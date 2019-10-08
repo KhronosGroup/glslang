@@ -5314,7 +5314,7 @@ void TBuiltIns::add2ndGenerationSamplingImaging(int version, EProfile profile, c
 #ifdef GLSLANG_WEB
             const int ms = 0;
 #else
-            for (int ms = 0; ms <= 1; ++ms)
+            for (int ms = 0; ms <= 1; ++ms) // loop over "bool" multisample or not
 #endif
             {
 #ifndef GLSLANG_WEB

@@ -167,370 +167,102 @@ extern int yydebug;
     USAMPLER3D = 299,
     USAMPLERCUBE = 300,
     USAMPLER2DARRAY = 301,
-    SAMPLERCUBEARRAY = 302,
-    SAMPLERCUBEARRAYSHADOW = 303,
-    ISAMPLERCUBEARRAY = 304,
-    USAMPLERCUBEARRAY = 305,
-    ATTRIBUTE = 306,
-    VARYING = 307,
-    FLOAT16_T = 308,
-    FLOAT32_T = 309,
-    DOUBLE = 310,
-    FLOAT64_T = 311,
-    INT64_T = 312,
-    UINT64_T = 313,
-    INT32_T = 314,
-    UINT32_T = 315,
-    INT16_T = 316,
-    UINT16_T = 317,
-    INT8_T = 318,
-    UINT8_T = 319,
-    I64VEC2 = 320,
-    I64VEC3 = 321,
-    I64VEC4 = 322,
-    U64VEC2 = 323,
-    U64VEC3 = 324,
-    U64VEC4 = 325,
-    I32VEC2 = 326,
-    I32VEC3 = 327,
-    I32VEC4 = 328,
-    U32VEC2 = 329,
-    U32VEC3 = 330,
-    U32VEC4 = 331,
-    I16VEC2 = 332,
-    I16VEC3 = 333,
-    I16VEC4 = 334,
-    U16VEC2 = 335,
-    U16VEC3 = 336,
-    U16VEC4 = 337,
-    I8VEC2 = 338,
-    I8VEC3 = 339,
-    I8VEC4 = 340,
-    U8VEC2 = 341,
-    U8VEC3 = 342,
-    U8VEC4 = 343,
-    DVEC2 = 344,
-    DVEC3 = 345,
-    DVEC4 = 346,
-    DMAT2 = 347,
-    DMAT3 = 348,
-    DMAT4 = 349,
-    F16VEC2 = 350,
-    F16VEC3 = 351,
-    F16VEC4 = 352,
-    F16MAT2 = 353,
-    F16MAT3 = 354,
-    F16MAT4 = 355,
-    F32VEC2 = 356,
-    F32VEC3 = 357,
-    F32VEC4 = 358,
-    F32MAT2 = 359,
-    F32MAT3 = 360,
-    F32MAT4 = 361,
-    F64VEC2 = 362,
-    F64VEC3 = 363,
-    F64VEC4 = 364,
-    F64MAT2 = 365,
-    F64MAT3 = 366,
-    F64MAT4 = 367,
-    DMAT2X2 = 368,
-    DMAT2X3 = 369,
-    DMAT2X4 = 370,
-    DMAT3X2 = 371,
-    DMAT3X3 = 372,
-    DMAT3X4 = 373,
-    DMAT4X2 = 374,
-    DMAT4X3 = 375,
-    DMAT4X4 = 376,
-    F16MAT2X2 = 377,
-    F16MAT2X3 = 378,
-    F16MAT2X4 = 379,
-    F16MAT3X2 = 380,
-    F16MAT3X3 = 381,
-    F16MAT3X4 = 382,
-    F16MAT4X2 = 383,
-    F16MAT4X3 = 384,
-    F16MAT4X4 = 385,
-    F32MAT2X2 = 386,
-    F32MAT2X3 = 387,
-    F32MAT2X4 = 388,
-    F32MAT3X2 = 389,
-    F32MAT3X3 = 390,
-    F32MAT3X4 = 391,
-    F32MAT4X2 = 392,
-    F32MAT4X3 = 393,
-    F32MAT4X4 = 394,
-    F64MAT2X2 = 395,
-    F64MAT2X3 = 396,
-    F64MAT2X4 = 397,
-    F64MAT3X2 = 398,
-    F64MAT3X3 = 399,
-    F64MAT3X4 = 400,
-    F64MAT4X2 = 401,
-    F64MAT4X3 = 402,
-    F64MAT4X4 = 403,
-    ATOMIC_UINT = 404,
-    ACCSTRUCTNV = 405,
-    FCOOPMATNV = 406,
-    ICOOPMATNV = 407,
-    UCOOPMATNV = 408,
-    SAMPLER1D = 409,
-    SAMPLER1DARRAY = 410,
-    SAMPLER1DARRAYSHADOW = 411,
-    ISAMPLER1D = 412,
-    SAMPLER1DSHADOW = 413,
-    SAMPLER2DRECT = 414,
-    SAMPLER2DRECTSHADOW = 415,
-    ISAMPLER2DRECT = 416,
-    USAMPLER2DRECT = 417,
-    SAMPLERBUFFER = 418,
-    ISAMPLERBUFFER = 419,
-    USAMPLERBUFFER = 420,
-    SAMPLER2DMS = 421,
-    ISAMPLER2DMS = 422,
-    USAMPLER2DMS = 423,
-    SAMPLER2DMSARRAY = 424,
-    ISAMPLER2DMSARRAY = 425,
-    USAMPLER2DMSARRAY = 426,
-    SAMPLEREXTERNALOES = 427,
-    SAMPLEREXTERNAL2DY2YEXT = 428,
-    ISAMPLER1DARRAY = 429,
-    USAMPLER1D = 430,
-    USAMPLER1DARRAY = 431,
-    F16SAMPLER1D = 432,
-    F16SAMPLER2D = 433,
-    F16SAMPLER3D = 434,
-    F16SAMPLER2DRECT = 435,
-    F16SAMPLERCUBE = 436,
-    F16SAMPLER1DARRAY = 437,
-    F16SAMPLER2DARRAY = 438,
-    F16SAMPLERCUBEARRAY = 439,
-    F16SAMPLERBUFFER = 440,
-    F16SAMPLER2DMS = 441,
-    F16SAMPLER2DMSARRAY = 442,
-    F16SAMPLER1DSHADOW = 443,
-    F16SAMPLER2DSHADOW = 444,
-    F16SAMPLER1DARRAYSHADOW = 445,
-    F16SAMPLER2DARRAYSHADOW = 446,
-    F16SAMPLER2DRECTSHADOW = 447,
-    F16SAMPLERCUBESHADOW = 448,
-    F16SAMPLERCUBEARRAYSHADOW = 449,
-    IMAGE1D = 450,
-    IIMAGE1D = 451,
-    UIMAGE1D = 452,
-    IMAGE2D = 453,
-    IIMAGE2D = 454,
-    UIMAGE2D = 455,
-    IMAGE3D = 456,
-    IIMAGE3D = 457,
-    UIMAGE3D = 458,
-    IMAGE2DRECT = 459,
-    IIMAGE2DRECT = 460,
-    UIMAGE2DRECT = 461,
-    IMAGECUBE = 462,
-    IIMAGECUBE = 463,
-    UIMAGECUBE = 464,
-    IMAGEBUFFER = 465,
-    IIMAGEBUFFER = 466,
-    UIMAGEBUFFER = 467,
-    IMAGE1DARRAY = 468,
-    IIMAGE1DARRAY = 469,
-    UIMAGE1DARRAY = 470,
-    IMAGE2DARRAY = 471,
-    IIMAGE2DARRAY = 472,
-    UIMAGE2DARRAY = 473,
-    IMAGECUBEARRAY = 474,
-    IIMAGECUBEARRAY = 475,
-    UIMAGECUBEARRAY = 476,
-    IMAGE2DMS = 477,
-    IIMAGE2DMS = 478,
-    UIMAGE2DMS = 479,
-    IMAGE2DMSARRAY = 480,
-    IIMAGE2DMSARRAY = 481,
-    UIMAGE2DMSARRAY = 482,
-    F16IMAGE1D = 483,
-    F16IMAGE2D = 484,
-    F16IMAGE3D = 485,
-    F16IMAGE2DRECT = 486,
-    F16IMAGECUBE = 487,
-    F16IMAGE1DARRAY = 488,
-    F16IMAGE2DARRAY = 489,
-    F16IMAGECUBEARRAY = 490,
-    F16IMAGEBUFFER = 491,
-    F16IMAGE2DMS = 492,
-    F16IMAGE2DMSARRAY = 493,
-    SAMPLER = 494,
-    SAMPLERSHADOW = 495,
-    TEXTURE1D = 496,
-    TEXTURE2D = 497,
-    TEXTURE3D = 498,
-    TEXTURECUBE = 499,
-    TEXTURE1DARRAY = 500,
-    TEXTURE2DARRAY = 501,
-    ITEXTURE1D = 502,
-    ITEXTURE2D = 503,
-    ITEXTURE3D = 504,
-    ITEXTURECUBE = 505,
-    ITEXTURE1DARRAY = 506,
-    ITEXTURE2DARRAY = 507,
-    UTEXTURE1D = 508,
-    UTEXTURE2D = 509,
-    UTEXTURE3D = 510,
-    UTEXTURECUBE = 511,
-    UTEXTURE1DARRAY = 512,
-    UTEXTURE2DARRAY = 513,
-    TEXTURE2DRECT = 514,
-    ITEXTURE2DRECT = 515,
-    UTEXTURE2DRECT = 516,
-    TEXTUREBUFFER = 517,
-    ITEXTUREBUFFER = 518,
-    UTEXTUREBUFFER = 519,
-    TEXTURECUBEARRAY = 520,
-    ITEXTURECUBEARRAY = 521,
-    UTEXTURECUBEARRAY = 522,
-    TEXTURE2DMS = 523,
-    ITEXTURE2DMS = 524,
-    UTEXTURE2DMS = 525,
-    TEXTURE2DMSARRAY = 526,
-    ITEXTURE2DMSARRAY = 527,
-    UTEXTURE2DMSARRAY = 528,
-    F16TEXTURE1D = 529,
-    F16TEXTURE2D = 530,
-    F16TEXTURE3D = 531,
-    F16TEXTURE2DRECT = 532,
-    F16TEXTURECUBE = 533,
-    F16TEXTURE1DARRAY = 534,
-    F16TEXTURE2DARRAY = 535,
-    F16TEXTURECUBEARRAY = 536,
-    F16TEXTUREBUFFER = 537,
-    F16TEXTURE2DMS = 538,
-    F16TEXTURE2DMSARRAY = 539,
-    SUBPASSINPUT = 540,
-    SUBPASSINPUTMS = 541,
-    ISUBPASSINPUT = 542,
-    ISUBPASSINPUTMS = 543,
-    USUBPASSINPUT = 544,
-    USUBPASSINPUTMS = 545,
-    F16SUBPASSINPUT = 546,
-    F16SUBPASSINPUTMS = 547,
-    LEFT_OP = 548,
-    RIGHT_OP = 549,
-    INC_OP = 550,
-    DEC_OP = 551,
-    LE_OP = 552,
-    GE_OP = 553,
-    EQ_OP = 554,
-    NE_OP = 555,
-    AND_OP = 556,
-    OR_OP = 557,
-    XOR_OP = 558,
-    MUL_ASSIGN = 559,
-    DIV_ASSIGN = 560,
-    ADD_ASSIGN = 561,
-    MOD_ASSIGN = 562,
-    LEFT_ASSIGN = 563,
-    RIGHT_ASSIGN = 564,
-    AND_ASSIGN = 565,
-    XOR_ASSIGN = 566,
-    OR_ASSIGN = 567,
-    SUB_ASSIGN = 568,
-    LEFT_PAREN = 569,
-    RIGHT_PAREN = 570,
-    LEFT_BRACKET = 571,
-    RIGHT_BRACKET = 572,
-    LEFT_BRACE = 573,
-    RIGHT_BRACE = 574,
-    DOT = 575,
-    COMMA = 576,
-    COLON = 577,
-    EQUAL = 578,
-    SEMICOLON = 579,
-    BANG = 580,
-    DASH = 581,
-    TILDE = 582,
-    PLUS = 583,
-    STAR = 584,
-    SLASH = 585,
-    PERCENT = 586,
-    LEFT_ANGLE = 587,
-    RIGHT_ANGLE = 588,
-    VERTICAL_BAR = 589,
-    CARET = 590,
-    AMPERSAND = 591,
-    QUESTION = 592,
-    INVARIANT = 593,
-    HIGH_PRECISION = 594,
-    MEDIUM_PRECISION = 595,
-    LOW_PRECISION = 596,
-    PRECISION = 597,
-    PACKED = 598,
-    RESOURCE = 599,
-    SUPERP = 600,
-    FLOATCONSTANT = 601,
-    INTCONSTANT = 602,
-    UINTCONSTANT = 603,
-    BOOLCONSTANT = 604,
-    IDENTIFIER = 605,
-    TYPE_NAME = 606,
-    CENTROID = 607,
-    IN = 608,
-    OUT = 609,
-    INOUT = 610,
-    STRUCT = 611,
-    VOID = 612,
-    WHILE = 613,
-    BREAK = 614,
-    CONTINUE = 615,
-    DO = 616,
-    ELSE = 617,
-    FOR = 618,
-    IF = 619,
-    DISCARD = 620,
-    RETURN = 621,
-    SWITCH = 622,
-    CASE = 623,
-    DEFAULT = 624,
-    UNIFORM = 625,
-    SHARED = 626,
-    FLAT = 627,
-    SMOOTH = 628,
-    LAYOUT = 629,
-    DOUBLECONSTANT = 630,
-    INT16CONSTANT = 631,
-    UINT16CONSTANT = 632,
-    FLOAT16CONSTANT = 633,
-    INT32CONSTANT = 634,
-    UINT32CONSTANT = 635,
-    INT64CONSTANT = 636,
-    UINT64CONSTANT = 637,
-    SUBROUTINE = 638,
-    DEMOTE = 639,
-    PAYLOADNV = 640,
-    PAYLOADINNV = 641,
-    HITATTRNV = 642,
-    CALLDATANV = 643,
-    CALLDATAINNV = 644,
-    PATCH = 645,
-    SAMPLE = 646,
-    BUFFER = 647,
-    NONUNIFORM = 648,
-    COHERENT = 649,
-    VOLATILE = 650,
-    RESTRICT = 651,
-    READONLY = 652,
-    WRITEONLY = 653,
-    DEVICECOHERENT = 654,
-    QUEUEFAMILYCOHERENT = 655,
-    WORKGROUPCOHERENT = 656,
-    SUBGROUPCOHERENT = 657,
-    NONPRIVATE = 658,
-    NOPERSPECTIVE = 659,
-    EXPLICITINTERPAMD = 660,
-    PERVERTEXNV = 661,
-    PERPRIMITIVENV = 662,
-    PERVIEWNV = 663,
-    PERTASKNV = 664,
-    PRECISE = 665
+    SAMPLER = 302,
+    SAMPLERSHADOW = 303,
+    TEXTURE2D = 304,
+    TEXTURE3D = 305,
+    TEXTURECUBE = 306,
+    TEXTURE2DARRAY = 307,
+    ITEXTURE2D = 308,
+    ITEXTURE3D = 309,
+    ITEXTURECUBE = 310,
+    ITEXTURE2DARRAY = 311,
+    UTEXTURE2D = 312,
+    UTEXTURE3D = 313,
+    UTEXTURECUBE = 314,
+    UTEXTURE2DARRAY = 315,
+    LEFT_OP = 316,
+    RIGHT_OP = 317,
+    INC_OP = 318,
+    DEC_OP = 319,
+    LE_OP = 320,
+    GE_OP = 321,
+    EQ_OP = 322,
+    NE_OP = 323,
+    AND_OP = 324,
+    OR_OP = 325,
+    XOR_OP = 326,
+    MUL_ASSIGN = 327,
+    DIV_ASSIGN = 328,
+    ADD_ASSIGN = 329,
+    MOD_ASSIGN = 330,
+    LEFT_ASSIGN = 331,
+    RIGHT_ASSIGN = 332,
+    AND_ASSIGN = 333,
+    XOR_ASSIGN = 334,
+    OR_ASSIGN = 335,
+    SUB_ASSIGN = 336,
+    LEFT_PAREN = 337,
+    RIGHT_PAREN = 338,
+    LEFT_BRACKET = 339,
+    RIGHT_BRACKET = 340,
+    LEFT_BRACE = 341,
+    RIGHT_BRACE = 342,
+    DOT = 343,
+    COMMA = 344,
+    COLON = 345,
+    EQUAL = 346,
+    SEMICOLON = 347,
+    BANG = 348,
+    DASH = 349,
+    TILDE = 350,
+    PLUS = 351,
+    STAR = 352,
+    SLASH = 353,
+    PERCENT = 354,
+    LEFT_ANGLE = 355,
+    RIGHT_ANGLE = 356,
+    VERTICAL_BAR = 357,
+    CARET = 358,
+    AMPERSAND = 359,
+    QUESTION = 360,
+    INVARIANT = 361,
+    HIGH_PRECISION = 362,
+    MEDIUM_PRECISION = 363,
+    LOW_PRECISION = 364,
+    PRECISION = 365,
+    PACKED = 366,
+    RESOURCE = 367,
+    SUPERP = 368,
+    FLOATCONSTANT = 369,
+    INTCONSTANT = 370,
+    UINTCONSTANT = 371,
+    BOOLCONSTANT = 372,
+    IDENTIFIER = 373,
+    TYPE_NAME = 374,
+    CENTROID = 375,
+    IN = 376,
+    OUT = 377,
+    INOUT = 378,
+    STRUCT = 379,
+    VOID = 380,
+    WHILE = 381,
+    BREAK = 382,
+    CONTINUE = 383,
+    DO = 384,
+    ELSE = 385,
+    FOR = 386,
+    IF = 387,
+    DISCARD = 388,
+    RETURN = 389,
+    SWITCH = 390,
+    CASE = 391,
+    DEFAULT = 392,
+    UNIFORM = 393,
+    SHARED = 394,
+    FLAT = 395,
+    SMOOTH = 396,
+    LAYOUT = 397
   };
 #endif
 
@@ -575,7 +307,7 @@ union YYSTYPE
         glslang::TArraySizes* typeParameters;
     } interm;
 
-#line 579 "MachineIndependent/glslang_tab.cpp" /* yacc.c:355  */
+#line 311 "MachineIndependent/glslang_tab.cpp" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -606,7 +338,7 @@ int yyparse (glslang::TParseContext* pParseContext);
 extern int yylex(YYSTYPE*, TParseContext&);
 
 
-#line 610 "MachineIndependent/glslang_tab.cpp" /* yacc.c:358  */
+#line 342 "MachineIndependent/glslang_tab.cpp" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -846,30 +578,30 @@ union yyalloc
 #endif /* !YYCOPY_NEEDED */
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  386
+#define YYFINAL  122
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   9369
+#define YYLAST   3110
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  411
+#define YYNTOKENS  143
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  111
+#define YYNNTS  103
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  582
+#define YYNRULES  293
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  727
+#define YYNSTATES  422
 
 /* YYTRANSLATE[YYX] -- Symbol number corresponding to YYX as returned
    by yylex, with out-of-bounds checking.  */
 #define YYUNDEFTOK  2
-#define YYMAXUTOK   665
+#define YYMAXUTOK   397
 
 #define YYTRANSLATE(YYX)                                                \
   ((unsigned int) (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
 
 /* YYTRANSLATE[TOKEN-NUM] -- Symbol number corresponding to TOKEN-NUM
    as returned by yylex, without out-of-bounds checking.  */
-static const yytype_uint16 yytranslate[] =
+static const yytype_uint8 yytranslate[] =
 {
        0,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -910,99 +642,43 @@ static const yytype_uint16 yytranslate[] =
      105,   106,   107,   108,   109,   110,   111,   112,   113,   114,
      115,   116,   117,   118,   119,   120,   121,   122,   123,   124,
      125,   126,   127,   128,   129,   130,   131,   132,   133,   134,
-     135,   136,   137,   138,   139,   140,   141,   142,   143,   144,
-     145,   146,   147,   148,   149,   150,   151,   152,   153,   154,
-     155,   156,   157,   158,   159,   160,   161,   162,   163,   164,
-     165,   166,   167,   168,   169,   170,   171,   172,   173,   174,
-     175,   176,   177,   178,   179,   180,   181,   182,   183,   184,
-     185,   186,   187,   188,   189,   190,   191,   192,   193,   194,
-     195,   196,   197,   198,   199,   200,   201,   202,   203,   204,
-     205,   206,   207,   208,   209,   210,   211,   212,   213,   214,
-     215,   216,   217,   218,   219,   220,   221,   222,   223,   224,
-     225,   226,   227,   228,   229,   230,   231,   232,   233,   234,
-     235,   236,   237,   238,   239,   240,   241,   242,   243,   244,
-     245,   246,   247,   248,   249,   250,   251,   252,   253,   254,
-     255,   256,   257,   258,   259,   260,   261,   262,   263,   264,
-     265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
-     275,   276,   277,   278,   279,   280,   281,   282,   283,   284,
-     285,   286,   287,   288,   289,   290,   291,   292,   293,   294,
-     295,   296,   297,   298,   299,   300,   301,   302,   303,   304,
-     305,   306,   307,   308,   309,   310,   311,   312,   313,   314,
-     315,   316,   317,   318,   319,   320,   321,   322,   323,   324,
-     325,   326,   327,   328,   329,   330,   331,   332,   333,   334,
-     335,   336,   337,   338,   339,   340,   341,   342,   343,   344,
-     345,   346,   347,   348,   349,   350,   351,   352,   353,   354,
-     355,   356,   357,   358,   359,   360,   361,   362,   363,   364,
-     365,   366,   367,   368,   369,   370,   371,   372,   373,   374,
-     375,   376,   377,   378,   379,   380,   381,   382,   383,   384,
-     385,   386,   387,   388,   389,   390,   391,   392,   393,   394,
-     395,   396,   397,   398,   399,   400,   401,   402,   403,   404,
-     405,   406,   407,   408,   409,   410
+     135,   136,   137,   138,   139,   140,   141,   142
 };
 
 #if YYDEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   352,   352,   358,   361,   366,   369,   372,   376,   380,
-     384,   388,   392,   396,   400,   404,   408,   416,   419,   422,
-     425,   428,   433,   441,   448,   455,   461,   465,   472,   475,
-     481,   488,   498,   506,   511,   539,   548,   554,   558,   562,
-     582,   583,   584,   585,   591,   592,   597,   602,   611,   612,
-     617,   625,   626,   632,   641,   642,   647,   652,   657,   665,
-     666,   675,   687,   688,   697,   698,   707,   708,   717,   718,
-     726,   727,   735,   736,   744,   745,   745,   763,   764,   780,
-     784,   788,   792,   797,   801,   805,   809,   813,   817,   821,
-     828,   831,   842,   849,   854,   859,   866,   870,   874,   878,
-     883,   888,   897,   897,   908,   912,   919,   926,   929,   936,
-     944,   964,   987,  1002,  1027,  1038,  1048,  1058,  1068,  1077,
-    1080,  1084,  1088,  1093,  1101,  1108,  1113,  1118,  1123,  1132,
-    1142,  1169,  1178,  1185,  1193,  1200,  1207,  1215,  1225,  1232,
-    1243,  1249,  1252,  1259,  1263,  1267,  1276,  1286,  1289,  1300,
-    1303,  1306,  1310,  1314,  1319,  1323,  1330,  1334,  1339,  1345,
-    1351,  1358,  1364,  1372,  1377,  1389,  1403,  1409,  1414,  1422,
-    1430,  1438,  1446,  1453,  1457,  1462,  1467,  1472,  1477,  1482,
-    1486,  1490,  1494,  1498,  1504,  1515,  1522,  1525,  1534,  1539,
-    1549,  1554,  1562,  1566,  1576,  1579,  1585,  1591,  1598,  1608,
-    1612,  1616,  1620,  1625,  1629,  1634,  1639,  1644,  1649,  1654,
-    1659,  1664,  1669,  1674,  1680,  1686,  1692,  1697,  1702,  1707,
-    1712,  1717,  1722,  1727,  1732,  1737,  1742,  1747,  1753,  1758,
-    1763,  1768,  1773,  1778,  1783,  1788,  1793,  1798,  1803,  1808,
-    1813,  1819,  1825,  1831,  1837,  1843,  1849,  1855,  1861,  1867,
-    1873,  1879,  1885,  1891,  1897,  1903,  1909,  1915,  1921,  1927,
-    1933,  1939,  1945,  1951,  1957,  1963,  1969,  1975,  1981,  1987,
-    1993,  1999,  2005,  2011,  2017,  2023,  2029,  2035,  2041,  2047,
-    2053,  2059,  2065,  2071,  2077,  2083,  2089,  2095,  2101,  2107,
-    2113,  2119,  2125,  2131,  2137,  2143,  2149,  2155,  2161,  2167,
-    2173,  2179,  2185,  2191,  2197,  2203,  2209,  2215,  2221,  2227,
-    2233,  2239,  2245,  2251,  2257,  2263,  2269,  2275,  2281,  2287,
-    2293,  2299,  2305,  2311,  2317,  2321,  2326,  2332,  2337,  2342,
-    2347,  2352,  2358,  2363,  2368,  2374,  2379,  2384,  2389,  2395,
-    2401,  2407,  2413,  2419,  2425,  2431,  2437,  2443,  2449,  2455,
-    2461,  2467,  2473,  2479,  2484,  2489,  2495,  2501,  2506,  2512,
-    2518,  2523,  2528,  2534,  2540,  2545,  2551,  2556,  2561,  2567,
-    2573,  2578,  2583,  2588,  2594,  2599,  2604,  2609,  2615,  2620,
-    2625,  2630,  2636,  2641,  2646,  2651,  2656,  2661,  2667,  2672,
-    2678,  2683,  2689,  2694,  2700,  2705,  2711,  2716,  2722,  2727,
-    2733,  2738,  2743,  2748,  2753,  2758,  2763,  2768,  2773,  2778,
-    2783,  2788,  2793,  2798,  2803,  2808,  2814,  2819,  2824,  2829,
-    2835,  2840,  2845,  2850,  2856,  2861,  2866,  2871,  2877,  2882,
-    2887,  2892,  2898,  2903,  2908,  2913,  2919,  2924,  2929,  2934,
-    2940,  2945,  2950,  2955,  2961,  2966,  2971,  2976,  2982,  2987,
-    2992,  2997,  3003,  3008,  3013,  3018,  3024,  3029,  3034,  3039,
-    3045,  3050,  3055,  3060,  3066,  3071,  3076,  3081,  3087,  3092,
-    3097,  3102,  3108,  3113,  3118,  3124,  3130,  3136,  3142,  3149,
-    3156,  3162,  3168,  3174,  3180,  3186,  3192,  3199,  3204,  3220,
-    3225,  3230,  3238,  3238,  3249,  3249,  3259,  3262,  3275,  3297,
-    3324,  3328,  3334,  3339,  3350,  3354,  3360,  3371,  3374,  3381,
-    3385,  3386,  3392,  3393,  3394,  3395,  3396,  3397,  3398,  3400,
-    3406,  3415,  3416,  3420,  3416,  3432,  3433,  3437,  3437,  3444,
-    3444,  3458,  3461,  3469,  3477,  3488,  3489,  3493,  3497,  3504,
-    3511,  3515,  3523,  3527,  3540,  3544,  3551,  3551,  3571,  3574,
-    3580,  3592,  3604,  3608,  3615,  3615,  3630,  3630,  3646,  3646,
-    3667,  3670,  3676,  3679,  3685,  3689,  3696,  3701,  3706,  3713,
-    3716,  3725,  3729,  3738,  3741,  3745,  3754,  3754,  3777,  3783,
-    3786,  3791,  3794
+       0,   253,   253,   259,   262,   267,   270,   273,   277,   284,
+     287,   290,   293,   296,   301,   309,   316,   323,   329,   333,
+     340,   343,   349,   356,   366,   374,   379,   410,   416,   420,
+     424,   444,   445,   446,   447,   453,   454,   459,   464,   473,
+     474,   479,   487,   488,   494,   503,   504,   509,   514,   519,
+     527,   528,   537,   549,   550,   559,   560,   569,   570,   579,
+     580,   588,   589,   597,   598,   606,   607,   607,   625,   626,
+     642,   646,   650,   654,   659,   663,   667,   671,   675,   679,
+     683,   690,   693,   704,   711,   716,   721,   728,   732,   736,
+     740,   745,   750,   759,   759,   770,   774,   781,   788,   791,
+     798,   806,   826,   849,   864,   889,   900,   910,   920,   930,
+     939,   942,   946,   950,   955,   963,   968,   973,   978,   983,
+     992,  1002,  1029,  1038,  1045,  1056,  1062,  1065,  1072,  1076,
+    1080,  1090,  1093,  1104,  1107,  1110,  1114,  1118,  1126,  1130,
+    1135,  1141,  1147,  1154,  1165,  1170,  1180,  1185,  1193,  1197,
+    1207,  1210,  1216,  1222,  1229,  1239,  1243,  1247,  1251,  1256,
+    1260,  1265,  1270,  1275,  1280,  1285,  1290,  1295,  1300,  1305,
+    1311,  1317,  1323,  1328,  1333,  1338,  1343,  1348,  1353,  1358,
+    1363,  1368,  1373,  1378,  1384,  1389,  1394,  1399,  1404,  1409,
+    1414,  1420,  1425,  1430,  1435,  1440,  1445,  1450,  1456,  1461,
+    1466,  1471,  1476,  1481,  1486,  1491,  1496,  1501,  1506,  1511,
+    1516,  1521,  1526,  1532,  1537,  1553,  1558,  1563,  1571,  1571,
+    1582,  1582,  1592,  1595,  1608,  1630,  1657,  1661,  1667,  1672,
+    1683,  1692,  1696,  1697,  1703,  1704,  1705,  1706,  1707,  1708,
+    1709,  1716,  1717,  1721,  1717,  1733,  1734,  1738,  1738,  1745,
+    1745,  1759,  1762,  1770,  1778,  1789,  1790,  1794,  1800,  1807,
+    1811,  1819,  1823,  1836,  1842,  1842,  1862,  1865,  1871,  1883,
+    1895,  1901,  1901,  1916,  1916,  1932,  1932,  1953,  1956,  1962,
+    1965,  1971,  1975,  1982,  1987,  1992,  1999,  2002,  2011,  2015,
+    2024,  2027,  2034,  2034
 };
 #endif
 
@@ -1018,88 +694,27 @@ static const char *const yytname[] =
   "MAT4X4", "SAMPLER2D", "SAMPLER3D", "SAMPLERCUBE", "SAMPLER2DSHADOW",
   "SAMPLERCUBESHADOW", "SAMPLER2DARRAY", "SAMPLER2DARRAYSHADOW",
   "ISAMPLER2D", "ISAMPLER3D", "ISAMPLERCUBE", "ISAMPLER2DARRAY",
-  "USAMPLER2D", "USAMPLER3D", "USAMPLERCUBE", "USAMPLER2DARRAY",
-  "SAMPLERCUBEARRAY", "SAMPLERCUBEARRAYSHADOW", "ISAMPLERCUBEARRAY",
-  "USAMPLERCUBEARRAY", "ATTRIBUTE", "VARYING", "FLOAT16_T", "FLOAT32_T",
-  "DOUBLE", "FLOAT64_T", "INT64_T", "UINT64_T", "INT32_T", "UINT32_T",
-  "INT16_T", "UINT16_T", "INT8_T", "UINT8_T", "I64VEC2", "I64VEC3",
-  "I64VEC4", "U64VEC2", "U64VEC3", "U64VEC4", "I32VEC2", "I32VEC3",
-  "I32VEC4", "U32VEC2", "U32VEC3", "U32VEC4", "I16VEC2", "I16VEC3",
-  "I16VEC4", "U16VEC2", "U16VEC3", "U16VEC4", "I8VEC2", "I8VEC3", "I8VEC4",
-  "U8VEC2", "U8VEC3", "U8VEC4", "DVEC2", "DVEC3", "DVEC4", "DMAT2",
-  "DMAT3", "DMAT4", "F16VEC2", "F16VEC3", "F16VEC4", "F16MAT2", "F16MAT3",
-  "F16MAT4", "F32VEC2", "F32VEC3", "F32VEC4", "F32MAT2", "F32MAT3",
-  "F32MAT4", "F64VEC2", "F64VEC3", "F64VEC4", "F64MAT2", "F64MAT3",
-  "F64MAT4", "DMAT2X2", "DMAT2X3", "DMAT2X4", "DMAT3X2", "DMAT3X3",
-  "DMAT3X4", "DMAT4X2", "DMAT4X3", "DMAT4X4", "F16MAT2X2", "F16MAT2X3",
-  "F16MAT2X4", "F16MAT3X2", "F16MAT3X3", "F16MAT3X4", "F16MAT4X2",
-  "F16MAT4X3", "F16MAT4X4", "F32MAT2X2", "F32MAT2X3", "F32MAT2X4",
-  "F32MAT3X2", "F32MAT3X3", "F32MAT3X4", "F32MAT4X2", "F32MAT4X3",
-  "F32MAT4X4", "F64MAT2X2", "F64MAT2X3", "F64MAT2X4", "F64MAT3X2",
-  "F64MAT3X3", "F64MAT3X4", "F64MAT4X2", "F64MAT4X3", "F64MAT4X4",
-  "ATOMIC_UINT", "ACCSTRUCTNV", "FCOOPMATNV", "ICOOPMATNV", "UCOOPMATNV",
-  "SAMPLER1D", "SAMPLER1DARRAY", "SAMPLER1DARRAYSHADOW", "ISAMPLER1D",
-  "SAMPLER1DSHADOW", "SAMPLER2DRECT", "SAMPLER2DRECTSHADOW",
-  "ISAMPLER2DRECT", "USAMPLER2DRECT", "SAMPLERBUFFER", "ISAMPLERBUFFER",
-  "USAMPLERBUFFER", "SAMPLER2DMS", "ISAMPLER2DMS", "USAMPLER2DMS",
-  "SAMPLER2DMSARRAY", "ISAMPLER2DMSARRAY", "USAMPLER2DMSARRAY",
-  "SAMPLEREXTERNALOES", "SAMPLEREXTERNAL2DY2YEXT", "ISAMPLER1DARRAY",
-  "USAMPLER1D", "USAMPLER1DARRAY", "F16SAMPLER1D", "F16SAMPLER2D",
-  "F16SAMPLER3D", "F16SAMPLER2DRECT", "F16SAMPLERCUBE",
-  "F16SAMPLER1DARRAY", "F16SAMPLER2DARRAY", "F16SAMPLERCUBEARRAY",
-  "F16SAMPLERBUFFER", "F16SAMPLER2DMS", "F16SAMPLER2DMSARRAY",
-  "F16SAMPLER1DSHADOW", "F16SAMPLER2DSHADOW", "F16SAMPLER1DARRAYSHADOW",
-  "F16SAMPLER2DARRAYSHADOW", "F16SAMPLER2DRECTSHADOW",
-  "F16SAMPLERCUBESHADOW", "F16SAMPLERCUBEARRAYSHADOW", "IMAGE1D",
-  "IIMAGE1D", "UIMAGE1D", "IMAGE2D", "IIMAGE2D", "UIMAGE2D", "IMAGE3D",
-  "IIMAGE3D", "UIMAGE3D", "IMAGE2DRECT", "IIMAGE2DRECT", "UIMAGE2DRECT",
-  "IMAGECUBE", "IIMAGECUBE", "UIMAGECUBE", "IMAGEBUFFER", "IIMAGEBUFFER",
-  "UIMAGEBUFFER", "IMAGE1DARRAY", "IIMAGE1DARRAY", "UIMAGE1DARRAY",
-  "IMAGE2DARRAY", "IIMAGE2DARRAY", "UIMAGE2DARRAY", "IMAGECUBEARRAY",
-  "IIMAGECUBEARRAY", "UIMAGECUBEARRAY", "IMAGE2DMS", "IIMAGE2DMS",
-  "UIMAGE2DMS", "IMAGE2DMSARRAY", "IIMAGE2DMSARRAY", "UIMAGE2DMSARRAY",
-  "F16IMAGE1D", "F16IMAGE2D", "F16IMAGE3D", "F16IMAGE2DRECT",
-  "F16IMAGECUBE", "F16IMAGE1DARRAY", "F16IMAGE2DARRAY",
-  "F16IMAGECUBEARRAY", "F16IMAGEBUFFER", "F16IMAGE2DMS",
-  "F16IMAGE2DMSARRAY", "SAMPLER", "SAMPLERSHADOW", "TEXTURE1D",
-  "TEXTURE2D", "TEXTURE3D", "TEXTURECUBE", "TEXTURE1DARRAY",
-  "TEXTURE2DARRAY", "ITEXTURE1D", "ITEXTURE2D", "ITEXTURE3D",
-  "ITEXTURECUBE", "ITEXTURE1DARRAY", "ITEXTURE2DARRAY", "UTEXTURE1D",
-  "UTEXTURE2D", "UTEXTURE3D", "UTEXTURECUBE", "UTEXTURE1DARRAY",
-  "UTEXTURE2DARRAY", "TEXTURE2DRECT", "ITEXTURE2DRECT", "UTEXTURE2DRECT",
-  "TEXTUREBUFFER", "ITEXTUREBUFFER", "UTEXTUREBUFFER", "TEXTURECUBEARRAY",
-  "ITEXTURECUBEARRAY", "UTEXTURECUBEARRAY", "TEXTURE2DMS", "ITEXTURE2DMS",
-  "UTEXTURE2DMS", "TEXTURE2DMSARRAY", "ITEXTURE2DMSARRAY",
-  "UTEXTURE2DMSARRAY", "F16TEXTURE1D", "F16TEXTURE2D", "F16TEXTURE3D",
-  "F16TEXTURE2DRECT", "F16TEXTURECUBE", "F16TEXTURE1DARRAY",
-  "F16TEXTURE2DARRAY", "F16TEXTURECUBEARRAY", "F16TEXTUREBUFFER",
-  "F16TEXTURE2DMS", "F16TEXTURE2DMSARRAY", "SUBPASSINPUT",
-  "SUBPASSINPUTMS", "ISUBPASSINPUT", "ISUBPASSINPUTMS", "USUBPASSINPUT",
-  "USUBPASSINPUTMS", "F16SUBPASSINPUT", "F16SUBPASSINPUTMS", "LEFT_OP",
-  "RIGHT_OP", "INC_OP", "DEC_OP", "LE_OP", "GE_OP", "EQ_OP", "NE_OP",
-  "AND_OP", "OR_OP", "XOR_OP", "MUL_ASSIGN", "DIV_ASSIGN", "ADD_ASSIGN",
-  "MOD_ASSIGN", "LEFT_ASSIGN", "RIGHT_ASSIGN", "AND_ASSIGN", "XOR_ASSIGN",
-  "OR_ASSIGN", "SUB_ASSIGN", "LEFT_PAREN", "RIGHT_PAREN", "LEFT_BRACKET",
-  "RIGHT_BRACKET", "LEFT_BRACE", "RIGHT_BRACE", "DOT", "COMMA", "COLON",
-  "EQUAL", "SEMICOLON", "BANG", "DASH", "TILDE", "PLUS", "STAR", "SLASH",
-  "PERCENT", "LEFT_ANGLE", "RIGHT_ANGLE", "VERTICAL_BAR", "CARET",
-  "AMPERSAND", "QUESTION", "INVARIANT", "HIGH_PRECISION",
-  "MEDIUM_PRECISION", "LOW_PRECISION", "PRECISION", "PACKED", "RESOURCE",
-  "SUPERP", "FLOATCONSTANT", "INTCONSTANT", "UINTCONSTANT", "BOOLCONSTANT",
-  "IDENTIFIER", "TYPE_NAME", "CENTROID", "IN", "OUT", "INOUT", "STRUCT",
-  "VOID", "WHILE", "BREAK", "CONTINUE", "DO", "ELSE", "FOR", "IF",
-  "DISCARD", "RETURN", "SWITCH", "CASE", "DEFAULT", "UNIFORM", "SHARED",
-  "FLAT", "SMOOTH", "LAYOUT", "DOUBLECONSTANT", "INT16CONSTANT",
-  "UINT16CONSTANT", "FLOAT16CONSTANT", "INT32CONSTANT", "UINT32CONSTANT",
-  "INT64CONSTANT", "UINT64CONSTANT", "SUBROUTINE", "DEMOTE", "PAYLOADNV",
-  "PAYLOADINNV", "HITATTRNV", "CALLDATANV", "CALLDATAINNV", "PATCH",
-  "SAMPLE", "BUFFER", "NONUNIFORM", "COHERENT", "VOLATILE", "RESTRICT",
-  "READONLY", "WRITEONLY", "DEVICECOHERENT", "QUEUEFAMILYCOHERENT",
-  "WORKGROUPCOHERENT", "SUBGROUPCOHERENT", "NONPRIVATE", "NOPERSPECTIVE",
-  "EXPLICITINTERPAMD", "PERVERTEXNV", "PERPRIMITIVENV", "PERVIEWNV",
-  "PERTASKNV", "PRECISE", "$accept", "variable_identifier",
-  "primary_expression", "postfix_expression", "integer_expression",
-  "function_call", "function_call_or_method", "function_call_generic",
+  "USAMPLER2D", "USAMPLER3D", "USAMPLERCUBE", "USAMPLER2DARRAY", "SAMPLER",
+  "SAMPLERSHADOW", "TEXTURE2D", "TEXTURE3D", "TEXTURECUBE",
+  "TEXTURE2DARRAY", "ITEXTURE2D", "ITEXTURE3D", "ITEXTURECUBE",
+  "ITEXTURE2DARRAY", "UTEXTURE2D", "UTEXTURE3D", "UTEXTURECUBE",
+  "UTEXTURE2DARRAY", "LEFT_OP", "RIGHT_OP", "INC_OP", "DEC_OP", "LE_OP",
+  "GE_OP", "EQ_OP", "NE_OP", "AND_OP", "OR_OP", "XOR_OP", "MUL_ASSIGN",
+  "DIV_ASSIGN", "ADD_ASSIGN", "MOD_ASSIGN", "LEFT_ASSIGN", "RIGHT_ASSIGN",
+  "AND_ASSIGN", "XOR_ASSIGN", "OR_ASSIGN", "SUB_ASSIGN", "LEFT_PAREN",
+  "RIGHT_PAREN", "LEFT_BRACKET", "RIGHT_BRACKET", "LEFT_BRACE",
+  "RIGHT_BRACE", "DOT", "COMMA", "COLON", "EQUAL", "SEMICOLON", "BANG",
+  "DASH", "TILDE", "PLUS", "STAR", "SLASH", "PERCENT", "LEFT_ANGLE",
+  "RIGHT_ANGLE", "VERTICAL_BAR", "CARET", "AMPERSAND", "QUESTION",
+  "INVARIANT", "HIGH_PRECISION", "MEDIUM_PRECISION", "LOW_PRECISION",
+  "PRECISION", "PACKED", "RESOURCE", "SUPERP", "FLOATCONSTANT",
+  "INTCONSTANT", "UINTCONSTANT", "BOOLCONSTANT", "IDENTIFIER", "TYPE_NAME",
+  "CENTROID", "IN", "OUT", "INOUT", "STRUCT", "VOID", "WHILE", "BREAK",
+  "CONTINUE", "DO", "ELSE", "FOR", "IF", "DISCARD", "RETURN", "SWITCH",
+  "CASE", "DEFAULT", "UNIFORM", "SHARED", "FLAT", "SMOOTH", "LAYOUT",
+  "$accept", "variable_identifier", "primary_expression",
+  "postfix_expression", "integer_expression", "function_call",
+  "function_call_or_method", "function_call_generic",
   "function_call_header_no_parameters",
   "function_call_header_with_parameters", "function_call_header",
   "function_identifier", "unary_expression", "unary_operator",
@@ -1116,26 +731,23 @@ static const char *const yytname[] =
   "parameter_type_specifier", "init_declarator_list", "single_declaration",
   "fully_specified_type", "invariant_qualifier", "interpolation_qualifier",
   "layout_qualifier", "layout_qualifier_id_list", "layout_qualifier_id",
-  "precise_qualifier", "type_qualifier", "single_type_qualifier",
-  "storage_qualifier", "non_uniform_qualifier", "type_name_list",
+  "type_qualifier", "single_type_qualifier", "storage_qualifier",
   "type_specifier", "array_specifier", "type_parameter_specifier_opt",
   "type_parameter_specifier", "type_parameter_specifier_list",
   "type_specifier_nonarray", "precision_qualifier", "struct_specifier",
   "$@3", "$@4", "struct_declaration_list", "struct_declaration",
   "struct_declarator_list", "struct_declarator", "initializer",
-  "initializer_list", "declaration_statement", "statement",
-  "simple_statement", "demote_statement", "compound_statement", "$@5",
-  "$@6", "statement_no_new_scope", "statement_scoped", "$@7", "$@8",
-  "compound_statement_no_new_scope", "statement_list",
-  "expression_statement", "selection_statement",
+  "declaration_statement", "statement", "simple_statement",
+  "compound_statement", "$@5", "$@6", "statement_no_new_scope",
+  "statement_scoped", "$@7", "$@8", "compound_statement_no_new_scope",
+  "statement_list", "expression_statement", "selection_statement",
   "selection_statement_nonattributed", "selection_rest_statement",
   "condition", "switch_statement", "switch_statement_nonattributed", "$@9",
   "switch_statement_list", "case_label", "iteration_statement",
   "iteration_statement_nonattributed", "$@10", "$@11", "$@12",
   "for_init_statement", "conditionopt", "for_rest_statement",
   "jump_statement", "translation_unit", "external_declaration",
-  "function_definition", "$@13", "attribute", "attribute_list",
-  "single_attribute", YY_NULLPTR
+  "function_definition", "$@13", YY_NULLPTR
 };
 #endif
 
@@ -1158,43 +770,16 @@ static const yytype_uint16 yytoknum[] =
      365,   366,   367,   368,   369,   370,   371,   372,   373,   374,
      375,   376,   377,   378,   379,   380,   381,   382,   383,   384,
      385,   386,   387,   388,   389,   390,   391,   392,   393,   394,
-     395,   396,   397,   398,   399,   400,   401,   402,   403,   404,
-     405,   406,   407,   408,   409,   410,   411,   412,   413,   414,
-     415,   416,   417,   418,   419,   420,   421,   422,   423,   424,
-     425,   426,   427,   428,   429,   430,   431,   432,   433,   434,
-     435,   436,   437,   438,   439,   440,   441,   442,   443,   444,
-     445,   446,   447,   448,   449,   450,   451,   452,   453,   454,
-     455,   456,   457,   458,   459,   460,   461,   462,   463,   464,
-     465,   466,   467,   468,   469,   470,   471,   472,   473,   474,
-     475,   476,   477,   478,   479,   480,   481,   482,   483,   484,
-     485,   486,   487,   488,   489,   490,   491,   492,   493,   494,
-     495,   496,   497,   498,   499,   500,   501,   502,   503,   504,
-     505,   506,   507,   508,   509,   510,   511,   512,   513,   514,
-     515,   516,   517,   518,   519,   520,   521,   522,   523,   524,
-     525,   526,   527,   528,   529,   530,   531,   532,   533,   534,
-     535,   536,   537,   538,   539,   540,   541,   542,   543,   544,
-     545,   546,   547,   548,   549,   550,   551,   552,   553,   554,
-     555,   556,   557,   558,   559,   560,   561,   562,   563,   564,
-     565,   566,   567,   568,   569,   570,   571,   572,   573,   574,
-     575,   576,   577,   578,   579,   580,   581,   582,   583,   584,
-     585,   586,   587,   588,   589,   590,   591,   592,   593,   594,
-     595,   596,   597,   598,   599,   600,   601,   602,   603,   604,
-     605,   606,   607,   608,   609,   610,   611,   612,   613,   614,
-     615,   616,   617,   618,   619,   620,   621,   622,   623,   624,
-     625,   626,   627,   628,   629,   630,   631,   632,   633,   634,
-     635,   636,   637,   638,   639,   640,   641,   642,   643,   644,
-     645,   646,   647,   648,   649,   650,   651,   652,   653,   654,
-     655,   656,   657,   658,   659,   660,   661,   662,   663,   664,
-     665
+     395,   396,   397
 };
 # endif
 
-#define YYPACT_NINF -367
+#define YYPACT_NINF -357
 
 #define yypact_value_is_default(Yystate) \
-  (!!((Yystate) == (-367)))
+  (!!((Yystate) == (-357)))
 
-#define YYTABLE_NINF -528
+#define YYTABLE_NINF -248
 
 #define yytable_value_is_error(Yytable_value) \
   0
@@ -1203,79 +788,49 @@ static const yytype_uint16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int16 yypact[] =
 {
-    3994,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,
-    -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,
-    -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,
-    -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,
-    -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,
-    -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,
-    -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,
-    -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,
-    -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,
-    -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,
-    -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,
-    -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,
-    -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,
-    -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,
-    -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,
-    -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,
-    -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,
-    -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,
-    -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,
-    -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,
-    -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,
-    -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,
-    -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,
-    -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,
-    -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,
-    -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,
-    -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,
-    -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,
-    -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,
-    -367,  -367,  -367,  -367,  -367,  -367,   -13,  -367,  -367,  -367,
-    -367,  -367,    13,  -367,  -367,  -367,  -367,  -367,    28,    40,
-    -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,
-    -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,
-    -367,  -367,  -367,  -367,  -367,  -367,  -367,    -2,    -1,    88,
-      98,  6034,   116,  -367,    74,  -367,  -367,  -367,  -367,  4402,
-    -367,  -367,  -367,  -367,   104,  -367,  -367,   730,  -367,  -367,
-      11,  -367,   136,   -25,   111,  -367,     8,  -367,   147,  -367,
-    6034,  -367,  -367,  -367,  6034,   139,   140,  -367,    61,  -367,
-      78,  -367,  -367,  8391,   155,  -367,  -367,  -367,   149,  6034,
-    -367,   152,  -367,  -309,  -367,  -367,    80,  6831,  -367,    27,
-    1138,  -367,  -367,  -367,  -367,   155,    53,  -367,  7221,    69,
-    -367,   141,  -367,   117,  8391,  8391,  8391,  -367,  -367,  -367,
-    -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,
-    -367,  -367,  -367,  -367,  -367,  -367,    77,  -367,  -367,  -367,
-     164,    89,  8781,   172,  -367,  8391,  -367,  -367,  -320,   176,
-    -367,  6034,   143,  4810,  -367,  6034,  8391,  -367,   -25,  -367,
-     145,  -367,  -367,   138,   144,  -231,    23,    65,   158,   153,
-     162,   196,   197,    16,   182,  7611,  -367,   185,   183,  -367,
-    -367,   189,   180,   181,  -367,   195,   198,   186,  8001,   200,
-    8391,   199,   187,   122,  -367,  -367,   123,  -367,    -1,   203,
-     204,  -367,  -367,  -367,  -367,  -367,  1546,  -367,  -367,  -367,
-    -367,  -367,  -367,  -367,  -367,  -367,  -353,   176,  7221,    71,
-    7221,  -367,  -367,  7221,  6034,  -367,   169,  -367,  -367,  -367,
-      91,  -367,  -367,  8391,   170,  -367,  -367,  8391,   207,  -367,
-    -367,  -367,  8391,  -367,   143,   155,   125,  -367,  -367,  -367,
-    5218,  -367,  -367,  -367,  -367,  8391,  8391,  8391,  8391,  8391,
-    8391,  8391,  8391,  8391,  8391,  8391,  8391,  8391,  8391,  8391,
-    8391,  8391,  8391,  8391,  -367,  -367,  -367,   206,   177,  -367,
-    1954,  -367,  -367,  -367,  1954,  -367,  8391,  -367,  -367,   135,
-    8391,    60,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,
-    -367,  -367,  -367,  -367,  -367,  8391,  8391,  -367,  -367,  -367,
-    -367,  -367,  -367,  -367,  7221,  -367,   129,  -367,  5626,  -367,
-    -367,   209,   208,  -367,  -367,  -367,   142,   176,   143,  -367,
-    -367,  -367,  -367,  -367,   138,   138,   144,   144,  -231,  -231,
-    -231,  -231,    23,    23,    65,   158,   153,   162,   196,   197,
-    8391,  -367,   214,  -314,  -367,  1954,  3586,   173,  3178,    93,
-    -367,    96,  -367,  -367,  -367,  -367,  -367,  6441,  -367,  -367,
-    -367,  -367,   121,  8391,   213,   177,   215,   208,   188,  6034,
-     217,   221,  -367,  -367,  3586,   218,  -367,  -367,  -367,  8391,
-     222,  -367,  -367,  -367,   216,  2362,  8391,  -367,   219,   226,
-     190,   224,  2770,  -367,   227,  -367,  -367,  7221,  -367,  -367,
-    -367,   100,  8391,  2362,   218,  -367,  -367,  1954,  -367,   220,
-     208,  -367,  -367,  1954,   228,  -367,  -367
+    1676,  -357,  -357,  -357,  -357,  -357,  -357,  -357,  -357,  -357,
+    -357,  -357,  -357,  -357,  -357,  -357,  -357,  -357,  -357,  -357,
+    -357,  -357,  -357,  -357,  -357,  -357,  -357,  -357,  -357,  -357,
+    -357,  -357,  -357,  -357,  -357,  -357,  -357,  -357,  -357,  -357,
+    -357,  -357,  -357,  -357,  -357,  -357,  -357,  -357,  -357,  -357,
+    -357,  -357,  -357,  -357,  -357,  -357,  -357,  -357,  -357,  -357,
+    -357,  -357,  -357,    42,  -357,  -357,  -357,  -357,  -357,   -70,
+    -357,  -357,  -357,  -357,   -57,  -357,   -69,   -48,   -21,   -15,
+    2236,    -6,  -357,   -37,  -357,  -357,  -357,  1536,  -357,  -357,
+    -357,   -40,  -357,  -357,   416,  -357,  -357,  2985,  -357,     3,
+     -96,  -357,   -29,  -357,    14,  -357,  2236,  -357,  -357,  -357,
+    2236,   -14,     5,  -357,   -53,  -357,   -52,  -357,  -357,  2741,
+       9,  -357,  -357,  -357,    37,  2236,  -357,    66,  -357,   -12,
+    -357,  2375,  -357,   -28,   556,  -357,  -357,  -357,  -357,     9,
+     -34,  -357,  2741,   -25,  -357,    41,  -357,    28,  2741,  2741,
+    2741,  -357,  -357,  -357,  -357,  -357,  -357,  -357,  -357,  -357,
+    -357,  -357,   -43,  -357,  -357,  -357,    50,   -10,  2863,    72,
+    -357,  2741,  -357,   -65,    77,  -357,  2236,    55,  1816,  -357,
+    2236,  2741,  -357,   -96,  -357,  -357,    38,    36,     8,   -47,
+      40,    70,    76,    73,   114,   113,   -58,   100,  2497,  -357,
+      99,  -357,  -357,   108,   101,   102,  -357,   109,   110,   104,
+    2619,   115,  2741,   111,    67,  -357,  -357,    29,  -357,   -48,
+     116,  -357,  -357,  -357,  -357,   696,  -357,  -357,  -357,  -357,
+    -357,  -357,  -357,  -357,  -357,    77,  2741,   -23,  -357,  -357,
+    2741,  2236,  -357,    81,  -357,  -357,  -357,    -5,  -357,  -357,
+    2741,    82,  -357,  -357,  2741,   119,  -357,  -357,  -357,  2741,
+    -357,    55,     9,    30,  -357,  -357,  -357,  1956,  -357,  -357,
+    -357,  2741,  2741,  2741,  2741,  2741,  2741,  2741,  2741,  2741,
+    2741,  2741,  2741,  2741,  2741,  2741,  2741,  2741,  2741,  2741,
+    -357,  -357,  -357,   118,  -357,   836,  -357,  -357,  -357,   836,
+    -357,  2741,  -357,  -357,    35,  2741,    63,  -357,  -357,  -357,
+    -357,  -357,  -357,  -357,  -357,  -357,  -357,  -357,  -357,  2741,
+    2741,  -357,  -357,  -357,  -357,  2741,  -357,  2096,  -357,  -357,
+     120,   121,  -357,  -357,  -357,    39,    77,    55,  -357,  -357,
+    -357,  -357,  -357,    38,    38,    36,    36,     8,     8,     8,
+       8,   -47,   -47,    40,    70,    76,    73,   114,   113,  2741,
+    -357,   836,  1396,    78,  1256,    -1,  -357,     2,  -357,  -357,
+    -357,  -357,  -357,  -357,  -357,  -357,    75,   122,   121,    90,
+    2236,   128,   130,  -357,  -357,  1396,   127,  -357,  2741,  -357,
+     124,   976,  2741,  -357,   126,   133,    89,   134,  1116,  -357,
+     135,  -357,  2741,  -357,  -357,  -357,     7,  2741,   976,   127,
+    -357,  -357,   836,  -357,   131,   121,  -357,  -357,   836,   137,
+    -357,  -357
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -1283,113 +838,81 @@ static const yytype_int16 yypact[] =
      means the default is an error.  */
 static const yytype_uint16 yydefact[] =
 {
-       0,   156,   203,   201,   202,   200,   207,   208,   209,   210,
-     211,   212,   213,   214,   215,   204,   205,   206,   216,   217,
-     218,   219,   220,   221,   222,   223,   224,   225,   226,   227,
-     327,   328,   329,   330,   331,   335,   336,   353,   354,   355,
-     357,   360,   361,   362,   364,   337,   338,   358,   365,   164,
-     165,   229,   230,   228,   231,   238,   239,   236,   237,   234,
-     235,   232,   233,   261,   262,   263,   273,   274,   275,   258,
-     259,   260,   270,   271,   272,   255,   256,   257,   267,   268,
-     269,   252,   253,   254,   264,   265,   266,   240,   241,   242,
-     276,   277,   278,   243,   244,   245,   288,   289,   290,   246,
-     247,   248,   300,   301,   302,   249,   250,   251,   312,   313,
-     314,   279,   280,   281,   282,   283,   284,   285,   286,   287,
-     291,   292,   293,   294,   295,   296,   297,   298,   299,   303,
-     304,   305,   306,   307,   308,   309,   310,   311,   315,   316,
-     317,   318,   319,   320,   321,   322,   323,   325,   324,   484,
-     485,   486,   326,   333,   334,   352,   332,   366,   367,   370,
-     371,   372,   374,   375,   376,   378,   379,   380,   382,   383,
-     474,   475,   356,   359,   363,   339,   340,   341,   368,   342,
-     346,   347,   350,   373,   377,   381,   343,   344,   348,   349,
-     369,   345,   351,   430,   432,   433,   434,   436,   437,   438,
-     440,   441,   442,   444,   445,   446,   448,   449,   450,   452,
-     453,   454,   456,   457,   458,   460,   461,   462,   464,   465,
-     466,   468,   469,   470,   472,   473,   431,   435,   439,   443,
-     447,   455,   459,   463,   451,   467,   471,   384,   385,   386,
-     388,   390,   392,   394,   396,   400,   401,   402,   403,   404,
-     405,   407,   408,   409,   410,   411,   412,   414,   416,   417,
-     418,   420,   421,   398,   406,   413,   422,   424,   425,   426,
-     428,   429,   387,   389,   391,   415,   393,   395,   397,   399,
-     419,   423,   427,   476,   477,   480,   481,   482,   483,   478,
-     479,   575,   131,   489,   490,   491,     0,   488,   160,   158,
-     159,   157,     0,   199,   161,   162,   133,   132,     0,   183,
-     169,   170,   168,   171,   172,   166,   167,   163,   185,   173,
-     179,   180,   181,   182,   174,   175,   176,   177,   178,   134,
-     135,   136,   137,   138,   139,   146,   574,     0,   576,     0,
-     108,   107,     0,   119,   124,   153,   152,   150,   154,     0,
-     147,   149,   155,   129,   195,   151,   487,     0,   571,   573,
-       0,   494,     0,     0,     0,    96,     0,    93,     0,   106,
-       0,   115,   109,   117,     0,   118,     0,    94,   125,    99,
-       0,   148,   130,     0,   188,   194,     1,   572,     0,     0,
-     492,   143,   145,     0,   141,   186,     0,     0,    97,     0,
-       0,   577,   110,   114,   116,   112,   120,   111,     0,   126,
-     102,     0,   100,     0,     0,     0,     0,    42,    41,    43,
-      40,     5,     6,     7,     8,     2,    15,    13,    14,    16,
-       9,    10,    11,    12,     3,    17,    36,    19,    24,    25,
-       0,     0,    29,     0,   197,     0,    35,    33,     0,   189,
-      95,     0,     0,     0,   496,     0,     0,   140,     0,   184,
-       0,   190,    44,    48,    51,    54,    59,    62,    64,    66,
-      68,    70,    72,    74,     0,     0,    98,     0,   522,   531,
-     535,     0,     0,     0,   556,     0,     0,     0,     0,     0,
-       0,     0,     0,    44,    77,    90,     0,   509,     0,   155,
-     129,   512,   533,   511,   519,   510,     0,   513,   514,   537,
-     515,   544,   516,   517,   552,   518,     0,   113,     0,   121,
-       0,   504,   128,     0,     0,   104,     0,   101,    37,    38,
-       0,    21,    22,     0,     0,    27,    26,     0,   199,    30,
-      32,    39,     0,   196,     0,   502,     0,   500,   495,   497,
-       0,    92,   144,   142,   187,     0,     0,     0,     0,     0,
+       0,   138,   159,   157,   158,   156,   163,   164,   165,   166,
+     167,   168,   169,   170,   171,   160,   161,   162,   172,   173,
+     174,   175,   176,   177,   178,   179,   180,   181,   182,   183,
+     184,   185,   186,   187,   188,   189,   190,   191,   192,   193,
+     194,   195,   196,   197,   198,   211,   212,   199,   200,   202,
+     201,   203,   204,   205,   206,   207,   208,   209,   210,   122,
+     215,   216,   217,     0,   214,   142,   140,   141,   139,     0,
+     155,   143,   124,   123,     0,   291,     0,   292,     0,    99,
+      98,     0,   110,   115,   137,   136,   134,     0,   131,   133,
+     120,   151,   135,   213,     0,   288,   290,     0,   220,     0,
+       0,    87,     0,    84,     0,    97,     0,   106,   100,   108,
+       0,   109,     0,    85,   116,    90,     0,   132,   121,     0,
+     144,   150,     1,   289,     0,     0,   218,   128,   130,     0,
+     126,     0,    88,     0,     0,   293,   101,   105,   107,   103,
+     111,   102,     0,   117,    93,     0,    91,     0,     0,     0,
+       0,    33,    32,    34,    31,     5,     6,     7,     8,     2,
+       3,     9,    27,    11,    16,    17,     0,     0,    21,     0,
+     153,     0,    25,     0,   145,    86,     0,     0,     0,   222,
+       0,     0,   125,     0,   146,    35,    39,    42,    45,    50,
+      53,    55,    57,    59,    61,    63,    65,     0,     0,    89,
+     242,   251,   255,     0,     0,     0,   273,     0,     0,     0,
+       0,     0,     0,     0,    35,    68,    81,     0,   231,     0,
+     120,   234,   253,   233,   232,     0,   235,   236,   257,   237,
+     263,   238,   239,   270,   240,   104,     0,   112,   230,   119,
+       0,     0,    95,     0,    92,    28,    29,     0,    13,    14,
+       0,     0,    19,    18,     0,   155,    22,    24,    30,     0,
+     152,     0,   228,     0,   226,   221,   223,     0,    83,   129,
+     127,     0,     0,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,    75,   191,   192,     0,     0,   521,
-       0,   554,   567,   566,     0,   558,     0,   570,   568,     0,
-       0,     0,   551,   520,    80,    81,    83,    82,    85,    86,
-      87,    88,    89,    84,    79,     0,     0,   536,   532,   534,
-     538,   545,   553,   123,     0,   507,     0,   127,     0,   105,
-       4,     0,    23,    20,    31,   198,     0,   503,     0,   498,
-     493,    45,    46,    47,    50,    49,    52,    53,    57,    58,
-      55,    56,    60,    61,    63,    65,    67,    69,    71,    73,
-       0,   193,   581,     0,   579,   523,     0,     0,     0,     0,
-     569,     0,   550,    78,    91,   122,   505,     0,   103,    18,
-     499,   501,     0,     0,     0,     0,     0,   542,     0,     0,
-       0,     0,   561,   560,   563,   529,   546,   506,   508,     0,
-       0,   578,   580,   524,     0,     0,     0,   562,     0,     0,
-     541,     0,     0,   539,     0,    76,   582,     0,   526,   555,
-     525,     0,   564,     0,   529,   528,   530,   548,   543,     0,
-     565,   559,   540,   549,     0,   557,   547
+      66,   147,   148,     0,   241,     0,   271,   284,   283,     0,
+     275,     0,   287,   285,     0,     0,     0,   269,    71,    72,
+      74,    73,    76,    77,    78,    79,    80,    75,    70,     0,
+       0,   256,   252,   254,   114,     0,   118,     0,    96,     4,
+       0,    15,    12,    23,   154,     0,   229,     0,   224,   219,
+      36,    37,    38,    41,    40,    43,    44,    48,    49,    46,
+      47,    51,    52,    54,    56,    58,    60,    62,    64,     0,
+     149,   243,     0,     0,     0,     0,   286,     0,   268,    69,
+      82,   113,    94,    10,   225,   227,     0,     0,   261,     0,
+       0,     0,     0,   278,   277,   280,   249,   264,     0,   244,
+       0,     0,     0,   279,     0,     0,   260,     0,     0,   258,
+       0,    67,     0,   246,   272,   245,     0,   281,     0,   249,
+     248,   250,   266,   262,     0,   282,   276,   259,   267,     0,
+     274,   265
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int16 yypgoto[] =
 {
-    -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,  -367,
-    -367,  -367,  8696,  -367,   -81,   -78,  -225,   -82,   -20,   -18,
-     -21,   -17,   -19,   -16,  -367,   -85,  -367,   -98,  -367,  -110,
-    -118,     2,  -367,  -367,  -367,     4,  -367,  -367,  -367,   184,
-     191,   192,  -367,  -367,  -339,  -367,  -367,  -367,  -367,   102,
-    -367,   -37,   -44,  -367,     9,  -367,     0,   -71,  -367,  -367,
-    -367,  -367,   260,  -367,  -367,  -367,  -136,  -137,    18,   -65,
-    -209,  -367,   -94,  -198,  -366,  -367,  -134,  -367,  -367,  -148,
-    -146,  -367,  -367,   202,  -265,   -87,  -367,    56,  -367,  -111,
-    -367,    59,  -367,  -367,  -367,  -367,    62,  -367,  -367,  -367,
-    -367,  -367,  -367,  -367,  -367,   225,  -367,  -367,  -367,  -367,
-     -99
+    -357,  -357,  -357,  -357,  -357,  -357,  -357,  -357,  -357,  -357,
+    -357,  -357,    58,  -357,  -108,  -106,  -166,  -114,   -62,   -59,
+     -56,   -60,   -55,   -61,  -357,  -123,  -357,  -138,  -357,  -145,
+    -357,    15,  -357,  -357,  -357,    17,  -357,  -357,  -357,   125,
+     132,   136,  -357,  -357,  -334,  -357,  -357,  -357,  -357,    48,
+     -79,   -84,  -357,     0,  -107,  -357,  -357,  -357,  -357,   169,
+    -357,  -357,  -357,  -169,  -164,   -27,  -101,  -230,  -127,  -223,
+    -356,  -155,  -357,  -357,  -165,  -160,  -357,  -357,   140,  -286,
+    -119,  -357,  -357,  -357,  -134,  -357,  -357,  -357,  -357,  -357,
+    -357,  -357,  -357,  -357,  -357,  -357,  -357,  -357,  -357,  -357,
+     158,  -357,  -357
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int16 yydefgoto[] =
 {
-      -1,   434,   435,   436,   621,   437,   438,   439,   440,   441,
-     442,   443,   493,   445,   463,   464,   465,   466,   467,   468,
-     469,   470,   471,   472,   473,   494,   650,   495,   605,   496,
-     552,   497,   337,   524,   413,   498,   339,   340,   341,   371,
-     372,   373,   342,   343,   344,   345,   346,   347,   393,   394,
-     348,   349,   350,   351,   446,   396,   447,   399,   384,   385,
-     448,   354,   355,   356,   455,   389,   453,   454,   546,   547,
-     522,   616,   501,   502,   503,   504,   505,   580,   676,   709,
-     700,   701,   702,   710,   506,   507,   508,   509,   703,   680,
-     510,   511,   704,   724,   512,   513,   514,   656,   584,   658,
-     684,   698,   699,   515,   357,   358,   359,   368,   516,   653,
-     654
+      -1,   160,   161,   162,   330,   163,   164,   165,   166,   167,
+     168,   169,   214,   171,   186,   187,   188,   189,   190,   191,
+     192,   193,   194,   195,   196,   215,   359,   216,   319,   217,
+     269,   218,    76,   241,   147,   219,    78,    79,    80,   107,
+     108,   109,    81,    82,    83,    84,    85,    86,   129,   130,
+      87,    88,    89,   172,   133,   120,   121,   173,    91,    92,
+      93,   180,   125,   178,   179,   263,   264,   239,   221,   222,
+     223,   224,   295,   377,   404,   396,   397,   398,   405,   225,
+     226,   227,   228,   399,   381,   229,   230,   400,   419,   231,
+     232,   233,   362,   299,   364,   385,   394,   395,   234,    94,
+      95,    96,   104
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -1397,2091 +920,753 @@ static const yytype_int16 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int16 yytable[] =
 {
-     353,   542,   336,   674,   338,   481,   457,   675,   484,   352,
-     485,   486,   458,   543,   489,     2,     3,     4,     5,     6,
-       7,     8,     9,    10,    11,    12,    13,    14,    15,    16,
-      17,    18,    19,    20,    21,    22,    23,    24,    25,    26,
-      27,    28,    29,    30,    31,    32,    33,    34,    35,    36,
-      37,    38,    39,    40,    41,    42,    43,    44,    45,    46,
-      47,    48,   560,   561,    51,    52,    53,    54,    55,    56,
-      57,    58,    59,    60,    61,    62,    63,    64,    65,    66,
-      67,    68,    69,    70,    71,    72,    73,    74,    75,    76,
-      77,    78,    79,    80,    81,    82,    83,    84,    85,    86,
-      87,    88,    89,    90,    91,    92,    93,    94,    95,    96,
-      97,    98,    99,   100,   101,   102,   103,   104,   105,   106,
-     107,   108,   109,   110,   111,   112,   113,   114,   115,   116,
-     117,   118,   119,   120,   121,   122,   123,   124,   125,   126,
-     127,   128,   129,   130,   131,   132,   133,   134,   135,   136,
-     137,   138,   139,   140,   141,   142,   143,   144,   145,   146,
-     147,   148,   149,   150,   151,   152,   153,   154,   155,   156,
-     157,   158,   159,   160,   161,   162,   163,   164,   165,   166,
-     167,   168,   169,   170,   171,   172,   173,   174,   175,   176,
-     177,   178,   179,   180,   181,   182,   183,   184,   185,   186,
-     187,   188,   189,   190,   191,   192,   193,   194,   195,   196,
-     197,   198,   199,   200,   201,   202,   203,   204,   205,   206,
-     207,   208,   209,   210,   211,   212,   213,   214,   215,   216,
-     217,   218,   219,   220,   221,   222,   223,   224,   225,   226,
-     227,   228,   229,   230,   231,   232,   233,   234,   235,   236,
-     237,   238,   239,   240,   241,   242,   243,   244,   245,   246,
-     247,   248,   249,   250,   251,   252,   253,   254,   255,   256,
-     257,   258,   259,   260,   261,   262,   263,   264,   265,   266,
-     267,   268,   269,   270,   271,   272,   273,   274,   275,   276,
-     277,   278,   279,   280,   281,   282,   283,   284,   285,   286,
-     287,   288,   289,   290,   374,   381,   530,   409,   609,   613,
-     521,   615,   474,   449,   617,   655,   549,   678,   573,   550,
-     562,   563,   365,   367,   397,   391,   293,   294,   295,   708,
-     381,   361,   398,   374,   517,   519,   716,   638,   639,   640,
-     641,   375,   363,   475,   539,   678,   392,   708,   366,   382,
-     352,   476,   451,   574,   364,   564,   565,   353,   352,   336,
-     388,   338,   297,   362,   566,   567,   352,   302,   303,   397,
-     375,   551,   531,   532,   375,   407,   518,   397,   589,   352,
-     591,   606,   662,   352,   408,   475,   657,   475,   618,   452,
-     577,   -34,   523,   533,   614,   459,   410,   534,   352,   411,
-     500,   460,   412,   369,   536,   665,   620,   381,   685,   499,
-     537,   686,   606,   549,   606,   719,   451,   606,   451,   370,
-     521,   606,   521,   622,   378,   521,   594,   595,   596,   597,
-     598,   599,   600,   601,   602,   603,   383,   376,   526,   624,
-     377,   527,   606,   689,   606,   604,   628,   607,   666,   629,
-     667,   544,   723,   452,   390,   452,   606,   609,   688,   660,
-     352,   395,   352,   628,   352,   400,   670,   555,   556,   557,
-     558,   397,   559,   450,   627,   456,   659,   634,   635,   535,
-     661,   549,   636,   637,   642,   643,   540,   451,   569,   405,
-     406,   525,   475,   545,   568,   554,   570,   571,   718,   575,
-     572,   578,   579,   581,   582,   583,   500,   663,   664,   585,
-     587,   593,   586,   451,   590,   499,   521,   -35,   -33,   619,
-     623,   592,   -28,   651,   452,   609,   669,   652,   673,   606,
-     691,   681,   695,   352,   693,   696,  -527,   706,   694,   707,
-     672,   713,   478,   712,   725,   717,   677,   726,   644,   646,
-     452,   645,   714,   648,   647,   690,   360,   649,   403,   352,
-     553,   402,   626,   671,   682,   721,   404,   715,   722,   521,
-     401,   683,   610,   697,   677,   611,   692,     0,   612,     0,
-     500,   451,   387,     0,   500,     0,   711,     0,   551,   499,
-       0,   705,     0,   499,     0,     0,     0,     0,     0,     0,
-       0,     0,   720,     0,     0,     0,     0,     0,     0,   521,
-       0,     0,     0,     0,     0,     0,     0,     0,   452,   679,
-       0,     0,     0,     0,     0,     0,     0,   352,     0,     0,
-       0,     0,     0,     0,     0,   381,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,   679,     0,     0,
-       0,     0,     0,     0,     0,   500,   500,     0,   500,     0,
-       0,     0,     0,     0,   499,   499,     0,   499,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,   382,
-       0,     0,     0,     0,   500,     0,     0,     0,   352,     0,
-       0,     0,     0,   499,     0,   500,     0,     0,     0,     0,
-       0,     0,   500,     0,   499,     0,     0,     0,     0,     0,
-       0,   499,     0,   500,     0,     0,     0,   500,     0,     0,
-       0,     0,   499,   500,     0,     0,   499,     0,     0,     0,
-     386,     0,   499,     1,     2,     3,     4,     5,     6,     7,
-       8,     9,    10,    11,    12,    13,    14,    15,    16,    17,
-      18,    19,    20,    21,    22,    23,    24,    25,    26,    27,
-      28,    29,    30,    31,    32,    33,    34,    35,    36,    37,
-      38,    39,    40,    41,    42,    43,    44,    45,    46,    47,
-      48,    49,    50,    51,    52,    53,    54,    55,    56,    57,
-      58,    59,    60,    61,    62,    63,    64,    65,    66,    67,
-      68,    69,    70,    71,    72,    73,    74,    75,    76,    77,
-      78,    79,    80,    81,    82,    83,    84,    85,    86,    87,
-      88,    89,    90,    91,    92,    93,    94,    95,    96,    97,
-      98,    99,   100,   101,   102,   103,   104,   105,   106,   107,
-     108,   109,   110,   111,   112,   113,   114,   115,   116,   117,
-     118,   119,   120,   121,   122,   123,   124,   125,   126,   127,
-     128,   129,   130,   131,   132,   133,   134,   135,   136,   137,
-     138,   139,   140,   141,   142,   143,   144,   145,   146,   147,
-     148,   149,   150,   151,   152,   153,   154,   155,   156,   157,
-     158,   159,   160,   161,   162,   163,   164,   165,   166,   167,
-     168,   169,   170,   171,   172,   173,   174,   175,   176,   177,
-     178,   179,   180,   181,   182,   183,   184,   185,   186,   187,
-     188,   189,   190,   191,   192,   193,   194,   195,   196,   197,
-     198,   199,   200,   201,   202,   203,   204,   205,   206,   207,
-     208,   209,   210,   211,   212,   213,   214,   215,   216,   217,
-     218,   219,   220,   221,   222,   223,   224,   225,   226,   227,
-     228,   229,   230,   231,   232,   233,   234,   235,   236,   237,
-     238,   239,   240,   241,   242,   243,   244,   245,   246,   247,
-     248,   249,   250,   251,   252,   253,   254,   255,   256,   257,
-     258,   259,   260,   261,   262,   263,   264,   265,   266,   267,
-     268,   269,   270,   271,   272,   273,   274,   275,   276,   277,
-     278,   279,   280,   281,   282,   283,   284,   285,   286,   287,
-     288,   289,   290,     0,     0,     0,     0,     0,     0,     0,
+      90,   110,   323,   117,   238,   247,   324,   143,   197,   361,
+     326,   267,   289,   174,   266,    75,    98,    77,   278,   279,
+     248,   249,   127,   101,   259,   100,   117,   110,   379,   141,
+     256,   131,   235,   237,   144,   403,   260,   145,   142,   -26,
+     146,   250,   411,   128,   103,   251,   176,   290,    99,   102,
+     131,   379,   403,   280,   281,   131,   198,   236,   268,   198,
+     119,   198,   105,   132,   199,   304,   240,   306,   325,   276,
+     277,   182,   327,   253,   106,   293,   363,   183,   329,   254,
+     111,   114,   386,   112,   320,   387,   113,   118,   320,   126,
+     414,   320,   117,   131,    90,   371,   320,   124,   238,   176,
+     134,   176,   238,   266,   139,   331,   111,   282,   283,    75,
+     111,    77,   347,   348,   349,   350,   333,   243,   320,   337,
+     244,   321,   338,   140,   320,   177,   418,   366,   337,   175,
+     274,   374,   275,   252,   220,   271,   272,   273,   323,   308,
+     309,   310,   311,   312,   313,   314,   315,   316,   317,    60,
+      61,    62,   320,   368,   257,   336,   365,   181,   318,   242,
+     367,   198,   176,   266,   320,   388,   343,   344,   351,   352,
+     345,   346,   413,   262,   284,   286,   261,   170,   177,   285,
+     177,   369,   370,   287,   288,   291,   294,   238,   176,   185,
+     296,   300,   301,   297,   298,   323,   302,   305,   -25,   328,
+     332,   307,   -20,   360,   382,   373,   245,   246,   390,   389,
+     320,   391,   392,  -247,   376,   402,   408,   378,   407,   409,
+     200,   412,   353,   420,   421,   220,   354,   356,   358,   258,
+     355,   270,    97,   357,   335,   137,   375,   383,   136,   185,
+     378,   177,   410,   416,   135,   384,   138,   406,   176,   417,
+     401,   393,   123,     0,     0,     0,   185,     0,     0,     0,
+       0,     0,   415,     0,   238,     0,     0,   177,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,   380,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,   220,   117,     0,     0,   220,
+       0,     0,     0,     0,     0,     0,   380,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,   334,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,   177,     0,   340,
+     341,   342,   185,   185,   185,   185,   185,   185,   185,   185,
+     185,   185,   185,   185,   185,   185,   185,   185,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,   291,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,   292,   293,
-     294,   295,   296,     0,     0,     0,     0,     0,     0,     0,
-       0,   297,   298,   299,   300,   301,   302,   303,     0,     0,
+       0,   220,   220,     0,   220,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-     304,   305,   306,   307,   308,     0,     0,     0,     0,     0,
-       0,     0,     0,   309,     0,   310,   311,   312,   313,   314,
-     315,   316,   317,   318,   319,   320,   321,   322,   323,   324,
-     325,   326,   327,   328,   329,   330,   331,   332,   333,   334,
-     335,     1,     2,     3,     4,     5,     6,     7,     8,     9,
-      10,    11,    12,    13,    14,    15,    16,    17,    18,    19,
-      20,    21,    22,    23,    24,    25,    26,    27,    28,    29,
-      30,    31,    32,    33,    34,    35,    36,    37,    38,    39,
-      40,    41,    42,    43,    44,    45,    46,    47,    48,    49,
-      50,    51,    52,    53,    54,    55,    56,    57,    58,    59,
-      60,    61,    62,    63,    64,    65,    66,    67,    68,    69,
-      70,    71,    72,    73,    74,    75,    76,    77,    78,    79,
-      80,    81,    82,    83,    84,    85,    86,    87,    88,    89,
-      90,    91,    92,    93,    94,    95,    96,    97,    98,    99,
-     100,   101,   102,   103,   104,   105,   106,   107,   108,   109,
-     110,   111,   112,   113,   114,   115,   116,   117,   118,   119,
-     120,   121,   122,   123,   124,   125,   126,   127,   128,   129,
-     130,   131,   132,   133,   134,   135,   136,   137,   138,   139,
-     140,   141,   142,   143,   144,   145,   146,   147,   148,   149,
-     150,   151,   152,   153,   154,   155,   156,   157,   158,   159,
-     160,   161,   162,   163,   164,   165,   166,   167,   168,   169,
-     170,   171,   172,   173,   174,   175,   176,   177,   178,   179,
-     180,   181,   182,   183,   184,   185,   186,   187,   188,   189,
-     190,   191,   192,   193,   194,   195,   196,   197,   198,   199,
-     200,   201,   202,   203,   204,   205,   206,   207,   208,   209,
-     210,   211,   212,   213,   214,   215,   216,   217,   218,   219,
-     220,   221,   222,   223,   224,   225,   226,   227,   228,   229,
-     230,   231,   232,   233,   234,   235,   236,   237,   238,   239,
-     240,   241,   242,   243,   244,   245,   246,   247,   248,   249,
-     250,   251,   252,   253,   254,   255,   256,   257,   258,   259,
-     260,   261,   262,   263,   264,   265,   266,   267,   268,   269,
-     270,   271,   272,   273,   274,   275,   276,   277,   278,   279,
-     280,   281,   282,   283,   284,   285,   286,   287,   288,   289,
-     290,     0,     0,   414,   415,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,   416,     0,   477,     0,   478,   479,     0,     0,
-       0,     0,   480,   417,   418,   419,   420,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,   292,   293,   294,   295,
-     296,     0,     0,     0,   421,   422,   423,   424,   425,   297,
-     298,   299,   300,   301,   302,   303,   481,   482,   483,   484,
-       0,   485,   486,   487,   488,   489,   490,   491,   304,   305,
-     306,   307,   308,   426,   427,   428,   429,   430,   431,   432,
-     433,   309,   492,   310,   311,   312,   313,   314,   315,   316,
-     317,   318,   319,   320,   321,   322,   323,   324,   325,   326,
-     327,   328,   329,   330,   331,   332,   333,   334,   335,     1,
+     118,     0,     0,     0,     0,   220,     0,     0,     0,     0,
+       0,   220,     0,     0,     0,     0,     0,     0,   220,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,   220,     0,
+       0,     0,   220,     0,     0,     0,   122,     0,   220,     1,
        2,     3,     4,     5,     6,     7,     8,     9,    10,    11,
       12,    13,    14,    15,    16,    17,    18,    19,    20,    21,
       22,    23,    24,    25,    26,    27,    28,    29,    30,    31,
       32,    33,    34,    35,    36,    37,    38,    39,    40,    41,
       42,    43,    44,    45,    46,    47,    48,    49,    50,    51,
-      52,    53,    54,    55,    56,    57,    58,    59,    60,    61,
-      62,    63,    64,    65,    66,    67,    68,    69,    70,    71,
-      72,    73,    74,    75,    76,    77,    78,    79,    80,    81,
-      82,    83,    84,    85,    86,    87,    88,    89,    90,    91,
-      92,    93,    94,    95,    96,    97,    98,    99,   100,   101,
-     102,   103,   104,   105,   106,   107,   108,   109,   110,   111,
-     112,   113,   114,   115,   116,   117,   118,   119,   120,   121,
-     122,   123,   124,   125,   126,   127,   128,   129,   130,   131,
-     132,   133,   134,   135,   136,   137,   138,   139,   140,   141,
-     142,   143,   144,   145,   146,   147,   148,   149,   150,   151,
-     152,   153,   154,   155,   156,   157,   158,   159,   160,   161,
-     162,   163,   164,   165,   166,   167,   168,   169,   170,   171,
-     172,   173,   174,   175,   176,   177,   178,   179,   180,   181,
-     182,   183,   184,   185,   186,   187,   188,   189,   190,   191,
-     192,   193,   194,   195,   196,   197,   198,   199,   200,   201,
-     202,   203,   204,   205,   206,   207,   208,   209,   210,   211,
-     212,   213,   214,   215,   216,   217,   218,   219,   220,   221,
-     222,   223,   224,   225,   226,   227,   228,   229,   230,   231,
-     232,   233,   234,   235,   236,   237,   238,   239,   240,   241,
-     242,   243,   244,   245,   246,   247,   248,   249,   250,   251,
-     252,   253,   254,   255,   256,   257,   258,   259,   260,   261,
-     262,   263,   264,   265,   266,   267,   268,   269,   270,   271,
-     272,   273,   274,   275,   276,   277,   278,   279,   280,   281,
-     282,   283,   284,   285,   286,   287,   288,   289,   290,     0,
-       0,   414,   415,     0,     0,     0,     0,     0,     0,     0,
+      52,    53,    54,    55,    56,    57,    58,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-     416,     0,   477,     0,   478,   608,     0,     0,     0,     0,
-     480,   417,   418,   419,   420,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,   292,   293,   294,   295,   296,     0,
-       0,     0,   421,   422,   423,   424,   425,   297,   298,   299,
-     300,   301,   302,   303,   481,   482,   483,   484,     0,   485,
-     486,   487,   488,   489,   490,   491,   304,   305,   306,   307,
-     308,   426,   427,   428,   429,   430,   431,   432,   433,   309,
-     492,   310,   311,   312,   313,   314,   315,   316,   317,   318,
-     319,   320,   321,   322,   323,   324,   325,   326,   327,   328,
-     329,   330,   331,   332,   333,   334,   335,     1,     2,     3,
-       4,     5,     6,     7,     8,     9,    10,    11,    12,    13,
-      14,    15,    16,    17,    18,    19,    20,    21,    22,    23,
-      24,    25,    26,    27,    28,    29,    30,    31,    32,    33,
-      34,    35,    36,    37,    38,    39,    40,    41,    42,    43,
-      44,    45,    46,    47,    48,    49,    50,    51,    52,    53,
-      54,    55,    56,    57,    58,    59,    60,    61,    62,    63,
-      64,    65,    66,    67,    68,    69,    70,    71,    72,    73,
-      74,    75,    76,    77,    78,    79,    80,    81,    82,    83,
-      84,    85,    86,    87,    88,    89,    90,    91,    92,    93,
-      94,    95,    96,    97,    98,    99,   100,   101,   102,   103,
-     104,   105,   106,   107,   108,   109,   110,   111,   112,   113,
-     114,   115,   116,   117,   118,   119,   120,   121,   122,   123,
-     124,   125,   126,   127,   128,   129,   130,   131,   132,   133,
-     134,   135,   136,   137,   138,   139,   140,   141,   142,   143,
-     144,   145,   146,   147,   148,   149,   150,   151,   152,   153,
-     154,   155,   156,   157,   158,   159,   160,   161,   162,   163,
-     164,   165,   166,   167,   168,   169,   170,   171,   172,   173,
-     174,   175,   176,   177,   178,   179,   180,   181,   182,   183,
-     184,   185,   186,   187,   188,   189,   190,   191,   192,   193,
-     194,   195,   196,   197,   198,   199,   200,   201,   202,   203,
-     204,   205,   206,   207,   208,   209,   210,   211,   212,   213,
-     214,   215,   216,   217,   218,   219,   220,   221,   222,   223,
-     224,   225,   226,   227,   228,   229,   230,   231,   232,   233,
-     234,   235,   236,   237,   238,   239,   240,   241,   242,   243,
-     244,   245,   246,   247,   248,   249,   250,   251,   252,   253,
-     254,   255,   256,   257,   258,   259,   260,   261,   262,   263,
-     264,   265,   266,   267,   268,   269,   270,   271,   272,   273,
-     274,   275,   276,   277,   278,   279,   280,   281,   282,   283,
-     284,   285,   286,   287,   288,   289,   290,     0,     0,   414,
-     415,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,   416,     0,
-     477,     0,   478,     0,     0,     0,     0,     0,   480,   417,
-     418,   419,   420,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,   292,   293,   294,   295,   296,     0,     0,     0,
-     421,   422,   423,   424,   425,   297,   298,   299,   300,   301,
-     302,   303,   481,   482,   483,   484,     0,   485,   486,   487,
-     488,   489,   490,   491,   304,   305,   306,   307,   308,   426,
-     427,   428,   429,   430,   431,   432,   433,   309,   492,   310,
-     311,   312,   313,   314,   315,   316,   317,   318,   319,   320,
-     321,   322,   323,   324,   325,   326,   327,   328,   329,   330,
-     331,   332,   333,   334,   335,     1,     2,     3,     4,     5,
-       6,     7,     8,     9,    10,    11,    12,    13,    14,    15,
-      16,    17,    18,    19,    20,    21,    22,    23,    24,    25,
-      26,    27,    28,    29,    30,    31,    32,    33,    34,    35,
-      36,    37,    38,    39,    40,    41,    42,    43,    44,    45,
-      46,    47,    48,    49,    50,    51,    52,    53,    54,    55,
-      56,    57,    58,    59,    60,    61,    62,    63,    64,    65,
-      66,    67,    68,    69,    70,    71,    72,    73,    74,    75,
-      76,    77,    78,    79,    80,    81,    82,    83,    84,    85,
-      86,    87,    88,    89,    90,    91,    92,    93,    94,    95,
-      96,    97,    98,    99,   100,   101,   102,   103,   104,   105,
-     106,   107,   108,   109,   110,   111,   112,   113,   114,   115,
-     116,   117,   118,   119,   120,   121,   122,   123,   124,   125,
-     126,   127,   128,   129,   130,   131,   132,   133,   134,   135,
-     136,   137,   138,   139,   140,   141,   142,   143,   144,   145,
-     146,   147,   148,   149,   150,   151,   152,   153,   154,   155,
-     156,   157,   158,   159,   160,   161,   162,   163,   164,   165,
-     166,   167,   168,   169,   170,   171,   172,   173,   174,   175,
-     176,   177,   178,   179,   180,   181,   182,   183,   184,   185,
-     186,   187,   188,   189,   190,   191,   192,   193,   194,   195,
-     196,   197,   198,   199,   200,   201,   202,   203,   204,   205,
-     206,   207,   208,   209,   210,   211,   212,   213,   214,   215,
-     216,   217,   218,   219,   220,   221,   222,   223,   224,   225,
-     226,   227,   228,   229,   230,   231,   232,   233,   234,   235,
-     236,   237,   238,   239,   240,   241,   242,   243,   244,   245,
-     246,   247,   248,   249,   250,   251,   252,   253,   254,   255,
-     256,   257,   258,   259,   260,   261,   262,   263,   264,   265,
-     266,   267,   268,   269,   270,   271,   272,   273,   274,   275,
-     276,   277,   278,   279,   280,   281,   282,   283,   284,   285,
-     286,   287,   288,   289,   290,     0,     0,   414,   415,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,   416,     0,   477,     0,
-     400,     0,     0,     0,     0,     0,   480,   417,   418,   419,
-     420,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-     292,   293,   294,   295,   296,     0,     0,     0,   421,   422,
-     423,   424,   425,   297,   298,   299,   300,   301,   302,   303,
-     481,   482,   483,   484,     0,   485,   486,   487,   488,   489,
-     490,   491,   304,   305,   306,   307,   308,   426,   427,   428,
-     429,   430,   431,   432,   433,   309,   492,   310,   311,   312,
-     313,   314,   315,   316,   317,   318,   319,   320,   321,   322,
-     323,   324,   325,   326,   327,   328,   329,   330,   331,   332,
-     333,   334,   335,     1,     2,     3,     4,     5,     6,     7,
-       8,     9,    10,    11,    12,    13,    14,    15,    16,    17,
-      18,    19,    20,    21,    22,    23,    24,    25,    26,    27,
-      28,    29,    30,    31,    32,    33,    34,    35,    36,    37,
-      38,    39,    40,    41,    42,    43,    44,    45,    46,    47,
-      48,    49,    50,    51,    52,    53,    54,    55,    56,    57,
-      58,    59,    60,    61,    62,    63,    64,    65,    66,    67,
-      68,    69,    70,    71,    72,    73,    74,    75,    76,    77,
-      78,    79,    80,    81,    82,    83,    84,    85,    86,    87,
-      88,    89,    90,    91,    92,    93,    94,    95,    96,    97,
-      98,    99,   100,   101,   102,   103,   104,   105,   106,   107,
-     108,   109,   110,   111,   112,   113,   114,   115,   116,   117,
-     118,   119,   120,   121,   122,   123,   124,   125,   126,   127,
-     128,   129,   130,   131,   132,   133,   134,   135,   136,   137,
-     138,   139,   140,   141,   142,   143,   144,   145,   146,   147,
-     148,   149,   150,   151,   152,   153,   154,   155,   156,   157,
-     158,   159,   160,   161,   162,   163,   164,   165,   166,   167,
-     168,   169,   170,   171,   172,   173,   174,   175,   176,   177,
-     178,   179,   180,   181,   182,   183,   184,   185,   186,   187,
-     188,   189,   190,   191,   192,   193,   194,   195,   196,   197,
-     198,   199,   200,   201,   202,   203,   204,   205,   206,   207,
-     208,   209,   210,   211,   212,   213,   214,   215,   216,   217,
-     218,   219,   220,   221,   222,   223,   224,   225,   226,   227,
-     228,   229,   230,   231,   232,   233,   234,   235,   236,   237,
-     238,   239,   240,   241,   242,   243,   244,   245,   246,   247,
-     248,   249,   250,   251,   252,   253,   254,   255,   256,   257,
-     258,   259,   260,   261,   262,   263,   264,   265,   266,   267,
-     268,   269,   270,   271,   272,   273,   274,   275,   276,   277,
-     278,   279,   280,   281,   282,   283,   284,   285,   286,   287,
-     288,   289,   290,     0,     0,   414,   415,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,   416,     0,   477,     0,     0,     0,
-       0,     0,     0,     0,   480,   417,   418,   419,   420,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,   292,   293,
-     294,   295,   296,     0,     0,     0,   421,   422,   423,   424,
-     425,   297,   298,   299,   300,   301,   302,   303,   481,   482,
-     483,   484,     0,   485,   486,   487,   488,   489,   490,   491,
-     304,   305,   306,   307,   308,   426,   427,   428,   429,   430,
-     431,   432,   433,   309,   492,   310,   311,   312,   313,   314,
-     315,   316,   317,   318,   319,   320,   321,   322,   323,   324,
-     325,   326,   327,   328,   329,   330,   331,   332,   333,   334,
-     335,     1,     2,     3,     4,     5,     6,     7,     8,     9,
-      10,    11,    12,    13,    14,    15,    16,    17,    18,    19,
-      20,    21,    22,    23,    24,    25,    26,    27,    28,    29,
-      30,    31,    32,    33,    34,    35,    36,    37,    38,    39,
-      40,    41,    42,    43,    44,    45,    46,    47,    48,    49,
-      50,    51,    52,    53,    54,    55,    56,    57,    58,    59,
-      60,    61,    62,    63,    64,    65,    66,    67,    68,    69,
-      70,    71,    72,    73,    74,    75,    76,    77,    78,    79,
-      80,    81,    82,    83,    84,    85,    86,    87,    88,    89,
-      90,    91,    92,    93,    94,    95,    96,    97,    98,    99,
-     100,   101,   102,   103,   104,   105,   106,   107,   108,   109,
-     110,   111,   112,   113,   114,   115,   116,   117,   118,   119,
-     120,   121,   122,   123,   124,   125,   126,   127,   128,   129,
-     130,   131,   132,   133,   134,   135,   136,   137,   138,   139,
-     140,   141,   142,   143,   144,   145,   146,   147,   148,   149,
-     150,   151,   152,   153,   154,   155,   156,   157,   158,   159,
-     160,   161,   162,   163,   164,   165,   166,   167,   168,   169,
-     170,   171,   172,   173,   174,   175,   176,   177,   178,   179,
-     180,   181,   182,   183,   184,   185,   186,   187,   188,   189,
-     190,   191,   192,   193,   194,   195,   196,   197,   198,   199,
-     200,   201,   202,   203,   204,   205,   206,   207,   208,   209,
-     210,   211,   212,   213,   214,   215,   216,   217,   218,   219,
-     220,   221,   222,   223,   224,   225,   226,   227,   228,   229,
-     230,   231,   232,   233,   234,   235,   236,   237,   238,   239,
-     240,   241,   242,   243,   244,   245,   246,   247,   248,   249,
-     250,   251,   252,   253,   254,   255,   256,   257,   258,   259,
-     260,   261,   262,   263,   264,   265,   266,   267,   268,   269,
-     270,   271,   272,   273,   274,   275,   276,   277,   278,   279,
-     280,   281,   282,   283,   284,   285,   286,   287,   288,   289,
-     290,     0,     0,   414,   415,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,   416,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,   480,   417,   418,   419,   420,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,   292,   293,   294,   295,
-     296,     0,     0,     0,   421,   422,   423,   424,   425,   297,
-     298,   299,   300,   301,   302,   303,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,   304,   305,
-     306,   307,   308,   426,   427,   428,   429,   430,   431,   432,
-     433,   309,     0,   310,   311,   312,   313,   314,   315,   316,
-     317,   318,   319,   320,   321,   322,   323,   324,   325,   326,
-     327,   328,   329,   330,   331,   332,   333,   334,   335,     1,
+       0,     0,    59,    60,    61,    62,    63,     0,     0,     0,
+       0,     0,     0,     0,     0,    64,    65,    66,    67,    68,
+      69,    70,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,    71,     0,    72,    73,    74,     1,
        2,     3,     4,     5,     6,     7,     8,     9,    10,    11,
       12,    13,    14,    15,    16,    17,    18,    19,    20,    21,
       22,    23,    24,    25,    26,    27,    28,    29,    30,    31,
       32,    33,    34,    35,    36,    37,    38,    39,    40,    41,
       42,    43,    44,    45,    46,    47,    48,    49,    50,    51,
-      52,    53,    54,    55,    56,    57,    58,    59,    60,    61,
-      62,    63,    64,    65,    66,    67,    68,    69,    70,    71,
-      72,    73,    74,    75,    76,    77,    78,    79,    80,    81,
-      82,    83,    84,    85,    86,    87,    88,    89,    90,    91,
-      92,    93,    94,    95,    96,    97,    98,    99,   100,   101,
-     102,   103,   104,   105,   106,   107,   108,   109,   110,   111,
-     112,   113,   114,   115,   116,   117,   118,   119,   120,   121,
-     122,   123,   124,   125,   126,   127,   128,   129,   130,   131,
-     132,   133,   134,   135,   136,   137,   138,   139,   140,   141,
-     142,   143,   144,   145,   146,   147,   148,   149,   150,   151,
-     152,   153,   154,   155,   156,   157,   158,   159,   160,   161,
-     162,   163,   164,   165,   166,   167,   168,   169,   170,   171,
-     172,   173,   174,   175,   176,   177,   178,   179,   180,   181,
-     182,   183,   184,   185,   186,   187,   188,   189,   190,   191,
-     192,   193,   194,   195,   196,   197,   198,   199,   200,   201,
-     202,   203,   204,   205,   206,   207,   208,   209,   210,   211,
-     212,   213,   214,   215,   216,   217,   218,   219,   220,   221,
-     222,   223,   224,   225,   226,   227,   228,   229,   230,   231,
-     232,   233,   234,   235,   236,   237,   238,   239,   240,   241,
-     242,   243,   244,   245,   246,   247,   248,   249,   250,   251,
-     252,   253,   254,   255,   256,   257,   258,   259,   260,   261,
-     262,   263,   264,   265,   266,   267,   268,   269,   270,   271,
-     272,   273,   274,   275,   276,   277,   278,   279,   280,   281,
-     282,   283,   284,   285,   286,   287,   288,   289,   290,     0,
-       0,   414,   415,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-     416,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,   417,   418,   419,   420,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,   292,   293,   294,   295,     0,     0,
-       0,     0,   421,   422,   423,   424,   425,   297,   298,   299,
-     300,   301,   302,   303,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,   304,   305,   306,   307,
-     308,   426,   427,   428,   429,   430,   431,   432,   433,   309,
-       0,   310,   311,   312,   313,   314,   315,   316,   317,   318,
-     319,   320,   321,   322,   323,   324,   325,   326,   327,   328,
-     329,   330,   331,   332,   333,   334,   335,     1,     2,     3,
-       4,     5,     6,     7,     8,     9,    10,    11,    12,    13,
-      14,    15,    16,    17,    18,    19,    20,    21,    22,    23,
-      24,    25,    26,    27,    28,    29,    30,    31,    32,    33,
-      34,    35,    36,    37,    38,    39,    40,    41,    42,    43,
-      44,    45,    46,    47,    48,    49,    50,    51,    52,    53,
-      54,    55,    56,    57,    58,    59,    60,    61,    62,    63,
-      64,    65,    66,    67,    68,    69,    70,    71,    72,    73,
-      74,    75,    76,    77,    78,    79,    80,    81,    82,    83,
-      84,    85,    86,    87,    88,    89,    90,    91,    92,    93,
-      94,    95,    96,    97,    98,    99,   100,   101,   102,   103,
-     104,   105,   106,   107,   108,   109,   110,   111,   112,   113,
-     114,   115,   116,   117,   118,   119,   120,   121,   122,   123,
-     124,   125,   126,   127,   128,   129,   130,   131,   132,   133,
-     134,   135,   136,   137,   138,   139,   140,   141,   142,   143,
-     144,   145,   146,   147,   148,   149,   150,   151,   152,   153,
-     154,   155,   156,   157,   158,   159,   160,   161,   162,   163,
-     164,   165,   166,   167,   168,   169,   170,   171,   172,   173,
-     174,   175,   176,   177,   178,   179,   180,   181,   182,   183,
-     184,   185,   186,   187,   188,   189,   190,   191,   192,   193,
-     194,   195,   196,   197,   198,   199,   200,   201,   202,   203,
-     204,   205,   206,   207,   208,   209,   210,   211,   212,   213,
-     214,   215,   216,   217,   218,   219,   220,   221,   222,   223,
-     224,   225,   226,   227,   228,   229,   230,   231,   232,   233,
-     234,   235,   236,   237,   238,   239,   240,   241,   242,   243,
-     244,   245,   246,   247,   248,   249,   250,   251,   252,   253,
-     254,   255,   256,   257,   258,   259,   260,   261,   262,   263,
-     264,   265,   266,   267,   268,   269,   270,   271,   272,   273,
-     274,   275,   276,   277,   278,   279,   280,   281,   282,   283,
-     284,   285,   286,   287,   288,   289,   290,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,   291,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,   292,   293,   294,   295,   296,     0,     0,     0,
-       0,     0,     0,     0,     0,   297,   298,   299,   300,   301,
-     302,   303,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,   304,   305,   306,   307,   308,     0,
-       0,     0,     0,     0,     0,     0,     0,   309,     0,   310,
-     311,   312,   313,   314,   315,   316,   317,   318,   319,   320,
-     321,   322,   323,   324,   325,   326,   327,   328,   329,   330,
-     331,   332,   333,   334,   335,     1,     2,     3,     4,     5,
-       6,     7,     8,     9,    10,    11,    12,    13,    14,    15,
-      16,    17,    18,    19,    20,    21,    22,    23,    24,    25,
-      26,    27,    28,    29,    30,    31,    32,    33,    34,    35,
-      36,    37,    38,    39,    40,    41,    42,    43,    44,    45,
-      46,    47,    48,    49,    50,    51,    52,    53,    54,    55,
-      56,    57,    58,    59,    60,    61,    62,    63,    64,    65,
-      66,    67,    68,    69,    70,    71,    72,    73,    74,    75,
-      76,    77,    78,    79,    80,    81,    82,    83,    84,    85,
-      86,    87,    88,    89,    90,    91,    92,    93,    94,    95,
-      96,    97,    98,    99,   100,   101,   102,   103,   104,   105,
-     106,   107,   108,   109,   110,   111,   112,   113,   114,   115,
-     116,   117,   118,   119,   120,   121,   122,   123,   124,   125,
-     126,   127,   128,   129,   130,   131,   132,   133,   134,   135,
-     136,   137,   138,   139,   140,   141,   142,   143,   144,   145,
-     146,   147,   148,   149,   150,   151,   152,   153,   154,   155,
-     156,   157,   158,   159,   160,   161,   162,   163,   164,   165,
-     166,   167,   168,   169,   170,   171,   172,   173,   174,   175,
-     176,   177,   178,   179,   180,   181,   182,   183,   184,   185,
-     186,   187,   188,   189,   190,   191,   192,   193,   194,   195,
-     196,   197,   198,   199,   200,   201,   202,   203,   204,   205,
-     206,   207,   208,   209,   210,   211,   212,   213,   214,   215,
-     216,   217,   218,   219,   220,   221,   222,   223,   224,   225,
-     226,   227,   228,   229,   230,   231,   232,   233,   234,   235,
-     236,   237,   238,   239,   240,   241,   242,   243,   244,   245,
-     246,   247,   248,   249,   250,   251,   252,   253,   254,   255,
-     256,   257,   258,   259,   260,   261,   262,   263,   264,   265,
-     266,   267,   268,   269,   270,   271,   272,   273,   274,   275,
-     276,   277,   278,   279,   280,   281,   282,   283,   284,   285,
-     286,   287,   288,   289,   290,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,   379,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-     292,   293,   294,   295,     0,     0,     0,     0,     0,     0,
-       0,     0,   380,   297,   298,   299,   300,   301,   302,   303,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,   304,   305,   306,   307,   308,     0,     0,     0,
-       0,     0,     0,     0,     0,   309,     0,   310,   311,   312,
-     313,   314,   315,   316,   317,   318,   319,   320,   321,   322,
-     323,   324,   325,   326,   327,   328,   329,   330,   331,   332,
-     333,   334,   335,     1,     2,     3,     4,     5,     6,     7,
-       8,     9,    10,    11,    12,    13,    14,    15,    16,    17,
-      18,    19,    20,    21,    22,    23,    24,    25,    26,    27,
-      28,    29,    30,    31,    32,    33,    34,    35,    36,    37,
-      38,    39,    40,    41,    42,    43,    44,    45,    46,    47,
-      48,    49,    50,    51,    52,    53,    54,    55,    56,    57,
-      58,    59,    60,    61,    62,    63,    64,    65,    66,    67,
-      68,    69,    70,    71,    72,    73,    74,    75,    76,    77,
-      78,    79,    80,    81,    82,    83,    84,    85,    86,    87,
-      88,    89,    90,    91,    92,    93,    94,    95,    96,    97,
-      98,    99,   100,   101,   102,   103,   104,   105,   106,   107,
-     108,   109,   110,   111,   112,   113,   114,   115,   116,   117,
-     118,   119,   120,   121,   122,   123,   124,   125,   126,   127,
-     128,   129,   130,   131,   132,   133,   134,   135,   136,   137,
-     138,   139,   140,   141,   142,   143,   144,   145,   146,   147,
-     148,   149,   150,   151,   152,   153,   154,   155,   156,   157,
-     158,   159,   160,   161,   162,   163,   164,   165,   166,   167,
-     168,   169,   170,   171,   172,   173,   174,   175,   176,   177,
-     178,   179,   180,   181,   182,   183,   184,   185,   186,   187,
-     188,   189,   190,   191,   192,   193,   194,   195,   196,   197,
-     198,   199,   200,   201,   202,   203,   204,   205,   206,   207,
-     208,   209,   210,   211,   212,   213,   214,   215,   216,   217,
-     218,   219,   220,   221,   222,   223,   224,   225,   226,   227,
-     228,   229,   230,   231,   232,   233,   234,   235,   236,   237,
-     238,   239,   240,   241,   242,   243,   244,   245,   246,   247,
-     248,   249,   250,   251,   252,   253,   254,   255,   256,   257,
-     258,   259,   260,   261,   262,   263,   264,   265,   266,   267,
-     268,   269,   270,   271,   272,   273,   274,   275,   276,   277,
-     278,   279,   280,   281,   282,   283,   284,   285,   286,   287,
-     288,   289,   290,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,   548,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,   292,   293,
-     294,   295,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,   297,   298,   299,   300,   301,   302,   303,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-     304,   305,   306,   307,   308,     0,     0,     0,     0,     0,
-       0,     0,     0,   309,     0,   310,   311,   312,   313,   314,
-     315,   316,   317,   318,   319,   320,   321,   322,   323,   324,
-     325,   326,   327,   328,   329,   330,   331,   332,   333,   334,
-     335,     1,     2,     3,     4,     5,     6,     7,     8,     9,
-      10,    11,    12,    13,    14,    15,    16,    17,    18,    19,
-      20,    21,    22,    23,    24,    25,    26,    27,    28,    29,
-      30,    31,    32,    33,    34,    35,    36,    37,    38,    39,
-      40,    41,    42,    43,    44,    45,    46,    47,    48,    49,
-      50,    51,    52,    53,    54,    55,    56,    57,    58,    59,
-      60,    61,    62,    63,    64,    65,    66,    67,    68,    69,
-      70,    71,    72,    73,    74,    75,    76,    77,    78,    79,
-      80,    81,    82,    83,    84,    85,    86,    87,    88,    89,
-      90,    91,    92,    93,    94,    95,    96,    97,    98,    99,
-     100,   101,   102,   103,   104,   105,   106,   107,   108,   109,
-     110,   111,   112,   113,   114,   115,   116,   117,   118,   119,
-     120,   121,   122,   123,   124,   125,   126,   127,   128,   129,
-     130,   131,   132,   133,   134,   135,   136,   137,   138,   139,
-     140,   141,   142,   143,   144,   145,   146,   147,   148,   149,
-     150,   151,   152,   153,   154,   155,   156,   157,   158,   159,
-     160,   161,   162,   163,   164,   165,   166,   167,   168,   169,
-     170,   171,   172,   173,   174,   175,   176,   177,   178,   179,
-     180,   181,   182,   183,   184,   185,   186,   187,   188,   189,
-     190,   191,   192,   193,   194,   195,   196,   197,   198,   199,
-     200,   201,   202,   203,   204,   205,   206,   207,   208,   209,
-     210,   211,   212,   213,   214,   215,   216,   217,   218,   219,
-     220,   221,   222,   223,   224,   225,   226,   227,   228,   229,
-     230,   231,   232,   233,   234,   235,   236,   237,   238,   239,
-     240,   241,   242,   243,   244,   245,   246,   247,   248,   249,
-     250,   251,   252,   253,   254,   255,   256,   257,   258,   259,
-     260,   261,   262,   263,   264,   265,   266,   267,   268,   269,
-     270,   271,   272,   273,   274,   275,   276,   277,   278,   279,
-     280,   281,   282,   283,   284,   285,   286,   287,   288,   289,
-     290,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,   630,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,   292,   293,   294,   295,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,   297,
-     298,   299,   300,   301,   302,   303,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,   304,   305,
-     306,   307,   308,     0,     0,     0,     0,     0,     0,     0,
-       0,   309,     0,   310,   311,   312,   313,   314,   315,   316,
-     317,   318,   319,   320,   321,   322,   323,   324,   325,   326,
-     327,   328,   329,   330,   331,   332,   333,   334,   335,     1,
+      52,    53,    54,    55,    56,    57,    58,     0,     0,   148,
+     149,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,   150,     0,
+       0,     0,   200,   201,     0,     0,     0,     0,   202,   151,
+     152,   153,   154,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,    59,    60,    61,    62,    63,     0,     0,     0,
+     155,   156,   157,   158,   159,    64,    65,    66,    67,    68,
+      69,    70,   203,   204,   205,   206,     0,   207,   208,   209,
+     210,   211,   212,   213,    71,     0,    72,    73,    74,     1,
        2,     3,     4,     5,     6,     7,     8,     9,    10,    11,
       12,    13,    14,    15,    16,    17,    18,    19,    20,    21,
       22,    23,    24,    25,    26,    27,    28,    29,    30,    31,
       32,    33,    34,    35,    36,    37,    38,    39,    40,    41,
       42,    43,    44,    45,    46,    47,    48,    49,    50,    51,
-      52,    53,    54,    55,    56,    57,    58,    59,    60,    61,
-      62,    63,    64,    65,    66,    67,    68,    69,    70,    71,
-      72,    73,    74,    75,    76,    77,    78,    79,    80,    81,
-      82,    83,    84,    85,    86,    87,    88,    89,    90,    91,
-      92,    93,    94,    95,    96,    97,    98,    99,   100,   101,
-     102,   103,   104,   105,   106,   107,   108,   109,   110,   111,
-     112,   113,   114,   115,   116,   117,   118,   119,   120,   121,
-     122,   123,   124,   125,   126,   127,   128,   129,   130,   131,
-     132,   133,   134,   135,   136,   137,   138,   139,   140,   141,
-     142,   143,   144,   145,   146,   147,   148,   149,   150,   151,
-     152,   153,   154,   155,   156,   157,   158,   159,   160,   161,
-     162,   163,   164,   165,   166,   167,   168,   169,   170,   171,
-     172,   173,   174,   175,   176,   177,   178,   179,   180,   181,
-     182,   183,   184,   185,   186,   187,   188,   189,   190,   191,
-     192,   193,   194,   195,   196,   197,   198,   199,   200,   201,
-     202,   203,   204,   205,   206,   207,   208,   209,   210,   211,
-     212,   213,   214,   215,   216,   217,   218,   219,   220,   221,
-     222,   223,   224,   225,   226,   227,   228,   229,   230,   231,
-     232,   233,   234,   235,   236,   237,   238,   239,   240,   241,
-     242,   243,   244,   245,   246,   247,   248,   249,   250,   251,
-     252,   253,   254,   255,   256,   257,   258,   259,   260,   261,
-     262,   263,   264,   265,   266,   267,   268,   269,   270,   271,
-     272,   273,   274,   275,   276,   277,   278,   279,   280,   281,
-     282,   283,   284,   285,   286,   287,   288,   289,   290,     0,
+      52,    53,    54,    55,    56,    57,    58,     0,     0,   148,
+     149,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,   150,     0,
+       0,     0,   200,   322,     0,     0,     0,     0,   202,   151,
+     152,   153,   154,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,    59,    60,    61,    62,    63,     0,     0,     0,
+     155,   156,   157,   158,   159,    64,    65,    66,    67,    68,
+      69,    70,   203,   204,   205,   206,     0,   207,   208,   209,
+     210,   211,   212,   213,    71,     0,    72,    73,    74,     1,
+       2,     3,     4,     5,     6,     7,     8,     9,    10,    11,
+      12,    13,    14,    15,    16,    17,    18,    19,    20,    21,
+      22,    23,    24,    25,    26,    27,    28,    29,    30,    31,
+      32,    33,    34,    35,    36,    37,    38,    39,    40,    41,
+      42,    43,    44,    45,    46,    47,    48,    49,    50,    51,
+      52,    53,    54,    55,    56,    57,    58,     0,     0,   148,
+     149,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,   150,     0,
+       0,     0,   200,     0,     0,     0,     0,     0,   202,   151,
+     152,   153,   154,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,    59,    60,    61,    62,    63,     0,     0,     0,
+     155,   156,   157,   158,   159,    64,    65,    66,    67,    68,
+      69,    70,   203,   204,   205,   206,     0,   207,   208,   209,
+     210,   211,   212,   213,    71,     0,    72,    73,    74,     1,
+       2,     3,     4,     5,     6,     7,     8,     9,    10,    11,
+      12,    13,    14,    15,    16,    17,    18,    19,    20,    21,
+      22,    23,    24,    25,    26,    27,    28,    29,    30,    31,
+      32,    33,    34,    35,    36,    37,    38,    39,    40,    41,
+      42,    43,    44,    45,    46,    47,    48,    49,    50,    51,
+      52,    53,    54,    55,    56,    57,    58,     0,     0,   148,
+     149,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,   150,     0,
+       0,     0,   134,     0,     0,     0,     0,     0,   202,   151,
+     152,   153,   154,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,    59,    60,    61,    62,    63,     0,     0,     0,
+     155,   156,   157,   158,   159,    64,    65,    66,    67,    68,
+      69,    70,   203,   204,   205,   206,     0,   207,   208,   209,
+     210,   211,   212,   213,    71,     0,    72,    73,    74,     1,
+       2,     3,     4,     5,     6,     7,     8,     9,    10,    11,
+      12,    13,    14,    15,    16,    17,    18,    19,    20,    21,
+      22,    23,    24,    25,    26,    27,    28,    29,    30,    31,
+      32,    33,    34,    35,    36,    37,    38,    39,    40,    41,
+      42,    43,    44,    45,    46,    47,    48,    49,    50,    51,
+      52,    53,    54,    55,    56,    57,    58,     0,     0,   148,
+     149,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,   150,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,   202,   151,
+     152,   153,   154,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,    59,    60,    61,    62,    63,     0,     0,     0,
+     155,   156,   157,   158,   159,    64,    65,    66,    67,    68,
+      69,    70,   203,   204,   205,   206,     0,   207,   208,   209,
+     210,   211,   212,   213,    71,     0,    72,    73,    74,     1,
+       2,     3,     4,     5,     6,     7,     8,     9,    10,    11,
+      12,    13,    14,    15,    16,    17,    18,    19,    20,    21,
+      22,    23,    24,    25,    26,    27,    28,    29,    30,    31,
+      32,    33,    34,    35,    36,    37,    38,    39,    40,    41,
+      42,    43,    44,    45,    46,    47,    48,    49,    50,    51,
+      52,    53,    54,    55,    56,    57,    58,     0,     0,   148,
+     149,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,   150,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,   202,   151,
+     152,   153,   154,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,    59,    60,    61,    62,    63,     0,     0,     0,
+     155,   156,   157,   158,   159,    64,    65,    66,    67,    68,
+      69,    70,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,    71,     0,    72,    73,    74,     1,
+       2,     3,     4,     5,     6,     7,     8,     9,    10,    11,
+      12,    13,    14,    15,    16,    17,    18,    19,    20,    21,
+      22,    23,    24,    25,    26,    27,    28,    29,    30,    31,
+      32,    33,    34,    35,    36,    37,    38,    39,    40,    41,
+      42,    43,    44,    45,    46,    47,    48,    49,    50,    51,
+      52,    53,    54,    55,    56,    57,    58,     0,     0,   148,
+     149,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,   150,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,   151,
+     152,   153,   154,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,    59,    60,    61,    62,     0,     0,     0,     0,
+     155,   156,   157,   158,   159,    64,    65,    66,    67,    68,
+      69,    70,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,    71,     0,    72,    73,    74,     1,
+       2,     3,     4,     5,     6,     7,     8,     9,    10,    11,
+      12,    13,    14,    15,    16,    17,    18,    19,    20,    21,
+      22,    23,    24,    25,    26,    27,    28,    29,    30,    31,
+      32,    33,    34,    35,    36,    37,    38,    39,    40,    41,
+      42,    43,    44,    45,    46,    47,    48,    49,    50,    51,
+      52,    53,    54,    55,    56,    57,    58,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,   668,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,   115,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,   292,   293,   294,   295,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,   297,   298,   299,
-     300,   301,   302,   303,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,   304,   305,   306,   307,
-     308,     0,     0,     0,     0,     0,     0,     0,     0,   309,
-       0,   310,   311,   312,   313,   314,   315,   316,   317,   318,
-     319,   320,   321,   322,   323,   324,   325,   326,   327,   328,
-     329,   330,   331,   332,   333,   334,   335,     1,     2,     3,
-       4,     5,     6,     7,     8,     9,    10,    11,    12,    13,
-      14,    15,    16,    17,    18,    19,    20,    21,    22,    23,
-      24,    25,    26,    27,    28,    29,    30,    31,    32,    33,
-      34,    35,    36,    37,    38,    39,    40,    41,    42,    43,
-      44,    45,    46,    47,    48,    49,    50,    51,    52,    53,
-      54,    55,    56,    57,    58,    59,    60,    61,    62,    63,
-      64,    65,    66,    67,    68,    69,    70,    71,    72,    73,
-      74,    75,    76,    77,    78,    79,    80,    81,    82,    83,
-      84,    85,    86,    87,    88,    89,    90,    91,    92,    93,
-      94,    95,    96,    97,    98,    99,   100,   101,   102,   103,
-     104,   105,   106,   107,   108,   109,   110,   111,   112,   113,
-     114,   115,   116,   117,   118,   119,   120,   121,   122,   123,
-     124,   125,   126,   127,   128,   129,   130,   131,   132,   133,
-     134,   135,   136,   137,   138,   139,   140,   141,   142,   143,
-     144,   145,   146,   147,   148,   149,   150,   151,   152,   153,
-     154,   155,   156,   157,   158,   159,   160,   161,   162,   163,
-     164,   165,   166,   167,   168,   169,   170,   171,   172,   173,
-     174,   175,   176,   177,   178,   179,   180,   181,   182,   183,
-     184,   185,   186,   187,   188,   189,   190,   191,   192,   193,
-     194,   195,   196,   197,   198,   199,   200,   201,   202,   203,
-     204,   205,   206,   207,   208,   209,   210,   211,   212,   213,
-     214,   215,   216,   217,   218,   219,   220,   221,   222,   223,
-     224,   225,   226,   227,   228,   229,   230,   231,   232,   233,
-     234,   235,   236,   237,   238,   239,   240,   241,   242,   243,
-     244,   245,   246,   247,   248,   249,   250,   251,   252,   253,
-     254,   255,   256,   257,   258,   259,   260,   261,   262,   263,
-     264,   265,   266,   267,   268,   269,   270,   271,   272,   273,
-     274,   275,   276,   277,   278,   279,   280,   281,   282,   283,
-     284,   285,   286,   287,   288,   289,   290,     0,     0,     0,
+       0,     0,    59,    60,    61,    62,     0,     0,     0,     0,
+       0,     0,     0,     0,   116,    64,    65,    66,    67,    68,
+      69,    70,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,    71,     0,    72,    73,    74,     1,
+       2,     3,     4,     5,     6,     7,     8,     9,    10,    11,
+      12,    13,    14,    15,    16,    17,    18,    19,    20,    21,
+      22,    23,    24,    25,    26,    27,    28,    29,    30,    31,
+      32,    33,    34,    35,    36,    37,    38,    39,    40,    41,
+      42,    43,    44,    45,    46,    47,    48,    49,    50,    51,
+      52,    53,    54,    55,    56,    57,    58,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,   292,   293,   294,   295,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,   297,   298,   299,   300,   301,
-     302,   303,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,   304,   305,   306,   307,   308,     0,
-       0,     0,     0,     0,     0,     0,     0,   309,     0,   310,
-     311,   312,   313,   314,   315,   316,   317,   318,   319,   320,
-     321,   322,   323,   324,   325,   326,   327,   328,   329,   330,
-     331,   332,   333,   334,   335,     2,     3,     4,     5,     6,
+       0,     0,    59,    60,    61,    62,    63,     0,     0,     0,
+       0,     0,     0,     0,     0,    64,    65,    66,    67,    68,
+      69,    70,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,    71,     0,    72,    73,    74,     1,
+       2,     3,     4,     5,     6,     7,     8,     9,    10,    11,
+      12,    13,    14,    15,    16,    17,    18,    19,    20,    21,
+      22,    23,    24,    25,    26,    27,    28,    29,    30,    31,
+      32,    33,    34,    35,    36,    37,    38,    39,    40,    41,
+      42,    43,    44,    45,    46,    47,    48,    49,    50,    51,
+      52,    53,    54,    55,    56,    57,    58,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,   265,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,    59,    60,    61,    62,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,    64,    65,    66,    67,    68,
+      69,    70,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,    71,     0,    72,    73,    74,     1,
+       2,     3,     4,     5,     6,     7,     8,     9,    10,    11,
+      12,    13,    14,    15,    16,    17,    18,    19,    20,    21,
+      22,    23,    24,    25,    26,    27,    28,    29,    30,    31,
+      32,    33,    34,    35,    36,    37,    38,    39,    40,    41,
+      42,    43,    44,    45,    46,    47,    48,    49,    50,    51,
+      52,    53,    54,    55,    56,    57,    58,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,   339,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,    59,    60,    61,    62,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,    64,    65,    66,    67,    68,
+      69,    70,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,    71,     0,    72,    73,    74,     1,
+       2,     3,     4,     5,     6,     7,     8,     9,    10,    11,
+      12,    13,    14,    15,    16,    17,    18,    19,    20,    21,
+      22,    23,    24,    25,    26,    27,    28,    29,    30,    31,
+      32,    33,    34,    35,    36,    37,    38,    39,    40,    41,
+      42,    43,    44,    45,    46,    47,    48,    49,    50,    51,
+      52,    53,    54,    55,    56,    57,    58,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,   372,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,    59,    60,    61,    62,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,    64,    65,    66,    67,    68,
+      69,    70,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,    71,     0,    72,    73,    74,     1,
+       2,     3,     4,     5,     6,     7,     8,     9,    10,    11,
+      12,    13,    14,    15,    16,    17,    18,    19,    20,    21,
+      22,    23,    24,    25,    26,    27,    28,    29,    30,    31,
+      32,    33,    34,    35,    36,    37,    38,    39,    40,    41,
+      42,    43,    44,    45,    46,    47,    48,    49,    50,    51,
+      52,    53,    54,    55,    56,    57,    58,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,    59,    60,    61,    62,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,    64,    65,    66,    67,    68,
+      69,    70,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,    71,     0,    72,    73,    74,     2,
+       3,     4,     5,     6,     7,     8,     9,    10,    11,    12,
+      13,    14,    15,    16,    17,    18,    19,    20,    21,    22,
+      23,    24,    25,    26,    27,    28,    29,    30,    31,    32,
+      33,    34,    35,    36,    37,    38,    39,    40,    41,    42,
+      43,    44,    45,    46,    47,    48,    49,    50,    51,    52,
+      53,    54,    55,    56,    57,    58,     0,     0,   148,   149,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,   150,     0,     0,
+     184,     0,     0,     0,     0,     0,     0,     0,   151,   152,
+     153,   154,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,   155,
+     156,   157,   158,   159,    64,     0,     0,     0,     0,    69,
+      70,     2,     3,     4,     5,     6,     7,     8,     9,    10,
+      11,    12,    13,    14,    15,    16,    17,    18,    19,    20,
+      21,    22,    23,    24,    25,    26,    27,    28,    29,    30,
+      31,    32,    33,    34,    35,    36,    37,    38,    39,    40,
+      41,    42,    43,    44,    45,    46,    47,    48,    49,    50,
+      51,    52,    53,    54,    55,    56,    57,    58,     0,     0,
+     148,   149,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,   150,
+       0,     0,   292,     0,     0,     0,     0,     0,     0,     0,
+     151,   152,   153,   154,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,   155,   156,   157,   158,   159,    64,     0,     0,     0,
+       0,    69,    70,     2,     3,     4,     5,     6,     7,     8,
+       9,    10,    11,    12,    13,    14,    15,    16,    17,    18,
+      19,    20,    21,    22,    23,    24,    25,    26,    27,    28,
+      29,    30,    31,    32,    33,    34,    35,    36,    37,    38,
+      39,    40,    41,    42,    43,    44,    45,    46,    47,    48,
+      49,    50,    51,    52,    53,    54,    55,    56,    57,    58,
+       0,     0,   148,   149,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,   150,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,   303,   151,   152,   153,   154,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,   155,   156,   157,   158,   159,    64,     0,
+       0,     0,     0,    69,    70,     2,     3,     4,     5,     6,
        7,     8,     9,    10,    11,    12,    13,    14,    15,    16,
       17,    18,    19,    20,    21,    22,    23,    24,    25,    26,
       27,    28,    29,    30,    31,    32,    33,    34,    35,    36,
       37,    38,    39,    40,    41,    42,    43,    44,    45,    46,
-      47,    48,     0,     0,    51,    52,    53,    54,    55,    56,
-      57,    58,    59,    60,    61,    62,    63,    64,    65,    66,
-      67,    68,    69,    70,    71,    72,    73,    74,    75,    76,
-      77,    78,    79,    80,    81,    82,    83,    84,    85,    86,
-      87,    88,    89,    90,    91,    92,    93,    94,    95,    96,
-      97,    98,    99,   100,   101,   102,   103,   104,   105,   106,
-     107,   108,   109,   110,   111,   112,   113,   114,   115,   116,
-     117,   118,   119,   120,   121,   122,   123,   124,   125,   126,
-     127,   128,   129,   130,   131,   132,   133,   134,   135,   136,
-     137,   138,   139,   140,   141,   142,   143,   144,   145,   146,
-     147,   148,   149,   150,   151,   152,   153,   154,   155,   156,
-     157,   158,   159,   160,   161,   162,   163,   164,   165,   166,
-     167,   168,   169,   170,   171,   172,   173,   174,   175,   176,
-     177,   178,   179,   180,   181,   182,   183,   184,   185,   186,
-     187,   188,   189,   190,   191,   192,   193,   194,   195,   196,
-     197,   198,   199,   200,   201,   202,   203,   204,   205,   206,
-     207,   208,   209,   210,   211,   212,   213,   214,   215,   216,
-     217,   218,   219,   220,   221,   222,   223,   224,   225,   226,
-     227,   228,   229,   230,   231,   232,   233,   234,   235,   236,
-     237,   238,   239,   240,   241,   242,   243,   244,   245,   246,
-     247,   248,   249,   250,   251,   252,   253,   254,   255,   256,
-     257,   258,   259,   260,   261,   262,   263,   264,   265,   266,
-     267,   268,   269,   270,   271,   272,   273,   274,   275,   276,
-     277,   278,   279,   280,   281,   282,   283,   284,   285,   286,
-     287,   288,   289,   290,     0,     0,   414,   415,     0,     0,
+      47,    48,    49,    50,    51,    52,    53,    54,    55,    56,
+      57,    58,     0,     0,   148,   149,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,   416,     0,     0,     0,   520,
-     687,     0,     0,     0,     0,     0,   417,   418,   419,   420,
+       0,     0,     0,   150,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,   151,   152,   153,   154,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,   421,   422,   423,
-     424,   425,   297,     0,     0,     0,     0,   302,   303,     0,
+       0,     0,     0,     0,     0,   155,   156,   157,   158,   159,
+      64,     0,     0,     0,     0,    69,    70,     2,     3,     4,
+       5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
+      15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
+      25,    26,    27,    28,    29,    30,    31,    32,    33,    34,
+      35,    36,    37,    38,    39,    40,    41,    42,    43,    44,
+      45,    46,    47,    48,    49,    50,    51,    52,    53,    54,
+      55,    56,    57,    58,     0,     0,   148,   149,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,   426,   427,   428,   429,
-     430,   431,   432,   433,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,   318,     2,     3,     4,     5,     6,
-       7,     8,     9,    10,    11,    12,    13,    14,    15,    16,
-      17,    18,    19,    20,    21,    22,    23,    24,    25,    26,
-      27,    28,    29,    30,    31,    32,    33,    34,    35,    36,
-      37,    38,    39,    40,    41,    42,    43,    44,    45,    46,
-      47,    48,     0,     0,    51,    52,    53,    54,    55,    56,
-      57,    58,    59,    60,    61,    62,    63,    64,    65,    66,
-      67,    68,    69,    70,    71,    72,    73,    74,    75,    76,
-      77,    78,    79,    80,    81,    82,    83,    84,    85,    86,
-      87,    88,    89,    90,    91,    92,    93,    94,    95,    96,
-      97,    98,    99,   100,   101,   102,   103,   104,   105,   106,
-     107,   108,   109,   110,   111,   112,   113,   114,   115,   116,
-     117,   118,   119,   120,   121,   122,   123,   124,   125,   126,
-     127,   128,   129,   130,   131,   132,   133,   134,   135,   136,
-     137,   138,   139,   140,   141,   142,   143,   144,   145,   146,
-     147,   148,   149,   150,   151,   152,   153,   154,   155,   156,
-     157,   158,   159,   160,   161,   162,   163,   164,   165,   166,
-     167,   168,   169,   170,   171,   172,   173,   174,   175,   176,
-     177,   178,   179,   180,   181,   182,   183,   184,   185,   186,
-     187,   188,   189,   190,   191,   192,   193,   194,   195,   196,
-     197,   198,   199,   200,   201,   202,   203,   204,   205,   206,
-     207,   208,   209,   210,   211,   212,   213,   214,   215,   216,
-     217,   218,   219,   220,   221,   222,   223,   224,   225,   226,
-     227,   228,   229,   230,   231,   232,   233,   234,   235,   236,
-     237,   238,   239,   240,   241,   242,   243,   244,   245,   246,
-     247,   248,   249,   250,   251,   252,   253,   254,   255,   256,
-     257,   258,   259,   260,   261,   262,   263,   264,   265,   266,
-     267,   268,   269,   270,   271,   272,   273,   274,   275,   276,
-     277,   278,   279,   280,   281,   282,   283,   284,   285,   286,
-     287,   288,   289,   290,     0,     0,   414,   415,     0,     0,
+       0,     0,     0,     0,     0,   150,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,   151,   152,   153,   154,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,   416,     0,     0,   461,     0,
-       0,     0,     0,     0,     0,     0,   417,   418,   419,   420,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,   421,   422,   423,
-     424,   425,   297,     0,     0,     0,     0,   302,   303,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,   426,   427,   428,   429,
-     430,   431,   432,   433,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,   318,     2,     3,     4,     5,     6,
-       7,     8,     9,    10,    11,    12,    13,    14,    15,    16,
-      17,    18,    19,    20,    21,    22,    23,    24,    25,    26,
-      27,    28,    29,    30,    31,    32,    33,    34,    35,    36,
-      37,    38,    39,    40,    41,    42,    43,    44,    45,    46,
-      47,    48,     0,     0,    51,    52,    53,    54,    55,    56,
-      57,    58,    59,    60,    61,    62,    63,    64,    65,    66,
-      67,    68,    69,    70,    71,    72,    73,    74,    75,    76,
-      77,    78,    79,    80,    81,    82,    83,    84,    85,    86,
-      87,    88,    89,    90,    91,    92,    93,    94,    95,    96,
-      97,    98,    99,   100,   101,   102,   103,   104,   105,   106,
-     107,   108,   109,   110,   111,   112,   113,   114,   115,   116,
-     117,   118,   119,   120,   121,   122,   123,   124,   125,   126,
-     127,   128,   129,   130,   131,   132,   133,   134,   135,   136,
-     137,   138,   139,   140,   141,   142,   143,   144,   145,   146,
-     147,   148,   149,   150,   151,   152,   153,   154,   155,   156,
-     157,   158,   159,   160,   161,   162,   163,   164,   165,   166,
-     167,   168,   169,   170,   171,   172,   173,   174,   175,   176,
-     177,   178,   179,   180,   181,   182,   183,   184,   185,   186,
-     187,   188,   189,   190,   191,   192,   193,   194,   195,   196,
-     197,   198,   199,   200,   201,   202,   203,   204,   205,   206,
-     207,   208,   209,   210,   211,   212,   213,   214,   215,   216,
-     217,   218,   219,   220,   221,   222,   223,   224,   225,   226,
-     227,   228,   229,   230,   231,   232,   233,   234,   235,   236,
-     237,   238,   239,   240,   241,   242,   243,   244,   245,   246,
-     247,   248,   249,   250,   251,   252,   253,   254,   255,   256,
-     257,   258,   259,   260,   261,   262,   263,   264,   265,   266,
-     267,   268,   269,   270,   271,   272,   273,   274,   275,   276,
-     277,   278,   279,   280,   281,   282,   283,   284,   285,   286,
-     287,   288,   289,   290,     0,     0,   414,   415,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,   416,     0,     0,     0,   520,
-       0,     0,     0,     0,     0,     0,   417,   418,   419,   420,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,   421,   422,   423,
-     424,   425,   297,     0,     0,     0,     0,   302,   303,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,   426,   427,   428,   429,
-     430,   431,   432,   433,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,   318,     2,     3,     4,     5,     6,
-       7,     8,     9,    10,    11,    12,    13,    14,    15,    16,
-      17,    18,    19,    20,    21,    22,    23,    24,    25,    26,
-      27,    28,    29,    30,    31,    32,    33,    34,    35,    36,
-      37,    38,    39,    40,    41,    42,    43,    44,    45,    46,
-      47,    48,     0,     0,    51,    52,    53,    54,    55,    56,
-      57,    58,    59,    60,    61,    62,    63,    64,    65,    66,
-      67,    68,    69,    70,    71,    72,    73,    74,    75,    76,
-      77,    78,    79,    80,    81,    82,    83,    84,    85,    86,
-      87,    88,    89,    90,    91,    92,    93,    94,    95,    96,
-      97,    98,    99,   100,   101,   102,   103,   104,   105,   106,
-     107,   108,   109,   110,   111,   112,   113,   114,   115,   116,
-     117,   118,   119,   120,   121,   122,   123,   124,   125,   126,
-     127,   128,   129,   130,   131,   132,   133,   134,   135,   136,
-     137,   138,   139,   140,   141,   142,   143,   144,   145,   146,
-     147,   148,   149,   150,   151,   152,   153,   154,   155,   156,
-     157,   158,   159,   160,   161,   162,   163,   164,   165,   166,
-     167,   168,   169,   170,   171,   172,   173,   174,   175,   176,
-     177,   178,   179,   180,   181,   182,   183,   184,   185,   186,
-     187,   188,   189,   190,   191,   192,   193,   194,   195,   196,
-     197,   198,   199,   200,   201,   202,   203,   204,   205,   206,
-     207,   208,   209,   210,   211,   212,   213,   214,   215,   216,
-     217,   218,   219,   220,   221,   222,   223,   224,   225,   226,
-     227,   228,   229,   230,   231,   232,   233,   234,   235,   236,
-     237,   238,   239,   240,   241,   242,   243,   244,   245,   246,
-     247,   248,   249,   250,   251,   252,   253,   254,   255,   256,
-     257,   258,   259,   260,   261,   262,   263,   264,   265,   266,
-     267,   268,   269,   270,   271,   272,   273,   274,   275,   276,
-     277,   278,   279,   280,   281,   282,   283,   284,   285,   286,
-     287,   288,   289,   290,     0,     0,   414,   415,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,   416,     0,     0,   576,     0,
-       0,     0,     0,     0,     0,     0,   417,   418,   419,   420,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,   421,   422,   423,
-     424,   425,   297,     0,     0,     0,     0,   302,   303,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,   426,   427,   428,   429,
-     430,   431,   432,   433,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,   318,     2,     3,     4,     5,     6,
-       7,     8,     9,    10,    11,    12,    13,    14,    15,    16,
-      17,    18,    19,    20,    21,    22,    23,    24,    25,    26,
-      27,    28,    29,    30,    31,    32,    33,    34,    35,    36,
-      37,    38,    39,    40,    41,    42,    43,    44,    45,    46,
-      47,    48,     0,     0,    51,    52,    53,    54,    55,    56,
-      57,    58,    59,    60,    61,    62,    63,    64,    65,    66,
-      67,    68,    69,    70,    71,    72,    73,    74,    75,    76,
-      77,    78,    79,    80,    81,    82,    83,    84,    85,    86,
-      87,    88,    89,    90,    91,    92,    93,    94,    95,    96,
-      97,    98,    99,   100,   101,   102,   103,   104,   105,   106,
-     107,   108,   109,   110,   111,   112,   113,   114,   115,   116,
-     117,   118,   119,   120,   121,   122,   123,   124,   125,   126,
-     127,   128,   129,   130,   131,   132,   133,   134,   135,   136,
-     137,   138,   139,   140,   141,   142,   143,   144,   145,   146,
-     147,   148,   149,   150,   151,   152,   153,   154,   155,   156,
-     157,   158,   159,   160,   161,   162,   163,   164,   165,   166,
-     167,   168,   169,   170,   171,   172,   173,   174,   175,   176,
-     177,   178,   179,   180,   181,   182,   183,   184,   185,   186,
-     187,   188,   189,   190,   191,   192,   193,   194,   195,   196,
-     197,   198,   199,   200,   201,   202,   203,   204,   205,   206,
-     207,   208,   209,   210,   211,   212,   213,   214,   215,   216,
-     217,   218,   219,   220,   221,   222,   223,   224,   225,   226,
-     227,   228,   229,   230,   231,   232,   233,   234,   235,   236,
-     237,   238,   239,   240,   241,   242,   243,   244,   245,   246,
-     247,   248,   249,   250,   251,   252,   253,   254,   255,   256,
-     257,   258,   259,   260,   261,   262,   263,   264,   265,   266,
-     267,   268,   269,   270,   271,   272,   273,   274,   275,   276,
-     277,   278,   279,   280,   281,   282,   283,   284,   285,   286,
-     287,   288,   289,   290,     0,     0,   414,   415,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,   416,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,   588,   417,   418,   419,   420,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,   421,   422,   423,
-     424,   425,   297,     0,     0,     0,     0,   302,   303,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,   426,   427,   428,   429,
-     430,   431,   432,   433,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,   318,     2,     3,     4,     5,     6,
-       7,     8,     9,    10,    11,    12,    13,    14,    15,    16,
-      17,    18,    19,    20,    21,    22,    23,    24,    25,    26,
-      27,    28,    29,    30,    31,    32,    33,    34,    35,    36,
-      37,    38,    39,    40,    41,    42,    43,    44,    45,    46,
-      47,    48,     0,     0,    51,    52,    53,    54,    55,    56,
-      57,    58,    59,    60,    61,    62,    63,    64,    65,    66,
-      67,    68,    69,    70,    71,    72,    73,    74,    75,    76,
-      77,    78,    79,    80,    81,    82,    83,    84,    85,    86,
-      87,    88,    89,    90,    91,    92,    93,    94,    95,    96,
-      97,    98,    99,   100,   101,   102,   103,   104,   105,   106,
-     107,   108,   109,   110,   111,   112,   113,   114,   115,   116,
-     117,   118,   119,   120,   121,   122,   123,   124,   125,   126,
-     127,   128,   129,   130,   131,   132,   133,   134,   135,   136,
-     137,   138,   139,   140,   141,   142,   143,   144,   145,   146,
-     147,   148,   149,   150,   151,   152,   153,   154,   155,   156,
-     157,   158,   159,   160,   161,   162,   163,   164,   165,   166,
-     167,   168,   169,   170,   171,   172,   173,   174,   175,   176,
-     177,   178,   179,   180,   181,   182,   183,   184,   185,   186,
-     187,   188,   189,   190,   191,   192,   193,   194,   195,   196,
-     197,   198,   199,   200,   201,   202,   203,   204,   205,   206,
-     207,   208,   209,   210,   211,   212,   213,   214,   215,   216,
-     217,   218,   219,   220,   221,   222,   223,   224,   225,   226,
-     227,   228,   229,   230,   231,   232,   233,   234,   235,   236,
-     237,   238,   239,   240,   241,   242,   243,   244,   245,   246,
-     247,   248,   249,   250,   251,   252,   253,   254,   255,   256,
-     257,   258,   259,   260,   261,   262,   263,   264,   265,   266,
-     267,   268,   269,   270,   271,   272,   273,   274,   275,   276,
-     277,   278,   279,   280,   281,   282,   283,   284,   285,   286,
-     287,   288,   289,   290,     0,     0,   414,   415,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,   416,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,   417,   418,   419,   420,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,   421,   422,   423,
-     424,   425,   297,     0,     0,     0,     0,   302,   303,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,   426,   427,   428,   429,
-     430,   431,   432,   433,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,   318,     2,     3,     4,     5,     6,
-       7,     8,     9,    10,    11,    12,    13,    14,    15,    16,
-      17,    18,    19,    20,    21,    22,    23,    24,    25,    26,
-      27,    28,    29,    30,    31,    32,    33,    34,    35,    36,
-      37,    38,    39,    40,    41,    42,    43,    44,    45,    46,
-      47,    48,     0,     0,    51,    52,    53,    54,    55,    56,
-      57,    58,    59,    60,    61,    62,    63,    64,    65,    66,
-      67,    68,    69,    70,    71,    72,    73,    74,    75,    76,
-      77,    78,    79,    80,    81,    82,    83,    84,    85,    86,
-      87,    88,    89,    90,    91,    92,    93,    94,    95,    96,
-      97,    98,    99,   100,   101,   102,   103,   104,   105,   106,
-     107,   108,   109,   110,   111,   112,   113,   114,   115,   116,
-     117,   118,   119,   120,   121,   122,   123,   124,   125,   126,
-     127,   128,   129,   130,   131,   132,   133,   134,   135,   136,
-     137,   138,   139,   140,   141,   142,   143,   144,   145,   146,
-     147,   148,   149,   150,   151,   152,   153,   154,   155,   156,
-     157,   158,   159,   160,   161,   162,   163,   164,   165,   166,
-     167,   168,   169,   170,   171,   172,   173,   174,   175,   176,
-     177,   178,   179,   180,   181,   182,   183,   184,   185,   186,
-     187,   188,   189,   190,   191,   192,   193,   194,   195,   196,
-     197,   198,   199,   200,   201,   202,   203,   204,   205,   206,
-     207,   208,   209,   210,   211,   212,   213,   214,   215,   216,
-     217,   218,   219,   220,   221,   222,   223,   224,   225,   226,
-     227,   228,   229,   230,   231,   232,   233,   234,   235,   236,
-     237,   238,   239,   240,   241,   242,   243,   244,   245,   246,
-     247,   248,   249,   250,   251,   252,   253,   254,   255,   256,
-     257,   258,   259,   260,   261,   262,   263,   264,   265,   266,
-     267,   268,   269,   270,   271,   272,   273,   274,   275,   276,
-     277,   278,   279,   280,   281,   282,   283,   284,   285,   286,
-     287,   288,   289,   290,     0,     0,   414,   415,     0,   444,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,   462,     0,   416,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,   417,   418,   419,   420,
-     528,   529,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,   421,   422,   423,
-     424,   425,   297,     0,     0,     0,     0,   302,   538,     0,
-       0,   541,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,   462,     0,     0,     0,   426,   427,   428,   429,
-     430,   431,   432,   433,     0,     0,     0,     0,     0,     0,
-       0,   462,     0,     0,   318,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,   155,   156,   157,
+     158,   159,    64,     0,     0,     0,     0,    69,   255,     2,
+       3,     4,     5,     6,     7,     8,     9,    10,    11,    12,
+      13,    14,    15,    16,    17,    18,    19,    20,    21,    22,
+      23,    24,    25,    26,    27,    28,    29,    30,    31,    32,
+      33,    34,    35,    36,    37,    38,    39,    40,    41,    42,
+      43,    44,    45,    46,    47,    48,    49,    50,    51,    52,
+      53,    54,    55,    56,    57,    58,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,   625,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,   631,   632,   633,   462,   462,   462,   462,   462,   462,
-     462,   462,   462,   462,   462,   462,   462,   462,   462,   462,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,   462
+       0,     0,     0,     0,    64,     0,     0,     0,     0,    69,
+      70
 };
 
 static const yytype_int16 yycheck[] =
 {
-       0,   321,     0,   317,     0,   358,   315,   321,   361,     0,
-     363,   364,   321,   333,   367,     4,     5,     6,     7,     8,
-       9,    10,    11,    12,    13,    14,    15,    16,    17,    18,
-      19,    20,    21,    22,    23,    24,    25,    26,    27,    28,
-      29,    30,    31,    32,    33,    34,    35,    36,    37,    38,
-      39,    40,    41,    42,    43,    44,    45,    46,    47,    48,
-      49,    50,   293,   294,    53,    54,    55,    56,    57,    58,
-      59,    60,    61,    62,    63,    64,    65,    66,    67,    68,
-      69,    70,    71,    72,    73,    74,    75,    76,    77,    78,
-      79,    80,    81,    82,    83,    84,    85,    86,    87,    88,
-      89,    90,    91,    92,    93,    94,    95,    96,    97,    98,
-      99,   100,   101,   102,   103,   104,   105,   106,   107,   108,
-     109,   110,   111,   112,   113,   114,   115,   116,   117,   118,
-     119,   120,   121,   122,   123,   124,   125,   126,   127,   128,
-     129,   130,   131,   132,   133,   134,   135,   136,   137,   138,
-     139,   140,   141,   142,   143,   144,   145,   146,   147,   148,
-     149,   150,   151,   152,   153,   154,   155,   156,   157,   158,
-     159,   160,   161,   162,   163,   164,   165,   166,   167,   168,
-     169,   170,   171,   172,   173,   174,   175,   176,   177,   178,
-     179,   180,   181,   182,   183,   184,   185,   186,   187,   188,
-     189,   190,   191,   192,   193,   194,   195,   196,   197,   198,
-     199,   200,   201,   202,   203,   204,   205,   206,   207,   208,
-     209,   210,   211,   212,   213,   214,   215,   216,   217,   218,
-     219,   220,   221,   222,   223,   224,   225,   226,   227,   228,
-     229,   230,   231,   232,   233,   234,   235,   236,   237,   238,
-     239,   240,   241,   242,   243,   244,   245,   246,   247,   248,
-     249,   250,   251,   252,   253,   254,   255,   256,   257,   258,
-     259,   260,   261,   262,   263,   264,   265,   266,   267,   268,
-     269,   270,   271,   272,   273,   274,   275,   276,   277,   278,
-     279,   280,   281,   282,   283,   284,   285,   286,   287,   288,
-     289,   290,   291,   292,   341,   349,   416,   378,   506,   518,
-     408,   520,   397,   384,   523,   580,   453,   656,   302,   455,
-     297,   298,   324,   324,   316,   350,   339,   340,   341,   695,
-     374,   318,   324,   370,   405,   406,   702,   562,   563,   564,
-     565,   341,   314,   316,   442,   684,   371,   713,   350,   349,
-     341,   324,   389,   337,   314,   332,   333,   357,   349,   357,
-     360,   357,   351,   350,   299,   300,   357,   356,   357,   316,
-     370,   456,   295,   296,   374,   314,   323,   316,   488,   370,
-     490,   321,   322,   374,   323,   316,   584,   316,   524,   389,
-     475,   314,   323,   316,   323,   315,   318,   320,   389,   321,
-     400,   321,   324,   315,   315,   614,   315,   451,   315,   400,
-     321,   315,   321,   550,   321,   315,   453,   321,   455,   321,
-     518,   321,   520,   533,   350,   523,   304,   305,   306,   307,
-     308,   309,   310,   311,   312,   313,   332,   321,   321,   537,
-     324,   324,   321,   322,   321,   323,   321,   324,   319,   324,
-     321,   451,   717,   453,   318,   455,   321,   655,   667,   324,
-     451,   350,   453,   321,   455,   318,   324,   329,   330,   331,
-     326,   316,   328,   324,   545,   323,   586,   558,   559,   315,
-     590,   618,   560,   561,   566,   567,   314,   524,   335,   350,
-     350,   350,   316,   350,   336,   350,   334,   301,   707,   317,
-     303,   316,   319,   314,   324,   324,   506,   605,   606,   314,
-     324,   324,   314,   550,   314,   506,   614,   314,   314,   350,
-     350,   322,   315,   317,   524,   723,   317,   350,   314,   321,
-     317,   358,   315,   524,   319,   314,   318,   315,   350,   323,
-     650,   315,   318,   324,   324,   318,   656,   319,   568,   570,
-     550,   569,   362,   572,   571,   673,   296,   573,   374,   550,
-     458,   370,   544,   628,   658,   713,   374,   701,   714,   667,
-     368,   658,   516,   684,   684,   516,   675,    -1,   516,    -1,
-     580,   618,   357,    -1,   584,    -1,   696,    -1,   673,   580,
-      -1,   689,    -1,   584,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,   712,    -1,    -1,    -1,    -1,    -1,    -1,   707,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   618,   656,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,   618,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,   679,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,   684,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,   655,   656,    -1,   658,    -1,
-      -1,    -1,    -1,    -1,   655,   656,    -1,   658,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   679,
-      -1,    -1,    -1,    -1,   684,    -1,    -1,    -1,   679,    -1,
-      -1,    -1,    -1,   684,    -1,   695,    -1,    -1,    -1,    -1,
-      -1,    -1,   702,    -1,   695,    -1,    -1,    -1,    -1,    -1,
-      -1,   702,    -1,   713,    -1,    -1,    -1,   717,    -1,    -1,
-      -1,    -1,   713,   723,    -1,    -1,   717,    -1,    -1,    -1,
-       0,    -1,   723,     3,     4,     5,     6,     7,     8,     9,
-      10,    11,    12,    13,    14,    15,    16,    17,    18,    19,
-      20,    21,    22,    23,    24,    25,    26,    27,    28,    29,
-      30,    31,    32,    33,    34,    35,    36,    37,    38,    39,
-      40,    41,    42,    43,    44,    45,    46,    47,    48,    49,
-      50,    51,    52,    53,    54,    55,    56,    57,    58,    59,
-      60,    61,    62,    63,    64,    65,    66,    67,    68,    69,
-      70,    71,    72,    73,    74,    75,    76,    77,    78,    79,
-      80,    81,    82,    83,    84,    85,    86,    87,    88,    89,
-      90,    91,    92,    93,    94,    95,    96,    97,    98,    99,
-     100,   101,   102,   103,   104,   105,   106,   107,   108,   109,
-     110,   111,   112,   113,   114,   115,   116,   117,   118,   119,
-     120,   121,   122,   123,   124,   125,   126,   127,   128,   129,
-     130,   131,   132,   133,   134,   135,   136,   137,   138,   139,
-     140,   141,   142,   143,   144,   145,   146,   147,   148,   149,
-     150,   151,   152,   153,   154,   155,   156,   157,   158,   159,
-     160,   161,   162,   163,   164,   165,   166,   167,   168,   169,
-     170,   171,   172,   173,   174,   175,   176,   177,   178,   179,
-     180,   181,   182,   183,   184,   185,   186,   187,   188,   189,
-     190,   191,   192,   193,   194,   195,   196,   197,   198,   199,
-     200,   201,   202,   203,   204,   205,   206,   207,   208,   209,
-     210,   211,   212,   213,   214,   215,   216,   217,   218,   219,
-     220,   221,   222,   223,   224,   225,   226,   227,   228,   229,
-     230,   231,   232,   233,   234,   235,   236,   237,   238,   239,
-     240,   241,   242,   243,   244,   245,   246,   247,   248,   249,
-     250,   251,   252,   253,   254,   255,   256,   257,   258,   259,
-     260,   261,   262,   263,   264,   265,   266,   267,   268,   269,
-     270,   271,   272,   273,   274,   275,   276,   277,   278,   279,
-     280,   281,   282,   283,   284,   285,   286,   287,   288,   289,
-     290,   291,   292,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+       0,    80,   225,    87,   142,   150,   236,   114,   131,   295,
+     240,   180,    70,   120,   178,     0,    86,     0,    65,    66,
+      63,    64,   118,    92,    89,    82,   110,   106,   362,    82,
+     168,    84,   139,   140,    86,   391,   101,    89,    91,    82,
+      92,    84,   398,   139,    92,    88,   125,   105,   118,   118,
+      84,   385,   408,   100,   101,    84,    84,    91,   181,    84,
+     100,    84,    83,    92,    92,   210,    91,   212,    91,    61,
+      62,    83,   241,    83,    89,   198,   299,    89,    83,    89,
+      80,   118,    83,    89,    89,    83,    92,    87,    89,    86,
+      83,    89,   176,    84,    94,   325,    89,    97,   236,   178,
+      86,   180,   240,   267,   118,   250,   106,    67,    68,    94,
+     110,    94,   278,   279,   280,   281,   254,    89,    89,    89,
+      92,    92,    92,   118,    89,   125,   412,    92,    89,    92,
+      94,    92,    96,    83,   134,    97,    98,    99,   361,    72,
+      73,    74,    75,    76,    77,    78,    79,    80,    81,   107,
+     108,   109,    89,    90,    82,   262,   301,    91,    91,   118,
+     305,    84,   241,   327,    89,    90,   274,   275,   282,   283,
+     276,   277,   402,   118,   104,   102,   176,   119,   178,   103,
+     180,   319,   320,    69,    71,    85,    87,   325,   267,   131,
+      82,    82,    82,    92,    92,   418,    92,    82,    82,   118,
+     118,    90,    83,    85,   126,    85,   148,   149,   118,    87,
+      89,    83,    82,    86,   359,    91,    83,   362,    92,   130,
+      86,    86,   284,    92,    87,   225,   285,   287,   289,   171,
+     286,   183,    63,   288,   261,   110,   337,   364,   106,   181,
+     385,   241,   397,   408,   104,   364,   110,   392,   327,   409,
+     388,   385,    94,    -1,    -1,    -1,   198,    -1,    -1,    -1,
+      -1,    -1,   407,    -1,   402,    -1,    -1,   267,    -1,    -1,
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,   324,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   338,   339,
-     340,   341,   342,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,   351,   352,   353,   354,   355,   356,   357,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-     370,   371,   372,   373,   374,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,   383,    -1,   385,   386,   387,   388,   389,
-     390,   391,   392,   393,   394,   395,   396,   397,   398,   399,
-     400,   401,   402,   403,   404,   405,   406,   407,   408,   409,
-     410,     3,     4,     5,     6,     7,     8,     9,    10,    11,
-      12,    13,    14,    15,    16,    17,    18,    19,    20,    21,
-      22,    23,    24,    25,    26,    27,    28,    29,    30,    31,
-      32,    33,    34,    35,    36,    37,    38,    39,    40,    41,
-      42,    43,    44,    45,    46,    47,    48,    49,    50,    51,
-      52,    53,    54,    55,    56,    57,    58,    59,    60,    61,
-      62,    63,    64,    65,    66,    67,    68,    69,    70,    71,
-      72,    73,    74,    75,    76,    77,    78,    79,    80,    81,
-      82,    83,    84,    85,    86,    87,    88,    89,    90,    91,
-      92,    93,    94,    95,    96,    97,    98,    99,   100,   101,
-     102,   103,   104,   105,   106,   107,   108,   109,   110,   111,
-     112,   113,   114,   115,   116,   117,   118,   119,   120,   121,
-     122,   123,   124,   125,   126,   127,   128,   129,   130,   131,
-     132,   133,   134,   135,   136,   137,   138,   139,   140,   141,
-     142,   143,   144,   145,   146,   147,   148,   149,   150,   151,
-     152,   153,   154,   155,   156,   157,   158,   159,   160,   161,
-     162,   163,   164,   165,   166,   167,   168,   169,   170,   171,
-     172,   173,   174,   175,   176,   177,   178,   179,   180,   181,
-     182,   183,   184,   185,   186,   187,   188,   189,   190,   191,
-     192,   193,   194,   195,   196,   197,   198,   199,   200,   201,
-     202,   203,   204,   205,   206,   207,   208,   209,   210,   211,
-     212,   213,   214,   215,   216,   217,   218,   219,   220,   221,
-     222,   223,   224,   225,   226,   227,   228,   229,   230,   231,
-     232,   233,   234,   235,   236,   237,   238,   239,   240,   241,
-     242,   243,   244,   245,   246,   247,   248,   249,   250,   251,
-     252,   253,   254,   255,   256,   257,   258,   259,   260,   261,
-     262,   263,   264,   265,   266,   267,   268,   269,   270,   271,
+      -1,    -1,    -1,   362,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,   295,   380,    -1,    -1,   299,
+      -1,    -1,    -1,    -1,    -1,    -1,   385,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,   259,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,   327,    -1,   271,
      272,   273,   274,   275,   276,   277,   278,   279,   280,   281,
-     282,   283,   284,   285,   286,   287,   288,   289,   290,   291,
-     292,    -1,    -1,   295,   296,    -1,    -1,    -1,    -1,    -1,
+     282,   283,   284,   285,   286,   287,   288,   289,    -1,    -1,
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,   314,    -1,   316,    -1,   318,   319,    -1,    -1,
-      -1,    -1,   324,   325,   326,   327,   328,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,   338,   339,   340,   341,
-     342,    -1,    -1,    -1,   346,   347,   348,   349,   350,   351,
-     352,   353,   354,   355,   356,   357,   358,   359,   360,   361,
-      -1,   363,   364,   365,   366,   367,   368,   369,   370,   371,
-     372,   373,   374,   375,   376,   377,   378,   379,   380,   381,
-     382,   383,   384,   385,   386,   387,   388,   389,   390,   391,
-     392,   393,   394,   395,   396,   397,   398,   399,   400,   401,
-     402,   403,   404,   405,   406,   407,   408,   409,   410,     3,
+      -1,   361,   362,    -1,   364,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+     380,    -1,    -1,    -1,    -1,   385,    -1,    -1,    -1,    -1,
+      -1,   391,    -1,    -1,    -1,    -1,    -1,    -1,   398,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   408,    -1,
+      -1,    -1,   412,    -1,    -1,    -1,     0,    -1,   418,     3,
        4,     5,     6,     7,     8,     9,    10,    11,    12,    13,
       14,    15,    16,    17,    18,    19,    20,    21,    22,    23,
       24,    25,    26,    27,    28,    29,    30,    31,    32,    33,
       34,    35,    36,    37,    38,    39,    40,    41,    42,    43,
       44,    45,    46,    47,    48,    49,    50,    51,    52,    53,
-      54,    55,    56,    57,    58,    59,    60,    61,    62,    63,
-      64,    65,    66,    67,    68,    69,    70,    71,    72,    73,
-      74,    75,    76,    77,    78,    79,    80,    81,    82,    83,
-      84,    85,    86,    87,    88,    89,    90,    91,    92,    93,
-      94,    95,    96,    97,    98,    99,   100,   101,   102,   103,
-     104,   105,   106,   107,   108,   109,   110,   111,   112,   113,
-     114,   115,   116,   117,   118,   119,   120,   121,   122,   123,
-     124,   125,   126,   127,   128,   129,   130,   131,   132,   133,
-     134,   135,   136,   137,   138,   139,   140,   141,   142,   143,
-     144,   145,   146,   147,   148,   149,   150,   151,   152,   153,
-     154,   155,   156,   157,   158,   159,   160,   161,   162,   163,
-     164,   165,   166,   167,   168,   169,   170,   171,   172,   173,
-     174,   175,   176,   177,   178,   179,   180,   181,   182,   183,
-     184,   185,   186,   187,   188,   189,   190,   191,   192,   193,
-     194,   195,   196,   197,   198,   199,   200,   201,   202,   203,
-     204,   205,   206,   207,   208,   209,   210,   211,   212,   213,
-     214,   215,   216,   217,   218,   219,   220,   221,   222,   223,
-     224,   225,   226,   227,   228,   229,   230,   231,   232,   233,
-     234,   235,   236,   237,   238,   239,   240,   241,   242,   243,
-     244,   245,   246,   247,   248,   249,   250,   251,   252,   253,
-     254,   255,   256,   257,   258,   259,   260,   261,   262,   263,
-     264,   265,   266,   267,   268,   269,   270,   271,   272,   273,
-     274,   275,   276,   277,   278,   279,   280,   281,   282,   283,
-     284,   285,   286,   287,   288,   289,   290,   291,   292,    -1,
-      -1,   295,   296,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      54,    55,    56,    57,    58,    59,    60,    -1,    -1,    -1,
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-     314,    -1,   316,    -1,   318,   319,    -1,    -1,    -1,    -1,
-     324,   325,   326,   327,   328,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,   338,   339,   340,   341,   342,    -1,
-      -1,    -1,   346,   347,   348,   349,   350,   351,   352,   353,
-     354,   355,   356,   357,   358,   359,   360,   361,    -1,   363,
-     364,   365,   366,   367,   368,   369,   370,   371,   372,   373,
-     374,   375,   376,   377,   378,   379,   380,   381,   382,   383,
-     384,   385,   386,   387,   388,   389,   390,   391,   392,   393,
-     394,   395,   396,   397,   398,   399,   400,   401,   402,   403,
-     404,   405,   406,   407,   408,   409,   410,     3,     4,     5,
-       6,     7,     8,     9,    10,    11,    12,    13,    14,    15,
-      16,    17,    18,    19,    20,    21,    22,    23,    24,    25,
-      26,    27,    28,    29,    30,    31,    32,    33,    34,    35,
-      36,    37,    38,    39,    40,    41,    42,    43,    44,    45,
-      46,    47,    48,    49,    50,    51,    52,    53,    54,    55,
-      56,    57,    58,    59,    60,    61,    62,    63,    64,    65,
-      66,    67,    68,    69,    70,    71,    72,    73,    74,    75,
-      76,    77,    78,    79,    80,    81,    82,    83,    84,    85,
-      86,    87,    88,    89,    90,    91,    92,    93,    94,    95,
-      96,    97,    98,    99,   100,   101,   102,   103,   104,   105,
-     106,   107,   108,   109,   110,   111,   112,   113,   114,   115,
-     116,   117,   118,   119,   120,   121,   122,   123,   124,   125,
-     126,   127,   128,   129,   130,   131,   132,   133,   134,   135,
-     136,   137,   138,   139,   140,   141,   142,   143,   144,   145,
-     146,   147,   148,   149,   150,   151,   152,   153,   154,   155,
-     156,   157,   158,   159,   160,   161,   162,   163,   164,   165,
-     166,   167,   168,   169,   170,   171,   172,   173,   174,   175,
-     176,   177,   178,   179,   180,   181,   182,   183,   184,   185,
-     186,   187,   188,   189,   190,   191,   192,   193,   194,   195,
-     196,   197,   198,   199,   200,   201,   202,   203,   204,   205,
-     206,   207,   208,   209,   210,   211,   212,   213,   214,   215,
-     216,   217,   218,   219,   220,   221,   222,   223,   224,   225,
-     226,   227,   228,   229,   230,   231,   232,   233,   234,   235,
-     236,   237,   238,   239,   240,   241,   242,   243,   244,   245,
-     246,   247,   248,   249,   250,   251,   252,   253,   254,   255,
-     256,   257,   258,   259,   260,   261,   262,   263,   264,   265,
-     266,   267,   268,   269,   270,   271,   272,   273,   274,   275,
-     276,   277,   278,   279,   280,   281,   282,   283,   284,   285,
-     286,   287,   288,   289,   290,   291,   292,    -1,    -1,   295,
-     296,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   314,    -1,
-     316,    -1,   318,    -1,    -1,    -1,    -1,    -1,   324,   325,
-     326,   327,   328,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,   338,   339,   340,   341,   342,    -1,    -1,    -1,
-     346,   347,   348,   349,   350,   351,   352,   353,   354,   355,
-     356,   357,   358,   359,   360,   361,    -1,   363,   364,   365,
-     366,   367,   368,   369,   370,   371,   372,   373,   374,   375,
-     376,   377,   378,   379,   380,   381,   382,   383,   384,   385,
-     386,   387,   388,   389,   390,   391,   392,   393,   394,   395,
-     396,   397,   398,   399,   400,   401,   402,   403,   404,   405,
-     406,   407,   408,   409,   410,     3,     4,     5,     6,     7,
-       8,     9,    10,    11,    12,    13,    14,    15,    16,    17,
-      18,    19,    20,    21,    22,    23,    24,    25,    26,    27,
-      28,    29,    30,    31,    32,    33,    34,    35,    36,    37,
-      38,    39,    40,    41,    42,    43,    44,    45,    46,    47,
-      48,    49,    50,    51,    52,    53,    54,    55,    56,    57,
-      58,    59,    60,    61,    62,    63,    64,    65,    66,    67,
-      68,    69,    70,    71,    72,    73,    74,    75,    76,    77,
-      78,    79,    80,    81,    82,    83,    84,    85,    86,    87,
-      88,    89,    90,    91,    92,    93,    94,    95,    96,    97,
-      98,    99,   100,   101,   102,   103,   104,   105,   106,   107,
-     108,   109,   110,   111,   112,   113,   114,   115,   116,   117,
-     118,   119,   120,   121,   122,   123,   124,   125,   126,   127,
-     128,   129,   130,   131,   132,   133,   134,   135,   136,   137,
-     138,   139,   140,   141,   142,   143,   144,   145,   146,   147,
-     148,   149,   150,   151,   152,   153,   154,   155,   156,   157,
-     158,   159,   160,   161,   162,   163,   164,   165,   166,   167,
-     168,   169,   170,   171,   172,   173,   174,   175,   176,   177,
-     178,   179,   180,   181,   182,   183,   184,   185,   186,   187,
-     188,   189,   190,   191,   192,   193,   194,   195,   196,   197,
-     198,   199,   200,   201,   202,   203,   204,   205,   206,   207,
-     208,   209,   210,   211,   212,   213,   214,   215,   216,   217,
-     218,   219,   220,   221,   222,   223,   224,   225,   226,   227,
-     228,   229,   230,   231,   232,   233,   234,   235,   236,   237,
-     238,   239,   240,   241,   242,   243,   244,   245,   246,   247,
-     248,   249,   250,   251,   252,   253,   254,   255,   256,   257,
-     258,   259,   260,   261,   262,   263,   264,   265,   266,   267,
-     268,   269,   270,   271,   272,   273,   274,   275,   276,   277,
-     278,   279,   280,   281,   282,   283,   284,   285,   286,   287,
-     288,   289,   290,   291,   292,    -1,    -1,   295,   296,    -1,
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,   314,    -1,   316,    -1,
-     318,    -1,    -1,    -1,    -1,    -1,   324,   325,   326,   327,
-     328,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-     338,   339,   340,   341,   342,    -1,    -1,    -1,   346,   347,
-     348,   349,   350,   351,   352,   353,   354,   355,   356,   357,
-     358,   359,   360,   361,    -1,   363,   364,   365,   366,   367,
-     368,   369,   370,   371,   372,   373,   374,   375,   376,   377,
-     378,   379,   380,   381,   382,   383,   384,   385,   386,   387,
-     388,   389,   390,   391,   392,   393,   394,   395,   396,   397,
-     398,   399,   400,   401,   402,   403,   404,   405,   406,   407,
-     408,   409,   410,     3,     4,     5,     6,     7,     8,     9,
-      10,    11,    12,    13,    14,    15,    16,    17,    18,    19,
-      20,    21,    22,    23,    24,    25,    26,    27,    28,    29,
-      30,    31,    32,    33,    34,    35,    36,    37,    38,    39,
-      40,    41,    42,    43,    44,    45,    46,    47,    48,    49,
-      50,    51,    52,    53,    54,    55,    56,    57,    58,    59,
-      60,    61,    62,    63,    64,    65,    66,    67,    68,    69,
-      70,    71,    72,    73,    74,    75,    76,    77,    78,    79,
-      80,    81,    82,    83,    84,    85,    86,    87,    88,    89,
-      90,    91,    92,    93,    94,    95,    96,    97,    98,    99,
-     100,   101,   102,   103,   104,   105,   106,   107,   108,   109,
-     110,   111,   112,   113,   114,   115,   116,   117,   118,   119,
-     120,   121,   122,   123,   124,   125,   126,   127,   128,   129,
-     130,   131,   132,   133,   134,   135,   136,   137,   138,   139,
-     140,   141,   142,   143,   144,   145,   146,   147,   148,   149,
-     150,   151,   152,   153,   154,   155,   156,   157,   158,   159,
-     160,   161,   162,   163,   164,   165,   166,   167,   168,   169,
-     170,   171,   172,   173,   174,   175,   176,   177,   178,   179,
-     180,   181,   182,   183,   184,   185,   186,   187,   188,   189,
-     190,   191,   192,   193,   194,   195,   196,   197,   198,   199,
-     200,   201,   202,   203,   204,   205,   206,   207,   208,   209,
-     210,   211,   212,   213,   214,   215,   216,   217,   218,   219,
-     220,   221,   222,   223,   224,   225,   226,   227,   228,   229,
-     230,   231,   232,   233,   234,   235,   236,   237,   238,   239,
-     240,   241,   242,   243,   244,   245,   246,   247,   248,   249,
-     250,   251,   252,   253,   254,   255,   256,   257,   258,   259,
-     260,   261,   262,   263,   264,   265,   266,   267,   268,   269,
-     270,   271,   272,   273,   274,   275,   276,   277,   278,   279,
-     280,   281,   282,   283,   284,   285,   286,   287,   288,   289,
-     290,   291,   292,    -1,    -1,   295,   296,    -1,    -1,    -1,
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,   314,    -1,   316,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,   324,   325,   326,   327,   328,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   338,   339,
-     340,   341,   342,    -1,    -1,    -1,   346,   347,   348,   349,
-     350,   351,   352,   353,   354,   355,   356,   357,   358,   359,
-     360,   361,    -1,   363,   364,   365,   366,   367,   368,   369,
-     370,   371,   372,   373,   374,   375,   376,   377,   378,   379,
-     380,   381,   382,   383,   384,   385,   386,   387,   388,   389,
-     390,   391,   392,   393,   394,   395,   396,   397,   398,   399,
-     400,   401,   402,   403,   404,   405,   406,   407,   408,   409,
-     410,     3,     4,     5,     6,     7,     8,     9,    10,    11,
-      12,    13,    14,    15,    16,    17,    18,    19,    20,    21,
-      22,    23,    24,    25,    26,    27,    28,    29,    30,    31,
-      32,    33,    34,    35,    36,    37,    38,    39,    40,    41,
-      42,    43,    44,    45,    46,    47,    48,    49,    50,    51,
-      52,    53,    54,    55,    56,    57,    58,    59,    60,    61,
-      62,    63,    64,    65,    66,    67,    68,    69,    70,    71,
-      72,    73,    74,    75,    76,    77,    78,    79,    80,    81,
-      82,    83,    84,    85,    86,    87,    88,    89,    90,    91,
-      92,    93,    94,    95,    96,    97,    98,    99,   100,   101,
-     102,   103,   104,   105,   106,   107,   108,   109,   110,   111,
-     112,   113,   114,   115,   116,   117,   118,   119,   120,   121,
-     122,   123,   124,   125,   126,   127,   128,   129,   130,   131,
-     132,   133,   134,   135,   136,   137,   138,   139,   140,   141,
-     142,   143,   144,   145,   146,   147,   148,   149,   150,   151,
-     152,   153,   154,   155,   156,   157,   158,   159,   160,   161,
-     162,   163,   164,   165,   166,   167,   168,   169,   170,   171,
-     172,   173,   174,   175,   176,   177,   178,   179,   180,   181,
-     182,   183,   184,   185,   186,   187,   188,   189,   190,   191,
-     192,   193,   194,   195,   196,   197,   198,   199,   200,   201,
-     202,   203,   204,   205,   206,   207,   208,   209,   210,   211,
-     212,   213,   214,   215,   216,   217,   218,   219,   220,   221,
-     222,   223,   224,   225,   226,   227,   228,   229,   230,   231,
-     232,   233,   234,   235,   236,   237,   238,   239,   240,   241,
-     242,   243,   244,   245,   246,   247,   248,   249,   250,   251,
-     252,   253,   254,   255,   256,   257,   258,   259,   260,   261,
-     262,   263,   264,   265,   266,   267,   268,   269,   270,   271,
-     272,   273,   274,   275,   276,   277,   278,   279,   280,   281,
-     282,   283,   284,   285,   286,   287,   288,   289,   290,   291,
-     292,    -1,    -1,   295,   296,    -1,    -1,    -1,    -1,    -1,
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,   314,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,   324,   325,   326,   327,   328,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,   338,   339,   340,   341,
-     342,    -1,    -1,    -1,   346,   347,   348,   349,   350,   351,
-     352,   353,   354,   355,   356,   357,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   370,   371,
-     372,   373,   374,   375,   376,   377,   378,   379,   380,   381,
-     382,   383,    -1,   385,   386,   387,   388,   389,   390,   391,
-     392,   393,   394,   395,   396,   397,   398,   399,   400,   401,
-     402,   403,   404,   405,   406,   407,   408,   409,   410,     3,
+      -1,    -1,   106,   107,   108,   109,   110,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,   119,   120,   121,   122,   123,
+     124,   125,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,   138,    -1,   140,   141,   142,     3,
        4,     5,     6,     7,     8,     9,    10,    11,    12,    13,
       14,    15,    16,    17,    18,    19,    20,    21,    22,    23,
       24,    25,    26,    27,    28,    29,    30,    31,    32,    33,
       34,    35,    36,    37,    38,    39,    40,    41,    42,    43,
       44,    45,    46,    47,    48,    49,    50,    51,    52,    53,
-      54,    55,    56,    57,    58,    59,    60,    61,    62,    63,
-      64,    65,    66,    67,    68,    69,    70,    71,    72,    73,
-      74,    75,    76,    77,    78,    79,    80,    81,    82,    83,
-      84,    85,    86,    87,    88,    89,    90,    91,    92,    93,
-      94,    95,    96,    97,    98,    99,   100,   101,   102,   103,
-     104,   105,   106,   107,   108,   109,   110,   111,   112,   113,
+      54,    55,    56,    57,    58,    59,    60,    -1,    -1,    63,
+      64,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    82,    -1,
+      -1,    -1,    86,    87,    -1,    -1,    -1,    -1,    92,    93,
+      94,    95,    96,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,   106,   107,   108,   109,   110,    -1,    -1,    -1,
      114,   115,   116,   117,   118,   119,   120,   121,   122,   123,
-     124,   125,   126,   127,   128,   129,   130,   131,   132,   133,
-     134,   135,   136,   137,   138,   139,   140,   141,   142,   143,
-     144,   145,   146,   147,   148,   149,   150,   151,   152,   153,
-     154,   155,   156,   157,   158,   159,   160,   161,   162,   163,
-     164,   165,   166,   167,   168,   169,   170,   171,   172,   173,
-     174,   175,   176,   177,   178,   179,   180,   181,   182,   183,
-     184,   185,   186,   187,   188,   189,   190,   191,   192,   193,
-     194,   195,   196,   197,   198,   199,   200,   201,   202,   203,
-     204,   205,   206,   207,   208,   209,   210,   211,   212,   213,
-     214,   215,   216,   217,   218,   219,   220,   221,   222,   223,
-     224,   225,   226,   227,   228,   229,   230,   231,   232,   233,
-     234,   235,   236,   237,   238,   239,   240,   241,   242,   243,
-     244,   245,   246,   247,   248,   249,   250,   251,   252,   253,
-     254,   255,   256,   257,   258,   259,   260,   261,   262,   263,
-     264,   265,   266,   267,   268,   269,   270,   271,   272,   273,
-     274,   275,   276,   277,   278,   279,   280,   281,   282,   283,
-     284,   285,   286,   287,   288,   289,   290,   291,   292,    -1,
-      -1,   295,   296,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-     314,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,   325,   326,   327,   328,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,   338,   339,   340,   341,    -1,    -1,
-      -1,    -1,   346,   347,   348,   349,   350,   351,   352,   353,
-     354,   355,   356,   357,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,   370,   371,   372,   373,
-     374,   375,   376,   377,   378,   379,   380,   381,   382,   383,
-      -1,   385,   386,   387,   388,   389,   390,   391,   392,   393,
-     394,   395,   396,   397,   398,   399,   400,   401,   402,   403,
-     404,   405,   406,   407,   408,   409,   410,     3,     4,     5,
-       6,     7,     8,     9,    10,    11,    12,    13,    14,    15,
-      16,    17,    18,    19,    20,    21,    22,    23,    24,    25,
-      26,    27,    28,    29,    30,    31,    32,    33,    34,    35,
-      36,    37,    38,    39,    40,    41,    42,    43,    44,    45,
-      46,    47,    48,    49,    50,    51,    52,    53,    54,    55,
-      56,    57,    58,    59,    60,    61,    62,    63,    64,    65,
-      66,    67,    68,    69,    70,    71,    72,    73,    74,    75,
-      76,    77,    78,    79,    80,    81,    82,    83,    84,    85,
-      86,    87,    88,    89,    90,    91,    92,    93,    94,    95,
-      96,    97,    98,    99,   100,   101,   102,   103,   104,   105,
-     106,   107,   108,   109,   110,   111,   112,   113,   114,   115,
-     116,   117,   118,   119,   120,   121,   122,   123,   124,   125,
-     126,   127,   128,   129,   130,   131,   132,   133,   134,   135,
-     136,   137,   138,   139,   140,   141,   142,   143,   144,   145,
-     146,   147,   148,   149,   150,   151,   152,   153,   154,   155,
-     156,   157,   158,   159,   160,   161,   162,   163,   164,   165,
-     166,   167,   168,   169,   170,   171,   172,   173,   174,   175,
-     176,   177,   178,   179,   180,   181,   182,   183,   184,   185,
-     186,   187,   188,   189,   190,   191,   192,   193,   194,   195,
-     196,   197,   198,   199,   200,   201,   202,   203,   204,   205,
-     206,   207,   208,   209,   210,   211,   212,   213,   214,   215,
-     216,   217,   218,   219,   220,   221,   222,   223,   224,   225,
-     226,   227,   228,   229,   230,   231,   232,   233,   234,   235,
-     236,   237,   238,   239,   240,   241,   242,   243,   244,   245,
-     246,   247,   248,   249,   250,   251,   252,   253,   254,   255,
-     256,   257,   258,   259,   260,   261,   262,   263,   264,   265,
-     266,   267,   268,   269,   270,   271,   272,   273,   274,   275,
-     276,   277,   278,   279,   280,   281,   282,   283,   284,   285,
-     286,   287,   288,   289,   290,   291,   292,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   324,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,   338,   339,   340,   341,   342,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,   351,   352,   353,   354,   355,
-     356,   357,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,   370,   371,   372,   373,   374,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,   383,    -1,   385,
-     386,   387,   388,   389,   390,   391,   392,   393,   394,   395,
-     396,   397,   398,   399,   400,   401,   402,   403,   404,   405,
-     406,   407,   408,   409,   410,     3,     4,     5,     6,     7,
-       8,     9,    10,    11,    12,    13,    14,    15,    16,    17,
-      18,    19,    20,    21,    22,    23,    24,    25,    26,    27,
-      28,    29,    30,    31,    32,    33,    34,    35,    36,    37,
-      38,    39,    40,    41,    42,    43,    44,    45,    46,    47,
-      48,    49,    50,    51,    52,    53,    54,    55,    56,    57,
-      58,    59,    60,    61,    62,    63,    64,    65,    66,    67,
-      68,    69,    70,    71,    72,    73,    74,    75,    76,    77,
-      78,    79,    80,    81,    82,    83,    84,    85,    86,    87,
-      88,    89,    90,    91,    92,    93,    94,    95,    96,    97,
-      98,    99,   100,   101,   102,   103,   104,   105,   106,   107,
-     108,   109,   110,   111,   112,   113,   114,   115,   116,   117,
-     118,   119,   120,   121,   122,   123,   124,   125,   126,   127,
-     128,   129,   130,   131,   132,   133,   134,   135,   136,   137,
-     138,   139,   140,   141,   142,   143,   144,   145,   146,   147,
-     148,   149,   150,   151,   152,   153,   154,   155,   156,   157,
-     158,   159,   160,   161,   162,   163,   164,   165,   166,   167,
-     168,   169,   170,   171,   172,   173,   174,   175,   176,   177,
-     178,   179,   180,   181,   182,   183,   184,   185,   186,   187,
-     188,   189,   190,   191,   192,   193,   194,   195,   196,   197,
-     198,   199,   200,   201,   202,   203,   204,   205,   206,   207,
-     208,   209,   210,   211,   212,   213,   214,   215,   216,   217,
-     218,   219,   220,   221,   222,   223,   224,   225,   226,   227,
-     228,   229,   230,   231,   232,   233,   234,   235,   236,   237,
-     238,   239,   240,   241,   242,   243,   244,   245,   246,   247,
-     248,   249,   250,   251,   252,   253,   254,   255,   256,   257,
-     258,   259,   260,   261,   262,   263,   264,   265,   266,   267,
-     268,   269,   270,   271,   272,   273,   274,   275,   276,   277,
-     278,   279,   280,   281,   282,   283,   284,   285,   286,   287,
-     288,   289,   290,   291,   292,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,   324,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-     338,   339,   340,   341,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,   350,   351,   352,   353,   354,   355,   356,   357,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,   370,   371,   372,   373,   374,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,   383,    -1,   385,   386,   387,
-     388,   389,   390,   391,   392,   393,   394,   395,   396,   397,
-     398,   399,   400,   401,   402,   403,   404,   405,   406,   407,
-     408,   409,   410,     3,     4,     5,     6,     7,     8,     9,
-      10,    11,    12,    13,    14,    15,    16,    17,    18,    19,
-      20,    21,    22,    23,    24,    25,    26,    27,    28,    29,
-      30,    31,    32,    33,    34,    35,    36,    37,    38,    39,
-      40,    41,    42,    43,    44,    45,    46,    47,    48,    49,
-      50,    51,    52,    53,    54,    55,    56,    57,    58,    59,
-      60,    61,    62,    63,    64,    65,    66,    67,    68,    69,
-      70,    71,    72,    73,    74,    75,    76,    77,    78,    79,
-      80,    81,    82,    83,    84,    85,    86,    87,    88,    89,
-      90,    91,    92,    93,    94,    95,    96,    97,    98,    99,
-     100,   101,   102,   103,   104,   105,   106,   107,   108,   109,
-     110,   111,   112,   113,   114,   115,   116,   117,   118,   119,
-     120,   121,   122,   123,   124,   125,   126,   127,   128,   129,
-     130,   131,   132,   133,   134,   135,   136,   137,   138,   139,
-     140,   141,   142,   143,   144,   145,   146,   147,   148,   149,
-     150,   151,   152,   153,   154,   155,   156,   157,   158,   159,
-     160,   161,   162,   163,   164,   165,   166,   167,   168,   169,
-     170,   171,   172,   173,   174,   175,   176,   177,   178,   179,
-     180,   181,   182,   183,   184,   185,   186,   187,   188,   189,
-     190,   191,   192,   193,   194,   195,   196,   197,   198,   199,
-     200,   201,   202,   203,   204,   205,   206,   207,   208,   209,
-     210,   211,   212,   213,   214,   215,   216,   217,   218,   219,
-     220,   221,   222,   223,   224,   225,   226,   227,   228,   229,
-     230,   231,   232,   233,   234,   235,   236,   237,   238,   239,
-     240,   241,   242,   243,   244,   245,   246,   247,   248,   249,
-     250,   251,   252,   253,   254,   255,   256,   257,   258,   259,
-     260,   261,   262,   263,   264,   265,   266,   267,   268,   269,
-     270,   271,   272,   273,   274,   275,   276,   277,   278,   279,
-     280,   281,   282,   283,   284,   285,   286,   287,   288,   289,
-     290,   291,   292,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   319,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   338,   339,
-     340,   341,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,   351,   352,   353,   354,   355,   356,   357,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-     370,   371,   372,   373,   374,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,   383,    -1,   385,   386,   387,   388,   389,
-     390,   391,   392,   393,   394,   395,   396,   397,   398,   399,
-     400,   401,   402,   403,   404,   405,   406,   407,   408,   409,
-     410,     3,     4,     5,     6,     7,     8,     9,    10,    11,
-      12,    13,    14,    15,    16,    17,    18,    19,    20,    21,
-      22,    23,    24,    25,    26,    27,    28,    29,    30,    31,
-      32,    33,    34,    35,    36,    37,    38,    39,    40,    41,
-      42,    43,    44,    45,    46,    47,    48,    49,    50,    51,
-      52,    53,    54,    55,    56,    57,    58,    59,    60,    61,
-      62,    63,    64,    65,    66,    67,    68,    69,    70,    71,
-      72,    73,    74,    75,    76,    77,    78,    79,    80,    81,
-      82,    83,    84,    85,    86,    87,    88,    89,    90,    91,
-      92,    93,    94,    95,    96,    97,    98,    99,   100,   101,
-     102,   103,   104,   105,   106,   107,   108,   109,   110,   111,
-     112,   113,   114,   115,   116,   117,   118,   119,   120,   121,
-     122,   123,   124,   125,   126,   127,   128,   129,   130,   131,
-     132,   133,   134,   135,   136,   137,   138,   139,   140,   141,
-     142,   143,   144,   145,   146,   147,   148,   149,   150,   151,
-     152,   153,   154,   155,   156,   157,   158,   159,   160,   161,
-     162,   163,   164,   165,   166,   167,   168,   169,   170,   171,
-     172,   173,   174,   175,   176,   177,   178,   179,   180,   181,
-     182,   183,   184,   185,   186,   187,   188,   189,   190,   191,
-     192,   193,   194,   195,   196,   197,   198,   199,   200,   201,
-     202,   203,   204,   205,   206,   207,   208,   209,   210,   211,
-     212,   213,   214,   215,   216,   217,   218,   219,   220,   221,
-     222,   223,   224,   225,   226,   227,   228,   229,   230,   231,
-     232,   233,   234,   235,   236,   237,   238,   239,   240,   241,
-     242,   243,   244,   245,   246,   247,   248,   249,   250,   251,
-     252,   253,   254,   255,   256,   257,   258,   259,   260,   261,
-     262,   263,   264,   265,   266,   267,   268,   269,   270,   271,
-     272,   273,   274,   275,   276,   277,   278,   279,   280,   281,
-     282,   283,   284,   285,   286,   287,   288,   289,   290,   291,
-     292,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,   319,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,   338,   339,   340,   341,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   351,
-     352,   353,   354,   355,   356,   357,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   370,   371,
-     372,   373,   374,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,   383,    -1,   385,   386,   387,   388,   389,   390,   391,
-     392,   393,   394,   395,   396,   397,   398,   399,   400,   401,
-     402,   403,   404,   405,   406,   407,   408,   409,   410,     3,
+     124,   125,   126,   127,   128,   129,    -1,   131,   132,   133,
+     134,   135,   136,   137,   138,    -1,   140,   141,   142,     3,
        4,     5,     6,     7,     8,     9,    10,    11,    12,    13,
       14,    15,    16,    17,    18,    19,    20,    21,    22,    23,
       24,    25,    26,    27,    28,    29,    30,    31,    32,    33,
       34,    35,    36,    37,    38,    39,    40,    41,    42,    43,
       44,    45,    46,    47,    48,    49,    50,    51,    52,    53,
-      54,    55,    56,    57,    58,    59,    60,    61,    62,    63,
-      64,    65,    66,    67,    68,    69,    70,    71,    72,    73,
-      74,    75,    76,    77,    78,    79,    80,    81,    82,    83,
-      84,    85,    86,    87,    88,    89,    90,    91,    92,    93,
-      94,    95,    96,    97,    98,    99,   100,   101,   102,   103,
-     104,   105,   106,   107,   108,   109,   110,   111,   112,   113,
+      54,    55,    56,    57,    58,    59,    60,    -1,    -1,    63,
+      64,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    82,    -1,
+      -1,    -1,    86,    87,    -1,    -1,    -1,    -1,    92,    93,
+      94,    95,    96,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,   106,   107,   108,   109,   110,    -1,    -1,    -1,
      114,   115,   116,   117,   118,   119,   120,   121,   122,   123,
-     124,   125,   126,   127,   128,   129,   130,   131,   132,   133,
-     134,   135,   136,   137,   138,   139,   140,   141,   142,   143,
-     144,   145,   146,   147,   148,   149,   150,   151,   152,   153,
-     154,   155,   156,   157,   158,   159,   160,   161,   162,   163,
-     164,   165,   166,   167,   168,   169,   170,   171,   172,   173,
-     174,   175,   176,   177,   178,   179,   180,   181,   182,   183,
-     184,   185,   186,   187,   188,   189,   190,   191,   192,   193,
-     194,   195,   196,   197,   198,   199,   200,   201,   202,   203,
-     204,   205,   206,   207,   208,   209,   210,   211,   212,   213,
-     214,   215,   216,   217,   218,   219,   220,   221,   222,   223,
-     224,   225,   226,   227,   228,   229,   230,   231,   232,   233,
-     234,   235,   236,   237,   238,   239,   240,   241,   242,   243,
-     244,   245,   246,   247,   248,   249,   250,   251,   252,   253,
-     254,   255,   256,   257,   258,   259,   260,   261,   262,   263,
-     264,   265,   266,   267,   268,   269,   270,   271,   272,   273,
-     274,   275,   276,   277,   278,   279,   280,   281,   282,   283,
-     284,   285,   286,   287,   288,   289,   290,   291,   292,    -1,
+     124,   125,   126,   127,   128,   129,    -1,   131,   132,   133,
+     134,   135,   136,   137,   138,    -1,   140,   141,   142,     3,
+       4,     5,     6,     7,     8,     9,    10,    11,    12,    13,
+      14,    15,    16,    17,    18,    19,    20,    21,    22,    23,
+      24,    25,    26,    27,    28,    29,    30,    31,    32,    33,
+      34,    35,    36,    37,    38,    39,    40,    41,    42,    43,
+      44,    45,    46,    47,    48,    49,    50,    51,    52,    53,
+      54,    55,    56,    57,    58,    59,    60,    -1,    -1,    63,
+      64,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    82,    -1,
+      -1,    -1,    86,    -1,    -1,    -1,    -1,    -1,    92,    93,
+      94,    95,    96,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,   106,   107,   108,   109,   110,    -1,    -1,    -1,
+     114,   115,   116,   117,   118,   119,   120,   121,   122,   123,
+     124,   125,   126,   127,   128,   129,    -1,   131,   132,   133,
+     134,   135,   136,   137,   138,    -1,   140,   141,   142,     3,
+       4,     5,     6,     7,     8,     9,    10,    11,    12,    13,
+      14,    15,    16,    17,    18,    19,    20,    21,    22,    23,
+      24,    25,    26,    27,    28,    29,    30,    31,    32,    33,
+      34,    35,    36,    37,    38,    39,    40,    41,    42,    43,
+      44,    45,    46,    47,    48,    49,    50,    51,    52,    53,
+      54,    55,    56,    57,    58,    59,    60,    -1,    -1,    63,
+      64,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    82,    -1,
+      -1,    -1,    86,    -1,    -1,    -1,    -1,    -1,    92,    93,
+      94,    95,    96,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,   106,   107,   108,   109,   110,    -1,    -1,    -1,
+     114,   115,   116,   117,   118,   119,   120,   121,   122,   123,
+     124,   125,   126,   127,   128,   129,    -1,   131,   132,   133,
+     134,   135,   136,   137,   138,    -1,   140,   141,   142,     3,
+       4,     5,     6,     7,     8,     9,    10,    11,    12,    13,
+      14,    15,    16,    17,    18,    19,    20,    21,    22,    23,
+      24,    25,    26,    27,    28,    29,    30,    31,    32,    33,
+      34,    35,    36,    37,    38,    39,    40,    41,    42,    43,
+      44,    45,    46,    47,    48,    49,    50,    51,    52,    53,
+      54,    55,    56,    57,    58,    59,    60,    -1,    -1,    63,
+      64,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    82,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    92,    93,
+      94,    95,    96,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,   106,   107,   108,   109,   110,    -1,    -1,    -1,
+     114,   115,   116,   117,   118,   119,   120,   121,   122,   123,
+     124,   125,   126,   127,   128,   129,    -1,   131,   132,   133,
+     134,   135,   136,   137,   138,    -1,   140,   141,   142,     3,
+       4,     5,     6,     7,     8,     9,    10,    11,    12,    13,
+      14,    15,    16,    17,    18,    19,    20,    21,    22,    23,
+      24,    25,    26,    27,    28,    29,    30,    31,    32,    33,
+      34,    35,    36,    37,    38,    39,    40,    41,    42,    43,
+      44,    45,    46,    47,    48,    49,    50,    51,    52,    53,
+      54,    55,    56,    57,    58,    59,    60,    -1,    -1,    63,
+      64,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    82,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    92,    93,
+      94,    95,    96,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,   106,   107,   108,   109,   110,    -1,    -1,    -1,
+     114,   115,   116,   117,   118,   119,   120,   121,   122,   123,
+     124,   125,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,   138,    -1,   140,   141,   142,     3,
+       4,     5,     6,     7,     8,     9,    10,    11,    12,    13,
+      14,    15,    16,    17,    18,    19,    20,    21,    22,    23,
+      24,    25,    26,    27,    28,    29,    30,    31,    32,    33,
+      34,    35,    36,    37,    38,    39,    40,    41,    42,    43,
+      44,    45,    46,    47,    48,    49,    50,    51,    52,    53,
+      54,    55,    56,    57,    58,    59,    60,    -1,    -1,    63,
+      64,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    82,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    93,
+      94,    95,    96,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,   106,   107,   108,   109,    -1,    -1,    -1,    -1,
+     114,   115,   116,   117,   118,   119,   120,   121,   122,   123,
+     124,   125,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,   138,    -1,   140,   141,   142,     3,
+       4,     5,     6,     7,     8,     9,    10,    11,    12,    13,
+      14,    15,    16,    17,    18,    19,    20,    21,    22,    23,
+      24,    25,    26,    27,    28,    29,    30,    31,    32,    33,
+      34,    35,    36,    37,    38,    39,    40,    41,    42,    43,
+      44,    45,    46,    47,    48,    49,    50,    51,    52,    53,
+      54,    55,    56,    57,    58,    59,    60,    -1,    -1,    -1,
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,   319,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    92,    -1,
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,   338,   339,   340,   341,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,   351,   352,   353,
-     354,   355,   356,   357,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,   370,   371,   372,   373,
-     374,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   383,
-      -1,   385,   386,   387,   388,   389,   390,   391,   392,   393,
-     394,   395,   396,   397,   398,   399,   400,   401,   402,   403,
-     404,   405,   406,   407,   408,   409,   410,     3,     4,     5,
-       6,     7,     8,     9,    10,    11,    12,    13,    14,    15,
-      16,    17,    18,    19,    20,    21,    22,    23,    24,    25,
-      26,    27,    28,    29,    30,    31,    32,    33,    34,    35,
-      36,    37,    38,    39,    40,    41,    42,    43,    44,    45,
-      46,    47,    48,    49,    50,    51,    52,    53,    54,    55,
-      56,    57,    58,    59,    60,    61,    62,    63,    64,    65,
-      66,    67,    68,    69,    70,    71,    72,    73,    74,    75,
-      76,    77,    78,    79,    80,    81,    82,    83,    84,    85,
-      86,    87,    88,    89,    90,    91,    92,    93,    94,    95,
-      96,    97,    98,    99,   100,   101,   102,   103,   104,   105,
-     106,   107,   108,   109,   110,   111,   112,   113,   114,   115,
-     116,   117,   118,   119,   120,   121,   122,   123,   124,   125,
-     126,   127,   128,   129,   130,   131,   132,   133,   134,   135,
-     136,   137,   138,   139,   140,   141,   142,   143,   144,   145,
-     146,   147,   148,   149,   150,   151,   152,   153,   154,   155,
-     156,   157,   158,   159,   160,   161,   162,   163,   164,   165,
-     166,   167,   168,   169,   170,   171,   172,   173,   174,   175,
-     176,   177,   178,   179,   180,   181,   182,   183,   184,   185,
-     186,   187,   188,   189,   190,   191,   192,   193,   194,   195,
-     196,   197,   198,   199,   200,   201,   202,   203,   204,   205,
-     206,   207,   208,   209,   210,   211,   212,   213,   214,   215,
-     216,   217,   218,   219,   220,   221,   222,   223,   224,   225,
-     226,   227,   228,   229,   230,   231,   232,   233,   234,   235,
-     236,   237,   238,   239,   240,   241,   242,   243,   244,   245,
-     246,   247,   248,   249,   250,   251,   252,   253,   254,   255,
-     256,   257,   258,   259,   260,   261,   262,   263,   264,   265,
-     266,   267,   268,   269,   270,   271,   272,   273,   274,   275,
-     276,   277,   278,   279,   280,   281,   282,   283,   284,   285,
-     286,   287,   288,   289,   290,   291,   292,    -1,    -1,    -1,
+      -1,    -1,   106,   107,   108,   109,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,   118,   119,   120,   121,   122,   123,
+     124,   125,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,   138,    -1,   140,   141,   142,     3,
+       4,     5,     6,     7,     8,     9,    10,    11,    12,    13,
+      14,    15,    16,    17,    18,    19,    20,    21,    22,    23,
+      24,    25,    26,    27,    28,    29,    30,    31,    32,    33,
+      34,    35,    36,    37,    38,    39,    40,    41,    42,    43,
+      44,    45,    46,    47,    48,    49,    50,    51,    52,    53,
+      54,    55,    56,    57,    58,    59,    60,    -1,    -1,    -1,
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,   338,   339,   340,   341,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,   351,   352,   353,   354,   355,
-     356,   357,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,   370,   371,   372,   373,   374,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,   383,    -1,   385,
-     386,   387,   388,   389,   390,   391,   392,   393,   394,   395,
-     396,   397,   398,   399,   400,   401,   402,   403,   404,   405,
-     406,   407,   408,   409,   410,     4,     5,     6,     7,     8,
+      -1,    -1,   106,   107,   108,   109,   110,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,   119,   120,   121,   122,   123,
+     124,   125,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,   138,    -1,   140,   141,   142,     3,
+       4,     5,     6,     7,     8,     9,    10,    11,    12,    13,
+      14,    15,    16,    17,    18,    19,    20,    21,    22,    23,
+      24,    25,    26,    27,    28,    29,    30,    31,    32,    33,
+      34,    35,    36,    37,    38,    39,    40,    41,    42,    43,
+      44,    45,    46,    47,    48,    49,    50,    51,    52,    53,
+      54,    55,    56,    57,    58,    59,    60,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    87,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,   106,   107,   108,   109,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,   119,   120,   121,   122,   123,
+     124,   125,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,   138,    -1,   140,   141,   142,     3,
+       4,     5,     6,     7,     8,     9,    10,    11,    12,    13,
+      14,    15,    16,    17,    18,    19,    20,    21,    22,    23,
+      24,    25,    26,    27,    28,    29,    30,    31,    32,    33,
+      34,    35,    36,    37,    38,    39,    40,    41,    42,    43,
+      44,    45,    46,    47,    48,    49,    50,    51,    52,    53,
+      54,    55,    56,    57,    58,    59,    60,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    87,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,   106,   107,   108,   109,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,   119,   120,   121,   122,   123,
+     124,   125,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,   138,    -1,   140,   141,   142,     3,
+       4,     5,     6,     7,     8,     9,    10,    11,    12,    13,
+      14,    15,    16,    17,    18,    19,    20,    21,    22,    23,
+      24,    25,    26,    27,    28,    29,    30,    31,    32,    33,
+      34,    35,    36,    37,    38,    39,    40,    41,    42,    43,
+      44,    45,    46,    47,    48,    49,    50,    51,    52,    53,
+      54,    55,    56,    57,    58,    59,    60,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    87,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,   106,   107,   108,   109,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,   119,   120,   121,   122,   123,
+     124,   125,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,   138,    -1,   140,   141,   142,     3,
+       4,     5,     6,     7,     8,     9,    10,    11,    12,    13,
+      14,    15,    16,    17,    18,    19,    20,    21,    22,    23,
+      24,    25,    26,    27,    28,    29,    30,    31,    32,    33,
+      34,    35,    36,    37,    38,    39,    40,    41,    42,    43,
+      44,    45,    46,    47,    48,    49,    50,    51,    52,    53,
+      54,    55,    56,    57,    58,    59,    60,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,   106,   107,   108,   109,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,   119,   120,   121,   122,   123,
+     124,   125,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,   138,    -1,   140,   141,   142,     4,
+       5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
+      15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
+      25,    26,    27,    28,    29,    30,    31,    32,    33,    34,
+      35,    36,    37,    38,    39,    40,    41,    42,    43,    44,
+      45,    46,    47,    48,    49,    50,    51,    52,    53,    54,
+      55,    56,    57,    58,    59,    60,    -1,    -1,    63,    64,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    82,    -1,    -1,
+      85,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    93,    94,
+      95,    96,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   114,
+     115,   116,   117,   118,   119,    -1,    -1,    -1,    -1,   124,
+     125,     4,     5,     6,     7,     8,     9,    10,    11,    12,
+      13,    14,    15,    16,    17,    18,    19,    20,    21,    22,
+      23,    24,    25,    26,    27,    28,    29,    30,    31,    32,
+      33,    34,    35,    36,    37,    38,    39,    40,    41,    42,
+      43,    44,    45,    46,    47,    48,    49,    50,    51,    52,
+      53,    54,    55,    56,    57,    58,    59,    60,    -1,    -1,
+      63,    64,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    82,
+      -1,    -1,    85,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      93,    94,    95,    96,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,   114,   115,   116,   117,   118,   119,    -1,    -1,    -1,
+      -1,   124,   125,     4,     5,     6,     7,     8,     9,    10,
+      11,    12,    13,    14,    15,    16,    17,    18,    19,    20,
+      21,    22,    23,    24,    25,    26,    27,    28,    29,    30,
+      31,    32,    33,    34,    35,    36,    37,    38,    39,    40,
+      41,    42,    43,    44,    45,    46,    47,    48,    49,    50,
+      51,    52,    53,    54,    55,    56,    57,    58,    59,    60,
+      -1,    -1,    63,    64,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    82,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    92,    93,    94,    95,    96,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,   114,   115,   116,   117,   118,   119,    -1,
+      -1,    -1,    -1,   124,   125,     4,     5,     6,     7,     8,
        9,    10,    11,    12,    13,    14,    15,    16,    17,    18,
       19,    20,    21,    22,    23,    24,    25,    26,    27,    28,
       29,    30,    31,    32,    33,    34,    35,    36,    37,    38,
       39,    40,    41,    42,    43,    44,    45,    46,    47,    48,
-      49,    50,    -1,    -1,    53,    54,    55,    56,    57,    58,
-      59,    60,    61,    62,    63,    64,    65,    66,    67,    68,
-      69,    70,    71,    72,    73,    74,    75,    76,    77,    78,
-      79,    80,    81,    82,    83,    84,    85,    86,    87,    88,
-      89,    90,    91,    92,    93,    94,    95,    96,    97,    98,
-      99,   100,   101,   102,   103,   104,   105,   106,   107,   108,
-     109,   110,   111,   112,   113,   114,   115,   116,   117,   118,
-     119,   120,   121,   122,   123,   124,   125,   126,   127,   128,
-     129,   130,   131,   132,   133,   134,   135,   136,   137,   138,
-     139,   140,   141,   142,   143,   144,   145,   146,   147,   148,
-     149,   150,   151,   152,   153,   154,   155,   156,   157,   158,
-     159,   160,   161,   162,   163,   164,   165,   166,   167,   168,
-     169,   170,   171,   172,   173,   174,   175,   176,   177,   178,
-     179,   180,   181,   182,   183,   184,   185,   186,   187,   188,
-     189,   190,   191,   192,   193,   194,   195,   196,   197,   198,
-     199,   200,   201,   202,   203,   204,   205,   206,   207,   208,
-     209,   210,   211,   212,   213,   214,   215,   216,   217,   218,
-     219,   220,   221,   222,   223,   224,   225,   226,   227,   228,
-     229,   230,   231,   232,   233,   234,   235,   236,   237,   238,
-     239,   240,   241,   242,   243,   244,   245,   246,   247,   248,
-     249,   250,   251,   252,   253,   254,   255,   256,   257,   258,
-     259,   260,   261,   262,   263,   264,   265,   266,   267,   268,
-     269,   270,   271,   272,   273,   274,   275,   276,   277,   278,
-     279,   280,   281,   282,   283,   284,   285,   286,   287,   288,
-     289,   290,   291,   292,    -1,    -1,   295,   296,    -1,    -1,
+      49,    50,    51,    52,    53,    54,    55,    56,    57,    58,
+      59,    60,    -1,    -1,    63,    64,    -1,    -1,    -1,    -1,
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,   314,    -1,    -1,    -1,   318,
-     319,    -1,    -1,    -1,    -1,    -1,   325,   326,   327,   328,
+      -1,    -1,    -1,    82,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    93,    94,    95,    96,    -1,    -1,
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,   346,   347,   348,
-     349,   350,   351,    -1,    -1,    -1,    -1,   356,   357,    -1,
+      -1,    -1,    -1,    -1,    -1,   114,   115,   116,   117,   118,
+     119,    -1,    -1,    -1,    -1,   124,   125,     4,     5,     6,
+       7,     8,     9,    10,    11,    12,    13,    14,    15,    16,
+      17,    18,    19,    20,    21,    22,    23,    24,    25,    26,
+      27,    28,    29,    30,    31,    32,    33,    34,    35,    36,
+      37,    38,    39,    40,    41,    42,    43,    44,    45,    46,
+      47,    48,    49,    50,    51,    52,    53,    54,    55,    56,
+      57,    58,    59,    60,    -1,    -1,    63,    64,    -1,    -1,
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,   375,   376,   377,   378,
-     379,   380,   381,   382,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,   393,     4,     5,     6,     7,     8,
-       9,    10,    11,    12,    13,    14,    15,    16,    17,    18,
-      19,    20,    21,    22,    23,    24,    25,    26,    27,    28,
-      29,    30,    31,    32,    33,    34,    35,    36,    37,    38,
-      39,    40,    41,    42,    43,    44,    45,    46,    47,    48,
-      49,    50,    -1,    -1,    53,    54,    55,    56,    57,    58,
-      59,    60,    61,    62,    63,    64,    65,    66,    67,    68,
-      69,    70,    71,    72,    73,    74,    75,    76,    77,    78,
-      79,    80,    81,    82,    83,    84,    85,    86,    87,    88,
-      89,    90,    91,    92,    93,    94,    95,    96,    97,    98,
-      99,   100,   101,   102,   103,   104,   105,   106,   107,   108,
-     109,   110,   111,   112,   113,   114,   115,   116,   117,   118,
-     119,   120,   121,   122,   123,   124,   125,   126,   127,   128,
-     129,   130,   131,   132,   133,   134,   135,   136,   137,   138,
-     139,   140,   141,   142,   143,   144,   145,   146,   147,   148,
-     149,   150,   151,   152,   153,   154,   155,   156,   157,   158,
-     159,   160,   161,   162,   163,   164,   165,   166,   167,   168,
-     169,   170,   171,   172,   173,   174,   175,   176,   177,   178,
-     179,   180,   181,   182,   183,   184,   185,   186,   187,   188,
-     189,   190,   191,   192,   193,   194,   195,   196,   197,   198,
-     199,   200,   201,   202,   203,   204,   205,   206,   207,   208,
-     209,   210,   211,   212,   213,   214,   215,   216,   217,   218,
-     219,   220,   221,   222,   223,   224,   225,   226,   227,   228,
-     229,   230,   231,   232,   233,   234,   235,   236,   237,   238,
-     239,   240,   241,   242,   243,   244,   245,   246,   247,   248,
-     249,   250,   251,   252,   253,   254,   255,   256,   257,   258,
-     259,   260,   261,   262,   263,   264,   265,   266,   267,   268,
-     269,   270,   271,   272,   273,   274,   275,   276,   277,   278,
-     279,   280,   281,   282,   283,   284,   285,   286,   287,   288,
-     289,   290,   291,   292,    -1,    -1,   295,   296,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    82,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    93,    94,    95,    96,
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,   314,    -1,    -1,   317,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,   325,   326,   327,   328,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,   346,   347,   348,
-     349,   350,   351,    -1,    -1,    -1,    -1,   356,   357,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,   375,   376,   377,   378,
-     379,   380,   381,   382,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,   393,     4,     5,     6,     7,     8,
-       9,    10,    11,    12,    13,    14,    15,    16,    17,    18,
-      19,    20,    21,    22,    23,    24,    25,    26,    27,    28,
-      29,    30,    31,    32,    33,    34,    35,    36,    37,    38,
-      39,    40,    41,    42,    43,    44,    45,    46,    47,    48,
-      49,    50,    -1,    -1,    53,    54,    55,    56,    57,    58,
-      59,    60,    61,    62,    63,    64,    65,    66,    67,    68,
-      69,    70,    71,    72,    73,    74,    75,    76,    77,    78,
-      79,    80,    81,    82,    83,    84,    85,    86,    87,    88,
-      89,    90,    91,    92,    93,    94,    95,    96,    97,    98,
-      99,   100,   101,   102,   103,   104,   105,   106,   107,   108,
-     109,   110,   111,   112,   113,   114,   115,   116,   117,   118,
-     119,   120,   121,   122,   123,   124,   125,   126,   127,   128,
-     129,   130,   131,   132,   133,   134,   135,   136,   137,   138,
-     139,   140,   141,   142,   143,   144,   145,   146,   147,   148,
-     149,   150,   151,   152,   153,   154,   155,   156,   157,   158,
-     159,   160,   161,   162,   163,   164,   165,   166,   167,   168,
-     169,   170,   171,   172,   173,   174,   175,   176,   177,   178,
-     179,   180,   181,   182,   183,   184,   185,   186,   187,   188,
-     189,   190,   191,   192,   193,   194,   195,   196,   197,   198,
-     199,   200,   201,   202,   203,   204,   205,   206,   207,   208,
-     209,   210,   211,   212,   213,   214,   215,   216,   217,   218,
-     219,   220,   221,   222,   223,   224,   225,   226,   227,   228,
-     229,   230,   231,   232,   233,   234,   235,   236,   237,   238,
-     239,   240,   241,   242,   243,   244,   245,   246,   247,   248,
-     249,   250,   251,   252,   253,   254,   255,   256,   257,   258,
-     259,   260,   261,   262,   263,   264,   265,   266,   267,   268,
-     269,   270,   271,   272,   273,   274,   275,   276,   277,   278,
-     279,   280,   281,   282,   283,   284,   285,   286,   287,   288,
-     289,   290,   291,   292,    -1,    -1,   295,   296,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,   314,    -1,    -1,    -1,   318,
-      -1,    -1,    -1,    -1,    -1,    -1,   325,   326,   327,   328,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,   346,   347,   348,
-     349,   350,   351,    -1,    -1,    -1,    -1,   356,   357,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,   375,   376,   377,   378,
-     379,   380,   381,   382,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,   393,     4,     5,     6,     7,     8,
-       9,    10,    11,    12,    13,    14,    15,    16,    17,    18,
-      19,    20,    21,    22,    23,    24,    25,    26,    27,    28,
-      29,    30,    31,    32,    33,    34,    35,    36,    37,    38,
-      39,    40,    41,    42,    43,    44,    45,    46,    47,    48,
-      49,    50,    -1,    -1,    53,    54,    55,    56,    57,    58,
-      59,    60,    61,    62,    63,    64,    65,    66,    67,    68,
-      69,    70,    71,    72,    73,    74,    75,    76,    77,    78,
-      79,    80,    81,    82,    83,    84,    85,    86,    87,    88,
-      89,    90,    91,    92,    93,    94,    95,    96,    97,    98,
-      99,   100,   101,   102,   103,   104,   105,   106,   107,   108,
-     109,   110,   111,   112,   113,   114,   115,   116,   117,   118,
-     119,   120,   121,   122,   123,   124,   125,   126,   127,   128,
-     129,   130,   131,   132,   133,   134,   135,   136,   137,   138,
-     139,   140,   141,   142,   143,   144,   145,   146,   147,   148,
-     149,   150,   151,   152,   153,   154,   155,   156,   157,   158,
-     159,   160,   161,   162,   163,   164,   165,   166,   167,   168,
-     169,   170,   171,   172,   173,   174,   175,   176,   177,   178,
-     179,   180,   181,   182,   183,   184,   185,   186,   187,   188,
-     189,   190,   191,   192,   193,   194,   195,   196,   197,   198,
-     199,   200,   201,   202,   203,   204,   205,   206,   207,   208,
-     209,   210,   211,   212,   213,   214,   215,   216,   217,   218,
-     219,   220,   221,   222,   223,   224,   225,   226,   227,   228,
-     229,   230,   231,   232,   233,   234,   235,   236,   237,   238,
-     239,   240,   241,   242,   243,   244,   245,   246,   247,   248,
-     249,   250,   251,   252,   253,   254,   255,   256,   257,   258,
-     259,   260,   261,   262,   263,   264,   265,   266,   267,   268,
-     269,   270,   271,   272,   273,   274,   275,   276,   277,   278,
-     279,   280,   281,   282,   283,   284,   285,   286,   287,   288,
-     289,   290,   291,   292,    -1,    -1,   295,   296,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,   314,    -1,    -1,   317,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,   325,   326,   327,   328,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,   346,   347,   348,
-     349,   350,   351,    -1,    -1,    -1,    -1,   356,   357,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,   375,   376,   377,   378,
-     379,   380,   381,   382,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,   393,     4,     5,     6,     7,     8,
-       9,    10,    11,    12,    13,    14,    15,    16,    17,    18,
-      19,    20,    21,    22,    23,    24,    25,    26,    27,    28,
-      29,    30,    31,    32,    33,    34,    35,    36,    37,    38,
-      39,    40,    41,    42,    43,    44,    45,    46,    47,    48,
-      49,    50,    -1,    -1,    53,    54,    55,    56,    57,    58,
-      59,    60,    61,    62,    63,    64,    65,    66,    67,    68,
-      69,    70,    71,    72,    73,    74,    75,    76,    77,    78,
-      79,    80,    81,    82,    83,    84,    85,    86,    87,    88,
-      89,    90,    91,    92,    93,    94,    95,    96,    97,    98,
-      99,   100,   101,   102,   103,   104,   105,   106,   107,   108,
-     109,   110,   111,   112,   113,   114,   115,   116,   117,   118,
-     119,   120,   121,   122,   123,   124,   125,   126,   127,   128,
-     129,   130,   131,   132,   133,   134,   135,   136,   137,   138,
-     139,   140,   141,   142,   143,   144,   145,   146,   147,   148,
-     149,   150,   151,   152,   153,   154,   155,   156,   157,   158,
-     159,   160,   161,   162,   163,   164,   165,   166,   167,   168,
-     169,   170,   171,   172,   173,   174,   175,   176,   177,   178,
-     179,   180,   181,   182,   183,   184,   185,   186,   187,   188,
-     189,   190,   191,   192,   193,   194,   195,   196,   197,   198,
-     199,   200,   201,   202,   203,   204,   205,   206,   207,   208,
-     209,   210,   211,   212,   213,   214,   215,   216,   217,   218,
-     219,   220,   221,   222,   223,   224,   225,   226,   227,   228,
-     229,   230,   231,   232,   233,   234,   235,   236,   237,   238,
-     239,   240,   241,   242,   243,   244,   245,   246,   247,   248,
-     249,   250,   251,   252,   253,   254,   255,   256,   257,   258,
-     259,   260,   261,   262,   263,   264,   265,   266,   267,   268,
-     269,   270,   271,   272,   273,   274,   275,   276,   277,   278,
-     279,   280,   281,   282,   283,   284,   285,   286,   287,   288,
-     289,   290,   291,   292,    -1,    -1,   295,   296,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,   314,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,   324,   325,   326,   327,   328,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,   346,   347,   348,
-     349,   350,   351,    -1,    -1,    -1,    -1,   356,   357,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,   375,   376,   377,   378,
-     379,   380,   381,   382,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,   393,     4,     5,     6,     7,     8,
-       9,    10,    11,    12,    13,    14,    15,    16,    17,    18,
-      19,    20,    21,    22,    23,    24,    25,    26,    27,    28,
-      29,    30,    31,    32,    33,    34,    35,    36,    37,    38,
-      39,    40,    41,    42,    43,    44,    45,    46,    47,    48,
-      49,    50,    -1,    -1,    53,    54,    55,    56,    57,    58,
-      59,    60,    61,    62,    63,    64,    65,    66,    67,    68,
-      69,    70,    71,    72,    73,    74,    75,    76,    77,    78,
-      79,    80,    81,    82,    83,    84,    85,    86,    87,    88,
-      89,    90,    91,    92,    93,    94,    95,    96,    97,    98,
-      99,   100,   101,   102,   103,   104,   105,   106,   107,   108,
-     109,   110,   111,   112,   113,   114,   115,   116,   117,   118,
-     119,   120,   121,   122,   123,   124,   125,   126,   127,   128,
-     129,   130,   131,   132,   133,   134,   135,   136,   137,   138,
-     139,   140,   141,   142,   143,   144,   145,   146,   147,   148,
-     149,   150,   151,   152,   153,   154,   155,   156,   157,   158,
-     159,   160,   161,   162,   163,   164,   165,   166,   167,   168,
-     169,   170,   171,   172,   173,   174,   175,   176,   177,   178,
-     179,   180,   181,   182,   183,   184,   185,   186,   187,   188,
-     189,   190,   191,   192,   193,   194,   195,   196,   197,   198,
-     199,   200,   201,   202,   203,   204,   205,   206,   207,   208,
-     209,   210,   211,   212,   213,   214,   215,   216,   217,   218,
-     219,   220,   221,   222,   223,   224,   225,   226,   227,   228,
-     229,   230,   231,   232,   233,   234,   235,   236,   237,   238,
-     239,   240,   241,   242,   243,   244,   245,   246,   247,   248,
-     249,   250,   251,   252,   253,   254,   255,   256,   257,   258,
-     259,   260,   261,   262,   263,   264,   265,   266,   267,   268,
-     269,   270,   271,   272,   273,   274,   275,   276,   277,   278,
-     279,   280,   281,   282,   283,   284,   285,   286,   287,   288,
-     289,   290,   291,   292,    -1,    -1,   295,   296,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,   314,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,   325,   326,   327,   328,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,   346,   347,   348,
-     349,   350,   351,    -1,    -1,    -1,    -1,   356,   357,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,   375,   376,   377,   378,
-     379,   380,   381,   382,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,   393,     4,     5,     6,     7,     8,
-       9,    10,    11,    12,    13,    14,    15,    16,    17,    18,
-      19,    20,    21,    22,    23,    24,    25,    26,    27,    28,
-      29,    30,    31,    32,    33,    34,    35,    36,    37,    38,
-      39,    40,    41,    42,    43,    44,    45,    46,    47,    48,
-      49,    50,    -1,    -1,    53,    54,    55,    56,    57,    58,
-      59,    60,    61,    62,    63,    64,    65,    66,    67,    68,
-      69,    70,    71,    72,    73,    74,    75,    76,    77,    78,
-      79,    80,    81,    82,    83,    84,    85,    86,    87,    88,
-      89,    90,    91,    92,    93,    94,    95,    96,    97,    98,
-      99,   100,   101,   102,   103,   104,   105,   106,   107,   108,
-     109,   110,   111,   112,   113,   114,   115,   116,   117,   118,
-     119,   120,   121,   122,   123,   124,   125,   126,   127,   128,
-     129,   130,   131,   132,   133,   134,   135,   136,   137,   138,
-     139,   140,   141,   142,   143,   144,   145,   146,   147,   148,
-     149,   150,   151,   152,   153,   154,   155,   156,   157,   158,
-     159,   160,   161,   162,   163,   164,   165,   166,   167,   168,
-     169,   170,   171,   172,   173,   174,   175,   176,   177,   178,
-     179,   180,   181,   182,   183,   184,   185,   186,   187,   188,
-     189,   190,   191,   192,   193,   194,   195,   196,   197,   198,
-     199,   200,   201,   202,   203,   204,   205,   206,   207,   208,
-     209,   210,   211,   212,   213,   214,   215,   216,   217,   218,
-     219,   220,   221,   222,   223,   224,   225,   226,   227,   228,
-     229,   230,   231,   232,   233,   234,   235,   236,   237,   238,
-     239,   240,   241,   242,   243,   244,   245,   246,   247,   248,
-     249,   250,   251,   252,   253,   254,   255,   256,   257,   258,
-     259,   260,   261,   262,   263,   264,   265,   266,   267,   268,
-     269,   270,   271,   272,   273,   274,   275,   276,   277,   278,
-     279,   280,   281,   282,   283,   284,   285,   286,   287,   288,
-     289,   290,   291,   292,    -1,    -1,   295,   296,    -1,   383,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,   397,    -1,   314,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,   325,   326,   327,   328,
-     414,   415,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,   346,   347,   348,
-     349,   350,   351,    -1,    -1,    -1,    -1,   356,   357,    -1,
-      -1,   445,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,   456,    -1,    -1,    -1,   375,   376,   377,   378,
-     379,   380,   381,   382,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,   475,    -1,    -1,   393,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,   114,   115,   116,
+     117,   118,   119,    -1,    -1,    -1,    -1,   124,   125,     4,
+       5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
+      15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
+      25,    26,    27,    28,    29,    30,    31,    32,    33,    34,
+      35,    36,    37,    38,    39,    40,    41,    42,    43,    44,
+      45,    46,    47,    48,    49,    50,    51,    52,    53,    54,
+      55,    56,    57,    58,    59,    60,    -1,    -1,    -1,    -1,
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   542,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,   555,   556,   557,   558,   559,   560,   561,   562,   563,
-     564,   565,   566,   567,   568,   569,   570,   571,   572,   573,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   673
+      -1,    -1,    -1,    -1,   119,    -1,    -1,    -1,    -1,   124,
+     125
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
      symbol of state STATE-NUM.  */
-static const yytype_uint16 yystos[] =
+static const yytype_uint8 yystos[] =
 {
        0,     3,     4,     5,     6,     7,     8,     9,    10,    11,
       12,    13,    14,    15,    16,    17,    18,    19,    20,    21,
       22,    23,    24,    25,    26,    27,    28,    29,    30,    31,
       32,    33,    34,    35,    36,    37,    38,    39,    40,    41,
       42,    43,    44,    45,    46,    47,    48,    49,    50,    51,
-      52,    53,    54,    55,    56,    57,    58,    59,    60,    61,
-      62,    63,    64,    65,    66,    67,    68,    69,    70,    71,
-      72,    73,    74,    75,    76,    77,    78,    79,    80,    81,
-      82,    83,    84,    85,    86,    87,    88,    89,    90,    91,
-      92,    93,    94,    95,    96,    97,    98,    99,   100,   101,
-     102,   103,   104,   105,   106,   107,   108,   109,   110,   111,
-     112,   113,   114,   115,   116,   117,   118,   119,   120,   121,
-     122,   123,   124,   125,   126,   127,   128,   129,   130,   131,
-     132,   133,   134,   135,   136,   137,   138,   139,   140,   141,
-     142,   143,   144,   145,   146,   147,   148,   149,   150,   151,
-     152,   153,   154,   155,   156,   157,   158,   159,   160,   161,
-     162,   163,   164,   165,   166,   167,   168,   169,   170,   171,
-     172,   173,   174,   175,   176,   177,   178,   179,   180,   181,
-     182,   183,   184,   185,   186,   187,   188,   189,   190,   191,
-     192,   193,   194,   195,   196,   197,   198,   199,   200,   201,
-     202,   203,   204,   205,   206,   207,   208,   209,   210,   211,
-     212,   213,   214,   215,   216,   217,   218,   219,   220,   221,
-     222,   223,   224,   225,   226,   227,   228,   229,   230,   231,
-     232,   233,   234,   235,   236,   237,   238,   239,   240,   241,
-     242,   243,   244,   245,   246,   247,   248,   249,   250,   251,
-     252,   253,   254,   255,   256,   257,   258,   259,   260,   261,
-     262,   263,   264,   265,   266,   267,   268,   269,   270,   271,
-     272,   273,   274,   275,   276,   277,   278,   279,   280,   281,
-     282,   283,   284,   285,   286,   287,   288,   289,   290,   291,
-     292,   324,   338,   339,   340,   341,   342,   351,   352,   353,
-     354,   355,   356,   357,   370,   371,   372,   373,   374,   383,
-     385,   386,   387,   388,   389,   390,   391,   392,   393,   394,
-     395,   396,   397,   398,   399,   400,   401,   402,   403,   404,
-     405,   406,   407,   408,   409,   410,   442,   443,   446,   447,
-     448,   449,   453,   454,   455,   456,   457,   458,   461,   462,
-     463,   464,   465,   467,   472,   473,   474,   515,   516,   517,
-     473,   318,   350,   314,   314,   324,   350,   324,   518,   315,
-     321,   450,   451,   452,   462,   467,   321,   324,   350,   324,
-     350,   463,   467,   332,   469,   470,     0,   516,   467,   476,
-     318,   350,   371,   459,   460,   350,   466,   316,   324,   468,
-     318,   494,   451,   450,   452,   350,   350,   314,   323,   468,
-     318,   321,   324,   445,   295,   296,   314,   325,   326,   327,
-     328,   346,   347,   348,   349,   350,   375,   376,   377,   378,
-     379,   380,   381,   382,   412,   413,   414,   416,   417,   418,
-     419,   420,   421,   422,   423,   424,   465,   467,   471,   468,
-     324,   462,   467,   477,   478,   475,   323,   315,   321,   315,
-     321,   317,   423,   425,   426,   427,   428,   429,   430,   431,
-     432,   433,   434,   435,   436,   316,   324,   316,   318,   319,
-     324,   358,   359,   360,   361,   363,   364,   365,   366,   367,
-     368,   369,   384,   423,   436,   438,   440,   442,   446,   465,
-     467,   483,   484,   485,   486,   487,   495,   496,   497,   498,
-     501,   502,   505,   506,   507,   514,   519,   468,   323,   468,
-     318,   438,   481,   323,   444,   350,   321,   324,   423,   423,
-     440,   295,   296,   316,   320,   315,   315,   321,   357,   438,
-     314,   423,   321,   333,   467,   350,   479,   480,   319,   478,
-     477,   436,   441,   460,   350,   329,   330,   331,   326,   328,
-     293,   294,   297,   298,   332,   333,   299,   300,   336,   335,
-     334,   301,   303,   302,   337,   317,   317,   436,   316,   319,
-     488,   314,   324,   324,   509,   314,   314,   324,   324,   440,
-     314,   440,   322,   324,   304,   305,   306,   307,   308,   309,
-     310,   311,   312,   313,   323,   439,   321,   324,   319,   484,
-     498,   502,   507,   481,   323,   481,   482,   481,   477,   350,
-     315,   415,   440,   350,   438,   423,   479,   468,   321,   324,
-     319,   423,   423,   423,   425,   425,   426,   426,   427,   427,
-     427,   427,   428,   428,   429,   430,   431,   432,   433,   434,
-     437,   317,   350,   520,   521,   495,   508,   484,   510,   440,
-     324,   440,   322,   438,   438,   481,   319,   321,   319,   317,
-     324,   480,   440,   314,   317,   321,   489,   440,   455,   462,
-     500,   358,   483,   496,   511,   315,   315,   319,   481,   322,
-     441,   317,   521,   319,   350,   315,   314,   500,   512,   513,
-     491,   492,   493,   499,   503,   438,   315,   323,   485,   490,
-     494,   440,   324,   315,   362,   487,   485,   318,   481,   315,
-     440,   490,   491,   495,   504,   324,   319
+      52,    53,    54,    55,    56,    57,    58,    59,    60,   106,
+     107,   108,   109,   110,   119,   120,   121,   122,   123,   124,
+     125,   138,   140,   141,   142,   174,   175,   178,   179,   180,
+     181,   185,   186,   187,   188,   189,   190,   193,   194,   195,
+     196,   201,   202,   203,   242,   243,   244,   202,    86,   118,
+      82,    92,   118,    92,   245,    83,    89,   182,   183,   184,
+     193,   196,    89,    92,   118,    92,   118,   194,   196,   100,
+     198,   199,     0,   243,   196,   205,    86,   118,   139,   191,
+     192,    84,    92,   197,    86,   221,   183,   182,   184,   118,
+     118,    82,    91,   197,    86,    89,    92,   177,    63,    64,
+      82,    93,    94,    95,    96,   114,   115,   116,   117,   118,
+     144,   145,   146,   148,   149,   150,   151,   152,   153,   154,
+     155,   156,   196,   200,   197,    92,   193,   196,   206,   207,
+     204,    91,    83,    89,    85,   155,   157,   158,   159,   160,
+     161,   162,   163,   164,   165,   166,   167,   168,    84,    92,
+      86,    87,    92,   126,   127,   128,   129,   131,   132,   133,
+     134,   135,   136,   137,   155,   168,   170,   172,   174,   178,
+     196,   211,   212,   213,   214,   222,   223,   224,   225,   228,
+     229,   232,   233,   234,   241,   197,    91,   197,   170,   210,
+      91,   176,   118,    89,    92,   155,   155,   172,    63,    64,
+      84,    88,    83,    83,    89,   125,   170,    82,   155,    89,
+     101,   196,   118,   208,   209,    87,   207,   206,   168,   173,
+     192,    97,    98,    99,    94,    96,    61,    62,    65,    66,
+     100,   101,    67,    68,   104,   103,   102,    69,    71,    70,
+     105,    85,    85,   168,    87,   215,    82,    92,    92,   236,
+      82,    82,    92,    92,   172,    82,   172,    90,    72,    73,
+      74,    75,    76,    77,    78,    79,    80,    81,    91,   171,
+      89,    92,    87,   212,   210,    91,   210,   206,   118,    83,
+     147,   172,   118,   170,   155,   208,   197,    89,    92,    87,
+     155,   155,   155,   157,   157,   158,   158,   159,   159,   159,
+     159,   160,   160,   161,   162,   163,   164,   165,   166,   169,
+      85,   222,   235,   212,   237,   172,    92,   172,    90,   170,
+     170,   210,    87,    85,    92,   209,   172,   216,   172,   187,
+     193,   227,   126,   211,   223,   238,    83,    83,    90,    87,
+     118,    83,    82,   227,   239,   240,   218,   219,   220,   226,
+     230,   170,    91,   213,   217,   221,   172,    92,    83,   130,
+     214,   213,    86,   210,    83,   172,   217,   218,   222,   231,
+      92,    87
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
-static const yytype_uint16 yyr1[] =
+static const yytype_uint8 yyr1[] =
 {
-       0,   411,   412,   413,   413,   413,   413,   413,   413,   413,
-     413,   413,   413,   413,   413,   413,   413,   414,   414,   414,
-     414,   414,   414,   415,   416,   417,   418,   418,   419,   419,
-     420,   420,   421,   422,   422,   422,   423,   423,   423,   423,
-     424,   424,   424,   424,   425,   425,   425,   425,   426,   426,
-     426,   427,   427,   427,   428,   428,   428,   428,   428,   429,
-     429,   429,   430,   430,   431,   431,   432,   432,   433,   433,
-     434,   434,   435,   435,   436,   437,   436,   438,   438,   439,
-     439,   439,   439,   439,   439,   439,   439,   439,   439,   439,
-     440,   440,   441,   442,   442,   442,   442,   442,   442,   442,
-     442,   442,   444,   443,   445,   445,   446,   447,   447,   448,
-     448,   449,   450,   450,   451,   451,   451,   451,   452,   453,
-     453,   453,   453,   453,   454,   454,   454,   454,   454,   455,
-     455,   456,   457,   457,   457,   457,   457,   457,   457,   457,
-     458,   459,   459,   460,   460,   460,   461,   462,   462,   463,
-     463,   463,   463,   463,   463,   463,   464,   464,   464,   464,
-     464,   464,   464,   464,   464,   464,   464,   464,   464,   464,
-     464,   464,   464,   464,   464,   464,   464,   464,   464,   464,
-     464,   464,   464,   464,   464,   465,   466,   466,   467,   467,
-     468,   468,   468,   468,   469,   469,   470,   471,   471,   472,
-     472,   472,   472,   472,   472,   472,   472,   472,   472,   472,
-     472,   472,   472,   472,   472,   472,   472,   472,   472,   472,
-     472,   472,   472,   472,   472,   472,   472,   472,   472,   472,
-     472,   472,   472,   472,   472,   472,   472,   472,   472,   472,
-     472,   472,   472,   472,   472,   472,   472,   472,   472,   472,
-     472,   472,   472,   472,   472,   472,   472,   472,   472,   472,
-     472,   472,   472,   472,   472,   472,   472,   472,   472,   472,
-     472,   472,   472,   472,   472,   472,   472,   472,   472,   472,
-     472,   472,   472,   472,   472,   472,   472,   472,   472,   472,
-     472,   472,   472,   472,   472,   472,   472,   472,   472,   472,
-     472,   472,   472,   472,   472,   472,   472,   472,   472,   472,
-     472,   472,   472,   472,   472,   472,   472,   472,   472,   472,
-     472,   472,   472,   472,   472,   472,   472,   472,   472,   472,
-     472,   472,   472,   472,   472,   472,   472,   472,   472,   472,
-     472,   472,   472,   472,   472,   472,   472,   472,   472,   472,
-     472,   472,   472,   472,   472,   472,   472,   472,   472,   472,
-     472,   472,   472,   472,   472,   472,   472,   472,   472,   472,
-     472,   472,   472,   472,   472,   472,   472,   472,   472,   472,
-     472,   472,   472,   472,   472,   472,   472,   472,   472,   472,
-     472,   472,   472,   472,   472,   472,   472,   472,   472,   472,
-     472,   472,   472,   472,   472,   472,   472,   472,   472,   472,
-     472,   472,   472,   472,   472,   472,   472,   472,   472,   472,
-     472,   472,   472,   472,   472,   472,   472,   472,   472,   472,
-     472,   472,   472,   472,   472,   472,   472,   472,   472,   472,
-     472,   472,   472,   472,   472,   472,   472,   472,   472,   472,
-     472,   472,   472,   472,   472,   472,   472,   472,   472,   472,
-     472,   472,   472,   472,   472,   472,   472,   472,   472,   472,
-     472,   472,   472,   472,   472,   472,   472,   472,   472,   472,
-     472,   472,   472,   472,   472,   472,   472,   472,   472,   473,
-     473,   473,   475,   474,   476,   474,   477,   477,   478,   478,
-     479,   479,   480,   480,   481,   481,   481,   482,   482,   483,
-     484,   484,   485,   485,   485,   485,   485,   485,   485,   485,
-     486,   487,   488,   489,   487,   490,   490,   492,   491,   493,
-     491,   494,   494,   495,   495,   496,   496,   497,   497,   498,
-     499,   499,   500,   500,   501,   501,   503,   502,   504,   504,
-     505,   505,   506,   506,   508,   507,   509,   507,   510,   507,
-     511,   511,   512,   512,   513,   513,   514,   514,   514,   514,
-     514,   515,   515,   516,   516,   516,   518,   517,   519,   520,
-     520,   521,   521
+       0,   143,   144,   145,   145,   145,   145,   145,   145,   146,
+     146,   146,   146,   146,   146,   147,   148,   149,   150,   150,
+     151,   151,   152,   152,   153,   154,   154,   155,   155,   155,
+     155,   156,   156,   156,   156,   157,   157,   157,   157,   158,
+     158,   158,   159,   159,   159,   160,   160,   160,   160,   160,
+     161,   161,   161,   162,   162,   163,   163,   164,   164,   165,
+     165,   166,   166,   167,   167,   168,   169,   168,   170,   170,
+     171,   171,   171,   171,   171,   171,   171,   171,   171,   171,
+     171,   172,   172,   173,   174,   174,   174,   174,   174,   174,
+     174,   174,   174,   176,   175,   177,   177,   178,   179,   179,
+     180,   180,   181,   182,   182,   183,   183,   183,   183,   184,
+     185,   185,   185,   185,   185,   186,   186,   186,   186,   186,
+     187,   187,   188,   189,   189,   190,   191,   191,   192,   192,
+     192,   193,   193,   194,   194,   194,   194,   194,   195,   195,
+     195,   195,   195,   195,   196,   196,   197,   197,   197,   197,
+     198,   198,   199,   200,   200,   201,   201,   201,   201,   201,
+     201,   201,   201,   201,   201,   201,   201,   201,   201,   201,
+     201,   201,   201,   201,   201,   201,   201,   201,   201,   201,
+     201,   201,   201,   201,   201,   201,   201,   201,   201,   201,
+     201,   201,   201,   201,   201,   201,   201,   201,   201,   201,
+     201,   201,   201,   201,   201,   201,   201,   201,   201,   201,
+     201,   201,   201,   201,   201,   202,   202,   202,   204,   203,
+     205,   203,   206,   206,   207,   207,   208,   208,   209,   209,
+     210,   211,   212,   212,   213,   213,   213,   213,   213,   213,
+     213,   214,   215,   216,   214,   217,   217,   219,   218,   220,
+     218,   221,   221,   222,   222,   223,   223,   224,   225,   226,
+     226,   227,   227,   228,   230,   229,   231,   231,   232,   232,
+     233,   235,   234,   236,   234,   237,   234,   238,   238,   239,
+     239,   240,   240,   241,   241,   241,   241,   241,   242,   242,
+     243,   243,   245,   244
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_uint8 yyr2[] =
 {
        0,     2,     1,     1,     3,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     4,     1,
-       3,     2,     2,     1,     1,     1,     2,     2,     2,     1,
-       2,     3,     2,     1,     1,     1,     1,     2,     2,     2,
-       1,     1,     1,     1,     1,     3,     3,     3,     1,     3,
-       3,     1,     3,     3,     1,     3,     3,     3,     3,     1,
-       3,     3,     1,     3,     1,     3,     1,     3,     1,     3,
-       1,     3,     1,     3,     1,     0,     6,     1,     3,     1,
+       4,     1,     3,     2,     2,     1,     1,     1,     2,     2,
+       2,     1,     2,     3,     2,     1,     1,     1,     2,     2,
+       2,     1,     1,     1,     1,     1,     3,     3,     3,     1,
+       3,     3,     1,     3,     3,     1,     3,     3,     3,     3,
+       1,     3,     3,     1,     3,     1,     3,     1,     3,     1,
+       3,     1,     3,     1,     3,     1,     0,     6,     1,     3,
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     3,     1,     2,     2,     4,     2,     3,     4,     2,
-       3,     4,     0,     6,     2,     3,     2,     1,     1,     2,
-       3,     3,     2,     3,     2,     1,     2,     1,     1,     1,
-       3,     4,     6,     5,     1,     2,     3,     5,     4,     1,
-       2,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       4,     1,     3,     1,     3,     1,     1,     1,     2,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     4,     1,     1,     3,     2,     3,
-       2,     3,     3,     4,     1,     0,     3,     1,     3,     1,
+       1,     1,     3,     1,     2,     2,     4,     2,     3,     4,
+       2,     3,     4,     0,     6,     2,     3,     2,     1,     1,
+       2,     3,     3,     2,     3,     2,     1,     2,     1,     1,
+       1,     3,     4,     6,     5,     1,     2,     3,     5,     4,
+       1,     2,     1,     1,     1,     4,     1,     3,     1,     3,
+       1,     1,     2,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     2,     3,     2,     3,     3,     4,
+       1,     0,     3,     1,     3,     1,     1,     1,     1,     1,
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     0,     6,
+       0,     5,     1,     2,     3,     4,     1,     3,     1,     2,
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     0,     6,     0,     5,     1,     2,     3,     4,
-       1,     3,     1,     2,     1,     3,     4,     1,     3,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       2,     2,     0,     0,     5,     1,     1,     0,     2,     0,
-       2,     2,     3,     1,     2,     1,     2,     1,     2,     5,
-       3,     1,     1,     4,     1,     2,     0,     8,     0,     1,
-       3,     2,     1,     2,     0,     6,     0,     8,     0,     7,
-       1,     1,     1,     0,     2,     3,     2,     2,     2,     3,
-       2,     1,     2,     1,     1,     1,     0,     3,     5,     1,
-       3,     1,     4
+       1,     2,     0,     0,     5,     1,     1,     0,     2,     0,
+       2,     2,     3,     1,     2,     1,     2,     1,     5,     3,
+       1,     1,     4,     1,     0,     8,     0,     1,     3,     2,
+       1,     0,     6,     0,     8,     0,     7,     1,     1,     1,
+       0,     2,     3,     2,     2,     2,     3,     2,     1,     2,
+       1,     1,     0,     3
 };
 
 
@@ -4164,250 +2349,178 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 352 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+#line 253 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.intermTypedNode) = parseContext.handleVariable((yyvsp[0].lex).loc, (yyvsp[0].lex).symbol, (yyvsp[0].lex).string);
     }
-#line 4172 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2357 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
   case 3:
-#line 358 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+#line 259 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.intermTypedNode) = (yyvsp[0].interm.intermTypedNode);
     }
-#line 4180 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2365 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
   case 4:
-#line 361 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+#line 262 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.intermTypedNode) = (yyvsp[-1].interm.intermTypedNode);
         if ((yyval.interm.intermTypedNode)->getAsConstantUnion())
             (yyval.interm.intermTypedNode)->getAsConstantUnion()->setExpression();
     }
-#line 4190 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2375 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
   case 5:
-#line 366 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+#line 267 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.intermTypedNode) = parseContext.intermediate.addConstantUnion((yyvsp[0].lex).d, EbtFloat, (yyvsp[0].lex).loc, true);
     }
-#line 4198 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2383 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
   case 6:
-#line 369 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+#line 270 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.intermTypedNode) = parseContext.intermediate.addConstantUnion((yyvsp[0].lex).i, (yyvsp[0].lex).loc, true);
     }
-#line 4206 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2391 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
   case 7:
-#line 372 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+#line 273 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.fullIntegerCheck((yyvsp[0].lex).loc, "unsigned literal");
         (yyval.interm.intermTypedNode) = parseContext.intermediate.addConstantUnion((yyvsp[0].lex).u, (yyvsp[0].lex).loc, true);
     }
-#line 4215 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2400 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
   case 8:
-#line 376 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+#line 277 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.intermTypedNode) = parseContext.intermediate.addConstantUnion((yyvsp[0].lex).b, (yyvsp[0].lex).loc, true);
     }
-#line 4223 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2408 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
   case 9:
-#line 380 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+#line 284 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
-        parseContext.explicitInt32Check((yyvsp[0].lex).loc, "32-bit signed literal");
-        (yyval.interm.intermTypedNode) = parseContext.intermediate.addConstantUnion((yyvsp[0].lex).i, (yyvsp[0].lex).loc, true);
+        (yyval.interm.intermTypedNode) = (yyvsp[0].interm.intermTypedNode);
     }
-#line 4232 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2416 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
   case 10:
-#line 384 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.explicitInt32Check((yyvsp[0].lex).loc, "32-bit signed literal");
-        (yyval.interm.intermTypedNode) = parseContext.intermediate.addConstantUnion((yyvsp[0].lex).u, (yyvsp[0].lex).loc, true);
-    }
-#line 4241 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 11:
-#line 388 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.int64Check((yyvsp[0].lex).loc, "64-bit integer literal");
-        (yyval.interm.intermTypedNode) = parseContext.intermediate.addConstantUnion((yyvsp[0].lex).i64, (yyvsp[0].lex).loc, true);
-    }
-#line 4250 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 12:
-#line 392 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.int64Check((yyvsp[0].lex).loc, "64-bit unsigned integer literal");
-        (yyval.interm.intermTypedNode) = parseContext.intermediate.addConstantUnion((yyvsp[0].lex).u64, (yyvsp[0].lex).loc, true);
-    }
-#line 4259 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 13:
-#line 396 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.explicitInt16Check((yyvsp[0].lex).loc, "16-bit integer literal");
-        (yyval.interm.intermTypedNode) = parseContext.intermediate.addConstantUnion((short)(yyvsp[0].lex).i, (yyvsp[0].lex).loc, true);
-    }
-#line 4268 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 14:
-#line 400 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.explicitInt16Check((yyvsp[0].lex).loc, "16-bit unsigned integer literal");
-        (yyval.interm.intermTypedNode) = parseContext.intermediate.addConstantUnion((unsigned short)(yyvsp[0].lex).u, (yyvsp[0].lex).loc, true);
-    }
-#line 4277 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 15:
-#line 404 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.doubleCheck((yyvsp[0].lex).loc, "double literal");
-        (yyval.interm.intermTypedNode) = parseContext.intermediate.addConstantUnion((yyvsp[0].lex).d, EbtDouble, (yyvsp[0].lex).loc, true);
-    }
-#line 4286 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 16:
-#line 408 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16Check((yyvsp[0].lex).loc, "half float literal");
-        (yyval.interm.intermTypedNode) = parseContext.intermediate.addConstantUnion((yyvsp[0].lex).d, EbtFloat16, (yyvsp[0].lex).loc, true);
-    }
-#line 4295 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 17:
-#line 416 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.intermTypedNode) = (yyvsp[0].interm.intermTypedNode);
-    }
-#line 4303 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 18:
-#line 419 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+#line 287 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.intermTypedNode) = parseContext.handleBracketDereference((yyvsp[-2].lex).loc, (yyvsp[-3].interm.intermTypedNode), (yyvsp[-1].interm.intermTypedNode));
     }
-#line 4311 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2424 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 19:
-#line 422 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 11:
+#line 290 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.intermTypedNode) = (yyvsp[0].interm.intermTypedNode);
     }
-#line 4319 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2432 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 20:
-#line 425 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 12:
+#line 293 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.intermTypedNode) = parseContext.handleDotDereference((yyvsp[0].lex).loc, (yyvsp[-2].interm.intermTypedNode), *(yyvsp[0].lex).string);
     }
-#line 4327 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2440 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 21:
-#line 428 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 13:
+#line 296 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.variableCheck((yyvsp[-1].interm.intermTypedNode));
         parseContext.lValueErrorCheck((yyvsp[0].lex).loc, "++", (yyvsp[-1].interm.intermTypedNode));
         (yyval.interm.intermTypedNode) = parseContext.handleUnaryMath((yyvsp[0].lex).loc, "++", EOpPostIncrement, (yyvsp[-1].interm.intermTypedNode));
     }
-#line 4337 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2450 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 22:
-#line 433 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 14:
+#line 301 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.variableCheck((yyvsp[-1].interm.intermTypedNode));
         parseContext.lValueErrorCheck((yyvsp[0].lex).loc, "--", (yyvsp[-1].interm.intermTypedNode));
         (yyval.interm.intermTypedNode) = parseContext.handleUnaryMath((yyvsp[0].lex).loc, "--", EOpPostDecrement, (yyvsp[-1].interm.intermTypedNode));
     }
-#line 4347 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2460 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 23:
-#line 441 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 15:
+#line 309 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.integerCheck((yyvsp[0].interm.intermTypedNode), "[]");
         (yyval.interm.intermTypedNode) = (yyvsp[0].interm.intermTypedNode);
     }
-#line 4356 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2469 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 24:
-#line 448 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 16:
+#line 316 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.intermTypedNode) = parseContext.handleFunctionCall((yyvsp[0].interm).loc, (yyvsp[0].interm).function, (yyvsp[0].interm).intermNode);
         delete (yyvsp[0].interm).function;
     }
-#line 4365 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2478 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 25:
-#line 455 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 17:
+#line 323 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm) = (yyvsp[0].interm);
     }
-#line 4373 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2486 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 26:
-#line 461 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 18:
+#line 329 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm) = (yyvsp[-1].interm);
         (yyval.interm).loc = (yyvsp[0].lex).loc;
     }
-#line 4382 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2495 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 27:
-#line 465 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 19:
+#line 333 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm) = (yyvsp[-1].interm);
         (yyval.interm).loc = (yyvsp[0].lex).loc;
     }
-#line 4391 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2504 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 28:
-#line 472 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 20:
+#line 340 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm) = (yyvsp[-1].interm);
     }
-#line 4399 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2512 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 29:
-#line 475 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 21:
+#line 343 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm) = (yyvsp[0].interm);
     }
-#line 4407 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2520 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 30:
-#line 481 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 22:
+#line 349 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         TParameter param = { 0, new TType };
         param.type->shallowCopy((yyvsp[0].interm.intermTypedNode)->getType());
@@ -4415,11 +2528,11 @@ yyreduce:
         (yyval.interm).function = (yyvsp[-1].interm).function;
         (yyval.interm).intermNode = (yyvsp[0].interm.intermTypedNode);
     }
-#line 4419 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2532 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 31:
-#line 488 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 23:
+#line 356 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         TParameter param = { 0, new TType };
         param.type->shallowCopy((yyvsp[0].interm.intermTypedNode)->getType());
@@ -4427,29 +2540,29 @@ yyreduce:
         (yyval.interm).function = (yyvsp[-2].interm).function;
         (yyval.interm).intermNode = parseContext.intermediate.growAggregate((yyvsp[-2].interm).intermNode, (yyvsp[0].interm.intermTypedNode), (yyvsp[-1].lex).loc);
     }
-#line 4431 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2544 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 32:
-#line 498 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 24:
+#line 366 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm) = (yyvsp[-1].interm);
     }
-#line 4439 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2552 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 33:
-#line 506 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 25:
+#line 374 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         // Constructor
         (yyval.interm).intermNode = 0;
         (yyval.interm).function = parseContext.handleConstructorCall((yyvsp[0].interm.type).loc, (yyvsp[0].interm.type));
     }
-#line 4449 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2562 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 34:
-#line 511 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 26:
+#line 379 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         //
         // Should be a method or subroutine call, but we haven't recognized the arguments yet.
@@ -4477,50 +2590,40 @@ yyreduce:
             (yyval.interm).function = new TFunction(empty, TType(EbtVoid), EOpNull);
         }
     }
-#line 4481 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2594 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 35:
-#line 539 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        // Constructor
-        (yyval.interm).intermNode = 0;
-        (yyval.interm).function = parseContext.handleConstructorCall((yyvsp[0].interm.type).loc, (yyvsp[0].interm.type));
-    }
-#line 4491 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 36:
-#line 548 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 27:
+#line 410 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.variableCheck((yyvsp[0].interm.intermTypedNode));
         (yyval.interm.intermTypedNode) = (yyvsp[0].interm.intermTypedNode);
         if (TIntermMethod* method = (yyvsp[0].interm.intermTypedNode)->getAsMethodNode())
             parseContext.error((yyvsp[0].interm.intermTypedNode)->getLoc(), "incomplete method syntax", method->getMethodName().c_str(), "");
     }
-#line 4502 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2605 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 37:
-#line 554 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 28:
+#line 416 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.lValueErrorCheck((yyvsp[-1].lex).loc, "++", (yyvsp[0].interm.intermTypedNode));
         (yyval.interm.intermTypedNode) = parseContext.handleUnaryMath((yyvsp[-1].lex).loc, "++", EOpPreIncrement, (yyvsp[0].interm.intermTypedNode));
     }
-#line 4511 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2614 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 38:
-#line 558 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 29:
+#line 420 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.lValueErrorCheck((yyvsp[-1].lex).loc, "--", (yyvsp[0].interm.intermTypedNode));
         (yyval.interm.intermTypedNode) = parseContext.handleUnaryMath((yyvsp[-1].lex).loc, "--", EOpPreDecrement, (yyvsp[0].interm.intermTypedNode));
     }
-#line 4520 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2623 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 39:
-#line 562 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 30:
+#line 424 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         if ((yyvsp[-1].interm).op != EOpNull) {
             char errorOp[2] = {0, 0};
@@ -4537,179 +2640,179 @@ yyreduce:
                 (yyval.interm.intermTypedNode)->getAsConstantUnion()->setExpression();
         }
     }
-#line 4541 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2644 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 40:
-#line 582 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 31:
+#line 444 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     { (yyval.interm).loc = (yyvsp[0].lex).loc; (yyval.interm).op = EOpNull; }
-#line 4547 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2650 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 41:
-#line 583 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 32:
+#line 445 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     { (yyval.interm).loc = (yyvsp[0].lex).loc; (yyval.interm).op = EOpNegative; }
-#line 4553 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2656 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 42:
-#line 584 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 33:
+#line 446 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     { (yyval.interm).loc = (yyvsp[0].lex).loc; (yyval.interm).op = EOpLogicalNot; }
-#line 4559 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2662 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 43:
-#line 585 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 34:
+#line 447 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     { (yyval.interm).loc = (yyvsp[0].lex).loc; (yyval.interm).op = EOpBitwiseNot;
               parseContext.fullIntegerCheck((yyvsp[0].lex).loc, "bitwise not"); }
-#line 4566 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2669 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 44:
-#line 591 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 35:
+#line 453 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     { (yyval.interm.intermTypedNode) = (yyvsp[0].interm.intermTypedNode); }
-#line 4572 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2675 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 45:
-#line 592 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 36:
+#line 454 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.intermTypedNode) = parseContext.handleBinaryMath((yyvsp[-1].lex).loc, "*", EOpMul, (yyvsp[-2].interm.intermTypedNode), (yyvsp[0].interm.intermTypedNode));
         if ((yyval.interm.intermTypedNode) == 0)
             (yyval.interm.intermTypedNode) = (yyvsp[-2].interm.intermTypedNode);
     }
-#line 4582 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2685 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 46:
-#line 597 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 37:
+#line 459 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.intermTypedNode) = parseContext.handleBinaryMath((yyvsp[-1].lex).loc, "/", EOpDiv, (yyvsp[-2].interm.intermTypedNode), (yyvsp[0].interm.intermTypedNode));
         if ((yyval.interm.intermTypedNode) == 0)
             (yyval.interm.intermTypedNode) = (yyvsp[-2].interm.intermTypedNode);
     }
-#line 4592 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2695 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 47:
-#line 602 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 38:
+#line 464 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.fullIntegerCheck((yyvsp[-1].lex).loc, "%");
         (yyval.interm.intermTypedNode) = parseContext.handleBinaryMath((yyvsp[-1].lex).loc, "%", EOpMod, (yyvsp[-2].interm.intermTypedNode), (yyvsp[0].interm.intermTypedNode));
         if ((yyval.interm.intermTypedNode) == 0)
             (yyval.interm.intermTypedNode) = (yyvsp[-2].interm.intermTypedNode);
     }
-#line 4603 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2706 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 48:
-#line 611 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 39:
+#line 473 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     { (yyval.interm.intermTypedNode) = (yyvsp[0].interm.intermTypedNode); }
-#line 4609 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2712 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 49:
-#line 612 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 40:
+#line 474 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.intermTypedNode) = parseContext.handleBinaryMath((yyvsp[-1].lex).loc, "+", EOpAdd, (yyvsp[-2].interm.intermTypedNode), (yyvsp[0].interm.intermTypedNode));
         if ((yyval.interm.intermTypedNode) == 0)
             (yyval.interm.intermTypedNode) = (yyvsp[-2].interm.intermTypedNode);
     }
-#line 4619 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2722 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 50:
-#line 617 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 41:
+#line 479 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.intermTypedNode) = parseContext.handleBinaryMath((yyvsp[-1].lex).loc, "-", EOpSub, (yyvsp[-2].interm.intermTypedNode), (yyvsp[0].interm.intermTypedNode));
         if ((yyval.interm.intermTypedNode) == 0)
             (yyval.interm.intermTypedNode) = (yyvsp[-2].interm.intermTypedNode);
     }
-#line 4629 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2732 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 51:
-#line 625 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 42:
+#line 487 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     { (yyval.interm.intermTypedNode) = (yyvsp[0].interm.intermTypedNode); }
-#line 4635 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2738 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 52:
-#line 626 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 43:
+#line 488 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.fullIntegerCheck((yyvsp[-1].lex).loc, "bit shift left");
         (yyval.interm.intermTypedNode) = parseContext.handleBinaryMath((yyvsp[-1].lex).loc, "<<", EOpLeftShift, (yyvsp[-2].interm.intermTypedNode), (yyvsp[0].interm.intermTypedNode));
         if ((yyval.interm.intermTypedNode) == 0)
             (yyval.interm.intermTypedNode) = (yyvsp[-2].interm.intermTypedNode);
     }
-#line 4646 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2749 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 53:
-#line 632 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 44:
+#line 494 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.fullIntegerCheck((yyvsp[-1].lex).loc, "bit shift right");
         (yyval.interm.intermTypedNode) = parseContext.handleBinaryMath((yyvsp[-1].lex).loc, ">>", EOpRightShift, (yyvsp[-2].interm.intermTypedNode), (yyvsp[0].interm.intermTypedNode));
         if ((yyval.interm.intermTypedNode) == 0)
             (yyval.interm.intermTypedNode) = (yyvsp[-2].interm.intermTypedNode);
     }
-#line 4657 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2760 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 54:
-#line 641 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 45:
+#line 503 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     { (yyval.interm.intermTypedNode) = (yyvsp[0].interm.intermTypedNode); }
-#line 4663 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2766 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 55:
-#line 642 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 46:
+#line 504 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.intermTypedNode) = parseContext.handleBinaryMath((yyvsp[-1].lex).loc, "<", EOpLessThan, (yyvsp[-2].interm.intermTypedNode), (yyvsp[0].interm.intermTypedNode));
         if ((yyval.interm.intermTypedNode) == 0)
             (yyval.interm.intermTypedNode) = parseContext.intermediate.addConstantUnion(false, (yyvsp[-1].lex).loc);
     }
-#line 4673 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2776 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 56:
-#line 647 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 47:
+#line 509 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.intermTypedNode) = parseContext.handleBinaryMath((yyvsp[-1].lex).loc, ">", EOpGreaterThan, (yyvsp[-2].interm.intermTypedNode), (yyvsp[0].interm.intermTypedNode));
         if ((yyval.interm.intermTypedNode) == 0)
             (yyval.interm.intermTypedNode) = parseContext.intermediate.addConstantUnion(false, (yyvsp[-1].lex).loc);
     }
-#line 4683 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2786 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 57:
-#line 652 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 48:
+#line 514 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.intermTypedNode) = parseContext.handleBinaryMath((yyvsp[-1].lex).loc, "<=", EOpLessThanEqual, (yyvsp[-2].interm.intermTypedNode), (yyvsp[0].interm.intermTypedNode));
         if ((yyval.interm.intermTypedNode) == 0)
             (yyval.interm.intermTypedNode) = parseContext.intermediate.addConstantUnion(false, (yyvsp[-1].lex).loc);
     }
-#line 4693 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2796 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 58:
-#line 657 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 49:
+#line 519 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.intermTypedNode) = parseContext.handleBinaryMath((yyvsp[-1].lex).loc, ">=", EOpGreaterThanEqual, (yyvsp[-2].interm.intermTypedNode), (yyvsp[0].interm.intermTypedNode));
         if ((yyval.interm.intermTypedNode) == 0)
             (yyval.interm.intermTypedNode) = parseContext.intermediate.addConstantUnion(false, (yyvsp[-1].lex).loc);
     }
-#line 4703 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2806 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 59:
-#line 665 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 50:
+#line 527 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     { (yyval.interm.intermTypedNode) = (yyvsp[0].interm.intermTypedNode); }
-#line 4709 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2812 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 60:
-#line 666 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 51:
+#line 528 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.arrayObjectCheck((yyvsp[-1].lex).loc, (yyvsp[-2].interm.intermTypedNode)->getType(), "array comparison");
         parseContext.opaqueCheck((yyvsp[-1].lex).loc, (yyvsp[-2].interm.intermTypedNode)->getType(), "==");
@@ -4719,11 +2822,11 @@ yyreduce:
         if ((yyval.interm.intermTypedNode) == 0)
             (yyval.interm.intermTypedNode) = parseContext.intermediate.addConstantUnion(false, (yyvsp[-1].lex).loc);
     }
-#line 4723 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2826 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 61:
-#line 675 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 52:
+#line 537 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.arrayObjectCheck((yyvsp[-1].lex).loc, (yyvsp[-2].interm.intermTypedNode)->getType(), "array comparison");
         parseContext.opaqueCheck((yyvsp[-1].lex).loc, (yyvsp[-2].interm.intermTypedNode)->getType(), "!=");
@@ -4733,124 +2836,124 @@ yyreduce:
         if ((yyval.interm.intermTypedNode) == 0)
             (yyval.interm.intermTypedNode) = parseContext.intermediate.addConstantUnion(false, (yyvsp[-1].lex).loc);
     }
-#line 4737 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2840 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 62:
-#line 687 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 53:
+#line 549 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     { (yyval.interm.intermTypedNode) = (yyvsp[0].interm.intermTypedNode); }
-#line 4743 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2846 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 63:
-#line 688 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 54:
+#line 550 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.fullIntegerCheck((yyvsp[-1].lex).loc, "bitwise and");
         (yyval.interm.intermTypedNode) = parseContext.handleBinaryMath((yyvsp[-1].lex).loc, "&", EOpAnd, (yyvsp[-2].interm.intermTypedNode), (yyvsp[0].interm.intermTypedNode));
         if ((yyval.interm.intermTypedNode) == 0)
             (yyval.interm.intermTypedNode) = (yyvsp[-2].interm.intermTypedNode);
     }
-#line 4754 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2857 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 64:
-#line 697 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 55:
+#line 559 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     { (yyval.interm.intermTypedNode) = (yyvsp[0].interm.intermTypedNode); }
-#line 4760 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2863 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 65:
-#line 698 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 56:
+#line 560 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.fullIntegerCheck((yyvsp[-1].lex).loc, "bitwise exclusive or");
         (yyval.interm.intermTypedNode) = parseContext.handleBinaryMath((yyvsp[-1].lex).loc, "^", EOpExclusiveOr, (yyvsp[-2].interm.intermTypedNode), (yyvsp[0].interm.intermTypedNode));
         if ((yyval.interm.intermTypedNode) == 0)
             (yyval.interm.intermTypedNode) = (yyvsp[-2].interm.intermTypedNode);
     }
-#line 4771 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2874 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 66:
-#line 707 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 57:
+#line 569 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     { (yyval.interm.intermTypedNode) = (yyvsp[0].interm.intermTypedNode); }
-#line 4777 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2880 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 67:
-#line 708 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 58:
+#line 570 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.fullIntegerCheck((yyvsp[-1].lex).loc, "bitwise inclusive or");
         (yyval.interm.intermTypedNode) = parseContext.handleBinaryMath((yyvsp[-1].lex).loc, "|", EOpInclusiveOr, (yyvsp[-2].interm.intermTypedNode), (yyvsp[0].interm.intermTypedNode));
         if ((yyval.interm.intermTypedNode) == 0)
             (yyval.interm.intermTypedNode) = (yyvsp[-2].interm.intermTypedNode);
     }
-#line 4788 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2891 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 68:
-#line 717 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 59:
+#line 579 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     { (yyval.interm.intermTypedNode) = (yyvsp[0].interm.intermTypedNode); }
-#line 4794 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2897 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 69:
-#line 718 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 60:
+#line 580 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.intermTypedNode) = parseContext.handleBinaryMath((yyvsp[-1].lex).loc, "&&", EOpLogicalAnd, (yyvsp[-2].interm.intermTypedNode), (yyvsp[0].interm.intermTypedNode));
         if ((yyval.interm.intermTypedNode) == 0)
             (yyval.interm.intermTypedNode) = parseContext.intermediate.addConstantUnion(false, (yyvsp[-1].lex).loc);
     }
-#line 4804 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2907 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 70:
-#line 726 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 61:
+#line 588 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     { (yyval.interm.intermTypedNode) = (yyvsp[0].interm.intermTypedNode); }
-#line 4810 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2913 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 71:
-#line 727 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 62:
+#line 589 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.intermTypedNode) = parseContext.handleBinaryMath((yyvsp[-1].lex).loc, "^^", EOpLogicalXor, (yyvsp[-2].interm.intermTypedNode), (yyvsp[0].interm.intermTypedNode));
         if ((yyval.interm.intermTypedNode) == 0)
             (yyval.interm.intermTypedNode) = parseContext.intermediate.addConstantUnion(false, (yyvsp[-1].lex).loc);
     }
-#line 4820 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2923 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 72:
-#line 735 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 63:
+#line 597 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     { (yyval.interm.intermTypedNode) = (yyvsp[0].interm.intermTypedNode); }
-#line 4826 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2929 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 73:
-#line 736 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 64:
+#line 598 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.intermTypedNode) = parseContext.handleBinaryMath((yyvsp[-1].lex).loc, "||", EOpLogicalOr, (yyvsp[-2].interm.intermTypedNode), (yyvsp[0].interm.intermTypedNode));
         if ((yyval.interm.intermTypedNode) == 0)
             (yyval.interm.intermTypedNode) = parseContext.intermediate.addConstantUnion(false, (yyvsp[-1].lex).loc);
     }
-#line 4836 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2939 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 74:
-#line 744 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 65:
+#line 606 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     { (yyval.interm.intermTypedNode) = (yyvsp[0].interm.intermTypedNode); }
-#line 4842 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2945 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 75:
-#line 745 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 66:
+#line 607 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         ++parseContext.controlFlowNestingLevel;
     }
-#line 4850 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2953 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 76:
-#line 748 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 67:
+#line 610 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         --parseContext.controlFlowNestingLevel;
         parseContext.boolCheck((yyvsp[-4].lex).loc, (yyvsp[-5].interm.intermTypedNode));
@@ -4863,17 +2966,17 @@ yyreduce:
             (yyval.interm.intermTypedNode) = (yyvsp[0].interm.intermTypedNode);
         }
     }
-#line 4867 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2970 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 77:
-#line 763 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 68:
+#line 625 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     { (yyval.interm.intermTypedNode) = (yyvsp[0].interm.intermTypedNode); }
-#line 4873 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2976 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 78:
-#line 764 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 69:
+#line 626 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.arrayObjectCheck((yyvsp[-1].interm).loc, (yyvsp[-2].interm.intermTypedNode)->getType(), "array assignment");
         parseContext.opaqueCheck((yyvsp[-1].interm).loc, (yyvsp[-2].interm.intermTypedNode)->getType(), "=");
@@ -4887,119 +2990,119 @@ yyreduce:
             (yyval.interm.intermTypedNode) = (yyvsp[-2].interm.intermTypedNode);
         }
     }
-#line 4891 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 2994 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 79:
-#line 780 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 70:
+#line 642 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm).loc = (yyvsp[0].lex).loc;
         (yyval.interm).op = EOpAssign;
     }
-#line 4900 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3003 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 80:
-#line 784 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 71:
+#line 646 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm).loc = (yyvsp[0].lex).loc;
         (yyval.interm).op = EOpMulAssign;
     }
-#line 4909 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3012 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 81:
-#line 788 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 72:
+#line 650 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm).loc = (yyvsp[0].lex).loc;
         (yyval.interm).op = EOpDivAssign;
     }
-#line 4918 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3021 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 82:
-#line 792 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 73:
+#line 654 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.fullIntegerCheck((yyvsp[0].lex).loc, "%=");
         (yyval.interm).loc = (yyvsp[0].lex).loc;
         (yyval.interm).op = EOpModAssign;
     }
-#line 4928 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3031 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 83:
-#line 797 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 74:
+#line 659 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm).loc = (yyvsp[0].lex).loc;
         (yyval.interm).op = EOpAddAssign;
     }
-#line 4937 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3040 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 84:
-#line 801 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 75:
+#line 663 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm).loc = (yyvsp[0].lex).loc;
         (yyval.interm).op = EOpSubAssign;
     }
-#line 4946 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3049 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 85:
-#line 805 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 76:
+#line 667 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.fullIntegerCheck((yyvsp[0].lex).loc, "bit-shift left assign");
         (yyval.interm).loc = (yyvsp[0].lex).loc; (yyval.interm).op = EOpLeftShiftAssign;
     }
-#line 4955 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3058 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 86:
-#line 809 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 77:
+#line 671 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.fullIntegerCheck((yyvsp[0].lex).loc, "bit-shift right assign");
         (yyval.interm).loc = (yyvsp[0].lex).loc; (yyval.interm).op = EOpRightShiftAssign;
     }
-#line 4964 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3067 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 87:
-#line 813 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 78:
+#line 675 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.fullIntegerCheck((yyvsp[0].lex).loc, "bitwise-and assign");
         (yyval.interm).loc = (yyvsp[0].lex).loc; (yyval.interm).op = EOpAndAssign;
     }
-#line 4973 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3076 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 88:
-#line 817 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 79:
+#line 679 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.fullIntegerCheck((yyvsp[0].lex).loc, "bitwise-xor assign");
         (yyval.interm).loc = (yyvsp[0].lex).loc; (yyval.interm).op = EOpExclusiveOrAssign;
     }
-#line 4982 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3085 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 89:
-#line 821 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 80:
+#line 683 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.fullIntegerCheck((yyvsp[0].lex).loc, "bitwise-or assign");
         (yyval.interm).loc = (yyvsp[0].lex).loc; (yyval.interm).op = EOpInclusiveOrAssign;
     }
-#line 4991 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3094 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 90:
-#line 828 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 81:
+#line 690 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.intermTypedNode) = (yyvsp[0].interm.intermTypedNode);
     }
-#line 4999 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3102 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 91:
-#line 831 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 82:
+#line 693 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.samplerConstructorLocationCheck((yyvsp[-1].lex).loc, ",", (yyvsp[0].interm.intermTypedNode));
         (yyval.interm.intermTypedNode) = parseContext.intermediate.addComma((yyvsp[-2].interm.intermTypedNode), (yyvsp[0].interm.intermTypedNode), (yyvsp[-1].lex).loc);
@@ -5008,40 +3111,40 @@ yyreduce:
             (yyval.interm.intermTypedNode) = (yyvsp[0].interm.intermTypedNode);
         }
     }
-#line 5012 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3115 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 92:
-#line 842 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 83:
+#line 704 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.constantValueCheck((yyvsp[0].interm.intermTypedNode), "");
         (yyval.interm.intermTypedNode) = (yyvsp[0].interm.intermTypedNode);
     }
-#line 5021 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3124 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 93:
-#line 849 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 84:
+#line 711 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.handleFunctionDeclarator((yyvsp[-1].interm).loc, *(yyvsp[-1].interm).function, true /* prototype */);
         (yyval.interm.intermNode) = 0;
         // TODO: 4.0 functionality: subroutines: make the identifier a user type for this signature
     }
-#line 5031 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3134 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 94:
-#line 854 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 85:
+#line 716 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         if ((yyvsp[-1].interm).intermNode && (yyvsp[-1].interm).intermNode->getAsAggregate())
             (yyvsp[-1].interm).intermNode->getAsAggregate()->setOperator(EOpSequence);
         (yyval.interm.intermNode) = (yyvsp[-1].interm).intermNode;
     }
-#line 5041 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3144 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 95:
-#line 859 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 86:
+#line 721 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.profileRequires((yyvsp[-3].lex).loc, ENoProfile, 130, 0, "precision statement");
         // lazy setting of the previous scope's defaults, has effect only the first time it is called in a particular scope
@@ -5049,75 +3152,75 @@ yyreduce:
         parseContext.setDefaultPrecision((yyvsp[-3].lex).loc, (yyvsp[-1].interm.type), (yyvsp[-2].interm.type).qualifier.precision);
         (yyval.interm.intermNode) = 0;
     }
-#line 5053 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3156 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 96:
-#line 866 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 87:
+#line 728 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.declareBlock((yyvsp[-1].interm).loc, *(yyvsp[-1].interm).typeList);
         (yyval.interm.intermNode) = 0;
     }
-#line 5062 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3165 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 97:
-#line 870 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 88:
+#line 732 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.declareBlock((yyvsp[-2].interm).loc, *(yyvsp[-2].interm).typeList, (yyvsp[-1].lex).string);
         (yyval.interm.intermNode) = 0;
     }
-#line 5071 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3174 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 98:
-#line 874 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 89:
+#line 736 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.declareBlock((yyvsp[-3].interm).loc, *(yyvsp[-3].interm).typeList, (yyvsp[-2].lex).string, (yyvsp[-1].interm).arraySizes);
         (yyval.interm.intermNode) = 0;
     }
-#line 5080 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3183 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 99:
-#line 878 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 90:
+#line 740 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.globalQualifierFixCheck((yyvsp[-1].interm.type).loc, (yyvsp[-1].interm.type).qualifier);
         parseContext.updateStandaloneQualifierDefaults((yyvsp[-1].interm.type).loc, (yyvsp[-1].interm.type));
         (yyval.interm.intermNode) = 0;
     }
-#line 5090 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3193 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 100:
-#line 883 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 91:
+#line 745 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.checkNoShaderLayouts((yyvsp[-2].interm.type).loc, (yyvsp[-2].interm.type).shaderQualifiers);
         parseContext.addQualifierToExisting((yyvsp[-2].interm.type).loc, (yyvsp[-2].interm.type).qualifier, *(yyvsp[-1].lex).string);
         (yyval.interm.intermNode) = 0;
     }
-#line 5100 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3203 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 101:
-#line 888 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 92:
+#line 750 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.checkNoShaderLayouts((yyvsp[-3].interm.type).loc, (yyvsp[-3].interm.type).shaderQualifiers);
         (yyvsp[-1].interm.identifierList)->push_back((yyvsp[-2].lex).string);
         parseContext.addQualifierToExisting((yyvsp[-3].interm.type).loc, (yyvsp[-3].interm.type).qualifier, *(yyvsp[-1].interm.identifierList));
         (yyval.interm.intermNode) = 0;
     }
-#line 5111 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3214 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 102:
-#line 897 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 93:
+#line 759 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     { parseContext.nestedBlockCheck((yyvsp[-2].interm.type).loc); }
-#line 5117 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3220 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 103:
-#line 897 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 94:
+#line 759 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         --parseContext.structNestingLevel;
         parseContext.blockName = (yyvsp[-4].lex).string;
@@ -5127,54 +3230,54 @@ yyreduce:
         (yyval.interm).loc = (yyvsp[-5].interm.type).loc;
         (yyval.interm).typeList = (yyvsp[-1].interm.typeList);
     }
-#line 5131 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3234 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 104:
-#line 908 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 95:
+#line 770 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.identifierList) = new TIdentifierList;
         (yyval.interm.identifierList)->push_back((yyvsp[0].lex).string);
     }
-#line 5140 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3243 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 105:
-#line 912 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 96:
+#line 774 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.identifierList) = (yyvsp[-2].interm.identifierList);
         (yyval.interm.identifierList)->push_back((yyvsp[0].lex).string);
     }
-#line 5149 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3252 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 106:
-#line 919 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 97:
+#line 781 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm).function = (yyvsp[-1].interm.function);
         (yyval.interm).loc = (yyvsp[0].lex).loc;
     }
-#line 5158 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3261 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 107:
-#line 926 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 98:
+#line 788 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.function) = (yyvsp[0].interm.function);
     }
-#line 5166 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3269 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 108:
-#line 929 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 99:
+#line 791 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.function) = (yyvsp[0].interm.function);
     }
-#line 5174 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3277 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 109:
-#line 936 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 100:
+#line 798 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         // Add the parameter
         (yyval.interm.function) = (yyvsp[-1].interm.function);
@@ -5183,11 +3286,11 @@ yyreduce:
         else
             delete (yyvsp[0].interm).param.type;
     }
-#line 5187 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3290 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 110:
-#line 944 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 101:
+#line 806 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         //
         // Only first parameter of one-parameter functions can be void
@@ -5205,11 +3308,11 @@ yyreduce:
             (yyvsp[-2].interm.function)->addParameter((yyvsp[0].interm).param);
         }
     }
-#line 5209 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3312 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 111:
-#line 964 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 102:
+#line 826 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         if ((yyvsp[-2].interm.type).qualifier.storage != EvqGlobal && (yyvsp[-2].interm.type).qualifier.storage != EvqTemporary) {
             parseContext.error((yyvsp[-1].lex).loc, "no qualifiers allowed for function return",
@@ -5229,11 +3332,11 @@ yyreduce:
         function = new TFunction((yyvsp[-1].lex).string, type);
         (yyval.interm.function) = function;
     }
-#line 5233 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3336 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 112:
-#line 987 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 103:
+#line 849 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         if ((yyvsp[-1].interm.type).arraySizes) {
             parseContext.profileRequires((yyvsp[-1].interm.type).loc, ENoProfile, 120, E_GL_3DL_array_objects, "arrayed type");
@@ -5249,11 +3352,11 @@ yyreduce:
         (yyval.interm).loc = (yyvsp[0].lex).loc;
         (yyval.interm).param = param;
     }
-#line 5253 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3356 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 113:
-#line 1002 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 104:
+#line 864 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         if ((yyvsp[-2].interm.type).arraySizes) {
             parseContext.profileRequires((yyvsp[-2].interm.type).loc, ENoProfile, 120, E_GL_3DL_array_objects, "arrayed type");
@@ -5273,11 +3376,11 @@ yyreduce:
         (yyval.interm).loc = (yyvsp[-1].lex).loc;
         (yyval.interm).param = param;
     }
-#line 5277 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3380 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 114:
-#line 1027 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 105:
+#line 889 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm) = (yyvsp[0].interm);
         if ((yyvsp[-1].interm.type).qualifier.precision != EpqNone)
@@ -5289,11 +3392,11 @@ yyreduce:
         parseContext.paramCheckFix((yyvsp[-1].interm.type).loc, (yyvsp[-1].interm.type).qualifier, *(yyval.interm).param.type);
 
     }
-#line 5293 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3396 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 115:
-#line 1038 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 106:
+#line 900 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm) = (yyvsp[0].interm);
 
@@ -5301,11 +3404,11 @@ yyreduce:
         parseContext.paramCheckFixStorage((yyvsp[0].interm).loc, EvqTemporary, *(yyval.interm).param.type);
         parseContext.precisionQualifierCheck((yyval.interm).loc, (yyval.interm).param.type->getBasicType(), (yyval.interm).param.type->getQualifier());
     }
-#line 5305 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3408 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 116:
-#line 1048 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 107:
+#line 910 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm) = (yyvsp[0].interm);
         if ((yyvsp[-1].interm.type).qualifier.precision != EpqNone)
@@ -5316,11 +3419,11 @@ yyreduce:
         parseContext.parameterTypeCheck((yyvsp[0].interm).loc, (yyvsp[-1].interm.type).qualifier.storage, *(yyval.interm).param.type);
         parseContext.paramCheckFix((yyvsp[-1].interm.type).loc, (yyvsp[-1].interm.type).qualifier, *(yyval.interm).param.type);
     }
-#line 5320 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3423 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 117:
-#line 1058 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 108:
+#line 920 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm) = (yyvsp[0].interm);
 
@@ -5328,120 +3431,118 @@ yyreduce:
         parseContext.paramCheckFixStorage((yyvsp[0].interm).loc, EvqTemporary, *(yyval.interm).param.type);
         parseContext.precisionQualifierCheck((yyval.interm).loc, (yyval.interm).param.type->getBasicType(), (yyval.interm).param.type->getQualifier());
     }
-#line 5332 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3435 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 118:
-#line 1068 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 109:
+#line 930 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         TParameter param = { 0, new TType((yyvsp[0].interm.type)) };
         (yyval.interm).param = param;
         if ((yyvsp[0].interm.type).arraySizes)
             parseContext.arraySizeRequiredCheck((yyvsp[0].interm.type).loc, *(yyvsp[0].interm.type).arraySizes);
     }
-#line 5343 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3446 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 119:
-#line 1077 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 110:
+#line 939 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm) = (yyvsp[0].interm);
     }
-#line 5351 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3454 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 120:
-#line 1080 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 111:
+#line 942 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm) = (yyvsp[-2].interm);
         parseContext.declareVariable((yyvsp[0].lex).loc, *(yyvsp[0].lex).string, (yyvsp[-2].interm).type);
     }
-#line 5360 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3463 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 121:
-#line 1084 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 112:
+#line 946 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm) = (yyvsp[-3].interm);
         parseContext.declareVariable((yyvsp[-1].lex).loc, *(yyvsp[-1].lex).string, (yyvsp[-3].interm).type, (yyvsp[0].interm).arraySizes);
     }
-#line 5369 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3472 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 122:
-#line 1088 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 113:
+#line 950 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm).type = (yyvsp[-5].interm).type;
         TIntermNode* initNode = parseContext.declareVariable((yyvsp[-3].lex).loc, *(yyvsp[-3].lex).string, (yyvsp[-5].interm).type, (yyvsp[-2].interm).arraySizes, (yyvsp[0].interm.intermTypedNode));
         (yyval.interm).intermNode = parseContext.intermediate.growAggregate((yyvsp[-5].interm).intermNode, initNode, (yyvsp[-1].lex).loc);
     }
-#line 5379 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3482 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 123:
-#line 1093 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 114:
+#line 955 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm).type = (yyvsp[-4].interm).type;
         TIntermNode* initNode = parseContext.declareVariable((yyvsp[-2].lex).loc, *(yyvsp[-2].lex).string, (yyvsp[-4].interm).type, 0, (yyvsp[0].interm.intermTypedNode));
         (yyval.interm).intermNode = parseContext.intermediate.growAggregate((yyvsp[-4].interm).intermNode, initNode, (yyvsp[-1].lex).loc);
     }
-#line 5389 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3492 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 124:
-#line 1101 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 115:
+#line 963 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm).type = (yyvsp[0].interm.type);
         (yyval.interm).intermNode = 0;
 
-        parseContext.declareTypeDefaults((yyval.interm).loc, (yyval.interm).type);
-
     }
-#line 5401 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3502 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 125:
-#line 1108 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 116:
+#line 968 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm).type = (yyvsp[-1].interm.type);
         (yyval.interm).intermNode = 0;
         parseContext.declareVariable((yyvsp[0].lex).loc, *(yyvsp[0].lex).string, (yyvsp[-1].interm.type));
     }
-#line 5411 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3512 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 126:
-#line 1113 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 117:
+#line 973 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm).type = (yyvsp[-2].interm.type);
         (yyval.interm).intermNode = 0;
         parseContext.declareVariable((yyvsp[-1].lex).loc, *(yyvsp[-1].lex).string, (yyvsp[-2].interm.type), (yyvsp[0].interm).arraySizes);
     }
-#line 5421 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3522 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 127:
-#line 1118 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 118:
+#line 978 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm).type = (yyvsp[-4].interm.type);
         TIntermNode* initNode = parseContext.declareVariable((yyvsp[-3].lex).loc, *(yyvsp[-3].lex).string, (yyvsp[-4].interm.type), (yyvsp[-2].interm).arraySizes, (yyvsp[0].interm.intermTypedNode));
         (yyval.interm).intermNode = parseContext.intermediate.growAggregate(0, initNode, (yyvsp[-1].lex).loc);
     }
-#line 5431 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3532 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 128:
-#line 1123 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 119:
+#line 983 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm).type = (yyvsp[-3].interm.type);
         TIntermNode* initNode = parseContext.declareVariable((yyvsp[-2].lex).loc, *(yyvsp[-2].lex).string, (yyvsp[-3].interm.type), 0, (yyvsp[0].interm.intermTypedNode));
         (yyval.interm).intermNode = parseContext.intermediate.growAggregate(0, initNode, (yyvsp[-1].lex).loc);
     }
-#line 5441 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3542 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 129:
-#line 1132 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 120:
+#line 992 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type) = (yyvsp[0].interm.type);
 
@@ -5452,11 +3553,11 @@ yyreduce:
         }
         parseContext.precisionQualifierCheck((yyval.interm.type).loc, (yyval.interm.type).basicType, (yyval.interm.type).qualifier);
     }
-#line 5456 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3557 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 130:
-#line 1142 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 121:
+#line 1002 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.globalQualifierFixCheck((yyvsp[-1].interm.type).loc, (yyvsp[-1].interm.type).qualifier);
         parseContext.globalQualifierTypeCheck((yyvsp[-1].interm.type).loc, (yyvsp[-1].interm.type).qualifier, (yyvsp[0].interm.type));
@@ -5481,22 +3582,22 @@ yyreduce:
              (parseContext.language == EShLangFragment && (yyval.interm.type).qualifier.storage == EvqVaryingIn)))
             (yyval.interm.type).qualifier.smooth = true;
     }
-#line 5485 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3586 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 131:
-#line 1169 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 122:
+#line 1029 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.globalCheck((yyvsp[0].lex).loc, "invariant");
         parseContext.profileRequires((yyval.interm.type).loc, ENoProfile, 120, 0, "invariant");
         (yyval.interm.type).init((yyvsp[0].lex).loc);
         (yyval.interm.type).qualifier.invariant = true;
     }
-#line 5496 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3597 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 132:
-#line 1178 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 123:
+#line 1038 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.globalCheck((yyvsp[0].lex).loc, "smooth");
         parseContext.profileRequires((yyvsp[0].lex).loc, ENoProfile, 130, 0, "smooth");
@@ -5504,11 +3605,11 @@ yyreduce:
         (yyval.interm.type).init((yyvsp[0].lex).loc);
         (yyval.interm.type).qualifier.smooth = true;
     }
-#line 5508 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3609 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 133:
-#line 1185 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 124:
+#line 1045 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.globalCheck((yyvsp[0].lex).loc, "flat");
         parseContext.profileRequires((yyvsp[0].lex).loc, ENoProfile, 130, 0, "flat");
@@ -5516,160 +3617,73 @@ yyreduce:
         (yyval.interm.type).init((yyvsp[0].lex).loc);
         (yyval.interm.type).qualifier.flat = true;
     }
-#line 5520 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3621 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 134:
-#line 1193 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.globalCheck((yyvsp[0].lex).loc, "noperspective");
-        parseContext.profileRequires((yyvsp[0].lex).loc, EEsProfile, 0, E_GL_NV_shader_noperspective_interpolation, "noperspective");
-        parseContext.profileRequires((yyvsp[0].lex).loc, ENoProfile, 130, 0, "noperspective");
-        (yyval.interm.type).init((yyvsp[0].lex).loc);
-        (yyval.interm.type).qualifier.nopersp = true;
-    }
-#line 5532 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 135:
-#line 1200 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.globalCheck((yyvsp[0].lex).loc, "__explicitInterpAMD");
-        parseContext.profileRequires((yyvsp[0].lex).loc, ECoreProfile, 450, E_GL_AMD_shader_explicit_vertex_parameter, "explicit interpolation");
-        parseContext.profileRequires((yyvsp[0].lex).loc, ECompatibilityProfile, 450, E_GL_AMD_shader_explicit_vertex_parameter, "explicit interpolation");
-        (yyval.interm.type).init((yyvsp[0].lex).loc);
-        (yyval.interm.type).qualifier.explicitInterp = true;
-    }
-#line 5544 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 136:
-#line 1207 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.globalCheck((yyvsp[0].lex).loc, "pervertexNV");
-        parseContext.profileRequires((yyvsp[0].lex).loc, ECoreProfile, 0, E_GL_NV_fragment_shader_barycentric, "fragment shader barycentric");
-        parseContext.profileRequires((yyvsp[0].lex).loc, ECompatibilityProfile, 0, E_GL_NV_fragment_shader_barycentric, "fragment shader barycentric");
-        parseContext.profileRequires((yyvsp[0].lex).loc, EEsProfile, 0, E_GL_NV_fragment_shader_barycentric, "fragment shader barycentric");
-        (yyval.interm.type).init((yyvsp[0].lex).loc);
-        (yyval.interm.type).qualifier.pervertexNV = true;
-    }
-#line 5557 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 137:
-#line 1215 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        // No need for profile version or extension check. Shader stage already checks both.
-        parseContext.globalCheck((yyvsp[0].lex).loc, "perprimitiveNV");
-        parseContext.requireStage((yyvsp[0].lex).loc, (EShLanguageMask)(EShLangFragmentMask | EShLangMeshNVMask), "perprimitiveNV");
-        // Fragment shader stage doesn't check for extension. So we explicitly add below extension check.
-        if (parseContext.language == EShLangFragment)
-            parseContext.requireExtensions((yyvsp[0].lex).loc, 1, &E_GL_NV_mesh_shader, "perprimitiveNV");
-        (yyval.interm.type).init((yyvsp[0].lex).loc);
-        (yyval.interm.type).qualifier.perPrimitiveNV = true;
-    }
-#line 5572 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 138:
-#line 1225 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        // No need for profile version or extension check. Shader stage already checks both.
-        parseContext.globalCheck((yyvsp[0].lex).loc, "perviewNV");
-        parseContext.requireStage((yyvsp[0].lex).loc, EShLangMeshNV, "perviewNV");
-        (yyval.interm.type).init((yyvsp[0].lex).loc);
-        (yyval.interm.type).qualifier.perViewNV = true;
-    }
-#line 5584 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 139:
-#line 1232 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        // No need for profile version or extension check. Shader stage already checks both.
-        parseContext.globalCheck((yyvsp[0].lex).loc, "taskNV");
-        parseContext.requireStage((yyvsp[0].lex).loc, (EShLanguageMask)(EShLangTaskNVMask | EShLangMeshNVMask), "taskNV");
-        (yyval.interm.type).init((yyvsp[0].lex).loc);
-        (yyval.interm.type).qualifier.perTaskNV = true;
-    }
-#line 5596 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 140:
-#line 1243 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 125:
+#line 1056 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type) = (yyvsp[-1].interm.type);
     }
-#line 5604 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3629 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 141:
-#line 1249 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 126:
+#line 1062 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type) = (yyvsp[0].interm.type);
     }
-#line 5612 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3637 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 142:
-#line 1252 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 127:
+#line 1065 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type) = (yyvsp[-2].interm.type);
         (yyval.interm.type).shaderQualifiers.merge((yyvsp[0].interm.type).shaderQualifiers);
         parseContext.mergeObjectLayoutQualifiers((yyval.interm.type).qualifier, (yyvsp[0].interm.type).qualifier, false);
     }
-#line 5622 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3647 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 143:
-#line 1259 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 128:
+#line 1072 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc);
         parseContext.setLayoutQualifier((yyvsp[0].lex).loc, (yyval.interm.type), *(yyvsp[0].lex).string);
     }
-#line 5631 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3656 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 144:
-#line 1263 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 129:
+#line 1076 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[-2].lex).loc);
         parseContext.setLayoutQualifier((yyvsp[-2].lex).loc, (yyval.interm.type), *(yyvsp[-2].lex).string, (yyvsp[0].interm.intermTypedNode));
     }
-#line 5640 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3665 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 145:
-#line 1267 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 130:
+#line 1080 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     { // because "shared" is both an identifier and a keyword
         (yyval.interm.type).init((yyvsp[0].lex).loc);
         TString strShared("shared");
         parseContext.setLayoutQualifier((yyvsp[0].lex).loc, (yyval.interm.type), strShared);
     }
-#line 5650 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3675 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 146:
-#line 1276 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.profileRequires((yyval.interm.type).loc, ECoreProfile | ECompatibilityProfile, 400, E_GL_ARB_gpu_shader5, "precise");
-        parseContext.profileRequires((yyvsp[0].lex).loc, EEsProfile, 320, Num_AEP_gpu_shader5, AEP_gpu_shader5, "precise");
-        (yyval.interm.type).init((yyvsp[0].lex).loc);
-        (yyval.interm.type).qualifier.noContraction = true;
-    }
-#line 5661 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 147:
-#line 1286 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 131:
+#line 1090 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type) = (yyvsp[0].interm.type);
     }
-#line 5669 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3683 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 148:
-#line 1289 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 132:
+#line 1093 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type) = (yyvsp[-1].interm.type);
         if ((yyval.interm.type).basicType == EbtVoid)
@@ -5678,112 +3692,95 @@ yyreduce:
         (yyval.interm.type).shaderQualifiers.merge((yyvsp[0].interm.type).shaderQualifiers);
         parseContext.mergeQualifiers((yyval.interm.type).loc, (yyval.interm.type).qualifier, (yyvsp[0].interm.type).qualifier, false);
     }
-#line 5682 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3696 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 149:
-#line 1300 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 133:
+#line 1104 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type) = (yyvsp[0].interm.type);
     }
-#line 5690 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3704 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 150:
-#line 1303 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 134:
+#line 1107 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type) = (yyvsp[0].interm.type);
     }
-#line 5698 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3712 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 151:
-#line 1306 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 135:
+#line 1110 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.checkPrecisionQualifier((yyvsp[0].interm.type).loc, (yyvsp[0].interm.type).qualifier.precision);
         (yyval.interm.type) = (yyvsp[0].interm.type);
     }
-#line 5707 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3721 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 152:
-#line 1310 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 136:
+#line 1114 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         // allow inheritance of storage qualifier from block declaration
         (yyval.interm.type) = (yyvsp[0].interm.type);
     }
-#line 5716 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3730 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 153:
-#line 1314 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 137:
+#line 1118 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         // allow inheritance of storage qualifier from block declaration
         (yyval.interm.type) = (yyvsp[0].interm.type);
     }
-#line 5725 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3739 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 154:
-#line 1319 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        // allow inheritance of storage qualifier from block declaration
-        (yyval.interm.type) = (yyvsp[0].interm.type);
-    }
-#line 5734 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 155:
-#line 1323 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type) = (yyvsp[0].interm.type);
-    }
-#line 5742 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 156:
-#line 1330 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 138:
+#line 1126 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc);
         (yyval.interm.type).qualifier.storage = EvqConst;  // will later turn into EvqConstReadOnly, if the initializer is not constant
     }
-#line 5751 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3748 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 157:
-#line 1334 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 139:
+#line 1130 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.globalCheck((yyvsp[0].lex).loc, "inout");
         (yyval.interm.type).init((yyvsp[0].lex).loc);
         (yyval.interm.type).qualifier.storage = EvqInOut;
     }
-#line 5761 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3758 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 158:
-#line 1339 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 140:
+#line 1135 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.globalCheck((yyvsp[0].lex).loc, "in");
         (yyval.interm.type).init((yyvsp[0].lex).loc);
         // whether this is a parameter "in" or a pipeline "in" will get sorted out a bit later
         (yyval.interm.type).qualifier.storage = EvqIn;
     }
-#line 5772 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3769 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 159:
-#line 1345 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 141:
+#line 1141 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.globalCheck((yyvsp[0].lex).loc, "out");
         (yyval.interm.type).init((yyvsp[0].lex).loc);
         // whether this is a parameter "out" or a pipeline "out" will get sorted out a bit later
         (yyval.interm.type).qualifier.storage = EvqOut;
     }
-#line 5783 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3780 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 160:
-#line 1351 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 142:
+#line 1147 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.profileRequires((yyvsp[0].lex).loc, ENoProfile, 120, 0, "centroid");
         parseContext.profileRequires((yyvsp[0].lex).loc, EEsProfile, 300, 0, "centroid");
@@ -5791,319 +3788,31 @@ yyreduce:
         (yyval.interm.type).init((yyvsp[0].lex).loc);
         (yyval.interm.type).qualifier.centroid = true;
     }
-#line 5795 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3792 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 161:
-#line 1358 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 143:
+#line 1154 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.globalCheck((yyvsp[0].lex).loc, "uniform");
         (yyval.interm.type).init((yyvsp[0].lex).loc);
         (yyval.interm.type).qualifier.storage = EvqUniform;
     }
-#line 5805 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3802 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 162:
-#line 1364 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.globalCheck((yyvsp[0].lex).loc, "shared");
-        parseContext.profileRequires((yyvsp[0].lex).loc, ECoreProfile | ECompatibilityProfile, 430, E_GL_ARB_compute_shader, "shared");
-        parseContext.profileRequires((yyvsp[0].lex).loc, EEsProfile, 310, 0, "shared");
-        parseContext.requireStage((yyvsp[0].lex).loc, (EShLanguageMask)(EShLangComputeMask | EShLangMeshNVMask | EShLangTaskNVMask), "shared");
-        (yyval.interm.type).init((yyvsp[0].lex).loc);
-        (yyval.interm.type).qualifier.storage = EvqShared;
-    }
-#line 5818 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 163:
-#line 1372 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.globalCheck((yyvsp[0].lex).loc, "buffer");
-        (yyval.interm.type).init((yyvsp[0].lex).loc);
-        (yyval.interm.type).qualifier.storage = EvqBuffer;
-    }
-#line 5828 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 164:
-#line 1377 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.requireStage((yyvsp[0].lex).loc, EShLangVertex, "attribute");
-        parseContext.checkDeprecated((yyvsp[0].lex).loc, ECoreProfile, 130, "attribute");
-        parseContext.checkDeprecated((yyvsp[0].lex).loc, ENoProfile, 130, "attribute");
-        parseContext.requireNotRemoved((yyvsp[0].lex).loc, ECoreProfile, 420, "attribute");
-        parseContext.requireNotRemoved((yyvsp[0].lex).loc, EEsProfile, 300, "attribute");
-
-        parseContext.globalCheck((yyvsp[0].lex).loc, "attribute");
-
-        (yyval.interm.type).init((yyvsp[0].lex).loc);
-        (yyval.interm.type).qualifier.storage = EvqVaryingIn;
-    }
-#line 5845 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 165:
-#line 1389 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.checkDeprecated((yyvsp[0].lex).loc, ENoProfile, 130, "varying");
-        parseContext.checkDeprecated((yyvsp[0].lex).loc, ECoreProfile, 130, "varying");
-        parseContext.requireNotRemoved((yyvsp[0].lex).loc, ECoreProfile, 420, "varying");
-        parseContext.requireNotRemoved((yyvsp[0].lex).loc, EEsProfile, 300, "varying");
-
-        parseContext.globalCheck((yyvsp[0].lex).loc, "varying");
-
-        (yyval.interm.type).init((yyvsp[0].lex).loc);
-        if (parseContext.language == EShLangVertex)
-            (yyval.interm.type).qualifier.storage = EvqVaryingOut;
-        else
-            (yyval.interm.type).qualifier.storage = EvqVaryingIn;
-    }
-#line 5864 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 166:
-#line 1403 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.globalCheck((yyvsp[0].lex).loc, "patch");
-        parseContext.requireStage((yyvsp[0].lex).loc, (EShLanguageMask)(EShLangTessControlMask | EShLangTessEvaluationMask), "patch");
-        (yyval.interm.type).init((yyvsp[0].lex).loc);
-        (yyval.interm.type).qualifier.patch = true;
-    }
-#line 5875 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 167:
-#line 1409 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.globalCheck((yyvsp[0].lex).loc, "sample");
-        (yyval.interm.type).init((yyvsp[0].lex).loc);
-        (yyval.interm.type).qualifier.sample = true;
-    }
-#line 5885 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 168:
-#line 1414 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.globalCheck((yyvsp[0].lex).loc, "hitAttributeNV");
-        parseContext.requireStage((yyvsp[0].lex).loc, (EShLanguageMask)(EShLangIntersectNVMask | EShLangClosestHitNVMask
-            | EShLangAnyHitNVMask), "hitAttributeNV");
-        parseContext.profileRequires((yyvsp[0].lex).loc, ECoreProfile, 460, E_GL_NV_ray_tracing, "hitAttributeNV");
-        (yyval.interm.type).init((yyvsp[0].lex).loc);
-        (yyval.interm.type).qualifier.storage = EvqHitAttrNV;
-    }
-#line 5898 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 169:
-#line 1422 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.globalCheck((yyvsp[0].lex).loc, "rayPayloadNV");
-        parseContext.requireStage((yyvsp[0].lex).loc, (EShLanguageMask)(EShLangRayGenNVMask | EShLangClosestHitNVMask |
-            EShLangAnyHitNVMask | EShLangMissNVMask), "rayPayloadNV");
-        parseContext.profileRequires((yyvsp[0].lex).loc, ECoreProfile, 460, E_GL_NV_ray_tracing, "rayPayloadNV");
-        (yyval.interm.type).init((yyvsp[0].lex).loc);
-        (yyval.interm.type).qualifier.storage = EvqPayloadNV;
-    }
-#line 5911 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 170:
-#line 1430 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.globalCheck((yyvsp[0].lex).loc, "rayPayloadInNV");
-        parseContext.requireStage((yyvsp[0].lex).loc, (EShLanguageMask)(EShLangClosestHitNVMask |
-            EShLangAnyHitNVMask | EShLangMissNVMask), "rayPayloadInNV");
-        parseContext.profileRequires((yyvsp[0].lex).loc, ECoreProfile, 460, E_GL_NV_ray_tracing, "rayPayloadInNV");
-        (yyval.interm.type).init((yyvsp[0].lex).loc);
-        (yyval.interm.type).qualifier.storage = EvqPayloadInNV;
-    }
-#line 5924 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 171:
-#line 1438 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.globalCheck((yyvsp[0].lex).loc, "callableDataNV");
-        parseContext.requireStage((yyvsp[0].lex).loc, (EShLanguageMask)(EShLangRayGenNVMask |
-            EShLangClosestHitNVMask | EShLangMissNVMask | EShLangCallableNVMask), "callableDataNV");
-        parseContext.profileRequires((yyvsp[0].lex).loc, ECoreProfile, 460, E_GL_NV_ray_tracing, "callableDataNV");
-        (yyval.interm.type).init((yyvsp[0].lex).loc);
-        (yyval.interm.type).qualifier.storage = EvqCallableDataNV;
-    }
-#line 5937 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 172:
-#line 1446 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.globalCheck((yyvsp[0].lex).loc, "callableDataInNV");
-        parseContext.requireStage((yyvsp[0].lex).loc, (EShLanguageMask)(EShLangCallableNVMask), "callableDataInNV");
-        parseContext.profileRequires((yyvsp[0].lex).loc, ECoreProfile, 460, E_GL_NV_ray_tracing, "callableDataInNV");
-        (yyval.interm.type).init((yyvsp[0].lex).loc);
-        (yyval.interm.type).qualifier.storage = EvqCallableDataInNV;
-    }
-#line 5949 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 173:
-#line 1453 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc);
-        (yyval.interm.type).qualifier.coherent = true;
-    }
-#line 5958 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 174:
-#line 1457 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc);
-        parseContext.requireExtensions((yyvsp[0].lex).loc, 1, &E_GL_KHR_memory_scope_semantics, "devicecoherent");
-        (yyval.interm.type).qualifier.devicecoherent = true;
-    }
-#line 5968 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 175:
-#line 1462 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc);
-        parseContext.requireExtensions((yyvsp[0].lex).loc, 1, &E_GL_KHR_memory_scope_semantics, "queuefamilycoherent");
-        (yyval.interm.type).qualifier.queuefamilycoherent = true;
-    }
-#line 5978 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 176:
-#line 1467 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc);
-        parseContext.requireExtensions((yyvsp[0].lex).loc, 1, &E_GL_KHR_memory_scope_semantics, "workgroupcoherent");
-        (yyval.interm.type).qualifier.workgroupcoherent = true;
-    }
-#line 5988 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 177:
-#line 1472 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc);
-        parseContext.requireExtensions((yyvsp[0].lex).loc, 1, &E_GL_KHR_memory_scope_semantics, "subgroupcoherent");
-        (yyval.interm.type).qualifier.subgroupcoherent = true;
-    }
-#line 5998 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 178:
-#line 1477 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc);
-        parseContext.requireExtensions((yyvsp[0].lex).loc, 1, &E_GL_KHR_memory_scope_semantics, "nonprivate");
-        (yyval.interm.type).qualifier.nonprivate = true;
-    }
-#line 6008 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 179:
-#line 1482 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc);
-        (yyval.interm.type).qualifier.volatil = true;
-    }
-#line 6017 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 180:
-#line 1486 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc);
-        (yyval.interm.type).qualifier.restrict = true;
-    }
-#line 6026 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 181:
-#line 1490 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc);
-        (yyval.interm.type).qualifier.readonly = true;
-    }
-#line 6035 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 182:
-#line 1494 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc);
-        (yyval.interm.type).qualifier.writeonly = true;
-    }
-#line 6044 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 183:
-#line 1498 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.spvRemoved((yyvsp[0].lex).loc, "subroutine");
-        parseContext.globalCheck((yyvsp[0].lex).loc, "subroutine");
-        parseContext.unimplemented((yyvsp[0].lex).loc, "subroutine");
-        (yyval.interm.type).init((yyvsp[0].lex).loc);
-    }
-#line 6055 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 184:
-#line 1504 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.spvRemoved((yyvsp[-3].lex).loc, "subroutine");
-        parseContext.globalCheck((yyvsp[-3].lex).loc, "subroutine");
-        parseContext.unimplemented((yyvsp[-3].lex).loc, "subroutine");
-        (yyval.interm.type).init((yyvsp[-3].lex).loc);
-    }
-#line 6066 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 185:
-#line 1515 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc);
-        (yyval.interm.type).qualifier.nonUniform = true;
-    }
-#line 6075 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 186:
-#line 1522 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        // TODO
-    }
-#line 6083 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 187:
-#line 1525 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        // TODO: 4.0 semantics: subroutines
-        // 1) make sure each identifier is a type declared earlier with SUBROUTINE
-        // 2) save all of the identifiers for future comparison with the declared function
-    }
-#line 6093 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 188:
-#line 1534 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 144:
+#line 1165 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type) = (yyvsp[-1].interm.type);
         (yyval.interm.type).qualifier.precision = parseContext.getDefaultPrecision((yyval.interm.type));
         (yyval.interm.type).typeParameters = (yyvsp[0].interm.typeParameters);
     }
-#line 6103 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3812 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 189:
-#line 1539 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 145:
+#line 1170 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.arrayOfArrayVersionCheck((yyvsp[0].interm).loc, (yyvsp[0].interm).arraySizes);
         (yyval.interm.type) = (yyvsp[-2].interm.type);
@@ -6111,21 +3820,21 @@ yyreduce:
         (yyval.interm.type).typeParameters = (yyvsp[-1].interm.typeParameters);
         (yyval.interm.type).arraySizes = (yyvsp[0].interm).arraySizes;
     }
-#line 6115 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3824 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 190:
-#line 1549 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 146:
+#line 1180 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm).loc = (yyvsp[-1].lex).loc;
         (yyval.interm).arraySizes = new TArraySizes;
         (yyval.interm).arraySizes->addInnerSize();
     }
-#line 6125 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3834 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 191:
-#line 1554 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 147:
+#line 1185 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm).loc = (yyvsp[-2].lex).loc;
         (yyval.interm).arraySizes = new TArraySizes;
@@ -6134,20 +3843,20 @@ yyreduce:
         parseContext.arraySizeCheck((yyvsp[-1].interm.intermTypedNode)->getLoc(), (yyvsp[-1].interm.intermTypedNode), size, "array size");
         (yyval.interm).arraySizes->addInnerSize(size);
     }
-#line 6138 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3847 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 192:
-#line 1562 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 148:
+#line 1193 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm) = (yyvsp[-2].interm);
         (yyval.interm).arraySizes->addInnerSize();
     }
-#line 6147 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3856 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 193:
-#line 1566 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 149:
+#line 1197 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm) = (yyvsp[-3].interm);
 
@@ -6155,35 +3864,35 @@ yyreduce:
         parseContext.arraySizeCheck((yyvsp[-1].interm.intermTypedNode)->getLoc(), (yyvsp[-1].interm.intermTypedNode), size, "array size");
         (yyval.interm).arraySizes->addInnerSize(size);
     }
-#line 6159 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3868 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 194:
-#line 1576 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 150:
+#line 1207 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.typeParameters) = (yyvsp[0].interm.typeParameters);
     }
-#line 6167 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3876 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 195:
-#line 1579 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 151:
+#line 1210 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.typeParameters) = 0;
     }
-#line 6175 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3884 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 196:
-#line 1585 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 152:
+#line 1216 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.typeParameters) = (yyvsp[-1].interm.typeParameters);
     }
-#line 6183 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3892 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 197:
-#line 1591 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 153:
+#line 1222 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.typeParameters) = new TArraySizes;
 
@@ -6191,11 +3900,11 @@ yyreduce:
         parseContext.arraySizeCheck((yyvsp[0].interm.intermTypedNode)->getLoc(), (yyvsp[0].interm.intermTypedNode), size, "type parameter");
         (yyval.interm.typeParameters)->addInnerSize(size);
     }
-#line 6195 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3904 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 198:
-#line 1598 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 154:
+#line 1229 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.typeParameters) = (yyvsp[-2].interm.typeParameters);
 
@@ -6203,3038 +3912,600 @@ yyreduce:
         parseContext.arraySizeCheck((yyvsp[0].interm.intermTypedNode)->getLoc(), (yyvsp[0].interm.intermTypedNode), size, "type parameter");
         (yyval.interm.typeParameters)->addInnerSize(size);
     }
-#line 6207 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3916 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 199:
-#line 1608 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 155:
+#line 1239 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtVoid;
     }
-#line 6216 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3925 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 200:
-#line 1612 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 156:
+#line 1243 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtFloat;
     }
-#line 6225 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3934 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 201:
-#line 1616 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 157:
+#line 1247 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtInt;
     }
-#line 6234 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3943 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 202:
-#line 1620 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 158:
+#line 1251 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.fullIntegerCheck((yyvsp[0].lex).loc, "unsigned integer");
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtUint;
     }
-#line 6244 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3953 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 203:
-#line 1625 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 159:
+#line 1256 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtBool;
     }
-#line 6253 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3962 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 204:
-#line 1629 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 160:
+#line 1260 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtFloat;
         (yyval.interm.type).setVector(2);
     }
-#line 6263 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3972 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 205:
-#line 1634 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 161:
+#line 1265 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtFloat;
         (yyval.interm.type).setVector(3);
     }
-#line 6273 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3982 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 206:
-#line 1639 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 162:
+#line 1270 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtFloat;
         (yyval.interm.type).setVector(4);
     }
-#line 6283 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 3992 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 207:
-#line 1644 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 163:
+#line 1275 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtBool;
         (yyval.interm.type).setVector(2);
     }
-#line 6293 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4002 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 208:
-#line 1649 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 164:
+#line 1280 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtBool;
         (yyval.interm.type).setVector(3);
     }
-#line 6303 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4012 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 209:
-#line 1654 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 165:
+#line 1285 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtBool;
         (yyval.interm.type).setVector(4);
     }
-#line 6313 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4022 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 210:
-#line 1659 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 166:
+#line 1290 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtInt;
         (yyval.interm.type).setVector(2);
     }
-#line 6323 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4032 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 211:
-#line 1664 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 167:
+#line 1295 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtInt;
         (yyval.interm.type).setVector(3);
     }
-#line 6333 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4042 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 212:
-#line 1669 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 168:
+#line 1300 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtInt;
         (yyval.interm.type).setVector(4);
     }
-#line 6343 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4052 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 213:
-#line 1674 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 169:
+#line 1305 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.fullIntegerCheck((yyvsp[0].lex).loc, "unsigned integer vector");
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtUint;
         (yyval.interm.type).setVector(2);
     }
-#line 6354 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4063 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 214:
-#line 1680 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 170:
+#line 1311 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.fullIntegerCheck((yyvsp[0].lex).loc, "unsigned integer vector");
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtUint;
         (yyval.interm.type).setVector(3);
     }
-#line 6365 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4074 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 215:
-#line 1686 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 171:
+#line 1317 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.fullIntegerCheck((yyvsp[0].lex).loc, "unsigned integer vector");
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtUint;
         (yyval.interm.type).setVector(4);
     }
-#line 6376 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4085 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 216:
-#line 1692 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 172:
+#line 1323 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtFloat;
         (yyval.interm.type).setMatrix(2, 2);
     }
-#line 6386 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4095 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 217:
-#line 1697 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 173:
+#line 1328 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtFloat;
         (yyval.interm.type).setMatrix(3, 3);
     }
-#line 6396 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4105 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 218:
-#line 1702 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 174:
+#line 1333 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtFloat;
         (yyval.interm.type).setMatrix(4, 4);
     }
-#line 6406 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4115 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 219:
-#line 1707 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 175:
+#line 1338 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtFloat;
         (yyval.interm.type).setMatrix(2, 2);
     }
-#line 6416 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4125 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 220:
-#line 1712 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 176:
+#line 1343 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtFloat;
         (yyval.interm.type).setMatrix(2, 3);
     }
-#line 6426 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4135 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 221:
-#line 1717 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 177:
+#line 1348 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtFloat;
         (yyval.interm.type).setMatrix(2, 4);
     }
-#line 6436 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4145 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 222:
-#line 1722 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 178:
+#line 1353 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtFloat;
         (yyval.interm.type).setMatrix(3, 2);
     }
-#line 6446 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4155 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 223:
-#line 1727 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 179:
+#line 1358 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtFloat;
         (yyval.interm.type).setMatrix(3, 3);
     }
-#line 6456 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4165 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 224:
-#line 1732 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 180:
+#line 1363 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtFloat;
         (yyval.interm.type).setMatrix(3, 4);
     }
-#line 6466 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4175 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 225:
-#line 1737 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 181:
+#line 1368 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtFloat;
         (yyval.interm.type).setMatrix(4, 2);
     }
-#line 6476 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4185 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 226:
-#line 1742 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 182:
+#line 1373 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtFloat;
         (yyval.interm.type).setMatrix(4, 3);
     }
-#line 6486 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4195 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 227:
-#line 1747 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 183:
+#line 1378 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtFloat;
         (yyval.interm.type).setMatrix(4, 4);
     }
-#line 6496 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4205 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 228:
-#line 1753 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.doubleCheck((yyvsp[0].lex).loc, "double");
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtDouble;
-    }
-#line 6506 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 229:
-#line 1758 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16ScalarVectorCheck((yyvsp[0].lex).loc, "float16_t", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtFloat16;
-    }
-#line 6516 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 230:
-#line 1763 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.explicitFloat32Check((yyvsp[0].lex).loc, "float32_t", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtFloat;
-    }
-#line 6526 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 231:
-#line 1768 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.explicitFloat64Check((yyvsp[0].lex).loc, "float64_t", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtDouble;
-    }
-#line 6536 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 232:
-#line 1773 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.int8ScalarVectorCheck((yyvsp[0].lex).loc, "8-bit signed integer", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtInt8;
-    }
-#line 6546 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 233:
-#line 1778 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.int8ScalarVectorCheck((yyvsp[0].lex).loc, "8-bit unsigned integer", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtUint8;
-    }
-#line 6556 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 234:
-#line 1783 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.int16ScalarVectorCheck((yyvsp[0].lex).loc, "16-bit signed integer", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtInt16;
-    }
-#line 6566 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 235:
-#line 1788 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.int16ScalarVectorCheck((yyvsp[0].lex).loc, "16-bit unsigned integer", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtUint16;
-    }
-#line 6576 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 236:
-#line 1793 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.explicitInt32Check((yyvsp[0].lex).loc, "32-bit signed integer", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtInt;
-    }
-#line 6586 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 237:
-#line 1798 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.explicitInt32Check((yyvsp[0].lex).loc, "32-bit unsigned integer", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtUint;
-    }
-#line 6596 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 238:
-#line 1803 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.int64Check((yyvsp[0].lex).loc, "64-bit integer", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtInt64;
-    }
-#line 6606 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 239:
-#line 1808 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.int64Check((yyvsp[0].lex).loc, "64-bit unsigned integer", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtUint64;
-    }
-#line 6616 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 240:
-#line 1813 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.doubleCheck((yyvsp[0].lex).loc, "double vector");
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtDouble;
-        (yyval.interm.type).setVector(2);
-    }
-#line 6627 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 241:
-#line 1819 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.doubleCheck((yyvsp[0].lex).loc, "double vector");
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtDouble;
-        (yyval.interm.type).setVector(3);
-    }
-#line 6638 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 242:
-#line 1825 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.doubleCheck((yyvsp[0].lex).loc, "double vector");
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtDouble;
-        (yyval.interm.type).setVector(4);
-    }
-#line 6649 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 243:
-#line 1831 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16ScalarVectorCheck((yyvsp[0].lex).loc, "half float vector", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtFloat16;
-        (yyval.interm.type).setVector(2);
-    }
-#line 6660 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 244:
-#line 1837 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16ScalarVectorCheck((yyvsp[0].lex).loc, "half float vector", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtFloat16;
-        (yyval.interm.type).setVector(3);
-    }
-#line 6671 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 245:
-#line 1843 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16ScalarVectorCheck((yyvsp[0].lex).loc, "half float vector", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtFloat16;
-        (yyval.interm.type).setVector(4);
-    }
-#line 6682 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 246:
-#line 1849 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.explicitFloat32Check((yyvsp[0].lex).loc, "float32_t vector", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtFloat;
-        (yyval.interm.type).setVector(2);
-    }
-#line 6693 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 247:
-#line 1855 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.explicitFloat32Check((yyvsp[0].lex).loc, "float32_t vector", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtFloat;
-        (yyval.interm.type).setVector(3);
-    }
-#line 6704 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 248:
-#line 1861 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.explicitFloat32Check((yyvsp[0].lex).loc, "float32_t vector", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtFloat;
-        (yyval.interm.type).setVector(4);
-    }
-#line 6715 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 249:
-#line 1867 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.explicitFloat64Check((yyvsp[0].lex).loc, "float64_t vector", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtDouble;
-        (yyval.interm.type).setVector(2);
-    }
-#line 6726 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 250:
-#line 1873 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.explicitFloat64Check((yyvsp[0].lex).loc, "float64_t vector", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtDouble;
-        (yyval.interm.type).setVector(3);
-    }
-#line 6737 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 251:
-#line 1879 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.explicitFloat64Check((yyvsp[0].lex).loc, "float64_t vector", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtDouble;
-        (yyval.interm.type).setVector(4);
-    }
-#line 6748 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 252:
-#line 1885 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.int8ScalarVectorCheck((yyvsp[0].lex).loc, "8-bit signed integer vector", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtInt8;
-        (yyval.interm.type).setVector(2);
-    }
-#line 6759 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 253:
-#line 1891 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.int8ScalarVectorCheck((yyvsp[0].lex).loc, "8-bit signed integer vector", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtInt8;
-        (yyval.interm.type).setVector(3);
-    }
-#line 6770 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 254:
-#line 1897 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.int8ScalarVectorCheck((yyvsp[0].lex).loc, "8-bit signed integer vector", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtInt8;
-        (yyval.interm.type).setVector(4);
-    }
-#line 6781 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 255:
-#line 1903 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.int16ScalarVectorCheck((yyvsp[0].lex).loc, "16-bit signed integer vector", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtInt16;
-        (yyval.interm.type).setVector(2);
-    }
-#line 6792 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 256:
-#line 1909 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.int16ScalarVectorCheck((yyvsp[0].lex).loc, "16-bit signed integer vector", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtInt16;
-        (yyval.interm.type).setVector(3);
-    }
-#line 6803 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 257:
-#line 1915 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.int16ScalarVectorCheck((yyvsp[0].lex).loc, "16-bit signed integer vector", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtInt16;
-        (yyval.interm.type).setVector(4);
-    }
-#line 6814 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 258:
-#line 1921 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.explicitInt32Check((yyvsp[0].lex).loc, "32-bit signed integer vector", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtInt;
-        (yyval.interm.type).setVector(2);
-    }
-#line 6825 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 259:
-#line 1927 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.explicitInt32Check((yyvsp[0].lex).loc, "32-bit signed integer vector", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtInt;
-        (yyval.interm.type).setVector(3);
-    }
-#line 6836 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 260:
-#line 1933 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.explicitInt32Check((yyvsp[0].lex).loc, "32-bit signed integer vector", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtInt;
-        (yyval.interm.type).setVector(4);
-    }
-#line 6847 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 261:
-#line 1939 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.int64Check((yyvsp[0].lex).loc, "64-bit integer vector", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtInt64;
-        (yyval.interm.type).setVector(2);
-    }
-#line 6858 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 262:
-#line 1945 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.int64Check((yyvsp[0].lex).loc, "64-bit integer vector", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtInt64;
-        (yyval.interm.type).setVector(3);
-    }
-#line 6869 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 263:
-#line 1951 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.int64Check((yyvsp[0].lex).loc, "64-bit integer vector", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtInt64;
-        (yyval.interm.type).setVector(4);
-    }
-#line 6880 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 264:
-#line 1957 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.int8ScalarVectorCheck((yyvsp[0].lex).loc, "8-bit unsigned integer vector", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtUint8;
-        (yyval.interm.type).setVector(2);
-    }
-#line 6891 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 265:
-#line 1963 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.int8ScalarVectorCheck((yyvsp[0].lex).loc, "8-bit unsigned integer vector", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtUint8;
-        (yyval.interm.type).setVector(3);
-    }
-#line 6902 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 266:
-#line 1969 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.int8ScalarVectorCheck((yyvsp[0].lex).loc, "8-bit unsigned integer vector", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtUint8;
-        (yyval.interm.type).setVector(4);
-    }
-#line 6913 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 267:
-#line 1975 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.int16ScalarVectorCheck((yyvsp[0].lex).loc, "16-bit unsigned integer vector", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtUint16;
-        (yyval.interm.type).setVector(2);
-    }
-#line 6924 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 268:
-#line 1981 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.int16ScalarVectorCheck((yyvsp[0].lex).loc, "16-bit unsigned integer vector", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtUint16;
-        (yyval.interm.type).setVector(3);
-    }
-#line 6935 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 269:
-#line 1987 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.int16ScalarVectorCheck((yyvsp[0].lex).loc, "16-bit unsigned integer vector", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtUint16;
-        (yyval.interm.type).setVector(4);
-    }
-#line 6946 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 270:
-#line 1993 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.explicitInt32Check((yyvsp[0].lex).loc, "32-bit unsigned integer vector", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtUint;
-        (yyval.interm.type).setVector(2);
-    }
-#line 6957 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 271:
-#line 1999 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.explicitInt32Check((yyvsp[0].lex).loc, "32-bit unsigned integer vector", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtUint;
-        (yyval.interm.type).setVector(3);
-    }
-#line 6968 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 272:
-#line 2005 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.explicitInt32Check((yyvsp[0].lex).loc, "32-bit unsigned integer vector", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtUint;
-        (yyval.interm.type).setVector(4);
-    }
-#line 6979 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 273:
-#line 2011 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.int64Check((yyvsp[0].lex).loc, "64-bit unsigned integer vector", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtUint64;
-        (yyval.interm.type).setVector(2);
-    }
-#line 6990 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 274:
-#line 2017 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.int64Check((yyvsp[0].lex).loc, "64-bit unsigned integer vector", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtUint64;
-        (yyval.interm.type).setVector(3);
-    }
-#line 7001 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 275:
-#line 2023 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.int64Check((yyvsp[0].lex).loc, "64-bit unsigned integer vector", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtUint64;
-        (yyval.interm.type).setVector(4);
-    }
-#line 7012 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 276:
-#line 2029 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.doubleCheck((yyvsp[0].lex).loc, "double matrix");
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtDouble;
-        (yyval.interm.type).setMatrix(2, 2);
-    }
-#line 7023 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 277:
-#line 2035 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.doubleCheck((yyvsp[0].lex).loc, "double matrix");
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtDouble;
-        (yyval.interm.type).setMatrix(3, 3);
-    }
-#line 7034 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 278:
-#line 2041 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.doubleCheck((yyvsp[0].lex).loc, "double matrix");
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtDouble;
-        (yyval.interm.type).setMatrix(4, 4);
-    }
-#line 7045 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 279:
-#line 2047 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.doubleCheck((yyvsp[0].lex).loc, "double matrix");
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtDouble;
-        (yyval.interm.type).setMatrix(2, 2);
-    }
-#line 7056 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 280:
-#line 2053 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.doubleCheck((yyvsp[0].lex).loc, "double matrix");
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtDouble;
-        (yyval.interm.type).setMatrix(2, 3);
-    }
-#line 7067 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 281:
-#line 2059 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.doubleCheck((yyvsp[0].lex).loc, "double matrix");
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtDouble;
-        (yyval.interm.type).setMatrix(2, 4);
-    }
-#line 7078 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 282:
-#line 2065 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.doubleCheck((yyvsp[0].lex).loc, "double matrix");
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtDouble;
-        (yyval.interm.type).setMatrix(3, 2);
-    }
-#line 7089 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 283:
-#line 2071 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.doubleCheck((yyvsp[0].lex).loc, "double matrix");
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtDouble;
-        (yyval.interm.type).setMatrix(3, 3);
-    }
-#line 7100 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 284:
-#line 2077 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.doubleCheck((yyvsp[0].lex).loc, "double matrix");
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtDouble;
-        (yyval.interm.type).setMatrix(3, 4);
-    }
-#line 7111 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 285:
-#line 2083 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.doubleCheck((yyvsp[0].lex).loc, "double matrix");
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtDouble;
-        (yyval.interm.type).setMatrix(4, 2);
-    }
-#line 7122 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 286:
-#line 2089 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.doubleCheck((yyvsp[0].lex).loc, "double matrix");
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtDouble;
-        (yyval.interm.type).setMatrix(4, 3);
-    }
-#line 7133 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 287:
-#line 2095 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.doubleCheck((yyvsp[0].lex).loc, "double matrix");
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtDouble;
-        (yyval.interm.type).setMatrix(4, 4);
-    }
-#line 7144 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 288:
-#line 2101 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16Check((yyvsp[0].lex).loc, "half float matrix", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtFloat16;
-        (yyval.interm.type).setMatrix(2, 2);
-    }
-#line 7155 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 289:
-#line 2107 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16Check((yyvsp[0].lex).loc, "half float matrix", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtFloat16;
-        (yyval.interm.type).setMatrix(3, 3);
-    }
-#line 7166 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 290:
-#line 2113 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16Check((yyvsp[0].lex).loc, "half float matrix", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtFloat16;
-        (yyval.interm.type).setMatrix(4, 4);
-    }
-#line 7177 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 291:
-#line 2119 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16Check((yyvsp[0].lex).loc, "half float matrix", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtFloat16;
-        (yyval.interm.type).setMatrix(2, 2);
-    }
-#line 7188 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 292:
-#line 2125 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16Check((yyvsp[0].lex).loc, "half float matrix", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtFloat16;
-        (yyval.interm.type).setMatrix(2, 3);
-    }
-#line 7199 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 293:
-#line 2131 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16Check((yyvsp[0].lex).loc, "half float matrix", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtFloat16;
-        (yyval.interm.type).setMatrix(2, 4);
-    }
-#line 7210 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 294:
-#line 2137 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16Check((yyvsp[0].lex).loc, "half float matrix", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtFloat16;
-        (yyval.interm.type).setMatrix(3, 2);
-    }
-#line 7221 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 295:
-#line 2143 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16Check((yyvsp[0].lex).loc, "half float matrix", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtFloat16;
-        (yyval.interm.type).setMatrix(3, 3);
-    }
-#line 7232 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 296:
-#line 2149 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16Check((yyvsp[0].lex).loc, "half float matrix", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtFloat16;
-        (yyval.interm.type).setMatrix(3, 4);
-    }
-#line 7243 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 297:
-#line 2155 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16Check((yyvsp[0].lex).loc, "half float matrix", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtFloat16;
-        (yyval.interm.type).setMatrix(4, 2);
-    }
-#line 7254 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 298:
-#line 2161 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16Check((yyvsp[0].lex).loc, "half float matrix", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtFloat16;
-        (yyval.interm.type).setMatrix(4, 3);
-    }
-#line 7265 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 299:
-#line 2167 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16Check((yyvsp[0].lex).loc, "half float matrix", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtFloat16;
-        (yyval.interm.type).setMatrix(4, 4);
-    }
-#line 7276 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 300:
-#line 2173 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.explicitFloat32Check((yyvsp[0].lex).loc, "float32_t matrix", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtFloat;
-        (yyval.interm.type).setMatrix(2, 2);
-    }
-#line 7287 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 301:
-#line 2179 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.explicitFloat32Check((yyvsp[0].lex).loc, "float32_t matrix", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtFloat;
-        (yyval.interm.type).setMatrix(3, 3);
-    }
-#line 7298 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 302:
-#line 2185 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.explicitFloat32Check((yyvsp[0].lex).loc, "float32_t matrix", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtFloat;
-        (yyval.interm.type).setMatrix(4, 4);
-    }
-#line 7309 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 303:
-#line 2191 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.explicitFloat32Check((yyvsp[0].lex).loc, "float32_t matrix", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtFloat;
-        (yyval.interm.type).setMatrix(2, 2);
-    }
-#line 7320 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 304:
-#line 2197 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.explicitFloat32Check((yyvsp[0].lex).loc, "float32_t matrix", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtFloat;
-        (yyval.interm.type).setMatrix(2, 3);
-    }
-#line 7331 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 305:
-#line 2203 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.explicitFloat32Check((yyvsp[0].lex).loc, "float32_t matrix", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtFloat;
-        (yyval.interm.type).setMatrix(2, 4);
-    }
-#line 7342 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 306:
-#line 2209 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.explicitFloat32Check((yyvsp[0].lex).loc, "float32_t matrix", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtFloat;
-        (yyval.interm.type).setMatrix(3, 2);
-    }
-#line 7353 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 307:
-#line 2215 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.explicitFloat32Check((yyvsp[0].lex).loc, "float32_t matrix", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtFloat;
-        (yyval.interm.type).setMatrix(3, 3);
-    }
-#line 7364 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 308:
-#line 2221 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.explicitFloat32Check((yyvsp[0].lex).loc, "float32_t matrix", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtFloat;
-        (yyval.interm.type).setMatrix(3, 4);
-    }
-#line 7375 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 309:
-#line 2227 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.explicitFloat32Check((yyvsp[0].lex).loc, "float32_t matrix", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtFloat;
-        (yyval.interm.type).setMatrix(4, 2);
-    }
-#line 7386 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 310:
-#line 2233 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.explicitFloat32Check((yyvsp[0].lex).loc, "float32_t matrix", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtFloat;
-        (yyval.interm.type).setMatrix(4, 3);
-    }
-#line 7397 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 311:
-#line 2239 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.explicitFloat32Check((yyvsp[0].lex).loc, "float32_t matrix", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtFloat;
-        (yyval.interm.type).setMatrix(4, 4);
-    }
-#line 7408 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 312:
-#line 2245 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.explicitFloat64Check((yyvsp[0].lex).loc, "float64_t matrix", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtDouble;
-        (yyval.interm.type).setMatrix(2, 2);
-    }
-#line 7419 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 313:
-#line 2251 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.explicitFloat64Check((yyvsp[0].lex).loc, "float64_t matrix", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtDouble;
-        (yyval.interm.type).setMatrix(3, 3);
-    }
-#line 7430 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 314:
-#line 2257 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.explicitFloat64Check((yyvsp[0].lex).loc, "float64_t matrix", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtDouble;
-        (yyval.interm.type).setMatrix(4, 4);
-    }
-#line 7441 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 315:
-#line 2263 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.explicitFloat64Check((yyvsp[0].lex).loc, "float64_t matrix", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtDouble;
-        (yyval.interm.type).setMatrix(2, 2);
-    }
-#line 7452 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 316:
-#line 2269 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.explicitFloat64Check((yyvsp[0].lex).loc, "float64_t matrix", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtDouble;
-        (yyval.interm.type).setMatrix(2, 3);
-    }
-#line 7463 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 317:
-#line 2275 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.explicitFloat64Check((yyvsp[0].lex).loc, "float64_t matrix", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtDouble;
-        (yyval.interm.type).setMatrix(2, 4);
-    }
-#line 7474 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 318:
-#line 2281 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.explicitFloat64Check((yyvsp[0].lex).loc, "float64_t matrix", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtDouble;
-        (yyval.interm.type).setMatrix(3, 2);
-    }
-#line 7485 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 319:
-#line 2287 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.explicitFloat64Check((yyvsp[0].lex).loc, "float64_t matrix", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtDouble;
-        (yyval.interm.type).setMatrix(3, 3);
-    }
-#line 7496 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 320:
-#line 2293 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.explicitFloat64Check((yyvsp[0].lex).loc, "float64_t matrix", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtDouble;
-        (yyval.interm.type).setMatrix(3, 4);
-    }
-#line 7507 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 321:
-#line 2299 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.explicitFloat64Check((yyvsp[0].lex).loc, "float64_t matrix", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtDouble;
-        (yyval.interm.type).setMatrix(4, 2);
-    }
-#line 7518 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 322:
-#line 2305 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.explicitFloat64Check((yyvsp[0].lex).loc, "float64_t matrix", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtDouble;
-        (yyval.interm.type).setMatrix(4, 3);
-    }
-#line 7529 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 323:
-#line 2311 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.explicitFloat64Check((yyvsp[0].lex).loc, "float64_t matrix", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtDouble;
-        (yyval.interm.type).setMatrix(4, 4);
-    }
-#line 7540 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 324:
-#line 2317 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-       (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-       (yyval.interm.type).basicType = EbtAccStructNV;
-    }
-#line 7549 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 325:
-#line 2321 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.vulkanRemoved((yyvsp[0].lex).loc, "atomic counter types");
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtAtomicUint;
-    }
-#line 7559 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 326:
-#line 2326 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.set(EbtFloat, Esd1D);
-    }
-#line 7569 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 327:
-#line 2332 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 184:
+#line 1384 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtSampler;
         (yyval.interm.type).sampler.set(EbtFloat, Esd2D);
     }
-#line 7579 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4215 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 328:
-#line 2337 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 185:
+#line 1389 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtSampler;
         (yyval.interm.type).sampler.set(EbtFloat, Esd3D);
     }
-#line 7589 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4225 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 329:
-#line 2342 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 186:
+#line 1394 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtSampler;
         (yyval.interm.type).sampler.set(EbtFloat, EsdCube);
     }
-#line 7599 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4235 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 330:
-#line 2347 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 187:
+#line 1399 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtSampler;
         (yyval.interm.type).sampler.set(EbtFloat, Esd2D, false, true);
     }
-#line 7609 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4245 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 331:
-#line 2352 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 188:
+#line 1404 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtSampler;
         (yyval.interm.type).sampler.set(EbtFloat, EsdCube, false, true);
     }
-#line 7619 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4255 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 332:
-#line 2358 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.set(EbtFloat, Esd1D, false, true);
-    }
-#line 7629 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 333:
-#line 2363 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.set(EbtFloat, Esd1D, true);
-    }
-#line 7639 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 334:
-#line 2368 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.set(EbtFloat, Esd1D, true, true);
-    }
-#line 7649 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 335:
-#line 2374 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 189:
+#line 1409 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtSampler;
         (yyval.interm.type).sampler.set(EbtFloat, Esd2D, true);
     }
-#line 7659 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4265 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 336:
-#line 2379 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 190:
+#line 1414 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtSampler;
         (yyval.interm.type).sampler.set(EbtFloat, Esd2D, true, true);
     }
-#line 7669 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4275 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 337:
-#line 2384 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.set(EbtFloat, EsdCube, true);
-    }
-#line 7679 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 338:
-#line 2389 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.set(EbtFloat, EsdCube, true, true);
-    }
-#line 7689 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 339:
-#line 2395 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16OpaqueCheck((yyvsp[0].lex).loc, "half float sampler", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.set(EbtFloat16, Esd1D);
-    }
-#line 7700 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 340:
-#line 2401 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16OpaqueCheck((yyvsp[0].lex).loc, "half float sampler", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.set(EbtFloat16, Esd2D);
-    }
-#line 7711 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 341:
-#line 2407 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16OpaqueCheck((yyvsp[0].lex).loc, "half float sampler", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.set(EbtFloat16, Esd3D);
-    }
-#line 7722 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 342:
-#line 2413 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16OpaqueCheck((yyvsp[0].lex).loc, "half float sampler", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.set(EbtFloat16, EsdCube);
-    }
-#line 7733 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 343:
-#line 2419 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16OpaqueCheck((yyvsp[0].lex).loc, "half float sampler", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.set(EbtFloat16, Esd1D, false, true);
-    }
-#line 7744 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 344:
-#line 2425 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16OpaqueCheck((yyvsp[0].lex).loc, "half float sampler", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.set(EbtFloat16, Esd2D, false, true);
-    }
-#line 7755 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 345:
-#line 2431 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16OpaqueCheck((yyvsp[0].lex).loc, "half float sampler", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.set(EbtFloat16, EsdCube, false, true);
-    }
-#line 7766 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 346:
-#line 2437 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16OpaqueCheck((yyvsp[0].lex).loc, "half float sampler", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.set(EbtFloat16, Esd1D, true);
-    }
-#line 7777 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 347:
-#line 2443 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16OpaqueCheck((yyvsp[0].lex).loc, "half float sampler", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.set(EbtFloat16, Esd2D, true);
-    }
-#line 7788 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 348:
-#line 2449 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16OpaqueCheck((yyvsp[0].lex).loc, "half float sampler", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.set(EbtFloat16, Esd1D, true, true);
-    }
-#line 7799 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 349:
-#line 2455 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16OpaqueCheck((yyvsp[0].lex).loc, "half float sampler", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.set(EbtFloat16, Esd2D, true, true);
-    }
-#line 7810 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 350:
-#line 2461 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16OpaqueCheck((yyvsp[0].lex).loc, "half float sampler", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.set(EbtFloat16, EsdCube, true);
-    }
-#line 7821 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 351:
-#line 2467 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16OpaqueCheck((yyvsp[0].lex).loc, "half float sampler", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.set(EbtFloat16, EsdCube, true, true);
-    }
-#line 7832 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 352:
-#line 2473 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.set(EbtInt, Esd1D);
-    }
-#line 7842 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 353:
-#line 2479 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 191:
+#line 1420 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtSampler;
         (yyval.interm.type).sampler.set(EbtInt, Esd2D);
     }
-#line 7852 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4285 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 354:
-#line 2484 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 192:
+#line 1425 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtSampler;
         (yyval.interm.type).sampler.set(EbtInt, Esd3D);
     }
-#line 7862 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4295 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 355:
-#line 2489 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 193:
+#line 1430 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtSampler;
         (yyval.interm.type).sampler.set(EbtInt, EsdCube);
     }
-#line 7872 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4305 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 356:
-#line 2495 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.set(EbtInt, Esd1D, true);
-    }
-#line 7882 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 357:
-#line 2501 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 194:
+#line 1435 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtSampler;
         (yyval.interm.type).sampler.set(EbtInt, Esd2D, true);
     }
-#line 7892 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4315 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 358:
-#line 2506 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.set(EbtInt, EsdCube, true);
-    }
-#line 7902 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 359:
-#line 2512 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.set(EbtUint, Esd1D);
-    }
-#line 7912 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 360:
-#line 2518 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 195:
+#line 1440 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtSampler;
         (yyval.interm.type).sampler.set(EbtUint, Esd2D);
     }
-#line 7922 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4325 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 361:
-#line 2523 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 196:
+#line 1445 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtSampler;
         (yyval.interm.type).sampler.set(EbtUint, Esd3D);
     }
-#line 7932 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4335 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 362:
-#line 2528 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 197:
+#line 1450 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtSampler;
         (yyval.interm.type).sampler.set(EbtUint, EsdCube);
     }
-#line 7942 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4345 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 363:
-#line 2534 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.set(EbtUint, Esd1D, true);
-    }
-#line 7952 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 364:
-#line 2540 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 198:
+#line 1456 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtSampler;
         (yyval.interm.type).sampler.set(EbtUint, Esd2D, true);
     }
-#line 7962 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4355 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 365:
-#line 2545 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.set(EbtUint, EsdCube, true);
-    }
-#line 7972 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 366:
-#line 2551 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.set(EbtFloat, EsdRect);
-    }
-#line 7982 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 367:
-#line 2556 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.set(EbtFloat, EsdRect, false, true);
-    }
-#line 7992 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 368:
-#line 2561 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16OpaqueCheck((yyvsp[0].lex).loc, "half float sampler", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.set(EbtFloat16, EsdRect);
-    }
-#line 8003 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 369:
-#line 2567 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16OpaqueCheck((yyvsp[0].lex).loc, "half float sampler", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.set(EbtFloat16, EsdRect, false, true);
-    }
-#line 8014 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 370:
-#line 2573 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.set(EbtInt, EsdRect);
-    }
-#line 8024 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 371:
-#line 2578 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.set(EbtUint, EsdRect);
-    }
-#line 8034 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 372:
-#line 2583 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.set(EbtFloat, EsdBuffer);
-    }
-#line 8044 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 373:
-#line 2588 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16OpaqueCheck((yyvsp[0].lex).loc, "half float sampler", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.set(EbtFloat16, EsdBuffer);
-    }
-#line 8055 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 374:
-#line 2594 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.set(EbtInt, EsdBuffer);
-    }
-#line 8065 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 375:
-#line 2599 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.set(EbtUint, EsdBuffer);
-    }
-#line 8075 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 376:
-#line 2604 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.set(EbtFloat, Esd2D, false, false, true);
-    }
-#line 8085 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 377:
-#line 2609 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16OpaqueCheck((yyvsp[0].lex).loc, "half float sampler", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.set(EbtFloat16, Esd2D, false, false, true);
-    }
-#line 8096 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 378:
-#line 2615 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.set(EbtInt, Esd2D, false, false, true);
-    }
-#line 8106 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 379:
-#line 2620 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.set(EbtUint, Esd2D, false, false, true);
-    }
-#line 8116 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 380:
-#line 2625 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.set(EbtFloat, Esd2D, true, false, true);
-    }
-#line 8126 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 381:
-#line 2630 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16OpaqueCheck((yyvsp[0].lex).loc, "half float sampler", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.set(EbtFloat16, Esd2D, true, false, true);
-    }
-#line 8137 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 382:
-#line 2636 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.set(EbtInt, Esd2D, true, false, true);
-    }
-#line 8147 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 383:
-#line 2641 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.set(EbtUint, Esd2D, true, false, true);
-    }
-#line 8157 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 384:
-#line 2646 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setPureSampler(false);
-    }
-#line 8167 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 385:
-#line 2651 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setPureSampler(true);
-    }
-#line 8177 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 386:
-#line 2656 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setTexture(EbtFloat, Esd1D);
-    }
-#line 8187 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 387:
-#line 2661 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16OpaqueCheck((yyvsp[0].lex).loc, "half float texture", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setTexture(EbtFloat16, Esd1D);
-    }
-#line 8198 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 388:
-#line 2667 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 199:
+#line 1461 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtSampler;
         (yyval.interm.type).sampler.setTexture(EbtFloat, Esd2D);
     }
-#line 8208 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4365 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 389:
-#line 2672 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16OpaqueCheck((yyvsp[0].lex).loc, "half float texture", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setTexture(EbtFloat16, Esd2D);
-    }
-#line 8219 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 390:
-#line 2678 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 200:
+#line 1466 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtSampler;
         (yyval.interm.type).sampler.setTexture(EbtFloat, Esd3D);
     }
-#line 8229 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4375 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 391:
-#line 2683 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16OpaqueCheck((yyvsp[0].lex).loc, "half float texture", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setTexture(EbtFloat16, Esd3D);
-    }
-#line 8240 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 392:
-#line 2689 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setTexture(EbtFloat, EsdCube);
-    }
-#line 8250 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 393:
-#line 2694 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16OpaqueCheck((yyvsp[0].lex).loc, "half float texture", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setTexture(EbtFloat16, EsdCube);
-    }
-#line 8261 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 394:
-#line 2700 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setTexture(EbtFloat, Esd1D, true);
-    }
-#line 8271 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 395:
-#line 2705 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16OpaqueCheck((yyvsp[0].lex).loc, "half float texture", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setTexture(EbtFloat16, Esd1D, true);
-    }
-#line 8282 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 396:
-#line 2711 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 201:
+#line 1471 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtSampler;
         (yyval.interm.type).sampler.setTexture(EbtFloat, Esd2D, true);
     }
-#line 8292 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4385 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 397:
-#line 2716 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16OpaqueCheck((yyvsp[0].lex).loc, "half float texture", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setTexture(EbtFloat16, Esd2D, true);
-    }
-#line 8303 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 398:
-#line 2722 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 202:
+#line 1476 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setTexture(EbtFloat, EsdCube, true);
+        (yyval.interm.type).sampler.setTexture(EbtFloat, EsdCube);
     }
-#line 8313 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4395 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 399:
-#line 2727 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16OpaqueCheck((yyvsp[0].lex).loc, "half float texture", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setTexture(EbtFloat16, EsdCube, true);
-    }
-#line 8324 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 400:
-#line 2733 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setTexture(EbtInt, Esd1D);
-    }
-#line 8334 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 401:
-#line 2738 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 203:
+#line 1481 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtSampler;
         (yyval.interm.type).sampler.setTexture(EbtInt, Esd2D);
     }
-#line 8344 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4405 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 402:
-#line 2743 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 204:
+#line 1486 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtSampler;
         (yyval.interm.type).sampler.setTexture(EbtInt, Esd3D);
     }
-#line 8354 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4415 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 403:
-#line 2748 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 205:
+#line 1491 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtSampler;
         (yyval.interm.type).sampler.setTexture(EbtInt, EsdCube);
     }
-#line 8364 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4425 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 404:
-#line 2753 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setTexture(EbtInt, Esd1D, true);
-    }
-#line 8374 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 405:
-#line 2758 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 206:
+#line 1496 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtSampler;
         (yyval.interm.type).sampler.setTexture(EbtInt, Esd2D, true);
     }
-#line 8384 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4435 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 406:
-#line 2763 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setTexture(EbtInt, EsdCube, true);
-    }
-#line 8394 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 407:
-#line 2768 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setTexture(EbtUint, Esd1D);
-    }
-#line 8404 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 408:
-#line 2773 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 207:
+#line 1501 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtSampler;
         (yyval.interm.type).sampler.setTexture(EbtUint, Esd2D);
     }
-#line 8414 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4445 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 409:
-#line 2778 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 208:
+#line 1506 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtSampler;
         (yyval.interm.type).sampler.setTexture(EbtUint, Esd3D);
     }
-#line 8424 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4455 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 410:
-#line 2783 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 209:
+#line 1511 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtSampler;
         (yyval.interm.type).sampler.setTexture(EbtUint, EsdCube);
     }
-#line 8434 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4465 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 411:
-#line 2788 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setTexture(EbtUint, Esd1D, true);
-    }
-#line 8444 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 412:
-#line 2793 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 210:
+#line 1516 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtSampler;
         (yyval.interm.type).sampler.setTexture(EbtUint, Esd2D, true);
     }
-#line 8454 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4475 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 413:
-#line 2798 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 211:
+#line 1521 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setTexture(EbtUint, EsdCube, true);
+        (yyval.interm.type).sampler.setPureSampler(false);
     }
-#line 8464 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4485 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 414:
-#line 2803 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 212:
+#line 1526 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setTexture(EbtFloat, EsdRect);
+        (yyval.interm.type).sampler.setPureSampler(true);
     }
-#line 8474 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4495 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 415:
-#line 2808 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16OpaqueCheck((yyvsp[0].lex).loc, "half float texture", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setTexture(EbtFloat16, EsdRect);
-    }
-#line 8485 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 416:
-#line 2814 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setTexture(EbtInt, EsdRect);
-    }
-#line 8495 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 417:
-#line 2819 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setTexture(EbtUint, EsdRect);
-    }
-#line 8505 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 418:
-#line 2824 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setTexture(EbtFloat, EsdBuffer);
-    }
-#line 8515 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 419:
-#line 2829 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16OpaqueCheck((yyvsp[0].lex).loc, "half float texture", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setTexture(EbtFloat16, EsdBuffer);
-    }
-#line 8526 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 420:
-#line 2835 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setTexture(EbtInt, EsdBuffer);
-    }
-#line 8536 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 421:
-#line 2840 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setTexture(EbtUint, EsdBuffer);
-    }
-#line 8546 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 422:
-#line 2845 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setTexture(EbtFloat, Esd2D, false, false, true);
-    }
-#line 8556 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 423:
-#line 2850 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16OpaqueCheck((yyvsp[0].lex).loc, "half float texture", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setTexture(EbtFloat16, Esd2D, false, false, true);
-    }
-#line 8567 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 424:
-#line 2856 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setTexture(EbtInt, Esd2D, false, false, true);
-    }
-#line 8577 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 425:
-#line 2861 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setTexture(EbtUint, Esd2D, false, false, true);
-    }
-#line 8587 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 426:
-#line 2866 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setTexture(EbtFloat, Esd2D, true, false, true);
-    }
-#line 8597 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 427:
-#line 2871 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16OpaqueCheck((yyvsp[0].lex).loc, "half float texture", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setTexture(EbtFloat16, Esd2D, true, false, true);
-    }
-#line 8608 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 428:
-#line 2877 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setTexture(EbtInt, Esd2D, true, false, true);
-    }
-#line 8618 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 429:
-#line 2882 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setTexture(EbtUint, Esd2D, true, false, true);
-    }
-#line 8628 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 430:
-#line 2887 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setImage(EbtFloat, Esd1D);
-    }
-#line 8638 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 431:
-#line 2892 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16OpaqueCheck((yyvsp[0].lex).loc, "half float image", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setImage(EbtFloat16, Esd1D);
-    }
-#line 8649 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 432:
-#line 2898 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setImage(EbtInt, Esd1D);
-    }
-#line 8659 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 433:
-#line 2903 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setImage(EbtUint, Esd1D);
-    }
-#line 8669 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 434:
-#line 2908 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setImage(EbtFloat, Esd2D);
-    }
-#line 8679 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 435:
-#line 2913 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16OpaqueCheck((yyvsp[0].lex).loc, "half float image", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setImage(EbtFloat16, Esd2D);
-    }
-#line 8690 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 436:
-#line 2919 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setImage(EbtInt, Esd2D);
-    }
-#line 8700 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 437:
-#line 2924 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setImage(EbtUint, Esd2D);
-    }
-#line 8710 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 438:
-#line 2929 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setImage(EbtFloat, Esd3D);
-    }
-#line 8720 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 439:
-#line 2934 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16OpaqueCheck((yyvsp[0].lex).loc, "half float image", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setImage(EbtFloat16, Esd3D);
-    }
-#line 8731 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 440:
-#line 2940 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setImage(EbtInt, Esd3D);
-    }
-#line 8741 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 441:
-#line 2945 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setImage(EbtUint, Esd3D);
-    }
-#line 8751 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 442:
-#line 2950 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setImage(EbtFloat, EsdRect);
-    }
-#line 8761 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 443:
-#line 2955 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16OpaqueCheck((yyvsp[0].lex).loc, "half float image", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setImage(EbtFloat16, EsdRect);
-    }
-#line 8772 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 444:
-#line 2961 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setImage(EbtInt, EsdRect);
-    }
-#line 8782 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 445:
-#line 2966 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setImage(EbtUint, EsdRect);
-    }
-#line 8792 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 446:
-#line 2971 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setImage(EbtFloat, EsdCube);
-    }
-#line 8802 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 447:
-#line 2976 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16OpaqueCheck((yyvsp[0].lex).loc, "half float image", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setImage(EbtFloat16, EsdCube);
-    }
-#line 8813 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 448:
-#line 2982 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setImage(EbtInt, EsdCube);
-    }
-#line 8823 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 449:
-#line 2987 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setImage(EbtUint, EsdCube);
-    }
-#line 8833 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 450:
-#line 2992 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setImage(EbtFloat, EsdBuffer);
-    }
-#line 8843 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 451:
-#line 2997 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16OpaqueCheck((yyvsp[0].lex).loc, "half float image", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setImage(EbtFloat16, EsdBuffer);
-    }
-#line 8854 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 452:
-#line 3003 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setImage(EbtInt, EsdBuffer);
-    }
-#line 8864 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 453:
-#line 3008 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setImage(EbtUint, EsdBuffer);
-    }
-#line 8874 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 454:
-#line 3013 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setImage(EbtFloat, Esd1D, true);
-    }
-#line 8884 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 455:
-#line 3018 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16OpaqueCheck((yyvsp[0].lex).loc, "half float image", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setImage(EbtFloat16, Esd1D, true);
-    }
-#line 8895 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 456:
-#line 3024 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setImage(EbtInt, Esd1D, true);
-    }
-#line 8905 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 457:
-#line 3029 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setImage(EbtUint, Esd1D, true);
-    }
-#line 8915 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 458:
-#line 3034 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setImage(EbtFloat, Esd2D, true);
-    }
-#line 8925 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 459:
-#line 3039 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16OpaqueCheck((yyvsp[0].lex).loc, "half float image", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setImage(EbtFloat16, Esd2D, true);
-    }
-#line 8936 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 460:
-#line 3045 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setImage(EbtInt, Esd2D, true);
-    }
-#line 8946 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 461:
-#line 3050 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setImage(EbtUint, Esd2D, true);
-    }
-#line 8956 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 462:
-#line 3055 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setImage(EbtFloat, EsdCube, true);
-    }
-#line 8966 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 463:
-#line 3060 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16OpaqueCheck((yyvsp[0].lex).loc, "half float image", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setImage(EbtFloat16, EsdCube, true);
-    }
-#line 8977 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 464:
-#line 3066 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setImage(EbtInt, EsdCube, true);
-    }
-#line 8987 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 465:
-#line 3071 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setImage(EbtUint, EsdCube, true);
-    }
-#line 8997 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 466:
-#line 3076 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setImage(EbtFloat, Esd2D, false, false, true);
-    }
-#line 9007 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 467:
-#line 3081 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16OpaqueCheck((yyvsp[0].lex).loc, "half float image", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setImage(EbtFloat16, Esd2D, false, false, true);
-    }
-#line 9018 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 468:
-#line 3087 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setImage(EbtInt, Esd2D, false, false, true);
-    }
-#line 9028 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 469:
-#line 3092 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setImage(EbtUint, Esd2D, false, false, true);
-    }
-#line 9038 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 470:
-#line 3097 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setImage(EbtFloat, Esd2D, true, false, true);
-    }
-#line 9048 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 471:
-#line 3102 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16OpaqueCheck((yyvsp[0].lex).loc, "half float image", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setImage(EbtFloat16, Esd2D, true, false, true);
-    }
-#line 9059 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 472:
-#line 3108 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setImage(EbtInt, Esd2D, true, false, true);
-    }
-#line 9069 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 473:
-#line 3113 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setImage(EbtUint, Esd2D, true, false, true);
-    }
-#line 9079 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 474:
-#line 3118 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {  // GL_OES_EGL_image_external
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.set(EbtFloat, Esd2D);
-        (yyval.interm.type).sampler.external = true;
-    }
-#line 9090 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 475:
-#line 3124 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    { // GL_EXT_YUV_target
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.set(EbtFloat, Esd2D);
-        (yyval.interm.type).sampler.yuv = true;
-    }
-#line 9101 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 476:
-#line 3130 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.requireStage((yyvsp[0].lex).loc, EShLangFragment, "subpass input");
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setSubpass(EbtFloat);
-    }
-#line 9112 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 477:
-#line 3136 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.requireStage((yyvsp[0].lex).loc, EShLangFragment, "subpass input");
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setSubpass(EbtFloat, true);
-    }
-#line 9123 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 478:
-#line 3142 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16OpaqueCheck((yyvsp[0].lex).loc, "half float subpass input", parseContext.symbolTable.atBuiltInLevel());
-        parseContext.requireStage((yyvsp[0].lex).loc, EShLangFragment, "subpass input");
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setSubpass(EbtFloat16);
-    }
-#line 9135 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 479:
-#line 3149 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.float16OpaqueCheck((yyvsp[0].lex).loc, "half float subpass input", parseContext.symbolTable.atBuiltInLevel());
-        parseContext.requireStage((yyvsp[0].lex).loc, EShLangFragment, "subpass input");
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setSubpass(EbtFloat16, true);
-    }
-#line 9147 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 480:
-#line 3156 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.requireStage((yyvsp[0].lex).loc, EShLangFragment, "subpass input");
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setSubpass(EbtInt);
-    }
-#line 9158 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 481:
-#line 3162 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.requireStage((yyvsp[0].lex).loc, EShLangFragment, "subpass input");
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setSubpass(EbtInt, true);
-    }
-#line 9169 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 482:
-#line 3168 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.requireStage((yyvsp[0].lex).loc, EShLangFragment, "subpass input");
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setSubpass(EbtUint);
-    }
-#line 9180 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 483:
-#line 3174 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.requireStage((yyvsp[0].lex).loc, EShLangFragment, "subpass input");
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtSampler;
-        (yyval.interm.type).sampler.setSubpass(EbtUint, true);
-    }
-#line 9191 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 484:
-#line 3180 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.fcoopmatCheck((yyvsp[0].lex).loc, "fcoopmatNV", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtFloat;
-        (yyval.interm.type).coopmat = true;
-    }
-#line 9202 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 485:
-#line 3186 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.intcoopmatCheck((yyvsp[0].lex).loc, "icoopmatNV", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtInt;
-        (yyval.interm.type).coopmat = true;
-    }
-#line 9213 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 486:
-#line 3192 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.intcoopmatCheck((yyvsp[0].lex).loc, "ucoopmatNV", parseContext.symbolTable.atBuiltInLevel());
-        (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        (yyval.interm.type).basicType = EbtUint;
-        (yyval.interm.type).coopmat = true;
-    }
-#line 9224 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 487:
-#line 3199 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 213:
+#line 1532 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.type) = (yyvsp[0].interm.type);
         (yyval.interm.type).qualifier.storage = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         parseContext.structTypeCheck((yyval.interm.type).loc, (yyval.interm.type));
     }
-#line 9234 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4505 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 488:
-#line 3204 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 214:
+#line 1537 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         //
         // This is for user defined type names.  The lexical phase looked up the
@@ -9248,47 +4519,47 @@ yyreduce:
         } else
             parseContext.error((yyvsp[0].lex).loc, "expected type name", (yyvsp[0].lex).string->c_str(), "");
     }
-#line 9252 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4523 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 489:
-#line 3220 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 215:
+#line 1553 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.profileRequires((yyvsp[0].lex).loc, ENoProfile, 130, 0, "highp precision qualifier");
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         parseContext.handlePrecisionQualifier((yyvsp[0].lex).loc, (yyval.interm.type).qualifier, EpqHigh);
     }
-#line 9262 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4533 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 490:
-#line 3225 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 216:
+#line 1558 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.profileRequires((yyvsp[0].lex).loc, ENoProfile, 130, 0, "mediump precision qualifier");
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         parseContext.handlePrecisionQualifier((yyvsp[0].lex).loc, (yyval.interm.type).qualifier, EpqMedium);
     }
-#line 9272 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4543 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 491:
-#line 3230 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 217:
+#line 1563 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.profileRequires((yyvsp[0].lex).loc, ENoProfile, 130, 0, "lowp precision qualifier");
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         parseContext.handlePrecisionQualifier((yyvsp[0].lex).loc, (yyval.interm.type).qualifier, EpqLow);
     }
-#line 9282 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4553 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 492:
-#line 3238 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 218:
+#line 1571 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     { parseContext.nestedStructCheck((yyvsp[-2].lex).loc); }
-#line 9288 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4559 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 493:
-#line 3238 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 219:
+#line 1571 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         TType* structure = new TType((yyvsp[-1].interm.typeList), *(yyvsp[-4].lex).string);
         parseContext.structArrayCheck((yyvsp[-4].lex).loc, *structure);
@@ -9300,17 +4571,17 @@ yyreduce:
         (yyval.interm.type).userDef = structure;
         --parseContext.structNestingLevel;
     }
-#line 9304 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4575 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 494:
-#line 3249 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 220:
+#line 1582 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     { parseContext.nestedStructCheck((yyvsp[-1].lex).loc); }
-#line 9310 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4581 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 495:
-#line 3249 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 221:
+#line 1582 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         TType* structure = new TType((yyvsp[-1].interm.typeList), TString(""));
         (yyval.interm.type).init((yyvsp[-4].lex).loc);
@@ -9318,19 +4589,19 @@ yyreduce:
         (yyval.interm.type).userDef = structure;
         --parseContext.structNestingLevel;
     }
-#line 9322 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4593 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 496:
-#line 3259 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 222:
+#line 1592 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.typeList) = (yyvsp[0].interm.typeList);
     }
-#line 9330 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4601 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 497:
-#line 3262 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 223:
+#line 1595 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.typeList) = (yyvsp[-1].interm.typeList);
         for (unsigned int i = 0; i < (yyvsp[0].interm.typeList)->size(); ++i) {
@@ -9341,11 +4612,11 @@ yyreduce:
             (yyval.interm.typeList)->push_back((*(yyvsp[0].interm.typeList))[i]);
         }
     }
-#line 9345 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4616 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 498:
-#line 3275 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 224:
+#line 1608 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         if ((yyvsp[-2].interm.type).arraySizes) {
             parseContext.profileRequires((yyvsp[-2].interm.type).loc, ENoProfile, 120, E_GL_3DL_array_objects, "arrayed type");
@@ -9368,11 +4639,11 @@ yyreduce:
             (*(yyval.interm.typeList))[i].type->shallowCopy(type);
         }
     }
-#line 9372 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4643 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 499:
-#line 3297 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 225:
+#line 1630 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         if ((yyvsp[-2].interm.type).arraySizes) {
             parseContext.profileRequires((yyvsp[-2].interm.type).loc, ENoProfile, 120, E_GL_3DL_array_objects, "arrayed type");
@@ -9397,38 +4668,38 @@ yyreduce:
             (*(yyval.interm.typeList))[i].type->shallowCopy(type);
         }
     }
-#line 9401 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4672 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 500:
-#line 3324 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 226:
+#line 1657 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.typeList) = new TTypeList;
         (yyval.interm.typeList)->push_back((yyvsp[0].interm.typeLine));
     }
-#line 9410 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4681 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 501:
-#line 3328 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 227:
+#line 1661 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.typeList)->push_back((yyvsp[0].interm.typeLine));
     }
-#line 9418 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4689 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 502:
-#line 3334 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 228:
+#line 1667 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.typeLine).type = new TType(EbtVoid);
         (yyval.interm.typeLine).loc = (yyvsp[0].lex).loc;
         (yyval.interm.typeLine).type->setFieldName(*(yyvsp[0].lex).string);
     }
-#line 9428 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4699 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 503:
-#line 3339 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 229:
+#line 1672 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.arrayOfArrayVersionCheck((yyvsp[-1].lex).loc, (yyvsp[0].interm).arraySizes);
 
@@ -9437,235 +4708,181 @@ yyreduce:
         (yyval.interm.typeLine).type->setFieldName(*(yyvsp[-1].lex).string);
         (yyval.interm.typeLine).type->transferArraySizes((yyvsp[0].interm).arraySizes);
     }
-#line 9441 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4712 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 504:
-#line 3350 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 230:
+#line 1683 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.intermTypedNode) = (yyvsp[0].interm.intermTypedNode);
     }
-#line 9449 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4720 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 505:
-#line 3354 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        const char* initFeature = "{ } style initializers";
-        parseContext.requireProfile((yyvsp[-2].lex).loc, ~EEsProfile, initFeature);
-        parseContext.profileRequires((yyvsp[-2].lex).loc, ~EEsProfile, 420, E_GL_ARB_shading_language_420pack, initFeature);
-        (yyval.interm.intermTypedNode) = (yyvsp[-1].interm.intermTypedNode);
-    }
-#line 9460 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 506:
-#line 3360 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        const char* initFeature = "{ } style initializers";
-        parseContext.requireProfile((yyvsp[-3].lex).loc, ~EEsProfile, initFeature);
-        parseContext.profileRequires((yyvsp[-3].lex).loc, ~EEsProfile, 420, E_GL_ARB_shading_language_420pack, initFeature);
-        (yyval.interm.intermTypedNode) = (yyvsp[-2].interm.intermTypedNode);
-    }
-#line 9471 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 507:
-#line 3371 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.intermTypedNode) = parseContext.intermediate.growAggregate(0, (yyvsp[0].interm.intermTypedNode), (yyvsp[0].interm.intermTypedNode)->getLoc());
-    }
-#line 9479 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 508:
-#line 3374 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.intermTypedNode) = parseContext.intermediate.growAggregate((yyvsp[-2].interm.intermTypedNode), (yyvsp[0].interm.intermTypedNode));
-    }
-#line 9487 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 509:
-#line 3381 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 231:
+#line 1692 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     { (yyval.interm.intermNode) = (yyvsp[0].interm.intermNode); }
-#line 9493 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4726 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 510:
-#line 3385 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 232:
+#line 1696 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     { (yyval.interm.intermNode) = (yyvsp[0].interm.intermNode); }
-#line 9499 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4732 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 511:
-#line 3386 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 233:
+#line 1697 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     { (yyval.interm.intermNode) = (yyvsp[0].interm.intermNode); }
-#line 9505 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4738 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 512:
-#line 3392 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 234:
+#line 1703 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     { (yyval.interm.intermNode) = (yyvsp[0].interm.intermNode); }
-#line 9511 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4744 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 513:
-#line 3393 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 235:
+#line 1704 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     { (yyval.interm.intermNode) = (yyvsp[0].interm.intermNode); }
-#line 9517 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4750 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 514:
-#line 3394 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 236:
+#line 1705 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     { (yyval.interm.intermNode) = (yyvsp[0].interm.intermNode); }
-#line 9523 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4756 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 515:
-#line 3395 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 237:
+#line 1706 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     { (yyval.interm.intermNode) = (yyvsp[0].interm.intermNode); }
-#line 9529 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4762 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 516:
-#line 3396 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 238:
+#line 1707 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     { (yyval.interm.intermNode) = (yyvsp[0].interm.intermNode); }
-#line 9535 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4768 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 517:
-#line 3397 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 239:
+#line 1708 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     { (yyval.interm.intermNode) = (yyvsp[0].interm.intermNode); }
-#line 9541 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4774 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 518:
-#line 3398 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 240:
+#line 1709 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     { (yyval.interm.intermNode) = (yyvsp[0].interm.intermNode); }
-#line 9547 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4780 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 519:
-#line 3400 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    { (yyval.interm.intermNode) = (yyvsp[0].interm.intermNode); }
-#line 9553 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 520:
-#line 3406 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.requireStage((yyvsp[-1].lex).loc, EShLangFragment, "demote");
-        parseContext.requireExtensions((yyvsp[-1].lex).loc, 1, &E_GL_EXT_demote_to_helper_invocation, "demote");
-        (yyval.interm.intermNode) = parseContext.intermediate.addBranch(EOpDemote, (yyvsp[-1].lex).loc);
-    }
-#line 9563 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 521:
-#line 3415 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 241:
+#line 1716 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     { (yyval.interm.intermNode) = 0; }
-#line 9569 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4786 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 522:
-#line 3416 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 242:
+#line 1717 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.symbolTable.push();
         ++parseContext.statementNestingLevel;
     }
-#line 9578 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4795 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 523:
-#line 3420 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 243:
+#line 1721 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.symbolTable.pop(&parseContext.defaultPrecision[0]);
         --parseContext.statementNestingLevel;
     }
-#line 9587 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4804 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 524:
-#line 3424 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 244:
+#line 1725 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         if ((yyvsp[-2].interm.intermNode) && (yyvsp[-2].interm.intermNode)->getAsAggregate())
             (yyvsp[-2].interm.intermNode)->getAsAggregate()->setOperator(EOpSequence);
         (yyval.interm.intermNode) = (yyvsp[-2].interm.intermNode);
     }
-#line 9597 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4814 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 525:
-#line 3432 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 245:
+#line 1733 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     { (yyval.interm.intermNode) = (yyvsp[0].interm.intermNode); }
-#line 9603 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4820 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 526:
-#line 3433 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 246:
+#line 1734 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     { (yyval.interm.intermNode) = (yyvsp[0].interm.intermNode); }
-#line 9609 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4826 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 527:
-#line 3437 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 247:
+#line 1738 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         ++parseContext.controlFlowNestingLevel;
     }
-#line 9617 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4834 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 528:
-#line 3440 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 248:
+#line 1741 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         --parseContext.controlFlowNestingLevel;
         (yyval.interm.intermNode) = (yyvsp[0].interm.intermNode);
     }
-#line 9626 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4843 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 529:
-#line 3444 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 249:
+#line 1745 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.symbolTable.push();
         ++parseContext.statementNestingLevel;
         ++parseContext.controlFlowNestingLevel;
     }
-#line 9636 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4853 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 530:
-#line 3449 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 250:
+#line 1750 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.symbolTable.pop(&parseContext.defaultPrecision[0]);
         --parseContext.statementNestingLevel;
         --parseContext.controlFlowNestingLevel;
         (yyval.interm.intermNode) = (yyvsp[0].interm.intermNode);
     }
-#line 9647 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4864 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 531:
-#line 3458 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 251:
+#line 1759 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.intermNode) = 0;
     }
-#line 9655 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4872 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 532:
-#line 3461 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 252:
+#line 1762 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         if ((yyvsp[-1].interm.intermNode) && (yyvsp[-1].interm.intermNode)->getAsAggregate())
             (yyvsp[-1].interm.intermNode)->getAsAggregate()->setOperator(EOpSequence);
         (yyval.interm.intermNode) = (yyvsp[-1].interm.intermNode);
     }
-#line 9665 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4882 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 533:
-#line 3469 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 253:
+#line 1770 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.intermNode) = parseContext.intermediate.makeAggregate((yyvsp[0].interm.intermNode));
         if ((yyvsp[0].interm.intermNode) && (yyvsp[0].interm.intermNode)->getAsBranchNode() && ((yyvsp[0].interm.intermNode)->getAsBranchNode()->getFlowOp() == EOpCase ||
@@ -9674,11 +4891,11 @@ yyreduce:
             (yyval.interm.intermNode) = 0;  // start a fresh subsequence for what's after this case
         }
     }
-#line 9678 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4895 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 534:
-#line 3477 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 254:
+#line 1778 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         if ((yyvsp[0].interm.intermNode) && (yyvsp[0].interm.intermNode)->getAsBranchNode() && ((yyvsp[0].interm.intermNode)->getAsBranchNode()->getFlowOp() == EOpCase ||
                                             (yyvsp[0].interm.intermNode)->getAsBranchNode()->getFlowOp() == EOpDefault)) {
@@ -9687,76 +4904,67 @@ yyreduce:
         } else
             (yyval.interm.intermNode) = parseContext.intermediate.growAggregate((yyvsp[-1].interm.intermNode), (yyvsp[0].interm.intermNode));
     }
-#line 9691 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4908 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 535:
-#line 3488 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 255:
+#line 1789 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     { (yyval.interm.intermNode) = 0; }
-#line 9697 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4914 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 536:
-#line 3489 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 256:
+#line 1790 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     { (yyval.interm.intermNode) = static_cast<TIntermNode*>((yyvsp[-1].interm.intermTypedNode)); }
-#line 9703 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4920 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 537:
-#line 3493 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 257:
+#line 1794 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.intermNode) = (yyvsp[0].interm.intermNode);
     }
-#line 9711 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4928 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 538:
-#line 3497 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.handleSelectionAttributes(*(yyvsp[-1].interm.attributes), (yyvsp[0].interm.intermNode));
-        (yyval.interm.intermNode) = (yyvsp[0].interm.intermNode);
-    }
-#line 9720 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 539:
-#line 3504 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 258:
+#line 1800 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.boolCheck((yyvsp[-4].lex).loc, (yyvsp[-2].interm.intermTypedNode));
         (yyval.interm.intermNode) = parseContext.intermediate.addSelection((yyvsp[-2].interm.intermTypedNode), (yyvsp[0].interm.nodePair), (yyvsp[-4].lex).loc);
     }
-#line 9729 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4937 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 540:
-#line 3511 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 259:
+#line 1807 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.nodePair).node1 = (yyvsp[-2].interm.intermNode);
         (yyval.interm.nodePair).node2 = (yyvsp[0].interm.intermNode);
     }
-#line 9738 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4946 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 541:
-#line 3515 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 260:
+#line 1811 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.nodePair).node1 = (yyvsp[0].interm.intermNode);
         (yyval.interm.nodePair).node2 = 0;
     }
-#line 9747 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4955 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 542:
-#line 3523 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 261:
+#line 1819 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.intermTypedNode) = (yyvsp[0].interm.intermTypedNode);
         parseContext.boolCheck((yyvsp[0].interm.intermTypedNode)->getLoc(), (yyvsp[0].interm.intermTypedNode));
     }
-#line 9756 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4964 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 543:
-#line 3527 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 262:
+#line 1823 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.boolCheck((yyvsp[-2].lex).loc, (yyvsp[-3].interm.type));
 
@@ -9767,28 +4975,19 @@ yyreduce:
         else
             (yyval.interm.intermTypedNode) = 0;
     }
-#line 9771 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4979 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 544:
-#line 3540 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 263:
+#line 1836 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.intermNode) = (yyvsp[0].interm.intermNode);
     }
-#line 9779 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 4987 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 545:
-#line 3544 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.handleSwitchAttributes(*(yyvsp[-1].interm.attributes), (yyvsp[0].interm.intermNode));
-        (yyval.interm.intermNode) = (yyvsp[0].interm.intermNode);
-    }
-#line 9788 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 546:
-#line 3551 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 264:
+#line 1842 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         // start new switch sequence on the switch stack
         ++parseContext.controlFlowNestingLevel;
@@ -9797,11 +4996,11 @@ yyreduce:
         parseContext.switchLevel.push_back(parseContext.statementNestingLevel);
         parseContext.symbolTable.push();
     }
-#line 9801 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 5000 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 547:
-#line 3559 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 265:
+#line 1850 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.intermNode) = parseContext.addSwitch((yyvsp[-7].lex).loc, (yyvsp[-5].interm.intermTypedNode), (yyvsp[-1].interm.intermNode) ? (yyvsp[-1].interm.intermNode)->getAsAggregate() : 0);
         delete parseContext.switchSequenceStack.back();
@@ -9811,27 +5010,27 @@ yyreduce:
         --parseContext.statementNestingLevel;
         --parseContext.controlFlowNestingLevel;
     }
-#line 9815 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 5014 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 548:
-#line 3571 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 266:
+#line 1862 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.intermNode) = 0;
     }
-#line 9823 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 5022 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 549:
-#line 3574 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 267:
+#line 1865 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.intermNode) = (yyvsp[0].interm.intermNode);
     }
-#line 9831 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 5030 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 550:
-#line 3580 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 268:
+#line 1871 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.intermNode) = 0;
         if (parseContext.switchLevel.size() == 0)
@@ -9844,11 +5043,11 @@ yyreduce:
             (yyval.interm.intermNode) = parseContext.intermediate.addBranch(EOpCase, (yyvsp[-1].interm.intermTypedNode), (yyvsp[-2].lex).loc);
         }
     }
-#line 9848 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 5047 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 551:
-#line 3592 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 269:
+#line 1883 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.intermNode) = 0;
         if (parseContext.switchLevel.size() == 0)
@@ -9858,28 +5057,19 @@ yyreduce:
         else
             (yyval.interm.intermNode) = parseContext.intermediate.addBranch(EOpDefault, (yyvsp[-1].lex).loc);
     }
-#line 9862 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 5061 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 552:
-#line 3604 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 270:
+#line 1895 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.intermNode) = (yyvsp[0].interm.intermNode);
     }
-#line 9870 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 5069 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 553:
-#line 3608 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.handleLoopAttributes(*(yyvsp[-1].interm.attributes), (yyvsp[0].interm.intermNode));
-        (yyval.interm.intermNode) = (yyvsp[0].interm.intermNode);
-    }
-#line 9879 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 554:
-#line 3615 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 271:
+#line 1901 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         if (! parseContext.limits.whileLoops)
             parseContext.error((yyvsp[-1].lex).loc, "while loops not available", "limitation", "");
@@ -9888,11 +5078,11 @@ yyreduce:
         ++parseContext.statementNestingLevel;
         ++parseContext.controlFlowNestingLevel;
     }
-#line 9892 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 5082 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 555:
-#line 3623 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 272:
+#line 1909 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.symbolTable.pop(&parseContext.defaultPrecision[0]);
         (yyval.interm.intermNode) = parseContext.intermediate.addLoop((yyvsp[0].interm.intermNode), (yyvsp[-2].interm.intermTypedNode), 0, true, (yyvsp[-5].lex).loc);
@@ -9900,21 +5090,21 @@ yyreduce:
         --parseContext.statementNestingLevel;
         --parseContext.controlFlowNestingLevel;
     }
-#line 9904 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 5094 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 556:
-#line 3630 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 273:
+#line 1916 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         ++parseContext.loopNestingLevel;
         ++parseContext.statementNestingLevel;
         ++parseContext.controlFlowNestingLevel;
     }
-#line 9914 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 5104 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 557:
-#line 3635 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 274:
+#line 1921 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         if (! parseContext.limits.whileLoops)
             parseContext.error((yyvsp[-7].lex).loc, "do-while loops not available", "limitation", "");
@@ -9926,22 +5116,22 @@ yyreduce:
         --parseContext.statementNestingLevel;
         --parseContext.controlFlowNestingLevel;
     }
-#line 9930 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 5120 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 558:
-#line 3646 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 275:
+#line 1932 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.symbolTable.push();
         ++parseContext.loopNestingLevel;
         ++parseContext.statementNestingLevel;
         ++parseContext.controlFlowNestingLevel;
     }
-#line 9941 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 5131 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 559:
-#line 3652 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 276:
+#line 1938 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.symbolTable.pop(&parseContext.defaultPrecision[0]);
         (yyval.interm.intermNode) = parseContext.intermediate.makeAggregate((yyvsp[-3].interm.intermNode), (yyvsp[-5].lex).loc);
@@ -9954,81 +5144,81 @@ yyreduce:
         --parseContext.statementNestingLevel;
         --parseContext.controlFlowNestingLevel;
     }
-#line 9958 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 5148 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 560:
-#line 3667 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 277:
+#line 1953 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.intermNode) = (yyvsp[0].interm.intermNode);
     }
-#line 9966 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 5156 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 561:
-#line 3670 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 278:
+#line 1956 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.intermNode) = (yyvsp[0].interm.intermNode);
     }
-#line 9974 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 5164 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 562:
-#line 3676 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 279:
+#line 1962 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.intermTypedNode) = (yyvsp[0].interm.intermTypedNode);
     }
-#line 9982 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 5172 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 563:
-#line 3679 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 280:
+#line 1965 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.intermTypedNode) = 0;
     }
-#line 9990 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 5180 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 564:
-#line 3685 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 281:
+#line 1971 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.nodePair).node1 = (yyvsp[-1].interm.intermTypedNode);
         (yyval.interm.nodePair).node2 = 0;
     }
-#line 9999 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 5189 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 565:
-#line 3689 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 282:
+#line 1975 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.nodePair).node1 = (yyvsp[-2].interm.intermTypedNode);
         (yyval.interm.nodePair).node2 = (yyvsp[0].interm.intermTypedNode);
     }
-#line 10008 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 5198 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 566:
-#line 3696 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 283:
+#line 1982 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         if (parseContext.loopNestingLevel <= 0)
             parseContext.error((yyvsp[-1].lex).loc, "continue statement only allowed in loops", "", "");
         (yyval.interm.intermNode) = parseContext.intermediate.addBranch(EOpContinue, (yyvsp[-1].lex).loc);
     }
-#line 10018 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 5208 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 567:
-#line 3701 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 284:
+#line 1987 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         if (parseContext.loopNestingLevel + parseContext.switchSequenceStack.size() <= 0)
             parseContext.error((yyvsp[-1].lex).loc, "break statement only allowed in switch and loops", "", "");
         (yyval.interm.intermNode) = parseContext.intermediate.addBranch(EOpBreak, (yyvsp[-1].lex).loc);
     }
-#line 10028 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 5218 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 568:
-#line 3706 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 285:
+#line 1992 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.intermNode) = parseContext.intermediate.addBranch(EOpReturn, (yyvsp[-1].lex).loc);
         if (parseContext.currentFunctionType->getBasicType() != EbtVoid)
@@ -10036,83 +5226,73 @@ yyreduce:
         if (parseContext.inMain)
             parseContext.postEntryPointReturn = true;
     }
-#line 10040 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 5230 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 569:
-#line 3713 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 286:
+#line 1999 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.intermNode) = parseContext.handleReturnValue((yyvsp[-2].lex).loc, (yyvsp[-1].interm.intermTypedNode));
     }
-#line 10048 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 5238 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 570:
-#line 3716 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 287:
+#line 2002 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.requireStage((yyvsp[-1].lex).loc, EShLangFragment, "discard");
         (yyval.interm.intermNode) = parseContext.intermediate.addBranch(EOpKill, (yyvsp[-1].lex).loc);
     }
-#line 10057 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 5247 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 571:
-#line 3725 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 288:
+#line 2011 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.intermNode) = (yyvsp[0].interm.intermNode);
         parseContext.intermediate.setTreeRoot((yyval.interm.intermNode));
     }
-#line 10066 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 5256 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 572:
-#line 3729 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 289:
+#line 2015 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         if ((yyvsp[0].interm.intermNode) != nullptr) {
             (yyval.interm.intermNode) = parseContext.intermediate.growAggregate((yyvsp[-1].interm.intermNode), (yyvsp[0].interm.intermNode));
             parseContext.intermediate.setTreeRoot((yyval.interm.intermNode));
         }
     }
-#line 10077 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 5267 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 573:
-#line 3738 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 290:
+#line 2024 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.intermNode) = (yyvsp[0].interm.intermNode);
     }
-#line 10085 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 5275 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 574:
-#line 3741 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 291:
+#line 2027 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.intermNode) = (yyvsp[0].interm.intermNode);
     }
-#line 10093 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 5283 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 575:
-#line 3745 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        parseContext.requireProfile((yyvsp[0].lex).loc, ~EEsProfile, "extraneous semicolon");
-        parseContext.profileRequires((yyvsp[0].lex).loc, ~EEsProfile, 460, nullptr, "extraneous semicolon");
-        (yyval.interm.intermNode) = nullptr;
-    }
-#line 10103 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 576:
-#line 3754 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 292:
+#line 2034 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyvsp[0].interm).function = parseContext.handleFunctionDeclarator((yyvsp[0].interm).loc, *(yyvsp[0].interm).function, false /* not prototype */);
         (yyvsp[0].interm).intermNode = parseContext.handleFunctionDefinition((yyvsp[0].interm).loc, *(yyvsp[0].interm).function);
     }
-#line 10112 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 5292 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
-  case 577:
-#line 3758 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+  case 293:
+#line 2038 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         //   May be best done as post process phase on intermediate code
         if (parseContext.currentFunctionType->getBasicType() != EbtVoid && ! parseContext.functionReturnsValue)
@@ -10128,52 +5308,11 @@ yyreduce:
         (yyval.interm.intermNode)->getAsAggregate()->setDebug(parseContext.contextPragma.debug);
         (yyval.interm.intermNode)->getAsAggregate()->setPragmaTable(parseContext.contextPragma.pragmaTable);
     }
-#line 10132 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 578:
-#line 3777 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.attributes) = (yyvsp[-2].interm.attributes);
-        parseContext.requireExtensions((yyvsp[-4].lex).loc, 1, &E_GL_EXT_control_flow_attributes, "attribute");
-    }
-#line 10141 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 579:
-#line 3783 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.attributes) = (yyvsp[0].interm.attributes);
-    }
-#line 10149 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 580:
-#line 3786 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.attributes) = parseContext.mergeAttributes((yyvsp[-2].interm.attributes), (yyvsp[0].interm.attributes));
-    }
-#line 10157 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 581:
-#line 3791 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.attributes) = parseContext.makeAttributes(*(yyvsp[0].lex).string);
-    }
-#line 10165 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
-    break;
-
-  case 582:
-#line 3794 "MachineIndependent/glslang.y" /* yacc.c:1646  */
-    {
-        (yyval.interm.attributes) = parseContext.makeAttributes(*(yyvsp[-3].lex).string, (yyvsp[-1].interm.intermTypedNode));
-    }
-#line 10173 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 5312 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
 
-#line 10177 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 5316 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -10401,5 +5540,5 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 3799 "MachineIndependent/glslang.y" /* yacc.c:1906  */
+#line 2057 "MachineIndependent/glslang.y" /* yacc.c:1906  */
 

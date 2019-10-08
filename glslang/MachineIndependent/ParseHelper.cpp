@@ -2794,10 +2794,8 @@ bool TParseContext::constructorError(const TSourceLoc& loc, TIntermNode* node, T
     // See if it's a matrix
     bool constructingMatrix = false;
     switch (op) {
-#ifndef GLSLANG_WEB
     case EOpConstructTextureSampler:
         return constructorTextureSamplerError(loc, function);
-#endif
     case EOpConstructMat2x2:
     case EOpConstructMat2x3:
     case EOpConstructMat2x4:
