@@ -267,7 +267,6 @@ public:
         uniformLocationBase(0)
 #endif
     {
-#ifndef GLSLANG_WEB
         localSize[0] = 1;
         localSize[1] = 1;
         localSize[2] = 1;
@@ -277,6 +276,7 @@ public:
         localSizeSpecId[0] = TQualifier::layoutNotSet;
         localSizeSpecId[1] = TQualifier::layoutNotSet;
         localSizeSpecId[2] = TQualifier::layoutNotSet;
+#ifndef GLSLANG_WEB
         xfbBuffers.resize(TQualifier::layoutXfbBufferEnd);
         shiftBinding.fill(0);
 #endif
@@ -492,6 +492,23 @@ public:
     bool usingVariablePointers() const { return false; }
     unsigned getXfbStride(int buffer) const { return 0; }
     bool hasLayoutDerivativeModeNone() const { return false; }
+    bool setLocalSize(int dim, int size)
+    {
+        if (localSizeNotDefault[dim])
+            return size == localSize[dim];
+        localSizeNotDefault[dim] = true;
+        localSize[dim] = size;
+        return true;
+    }
+    unsigned int getLocalSize(int dim) const { return localSize[dim]; }
+    bool setLocalSizeSpecId(int dim, int id)
+    {
+        if (localSizeSpecId[dim] != TQualifier::layoutNotSet)
+            return id == localSizeSpecId[dim];
+        localSizeSpecId[dim] = id;
+        return true;
+    }
+    int getLocalSizeSpecId(int dim) const { return localSizeSpecId[dim]; }
 #else
     void output(TInfoSink&, bool tree);
 
@@ -655,24 +672,6 @@ public:
     }
     TInterlockOrdering getInterlockOrdering() const { return interlockOrdering; }
 
-    bool setLocalSize(int dim, int size)
-    {
-        if (localSizeNotDefault[dim])
-            return size == localSize[dim];
-        localSizeNotDefault[dim] = true;
-        localSize[dim] = size;
-        return true;
-    }
-    unsigned int getLocalSize(int dim) const { return localSize[dim]; }
-
-    bool setLocalSizeSpecId(int dim, int id)
-    {
-        if (localSizeSpecId[dim] != TQualifier::layoutNotSet)
-            return id == localSizeSpecId[dim];
-        localSizeSpecId[dim] = id;
-        return true;
-    }
-    int getLocalSizeSpecId(int dim) const { return localSizeSpecId[dim]; }
     void setXfbMode() { xfbMode = true; }
     bool getXfbMode() const { return xfbMode; }
     void setMultiStream() { multiStream = true; }
@@ -920,6 +919,9 @@ protected:
     bool useStorageBuffer;
     bool nanMinMaxClamp;            // true if desiring min/max/clamp to favor non-NaN over NaN
     bool depthReplacing;
+    int localSize[3];
+    bool localSizeNotDefault[3];
+    int localSizeSpecId[3];
 #ifndef GLSLANG_WEB
     bool useVulkanMemoryModel;
     int invocations;
@@ -932,9 +934,6 @@ protected:
     TVertexOrder vertexOrder;
     TInterlockOrdering interlockOrdering;
     bool pointMode;
-    int localSize[3];
-    bool localSizeNotDefault[3];
-    int localSizeSpecId[3];
     bool earlyFragmentTests;
     bool postDepthCoverage;
     TLayoutDepth depthLayout;

@@ -3795,19 +3795,42 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "void EndPrimitive();"
             "\n");
     }
+#endif
 
     //============================================================================
     //
     // Prototypes for all control functions.
     //
     //============================================================================
+#ifdef GLSLANG_WEB
+    bool esBarrier = true;
+#else
     bool esBarrier = (profile == EEsProfile && version >= 310);
-    if ((profile != EEsProfile && version >= 150) || esBarrier)
-        stageBuiltins[EShLangTessControl].append(
-            "void barrier();"
-            );
+#endif
     if ((profile != EEsProfile && version >= 420) || esBarrier)
         stageBuiltins[EShLangCompute].append(
+            "void barrier();"
+            );
+    if ((profile != EEsProfile && version >= 130) || esBarrier)
+        commonBuiltins.append(
+            "void memoryBarrier();"
+            );
+    if ((profile != EEsProfile && version >= 420) || esBarrier) {
+        stageBuiltins[EShLangCompute].append(
+            "void memoryBarrierShared();"
+            "void groupMemoryBarrier();"
+            );
+    }
+#ifndef GLSLANG_WEB
+    if ((profile != EEsProfile && version >= 420) || esBarrier) {
+        commonBuiltins.append(
+            "void memoryBarrierAtomicCounter();"
+            "void memoryBarrierBuffer();"
+            "void memoryBarrierImage();"
+            );
+    }
+    if ((profile != EEsProfile && version >= 150) || esBarrier)
+        stageBuiltins[EShLangTessControl].append(
             "void barrier();"
             );
     if ((profile != EEsProfile && version >= 450) || (profile == EEsProfile && version >= 320)) {
@@ -3816,21 +3839,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             );
         stageBuiltins[EShLangTaskNV].append(
             "void barrier();"
-            );
-    }
-    if ((profile != EEsProfile && version >= 130) || esBarrier)
-        commonBuiltins.append(
-            "void memoryBarrier();"
-            );
-    if ((profile != EEsProfile && version >= 420) || esBarrier) {
-        commonBuiltins.append(
-            "void memoryBarrierAtomicCounter();"
-            "void memoryBarrierBuffer();"
-            "void memoryBarrierImage();"
-            );
-        stageBuiltins[EShLangCompute].append(
-            "void memoryBarrierShared();"
-            "void groupMemoryBarrier();"
             );
     }
     if ((profile != EEsProfile && version >= 450) || (profile == EEsProfile && version >= 320)) {
@@ -4279,6 +4287,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
 
             "\n");
     }
+#endif
 
     //============================================================================
     //
@@ -4308,6 +4317,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "\n");
     }
 
+#ifndef GLSLANG_WEB
     //============================================================================
     //
     // Define the interface to the mesh/task shader.
@@ -6300,9 +6310,7 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
             s.append(builtInConstant);
         }
 
-#ifdef GLSLANG_WEB
-    }
-#else
+#ifndef GLSLANG_WEB
         if (version >= 310) {
             // geometry
 
@@ -6584,8 +6592,29 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
             snprintf(builtInConstant, maxSize, "const int gl_MaxTransformFeedbackInterleavedComponents = %d;", resources.maxTransformFeedbackInterleavedComponents);
             s.append(builtInConstant);
         }
+#endif
     }
 
+    // compute
+    if ((profile == EEsProfile && version >= 310) || (profile != EEsProfile && version >= 420)) {
+        snprintf(builtInConstant, maxSize, "const ivec3 gl_MaxComputeWorkGroupCount = ivec3(%d,%d,%d);", resources.maxComputeWorkGroupCountX,
+                                                                                                         resources.maxComputeWorkGroupCountY,
+                                                                                                         resources.maxComputeWorkGroupCountZ);
+        s.append(builtInConstant);
+        snprintf(builtInConstant, maxSize, "const ivec3 gl_MaxComputeWorkGroupSize = ivec3(%d,%d,%d);", resources.maxComputeWorkGroupSizeX,
+                                                                                                        resources.maxComputeWorkGroupSizeY,
+                                                                                                        resources.maxComputeWorkGroupSizeZ);
+        s.append(builtInConstant);
+
+        snprintf(builtInConstant, maxSize, "const int gl_MaxComputeUniformComponents = %d;", resources.maxComputeUniformComponents);
+        s.append(builtInConstant);
+        snprintf(builtInConstant, maxSize, "const int gl_MaxComputeTextureImageUnits = %d;", resources.maxComputeTextureImageUnits);
+        s.append(builtInConstant);
+
+        s.append("\n");
+    }
+
+#ifndef GLSLANG_WEB
     // images (some in compute below)
     if ((profile == EEsProfile && version >= 310) ||
         (profile != EEsProfile && version >= 130)) {
@@ -6599,6 +6628,18 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
         s.append(builtInConstant);
         snprintf(builtInConstant, maxSize, "const int gl_MaxCombinedImageUniforms = %d;", resources.maxCombinedImageUniforms);
         s.append(builtInConstant);
+    }
+
+    // compute
+    if ((profile == EEsProfile && version >= 310) || (profile != EEsProfile && version >= 420)) {
+        snprintf(builtInConstant, maxSize, "const int gl_MaxComputeImageUniforms = %d;", resources.maxComputeImageUniforms);
+        s.append(builtInConstant);
+        snprintf(builtInConstant, maxSize, "const int gl_MaxComputeAtomicCounters = %d;", resources.maxComputeAtomicCounters);
+        s.append(builtInConstant);
+        snprintf(builtInConstant, maxSize, "const int gl_MaxComputeAtomicCounterBuffers = %d;", resources.maxComputeAtomicCounterBuffers);
+        s.append(builtInConstant);
+
+        s.append("\n");
     }
 
     // atomic counters (some in compute below)
@@ -6633,31 +6674,6 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
         snprintf(builtInConstant, maxSize, "const int gl_MaxTessEvaluationAtomicCounterBuffers = %d;", resources. maxTessEvaluationAtomicCounterBuffers);
         s.append(builtInConstant);
         snprintf(builtInConstant, maxSize, "const int gl_MaxGeometryAtomicCounterBuffers = %d;", resources.       maxGeometryAtomicCounterBuffers);
-        s.append(builtInConstant);
-
-        s.append("\n");
-    }
-
-    // compute
-    if ((profile == EEsProfile && version >= 310) || (profile != EEsProfile && version >= 420)) {
-        snprintf(builtInConstant, maxSize, "const ivec3 gl_MaxComputeWorkGroupCount = ivec3(%d,%d,%d);", resources.maxComputeWorkGroupCountX,
-                                                                                                         resources.maxComputeWorkGroupCountY,
-                                                                                                         resources.maxComputeWorkGroupCountZ);
-        s.append(builtInConstant);
-        snprintf(builtInConstant, maxSize, "const ivec3 gl_MaxComputeWorkGroupSize = ivec3(%d,%d,%d);", resources.maxComputeWorkGroupSizeX,
-                                                                                                        resources.maxComputeWorkGroupSizeY,
-                                                                                                        resources.maxComputeWorkGroupSizeZ);
-        s.append(builtInConstant);
-
-        snprintf(builtInConstant, maxSize, "const int gl_MaxComputeUniformComponents = %d;", resources.maxComputeUniformComponents);
-        s.append(builtInConstant);
-        snprintf(builtInConstant, maxSize, "const int gl_MaxComputeTextureImageUnits = %d;", resources.maxComputeTextureImageUnits);
-        s.append(builtInConstant);
-        snprintf(builtInConstant, maxSize, "const int gl_MaxComputeImageUniforms = %d;", resources.maxComputeImageUniforms);
-        s.append(builtInConstant);
-        snprintf(builtInConstant, maxSize, "const int gl_MaxComputeAtomicCounters = %d;", resources.maxComputeAtomicCounters);
-        s.append(builtInConstant);
-        snprintf(builtInConstant, maxSize, "const int gl_MaxComputeAtomicCounterBuffers = %d;", resources.maxComputeAtomicCounterBuffers);
         s.append(builtInConstant);
 
         s.append("\n");
@@ -7547,7 +7563,6 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
 #endif
         break;
 
-#ifndef GLSLANG_WEB
     case EShLangCompute:
         BuiltInVariable("gl_NumWorkGroups",         EbvNumWorkGroups,        symbolTable);
         BuiltInVariable("gl_WorkGroupSize",         EbvWorkGroupSize,        symbolTable);
@@ -7556,6 +7571,7 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         BuiltInVariable("gl_GlobalInvocationID",    EbvGlobalInvocationId,   symbolTable);
         BuiltInVariable("gl_LocalInvocationIndex",  EbvLocalInvocationIndex, symbolTable);
 
+#ifndef GLSLANG_WEB
         if (profile != EEsProfile && version < 430) {
             symbolTable.setVariableExtensions("gl_NumWorkGroups",        1, &E_GL_ARB_compute_shader);
             symbolTable.setVariableExtensions("gl_WorkGroupSize",        1, &E_GL_ARB_compute_shader);
@@ -7635,6 +7651,7 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             BuiltInVariable("gl_WarpIDNV",              EbvWarpID,          symbolTable);
             BuiltInVariable("gl_SMIDNV",                EbvSMID,            symbolTable);
         }
+#endif
 
         if ((profile != EEsProfile && version >= 140) ||
             (profile == EEsProfile && version >= 310)) {
@@ -7644,6 +7661,7 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             BuiltInVariable("gl_ViewIndex", EbvViewIndex, symbolTable);
         }
 
+#ifndef GLSLANG_WEB
         // GL_KHR_shader_subgroup
         if ((profile == EEsProfile && version >= 310) ||
             (profile != EEsProfile && version >= 140)) {
@@ -8088,6 +8106,9 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
     symbolTable.relateToOperator("packUint2x32",    EOpPackUint2x32);
     symbolTable.relateToOperator("unpackUint2x32",  EOpUnpackUint2x32);
 
+    symbolTable.relateToOperator("barrier",                    EOpBarrier);
+    symbolTable.relateToOperator("memoryBarrier",              EOpMemoryBarrier);
+
 #ifndef GLSLANG_WEB
     symbolTable.relateToOperator("packInt2x16",     EOpPackInt2x16);
     symbolTable.relateToOperator("unpackInt2x16",   EOpUnpackInt2x16);
@@ -8109,9 +8130,7 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
     symbolTable.relateToOperator("unpack16",        EOpUnpack16);
     symbolTable.relateToOperator("unpack8",         EOpUnpack8);
 
-    symbolTable.relateToOperator("barrier",                    EOpBarrier);
     symbolTable.relateToOperator("controlBarrier",             EOpBarrier);
-    symbolTable.relateToOperator("memoryBarrier",              EOpMemoryBarrier);
     symbolTable.relateToOperator("memoryBarrierAtomicCounter", EOpMemoryBarrierAtomicCounter);
     symbolTable.relateToOperator("memoryBarrierBuffer",        EOpMemoryBarrierBuffer);
     symbolTable.relateToOperator("memoryBarrierImage",         EOpMemoryBarrierImage);
@@ -8443,8 +8462,8 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
 #endif
     }
 
-#ifndef GLSLANG_WEB
     switch(language) {
+#ifndef GLSLANG_WEB
     case EShLangVertex:
         break;
 
@@ -8479,10 +8498,12 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         symbolTable.relateToOperator("endInvocationInterlockARB",   EOpEndInvocationInterlock);
 
         break;
+#endif
 
     case EShLangCompute:
         symbolTable.relateToOperator("memoryBarrierShared",         EOpMemoryBarrierShared);
         symbolTable.relateToOperator("groupMemoryBarrier",          EOpGroupMemoryBarrier);
+#ifndef GLSLANG_WEB
         symbolTable.relateToOperator("subgroupMemoryBarrierShared", EOpSubgroupMemoryBarrierShared);
         if ((profile != EEsProfile && version >= 450) ||
             (profile == EEsProfile && version >= 320)) {
@@ -8499,8 +8520,10 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         symbolTable.relateToOperator("coopMatLoadNV",              EOpCooperativeMatrixLoad);
         symbolTable.relateToOperator("coopMatStoreNV",             EOpCooperativeMatrixStore);
         symbolTable.relateToOperator("coopMatMulAddNV",            EOpCooperativeMatrixMulAdd);
+#endif
         break;
 
+#ifndef GLSLANG_WEB
     case EShLangRayGenNV:
     case EShLangClosestHitNV:
     case EShLangMissNV:
@@ -8539,8 +8562,8 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
 
     default:
         assert(false && "Language not supported");
-    }
 #endif
+    }
 }
 
 //

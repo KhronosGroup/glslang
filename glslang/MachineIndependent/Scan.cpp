@@ -1058,13 +1058,12 @@ int TScanContext::tokenizeIdentifier()
 
     case SUBROUTINE:
         return es30ReservedFromGLSL(400);
+#endif
     case SHARED:
         if ((parseContext.isEsProfile() && parseContext.version < 300) ||
             (!parseContext.isEsProfile() && parseContext.version < 140))
             return identifierOrType();
         return keyword;
-#endif
-
     case LAYOUT:
     {
         const int numLayoutExts = 2;

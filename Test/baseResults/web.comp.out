@@ -1,0 +1,75 @@
+; SPIR-V
+; Version: 1.0
+; Generator: Khronos Glslang Reference Front End; 7
+; Bound: 55
+; Schema: 0
+               OpCapability Shader
+          %1 = OpExtInstImport "GLSL.std.450"
+               OpMemoryModel Logical GLSL450
+               OpEntryPoint GLCompute %main "main"
+               OpExecutionMode %main LocalSize 2 5 7
+               OpSource ESSL 310
+               OpName %main "main"
+               OpName %s "s"
+               OpName %arrX "arrX"
+               OpName %arrY "arrY"
+               OpName %arrZ "arrZ"
+               OpDecorate %19 SpecId 18
+               OpDecorate %21 SpecId 19
+       %void = OpTypeVoid
+          %3 = OpTypeFunction %void
+      %float = OpTypeFloat 32
+    %v4float = OpTypeVector %float 4
+       %uint = OpTypeInt 32 0
+%uint_197645 = OpConstant %uint 197645
+%_arr_v4float_uint_197645 = OpTypeArray %v4float %uint_197645
+%_ptr_Function__arr_v4float_uint_197645 = OpTypePointer Function %_arr_v4float_uint_197645
+        %int = OpTypeInt 32 1
+      %int_3 = OpConstant %int 3
+    %float_1 = OpConstant %float 1
+         %16 = OpConstantComposite %v4float %float_1 %float_1 %float_1 %float_1
+%_ptr_Function_v4float = OpTypePointer Function %v4float
+         %19 = OpSpecConstant %uint 2
+     %uint_5 = OpConstant %uint 5
+         %21 = OpSpecConstant %uint 7
+     %v3uint = OpTypeVector %uint 3
+         %23 = OpSpecConstantComposite %v3uint %19 %uint_5 %21
+     %uint_0 = OpConstant %uint 0
+%_arr_int_25 = OpTypeArray %int %25
+%_ptr_Private__arr_int_25 = OpTypePointer Private %_arr_int_25
+       %arrX = OpVariable %_ptr_Private__arr_int_25 Private
+      %int_0 = OpConstant %int 0
+%_ptr_Private_int = OpTypePointer Private %int
+     %uint_1 = OpConstant %uint 1
+%_arr_int_34 = OpTypeArray %int %34
+%_ptr_Private__arr_int_34 = OpTypePointer Private %_arr_int_34
+       %arrY = OpVariable %_ptr_Private__arr_int_34 Private
+     %uint_2 = OpConstant %uint 2
+%_arr_int_42 = OpTypeArray %int %42
+%_ptr_Private__arr_int_42 = OpTypePointer Private %_arr_int_42
+       %arrZ = OpVariable %_ptr_Private__arr_int_42 Private
+ %int_197645 = OpConstant %int 197645
+       %main = OpFunction %void None %3
+          %5 = OpLabel
+          %s = OpVariable %_ptr_Function__arr_v4float_uint_197645 Function
+         %18 = OpAccessChain %_ptr_Function_v4float %s %int_3
+               OpStore %18 %16
+         %25 = OpCompositeExtract %uint %23 0
+         %31 = OpAccessChain %_ptr_Private_int %arrX %int_0
+         %32 = OpLoad %int %31
+         %34 = OpCompositeExtract %uint %23 1
+         %38 = OpAccessChain %_ptr_Private_int %arrY %int_0
+         %39 = OpLoad %int %38
+         %40 = OpIMul %int %32 %39
+         %42 = OpCompositeExtract %uint %23 2
+         %46 = OpAccessChain %_ptr_Private_int %arrZ %int_0
+         %47 = OpLoad %int %46
+         %48 = OpIMul %int %40 %47
+         %49 = OpConvertSToF %float %48
+         %50 = OpAccessChain %_ptr_Function_v4float %s %int_3
+         %51 = OpLoad %v4float %50
+         %52 = OpVectorTimesScalar %v4float %51 %49
+         %53 = OpAccessChain %_ptr_Function_v4float %s %int_3
+               OpStore %53 %52
+               OpReturn
+               OpFunctionEnd

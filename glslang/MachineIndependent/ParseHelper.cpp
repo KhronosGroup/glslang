@@ -3387,11 +3387,11 @@ void TParseContext::globalQualifierTypeCheck(const TSourceLoc& loc, const TQuali
                     requireProfile(loc, ~EEsProfile, "fragment-shader struct input containing an array");
             }
             break;
-#ifndef GLSLANG_WEB
        case EShLangCompute:
             if (! symbolTable.atBuiltInLevel())
                 error(loc, "global storage input qualifier cannot be used in a compute shader", "in", "");
             break;
+#ifndef GLSLANG_WEB
        case EShLangTessControl:
             if (qualifier.patch)
                 error(loc, "can only use on output in tessellation-control shader", "patch", "");
@@ -3432,10 +3432,10 @@ void TParseContext::globalQualifierTypeCheck(const TSourceLoc& loc, const TQuali
                 error(loc, "cannot contain a double, int64, or uint64", GetStorageQualifierString(qualifier.storage), "");
         break;
 
-#ifndef GLSLANG_WEB
         case EShLangCompute:
             error(loc, "global storage output qualifier cannot be used in a compute shader", "out", "");
             break;
+#ifndef GLSLANG_WEB
         case EShLangTessEvaluation:
             if (qualifier.patch)
                 error(loc, "can only use on input in tessellation-evaluation shader", "patch", "");
@@ -5293,11 +5293,10 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
             error(loc, "needs a literal integer", "buffer_reference_align", "");
         return;
     }
+#endif
 
     switch (language) {
-    case EShLangVertex:
-        break;
-
+#ifndef GLSLANG_WEB
     case EShLangTessControl:
         if (id == "vertices") {
             if (value == 0)
@@ -5308,9 +5307,6 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
                 error(loc, "needs a literal integer", "vertices", "");
             return;
         }
-        break;
-
-    case EShLangTessEvaluation:
         break;
 
     case EShLangGeometry:
@@ -5385,6 +5381,7 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
 
     case EShLangTaskNV:
         // Fall through
+#endif
     case EShLangCompute:
         if (id.compare(0, 11, "local_size_") == 0) {
             if (language == EShLangMeshNV || language == EShLangTaskNV) {
@@ -5432,11 +5429,10 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
             }
         }
         break;
+
     default:
         break;
     }
-
-#endif // GLSLANG_WEB
 
     error(loc, "there is no such layout identifier for this stage taking an assigned value", id.c_str(), "");
 }
@@ -8004,6 +8000,7 @@ void TParseContext::updateStandaloneQualifierDefaults(const TSourceLoc& loc, con
         else
             error(loc, "can only apply to 'in'", "point_mode", "");
     }
+#endif
     for (int i = 0; i < 3; ++i) {
         if (publicType.shaderQualifiers.localSizeNotDefault[i]) {
             if (publicType.qualifier.storage == EvqVaryingIn) {
@@ -8063,6 +8060,7 @@ void TParseContext::updateStandaloneQualifierDefaults(const TSourceLoc& loc, con
         }
     }
 
+#ifndef GLSLANG_WEB
     if (publicType.shaderQualifiers.earlyFragmentTests) {
         if (publicType.qualifier.storage == EvqVaryingIn)
             intermediate.setEarlyFragmentTests();
