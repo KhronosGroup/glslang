@@ -6275,6 +6275,9 @@ spv::Id TGlslangToSpvTraverser::createConversion(glslang::TOperator op, OpDecora
         break;
     case glslang::EOpConvPtrToUvec2:
     case glslang::EOpConvUvec2ToPtr:
+        if (builder.isVector(operand))
+            builder.promoteIncorporatedExtension(spv::E_SPV_EXT_physical_storage_buffer,
+                                                 spv::E_SPV_KHR_physical_storage_buffer, spv::Spv_1_5);
         convOp = spv::OpBitcast;
         break;
 #endif
