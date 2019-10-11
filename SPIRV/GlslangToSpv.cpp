@@ -100,11 +100,11 @@ struct OpDecorations {
     spv::Decoration precision;
 
 #ifdef GLSLANG_WEB
-        void addNoContraction(spv::Builder&, spv::Id) const { };
-        void addNonUniform(spv::Builder&, spv::Id) const { };
+        void addNoContraction(spv::Builder&, spv::Id) const { }
+        void addNonUniform(spv::Builder&, spv::Id) const { }
 #else
-        void addNoContraction(spv::Builder& builder, spv::Id t) { builder.addDecoration(t, noContraction); };
-        void addNonUniform(spv::Builder& builder, spv::Id t)  { builder.addDecoration(t, nonUniform); };
+        void addNoContraction(spv::Builder& builder, spv::Id t) { builder.addDecoration(t, noContraction); }
+        void addNonUniform(spv::Builder& builder, spv::Id t)  { builder.addDecoration(t, nonUniform); }
     protected:
         spv::Decoration noContraction;
         spv::Decoration nonUniform;
