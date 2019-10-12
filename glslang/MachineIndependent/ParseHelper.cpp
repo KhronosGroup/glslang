@@ -5861,9 +5861,7 @@ void TParseContext::layoutQualifierCheck(const TSourceLoc& loc, const TQualifier
             const char* feature = "location qualifier on uniform or buffer";
             requireProfile(loc, EEsProfile | ECoreProfile | ECompatibilityProfile | ENoProfile, feature);
             profileRequires(loc, ~EEsProfile, 330, E_GL_ARB_explicit_attrib_location, feature);
-            if (!isEsProfile() && (extensionTurnedOn(E_GL_ARB_explicit_attrib_location) || version >= 330)) {
-                profileRequires(loc, ~EEsProfile, 430, E_GL_ARB_explicit_uniform_location, feature);
-            }
+            profileRequires(loc, ~EEsProfile, 430, E_GL_ARB_explicit_uniform_location, feature);
             profileRequires(loc, EEsProfile, 310, nullptr, feature);
             break;
         }
