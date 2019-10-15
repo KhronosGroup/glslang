@@ -193,15 +193,19 @@ if(BUILD_TESTING)
     COMMAND bash ${IGNORE_CR_FLAG} runtests
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Test/)
 
-  set_property(TEST glslang-testsuite APPEND PROPERTY
-    ENVIRONMENT GLSLANG_PATH=${CMAKE_CURRENT_BINARY_DIR}/StandAlone/glslangValidator)
-  set_property(TEST glslang-testsuite APPEND PROPERTY
-    ENVIRONMENT SPIRV_REMAP_PATH=${CMAKE_CURRENT_BINARY_DIR}/StandAlone/spirv-remap)
-
+  
   if (CMAKE_CONFIGURATION_TYPES)
+    set_property(TEST glslang-testsuite APPEND PROPERTY
+      ENVIRONMENT GLSLANG_PATH=${CMAKE_CURRENT_BINARY_DIR}/StandAlone/$<CONFIGURATION>/glslangValidator)
+    set_property(TEST glslang-testsuite APPEND PROPERTY
+      ENVIRONMENT SPIRV_REMAP_PATH=${CMAKE_CURRENT_BINARY_DIR}/StandAlone/$<CONFIGURATION>/spirv-remap)
     set_property(TEST glslang-testsuite APPEND PROPERTY
       ENVIRONMENT GLSLANG_TEST_RESULTS=${CMAKE_CURRENT_BINARY_DIR}/$<CONFIGURATION>/localResults)
   else(CMAKE_CONFIGURATION_TYPES)
+    set_property(TEST glslang-testsuite APPEND PROPERTY
+      ENVIRONMENT GLSLANG_PATH=${CMAKE_CURRENT_BINARY_DIR}/StandAlone/glslangValidator)
+    set_property(TEST glslang-testsuite APPEND PROPERTY
+      ENVIRONMENT SPIRV_REMAP_PATH=${CMAKE_CURRENT_BINARY_DIR}/StandAlone/spirv-remap)
     set_property(TEST glslang-testsuite APPEND PROPERTY
       ENVIRONMENT GLSLANG_TEST_RESULTS=${CMAKE_CURRENT_BINARY_DIR}/localResults)
   endif(CMAKE_CONFIGURATION_TYPES)
