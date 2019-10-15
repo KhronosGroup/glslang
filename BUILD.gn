@@ -159,7 +159,7 @@ source_set("glslang_sources") {
   }
 
   if (is_clang) {
-    cflags_cc = [
+    cflags = [
       "-Wno-extra-semi",
       "-Wno-ignored-qualifiers",
       "-Wno-implicit-fallthrough",
@@ -168,7 +168,6 @@ source_set("glslang_sources") {
       "-Wno-unused-variable",
       "-Wno-missing-field-initializers",
       "-Wno-newline-eof",
-      "-Wextra-semi",
     ]
   }
   if (is_win && !is_clang) {
@@ -182,6 +181,9 @@ source_set("glslang_sources") {
     "${spirv_tools_dir}:spvtools_opt",
     "${spirv_tools_dir}:spvtools_val",
   ]
+
+  configs -= [ "//build/config/compiler:chromium_code" ]
+  configs += [ "//build/config/compiler:no_chromium_code" ]
 }
 
 source_set("glslang_default_resource_limits_sources") {
@@ -193,6 +195,9 @@ source_set("glslang_default_resource_limits_sources") {
     ":glslang_sources",
   ]
   public_configs = [ ":glslang_public" ]
+
+  configs -= [ "//build/config/compiler:chromium_code" ]
+  configs += [ "//build/config/compiler:no_chromium_code" ]
 }
 
 executable("glslang_validator") {
@@ -208,6 +213,9 @@ executable("glslang_validator") {
     ":glslang_default_resource_limits_sources",
     ":glslang_sources",
   ]
+
+  configs -= [ "//build/config/compiler:chromium_code" ]
+  configs += [ "//build/config/compiler:no_chromium_code" ]
 }
 
 executable("spirv-remap") {
@@ -218,4 +226,7 @@ executable("spirv-remap") {
   deps = [
     ":glslang_sources",
   ]
+
+  configs -= [ "//build/config/compiler:chromium_code" ]
+  configs += [ "//build/config/compiler:no_chromium_code" ]
 }
