@@ -180,3 +180,21 @@ if(ENABLE_HLSL)
     add_subdirectory(hlsl)
 endif(ENABLE_HLSL)
 add_subdirectory(gtests)
+
+if(BUILD_TESTING)
+  # glslang-testsuite runs a bash script on Windows.
+  # Make sure to use '-o igncr' flag to ignore carriage returns (\r).
+  set(IGNORE_CR_FLAG "")
+  if(WIN32)
+    set(IGNORE_CR_FLAG -o igncr)
+  endif()
+
+  add_test(NAME glslang-testsuite
+    COMMAND bash ${IGNORE_CR_FLAG} runtests
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Test/)
+
+  set_property(TEST glslang-testsuite APPEND PROPERTY
+    ENVIRONMENT GLSLANG_PATH=${CMAKE_CURRENT_BINARY_DIR}/StandAlone/glslangValidator)
+  set_property(TEST glslang-testsuite APPEND PROPERTY
+    ENVIRONMENT SPIRV_REMAP_PATH=${CMAKE_CURRENT_BINARY_DIR}/StandAlone/spirv-remap)
+endif(BUILD_TESTING)
