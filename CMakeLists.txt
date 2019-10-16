@@ -37,6 +37,7 @@ option(ENABLE_EMSCRIPTEN_ENVIRONMENT_NODE "If using Emscripten, builds to run on
 CMAKE_DEPENDENT_OPTION(ENABLE_HLSL "Enables HLSL input support" ON "NOT ENABLE_GLSLANG_WEB" OFF)
 
 option(ENABLE_OPT "Enables spirv-opt capability if present" ON)
+option(ENABLE_PCH "Enables Precompiled header" ON)
 
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT AND WIN32)
     set(CMAKE_INSTALL_PREFIX "install" CACHE STRING "..." FORCE)
@@ -52,7 +53,7 @@ endif()
 
 # Precompiled header macro. Parameters are source file list and filename for pch cpp file.
 macro(glslang_pch SRCS PCHCPP)
-  if(MSVC AND CMAKE_GENERATOR MATCHES "^Visual Studio")
+  if(MSVC AND CMAKE_GENERATOR MATCHES "^Visual Studio" AND ENABLE_PCH)
     set(PCH_NAME "$(IntDir)\\pch.pch")
     # make source files use/depend on PCH_NAME
     set_source_files_properties(${${SRCS}} PROPERTIES COMPILE_FLAGS "/Yupch.h /FIpch.h /Fp${PCH_NAME} /Zm300" OBJECT_DEPENDS "${PCH_NAME}")
