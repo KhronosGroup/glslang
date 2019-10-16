@@ -151,7 +151,7 @@ endfunction(glslang_set_link_args)
 # otherwise, it will find the wrong version and fail later
 if(BUILD_EXTERNAL AND IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/External)
     find_package(PythonInterp 3 REQUIRED)
-	
+
 	# We depend on these for later projects, so they should come first.
 	add_subdirectory(External)
 endif()
@@ -189,24 +189,17 @@ if(BUILD_TESTING)
         set(IGNORE_CR_FLAG -o igncr)
     endif()
 
-    add_test(NAME glslang-testsuite
-        COMMAND bash ${IGNORE_CR_FLAG} runtests
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Test/)
-
-  
     if (CMAKE_CONFIGURATION_TYPES)
-        set_property(TEST glslang-testsuite APPEND PROPERTY
-            ENVIRONMENT GLSLANG_PATH=${CMAKE_CURRENT_BINARY_DIR}/StandAlone/$<CONFIGURATION>/glslangValidator)
-        set_property(TEST glslang-testsuite APPEND PROPERTY
-            ENVIRONMENT SPIRV_REMAP_PATH=${CMAKE_CURRENT_BINARY_DIR}/StandAlone/$<CONFIGURATION>/spirv-remap)
-        set_property(TEST glslang-testsuite APPEND PROPERTY
-            ENVIRONMENT GLSLANG_TEST_RESULTS=${CMAKE_CURRENT_BINARY_DIR}/$<CONFIGURATION>/localResults)
+        set(RESULTS_PATH ${CMAKE_CURRENT_BINARY_DIR}/$<CONFIGURATION>/localResults)
+        set(VALIDATOR_PATH ${CMAKE_CURRENT_BINARY_DIR}/StandAlone/$<CONFIGURATION>/glslangValidator)
+        set(REMAP_PATH ${CMAKE_CURRENT_BINARY_DIR}/StandAlone/$<CONFIGURATION>/spirv-remap)
     else(CMAKE_CONFIGURATION_TYPES)
-        set_property(TEST glslang-testsuite APPEND PROPERTY
-            ENVIRONMENT GLSLANG_PATH=${CMAKE_CURRENT_BINARY_DIR}/StandAlone/glslangValidator)
-        set_property(TEST glslang-testsuite APPEND PROPERTY
-            ENVIRONMENT SPIRV_REMAP_PATH=${CMAKE_CURRENT_BINARY_DIR}/StandAlone/spirv-remap)
-        set_property(TEST glslang-testsuite APPEND PROPERTY
-            ENVIRONMENT GLSLANG_TEST_RESULTS=${CMAKE_CURRENT_BINARY_DIR}/localResults)
+        set(RESULTS_PATH ${CMAKE_CURRENT_BINARY_DIR}/localResults)
+        set(VALIDATOR_PATH ${CMAKE_CURRENT_BINARY_DIR}/StandAlone/glslangValidator)
+        set(REMAP_PATH ${CMAKE_CURRENT_BINARY_DIR}/StandAlone/spirv-remap)
     endif(CMAKE_CONFIGURATION_TYPES)
+
+    add_test(NAME glslang-testsuite
+        COMMAND bash ${IGNORE_CR_FLAG} runtests ${RESULTS_PATH} ${VALIDATOR_PATH} ${REMAP_PATH}
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Test/)
 endif(BUILD_TESTING)

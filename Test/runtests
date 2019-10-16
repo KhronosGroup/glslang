@@ -1,9 +1,14 @@
 #!/usr/bin/env bash
 
-TARGETDIR=${GLSLANG_TEST_RESULTS:-localResults}
+# Arguments:
+#  1- TargetDirectory, where to write test results and intermediary files
+#  2- Path to glslangValidator
+#  3- Path to spirv-remap
+
+TARGETDIR=${1:-localResults}
 BASEDIR=baseResults
-EXE=${GLSLANG_PATH:-../build/install/bin/glslangValidator}
-REMAPEXE=${SPIRV_REMAP_PATH:-../build/install/bin/spirv-remap}
+EXE=${2:-../build/install/bin/glslangValidator}
+REMAPEXE=${3:-../build/install/bin/spirv-remap}
 HASERROR=0
 mkdir -p $TARGETDIR
 
