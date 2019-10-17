@@ -3813,10 +3813,6 @@ void TParseContext::arraySizesCheck(const TSourceLoc& loc, const TQualifier& qua
     // for ES, if size isn't coming from an initializer, it has to be explicitly declared now,
     // with very few exceptions
 
-    // last member of ssbo block exception:
-    if (qualifier.storage == EvqBuffer && lastMember)
-        return;
-
     // implicitly-sized io exceptions:
     switch (language) {
     case EShLangGeometry:
@@ -3850,6 +3846,10 @@ void TParseContext::arraySizesCheck(const TSourceLoc& loc, const TQualifier& qua
     }
 
 #endif
+
+    // last member of ssbo block exception:
+    if (qualifier.storage == EvqBuffer && lastMember)
+        return;
 
     arraySizeRequiredCheck(loc, *arraySizes);
 }
@@ -5384,6 +5384,7 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
 #endif
     case EShLangCompute:
         if (id.compare(0, 11, "local_size_") == 0) {
+#ifndef GLSLANG_WEB
             if (language == EShLangMeshNV || language == EShLangTaskNV) {
                 requireExtensions(loc, 1, &E_GL_NV_mesh_shader, "gl_WorkGroupSize");
             }
@@ -5392,6 +5393,7 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
                 profileRequires(loc, EEsProfile, 310, 0, "gl_WorkGroupSize");
                 profileRequires(loc, ~EEsProfile, 430, E_GL_ARB_compute_shader, "gl_WorkGroupSize");
             }
+#endif
             if (nonLiteral)
                 error(loc, "needs a literal integer", "local_size", "");
             if (id.size() == 12 && value == 0) {
@@ -8017,7 +8019,9 @@ void TParseContext::updateStandaloneQualifierDefaults(const TSourceLoc& loc, con
                         }
                         if (intermediate.getLocalSize(i) > (unsigned int)max)
                             error(loc, "too large; see gl_MaxComputeWorkGroupSize", "local_size", "");
-                    } else if (language == EShLangMeshNV) {
+                    }
+#ifndef GLSLANG_WEB
+                    else if (language == EShLangMeshNV) {
                         switch (i) {
                         case 0: max = resources.maxMeshWorkGroupSizeX_NV; break;
                         case 1: max = resources.maxMeshWorkGroupSizeY_NV; break;
@@ -8035,7 +8039,9 @@ void TParseContext::updateStandaloneQualifierDefaults(const TSourceLoc& loc, con
                         }
                         if (intermediate.getLocalSize(i) > (unsigned int)max)
                             error(loc, "too large; see gl_MaxTaskWorkGroupSizeNV", "local_size", "");
-                    } else {
+                    }
+#endif
+                    else {
                         assert(0);
                     }
 

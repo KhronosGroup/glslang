@@ -673,6 +673,13 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
     case glslang::EbvFace:                 return spv::BuiltInFrontFacing;
     case glslang::EbvFragDepth:            return spv::BuiltInFragDepth;
 
+    case glslang::EbvNumWorkGroups:        return spv::BuiltInNumWorkgroups;
+    case glslang::EbvWorkGroupSize:        return spv::BuiltInWorkgroupSize;
+    case glslang::EbvWorkGroupId:          return spv::BuiltInWorkgroupId;
+    case glslang::EbvLocalInvocationId:    return spv::BuiltInLocalInvocationId;
+    case glslang::EbvLocalInvocationIndex: return spv::BuiltInLocalInvocationIndex;
+    case glslang::EbvGlobalInvocationId:   return spv::BuiltInGlobalInvocationId;
+
 #ifndef GLSLANG_WEB
     // These *Distance capabilities logically belong here, but if the member is declared and
     // then never used, consumers of SPIR-V prefer the capability not be declared.
@@ -757,12 +764,6 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
     case glslang::EbvTessCoord:            return spv::BuiltInTessCoord;
     case glslang::EbvPatchVertices:        return spv::BuiltInPatchVertices;
     case glslang::EbvHelperInvocation:     return spv::BuiltInHelperInvocation;
-    case glslang::EbvNumWorkGroups:        return spv::BuiltInNumWorkgroups;
-    case glslang::EbvWorkGroupSize:        return spv::BuiltInWorkgroupSize;
-    case glslang::EbvWorkGroupId:          return spv::BuiltInWorkgroupId;
-    case glslang::EbvLocalInvocationId:    return spv::BuiltInLocalInvocationId;
-    case glslang::EbvLocalInvocationIndex: return spv::BuiltInLocalInvocationIndex;
-    case glslang::EbvGlobalInvocationId:   return spv::BuiltInGlobalInvocationId;
 
     case glslang::EbvSubGroupSize:
         builder.addExtension(spv::E_SPV_KHR_shader_ballot);
@@ -1200,11 +1201,11 @@ spv::StorageClass TGlslangToSpvTraverser::TranslateStorageClass(const glslang::T
     }
 
     switch (type.getQualifier().storage) {
-    case glslang::EvqGlobal:        return spv::StorageClassPrivate;
-    case glslang::EvqConstReadOnly: return spv::StorageClassFunction;
-    case glslang::EvqTemporary:     return spv::StorageClassFunction;
-#ifndef GLSLANG_WEB
+    case glslang::EvqGlobal:           return spv::StorageClassPrivate;
+    case glslang::EvqConstReadOnly:    return spv::StorageClassFunction;
+    case glslang::EvqTemporary:        return spv::StorageClassFunction;
     case glslang::EvqShared:           return spv::StorageClassWorkgroup;
+#ifndef GLSLANG_WEB
     case glslang::EvqPayloadNV:        return spv::StorageClassRayPayloadNV;
     case glslang::EvqPayloadInNV:      return spv::StorageClassIncomingRayPayloadNV;
     case glslang::EvqHitAttrNV:        return spv::StorageClassHitAttributeNV;
@@ -2548,7 +2549,6 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         binOp = glslang::EOpMod;
         break;
 
-#ifndef GLSLANG_WEB
     case glslang::EOpEmitVertex:
     case glslang::EOpEndPrimitive:
     case glslang::EOpBarrier:
@@ -2572,6 +2572,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         // These all have 0 operands and will naturally finish up in the code below for 0 operands
         break;
 
+#ifndef GLSLANG_WEB
     case glslang::EOpAtomicStore:
         noReturnValue = true;
         // fallthrough
@@ -3537,8 +3538,8 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
                 builder.addIncorporatedExtension("SPV_EXT_descriptor_indexing", spv::Spv_1_5);
                 builder.addCapability(spv::CapabilityRuntimeDescriptorArrayEXT);
             }
-            spvType = builder.makeRuntimeArray(spvType);
 #endif
+            spvType = builder.makeRuntimeArray(spvType);
         }
         if (stride > 0)
             builder.addDecoration(spvType, spv::DecorationArrayStride, stride);
@@ -7172,6 +7173,48 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
     case glslang::EOpRefract:
         libCall = spv::GLSLstd450Refract;
         break;
+    case glslang::EOpBarrier:
+        {
+            // This is for the extended controlBarrier function, with four operands.
+            // The unextended barrier() goes through createNoArgOperation.
+            assert(operands.size() == 4);
+            unsigned int executionScope = builder.getConstantScalar(operands[0]);
+            unsigned int memoryScope = builder.getConstantScalar(operands[1]);
+            unsigned int semantics = builder.getConstantScalar(operands[2]) | builder.getConstantScalar(operands[3]);
+            builder.createControlBarrier((spv::Scope)executionScope, (spv::Scope)memoryScope, (spv::MemorySemanticsMask)semantics);
+            if (semantics & (spv::MemorySemanticsMakeAvailableKHRMask |
+                             spv::MemorySemanticsMakeVisibleKHRMask |
+                             spv::MemorySemanticsOutputMemoryKHRMask |
+                             spv::MemorySemanticsVolatileMask)) {
+                builder.addCapability(spv::CapabilityVulkanMemoryModelKHR);
+            }
+            if (glslangIntermediate->usingVulkanMemoryModel() && (executionScope == spv::ScopeDevice || memoryScope == spv::ScopeDevice)) {
+                builder.addCapability(spv::CapabilityVulkanMemoryModelDeviceScopeKHR);
+            }
+            return 0;
+        }
+        break;
+    case glslang::EOpMemoryBarrier:
+        {
+            // This is for the extended memoryBarrier function, with three operands.
+            // The unextended memoryBarrier() goes through createNoArgOperation.
+            assert(operands.size() == 3);
+            unsigned int memoryScope = builder.getConstantScalar(operands[0]);
+            unsigned int semantics = builder.getConstantScalar(operands[1]) | builder.getConstantScalar(operands[2]);
+            builder.createMemoryBarrier((spv::Scope)memoryScope, (spv::MemorySemanticsMask)semantics);
+            if (semantics & (spv::MemorySemanticsMakeAvailableKHRMask |
+                             spv::MemorySemanticsMakeVisibleKHRMask |
+                             spv::MemorySemanticsOutputMemoryKHRMask |
+                             spv::MemorySemanticsVolatileMask)) {
+                builder.addCapability(spv::CapabilityVulkanMemoryModelKHR);
+            }
+            if (glslangIntermediate->usingVulkanMemoryModel() && memoryScope == spv::ScopeDevice) {
+                builder.addCapability(spv::CapabilityVulkanMemoryModelDeviceScopeKHR);
+            }
+            return 0;
+        }
+        break;
+
 #ifndef GLSLANG_WEB
     case glslang::EOpInterpolateAtSample:
         if (typeProxy == glslang::EbtFloat16)
@@ -7330,47 +7373,6 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
         extBuiltins = getExtBuiltins(spv::E_SPV_AMD_shader_explicit_vertex_parameter);
         libCall = spv::InterpolateAtVertexAMD;
         break;
-    case glslang::EOpBarrier:
-        {
-            // This is for the extended controlBarrier function, with four operands.
-            // The unextended barrier() goes through createNoArgOperation.
-            assert(operands.size() == 4);
-            unsigned int executionScope = builder.getConstantScalar(operands[0]);
-            unsigned int memoryScope = builder.getConstantScalar(operands[1]);
-            unsigned int semantics = builder.getConstantScalar(operands[2]) | builder.getConstantScalar(operands[3]);
-            builder.createControlBarrier((spv::Scope)executionScope, (spv::Scope)memoryScope, (spv::MemorySemanticsMask)semantics);
-            if (semantics & (spv::MemorySemanticsMakeAvailableKHRMask |
-                             spv::MemorySemanticsMakeVisibleKHRMask |
-                             spv::MemorySemanticsOutputMemoryKHRMask |
-                             spv::MemorySemanticsVolatileMask)) {
-                builder.addCapability(spv::CapabilityVulkanMemoryModelKHR);
-            }
-            if (glslangIntermediate->usingVulkanMemoryModel() && (executionScope == spv::ScopeDevice || memoryScope == spv::ScopeDevice)) {
-                builder.addCapability(spv::CapabilityVulkanMemoryModelDeviceScopeKHR);
-            }
-            return 0;
-        }
-        break;
-    case glslang::EOpMemoryBarrier:
-        {
-            // This is for the extended memoryBarrier function, with three operands.
-            // The unextended memoryBarrier() goes through createNoArgOperation.
-            assert(operands.size() == 3);
-            unsigned int memoryScope = builder.getConstantScalar(operands[0]);
-            unsigned int semantics = builder.getConstantScalar(operands[1]) | builder.getConstantScalar(operands[2]);
-            builder.createMemoryBarrier((spv::Scope)memoryScope, (spv::MemorySemanticsMask)semantics);
-            if (semantics & (spv::MemorySemanticsMakeAvailableKHRMask |
-                             spv::MemorySemanticsMakeVisibleKHRMask |
-                             spv::MemorySemanticsOutputMemoryKHRMask |
-                             spv::MemorySemanticsVolatileMask)) {
-                builder.addCapability(spv::CapabilityVulkanMemoryModelKHR);
-            }
-            if (glslangIntermediate->usingVulkanMemoryModel() && memoryScope == spv::ScopeDevice) {
-                builder.addCapability(spv::CapabilityVulkanMemoryModelDeviceScopeKHR);
-            }
-            return 0;
-        }
-        break;
 
     case glslang::EOpReportIntersectionNV:
     {
@@ -7478,17 +7480,18 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
 // Intrinsics with no arguments (or no return value, and no precision).
 spv::Id TGlslangToSpvTraverser::createNoArgOperation(glslang::TOperator op, spv::Decoration precision, spv::Id typeId)
 {
-#ifndef GLSLANG_WEB
     // GLSL memory barriers use queuefamily scope in new model, device scope in old model
     spv::Scope memoryBarrierScope = glslangIntermediate->usingVulkanMemoryModel() ? spv::ScopeQueueFamilyKHR : spv::ScopeDevice;
 
     switch (op) {
+#ifndef GLSLANG_WEB
     case glslang::EOpEmitVertex:
         builder.createNoResultOp(spv::OpEmitVertex);
         return 0;
     case glslang::EOpEndPrimitive:
         builder.createNoResultOp(spv::OpEndPrimitive);
         return 0;
+#endif
     case glslang::EOpBarrier:
         if (glslangIntermediate->getStage() == EShLangTessControl) {
             if (glslangIntermediate->usingVulkanMemoryModel()) {
@@ -7509,16 +7512,8 @@ spv::Id TGlslangToSpvTraverser::createNoArgOperation(glslang::TOperator op, spv:
         builder.createMemoryBarrier(memoryBarrierScope, spv::MemorySemanticsAllMemory |
                                                         spv::MemorySemanticsAcquireReleaseMask);
         return 0;
-    case glslang::EOpMemoryBarrierAtomicCounter:
-        builder.createMemoryBarrier(memoryBarrierScope, spv::MemorySemanticsAtomicCounterMemoryMask |
-                                                        spv::MemorySemanticsAcquireReleaseMask);
-        return 0;
     case glslang::EOpMemoryBarrierBuffer:
         builder.createMemoryBarrier(memoryBarrierScope, spv::MemorySemanticsUniformMemoryMask |
-                                                        spv::MemorySemanticsAcquireReleaseMask);
-        return 0;
-    case glslang::EOpMemoryBarrierImage:
-        builder.createMemoryBarrier(memoryBarrierScope, spv::MemorySemanticsImageMemoryMask |
                                                         spv::MemorySemanticsAcquireReleaseMask);
         return 0;
     case glslang::EOpMemoryBarrierShared:
@@ -7528,6 +7523,15 @@ spv::Id TGlslangToSpvTraverser::createNoArgOperation(glslang::TOperator op, spv:
     case glslang::EOpGroupMemoryBarrier:
         builder.createMemoryBarrier(spv::ScopeWorkgroup, spv::MemorySemanticsAllMemory |
                                                          spv::MemorySemanticsAcquireReleaseMask);
+        return 0;
+#ifndef GLSLANG_WEB
+    case glslang::EOpMemoryBarrierAtomicCounter:
+        builder.createMemoryBarrier(memoryBarrierScope, spv::MemorySemanticsAtomicCounterMemoryMask |
+                                                        spv::MemorySemanticsAcquireReleaseMask);
+        return 0;
+    case glslang::EOpMemoryBarrierImage:
+        builder.createMemoryBarrier(memoryBarrierScope, spv::MemorySemanticsImageMemoryMask |
+                                                        spv::MemorySemanticsAcquireReleaseMask);
         return 0;
     case glslang::EOpAllMemoryBarrierWithGroupSync:
         builder.createControlBarrier(spv::ScopeWorkgroup, spv::ScopeDevice,
@@ -7620,10 +7624,10 @@ spv::Id TGlslangToSpvTraverser::createNoArgOperation(glslang::TOperator op, spv:
         builder.addCapability(spv::CapabilityShaderClockKHR);
         return builder.createOp(spv::OpReadClockKHR, typeId, args);
     }
+#endif
     default:
         break;
     }
-#endif
 
     logger->missingFunctionality("unknown operation with no arguments");
 

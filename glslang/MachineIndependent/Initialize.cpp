@@ -3819,13 +3819,13 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
         stageBuiltins[EShLangCompute].append(
             "void memoryBarrierShared();"
             "void groupMemoryBarrier();"
+            "void memoryBarrierBuffer();"
             );
     }
 #ifndef GLSLANG_WEB
     if ((profile != EEsProfile && version >= 420) || esBarrier) {
         commonBuiltins.append(
             "void memoryBarrierAtomicCounter();"
-            "void memoryBarrierBuffer();"
             "void memoryBarrierImage();"
             );
     }
@@ -7692,8 +7692,10 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setFunctionExtensions("dFdyCoarse",             1, &E_GL_NV_compute_shader_derivatives);
             symbolTable.setFunctionExtensions("fwidthCoarse",           1, &E_GL_NV_compute_shader_derivatives);
         }
-
+#endif
         break;
+
+#ifndef GLSLANG_WEB
     case EShLangRayGenNV:
     case EShLangIntersectNV:
     case EShLangAnyHitNV:
@@ -8108,6 +8110,7 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
 
     symbolTable.relateToOperator("barrier",                    EOpBarrier);
     symbolTable.relateToOperator("memoryBarrier",              EOpMemoryBarrier);
+    symbolTable.relateToOperator("memoryBarrierBuffer",        EOpMemoryBarrierBuffer);
 
 #ifndef GLSLANG_WEB
     symbolTable.relateToOperator("packInt2x16",     EOpPackInt2x16);
@@ -8132,7 +8135,6 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
 
     symbolTable.relateToOperator("controlBarrier",             EOpBarrier);
     symbolTable.relateToOperator("memoryBarrierAtomicCounter", EOpMemoryBarrierAtomicCounter);
-    symbolTable.relateToOperator("memoryBarrierBuffer",        EOpMemoryBarrierBuffer);
     symbolTable.relateToOperator("memoryBarrierImage",         EOpMemoryBarrierImage);
 
     symbolTable.relateToOperator("atomicLoad",     EOpAtomicLoad);

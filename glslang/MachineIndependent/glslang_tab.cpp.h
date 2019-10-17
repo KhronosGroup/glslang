@@ -182,9 +182,10 @@ extern int yydebug;
     DEFAULT = 392,
     UNIFORM = 393,
     SHARED = 394,
-    FLAT = 395,
-    SMOOTH = 396,
-    LAYOUT = 397
+    BUFFER = 395,
+    FLAT = 396,
+    SMOOTH = 397,
+    LAYOUT = 398
   };
 #endif
 
@@ -229,7 +230,7 @@ union YYSTYPE
         glslang::TArraySizes* typeParameters;
     } interm;
 
-#line 233 "MachineIndependent/glslang_tab.cpp.h" /* yacc.c:1909  */
+#line 234 "MachineIndependent/glslang_tab.cpp.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

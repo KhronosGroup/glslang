@@ -38,7 +38,7 @@
 
 //
 // Do not edit the .y file, only edit the .m4 file.
-// The .y bison file is not a source file, it is a derivitive of the .m4 file.
+// The .y bison file is not a source file, it is a derivative of the .m4 file.
 // The m4 file needs to be processed by m4 to generate the .y bison file.
 //
 // Code sandwiched between a pair:
@@ -49,7 +49,7 @@
 //      ...
 //    GLSLANG_WEB_EXCLUDE_OFF
 //
-// Will be exluded from the grammar when m4 is executed as:
+// Will be excluded from the grammar when m4 is executed as:
 //
 //    m4 -P -DGLSLANG_WEB
 //
@@ -277,7 +277,7 @@ GLSLANG_WEB_EXCLUDE_OFF
 %token <lex> CENTROID IN OUT INOUT
 %token <lex> STRUCT VOID WHILE
 %token <lex> BREAK CONTINUE DO ELSE FOR IF DISCARD RETURN SWITCH CASE DEFAULT
-%token <lex> UNIFORM SHARED
+%token <lex> UNIFORM SHARED BUFFER
 %token <lex> FLAT SMOOTH LAYOUT
 
 GLSLANG_WEB_EXCLUDE_ON
@@ -285,7 +285,7 @@ GLSLANG_WEB_EXCLUDE_ON
 %token <lex> INT64CONSTANT UINT64CONSTANT
 %token <lex> SUBROUTINE DEMOTE
 %token <lex> PAYLOADNV PAYLOADINNV HITATTRNV CALLDATANV CALLDATAINNV
-%token <lex> PATCH SAMPLE BUFFER NONUNIFORM
+%token <lex> PATCH SAMPLE NONUNIFORM
 %token <lex> COHERENT VOLATILE RESTRICT READONLY WRITEONLY DEVICECOHERENT QUEUEFAMILYCOHERENT WORKGROUPCOHERENT
 %token <lex> SUBGROUPCOHERENT NONPRIVATE
 %token <lex> NOPERSPECTIVE EXPLICITINTERPAMD PERVERTEXNV PERPRIMITIVENV PERVIEWNV PERTASKNV
@@ -1368,12 +1368,12 @@ storage_qualifier
         $$.init($1.loc);
         $$.qualifier.storage = EvqShared;
     }
-GLSLANG_WEB_EXCLUDE_ON
     | BUFFER {
         parseContext.globalCheck($1.loc, "buffer");
         $$.init($1.loc);
         $$.qualifier.storage = EvqBuffer;
     }
+GLSLANG_WEB_EXCLUDE_ON
     | ATTRIBUTE {
         parseContext.requireStage($1.loc, EShLangVertex, "attribute");
         parseContext.checkDeprecated($1.loc, ECoreProfile, 130, "attribute");

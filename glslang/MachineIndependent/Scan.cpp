@@ -343,6 +343,7 @@ void TScanContext::fillInKeywordMap()
 
     (*KeywordMap)["const"] =                   CONST;
     (*KeywordMap)["uniform"] =                 UNIFORM;
+    (*KeywordMap)["buffer"] =                  BUFFER;
     (*KeywordMap)["in"] =                      IN;
     (*KeywordMap)["out"] =                     OUT;
     (*KeywordMap)["smooth"] =                  SMOOTH;
@@ -410,7 +411,6 @@ void TScanContext::fillInKeywordMap()
     (*KeywordMap)["attribute"] =               ATTRIBUTE;
     (*KeywordMap)["varying"] =                 VARYING;
     (*KeywordMap)["noperspective"] =           NOPERSPECTIVE;
-    (*KeywordMap)["buffer"] =                  BUFFER;
     (*KeywordMap)["coherent"] =                COHERENT;
     (*KeywordMap)["devicecoherent"] =          DEVICECOHERENT;
     (*KeywordMap)["queuefamilycoherent"] =     QUEUEFAMILYCOHERENT;
@@ -905,6 +905,13 @@ int TScanContext::tokenizeIdentifier()
     case CASE:
         return keyword;
 
+    case BUFFER:
+        afterBuffer = true;
+        if ((parseContext.isEsProfile() && parseContext.version < 310) ||
+            (!parseContext.isEsProfile() && parseContext.version < 430))
+            return identifierOrType();
+        return keyword;
+
     case STRUCT:
         afterStruct = true;
         return keyword;
@@ -997,12 +1004,6 @@ int TScanContext::tokenizeIdentifier()
     case VARYING:
         if (parseContext.isEsProfile() && parseContext.version >= 300)
             reservedWord();
-        return keyword;
-    case BUFFER:
-        afterBuffer = true;
-        if ((parseContext.isEsProfile() && parseContext.version < 310) ||
-            (!parseContext.isEsProfile() && parseContext.version < 430))
-            return identifierOrType();
         return keyword;
     case PAYLOADNV:
     case PAYLOADINNV:

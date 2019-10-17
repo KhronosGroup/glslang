@@ -38,7 +38,7 @@
 
 //
 // Do not edit the .y file, only edit the .m4 file.
-// The .y bison file is not a source file, it is a derivitive of the .m4 file.
+// The .y bison file is not a source file, it is a derivative of the .m4 file.
 // The m4 file needs to be processed by m4 to generate the .y bison file.
 //
 // Code sandwiched between a pair:
@@ -49,7 +49,7 @@
 //      ...
 //    GLSLANG_WEB_EXCLUDE_OFF
 //
-// Will be exluded from the grammar when m4 is executed as:
+// Will be excluded from the grammar when m4 is executed as:
 //
 //    m4 -P -DGLSLANG_WEB
 //
@@ -194,7 +194,7 @@ extern int yylex(YYSTYPE*, TParseContext&);
 %token <lex> CENTROID IN OUT INOUT
 %token <lex> STRUCT VOID WHILE
 %token <lex> BREAK CONTINUE DO ELSE FOR IF DISCARD RETURN SWITCH CASE DEFAULT
-%token <lex> UNIFORM SHARED
+%token <lex> UNIFORM SHARED BUFFER
 %token <lex> FLAT SMOOTH LAYOUT
 
 
@@ -1163,6 +1163,11 @@ storage_qualifier
         parseContext.requireStage($1.loc, (EShLanguageMask)(EShLangComputeMask | EShLangMeshNVMask | EShLangTaskNVMask), "shared");
         $$.init($1.loc);
         $$.qualifier.storage = EvqShared;
+    }
+    | BUFFER {
+        parseContext.globalCheck($1.loc, "buffer");
+        $$.init($1.loc);
+        $$.qualifier.storage = EvqBuffer;
     }
 
     ;
