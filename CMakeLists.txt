@@ -152,7 +152,7 @@ endfunction(glslang_set_link_args)
 # otherwise, it will find the wrong version and fail later
 if(BUILD_EXTERNAL AND IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/External)
     find_package(PythonInterp 3 REQUIRED)
-	
+
 	# We depend on these for later projects, so they should come first.
 	add_subdirectory(External)
 endif()
@@ -181,3 +181,26 @@ if(ENABLE_HLSL)
     add_subdirectory(hlsl)
 endif(ENABLE_HLSL)
 add_subdirectory(gtests)
+
+if(BUILD_TESTING)
+    # glslang-testsuite runs a bash script on Windows.
+    # Make sure to use '-o igncr' flag to ignore carriage returns (\r).
+    set(IGNORE_CR_FLAG "")
+    if(WIN32)
+        set(IGNORE_CR_FLAG -o igncr)
+    endif()
+
+    if (CMAKE_CONFIGURATION_TYPES)
+        set(RESULTS_PATH ${CMAKE_CURRENT_BINARY_DIR}/$<CONFIGURATION>/localResults)
+        set(VALIDATOR_PATH ${CMAKE_CURRENT_BINARY_DIR}/StandAlone/$<CONFIGURATION>/glslangValidator)
+        set(REMAP_PATH ${CMAKE_CURRENT_BINARY_DIR}/StandAlone/$<CONFIGURATION>/spirv-remap)
+    else(CMAKE_CONFIGURATION_TYPES)
+        set(RESULTS_PATH ${CMAKE_CURRENT_BINARY_DIR}/localResults)
+        set(VALIDATOR_PATH ${CMAKE_CURRENT_BINARY_DIR}/StandAlone/glslangValidator)
+        set(REMAP_PATH ${CMAKE_CURRENT_BINARY_DIR}/StandAlone/spirv-remap)
+    endif(CMAKE_CONFIGURATION_TYPES)
+
+    add_test(NAME glslang-testsuite
+        COMMAND bash ${IGNORE_CR_FLAG} runtests ${RESULTS_PATH} ${VALIDATOR_PATH} ${REMAP_PATH}
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Test/)
+endif(BUILD_TESTING)
