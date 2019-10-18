@@ -161,7 +161,7 @@ struct TNotifyUniformAdaptor
     }
 
 private:
-    TNotifyUniformAdaptor& operator=(TNotifyUniformAdaptor&);
+    TNotifyUniformAdaptor& operator=(TNotifyUniformAdaptor&) = delete;
 };
 
 struct TNotifyInOutAdaptor
@@ -180,7 +180,7 @@ struct TNotifyInOutAdaptor
     }
 
 private:
-    TNotifyInOutAdaptor& operator=(TNotifyInOutAdaptor&);
+    TNotifyInOutAdaptor& operator=(TNotifyInOutAdaptor&) = delete;
 };
 
 struct TResolverUniformAdaptor {
@@ -236,7 +236,7 @@ struct TResolverUniformAdaptor {
     bool&           error;
 
 private:
-    TResolverUniformAdaptor& operator=(TResolverUniformAdaptor&);
+    TResolverUniformAdaptor& operator=(TResolverUniformAdaptor&) = delete;
 };
 
 struct TResolverInOutAdaptor {
@@ -283,7 +283,7 @@ struct TResolverInOutAdaptor {
     bool&           error;
 
 private:
-    TResolverInOutAdaptor& operator=(TResolverInOutAdaptor&);
+    TResolverInOutAdaptor& operator=(TResolverInOutAdaptor&) = delete;
 };
 
 // The class is used for reserving explicit uniform locations and ubo/ssbo/opaque bindings
@@ -384,7 +384,7 @@ struct TSymbolValidater
     bool& hadError;
 
 private:
-    TSymbolValidater& operator=(TSymbolValidater&);
+    TSymbolValidater& operator=(TSymbolValidater&) = delete;
 };
 
 struct TSlotCollector {
@@ -398,7 +398,7 @@ struct TSlotCollector {
     TInfoSink& infoSink;
 
 private:
-    TSlotCollector& operator=(TSlotCollector&);
+    TSlotCollector& operator=(TSlotCollector&) = delete;
 };
 
 TDefaultIoResolverBase::TDefaultIoResolverBase(const TIntermediate& intermediate)
