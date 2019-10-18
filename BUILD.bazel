@@ -48,9 +48,9 @@ cc_library(
         "OGLCompilersDLL/InitializeDll.cpp",
     ] + select({
         "@bazel_tools//src/conditions:windows":
-	    ["glslang/OSDependent/Windows/ossource.cpp"],
+            ["glslang/OSDependent/Windows/ossource.cpp"],
         "//conditions:default":
-	    ["glslang/OSDependent/Unix/ossource.cpp"],
+            ["glslang/OSDependent/Unix/ossource.cpp"],
     }),
     hdrs = glob([
         "glslang/Include/*.h",
@@ -188,11 +188,6 @@ filegroup(
     ),
 )
 
-filegroup(
-    name = "test_dir",
-    srcs = ["Test"],
-)
-
 cc_library(
     name = "glslang_test_lib",
     testonly = 1,
@@ -207,9 +202,15 @@ cc_library(
     ],
     copts = COMMON_COPTS,
     data = [":test_files"],
-    defines = [
-        'GLSLANG_TEST_DIRECTORY=\\"\\"',
-    ],
+    defines = select({
+        # Unfortunately we can't use $(location) in cc_library at the moment.
+        # See https://github.com/bazelbuild/bazel/issues/1023
+        # So we'll specify the path manually.
+        "@bazel_tools//src/conditions:windows":
+            ["GLSLANG_TEST_DIRECTORY='\"../../../../../Test\"'"],
+        "//conditions:default":
+            ["GLSLANG_TEST_DIRECTORY='\"Test\"'"],
+    }),
     linkstatic = 1,
     deps = [
         ":SPIRV",
@@ -232,13 +233,8 @@ GLSLANG_TESTS = glob(
 [cc_test(
     name = test_file.replace("gtests/", "").replace(".FromFile.cpp", "") + "_test",
     srcs = [test_file],
-    args = [
-        "--test-root",
-        "$(location :test_dir)",
-    ],
     copts = COMMON_COPTS,
     data = [
-        ":test_dir",
         ":test_files",
     ],
     deps = [
