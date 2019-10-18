@@ -43,14 +43,13 @@ bazel.exe build :all
 if %ERRORLEVEL% NEQ 0 exit /b %ERRORLEVEL%
 echo "Build Completed %DATE% %TIME%"
 
-:: TODO: Currently the bazel tests fail due to issues resolving paths on Windows
 :: ##############
 :: Run the tests
 :: ##############
-:: echo "Running Tests... %DATE% %TIME%"
-:: bazel.exe test :all
-:: if %ERRORLEVEL% NEQ 0 exit /b %ERRORLEVEL%
-:: echo "Tests Completed %DATE% %TIME%"
+echo "Running Tests... %DATE% %TIME%"
+bazel.exe test :all
+if %ERRORLEVEL% NEQ 0 exit /b %ERRORLEVEL%
+echo "Tests Completed %DATE% %TIME%"
 
 exit /b 0
 
