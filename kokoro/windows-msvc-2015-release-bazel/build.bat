@@ -22,6 +22,8 @@ set SRC=%cd%\github\glslang
 set PATH=C:\python36;%PATH%
 cd %SRC%
 
+mv External third_party
+
 :: REM Install Bazel.
 wget -q https://github.com/bazelbuild/bazel/releases/download/0.29.1/bazel-0.29.1-windows-x86_64.zip
 unzip -q bazel-0.29.1-windows-x86_64.zip

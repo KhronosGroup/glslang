@@ -25,6 +25,8 @@ CXX=clang++
 SRC=$PWD/github/glslang
 cd $SRC
 
+mv External third_party
+
 # Get bazel 0.29.1.
 gsutil cp gs://bazel/0.29.1/release/bazel-0.29.1-darwin-x86_64 .
 chmod +x bazel-0.29.1-darwin-x86_64
