@@ -1,7 +1,7 @@
 ; SPIR-V
 ; Version: 1.0
 ; Generator: Khronos Glslang Reference Front End; 7
-; Bound: 91
+; Bound: 108
 ; Schema: 0
                OpCapability Shader
           %1 = OpExtInstImport "GLSL.std.450"
@@ -92,6 +92,7 @@
 %_ptr_Input_uint = OpTypePointer Input %uint
 %gl_LocalInvocationIndex = OpVariable %_ptr_Input_uint Input
 %_ptr_Uniform_v3uint = OpTypePointer Uniform %v3uint
+      %int_5 = OpConstant %int 5
  %int_197645 = OpConstant %int 197645
        %main = OpFunction %void None %3
           %5 = OpLabel
@@ -136,5 +137,21 @@
          %87 = OpIAdd %v3uint %79 %86
          %89 = OpAccessChain %_ptr_Uniform_v3uint %bInst %int_1
                OpStore %89 %87
+         %90 = OpAccessChain %_ptr_Uniform_int %bInst %int_0
+         %91 = OpAtomicIAdd %int %90 %uint_1 %uint_0 %int_2
+         %92 = OpAccessChain %_ptr_Uniform_int %bInst %int_0
+         %93 = OpAtomicSMin %int %92 %uint_1 %uint_0 %int_2
+         %94 = OpAccessChain %_ptr_Uniform_int %bInst %int_0
+         %95 = OpAtomicSMax %int %94 %uint_1 %uint_0 %int_2
+         %96 = OpAccessChain %_ptr_Uniform_int %bInst %int_0
+         %97 = OpAtomicAnd %int %96 %uint_1 %uint_0 %int_2
+         %98 = OpAccessChain %_ptr_Uniform_int %bInst %int_0
+         %99 = OpAtomicOr %int %98 %uint_1 %uint_0 %int_2
+        %100 = OpAccessChain %_ptr_Uniform_int %bInst %int_0
+        %101 = OpAtomicXor %int %100 %uint_1 %uint_0 %int_2
+        %102 = OpAccessChain %_ptr_Uniform_int %bInst %int_0
+        %103 = OpAtomicExchange %int %102 %uint_1 %uint_0 %int_2
+        %104 = OpAccessChain %_ptr_Uniform_int %bInst %int_0
+        %106 = OpAtomicCompareExchange %int %104 %uint_1 %uint_0 %uint_0 %int_2 %int_5
                OpReturn
                OpFunctionEnd

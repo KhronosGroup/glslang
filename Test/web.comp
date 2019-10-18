@@ -38,4 +38,13 @@ void main()
     s[3] = vec4(0, arrX[0], arrY[0], arrZ[0]);
     bInst.count = gl_NumWorkGroups + gl_WorkGroupSize + gl_WorkGroupID + gl_LocalInvocationID +
                   gl_GlobalInvocationID * gl_LocalInvocationIndex;
+
+    atomicAdd(bInst.size, 2);
+    atomicMin(bInst.size, 2);
+    atomicMax(bInst.size, 2);
+    atomicAnd(bInst.size, 2);
+    atomicOr(bInst.size, 2);
+    atomicXor(bInst.size, 2);
+    atomicExchange(bInst.size, 2);
+    atomicCompSwap(bInst.size, 5, 2);
 }

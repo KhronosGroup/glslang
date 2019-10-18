@@ -147,16 +147,16 @@ EProfile EDesktopProfile = static_cast<EProfile>(ENoProfile | ECoreProfile | ECo
 // Declare pointers to put into the table for versioning.
 #ifdef GLSLANG_WEB
     const Versioning* Es300Desktop130 = nullptr;
-#else
-    const Versioning Es300Desktop130Version[] = { { EEsProfile,      0, 300, 0, nullptr },
-                                                  { EDesktopProfile, 0, 130, 0, nullptr },
-                                                  { EBadProfile } };
-    const Versioning* Es300Desktop130 = &Es300Desktop130Version[0];
 
     const Versioning Es310Desktop430Version[] = { { EEsProfile,      0, 310, 0, nullptr },
                                                   { EDesktopProfile, 0, 430, 0, nullptr },
                                                   { EBadProfile } };
     const Versioning* Es310Desktop430 = &Es310Desktop430Version[0];
+#else
+    const Versioning Es300Desktop130Version[] = { { EEsProfile,      0, 300, 0, nullptr },
+                                                  { EDesktopProfile, 0, 130, 0, nullptr },
+                                                  { EBadProfile } };
+    const Versioning* Es300Desktop130 = &Es300Desktop130Version[0];
 
     const Versioning Es310Desktop450Version[] = { { EEsProfile,      0, 310, 0, nullptr },
                                                   { EDesktopProfile, 0, 450, 0, nullptr },
@@ -256,7 +256,6 @@ const BuiltInFunction BaseFunctions[] = {
     { EOpGreaterThanEqual, "greaterThanEqual", 2,   TypeU,     ClassBNS,     Es300Desktop130 },
     { EOpVectorEqual,      "equal",            2,   TypeU,     ClassBNS,     Es300Desktop130 },
     { EOpVectorNotEqual,   "notEqual",         2,   TypeU,     ClassBNS,     Es300Desktop130 },
-#ifndef GLSLANG_WEB
     { EOpAtomicAdd,        "atomicAdd",        2,   TypeIU,    ClassV1FIOCV, Es310Desktop430 },
     { EOpAtomicMin,        "atomicMin",        2,   TypeIU,    ClassV1FIOCV, Es310Desktop430 },
     { EOpAtomicMax,        "atomicMax",        2,   TypeIU,    ClassV1FIOCV, Es310Desktop430 },
@@ -265,6 +264,7 @@ const BuiltInFunction BaseFunctions[] = {
     { EOpAtomicXor,        "atomicXor",        2,   TypeIU,    ClassV1FIOCV, Es310Desktop430 },
     { EOpAtomicExchange,   "atomicExchange",   2,   TypeIU,    ClassV1FIOCV, Es310Desktop430 },
     { EOpAtomicCompSwap,   "atomicCompSwap",   3,   TypeIU,    ClassV1FIOCV, Es310Desktop430 },
+#ifndef GLSLANG_WEB
     { EOpMix,              "mix",              3,   TypeB,     ClassRegular, Es310Desktop450 },
     { EOpMix,              "mix",              3,   TypeIU,    ClassLB,      Es310Desktop450 },
 #endif
@@ -331,8 +331,10 @@ void AddTabledBuiltin(TString& decls, const BuiltInFunction& function)
                 if (arg == function.numArguments - 1 && (function.classes & ClassLO))
                     decls.append("out ");
                 if (arg == 0) {
+#ifndef GLSLANG_WEB
                     if (function.classes & ClassCV)
                         decls.append("coherent volatile ");
+#endif
                     if (function.classes & ClassFIO)
                         decls.append("inout ");
                     if (function.classes & ClassFO)

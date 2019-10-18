@@ -2572,11 +2572,6 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         // These all have 0 operands and will naturally finish up in the code below for 0 operands
         break;
 
-#ifndef GLSLANG_WEB
-    case glslang::EOpAtomicStore:
-        noReturnValue = true;
-        // fallthrough
-    case glslang::EOpAtomicLoad:
     case glslang::EOpAtomicAdd:
     case glslang::EOpAtomicMin:
     case glslang::EOpAtomicMax:
@@ -2585,6 +2580,14 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
     case glslang::EOpAtomicXor:
     case glslang::EOpAtomicExchange:
     case glslang::EOpAtomicCompSwap:
+        atomic = true;
+        break;
+
+#ifndef GLSLANG_WEB
+    case glslang::EOpAtomicStore:
+        noReturnValue = true;
+        // fallthrough
+    case glslang::EOpAtomicLoad:
         atomic = true;
         break;
 
@@ -2670,6 +2673,19 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
             if (arg == 1)
                 lvalue = true;
             break;
+
+        case glslang::EOpAtomicAdd:
+        case glslang::EOpAtomicMin:
+        case glslang::EOpAtomicMax:
+        case glslang::EOpAtomicAnd:
+        case glslang::EOpAtomicOr:
+        case glslang::EOpAtomicXor:
+        case glslang::EOpAtomicExchange:
+        case glslang::EOpAtomicCompSwap:
+            if (arg == 0)
+                lvalue = true;
+            break;
+
 #ifndef GLSLANG_WEB
         case glslang::EOpFrexp:
             if (arg == 1)
@@ -2688,14 +2704,6 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
                     invertedType = convertGlslangToSpvType(glslangOperands[0]->getAsBinaryNode()->getLeft()->getType());
             }
             break;
-        case glslang::EOpAtomicAdd:
-        case glslang::EOpAtomicMin:
-        case glslang::EOpAtomicMax:
-        case glslang::EOpAtomicAnd:
-        case glslang::EOpAtomicOr:
-        case glslang::EOpAtomicXor:
-        case glslang::EOpAtomicExchange:
-        case glslang::EOpAtomicCompSwap:
         case glslang::EOpAtomicLoad:
         case glslang::EOpAtomicStore:
         case glslang::EOpAtomicCounterAdd:
@@ -2821,12 +2829,12 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
 
         builder.createNoResultOp(spv::OpCooperativeMatrixStoreNV, idImmOps);
         result = 0;
-    } else if (atomic) {
-        // Handle all atomics
-        result = createAtomicOperation(node->getOp(), precision, resultType(), operands, node->getBasicType(), lvalueCoherentFlags);
     } else
 #endif
-    {
+    if (atomic) {
+        // Handle all atomics
+        result = createAtomicOperation(node->getOp(), precision, resultType(), operands, node->getBasicType(), lvalueCoherentFlags);
+    } else {
         // Pass through to generic operations.
         switch (glslangOperands.size()) {
         case 0:
