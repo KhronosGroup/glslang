@@ -175,6 +175,89 @@ extern int yylex(YYSTYPE*, TParseContext&);
 
 
 
+%token <lex> ATTRIBUTE VARYING
+%token <lex> FLOAT16_T FLOAT32_T DOUBLE FLOAT64_T
+%token <lex> INT64_T UINT64_T INT32_T UINT32_T INT16_T UINT16_T INT8_T UINT8_T
+%token <lex> I64VEC2 I64VEC3 I64VEC4
+%token <lex> U64VEC2 U64VEC3 U64VEC4
+%token <lex> I32VEC2 I32VEC3 I32VEC4
+%token <lex> U32VEC2 U32VEC3 U32VEC4
+%token <lex> I16VEC2 I16VEC3 I16VEC4
+%token <lex> U16VEC2 U16VEC3 U16VEC4
+%token <lex> I8VEC2  I8VEC3  I8VEC4
+%token <lex> U8VEC2  U8VEC3  U8VEC4
+%token <lex> DVEC2 DVEC3 DVEC4 DMAT2 DMAT3 DMAT4
+%token <lex> F16VEC2 F16VEC3 F16VEC4 F16MAT2 F16MAT3 F16MAT4
+%token <lex> F32VEC2 F32VEC3 F32VEC4 F32MAT2 F32MAT3 F32MAT4
+%token <lex> F64VEC2 F64VEC3 F64VEC4 F64MAT2 F64MAT3 F64MAT4
+%token <lex> DMAT2X2 DMAT2X3 DMAT2X4
+%token <lex> DMAT3X2 DMAT3X3 DMAT3X4
+%token <lex> DMAT4X2 DMAT4X3 DMAT4X4
+%token <lex> F16MAT2X2 F16MAT2X3 F16MAT2X4
+%token <lex> F16MAT3X2 F16MAT3X3 F16MAT3X4
+%token <lex> F16MAT4X2 F16MAT4X3 F16MAT4X4
+%token <lex> F32MAT2X2 F32MAT2X3 F32MAT2X4
+%token <lex> F32MAT3X2 F32MAT3X3 F32MAT3X4
+%token <lex> F32MAT4X2 F32MAT4X3 F32MAT4X4
+%token <lex> F64MAT2X2 F64MAT2X3 F64MAT2X4
+%token <lex> F64MAT3X2 F64MAT3X3 F64MAT3X4
+%token <lex> F64MAT4X2 F64MAT4X3 F64MAT4X4
+%token <lex> ATOMIC_UINT
+%token <lex> ACCSTRUCTNV
+%token <lex> FCOOPMATNV ICOOPMATNV UCOOPMATNV
+
+// combined image/sampler
+%token <lex> SAMPLERCUBEARRAY SAMPLERCUBEARRAYSHADOW
+%token <lex> ISAMPLERCUBEARRAY USAMPLERCUBEARRAY
+%token <lex> SAMPLER1D SAMPLER1DARRAY SAMPLER1DARRAYSHADOW ISAMPLER1D SAMPLER1DSHADOW
+%token <lex> SAMPLER2DRECT SAMPLER2DRECTSHADOW ISAMPLER2DRECT USAMPLER2DRECT
+%token <lex> SAMPLERBUFFER ISAMPLERBUFFER USAMPLERBUFFER
+%token <lex> SAMPLER2DMS ISAMPLER2DMS USAMPLER2DMS
+%token <lex> SAMPLER2DMSARRAY ISAMPLER2DMSARRAY USAMPLER2DMSARRAY
+%token <lex> SAMPLEREXTERNALOES
+%token <lex> SAMPLEREXTERNAL2DY2YEXT
+%token <lex> ISAMPLER1DARRAY USAMPLER1D USAMPLER1DARRAY 
+%token <lex> F16SAMPLER1D F16SAMPLER2D F16SAMPLER3D F16SAMPLER2DRECT F16SAMPLERCUBE
+%token <lex> F16SAMPLER1DARRAY F16SAMPLER2DARRAY F16SAMPLERCUBEARRAY
+%token <lex> F16SAMPLERBUFFER F16SAMPLER2DMS F16SAMPLER2DMSARRAY
+%token <lex> F16SAMPLER1DSHADOW F16SAMPLER2DSHADOW F16SAMPLER1DARRAYSHADOW F16SAMPLER2DARRAYSHADOW
+%token <lex> F16SAMPLER2DRECTSHADOW F16SAMPLERCUBESHADOW F16SAMPLERCUBEARRAYSHADOW
+
+// images
+%token <lex> IMAGE1D IIMAGE1D UIMAGE1D IMAGE2D IIMAGE2D
+%token <lex> UIMAGE2D IMAGE3D IIMAGE3D UIMAGE3D
+%token <lex> IMAGE2DRECT IIMAGE2DRECT UIMAGE2DRECT
+%token <lex> IMAGECUBE IIMAGECUBE UIMAGECUBE
+%token <lex> IMAGEBUFFER IIMAGEBUFFER UIMAGEBUFFER
+%token <lex> IMAGE1DARRAY IIMAGE1DARRAY UIMAGE1DARRAY
+%token <lex> IMAGE2DARRAY IIMAGE2DARRAY UIMAGE2DARRAY
+%token <lex> IMAGECUBEARRAY IIMAGECUBEARRAY UIMAGECUBEARRAY
+%token <lex> IMAGE2DMS IIMAGE2DMS UIMAGE2DMS
+%token <lex> IMAGE2DMSARRAY IIMAGE2DMSARRAY UIMAGE2DMSARRAY
+
+%token <lex> F16IMAGE1D F16IMAGE2D F16IMAGE3D F16IMAGE2DRECT
+%token <lex> F16IMAGECUBE F16IMAGE1DARRAY F16IMAGE2DARRAY F16IMAGECUBEARRAY
+%token <lex> F16IMAGEBUFFER F16IMAGE2DMS F16IMAGE2DMSARRAY
+
+// texture without sampler
+%token <lex> TEXTURECUBEARRAY ITEXTURECUBEARRAY UTEXTURECUBEARRAY
+%token <lex> TEXTURE1D ITEXTURE1D UTEXTURE1D
+%token <lex> TEXTURE1DARRAY ITEXTURE1DARRAY UTEXTURE1DARRAY
+%token <lex> TEXTURE2DRECT ITEXTURE2DRECT UTEXTURE2DRECT
+%token <lex> TEXTUREBUFFER ITEXTUREBUFFER UTEXTUREBUFFER
+%token <lex> TEXTURE2DMS ITEXTURE2DMS UTEXTURE2DMS
+%token <lex> TEXTURE2DMSARRAY ITEXTURE2DMSARRAY UTEXTURE2DMSARRAY
+
+%token <lex> F16TEXTURE1D F16TEXTURE2D F16TEXTURE3D F16TEXTURE2DRECT F16TEXTURECUBE
+%token <lex> F16TEXTURE1DARRAY F16TEXTURE2DARRAY F16TEXTURECUBEARRAY
+%token <lex> F16TEXTUREBUFFER F16TEXTURE2DMS F16TEXTURE2DMSARRAY
+
+// input attachments
+%token <lex> SUBPASSINPUT SUBPASSINPUTMS ISUBPASSINPUT ISUBPASSINPUTMS USUBPASSINPUT USUBPASSINPUTMS
+%token <lex> F16SUBPASSINPUT F16SUBPASSINPUTMS
+
+
+
 %token <lex> LEFT_OP RIGHT_OP
 %token <lex> INC_OP DEC_OP LE_OP GE_OP EQ_OP NE_OP
 %token <lex> AND_OP OR_OP XOR_OP MUL_ASSIGN DIV_ASSIGN ADD_ASSIGN
@@ -197,6 +280,16 @@ extern int yylex(YYSTYPE*, TParseContext&);
 %token <lex> UNIFORM SHARED BUFFER
 %token <lex> FLAT SMOOTH LAYOUT
 
+
+%token <lex> DOUBLECONSTANT INT16CONSTANT UINT16CONSTANT FLOAT16CONSTANT INT32CONSTANT UINT32CONSTANT
+%token <lex> INT64CONSTANT UINT64CONSTANT
+%token <lex> SUBROUTINE DEMOTE
+%token <lex> PAYLOADNV PAYLOADINNV HITATTRNV CALLDATANV CALLDATAINNV
+%token <lex> PATCH SAMPLE NONUNIFORM
+%token <lex> COHERENT VOLATILE RESTRICT READONLY WRITEONLY DEVICECOHERENT QUEUEFAMILYCOHERENT WORKGROUPCOHERENT
+%token <lex> SUBGROUPCOHERENT NONPRIVATE
+%token <lex> NOPERSPECTIVE EXPLICITINTERPAMD PERVERTEXNV PERPRIMITIVENV PERVIEWNV PERTASKNV
+%token <lex> PRECISE
 
 
 %type <interm> assignment_operator unary_operator
@@ -245,6 +338,12 @@ extern int yylex(YYSTYPE*, TParseContext&);
 %type <interm.identifierList> identifier_list
 
 
+%type <interm.type> precise_qualifier non_uniform_qualifier
+%type <interm.typeList> type_name_list
+%type <interm.attributes> attribute attribute_list single_attribute
+%type <interm.intermNode> demote_statement
+%type <interm.intermTypedNode> initializer_list
+
 
 %start translation_unit
 %%
@@ -276,6 +375,39 @@ primary_expression
     }
     | BOOLCONSTANT {
         $$ = parseContext.intermediate.addConstantUnion($1.b, $1.loc, true);
+    }
+
+    | INT32CONSTANT {
+        parseContext.explicitInt32Check($1.loc, "32-bit signed literal");
+        $$ = parseContext.intermediate.addConstantUnion($1.i, $1.loc, true);
+    }
+    | UINT32CONSTANT {
+        parseContext.explicitInt32Check($1.loc, "32-bit signed literal");
+        $$ = parseContext.intermediate.addConstantUnion($1.u, $1.loc, true);
+    }
+    | INT64CONSTANT {
+        parseContext.int64Check($1.loc, "64-bit integer literal");
+        $$ = parseContext.intermediate.addConstantUnion($1.i64, $1.loc, true);
+    }
+    | UINT64CONSTANT {
+        parseContext.int64Check($1.loc, "64-bit unsigned integer literal");
+        $$ = parseContext.intermediate.addConstantUnion($1.u64, $1.loc, true);
+    }
+    | INT16CONSTANT {
+        parseContext.explicitInt16Check($1.loc, "16-bit integer literal");
+        $$ = parseContext.intermediate.addConstantUnion((short)$1.i, $1.loc, true);
+    }
+    | UINT16CONSTANT {
+        parseContext.explicitInt16Check($1.loc, "16-bit unsigned integer literal");
+        $$ = parseContext.intermediate.addConstantUnion((unsigned short)$1.u, $1.loc, true);
+    }
+    | DOUBLECONSTANT {
+        parseContext.doubleCheck($1.loc, "double literal");
+        $$ = parseContext.intermediate.addConstantUnion($1.d, EbtDouble, $1.loc, true);
+    }
+    | FLOAT16CONSTANT {
+        parseContext.float16Check($1.loc, "half float literal");
+        $$ = parseContext.intermediate.addConstantUnion($1.d, EbtFloat16, $1.loc, true);
     }
 
     ;
@@ -402,6 +534,12 @@ function_identifier
             TString* empty = NewPoolTString("");
             $$.function = new TFunction(empty, TType(EbtVoid), EOpNull);
         }
+    }
+
+    | non_uniform_qualifier {
+        // Constructor
+        $$.intermNode = 0;
+        $$.function = parseContext.handleConstructorCall($1.loc, $1);
     }
 
     ;
@@ -964,6 +1102,8 @@ single_declaration
         $$.type = $1;
         $$.intermNode = 0;
 
+        parseContext.declareTypeDefaults($$.loc, $$.type);
+
     }
     | fully_specified_type IDENTIFIER {
         $$.type = $1;
@@ -1050,6 +1190,53 @@ interpolation_qualifier
         $$.qualifier.flat = true;
     }
 
+    | NOPERSPECTIVE {
+        parseContext.globalCheck($1.loc, "noperspective");
+        parseContext.profileRequires($1.loc, EEsProfile, 0, E_GL_NV_shader_noperspective_interpolation, "noperspective");
+        parseContext.profileRequires($1.loc, ENoProfile, 130, 0, "noperspective");
+        $$.init($1.loc);
+        $$.qualifier.nopersp = true;
+    }
+    | EXPLICITINTERPAMD {
+        parseContext.globalCheck($1.loc, "__explicitInterpAMD");
+        parseContext.profileRequires($1.loc, ECoreProfile, 450, E_GL_AMD_shader_explicit_vertex_parameter, "explicit interpolation");
+        parseContext.profileRequires($1.loc, ECompatibilityProfile, 450, E_GL_AMD_shader_explicit_vertex_parameter, "explicit interpolation");
+        $$.init($1.loc);
+        $$.qualifier.explicitInterp = true;
+    }
+    | PERVERTEXNV {
+        parseContext.globalCheck($1.loc, "pervertexNV");
+        parseContext.profileRequires($1.loc, ECoreProfile, 0, E_GL_NV_fragment_shader_barycentric, "fragment shader barycentric");
+        parseContext.profileRequires($1.loc, ECompatibilityProfile, 0, E_GL_NV_fragment_shader_barycentric, "fragment shader barycentric");
+        parseContext.profileRequires($1.loc, EEsProfile, 0, E_GL_NV_fragment_shader_barycentric, "fragment shader barycentric");
+        $$.init($1.loc);
+        $$.qualifier.pervertexNV = true;
+    }
+    | PERPRIMITIVENV {
+        // No need for profile version or extension check. Shader stage already checks both.
+        parseContext.globalCheck($1.loc, "perprimitiveNV");
+        parseContext.requireStage($1.loc, (EShLanguageMask)(EShLangFragmentMask | EShLangMeshNVMask), "perprimitiveNV");
+        // Fragment shader stage doesn't check for extension. So we explicitly add below extension check.
+        if (parseContext.language == EShLangFragment)
+            parseContext.requireExtensions($1.loc, 1, &E_GL_NV_mesh_shader, "perprimitiveNV");
+        $$.init($1.loc);
+        $$.qualifier.perPrimitiveNV = true;
+    }
+    | PERVIEWNV {
+        // No need for profile version or extension check. Shader stage already checks both.
+        parseContext.globalCheck($1.loc, "perviewNV");
+        parseContext.requireStage($1.loc, EShLangMeshNV, "perviewNV");
+        $$.init($1.loc);
+        $$.qualifier.perViewNV = true;
+    }
+    | PERTASKNV {
+        // No need for profile version or extension check. Shader stage already checks both.
+        parseContext.globalCheck($1.loc, "taskNV");
+        parseContext.requireStage($1.loc, (EShLanguageMask)(EShLangTaskNVMask | EShLangMeshNVMask), "taskNV");
+        $$.init($1.loc);
+        $$.qualifier.perTaskNV = true;
+    }
+
     ;
 
 layout_qualifier
@@ -1085,6 +1272,15 @@ layout_qualifier_id
     ;
 
 
+precise_qualifier
+    : PRECISE {
+        parseContext.profileRequires($$.loc, ECoreProfile | ECompatibilityProfile, 400, E_GL_ARB_gpu_shader5, "precise");
+        parseContext.profileRequires($1.loc, EEsProfile, 320, Num_AEP_gpu_shader5, AEP_gpu_shader5, "precise");
+        $$.init($1.loc);
+        $$.qualifier.noContraction = true;
+    }
+    ;
+
 
 type_qualifier
     : single_type_qualifier {
@@ -1117,6 +1313,14 @@ single_type_qualifier
     }
     | invariant_qualifier {
         // allow inheritance of storage qualifier from block declaration
+        $$ = $1;
+    }
+
+    | precise_qualifier {
+        // allow inheritance of storage qualifier from block declaration
+        $$ = $1;
+    }
+    | non_uniform_qualifier {
         $$ = $1;
     }
 
@@ -1170,8 +1374,160 @@ storage_qualifier
         $$.qualifier.storage = EvqBuffer;
     }
 
+    | ATTRIBUTE {
+        parseContext.requireStage($1.loc, EShLangVertex, "attribute");
+        parseContext.checkDeprecated($1.loc, ECoreProfile, 130, "attribute");
+        parseContext.checkDeprecated($1.loc, ENoProfile, 130, "attribute");
+        parseContext.requireNotRemoved($1.loc, ECoreProfile, 420, "attribute");
+        parseContext.requireNotRemoved($1.loc, EEsProfile, 300, "attribute");
+
+        parseContext.globalCheck($1.loc, "attribute");
+
+        $$.init($1.loc);
+        $$.qualifier.storage = EvqVaryingIn;
+    }
+    | VARYING {
+        parseContext.checkDeprecated($1.loc, ENoProfile, 130, "varying");
+        parseContext.checkDeprecated($1.loc, ECoreProfile, 130, "varying");
+        parseContext.requireNotRemoved($1.loc, ECoreProfile, 420, "varying");
+        parseContext.requireNotRemoved($1.loc, EEsProfile, 300, "varying");
+
+        parseContext.globalCheck($1.loc, "varying");
+
+        $$.init($1.loc);
+        if (parseContext.language == EShLangVertex)
+            $$.qualifier.storage = EvqVaryingOut;
+        else
+            $$.qualifier.storage = EvqVaryingIn;
+    }
+    | PATCH {
+        parseContext.globalCheck($1.loc, "patch");
+        parseContext.requireStage($1.loc, (EShLanguageMask)(EShLangTessControlMask | EShLangTessEvaluationMask), "patch");
+        $$.init($1.loc);
+        $$.qualifier.patch = true;
+    }
+    | SAMPLE {
+        parseContext.globalCheck($1.loc, "sample");
+        $$.init($1.loc);
+        $$.qualifier.sample = true;
+    }
+    | HITATTRNV {
+        parseContext.globalCheck($1.loc, "hitAttributeNV");
+        parseContext.requireStage($1.loc, (EShLanguageMask)(EShLangIntersectNVMask | EShLangClosestHitNVMask
+            | EShLangAnyHitNVMask), "hitAttributeNV");
+        parseContext.profileRequires($1.loc, ECoreProfile, 460, E_GL_NV_ray_tracing, "hitAttributeNV");
+        $$.init($1.loc);
+        $$.qualifier.storage = EvqHitAttrNV;
+    }
+    | PAYLOADNV {
+        parseContext.globalCheck($1.loc, "rayPayloadNV");
+        parseContext.requireStage($1.loc, (EShLanguageMask)(EShLangRayGenNVMask | EShLangClosestHitNVMask |
+            EShLangAnyHitNVMask | EShLangMissNVMask), "rayPayloadNV");
+        parseContext.profileRequires($1.loc, ECoreProfile, 460, E_GL_NV_ray_tracing, "rayPayloadNV");
+        $$.init($1.loc);
+        $$.qualifier.storage = EvqPayloadNV;
+    }
+    | PAYLOADINNV {
+        parseContext.globalCheck($1.loc, "rayPayloadInNV");
+        parseContext.requireStage($1.loc, (EShLanguageMask)(EShLangClosestHitNVMask |
+            EShLangAnyHitNVMask | EShLangMissNVMask), "rayPayloadInNV");
+        parseContext.profileRequires($1.loc, ECoreProfile, 460, E_GL_NV_ray_tracing, "rayPayloadInNV");
+        $$.init($1.loc);
+        $$.qualifier.storage = EvqPayloadInNV;
+    }
+    | CALLDATANV {
+        parseContext.globalCheck($1.loc, "callableDataNV");
+        parseContext.requireStage($1.loc, (EShLanguageMask)(EShLangRayGenNVMask |
+            EShLangClosestHitNVMask | EShLangMissNVMask | EShLangCallableNVMask), "callableDataNV");
+        parseContext.profileRequires($1.loc, ECoreProfile, 460, E_GL_NV_ray_tracing, "callableDataNV");
+        $$.init($1.loc);
+        $$.qualifier.storage = EvqCallableDataNV;
+    }
+    | CALLDATAINNV {
+        parseContext.globalCheck($1.loc, "callableDataInNV");
+        parseContext.requireStage($1.loc, (EShLanguageMask)(EShLangCallableNVMask), "callableDataInNV");
+        parseContext.profileRequires($1.loc, ECoreProfile, 460, E_GL_NV_ray_tracing, "callableDataInNV");
+        $$.init($1.loc);
+        $$.qualifier.storage = EvqCallableDataInNV;
+    }
+    | COHERENT {
+        $$.init($1.loc);
+        $$.qualifier.coherent = true;
+    }
+    | DEVICECOHERENT {
+        $$.init($1.loc);
+        parseContext.requireExtensions($1.loc, 1, &E_GL_KHR_memory_scope_semantics, "devicecoherent");
+        $$.qualifier.devicecoherent = true;
+    }
+    | QUEUEFAMILYCOHERENT {
+        $$.init($1.loc);
+        parseContext.requireExtensions($1.loc, 1, &E_GL_KHR_memory_scope_semantics, "queuefamilycoherent");
+        $$.qualifier.queuefamilycoherent = true;
+    }
+    | WORKGROUPCOHERENT {
+        $$.init($1.loc);
+        parseContext.requireExtensions($1.loc, 1, &E_GL_KHR_memory_scope_semantics, "workgroupcoherent");
+        $$.qualifier.workgroupcoherent = true;
+    }
+    | SUBGROUPCOHERENT {
+        $$.init($1.loc);
+        parseContext.requireExtensions($1.loc, 1, &E_GL_KHR_memory_scope_semantics, "subgroupcoherent");
+        $$.qualifier.subgroupcoherent = true;
+    }
+    | NONPRIVATE {
+        $$.init($1.loc);
+        parseContext.requireExtensions($1.loc, 1, &E_GL_KHR_memory_scope_semantics, "nonprivate");
+        $$.qualifier.nonprivate = true;
+    }
+    | VOLATILE {
+        $$.init($1.loc);
+        $$.qualifier.volatil = true;
+    }
+    | RESTRICT {
+        $$.init($1.loc);
+        $$.qualifier.restrict = true;
+    }
+    | READONLY {
+        $$.init($1.loc);
+        $$.qualifier.readonly = true;
+    }
+    | WRITEONLY {
+        $$.init($1.loc);
+        $$.qualifier.writeonly = true;
+    }
+    | SUBROUTINE {
+        parseContext.spvRemoved($1.loc, "subroutine");
+        parseContext.globalCheck($1.loc, "subroutine");
+        parseContext.unimplemented($1.loc, "subroutine");
+        $$.init($1.loc);
+    }
+    | SUBROUTINE LEFT_PAREN type_name_list RIGHT_PAREN {
+        parseContext.spvRemoved($1.loc, "subroutine");
+        parseContext.globalCheck($1.loc, "subroutine");
+        parseContext.unimplemented($1.loc, "subroutine");
+        $$.init($1.loc);
+    }
+
     ;
 
+
+non_uniform_qualifier
+    : NONUNIFORM {
+        $$.init($1.loc);
+        $$.qualifier.nonUniform = true;
+    }
+    ;
+
+type_name_list
+    : IDENTIFIER {
+        // TODO
+    }
+    | type_name_list COMMA IDENTIFIER {
+        // TODO: 4.0 semantics: subroutines
+        // 1) make sure each identifier is a type declared earlier with SUBROUTINE
+        // 2) save all of the identifiers for future comparison with the declared function
+    }
+    ;
 
 
 type_specifier
@@ -1394,6 +1750,585 @@ type_specifier_nonarray
         $$.setMatrix(4, 4);
     }
 
+    | DOUBLE {
+        parseContext.doubleCheck($1.loc, "double");
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtDouble;
+    }
+    | FLOAT16_T {
+        parseContext.float16ScalarVectorCheck($1.loc, "float16_t", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloat16;
+    }
+    | FLOAT32_T {
+        parseContext.explicitFloat32Check($1.loc, "float32_t", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloat;
+    }
+    | FLOAT64_T {
+        parseContext.explicitFloat64Check($1.loc, "float64_t", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtDouble;
+    }
+    | INT8_T {
+        parseContext.int8ScalarVectorCheck($1.loc, "8-bit signed integer", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtInt8;
+    }
+    | UINT8_T {
+        parseContext.int8ScalarVectorCheck($1.loc, "8-bit unsigned integer", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtUint8;
+    }
+    | INT16_T {
+        parseContext.int16ScalarVectorCheck($1.loc, "16-bit signed integer", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtInt16;
+    }
+    | UINT16_T {
+        parseContext.int16ScalarVectorCheck($1.loc, "16-bit unsigned integer", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtUint16;
+    }
+    | INT32_T {
+        parseContext.explicitInt32Check($1.loc, "32-bit signed integer", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtInt;
+    }
+    | UINT32_T {
+        parseContext.explicitInt32Check($1.loc, "32-bit unsigned integer", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtUint;
+    }
+    | INT64_T {
+        parseContext.int64Check($1.loc, "64-bit integer", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtInt64;
+    }
+    | UINT64_T {
+        parseContext.int64Check($1.loc, "64-bit unsigned integer", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtUint64;
+    }
+    | DVEC2 {
+        parseContext.doubleCheck($1.loc, "double vector");
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtDouble;
+        $$.setVector(2);
+    }
+    | DVEC3 {
+        parseContext.doubleCheck($1.loc, "double vector");
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtDouble;
+        $$.setVector(3);
+    }
+    | DVEC4 {
+        parseContext.doubleCheck($1.loc, "double vector");
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtDouble;
+        $$.setVector(4);
+    }
+    | F16VEC2 {
+        parseContext.float16ScalarVectorCheck($1.loc, "half float vector", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloat16;
+        $$.setVector(2);
+    }
+    | F16VEC3 {
+        parseContext.float16ScalarVectorCheck($1.loc, "half float vector", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloat16;
+        $$.setVector(3);
+    }
+    | F16VEC4 {
+        parseContext.float16ScalarVectorCheck($1.loc, "half float vector", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloat16;
+        $$.setVector(4);
+    }
+    | F32VEC2 {
+        parseContext.explicitFloat32Check($1.loc, "float32_t vector", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloat;
+        $$.setVector(2);
+    }
+    | F32VEC3 {
+        parseContext.explicitFloat32Check($1.loc, "float32_t vector", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloat;
+        $$.setVector(3);
+    }
+    | F32VEC4 {
+        parseContext.explicitFloat32Check($1.loc, "float32_t vector", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloat;
+        $$.setVector(4);
+    }
+    | F64VEC2 {
+        parseContext.explicitFloat64Check($1.loc, "float64_t vector", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtDouble;
+        $$.setVector(2);
+    }
+    | F64VEC3 {
+        parseContext.explicitFloat64Check($1.loc, "float64_t vector", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtDouble;
+        $$.setVector(3);
+    }
+    | F64VEC4 {
+        parseContext.explicitFloat64Check($1.loc, "float64_t vector", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtDouble;
+        $$.setVector(4);
+    }
+    | I8VEC2 {
+        parseContext.int8ScalarVectorCheck($1.loc, "8-bit signed integer vector", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtInt8;
+        $$.setVector(2);
+    }
+    | I8VEC3 {
+        parseContext.int8ScalarVectorCheck($1.loc, "8-bit signed integer vector", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtInt8;
+        $$.setVector(3);
+    }
+    | I8VEC4 {
+        parseContext.int8ScalarVectorCheck($1.loc, "8-bit signed integer vector", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtInt8;
+        $$.setVector(4);
+    }
+    | I16VEC2 {
+        parseContext.int16ScalarVectorCheck($1.loc, "16-bit signed integer vector", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtInt16;
+        $$.setVector(2);
+    }
+    | I16VEC3 {
+        parseContext.int16ScalarVectorCheck($1.loc, "16-bit signed integer vector", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtInt16;
+        $$.setVector(3);
+    }
+    | I16VEC4 {
+        parseContext.int16ScalarVectorCheck($1.loc, "16-bit signed integer vector", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtInt16;
+        $$.setVector(4);
+    }
+    | I32VEC2 {
+        parseContext.explicitInt32Check($1.loc, "32-bit signed integer vector", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtInt;
+        $$.setVector(2);
+    }
+    | I32VEC3 {
+        parseContext.explicitInt32Check($1.loc, "32-bit signed integer vector", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtInt;
+        $$.setVector(3);
+    }
+    | I32VEC4 {
+        parseContext.explicitInt32Check($1.loc, "32-bit signed integer vector", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtInt;
+        $$.setVector(4);
+    }
+    | I64VEC2 {
+        parseContext.int64Check($1.loc, "64-bit integer vector", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtInt64;
+        $$.setVector(2);
+    }
+    | I64VEC3 {
+        parseContext.int64Check($1.loc, "64-bit integer vector", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtInt64;
+        $$.setVector(3);
+    }
+    | I64VEC4 {
+        parseContext.int64Check($1.loc, "64-bit integer vector", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtInt64;
+        $$.setVector(4);
+    }
+    | U8VEC2 {
+        parseContext.int8ScalarVectorCheck($1.loc, "8-bit unsigned integer vector", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtUint8;
+        $$.setVector(2);
+    }
+    | U8VEC3 {
+        parseContext.int8ScalarVectorCheck($1.loc, "8-bit unsigned integer vector", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtUint8;
+        $$.setVector(3);
+    }
+    | U8VEC4 {
+        parseContext.int8ScalarVectorCheck($1.loc, "8-bit unsigned integer vector", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtUint8;
+        $$.setVector(4);
+    }
+    | U16VEC2 {
+        parseContext.int16ScalarVectorCheck($1.loc, "16-bit unsigned integer vector", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtUint16;
+        $$.setVector(2);
+    }
+    | U16VEC3 {
+        parseContext.int16ScalarVectorCheck($1.loc, "16-bit unsigned integer vector", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtUint16;
+        $$.setVector(3);
+    }
+    | U16VEC4 {
+        parseContext.int16ScalarVectorCheck($1.loc, "16-bit unsigned integer vector", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtUint16;
+        $$.setVector(4);
+    }
+    | U32VEC2 {
+        parseContext.explicitInt32Check($1.loc, "32-bit unsigned integer vector", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtUint;
+        $$.setVector(2);
+    }
+    | U32VEC3 {
+        parseContext.explicitInt32Check($1.loc, "32-bit unsigned integer vector", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtUint;
+        $$.setVector(3);
+    }
+    | U32VEC4 {
+        parseContext.explicitInt32Check($1.loc, "32-bit unsigned integer vector", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtUint;
+        $$.setVector(4);
+    }
+    | U64VEC2 {
+        parseContext.int64Check($1.loc, "64-bit unsigned integer vector", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtUint64;
+        $$.setVector(2);
+    }
+    | U64VEC3 {
+        parseContext.int64Check($1.loc, "64-bit unsigned integer vector", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtUint64;
+        $$.setVector(3);
+    }
+    | U64VEC4 {
+        parseContext.int64Check($1.loc, "64-bit unsigned integer vector", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtUint64;
+        $$.setVector(4);
+    }
+    | DMAT2 {
+        parseContext.doubleCheck($1.loc, "double matrix");
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtDouble;
+        $$.setMatrix(2, 2);
+    }
+    | DMAT3 {
+        parseContext.doubleCheck($1.loc, "double matrix");
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtDouble;
+        $$.setMatrix(3, 3);
+    }
+    | DMAT4 {
+        parseContext.doubleCheck($1.loc, "double matrix");
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtDouble;
+        $$.setMatrix(4, 4);
+    }
+    | DMAT2X2 {
+        parseContext.doubleCheck($1.loc, "double matrix");
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtDouble;
+        $$.setMatrix(2, 2);
+    }
+    | DMAT2X3 {
+        parseContext.doubleCheck($1.loc, "double matrix");
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtDouble;
+        $$.setMatrix(2, 3);
+    }
+    | DMAT2X4 {
+        parseContext.doubleCheck($1.loc, "double matrix");
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtDouble;
+        $$.setMatrix(2, 4);
+    }
+    | DMAT3X2 {
+        parseContext.doubleCheck($1.loc, "double matrix");
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtDouble;
+        $$.setMatrix(3, 2);
+    }
+    | DMAT3X3 {
+        parseContext.doubleCheck($1.loc, "double matrix");
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtDouble;
+        $$.setMatrix(3, 3);
+    }
+    | DMAT3X4 {
+        parseContext.doubleCheck($1.loc, "double matrix");
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtDouble;
+        $$.setMatrix(3, 4);
+    }
+    | DMAT4X2 {
+        parseContext.doubleCheck($1.loc, "double matrix");
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtDouble;
+        $$.setMatrix(4, 2);
+    }
+    | DMAT4X3 {
+        parseContext.doubleCheck($1.loc, "double matrix");
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtDouble;
+        $$.setMatrix(4, 3);
+    }
+    | DMAT4X4 {
+        parseContext.doubleCheck($1.loc, "double matrix");
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtDouble;
+        $$.setMatrix(4, 4);
+    }
+    | F16MAT2 {
+        parseContext.float16Check($1.loc, "half float matrix", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloat16;
+        $$.setMatrix(2, 2);
+    }
+    | F16MAT3 {
+        parseContext.float16Check($1.loc, "half float matrix", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloat16;
+        $$.setMatrix(3, 3);
+    }
+    | F16MAT4 {
+        parseContext.float16Check($1.loc, "half float matrix", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloat16;
+        $$.setMatrix(4, 4);
+    }
+    | F16MAT2X2 {
+        parseContext.float16Check($1.loc, "half float matrix", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloat16;
+        $$.setMatrix(2, 2);
+    }
+    | F16MAT2X3 {
+        parseContext.float16Check($1.loc, "half float matrix", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloat16;
+        $$.setMatrix(2, 3);
+    }
+    | F16MAT2X4 {
+        parseContext.float16Check($1.loc, "half float matrix", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloat16;
+        $$.setMatrix(2, 4);
+    }
+    | F16MAT3X2 {
+        parseContext.float16Check($1.loc, "half float matrix", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloat16;
+        $$.setMatrix(3, 2);
+    }
+    | F16MAT3X3 {
+        parseContext.float16Check($1.loc, "half float matrix", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloat16;
+        $$.setMatrix(3, 3);
+    }
+    | F16MAT3X4 {
+        parseContext.float16Check($1.loc, "half float matrix", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloat16;
+        $$.setMatrix(3, 4);
+    }
+    | F16MAT4X2 {
+        parseContext.float16Check($1.loc, "half float matrix", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloat16;
+        $$.setMatrix(4, 2);
+    }
+    | F16MAT4X3 {
+        parseContext.float16Check($1.loc, "half float matrix", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloat16;
+        $$.setMatrix(4, 3);
+    }
+    | F16MAT4X4 {
+        parseContext.float16Check($1.loc, "half float matrix", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloat16;
+        $$.setMatrix(4, 4);
+    }
+    | F32MAT2 {
+        parseContext.explicitFloat32Check($1.loc, "float32_t matrix", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloat;
+        $$.setMatrix(2, 2);
+    }
+    | F32MAT3 {
+        parseContext.explicitFloat32Check($1.loc, "float32_t matrix", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloat;
+        $$.setMatrix(3, 3);
+    }
+    | F32MAT4 {
+        parseContext.explicitFloat32Check($1.loc, "float32_t matrix", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloat;
+        $$.setMatrix(4, 4);
+    }
+    | F32MAT2X2 {
+        parseContext.explicitFloat32Check($1.loc, "float32_t matrix", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloat;
+        $$.setMatrix(2, 2);
+    }
+    | F32MAT2X3 {
+        parseContext.explicitFloat32Check($1.loc, "float32_t matrix", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloat;
+        $$.setMatrix(2, 3);
+    }
+    | F32MAT2X4 {
+        parseContext.explicitFloat32Check($1.loc, "float32_t matrix", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloat;
+        $$.setMatrix(2, 4);
+    }
+    | F32MAT3X2 {
+        parseContext.explicitFloat32Check($1.loc, "float32_t matrix", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloat;
+        $$.setMatrix(3, 2);
+    }
+    | F32MAT3X3 {
+        parseContext.explicitFloat32Check($1.loc, "float32_t matrix", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloat;
+        $$.setMatrix(3, 3);
+    }
+    | F32MAT3X4 {
+        parseContext.explicitFloat32Check($1.loc, "float32_t matrix", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloat;
+        $$.setMatrix(3, 4);
+    }
+    | F32MAT4X2 {
+        parseContext.explicitFloat32Check($1.loc, "float32_t matrix", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloat;
+        $$.setMatrix(4, 2);
+    }
+    | F32MAT4X3 {
+        parseContext.explicitFloat32Check($1.loc, "float32_t matrix", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloat;
+        $$.setMatrix(4, 3);
+    }
+    | F32MAT4X4 {
+        parseContext.explicitFloat32Check($1.loc, "float32_t matrix", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloat;
+        $$.setMatrix(4, 4);
+    }
+    | F64MAT2 {
+        parseContext.explicitFloat64Check($1.loc, "float64_t matrix", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtDouble;
+        $$.setMatrix(2, 2);
+    }
+    | F64MAT3 {
+        parseContext.explicitFloat64Check($1.loc, "float64_t matrix", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtDouble;
+        $$.setMatrix(3, 3);
+    }
+    | F64MAT4 {
+        parseContext.explicitFloat64Check($1.loc, "float64_t matrix", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtDouble;
+        $$.setMatrix(4, 4);
+    }
+    | F64MAT2X2 {
+        parseContext.explicitFloat64Check($1.loc, "float64_t matrix", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtDouble;
+        $$.setMatrix(2, 2);
+    }
+    | F64MAT2X3 {
+        parseContext.explicitFloat64Check($1.loc, "float64_t matrix", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtDouble;
+        $$.setMatrix(2, 3);
+    }
+    | F64MAT2X4 {
+        parseContext.explicitFloat64Check($1.loc, "float64_t matrix", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtDouble;
+        $$.setMatrix(2, 4);
+    }
+    | F64MAT3X2 {
+        parseContext.explicitFloat64Check($1.loc, "float64_t matrix", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtDouble;
+        $$.setMatrix(3, 2);
+    }
+    | F64MAT3X3 {
+        parseContext.explicitFloat64Check($1.loc, "float64_t matrix", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtDouble;
+        $$.setMatrix(3, 3);
+    }
+    | F64MAT3X4 {
+        parseContext.explicitFloat64Check($1.loc, "float64_t matrix", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtDouble;
+        $$.setMatrix(3, 4);
+    }
+    | F64MAT4X2 {
+        parseContext.explicitFloat64Check($1.loc, "float64_t matrix", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtDouble;
+        $$.setMatrix(4, 2);
+    }
+    | F64MAT4X3 {
+        parseContext.explicitFloat64Check($1.loc, "float64_t matrix", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtDouble;
+        $$.setMatrix(4, 3);
+    }
+    | F64MAT4X4 {
+        parseContext.explicitFloat64Check($1.loc, "float64_t matrix", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtDouble;
+        $$.setMatrix(4, 4);
+    }
+    | ACCSTRUCTNV {
+       $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+       $$.basicType = EbtAccStructNV;
+    }
+    | ATOMIC_UINT {
+        parseContext.vulkanRemoved($1.loc, "atomic counter types");
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtAtomicUint;
+    }
+    | SAMPLER1D {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.set(EbtFloat, Esd1D);
+    }
+
     | SAMPLER2D {
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtSampler;
@@ -1430,6 +2365,115 @@ type_specifier_nonarray
         $$.sampler.set(EbtFloat, Esd2D, true, true);
     }
 
+    | SAMPLER1DSHADOW {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.set(EbtFloat, Esd1D, false, true);
+    }
+    | SAMPLER1DARRAY {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.set(EbtFloat, Esd1D, true);
+    }
+    | SAMPLER1DARRAYSHADOW {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.set(EbtFloat, Esd1D, true, true);
+    }
+    | SAMPLERCUBEARRAY {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.set(EbtFloat, EsdCube, true);
+    }
+    | SAMPLERCUBEARRAYSHADOW {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.set(EbtFloat, EsdCube, true, true);
+    }
+    | F16SAMPLER1D {
+        parseContext.float16OpaqueCheck($1.loc, "half float sampler", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.set(EbtFloat16, Esd1D);
+    }
+    | F16SAMPLER2D {
+        parseContext.float16OpaqueCheck($1.loc, "half float sampler", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.set(EbtFloat16, Esd2D);
+    }
+    | F16SAMPLER3D {
+        parseContext.float16OpaqueCheck($1.loc, "half float sampler", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.set(EbtFloat16, Esd3D);
+    }
+    | F16SAMPLERCUBE {
+        parseContext.float16OpaqueCheck($1.loc, "half float sampler", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.set(EbtFloat16, EsdCube);
+    }
+    | F16SAMPLER1DSHADOW {
+        parseContext.float16OpaqueCheck($1.loc, "half float sampler", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.set(EbtFloat16, Esd1D, false, true);
+    }
+    | F16SAMPLER2DSHADOW {
+        parseContext.float16OpaqueCheck($1.loc, "half float sampler", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.set(EbtFloat16, Esd2D, false, true);
+    }
+    | F16SAMPLERCUBESHADOW {
+        parseContext.float16OpaqueCheck($1.loc, "half float sampler", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.set(EbtFloat16, EsdCube, false, true);
+    }
+    | F16SAMPLER1DARRAY {
+        parseContext.float16OpaqueCheck($1.loc, "half float sampler", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.set(EbtFloat16, Esd1D, true);
+    }
+    | F16SAMPLER2DARRAY {
+        parseContext.float16OpaqueCheck($1.loc, "half float sampler", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.set(EbtFloat16, Esd2D, true);
+    }
+    | F16SAMPLER1DARRAYSHADOW {
+        parseContext.float16OpaqueCheck($1.loc, "half float sampler", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.set(EbtFloat16, Esd1D, true, true);
+    }
+    | F16SAMPLER2DARRAYSHADOW {
+        parseContext.float16OpaqueCheck($1.loc, "half float sampler", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.set(EbtFloat16, Esd2D, true, true);
+    }
+    | F16SAMPLERCUBEARRAY {
+        parseContext.float16OpaqueCheck($1.loc, "half float sampler", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.set(EbtFloat16, EsdCube, true);
+    }
+    | F16SAMPLERCUBEARRAYSHADOW {
+        parseContext.float16OpaqueCheck($1.loc, "half float sampler", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.set(EbtFloat16, EsdCube, true, true);
+    }
+    | ISAMPLER1D {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.set(EbtInt, Esd1D);
+    }
+
     | ISAMPLER2D {
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtSampler;
@@ -1464,6 +2508,47 @@ type_specifier_nonarray
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtSampler;
         $$.sampler.set(EbtUint, EsdCube);
+    }
+
+    | ISAMPLER1DARRAY {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.set(EbtInt, Esd1D, true);
+    }
+    | ISAMPLERCUBEARRAY {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.set(EbtInt, EsdCube, true);
+    }
+    | USAMPLER1D {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.set(EbtUint, Esd1D);
+    }
+    | USAMPLER1DARRAY {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.set(EbtUint, Esd1D, true);
+    }
+    | USAMPLERCUBEARRAY {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.set(EbtUint, EsdCube, true);
+    }
+    | TEXTURECUBEARRAY {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setTexture(EbtFloat, EsdCube, true);
+    }
+    | ITEXTURECUBEARRAY {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setTexture(EbtInt, EsdCube, true);
+    }
+    | UTEXTURECUBEARRAY {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setTexture(EbtUint, EsdCube, true);
     }
 
     | USAMPLER2DARRAY {
@@ -1540,6 +2625,569 @@ type_specifier_nonarray
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtSampler;
         $$.sampler.setPureSampler(true);
+    }
+
+    | SAMPLER2DRECT {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.set(EbtFloat, EsdRect);
+    }
+    | SAMPLER2DRECTSHADOW {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.set(EbtFloat, EsdRect, false, true);
+    }
+    | F16SAMPLER2DRECT {
+        parseContext.float16OpaqueCheck($1.loc, "half float sampler", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.set(EbtFloat16, EsdRect);
+    }
+    | F16SAMPLER2DRECTSHADOW {
+        parseContext.float16OpaqueCheck($1.loc, "half float sampler", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.set(EbtFloat16, EsdRect, false, true);
+    }
+    | ISAMPLER2DRECT {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.set(EbtInt, EsdRect);
+    }
+    | USAMPLER2DRECT {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.set(EbtUint, EsdRect);
+    }
+    | SAMPLERBUFFER {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.set(EbtFloat, EsdBuffer);
+    }
+    | F16SAMPLERBUFFER {
+        parseContext.float16OpaqueCheck($1.loc, "half float sampler", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.set(EbtFloat16, EsdBuffer);
+    }
+    | ISAMPLERBUFFER {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.set(EbtInt, EsdBuffer);
+    }
+    | USAMPLERBUFFER {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.set(EbtUint, EsdBuffer);
+    }
+    | SAMPLER2DMS {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.set(EbtFloat, Esd2D, false, false, true);
+    }
+    | F16SAMPLER2DMS {
+        parseContext.float16OpaqueCheck($1.loc, "half float sampler", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.set(EbtFloat16, Esd2D, false, false, true);
+    }
+    | ISAMPLER2DMS {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.set(EbtInt, Esd2D, false, false, true);
+    }
+    | USAMPLER2DMS {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.set(EbtUint, Esd2D, false, false, true);
+    }
+    | SAMPLER2DMSARRAY {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.set(EbtFloat, Esd2D, true, false, true);
+    }
+    | F16SAMPLER2DMSARRAY {
+        parseContext.float16OpaqueCheck($1.loc, "half float sampler", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.set(EbtFloat16, Esd2D, true, false, true);
+    }
+    | ISAMPLER2DMSARRAY {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.set(EbtInt, Esd2D, true, false, true);
+    }
+    | USAMPLER2DMSARRAY {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.set(EbtUint, Esd2D, true, false, true);
+    }
+    | TEXTURE1D {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setTexture(EbtFloat, Esd1D);
+    }
+    | F16TEXTURE1D {
+        parseContext.float16OpaqueCheck($1.loc, "half float texture", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setTexture(EbtFloat16, Esd1D);
+    }
+    | F16TEXTURE2D {
+        parseContext.float16OpaqueCheck($1.loc, "half float texture", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setTexture(EbtFloat16, Esd2D);
+    }
+    | F16TEXTURE3D {
+        parseContext.float16OpaqueCheck($1.loc, "half float texture", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setTexture(EbtFloat16, Esd3D);
+    }
+    | F16TEXTURECUBE {
+        parseContext.float16OpaqueCheck($1.loc, "half float texture", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setTexture(EbtFloat16, EsdCube);
+    }
+    | TEXTURE1DARRAY {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setTexture(EbtFloat, Esd1D, true);
+    }
+    | F16TEXTURE1DARRAY {
+        parseContext.float16OpaqueCheck($1.loc, "half float texture", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setTexture(EbtFloat16, Esd1D, true);
+    }
+    | F16TEXTURE2DARRAY {
+        parseContext.float16OpaqueCheck($1.loc, "half float texture", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setTexture(EbtFloat16, Esd2D, true);
+    }
+    | F16TEXTURECUBEARRAY {
+        parseContext.float16OpaqueCheck($1.loc, "half float texture", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setTexture(EbtFloat16, EsdCube, true);
+    }
+    | ITEXTURE1D {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setTexture(EbtInt, Esd1D);
+    }
+    | ITEXTURE1DARRAY {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setTexture(EbtInt, Esd1D, true);
+    }
+    | UTEXTURE1D {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setTexture(EbtUint, Esd1D);
+    }
+    | UTEXTURE1DARRAY {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setTexture(EbtUint, Esd1D, true);
+    }
+    | TEXTURE2DRECT {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setTexture(EbtFloat, EsdRect);
+    }
+    | F16TEXTURE2DRECT {
+        parseContext.float16OpaqueCheck($1.loc, "half float texture", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setTexture(EbtFloat16, EsdRect);
+    }
+    | ITEXTURE2DRECT {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setTexture(EbtInt, EsdRect);
+    }
+    | UTEXTURE2DRECT {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setTexture(EbtUint, EsdRect);
+    }
+    | TEXTUREBUFFER {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setTexture(EbtFloat, EsdBuffer);
+    }
+    | F16TEXTUREBUFFER {
+        parseContext.float16OpaqueCheck($1.loc, "half float texture", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setTexture(EbtFloat16, EsdBuffer);
+    }
+    | ITEXTUREBUFFER {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setTexture(EbtInt, EsdBuffer);
+    }
+    | UTEXTUREBUFFER {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setTexture(EbtUint, EsdBuffer);
+    }
+    | TEXTURE2DMS {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setTexture(EbtFloat, Esd2D, false, false, true);
+    }
+    | F16TEXTURE2DMS {
+        parseContext.float16OpaqueCheck($1.loc, "half float texture", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setTexture(EbtFloat16, Esd2D, false, false, true);
+    }
+    | ITEXTURE2DMS {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setTexture(EbtInt, Esd2D, false, false, true);
+    }
+    | UTEXTURE2DMS {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setTexture(EbtUint, Esd2D, false, false, true);
+    }
+    | TEXTURE2DMSARRAY {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setTexture(EbtFloat, Esd2D, true, false, true);
+    }
+    | F16TEXTURE2DMSARRAY {
+        parseContext.float16OpaqueCheck($1.loc, "half float texture", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setTexture(EbtFloat16, Esd2D, true, false, true);
+    }
+    | ITEXTURE2DMSARRAY {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setTexture(EbtInt, Esd2D, true, false, true);
+    }
+    | UTEXTURE2DMSARRAY {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setTexture(EbtUint, Esd2D, true, false, true);
+    }
+    | IMAGE1D {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setImage(EbtFloat, Esd1D);
+    }
+    | F16IMAGE1D {
+        parseContext.float16OpaqueCheck($1.loc, "half float image", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setImage(EbtFloat16, Esd1D);
+    }
+    | IIMAGE1D {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setImage(EbtInt, Esd1D);
+    }
+    | UIMAGE1D {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setImage(EbtUint, Esd1D);
+    }
+    | IMAGE2D {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setImage(EbtFloat, Esd2D);
+    }
+    | F16IMAGE2D {
+        parseContext.float16OpaqueCheck($1.loc, "half float image", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setImage(EbtFloat16, Esd2D);
+    }
+    | IIMAGE2D {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setImage(EbtInt, Esd2D);
+    }
+    | UIMAGE2D {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setImage(EbtUint, Esd2D);
+    }
+    | IMAGE3D {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setImage(EbtFloat, Esd3D);
+    }
+    | F16IMAGE3D {
+        parseContext.float16OpaqueCheck($1.loc, "half float image", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setImage(EbtFloat16, Esd3D);
+    }
+    | IIMAGE3D {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setImage(EbtInt, Esd3D);
+    }
+    | UIMAGE3D {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setImage(EbtUint, Esd3D);
+    }
+    | IMAGE2DRECT {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setImage(EbtFloat, EsdRect);
+    }
+    | F16IMAGE2DRECT {
+        parseContext.float16OpaqueCheck($1.loc, "half float image", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setImage(EbtFloat16, EsdRect);
+    }
+    | IIMAGE2DRECT {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setImage(EbtInt, EsdRect);
+    }
+    | UIMAGE2DRECT {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setImage(EbtUint, EsdRect);
+    }
+    | IMAGECUBE {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setImage(EbtFloat, EsdCube);
+    }
+    | F16IMAGECUBE {
+        parseContext.float16OpaqueCheck($1.loc, "half float image", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setImage(EbtFloat16, EsdCube);
+    }
+    | IIMAGECUBE {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setImage(EbtInt, EsdCube);
+    }
+    | UIMAGECUBE {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setImage(EbtUint, EsdCube);
+    }
+    | IMAGEBUFFER {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setImage(EbtFloat, EsdBuffer);
+    }
+    | F16IMAGEBUFFER {
+        parseContext.float16OpaqueCheck($1.loc, "half float image", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setImage(EbtFloat16, EsdBuffer);
+    }
+    | IIMAGEBUFFER {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setImage(EbtInt, EsdBuffer);
+    }
+    | UIMAGEBUFFER {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setImage(EbtUint, EsdBuffer);
+    }
+    | IMAGE1DARRAY {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setImage(EbtFloat, Esd1D, true);
+    }
+    | F16IMAGE1DARRAY {
+        parseContext.float16OpaqueCheck($1.loc, "half float image", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setImage(EbtFloat16, Esd1D, true);
+    }
+    | IIMAGE1DARRAY {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setImage(EbtInt, Esd1D, true);
+    }
+    | UIMAGE1DARRAY {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setImage(EbtUint, Esd1D, true);
+    }
+    | IMAGE2DARRAY {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setImage(EbtFloat, Esd2D, true);
+    }
+    | F16IMAGE2DARRAY {
+        parseContext.float16OpaqueCheck($1.loc, "half float image", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setImage(EbtFloat16, Esd2D, true);
+    }
+    | IIMAGE2DARRAY {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setImage(EbtInt, Esd2D, true);
+    }
+    | UIMAGE2DARRAY {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setImage(EbtUint, Esd2D, true);
+    }
+    | IMAGECUBEARRAY {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setImage(EbtFloat, EsdCube, true);
+    }
+    | F16IMAGECUBEARRAY {
+        parseContext.float16OpaqueCheck($1.loc, "half float image", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setImage(EbtFloat16, EsdCube, true);
+    }
+    | IIMAGECUBEARRAY {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setImage(EbtInt, EsdCube, true);
+    }
+    | UIMAGECUBEARRAY {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setImage(EbtUint, EsdCube, true);
+    }
+    | IMAGE2DMS {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setImage(EbtFloat, Esd2D, false, false, true);
+    }
+    | F16IMAGE2DMS {
+        parseContext.float16OpaqueCheck($1.loc, "half float image", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setImage(EbtFloat16, Esd2D, false, false, true);
+    }
+    | IIMAGE2DMS {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setImage(EbtInt, Esd2D, false, false, true);
+    }
+    | UIMAGE2DMS {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setImage(EbtUint, Esd2D, false, false, true);
+    }
+    | IMAGE2DMSARRAY {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setImage(EbtFloat, Esd2D, true, false, true);
+    }
+    | F16IMAGE2DMSARRAY {
+        parseContext.float16OpaqueCheck($1.loc, "half float image", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setImage(EbtFloat16, Esd2D, true, false, true);
+    }
+    | IIMAGE2DMSARRAY {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setImage(EbtInt, Esd2D, true, false, true);
+    }
+    | UIMAGE2DMSARRAY {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setImage(EbtUint, Esd2D, true, false, true);
+    }
+    | SAMPLEREXTERNALOES {  // GL_OES_EGL_image_external
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.set(EbtFloat, Esd2D);
+        $$.sampler.external = true;
+    }
+    | SAMPLEREXTERNAL2DY2YEXT { // GL_EXT_YUV_target
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.set(EbtFloat, Esd2D);
+        $$.sampler.yuv = true;
+    }
+    | SUBPASSINPUT {
+        parseContext.requireStage($1.loc, EShLangFragment, "subpass input");
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setSubpass(EbtFloat);
+    }
+    | SUBPASSINPUTMS {
+        parseContext.requireStage($1.loc, EShLangFragment, "subpass input");
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setSubpass(EbtFloat, true);
+    }
+    | F16SUBPASSINPUT {
+        parseContext.float16OpaqueCheck($1.loc, "half float subpass input", parseContext.symbolTable.atBuiltInLevel());
+        parseContext.requireStage($1.loc, EShLangFragment, "subpass input");
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setSubpass(EbtFloat16);
+    }
+    | F16SUBPASSINPUTMS {
+        parseContext.float16OpaqueCheck($1.loc, "half float subpass input", parseContext.symbolTable.atBuiltInLevel());
+        parseContext.requireStage($1.loc, EShLangFragment, "subpass input");
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setSubpass(EbtFloat16, true);
+    }
+    | ISUBPASSINPUT {
+        parseContext.requireStage($1.loc, EShLangFragment, "subpass input");
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setSubpass(EbtInt);
+    }
+    | ISUBPASSINPUTMS {
+        parseContext.requireStage($1.loc, EShLangFragment, "subpass input");
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setSubpass(EbtInt, true);
+    }
+    | USUBPASSINPUT {
+        parseContext.requireStage($1.loc, EShLangFragment, "subpass input");
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setSubpass(EbtUint);
+    }
+    | USUBPASSINPUTMS {
+        parseContext.requireStage($1.loc, EShLangFragment, "subpass input");
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtSampler;
+        $$.sampler.setSubpass(EbtUint, true);
+    }
+    | FCOOPMATNV {
+        parseContext.fcoopmatCheck($1.loc, "fcoopmatNV", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloat;
+        $$.coopmat = true;
+    }
+    | ICOOPMATNV {
+        parseContext.intcoopmatCheck($1.loc, "icoopmatNV", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtInt;
+        $$.coopmat = true;
+    }
+    | UCOOPMATNV {
+        parseContext.intcoopmatCheck($1.loc, "ucoopmatNV", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtUint;
+        $$.coopmat = true;
     }
 
     | struct_specifier {
@@ -1697,8 +3345,30 @@ initializer
         $$ = $1;
     }
 
+    | LEFT_BRACE initializer_list RIGHT_BRACE {
+        const char* initFeature = "{ } style initializers";
+        parseContext.requireProfile($1.loc, ~EEsProfile, initFeature);
+        parseContext.profileRequires($1.loc, ~EEsProfile, 420, E_GL_ARB_shading_language_420pack, initFeature);
+        $$ = $2;
+    }
+    | LEFT_BRACE initializer_list COMMA RIGHT_BRACE {
+        const char* initFeature = "{ } style initializers";
+        parseContext.requireProfile($1.loc, ~EEsProfile, initFeature);
+        parseContext.profileRequires($1.loc, ~EEsProfile, 420, E_GL_ARB_shading_language_420pack, initFeature);
+        $$ = $2;
+    }
+
     ;
 
+
+initializer_list
+    : initializer {
+        $$ = parseContext.intermediate.growAggregate(0, $1, $1->getLoc());
+    }
+    | initializer_list COMMA initializer {
+        $$ = parseContext.intermediate.growAggregate($1, $3);
+    }
+    ;
 
 
 declaration_statement
@@ -1721,8 +3391,18 @@ simple_statement
     | iteration_statement   { $$ = $1; }
     | jump_statement        { $$ = $1; }
 
+    | demote_statement      { $$ = $1; }
+
     ;
 
+
+demote_statement
+    : DEMOTE SEMICOLON {
+        parseContext.requireStage($1.loc, EShLangFragment, "demote");
+        parseContext.requireExtensions($1.loc, 1, &E_GL_EXT_demote_to_helper_invocation, "demote");
+        $$ = parseContext.intermediate.addBranch(EOpDemote, $1.loc);
+    }
+    ;
 
 
 compound_statement
@@ -1808,6 +3488,11 @@ selection_statement
         $$ = $1;
     }
 
+    | attribute selection_statement_nonattributed {
+        parseContext.handleSelectionAttributes(*$1, $2);
+        $$ = $2;
+    }
+
 
 selection_statement_nonattributed
     : IF LEFT_PAREN expression RIGHT_PAREN selection_rest_statement {
@@ -1848,6 +3533,11 @@ condition
 switch_statement
     : switch_statement_nonattributed {
         $$ = $1;
+    }
+
+    | attribute switch_statement_nonattributed {
+        parseContext.handleSwitchAttributes(*$1, $2);
+        $$ = $2;
     }
 
 
@@ -1907,6 +3597,11 @@ case_label
 iteration_statement
     : iteration_statement_nonattributed {
         $$ = $1;
+    }
+
+    | attribute iteration_statement_nonattributed {
+        parseContext.handleLoopAttributes(*$1, $2);
+        $$ = $2;
     }
 
 
@@ -2041,6 +3736,12 @@ external_declaration
         $$ = $1;
     }
 
+    | SEMICOLON {
+        parseContext.requireProfile($1.loc, ~EEsProfile, "extraneous semicolon");
+        parseContext.profileRequires($1.loc, ~EEsProfile, 460, nullptr, "extraneous semicolon");
+        $$ = nullptr;
+    }
+
     ;
 
 function_definition
@@ -2065,6 +3766,28 @@ function_definition
     }
     ;
 
+
+attribute
+    : LEFT_BRACKET LEFT_BRACKET attribute_list RIGHT_BRACKET RIGHT_BRACKET {
+        $$ = $3;
+        parseContext.requireExtensions($1.loc, 1, &E_GL_EXT_control_flow_attributes, "attribute");
+    }
+
+attribute_list
+    : single_attribute {
+        $$ = $1;
+    }
+    | attribute_list COMMA single_attribute {
+        $$ = parseContext.mergeAttributes($1, $3);
+    }
+
+single_attribute
+    : IDENTIFIER {
+        $$ = parseContext.makeAttributes(*$1.string);
+    }
+    | IDENTIFIER LEFT_PAREN constant_expression RIGHT_PAREN {
+        $$ = parseContext.makeAttributes(*$1.string, $3);
+    }
 
 
 %%

@@ -528,6 +528,7 @@ public:
 
     void clearMemory()
     {
+#ifndef GLSLANG_WEB
         coherent     = false;
         devicecoherent = false;
         queuefamilycoherent = false;
@@ -538,6 +539,7 @@ public:
         restrict     = false;
         readonly     = false;
         writeonly    = false;
+#endif
     }
 
     const char*         semanticName;
@@ -550,16 +552,6 @@ public:
     bool centroid     : 1;
     bool smooth       : 1;
     bool flat         : 1;
-    bool coherent     : 1;
-    bool devicecoherent : 1;
-    bool queuefamilycoherent : 1;
-    bool workgroupcoherent : 1;
-    bool subgroupcoherent  : 1;
-    bool nonprivate   : 1;
-    bool volatil      : 1;
-    bool restrict     : 1;
-    bool readonly     : 1;
-    bool writeonly    : 1;
     // having a constant_id is not sufficient: expressions have no id, but are still specConstant
     bool specConstant : 1;
     bool nonUniform   : 1;
@@ -567,6 +559,9 @@ public:
 #ifdef GLSLANG_WEB
     bool isWriteOnly() const { return false; }
     bool isReadOnly() const { return false; }
+    bool isRestrict() const { return false; }
+    bool isCoherent() const { return false; }
+    bool isVolatile() const { return false; }
     bool isSample() const { return false; }
     bool isMemory() const { return false; }
     bool isMemoryQualifierImageAndSSBOOnly() const { return false; }
@@ -588,8 +583,21 @@ public:
     bool perTaskNV : 1;
     bool patch        : 1;
     bool sample       : 1;
+    bool restrict     : 1;
+    bool readonly     : 1;
+    bool writeonly    : 1;
+    bool coherent     : 1;
+    bool volatil      : 1;
+    bool devicecoherent : 1;
+    bool queuefamilycoherent : 1;
+    bool workgroupcoherent : 1;
+    bool subgroupcoherent  : 1;
+    bool nonprivate   : 1;
     bool isWriteOnly() const { return writeonly; }
     bool isReadOnly() const { return readonly; }
+    bool isRestrict() const { return restrict; }
+    bool isCoherent() const { return coherent; }
+    bool isVolatile() const { return volatil; }
     bool isSample() const { return sample; }
     bool isMemory() const
     {
@@ -780,8 +788,8 @@ public:
     {
         layoutLocation = layoutLocationEnd;
         layoutComponent = layoutComponentEnd;
-        layoutIndex = layoutIndexEnd;
 #ifndef GLSLANG_WEB
+        layoutIndex = layoutIndexEnd;
         clearStreamLayout();
         clearXfbLayout();
 #endif
@@ -886,7 +894,9 @@ public:
 
         layoutSet = layoutSetEnd;
         layoutBinding = layoutBindingEnd;
+#ifndef GLSLANG_WEB
         layoutAttachment = layoutAttachmentEnd;
+#endif
     }
 
     bool hasMatrix() const
@@ -923,6 +933,7 @@ public:
     bool hasOffset() const { return false; }
     bool isNonPerspective() const { return false; }
     bool hasIndex() const { return false; }
+    unsigned getIndex() const { return 0; }
     bool hasComponent() const { return false; }
     bool hasStream() const { return false; }
     bool hasFormat() const { return false; }
@@ -947,6 +958,7 @@ public:
     {
         return layoutIndex != layoutIndexEnd;
     }
+    unsigned getIndex() const { return layoutIndex; }
     bool hasComponent() const
     {
         return layoutComponent != layoutComponentEnd;

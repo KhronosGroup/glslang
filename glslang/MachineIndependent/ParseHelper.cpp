@@ -1160,6 +1160,7 @@ TIntermTyped* TParseContext::handleFunctionCall(const TSourceLoc& loc, TFunction
                     const TQualifier& argQualifier = argType.getQualifier();
                     if (argQualifier.isMemory() && (argType.containsOpaque() || argType.isReference())) {
                         const char* message = "argument cannot drop memory qualifier when passed to formal parameter";
+#ifndef GLSLANG_WEB
                         if (argQualifier.volatil && ! formalQualifier.volatil)
                             error(arguments->getLoc(), message, "volatile", "");
                         if (argQualifier.coherent && ! (formalQualifier.devicecoherent || formalQualifier.coherent))
@@ -1179,6 +1180,7 @@ TIntermTyped* TParseContext::handleFunctionCall(const TSourceLoc& loc, TFunction
                         // Don't check 'restrict', it is different than the rest:
                         // "...but only restrict can be taken away from a calling argument, by a formal parameter that
                         // lacks the restrict qualifier..."
+#endif
                     }
                     if (!builtIn && argQualifier.getFormat() != formalQualifier.getFormat()) {
                         // we have mismatched formats, which should only be allowed if writeonly
@@ -2201,7 +2203,7 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
         break;
     }
 
-    if (callNode.getOp() > EOpSubgroupGuardStart && callNode.getOp() < EOpSubgroupGuardStop) {
+    if (callNode.isSubgroup()) {
         // these require SPIR-V 1.3
         if (spvVersion.spv > 0 && spvVersion.spv < EShTargetSpv_1_3)
             error(loc, "requires SPIR-V 1.3", "subgroup op", "");
@@ -2779,6 +2781,7 @@ bool TParseContext::constructorError(const TSourceLoc& loc, TIntermNode* node, T
     // it, in which case the type comes from the argument instead of from the
     // constructor function.
     switch (op) {
+#ifndef GLSLANG_WEB
     case EOpConstructNonuniform:
         if (node != nullptr && node->getAsTyped() != nullptr) {
             type.shallowCopy(node->getAsTyped()->getType());
@@ -2786,6 +2789,7 @@ bool TParseContext::constructorError(const TSourceLoc& loc, TIntermNode* node, T
             type.getQualifier().nonUniform = true;
         }
         break;
+#endif
     default:
         type.shallowCopy(function.getType());
         break;
@@ -4475,6 +4479,7 @@ void TParseContext::paramCheckFixStorage(const TSourceLoc& loc, const TStorageQu
 
 void TParseContext::paramCheckFix(const TSourceLoc& loc, const TQualifier& qualifier, TType& type)
 {
+#ifndef GLSLANG_WEB
     if (qualifier.isMemory()) {
         type.getQualifier().volatil   = qualifier.volatil;
         type.getQualifier().coherent  = qualifier.coherent;
@@ -4487,6 +4492,7 @@ void TParseContext::paramCheckFix(const TSourceLoc& loc, const TQualifier& quali
         type.getQualifier().writeonly = qualifier.writeonly;
         type.getQualifier().restrict  = qualifier.restrict;
     }
+#endif
 
     if (qualifier.isAuxiliary() ||
         qualifier.isInterpolation())
@@ -5387,9 +5393,7 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
 #ifndef GLSLANG_WEB
             if (language == EShLangMeshNV || language == EShLangTaskNV) {
                 requireExtensions(loc, 1, &E_GL_NV_mesh_shader, "gl_WorkGroupSize");
-            }
-            else
-            {
+            } else {
                 profileRequires(loc, EEsProfile, 310, 0, "gl_WorkGroupSize");
                 profileRequires(loc, ~EEsProfile, 430, E_GL_ARB_compute_shader, "gl_WorkGroupSize");
             }
@@ -7382,6 +7386,7 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
     for (unsigned int member = 0; member < typeList.size(); ++member) {
         TQualifier& memberQualifier = typeList[member].type->getQualifier();
         const TSourceLoc& memberLoc = typeList[member].loc;
+#ifndef GLSLANG_WEB
         if (memberQualifier.hasStream()) {
             if (defaultQualification.layoutStream != memberQualifier.layoutStream)
                 error(memberLoc, "member cannot contradict block", "stream", "");
@@ -7395,6 +7400,7 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
             if (defaultQualification.layoutXfbBuffer != memberQualifier.layoutXfbBuffer)
                 error(memberLoc, "member cannot contradict block (or what block inherited from global)", "xfb_buffer", "");
         }
+#endif
 
         if (memberQualifier.hasPacking())
             error(memberLoc, "member of block cannot have a packing layout qualifier", typeList[member].type->getFieldName().c_str(), "");
@@ -7437,6 +7443,7 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
 
     layoutMemberLocationArrayCheck(loc, memberWithLocation, arraySizes);
 
+#ifndef GLSLANG_WEB
     // Ensure that the block has an XfbBuffer assigned. This is needed
     // because if the block has a XfbOffset assigned, then it is
     // assumed that it has implicitly assigned the current global
@@ -7446,6 +7453,7 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
        if (!currentBlockQualifier.hasXfbBuffer() && currentBlockQualifier.hasXfbOffset())
           currentBlockQualifier.layoutXfbBuffer = globalOutputDefaults.layoutXfbBuffer;
     }
+#endif
 
     // Process the members
     fixBlockLocations(loc, currentBlockQualifier, typeList, memberWithLocation, memberWithoutLocation);

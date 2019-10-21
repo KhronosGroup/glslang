@@ -374,22 +374,20 @@ spv::Decoration TranslateBlockDecoration(const glslang::TType& type, bool useSto
 // Translate glslang type to SPIR-V memory decorations.
 void TranslateMemoryDecoration(const glslang::TQualifier& qualifier, std::vector<spv::Decoration>& memory, bool useVulkanMemoryModel)
 {
-#ifndef GLSLANG_WEB
     if (!useVulkanMemoryModel) {
-        if (qualifier.coherent)
+        if (qualifier.isCoherent())
             memory.push_back(spv::DecorationCoherent);
-        if (qualifier.volatil) {
+        if (qualifier.isVolatile()) {
             memory.push_back(spv::DecorationVolatile);
             memory.push_back(spv::DecorationCoherent);
         }
     }
-    if (qualifier.restrict)
+    if (qualifier.isRestrict())
         memory.push_back(spv::DecorationRestrict);
     if (qualifier.isReadOnly())
         memory.push_back(spv::DecorationNonWritable);
     if (qualifier.isWriteOnly())
        memory.push_back(spv::DecorationNonReadable);
-#endif
 }
 
 // Translate glslang type to SPIR-V layout decorations.
@@ -1201,9 +1199,9 @@ spv::StorageClass TGlslangToSpvTraverser::TranslateStorageClass(const glslang::T
     }
 
     switch (type.getQualifier().storage) {
-    case glslang::EvqGlobal:           return spv::StorageClassPrivate;
-    case glslang::EvqConstReadOnly:    return spv::StorageClassFunction;
-    case glslang::EvqTemporary:        return spv::StorageClassFunction;
+    case glslang::EvqGlobal:        return spv::StorageClassPrivate;
+    case glslang::EvqConstReadOnly: return spv::StorageClassFunction;
+    case glslang::EvqTemporary:     return spv::StorageClassFunction;
     case glslang::EvqShared:           return spv::StorageClassWorkgroup;
 #ifndef GLSLANG_WEB
     case glslang::EvqPayloadNV:        return spv::StorageClassRayPayloadNV;
@@ -1466,13 +1464,20 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion, const gl
         if (mode != spv::ExecutionModeMax)
             builder.addExecutionMode(shaderEntry, (spv::ExecutionMode)mode);
         switch (glslangIntermediate->getInterlockOrdering()) {
-        case glslang::EioPixelInterlockOrdered:         mode = spv::ExecutionModePixelInterlockOrderedEXT;          break;
-        case glslang::EioPixelInterlockUnordered:       mode = spv::ExecutionModePixelInterlockUnorderedEXT;          break;
-        case glslang::EioSampleInterlockOrdered:        mode = spv::ExecutionModeSampleInterlockOrderedEXT;          break;
-        case glslang::EioSampleInterlockUnordered:      mode = spv::ExecutionModeSampleInterlockUnorderedEXT;          break;
-        case glslang::EioShadingRateInterlockOrdered:   mode = spv::ExecutionModeShadingRateInterlockOrderedEXT;          break;
-        case glslang::EioShadingRateInterlockUnordered: mode = spv::ExecutionModeShadingRateInterlockUnorderedEXT;          break;
-        default:                                        mode = spv::ExecutionModeMax;                   break;
+        case glslang::EioPixelInterlockOrdered:         mode = spv::ExecutionModePixelInterlockOrderedEXT;
+            break;
+        case glslang::EioPixelInterlockUnordered:       mode = spv::ExecutionModePixelInterlockUnorderedEXT;
+            break;
+        case glslang::EioSampleInterlockOrdered:        mode = spv::ExecutionModeSampleInterlockOrderedEXT;
+            break;
+        case glslang::EioSampleInterlockUnordered:      mode = spv::ExecutionModeSampleInterlockUnorderedEXT;
+            break;
+        case glslang::EioShadingRateInterlockOrdered:   mode = spv::ExecutionModeShadingRateInterlockOrderedEXT;
+            break;
+        case glslang::EioShadingRateInterlockUnordered: mode = spv::ExecutionModeShadingRateInterlockUnorderedEXT;
+            break;
+        default:                                        mode = spv::ExecutionModeMax;
+            break;
         }
         if (mode != spv::ExecutionModeMax) {
             builder.addExecutionMode(shaderEntry, (spv::ExecutionMode)mode);
@@ -1495,7 +1500,6 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion, const gl
         builder.addExecutionMode(shaderEntry, spv::ExecutionModeLocalSize, glslangIntermediate->getLocalSize(0),
                                                                            glslangIntermediate->getLocalSize(1),
                                                                            glslangIntermediate->getLocalSize(2));
-#ifndef GLSLANG_WEB
         if (glslangIntermediate->getLayoutDerivativeModeNone() == glslang::LayoutDerivativeGroupQuads) {
             builder.addCapability(spv::CapabilityComputeDerivativeGroupQuadsNV);
             builder.addExecutionMode(shaderEntry, spv::ExecutionModeDerivativeGroupQuadsNV);
@@ -1505,7 +1509,6 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion, const gl
             builder.addExecutionMode(shaderEntry, spv::ExecutionModeDerivativeGroupLinearNV);
             builder.addExtension(spv::E_SPV_NV_compute_shader_derivatives);
         }
-#endif
         break;
 #ifndef GLSLANG_WEB
     case EShLangTessEvaluation:
@@ -3712,6 +3715,7 @@ void TGlslangToSpvTraverser::decorateStructType(const glslang::TType& type,
             for (unsigned int i = 0; i < memory.size(); ++i)
                 builder.addMemberDecoration(spvType, member, memory[i]);
         }
+
 #endif
 
         // Location assignment was already completed correctly by the front end,
@@ -4170,9 +4174,11 @@ void TGlslangToSpvTraverser::makeFunctions(const glslang::TIntermSequence& glslF
             // memory and use RestrictPointer/AliasedPointer.
             if (originalParam(type.getQualifier().storage, type, false) ||
                 !writableParam(type.getQualifier().storage)) {
-                decorations.push_back(type.getQualifier().restrict ? spv::DecorationRestrict : spv::DecorationAliased);
+                decorations.push_back(type.getQualifier().isRestrict() ? spv::DecorationRestrict :
+                                                                         spv::DecorationAliased);
             } else {
-                decorations.push_back(type.getQualifier().restrict ? spv::DecorationRestrictPointerEXT : spv::DecorationAliasedPointerEXT);
+                decorations.push_back(type.getQualifier().isRestrict() ? spv::DecorationRestrictPointerEXT :
+                                                                         spv::DecorationAliasedPointerEXT);
             }
         }
     };
@@ -4980,6 +4986,7 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
         }
     }
 
+#ifndef GLSLANG_WEB
     // nonprivate
     if (imageType.getQualifier().nonprivate) {
         params.nonprivate = true;
@@ -4989,6 +4996,7 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
     if (imageType.getQualifier().volatil) {
         params.volatil = true;
     }
+#endif
 
     std::vector<spv::Id> result( 1, 
         builder.createTextureCall(precision, resultType(), sparse, cracked.fetch, cracked.proj, cracked.gather,
@@ -7492,14 +7500,6 @@ spv::Id TGlslangToSpvTraverser::createNoArgOperation(glslang::TOperator op, spv:
     spv::Scope memoryBarrierScope = glslangIntermediate->usingVulkanMemoryModel() ? spv::ScopeQueueFamilyKHR : spv::ScopeDevice;
 
     switch (op) {
-#ifndef GLSLANG_WEB
-    case glslang::EOpEmitVertex:
-        builder.createNoResultOp(spv::OpEmitVertex);
-        return 0;
-    case glslang::EOpEndPrimitive:
-        builder.createNoResultOp(spv::OpEndPrimitive);
-        return 0;
-#endif
     case glslang::EOpBarrier:
         if (glslangIntermediate->getStage() == EShLangTessControl) {
             if (glslangIntermediate->usingVulkanMemoryModel()) {
@@ -7585,6 +7585,14 @@ spv::Id TGlslangToSpvTraverser::createNoArgOperation(glslang::TOperator op, spv:
         builder.createMemoryBarrier(spv::ScopeSubgroup, spv::MemorySemanticsWorkgroupMemoryMask |
                                                         spv::MemorySemanticsAcquireReleaseMask);
         return spv::NoResult;
+
+    case glslang::EOpEmitVertex:
+        builder.createNoResultOp(spv::OpEmitVertex);
+        return 0;
+    case glslang::EOpEndPrimitive:
+        builder.createNoResultOp(spv::OpEndPrimitive);
+        return 0;
+
     case glslang::EOpSubgroupElect: {
         std::vector<spv::Id> operands;
         return createSubgroupOperation(op, typeId, operands, glslang::EbtVoid);
