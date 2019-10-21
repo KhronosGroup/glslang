@@ -37,5 +37,5 @@ spv.merge-unreachable.frag
               23:               Label
                                 Return
               21:             Label
-                              Return
+                              Unreachable
                               FunctionEnd
