@@ -6,7 +6,7 @@ package(
 #
 # Khronos reference front-end for GLSL and ESSL, and sample SPIR-V generator.
 
-licenses(["notice"])  # Mixed: BSD, MIT, Khronos, Apache 2.0
+licenses(["notice"])
 
 exports_files(["LICENSE"])
 
