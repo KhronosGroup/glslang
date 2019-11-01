@@ -160,7 +160,7 @@ spv.earlyReturnDiscard.frag
              102:                 Label
                                   Return
              100:               Label
-                                Branch 67
+                                Unreachable
               67:             Label
              106:    7(fvec4) Load 9(color)
              107:    7(fvec4) Load 13(color2)

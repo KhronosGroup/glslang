@@ -99,8 +99,7 @@ spv.forwardFun.frag
               45:               Label
                                 ReturnValue 46
               42:             Label
-              48:    8(float) Undef
-                              ReturnValue 48
+                              Unreachable
                               FunctionEnd
     16(foo(vf4;):    8(float) Function None 14
          15(bar):     13(ptr) FunctionParameter
