@@ -300,7 +300,7 @@ protected:
 };
 
 // The different reasons for reaching a block in the inReadableOrder traversal.
-typedef enum ReachReason {
+enum ReachReason {
     // Reachable from the entry block via transfers of control, i.e. branches.
     ReachViaControlFlow = 0,
     // A continue target that is not reachable via control flow.
