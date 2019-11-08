@@ -1136,6 +1136,7 @@ struct DoPreprocessing {
                 outputBuffer += "#pragma ";
                 for(size_t i = 0; i < ops.size(); ++i) {
                     outputBuffer += ops[i].c_str();
+                    outputBuffer += ' ';
                 }
         });
 
