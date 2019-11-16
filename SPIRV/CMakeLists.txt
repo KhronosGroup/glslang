@@ -111,28 +111,22 @@ endif(WIN32)
 if(ENABLE_GLSLANG_INSTALL)
     if(BUILD_SHARED_LIBS)
         if (ENABLE_SPVREMAPPER)
-            install(TARGETS SPVRemapper EXPORT SPVRemapperTargets
+            install(TARGETS SPVRemapper EXPORT glslangConfig
                     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
                     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
         endif()
-        install(TARGETS SPIRV EXPORT SPIRVTargets
+        install(TARGETS SPIRV EXPORT glslangConfig
                 ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
                 LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
                 RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
     else()
         if (ENABLE_SPVREMAPPER)
-            install(TARGETS SPVRemapper EXPORT SPVRemapperTargets
+            install(TARGETS SPVRemapper EXPORT glslangConfig
                     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
         endif()
-        install(TARGETS SPIRV EXPORT SPIRVTargets
+        install(TARGETS SPIRV EXPORT glslangConfig
                 ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
     endif()
-
-    if (ENABLE_SPVREMAPPER)
-        install(EXPORT SPVRemapperTargets DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake)
-    endif()
-
-    install(EXPORT SPIRVTargets DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake)
 
     install(FILES ${HEADERS} ${SPVREMAP_HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/glslang/SPIRV/)
 endif(ENABLE_GLSLANG_INSTALL)

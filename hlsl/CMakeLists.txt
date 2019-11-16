@@ -47,13 +47,12 @@ endif()
 
 if(ENABLE_GLSLANG_INSTALL)
     if(BUILD_SHARED_LIBS)
-        install(TARGETS HLSL EXPORT HLSLTargets
+        install(TARGETS HLSL EXPORT glslangConfig
                 ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
                 LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
                 RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
     else()
-        install(TARGETS HLSL EXPORT HLSLTargets
+        install(TARGETS HLSL EXPORT glslangConfig
                 ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
     endif()
-	install(EXPORT HLSLTargets DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake)
 endif(ENABLE_GLSLANG_INSTALL)
