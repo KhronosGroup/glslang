@@ -341,6 +341,7 @@ public:
         return (existingMacroIt == macroDefs.end()) ? nullptr : &(existingMacroIt->second);
     }
     void addMacroDef(int atom, MacroSymbol& macroDef) { macroDefs[atom] = macroDef; }
+    bool nonMacroStarted;
 
 protected:
     TPpContext(TPpContext&);

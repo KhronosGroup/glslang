@@ -93,6 +93,7 @@ TPpContext::TPpContext(TParseContextBase& pc, const std::string& rootFileName, T
     for (elsetracker = 0; elsetracker < maxIfNesting; elsetracker++)
         elseSeen[elsetracker] = false;
     elsetracker = 0;
+    nonMacroStarted = false;
 
     strtodStream.imbue(std::locale::classic());
 }

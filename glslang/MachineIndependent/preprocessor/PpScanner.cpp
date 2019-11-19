@@ -1092,6 +1092,9 @@ int TPpContext::tokenize(TPpToken& ppToken)
         if (token == '\n')
             continue;
 
+        // the extension directives must occur before any non-preprocessor tokens.
+        parseContext.getPpContext()->nonMacroStarted = true;
+
         // expand macros
         if (token == PpAtomIdentifier) {
             switch (MacroExpand(&ppToken, false, true)) {
