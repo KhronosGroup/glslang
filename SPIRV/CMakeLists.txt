@@ -36,7 +36,7 @@ set(SPVREMAP_HEADERS
 add_library(SPIRV ${LIB_TYPE} ${SOURCES} ${HEADERS})
 set_property(TARGET SPIRV PROPERTY FOLDER glslang)
 set_property(TARGET SPIRV PROPERTY POSITION_INDEPENDENT_CODE ON)
-target_include_directories(SPIRV PUBLIC 
+target_include_directories(SPIRV PUBLIC
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>
 	$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
@@ -91,7 +91,10 @@ if(ENABLE_GLSLANG_INSTALL)
                 ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
     endif()
 
-    install(EXPORT SPVRemapperTargets DESTINATION lib/cmake)
+    if (ENABLE_SPVREMAPPER)
+        install(EXPORT SPVRemapperTargets DESTINATION lib/cmake)
+    endif()
+
     install(EXPORT SPIRVTargets DESTINATION lib/cmake)
 
     install(FILES ${HEADERS} ${SPVREMAP_HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/SPIRV/)
