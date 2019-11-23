@@ -2669,14 +2669,14 @@ void TParseContext::reservedErrorCheck(const TSourceLoc& loc, const TString& ide
         if (builtInName(identifier))
             error(loc, "identifiers starting with \"gl_\" are reserved", identifier.c_str(), "");
 
-        // "__" are not supposed to be an error.  ES 310 (and desktop) added the clarification:
+        // "__" are not supposed to be an error.  ES 300 (and desktop) added the clarification:
         // "In addition, all identifiers containing two consecutive underscores (__) are
         // reserved; using such a name does not itself result in an error, but may result
         // in undefined behavior."
         // however, before that, ES tests required an error.
         if (identifier.find("__") != TString::npos) {
-            if (isEsProfile() && version <= 300)
-                error(loc, "identifiers containing consecutive underscores (\"__\") are reserved, and an error if version <= 300", identifier.c_str(), "");
+            if (isEsProfile() && version < 300)
+                error(loc, "identifiers containing consecutive underscores (\"__\") are reserved, and an error if version < 300", identifier.c_str(), "");
             else
                 warn(loc, "identifiers containing consecutive underscores (\"__\") are reserved", identifier.c_str(), "");
         }
@@ -2688,7 +2688,7 @@ void TParseContext::reservedErrorCheck(const TSourceLoc& loc, const TString& ide
 //
 void TParseContext::reservedPpErrorCheck(const TSourceLoc& loc, const char* identifier, const char* op)
 {
-    // "__" are not supposed to be an error.  ES 310 (and desktop) added the clarification:
+    // "__" are not supposed to be an error.  ES 300 (and desktop) added the clarification:
     // "All macro names containing two consecutive underscores ( __ ) are reserved;
     // defining such a name does not itself result in an error, but may result in
     // undefined behavior.  All macro names prefixed with "GL_" ("GL" followed by a
@@ -2706,8 +2706,8 @@ void TParseContext::reservedPpErrorCheck(const TSourceLoc& loc, const char* iden
              strcmp(identifier, "__VERSION__") == 0))
             ppError(loc, "predefined names can't be (un)defined:", op,  identifier);
         else {
-            if (isEsProfile() && version <= 300)
-                ppError(loc, "names containing consecutive underscores are reserved, and an error if version <= 300:", op, identifier);
+            if (isEsProfile() && version < 300)
+                ppError(loc, "names containing consecutive underscores are reserved, and an error if version < 300:", op, identifier);
             else
                 ppWarn(loc, "names containing consecutive underscores are reserved:", op, identifier);
         }
@@ -6922,7 +6922,7 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
     // This avoids requesting a matrix of a new type that is going to be discarded anyway.
     // TODO: This could be generalized to more type combinations, but that would require
     // more extensive testing and full algorithm rework. For now, the need to do two changes makes
-    // the recursive call work, and avoids the most aggregious case of creating integer matrices.
+    // the recursive call work, and avoids the most egregious case of creating integer matrices.
     if (node->getType().isMatrix() && (type.isScalar() || type.isVector()) &&
             type.isFloatingDomain() != node->getType().isFloatingDomain()) {
         TType transitionType(node->getBasicType(), glslang::EvqTemporary, type.getVectorSize(), 0, 0, node->isVector());
