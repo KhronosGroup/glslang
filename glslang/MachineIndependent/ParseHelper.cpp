@@ -2,7 +2,7 @@
 // Copyright (C) 2002-2005  3Dlabs Inc. Ltd.
 // Copyright (C) 2012-2015 LunarG, Inc.
 // Copyright (C) 2015-2018 Google, Inc.
-// Copyright (C) 2017 ARM Limited.
+// Copyright (C) 2017, 2019 ARM Limited.
 //
 // All rights reserved.
 //
@@ -7017,8 +7017,14 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
         if (!intermediate.getArithemeticFloat16Enabled()) {
             TType tempType(EbtFloat, EvqTemporary, type.getVectorSize());
             newNode = node;
-            if (tempType != newNode->getType())
-                newNode = intermediate.setAggregateOperator(newNode, (TOperator)(EOpConstructVec2 + op - EOpConstructF16Vec2), tempType, node->getLoc());
+            if (tempType != newNode->getType()) {
+                TOperator aggregateOp;
+                if (op == EOpConstructFloat16)
+                    aggregateOp = EOpConstructFloat;
+                else
+                    aggregateOp = (TOperator)(EOpConstructVec2 + op - EOpConstructF16Vec2);
+                newNode = intermediate.setAggregateOperator(newNode, aggregateOp, tempType, node->getLoc());
+            }
             newNode = intermediate.addConversion(EbtFloat16, newNode);
             return newNode;
         }
@@ -7034,8 +7040,14 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
         if (!intermediate.getArithemeticInt8Enabled()) {
             TType tempType(EbtInt, EvqTemporary, type.getVectorSize());
             newNode = node;
-            if (tempType != newNode->getType())
-                newNode = intermediate.setAggregateOperator(newNode, (TOperator)(EOpConstructIVec2 + op - EOpConstructI8Vec2), tempType, node->getLoc());
+            if (tempType != newNode->getType()) {
+                TOperator aggregateOp;
+                if (op == EOpConstructInt8)
+                    aggregateOp = EOpConstructInt;
+                else
+                    aggregateOp = (TOperator)(EOpConstructIVec2 + op - EOpConstructI8Vec2);
+                newNode = intermediate.setAggregateOperator(newNode, aggregateOp, tempType, node->getLoc());
+            }
             newNode = intermediate.addConversion(EbtInt8, newNode);
             return newNode;
         }
@@ -7051,8 +7063,14 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
         if (!intermediate.getArithemeticInt8Enabled()) {
             TType tempType(EbtUint, EvqTemporary, type.getVectorSize());
             newNode = node;
-            if (tempType != newNode->getType())
-                newNode = intermediate.setAggregateOperator(newNode, (TOperator)(EOpConstructUVec2 + op - EOpConstructU8Vec2), tempType, node->getLoc());
+            if (tempType != newNode->getType()) {
+                TOperator aggregateOp;
+                if (op == EOpConstructUint8)
+                    aggregateOp = EOpConstructUint;
+                else
+                    aggregateOp = (TOperator)(EOpConstructUVec2 + op - EOpConstructU8Vec2);
+                newNode = intermediate.setAggregateOperator(newNode, aggregateOp, tempType, node->getLoc());
+            }
             newNode = intermediate.addConversion(EbtUint8, newNode);
             return newNode;
         }
@@ -7068,8 +7086,14 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
         if (!intermediate.getArithemeticInt16Enabled()) {
             TType tempType(EbtInt, EvqTemporary, type.getVectorSize());
             newNode = node;
-            if (tempType != newNode->getType())
-                newNode = intermediate.setAggregateOperator(newNode, (TOperator)(EOpConstructIVec2 + op - EOpConstructI16Vec2), tempType, node->getLoc());
+            if (tempType != newNode->getType()) {
+                TOperator aggregateOp;
+                if (op == EOpConstructInt16)
+                    aggregateOp = EOpConstructInt;
+                else
+                    aggregateOp = (TOperator)(EOpConstructIVec2 + op - EOpConstructI16Vec2);
+                newNode = intermediate.setAggregateOperator(newNode, aggregateOp, tempType, node->getLoc());
+            }
             newNode = intermediate.addConversion(EbtInt16, newNode);
             return newNode;
         }
@@ -7085,8 +7109,14 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
         if (!intermediate.getArithemeticInt16Enabled()) {
             TType tempType(EbtUint, EvqTemporary, type.getVectorSize());
             newNode = node;
-            if (tempType != newNode->getType())
-                newNode = intermediate.setAggregateOperator(newNode, (TOperator)(EOpConstructUVec2 + op - EOpConstructU16Vec2), tempType, node->getLoc());
+            if (tempType != newNode->getType()) {
+                TOperator aggregateOp;
+                if (op == EOpConstructUint16)
+                    aggregateOp = EOpConstructUint;
+                else
+                    aggregateOp = (TOperator)(EOpConstructUVec2 + op - EOpConstructU16Vec2);
+                newNode = intermediate.setAggregateOperator(newNode, aggregateOp, tempType, node->getLoc());
+            }
             newNode = intermediate.addConversion(EbtUint16, newNode);
             return newNode;
         }
