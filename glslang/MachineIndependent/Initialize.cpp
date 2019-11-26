@@ -5861,18 +5861,18 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "flat in int gl_PrimitiveID;"
                 );
 
-        if (version >= 400) {
+        if (version >= 130) // ARB_sample_shading
             stageBuiltins[EShLangFragment].append(
                 "flat in  int  gl_SampleID;"
                 "     in  vec2 gl_SamplePosition;"
-                "flat in  int  gl_SampleMaskIn[];"
+                "uniform  int  gl_NumSamples;"
                 "     out int  gl_SampleMask[];"
-                );
-            if (spvVersion.spv == 0)
-                stageBuiltins[EShLangFragment].append(
-                    "uniform int gl_NumSamples;"
-                    );
-        }
+            );
+
+        if (version >= 400 && spvVersion.spv == 0)
+            stageBuiltins[EShLangFragment].append(
+                "flat in  int  gl_SampleMaskIn[];"
+            );
 
         if (version >= 430)
             stageBuiltins[EShLangFragment].append(
@@ -8074,18 +8074,27 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             BuiltInVariable("gl_FragStencilRefARB", EbvFragStencilRef, symbolTable);
         }
 
-        if ((profile != EEsProfile && version >= 400) ||
+        if ((profile != EEsProfile && version >= 130) ||
             (profile == EEsProfile && version >= 310)) {
-            BuiltInVariable("gl_SampleID",        EbvSampleId,       symbolTable);
-            BuiltInVariable("gl_SamplePosition",  EbvSamplePosition, symbolTable);
-            BuiltInVariable("gl_SampleMaskIn",    EbvSampleMask,     symbolTable);
-            BuiltInVariable("gl_SampleMask",      EbvSampleMask,     symbolTable);
-            if (profile == EEsProfile && version < 320) {
-                symbolTable.setVariableExtensions("gl_SampleID",       1, &E_GL_OES_sample_variables);
-                symbolTable.setVariableExtensions("gl_SamplePosition", 1, &E_GL_OES_sample_variables);
-                symbolTable.setVariableExtensions("gl_SampleMaskIn",   1, &E_GL_OES_sample_variables);
-                symbolTable.setVariableExtensions("gl_SampleMask",     1, &E_GL_OES_sample_variables);
-                symbolTable.setVariableExtensions("gl_NumSamples",     1, &E_GL_OES_sample_variables);
+            BuiltInVariable("gl_SampleID",           EbvSampleId,       symbolTable);
+            BuiltInVariable("gl_SamplePosition",     EbvSamplePosition, symbolTable);
+            BuiltInVariable("gl_SampleMask",         EbvSampleMask,     symbolTable);
+            if (profile != EEsProfile && version < 400) {
+                BuiltInVariable("gl_NumSamples",     EbvSampleMask,     symbolTable);
+                symbolTable.setVariableExtensions("gl_SampleMask",     1, &E_GL_ARB_sample_shading);
+                symbolTable.setVariableExtensions("gl_SampleID",       1, &E_GL_ARB_sample_shading);
+                symbolTable.setVariableExtensions("gl_SamplePosition", 1, &E_GL_ARB_sample_shading);
+                symbolTable.setVariableExtensions("gl_NumSamples",     1, &E_GL_ARB_sample_shading);
+            }
+            else {
+                BuiltInVariable("gl_SampleMaskIn",    EbvSampleMask,     symbolTable);
+                if (profile == EEsProfile && version < 320) {
+                    symbolTable.setVariableExtensions("gl_SampleID", 1, &E_GL_OES_sample_variables);
+                    symbolTable.setVariableExtensions("gl_SamplePosition", 1, &E_GL_OES_sample_variables);
+                    symbolTable.setVariableExtensions("gl_SampleMaskIn", 1, &E_GL_OES_sample_variables);
+                    symbolTable.setVariableExtensions("gl_SampleMask", 1, &E_GL_OES_sample_variables);
+                    symbolTable.setVariableExtensions("gl_NumSamples", 1, &E_GL_OES_sample_variables);
+                }
             }
         }
 
