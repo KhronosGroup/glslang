@@ -1166,7 +1166,10 @@ int TScanContext::tokenizeIdentifier()
     case DVEC3:
     case DVEC4:
         afterType = true;
-        if (parseContext.isEsProfile() || parseContext.version < 400)
+        if (parseContext.isEsProfile() || parseContext.version < 150 ||
+            (!parseContext.symbolTable.atBuiltInLevel() &&
+              parseContext.version < 400 &&
+             !parseContext.extensionTurnedOn(E_GL_ARB_gpu_shader_fp64)))
             reservedWord();
         return keyword;
 
@@ -1741,7 +1744,9 @@ int TScanContext::dMat()
         return keyword;
     }
 
-    if (!parseContext.isEsProfile() && parseContext.version >= 400)
+    if (!parseContext.isEsProfile() && (parseContext.version >= 400 ||
+        parseContext.symbolTable.atBuiltInLevel() ||
+        (parseContext.version >= 150 && parseContext.extensionTurnedOn(E_GL_ARB_gpu_shader_fp64))))
         return keyword;
 
     if (parseContext.isForwardCompatible())

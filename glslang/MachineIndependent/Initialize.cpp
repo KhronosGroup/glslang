@@ -690,7 +690,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
     //
     // double functions added to desktop 4.00, but not fma, frexp, ldexp, or pack/unpack
     //
-    if (profile != EEsProfile && version >= 400) {
+    if (profile != EEsProfile && version >= 150) {  // ARB_gpu_shader_fp64
         commonBuiltins.append(
 
             "double sqrt(double);"
@@ -1298,15 +1298,15 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "vec3   fma(vec3,   vec3,   vec3  );"
             "vec4   fma(vec4,   vec4,   vec4  );"
             "\n");
+    }
 
-        if (profile != EEsProfile) {
+    if (profile != EEsProfile && version >= 150) {  // ARB_gpu_shader_fp64
             commonBuiltins.append(
                 "double fma(double, double, double);"
                 "dvec2  fma(dvec2,  dvec2,  dvec2 );"
                 "dvec3  fma(dvec3,  dvec3,  dvec3 );"
                 "dvec4  fma(dvec4,  dvec4,  dvec4 );"
                 "\n");
-        }
     }
 
     if ((profile == EEsProfile && version >= 310) ||
@@ -1325,7 +1325,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "\n");
     }
 
-    if (profile != EEsProfile && version >= 400) {
+    if (profile != EEsProfile && version >= 150) { // ARB_gpu_shader_fp64
         commonBuiltins.append(
             "double frexp(double, out int);"
             "dvec2  frexp( dvec2, out ivec2);"

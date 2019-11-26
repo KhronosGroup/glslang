@@ -184,6 +184,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_ARB_shader_texture_image_samples] = EBhDisable;
     extensionBehavior[E_GL_ARB_viewport_array]               = EBhDisable;
     extensionBehavior[E_GL_ARB_gpu_shader_int64]             = EBhDisable;
+    extensionBehavior[E_GL_ARB_gpu_shader_fp64]              = EBhDisable;
     extensionBehavior[E_GL_ARB_shader_ballot]                = EBhDisable;
     extensionBehavior[E_GL_ARB_sparse_texture2]              = EBhDisable;
     extensionBehavior[E_GL_ARB_sparse_texture_clamp]         = EBhDisable;
@@ -394,6 +395,7 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_ARB_shader_texture_image_samples 1\n"
             "#define GL_ARB_viewport_array 1\n"
             "#define GL_ARB_gpu_shader_int64 1\n"
+            "#define GL_ARB_gpu_shader_fp64 1\n"
             "#define GL_ARB_shader_ballot 1\n"
             "#define GL_ARB_sparse_texture2 1\n"
             "#define GL_ARB_sparse_texture_clamp 1\n"
@@ -923,10 +925,11 @@ void TParseVersions::fullIntegerCheck(const TSourceLoc& loc, const char* op)
 }
 
 // Call for any operation needing GLSL double data-type support.
-void TParseVersions::doubleCheck(const TSourceLoc& loc, const char* op)
+void TParseVersions::doubleCheck(const TSourceLoc& loc, const char* op, bool builtIn)
 {
     requireProfile(loc, ECoreProfile | ECompatibilityProfile, op);
-    profileRequires(loc, ECoreProfile | ECompatibilityProfile, 400, nullptr, op);
+    if (!builtIn)
+        profileRequires(loc, ECoreProfile | ECompatibilityProfile, 400, E_GL_ARB_gpu_shader_fp64, op);
 }
 
 // Call for any operation needing GLSL float16 data-type support.

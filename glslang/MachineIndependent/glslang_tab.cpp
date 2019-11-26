@@ -6498,7 +6498,7 @@ yyreduce:
   case 228:
 #line 1753 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
-        parseContext.doubleCheck((yyvsp[0].lex).loc, "double");
+        parseContext.doubleCheck((yyvsp[0].lex).loc, "double", parseContext.symbolTable.atBuiltInLevel());
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtDouble;
     }
@@ -6618,7 +6618,7 @@ yyreduce:
   case 240:
 #line 1813 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
-        parseContext.doubleCheck((yyvsp[0].lex).loc, "double vector");
+        parseContext.doubleCheck((yyvsp[0].lex).loc, "double vector", parseContext.symbolTable.atBuiltInLevel());
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtDouble;
         (yyval.interm.type).setVector(2);
@@ -6629,7 +6629,7 @@ yyreduce:
   case 241:
 #line 1819 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
-        parseContext.doubleCheck((yyvsp[0].lex).loc, "double vector");
+        parseContext.doubleCheck((yyvsp[0].lex).loc, "double vector", parseContext.symbolTable.atBuiltInLevel());
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtDouble;
         (yyval.interm.type).setVector(3);
@@ -6640,7 +6640,7 @@ yyreduce:
   case 242:
 #line 1825 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
-        parseContext.doubleCheck((yyvsp[0].lex).loc, "double vector");
+        parseContext.doubleCheck((yyvsp[0].lex).loc, "double vector", parseContext.symbolTable.atBuiltInLevel());
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtDouble;
         (yyval.interm.type).setVector(4);
@@ -7014,7 +7014,7 @@ yyreduce:
   case 276:
 #line 2029 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
-        parseContext.doubleCheck((yyvsp[0].lex).loc, "double matrix");
+        parseContext.doubleCheck((yyvsp[0].lex).loc, "double matrix", parseContext.symbolTable.atBuiltInLevel());
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtDouble;
         (yyval.interm.type).setMatrix(2, 2);
@@ -7025,7 +7025,7 @@ yyreduce:
   case 277:
 #line 2035 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
-        parseContext.doubleCheck((yyvsp[0].lex).loc, "double matrix");
+        parseContext.doubleCheck((yyvsp[0].lex).loc, "double matrix", parseContext.symbolTable.atBuiltInLevel());
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtDouble;
         (yyval.interm.type).setMatrix(3, 3);
@@ -7036,7 +7036,7 @@ yyreduce:
   case 278:
 #line 2041 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
-        parseContext.doubleCheck((yyvsp[0].lex).loc, "double matrix");
+        parseContext.doubleCheck((yyvsp[0].lex).loc, "double matrix", parseContext.symbolTable.atBuiltInLevel());
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtDouble;
         (yyval.interm.type).setMatrix(4, 4);
@@ -7047,7 +7047,7 @@ yyreduce:
   case 279:
 #line 2047 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
-        parseContext.doubleCheck((yyvsp[0].lex).loc, "double matrix");
+        parseContext.doubleCheck((yyvsp[0].lex).loc, "double matrix", parseContext.symbolTable.atBuiltInLevel());
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtDouble;
         (yyval.interm.type).setMatrix(2, 2);
@@ -7058,7 +7058,7 @@ yyreduce:
   case 280:
 #line 2053 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
-        parseContext.doubleCheck((yyvsp[0].lex).loc, "double matrix");
+        parseContext.doubleCheck((yyvsp[0].lex).loc, "double matrix", parseContext.symbolTable.atBuiltInLevel());
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtDouble;
         (yyval.interm.type).setMatrix(2, 3);
@@ -7069,7 +7069,7 @@ yyreduce:
   case 281:
 #line 2059 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
-        parseContext.doubleCheck((yyvsp[0].lex).loc, "double matrix");
+        parseContext.doubleCheck((yyvsp[0].lex).loc, "double matrix", parseContext.symbolTable.atBuiltInLevel());
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtDouble;
         (yyval.interm.type).setMatrix(2, 4);
@@ -7080,7 +7080,7 @@ yyreduce:
   case 282:
 #line 2065 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
-        parseContext.doubleCheck((yyvsp[0].lex).loc, "double matrix");
+        parseContext.doubleCheck((yyvsp[0].lex).loc, "double matrix", parseContext.symbolTable.atBuiltInLevel());
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtDouble;
         (yyval.interm.type).setMatrix(3, 2);
@@ -7091,7 +7091,7 @@ yyreduce:
   case 283:
 #line 2071 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
-        parseContext.doubleCheck((yyvsp[0].lex).loc, "double matrix");
+        parseContext.doubleCheck((yyvsp[0].lex).loc, "double matrix", parseContext.symbolTable.atBuiltInLevel());
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtDouble;
         (yyval.interm.type).setMatrix(3, 3);
@@ -7102,7 +7102,7 @@ yyreduce:
   case 284:
 #line 2077 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
-        parseContext.doubleCheck((yyvsp[0].lex).loc, "double matrix");
+        parseContext.doubleCheck((yyvsp[0].lex).loc, "double matrix", parseContext.symbolTable.atBuiltInLevel());
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtDouble;
         (yyval.interm.type).setMatrix(3, 4);
@@ -7113,7 +7113,7 @@ yyreduce:
   case 285:
 #line 2083 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
-        parseContext.doubleCheck((yyvsp[0].lex).loc, "double matrix");
+        parseContext.doubleCheck((yyvsp[0].lex).loc, "double matrix", parseContext.symbolTable.atBuiltInLevel());
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtDouble;
         (yyval.interm.type).setMatrix(4, 2);
@@ -7124,7 +7124,7 @@ yyreduce:
   case 286:
 #line 2089 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
-        parseContext.doubleCheck((yyvsp[0].lex).loc, "double matrix");
+        parseContext.doubleCheck((yyvsp[0].lex).loc, "double matrix", parseContext.symbolTable.atBuiltInLevel());
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtDouble;
         (yyval.interm.type).setMatrix(4, 3);
@@ -7135,7 +7135,7 @@ yyreduce:
   case 287:
 #line 2095 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
-        parseContext.doubleCheck((yyvsp[0].lex).loc, "double matrix");
+        parseContext.doubleCheck((yyvsp[0].lex).loc, "double matrix", parseContext.symbolTable.atBuiltInLevel());
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
         (yyval.interm.type).basicType = EbtDouble;
         (yyval.interm.type).setMatrix(4, 4);

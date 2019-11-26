@@ -1751,7 +1751,7 @@ type_specifier_nonarray
     }
 
     | DOUBLE {
-        parseContext.doubleCheck($1.loc, "double");
+        parseContext.doubleCheck($1.loc, "double", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtDouble;
     }
@@ -1811,19 +1811,19 @@ type_specifier_nonarray
         $$.basicType = EbtUint64;
     }
     | DVEC2 {
-        parseContext.doubleCheck($1.loc, "double vector");
+        parseContext.doubleCheck($1.loc, "double vector", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtDouble;
         $$.setVector(2);
     }
     | DVEC3 {
-        parseContext.doubleCheck($1.loc, "double vector");
+        parseContext.doubleCheck($1.loc, "double vector", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtDouble;
         $$.setVector(3);
     }
     | DVEC4 {
-        parseContext.doubleCheck($1.loc, "double vector");
+        parseContext.doubleCheck($1.loc, "double vector", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtDouble;
         $$.setVector(4);
@@ -2027,73 +2027,73 @@ type_specifier_nonarray
         $$.setVector(4);
     }
     | DMAT2 {
-        parseContext.doubleCheck($1.loc, "double matrix");
+        parseContext.doubleCheck($1.loc, "double matrix", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtDouble;
         $$.setMatrix(2, 2);
     }
     | DMAT3 {
-        parseContext.doubleCheck($1.loc, "double matrix");
+        parseContext.doubleCheck($1.loc, "double matrix", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtDouble;
         $$.setMatrix(3, 3);
     }
     | DMAT4 {
-        parseContext.doubleCheck($1.loc, "double matrix");
+        parseContext.doubleCheck($1.loc, "double matrix", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtDouble;
         $$.setMatrix(4, 4);
     }
     | DMAT2X2 {
-        parseContext.doubleCheck($1.loc, "double matrix");
+        parseContext.doubleCheck($1.loc, "double matrix", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtDouble;
         $$.setMatrix(2, 2);
     }
     | DMAT2X3 {
-        parseContext.doubleCheck($1.loc, "double matrix");
+        parseContext.doubleCheck($1.loc, "double matrix", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtDouble;
         $$.setMatrix(2, 3);
     }
     | DMAT2X4 {
-        parseContext.doubleCheck($1.loc, "double matrix");
+        parseContext.doubleCheck($1.loc, "double matrix", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtDouble;
         $$.setMatrix(2, 4);
     }
     | DMAT3X2 {
-        parseContext.doubleCheck($1.loc, "double matrix");
+        parseContext.doubleCheck($1.loc, "double matrix", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtDouble;
         $$.setMatrix(3, 2);
     }
     | DMAT3X3 {
-        parseContext.doubleCheck($1.loc, "double matrix");
+        parseContext.doubleCheck($1.loc, "double matrix", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtDouble;
         $$.setMatrix(3, 3);
     }
     | DMAT3X4 {
-        parseContext.doubleCheck($1.loc, "double matrix");
+        parseContext.doubleCheck($1.loc, "double matrix", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtDouble;
         $$.setMatrix(3, 4);
     }
     | DMAT4X2 {
-        parseContext.doubleCheck($1.loc, "double matrix");
+        parseContext.doubleCheck($1.loc, "double matrix", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtDouble;
         $$.setMatrix(4, 2);
     }
     | DMAT4X3 {
-        parseContext.doubleCheck($1.loc, "double matrix");
+        parseContext.doubleCheck($1.loc, "double matrix", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtDouble;
         $$.setMatrix(4, 3);
     }
     | DMAT4X4 {
-        parseContext.doubleCheck($1.loc, "double matrix");
+        parseContext.doubleCheck($1.loc, "double matrix", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtDouble;
         $$.setMatrix(4, 4);
