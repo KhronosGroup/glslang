@@ -140,6 +140,8 @@ void TIntermediate::mergeModes(TInfoSink& infoSink, TIntermediate& unit)
     numErrors += unit.getNumErrors();
     // Only one push_constant is allowed, mergeLinkerObjects() will ensure the push_constant
     // is the same for all units.
+    if (numPushConstants > 1 || unit.numPushConstants > 1)
+        error(infoSink, "Only one push_constant block is allowed per stage");
     numPushConstants = std::min(numPushConstants + unit.numPushConstants, 1);
 
     if (unit.invocations != TQualifier::layoutNotSet) {
@@ -626,6 +628,9 @@ void TIntermediate::finalCheck(TInfoSink& infoSink, bool keepUncalled)
     inOutLocationCheck(infoSink);
 
 #ifndef GLSLANG_WEB
+    if (getNumPushConstants() > 1)
+        error(infoSink, "Only one push_constant block is allowed per stage");
+
     // invocations
     if (invocations == TQualifier::layoutNotSet)
         invocations = 1;
