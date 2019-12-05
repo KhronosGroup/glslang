@@ -347,6 +347,7 @@ public:
     }
 
     Module& getParent() const { return parent; }
+    bool hasBlocks() const { return blocks.size() > 0; }
     Block* getEntryBlock() const { return blocks.front(); }
     Block* getLastBlock() const { return blocks.back(); }
     const std::vector<Block*>& getBlocks() const { return blocks; }
@@ -366,7 +367,9 @@ public:
             parameterInstructions[p]->dump(out);
 
         // Blocks
-        inReadableOrder(blocks[0], [&out](const Block* b, ReachReason, Block*) { b->dump(out); });
+        if (hasBlocks())
+            inReadableOrder(blocks[0], [&out](const Block* b, ReachReason, Block*) { b->dump(out); });
+
         Instruction end(0, 0, OpFunctionEnd);
         end.dump(out);
     }

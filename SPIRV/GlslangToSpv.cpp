@@ -183,6 +183,7 @@ protected:
     bool isShaderEntryPoint(const glslang::TIntermAggregate* node);
     bool writableParam(glslang::TStorageQualifier) const;
     bool originalParam(glslang::TStorageQualifier, const glslang::TType&, bool implicitThisParam);
+    spv::Function* makeFunction(const glslang::TIntermAggregate&, bool createBlock);
     void makeFunctions(const glslang::TIntermSequence&);
     void makeGlobalInitializers(const glslang::TIntermSequence&);
     void visitFunctions(const glslang::TIntermSequence&);
@@ -1412,8 +1413,10 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion, const gl
         builder.addCapability(spv::CapabilityVariablePointers);
     }
 
-    shaderEntry = builder.makeEntryPoint(glslangIntermediate->getEntryPointName().c_str());
-    entryPoint = builder.addEntryPoint(executionModel, shaderEntry, glslangIntermediate->getEntryPointName().c_str());
+    if (glslangIntermediate->getNumEntryPoints() > 0) {
+        shaderEntry = builder.makeEntryPoint(glslangIntermediate->getEntryPointName().c_str());
+        entryPoint = builder.addEntryPoint(executionModel, shaderEntry, glslangIntermediate->getEntryPointName().c_str());
+    }
 
     // Add the source extensions
     const auto& sourceExtensions = glslangIntermediate->getRequestedExtensions();
@@ -1621,7 +1624,7 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion, const gl
 void TGlslangToSpvTraverser::finishSpv()
 {
     // Finish the entry point function
-    if (! entryPointTerminated) {
+    if (shaderEntry && ! entryPointTerminated) {
         builder.setBuildPoint(shaderEntry->getLastBlock());
         builder.leaveFunction();
     }
@@ -2329,6 +2332,10 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         else
             linkageOnly = false;
 
+        return true;
+    }
+    case glslang::EOpLinkerFunction:
+    {
         return true;
     }
     case glslang::EOpComma:
@@ -4171,8 +4178,8 @@ bool TGlslangToSpvTraverser::originalParam(glslang::TStorageQualifier qualifier,
            (paramType.getBasicType() == glslang::EbtBlock && qualifier == glslang::EvqBuffer); // SSBO
 }
 
-// Make all the functions, skeletally, without actually visiting their bodies.
-void TGlslangToSpvTraverser::makeFunctions(const glslang::TIntermSequence& glslFunctions)
+// Make function, skeletally, without actually visiting their bodies.
+spv::Function* TGlslangToSpvTraverser::makeFunction(const glslang::TIntermAggregate& glslFunction, bool createBlock)
 {
     const auto getParamDecorations = [&](std::vector<spv::Decoration>& decorations, const glslang::TType& type, bool useVulkanMemoryModel) {
         spv::Decoration paramPrecision = TranslatePrecisionDecoration(type);
@@ -4194,74 +4201,132 @@ void TGlslangToSpvTraverser::makeFunctions(const glslang::TIntermSequence& glslF
         }
     };
 
-    for (int f = 0; f < (int)glslFunctions.size(); ++f) {
-        glslang::TIntermAggregate* glslFunction = glslFunctions[f]->getAsAggregate();
-        if (! glslFunction || glslFunction->getOp() != glslang::EOpFunction || isShaderEntryPoint(glslFunction))
-            continue;
+    // We're on a user function.  Set up the basic interface for the function now,
+    // so that it's available to call.  Translating the body will happen later.
+    //
+    // Typically (except for a "const in" parameter), an address will be passed to the
+    // function.  What it is an address of varies:
+    //
+    // - "in" parameters not marked as "const" can be written to without modifying the calling
+    //   argument so that write needs to be to a copy, hence the address of a copy works.
+    //
+    // - "const in" parameters can just be the r-value, as no writes need occur.
+    //
+    // - "out" and "inout" arguments can't be done as pointers to the calling argument, because
+    //   GLSL has copy-in/copy-out semantics.  They can be handled though with a pointer to a copy.
 
-        // We're on a user function.  Set up the basic interface for the function now,
-        // so that it's available to call.  Translating the body will happen later.
-        //
-        // Typically (except for a "const in" parameter), an address will be passed to the
-        // function.  What it is an address of varies:
-        //
-        // - "in" parameters not marked as "const" can be written to without modifying the calling
-        //   argument so that write needs to be to a copy, hence the address of a copy works.
-        //
-        // - "const in" parameters can just be the r-value, as no writes need occur.
-        //
-        // - "out" and "inout" arguments can't be done as pointers to the calling argument, because
-        //   GLSL has copy-in/copy-out semantics.  They can be handled though with a pointer to a copy.
-
-        std::vector<spv::Id> paramTypes;
-        std::vector<std::vector<spv::Decoration>> paramDecorations; // list of decorations per parameter
-        glslang::TIntermSequence& parameters = glslFunction->getSequence()[0]->getAsAggregate()->getSequence();
+    std::vector<spv::Id> paramTypes;
+    std::vector<std::vector<spv::Decoration>> paramDecorations; // list of decorations per parameter
+    glslang::TIntermSequence& parameters = glslFunction.getSequence()[0]->getAsAggregate()->getSequence();
 
 #ifdef ENABLE_HLSL
-        bool implicitThis = (int)parameters.size() > 0 && parameters[0]->getAsSymbolNode()->getName() ==
-                                                          glslangIntermediate->implicitThisName;
+    bool implicitThis = (int)parameters.size() > 0 && parameters[0]->getAsSymbolNode()->getName() ==
+                                                        glslangIntermediate->implicitThisName;
 #else
-        bool implicitThis = false;
+    bool implicitThis = false;
 #endif
 
-        paramDecorations.resize(parameters.size());
-        for (int p = 0; p < (int)parameters.size(); ++p) {
-            const glslang::TType& paramType = parameters[p]->getAsTyped()->getType();
-            spv::Id typeId = convertGlslangToSpvType(paramType);
-            if (originalParam(paramType.getQualifier().storage, paramType, implicitThis && p == 0))
-                typeId = builder.makePointer(TranslateStorageClass(paramType), typeId);
-            else if (writableParam(paramType.getQualifier().storage))
-                typeId = builder.makePointer(spv::StorageClassFunction, typeId);
-            else
-                rValueParameters.insert(parameters[p]->getAsSymbolNode()->getId());
-            getParamDecorations(paramDecorations[p], paramType, glslangIntermediate->usingVulkanMemoryModel());
-            paramTypes.push_back(typeId);
-        }
+    paramDecorations.resize(parameters.size());
+    for (int p = 0; p < (int)parameters.size(); ++p) {
+        const glslang::TType& paramType = parameters[p]->getAsTyped()->getType();
+        spv::Id typeId = convertGlslangToSpvType(paramType);
+        if (originalParam(paramType.getQualifier().storage, paramType, implicitThis && p == 0))
+            typeId = builder.makePointer(TranslateStorageClass(paramType), typeId);
+        else if (writableParam(paramType.getQualifier().storage))
+            typeId = builder.makePointer(spv::StorageClassFunction, typeId);
+        else
+            rValueParameters.insert(parameters[p]->getAsSymbolNode()->getId());
+        getParamDecorations(paramDecorations[p], paramType, glslangIntermediate->usingVulkanMemoryModel());
+        paramTypes.push_back(typeId);
+    }
 
-        spv::Block* functionBlock;
-        spv::Function *function = builder.makeFunctionEntry(TranslatePrecisionDecoration(glslFunction->getType()),
-                                                            convertGlslangToSpvType(glslFunction->getType()),
-                                                            glslFunction->getName().c_str(), paramTypes,
-                                                            paramDecorations, &functionBlock);
-        if (implicitThis)
-            function->setImplicitThis();
+    spv::Block* functionBlock;
+    spv::Function *function = builder.makeFunctionEntry(TranslatePrecisionDecoration(glslFunction.getType()),
+                                                        convertGlslangToSpvType(glslFunction.getType()),
+                                                        glslFunction.getName().c_str(), paramTypes,
+                                                        paramDecorations, createBlock ? &functionBlock : nullptr);
+    if (implicitThis)
+        function->setImplicitThis();
 
-        // Track function to emit/call later
-        functionMap[glslFunction->getName().c_str()] = function;
+    // Set the parameter id's
+    for (int p = 0; p < (int)parameters.size(); ++p) {
+        symbolValues[parameters[p]->getAsSymbolNode()->getId()] = function->getParamId(p);
 
-        // Set the parameter id's
-        for (int p = 0; p < (int)parameters.size(); ++p) {
-            symbolValues[parameters[p]->getAsSymbolNode()->getId()] = function->getParamId(p);
-            // give a name too
+        // Add name if available
+        const glslang::TString name = parameters[p]->getAsSymbolNode()->getName();
+        if (name.size() > 0)
             builder.addName(function->getParamId(p), parameters[p]->getAsSymbolNode()->getName().c_str());
 
-            const glslang::TType& paramType = parameters[p]->getAsTyped()->getType();
-            if (paramType.contains8BitInt())
-                builder.addCapability(spv::CapabilityInt8);
-            if (paramType.contains16BitInt())
-                builder.addCapability(spv::CapabilityInt16);
-            if (paramType.contains16BitFloat())
-                builder.addCapability(spv::CapabilityFloat16);
+        const glslang::TType& paramType = parameters[p]->getAsTyped()->getType();
+        if (paramType.contains8BitInt())
+            builder.addCapability(spv::CapabilityInt8);
+        if (paramType.contains16BitInt())
+            builder.addCapability(spv::CapabilityInt16);
+        if (paramType.contains16BitFloat())
+            builder.addCapability(spv::CapabilityFloat16);
+    }
+
+    return function;
+}
+
+// Make all the functions, skeletally, without actually visiting their bodies.
+// Additionally, add linkage information if applicable.
+void TGlslangToSpvTraverser::makeFunctions(const glslang::TIntermSequence& glslFunctions)
+{
+    glslang::TIntermAggregate* linkerObjects = nullptr;
+
+    // Add functions that have a definition.
+    for (int f = 0; f < (int)glslFunctions.size(); ++f) {
+        glslang::TIntermAggregate* glslFunction = glslFunctions[f]->getAsAggregate();
+        if (glslFunction) {
+            if (glslFunction->getOp() == glslang::EOpLinkerObjects) {
+                // We need to store the linker objects, if found, for later processing below
+                linkerObjects = glslFunction;
+            } else
+            if (glslFunction->getOp() == glslang::EOpFunction && ! isShaderEntryPoint(glslFunction)) {
+                // Make function and track it to handle emit/call later
+                spv::Function* function = makeFunction(*glslFunction, true);
+                functionMap[glslFunction->getName().c_str()] = function;
+            }
+        }
+    }
+
+    // Go through the linker objects and for any function with linkage information either:
+    // * add functions which don't have a definition as imported
+    // * mark all functions which do have a definition as exported
+    // If there are any functions with linkage information then we have to enable the Linkage
+    // capability.
+    if (linkerObjects) {
+        bool needsLinkageCapability = false;
+
+        glslang::TIntermSequence& linkerFunctions = linkerObjects->getSequence();
+        for (int f = 0; f < (int)linkerFunctions.size(); ++f) {
+            glslang::TIntermAggregate* linkerFunction = linkerFunctions[f]->getAsAggregate();
+            if (linkerFunction && linkerFunction->getOp() == glslang::EOpLinkerFunction) {
+                needsLinkageCapability = true;
+
+                const char *name = linkerFunction->getName().c_str();
+                const auto exportedFunction = functionMap.find(name);
+                spv::Function* function;
+                spv::LinkageType linkageType;
+
+                if (exportedFunction == functionMap.end()) {
+                    // Make function and mark it as imported
+                    function = makeFunction(*linkerFunction, false);
+                    functionMap[name] = function;
+                    linkageType = spv::LinkageTypeImport;
+                } else {
+                    // Mark existing function as exported
+                    function = exportedFunction->second;
+                    linkageType = spv::LinkageTypeExport;
+                }
+
+                builder.addDecoration(function->getId(), spv::DecorationLinkageAttributes, name, linkageType);
+            }
+        }
+
+        if (needsLinkageCapability) {
+            builder.addCapability(spv::CapabilityLinkage);
         }
     }
 }
@@ -4269,10 +4334,14 @@ void TGlslangToSpvTraverser::makeFunctions(const glslang::TIntermSequence& glslF
 // Process all the initializers, while skipping the functions and link objects
 void TGlslangToSpvTraverser::makeGlobalInitializers(const glslang::TIntermSequence& initializers)
 {
-    builder.setBuildPoint(shaderEntry->getLastBlock());
+    if (shaderEntry) {
+        builder.setBuildPoint(shaderEntry->getLastBlock());
+    }
+
     for (int i = 0; i < (int)initializers.size(); ++i) {
         glslang::TIntermAggregate* initializer = initializers[i]->getAsAggregate();
-        if (initializer && initializer->getOp() != glslang::EOpFunction && initializer->getOp() != glslang::EOpLinkerObjects) {
+        if (initializer && initializer->getOp() != glslang::EOpFunction &&
+            initializer->getOp() != glslang::EOpLinkerObjects) {
 
             // We're on a top-level node that's not a function.  Treat as an initializer, whose
             // code goes into the beginning of the entry point.
@@ -7822,8 +7891,8 @@ spv::Id TGlslangToSpvTraverser::getSymbolId(const glslang::TIntermSymbol* symbol
 
     if (glslangIntermediate->getHlslFunctionality1() && symbol->getType().getQualifier().semanticName != nullptr) {
         builder.addExtension("SPV_GOOGLE_hlsl_functionality1");
-        builder.addDecoration(id, (spv::Decoration)spv::DecorationHlslSemanticGOOGLE,
-                              symbol->getType().getQualifier().semanticName);
+        builder.addDecorationString(id, (spv::Decoration)spv::DecorationHlslSemanticGOOGLE,
+                                    symbol->getType().getQualifier().semanticName);
     }
 
     if (symbol->isReference()) {

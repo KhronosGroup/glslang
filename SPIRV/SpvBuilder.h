@@ -297,7 +297,8 @@ public:
     void addName(Id, const char* name);
     void addMemberName(Id, int member, const char* name);
     void addDecoration(Id, Decoration, int num = -1);
-    void addDecoration(Id, Decoration, const char*);
+    void addDecoration(Id, Decoration, const char*, int);
+    void addDecorationString(Id, Decoration, const char*);
     void addDecorationId(Id id, Decoration, Id idDecoration);
     void addMemberDecoration(Id, unsigned int member, Decoration, int num = -1);
     void addMemberDecoration(Id, unsigned int member, Decoration, const char*);

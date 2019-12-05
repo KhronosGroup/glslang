@@ -991,6 +991,11 @@ TFunction* TParseContext::handleFunctionDeclarator(const TSourceLoc& loc, TFunct
     if (! symbolTable.insert(function))
         error(loc, "function name is redeclaration of existing name", function.getName().c_str(), "");
 
+    // If this is the first declaration of a non-entry point global user function then we should add this function
+    // to the tracked linkage symbols.
+    if (! prevDec && function.getName().compare(intermediate.getEntryPointName().c_str()) != 0 && symbolTable.atGlobalLevel())
+        trackLinkage(function);
+
     //
     // If this is a redeclaration, it could also be a definition,
     // in which case, we need to use the parameter names from this one, and not the one that's

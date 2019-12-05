@@ -440,27 +440,43 @@ void TIntermediate::mergeLinkerObjects(TInfoSink& infoSink, TIntermSequence& lin
     for (unsigned int unitLinkObj = 0; unitLinkObj < unitLinkerObjects.size(); ++unitLinkObj) {
         bool merge = true;
         for (std::size_t linkObj = 0; linkObj < initialNumLinkerObjects; ++linkObj) {
+            // Link functions
+            TIntermAggregate* function = linkerObjects[linkObj]->getAsAggregate();
+            TIntermAggregate* unitFunction = unitLinkerObjects[unitLinkObj]->getAsAggregate();
+            if (function && unitFunction) {
+                if (function->getOp() == EOpLinkerFunction && unitFunction->getOp() == EOpLinkerFunction &&
+                    function->getName() == unitFunction->getName()) {
+                    // filter out copy
+                    merge = false;
+
+                    // Check for consistent types/parameters etc.
+                    mergeFunctionErrorCheck(infoSink, *function, *unitFunction);
+                }
+            }
+
+            // Link other symbols
             TIntermSymbol* symbol = linkerObjects[linkObj]->getAsSymbolNode();
             TIntermSymbol* unitSymbol = unitLinkerObjects[unitLinkObj]->getAsSymbolNode();
-            assert(symbol && unitSymbol);
-            if (symbol->getName() == unitSymbol->getName()) {
-                // filter out copy
-                merge = false;
+            if (symbol && unitSymbol) {
+                if (symbol->getName() == unitSymbol->getName()) {
+                    // filter out copy
+                    merge = false;
 
-                // but if one has an initializer and the other does not, update
-                // the initializer
-                if (symbol->getConstArray().empty() && ! unitSymbol->getConstArray().empty())
-                    symbol->setConstArray(unitSymbol->getConstArray());
+                    // but if one has an initializer and the other does not, update
+                    // the initializer
+                    if (symbol->getConstArray().empty() && ! unitSymbol->getConstArray().empty())
+                        symbol->setConstArray(unitSymbol->getConstArray());
 
-                // Similarly for binding
-                if (! symbol->getQualifier().hasBinding() && unitSymbol->getQualifier().hasBinding())
-                    symbol->getQualifier().layoutBinding = unitSymbol->getQualifier().layoutBinding;
+                    // Similarly for binding
+                    if (! symbol->getQualifier().hasBinding() && unitSymbol->getQualifier().hasBinding())
+                        symbol->getQualifier().layoutBinding = unitSymbol->getQualifier().layoutBinding;
 
-                // Update implicit array sizes
-                mergeImplicitArraySizes(symbol->getWritableType(), unitSymbol->getType());
+                    // Update implicit array sizes
+                    mergeImplicitArraySizes(symbol->getWritableType(), unitSymbol->getType());
 
-                // Check for consistent types/qualification/initializers etc.
-                mergeErrorCheck(infoSink, *symbol, *unitSymbol, false);
+                    // Check for consistent types/qualification/initializers etc.
+                    mergeSymbolErrorCheck(infoSink, *symbol, *unitSymbol, false);
+                }
             }
         }
         if (merge)
@@ -491,12 +507,91 @@ void TIntermediate::mergeImplicitArraySizes(TType& type, const TType& unitType)
 }
 
 //
-// Compare two global objects from two compilation units and see if they match
+// Compare two qualifiers from two compilation units and see if they match
+// well enough.  Rules can be different for intra- vs. cross-stage matching.
+// Returns whether there has been a mismatch.
+//
+// This function only does one of intra- or cross-stage matching per call.
+//
+bool TIntermediate::mergeQualifierErrorCheck(TInfoSink& infoSink, const TQualifier& qualifier, const TQualifier& unitQualifier, bool crossStage)
+{
+    bool mismatch = false;
+
+    // Storage...
+    if (qualifier.storage != unitQualifier.storage) {
+        error(infoSink, "Storage qualifiers must match:");
+        mismatch = true;
+    }
+
+    // Precision...
+    if (qualifier.precision != unitQualifier.precision) {
+        error(infoSink, "Precision qualifiers must match:");
+        mismatch = true;
+    }
+
+    // Invariance...
+    if (! crossStage && qualifier.invariant != unitQualifier.invariant) {
+        error(infoSink, "Presence of invariant qualifier must match:");
+        mismatch = true;
+    }
+
+    // Precise...
+    if (! crossStage && qualifier.isNoContraction() != unitQualifier.isNoContraction()) {
+        error(infoSink, "Presence of precise qualifier must match:");
+        mismatch = true;
+    }
+
+    // Auxiliary and interpolation...
+    if (qualifier.centroid  != unitQualifier.centroid ||
+        qualifier.smooth    != unitQualifier.smooth ||
+        qualifier.flat      != unitQualifier.flat ||
+        qualifier.isSample()!= unitQualifier.isSample() ||
+        qualifier.isPatch() != unitQualifier.isPatch() ||
+        qualifier.isNonPerspective() != unitQualifier.isNonPerspective()) {
+        error(infoSink, "Interpolation and auxiliary storage qualifiers must match:");
+        mismatch = true;
+    }
+
+    // Memory...
+    if (qualifier.coherent          != unitQualifier.coherent ||
+        qualifier.devicecoherent    != unitQualifier.devicecoherent ||
+        qualifier.queuefamilycoherent  != unitQualifier.queuefamilycoherent ||
+        qualifier.workgroupcoherent != unitQualifier.workgroupcoherent ||
+        qualifier.subgroupcoherent  != unitQualifier.subgroupcoherent ||
+        qualifier.nonprivate        != unitQualifier.nonprivate ||
+        qualifier.volatil           != unitQualifier.volatil ||
+        qualifier.restrict          != unitQualifier.restrict ||
+        qualifier.readonly          != unitQualifier.readonly ||
+        qualifier.writeonly         != unitQualifier.writeonly) {
+        error(infoSink, "Memory qualifiers must match:");
+        mismatch = true;
+    }
+
+    // Layouts...
+    // TODO: 4.4 enhanced layouts: Generalize to include offset/align: current spec
+    //       requires separate user-supplied offset from actual computed offset, but
+    //       current implementation only has one offset.
+    if (qualifier.layoutMatrix    != unitQualifier.layoutMatrix ||
+        qualifier.layoutPacking   != unitQualifier.layoutPacking ||
+        qualifier.layoutLocation  != unitQualifier.layoutLocation ||
+        qualifier.layoutComponent != unitQualifier.layoutComponent ||
+        qualifier.layoutIndex     != unitQualifier.layoutIndex ||
+        qualifier.layoutBinding   != unitQualifier.layoutBinding ||
+        (qualifier.hasBinding() && (qualifier.layoutOffset != unitQualifier.layoutOffset))) {
+        error(infoSink, "Layout qualification must match:");
+        mismatch = true;
+    }
+
+    return mismatch;
+}
+
+//
+// Compare two global symbols from two compilation units and see if they match
 // well enough.  Rules can be different for intra- vs. cross-stage matching.
 //
 // This function only does one of intra- or cross-stage matching per call.
 //
-void TIntermediate::mergeErrorCheck(TInfoSink& infoSink, const TIntermSymbol& symbol, const TIntermSymbol& unitSymbol, bool crossStage)
+void TIntermediate::mergeSymbolErrorCheck(TInfoSink& infoSink, const TIntermSymbol& symbol, const TIntermSymbol& unitSymbol, bool crossStage)
 {
 #ifndef GLSLANG_WEB
     bool writeTypeComparison = false;
@@ -513,69 +608,7 @@ void TIntermediate::mergeErrorCheck(TInfoSink& infoSink, const TIntermSymbol& sy
     }
 
     // Qualifiers have to (almost) match
-
-    // Storage...
-    if (symbol.getQualifier().storage != unitSymbol.getQualifier().storage) {
-        error(infoSink, "Storage qualifiers must match:");
-        writeTypeComparison = true;
-    }
-
-    // Precision...
-    if (symbol.getQualifier().precision != unitSymbol.getQualifier().precision) {
-        error(infoSink, "Precision qualifiers must match:");
-        writeTypeComparison = true;
-    }
-
-    // Invariance...
-    if (! crossStage && symbol.getQualifier().invariant != unitSymbol.getQualifier().invariant) {
-        error(infoSink, "Presence of invariant qualifier must match:");
-        writeTypeComparison = true;
-    }
-
-    // Precise...
-    if (! crossStage && symbol.getQualifier().isNoContraction() != unitSymbol.getQualifier().isNoContraction()) {
-        error(infoSink, "Presence of precise qualifier must match:");
-        writeTypeComparison = true;
-    }
-
-    // Auxiliary and interpolation...
-    if (symbol.getQualifier().centroid  != unitSymbol.getQualifier().centroid ||
-        symbol.getQualifier().smooth    != unitSymbol.getQualifier().smooth ||
-        symbol.getQualifier().flat      != unitSymbol.getQualifier().flat ||
-        symbol.getQualifier().isSample()!= unitSymbol.getQualifier().isSample() ||
-        symbol.getQualifier().isPatch() != unitSymbol.getQualifier().isPatch() ||
-        symbol.getQualifier().isNonPerspective() != unitSymbol.getQualifier().isNonPerspective()) {
-        error(infoSink, "Interpolation and auxiliary storage qualifiers must match:");
-        writeTypeComparison = true;
-    }
-
-    // Memory...
-    if (symbol.getQualifier().coherent          != unitSymbol.getQualifier().coherent ||
-        symbol.getQualifier().devicecoherent    != unitSymbol.getQualifier().devicecoherent ||
-        symbol.getQualifier().queuefamilycoherent  != unitSymbol.getQualifier().queuefamilycoherent ||
-        symbol.getQualifier().workgroupcoherent != unitSymbol.getQualifier().workgroupcoherent ||
-        symbol.getQualifier().subgroupcoherent  != unitSymbol.getQualifier().subgroupcoherent ||
-        symbol.getQualifier().nonprivate        != unitSymbol.getQualifier().nonprivate ||
-        symbol.getQualifier().volatil           != unitSymbol.getQualifier().volatil ||
-        symbol.getQualifier().restrict          != unitSymbol.getQualifier().restrict ||
-        symbol.getQualifier().readonly          != unitSymbol.getQualifier().readonly ||
-        symbol.getQualifier().writeonly         != unitSymbol.getQualifier().writeonly) {
-        error(infoSink, "Memory qualifiers must match:");
-        writeTypeComparison = true;
-    }
-
-    // Layouts...
-    // TODO: 4.4 enhanced layouts: Generalize to include offset/align: current spec
-    //       requires separate user-supplied offset from actual computed offset, but
-    //       current implementation only has one offset.
-    if (symbol.getQualifier().layoutMatrix    != unitSymbol.getQualifier().layoutMatrix ||
-        symbol.getQualifier().layoutPacking   != unitSymbol.getQualifier().layoutPacking ||
-        symbol.getQualifier().layoutLocation  != unitSymbol.getQualifier().layoutLocation ||
-        symbol.getQualifier().layoutComponent != unitSymbol.getQualifier().layoutComponent ||
-        symbol.getQualifier().layoutIndex     != unitSymbol.getQualifier().layoutIndex ||
-        symbol.getQualifier().layoutBinding   != unitSymbol.getQualifier().layoutBinding ||
-        (symbol.getQualifier().hasBinding() && (symbol.getQualifier().layoutOffset != unitSymbol.getQualifier().layoutOffset))) {
-        error(infoSink, "Layout qualification must match:");
+    if (mergeQualifierErrorCheck(infoSink, symbol.getQualifier(), unitSymbol.getQualifier(), crossStage)) {
         writeTypeComparison = true;
     }
 
@@ -596,6 +629,66 @@ void TIntermediate::mergeErrorCheck(TInfoSink& infoSink, const TIntermSymbol& sy
 }
 
 //
+// Compare two functions from two compilation units and see if they match.
+//
+void TIntermediate::mergeFunctionErrorCheck(TInfoSink& infoSink, const TIntermAggregate& function, const TIntermAggregate& unitFunction)
+{
+#ifndef GLSLANG_WEB
+    bool writeTypeComparison = false;
+
+    // Return types have to match
+    if (function.getType() != unitFunction.getType()) {
+        error(infoSink, "Types must match:");
+        writeTypeComparison = true;
+    }
+
+    // Return type qualifiers have to match
+    if (mergeQualifierErrorCheck(infoSink, function.getQualifier(), unitFunction.getQualifier(), false)) {
+        writeTypeComparison = true;
+    }
+
+    if (writeTypeComparison)
+        infoSink.info << "    return type of " << function.getName() << ": \"" <<
+                        function.getType().getCompleteString() << "\" versus \"" <<
+                        unitFunction.getType().getCompleteString() << "\"\n";
+
+    TIntermSequence& parameters = function.getSequence()[0]->getAsAggregate()->getSequence();
+    TIntermSequence& unitParameters = unitFunction.getSequence()[0]->getAsAggregate()->getSequence();
+
+    // Parameter count has to match
+    if (parameters.size() != unitParameters.size()) {
+        error(infoSink, "Parameter count must match:");
+        infoSink.info << "    " << function.getName() << ": " <<
+                        (int)parameters.size() << " versus " <<
+                        (int)unitParameters.size() << "\n";
+    } else {
+        for (int p = 0; p < (int)parameters.size(); ++p) {
+            const TIntermTyped& parameter = *parameters[p]->getAsTyped();
+            const TIntermTyped& unitParameter = *unitParameters[p]->getAsTyped();
+
+            writeTypeComparison = false;
+
+            // Parameter types have to match
+            if (parameter.getType() != parameter.getType()) {
+                error(infoSink, "Types must match:");
+                writeTypeComparison = true;
+            }
+
+            // Parameter type qualifiers have to match
+            if (mergeQualifierErrorCheck(infoSink, parameter.getQualifier(), unitParameter.getQualifier(), false)) {
+                writeTypeComparison = true;
+            }
+
+            if (writeTypeComparison)
+                infoSink.info << "    parameter #" << p << " of " << function.getName() << ": \"" <<
+                                parameter.getType().getCompleteString() << "\" versus \"" <<
+                                unitParameter.getType().getCompleteString() << "\"\n";
+        }
+    }
+#endif
+}
+
+//
 // Do final link-time error checking of a complete (merged) intermediate representation.
 // (Much error checking was done during merging).
 //
@@ -610,7 +703,11 @@ void TIntermediate::finalCheck(TInfoSink& infoSink, bool keepUncalled)
         if (getSource() == EShSourceGlsl)
             error(infoSink, "Missing entry point: Each stage requires one entry point");
         else
+            // TODO: This should be an error, not a warning, but for some reason the
+            // conclusion of issue #588 was this. In order to force the generation of
+            // an entry point we need to increment the entry point count here.
             warn(infoSink, "Entry point not found");
+            incrementEntryPointCount();
     }
 
     // recursion and missing body checking
@@ -978,6 +1075,21 @@ TIntermAggregate* TIntermediate::findLinkerObjects() const
     return globals.back()->getAsAggregate();
 }
 
+void TIntermediate::stripLinkerFunctions()
+{
+    if (getTreeRoot() == nullptr)
+        return;
+
+    TIntermSequence& linkerObjects = findLinkerObjects()->getSequence();
+
+    linkerObjects.erase(std::remove_if(linkerObjects.begin(), linkerObjects.end(),
+        [](TIntermNode* node) -> bool {
+            TIntermAggregate* function = node->getAsAggregate();
+            return function && function->getOp() == EOpLinkerFunction;
+        }),
+        linkerObjects.end());
+}
+
 // See if a variable was both a user-declared output and used.
 // Note: the spec discusses writing to one, but this looks at read or write, which
 // is more useful, and perhaps the spec should be changed to reflect that.
@@ -987,12 +1099,14 @@ bool TIntermediate::userOutputUsed() const
 
     bool found = false;
     for (size_t i = 0; i < linkerObjects.size(); ++i) {
-        const TIntermSymbol& symbolNode = *linkerObjects[i]->getAsSymbolNode();
-        if (symbolNode.getQualifier().storage == EvqVaryingOut &&
-            symbolNode.getName().compare(0, 3, "gl_") != 0 &&
-            inIoAccessed(symbolNode.getName())) {
-            found = true;
-            break;
+        const TIntermSymbol* symbolNode = linkerObjects[i]->getAsSymbolNode();
+        if (symbolNode) {
+            if (symbolNode->getQualifier().storage == EvqVaryingOut &&
+                symbolNode->getName().compare(0, 3, "gl_") != 0 &&
+                inIoAccessed(symbolNode->getName())) {
+                found = true;
+                break;
+            }
         }
     }
 

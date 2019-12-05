@@ -106,6 +106,26 @@ TIntermSymbol* TIntermediate::addSymbol(const TType& type, const TSourceLoc& loc
     return addSymbol(0, "", type, unionArray, nullptr, loc);
 }
 
+TIntermAggregate* TIntermediate::addLinkerFunction(const TFunction& function)
+{
+    glslang::TSourceLoc loc; // just a null location
+    loc.init();
+
+    TIntermAggregate* paramNodes = new TIntermAggregate;
+    for (int i = 0; i < function.getParamCount(); i++) {
+        const TParameter& param = function[i];
+        paramNodes = growAggregate(paramNodes, addSymbol(*param.type, loc), loc);
+    }
+    setAggregateOperator(paramNodes, EOpParameters, TType(EbtVoid), loc);
+
+    TIntermAggregate* funcNode = new TIntermAggregate;
+    growAggregate(funcNode, paramNodes);
+    setAggregateOperator(funcNode, EOpLinkerFunction, function.getType(), loc);
+    funcNode->setName(function.getMangledName().c_str());
+
+    return funcNode;
+}
+
 //
 // Connect two nodes with a new parent that does a binary operation on the nodes.
 //
@@ -2829,13 +2849,19 @@ void TIntermediate::addSymbolLinkageNode(TIntermAggregate*& linkage, TSymbolTabl
 
 void TIntermediate::addSymbolLinkageNode(TIntermAggregate*& linkage, const TSymbol& symbol)
 {
-    const TVariable* variable = symbol.getAsVariable();
-    if (! variable) {
-        // This must be a member of an anonymous block, and we need to add the whole block
-        const TAnonMember* anon = symbol.getAsAnonMember();
-        variable = &anon->getAnonContainer();
+    TIntermNode* node;
+    const TFunction* function = symbol.getAsFunction();
+    if (function) {
+        node = addLinkerFunction(*function);
+    } else {
+        const TVariable* variable = symbol.getAsVariable();
+        if (! variable) {
+            // This must be a member of an anonymous block, and we need to add the whole block
+            const TAnonMember* anon = symbol.getAsAnonMember();
+            variable = &anon->getAnonContainer();
+        }
+        node = addSymbol(*variable);
     }
-    TIntermSymbol* node = addSymbol(*variable);
     linkage = growAggregate(linkage, node);
 }
 

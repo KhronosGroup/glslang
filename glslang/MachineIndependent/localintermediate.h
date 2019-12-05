@@ -212,6 +212,7 @@ private:
 class TSymbolTable;
 class TSymbol;
 class TVariable;
+class TFunction;
 
 //
 // Texture and Sampler transformation mode.
@@ -387,6 +388,7 @@ public:
     TIntermSymbol* addSymbol(const TVariable&, const TSourceLoc&);
     TIntermSymbol* addSymbol(const TType&, const TSourceLoc&);
     TIntermSymbol* addSymbol(const TIntermSymbol&);
+    TIntermAggregate* addLinkerFunction(const TFunction&);
     TIntermTyped* addConversion(TOperator, const TType&, TIntermTyped*);
     std::tuple<TIntermTyped*, TIntermTyped*> addConversion(TOperator op, TIntermTyped* node0, TIntermTyped* node1);
     TIntermTyped* addUniShapeConversion(TOperator, const TType&, TIntermTyped*);
@@ -784,6 +786,7 @@ public:
     void addToCallGraph(TInfoSink&, const TString& caller, const TString& callee);
     void merge(TInfoSink&, TIntermediate&);
     void finalCheck(TInfoSink&, bool keepUncalled);
+    void stripLinkerFunctions();
 
     bool buildConvertOp(TBasicType dst, TBasicType src, TOperator& convertOp) const;
     TIntermTyped* createConversion(TBasicType convertTo, TIntermTyped* node) const;
@@ -861,7 +864,9 @@ protected:
     void mergeBodies(TInfoSink&, TIntermSequence& globals, const TIntermSequence& unitGlobals);
     void mergeLinkerObjects(TInfoSink&, TIntermSequence& linkerObjects, const TIntermSequence& unitLinkerObjects);
     void mergeImplicitArraySizes(TType&, const TType&);
-    void mergeErrorCheck(TInfoSink&, const TIntermSymbol&, const TIntermSymbol&, bool crossStage);
+    bool mergeQualifierErrorCheck(TInfoSink&, const TQualifier&, const TQualifier&, bool crossStage);
+    void mergeSymbolErrorCheck(TInfoSink&, const TIntermSymbol&, const TIntermSymbol&, bool crossStage);
+    void mergeFunctionErrorCheck(TInfoSink&, const TIntermAggregate&, const TIntermAggregate&);
     void checkCallGraphCycles(TInfoSink&);
     void checkCallGraphBodies(TInfoSink&, bool keepUncalled);
     void inOutLocationCheck(TInfoSink&);

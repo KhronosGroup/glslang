@@ -336,25 +336,27 @@ void Builder::postProcessCFG()
     // result IDs of the instructions in it.
     for (auto fi = module.getFunctions().cbegin(); fi != module.getFunctions().cend(); fi++) {
         Function* f = *fi;
-        Block* entry = f->getEntryBlock();
-        inReadableOrder(entry,
-            [&reachableBlocks, &unreachableMerges, &headerForUnreachableContinue]
-            (Block* b, ReachReason why, Block* header) {
-               reachableBlocks.insert(b);
-               if (why == ReachDeadContinue) headerForUnreachableContinue[b] = header;
-               if (why == ReachDeadMerge) unreachableMerges.insert(b);
-            });
-        for (auto bi = f->getBlocks().cbegin(); bi != f->getBlocks().cend(); bi++) {
-            Block* b = *bi;
-            if (unreachableMerges.count(b) != 0 || headerForUnreachableContinue.count(b) != 0) {
-                auto ii = b->getInstructions().cbegin();
-                ++ii; // Keep potential decorations on the label.
-                for (; ii != b->getInstructions().cend(); ++ii)
-                    unreachableDefinitions.insert(ii->get()->getResultId());
-            } else if (reachableBlocks.count(b) == 0) {
-                // The normal case for unreachable code.  All definitions are considered dead.
-                for (auto ii = b->getInstructions().cbegin(); ii != b->getInstructions().cend(); ++ii)
-                    unreachableDefinitions.insert(ii->get()->getResultId());
+        if (f->hasBlocks()) {
+            Block* entry = f->getEntryBlock();
+            inReadableOrder(entry,
+                [&reachableBlocks, &unreachableMerges, &headerForUnreachableContinue]
+                (Block* b, ReachReason why, Block* header) {
+                reachableBlocks.insert(b);
+                if (why == ReachDeadContinue) headerForUnreachableContinue[b] = header;
+                if (why == ReachDeadMerge) unreachableMerges.insert(b);
+                });
+            for (auto bi = f->getBlocks().cbegin(); bi != f->getBlocks().cend(); bi++) {
+                Block* b = *bi;
+                if (unreachableMerges.count(b) != 0 || headerForUnreachableContinue.count(b) != 0) {
+                    auto ii = b->getInstructions().cbegin();
+                    ++ii; // Keep potential decorations on the label.
+                    for (; ii != b->getInstructions().cend(); ++ii)
+                        unreachableDefinitions.insert(ii->get()->getResultId());
+                } else if (reachableBlocks.count(b) == 0) {
+                    // The normal case for unreachable code.  All definitions are considered dead.
+                    for (auto ii = b->getInstructions().cbegin(); ii != b->getInstructions().cend(); ++ii)
+                        unreachableDefinitions.insert(ii->get()->getResultId());
+                }
             }
         }
     }

@@ -1153,17 +1153,19 @@ Instruction* Builder::addEntryPoint(ExecutionModel model, Function* function, co
 // Currently relying on the fact that all 'value' of interest are small non-negative values.
 void Builder::addExecutionMode(Function* entryPoint, ExecutionMode mode, int value1, int value2, int value3)
 {
-    Instruction* instr = new Instruction(OpExecutionMode);
-    instr->addIdOperand(entryPoint->getId());
-    instr->addImmediateOperand(mode);
-    if (value1 >= 0)
-        instr->addImmediateOperand(value1);
-    if (value2 >= 0)
-        instr->addImmediateOperand(value2);
-    if (value3 >= 0)
-        instr->addImmediateOperand(value3);
+    if (entryPoint) {
+        Instruction* instr = new Instruction(OpExecutionMode);
+        instr->addIdOperand(entryPoint->getId());
+        instr->addImmediateOperand(mode);
+        if (value1 >= 0)
+            instr->addImmediateOperand(value1);
+        if (value2 >= 0)
+            instr->addImmediateOperand(value2);
+        if (value3 >= 0)
+            instr->addImmediateOperand(value3);
 
-    executionModes.push_back(std::unique_ptr<Instruction>(instr));
+        executionModes.push_back(std::unique_ptr<Instruction>(instr));
+    }
 }
 
 void Builder::addName(Id id, const char* string)
@@ -1199,7 +1201,21 @@ void Builder::addDecoration(Id id, Decoration decoration, int num)
     decorations.push_back(std::unique_ptr<Instruction>(dec));
 }
 
-void Builder::addDecoration(Id id, Decoration decoration, const char* s)
+void Builder::addDecoration(Id id, Decoration decoration, const char* s, int num)
+{
+    if (decoration == spv::DecorationMax)
+        return;
+
+    Instruction* dec = new Instruction(OpDecorate);
+    dec->addIdOperand(id);
+    dec->addImmediateOperand(decoration);
+    dec->addStringOperand(s);
+    dec->addImmediateOperand(num);
+
+    decorations.push_back(std::unique_ptr<Instruction>(dec));
+}
+
+void Builder::addDecorationString(Id id, Decoration decoration, const char* s)
 {
     if (decoration == spv::DecorationMax)
         return;

@@ -2005,6 +2005,7 @@ bool TProgram::linkStage(EShLanguage stage, EShMessages messages)
 #else
     intermediate[stage] = stages[stage].front()->intermediate;
 #endif
+    intermediate[stage]->stripLinkerFunctions();
     intermediate[stage]->finalCheck(*infoSink, (messages & EShMsgKeepUncalled) != 0);
 
     if (messages & EShMsgAST)

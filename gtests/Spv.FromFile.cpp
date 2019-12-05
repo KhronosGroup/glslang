@@ -63,6 +63,7 @@ std::string FileNameAsCustomTestSuffixIoMap(
     return name;
 }
 
+using CompileNoLinkVulkanToSpirvTest = GlslangTest<::testing::TestWithParam<std::string>>;
 using CompileVulkanToSpirvTest = GlslangTest<::testing::TestWithParam<std::string>>;
 using CompileVulkanToSpirvDeadCodeElimTest = GlslangTest<::testing::TestWithParam<std::string>>;
 using CompileVulkanToDebugSpirvTest = GlslangTest<::testing::TestWithParam<std::string>>;
@@ -77,6 +78,50 @@ using GlslIoMap = GlslangTest<::testing::TestWithParam<IoMapData>>;
 using CompileVulkanToSpirvTestAMD = GlslangTest<::testing::TestWithParam<std::string>>;
 using CompileVulkanToSpirvTestNV = GlslangTest<::testing::TestWithParam<std::string>>;
 using CompileUpgradeTextureToSampledTextureAndDropSamplersTest = GlslangTest<::testing::TestWithParam<std::string>>;
+
+// Compiling GLSL to SPIR-V under Vulkan semantics, without linking.
+// Expected to successfully generate SPIR-V.
+TEST_P(CompileNoLinkVulkanToSpirvTest, FromFile)
+{
+    const std::string fileName = GetParam();
+    const EShMessages controls = DeriveOptions(Source::GLSL, Semantics::Vulkan, Target::AST);
+    GlslangResult result;
+
+    // Compile each input shader file.
+    std::string contents;
+    tryLoadFile(GlobalTestSettings.testRoot + "/" + fileName,
+                "input", &contents);
+    glslang::TShader* shader = new glslang::TShader(GetShaderStage(GetSuffix(fileName)));
+    shader->setAutoMapLocations(true);
+    bool success = compile(shader, contents, "", controls);
+    result.shaderResults.push_back({fileName, shader->getInfoLog(), shader->getInfoDebugLog()});
+
+    if (success) {
+        spv::SpvBuildLogger logger;
+        std::vector<uint32_t> spirv_binary;
+        options().disableOptimizer = true;
+        glslang::GlslangToSpv(*shader->getIntermediate(), spirv_binary, &logger, &options());
+
+        std::ostringstream disassembly_stream;
+        spv::Parameterize();
+        spv::Disassemble(disassembly_stream, spirv_binary);
+        result.spirvWarningsErrors = logger.getAllMessages();
+        result.spirv = disassembly_stream.str();
+        result.validationResult = !options().validate || logger.getAllMessages().empty();
+    }
+
+    std::ostringstream stream;
+    outputResultToStream(&stream, result, controls);
+
+    // Check with expected results.
+    const std::string expectedOutputFname =
+        GlobalTestSettings.testRoot + "/baseResults/" + fileName + ".noLink.out";
+    std::string expectedOutput;
+    tryLoadFile(expectedOutputFname, "expected output", &expectedOutput);
+
+    checkEqAndUpdateIfRequested(expectedOutput, stream.str(), expectedOutputFname,
+                                result.spirvWarningsErrors);
+}
 
 // Compiling GLSL to SPIR-V under Vulkan semantics. Expected to successfully
 // generate SPIR-V.
@@ -210,6 +255,23 @@ TEST_P(CompileUpgradeTextureToSampledTextureAndDropSamplersTest, FromFile)
                                                                      Semantics::Vulkan,
                                                                      Target::Spv);
 }
+
+// clang-format off
+INSTANTIATE_TEST_CASE_P(
+    Glsl, CompileNoLinkVulkanToSpirvTest,
+    ::testing::ValuesIn(std::vector<std::string>({
+        "spv.paramQualifiers.unit1.frag",
+        "spv.paramQualifiers.unit2.frag",
+        "spv.structParam.unit1.frag",
+        "spv.structParam.unit2.frag",
+        "spv.main.importOnly.frag",
+        "spv.main.exportOnly.frag",
+        "spv.main.importExport.frag",
+        "spv.noMain.exportOnly.frag",
+        "spv.noMain.importExport.frag",
+    })),
+    FileNameAsCustomTestSuffix
+);
 
 // clang-format off
 INSTANTIATE_TEST_CASE_P(
