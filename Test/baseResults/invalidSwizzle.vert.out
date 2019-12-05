@@ -14,6 +14,8 @@ ERROR: node is still EOpNull!
 0:8      Function Call: f( ( global void)
 0:9      Function Call: f( ( global void)
 0:?   Linker Objects
+0:?     Linker Function: f( ( global void)
+0:?       Function Parameters: 
 0:?     's' ( uniform sampler2D)
 0:?     'gl_VertexID' ( gl_VertexId int VertexId)
 0:?     'gl_InstanceID' ( gl_InstanceId int InstanceId)

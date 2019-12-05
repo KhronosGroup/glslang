@@ -426,6 +426,8 @@ ERROR: node is still EOpNull!
 0:?     'outa' ( global 4-element array of int)
 0:?     'patchIn' ( patch in 4-component vector of float)
 0:?     'patchOut' ( patch out 4-component vector of float)
+0:?     Linker Function: foo( ( global void)
+0:?       Function Parameters: 
 0:?     'ina' ( in 2-component vector of float)
 0:?     'inb' ( in 32-element array of 2-component vector of float)
 0:?     'inc' ( in 32-element array of 2-component vector of float)
@@ -437,8 +439,17 @@ ERROR: node is still EOpNull!
 0:?     'ovlb' (layout( location=4) out 4-element array of 4-component vector of float)
 0:?     'ovlc' (layout( location=4) out 4-element array of 4-component vector of float)
 0:?     'pv3' ( noContraction temp 3-component vector of float)
+0:?     Linker Function: foop( ( global void)
+0:?       Function Parameters: 
 0:?     'pinbi' ( patch out block{ out int a})
 0:?     'badOrder' ( invariant noContraction out 4-element array of 4-component vector of float)
+0:?     Linker Function: badp(f1; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( noContraction out float)
+0:?     Linker Function: devi( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: devie( ( global void)
+0:?       Function Parameters: 
 
 400.tese
 ERROR: 0:3: 'vertices' : there is no such layout identifier for this stage taking an assigned value 
@@ -607,6 +618,10 @@ ERROR: node is still EOpNull!
 0:?     'ovla' (layout( location=23) out 2-element array of 4-component vector of float)
 0:?     'ovlb' (layout( location=24) out 2-element array of 4-component vector of float)
 0:?     'pinbi' ( patch in block{ in int a})
+0:?     Linker Function: devi( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: devie( ( global void)
+0:?       Function Parameters: 
 
 410.tesc
 ERROR: 0:4: 'length' :  array must first be sized by a redeclaration or layout qualifier
@@ -740,6 +755,8 @@ ERROR: node is still EOpNull!
 0:?     'outf' ( out float)
 0:?     'vs_tcs_first' (layout( location=0) in 32-element array of 2X4 matrix of double)
 0:?     'vs_tcs_last' (layout( location=12) in 32-element array of 2X4 matrix of double)
+0:?     Linker Function: foo( ( global void)
+0:?       Function Parameters: 
 
 420.tese
 ERROR: 0:7: '=' :  cannot convert from ' const 3-element array of float' to ' global 2-element array of float'

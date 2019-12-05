@@ -55,6 +55,10 @@ ERROR: node is still EOpNull!
 0:?   Linker Objects
 0:?     'gl_in' ( in unsized 2-element array of block{ in float PointSize gl_PointSize})
 0:?     'anon@0' (layout( stream=0) out block{layout( stream=0) gl_PointSize float PointSize gl_PointSize})
+0:?     Linker Function: foo( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: foo5( ( global float)
+0:?       Function Parameters: 
 
 
 Linked geometry stage:

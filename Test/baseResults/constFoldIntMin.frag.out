@@ -37,6 +37,8 @@ Requested GL_ARB_gpu_shader_int64
 0:11          Constant:
 0:11            0 (const int64_t)
 0:?   Linker Objects
+0:?     Linker Function: a( ( global void)
+0:?       Function Parameters: 
 
 
 Linked fragment stage:

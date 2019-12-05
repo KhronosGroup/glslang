@@ -132,6 +132,10 @@ Shader version: 400
 0:?     'flag' ( const bool)
 0:?       false (const bool)
 0:?     'c' ( global int)
+0:?     Linker Function: bar( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: foo( ( global int)
+0:?       Function Parameters: 
 
 
 Linked fragment stage:

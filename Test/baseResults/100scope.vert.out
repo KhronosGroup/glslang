@@ -121,8 +121,22 @@ ERROR: node is still EOpNull!
 0:73      Constant:
 0:73        0.000000
 0:?   Linker Objects
+0:?     Linker Function: f(i1;i1;i1; ( global highp int)
+0:?       Function Parameters: 
+0:?         '' ( in highp int)
+0:?         '' ( in highp int)
+0:?         '' ( in highp int)
 0:?     'b' ( global bool)
+0:?     Linker Function: b(i1; ( global highp float)
+0:?       Function Parameters: 
+0:?         '' ( in highp int)
+0:?     Linker Function: c(i1; ( global highp float)
+0:?       Function Parameters: 
+0:?         '' ( in highp int)
 0:?     'tan' ( global highp float)
+0:?     Linker Function: radians(b1; ( global bool)
+0:?       Function Parameters: 
+0:?         '' ( in bool)
 0:?     's' ( smooth out structure{ global highp float f})
 
 

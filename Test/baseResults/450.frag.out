@@ -163,6 +163,11 @@ ERROR: node is still EOpNull!
 0:?     'us2dmsa' ( uniform usampler2DMSArray)
 0:?     'ii2dms' (layout( rgba32i) uniform iimage2DMS)
 0:?     'i2dmsa' (layout( rgba32f) uniform image2DMSArray)
+0:?     Linker Function: foo( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: cull(i1; ( global float)
+0:?       Function Parameters: 
+0:?         '' ( in int)
 0:?     'bInst1' ( in block{layout( location=6) in float f, layout( location=7) in float g, layout( location=8) in 4X4 matrix of float m})
 0:?     'bInst2' ( in 3-element array of block{layout( location=12) in float f, layout( location=13) in float g})
 0:?     'f' ( smooth in float)

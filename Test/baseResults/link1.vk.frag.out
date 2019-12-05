@@ -36,6 +36,8 @@ gl_FragCoord origin is upper left
 0:23        Constant:
 0:23          1 (const int)
 0:?   Linker Objects
+0:?     Linker Function: getColor( ( global highp 4-component vector of float)
+0:?       Function Parameters: 
 0:?     'color' (layout( location=0) out highp 4-component vector of float)
 0:?     'a1' ( global unsized 9-element array of highp int)
 0:?     'a2' ( global unsized 2-element array of highp int)
@@ -101,6 +103,8 @@ gl_FragCoord origin is upper left
 0:?     'i' ( global highp int)
 0:?     'anon@0' (layout( binding=0 column_major std430) buffer block{layout( column_major std430) buffer unsized 1-element array of highp float r})
 0:?     'anon@1' (layout( binding=1 column_major std430) buffer block{layout( column_major std430) buffer 4-element array of highp float m})
+0:?     Linker Function: getColor( ( global highp 4-component vector of float)
+0:?       Function Parameters: 
 
 
 Linked fragment stage:

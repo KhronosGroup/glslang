@@ -40,6 +40,8 @@ ERROR: node is still EOpNull!
 0:56          'sum' ( global float)
 0:?   Linker Objects
 0:?     'sum' ( global float)
+0:?     Linker Function: foo986( ( global void)
+0:?       Function Parameters: 
 
 
 Linked vertex stage:

@@ -68,6 +68,10 @@ ERROR: node is still EOpNull!
 0:31        No loop body
 0:?   Linker Objects
 0:?     's' ( smooth in structure{ global float f,  global 4-component vector of float v})
+0:?     Linker Function: attExtBad( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: attExt( ( global void)
+0:?       Function Parameters: 
 
 
 Linked fragment stage:

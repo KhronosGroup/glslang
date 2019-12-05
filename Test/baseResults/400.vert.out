@@ -288,6 +288,65 @@ ERROR: node is still EOpNull!
 0:?     'd' ( in double)
 0:?     'd3' ( in 3-component vector of double)
 0:?     'dm4' ( in 4X4 matrix of double)
+0:?     Linker Function: foo1(d1;u1; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in double)
+0:?         '' ( in uint)
+0:?     Linker Function: foo1(d1;i1; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in double)
+0:?         '' ( in int)
+0:?     Linker Function: foo1(d1;f1; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in double)
+0:?         '' ( in float)
+0:?     Linker Function: foo1(d1;d1; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in double)
+0:?         '' ( in double)
+0:?     Linker Function: foo2(d1;f1; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in double)
+0:?         '' ( in float)
+0:?     Linker Function: foo2(d1;d1; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in double)
+0:?         '' ( in double)
+0:?     Linker Function: foo3(d1;f1; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in double)
+0:?         '' ( in float)
+0:?     Linker Function: foo3(f1;d1; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in float)
+0:?         '' ( in double)
+0:?     Linker Function: ftd(i1;f1;d1; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in int)
+0:?         '' ( in float)
+0:?         '' ( in double)
+0:?     Linker Function: ftd(u1;f1;d1; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in uint)
+0:?         '' ( in float)
+0:?         '' ( in double)
+0:?     Linker Function: ftd(f1;d1;d1; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in float)
+0:?         '' ( in double)
+0:?         '' ( in double)
+0:?     Linker Function: itf(i1;f1;i1; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in int)
+0:?         '' ( in float)
+0:?         '' ( in int)
+0:?     Linker Function: itf(i1;d1;i1; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in int)
+0:?         '' ( in double)
+0:?         '' ( in int)
+0:?     Linker Function: tf( ( global void)
+0:?       Function Parameters: 
 0:?     'gl_VertexID' ( gl_VertexId int VertexId)
 0:?     'gl_InstanceID' ( gl_InstanceId int InstanceId)
 

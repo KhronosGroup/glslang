@@ -41,6 +41,10 @@ Shader version: 120
 0:?     'BaseColor' ( smooth in 4-component vector of float)
 0:?     'd' ( uniform float)
 0:?     'bar' ( global float)
+0:?     Linker Function: foo( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: foo2( ( global void)
+0:?       Function Parameters: 
 
 
 Linked fragment stage:

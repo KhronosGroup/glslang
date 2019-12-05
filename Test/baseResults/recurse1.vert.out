@@ -64,6 +64,30 @@ Shader version: 330
 0:44    Sequence
 0:44      Function Call: AT( ( global void)
 0:?   Linker Objects
+0:?     Linker Function: bar(i1; ( global float)
+0:?       Function Parameters: 
+0:?         '' ( in int)
+0:?     Linker Function: self( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: foo(f1; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in float)
+0:?     Linker Function: B( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: D( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: A( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: C( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: BT( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: DT( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: AT( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: CT( ( global void)
+0:?       Function Parameters: 
 0:?     'gl_VertexID' ( gl_VertexId int VertexId)
 0:?     'gl_InstanceID' ( gl_InstanceId int InstanceId)
 
@@ -153,6 +177,56 @@ Shader version: 330
 0:48    Sequence
 0:48      Function Call: norcD( ( global void)
 0:?   Linker Objects
+0:?     Linker Function: cbar(i1; ( global float)
+0:?       Function Parameters: 
+0:?         '' ( in int)
+0:?     Linker Function: cfoo(f1; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in float)
+0:?     Linker Function: CB( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: CD( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: CA( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: CC( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: CBT( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: CDT( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: CAT( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: CCT( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: norA( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: norB( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: norC( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: norD( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: norE( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: norF( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: norG( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: norH( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: norI( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: norcA( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: norcB( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: norcC( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: norcD( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: norcE( ( global void)
+0:?       Function Parameters: 
 
 recurse2.frag
 Shader version: 330
@@ -186,6 +260,28 @@ Shader version: 330
 0:28    Sequence
 0:28      Function Call: CAT( ( global void)
 0:?   Linker Objects
+0:?     Linker Function: cfoo(f1; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in float)
+0:?     Linker Function: cbar(i1; ( global float)
+0:?       Function Parameters: 
+0:?         '' ( in int)
+0:?     Linker Function: CA( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: CC( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: CB( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: CD( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: CAT( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: CCT( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: CBT( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: CDT( ( global void)
+0:?       Function Parameters: 
 
 
 Linked vertex stage:

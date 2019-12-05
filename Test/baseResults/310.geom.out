@@ -173,6 +173,9 @@ ERROR: node is still EOpNull!
 0:?     'gl_in' ( in 4-element array of block{ in highp 4-component vector of float Position gl_Position,  in highp float PointSize gl_PointSize})
 0:?     'ov4' (layout( stream=4) out mediump 4-component vector of float)
 0:?     'ouuaa6' (layout( stream=0) out block{layout( stream=0) out mediump 4-component vector of float a})
+0:?     Linker Function: foo(i1; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in highp int)
 0:?     'badv4' (layout( stream=0) out mediump 4-component vector of float)
 0:?     'bad2v4' ( in 4-element array of mediump 4-component vector of float)
 0:?     'anon@1' (layout( stream=0) out block{layout( stream=0) out highp int a})
@@ -182,6 +185,8 @@ ERROR: node is still EOpNull!
 0:?     'anon@3' (layout( column_major shared) uniform block{layout( column_major shared) uniform bool b15})
 0:?     'summ' ( const highp int)
 0:?       2752 (const int)
+0:?     Linker Function: fooe1( ( global void)
+0:?       Function Parameters: 
 0:?     'explArray' ( in 4-element array of mediump 4-component vector of float)
 0:?     'explArrayBad' ( in 5-element array of mediump 4-component vector of float)
 0:?     'nonArrayed' ( in mediump 4-component vector of float)
@@ -190,6 +195,12 @@ ERROR: node is still EOpNull!
 0:?     'centr' ( centroid in 4-element array of mediump 3-component vector of float)
 0:?     'perSampleColor' (layout( stream=0) sample out mediump 4-component vector of float)
 0:?     'comp' (layout( location=7 component=2) in 4-element array of mediump float)
+0:?     Linker Function: notHere( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: pointSize1( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: pointSize2( ( global void)
+0:?       Function Parameters: 
 
 
 Linked geometry stage:

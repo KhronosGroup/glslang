@@ -115,6 +115,8 @@ ERROR: node is still EOpNull!
 0:?     'outf' ( out float)
 0:?     'vs_tcs_first' (layout( location=0) in 32-element array of 2X4 matrix of double)
 0:?     'vs_tcs_last' (layout( location=12) in 32-element array of 2X4 matrix of double)
+0:?     Linker Function: foo( ( global void)
+0:?       Function Parameters: 
 
 
 Linked tessellation control stage:

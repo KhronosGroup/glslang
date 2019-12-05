@@ -327,6 +327,8 @@ ERROR: node is still EOpNull!
 0:?       6.000000
 0:?       7.000000
 0:?       8.000000
+0:?     Linker Function: foo( ( global void)
+0:?       Function Parameters: 
 0:?     'm2' ( const 2X2 matrix of float)
 0:?       2.000000
 0:?       3.000000
@@ -355,6 +357,8 @@ ERROR: node is still EOpNull!
 0:?       4.000000
 0:?       5.000000
 0:?     'a4' ( global 2-element array of float)
+0:?     Linker Function: foo2( ( global void)
+0:?       Function Parameters: 
 0:?     'mm2' ( const 2X2 matrix of float)
 0:?       1.000000
 0:?       2.000000
@@ -367,6 +371,8 @@ ERROR: node is still EOpNull!
 0:?       13.000000
 0:?       14.000000
 0:?       15.000000
+0:?     Linker Function: foo3( ( global void)
+0:?       Function Parameters: 
 0:?     'a0' ( const 3-element array of structure{ global int i,  global float f,  global bool b})
 0:?       3 (const int)
 0:?       2.000000
@@ -377,6 +383,8 @@ ERROR: node is still EOpNull!
 0:?       1 (const int)
 0:?       9.000000
 0:?       false (const bool)
+0:?     Linker Function: foo4( ( global void)
+0:?       Function Parameters: 
 0:?     'cval1' ( const bool)
 0:?       true (const bool)
 0:?     'cval2' ( const bool)

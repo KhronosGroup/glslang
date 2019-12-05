@@ -282,13 +282,35 @@ ERROR: node is still EOpNull!
 0:?     'g4' ( global 4-element array of float)
 0:?     'g5' ( global 5-element array of float)
 0:?     'a' ( uniform int)
+0:?     Linker Function: foo(f1[5]; ( global 4-element array of float)
+0:?       Function Parameters: 
+0:?         '' ( in 5-element array of float)
+0:?     Linker Function: bar(f1[5]; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in 5-element array of float)
+0:?     Linker Function: foo213234( ( global unsized 1-element array of int)
+0:?       Function Parameters: 
+0:?     Linker Function: foo234234(f1[0]; ( global int)
+0:?       Function Parameters: 
+0:?         '' ( in unsized 1-element array of float)
+0:?     Linker Function: foo234235(vf2[0]; ( global int)
+0:?       Function Parameters: 
+0:?         '' ( in unsized 1-element array of 2-component vector of float)
 0:?     'guns' ( global unsized 8-element array of 3-component vector of float)
 0:?     'f' ( global float)
+0:?     Linker Function: foo( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: foo2( ( global unsized 1-element array of float)
+0:?       Function Parameters: 
 0:?     'gUnusedUnsized' ( global unsized 1-element array of float)
+0:?     Linker Function: foo3( ( global void)
+0:?       Function Parameters: 
 0:?     'i' ( global unsized 1-element array of int)
 0:?     'emptyA' ( global unsized 1-element array of float)
 0:?     'b' ( global float)
 0:?     's2d' ( uniform runtime-sized array of sampler2D)
+0:?     Linker Function: foo4( ( global void)
+0:?       Function Parameters: 
 
 
 Linked fragment stage:

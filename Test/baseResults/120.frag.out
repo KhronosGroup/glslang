@@ -634,6 +634,18 @@ ERROR: node is still EOpNull!
 0:?     'imageBuffer' ( global float)
 0:?     'uimage2DRect' ( global float)
 0:?     'a' ( temp int)
+0:?     Linker Function: foo(f1; ( global int)
+0:?       Function Parameters: 
+0:?         '' ( in float)
+0:?     Linker Function: gen(vf3; ( global bool)
+0:?       Function Parameters: 
+0:?         '' ( in 3-component vector of float)
+0:?     Linker Function: v1( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: v2( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: atest( ( global void)
+0:?       Function Parameters: 
 0:?     'gl_TexCoord' ( smooth in 6-element array of 4-component vector of float TexCoord)
 0:?     'm22' ( global 2X2 matrix of float)
 0:?     'm23' ( global 2X3 matrix of float)
@@ -644,12 +656,26 @@ ERROR: node is still EOpNull!
 0:?     'm42' ( global 4X2 matrix of float)
 0:?     'm43' ( global 4X3 matrix of float)
 0:?     'm44' ( global 4X4 matrix of float)
+0:?     Linker Function: foo123( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: matConst( ( global void)
+0:?       Function Parameters: 
 0:?     's3D' ( uniform sampler3D)
 0:?     's1D' ( uniform sampler1D)
 0:?     's2DS' ( uniform sampler2DShadow)
+0:?     Linker Function: foo2323( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: foo2324( ( global void)
+0:?       Function Parameters: 
 0:?     's2DRbad' ( uniform sampler2DRect)
+0:?     Linker Function: foo121111( ( global void)
+0:?       Function Parameters: 
 0:?     's2DR' ( uniform sampler2DRect)
 0:?     's2DRS' ( uniform sampler2DRectShadow)
+0:?     Linker Function: foo12111( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: voidTernary( ( global void)
+0:?       Function Parameters: 
 0:?     'halfFloat1' ( global float)
 
 

@@ -118,6 +118,10 @@ ERROR: node is still EOpNull!
 0:?     'aconst' ( global 4-element array of int)
 0:?     'bconst' ( global 64-element array of int)
 0:?     'sampInArray' ( smooth sample in 4-element array of 3-component vector of float)
+0:?     Linker Function: interp( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: layer( ( global int)
+0:?       Function Parameters: 
 
 
 Linked fragment stage:

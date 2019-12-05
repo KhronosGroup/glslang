@@ -519,12 +519,20 @@ ERROR: node is still EOpNull!
 0:?     'anon@0' ( in block{ in float FogFragCoord gl_FogFragCoord,  in unsized 1-element array of 4-component vector of float TexCoord gl_TexCoord,  smooth in 4-component vector of float Color gl_Color,  in 4-component vector of float SecondaryColor gl_SecondaryColor})
 0:?     'gl_FragCoord' ( gl_FragCoord 4-component vector of float FragCoord)
 0:?     'u2drs' ( uniform sampler2DRectShadow)
+0:?     Linker Function: foo23( ( global void)
+0:?       Function Parameters: 
 0:?     'patchIn' ( smooth patch in 4-component vector of float)
 0:?     'patchOut' ( patch out 4-component vector of float)
+0:?     Linker Function: foo24( ( global void)
+0:?       Function Parameters: 
 0:?     'in1' ( smooth in float)
 0:?     'in2' ( smooth in 2-component vector of float)
 0:?     'in3' ( smooth in 3-component vector of float)
 0:?     'in4' ( smooth in 4-component vector of float)
+0:?     Linker Function: foodc1( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: foodc2( ( global void)
+0:?       Function Parameters: 
 0:?     'colorSampIn' ( smooth sample in 4-component vector of float)
 0:?     'colorSampleBad' ( sample out 4-component vector of float)
 0:?     'colorfsi' ( noperspective in 4-component vector of float)
@@ -533,6 +541,8 @@ ERROR: node is still EOpNull!
 0:?     'colorfc' ( centroid flat in 2-component vector of float)
 0:?     's1' ( smooth in structure{ global float x})
 0:?     's2' ( sample temp structure{ global float x})
+0:?     Linker Function: interp( ( global void)
+0:?       Function Parameters: 
 0:?     'samp1D' ( uniform sampler1D)
 0:?     'isamp2D' ( uniform isampler2D)
 0:?     'usamp3D' ( uniform usampler3D)
@@ -548,8 +558,16 @@ ERROR: node is still EOpNull!
 0:?     'sampCubeAs' ( uniform samplerCubeArrayShadow)
 0:?     'sampBuf' ( uniform samplerBuffer)
 0:?     'sampRect' ( uniform sampler2DRect)
+0:?     Linker Function: qlod( ( global void)
+0:?       Function Parameters: 
 0:?     'uu' ( uniform uint)
 0:?     'iout' ( out uint)
+0:?     Linker Function: bitwiseConv( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: subT1( ( temp float)
+0:?       Function Parameters: 
+0:?     Linker Function: subT2( ( temp float)
+0:?       Function Parameters: 
 
 
 Linked fragment stage:

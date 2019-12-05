@@ -163,6 +163,9 @@ ERROR: node is still EOpNull!
 0:?     'ouua6' (layout( stream=6) out block{layout( stream=6) out 4-component vector of float a})
 0:?     'ouua7' (layout( stream=7) out block{layout( stream=6) out 4-component vector of float a})
 0:?     'ov2s3' (layout( stream=3) out 4-component vector of float)
+0:?     Linker Function: foo(i1; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in int)
 0:?     'badv4' (layout( stream=3) out 4-component vector of float)
 0:?     'bad2v4' ( in 4-element array of 4-component vector of float)
 0:?     'anon@2' (layout( stream=3) out block{layout( stream=3) out int a})
@@ -172,6 +175,10 @@ ERROR: node is still EOpNull!
 0:?     'anon@3' (layout( stream=3) out block{layout( stream=3) out float f15})
 0:?     'anon@4' (layout( column_major shared) uniform block{layout( column_major shared) uniform bool b15})
 0:?     'summ' ( global float)
+0:?     Linker Function: fooe1( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: fooe2( ( global void)
+0:?       Function Parameters: 
 0:?     'gl_ViewportIndex' (layout( stream=3) out int)
 
 

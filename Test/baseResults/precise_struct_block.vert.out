@@ -515,6 +515,12 @@ Shader version: 450
 0:?   Linker Objects
 0:?     'partial_precise_block' ( out block{ noContraction out structure{ global float f1,  global float f2} s,  out float x})
 0:?     'all_precise_block' ( noContraction out block{ out structure{ global float f1,  global float f2} s,  out float x})
+0:?     Linker Function: struct_member( ( global float)
+0:?       Function Parameters: 
+0:?     Linker Function: complex_array_struct( ( global float)
+0:?       Function Parameters: 
+0:?     Linker Function: out_block( ( global float)
+0:?       Function Parameters: 
 0:?     'gl_VertexID' ( gl_VertexId int VertexId)
 0:?     'gl_InstanceID' ( gl_InstanceId int InstanceId)
 

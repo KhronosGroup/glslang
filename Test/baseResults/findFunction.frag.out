@@ -131,6 +131,31 @@ ERROR: node is still EOpNull!
 0:45            Convert float16_t to float ( temp float)
 0:45              'f16' ( temp float16_t)
 0:?   Linker Objects
+0:?     Linker Function: func(i81;i161;i161; ( global int64_t)
+0:?       Function Parameters: 
+0:?         '' ( in int8_t)
+0:?         '' ( in int16_t)
+0:?         '' ( in int16_t)
+0:?     Linker Function: func(i81;i161;i1; ( global int64_t)
+0:?       Function Parameters: 
+0:?         '' ( in int8_t)
+0:?         '' ( in int16_t)
+0:?         '' ( in int)
+0:?     Linker Function: func(i1;i1;i1; ( global int64_t)
+0:?       Function Parameters: 
+0:?         '' ( in int)
+0:?         '' ( in int)
+0:?         '' ( in int)
+0:?     Linker Function: func(f161;f161;f1; ( global int64_t)
+0:?       Function Parameters: 
+0:?         '' ( in float16_t)
+0:?         '' ( in float16_t)
+0:?         '' ( in float)
+0:?     Linker Function: func(f161;i161;f1; ( global int64_t)
+0:?       Function Parameters: 
+0:?         '' ( in float16_t)
+0:?         '' ( in int16_t)
+0:?         '' ( in float)
 
 
 Linked fragment stage:

@@ -664,10 +664,40 @@ ERROR: node is still EOpNull!
 0:265      'gl_WarpIDNV' ( in uint WarpIDNV)
 0:266      'gl_SMIDNV' ( in uint SMIDNV)
 0:?   Linker Objects
+0:?     Linker Function: undeclared_errors(vf4; ( global 4-component vector of float)
+0:?       Function Parameters: 
+0:?         '' ( in 4-component vector of float)
 0:?     'accNV0' (layout( set=0 binding=0) uniform accelerationStructureNV)
 0:?     'accNV1' (layout( set=0 binding=1) uniform accelerationStructureNV)
 0:?     'payload' (layout( location=0) rayPayloadNV 4-component vector of float)
 0:?     'anon@0' (layout( column_major std430 shaderRecordNV) buffer block{layout( column_major std430 offset=0) buffer 3-component vector of float dir, layout( column_major std430 offset=16) buffer 3-component vector of float origin})
+0:?     Linker Function: basic_works( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: ballot_works(vf4; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in 4-component vector of float)
+0:?     Linker Function: vote_works(vf4; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in 4-component vector of float)
+0:?     Linker Function: shuffle_works(vf4; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in 4-component vector of float)
+0:?     Linker Function: arith_works(vf4; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in 4-component vector of float)
+0:?     Linker Function: clustered_works(vf4; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in 4-component vector of float)
+0:?     Linker Function: quad_works(vf4; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in 4-component vector of float)
+0:?     Linker Function: partitioned_works(vf4; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in 4-component vector of float)
+0:?     Linker Function: sm_builtins_err( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: sm_builtins( ( global void)
+0:?       Function Parameters: 
 
 
 Linked ray-generation stage:

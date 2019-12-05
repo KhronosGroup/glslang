@@ -64,6 +64,9 @@ ERROR: node is still EOpNull!
 0:48        1 (const int)
 0:?   Linker Objects
 0:?     'foo' ( global highp float)
+0:?     Linker Function: foo2(vf4; ( global highp 4-component vector of float)
+0:?       Function Parameters: 
+0:?         '' ( in highp 4-component vector of float)
 0:?     'a1' ( const highp int)
 0:?       4 (const int)
 0:?     'a2' ( const highp int)

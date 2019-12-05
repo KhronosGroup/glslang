@@ -105,6 +105,15 @@ Shader version: 310
 0:?   Linker Objects
 0:?     'ro_buffer' (layout( binding=2 column_major std430) readonly buffer block{layout( column_major std430 offset=0) readonly buffer 10-element array of mediump float buff_ro, layout( column_major std430 offset=40) readonly buffer structure{ global 10-element array of mediump float buff} s_ro})
 0:?     'non_ro_buffer' (layout( binding=2 column_major std430) buffer block{layout( column_major std430 offset=0) buffer 10-element array of mediump float buff, layout( column_major std430 offset=40) buffer structure{ global 10-element array of mediump float buff} s})
+0:?     Linker Function: non_ro_fun(f1[10]; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in 10-element array of mediump float)
+0:?     Linker Function: non_ro_funf(f1; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in mediump float)
+0:?     Linker Function: non_ro_funS(struct-S-f1[10]1; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in structure{ global 10-element array of mediump float buff})
 0:?     'fragColor' ( out mediump 4-component vector of float)
 
 

@@ -158,6 +158,8 @@ ERROR: node is still EOpNull!
 0:?     'myColor2' ( centroid out highp 3-component vector of float)
 0:?     'centr' ( centroid in 32-element array of highp 3-component vector of float)
 0:?     'perSampleColor' ( sample out highp 4-component vector of float)
+0:?     Linker Function: bbbad( ( global void)
+0:?       Function Parameters: 
 
 
 Linked tessellation evaluation stage:

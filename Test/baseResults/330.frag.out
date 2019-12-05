@@ -97,6 +97,8 @@ ERROR: node is still EOpNull!
 0:?     'outVar' (layout( location=0 index=0) out 4-component vector of float)
 0:?     'varyingVar' ( smooth in 4-component vector of float)
 0:?     'anon@0' ( in block{ in 4-component vector of float Color gl_Color})
+0:?     Linker Function: foo( ( global void)
+0:?       Function Parameters: 
 0:?     'gl_name' ( in block{ in int gl_i})
 0:?     'start' ( const int)
 0:?       6 (const int)
@@ -126,8 +128,12 @@ ERROR: node is still EOpNull!
 0:?     'indexBlockI' (layout( location=26 index=0) out block{ out int a})
 0:?     'samp1D' ( uniform sampler1D)
 0:?     'samp2Ds' ( uniform sampler2DShadow)
+0:?     Linker Function: qlod( ( global void)
+0:?       Function Parameters: 
 0:?     'precise' ( global int)
 0:?     'KeyMem' ( global structure{ global int precise})
+0:?     Linker Function: fooKeyMem( ( global void)
+0:?       Function Parameters: 
 0:?     'outIndex2' (layout( location=28 index=0) out 4-component vector of float)
 0:?     'ucolor0' (layout( location=4) uniform 4-component vector of float)
 0:?     'ucolor1' (layout( location=5) uniform 4-component vector of float)

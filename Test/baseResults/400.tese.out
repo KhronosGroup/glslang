@@ -165,6 +165,10 @@ ERROR: node is still EOpNull!
 0:?     'ovla' (layout( location=23) out 2-element array of 4-component vector of float)
 0:?     'ovlb' (layout( location=24) out 2-element array of 4-component vector of float)
 0:?     'pinbi' ( patch in block{ in int a})
+0:?     Linker Function: devi( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: devie( ( global void)
+0:?       Function Parameters: 
 
 
 Linked tessellation evaluation stage:

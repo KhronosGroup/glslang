@@ -386,15 +386,27 @@ ERROR: node is still EOpNull!
 0:?     'fnop' ( noperspective in float)
 0:?     'gl_ClipDistance' ( smooth in unsized 4-element array of float ClipDistance)
 0:?     'sampC' ( uniform samplerCube)
+0:?     Linker Function: foo( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: bar( ( global void)
+0:?       Function Parameters: 
 0:?     'gl_Color' ( in 4-component vector of float Color)
+0:?     Linker Function: bar2( ( global void)
+0:?       Function Parameters: 
 0:?     'samp2D' ( uniform sampler2D)
 0:?     'samp2DS' ( uniform sampler2DShadow)
 0:?     'samp2DR' ( uniform sampler2DRect)
 0:?     'samp2DA' ( uniform sampler2DArray)
+0:?     Linker Function: bar23( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: bar234( ( global void)
+0:?       Function Parameters: 
 0:?     'Sca' ( uniform samplerCubeArray)
 0:?     'Isca' ( uniform isamplerCubeArray)
 0:?     'Usca' ( uniform usamplerCubeArray)
 0:?     'Scas' ( uniform samplerCubeArrayShadow)
+0:?     Linker Function: bar235( ( global void)
+0:?       Function Parameters: 
 0:?     'x' ( global int)
 0:?     'ai' ( const 3-element array of int)
 0:?       10 (const int)
@@ -402,9 +414,13 @@ ERROR: node is still EOpNull!
 0:?       32 (const int)
 0:?     'instanceName' (layout( binding=0 column_major shared) uniform block{layout( column_major shared) uniform int a})
 0:?     'bounds' (layout( binding=0) uniform sampler2D)
+0:?     Linker Function: bar23444( ( global void)
+0:?       Function Parameters: 
 0:?     'gl_FogFragCoord' ( smooth in float)
 0:?     'iimg2Dbad' (layout( r32i) uniform iimage2D)
 0:?     'iimg2D' (layout( r32i) uniform iimage2D)
+0:?     Linker Function: qux2( ( global void)
+0:?       Function Parameters: 
 0:?     'ucolor0' (layout( location=3) uniform 4-component vector of float)
 0:?     'ucolor1' (layout( location=4) uniform 4-component vector of float)
 

@@ -196,6 +196,8 @@ ERROR: node is still EOpNull!
 0:?     'a' ( global int)
 0:?     'n' ( global int)
 0:?     'f' ( global double)
+0:?     Linker Function: foo234( ( global void)
+0:?       Function Parameters: 
 0:?     'RECURSE' ( global int)
 0:?     'R1' ( global int)
 0:?     'aoeua' ( global int)

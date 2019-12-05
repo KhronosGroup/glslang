@@ -134,6 +134,8 @@ ERROR: node is still EOpNull!
 0:98        3.300000
 0:?   Linker Objects
 0:?     'sum' ( global highp float)
+0:?     Linker Function: foo( ( global highp float)
+0:?       Function Parameters: 
 0:?     'c' ( global highp float)
 0:?     'gl_VertexID' ( gl_VertexId highp int VertexId)
 0:?     'gl_InstanceID' ( gl_InstanceId highp int InstanceId)

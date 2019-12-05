@@ -310,8 +310,31 @@ ERROR: node is still EOpNull!
 0:?     'anon@6' (layout( column_major shared) coherent buffer block{layout( column_major shared) coherent readonly buffer 4-component vector of float member1, layout( column_major shared) coherent buffer 4-component vector of float member2})
 0:?     'anon@7' (layout( column_major shared) buffer block{layout( column_major shared) coherent readonly buffer 4-component vector of float member1A, layout( column_major shared) coherent buffer 4-component vector of float member2A})
 0:?     'shv' ( shared 4-component vector of float)
+0:?     Linker Function: funcA(I21; ( global 4-component vector of float)
+0:?       Function Parameters: 
+0:?         '' ( restrict in image2D)
+0:?     Linker Function: funcB(I21; ( global 4-component vector of float)
+0:?       Function Parameters: 
+0:?         '' ( in image2D)
 0:?     'img1' (layout( rgba32f) uniform image2D)
 0:?     'img2' (layout( rgba32f) coherent uniform image2D)
+0:?     Linker Function: func(f1;f1;f1;f1; ( global float)
+0:?       Function Parameters: 
+0:?         '' ( in float)
+0:?         '' ( in float)
+0:?         '' ( in float)
+0:?         '' ( in float)
+0:?     Linker Function: func2(f1;f1;f1;f1; ( global float)
+0:?       Function Parameters: 
+0:?         '' ( in float)
+0:?         '' ( in float)
+0:?         '' ( in float)
+0:?         '' ( in float)
+0:?     Linker Function: func3(f1;f1;f1; ( global float)
+0:?       Function Parameters: 
+0:?         '' ( in float)
+0:?         '' ( in float)
+0:?         '' ( noContraction out float)
 0:?     'gl_VertexID' ( gl_VertexId int VertexId)
 0:?     'gl_InstanceID' ( gl_InstanceId int InstanceId)
 

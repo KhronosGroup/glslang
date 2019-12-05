@@ -440,6 +440,11 @@ Shader version: 100
 0:?       2.000000
 0:?       2.000000
 0:?       2.000000
+0:?     Linker Function: foo(f1; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( inout highp float)
+0:?     Linker Function: bar( ( global highp int)
+0:?       Function Parameters: 
 
 
 Linked vertex stage:

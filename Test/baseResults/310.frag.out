@@ -940,6 +940,9 @@ ERROR: node is still EOpNull!
 0:449      'gl_DeviceIndex' ( flat in highp int DeviceIndex)
 0:450      'gl_ViewIndex' ( flat in highp int ViewIndex)
 0:?   Linker Objects
+0:?     Linker Function: nodef3(f1; ( global highp float)
+0:?       Function Parameters: 
+0:?         '' ( in mediump float)
 0:?     'gl_FragCoord' ( smooth in mediump 4-component vector of float)
 0:?     'v3' (layout( location=2) smooth in mediump 3-component vector of float)
 0:?     'yi' (layout( location=2) smooth in mediump 4X4 matrix of float)
@@ -950,6 +953,8 @@ ERROR: node is still EOpNull!
 0:?     'c2D' ( smooth in mediump 2-component vector of float)
 0:?     'i' ( uniform mediump int)
 0:?     'outp' ( out mediump 4-component vector of float)
+0:?     Linker Function: foo23( ( global void)
+0:?       Function Parameters: 
 0:?     's1' (layout( binding=3) uniform highp sampler2D)
 0:?     's2' (layout( binding=3) uniform highp sampler2D)
 0:?     'i2D' (layout( binding=2) writeonly uniform highp image2D)
@@ -968,6 +973,8 @@ ERROR: node is still EOpNull!
 0:?     'smoothIn' ( smooth in mediump 4-component vector of float)
 0:?     'flatIn' ( flat in mediump int)
 0:?     's2dms' ( uniform mediump sampler2DMS)
+0:?     Linker Function: foots( ( global void)
+0:?       Function Parameters: 
 0:?     'bout' ( out bool)
 0:?     'imageOut' ( out highp image2D)
 0:?     'mout' ( out mediump 2X3 matrix of float)
@@ -985,7 +992,13 @@ ERROR: node is still EOpNull!
 0:?     'anon@0' ( in block{layout( location=12) in mediump int aAnon, layout( location=13) centroid in mediump 4-component vector of float vAnon})
 0:?     'aliased' (layout( location=13) smooth in mediump 4-component vector of float)
 0:?     'arrayedInst' ( in 4-element array of block{ in mediump float f})
+0:?     Linker Function: fooIO( ( global void)
+0:?       Function Parameters: 
 0:?     'gl_FragDepth' ( gl_FragDepth highp float FragDepth)
+0:?     Linker Function: foo_IO( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: foo_GS( ( global void)
+0:?       Function Parameters: 
 0:?     'inf' ( smooth in mediump 2-component vector of float)
 0:?     'ing' ( smooth in mediump 2-component vector of float)
 0:?     'offsets' ( uniform 4-element array of mediump 2-component vector of int)
@@ -1004,6 +1017,10 @@ ERROR: node is still EOpNull!
 0:?       0 (const int)
 0:?       0 (const int)
 0:?       0 (const int)
+0:?     Linker Function: pfooBad( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: pfoo( ( global void)
+0:?       Function Parameters: 
 0:?     'CA1' ( writeonly uniform highp imageCubeArray)
 0:?     'CA2' ( writeonly uniform highp iimageCubeArray)
 0:?     'CA3' ( writeonly uniform highp uimageCubeArray)
@@ -1011,15 +1028,25 @@ ERROR: node is still EOpNull!
 0:?     'CA5' ( uniform highp samplerCubeArrayShadow)
 0:?     'CA6' ( uniform highp isamplerCubeArray)
 0:?     'CA7' ( uniform highp usamplerCubeArray)
+0:?     Linker Function: CAT( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: badSample( ( global void)
+0:?       Function Parameters: 
 0:?     'gl_SampleMaskIn' ( flat in unsized 1-element array of highp int SampleMaskIn)
 0:?     'gl_SampleMask' ( out unsized 1-element array of highp int SampleMaskIn)
+0:?     Linker Function: goodSample( ( global void)
+0:?       Function Parameters: 
 0:?     'im2Df' (layout( r32f) uniform highp image2D)
 0:?     'im2Du' (layout( r32ui) uniform highp uimage2D)
 0:?     'im2Di' (layout( r32i) uniform highp iimage2D)
 0:?     'P' ( uniform mediump 2-component vector of int)
+0:?     Linker Function: badImageAtom( ( global void)
+0:?       Function Parameters: 
 0:?     'badIm2Df' (layout( rgba32f) uniform highp image2D)
 0:?     'badIm2Du' (layout( rgba8ui) uniform highp uimage2D)
 0:?     'badIm2Di' (layout( rgba16i) uniform highp iimage2D)
+0:?     Linker Function: goodImageAtom( ( global void)
+0:?       Function Parameters: 
 0:?     'colorSampInBad' ( smooth sample in mediump 4-component vector of float)
 0:?     'colorCentroidBad' ( centroid out mediump 4-component vector of float)
 0:?     'colorBadFlat' ( flat out mediump 4-component vector of float)
@@ -1027,12 +1054,25 @@ ERROR: node is still EOpNull!
 0:?     'colorBadNo' ( noperspective out mediump 4-component vector of float)
 0:?     'colorfc' ( centroid flat in mediump 2-component vector of float)
 0:?     'scalarIn' ( smooth in mediump float)
+0:?     Linker Function: badInterp( ( global void)
+0:?       Function Parameters: 
 0:?     'colorSampIn' ( smooth sample in mediump 4-component vector of float)
 0:?     'colorSampleBad' ( sample out mediump 4-component vector of float)
 0:?     'colorfsi' ( flat sample in mediump 4-component vector of float)
 0:?     'sampInArray' ( smooth sample in 4-element array of mediump 3-component vector of float)
+0:?     Linker Function: interp( ( global void)
+0:?       Function Parameters: 
 0:?     'badout' ( out mediump 4-component vector of float)
+0:?     Linker Function: blendFoo( ( temp void)
+0:?       Function Parameters: 
+0:?     Linker Function: blendFoo(vf3; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in mediump 3-component vector of float)
 0:?     'outAA' ( out 2-element array of 2-element array of mediump 4-component vector of float)
+0:?     Linker Function: devi( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: devie( ( global void)
+0:?       Function Parameters: 
 
 
 Linked fragment stage:

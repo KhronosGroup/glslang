@@ -156,6 +156,19 @@ ERROR: node is still EOpNull!
 0:?     'g4' ( global 4-element array of mediump float)
 0:?     'g5' ( global 5-element array of mediump float)
 0:?     'a' ( uniform mediump int)
+0:?     Linker Function: foo(f1[5]; ( global 4-element array of mediump float)
+0:?       Function Parameters: 
+0:?         '' ( in 5-element array of mediump float)
+0:?     Linker Function: bar(f1[5]; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in 5-element array of mediump float)
+0:?     Linker Function: bar9( ( global structure{ global mediump 4-component vector of float v4,  global structure{ global mediump 3-component vector of float v3,  global 4-element array of mediump 2-component vector of float v2} sa})
+0:?       Function Parameters: 
+0:?     Linker Function: bar10(struct-SB-vf4-struct-SA-vf3-vf2[4]11; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in structure{ global mediump 4-component vector of float v4,  global structure{ global mediump 3-component vector of float v3,  global 4-element array of mediump 2-component vector of float v2} sa})
+0:?     Linker Function: bar11( ( global void)
+0:?       Function Parameters: 
 
 
 Linked fragment stage:

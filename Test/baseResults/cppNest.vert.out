@@ -77,6 +77,10 @@ ERROR: node is still EOpNull!
 0:?     'selected4' ( global int)
 0:?     'selected2' ( global int)
 0:?     'selected3' ( global int)
+0:?     Linker Function: foo985( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: foo987( ( global void)
+0:?       Function Parameters: 
 
 
 Linked vertex stage:

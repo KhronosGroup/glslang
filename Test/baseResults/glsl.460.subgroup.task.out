@@ -749,6 +749,9 @@ ERROR: node is still EOpNull!
 0:302      'gl_WarpIDNV' ( in uint WarpIDNV)
 0:303      'gl_SMIDNV' ( in uint SMIDNV)
 0:?   Linker Objects
+0:?     Linker Function: undeclared_errors(vf4; ( global 4-component vector of float)
+0:?       Function Parameters: 
+0:?         '' ( in 4-component vector of float)
 0:?     'gl_WorkGroupSize' ( const 3-component vector of uint WorkGroupSize)
 0:?       32 (const uint)
 0:?       1 (const uint)
@@ -757,6 +760,33 @@ ERROR: node is still EOpNull!
 0:?     'anon@0' (layout( column_major shared) uniform block{layout( column_major shared) uniform uint uni_value})
 0:?     'mem' ( shared 10-element array of 4-component vector of float)
 0:?     'mytask' (layout( std430) taskNV out block{layout( std430 offset=0) taskNV out 2-component vector of float dummy, layout( std430 offset=8) taskNV out 3-element array of 2-component vector of float submesh, layout( std430 offset=32) taskNV out uint viewID})
+0:?     Linker Function: basic_works( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: ballot_works(vf4; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in 4-component vector of float)
+0:?     Linker Function: vote_works(vf4; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in 4-component vector of float)
+0:?     Linker Function: shuffle_works(vf4; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in 4-component vector of float)
+0:?     Linker Function: arith_works(vf4; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in 4-component vector of float)
+0:?     Linker Function: clustered_works(vf4; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in 4-component vector of float)
+0:?     Linker Function: quad_works(vf4; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in 4-component vector of float)
+0:?     Linker Function: partitioned_works(vf4; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in 4-component vector of float)
+0:?     Linker Function: sm_builtins_err( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: sm_builtins( ( global void)
+0:?       Function Parameters: 
 
 
 Linked task stage:

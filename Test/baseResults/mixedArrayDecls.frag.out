@@ -35,6 +35,11 @@ ERROR: node is still EOpNull!
 0:?     'f' ( global 13-element array of 9-element array of int)
 0:?     'g' ( global unsized 4-element array of 14-element array of int)
 0:?     'h' ( global unsized 3-element array of 14-element array of int)
+0:?     Linker Function: foo(i1[14][15][6]; ( global 14-element array of 15-element array of 6-element array of int)
+0:?       Function Parameters: 
+0:?         '' ( in 14-element array of 15-element array of 6-element array of int)
+0:?     Linker Function: bar( ( global 4-element array of 3-element array of 2-element array of float)
+0:?       Function Parameters: 
 0:?     'inbinst' ( in 4-element array of 5-element array of 6-element array of block{ in 8-element array of 9-element array of 7-element array of float f})
 0:?     'barm' ( global 4-element array of 3-element array of 2-element array of float)
 

@@ -259,6 +259,12 @@ ERROR: node is still EOpNull!
 0:?     'badorder2' ( invariant smooth out 4-component vector of float)
 0:?     'badorder4' ( centroid in 4-component vector of float)
 0:?     'badorder3' ( flat out 4-component vector of float)
+0:?     Linker Function: bar(f1; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( const (read only) float)
+0:?     Linker Function: bar2(f1; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in float)
 0:?     'rep' ( smooth flat out 4-component vector of float)
 0:?     'rep2' ( centroid smooth sample out 4-component vector of float)
 0:?     'rep3' ( in 4-component vector of float)
@@ -268,10 +274,15 @@ ERROR: node is still EOpNull!
 0:?     'a' ( const int)
 0:?       5 (const int)
 0:?     'b' ( temp int)
+0:?     Linker Function: foo( ( const int)
+0:?       Function Parameters: 
 0:?     'cx' ( const float)
 0:?       4.200000
 0:?     'dx' ( const float)
 0:?       4.200000
+0:?     Linker Function: bar(vf4; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( volatile in 4-component vector of float)
 0:?     'boundInst' (layout( binding=3 column_major shared) uniform block{layout( column_major shared) uniform int aoeu})
 0:?     'anon@0' (layout( binding=7 column_major shared) uniform block{layout( column_major shared) uniform int aoeu})
 0:?     'anon@1' (layout( binding=1) in block{ in int aoeua})
@@ -281,9 +292,15 @@ ERROR: node is still EOpNull!
 0:?     'sampb3' (layout( binding=80) uniform sampler2D)
 0:?     'sampb4' (layout( binding=31) uniform sampler2D)
 0:?     'sampb5' (layout( binding=79) uniform 2-element array of sampler2D)
+0:?     Linker Function: fgfg(f1;i1; ( global int)
+0:?       Function Parameters: 
+0:?         '' ( in float)
+0:?         '' ( in int)
 0:?     'anon@3' ( out block{ out 4-element array of float ClipDistance gl_ClipDistance})
 0:?     'patchIn' ( patch in 4-component vector of float)
 0:?     'patchOut' ( smooth patch out 4-component vector of float)
+0:?     Linker Function: bar23444( ( global void)
+0:?       Function Parameters: 
 0:?     'comma0' ( temp int)
 0:?     'comma1' ( global 1-element array of int)
 0:?     'iimg2D' (layout( r32i) uniform iimage2D)
@@ -292,10 +309,17 @@ ERROR: node is still EOpNull!
 0:?     'uimg2D' (layout( r32ui) uniform uimage2D)
 0:?     'img2DMS' ( uniform image2DMS)
 0:?     'img2DMSWO' ( writeonly uniform image2DMS)
+0:?     Linker Function: qux( ( global void)
+0:?       Function Parameters: 
 0:?     'vol' ( volatile temp float)
 0:?     'vol2' ( readonly temp int)
+0:?     Linker Function: passr(iI21; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( coherent readonly in iimage2D)
 0:?     'qualim1' (layout( r32i) coherent readonly uniform iimage2D)
 0:?     'qualim2' (layout( r32i) coherent volatile readonly uniform iimage2D)
+0:?     Linker Function: passrc( ( global void)
+0:?       Function Parameters: 
 0:?     'i1bad' (layout( rg8i) uniform uimage2D)
 0:?     'i2bad' (layout( rgba32i) uniform image2D)
 0:?     'i3bad' (layout( rgba32f) uniform uimage2D)
@@ -305,6 +329,8 @@ ERROR: node is still EOpNull!
 0:?     'offcheckI' (layout( column_major shared) uniform block{layout( column_major shared offset=16) uniform int foo})
 0:?     'samp1D' ( uniform sampler1D)
 0:?     'samp1Ds' ( uniform sampler1DShadow)
+0:?     Linker Function: qlod( ( global void)
+0:?       Function Parameters: 
 0:?     'badArray' (layout( binding=0) writeonly uniform unsized 1-element array of image1D)
 0:?     'gl_VertexID' ( gl_VertexId int VertexId)
 0:?     'gl_InstanceID' ( gl_InstanceId int InstanceId)

@@ -651,11 +651,39 @@ ERROR: node is still EOpNull!
 0:256      'gl_WarpIDNV' ( in uint WarpIDNV)
 0:257      'gl_SMIDNV' ( in uint SMIDNV)
 0:?   Linker Objects
+0:?     Linker Function: undeclared_errors(vf4; ( global 4-component vector of float)
+0:?       Function Parameters: 
+0:?         '' ( in 4-component vector of float)
 0:?     'gl_WorkGroupSize' ( const 3-component vector of uint WorkGroupSize)
 0:?       8 (const uint)
 0:?       8 (const uint)
 0:?       1 (const uint)
 0:?     'data' (layout( binding=0 column_major shared) buffer block{layout( column_major shared) buffer runtime-sized array of int a})
+0:?     Linker Function: ballot_works(vf4; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in 4-component vector of float)
+0:?     Linker Function: vote_works(vf4; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in 4-component vector of float)
+0:?     Linker Function: shuffle_works(vf4; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in 4-component vector of float)
+0:?     Linker Function: arith_works(vf4; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in 4-component vector of float)
+0:?     Linker Function: clustered_works(vf4; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in 4-component vector of float)
+0:?     Linker Function: quad_works(vf4; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in 4-component vector of float)
+0:?     Linker Function: partitioned_works(vf4; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in 4-component vector of float)
+0:?     Linker Function: sm_builtins_err( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: sm_builtins( ( global void)
+0:?       Function Parameters: 
 
 
 Linked compute stage:

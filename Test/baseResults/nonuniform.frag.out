@@ -55,6 +55,10 @@ ERROR: node is still EOpNull!
 0:?     'nu_uv4' ( nonuniform uniform 4-component vector of float)
 0:?     'nu_constf' ( nonuniform const float)
 0:?       1.000000
+0:?     Linker Function: foo(i1;i1; ( nonuniform temp int)
+0:?       Function Parameters: 
+0:?         '' ( nonuniform in int)
+0:?         '' ( nonuniform out int)
 0:?     'ins' (layout( location=1) smooth in structure{ global float a,  temp float b})
 0:?     'inb' (layout( location=3) in block{ in float a,  in float b})
 

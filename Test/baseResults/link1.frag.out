@@ -42,6 +42,9 @@ Shader version: 130
 0:?     'iv3' ( smooth in 3-component vector of float)
 0:?     'cup' ( smooth in 4-component vector of float)
 0:?     'b' ( global 4-component vector of float)
+0:?     Linker Function: foo(mf22; ( global 2-component vector of int)
+0:?       Function Parameters: 
+0:?         '' ( in 2X2 matrix of float)
 0:?     'c' ( global 4-component vector of float)
 0:?     'cv3' ( const 3-component vector of float)
 0:?       43.000000
@@ -119,6 +122,8 @@ Requested GL_OES_texture_3D
 0:?     'iv3' ( smooth in 3-component vector of float)
 0:?     'cup' ( flat in 4-component vector of float)
 0:?     'e' ( global 4-component vector of float)
+0:?     Linker Function: foo( ( global 2-component vector of int)
+0:?       Function Parameters: 
 0:?     'f' ( global 4-component vector of float)
 0:?     'cv3' ( const 3-component vector of float)
 0:?       43.000000

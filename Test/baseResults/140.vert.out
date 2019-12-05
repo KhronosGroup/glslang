@@ -146,6 +146,12 @@ ERROR: node is still EOpNull!
 0:?     'tloc2' ( in 2-component vector of float)
 0:?     'tloc3' ( in 3-component vector of float)
 0:?     'tloc4' ( in 4-component vector of float)
+0:?     Linker Function: foo( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: devi( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: devie( ( global void)
+0:?       Function Parameters: 
 0:?     'gl_VertexID' ( gl_VertexId int VertexId)
 0:?     'gl_InstanceID' ( gl_InstanceId int InstanceId)
 

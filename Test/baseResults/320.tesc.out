@@ -379,6 +379,8 @@ ERROR: node is still EOpNull!
 0:?     'outa' ( out 4-element array of highp int)
 0:?     'patchIn' ( patch in highp 4-component vector of float)
 0:?     'patchOut' ( patch out highp 4-component vector of float)
+0:?     Linker Function: foo( ( global void)
+0:?       Function Parameters: 
 0:?     'ina' ( in highp 2-component vector of float)
 0:?     'inb' ( in 32-element array of highp 2-component vector of float)
 0:?     'inc' ( in 32-element array of highp 2-component vector of float)
@@ -397,9 +399,22 @@ ERROR: node is still EOpNull!
 0:?     'badlay' ( out 4-element array of highp float)
 0:?     'misSized' ( out 5-element array of highp float)
 0:?     'okaySize' ( out 4-element array of highp float)
+0:?     Linker Function: pointSize2( ( global void)
+0:?       Function Parameters: 
 0:?     'pv3' ( noContraction temp highp 3-component vector of float)
+0:?     Linker Function: goodfoop( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: bb( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: bbext( ( global void)
+0:?       Function Parameters: 
 0:?     'badpatchIName' ( patch out unsized 1-element array of block{ out highp float f})
 0:?     'patchIName' ( patch out 4-element array of block{ out highp float f})
+0:?     Linker Function: outputtingOutparam(i1; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( out highp int)
+0:?     Linker Function: outputting( ( global void)
+0:?       Function Parameters: 
 
 
 Linked tessellation control stage:

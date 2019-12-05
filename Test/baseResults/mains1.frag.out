@@ -26,6 +26,8 @@ ERROR: node is still EOpNull!
 0:3  Function Definition: foo( ( global void)
 0:3    Function Parameters: 
 0:?   Linker Objects
+0:?     Linker Function: foo( ( global void)
+0:?       Function Parameters: 
 
 noMain2.geom
 Shader version: 150
@@ -37,6 +39,8 @@ output primitive = line_strip
 0:3  Function Definition: bar( ( global void)
 0:3    Function Parameters: 
 0:?   Linker Objects
+0:?     Linker Function: bar( ( global void)
+0:?       Function Parameters: 
 
 
 Linked geometry stage:

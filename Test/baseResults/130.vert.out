@@ -146,6 +146,8 @@ ERROR: node is still EOpNull!
 0:?     'c4D' ( smooth temp 4-component vector of float)
 0:?     'v4' ( uniform 4-component vector of float)
 0:?     'gl_ClipDistance' ( smooth out unsized 2-element array of float ClipDistance)
+0:?     Linker Function: foo88( ( global void)
+0:?       Function Parameters: 
 0:?     'gl_TexCoord' ( smooth out unsized 1-element array of 4-component vector of float TexCoord)
 0:?     'abcdef' ( global int)
 0:?     'qrstuv' ( global int)

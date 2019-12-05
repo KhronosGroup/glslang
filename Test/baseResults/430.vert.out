@@ -207,6 +207,14 @@ ERROR: node is still EOpNull!
 0:?     'b1' (layout( location=2) in block{ in 4-component vector of float v})
 0:?     'b2' (layout( location=2) out block{ out 4-component vector of float v})
 0:?     'anon@0' ( out block{ out 17-element array of float ClipDistance gl_ClipDistance})
+0:?     Linker Function: foo( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: foo3(vf4;vf3;vf2;vf3; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in 4-component vector of float)
+0:?         '' ( volatile in 3-component vector of float)
+0:?         '' ( in 2-component vector of float)
+0:?         '' ( in 3-component vector of float)
 0:?     'cs' (layout( location=10) smooth out 2-element array of structure{ global 7-element array of 3X2 matrix of float m,  global float f})
 0:?     'cf' (layout( location=54) smooth out float)
 0:?     'cg' (layout( location=53) smooth out float)
@@ -241,11 +249,17 @@ ERROR: node is still EOpNull!
 0:?     'bbinst4' (layout( xfb_stride=80) out block{layout( xfb_buffer=1 xfb_offset=16) out 4-component vector of float bbv1})
 0:?     'bbinst5' ( out block{layout( xfb_buffer=1 xfb_offset=0) out 4-component vector of float bbv1, layout( xfb_buffer=1 xfb_offset=64 xfb_stride=80) out 4-component vector of float bbv2})
 0:?     'sharedv' ( shared 4-component vector of float)
+0:?     Linker Function: fooBarrier( ( global void)
+0:?       Function Parameters: 
 0:?     'v' ( buffer 4-component vector of float)
 0:?     's2dms' ( uniform sampler2DMS)
 0:?     'us2dmsa' ( uniform usampler2DMSArray)
 0:?     'ii2dms' (layout( rgba32i) uniform iimage2DMS)
 0:?     'i2dmsa' (layout( rgba32f) uniform image2DMSArray)
+0:?     Linker Function: fooq( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: fooq2( ( global void)
+0:?       Function Parameters: 
 0:?     'samp1D' ( uniform sampler1D)
 0:?     'usamp2D' ( uniform usampler2D)
 0:?     'isamp3D' ( uniform isampler3D)
@@ -261,6 +275,8 @@ ERROR: node is still EOpNull!
 0:?     'sampCubeAs' ( uniform samplerCubeArrayShadow)
 0:?     'sampBuf' ( uniform samplerBuffer)
 0:?     'sampRect' ( uniform sampler2DRect)
+0:?     Linker Function: qlod( ( global void)
+0:?       Function Parameters: 
 0:?     'gl_VertexID' ( gl_VertexId int VertexId)
 0:?     'gl_InstanceID' ( gl_InstanceId int InstanceId)
 

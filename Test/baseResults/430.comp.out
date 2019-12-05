@@ -142,8 +142,12 @@ ERROR: node is still EOpNull!
 0:?     'arrY' ( global 1-element array of int)
 0:?     'arrZ' ( global 4096-element array of int)
 0:?     'ro' (layout( column_major shared) readonly buffer block{layout( column_major shared) readonly buffer int value, layout( column_major shared) readonly buffer unsized 3-element array of float values})
+0:?     Linker Function: foo( ( global void)
+0:?       Function Parameters: 
 0:?     'roll' ( uniform double)
 0:?     'destTex' ( writeonly uniform image2D)
+0:?     Linker Function: fooaoeu( ( global void)
+0:?       Function Parameters: 
 0:?     'inbi' ( in block{ in int a})
 0:?     'outbi' ( out block{ out int a})
 

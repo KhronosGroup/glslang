@@ -137,10 +137,24 @@ ERROR: node is still EOpNull!
 0:82          Constant:
 0:82            true (const bool)
 0:?   Linker Objects
+0:?     Linker Function: f(i1;i1;i1; ( global int)
+0:?       Function Parameters: 
+0:?         '' ( in int)
+0:?         '' ( in int)
+0:?         '' ( in int)
 0:?     'b' ( global bool)
+0:?     Linker Function: b(i1; ( global float)
+0:?       Function Parameters: 
+0:?         '' ( in int)
+0:?     Linker Function: c(i1; ( global float)
+0:?       Function Parameters: 
+0:?         '' ( in int)
 0:?     'c' ( global bool)
 0:?     'f' ( global float)
 0:?     'tan' ( global float)
+0:?     Linker Function: radians(b1; ( global bool)
+0:?       Function Parameters: 
+0:?         '' ( in bool)
 0:?     'gi' ( global int)
 
 

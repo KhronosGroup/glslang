@@ -907,6 +907,9 @@ ERROR: node is still EOpNull!
 0:312      'gl_WarpIDNV' ( in uint WarpIDNV)
 0:313      'gl_SMIDNV' ( in uint SMIDNV)
 0:?   Linker Objects
+0:?     Linker Function: undeclared_errors(vf4; ( global 4-component vector of float)
+0:?       Function Parameters: 
+0:?         '' ( in 4-component vector of float)
 0:?     'gl_WorkGroupSize' ( const 3-component vector of uint WorkGroupSize)
 0:?       32 (const uint)
 0:?       1 (const uint)
@@ -914,6 +917,33 @@ ERROR: node is still EOpNull!
 0:?     'gl_MeshVerticesNV' ( out 81-element array of block{ out 4-component vector of float Position gl_Position,  out float PointSize gl_PointSize,  out unsized 4-element array of float ClipDistance gl_ClipDistance,  out unsized 3-element array of float CullDistance gl_CullDistance,  perviewNV out 4-element array of 4-component vector of float PositionPerViewNV gl_PositionPerViewNV,  perviewNV out 4-element array of unsized-element array of float ClipDistancePerViewNV gl_ClipDistancePerViewNV,  perviewNV out 4-element array of unsized-element array of float CullDistancePerViewNV gl_CullDistancePerViewNV})
 0:?     'gl_MeshPrimitivesNV' ( perprimitiveNV out 32-element array of block{ perprimitiveNV out int PrimitiveID gl_PrimitiveID,  perprimitiveNV out int Layer gl_Layer,  perprimitiveNV out int ViewportIndex gl_ViewportIndex,  perprimitiveNV out unsized 1-element array of int ViewportMaskNV gl_ViewportMask,  perprimitiveNV perviewNV out 4-element array of int LayerPerViewNV gl_LayerPerViewNV,  perprimitiveNV perviewNV out 4-element array of unsized-element array of int ViewportMaskPerViewNV gl_ViewportMaskPerViewNV})
 0:?     'gl_PrimitiveIndicesNV' ( out 96-element array of uint PrimitiveIndicesNV)
+0:?     Linker Function: basic_works( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: ballot_works(vf4; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in 4-component vector of float)
+0:?     Linker Function: vote_works(vf4; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in 4-component vector of float)
+0:?     Linker Function: shuffle_works(vf4; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in 4-component vector of float)
+0:?     Linker Function: arith_works(vf4; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in 4-component vector of float)
+0:?     Linker Function: clustered_works(vf4; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in 4-component vector of float)
+0:?     Linker Function: quad_works(vf4; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in 4-component vector of float)
+0:?     Linker Function: partitioned_works(vf4; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in 4-component vector of float)
+0:?     Linker Function: sm_builtins_err( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: sm_builtins( ( global void)
+0:?       Function Parameters: 
 
 
 Linked mesh stage:

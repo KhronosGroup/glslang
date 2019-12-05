@@ -123,6 +123,10 @@ ERROR: node is still EOpNull!
 0:?     'p2' ( flat in 2-component vector of int)
 0:?     'p3' ( flat in 3-component vector of int)
 0:?     'samp' ( flat in int)
+0:?     Linker Function: barWxyz( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: primitiveID( ( global int)
+0:?       Function Parameters: 
 
 
 Linked fragment stage:

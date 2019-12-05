@@ -378,6 +378,32 @@ vertices = -1
 0:109  Function Definition: main( ( global void)
 0:109    Function Parameters: 
 0:?   Linker Objects
+0:?     Linker Function: minimal( ( global float)
+0:?       Function Parameters: 
+0:?     Linker Function: continuous_assignment( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: convert( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: loop_for( ( global float)
+0:?       Function Parameters: 
+0:?     Linker Function: loop_array( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: loop_while( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: fma_not_decorated( ( global float)
+0:?       Function Parameters: 
+0:?     Linker Function: precise_return_exp_func( ( noContraction temp float)
+0:?       Function Parameters: 
+0:?     Linker Function: precise_return_val_func( ( noContraction temp float)
+0:?       Function Parameters: 
+0:?     Linker Function: precise_func_parameter(f1;f1; ( global float)
+0:?       Function Parameters: 
+0:?         '' ( in float)
+0:?         '' ( noContraction out float)
+0:?     Linker Function: matrix(mf23;mf32; ( global 3X3 matrix of float)
+0:?       Function Parameters: 
+0:?         '' ( in 2X3 matrix of float)
+0:?         '' ( in 3X2 matrix of float)
 
 
 Linked tessellation control stage:

@@ -397,24 +397,80 @@ ERROR: node is still EOpNull!
 0:?     'v' ( smooth in 3-element array of mediump 4-component vector of float)
 0:?     'f' ( invariant global mediump float)
 0:?     'anon@0' (layout( column_major shared) uniform block{layout( column_major shared) uniform mediump int x})
+0:?     Linker Function: foo(f1; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in mediump float)
 0:?     'fa' ( global unsized 1-element array of mediump float)
 0:?     'f13' ( invariant global mediump float)
 0:?     'fi' ( invariant temp mediump float)
 0:?     'av' ( invariant smooth in mediump 4-component vector of float)
+0:?     Linker Function: foo10( ( global void)
+0:?       Function Parameters: 
 0:?     'uv2' ( invariant uniform mediump 2-component vector of float)
 0:?     'uv3' ( invariant uniform mediump 3-component vector of float)
 0:?     'glob2D' ( global lowp sampler2D)
+0:?     Linker Function: f11(s21; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in lowp sampler2D)
 0:?     'vary2D' ( smooth in lowp sampler2D)
 0:?     's3D' ( uniform mediump sampler3D)
 0:?     's3D2' ( uniform highp sampler3D)
+0:?     Linker Function: foo234( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: foo236( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: foo239( ( global void)
+0:?       Function Parameters: 
 0:?     'sExt' ( uniform lowp samplerExternalOES)
+0:?     Linker Function: foo245( ( global void)
+0:?       Function Parameters: 
 0:?     'mediumExt' ( uniform mediump samplerExternalOES)
 0:?     'highExt' ( uniform highp samplerExternalOES)
+0:?     Linker Function: foo246( ( global void)
+0:?       Function Parameters: 
 0:?     's2Dg' ( uniform lowp sampler2D)
+0:?     Linker Function: foo203940(i1;f1;f1; ( global mediump int)
+0:?       Function Parameters: 
+0:?         '' ( in mediump int)
+0:?         '' ( in mediump float)
+0:?         '' ( in mediump float)
 0:?     'f123' ( global mediump float)
 0:?     'f124' ( global mediump float)
 0:?     'sCube' ( uniform lowp samplerCube)
+0:?     Linker Function: foo323433( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: fgfg(f1;i1; ( global mediump int)
+0:?       Function Parameters: 
+0:?         '' ( in mediump float)
+0:?         '' ( in mediump int)
+0:?     Linker Function: fffg(f1; ( global mediump int)
+0:?       Function Parameters: 
+0:?         '' ( in mediump float)
+0:?     Linker Function: gggf(f1; ( global mediump int)
+0:?       Function Parameters: 
+0:?         '' ( in mediump float)
+0:?     Linker Function: agggf(f1; ( global mediump int)
+0:?       Function Parameters: 
+0:?         '' ( in mediump float)
 0:?     's' ( smooth in structure{ global mediump float f})
+0:?     Linker Function: vf( ( global mediump int)
+0:?       Function Parameters: 
+0:?     Linker Function: vf2( ( global mediump int)
+0:?       Function Parameters: 
+0:?     Linker Function: vf3( ( global mediump int)
+0:?       Function Parameters: 
+0:?     Linker Function: vf4(i1; ( global mediump int)
+0:?       Function Parameters: 
+0:?         '' ( in mediump int)
+0:?     Linker Function: vf5(i1; ( global mediump int)
+0:?       Function Parameters: 
+0:?         '' ( in mediump int)
+0:?     Linker Function: badswizzle( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: fooinit( ( global mediump float)
+0:?       Function Parameters: 
+0:?     Linker Function: fooinittest( ( global mediump float)
+0:?       Function Parameters: 
 0:?     'fi1' ( const mediump float)
 0:?       3.000000
 0:?     'fi2' ( const mediump float)

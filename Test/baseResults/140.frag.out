@@ -110,6 +110,10 @@ ERROR: node is still EOpNull!
 0:?     'factorBad' (layout( location=3) out 4-component vector of float)
 0:?     'factor' (layout( location=5) out 4-component vector of float)
 0:?     'vl2' (layout( location=4) smooth in 4-component vector of float)
+0:?     Linker Function: fooi( ( global float)
+0:?       Function Parameters: 
+0:?     Linker Function: foo( ( global void)
+0:?       Function Parameters: 
 0:?     'i1' ( global float)
 0:?     'i2' ( global float)
 

@@ -419,7 +419,89 @@ ERROR: node is still EOpNull!
 0:?       3.400000
 0:?     'concall' ( const float)
 0:?       0.295520
+0:?     Linker Function: foo(f1[2][3];f1[3][2];f1[2][3]; ( global 2-element array of 3-element array of int)
+0:?       Function Parameters: 
+0:?         '' ( in 2-element array of 3-element array of float)
+0:?         '' ( in 3-element array of 2-element array of float)
+0:?         '' ( in 2-element array of 3-element array of float)
+0:?     Linker Function: overloadA(f1; ( global int)
+0:?       Function Parameters: 
+0:?         '' ( in float)
+0:?     Linker Function: overloadA(f1;i1; ( global float)
+0:?       Function Parameters: 
+0:?         '' ( out float)
+0:?         '' ( in int)
+0:?     Linker Function: overloadA(i1; ( global float)
+0:?       Function Parameters: 
+0:?         '' ( in int)
+0:?     Linker Function: overloadB(f1;f1; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in float)
+0:?         '' ( const (read only) float)
+0:?     Linker Function: overloadC(i1;i1; ( global 2-component vector of float)
+0:?       Function Parameters: 
+0:?         '' ( in int)
+0:?         '' ( in int)
+0:?     Linker Function: overloadC(i1;f1; ( global 2-component vector of float)
+0:?       Function Parameters: 
+0:?         '' ( const (read only) int)
+0:?         '' ( in float)
+0:?     Linker Function: overloadC(f1;i1; ( global 2-component vector of float)
+0:?       Function Parameters: 
+0:?         '' ( in float)
+0:?         '' ( in int)
+0:?     Linker Function: overloadC(vf2;vf2; ( global 2-component vector of float)
+0:?       Function Parameters: 
+0:?         '' ( in 2-component vector of float)
+0:?         '' ( in 2-component vector of float)
+0:?     Linker Function: overloadD(i1;f1; ( global 3-component vector of float)
+0:?       Function Parameters: 
+0:?         '' ( in int)
+0:?         '' ( in float)
+0:?     Linker Function: overloadD(f1;i1; ( global 3-component vector of float)
+0:?       Function Parameters: 
+0:?         '' ( in float)
+0:?         '' ( in int)
+0:?     Linker Function: overloadE(f1[2]; ( global 3-component vector of float)
+0:?       Function Parameters: 
+0:?         '' ( in 2-element array of float)
+0:?     Linker Function: overloadE(mf22; ( global 3-component vector of float)
+0:?       Function Parameters: 
+0:?         '' ( in 2X2 matrix of float)
+0:?     Linker Function: overloadE(vf2; ( global 3-component vector of float)
+0:?       Function Parameters: 
+0:?         '' ( in 2-component vector of float)
+0:?     Linker Function: overloadF(i1; ( global 3-component vector of float)
+0:?       Function Parameters: 
+0:?         '' ( in int)
+0:?     Linker Function: overloadF(f1; ( global 3-component vector of float)
+0:?       Function Parameters: 
+0:?         '' ( in float)
+0:?     Linker Function: foo( ( global void)
+0:?       Function Parameters: 
 0:?     'gl_TexCoord' ( smooth out 35-element array of 4-component vector of float TexCoord)
+0:?     Linker Function: outFun(f1;vi2;i1;f1; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in float)
+0:?         '' ( out 2-component vector of int)
+0:?         '' ( in int)
+0:?         '' ( out float)
+0:?     Linker Function: outFunRet(f1;i1;i1;vi4; ( global int)
+0:?       Function Parameters: 
+0:?         '' ( in float)
+0:?         '' ( out int)
+0:?         '' ( const (read only) int)
+0:?         '' ( out 4-component vector of int)
+0:?     Linker Function: outFunRet(f1;vi4;i1;vi4; ( global 2-component vector of int)
+0:?       Function Parameters: 
+0:?         '' ( in float)
+0:?         '' ( out 4-component vector of int)
+0:?         '' ( in int)
+0:?         '' ( out 4-component vector of int)
+0:?     Linker Function: foo2( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: noise( ( global void)
+0:?       Function Parameters: 
 0:?     'c' ( uniform int)
 0:?     'x' ( in 2-component vector of int)
 0:?     'v2a' ( in 2-component vector of float)
@@ -427,6 +509,8 @@ ERROR: node is still EOpNull!
 0:?     'c2D' ( in 2-component vector of float)
 0:?     'c3D' ( in 3-component vector of float)
 0:?     'v4' ( uniform 4-component vector of float)
+0:?     Linker Function: foo213( ( global void)
+0:?       Function Parameters: 
 0:?     'abcdef' ( global int)
 0:?     'qrstuv' ( global int)
 

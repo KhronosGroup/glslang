@@ -408,6 +408,14 @@ ERROR: node is still EOpNull!
 0:?     'gimp' ( global unsized 1-element array of 1-element array of float)
 0:?     'g4' ( global 4-element array of 7-element array of float)
 0:?     'g5' ( global 5-element array of 7-element array of float)
+0:?     Linker Function: foo(f1[5][7]; ( global 4-element array of 7-element array of float)
+0:?       Function Parameters: 
+0:?         '' ( in 5-element array of 7-element array of float)
+0:?     Linker Function: bar(f1[5][7]; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in 5-element array of 7-element array of float)
+0:?     Linker Function: foo3( ( global void)
+0:?       Function Parameters: 
 
 
 Linked fragment stage:

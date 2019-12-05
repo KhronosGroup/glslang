@@ -205,6 +205,28 @@ ERROR: node is still EOpNull!
 0:74        'u' ( uniform float)
 0:?   Linker Objects
 0:?     'u' ( uniform float)
+0:?     Linker Function: foo(i1;i1;i1;i1;i1;i1; ( global int)
+0:?       Function Parameters: 
+0:?         '' ( in int)
+0:?         '' ( const (read only) int)
+0:?         '' ( in int)
+0:?         '' ( const (read only) int)
+0:?         '' ( out int)
+0:?         '' ( inout int)
+0:?     Linker Function: foo2(f1;vf3;i1; ( global int)
+0:?       Function Parameters: 
+0:?         '' ( in float)
+0:?         '' ( in 3-component vector of float)
+0:?         '' ( out int)
+0:?     Linker Function: foo3( ( global int)
+0:?       Function Parameters: 
+0:?     Linker Function: m(vf2; ( global 3-component vector of float)
+0:?       Function Parameters: 
+0:?         '' ( in 2-component vector of float)
+0:?     Linker Function: aggCall( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: badConv( ( global 4-component vector of float)
+0:?       Function Parameters: 
 
 
 Linked fragment stage:

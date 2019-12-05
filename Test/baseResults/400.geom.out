@@ -1025,11 +1025,17 @@ ERROR: node is still EOpNull!
 0:?   Linker Objects
 0:?     'bn' ( in 3-element array of block{ in int a})
 0:?     'gl_in' ( in 3-element array of block{ in 4-component vector of float Position gl_Position,  in float PointSize gl_PointSize})
+0:?     Linker Function: foo( ( global void)
+0:?       Function Parameters: 
 0:?     'color' ( in 3-element array of 4-component vector of float)
 0:?     'color2' ( in 3-element array of 4-component vector of float)
 0:?     'colorS' ( in 3-element array of 4-component vector of float)
 0:?     'colorBad' ( in 4-element array of 4-component vector of float)
+0:?     Linker Function: foo2( ( global void)
+0:?       Function Parameters: 
 0:?     'colorbad2' ( in 2-element array of 4-component vector of float)
+0:?     Linker Function: foo3( ( global void)
+0:?       Function Parameters: 
 0:?     'cva' (layout( location=4) in 3-element array of 4-component vector of float)
 0:?     'cvb' (layout( location=5) in 3-element array of 4-component vector of float)
 0:?     'cmc' (layout( location=2) in 3-element array of 3X3 matrix of float)
@@ -1038,9 +1044,15 @@ ERROR: node is still EOpNull!
 0:?     'scalar' ( in float)
 0:?     'inbls' ( in block{ in int a})
 0:?     'inbla' ( in 17-element array of block{ in int a})
+0:?     Linker Function: bits( ( global void)
+0:?       Function Parameters: 
 0:?     'indexedOut' (layout( location=7 stream=0) out 4-component vector of float)
 0:?     'samp1D' ( uniform sampler1D)
 0:?     'samp2Ds' ( uniform sampler2DShadow)
+0:?     Linker Function: qlod( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: doubles( ( global void)
+0:?       Function Parameters: 
 
 
 Linked geometry stage:

@@ -478,6 +478,8 @@ ERROR: node is still EOpNull!
 0:?     'arrY' ( global 1-element array of highp int)
 0:?     'arrZ' ( global 4096-element array of highp int)
 0:?     'ro' (layout( column_major shared) readonly buffer block{layout( column_major shared) readonly buffer highp int value, layout( column_major shared) readonly buffer unsized 3-element array of highp float values})
+0:?     Linker Function: foo( ( global void)
+0:?       Function Parameters: 
 0:?     'v' ( buffer highp 4-component vector of float)
 0:?     'us2dbad' ( uniform mediump usampler2D)
 0:?     'us2d' ( uniform highp usampler2D)
@@ -487,10 +489,17 @@ ERROR: node is still EOpNull!
 0:?     'iimg2Drgba' (layout( rgba32i) readonly uniform highp iimage2D)
 0:?     'img2Drgba' (layout( rgba32f) readonly uniform mediump image2D)
 0:?     'uimg2D' (layout( r32ui) uniform mediump uimage2D)
+0:?     Linker Function: qux( ( global void)
+0:?       Function Parameters: 
 0:?     'vol' ( volatile temp highp float)
 0:?     'vol2' ( readonly temp highp int)
+0:?     Linker Function: passr(iI21; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( coherent readonly in highp iimage2D)
 0:?     'qualim1' (layout( r32i) coherent readonly uniform highp iimage2D)
 0:?     'qualim2' (layout( r32i) coherent restrict readonly uniform highp iimage2D)
+0:?     Linker Function: passrc( ( global void)
+0:?       Function Parameters: 
 0:?     'i1bad' (layout( rg8i) readonly uniform highp uimage2D)
 0:?     'i2bad' (layout( rgba32i) readonly uniform highp image2D)
 0:?     'i3bad' (layout( rgba32f) readonly uniform highp uimage2D)
@@ -498,11 +507,23 @@ ERROR: node is still EOpNull!
 0:?     'i5bad' (layout( rgba32ui) readonly uniform highp iimage2D)
 0:?     'i6bad' (layout( r8ui) readonly uniform highp iimage2D)
 0:?     'counter' (layout( binding=0 offset=0) uniform highp atomic_uint)
+0:?     Linker Function: func(au1; ( global highp uint)
+0:?       Function Parameters: 
+0:?         '' ( in highp atomic_uint)
+0:?     Linker Function: func2(au1; ( global highp uint)
+0:?       Function Parameters: 
+0:?         '' ( out highp atomic_uint)
+0:?     Linker Function: mainAC( ( global void)
+0:?       Function Parameters: 
 0:?     'counterBad' (layout( binding=1) uniform mediump atomic_uint)
 0:?     'countArr' (layout( binding=2 offset=4) uniform 4-element array of highp atomic_uint)
 0:?     'i' ( uniform highp int)
+0:?     Linker Function: opac( ( global void)
+0:?       Function Parameters: 
 0:?     'atomi' ( shared highp int)
 0:?     'atomu' ( shared highp uint)
+0:?     Linker Function: atoms( ( global void)
+0:?       Function Parameters: 
 0:?     'pfoo' ( noContraction temp highp int)
 0:?     'dm' ( global 2X4 matrix of double)
 0:?     'sca' ( uniform mediump samplerCubeArray)
@@ -517,11 +538,19 @@ ERROR: node is still EOpNull!
 0:?     'badQ2' (layout( rgba8i) coherent volatile restrict uniform highp iimage2D)
 0:?     'badQ3' (layout( rgba16ui) coherent volatile restrict uniform highp uimage2D)
 0:?     'wo' (layout( column_major shared) writeonly buffer block{layout( column_major shared) writeonly buffer highp int value, layout( column_major shared) writeonly buffer unsized 3-element array of highp float values})
+0:?     Linker Function: foowo( ( global void)
+0:?       Function Parameters: 
 0:?     'multio' (layout( column_major shared) buffer block{layout( column_major shared) readonly buffer highp int value, layout( column_major shared) writeonly buffer unsized 1-element array of highp float values})
+0:?     Linker Function: foomultio( ( global void)
+0:?       Function Parameters: 
 0:?     'inbi' ( in block{ in highp int a})
 0:?     'outbi' ( out block{ out highp int a})
 0:?     't__' ( global highp float)
 0:?     'arr' ( shared 2-element array of 3-element array of 4-element array of highp 4-component vector of float)
+0:?     Linker Function: devi( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: devie( ( global void)
+0:?       Function Parameters: 
 
 
 Linked compute stage:

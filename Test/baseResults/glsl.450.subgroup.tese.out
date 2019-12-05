@@ -625,7 +625,35 @@ ERROR: node is still EOpNull!
 0:251      'gl_WarpIDNV' ( in uint WarpIDNV)
 0:252      'gl_SMIDNV' ( in uint SMIDNV)
 0:?   Linker Objects
+0:?     Linker Function: undeclared_errors(vf4; ( global 4-component vector of float)
+0:?       Function Parameters: 
+0:?         '' ( in 4-component vector of float)
 0:?     'anon@0' (layout( set=0 binding=0 column_major std430) buffer block{layout( column_major std430 offset=0) buffer runtime-sized array of 4-component vector of uint result})
+0:?     Linker Function: ballot_works(vf4; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in 4-component vector of float)
+0:?     Linker Function: vote_works(vf4; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in 4-component vector of float)
+0:?     Linker Function: shuffle_works(vf4; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in 4-component vector of float)
+0:?     Linker Function: arith_works(vf4; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in 4-component vector of float)
+0:?     Linker Function: clustered_works(vf4; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in 4-component vector of float)
+0:?     Linker Function: quad_works(vf4; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in 4-component vector of float)
+0:?     Linker Function: partitioned_works(vf4; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in 4-component vector of float)
+0:?     Linker Function: sm_builtins_err( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: sm_builtins( ( global void)
+0:?       Function Parameters: 
 
 
 Linked tessellation evaluation stage:

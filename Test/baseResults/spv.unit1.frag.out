@@ -25,6 +25,8 @@ gl_FragCoord origin is upper left
 0:?   Linker Objects
 0:?     'f' ( global highp float)
 0:?     'a1' ( global highp float)
+0:?     Linker Function: foo( ( global highp float)
+0:?       Function Parameters: 
 0:?     'cout' ( out highp float)
 
 spv.unit2.frag
@@ -59,8 +61,12 @@ gl_FragCoord origin is upper left
 0:?   Linker Objects
 0:?     'a2' ( global highp float)
 0:?     'f' ( global highp float)
+0:?     Linker Function: bar( ( global highp float)
+0:?       Function Parameters: 
 0:?     'cout' ( out highp float)
 0:?     'cin' ( smooth in highp float)
+0:?     Linker Function: foo( ( global highp float)
+0:?       Function Parameters: 
 
 spv.unit3.frag
 Shader version: 460
@@ -101,6 +107,8 @@ gl_FragCoord origin is upper left
 0:?     'h3' ( global highp float)
 0:?     'cout' ( out highp float)
 0:?     'cin' ( smooth in highp float)
+0:?     Linker Function: bar( ( global highp float)
+0:?       Function Parameters: 
 
 
 Linked fragment stage:

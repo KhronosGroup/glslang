@@ -33,6 +33,8 @@ ERROR: node is still EOpNull!
 0:?     'i' ( global int)
 0:?     'colorun' ( in 3-element array of 4-component vector of float)
 0:?     'color3' ( in 3-element array of 4-component vector of float)
+0:?     Linker Function: foo( ( global void)
+0:?       Function Parameters: 
 0:?     'gl_in' ( in 3-element array of block{ in 4-component vector of float Position gl_Position,  in float PointSize gl_PointSize,  in unsized 1-element array of float ClipDistance gl_ClipDistance})
 
 

@@ -46,7 +46,29 @@ Shader version: 450
 0:24      'f2' ( global int)
 0:24      Function Call: ret2( ( global int)
 0:?   Linker Objects
+0:?     Linker Function: bar( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: foo( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: B( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: C(i1; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in int)
+0:?     Linker Function: C(i1;i1; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in int)
+0:?         '' ( in int)
+0:?     Linker Function: C(b1; ( global void)
+0:?       Function Parameters: 
+0:?         '' ( in bool)
+0:?     Linker Function: A( ( global void)
+0:?       Function Parameters: 
+0:?     Linker Function: ret1( ( global int)
+0:?       Function Parameters: 
 0:?     'f1' ( global int)
+0:?     Linker Function: ret2( ( global int)
+0:?       Function Parameters: 
 0:?     'f2' ( global int)
 0:?     'gl_VertexID' ( gl_VertexId int VertexId)
 0:?     'gl_InstanceID' ( gl_InstanceId int InstanceId)
