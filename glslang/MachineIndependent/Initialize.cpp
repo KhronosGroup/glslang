@@ -3946,7 +3946,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
     //
     // Geometric Functions.
     //
-    if (IncludeLegacy(version, profile, spvVersion))
+    if (spvVersion.vulkan == 0 && IncludeLegacy(version, profile, spvVersion))
         stageBuiltins[EShLangVertex].append("vec4 ftransform();");
 
     //
@@ -8444,9 +8444,11 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         symbolTable.relateToOperator("textureFootprintGradNV",      EOpImageSampleFootprintGradNV);
         symbolTable.relateToOperator("textureFootprintGradClampNV", EOpImageSampleFootprintGradClampNV);
 
+        if (spvVersion.spv == 0 && IncludeLegacy(version, profile, spvVersion))
+            symbolTable.relateToOperator("ftransform", EOpFtransform);
+
         if (spvVersion.spv == 0 && (IncludeLegacy(version, profile, spvVersion) ||
             (profile == EEsProfile && version == 100))) {
-            symbolTable.relateToOperator("ftransform",               EOpFtransform);
 
             symbolTable.relateToOperator("texture1D",                EOpTexture);
             symbolTable.relateToOperator("texture1DGradARB",         EOpTextureGrad);
