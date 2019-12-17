@@ -12,3 +12,5 @@ inval: offset 0, type 1406, size 1, index 0, binding -1, stages 16
 
 Pipeline output reflection:
 
+Specialization constant reflection:
+

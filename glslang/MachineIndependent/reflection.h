@@ -59,7 +59,7 @@ class TReflection {
 public:
     TReflection(EShReflectionOptions opts, EShLanguage first, EShLanguage last)
         : options(opts), firstStage(first), lastStage(last), badReflection(TObjectReflection::badReflection())
-    { 
+    {
         for (int dim=0; dim<3; ++dim)
             localSize[dim] = 0;
     }
@@ -128,13 +128,23 @@ public:
         else
             return badReflection;
     }
-    
+
     // for mapping a storage block index to the storage block's description
     int getNumStorageBuffers() const { return (int)indexToBufferBlock.size(); }
     const TObjectReflection&  getStorageBufferBlock(int i) const
     {
         if (i >= 0 && i < (int)indexToBufferBlock.size())
             return indexToBufferBlock[i];
+        else
+            return badReflection;
+    }
+
+    // for mapping a specialization constant index to the specialization constant description
+    int getNumSpecConstants() { return (int)indexToSpecConstant.size(); }
+    const TObjectReflection& getSpecConstant(int i) const
+    {
+        if (i >= 0 && i < (int)indexToSpecConstant.size())
+            return indexToSpecConstant[i];
         else
             return badReflection;
     }
@@ -211,6 +221,7 @@ protected:
     TMapIndexToReflection indexToBufferBlock;
     TMapIndexToReflection indexToPipeInput;
     TMapIndexToReflection indexToPipeOutput;
+    TMapIndexToReflection indexToSpecConstant;
     TIndices atomicCounterUniformIndices;
 
     unsigned int localSize[3];

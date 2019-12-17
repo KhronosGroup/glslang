@@ -175,3 +175,5 @@ gl_InstanceID: offset 0, type 1404, size 1, index 0, binding -1, stages 1
 
 Pipeline output reflection:
 
+Specialization constant reflection:
+

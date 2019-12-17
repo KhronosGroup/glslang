@@ -804,6 +804,8 @@ public:
     const TObjectReflection& getBufferVariable(int index) const;
     int getNumBufferBlocks() const;
     const TObjectReflection& getBufferBlock(int index) const;
+    int getNumSpecConstants() const;
+    const TObjectReflection& getSpecConstant(int index) const;
     int getNumAtomicCounters() const;
     const TObjectReflection& getAtomicCounter(int index) const;
 

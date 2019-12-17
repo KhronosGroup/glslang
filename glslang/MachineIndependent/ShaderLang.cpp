@@ -2078,6 +2078,8 @@ int TProgram::getNumBufferVariables() const                           { return r
 const TObjectReflection& TProgram::getBufferVariable(int index) const { return reflection->getBufferVariable(index); }
 int TProgram::getNumBufferBlocks() const                              { return reflection->getNumStorageBuffers(); }
 const TObjectReflection& TProgram::getBufferBlock(int index) const    { return reflection->getStorageBufferBlock(index); }
+int TProgram::getNumSpecConstants() const                             { return reflection->getNumSpecConstants(); }
+const TObjectReflection& TProgram::getSpecConstant(int index) const   { return reflection->getSpecConstant(index); }
 int TProgram::getNumAtomicCounters() const                            { return reflection->getNumAtomicCounters(); }
 const TObjectReflection& TProgram::getAtomicCounter(int index) const  { return reflection->getAtomicCounter(index); }
 void TProgram::dumpReflection() { if (reflection != nullptr) reflection->dump(); }

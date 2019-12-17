@@ -23,3 +23,5 @@ block.Color: offset 0, type 8b52, size 1, index 0, binding -1, stages 8
 block.a: offset 0, type 8b52, size 1, index 0, binding -1, stages 8
 block.b[0]: offset 0, type 8b50, size 3, index 0, binding -1, stages 8
 
+Specialization constant reflection:
+
