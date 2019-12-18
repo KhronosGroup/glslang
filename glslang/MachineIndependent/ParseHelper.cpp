@@ -2,7 +2,7 @@
 // Copyright (C) 2002-2005  3Dlabs Inc. Ltd.
 // Copyright (C) 2012-2015 LunarG, Inc.
 // Copyright (C) 2015-2018 Google, Inc.
-// Copyright (C) 2017 ARM Limited.
+// Copyright (C) 2017, 2019 ARM Limited.
 //
 // All rights reserved.
 //
@@ -319,10 +319,15 @@ TIntermTyped* TParseContext::handleVariable(const TSourceLoc& loc, TSymbol* symb
         // If this is a variable or a block, check it and all it contains, but if this
         // is a member of an anonymous block, check the whole block, as the whole block
         // will need to be copied up if it contains an unsized array.
-        if (symbol->getType().containsUnsizedArray() ||
-            (symbol->getAsAnonMember() &&
-             symbol->getAsAnonMember()->getAnonContainer().getType().containsUnsizedArray()))
-            makeEditable(symbol);
+        //
+        // This check is being done before the block-name check further down, so guard
+        // for that too.
+        if (!symbol->getType().isUnusableName()) {
+            if (symbol->getType().containsUnsizedArray() ||
+                (symbol->getAsAnonMember() &&
+                 symbol->getAsAnonMember()->getAnonContainer().getType().containsUnsizedArray()))
+                makeEditable(symbol);
+        }
     }
 #endif
 
@@ -347,8 +352,7 @@ TIntermTyped* TParseContext::handleVariable(const TSourceLoc& loc, TSymbol* symb
         // See if it was a variable.
         variable = symbol ? symbol->getAsVariable() : nullptr;
         if (variable) {
-            if ((variable->getType().getBasicType() == EbtBlock ||
-                 variable->getType().getBasicType() == EbtStruct) && variable->getType().getStruct() == nullptr) {
+            if (variable->getType().isUnusableName()) {
                 error(loc, "cannot be used (maybe an instance name is needed)", string->c_str(), "");
                 variable = nullptr;
             }
@@ -1156,6 +1160,7 @@ TIntermTyped* TParseContext::handleFunctionCall(const TSourceLoc& loc, TFunction
                     const TQualifier& argQualifier = argType.getQualifier();
                     if (argQualifier.isMemory() && (argType.containsOpaque() || argType.isReference())) {
                         const char* message = "argument cannot drop memory qualifier when passed to formal parameter";
+#ifndef GLSLANG_WEB
                         if (argQualifier.volatil && ! formalQualifier.volatil)
                             error(arguments->getLoc(), message, "volatile", "");
                         if (argQualifier.coherent && ! (formalQualifier.devicecoherent || formalQualifier.coherent))
@@ -1175,6 +1180,7 @@ TIntermTyped* TParseContext::handleFunctionCall(const TSourceLoc& loc, TFunction
                         // Don't check 'restrict', it is different than the rest:
                         // "...but only restrict can be taken away from a calling argument, by a formal parameter that
                         // lacks the restrict qualifier..."
+#endif
                     }
                     if (!builtIn && argQualifier.getFormat() != formalQualifier.getFormat()) {
                         // we have mismatched formats, which should only be allowed if writeonly
@@ -2151,9 +2157,12 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
         break;
 
     case EOpSubgroupBroadcast:
-        // <id> must be an integral constant expression.
-        if ((*argp)[1]->getAsConstantUnion() == nullptr)
-            error(loc, "argument must be compile-time constant", "id", "");
+    case EOpSubgroupQuadBroadcast:
+        if (spvVersion.spv < EShTargetSpv_1_5) {
+            // <id> must be an integral constant expression.
+            if ((*argp)[1]->getAsConstantUnion() == nullptr)
+                error(loc, "argument must be compile-time constant", "id", "");
+        }
         break;
 
     case EOpBarrier:
@@ -2194,10 +2203,34 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
         break;
     }
 
-    if (callNode.getOp() > EOpSubgroupGuardStart && callNode.getOp() < EOpSubgroupGuardStop) {
+    if (callNode.isSubgroup()) {
         // these require SPIR-V 1.3
         if (spvVersion.spv > 0 && spvVersion.spv < EShTargetSpv_1_3)
             error(loc, "requires SPIR-V 1.3", "subgroup op", "");
+
+        // Check that if extended types are being used that the correct extensions are enabled.
+        if (arg0 != nullptr) {
+            const TType& type = arg0->getType();
+            switch (type.getBasicType()) {
+            default:
+                break;
+            case EbtInt8:
+            case EbtUint8:
+                requireExtensions(loc, 1, &E_GL_EXT_shader_subgroup_extended_types_int8, type.getCompleteString().c_str());
+                break;
+            case EbtInt16:
+            case EbtUint16:
+                requireExtensions(loc, 1, &E_GL_EXT_shader_subgroup_extended_types_int16, type.getCompleteString().c_str());
+                break;
+            case EbtInt64:
+            case EbtUint64:
+                requireExtensions(loc, 1, &E_GL_EXT_shader_subgroup_extended_types_int64, type.getCompleteString().c_str());
+                break;
+            case EbtFloat16:
+                requireExtensions(loc, 1, &E_GL_EXT_shader_subgroup_extended_types_float16, type.getCompleteString().c_str());
+                break;
+            }
+        }
     }
 }
 
@@ -2636,14 +2669,14 @@ void TParseContext::reservedErrorCheck(const TSourceLoc& loc, const TString& ide
         if (builtInName(identifier))
             error(loc, "identifiers starting with \"gl_\" are reserved", identifier.c_str(), "");
 
-        // "__" are not supposed to be an error.  ES 310 (and desktop) added the clarification:
+        // "__" are not supposed to be an error.  ES 300 (and desktop) added the clarification:
         // "In addition, all identifiers containing two consecutive underscores (__) are
         // reserved; using such a name does not itself result in an error, but may result
         // in undefined behavior."
         // however, before that, ES tests required an error.
         if (identifier.find("__") != TString::npos) {
-            if (isEsProfile() && version <= 300)
-                error(loc, "identifiers containing consecutive underscores (\"__\") are reserved, and an error if version <= 300", identifier.c_str(), "");
+            if (isEsProfile() && version < 300)
+                error(loc, "identifiers containing consecutive underscores (\"__\") are reserved, and an error if version < 300", identifier.c_str(), "");
             else
                 warn(loc, "identifiers containing consecutive underscores (\"__\") are reserved", identifier.c_str(), "");
         }
@@ -2655,7 +2688,7 @@ void TParseContext::reservedErrorCheck(const TSourceLoc& loc, const TString& ide
 //
 void TParseContext::reservedPpErrorCheck(const TSourceLoc& loc, const char* identifier, const char* op)
 {
-    // "__" are not supposed to be an error.  ES 310 (and desktop) added the clarification:
+    // "__" are not supposed to be an error.  ES 300 (and desktop) added the clarification:
     // "All macro names containing two consecutive underscores ( __ ) are reserved;
     // defining such a name does not itself result in an error, but may result in
     // undefined behavior.  All macro names prefixed with "GL_" ("GL" followed by a
@@ -2673,8 +2706,8 @@ void TParseContext::reservedPpErrorCheck(const TSourceLoc& loc, const char* iden
              strcmp(identifier, "__VERSION__") == 0))
             ppError(loc, "predefined names can't be (un)defined:", op,  identifier);
         else {
-            if (isEsProfile() && version <= 300)
-                ppError(loc, "names containing consecutive underscores are reserved, and an error if version <= 300:", op, identifier);
+            if (isEsProfile() && version < 300)
+                ppError(loc, "names containing consecutive underscores are reserved, and an error if version < 300:", op, identifier);
             else
                 ppWarn(loc, "names containing consecutive underscores are reserved:", op, identifier);
         }
@@ -2744,14 +2777,29 @@ bool TParseContext::builtInName(const TString& identifier)
 //
 bool TParseContext::constructorError(const TSourceLoc& loc, TIntermNode* node, TFunction& function, TOperator op, TType& type)
 {
-    type.shallowCopy(function.getType());
-
-    bool constructingMatrix = false;
-    switch(op) {
+    // See if the constructor does not establish the main type, only requalifies
+    // it, in which case the type comes from the argument instead of from the
+    // constructor function.
+    switch (op) {
 #ifndef GLSLANG_WEB
+    case EOpConstructNonuniform:
+        if (node != nullptr && node->getAsTyped() != nullptr) {
+            type.shallowCopy(node->getAsTyped()->getType());
+            type.getQualifier().makeTemporary();
+            type.getQualifier().nonUniform = true;
+        }
+        break;
+#endif
+    default:
+        type.shallowCopy(function.getType());
+        break;
+    }
+
+    // See if it's a matrix
+    bool constructingMatrix = false;
+    switch (op) {
     case EOpConstructTextureSampler:
         return constructorTextureSamplerError(loc, function);
-#endif
     case EOpConstructMat2x2:
     case EOpConstructMat2x3:
     case EOpConstructMat2x4:
@@ -2841,6 +2889,8 @@ bool TParseContext::constructorError(const TSourceLoc& loc, TIntermNode* node, T
             }
         }
     }
+    if (op == EOpConstructNonuniform)
+        constType = false;
 
 #ifndef GLSLANG_WEB
     switch (op) {
@@ -3341,11 +3391,11 @@ void TParseContext::globalQualifierTypeCheck(const TSourceLoc& loc, const TQuali
                     requireProfile(loc, ~EEsProfile, "fragment-shader struct input containing an array");
             }
             break;
-#ifndef GLSLANG_WEB
        case EShLangCompute:
             if (! symbolTable.atBuiltInLevel())
                 error(loc, "global storage input qualifier cannot be used in a compute shader", "in", "");
             break;
+#ifndef GLSLANG_WEB
        case EShLangTessControl:
             if (qualifier.patch)
                 error(loc, "can only use on output in tessellation-control shader", "patch", "");
@@ -3386,10 +3436,10 @@ void TParseContext::globalQualifierTypeCheck(const TSourceLoc& loc, const TQuali
                 error(loc, "cannot contain a double, int64, or uint64", GetStorageQualifierString(qualifier.storage), "");
         break;
 
-#ifndef GLSLANG_WEB
         case EShLangCompute:
             error(loc, "global storage output qualifier cannot be used in a compute shader", "out", "");
             break;
+#ifndef GLSLANG_WEB
         case EShLangTessEvaluation:
             if (qualifier.patch)
                 error(loc, "can only use on input in tessellation-evaluation shader", "patch", "");
@@ -3767,10 +3817,6 @@ void TParseContext::arraySizesCheck(const TSourceLoc& loc, const TQualifier& qua
     // for ES, if size isn't coming from an initializer, it has to be explicitly declared now,
     // with very few exceptions
 
-    // last member of ssbo block exception:
-    if (qualifier.storage == EvqBuffer && lastMember)
-        return;
-
     // implicitly-sized io exceptions:
     switch (language) {
     case EShLangGeometry:
@@ -3804,6 +3850,10 @@ void TParseContext::arraySizesCheck(const TSourceLoc& loc, const TQualifier& qua
     }
 
 #endif
+
+    // last member of ssbo block exception:
+    if (qualifier.storage == EvqBuffer && lastMember)
+        return;
 
     arraySizeRequiredCheck(loc, *arraySizes);
 }
@@ -4429,6 +4479,7 @@ void TParseContext::paramCheckFixStorage(const TSourceLoc& loc, const TStorageQu
 
 void TParseContext::paramCheckFix(const TSourceLoc& loc, const TQualifier& qualifier, TType& type)
 {
+#ifndef GLSLANG_WEB
     if (qualifier.isMemory()) {
         type.getQualifier().volatil   = qualifier.volatil;
         type.getQualifier().coherent  = qualifier.coherent;
@@ -4441,6 +4492,7 @@ void TParseContext::paramCheckFix(const TSourceLoc& loc, const TQualifier& quali
         type.getQualifier().writeonly = qualifier.writeonly;
         type.getQualifier().restrict  = qualifier.restrict;
     }
+#endif
 
     if (qualifier.isAuxiliary() ||
         qualifier.isInterpolation())
@@ -5102,7 +5154,8 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
         return;
     } else if (id == "location") {
         profileRequires(loc, EEsProfile, 300, nullptr, "location");
-        const char* exts[2] = { E_GL_ARB_separate_shader_objects, E_GL_ARB_explicit_attrib_location };
+        const char* exts[2] = { E_GL_ARB_separate_shader_objects, E_GL_ARB_explicit_attrib_location }; 
+        // GL_ARB_explicit_uniform_location requires 330 or GL_ARB_explicit_attrib_location we do not need to add it here
         profileRequires(loc, ~EEsProfile, 330, 2, exts, "location");
         if ((unsigned int)value >= TQualifier::layoutLocationEnd)
             error(loc, "location is too large", id.c_str(), "");
@@ -5246,11 +5299,10 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
             error(loc, "needs a literal integer", "buffer_reference_align", "");
         return;
     }
+#endif
 
     switch (language) {
-    case EShLangVertex:
-        break;
-
+#ifndef GLSLANG_WEB
     case EShLangTessControl:
         if (id == "vertices") {
             if (value == 0)
@@ -5261,9 +5313,6 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
                 error(loc, "needs a literal integer", "vertices", "");
             return;
         }
-        break;
-
-    case EShLangTessEvaluation:
         break;
 
     case EShLangGeometry:
@@ -5338,16 +5387,17 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
 
     case EShLangTaskNV:
         // Fall through
+#endif
     case EShLangCompute:
         if (id.compare(0, 11, "local_size_") == 0) {
+#ifndef GLSLANG_WEB
             if (language == EShLangMeshNV || language == EShLangTaskNV) {
                 requireExtensions(loc, 1, &E_GL_NV_mesh_shader, "gl_WorkGroupSize");
-            }
-            else
-            {
+            } else {
                 profileRequires(loc, EEsProfile, 310, 0, "gl_WorkGroupSize");
                 profileRequires(loc, ~EEsProfile, 430, E_GL_ARB_compute_shader, "gl_WorkGroupSize");
             }
+#endif
             if (nonLiteral)
                 error(loc, "needs a literal integer", "local_size", "");
             if (id.size() == 12 && value == 0) {
@@ -5356,14 +5406,17 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
             }
             if (id == "local_size_x") {
                 publicType.shaderQualifiers.localSize[0] = value;
+                publicType.shaderQualifiers.localSizeNotDefault[0] = true;
                 return;
             }
             if (id == "local_size_y") {
                 publicType.shaderQualifiers.localSize[1] = value;
+                publicType.shaderQualifiers.localSizeNotDefault[1] = true;
                 return;
             }
             if (id == "local_size_z") {
                 publicType.shaderQualifiers.localSize[2] = value;
+                publicType.shaderQualifiers.localSizeNotDefault[2] = true;
                 return;
             }
             if (spvVersion.spv != 0) {
@@ -5382,11 +5435,10 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
             }
         }
         break;
+
     default:
         break;
     }
-
-#endif // GLSLANG_WEB
 
     error(loc, "there is no such layout identifier for this stage taking an assigned value", id.c_str(), "");
 }
@@ -5859,8 +5911,9 @@ void TParseContext::layoutQualifierCheck(const TSourceLoc& loc, const TQualifier
         case EvqBuffer:
         {
             const char* feature = "location qualifier on uniform or buffer";
-            requireProfile(loc, EEsProfile | ECoreProfile | ECompatibilityProfile, feature);
-            profileRequires(loc, ECoreProfile | ECompatibilityProfile, 430, nullptr, feature);
+            requireProfile(loc, EEsProfile | ECoreProfile | ECompatibilityProfile | ENoProfile, feature);
+            profileRequires(loc, ~EEsProfile, 330, E_GL_ARB_explicit_attrib_location, feature);
+            profileRequires(loc, ~EEsProfile, 430, E_GL_ARB_explicit_uniform_location, feature);
             profileRequires(loc, EEsProfile, 310, nullptr, feature);
             break;
         }
@@ -6869,7 +6922,7 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
     // This avoids requesting a matrix of a new type that is going to be discarded anyway.
     // TODO: This could be generalized to more type combinations, but that would require
     // more extensive testing and full algorithm rework. For now, the need to do two changes makes
-    // the recursive call work, and avoids the most aggregious case of creating integer matrices.
+    // the recursive call work, and avoids the most egregious case of creating integer matrices.
     if (node->getType().isMatrix() && (type.isScalar() || type.isVector()) &&
             type.isFloatingDomain() != node->getType().isFloatingDomain()) {
         TType transitionType(node->getBasicType(), glslang::EvqTemporary, type.getVectorSize(), 0, 0, node->isVector());
@@ -6908,6 +6961,12 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
         break;
 
     case EOpConstructUVec2:
+        if (node->getType().getBasicType() == EbtReference) {
+            requireExtensions(loc, 1, &E_GL_EXT_buffer_reference_uvec2, "reference conversion to uvec2");
+            TIntermTyped* newNode = intermediate.addBuiltInFunctionCall(node->getLoc(), EOpConvPtrToUvec2, true, node,
+                type);
+            return newNode;
+        }
     case EOpConstructUVec3:
     case EOpConstructUVec4:
     case EOpConstructUint:
@@ -6958,8 +7017,14 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
         if (!intermediate.getArithemeticFloat16Enabled()) {
             TType tempType(EbtFloat, EvqTemporary, type.getVectorSize());
             newNode = node;
-            if (tempType != newNode->getType())
-                newNode = intermediate.setAggregateOperator(newNode, (TOperator)(EOpConstructVec2 + op - EOpConstructF16Vec2), tempType, node->getLoc());
+            if (tempType != newNode->getType()) {
+                TOperator aggregateOp;
+                if (op == EOpConstructFloat16)
+                    aggregateOp = EOpConstructFloat;
+                else
+                    aggregateOp = (TOperator)(EOpConstructVec2 + op - EOpConstructF16Vec2);
+                newNode = intermediate.setAggregateOperator(newNode, aggregateOp, tempType, node->getLoc());
+            }
             newNode = intermediate.addConversion(EbtFloat16, newNode);
             return newNode;
         }
@@ -6975,8 +7040,14 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
         if (!intermediate.getArithemeticInt8Enabled()) {
             TType tempType(EbtInt, EvqTemporary, type.getVectorSize());
             newNode = node;
-            if (tempType != newNode->getType())
-                newNode = intermediate.setAggregateOperator(newNode, (TOperator)(EOpConstructIVec2 + op - EOpConstructI8Vec2), tempType, node->getLoc());
+            if (tempType != newNode->getType()) {
+                TOperator aggregateOp;
+                if (op == EOpConstructInt8)
+                    aggregateOp = EOpConstructInt;
+                else
+                    aggregateOp = (TOperator)(EOpConstructIVec2 + op - EOpConstructI8Vec2);
+                newNode = intermediate.setAggregateOperator(newNode, aggregateOp, tempType, node->getLoc());
+            }
             newNode = intermediate.addConversion(EbtInt8, newNode);
             return newNode;
         }
@@ -6992,8 +7063,14 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
         if (!intermediate.getArithemeticInt8Enabled()) {
             TType tempType(EbtUint, EvqTemporary, type.getVectorSize());
             newNode = node;
-            if (tempType != newNode->getType())
-                newNode = intermediate.setAggregateOperator(newNode, (TOperator)(EOpConstructUVec2 + op - EOpConstructU8Vec2), tempType, node->getLoc());
+            if (tempType != newNode->getType()) {
+                TOperator aggregateOp;
+                if (op == EOpConstructUint8)
+                    aggregateOp = EOpConstructUint;
+                else
+                    aggregateOp = (TOperator)(EOpConstructUVec2 + op - EOpConstructU8Vec2);
+                newNode = intermediate.setAggregateOperator(newNode, aggregateOp, tempType, node->getLoc());
+            }
             newNode = intermediate.addConversion(EbtUint8, newNode);
             return newNode;
         }
@@ -7009,8 +7086,14 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
         if (!intermediate.getArithemeticInt16Enabled()) {
             TType tempType(EbtInt, EvqTemporary, type.getVectorSize());
             newNode = node;
-            if (tempType != newNode->getType())
-                newNode = intermediate.setAggregateOperator(newNode, (TOperator)(EOpConstructIVec2 + op - EOpConstructI16Vec2), tempType, node->getLoc());
+            if (tempType != newNode->getType()) {
+                TOperator aggregateOp;
+                if (op == EOpConstructInt16)
+                    aggregateOp = EOpConstructInt;
+                else
+                    aggregateOp = (TOperator)(EOpConstructIVec2 + op - EOpConstructI16Vec2);
+                newNode = intermediate.setAggregateOperator(newNode, aggregateOp, tempType, node->getLoc());
+            }
             newNode = intermediate.addConversion(EbtInt16, newNode);
             return newNode;
         }
@@ -7026,8 +7109,14 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
         if (!intermediate.getArithemeticInt16Enabled()) {
             TType tempType(EbtUint, EvqTemporary, type.getVectorSize());
             newNode = node;
-            if (tempType != newNode->getType())
-                newNode = intermediate.setAggregateOperator(newNode, (TOperator)(EOpConstructUVec2 + op - EOpConstructU16Vec2), tempType, node->getLoc());
+            if (tempType != newNode->getType()) {
+                TOperator aggregateOp;
+                if (op == EOpConstructUint16)
+                    aggregateOp = EOpConstructUint;
+                else
+                    aggregateOp = (TOperator)(EOpConstructUVec2 + op - EOpConstructU16Vec2);
+                newNode = intermediate.setAggregateOperator(newNode, aggregateOp, tempType, node->getLoc());
+            }
             newNode = intermediate.addConversion(EbtUint16, newNode);
             return newNode;
         }
@@ -7054,8 +7143,7 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
 
     case EOpConstructNonuniform:
         // Make a nonuniform copy of node
-        newNode = intermediate.addBuiltInFunctionCall(node->getLoc(), EOpCopyObject, true, node, node->getType());
-        newNode->getWritableType().getQualifier().nonUniform = true;
+        newNode = intermediate.addBuiltInFunctionCall(node->getLoc(), EOpCopyObject, true, node, type);
         return newNode;
 
     case EOpConstructReference:
@@ -7065,7 +7153,15 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
             return newNode;
         // construct reference from uint64
         } else if (node->getType().isScalar() && node->getType().getBasicType() == EbtUint64) {
-            TIntermTyped* newNode = intermediate.addBuiltInFunctionCall(node->getLoc(), EOpConvUint64ToPtr, true, node, type);
+            TIntermTyped* newNode = intermediate.addBuiltInFunctionCall(node->getLoc(), EOpConvUint64ToPtr, true, node,
+                type);
+            return newNode;
+        // construct reference from uvec2
+        } else if (node->getType().isVector() && node->getType().getBasicType() == EbtUint &&
+                   node->getVectorSize() == 2) {
+            requireExtensions(loc, 1, &E_GL_EXT_buffer_reference_uvec2, "uvec2 conversion to reference");
+            TIntermTyped* newNode = intermediate.addBuiltInFunctionCall(node->getLoc(), EOpConvUvec2ToPtr, true, node,
+                type);
             return newNode;
         } else {
             return nullptr;
@@ -7320,6 +7416,7 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
     for (unsigned int member = 0; member < typeList.size(); ++member) {
         TQualifier& memberQualifier = typeList[member].type->getQualifier();
         const TSourceLoc& memberLoc = typeList[member].loc;
+#ifndef GLSLANG_WEB
         if (memberQualifier.hasStream()) {
             if (defaultQualification.layoutStream != memberQualifier.layoutStream)
                 error(memberLoc, "member cannot contradict block", "stream", "");
@@ -7333,6 +7430,7 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
             if (defaultQualification.layoutXfbBuffer != memberQualifier.layoutXfbBuffer)
                 error(memberLoc, "member cannot contradict block (or what block inherited from global)", "xfb_buffer", "");
         }
+#endif
 
         if (memberQualifier.hasPacking())
             error(memberLoc, "member of block cannot have a packing layout qualifier", typeList[member].type->getFieldName().c_str(), "");
@@ -7375,6 +7473,7 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
 
     layoutMemberLocationArrayCheck(loc, memberWithLocation, arraySizes);
 
+#ifndef GLSLANG_WEB
     // Ensure that the block has an XfbBuffer assigned. This is needed
     // because if the block has a XfbOffset assigned, then it is
     // assumed that it has implicitly assigned the current global
@@ -7384,6 +7483,7 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
        if (!currentBlockQualifier.hasXfbBuffer() && currentBlockQualifier.hasXfbOffset())
           currentBlockQualifier.layoutXfbBuffer = globalOutputDefaults.layoutXfbBuffer;
     }
+#endif
 
     // Process the members
     fixBlockLocations(loc, currentBlockQualifier, typeList, memberWithLocation, memberWithoutLocation);
@@ -7940,8 +8040,9 @@ void TParseContext::updateStandaloneQualifierDefaults(const TSourceLoc& loc, con
         else
             error(loc, "can only apply to 'in'", "point_mode", "");
     }
+#endif
     for (int i = 0; i < 3; ++i) {
-        if (publicType.shaderQualifiers.localSize[i] > 1) {
+        if (publicType.shaderQualifiers.localSizeNotDefault[i]) {
             if (publicType.qualifier.storage == EvqVaryingIn) {
                 if (! intermediate.setLocalSize(i, publicType.shaderQualifiers.localSize[i]))
                     error(loc, "cannot change previously set size", "local_size", "");
@@ -7956,7 +8057,9 @@ void TParseContext::updateStandaloneQualifierDefaults(const TSourceLoc& loc, con
                         }
                         if (intermediate.getLocalSize(i) > (unsigned int)max)
                             error(loc, "too large; see gl_MaxComputeWorkGroupSize", "local_size", "");
-                    } else if (language == EShLangMeshNV) {
+                    }
+#ifndef GLSLANG_WEB
+                    else if (language == EShLangMeshNV) {
                         switch (i) {
                         case 0: max = resources.maxMeshWorkGroupSizeX_NV; break;
                         case 1: max = resources.maxMeshWorkGroupSizeY_NV; break;
@@ -7974,7 +8077,9 @@ void TParseContext::updateStandaloneQualifierDefaults(const TSourceLoc& loc, con
                         }
                         if (intermediate.getLocalSize(i) > (unsigned int)max)
                             error(loc, "too large; see gl_MaxTaskWorkGroupSizeNV", "local_size", "");
-                    } else {
+                    }
+#endif
+                    else {
                         assert(0);
                     }
 
@@ -7999,6 +8104,7 @@ void TParseContext::updateStandaloneQualifierDefaults(const TSourceLoc& loc, con
         }
     }
 
+#ifndef GLSLANG_WEB
     if (publicType.shaderQualifiers.earlyFragmentTests) {
         if (publicType.qualifier.storage == EvqVaryingIn)
             intermediate.setEarlyFragmentTests();

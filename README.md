@@ -28,6 +28,15 @@ comment in `glslang/MachineIndependent/Versions.cpp`.
 
 Tasks waiting to be done are documented as GitHub issues.
 
+Deprecations
+------------
+
+1. GLSLang, when installed through CMake, will install a `SPIRV` folder into
+`${CMAKE_INSTALL_INCLUDEDIR}`. This `SPIRV` folder is being moved to
+`glslang/SPIRV`. During the transition the `SPIRV` folder will be installed into
+both locations. The old install of `SPIRV/` will be removed as a CMake install
+target no sooner then May 1, 2020. See issue #1964.
+
 Execution of Standalone Wrapper
 -------------------------------
 
@@ -94,8 +103,8 @@ cd ../..
 ```
 
 If you wish to assure that SPIR-V generated from HLSL is legal for Vulkan,
-or wish to invoke -Os to reduce SPIR-V size from HLSL or GLSL, install
-spirv-tools with this:
+wish to invoke -Os to reduce SPIR-V size from HLSL or GLSL, or wish to run the
+integrated test suite, install spirv-tools with this:
 
 ```bash
 ./update_glslang_sources.py
@@ -166,25 +175,29 @@ when executed from the glslang subdirectory of the glslang repository.
 With no arguments it builds the full grammar, and with a "web" argument,
 the web grammar subset (see more about the web subset in the next section).
 
-### WASM for the the Web
+### Building to WASM for the Web and Node
 
-Use the steps in [Build Steps](#build-steps), which following notes/exceptions:
+Use the steps in [Build Steps](#build-steps), with the following notes/exceptions:
 * For building the web subset of core glslang:
-  + `m4` also needs a `-DGLSLANG_WEB` argument, or simply execute `updateGrammar web` from the glslang subdirectory
-  + turn off the CMAKE options for `BUILD_TESTING`, `ENABLE_OPT`, and `INSTALL_GTEST`,
-    while turning on `ENABLE_GLSLANG_WEB`
+  + execute `updateGrammar web` from the glslang subdirectory
+    (or if using your own scripts, `m4` needs a `-DGLSLANG_WEB` argument)
+  + set `-DENABLE_HLSL=OFF -DBUILD_TESTING=OFF -DENABLE_OPT=OFF -DINSTALL_GTEST=OFF`
+  + turn on `-DENABLE_GLSLANG_WEB=ON`
+  + optionally, for GLSL compilation error messages, turn on `-DENABLE_GLSLANG_WEB_DEVEL=ON`
 * `emsdk` needs to be present in your executable search path, *PATH* for
   Bash-like enivironments
-  + Instructions located
-    [here](https://emscripten.org/docs/getting_started/downloads.html#sdk-download-and-install)
-* Do not checkout SPIRV-Tools into `External`
-  + Does not work correctly with emscripten out of the box and we don't want it
-    in the build anyway. *TBD* Have build ignore SPIRV-Tools for web build
-* Wrap call to `cmake` using `emconfigure` with ENABLE_GLSLANG_WEB=ON:
-  + e.g. For Linux, `emconfigure cmake -DCMAKE_BUILD_TYPE=Release
-    -DENABLE_GLSLANG_WEB=ON -DCMAKE_INSTALL_PREFIX="$(pwd)/install" ..`
-* To get a 'true' minimized build, make sure to use `brotli` to compress the .js
+  + [Instructions located
+    here](https://emscripten.org/docs/getting_started/downloads.html#sdk-download-and-install)
+* Wrap cmake call: `emcmake cmake`
+* To get a fully minimized build, make sure to use `brotli` to compress the .js
   and .wasm files
+
+Example:
+
+```sh
+emcmake cmake -DCMAKE_BUILD_TYPE=Release -DENABLE_GLSLANG_WEB=ON \
+    -DENABLE_HLSL=OFF -DBUILD_TESTING=OFF -DENABLE_OPT=OFF -DINSTALL_GTEST=OFF ..
+```
 
 Testing
 -------
@@ -222,6 +235,11 @@ Running `runtests` script-backed tests:
 ```bash
 cd $SOURCE_DIR/Test && ./runtests
 ```
+
+If some tests fail with validation errors, there may be a mismatch between the
+version of `spirv-val` on the system and the version of glslang.  In this
+case, it is necessary to run `update_glslang_sources.py`.  See "Check-Out
+External Projects" above for more details.
 
 ### Contributing tests
 
@@ -303,7 +321,7 @@ See `ShaderLang.h` and the usage of it in `StandAlone/StandAlone.cpp` for more
 details. There is a block comment giving more detail above the calls for
 `setEnvInput, setEnvClient, and setEnvTarget`.
 
-### C Functional Interface (orignal)
+### C Functional Interface (original)
 
 This interface is in roughly the first 2/3 of `ShaderLang.h`, and referred to
 as the `Sh*()` interface, as all the entry points start `Sh`.

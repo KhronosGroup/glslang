@@ -6,6 +6,10 @@ else(WIN32)
     message("unknown platform")
 endif(WIN32)
 
+if(EMSCRIPTEN OR ENABLE_GLSLANG_WEB)
+    add_subdirectory(OSDependent/Web)
+endif(EMSCRIPTEN OR ENABLE_GLSLANG_WEB)
+
 set(SOURCES
     MachineIndependent/glslang.m4
     MachineIndependent/glslang.y
@@ -78,7 +82,9 @@ add_library(glslang ${LIB_TYPE} ${BISON_GLSLParser_OUTPUT_SOURCE} ${SOURCES} ${H
 set_property(TARGET glslang PROPERTY FOLDER glslang)
 set_property(TARGET glslang PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_link_libraries(glslang OGLCompiler OSDependent)
-target_include_directories(glslang PUBLIC ..)
+target_include_directories(glslang PUBLIC 
+	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>
+	$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
 if(WIN32 AND BUILD_SHARED_LIBS)
     set_target_properties(glslang PROPERTIES PREFIX "")
@@ -98,14 +104,15 @@ endif(WIN32)
 
 if(ENABLE_GLSLANG_INSTALL)
     if(BUILD_SHARED_LIBS)
-        install(TARGETS glslang
+        install(TARGETS glslang EXPORT glslangTargets
                 ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
                 LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
                 RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
     else()
-        install(TARGETS glslang
+        install(TARGETS glslang EXPORT glslangTargets
                 ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
     endif()
+	install(EXPORT glslangTargets DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake)
 endif(ENABLE_GLSLANG_INSTALL)
 
 if(ENABLE_GLSLANG_INSTALL)
@@ -114,16 +121,3 @@ if(ENABLE_GLSLANG_INSTALL)
         install(FILES ${file} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/glslang/${dir})
     endforeach()
 endif(ENABLE_GLSLANG_INSTALL)
-
-if(ENABLE_GLSLANG_WEB)
-    add_executable(glslang.js glslang.js.cpp)
-    glslang_set_link_args(glslang.js)
-    target_link_libraries(glslang.js glslang SPIRV)
-    if(EMSCRIPTEN)
-        set_target_properties(glslang.js PROPERTIES
-          OUTPUT_NAME "glslang"
-          SUFFIX ".js"
-          LINK_FLAGS "--bind -s EXPORT_NAME=\"glslangModule\"")
-        em_link_pre_js(glslang.js ${CMAKE_CURRENT_SOURCE_DIR}/glslang.pre.js)
-    endif(EMSCRIPTEN)
-endif(ENABLE_GLSLANG_WEB)

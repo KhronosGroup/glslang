@@ -67,6 +67,7 @@ typedef enum {
     Spv_1_2 = (1 << 16) | (2 << 8),
     Spv_1_3 = (1 << 16) | (3 << 8),
     Spv_1_4 = (1 << 16) | (4 << 8),
+    Spv_1_5 = (1 << 16) | (5 << 8),
 } SpvVersion;
 
 class Builder {
@@ -105,6 +106,20 @@ public:
     void addModuleProcessed(const std::string& p) { moduleProcesses.push_back(p.c_str()); }
     void setEmitOpLines() { emitOpLines = true; }
     void addExtension(const char* ext) { extensions.insert(ext); }
+    void removeExtension(const char* ext)
+    {
+        extensions.erase(ext);
+    }
+    void addIncorporatedExtension(const char* ext, SpvVersion incorporatedVersion)
+    {
+        if (getSpvVersion() < static_cast<unsigned>(incorporatedVersion))
+            addExtension(ext);
+    }
+    void promoteIncorporatedExtension(const char* baseExt, const char* promoExt, SpvVersion incorporatedVersion)
+    {
+        removeExtension(baseExt);
+        addIncorporatedExtension(promoExt, incorporatedVersion);
+    }
     void addInclude(const std::string& name, const std::string& text)
     {
         spv::Id incId = getStringId(name);
@@ -668,16 +683,21 @@ public:
     // based on the type of the base and the chain of dereferences.
     Id accessChainGetInferredType();
 
-    // Add capabilities, extensions, remove unneeded decorations, etc., 
+    // Add capabilities, extensions, remove unneeded decorations, etc.,
     // based on the resulting SPIR-V.
     void postProcess();
 
+    // Prune unreachable blocks in the CFG and remove unneeded decorations.
+    void postProcessCFG();
+
+#ifndef GLSLANG_WEB
+    // Add capabilities, extensions based on instructions in the module.
+    void postProcessFeatures();
     // Hook to visit each instruction in a block in a function
     void postProcess(Instruction&);
-    // Hook to visit each instruction in a reachable block in a function.
-    void postProcessReachable(const Instruction&);
     // Hook to visit each non-32-bit sized float/int operation in a block.
     void postProcessType(const Instruction&, spv::Id typeId);
+#endif
 
     void dump(std::vector<unsigned int>&) const;
 

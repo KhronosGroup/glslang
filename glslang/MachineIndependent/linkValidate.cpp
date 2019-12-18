@@ -192,12 +192,14 @@ void TIntermediate::mergeModes(TInfoSink& infoSink, TIntermediate& unit)
     MERGE_TRUE(pointMode);
 
     for (int i = 0; i < 3; ++i) {
-        if (localSize[i] > 1)
+        if (!localSizeNotDefault[i] && unit.localSizeNotDefault[i]) {
             localSize[i] = unit.localSize[i];
+            localSizeNotDefault[i] = true;
+        }
         else if (localSize[i] != unit.localSize[i])
             error(infoSink, "Contradictory local size");
 
-        if (localSizeSpecId[i] != TQualifier::layoutNotSet)
+        if (localSizeSpecId[i] == TQualifier::layoutNotSet)
             localSizeSpecId[i] = unit.localSizeSpecId[i];
         else if (localSizeSpecId[i] != unit.localSizeSpecId[i])
             error(infoSink, "Contradictory local size specialization ids");
@@ -496,6 +498,7 @@ void TIntermediate::mergeImplicitArraySizes(TType& type, const TType& unitType)
 //
 void TIntermediate::mergeErrorCheck(TInfoSink& infoSink, const TIntermSymbol& symbol, const TIntermSymbol& unitSymbol, bool crossStage)
 {
+#ifndef GLSLANG_WEB
     bool writeTypeComparison = false;
 
     // Types have to match
@@ -546,7 +549,6 @@ void TIntermediate::mergeErrorCheck(TInfoSink& infoSink, const TIntermSymbol& sy
         writeTypeComparison = true;
     }
 
-#ifndef GLSLANG_WEB
     // Memory...
     if (symbol.getQualifier().coherent          != unitSymbol.getQualifier().coherent ||
         symbol.getQualifier().devicecoherent    != unitSymbol.getQualifier().devicecoherent ||
@@ -561,7 +563,6 @@ void TIntermediate::mergeErrorCheck(TInfoSink& infoSink, const TIntermSymbol& sy
         error(infoSink, "Memory qualifiers must match:");
         writeTypeComparison = true;
     }
-#endif
 
     // Layouts...
     // TODO: 4.4 enhanced layouts: Generalize to include offset/align: current spec
@@ -591,6 +592,7 @@ void TIntermediate::mergeErrorCheck(TInfoSink& infoSink, const TIntermSymbol& sy
     if (writeTypeComparison)
         infoSink.info << "    " << symbol.getName() << ": \"" << symbol.getType().getCompleteString() << "\" versus \"" <<
                                                              unitSymbol.getType().getCompleteString() << "\"\n";
+#endif
 }
 
 //
@@ -1095,7 +1097,7 @@ int TIntermediate::addUsedLocation(const TQualifier& qualifier, const TType& typ
         }
 
         // combine location and component ranges
-        TIoRange range(locationRange, componentRange, type.getBasicType(), qualifier.hasIndex() ? qualifier.layoutIndex : 0);
+        TIoRange range(locationRange, componentRange, type.getBasicType(), qualifier.hasIndex() ? qualifier.getIndex() : 0);
 
         // check for collisions, except for vertex inputs on desktop targeting OpenGL
         if (! (!isEsProfile() && language == EShLangVertex && qualifier.isPipeInput()) || spvVersion.vulkan > 0)

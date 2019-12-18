@@ -156,6 +156,7 @@ typedef enum {
     EShTargetSpv_1_2 = (1 << 16) | (2 << 8),          // SPIR-V 1.2
     EShTargetSpv_1_3 = (1 << 16) | (3 << 8),          // SPIR-V 1.3
     EShTargetSpv_1_4 = (1 << 16) | (4 << 8),          // SPIR-V 1.4
+    EShTargetSpv_1_5 = (1 << 16) | (5 << 8),          // SPIR-V 1.5
 } EShTargetLanguageVersion;
 
 struct TInputLanguage {
@@ -486,6 +487,8 @@ public:
         environment.target.version = version;
     }
 
+    void getStrings(const char* const* &s, int& n) { s = strings; n = numStrings; }
+
 #ifdef ENABLE_HLSL
     void setEnvTargetHlslFunctionality1() { environment.target.hlslFunctionality1 = true; }
     bool getEnvTargetHlslFunctionality1() const { return environment.target.hlslFunctionality1; }
@@ -772,7 +775,7 @@ public:
     TProgram();
     virtual ~TProgram();
     void addShader(TShader* shader) { stages[shader->stage].push_back(shader); }
-
+    std::list<TShader*>& getShaders(EShLanguage stage) { return stages[stage]; }
     // Link Validation interface
     bool link(EShMessages);
     const char* getInfoLog();
@@ -788,6 +791,7 @@ public:
     bool buildReflection(int opts = EShReflectionDefault);
     unsigned getLocalSize(int dim) const;                  // return dim'th local size
     int getReflectionIndex(const char *name) const;
+    int getReflectionPipeIOIndex(const char* name, const bool inOrOut) const;
     int getNumUniformVariables() const;
     const TObjectReflection& getUniform(int index) const;
     int getNumUniformBlocks() const;
@@ -816,6 +820,9 @@ public:
 
     // can be used for glGetUniformIndices()
     int getUniformIndex(const char *name) const        { return getReflectionIndex(name); }
+
+    int getPipeIOIndex(const char *name, const bool inOrOut) const
+                                                       { return getReflectionPipeIOIndex(name, inOrOut); }
 
     // can be used for "name" part of glGetActiveUniform()
     const char *getUniformName(int index) const        { return getUniform(index).name.c_str(); }
