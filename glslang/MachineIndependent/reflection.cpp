@@ -77,10 +77,10 @@ namespace glslang {
 // This is in the glslang namespace directly so it can be a friend of TReflection.
 //
 
-class TReflectionTraverser : public TLiveTraverser {
+class TReflectionTraverser : public TIntermTraverser {
 public:
     TReflectionTraverser(const TIntermediate& i, TReflection& r) :
-         TLiveTraverser(i), reflection(r) { }
+                         TIntermTraverser(), intermediate(i), reflection(r) { }
 
     virtual bool visitBinary(TVisit, TIntermBinary* node);
     virtual void visitSymbol(TIntermSymbol* base);
@@ -1016,6 +1016,7 @@ public:
         return type.isArray() ? type.getOuterArraySize() : 1;
     }
 
+    const TIntermediate& intermediate;
     TReflection& reflection;
     std::set<const TIntermNode*> processedDerefs;
 
@@ -1156,14 +1157,22 @@ bool TReflection::addStage(EShLanguage stage, const TIntermediate& intermediate)
 
     TReflectionTraverser it(intermediate, *this);
 
-    // put the entry point on the list of functions to process
-    it.pushFunction(intermediate.getEntryPointMangledName().c_str());
-
-    // process all the functions
-    while (! it.functions.empty()) {
-        TIntermNode* function = it.functions.back();
-        it.functions.pop_back();
-        function->traverse(&it);
+    // This traverser will travers all function in AST.
+    // If we want reflect uncalled function, we need set linke message EShMsgKeepUncalled.
+    // When EShMsgKeepUncalled been set to true, all function will be keep in AST, even it is a uncalled function.
+    // This will keep some uniform variables in reflection, if those uniform variables is used in these uncalled function.
+    //
+    // If we just want reflect only live node, we can use a default link message or set EShMsgKeepUncalled false.
+    // When linke message not been set EShMsgKeepUncalled, linker won't keep uncalled function in AST.
+    // So, travers all function node can equivalent to travers live function.
+    for (auto & sequnence : intermediate.getTreeRoot()->getAsAggregate()->getSequence()) {
+        if (sequnence->getAsAggregate()->getOp() == glslang::EOpFunction)
+        {
+            if (sequnence->getAsAggregate() != nullptr)
+            {
+                sequnence->getAsAggregate()->traverse(&it);
+            };
+        }
     }
 
     // This traverse only traver at global variable declare, for std140 uniform block and shared uniform block
