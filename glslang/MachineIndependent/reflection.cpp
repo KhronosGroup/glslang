@@ -92,10 +92,31 @@ public:
         if (processedDerefs.find(&base) == processedDerefs.end()) {
             processedDerefs.insert(&base);
 
+            uint32_t blockIndex = -1;
+            uint32_t offset     = -1;
+            TList<TIntermBinary*> derefs;
+
+            if (base.getType().getBasicType() == EbtBlock) {
+                offset = 0;
+                bool anonymous = IsAnonymous(base.getName());
+                const TString& blockName = base.getType().getTypeName();
+
+                if (base.getType().isArray()) {
+                    TType derefType(base.getType(), 0);
+
+                    assert(!anonymous);
+                    for (int e = 0; e < base.getType().getCumulativeArraySize(); ++e)
+                        blockIndex = addBlockName(blockName + "[" + String(e) + "]", derefType,
+                            intermediate.getBlockSize(base.getType()));
+                }
+                else
+                    blockIndex = addBlockName(blockName, base.getType(), intermediate.getBlockSize(base.getType()));
+            }
+
             // Use a degenerate (empty) set of dereferences to immediately put as at the end of
             // the dereference change expected by blowUpActiveAggregate.
             TList<TIntermBinary*> derefs;
-            blowUpActiveAggregate(base.getType(), base.getName(), derefs, derefs.end(), -1, -1, 0, 0,
+            blowUpActiveAggregate(base.getType(), base.getName(), derefs, derefs.end(), offset, blockIndex, 0, 0,
                                   base.getQualifier().storage, true);
         }
     }
@@ -1143,6 +1164,39 @@ bool TReflection::addStage(EShLanguage stage, const TIntermediate& intermediate)
         TIntermNode* function = it.functions.back();
         it.functions.pop_back();
         function->traverse(&it);
+    }
+
+    // This traverse only traver at global variable declare, for std140 uniform block and shared uniform block
+    TIntermAggregate* linkerObjects;
+    for (auto & sequnence : intermediate.getTreeRoot()->getAsAggregate()->getSequence()) {
+        // In AST all global declare been put in a aggregate behind the function declare.
+        // If this struct been change, we must to adjust the code to adapt.
+        if (sequnence->getAsAggregate()->getOp() == glslang::EOpLinkerObjects)
+        {
+            linkerObjects = sequnence->getAsAggregate();
+            break;
+        }
+    }
+
+    // Traverse all global variable node to ensure all uniform block been declare std140 or shared can be record in reflection.
+    if (linkerObjects != nullptr)
+    {
+        for (auto & sequnence : linkerObjects->getSequence())
+        {
+            auto pNode = sequnence->getAsSymbolNode();
+            if (pNode != nullptr && pNode->getQualifier().storage == EvqUniform)
+            {
+                if (pNode->getBasicType() == EbtBlock)
+                {
+                    // collect std140 and shared uniform block form AST
+                    if (pNode->getQualifier().layoutPacking == ElpStd140 ||
+                        pNode->getQualifier().layoutPacking == ElpShared)
+                    {
+                        pNode->traverse(&it);
+                    }
+                }
+            }
+        }
     }
 
     buildCounterIndices(intermediate);

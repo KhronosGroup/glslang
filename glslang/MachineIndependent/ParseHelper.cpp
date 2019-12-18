@@ -7489,6 +7489,7 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
     fixBlockLocations(loc, currentBlockQualifier, typeList, memberWithLocation, memberWithoutLocation);
     fixXfbOffsets(currentBlockQualifier, typeList);
     fixBlockUniformOffsets(currentBlockQualifier, typeList);
+    fixBlockUniformLayoutMatrix(currentBlockQualifier, typeList);
     for (unsigned int member = 0; member < typeList.size(); ++member)
         layoutTypeCheck(typeList[member].loc, *typeList[member].type);
 
@@ -7855,6 +7856,20 @@ void TParseContext::fixBlockUniformOffsets(TQualifier& qualifier, TTypeList& typ
         RoundToPow2(offset, memberAlignment);
         typeList[member].type->getQualifier().layoutOffset = offset;
         offset += memberSize;
+    }
+}
+
+// Spread LayoutMatrix to uniform block member, if a uniform block member is a struct,
+// we need spread LayoutMatrix to this struct member too. and keep this rule for recursive.
+void TParseContext::fixBlockUniformLayoutMatrix(TQualifier& qualifier, const TTypeList& typeList)
+{
+    for (unsigned int member = 0; member < typeList.size(); ++member) {
+        if (typeList[member].type->getBasicType() == EbtStruct) {
+            fixBlockUniformLayoutMatrix(qualifier, *(typeList[member].type->getStruct()));
+        }
+        else if (typeList[member].type->isMatrix() && typeList[member].type->getQualifier().layoutMatrix == ElmNone) {
+            typeList[member].type->getQualifier().layoutMatrix = qualifier.layoutMatrix;
+        }
     }
 }
 
