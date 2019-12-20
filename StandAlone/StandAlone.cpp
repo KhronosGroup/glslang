@@ -292,9 +292,12 @@ bool SetConfigFile(const std::string& name)
 //
 // Give error and exit with failure code.
 //
-void Error(const char* message)
+void Error(const char* message, const char* detail = nullptr)
 {
-    fprintf(stderr, "%s: Error %s (use -h for usage)\n", ExecutableName, message);
+    fprintf(stderr, "%s: Error: ", ExecutableName);
+    if (detail != nullptr)
+        fprintf(stderr, "%s: ", detail);
+    fprintf(stderr, "%s (use -h for usage)\n", message);
     exit(EFailUsage);
 }
 
@@ -482,7 +485,7 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                         Options |= EOptionAutoMapLocations;
                     } else if (lowerword == "uniform-base") {
                         if (argc <= 1)
-                            Error("no <base> provided for --uniform-base");
+                            Error("no <base> provided", lowerword.c_str());
                         uniformBase = ::strtol(argv[1], NULL, 10);
                         bumpArg();
                         break;
@@ -493,15 +496,16 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                             else if (strcmp(argv[1], "opengl100") == 0)
                                 setOpenGlSpv();
                             else
-                                Error("--client expects vulkan100 or opengl100");
-                        }
+                                Error("expects vulkan100 or opengl100", lowerword.c_str());
+                        } else
+                            Error("expects vulkan100 or opengl100", lowerword.c_str());
                         bumpArg();
                     } else if (lowerword == "dump-builtin-symbols") {
                         DumpBuiltinSymbols = true;
                     } else if (lowerword == "entry-point") {
                         entryPointName = argv[1];
                         if (argc <= 1)
-                            Error("no <name> provided for --entry-point");
+                            Error("no <name> provided", lowerword.c_str());
                         bumpArg();
                     } else if (lowerword == "flatten-uniform-arrays" || // synonyms
                                lowerword == "flatten-uniform-array"  ||
@@ -576,7 +580,7 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                     } else if (lowerword == "source-entrypoint" || // synonyms
                                lowerword == "sep") {
                         if (argc <= 1)
-                            Error("no <entry-point> provided for --source-entrypoint");
+                            Error("no <entry-point> provided", lowerword.c_str());
                         sourceEntryPointName = argv[1];
                         bumpArg();
                         break;
@@ -627,14 +631,14 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                                lowerword == "vn") {
                         Options |= EOptionOutputHexadecimal;
                         if (argc <= 1)
-                            Error("no <C-variable-name> provided for --variable-name");
+                            Error("no <C-variable-name> provided", lowerword.c_str());
                         variableName = argv[1];
                         bumpArg();
                         break;
                     } else if (lowerword == "version") {
                         Options |= EOptionDumpVersions;
                     } else {
-                        usage();
+                        Error("unrecognized command-line option", argv[0]);
                     }
                 }
                 break;
@@ -760,7 +764,7 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                 Options |= EOptionOutputHexadecimal;
                 break;
             default:
-                usage();
+                Error("unrecognized command-line option", argv[0]);
                 break;
             }
         } else {
@@ -1263,7 +1267,7 @@ int singleMain()
     ProcessConfigFile();
 
     if ((Options & EOptionReadHlsl) && !((Options & EOptionOutputPreprocessed) || (Options & EOptionSpv)))
-        Error("ERROR: HLSL requires SPIR-V code generation (or preprocessing only)");
+        Error("HLSL requires SPIR-V code generation (or preprocessing only)");
 
     //
     // Two modes:
