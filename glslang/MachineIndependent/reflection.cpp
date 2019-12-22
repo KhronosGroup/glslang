@@ -76,7 +76,6 @@ namespace glslang {
 //
 // This is in the glslang namespace directly so it can be a friend of TReflection.
 //
-
 class TReflectionTraverser : public TLiveTraverser {
 public:
     TReflectionTraverser(const TIntermediate& i, TReflection& r) :
@@ -110,6 +109,51 @@ public:
             reflection.indexToSpecConstant.push_back(
                 TObjectReflection(name.c_str(), type, 0, mapToGlType(type), mapToGlArraySize(type), 0));
         }
+    }
+
+    // Traverse in search for spec constants
+    void traverseToFindSpecConsants(TIntermTyped* typed)
+    {
+        // Simple traverser that searches for spec constants
+        class TArrayDimensionTraverser : public TIntermTraverser
+        {
+        public:
+            TReflectionTraverser* reflectionTraverser = nullptr;
+
+            void visitSymbol(TIntermSymbol* base)
+            {
+                if (base->getType().getQualifier().specConstant) {
+                    // Some symbols contain the specConstant qualifier but in reality they are not. Check that
+                    if (base->getType().getQualifier().layoutSpecConstantId != TQualifier::layoutSpecConstantIdEnd) {
+                        reflectionTraverser->addSpecConstant(*base);
+                    } else if (base->getConstSubtree()) {
+                        TArrayDimensionTraverser traverser;
+                        traverser.reflectionTraverser = reflectionTraverser;
+                        base->getConstSubtree()->traverse(&traverser);
+                    }
+                }
+            }
+        };
+
+        TArrayDimensionTraverser traverser;
+        traverser.reflectionTraverser = this;
+        typed->traverse(&traverser);
+    }
+
+    // Search for spec constant subtypes associated with this symbol
+    void searchForSpecConstantsInArrayDimensions(const TIntermSymbol& base)
+    {
+        base.getType().contains([this](const TType* t) {
+            bool containsSpecializationSize = t->isArray() && t->getArraySizes()->isOuterSpecialization();
+            if (containsSpecializationSize) {
+                const int dimension = 0; // Spec consts can only be in the outermost dimension
+                TIntermTyped* typed = t->getArraySizes()->getDimNode(dimension);
+                assert(typed);
+                traverseToFindSpecConsants(typed);
+            }
+
+            return false;
+        });
     }
 
     void addPipeIOVariable(const TIntermSymbol& base)
@@ -1041,10 +1085,13 @@ bool TReflectionTraverser::visitBinary(TVisit /* visit */, TIntermBinary* node)
 // To reflect non-dereferenced objects.
 void TReflectionTraverser::visitSymbol(TIntermSymbol* base)
 {
+    searchForSpecConstantsInArrayDimensions(*base);
+
     if (base->getQualifier().storage == EvqUniform)
         addUniform(*base);
-    else if (base->getQualifier().storage == EvqConst)
-        addSpecConstant(*base);
+    else if (base->getQualifier().specConstant) {
+        traverseToFindSpecConsants(base);
+    }
 
     if ((intermediate.getStage() == reflection.firstStage && base->getQualifier().isPipeInput()) ||
         (intermediate.getStage() == reflection.lastStage && base->getQualifier().isPipeOutput()))

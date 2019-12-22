@@ -55,6 +55,8 @@ $EXE -D -Od -e main -l -q -C -V -Od hlsl.reflection.binding.frag > $TARGETDIR/hl
 diff -b $BASEDIR/hlsl.reflection.binding.frag.out $TARGETDIR/hlsl.reflection.binding.frag.out || HASERROR=1
 $EXE -D -Od -e main -l -q --hlsl-iomap --auto-map-bindings --stb 10 --sbb 20 --ssb 30 --suavb 40 --scb 50 -D -V -e main -Od hlsl.automap.frag > $TARGETDIR/hlsl.automap.frag.out
 diff -b $BASEDIR/hlsl.automap.frag.out $TARGETDIR/hlsl.automap.frag.out || HASERROR=1
+$EXE -l -q -V reflection.spec_consts.vert > $TARGETDIR/reflection.spec_consts.vert.out
+diff -b $BASEDIR/reflection.spec_consts.vert.out $TARGETDIR/reflection.spec_consts.vert.out || HASERROR=1
 
 #
 # multi-threaded test
