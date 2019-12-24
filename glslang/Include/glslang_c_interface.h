@@ -134,6 +134,7 @@ typedef struct glslang_resource_s {
     int max_fragment_atomic_counter_buffers;
     int max_combined_atomic_counter_buffers;
     int max_atomic_counter_buffer_size;
+    int max_uniform_buffer_bindings;
     int max_transform_feedback_buffers;
     int max_transform_feedback_interleaved_components;
     int max_cull_distances;

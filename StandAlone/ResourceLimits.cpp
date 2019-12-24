@@ -120,6 +120,7 @@ const TBuiltInResource DefaultTBuiltInResource = {
     /* .MaxFragmentAtomicCounterBuffers = */ 1,
     /* .MaxCombinedAtomicCounterBuffers = */ 1,
     /* .MaxAtomicCounterBufferSize = */ 16384,
+    /* .MaxUniformBufferBindings = */ 2147483647, // int32_max, implementation dependent value
     /* .MaxTransformFeedbackBuffers = */ 4,
     /* .MaxTransformFeedbackInterleavedComponents = */ 64,
     /* .MaxCullDistances = */ 8,

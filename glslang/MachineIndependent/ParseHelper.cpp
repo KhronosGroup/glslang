@@ -5751,6 +5751,12 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
                 return;
             }
         }
+        if (type.getBasicType() == EbtBlock) {
+            if (qualifier.layoutBinding >= (unsigned int)resources.maxUniformBufferBindings) {
+                error(loc, "uniform block binding is too large; no more than ", "binding", "%d", resources.maxUniformBufferBindings);
+                return;
+            }
+        }
     } else if (!intermediate.getAutoMapBindings()) {
         // some types require bindings
 
