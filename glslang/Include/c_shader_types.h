@@ -46,24 +46,24 @@ typedef enum {
     SH_STAGE_TASK_NV,
     SH_STAGE_MESH_NV,
     SH_STAGE_COUNT,
-} glslang_stage_t;         // would be better as stage, but this is ancient now
+} glslang_stage_t; // would be better as stage, but this is ancient now
 
 /* EShLanguageMask counterpart */
 typedef enum {
-    SH_STAGE_VERTEX_MASK          = (1 << SH_STAGE_VERTEX),
-    SH_STAGE_TESSCONTROL_MASK     = (1 << SH_STAGE_TESSCONTROL),
-    SH_STAGE_TESSEVALUATION_MASK  = (1 << SH_STAGE_TESSEVALUATION),
-    SH_STAGE_GEOMETRY_MASK        = (1 << SH_STAGE_GEOMETRY),
-    SH_STAGE_FRAGMENT_MASK        = (1 << SH_STAGE_FRAGMENT),
-    SH_STAGE_COMPUTE_MASK         = (1 << SH_STAGE_COMPUTE),
-    SH_STAGE_RAYGEN_NV_MASK       = (1 << SH_STAGE_RAYGEN_NV),
-    SH_STAGE_INTERSECT_NV_MASK    = (1 << SH_STAGE_INTERSECT_NV),
-    SH_STAGE_ANYHIT_NV_MASK       = (1 << SH_STAGE_ANYHIT_NV),
-    SH_STAGE_CLOSESTHIT_NV_MASK   = (1 << SH_STAGE_CLOSESTHIT_NV),
-    SH_STAGE_MISS_NV_MASK         = (1 << SH_STAGE_MISS_NV),
-    SH_STAGE_CALLABLE_NV_MASK     = (1 << SH_STAGE_CALLABLE_NV),
-    SH_STAGE_TASK_NV_MASK         = (1 << SH_STAGE_TASK_NV),
-    SH_STAGE_MESH_NV_MASK         = (1 << SH_STAGE_MESH_NV),
+    SH_STAGE_VERTEX_MASK = (1 << SH_STAGE_VERTEX),
+    SH_STAGE_TESSCONTROL_MASK = (1 << SH_STAGE_TESSCONTROL),
+    SH_STAGE_TESSEVALUATION_MASK = (1 << SH_STAGE_TESSEVALUATION),
+    SH_STAGE_GEOMETRY_MASK = (1 << SH_STAGE_GEOMETRY),
+    SH_STAGE_FRAGMENT_MASK = (1 << SH_STAGE_FRAGMENT),
+    SH_STAGE_COMPUTE_MASK = (1 << SH_STAGE_COMPUTE),
+    SH_STAGE_RAYGEN_NV_MASK = (1 << SH_STAGE_RAYGEN_NV),
+    SH_STAGE_INTERSECT_NV_MASK = (1 << SH_STAGE_INTERSECT_NV),
+    SH_STAGE_ANYHIT_NV_MASK = (1 << SH_STAGE_ANYHIT_NV),
+    SH_STAGE_CLOSESTHIT_NV_MASK = (1 << SH_STAGE_CLOSESTHIT_NV),
+    SH_STAGE_MISS_NV_MASK = (1 << SH_STAGE_MISS_NV),
+    SH_STAGE_CALLABLE_NV_MASK = (1 << SH_STAGE_CALLABLE_NV),
+    SH_STAGE_TASK_NV_MASK = (1 << SH_STAGE_TASK_NV),
+    SH_STAGE_MESH_NV_MASK = (1 << SH_STAGE_MESH_NV),
 } glslang_stage_mask_t;
 
 /* EShSource counterpart */
@@ -104,10 +104,7 @@ typedef enum {
 } glslang_target_language_version_t;
 
 /* EShExecutable counterpart */
-typedef enum {
-    SH_EX_VERTEX_FRAGMENT,
-    SH_EX_FRAGMENT
-} glslang_executable_t;
+typedef enum { SH_EX_VERTEX_FRAGMENT, SH_EX_FRAGMENT } glslang_executable_t;
 
 /* EShOptimizationLevel counterpart  */
 typedef enum {
@@ -125,44 +122,42 @@ typedef enum {
 
 /* EShMessages counterpart */
 typedef enum {
-    SH_MSG_DEFAULT                 = 0,
-    SH_MSG_RELAXED_ERRORS          = (1 << 0),
-    SH_MSG_SUPPRESS_WARNINGS       = (1 << 1),
-    SH_MSG_AST                     = (1 << 2),
-    SH_MSG_SPV_RULES               = (1 << 3),
-    SH_MSG_VULKAN_RULES            = (1 << 4),
-    SH_MSG_ONLY_PREPROCESSOR       = (1 << 5),
-    SH_MSG_READ_HLSL               = (1 << 6),
-    SH_MSG_CASCADING_ERRORS        = (1 << 7),
-    SH_MSG_KEEP_UNCALLED           = (1 << 8),
-    SH_MSG_HLSL_OFFSETS            = (1 << 9),
-    SH_MSG_DEBUG_INFO              = (1 << 10),
+    SH_MSG_DEFAULT = 0,
+    SH_MSG_RELAXED_ERRORS = (1 << 0),
+    SH_MSG_SUPPRESS_WARNINGS = (1 << 1),
+    SH_MSG_AST = (1 << 2),
+    SH_MSG_SPV_RULES = (1 << 3),
+    SH_MSG_VULKAN_RULES = (1 << 4),
+    SH_MSG_ONLY_PREPROCESSOR = (1 << 5),
+    SH_MSG_READ_HLSL = (1 << 6),
+    SH_MSG_CASCADING_ERRORS = (1 << 7),
+    SH_MSG_KEEP_UNCALLED = (1 << 8),
+    SH_MSG_HLSL_OFFSETS = (1 << 9),
+    SH_MSG_DEBUG_INFO = (1 << 10),
     SH_MSG_HLSL_ENABLE_16BIT_TYPES = (1 << 11),
-    SH_MSG_HLSL_LEGALIZATION       = (1 << 12),
-    SH_MSG_HLSL_DX9_COMPATIBLE     = (1 << 13),
-    SH_MSG_BUILTIN_SYMBOL_TABLE    = (1 << 14),
+    SH_MSG_HLSL_LEGALIZATION = (1 << 12),
+    SH_MSG_HLSL_DX9_COMPATIBLE = (1 << 13),
+    SH_MSG_BUILTIN_SYMBOL_TABLE = (1 << 14),
 } glslang_messages_t;
 
 /* EShReflectionOptions counterpart */
-typedef enum
-{
-    SH_REFLECTION_DEFAULT             = 0,
+typedef enum {
+    SH_REFLECTION_DEFAULT = 0,
     SH_REFLECTION_STRICT_ARRAY_SUFFIX = (1 << 0),
-    SH_REFLECTION_BASIC_ARRAY_SUFFIX  = (1 << 1),
-    SH_REFLECTION_INTERMEDIATE_IOO    = (1 << 2),
-    SH_REFLECTION_SEPARATE_BUFFERS    = (1 << 3),
+    SH_REFLECTION_BASIC_ARRAY_SUFFIX = (1 << 1),
+    SH_REFLECTION_INTERMEDIATE_IOO = (1 << 2),
+    SH_REFLECTION_SEPARATE_BUFFERS = (1 << 3),
     SH_REFLECTION_ALL_BLOCK_VARIABLES = (1 << 4),
-    SH_REFLECTION_UNWRAP_IO_BLOCKS    = (1 << 5),
+    SH_REFLECTION_UNWRAP_IO_BLOCKS = (1 << 5),
 } glslang_reflection_options_t;
 
 /* EProfile counterpart (from Versions.h) */
 typedef enum {
-    SH_BAD_PROFILE           = 0,
-    SH_NO_PROFILE            = (1 << 0),
-    SH_CORE_PROFILE          = (1 << 1),
+    SH_BAD_PROFILE = 0,
+    SH_NO_PROFILE = (1 << 0),
+    SH_CORE_PROFILE = (1 << 1),
     SH_COMPATIBILITY_PROFILE = (1 << 2),
-    SH_ES_PROFILE            = (1 << 3)
+    SH_ES_PROFILE = (1 << 3)
 } glslang_profile_t;
 
 #endif
-
