@@ -6618,6 +6618,23 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
             }
         }
 
+        if (version >= 320) {
+            // tessellation
+
+            snprintf(builtInConstant, maxSize, "const int gl_MaxTessControlImageUniforms = %d;", resources.maxTessControlImageUniforms);
+            s.append(builtInConstant);
+            snprintf(builtInConstant, maxSize, "const int gl_MaxTessEvaluationImageUniforms = %d;", resources.maxTessEvaluationImageUniforms);
+            s.append(builtInConstant);
+            snprintf(builtInConstant, maxSize, "const int gl_MaxTessControlAtomicCounters = %d;", resources.maxTessControlAtomicCounters);
+            s.append(builtInConstant);
+            snprintf(builtInConstant, maxSize, "const int gl_MaxTessEvaluationAtomicCounters = %d;", resources.maxTessEvaluationAtomicCounters);
+            s.append(builtInConstant);
+            snprintf(builtInConstant, maxSize, "const int gl_MaxTessControlAtomicCounterBuffers = %d;", resources.maxTessControlAtomicCounterBuffers);
+            s.append(builtInConstant);
+            snprintf(builtInConstant, maxSize, "const int gl_MaxTessEvaluationAtomicCounterBuffers = %d;", resources.maxTessEvaluationAtomicCounterBuffers);
+            s.append(builtInConstant);
+        }
+
     } else {
         // non-ES profile
 
