@@ -8295,7 +8295,8 @@ TIntermNode* TParseContext::addSwitch(const TSourceLoc& loc, TIntermTyped* expre
         // "it is an error to have no statement between a label and the end of the switch statement."
         // The specifications were updated to remove this (being ill-defined what a "statement" was),
         // so, this became a warning.  However, 3.0 tests still check for the error.
-        if (isEsProfile() && version <= 300 && ! relaxedErrors())
+        if (((profile == EEsProfile && version <= 300) || (profile != EEsProfile && version < 440)) &&
+            !relaxedErrors())
             error(loc, "last case/default label not followed by statements", "switch", "");
         else
             warn(loc, "last case/default label not followed by statements", "switch", "");

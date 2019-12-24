@@ -79,6 +79,12 @@ void fooaoeu() {
      double globalCoef = 1.0;
      int i = globalCoef;            // ERROR, can't convert from double to int
      double di = i;
+     int j = 0;
+     switch(j)                       // ERROR
+     {
+     case 1: break;
+     default:
+     }
 }
 
 in inb {     // ERROR

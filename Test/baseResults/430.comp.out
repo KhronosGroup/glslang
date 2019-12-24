@@ -14,9 +14,10 @@ ERROR: 0:54: 'local_size' : can only apply to 'in'
 ERROR: 0:54: 'local_size' : can only apply to 'in' 
 ERROR: 0:68: 'assign' :  l-value required "ro" (can't modify a readonly buffer)
 ERROR: 0:80: '=' :  cannot convert from ' temp double' to ' temp int'
-ERROR: 0:84: 'input block' : not supported in this stage: compute
-ERROR: 0:88: 'output block' : not supported in this stage: compute
-ERROR: 17 compilation errors.  No code generated.
+ERROR: 0:83: 'switch' : last case/default label not followed by statements 
+ERROR: 0:90: 'input block' : not supported in this stage: compute
+ERROR: 0:94: 'output block' : not supported in this stage: compute
+ERROR: 18 compilation errors.  No code generated.
 
 
 Shader version: 430
@@ -123,6 +124,24 @@ ERROR: node is still EOpNull!
 0:81          'di' ( temp double)
 0:81          Convert int to double ( temp double)
 0:81            'i' ( temp int)
+0:82      Sequence
+0:82        move second child to first child ( temp int)
+0:82          'j' ( temp int)
+0:82          Constant:
+0:82            0 (const int)
+0:83      switch
+0:83      condition
+0:83        'j' ( temp int)
+0:83      body
+0:83        Sequence
+0:85          case:  with expression
+0:85            Constant:
+0:85              1 (const int)
+0:?           Sequence
+0:85            Branch: Break
+0:86          default: 
+0:83          Sequence
+0:83            Branch: Break
 0:?   Linker Objects
 0:?     'gl_WorkGroupSize' ( const 3-component vector of uint WorkGroupSize)
 0:?       2 (const uint)
