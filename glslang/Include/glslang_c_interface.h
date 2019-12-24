@@ -1,4 +1,8 @@
 /**
+	This code is based on the glslang_c_interface implementation by Viktor Latypov
+**/
+
+/**
 BSD 2-Clause License
 
 Copyright (c) 2019, Viktor Latypov
@@ -31,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <stdlib.h>
 
-#include "c_shader_types.h"
+#include "glslang_c_shader_types.h"
 
 typedef struct glslang_shader_s glslang_shader_t;
 typedef struct glslang_program_s glslang_program_t;
@@ -88,10 +92,10 @@ extern "C" {
 int glslang_initialize_process();
 void glslang_finalize_process();
 
-glslang_shader_t* glslang_shader_create(glslang_input_t* input);
+glslang_shader_t* glslang_shader_create(const glslang_input_t* input);
 void glslang_shader_delete(glslang_shader_t* shader);
-int glslang_shader_preprocess(glslang_shader_t* shader, glslang_input_t* input);
-int glslang_shader_parse(glslang_shader_t* shader, glslang_input_t* input);
+int glslang_shader_preprocess(glslang_shader_t* shader, const glslang_input_t* input);
+int glslang_shader_parse(glslang_shader_t* shader, const glslang_input_t* input);
 const char* glslang_shader_get_preprocessed_code(glslang_shader_t* shader);
 const char* glslang_shader_get_info_log(glslang_shader_t* shader);
 const char* glslang_shader_get_info_debug_log(glslang_shader_t* shader);
@@ -99,7 +103,7 @@ const char* glslang_shader_get_info_debug_log(glslang_shader_t* shader);
 glslang_program_t* glslang_program_create();
 void glslang_program_delete(glslang_program_t* program);
 void glslang_program_add_shader(glslang_program_t* program, glslang_shader_t* shader);
-int glslang_program_link(glslang_program_t* program, int messages);
+int glslang_program_link(glslang_program_t* program, int messages); // glslang_messages_t
 void glslang_program_SPIRV_generate(glslang_program_t* program, glslang_stage_t stage);
 size_t glslang_program_SPIRV_get_size(glslang_program_t* program);
 void glslang_program_SPIRV_get(glslang_program_t* program, unsigned int*);

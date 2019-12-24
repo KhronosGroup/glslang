@@ -1,4 +1,8 @@
 ﻿/**
+	This code is based on the glslang_c_interface implementation by Viktor Latypov
+**/
+
+/**
 BSD 2-Clause License
 
 Copyright (c) 2019, Viktor Latypov
@@ -122,33 +126,33 @@ typedef enum {
 
 /* EShMessages counterpart */
 typedef enum {
-    SH_MSG_DEFAULT = 0,
-    SH_MSG_RELAXED_ERRORS = (1 << 0),
-    SH_MSG_SUPPRESS_WARNINGS = (1 << 1),
-    SH_MSG_AST = (1 << 2),
-    SH_MSG_SPV_RULES = (1 << 3),
-    SH_MSG_VULKAN_RULES = (1 << 4),
-    SH_MSG_ONLY_PREPROCESSOR = (1 << 5),
-    SH_MSG_READ_HLSL = (1 << 6),
-    SH_MSG_CASCADING_ERRORS = (1 << 7),
-    SH_MSG_KEEP_UNCALLED = (1 << 8),
-    SH_MSG_HLSL_OFFSETS = (1 << 9),
-    SH_MSG_DEBUG_INFO = (1 << 10),
-    SH_MSG_HLSL_ENABLE_16BIT_TYPES = (1 << 11),
-    SH_MSG_HLSL_LEGALIZATION = (1 << 12),
-    SH_MSG_HLSL_DX9_COMPATIBLE = (1 << 13),
-    SH_MSG_BUILTIN_SYMBOL_TABLE = (1 << 14),
+    SH_MSG_DEFAULT_BIT = 0,
+    SH_MSG_RELAXED_ERRORS_BIT = (1 << 0),
+    SH_MSG_SUPPRESS_WARNINGS_BIT = (1 << 1),
+    SH_MSG_AST_BIT = (1 << 2),
+    SH_MSG_SPV_RULES_BIT = (1 << 3),
+    SH_MSG_VULKAN_RULES_BIT = (1 << 4),
+    SH_MSG_ONLY_PREPROCESSOR_BIT = (1 << 5),
+    SH_MSG_READ_HLSL_BIT = (1 << 6),
+    SH_MSG_CASCADING_ERRORS_BIT = (1 << 7),
+    SH_MSG_KEEP_UNCALLED_BIT = (1 << 8),
+    SH_MSG_HLSL_OFFSETS_BIT = (1 << 9),
+    SH_MSG_DEBUG_INFO_BIT = (1 << 10),
+    SH_MSG_HLSL_ENABLE_16BIT_TYPES_BIT = (1 << 11),
+    SH_MSG_HLSL_LEGALIZATION_BIT = (1 << 12),
+    SH_MSG_HLSL_DX9_COMPATIBLE_BIT = (1 << 13),
+    SH_MSG_BUILTIN_SYMBOL_TABLE_BIT = (1 << 14),
 } glslang_messages_t;
 
 /* EShReflectionOptions counterpart */
 typedef enum {
-    SH_REFLECTION_DEFAULT = 0,
-    SH_REFLECTION_STRICT_ARRAY_SUFFIX = (1 << 0),
-    SH_REFLECTION_BASIC_ARRAY_SUFFIX = (1 << 1),
-    SH_REFLECTION_INTERMEDIATE_IOO = (1 << 2),
-    SH_REFLECTION_SEPARATE_BUFFERS = (1 << 3),
-    SH_REFLECTION_ALL_BLOCK_VARIABLES = (1 << 4),
-    SH_REFLECTION_UNWRAP_IO_BLOCKS = (1 << 5),
+    SH_REFLECTION_DEFAULT_BIT = 0,
+    SH_REFLECTION_STRICT_ARRAY_SUFFIX_BIT = (1 << 0),
+    SH_REFLECTION_BASIC_ARRAY_SUFFIX_BIT = (1 << 1),
+    SH_REFLECTION_INTERMEDIATE_IOO_BIT = (1 << 2),
+    SH_REFLECTION_SEPARATE_BUFFERS_BIT = (1 << 3),
+    SH_REFLECTION_ALL_BLOCK_VARIABLES_BIT = (1 << 4),
+    SH_REFLECTION_UNWRAP_IO_BLOCKS_BIT = (1 << 5),
 } glslang_reflection_options_t;
 
 /* EProfile counterpart (from Versions.h) */

@@ -1,4 +1,8 @@
 /**
+	This code is based on the glslang_c_interface implementation by Viktor Latypov
+**/
+
+/**
 BSD 2-Clause License
 
 Copyright (c) 2019, Viktor Latypov
@@ -26,7 +30,7 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **/
 
-#include "glslang_c_interface.h"
+#include "glslang/Include/glslang_c_interface.h"
 
 #include "SPIRV/GlslangToSpv.h"
 #include "SPIRV/Logger.h"
@@ -185,43 +189,31 @@ static EShLanguage c_shader_stage(glslang_stage_t stage)
     return EShLangCount;
 }
 
-static EShMessages c_shader_messages(glslang_messages_t messages)
+static int c_shader_messages(glslang_messages_t messages)
 {
-    switch (messages) {
-    case SH_MSG_RELAXED_ERRORS:
-        return EShMsgRelaxedErrors;
-    case SH_MSG_SUPPRESS_WARNINGS:
-        return EShMsgSuppressWarnings;
-    case SH_MSG_AST:
-        return EShMsgAST;
-    case SH_MSG_SPV_RULES:
-        return EShMsgSpvRules;
-    case SH_MSG_VULKAN_RULES:
-        return EShMsgVulkanRules;
-    case SH_MSG_ONLY_PREPROCESSOR:
-        return EShMsgOnlyPreprocessor;
-    case SH_MSG_READ_HLSL:
-        return EShMsgReadHlsl;
-    case SH_MSG_CASCADING_ERRORS:
-        return EShMsgCascadingErrors;
-    case SH_MSG_KEEP_UNCALLED:
-        return EShMsgKeepUncalled;
-    case SH_MSG_HLSL_OFFSETS:
-        return EShMsgHlslOffsets;
-    case SH_MSG_DEBUG_INFO:
-        return EShMsgDebugInfo;
-    case SH_MSG_HLSL_ENABLE_16BIT_TYPES:
-        return EShMsgHlslEnable16BitTypes;
-    case SH_MSG_HLSL_LEGALIZATION:
-        return EShMsgHlslLegalization;
-    case SH_MSG_HLSL_DX9_COMPATIBLE:
-        return EShMsgHlslDX9Compatible;
-    case SH_MSG_BUILTIN_SYMBOL_TABLE:
-        return EShMsgBuiltinSymbolTable;
-    default:
-        break;
-    }
-    return EShMsgDefault;
+#define CONVERT_MSG(in, out)                                                                                           \
+    if ((messages & in) == in)                                                                                         \
+        res |= out;
+
+    int res = 0;
+
+    CONVERT_MSG(SH_MSG_RELAXED_ERRORS_BIT, EShMsgRelaxedErrors);
+    CONVERT_MSG(SH_MSG_SUPPRESS_WARNINGS_BIT, EShMsgSuppressWarnings);
+    CONVERT_MSG(SH_MSG_AST_BIT, EShMsgAST);
+    CONVERT_MSG(SH_MSG_SPV_RULES_BIT, EShMsgSpvRules);
+    CONVERT_MSG(SH_MSG_VULKAN_RULES_BIT, EShMsgVulkanRules);
+    CONVERT_MSG(SH_MSG_ONLY_PREPROCESSOR_BIT, EShMsgOnlyPreprocessor);
+    CONVERT_MSG(SH_MSG_READ_HLSL_BIT, EShMsgReadHlsl);
+    CONVERT_MSG(SH_MSG_CASCADING_ERRORS_BIT, EShMsgCascadingErrors);
+    CONVERT_MSG(SH_MSG_KEEP_UNCALLED_BIT, EShMsgKeepUncalled);
+    CONVERT_MSG(SH_MSG_HLSL_OFFSETS_BIT, EShMsgHlslOffsets);
+    CONVERT_MSG(SH_MSG_DEBUG_INFO_BIT, EShMsgDebugInfo);
+    CONVERT_MSG(SH_MSG_HLSL_ENABLE_16BIT_TYPES_BIT, EShMsgHlslEnable16BitTypes);
+    CONVERT_MSG(SH_MSG_HLSL_LEGALIZATION_BIT, EShMsgHlslLegalization);
+    CONVERT_MSG(SH_MSG_HLSL_DX9_COMPATIBLE_BIT, EShMsgHlslDX9Compatible);
+    CONVERT_MSG(SH_MSG_BUILTIN_SYMBOL_TABLE_BIT, EShMsgBuiltinSymbolTable);
+    return res;
+#undef CONVERT_MSG
 }
 
 static glslang::EShTargetLanguageVersion
@@ -314,7 +306,7 @@ static EProfile c_shader_profile(glslang_profile_t profile)
     return EProfile();
 }
 
-glslang_shader_t* glslang_shader_create(glslang_input_t* input)
+glslang_shader_t* glslang_shader_create(const glslang_input_t* input)
 {
     if (!input || !input->code) {
         printf("Error creating shader: null input(%p)/input->code\n", input);
@@ -340,18 +332,18 @@ glslang_shader_t* glslang_shader_create(glslang_input_t* input)
 
 const char* glslang_shader_get_preprocessed_code(glslang_shader_t* shader) { return shader->preprocessedGLSL.c_str(); }
 
-int glslang_shader_preprocess(glslang_shader_t* shader, glslang_input_t* i)
+int glslang_shader_preprocess(glslang_shader_t* shader, const glslang_input_t* i)
 {
     DirStackFileIncluder Includer;
     /* TODO: use custom callbacks if they are available in 'i->callbacks' */
     return shader->shader->preprocess(
         /* No user-defined resources limit */
         &glslang::DefaultTBuiltInResource, i->default_version, c_shader_profile(i->default_profile),
-        (bool)i->force_default_version_and_profile, (bool)i->forward_compatible, c_shader_messages(i->messages),
-        &shader->preprocessedGLSL, Includer);
+        (bool)i->force_default_version_and_profile, (bool)i->forward_compatible,
+        (EShMessages)c_shader_messages(i->messages), &shader->preprocessedGLSL, Includer);
 }
 
-int glslang_shader_parse(glslang_shader_t* shader, glslang_input_t* input)
+int glslang_shader_parse(glslang_shader_t* shader, const glslang_input_t* input)
 {
     const char* preprocessedCStr = shader->preprocessedGLSL.c_str();
     shader->shader->setStrings(&preprocessedCStr, 1);
@@ -359,7 +351,7 @@ int glslang_shader_parse(glslang_shader_t* shader, glslang_input_t* input)
     return shader->shader->parse(
         /* No user-defined resource limits for now */
         &glslang::DefaultTBuiltInResource, input->default_version, (bool)input->forward_compatible,
-        c_shader_messages(input->messages));
+        (EShMessages)c_shader_messages(input->messages));
 }
 
 const char* glslang_shader_get_info_log(glslang_shader_t* shader) { return shader->shader->getInfoLog(); }
