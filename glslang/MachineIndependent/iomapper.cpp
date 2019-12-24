@@ -831,6 +831,7 @@ void TDefaultGlslIoResolver::reserverStorageSlot(TVarEntryInfo& ent, TInfoSink& 
                 if (iter->second != location) {
                     TString errorMsg = "Invalid location: " + name;
                     infoSink.info.message(EPrefixInternalError, errorMsg.c_str());
+                    hasError = true;
                 }
             }
         }
@@ -856,6 +857,7 @@ void TDefaultGlslIoResolver::reserverStorageSlot(TVarEntryInfo& ent, TInfoSink& 
                 if (iter->second != location) {
                     TString errorMsg = "Invalid location: " + name;
                     infoSink.info.message(EPrefixInternalError, errorMsg.c_str());
+                    hasError = true;
                 }
             }
         }
@@ -884,6 +886,7 @@ void TDefaultGlslIoResolver::reserverResourceSlot(TVarEntryInfo& ent, TInfoSink&
             if (iter->second != binding) {
                 TString errorMsg = "Invalid binding: " + name;
                 infoSink.info.message(EPrefixInternalError, errorMsg.c_str());
+                hasError = true;
             }
         }
     }
