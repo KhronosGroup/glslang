@@ -394,6 +394,11 @@ void glslang_program_SPIRV_get(glslang_program_t* program, unsigned int* out)
     memcpy(out, program->spirv.data(), program->spirv.size() * sizeof(unsigned int));
 }
 
+unsigned int* glslang_program_SPIRV_get_ptr(glslang_program_t* program)
+{
+	return program->spirv.data();
+}
+
 const char* glslang_program_SPIRV_get_messages(glslang_program_t* program)
 {
     return program->loggerMessages.empty() ? nullptr : program->loggerMessages.c_str();

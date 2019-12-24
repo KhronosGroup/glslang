@@ -107,6 +107,7 @@ int glslang_program_link(glslang_program_t* program, int messages); // glslang_m
 void glslang_program_SPIRV_generate(glslang_program_t* program, glslang_stage_t stage);
 size_t glslang_program_SPIRV_get_size(glslang_program_t* program);
 void glslang_program_SPIRV_get(glslang_program_t* program, unsigned int*);
+unsigned int* glslang_program_SPIRV_get_ptr(glslang_program_t* program);
 const char* glslang_program_SPIRV_get_messages(glslang_program_t* program);
 const char* glslang_program_get_info_log(glslang_program_t* program);
 const char* glslang_program_get_info_debug_log(glslang_program_t* program);
