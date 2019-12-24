@@ -5135,6 +5135,7 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
             profileRequires(loc, EEsProfile, 310, nullptr, feature);
         }
         publicType.qualifier.layoutOffset = value;
+        publicType.qualifier.explicitOffset = true;
         if (nonLiteral)
             error(loc, "needs a literal integer", "offset", "");
         return;
