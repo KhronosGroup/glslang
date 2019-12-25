@@ -6380,13 +6380,15 @@ const TFunction* TParseContext::findFunctionExplicitTypes(const TSourceLoc& loc,
 void TParseContext::declareTypeDefaults(const TSourceLoc& loc, const TPublicType& publicType)
 {
 #ifndef GLSLANG_WEB
-    if (publicType.basicType == EbtAtomicUint && publicType.qualifier.hasBinding() &&
-        publicType.qualifier.hasOffset()) {
+    if (publicType.basicType == EbtAtomicUint && publicType.qualifier.hasBinding()) {
         if (publicType.qualifier.layoutBinding >= (unsigned int)resources.maxAtomicCounterBindings) {
             error(loc, "atomic_uint binding is too large", "binding", "");
             return;
         }
-        atomicUintOffsets[publicType.qualifier.layoutBinding] = publicType.qualifier.layoutOffset;
+
+        if(publicType.qualifier.hasOffset()) {
+            atomicUintOffsets[publicType.qualifier.layoutBinding] = publicType.qualifier.layoutOffset;
+        }
         return;
     }
 
