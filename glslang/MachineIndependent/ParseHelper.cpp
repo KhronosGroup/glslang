@@ -6035,6 +6035,10 @@ void TParseContext::fixOffset(const TSourceLoc& loc, TSymbol& symbol)
                 offset = qualifier.layoutOffset;
             else
                 offset = atomicUintOffsets[qualifier.layoutBinding];
+
+            if (offset % 4 != 0)
+                error(loc, "atomic counters offset should align based on 4:", "offset", "%d", offset);
+
             symbol.getWritableType().getQualifier().layoutOffset = offset;
 
             // Check for overlap
