@@ -155,33 +155,33 @@ void glslang_finalize_process() { glslang::FinalizeProcess(); }
 static EShLanguage c_shader_stage(glslang_stage_t stage)
 {
     switch (stage) {
-    case SH_STAGE_VERTEX:
+    case GLSLANG_STAGE_VERTEX:
         return EShLangVertex;
-    case SH_STAGE_TESSCONTROL:
+    case GLSLANG_STAGE_TESSCONTROL:
         return EShLangTessControl;
-    case SH_STAGE_TESSEVALUATION:
+    case GLSLANG_STAGE_TESSEVALUATION:
         return EShLangTessEvaluation;
-    case SH_STAGE_GEOMETRY:
+    case GLSLANG_STAGE_GEOMETRY:
         return EShLangGeometry;
-    case SH_STAGE_FRAGMENT:
+    case GLSLANG_STAGE_FRAGMENT:
         return EShLangFragment;
-    case SH_STAGE_COMPUTE:
+    case GLSLANG_STAGE_COMPUTE:
         return EShLangCompute;
-    case SH_STAGE_RAYGEN_NV:
+    case GLSLANG_STAGE_RAYGEN_NV:
         return EShLangRayGenNV;
-    case SH_STAGE_INTERSECT_NV:
+    case GLSLANG_STAGE_INTERSECT_NV:
         return EShLangIntersectNV;
-    case SH_STAGE_ANYHIT_NV:
+    case GLSLANG_STAGE_ANYHIT_NV:
         return EShLangAnyHitNV;
-    case SH_STAGE_CLOSESTHIT_NV:
+    case GLSLANG_STAGE_CLOSESTHIT_NV:
         return EShLangClosestHitNV;
-    case SH_STAGE_MISS_NV:
+    case GLSLANG_STAGE_MISS_NV:
         return EShLangMissNV;
-    case SH_STAGE_CALLABLE_NV:
+    case GLSLANG_STAGE_CALLABLE_NV:
         return EShLangCallableNV;
-    case SH_STAGE_TASK_NV:
+    case GLSLANG_STAGE_TASK_NV:
         return EShLangTaskNV;
-    case SH_STAGE_MESH_NV:
+    case GLSLANG_STAGE_MESH_NV:
         return EShLangMeshNV;
     default:
         break;
@@ -197,21 +197,21 @@ static int c_shader_messages(glslang_messages_t messages)
 
     int res = 0;
 
-    CONVERT_MSG(SH_MSG_RELAXED_ERRORS_BIT, EShMsgRelaxedErrors);
-    CONVERT_MSG(SH_MSG_SUPPRESS_WARNINGS_BIT, EShMsgSuppressWarnings);
-    CONVERT_MSG(SH_MSG_AST_BIT, EShMsgAST);
-    CONVERT_MSG(SH_MSG_SPV_RULES_BIT, EShMsgSpvRules);
-    CONVERT_MSG(SH_MSG_VULKAN_RULES_BIT, EShMsgVulkanRules);
-    CONVERT_MSG(SH_MSG_ONLY_PREPROCESSOR_BIT, EShMsgOnlyPreprocessor);
-    CONVERT_MSG(SH_MSG_READ_HLSL_BIT, EShMsgReadHlsl);
-    CONVERT_MSG(SH_MSG_CASCADING_ERRORS_BIT, EShMsgCascadingErrors);
-    CONVERT_MSG(SH_MSG_KEEP_UNCALLED_BIT, EShMsgKeepUncalled);
-    CONVERT_MSG(SH_MSG_HLSL_OFFSETS_BIT, EShMsgHlslOffsets);
-    CONVERT_MSG(SH_MSG_DEBUG_INFO_BIT, EShMsgDebugInfo);
-    CONVERT_MSG(SH_MSG_HLSL_ENABLE_16BIT_TYPES_BIT, EShMsgHlslEnable16BitTypes);
-    CONVERT_MSG(SH_MSG_HLSL_LEGALIZATION_BIT, EShMsgHlslLegalization);
-    CONVERT_MSG(SH_MSG_HLSL_DX9_COMPATIBLE_BIT, EShMsgHlslDX9Compatible);
-    CONVERT_MSG(SH_MSG_BUILTIN_SYMBOL_TABLE_BIT, EShMsgBuiltinSymbolTable);
+    CONVERT_MSG(GLSLANG_MSG_RELAXED_ERRORS_BIT, EShMsgRelaxedErrors);
+    CONVERT_MSG(GLSLANG_MSG_SUPPRESS_WARNINGS_BIT, EShMsgSuppressWarnings);
+    CONVERT_MSG(GLSLANG_MSG_AST_BIT, EShMsgAST);
+    CONVERT_MSG(GLSLANG_MSG_SPV_RULES_BIT, EShMsgSpvRules);
+    CONVERT_MSG(GLSLANG_MSG_VULKAN_RULES_BIT, EShMsgVulkanRules);
+    CONVERT_MSG(GLSLANG_MSG_ONLY_PREPROCESSOR_BIT, EShMsgOnlyPreprocessor);
+    CONVERT_MSG(GLSLANG_MSG_READ_HLSL_BIT, EShMsgReadHlsl);
+    CONVERT_MSG(GLSLANG_MSG_CASCADING_ERRORS_BIT, EShMsgCascadingErrors);
+    CONVERT_MSG(GLSLANG_MSG_KEEP_UNCALLED_BIT, EShMsgKeepUncalled);
+    CONVERT_MSG(GLSLANG_MSG_HLSL_OFFSETS_BIT, EShMsgHlslOffsets);
+    CONVERT_MSG(GLSLANG_MSG_DEBUG_INFO_BIT, EShMsgDebugInfo);
+    CONVERT_MSG(GLSLANG_MSG_HLSL_ENABLE_16BIT_TYPES_BIT, EShMsgHlslEnable16BitTypes);
+    CONVERT_MSG(GLSLANG_MSG_HLSL_LEGALIZATION_BIT, EShMsgHlslLegalization);
+    CONVERT_MSG(GLSLANG_MSG_HLSL_DX9_COMPATIBLE_BIT, EShMsgHlslDX9Compatible);
+    CONVERT_MSG(GLSLANG_MSG_BUILTIN_SYMBOL_TABLE_BIT, EShMsgBuiltinSymbolTable);
     return res;
 #undef CONVERT_MSG
 }
@@ -220,17 +220,17 @@ static glslang::EShTargetLanguageVersion
 c_shader_target_language_version(glslang_target_language_version_t target_language_version)
 {
     switch (target_language_version) {
-    case SH_TARGET_SPV_1_0:
+    case GLSLANG_TARGET_SPV_1_0:
         return glslang::EShTargetSpv_1_0;
-    case SH_TARGET_SPV_1_1:
+    case GLSLANG_TARGET_SPV_1_1:
         return glslang::EShTargetSpv_1_1;
-    case SH_TARGET_SPV_1_2:
+    case GLSLANG_TARGET_SPV_1_2:
         return glslang::EShTargetSpv_1_2;
-    case SH_TARGET_SPV_1_3:
+    case GLSLANG_TARGET_SPV_1_3:
         return glslang::EShTargetSpv_1_3;
-    case SH_TARGET_SPV_1_4:
+    case GLSLANG_TARGET_SPV_1_4:
         return glslang::EShTargetSpv_1_4;
-    case SH_TARGET_SPV_1_5:
+    case GLSLANG_TARGET_SPV_1_5:
         return glslang::EShTargetSpv_1_5;
     default:
         break;
@@ -241,9 +241,9 @@ c_shader_target_language_version(glslang_target_language_version_t target_langua
 static glslang::EShClient c_shader_client(glslang_client_t client)
 {
     switch (client) {
-    case SH_CLIENT_VULKAN:
+    case GLSLANG_CLIENT_VULKAN:
         return glslang::EShClientVulkan;
-    case SH_CLIENT_OPENGL:
+    case GLSLANG_CLIENT_OPENGL:
         return glslang::EShClientOpenGL;
     default:
         break;
@@ -255,9 +255,9 @@ static glslang::EShClient c_shader_client(glslang_client_t client)
 static glslang::EShTargetClientVersion c_shader_client_version(glslang_target_client_version_t client_version)
 {
     switch (client_version) {
-    case SH_TARGET_VULKAN_1_1:
+    case GLSLANG_TARGET_VULKAN_1_1:
         return glslang::EShTargetVulkan_1_1;
-    case SH_TARGET_OPENGL_450:
+    case GLSLANG_TARGET_OPENGL_450:
         return glslang::EShTargetOpenGL_450;
     default:
         break;
@@ -268,7 +268,7 @@ static glslang::EShTargetClientVersion c_shader_client_version(glslang_target_cl
 
 static glslang::EShTargetLanguage c_shader_target_language(glslang_target_language_t target_language)
 {
-    if (target_language == SH_TARGET_NONE)
+    if (target_language == GLSLANG_TARGET_NONE)
         return glslang::EShTargetNone;
 
     return glslang::EShTargetSpv;
@@ -277,9 +277,9 @@ static glslang::EShTargetLanguage c_shader_target_language(glslang_target_langua
 static glslang::EShSource c_shader_source(glslang_source_t source)
 {
     switch (source) {
-    case SH_SOURCE_GLSL:
+    case GLSLANG_SOURCE_GLSL:
         return glslang::EShSourceGlsl;
-    case SH_SOURCE_HLSL:
+    case GLSLANG_SOURCE_HLSL:
         return glslang::EShSourceHlsl;
     default:
         break;
@@ -291,15 +291,15 @@ static glslang::EShSource c_shader_source(glslang_source_t source)
 static EProfile c_shader_profile(glslang_profile_t profile)
 {
     switch (profile) {
-    case SH_BAD_PROFILE:
+    case GLSLANG_BAD_PROFILE:
         return EBadProfile;
-    case SH_NO_PROFILE:
+    case GLSLANG_NO_PROFILE:
         return ENoProfile;
-    case SH_CORE_PROFILE:
+    case GLSLANG_CORE_PROFILE:
         return ECoreProfile;
-    case SH_COMPATIBILITY_PROFILE:
+    case GLSLANG_COMPATIBILITY_PROFILE:
         return ECompatibilityProfile;
-    case SH_ES_PROFILE:
+    case GLSLANG_ES_PROFILE:
         return EEsProfile;
     }
 
