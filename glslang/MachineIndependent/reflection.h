@@ -60,8 +60,10 @@ public:
     TReflection(EShReflectionOptions opts, EShLanguage first, EShLanguage last)
         : options(opts), firstStage(first), lastStage(last), badReflection(TObjectReflection::badReflection())
     {
-        for (int dim=0; dim<3; ++dim)
+        for (int dim = 0; dim < 3; ++dim) {
             localSize[dim] = 0;
+            localSizeSpecId[dim] = -1;
+        }
     }
 
     virtual ~TReflection() {}
@@ -176,8 +178,13 @@ public:
     // see gePipeIOIndex(const char*, const bool)
     int getPipeIOIndex(const TString& name, const bool inOrOut) const { return getPipeIOIndex(name.c_str(), inOrOut); }
 
-    // Thread local size
+    // Thread local size. If the function returns zero maybe the size is backed by a specialization constant. Use
+    // getLocalSizeSpecId() to check
     unsigned getLocalSize(int dim) const { return dim <= 2 ? localSize[dim] : 0; }
+
+    // Thread local size backed by a specialization constant. It's negative if the size is not backed by a
+    // specialization constant
+    int getLocalSizeSpecId(int dim) const { return dim <= 2 ? localSizeSpecId[dim] : -1; }
 
     void dump();
 
@@ -186,7 +193,7 @@ protected:
 
     void buildCounterIndices(const TIntermediate&);
     void buildUniformStageMask(const TIntermediate& intermediate);
-    void buildAttributeReflection(EShLanguage, const TIntermediate&);
+    void buildAttributeReflection(EShLanguage, const TIntermediate&, TReflectionTraverser&);
 
     // Need a TString hash: typedef std::unordered_map<TString, int> TNameToIndex;
     typedef std::map<std::string, int> TNameToIndex;
@@ -225,6 +232,7 @@ protected:
     TIndices atomicCounterUniformIndices;
 
     unsigned int localSize[3];
+    int localSizeSpecId[3];
 };
 
 } // end namespace glslang

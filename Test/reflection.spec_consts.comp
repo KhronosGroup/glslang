@@ -1,0 +1,16 @@
+#version 450 core
+
+layout(constant_id = 0) const int liveSpecConst1 = 64;
+layout(constant_id = 1) const int deadSpecConst1 = 1;
+
+layout(local_size_x_id = 0, local_size_y = 1, local_size_z = 2) in;
+
+layout(binding = 0) writeonly buffer s_
+{
+	vec4 liveStorageVariable1[];
+};
+
+void main()
+{
+	liveStorageVariable1[gl_LocalInvocationID.x] = vec4(1.0);
+}

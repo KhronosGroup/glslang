@@ -146,10 +146,11 @@ public:
         base.getType().contains([this](const TType* t) {
             bool containsSpecializationSize = t->isArray() && t->getArraySizes()->isOuterSpecialization();
             if (containsSpecializationSize) {
-                const int dimension = 0; // Spec consts can only be in the outermost dimension
-                TIntermTyped* typed = t->getArraySizes()->getDimNode(dimension);
-                assert(typed);
-                traverseToFindSpecConsants(typed);
+                for (int dim = 0; dim < t->getArraySizes()->getNumDims(); ++dim) {
+                    TIntermTyped* typed = t->getArraySizes()->getDimNode(dim);
+                    if (typed != nullptr)
+                        traverseToFindSpecConsants(typed);
+                }
             }
 
             return false;
@@ -1118,7 +1119,7 @@ int TObjectReflection::getBinding() const
 
 void TObjectReflection::dump() const
 {
-    if (type->getQualifier().storage == EvqConst) {
+    if (type->getQualifier().specConstant) {
         printf("%s: constantId %d, type %d\n", name.c_str(), type->getQualifier().layoutSpecConstantId, glDefineType);
     } else {
         printf("%s: offset %d, type %x, size %d, index %d, binding %d, stages %d", name.c_str(), offset, glDefineType,
@@ -1146,12 +1147,37 @@ void TObjectReflection::dump() const
 
 // Track any required attribute reflection, such as compute shader numthreads.
 //
-void TReflection::buildAttributeReflection(EShLanguage stage, const TIntermediate& intermediate)
+void TReflection::buildAttributeReflection(
+    EShLanguage stage, const TIntermediate& intermediate, TReflectionTraverser& reflectionTraverser)
 {
     if (stage == EShLangCompute) {
         // Remember thread dimensions
-        for (int dim=0; dim<3; ++dim)
-            localSize[dim] = intermediate.getLocalSize(dim);
+        for (int dim = 0; dim < 3; ++dim) {
+            if (intermediate.getLocalSizeSpecId(dim) >= 0) {
+                // Searches all symbols for a spec constant with a specific constant_id
+                class SpecConstTraverser : public TIntermTraverser
+                {
+                public:
+                    TReflectionTraverser* reflectionTraverser;
+                    int specId;
+
+                    void visitSymbol(TIntermSymbol* base)
+                    {
+                        if (base->getQualifier().specConstant && base->getQualifier().layoutSpecConstantId == specId)
+                            reflectionTraverser->addSpecConstant(*base);
+                    }
+                };
+
+                SpecConstTraverser traverser;
+                traverser.reflectionTraverser = &reflectionTraverser;
+                traverser.specId = intermediate.getLocalSizeSpecId(dim);
+                intermediate.getTreeRoot()->traverse(&traverser);
+
+                localSizeSpecId[dim] = intermediate.getLocalSizeSpecId(dim);
+            } else {
+                localSize[dim] = intermediate.getLocalSize(dim);
+            }
+        }
     }
 }
 
@@ -1196,9 +1222,9 @@ bool TReflection::addStage(EShLanguage stage, const TIntermediate& intermediate)
         intermediate.isRecursive())
         return false;
 
-    buildAttributeReflection(stage, intermediate);
-
     TReflectionTraverser it(intermediate, *this);
+
+    buildAttributeReflection(stage, intermediate, it);
 
     // put the entry point on the list of functions to process
     it.pushFunction(intermediate.getEntryPointMangledName().c_str());
@@ -1253,11 +1279,13 @@ void TReflection::dump()
         indexToSpecConstant[i].dump();
     printf("\n");
 
-    if (getLocalSize(0) > 1) {
+    if (getLocalSize(0) > 1 || getLocalSizeSpecId(0) >= 0) {
         static const char* axis[] = { "X", "Y", "Z" };
 
-        for (int dim=0; dim<3; ++dim)
-            if (getLocalSize(dim) > 1)
+        for (int dim = 0; dim < 3; ++dim)
+            if (getLocalSizeSpecId(dim) >= 0)
+                printf("Local size %s: specialization constant ID %d\n", axis[dim], getLocalSizeSpecId(dim));
+            else if (getLocalSize(dim) > 1)
                 printf("Local size %s: %d\n", axis[dim], getLocalSize(dim));
 
         printf("\n");

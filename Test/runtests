@@ -57,6 +57,8 @@ $EXE -D -Od -e main -l -q --hlsl-iomap --auto-map-bindings --stb 10 --sbb 20 --s
 diff -b $BASEDIR/hlsl.automap.frag.out $TARGETDIR/hlsl.automap.frag.out || HASERROR=1
 $EXE -l -q -V reflection.spec_consts.vert > $TARGETDIR/reflection.spec_consts.vert.out
 diff -b $BASEDIR/reflection.spec_consts.vert.out $TARGETDIR/reflection.spec_consts.vert.out || HASERROR=1
+$EXE -l -q -V reflection.spec_consts.comp > $TARGETDIR/reflection.spec_consts.comp.out
+diff -b $BASEDIR/reflection.spec_consts.comp.out $TARGETDIR/reflection.spec_consts.comp.out || HASERROR=1
 
 #
 # multi-threaded test

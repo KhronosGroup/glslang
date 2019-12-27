@@ -789,7 +789,12 @@ public:
 
     // call first, to do liveness analysis, index mapping, etc.; returns false on failure
     bool buildReflection(int opts = EShReflectionDefault);
-    unsigned getLocalSize(int dim) const;                  // return dim'th local size
+    // return dim'th local size. If zero use getLocalSizeSpecId() to check if by any chance the size is given by a
+    // specialization constant
+    unsigned getLocalSize(int dim) const;
+    // return the specialization constant ID of the dim'th local size or negative if dim is not given by a
+    // specialization constant
+    int getLocalSizeSpecId(int dim) const;
     int getReflectionIndex(const char *name) const;
     int getReflectionPipeIOIndex(const char* name, const bool inOrOut) const;
     int getNumUniformVariables() const;
