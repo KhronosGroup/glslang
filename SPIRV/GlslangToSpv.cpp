@@ -7482,7 +7482,7 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
         id = builder.createCompositeExtract(mulOp, typeId, 0);
         for (int i = 1; i < componentCount; ++i) {
             builder.setPrecision(id, precision);
-            id = builder.createBinOp(spv::OpIAdd, typeId, id, builder.createCompositeExtract(operands[0], typeId, i));
+            id = builder.createBinOp(spv::OpIAdd, typeId, id, builder.createCompositeExtract(mulOp, typeId, i));
         }
     } else {
         switch (consumedOperands) {

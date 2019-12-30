@@ -1421,6 +1421,9 @@ int TScanContext::tokenizeIdentifier()
         afterType = true;
         if (parseContext.isEsProfile() && parseContext.version >= 310)
             return keyword;
+        if (!parseContext.isEsProfile() && (parseContext.version > 140 ||
+            (parseContext.version == 140 && parseContext.extensionsTurnedOn(1, &E_GL_ARB_texture_multisample))))
+            return keyword;
         return es30ReservedFromGLSL(150);
 
     case SAMPLER2DMSARRAY:
@@ -1429,6 +1432,9 @@ int TScanContext::tokenizeIdentifier()
         afterType = true;
         if ((parseContext.isEsProfile() && parseContext.version >= 320) ||
             parseContext.extensionsTurnedOn(1, &E_GL_OES_texture_storage_multisample_2d_array))
+            return keyword;
+        if (!parseContext.isEsProfile() && (parseContext.version > 140 ||
+            (parseContext.version == 140 && parseContext.extensionsTurnedOn(1, &E_GL_ARB_texture_multisample))))
             return keyword;
         return es30ReservedFromGLSL(150);
 

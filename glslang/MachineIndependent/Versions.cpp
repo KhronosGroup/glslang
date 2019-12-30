@@ -172,6 +172,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_ARB_tessellation_shader]          = EBhDisable;
     extensionBehavior[E_GL_ARB_enhanced_layouts]             = EBhDisable;
     extensionBehavior[E_GL_ARB_texture_cube_map_array]       = EBhDisable;
+    extensionBehavior[E_GL_ARB_texture_multisample]          = EBhDisable;
     extensionBehavior[E_GL_ARB_shader_texture_lod]           = EBhDisable;
     extensionBehavior[E_GL_ARB_explicit_attrib_location]     = EBhDisable;
     extensionBehavior[E_GL_ARB_explicit_uniform_location]    = EBhDisable;
@@ -193,6 +194,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_ARB_fragment_shader_interlock]    = EBhDisable;
     extensionBehavior[E_GL_ARB_shader_clock]                 = EBhDisable;
     extensionBehavior[E_GL_ARB_uniform_buffer_object]        = EBhDisable;
+    extensionBehavior[E_GL_ARB_sample_shading]               = EBhDisable;
 
     extensionBehavior[E_GL_KHR_shader_subgroup_basic]            = EBhDisable;
     extensionBehavior[E_GL_KHR_shader_subgroup_vote]             = EBhDisable;
@@ -380,6 +382,7 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_ARB_tessellation_shader 1\n"
             "#define GL_ARB_enhanced_layouts 1\n"
             "#define GL_ARB_texture_cube_map_array 1\n"
+            "#define GL_ARB_texture_multisample 1\n"
             "#define GL_ARB_shader_texture_lod 1\n"
             "#define GL_ARB_explicit_attrib_location 1\n"
             "#define GL_ARB_explicit_uniform_location 1\n"
@@ -395,6 +398,7 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_ARB_sparse_texture2 1\n"
             "#define GL_ARB_sparse_texture_clamp 1\n"
             "#define GL_ARB_shader_stencil_export 1\n"
+            "#define GL_ARB_sample_shading 1\n"
 //            "#define GL_ARB_cull_distance 1\n"    // present for 4.5, but need extension control over block members
             "#define GL_ARB_post_depth_coverage 1\n"
             "#define GL_ARB_fragment_shader_interlock 1\n"

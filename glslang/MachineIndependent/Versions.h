@@ -124,6 +124,7 @@ const char* const E_GL_ARB_compute_shader               = "GL_ARB_compute_shader
 const char* const E_GL_ARB_tessellation_shader          = "GL_ARB_tessellation_shader";
 const char* const E_GL_ARB_enhanced_layouts             = "GL_ARB_enhanced_layouts";
 const char* const E_GL_ARB_texture_cube_map_array       = "GL_ARB_texture_cube_map_array";
+const char* const E_GL_ARB_texture_multisample          = "GL_ARB_texture_multisample";
 const char* const E_GL_ARB_shader_texture_lod           = "GL_ARB_shader_texture_lod";
 const char* const E_GL_ARB_explicit_attrib_location     = "GL_ARB_explicit_attrib_location";
 const char* const E_GL_ARB_explicit_uniform_location    = "GL_ARB_explicit_uniform_location";
@@ -145,6 +146,7 @@ const char* const E_GL_ARB_shader_viewport_layer_array  = "GL_ARB_shader_viewpor
 const char* const E_GL_ARB_fragment_shader_interlock    = "GL_ARB_fragment_shader_interlock";
 const char* const E_GL_ARB_shader_clock                 = "GL_ARB_shader_clock";
 const char* const E_GL_ARB_uniform_buffer_object        = "GL_ARB_uniform_buffer_object";
+const char* const E_GL_ARB_sample_shading               = "GL_ARB_sample_shading";
 
 const char* const E_GL_KHR_shader_subgroup_basic            = "GL_KHR_shader_subgroup_basic";
 const char* const E_GL_KHR_shader_subgroup_vote             = "GL_KHR_shader_subgroup_vote";
