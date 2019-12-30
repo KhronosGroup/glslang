@@ -144,6 +144,7 @@ const char* const E_GL_ARB_post_depth_coverage          = "GL_ARB_post_depth_cov
 const char* const E_GL_ARB_shader_viewport_layer_array  = "GL_ARB_shader_viewport_layer_array";
 const char* const E_GL_ARB_fragment_shader_interlock    = "GL_ARB_fragment_shader_interlock";
 const char* const E_GL_ARB_shader_clock                 = "GL_ARB_shader_clock";
+const char* const E_GL_ARB_sample_shading               = "GL_ARB_sample_shading";
 
 const char* const E_GL_KHR_shader_subgroup_basic            = "GL_KHR_shader_subgroup_basic";
 const char* const E_GL_KHR_shader_subgroup_vote             = "GL_KHR_shader_subgroup_vote";
