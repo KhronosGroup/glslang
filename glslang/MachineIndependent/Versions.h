@@ -124,6 +124,7 @@ const char* const E_GL_ARB_compute_shader               = "GL_ARB_compute_shader
 const char* const E_GL_ARB_tessellation_shader          = "GL_ARB_tessellation_shader";
 const char* const E_GL_ARB_enhanced_layouts             = "GL_ARB_enhanced_layouts";
 const char* const E_GL_ARB_texture_cube_map_array       = "GL_ARB_texture_cube_map_array";
+const char* const E_GL_ARB_texture_multisample          = "GL_ARB_texture_multisample";
 const char* const E_GL_ARB_shader_texture_lod           = "GL_ARB_shader_texture_lod";
 const char* const E_GL_ARB_explicit_attrib_location     = "GL_ARB_explicit_attrib_location";
 const char* const E_GL_ARB_explicit_uniform_location    = "GL_ARB_explicit_uniform_location";
