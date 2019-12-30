@@ -33,6 +33,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef C_SHADER_TYPES_H_INCLUDED
 #define C_SHADER_TYPES_H_INCLUDED
 
+#define LAST_ELEMENT_MARKER(x) x
+
 /* EShLanguage counterpart */
 typedef enum {
     GLSLANG_STAGE_VERTEX,
@@ -49,7 +51,7 @@ typedef enum {
     GLSLANG_STAGE_CALLABLE_NV,
     GLSLANG_STAGE_TASK_NV,
     GLSLANG_STAGE_MESH_NV,
-    GLSLANG_STAGE_COUNT,
+    LAST_ELEMENT_MARKER(GLSLANG_STAGE_COUNT),
 } glslang_stage_t; // would be better as stage, but this is ancient now
 
 /* EShLanguageMask counterpart */
@@ -68,6 +70,7 @@ typedef enum {
     GLSLANG_STAGE_CALLABLE_NV_MASK = (1 << GLSLANG_STAGE_CALLABLE_NV),
     GLSLANG_STAGE_TASK_NV_MASK = (1 << GLSLANG_STAGE_TASK_NV),
     GLSLANG_STAGE_MESH_NV_MASK = (1 << GLSLANG_STAGE_MESH_NV),
+    LAST_ELEMENT_MARKER(GLSLANG_STAGE_MASK_COUNT),
 } glslang_stage_mask_t;
 
 /* EShSource counterpart */
@@ -75,6 +78,7 @@ typedef enum {
     GLSLANG_SOURCE_NONE,
     GLSLANG_SOURCE_GLSL,
     GLSLANG_SOURCE_HLSL,
+    LAST_ELEMENT_MARKER(GLSLANG_SOURCE_COUNT),
 } glslang_source_t;
 
 /* EShClient counterpart */
@@ -82,12 +86,14 @@ typedef enum {
     GLSLANG_CLIENT_NONE,
     GLSLANG_CLIENT_VULKAN,
     GLSLANG_CLIENT_OPENGL,
+    LAST_ELEMENT_MARKER(GLSLANG_CLIENT_COUNT),
 } glslang_client_t;
 
 /* EShTargetLanguage counterpart */
 typedef enum {
     GLSLANG_TARGET_NONE,
     GLSLANG_TARGET_SPV,
+    LAST_ELEMENT_MARKER(GLSLANG_TARGET_COUNT),
 } glslang_target_language_t;
 
 /* SH_TARGET_ClientVersion counterpart */
@@ -95,6 +101,7 @@ typedef enum {
     GLSLANG_TARGET_VULKAN_1_0 = (1 << 22),
     GLSLANG_TARGET_VULKAN_1_1 = (1 << 22) | (1 << 12),
     GLSLANG_TARGET_OPENGL_450 = 450,
+    LAST_ELEMENT_MARKER(GLSLANG_TARGET_CLIENT_VERSION_COUNT),
 } glslang_target_client_version_t;
 
 /* SH_TARGET_LanguageVersion counterpart */
@@ -105,6 +112,7 @@ typedef enum {
     GLSLANG_TARGET_SPV_1_3 = (1 << 16) | (3 << 8),
     GLSLANG_TARGET_SPV_1_4 = (1 << 16) | (4 << 8),
     GLSLANG_TARGET_SPV_1_5 = (1 << 16) | (5 << 8),
+    LAST_ELEMENT_MARKER(GLSLANG_TARGET_LANGUAGE_VERSION_COUNT),
 } glslang_target_language_version_t;
 
 /* EShExecutable counterpart */
@@ -116,12 +124,14 @@ typedef enum {
     GLSLANG_OPT_NONE,
     GLSLANG_OPT_SIMPLE,
     GLSLANG_OPT_FULL,
+    LAST_ELEMENT_MARKER(GLSLANG_OPT_LEVEL_COUNT),
 } glslang_optimization_level_t;
 
 /* EShTextureSamplerTransformMode counterpart */
 typedef enum {
     GLSLANG_TEX_SAMP_TRANS_KEEP,
     GLSLANG_TEX_SAMP_TRANS_UPGRADE_TEXTURE_REMOVE_SAMPLER,
+    LAST_ELEMENT_MARKER(GLSLANG_TEX_SAMP_TRANS_COUNT),
 } glslang_texture_sampler_transform_mode_t;
 
 /* EShMessages counterpart */
@@ -142,6 +152,7 @@ typedef enum {
     GLSLANG_MSG_HLSL_LEGALIZATION_BIT = (1 << 12),
     GLSLANG_MSG_HLSL_DX9_COMPATIBLE_BIT = (1 << 13),
     GLSLANG_MSG_BUILTIN_SYMBOL_TABLE_BIT = (1 << 14),
+    LAST_ELEMENT_MARKER(GLSLANG_MSG_COUNT),
 } glslang_messages_t;
 
 /* EShReflectionOptions counterpart */
@@ -153,6 +164,7 @@ typedef enum {
     GLSLANG_REFLECTION_SEPARATE_BUFFERS_BIT = (1 << 3),
     GLSLANG_REFLECTION_ALL_BLOCK_VARIABLES_BIT = (1 << 4),
     GLSLANG_REFLECTION_UNWRAP_IO_BLOCKS_BIT = (1 << 5),
+    LAST_ELEMENT_MARKER(GLSLANG_REFLECTION_COUNT),
 } glslang_reflection_options_t;
 
 /* EProfile counterpart (from Versions.h) */
@@ -161,7 +173,10 @@ typedef enum {
     GLSLANG_NO_PROFILE = (1 << 0),
     GLSLANG_CORE_PROFILE = (1 << 1),
     GLSLANG_COMPATIBILITY_PROFILE = (1 << 2),
-    GLSLANG_ES_PROFILE = (1 << 3)
+    GLSLANG_ES_PROFILE = (1 << 3),
+    LAST_ELEMENT_MARKER(GLSLANG_PROFILE_COUNT),
 } glslang_profile_t;
+
+#undef LAST_ELEMENT_MARKER
 
 #endif
