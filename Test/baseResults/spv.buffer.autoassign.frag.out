@@ -28,16 +28,19 @@ spv.buffer.autoassign.frag
                               MemberDecorate 16(MyUB1) 0 Offset 0
                               MemberDecorate 16(MyUB1) 1 Offset 4
                               Decorate 16(MyUB1) Block
+                              Decorate 18 Location 0
                               Decorate 18 DescriptorSet 0
-                              Decorate 18 Binding 20
+                              Decorate 18 Binding 0
                               MemberDecorate 28(MyUB2) 0 Offset 0
                               Decorate 28(MyUB2) Block
+                              Decorate 30 Location 0
                               Decorate 30 DescriptorSet 0
-                              Decorate 30 Binding 15
+                              Decorate 30 Binding 0
                               MemberDecorate 34(MyUB3) 0 Offset 0
                               Decorate 34(MyUB3) Block
+                              Decorate 36 Location 0
                               Decorate 36 DescriptorSet 0
-                              Decorate 36 Binding 16
+                              Decorate 36 Binding 0
                               Decorate 47(@entryPointOutput.Color) Location 0
                2:             TypeVoid
                3:             TypeFunction 2

@@ -68,8 +68,9 @@ spv.glsl.register.noautoassign.frag
                               MemberDecorate 95(myblock) 2 Offset 48
                               MemberDecorate 95(myblock) 3 Offset 64
                               Decorate 95(myblock) Block
+                              Decorate 97 Location 0
                               Decorate 97 DescriptorSet 0
-                              Decorate 97 Binding 19
+                              Decorate 97 Binding 0
                               Decorate 119(g_tTex_unused1) DescriptorSet 0
                               Decorate 119(g_tTex_unused1) Binding 22
                               Decorate 121(g_sSamp_unused1) DescriptorSet 0

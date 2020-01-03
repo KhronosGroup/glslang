@@ -72,6 +72,7 @@ spv.register.noautoassign.frag
                               MemberDecorate 99($Global) 2 Offset 48
                               MemberDecorate 99($Global) 3 Offset 64
                               Decorate 99($Global) Block
+                              Decorate 101 Location 0
                               Decorate 101 DescriptorSet 0
                               Decorate 101 Binding 0
                               Decorate 123(g_tTex_unused1) DescriptorSet 0
