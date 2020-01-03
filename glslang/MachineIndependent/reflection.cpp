@@ -92,11 +92,29 @@ public:
         if (processedDerefs.find(&base) == processedDerefs.end()) {
             processedDerefs.insert(&base);
 
+            uint32_t blockIndex = -1;
+            uint32_t offset     = -1;
+            TList<TIntermBinary*> derefs;
+            TString baseName = base.getName();
+
+            if (base.getType().getBasicType() == EbtBlock) {
+                offset = 0;
+                bool anonymous = IsAnonymous(base.getName());
+                const TString& blockName = base.getType().getTypeName();
+
+                if (!anonymous)
+                    baseName = blockName;
+                else
+                    baseName = "";
+
+
+                blockIndex = addBlockName(blockName, base.getType(), intermediate.getBlockSize(base.getType()));
+            }
+
             // Use a degenerate (empty) set of dereferences to immediately put as at the end of
             // the dereference change expected by blowUpActiveAggregate.
-            TList<TIntermBinary*> derefs;
-            blowUpActiveAggregate(base.getType(), base.getName(), derefs, derefs.end(), -1, -1, 0, 0,
-                                  base.getQualifier().storage, true);
+            blowUpActiveAggregate(base.getType(), baseName, derefs, derefs.end(), offset, blockIndex, 0, 0,
+                                    base.getQualifier().storage, true);
         }
     }
 
@@ -262,7 +280,8 @@ public:
                 // Visit all the indices of this array, and for each one add on the remaining dereferencing
                 for (int i = 0; i < std::max(visitNode->getLeft()->getType().getOuterArraySize(), 1); ++i) {
                     TString newBaseName = name;
-                    if (strictArraySuffix && blockParent)
+                    if (terminalType->getBasicType() == EbtBlock) {}
+                    else if (strictArraySuffix && blockParent)
                         newBaseName.append(TString("[0]"));
                     else if (strictArraySuffix || baseType.getBasicType() != EbtBlock)
                         newBaseName.append(TString("[") + String(i) + "]");
@@ -282,9 +301,10 @@ public:
                 int stride = getArrayStride(baseType, visitNode->getLeft()->getType());
 
                 index = visitNode->getRight()->getAsConstantUnion()->getConstArray()[0].getIConst();
-                if (strictArraySuffix && blockParent) {
+                if (terminalType->getBasicType() == EbtBlock) {}
+                else if (strictArraySuffix && blockParent)
                     name.append(TString("[0]"));
-                } else if (strictArraySuffix || baseType.getBasicType() != EbtBlock) {
+                else if (strictArraySuffix || baseType.getBasicType() != EbtBlock) {
                     name.append(TString("[") + String(index) + "]");
 
                     if (offset >= 0)
@@ -537,16 +557,7 @@ public:
             if (! anonymous)
                 baseName = blockName;
 
-            if (base->getType().isArray()) {
-                TType derefType(base->getType(), 0);
-
-                assert(! anonymous);
-                for (int e = 0; e < base->getType().getCumulativeArraySize(); ++e)
-                    blockIndex = addBlockName(blockName + "[" + String(e) + "]", derefType,
-                                              intermediate.getBlockSize(base->getType()));
-                baseName.append(TString("[0]"));
-            } else
-                blockIndex = addBlockName(blockName, base->getType(), intermediate.getBlockSize(base->getType()));
+            blockIndex = addBlockName(blockName, base->getType(), intermediate.getBlockSize(base->getType()));
 
             if (reflection.options & EShReflectionAllBlockVariables) {
                 // Use a degenerate (empty) set of dereferences to immediately put as at the end of
@@ -572,7 +583,7 @@ public:
                     getOffsets(structType, memberOffsets);
 
                     for (int i = 0; i < (int)typeList.size(); ++i) {
-                        TType derefType(structType, i);
+                        const TType& derefType = *typeList[i].type;
                         TString name = baseName;
                         if (name.size() > 0)
                             name.append(".");
@@ -632,24 +643,35 @@ public:
 
     int addBlockName(const TString& name, const TType& type, int size)
     {
-        TReflection::TMapIndexToReflection& blocks = reflection.GetBlockMapForStorage(type.getQualifier().storage);
-
         int blockIndex;
-        TReflection::TNameToIndex::const_iterator it = reflection.nameToIndex.find(name.c_str());
-        if (reflection.nameToIndex.find(name.c_str()) == reflection.nameToIndex.end()) {
-            blockIndex = (int)blocks.size();
-            reflection.nameToIndex[name.c_str()] = blockIndex;
-            blocks.push_back(TObjectReflection(name.c_str(), type, -1, -1, size, -1));
 
-            blocks.back().numMembers = countAggregateMembers(type);
-
-            EShLanguageMask& stages = blocks.back().stages;
-            stages = static_cast<EShLanguageMask>(stages | 1 << intermediate.getStage());
+        if (type.isArray()) {
+            TType derefType(type, 0);
+            for (int e = 0; e < type.getOuterArraySize(); ++e) {
+                uint32_t memberBlockIndex = addBlockName(name + "[" + String(e) + "]", derefType, size);
+                if (e == 0)
+                    blockIndex = memberBlockIndex;
+            }
         } else {
-            blockIndex = it->second;
+            TReflection::TMapIndexToReflection& blocks = reflection.GetBlockMapForStorage(type.getQualifier().storage);
 
-            EShLanguageMask& stages = blocks[blockIndex].stages;
-            stages = static_cast<EShLanguageMask>(stages | 1 << intermediate.getStage());
+            TReflection::TNameToIndex::const_iterator it = reflection.nameToIndex.find(name.c_str());
+            if (reflection.nameToIndex.find(name.c_str()) == reflection.nameToIndex.end()) {
+                blockIndex = (int)blocks.size();
+                reflection.nameToIndex[name.c_str()] = blockIndex;
+                blocks.push_back(TObjectReflection(name.c_str(), type, -1, -1, size, -1));
+
+                blocks.back().numMembers = countAggregateMembers(type);
+
+                EShLanguageMask& stages = blocks.back().stages;
+                stages = static_cast<EShLanguageMask>(stages | 1 << intermediate.getStage());
+            }
+            else {
+                blockIndex = it->second;
+
+                EShLanguageMask& stages = blocks[blockIndex].stages;
+                stages = static_cast<EShLanguageMask>(stages | 1 << intermediate.getStage());
+            }
         }
 
         return blockIndex;
