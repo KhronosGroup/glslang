@@ -40,6 +40,7 @@
 
 #include "gl_types.h"
 #include "iomapper.h"
+#include "../Include/Types.h"
 
 //
 // Map IO bindings.
@@ -80,14 +81,21 @@ public:
         else if (base->getQualifier().isUniformOrBuffer() && !base->getQualifier().isPushConstant())
             target = &uniformList;
         if (target) {
-            TVarEntryInfo ent = {base->getId(), base, ! traverseAll};
-            ent.stage = intermediate.getStage();
-            TVarLiveMap::iterator at = target->find(
-                ent.symbol->getName()); // std::lower_bound(target->begin(), target->end(), ent, TVarEntryInfo::TOrderById());
-            if (at != target->end() && at->second.id == ent.id)
-                at->second.live = at->second.live || ! traverseAll; // update live state
-            else
-                (*target)[ent.symbol->getName()] = ent;
+            TVarEntryInfo ent = {base->getId(), base, ! traverseAll};ent.stage = intermediate.getStage();
+            TVarLiveMap::iterator at = target->find(ent.symbol->getName());  // std::lower_bound(target->begin(), target->end(), ent, TVarEntryInfo::TOrderById());
+            if (at != target->end() && at->second.id == ent.id) {
+                at->second.live = at->second.live || !traverseAll; // update live state
+            }
+            else {
+                TString baseName;
+                if (ent.symbol->getBasicType() == EbtBlock) {
+                    baseName = ent.symbol->getType().getTypeName();
+                }
+                else {
+                    baseName = ent.symbol->getName();
+                }
+                (*target)[baseName] = ent;
+            }
         }
     }
 
@@ -120,7 +128,10 @@ public:
             return;
 
         TVarEntryInfo ent = { base->getId() };
-        TVarLiveMap::const_iterator at = source->find(base->getName());
+
+        // Fix a defect, when block has no instance name, we need to find its block name
+        const TString& name = IsAnonymous(base->getName()) ? base->getType().getTypeName() : base->getName(); 
+        TVarLiveMap::const_iterator at = source->find(name);
         if (at == source->end())
             return;
 
@@ -302,6 +313,38 @@ struct TSymbolValidater
         memcpy(inVarMaps, in, EShLangCount * (sizeof(TVarLiveMap*)));
         memcpy(outVarMaps, out, EShLangCount * (sizeof(TVarLiveMap*)));
         memcpy(uniformVarMap, uniform, EShLangCount * (sizeof(TVarLiveMap*)));
+        std::map<TString, TString> anonymousMemberMap;
+        for (int i = 0; i < EShLangCount; i++) {
+            if (uniformVarMap[i]) {
+                for (auto uniformVar : *uniformVarMap[i])
+                {
+                    if ((uniformVar.second.symbol->getBasicType() == EbtBlock) &&
+                        IsAnonymous(uniformVar.second.symbol->getName()))
+                    {
+                        auto blockType = uniformVar.second.symbol->getType().getStruct();
+                        for (int memberIdx = 0; memberIdx < blockType->size(); ++memberIdx) {
+                            auto memberName = (*blockType)[memberIdx].type->getFieldName();
+                            if (anonymousMemberMap.find(memberName) != anonymousMemberMap.end())
+                            {
+                                if (anonymousMemberMap[memberName] != uniformVar.second.symbol->getType().getTypeName())
+                                {
+                                    TString err = "Invalid block member name: " + memberName;
+                                    infoSink.info.message(EPrefixInternalError, err.c_str());
+                                    hadError = true;
+                                    break;
+                                }
+                            }
+                            else
+                            {
+                                anonymousMemberMap[memberName] = uniformVar.second.symbol->getType().getTypeName();
+                            }
+                        }
+                    }
+                    if (hadError)
+                        break;
+                }
+            }
+        }
     }
 
     inline void operator()(std::pair<const TString, TVarEntryInfo>& entKey) {
@@ -370,6 +413,55 @@ struct TSymbolValidater
                             hadError = true;
                         }
                         mangleName2.clear();
+
+                        // validate instance name of blocks
+                        if (hadError == false &&
+                            base->getType().getBasicType() == EbtBlock &&
+                            IsAnonymous(base->getName()) != IsAnonymous(ent2->second.symbol->getName())) {
+                            TString err = "Matched uniform block names must also either all be lacking "
+                                          "an instance name or all having an instance name: " + entKey.first;
+                            infoSink.info.message(EPrefixInternalError, err.c_str());
+                            hadError = true;
+                        }
+
+                        // validate uniform block member qualifier and member names
+                        if (hadError == false && base->getType().getBasicType() == EbtBlock) {
+                            auto blockType1 = base->getType().getStruct();
+                            auto blockType2 = ent2->second.symbol->getType().getStruct();
+                            for (int memberIdx = 0; memberIdx < blockType1->size(); ++memberIdx) {
+                                auto qualifier1 = (*blockType1)[memberIdx].type->getQualifier();
+                                auto& name1 = (*blockType1)[memberIdx].type->getFieldName();
+                                auto qualifier2 = (*blockType2)[memberIdx].type->getQualifier();
+                                auto& name2 = (*blockType2)[memberIdx].type->getFieldName();
+                                if (qualifier1.layoutOffset != qualifier2.layoutOffset ||
+                                    qualifier1.layoutMatrix != qualifier2.layoutMatrix ||
+                                    qualifier1.layoutAlign != qualifier2.layoutAlign ||
+                                    name1 != name2) {
+                                    TString err = "Invalid Uniform variable type : " + entKey.first;
+                                    infoSink.info.message(EPrefixInternalError, err.c_str());
+                                    hadError = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    else if (base->getBasicType() == EbtBlock)
+                    {
+                        if (IsAnonymous(base->getName()))
+                        {
+                            // The name of anonymous block member can't same with default uniform variable.
+                            auto blockType1 = base->getType().getStruct();
+                            for (int memberIdx = 0; memberIdx < blockType1->size(); ++memberIdx) {
+                                auto memberName = (*blockType1)[memberIdx].type->getFieldName();
+                                if (uniformVarMap[i]->find(memberName) != uniformVarMap[i]->end())
+                                {
+                                    TString err = "Invalid Uniform variable name : " + memberName;
+                                    infoSink.info.message(EPrefixInternalError, err.c_str());
+                                    hadError = true;
+                                    break;
+                                }
+                            }
+                        }
                     }
                 }
             }
