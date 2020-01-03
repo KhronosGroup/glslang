@@ -370,6 +370,27 @@ struct TSymbolValidater
                             hadError = true;
                         }
                         mangleName2.clear();
+
+                        // validate uniform block member qualifier and member names
+                        if (hadError == false && base->getType().getBasicType() == EbtBlock) {
+                            auto blockType1 = base->getType().getStruct();
+                            auto blockType2 = ent2->second.symbol->getType().getStruct();
+                            for (int i = 0; i < blockType1->size(); ++i) {
+                                auto qualifier1 = (*blockType1)[i].type->getQualifier();
+                                auto& name1 = (*blockType1)[i].type->getFieldName();
+                                auto qualifier2 = (*blockType2)[i].type->getQualifier();
+                                auto& name2 = (*blockType2)[i].type->getFieldName();
+                                if (qualifier1.layoutOffset != qualifier2.layoutOffset ||
+                                    qualifier1.layoutMatrix != qualifier2.layoutMatrix ||
+                                    qualifier1.layoutAlign != qualifier2.layoutAlign ||
+                                    name1 != name2) {
+                                    TString err = "Invalid Uniform variable type : " + entKey.first;
+                                    infoSink.info.message(EPrefixInternalError, err.c_str());
+                                    hadError = true;
+                                    break;
+                                }
+                            }
+                        }
                     }
                 }
             }
