@@ -338,7 +338,6 @@ void TParseVersions::getPreamble(std::string& preamble)
 
             // AEP
             "#define GL_ANDROID_extension_pack_es31a 1\n"
-            "#define GL_KHR_blend_equation_advanced 1\n"
             "#define GL_OES_sample_variables 1\n"
             "#define GL_OES_shader_image_atomic 1\n"
             "#define GL_OES_shader_multisample_interpolation 1\n"
@@ -505,6 +504,7 @@ void TParseVersions::getPreamble(std::string& preamble)
     preamble +=
             "#define GL_GOOGLE_cpp_style_line_directive 1\n"
             "#define GL_GOOGLE_include_directive 1\n"
+            "#define GL_KHR_blend_equation_advanced 1\n"
             ;
 #endif
 
