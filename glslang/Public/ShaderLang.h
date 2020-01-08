@@ -143,7 +143,7 @@ typedef enum {
     EShTargetNone,
     EShTargetSpv,                 // SPIR-V (preferred spelling)
     EshTargetSpv = EShTargetSpv,  // legacy spelling
-	 LAST_ELEMENT_MARKER(EShTargetCount),
+    LAST_ELEMENT_MARKER(EShTargetCount),
 } EShTargetLanguage;
 
 typedef enum {
@@ -162,7 +162,7 @@ typedef enum {
     EShTargetSpv_1_3 = (1 << 16) | (3 << 8),          // SPIR-V 1.3
     EShTargetSpv_1_4 = (1 << 16) | (4 << 8),          // SPIR-V 1.4
     EShTargetSpv_1_5 = (1 << 16) | (5 << 8),          // SPIR-V 1.5
-	 LAST_ELEMENT_MARKER(EShTargetLanguageVersionCount),
+    LAST_ELEMENT_MARKER(EShTargetLanguageVersionCount),
 } EShTargetLanguageVersion;
 
 struct TInputLanguage {
@@ -212,7 +212,7 @@ typedef enum {
     EShOptNone,
     EShOptSimple,       // Optimizations that can be done quickly
     EShOptFull,         // Optimizations that will take more time
-	 LAST_ELEMENT_MARKER(EshOptLevelCount),
+    LAST_ELEMENT_MARKER(EshOptLevelCount),
 } EShOptimizationLevel;
 
 //
