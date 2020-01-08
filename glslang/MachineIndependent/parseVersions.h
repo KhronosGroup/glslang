@@ -102,7 +102,7 @@ public:
     void updateExtensionBehavior(const char* const extension, TExtensionBehavior) { }
     void checkExtensionStage(const TSourceLoc&, const char* const extension) { }
     void fullIntegerCheck(const TSourceLoc&, const char* op) { }
-    void doubleCheck(const TSourceLoc&, const char* op, bool builtIn = false) { }
+    void doubleCheck(const TSourceLoc&, const char* op) { }
     bool float16Arithmetic() { return false; }
     void requireFloat16Arithmetic(const TSourceLoc& loc, const char* op, const char* featureDesc) { }
     bool int16Arithmetic() { return false; }
@@ -142,7 +142,7 @@ public:
     virtual void fullIntegerCheck(const TSourceLoc&, const char* op);
 
     virtual void unimplemented(const TSourceLoc&, const char* featureDesc);
-    virtual void doubleCheck(const TSourceLoc&, const char* op, bool builtIn = false);
+    virtual void doubleCheck(const TSourceLoc&, const char* op);
     virtual void float16Check(const TSourceLoc&, const char* op, bool builtIn = false);
     virtual void float16ScalarVectorCheck(const TSourceLoc&, const char* op, bool builtIn = false);
     virtual bool float16Arithmetic();

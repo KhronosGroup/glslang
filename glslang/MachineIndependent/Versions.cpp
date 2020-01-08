@@ -925,11 +925,10 @@ void TParseVersions::fullIntegerCheck(const TSourceLoc& loc, const char* op)
 }
 
 // Call for any operation needing GLSL double data-type support.
-void TParseVersions::doubleCheck(const TSourceLoc& loc, const char* op, bool builtIn)
+void TParseVersions::doubleCheck(const TSourceLoc& loc, const char* op)
 {
-    requireProfile(loc, ECoreProfile | ECompatibilityProfile, op);
-    if (!builtIn)
-        profileRequires(loc, ECoreProfile | ECompatibilityProfile, 400, E_GL_ARB_gpu_shader_fp64, op);
+    //requireProfile(loc, ECoreProfile | ECompatibilityProfile, op);
+    profileRequires(loc, ECoreProfile | ECompatibilityProfile, 400, E_GL_ARB_gpu_shader_fp64, op);
 }
 
 // Call for any operation needing GLSL float16 data-type support.
