@@ -1,5 +1,5 @@
 /**
-	This code is based on the glslang_c_interface implementation by Viktor Latypov
+    This code is based on the glslang_c_interface implementation by Viktor Latypov
 **/
 
 /**
@@ -133,7 +133,7 @@ public:
     }
 
     /* This function only calls free_include_result callback
-	   when the IncludeResult instance is allocated by a C function */
+       when the IncludeResult instance is allocated by a C function */
     virtual void releaseInclude(IncludeResult* result) override
     {
         if (result == nullptr)
@@ -343,7 +343,10 @@ glslang_shader_t* glslang_shader_create(const glslang_input_t* input)
     return shader;
 }
 
-const char* glslang_shader_get_preprocessed_code(glslang_shader_t* shader) { return shader->preprocessedGLSL.c_str(); }
+const char* glslang_shader_get_preprocessed_code(glslang_shader_t* shader)
+{
+    return shader->preprocessedGLSL.c_str();
+}
 
 int glslang_shader_preprocess(glslang_shader_t* shader, const glslang_input_t* i)
 {
@@ -353,7 +356,8 @@ int glslang_shader_preprocess(glslang_shader_t* shader, const glslang_input_t* i
         /* No user-defined resources limit */
         &glslang::DefaultTBuiltInResource, i->default_version, c_shader_profile(i->default_profile),
         (bool)i->force_default_version_and_profile, (bool)i->forward_compatible,
-        (EShMessages)c_shader_messages(i->messages), &shader->preprocessedGLSL, Includer);
+        (EShMessages)c_shader_messages(i->messages), &shader->preprocessedGLSL, Includer
+    );
 }
 
 int glslang_shader_parse(glslang_shader_t* shader, const glslang_input_t* input)
@@ -409,7 +413,7 @@ void glslang_program_SPIRV_get(glslang_program_t* program, unsigned int* out)
 
 unsigned int* glslang_program_SPIRV_get_ptr(glslang_program_t* program)
 {
-	return program->spirv.data();
+    return program->spirv.data();
 }
 
 const char* glslang_program_SPIRV_get_messages(glslang_program_t* program)
@@ -436,7 +440,10 @@ int glslang_program_link(glslang_program_t* program, int messages)
     return (int)program->program->link((EShMessages)messages);
 }
 
-const char* glslang_program_get_info_log(glslang_program_t* program) { return program->program->getInfoLog(); }
+const char* glslang_program_get_info_log(glslang_program_t* program)
+{
+    return program->program->getInfoLog();
+}
 
 const char* glslang_program_get_info_debug_log(glslang_program_t* program)
 {

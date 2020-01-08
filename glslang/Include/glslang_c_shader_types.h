@@ -1,5 +1,5 @@
 ﻿/**
-	This code is based on the glslang_c_interface implementation by Viktor Latypov
+    This code is based on the glslang_c_interface implementation by Viktor Latypov
 **/
 
 /**
