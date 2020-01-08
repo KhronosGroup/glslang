@@ -204,7 +204,7 @@ public:
         text.append("#define ");
         fixLine(def);
 
-        Processes.push_back("D");
+        Processes.push_back("define-macro ");
         Processes.back().append(def);
 
         // The first "=" needs to turn into a space
@@ -222,7 +222,7 @@ public:
         text.append("#undef ");
         fixLine(undef);
 
-        Processes.push_back("U");
+        Processes.push_back("undef-macro ");
         Processes.back().append(undef);
 
         text.append(undef);
@@ -500,6 +500,13 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                         } else
                             Error("expects vulkan100 or opengl100", lowerword.c_str());
                         bumpArg();
+                    } else if (lowerword == "define-macro" ||
+                               lowerword == "d") {
+                        if (argc > 1)
+                            UserPreamble.addDef(argv[1]);
+                        else
+                            Error("expects <name[=def]>", argv[0]);
+                        bumpArg();
                     } else if (lowerword == "dump-builtin-symbols") {
                         DumpBuiltinSymbols = true;
                     } else if (lowerword == "entry-point") {
@@ -627,6 +634,13 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                                       "spirv1.0, spirv1.1, spirv1.2, spirv1.3, spirv1.4, or spirv1.5");
                         }
                         bumpArg();
+                    } else if (lowerword == "undef-macro" ||
+                               lowerword == "u") {
+                        if (argc > 1)
+                            UserPreamble.addUndef(argv[1]);
+                        else
+                            Error("expects <name>", argv[0]);
+                        bumpArg();
                     } else if (lowerword == "variable-name" || // synonyms
                                lowerword == "vn") {
                         Options |= EOptionOutputHexadecimal;
@@ -649,7 +663,7 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                 if (argv[0][2] == 0)
                     Options |= EOptionReadHlsl;
                 else
-                    UserPreamble.addDef(getStringOperand("-D<macro> macro name"));
+                    UserPreamble.addDef(getStringOperand("-D<name[=def]>"));
                 break;
             case 'u':
                 uniformLocationOverrides.push_back(getUniformOverride());
@@ -692,7 +706,7 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                 bumpArg();
                 break;
             case 'U':
-                UserPreamble.addUndef(getStringOperand("-U<macro>: macro name"));
+                UserPreamble.addUndef(getStringOperand("-U<name>"));
                 break;
             case 'V':
                 setVulkanSpv();
@@ -1502,8 +1516,8 @@ void usage()
            "Options:\n"
            "  -C          cascading errors; risk crash from accumulation of error recoveries\n"
            "  -D          input is HLSL (this is the default when any suffix is .hlsl)\n"
-           "  -D<macro=def>\n"
-           "  -D<macro>   define a pre-processor macro\n"
+           "  -D<name[=def]> | --define-macro <name[=def]> | --D <name[=def]>\n"
+           "              define a pre-processor macro\n"
            "  -E          print pre-processed GLSL; cannot be used with -l;\n"
            "              errors will appear on stderr\n"
            "  -G[ver]     create SPIR-V binary, under OpenGL semantics; turns on -l;\n"
@@ -1519,7 +1533,8 @@ void usage()
            "  -Os         optimizes SPIR-V to minimize size\n"
            "  -S <stage>  uses specified stage rather than parsing the file extension\n"
            "              choices for <stage> are vert, tesc, tese, geom, frag, or comp\n"
-           "  -U<macro>   undefine a pre-processor macro\n"
+           "  -U<name> | --undef-macro <name> | --U <name>\n"
+           "              undefine a pre-processor macro\n"
            "  -V[ver]     create SPIR-V binary, under Vulkan semantics; turns on -l;\n"
            "              default file name is <stage>.spv (-o overrides this)\n"
            "              'ver', when present, is the version of the input semantics,\n"
