@@ -123,8 +123,8 @@ public:
             void visitSymbol(TIntermSymbol* base)
             {
                 if (base->getType().getQualifier().specConstant) {
-                    // Some symbols contain the specConstant qualifier but in reality they are not. Check that
                     if (base->getType().getQualifier().layoutSpecConstantId != TQualifier::layoutSpecConstantIdEnd) {
+                        // Only spec constants that have a constant ID will be taken into account
                         reflectionTraverser->addSpecConstant(*base);
                     } else if (base->getConstSubtree()) {
                         TArrayDimensionTraverser traverser;
@@ -144,8 +144,7 @@ public:
     void searchForSpecConstantsInArrayDimensions(const TIntermSymbol& base)
     {
         base.getType().contains([this](const TType* t) {
-            bool containsSpecializationSize = t->isArray() && t->getArraySizes()->isOuterSpecialization();
-            if (containsSpecializationSize) {
+            if (t->isArray()) {
                 for (int dim = 0; dim < t->getArraySizes()->getNumDims(); ++dim) {
                     TIntermTyped* typed = t->getArraySizes()->getDimNode(dim);
                     if (typed != nullptr)
