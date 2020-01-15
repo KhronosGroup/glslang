@@ -145,6 +145,7 @@ typedef enum {
 typedef enum {
     EShTargetVulkan_1_0 = (1 << 22),                  // Vulkan 1.0
     EShTargetVulkan_1_1 = (1 << 22) | (1 << 12),      // Vulkan 1.1
+    EShTargetVulkan_1_2 = (1 << 22) | (2 << 12),      // Vulkan 1.2
     EShTargetOpenGL_450 = 450,                        // OpenGL
 } EShTargetClientVersion;
 
