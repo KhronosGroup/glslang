@@ -189,6 +189,7 @@ $EXE --client vulkan100       spv.targetVulkan.vert || HASERROR=1
 $EXE --client opengl100       spv.targetOpenGL.vert || HASERROR=1
 $EXE --target-env vulkan1.0   spv.targetVulkan.vert || HASERROR=1
 $EXE --target-env vulkan1.1   spv.targetVulkan.vert || HASERROR=1
+$EXE --target-env vulkan1.2   spv.targetVulkan.vert || HASERROR=1
 $EXE --target-env opengl      spv.targetOpenGL.vert || HASERROR=1
 $EXE -V100                    spv.targetVulkan.vert || HASERROR=1
 $EXE -G100                    spv.targetOpenGL.vert || HASERROR=1
