@@ -17,6 +17,20 @@ branches:
   only:
     - master
 
+# changes to these files don't need to trigger testing
+skip_commits:
+  files:
+    - README.md
+    - README-spirv-remap.txt
+    - LICENSE.txt
+    - CODE_OF_CONDUCT.md
+    - BUILD.*
+    - WORKSPACE
+    - kokoro/*
+    - make-revision
+    - Android.mk
+    - _config.yml
+
 # Travis advances the master-tot tag to current top of the tree after
 # each push into the master branch, because it relies on that tag to
 # upload build artifacts to the master-tot release. This will cause
