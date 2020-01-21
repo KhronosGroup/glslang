@@ -1166,7 +1166,10 @@ int TScanContext::tokenizeIdentifier()
     case DVEC3:
     case DVEC4:
         afterType = true;
-        if (parseContext.isEsProfile() || parseContext.version < 400)
+        if (parseContext.isEsProfile() || parseContext.version < 150 ||
+            (!parseContext.symbolTable.atBuiltInLevel() &&
+              parseContext.version < 400 &&
+             !parseContext.extensionTurnedOn(E_GL_ARB_gpu_shader_fp64)))
             reservedWord();
         return keyword;
 
@@ -1421,6 +1424,9 @@ int TScanContext::tokenizeIdentifier()
         afterType = true;
         if (parseContext.isEsProfile() && parseContext.version >= 310)
             return keyword;
+        if (!parseContext.isEsProfile() && (parseContext.version > 140 ||
+            (parseContext.version == 140 && parseContext.extensionsTurnedOn(1, &E_GL_ARB_texture_multisample))))
+            return keyword;
         return es30ReservedFromGLSL(150);
 
     case SAMPLER2DMSARRAY:
@@ -1429,6 +1435,9 @@ int TScanContext::tokenizeIdentifier()
         afterType = true;
         if ((parseContext.isEsProfile() && parseContext.version >= 320) ||
             parseContext.extensionsTurnedOn(1, &E_GL_OES_texture_storage_multisample_2d_array))
+            return keyword;
+        if (!parseContext.isEsProfile() && (parseContext.version > 140 ||
+            (parseContext.version == 140 && parseContext.extensionsTurnedOn(1, &E_GL_ARB_texture_multisample))))
             return keyword;
         return es30ReservedFromGLSL(150);
 
@@ -1735,7 +1744,9 @@ int TScanContext::dMat()
         return keyword;
     }
 
-    if (!parseContext.isEsProfile() && parseContext.version >= 400)
+    if (!parseContext.isEsProfile() && (parseContext.version >= 400 ||
+        parseContext.symbolTable.atBuiltInLevel() ||
+        (parseContext.version >= 150 && parseContext.extensionTurnedOn(E_GL_ARB_gpu_shader_fp64))))
         return keyword;
 
     if (parseContext.isForwardCompatible())

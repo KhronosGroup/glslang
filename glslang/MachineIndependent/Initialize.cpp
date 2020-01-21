@@ -690,7 +690,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
     //
     // double functions added to desktop 4.00, but not fma, frexp, ldexp, or pack/unpack
     //
-    if (profile != EEsProfile && version >= 400) {
+    if (profile != EEsProfile && version >= 150) {  // ARB_gpu_shader_fp64
         commonBuiltins.append(
 
             "double sqrt(double);"
@@ -1298,15 +1298,15 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "vec3   fma(vec3,   vec3,   vec3  );"
             "vec4   fma(vec4,   vec4,   vec4  );"
             "\n");
+    }
 
-        if (profile != EEsProfile) {
+    if (profile != EEsProfile && version >= 150) {  // ARB_gpu_shader_fp64
             commonBuiltins.append(
                 "double fma(double, double, double);"
                 "dvec2  fma(dvec2,  dvec2,  dvec2 );"
                 "dvec3  fma(dvec3,  dvec3,  dvec3 );"
                 "dvec4  fma(dvec4,  dvec4,  dvec4 );"
                 "\n");
-        }
     }
 
     if ((profile == EEsProfile && version >= 310) ||
@@ -1325,7 +1325,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "\n");
     }
 
-    if (profile != EEsProfile && version >= 400) {
+    if (profile != EEsProfile && version >= 150) { // ARB_gpu_shader_fp64
         commonBuiltins.append(
             "double frexp(double, out int);"
             "dvec2  frexp( dvec2, out ivec2);"
@@ -5178,18 +5178,24 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "flat in int gl_PrimitiveID;"
                 );
 
-        if (version >= 400) {
+        if (version >= 130) { // ARB_sample_shading
             stageBuiltins[EShLangFragment].append(
                 "flat in  int  gl_SampleID;"
                 "     in  vec2 gl_SamplePosition;"
-                "flat in  int  gl_SampleMaskIn[];"
                 "     out int  gl_SampleMask[];"
                 );
-            if (spvVersion.spv == 0)
+
+            if (spvVersion.spv == 0) {
                 stageBuiltins[EShLangFragment].append(
                     "uniform int gl_NumSamples;"
-                    );
+                );
+            }
         }
+
+        if (version >= 400)
+            stageBuiltins[EShLangFragment].append(
+                "flat in  int  gl_SampleMaskIn[];"
+            );
 
         if (version >= 430)
             stageBuiltins[EShLangFragment].append(
@@ -6621,6 +6627,14 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
     } else {
         // non-ES profile
 
+        if (version > 400) {
+            snprintf(builtInConstant, maxSize, "const int  gl_MaxVertexUniformVectors = %d;", resources.maxVertexUniformVectors);
+            s.append(builtInConstant);
+
+            snprintf(builtInConstant, maxSize, "const int  gl_MaxFragmentUniformVectors = %d;", resources.maxFragmentUniformVectors);
+            s.append(builtInConstant);
+        }
+
         snprintf(builtInConstant, maxSize, "const int  gl_MaxVertexAttribs = %d;", resources.maxVertexAttribs);
         s.append(builtInConstant);
 
@@ -7422,18 +7436,29 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             BuiltInVariable("gl_FragStencilRefARB", EbvFragStencilRef, symbolTable);
         }
 
-        if ((profile != EEsProfile && version >= 400) ||
+        if ((profile != EEsProfile && version >= 130) ||
             (profile == EEsProfile && version >= 310)) {
-            BuiltInVariable("gl_SampleID",        EbvSampleId,       symbolTable);
-            BuiltInVariable("gl_SamplePosition",  EbvSamplePosition, symbolTable);
-            BuiltInVariable("gl_SampleMaskIn",    EbvSampleMask,     symbolTable);
-            BuiltInVariable("gl_SampleMask",      EbvSampleMask,     symbolTable);
-            if (profile == EEsProfile && version < 320) {
-                symbolTable.setVariableExtensions("gl_SampleID",       1, &E_GL_OES_sample_variables);
-                symbolTable.setVariableExtensions("gl_SamplePosition", 1, &E_GL_OES_sample_variables);
-                symbolTable.setVariableExtensions("gl_SampleMaskIn",   1, &E_GL_OES_sample_variables);
-                symbolTable.setVariableExtensions("gl_SampleMask",     1, &E_GL_OES_sample_variables);
-                symbolTable.setVariableExtensions("gl_NumSamples",     1, &E_GL_OES_sample_variables);
+            BuiltInVariable("gl_SampleID",           EbvSampleId,       symbolTable);
+            BuiltInVariable("gl_SamplePosition",     EbvSamplePosition, symbolTable);
+            BuiltInVariable("gl_SampleMask",         EbvSampleMask,     symbolTable);
+
+            if (profile != EEsProfile && version < 400) {
+                BuiltInVariable("gl_NumSamples",     EbvSampleMask,     symbolTable);
+
+                symbolTable.setVariableExtensions("gl_SampleMask",     1, &E_GL_ARB_sample_shading);
+                symbolTable.setVariableExtensions("gl_SampleID",       1, &E_GL_ARB_sample_shading);
+                symbolTable.setVariableExtensions("gl_SamplePosition", 1, &E_GL_ARB_sample_shading);
+                symbolTable.setVariableExtensions("gl_NumSamples",     1, &E_GL_ARB_sample_shading);
+            } else {
+                BuiltInVariable("gl_SampleMaskIn",    EbvSampleMask,     symbolTable);
+
+                if (profile == EEsProfile && version < 320) {
+                    symbolTable.setVariableExtensions("gl_SampleID", 1, &E_GL_OES_sample_variables);
+                    symbolTable.setVariableExtensions("gl_SamplePosition", 1, &E_GL_OES_sample_variables);
+                    symbolTable.setVariableExtensions("gl_SampleMaskIn", 1, &E_GL_OES_sample_variables);
+                    symbolTable.setVariableExtensions("gl_SampleMask", 1, &E_GL_OES_sample_variables);
+                    symbolTable.setVariableExtensions("gl_NumSamples", 1, &E_GL_OES_sample_variables);
+                }
             }
         }
 

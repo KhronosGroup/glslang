@@ -35,7 +35,7 @@ Deprecations
 `${CMAKE_INSTALL_INCLUDEDIR}`. This `SPIRV` folder is being moved to
 `glslang/SPIRV`. During the transition the `SPIRV` folder will be installed into
 both locations. The old install of `SPIRV/` will be removed as a CMake install
-target no sooner then May 1, 2020. See issue #1964.
+target no sooner than May 1, 2020. See issue #1964.
 
 Execution of Standalone Wrapper
 -------------------------------
@@ -185,7 +185,7 @@ Use the steps in [Build Steps](#build-steps), with the following notes/exception
   + turn on `-DENABLE_GLSLANG_WEB=ON`
   + optionally, for GLSL compilation error messages, turn on `-DENABLE_GLSLANG_WEB_DEVEL=ON`
 * `emsdk` needs to be present in your executable search path, *PATH* for
-  Bash-like enivironments
+  Bash-like environments
   + [Instructions located
     here](https://emscripten.org/docs/getting_started/downloads.html#sdk-download-and-install)
 * Wrap cmake call: `emcmake cmake`
@@ -309,7 +309,7 @@ class TProgram
     Reflection queries
 ```
 
-For just validating (not generating code), subsitute these calls:
+For just validating (not generating code), substitute these calls:
 
 ```cxx
     setEnvInput(EShSourceHlsl or EShSourceGlsl, stage,  EShClientNone, 0);
@@ -327,7 +327,7 @@ This interface is in roughly the first 2/3 of `ShaderLang.h`, and referred to
 as the `Sh*()` interface, as all the entry points start `Sh`.
 
 The `Sh*()` interface takes a "compiler" call-back object, which it calls after
-building call back that is passed the AST and can then execute a backend on it.
+building call back that is passed the AST and can then execute a back end on it.
 
 The following is a simplified resulting run-time call stack:
 
@@ -354,7 +354,7 @@ Basic Internal Operation
 * The intermediate representation is very high-level, and represented
   as an in-memory tree.   This serves to lose no information from the
   original program, and to have efficient transfer of the result from
-  parsing to the back-end.  In the AST, constants are propogated and
+  parsing to the back-end.  In the AST, constants are propagated and
   folded, and a very small amount of dead code is eliminated.
 
   To aid linking and reflection, the last top-level branch in the AST

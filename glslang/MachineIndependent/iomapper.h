@@ -129,6 +129,7 @@ public:
     uint32_t computeTypeLocationSize(const TType& type, EShLanguage stage);
 
     TSlotSetMap slots;
+    bool hasError = false;
 
 protected:
     TDefaultIoResolverBase(TDefaultIoResolverBase&);
