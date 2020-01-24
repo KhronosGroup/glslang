@@ -38,6 +38,8 @@
 #ifndef _VERSIONS_INCLUDED_
 #define _VERSIONS_INCLUDED_
 
+#define LAST_ELEMENT_MARKER(x) x
+
 //
 // Help manage multiple profiles, versions, extensions etc.
 //
@@ -54,7 +56,8 @@ typedef enum {
     ENoProfile            = (1 << 0), // only for desktop, before profiles showed up
     ECoreProfile          = (1 << 1),
     ECompatibilityProfile = (1 << 2),
-    EEsProfile            = (1 << 3)
+    EEsProfile            = (1 << 3),
+    LAST_ELEMENT_MARKER(EProfileCount),
 } EProfile;
 
 namespace glslang {
