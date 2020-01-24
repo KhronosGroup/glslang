@@ -203,8 +203,8 @@ void* convert_glsl_to_spirv(const char* glsl, int stage_int, bool gen_debug, uin
     glslang::TShader shader(stage);
     shader.setStrings(&glsl, 1);
     shader.setEnvInput(glslang::EShSourceGlsl, stage, glslang::EShClientVulkan, 100);
-    shader.setEnvClient(glslang::EShClientVulkan, glslang::EShTargetVulkan_1_1);
-    shader.setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_3);
+    shader.setEnvClient(glslang::EShClientVulkan, glslang::EShTargetVulkan_1_0);
+    shader.setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_0);
     if (!shader.parse(&DefaultTBuiltInResource, 100, true, EShMsgDefault)) {
         fprintf(stderr, "Parse failed\n");
         fprintf(stderr, "%s\n", shader.getInfoLog());
