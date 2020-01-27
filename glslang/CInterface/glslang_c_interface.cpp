@@ -355,7 +355,7 @@ int glslang_shader_preprocess(glslang_shader_t* shader, const glslang_input_t* i
     return shader->shader->preprocess(
         /* No user-defined resources limit */
         &glslang::DefaultTBuiltInResource, i->default_version, c_shader_profile(i->default_profile),
-        (bool)i->force_default_version_and_profile, (bool)i->forward_compatible,
+        i->force_default_version_and_profile != 0, i->forward_compatible != 0,
         (EShMessages)c_shader_messages(i->messages), &shader->preprocessedGLSL, Includer
     );
 }
@@ -367,7 +367,7 @@ int glslang_shader_parse(glslang_shader_t* shader, const glslang_input_t* input)
 
     return shader->shader->parse(
         /* No user-defined resource limits for now */
-        &glslang::DefaultTBuiltInResource, input->default_version, (bool)input->forward_compatible,
+        &glslang::DefaultTBuiltInResource, input->default_version, input->forward_compatible != 0,
         (EShMessages)c_shader_messages(input->messages));
 }
 
