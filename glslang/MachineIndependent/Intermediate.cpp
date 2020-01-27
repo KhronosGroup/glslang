@@ -2774,6 +2774,8 @@ bool TIntermediate::postProcess(TIntermNode* root, EShLanguage /*language*/)
     case EShTexSampTransUpgradeTextureRemoveSampler:
         performTextureUpgradeAndSamplerRemovalTransformation(root);
         break;
+    default:
+        assert(0);
     }
 #endif
 
