@@ -731,7 +731,7 @@ void TranslateEnvironment(const TEnvironment* environment, EShMessages& messages
                 source = EShSourceHlsl;
                 messages = static_cast<EShMessages>(messages | EShMsgReadHlsl);
                 break;
-            case EShClientCount:
+            case EShSourceCount:
                 assert(0);
                 break;
             }
