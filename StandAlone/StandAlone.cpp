@@ -654,6 +654,9 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                         break;
                     } else if (lowerword == "version") {
                         Options |= EOptionDumpVersions;
+                    } else if (lowerword == "help") {
+                        usage();
+                        break;
                     } else {
                         Error("unrecognized command-line option", argv[0]);
                     }
