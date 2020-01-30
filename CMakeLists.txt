@@ -101,7 +101,7 @@ if(${CMAKE_CXX_COMPILER_ID} MATCHES "GNU")
                         -Wunused-parameter -Wunused-value  -Wunused-variable -Wunused-but-set-parameter -Wunused-but-set-variable -fno-exceptions)
     add_compile_options(-Wno-reorder)  # disable this from -Wall, since it happens all over.
     add_compile_options(-fno-rtti)
-    if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "9.0.0")
+    if(NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS "9.0.0")
         add_compile_options(-Werror=deprecated-copy)
     endif()
 elseif(${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
