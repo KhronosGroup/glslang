@@ -277,7 +277,7 @@ void main() { })";
     uint32_t* output;
     size_t output_len;
 
-    void* id = convert_glsl_to_spirv(input, 4, false, &output, &output_len);
+    void* id = convert_glsl_to_spirv(input, 4, false, glslang::EShTargetSpv_1_0, &output, &output_len);
     assert(output != nullptr);
     assert(output_len != 0);
     destroy_output_buffer(id);
