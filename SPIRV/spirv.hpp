@@ -79,11 +79,17 @@ enum ExecutionModel {
     ExecutionModelTaskNV = 5267,
     ExecutionModelMeshNV = 5268,
     ExecutionModelRayGenerationNV = 5313,
+    ExecutionModelRayGenerationKHR = 5313,
     ExecutionModelIntersectionNV = 5314,
+    ExecutionModelIntersectionKHR = 5314,
     ExecutionModelAnyHitNV = 5315,
+    ExecutionModelAnyHitKHR = 5315,
     ExecutionModelClosestHitNV = 5316,
+    ExecutionModelClosestHitKHR = 5316,
     ExecutionModelMissNV = 5317,
+    ExecutionModelMissKHR = 5317,
     ExecutionModelCallableNV = 5318,
+    ExecutionModelCallableKHR = 5318,
     ExecutionModelMax = 0x7fffffff,
 };
 
@@ -180,11 +186,17 @@ enum StorageClass {
     StorageClassImage = 11,
     StorageClassStorageBuffer = 12,
     StorageClassCallableDataNV = 5328,
+    StorageClassCallableDataKHR = 5328,
     StorageClassIncomingCallableDataNV = 5329,
+    StorageClassIncomingCallableDataKHR = 5329,
     StorageClassRayPayloadNV = 5338,
+    StorageClassRayPayloadKHR = 5338,
     StorageClassHitAttributeNV = 5339,
+    StorageClassHitAttributeKHR = 5339,
     StorageClassIncomingRayPayloadNV = 5342,
+    StorageClassIncomingRayPayloadKHR = 5342,
     StorageClassShaderRecordBufferNV = 5343,
+    StorageClassShaderRecordBufferKHR = 5343,
     StorageClassPhysicalStorageBuffer = 5349,
     StorageClassPhysicalStorageBufferEXT = 5349,
     StorageClassMax = 0x7fffffff,
@@ -559,19 +571,34 @@ enum BuiltIn {
     BuiltInFragInvocationCountEXT = 5293,
     BuiltInInvocationsPerPixelNV = 5293,
     BuiltInLaunchIdNV = 5319,
+    BuiltInLaunchIdKHR = 5319,
     BuiltInLaunchSizeNV = 5320,
+    BuiltInLaunchSizeKHR = 5320,
     BuiltInWorldRayOriginNV = 5321,
+    BuiltInWorldRayOriginKHR = 5321,
     BuiltInWorldRayDirectionNV = 5322,
+    BuiltInWorldRayDirectionKHR = 5322,
     BuiltInObjectRayOriginNV = 5323,
+    BuiltInObjectRayOriginKHR = 5323,
     BuiltInObjectRayDirectionNV = 5324,
+    BuiltInObjectRayDirectionKHR = 5324,
     BuiltInRayTminNV = 5325,
+    BuiltInRayTminKHR = 5325,
     BuiltInRayTmaxNV = 5326,
+    BuiltInRayTmaxKHR = 5326,
     BuiltInInstanceCustomIndexNV = 5327,
+    BuiltInInstanceCustomIndexKHR = 5327,
     BuiltInObjectToWorldNV = 5330,
+    BuiltInObjectToWorldKHR = 5330,
     BuiltInWorldToObjectNV = 5331,
+    BuiltInWorldToObjectKHR = 5331,
     BuiltInHitTNV = 5332,
+    BuiltInHitTKHR = 5332,
     BuiltInHitKindNV = 5333,
+    BuiltInHitKindKHR = 5333,
     BuiltInIncomingRayFlagsNV = 5351,
+    BuiltInIncomingRayFlagsKHR = 5351,
+    BuiltInRayGeometryIndexKHR = 5352,
     BuiltInWarpsPerSMNV = 5374,
     BuiltInSMCountNV = 5375,
     BuiltInWarpIDNV = 5376,
@@ -709,6 +736,7 @@ enum Scope {
     ScopeInvocation = 4,
     ScopeQueueFamily = 5,
     ScopeQueueFamilyKHR = 5,
+    ScopeShaderCallKHR = 6,
     ScopeMax = 0x7fffffff,
 };
 
@@ -886,6 +914,7 @@ enum Capability {
     CapabilityPhysicalStorageBufferAddresses = 5347,
     CapabilityPhysicalStorageBufferAddressesEXT = 5347,
     CapabilityComputeDerivativeGroupLinearNV = 5350,
+    CapabilityRayTracingProvisionalKHR = 5353,
     CapabilityCooperativeMatrixNV = 5357,
     CapabilityFragmentShaderSampleInterlockEXT = 5363,
     CapabilityFragmentShaderShadingRateInterlockEXT = 5372,
@@ -1269,11 +1298,17 @@ enum Op {
     OpGroupNonUniformPartitionNV = 5296,
     OpWritePackedPrimitiveIndices4x8NV = 5299,
     OpReportIntersectionNV = 5334,
+    OpReportIntersectionKHR = 5334,
     OpIgnoreIntersectionNV = 5335,
+    OpIgnoreIntersectionKHR = 5335,
     OpTerminateRayNV = 5336,
+    OpTerminateRayKHR = 5336,
     OpTraceNV = 5337,
+    OpTraceRayKHR = 5337,
     OpTypeAccelerationStructureNV = 5341,
+    OpTypeAccelerationStructureKHR = 5341,
     OpExecuteCallableNV = 5344,
+    OpExecuteCallableKHR = 5344,
     OpTypeCooperativeMatrixNV = 5358,
     OpCooperativeMatrixLoadNV = 5359,
     OpCooperativeMatrixStoreNV = 5360,
@@ -1801,12 +1836,12 @@ inline void HasResultAndType(Op opcode, bool *hasResult, bool *hasResultType) {
     case OpImageSampleFootprintNV: *hasResult = true; *hasResultType = true; break;
     case OpGroupNonUniformPartitionNV: *hasResult = true; *hasResultType = true; break;
     case OpWritePackedPrimitiveIndices4x8NV: *hasResult = false; *hasResultType = false; break;
-    case OpReportIntersectionNV: *hasResult = true; *hasResultType = true; break;
-    case OpIgnoreIntersectionNV: *hasResult = false; *hasResultType = false; break;
-    case OpTerminateRayNV: *hasResult = false; *hasResultType = false; break;
-    case OpTraceNV: *hasResult = false; *hasResultType = false; break;
-    case OpTypeAccelerationStructureNV: *hasResult = true; *hasResultType = false; break;
-    case OpExecuteCallableNV: *hasResult = false; *hasResultType = false; break;
+    case OpReportIntersectionKHR: *hasResult = true; *hasResultType = true; break;
+    case OpIgnoreIntersectionKHR: *hasResult = false; *hasResultType = false; break;
+    case OpTerminateRayKHR: *hasResult = false; *hasResultType = false; break;
+    case OpTraceRayKHR: *hasResult = false; *hasResultType = false; break;
+    case OpTypeAccelerationStructureKHR: *hasResult = true; *hasResultType = false; break;
+    case OpExecuteCallableKHR: *hasResult = false; *hasResultType = false; break;
     case OpTypeCooperativeMatrixNV: *hasResult = true; *hasResultType = false; break;
     case OpCooperativeMatrixLoadNV: *hasResult = true; *hasResultType = true; break;
     case OpCooperativeMatrixStoreNV: *hasResult = false; *hasResultType = false; break;

@@ -290,7 +290,7 @@ void TIntermediate::mergeTrees(TInfoSink& infoSink, TIntermediate& unit)
     }
 
     // Getting this far means we have two existing trees to merge...
-    numShaderRecordNVBlocks += unit.numShaderRecordNVBlocks;
+    numShaderRecordBlocks += unit.numShaderRecordBlocks;
     numTaskNVBlocks += unit.numTaskNVBlocks;
 
     // Get the top-level globals of each unit
@@ -562,6 +562,7 @@ void TIntermediate::mergeErrorCheck(TInfoSink& infoSink, const TIntermSymbol& sy
         symbol.getQualifier().queuefamilycoherent  != unitSymbol.getQualifier().queuefamilycoherent ||
         symbol.getQualifier().workgroupcoherent != unitSymbol.getQualifier().workgroupcoherent ||
         symbol.getQualifier().subgroupcoherent  != unitSymbol.getQualifier().subgroupcoherent ||
+        symbol.getQualifier().shadercallcoherent!= unitSymbol.getQualifier().shadercallcoherent ||
         symbol.getQualifier().nonprivate        != unitSymbol.getQualifier().nonprivate ||
         symbol.getQualifier().volatil           != unitSymbol.getQualifier().volatil ||
         symbol.getQualifier().restrict          != unitSymbol.getQualifier().restrict ||
@@ -728,13 +729,13 @@ void TIntermediate::finalCheck(TInfoSink& infoSink, bool keepUncalled)
         break;
     case EShLangCompute:
         break;
-    case EShLangRayGenNV:
-    case EShLangIntersectNV:
-    case EShLangAnyHitNV:
-    case EShLangClosestHitNV:
-    case EShLangMissNV:
-    case EShLangCallableNV:
-        if (numShaderRecordNVBlocks > 1)
+    case EShLangRayGen:
+    case EShLangIntersect:
+    case EShLangAnyHit:
+    case EShLangClosestHit:
+    case EShLangMiss:
+    case EShLangCallable:
+        if (numShaderRecordBlocks > 1)
             error(infoSink, "Only one shaderRecordNV buffer block is allowed per stage");
         break;
     case EShLangMeshNV:
