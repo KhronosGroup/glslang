@@ -80,6 +80,7 @@ set(HEADERS
     MachineIndependent/preprocessor/PpContext.h
     MachineIndependent/preprocessor/PpTokens.h)
 
+set(VERSION 8.13.3559)
 glslang_pch(SOURCES MachineIndependent/pch.cpp)
 
 add_library(glslang ${LIB_TYPE} ${BISON_GLSLParser_OUTPUT_SOURCE} ${SOURCES} ${HEADERS})
@@ -117,6 +118,9 @@ if(ENABLE_GLSLANG_INSTALL)
                 ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
     endif()
     install(EXPORT glslangTargets DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/glslang.pc.in ${CMAKE_CURRENT_BINARY_DIR}/glslang.pc @ONLY)
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/glslang.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
+
 endif(ENABLE_GLSLANG_INSTALL)
 
 if(ENABLE_GLSLANG_INSTALL)
