@@ -56,6 +56,7 @@ CMAKE_DEPENDENT_OPTION(ENABLE_HLSL
     ON "NOT ENABLE_GLSLANG_WEBMIN"
     OFF)
 
+option(ENABLE_RTTI "Enables RTTI" OFF)
 option(ENABLE_OPT "Enables spirv-opt capability if present" ON)
 option(ENABLE_PCH "Enables Precompiled header" ON)
 option(ENABLE_CTEST "Enables testing" ON)
@@ -117,7 +118,9 @@ if(${CMAKE_CXX_COMPILER_ID} MATCHES "GNU")
     add_compile_options(-Wall -Wmaybe-uninitialized -Wuninitialized -Wunused -Wunused-local-typedefs
                         -Wunused-parameter -Wunused-value  -Wunused-variable -Wunused-but-set-parameter -Wunused-but-set-variable -fno-exceptions)
     add_compile_options(-Wno-reorder)  # disable this from -Wall, since it happens all over.
-    add_compile_options(-fno-rtti)
+    if(NOT ENABLE_RTTI)
+        add_compile_options(-fno-rtti)
+    endif()
     if(NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS "9.0.0")
         add_compile_options(-Werror=deprecated-copy)
     endif()
@@ -125,9 +128,13 @@ elseif(${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
     add_compile_options(-Wall -Wuninitialized -Wunused -Wunused-local-typedefs
                         -Wunused-parameter -Wunused-value  -Wunused-variable)
     add_compile_options(-Wno-reorder)  # disable this from -Wall, since it happens all over.
-    add_compile_options(-fno-rtti)
+    if(NOT ENABLE_RTTI)
+        add_compile_options(-fno-rtti)
+    endif()
 elseif(${CMAKE_CXX_COMPILER_ID} MATCHES "MSVC")
-    add_compile_options(/GR-) # Disable RTTI
+    if(NOT ENABLE_RTTI)
+        add_compile_options(/GR-) # Disable RTTI
+    endif()
 endif()
 
 if(ENABLE_GLSLANG_JS)
