@@ -350,6 +350,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.semicolons.frag", "main"},
         {"hlsl.shapeConv.frag", "main"},
         {"hlsl.shapeConvRet.frag", "main"},
+        {"hlsl.singleArgIntPromo.vert", "main"},
         {"hlsl.self_cast.frag", "main"},
         {"hlsl.snorm.uav.comp", "main"},
         {"hlsl.specConstant.frag", "main"},
