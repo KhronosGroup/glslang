@@ -5684,6 +5684,8 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
         int repeated = intermediate.addXfbBufferOffset(type);
         if (repeated >= 0)
             error(loc, "overlapping offsets at", "xfb_offset", "offset %d in buffer %d", repeated, qualifier.layoutXfbBuffer);
+        if (type.isUnsizedArray())
+            error(loc, "unsized array at", "xfb_offset", "in buffer %d", qualifier.layoutXfbBuffer);
 
         // "The offset must be a multiple of the size of the first component of the first
         // qualified variable or block member, or a compile-time error results. Further, if applied to an aggregate
@@ -5776,6 +5778,12 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
 
     // "The offset qualifier can only be used on block members of blocks..."
     if (qualifier.hasOffset()) {
+        if (isEsProfile())
+            profileRequires(loc, EEsProfile, 300, E_GL_ARB_enhanced_layouts, "\"offset\" can only use to atomic counter layout qualifiers");
+        else {
+            if (version <= 430)
+                profileRequires(loc, ~EEsProfile, 140, E_GL_ARB_enhanced_layouts, "\"offset\" can only use to atomic counter layout qualifiers");
+        }
         if (type.getBasicType() == EbtBlock)
             error(loc, "only applies to block members, not blocks", "offset", "");
     }
