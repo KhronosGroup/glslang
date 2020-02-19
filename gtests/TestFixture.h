@@ -466,6 +466,43 @@ public:
                                     expectedOutputFname, result.spirvWarningsErrors);
     }
 
+    void loadFileCompileAndCheckError(const std::string& testDir,
+        const std::string& testName,
+        Source source,
+        Semantics semantics,
+        glslang::EShTargetClientVersion clientTargetVersion,
+        glslang::EShTargetLanguageVersion targetLanguageVersion,
+        Target target,
+        bool automap = true,
+        const std::string& entryPointName = "",
+        const std::string& baseDir = "/baseResults/",
+        const bool enableOptimizer = false,
+        const bool enableDebug = false)
+    {
+        const std::string inputFname = testDir + "/" + testName;
+        const std::string expectedOutputFname = testDir + baseDir + testName + ".err";
+        std::string input, expectedOutput;
+
+        tryLoadFile(inputFname, "input", &input);
+        tryLoadFile(expectedOutputFname, "expected error", &expectedOutput);
+
+        EShMessages controls = DeriveOptions(source, semantics, target);
+        if (enableOptimizer)
+            controls = static_cast<EShMessages>(controls & ~EShMsgHlslLegalization);
+        if (enableDebug)
+            controls = static_cast<EShMessages>(controls | EShMsgDebugInfo);
+        controls = static_cast<EShMessages>(controls & ~EShMsgAST);
+        GlslangResult result =
+            compileAndLink(testName, input, entryPointName, controls, clientTargetVersion, targetLanguageVersion, false,
+                           EShTexSampTransKeep, enableOptimizer, enableDebug, automap);
+
+        // Generate the hybrid output in the way of glslangValidator.
+        std::ostringstream stream;
+        outputResultToStream(&stream, result, controls);
+
+        checkEqAndUpdateIfRequested(expectedOutput, stream.str(), expectedOutputFname, result.spirvWarningsErrors);
+    }
+
     void loadFileCompileAndCheckWithOptions(const std::string &testDir,
                                             const std::string &testName,
                                             Source source,

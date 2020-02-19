@@ -43,6 +43,8 @@ using CompileToAstTest = GlslangTest<::testing::TestWithParam<std::string>>;
 
 using CompileToAstTestNV = GlslangTest<::testing::TestWithParam<std::string>>;
 
+using CompileToAstTestError = GlslangTest<::testing::TestWithParam<std::string>>;
+
 TEST_P(CompileToAstTest, FromFile)
 {
     loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam(),
@@ -56,6 +58,13 @@ TEST_P(CompileToAstTestNV, FromFile)
     loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam(),
                             Source::GLSL, Semantics::OpenGL, glslang::EShTargetVulkan_1_0, glslang::EShTargetSpv_1_0,
                             Target::AST);
+}
+
+// Compiling GLSL to SPIR-V under OpenGL semantics (NV extensions enabled).
+TEST_P(CompileToAstTestError, FromFile)
+{
+    loadFileCompileAndCheckError(GlobalTestSettings.testRoot, GetParam(), Source::GLSL, Semantics::OpenGL,
+                            glslang::EShTargetVulkan_1_0, glslang::EShTargetSpv_1_0, Target::AST);
 }
 
 // clang-format off
@@ -285,6 +294,18 @@ INSTANTIATE_TEST_CASE_P(
     })),
     FileNameAsCustomTestSuffix
 );
+
+INSTANTIATE_TEST_CASE_P(
+    Glsl, CompileToAstTestError,
+    ::testing::ValuesIn(std::vector<std::string>({
+        "glsl.es300.layoutOffset.error.vert",
+        "glsl.430.layoutOffset.error.vert",
+        "glsl.140.layoutOffset.error.vert",
+        "xfbUnsizedArray.error.vert",
+    })),
+    FileNameAsCustomTestSuffix
+);
+
 // clang-format on
 
 }  // anonymous namespace
