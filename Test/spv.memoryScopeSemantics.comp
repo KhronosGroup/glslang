@@ -69,5 +69,6 @@ void main()
     atomicAdd(bufferu.x, 5u, gl_ScopeDevice, 0, gl_SemanticsVolatile);
 
     imageAtomicStore(imageMS, ivec2(0,0), 1, 4, gl_ScopeDevice, gl_StorageSemanticsBuffer, gl_SemanticsRelease);
+    imageAtomicStore(imagei, ivec2(0,0), -7, gl_ScopeDevice, gl_StorageSemanticsBuffer, gl_SemanticsRelease);
 }
 
