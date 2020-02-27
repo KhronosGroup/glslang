@@ -39,6 +39,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 typedef struct glslang_shader_s glslang_shader_t;
 typedef struct glslang_program_s glslang_program_t;
+typedef struct TBuiltInResource glslang_resource_t;
 
 typedef struct glslang_input_s {
     glslang_source_t language;
@@ -54,6 +55,7 @@ typedef struct glslang_input_s {
     int force_default_version_and_profile;
     int forward_compatible;
     glslang_messages_t messages;
+    const glslang_resource_t* resource;
 } glslang_input_t;
 
 /* Inclusion result structure allocated by C include_local/include_system callbacks */
