@@ -1079,7 +1079,6 @@ TIntermTyped* TIntermediate::fold(TIntermAggregate* aggrNode)
             {
                 double arg0 = childConstUnions[0][arg0comp].getDConst();
                 double arg1 = childConstUnions[1][arg1comp].getDConst();
-                assert(arg1 != 0.0);
                 double result = arg0 - arg1 * floor(arg0 / arg1);
                 newConstArray[comp].setDConst(result);
                 break;
