@@ -350,15 +350,19 @@ const char* glslang_shader_get_preprocessed_code(glslang_shader_t* shader)
     return shader->preprocessedGLSL.c_str();
 }
 
-int glslang_shader_preprocess(glslang_shader_t* shader, const glslang_input_t* i)
+int glslang_shader_preprocess(glslang_shader_t* shader, const glslang_input_t* input)
 {
     DirStackFileIncluder Includer;
     /* TODO: use custom callbacks if they are available in 'i->callbacks' */
     return shader->shader->preprocess(
-        /* No user-defined resources limit */
-        &glslang::DefaultTBuiltInResource, i->default_version, c_shader_profile(i->default_profile),
-        i->force_default_version_and_profile != 0, i->forward_compatible != 0,
-        (EShMessages)c_shader_messages(i->messages), &shader->preprocessedGLSL, Includer
+        input->resource,
+        input->default_version,
+        c_shader_profile(input->default_profile),
+        input->force_default_version_and_profile != 0,
+        input->forward_compatible != 0,
+        (EShMessages)c_shader_messages(input->messages),
+        &shader->preprocessedGLSL,
+        Includer
     );
 }
 
@@ -368,9 +372,11 @@ int glslang_shader_parse(glslang_shader_t* shader, const glslang_input_t* input)
     shader->shader->setStrings(&preprocessedCStr, 1);
 
     return shader->shader->parse(
-        /* No user-defined resource limits for now */
-        &glslang::DefaultTBuiltInResource, input->default_version, input->forward_compatible != 0,
-        (EShMessages)c_shader_messages(input->messages));
+        input->resource,
+        input->default_version,
+        input->forward_compatible != 0,
+        (EShMessages)c_shader_messages(input->messages)
+    );
 }
 
 const char* glslang_shader_get_info_log(glslang_shader_t* shader) { return shader->shader->getInfoLog(); }
