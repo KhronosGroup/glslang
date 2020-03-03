@@ -2277,7 +2277,10 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         spec_constant_op_mode_setter.turnOnSpecConstantOpMode();
 
     spv::Id result = spv::NoResult;
-    spv::Id invertedType = spv::NoType;  // to use to override the natural type of the node
+    spv::Id invertedType = spv::NoType;       // to use to override the natural type of the node
+    spv::Builder::AccessChain complexLvalue;  // for holding swizzling l-values too complex for SPIR-V, for at out parameter
+    spv::Id temporaryLvalue = spv::NoResult;  // temporary to pass, as proxy for complexLValue
+
     auto resultType = [&invertedType, &node, this](){ return invertedType != spv::NoType ? invertedType : convertGlslangToSpvType(node->getType()); };
 
     // try texturing
@@ -2727,6 +2730,10 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
 
                 // Does it need a swizzle inversion?  If so, evaluation is inverted;
                 // operate first on the swizzle base, then apply the swizzle.
+                // That is, we transform
+                //
+                //    interpolate(v.zy)  ->  interpolate(v).zy
+                //
                 if (glslangOperands[0]->getAsOperator() &&
                     glslangOperands[0]->getAsOperator()->getOp() == glslang::EOpVectorSwizzle)
                     invertedType = convertGlslangToSpvType(glslangOperands[0]->getAsBinaryNode()->getLeft()->getType());
@@ -2819,8 +2826,19 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         }
 #endif
 
+        // for l-values, pass the address, for r-values, pass the value
         if (lvalue) {
-            operands.push_back(builder.accessChainGetLValue());
+            if (invertedType == spv::NoType && !builder.isSpvLvalue()) {
+                // SPIR-V cannot represent an l-value containing a swizzle that doesn't
+                // reduce to a simple access chain.  So, we need a temporary vector to
+                // receive the result, and must later swizzle that into the original
+                // l-value.
+                complexLvalue = builder.getAccessChain();
+                temporaryLvalue = builder.createVariable(spv::StorageClassFunction, builder.accessChainGetInferredType(), "swizzleTemp");
+                operands.push_back(temporaryLvalue);
+            } else {
+                operands.push_back(builder.accessChainGetLValue());
+            }
             lvalueCoherentFlags = builder.getAccessChain().coherentFlags;
             lvalueCoherentFlags |= TranslateCoherent(glslangOperands[arg]->getAsTyped()->getType());
         } else {
@@ -2883,8 +2901,12 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
             result = createMiscOperation(node->getOp(), precision, resultType(), operands, node->getBasicType());
             break;
         }
-        if (invertedType)
+        if (invertedType != spv::NoResult)
             result = createInvertedSwizzle(precision, *glslangOperands[0]->getAsBinaryNode(), result);
+        else if (temporaryLvalue != spv::NoResult) {
+            builder.setAccessChain(complexLvalue);
+            builder.accessChainStore(builder.createLoad(temporaryLvalue));
+        }
     }
 
     if (noReturnValue)

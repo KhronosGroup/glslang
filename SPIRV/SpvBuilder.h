@@ -676,6 +676,11 @@ public:
     // use accessChain and swizzle to load an r-value
     Id accessChainLoad(Decoration precision, Decoration nonUniform, Id ResultType, spv::MemoryAccessMask memoryAccess = spv::MemoryAccessMaskNone, spv::Scope scope = spv::ScopeMax, unsigned int alignment = 0);
 
+    // Return whether or not the access chain can be represented in SPIR-V
+    // as an l-value.
+    // E.g., a[3].yx cannot be, while a[3].y and a[3].y[x] can be.
+    bool isSpvLvalue() const { return accessChain.swizzle.size() <= 1; }
+
     // get the direct pointer for an l-value
     Id accessChainGetLValue();
 
