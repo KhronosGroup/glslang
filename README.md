@@ -1,44 +1,56 @@
-Also see the Khronos landing page for glslang as a reference front end:
-
-https://www.khronos.org/opengles/sdk/tools/Reference-Compiler/
-
-The above page includes where to get binaries, and is kept up to date
-regarding the feature level of glslang.
-
-glslang
-=======
+# News
 
 [![Build Status](https://travis-ci.org/KhronosGroup/glslang.svg?branch=master)](https://travis-ci.org/KhronosGroup/glslang)
 [![Build status](https://ci.appveyor.com/api/projects/status/q6fi9cb0qnhkla68/branch/master?svg=true)](https://ci.appveyor.com/project/Khronoswebmaster/glslang/branch/master)
 
-An OpenGL and OpenGL ES shader front end and validator.
+## Planned Deprecations/Removals
+
+1. **SPIRV Folder, 1-May, 2020.** Glslang, when installed through CMake,
+will install a `SPIRV` folder into `${CMAKE_INSTALL_INCLUDEDIR}`.
+This `SPIRV` folder is being moved to `glslang/SPIRV`.
+During the transition the `SPIRV` folder will be installed into both locations.
+The old install of `SPIRV/` will be removed as a CMake install target no sooner than May 1, 2020.
+See issue #1964.
+
+2. **Visual Studio 2013, 20-July, 2020.** Keeping code compiling for MS Visual Studio 2013 will no longer be
+a goal as of July 20, 2020, the fifth anniversary of the release of Visual Studio 2015.
+
+# Glslang Components and Status
 
 There are several components:
 
-1. A GLSL/ESSL front-end for reference validation and translation of GLSL/ESSL into an AST.
+**Reference Validator and GLSL/ESSL -> AST Front End.** An OpenGL GLSL and OpenGL|ES GLSL (ESSL) front-end for reference validation and translation of GLSL/ESSL into an internal abstract syntax tree (AST).
 
-2. An HLSL front-end for translation of a broad generic HLL into the AST. See [issue 362](https://github.com/KhronosGroup/glslang/issues/362) and [issue 701](https://github.com/KhronosGroup/glslang/issues/701) for current status.
+Status: Virtually complete, with results carrying similar weight as the specifications.
 
-3. A SPIR-V back end for translating the AST to SPIR-V.
+**HLSL -> AST Front End.** An HLSL front-end for translation of an approximation of HLSL to glslang's AST form.
 
-4. A standalone wrapper, `glslangValidator`, that can be used as a command-line tool for the above.
+Status: Partially complete. Semantics are not reference quality and input is not validated.
+This is in contrast to the [DXC project](https://github.com/Microsoft/DirectXShaderCompiler), which receives a much larger investment and attempts to have definitive/reference-level semantics.
 
-How to add a feature protected by a version/extension/stage/profile:  See the
-comment in `glslang/MachineIndependent/Versions.cpp`.
+See [issue 362](https://github.com/KhronosGroup/glslang/issues/362) and [issue 701](https://github.com/KhronosGroup/glslang/issues/701) for current status.
+
+**AST -> SPIR-V Back End.** Translates glslang's AST to the Khronos-specified SPIR-V intermediate language.
+
+Status: Virtually complete.
+
+**Standalone Wrapper.** `glslangValidator` is command-line tool for accessing the functionality above.
+
+Status: Complete.
 
 Tasks waiting to be done are documented as GitHub issues.
 
-Deprecations
-------------
+## Other References
 
-1. GLSLang, when installed through CMake, will install a `SPIRV` folder into
-`${CMAKE_INSTALL_INCLUDEDIR}`. This `SPIRV` folder is being moved to
-`glslang/SPIRV`. During the transition the `SPIRV` folder will be installed into
-both locations. The old install of `SPIRV/` will be removed as a CMake install
-target no sooner than May 1, 2020. See issue #1964.
+Also see the Khronos landing page for glslang as a reference front end:
 
-Execution of Standalone Wrapper
--------------------------------
+https://www.khronos.org/opengles/sdk/tools/Reference-Compiler/
+
+The above page, while not kept up to date, includes additional information regarding glslang as a reference validator.
+
+# How to Use Glslang
+
+## Execution of Standalone Wrapper
 
 To use the standalone binary form, execute `glslangValidator`, and it will print
 a usage statement.  Basic operation is to give it a file containing a shader,
@@ -55,8 +67,7 @@ The applied stage-specific rules are based on the file extension:
 There is also a non-shader extension
 * `.conf` for a configuration file of limits, see usage statement for example
 
-Building
---------
+## Building
 
 Instead of building manually, you can also download the binaries for your
 platform directly from the [master-tot release][master-tot-release] on GitHub.
@@ -200,8 +211,7 @@ emcmake cmake -DCMAKE_BUILD_TYPE=Release -DENABLE_GLSLANG_WEB=ON \
     -DENABLE_HLSL=OFF -DBUILD_TESTING=OFF -DENABLE_OPT=OFF -DINSTALL_GTEST=OFF ..
 ```
 
-Building glslang - Using vcpkg
-------------------------------
+## Building glslang - Using vcpkg
 
 You can download and install glslang using the [vcpkg](https://github.com/Microsoft/vcpkg) dependency manager:
 
@@ -213,8 +223,7 @@ You can download and install glslang using the [vcpkg](https://github.com/Micros
 
 The glslang port in vcpkg is kept up to date by Microsoft team members and community contributors. If the version is out of date, please [create an issue or pull request](https://github.com/Microsoft/vcpkg) on the vcpkg repository.
 
-Testing
--------
+## Testing
 
 Right now, there are two test harnesses existing in glslang: one is [Google
 Test](gtests/), one is the [`runtests` script](Test/runtests). The former
@@ -286,8 +295,7 @@ You can add your own private list of tests, not tracked publicly, by using
 `localtestlist` to list non-tracked tests.  This is automatically read
 by `runtests` and included in the `diff` and `bump` process.
 
-Programmatic Interfaces
------------------------
+## Programmatic Interfaces
 
 Another piece of software can programmatically translate shaders to an AST
 using one of two different interfaces:
@@ -352,8 +360,7 @@ ShCompile(shader, compiler) -> compiler(AST) -> <back end>
 In practice, `ShCompile()` takes shader strings, default version, and
 warning/error and other options for controlling compilation.
 
-Basic Internal Operation
-------------------------
+## Basic Internal Operation
 
 * Initial lexical analysis is done by the preprocessor in
   `MachineIndependent/Preprocessor`, and then refined by a GLSL scanner
@@ -400,6 +407,8 @@ Basic Internal Operation
   - the object does not come from the pool, and you have to do normal
     C++ memory management of what you `new`
 
+* Features can be protected by version/extension/stage/profile:
+  See the comment in `glslang/MachineIndependent/Versions.cpp`.
 
 [cmake]: https://cmake.org/
 [python]: https://www.python.org/
