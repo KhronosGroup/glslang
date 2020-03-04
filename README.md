@@ -104,7 +104,7 @@ branch.
 The following steps assume a Bash shell. On Windows, that could be the Git Bash
 shell or some other shell of your choosing.
 
-#### 1) Check-Out this project 
+#### 1) Check-Out this project
 
 ```bash
 cd <parent of where you want glslang to be>
@@ -150,6 +150,14 @@ For building on Linux:
 ```bash
 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$(pwd)/install" $SOURCE_DIR
 # "Release" (for CMAKE_BUILD_TYPE) could also be "Debug" or "RelWithDebInfo"
+```
+
+For building on Android:
+```bash
+cmake $SOURCE_DIR -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="$(pwd)/install" -DANDROID_ABI=arm64-v8a -DCMAKE_BUILD_TYPE=Release -DANDROID_STL=c++_static -DANDROID_PLATFORM=android-24 -DCMAKE_SYSTEM_NAME=Android -DANDROID_TOOLCHAIN=clang -DANDROID_ARM_MODE=arm -DCMAKE_MAKE_PROGRAM=$ANDROID_NDK_ROOT/prebuilt/linux-x86_64/bin/make -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_ROOT/build/cmake/android.toolchain.cmake
+# If on Windows will be -DCMAKE_MAKE_PROGRAM=%ANDROID_NDK_ROOT%\prebuilt\windows-x86_64\bin\make.exe
+# -G is needed for building on Windows
+# -DANDROID_ABI can also be armeabi-v7a for 32 bit
 ```
 
 For building on Windows:
