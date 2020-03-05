@@ -1,7 +1,7 @@
 //
 // Copyright (C) 2002-2005  3Dlabs Inc. Ltd.
 // Copyright (C) 2013-2016 LunarG, Inc.
-// Copyright (C) 2015-2018 Google, Inc.
+// Copyright (C) 2015-2020 Google, Inc.
 //
 // All rights reserved.
 //
@@ -716,6 +716,9 @@ void TranslateEnvironment(const TEnvironment* environment, EShMessages& messages
             case EShClientOpenGL:
                 spvVersion.openGl = environment->input.dialectVersion;
                 break;
+            case EShClientCount:
+                assert(0);
+                break;
             }
             switch (environment->input.languageFamily) {
             case EShSourceNone:
@@ -727,6 +730,9 @@ void TranslateEnvironment(const TEnvironment* environment, EShMessages& messages
             case EShSourceHlsl:
                 source = EShSourceHlsl;
                 messages = static_cast<EShMessages>(messages | EShMsgReadHlsl);
+                break;
+            case EShSourceCount:
+                assert(0);
                 break;
             }
         }

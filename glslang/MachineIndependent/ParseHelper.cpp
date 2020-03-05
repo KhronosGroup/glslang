@@ -1672,6 +1672,9 @@ void TParseContext::memorySemanticsCheck(const TSourceLoc& loc, const TFunction&
     unsigned int semantics = 0, storageClassSemantics = 0;
     unsigned int semantics2 = 0, storageClassSemantics2 = 0;
 
+    const TIntermTyped* arg0 = (*argp)[0]->getAsTyped();
+    const bool isMS = arg0->getBasicType() == EbtSampler && arg0->getType().getSampler().isMultiSample();
+
     // Grab the semantics and storage class semantics from the operands, based on opcode
     switch (callNode.getOp()) {
     case EOpAtomicAdd:
@@ -1704,18 +1707,18 @@ void TParseContext::memorySemanticsCheck(const TSourceLoc& loc, const TFunction&
     case EOpImageAtomicXor:
     case EOpImageAtomicExchange:
     case EOpImageAtomicStore:
-        storageClassSemantics = (*argp)[4]->getAsConstantUnion()->getConstArray()[0].getIConst();
-        semantics = (*argp)[5]->getAsConstantUnion()->getConstArray()[0].getIConst();
+        storageClassSemantics = (*argp)[isMS ? 5 : 4]->getAsConstantUnion()->getConstArray()[0].getIConst();
+        semantics = (*argp)[isMS ? 6 : 5]->getAsConstantUnion()->getConstArray()[0].getIConst();
         break;
     case EOpImageAtomicLoad:
-        storageClassSemantics = (*argp)[3]->getAsConstantUnion()->getConstArray()[0].getIConst();
-        semantics = (*argp)[4]->getAsConstantUnion()->getConstArray()[0].getIConst();
+        storageClassSemantics = (*argp)[isMS ? 4 : 3]->getAsConstantUnion()->getConstArray()[0].getIConst();
+        semantics = (*argp)[isMS ? 5 : 4]->getAsConstantUnion()->getConstArray()[0].getIConst();
         break;
     case EOpImageAtomicCompSwap:
-        storageClassSemantics = (*argp)[5]->getAsConstantUnion()->getConstArray()[0].getIConst();
-        semantics = (*argp)[6]->getAsConstantUnion()->getConstArray()[0].getIConst();
-        storageClassSemantics2 = (*argp)[7]->getAsConstantUnion()->getConstArray()[0].getIConst();
-        semantics2 = (*argp)[8]->getAsConstantUnion()->getConstArray()[0].getIConst();
+        storageClassSemantics = (*argp)[isMS ? 6 : 5]->getAsConstantUnion()->getConstArray()[0].getIConst();
+        semantics = (*argp)[isMS ? 7 : 6]->getAsConstantUnion()->getConstArray()[0].getIConst();
+        storageClassSemantics2 = (*argp)[isMS ? 8 : 7]->getAsConstantUnion()->getConstArray()[0].getIConst();
+        semantics2 = (*argp)[isMS ? 9 : 8]->getAsConstantUnion()->getConstArray()[0].getIConst();
         break;
 
     case EOpBarrier:
@@ -6035,6 +6038,10 @@ void TParseContext::fixOffset(const TSourceLoc& loc, TSymbol& symbol)
                 offset = qualifier.layoutOffset;
             else
                 offset = atomicUintOffsets[qualifier.layoutBinding];
+
+            if (offset % 4 != 0)
+                error(loc, "atomic counters offset should align based on 4:", "offset", "%d", offset);
+
             symbol.getWritableType().getQualifier().layoutOffset = offset;
 
             // Check for overlap
@@ -6087,7 +6094,7 @@ const TFunction* TParseContext::findFunction(const TSourceLoc& loc, const TFunct
     if (isEsProfile() || version < 120)
         function = findFunctionExact(loc, call, builtIn);
     else if (version < 400)
-        function = findFunction120(loc, call, builtIn);
+        function = extensionTurnedOn(E_GL_ARB_gpu_shader_fp64) ? findFunction400(loc, call, builtIn) : findFunction120(loc, call, builtIn);
     else if (explicitTypesEnabled)
         function = findFunctionExplicitTypes(loc, call, builtIn);
     else
@@ -6380,13 +6387,15 @@ const TFunction* TParseContext::findFunctionExplicitTypes(const TSourceLoc& loc,
 void TParseContext::declareTypeDefaults(const TSourceLoc& loc, const TPublicType& publicType)
 {
 #ifndef GLSLANG_WEB
-    if (publicType.basicType == EbtAtomicUint && publicType.qualifier.hasBinding() &&
-        publicType.qualifier.hasOffset()) {
+    if (publicType.basicType == EbtAtomicUint && publicType.qualifier.hasBinding()) {
         if (publicType.qualifier.layoutBinding >= (unsigned int)resources.maxAtomicCounterBindings) {
             error(loc, "atomic_uint binding is too large", "binding", "");
             return;
         }
-        atomicUintOffsets[publicType.qualifier.layoutBinding] = publicType.qualifier.layoutOffset;
+
+        if(publicType.qualifier.hasOffset()) {
+            atomicUintOffsets[publicType.qualifier.layoutBinding] = publicType.qualifier.layoutOffset;
+        }
         return;
     }
 
@@ -7609,7 +7618,7 @@ void TParseContext::blockStageIoCheck(const TSourceLoc& loc, const TQualifier& q
     switch (qualifier.storage) {
     case EvqUniform:
         profileRequires(loc, EEsProfile, 300, nullptr, "uniform block");
-        profileRequires(loc, ENoProfile, 140, nullptr, "uniform block");
+        profileRequires(loc, ENoProfile, 140, E_GL_ARB_uniform_buffer_object, "uniform block");
         if (currentBlockQualifier.layoutPacking == ElpStd430 && ! currentBlockQualifier.isPushConstant())
             requireExtensions(loc, 1, &E_GL_EXT_scalar_block_layout, "std430 requires the buffer storage qualifier");
         break;

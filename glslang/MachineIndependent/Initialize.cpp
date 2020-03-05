@@ -1,7 +1,7 @@
 //
 // Copyright (C) 2002-2005  3Dlabs Inc. Ltd.
 // Copyright (C) 2012-2016 LunarG, Inc.
-// Copyright (C) 2015-2018 Google, Inc.
+// Copyright (C) 2015-2020 Google, Inc.
 // Copyright (C) 2017 ARM Limited.
 //
 // All rights reserved.
@@ -690,7 +690,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
     //
     // double functions added to desktop 4.00, but not fma, frexp, ldexp, or pack/unpack
     //
-    if (profile != EEsProfile && version >= 400) {
+    if (profile != EEsProfile && version >= 150) {  // ARB_gpu_shader_fp64
         commonBuiltins.append(
 
             "double sqrt(double);"
@@ -1298,15 +1298,15 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "vec3   fma(vec3,   vec3,   vec3  );"
             "vec4   fma(vec4,   vec4,   vec4  );"
             "\n");
+    }
 
-        if (profile != EEsProfile) {
+    if (profile != EEsProfile && version >= 150) {  // ARB_gpu_shader_fp64
             commonBuiltins.append(
                 "double fma(double, double, double);"
                 "dvec2  fma(dvec2,  dvec2,  dvec2 );"
                 "dvec3  fma(dvec3,  dvec3,  dvec3 );"
                 "dvec4  fma(dvec4,  dvec4,  dvec4 );"
                 "\n");
-        }
     }
 
     if ((profile == EEsProfile && version >= 310) ||
@@ -1325,7 +1325,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "\n");
     }
 
-    if (profile != EEsProfile && version >= 400) {
+    if (profile != EEsProfile && version >= 150) { // ARB_gpu_shader_fp64
         commonBuiltins.append(
             "double frexp(double, out int);"
             "dvec2  frexp( dvec2, out ivec2);"
@@ -2854,6 +2854,181 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "\n");
     }
 
+    if ((profile != EEsProfile && version >= 130) ||
+        (profile == EEsProfile && version >= 300)) {
+        commonBuiltins.append(
+            "uint countLeadingZeros(uint);"
+            "uvec2 countLeadingZeros(uvec2);"
+            "uvec3 countLeadingZeros(uvec3);"
+            "uvec4 countLeadingZeros(uvec4);"
+
+            "uint countTrailingZeros(uint);"
+            "uvec2 countTrailingZeros(uvec2);"
+            "uvec3 countTrailingZeros(uvec3);"
+            "uvec4 countTrailingZeros(uvec4);"
+
+            "uint absoluteDifference(int, int);"
+            "uvec2 absoluteDifference(ivec2, ivec2);"
+            "uvec3 absoluteDifference(ivec3, ivec3);"
+            "uvec4 absoluteDifference(ivec4, ivec4);"
+
+            "uint16_t absoluteDifference(int16_t, int16_t);"
+            "u16vec2 absoluteDifference(i16vec2, i16vec2);"
+            "u16vec3 absoluteDifference(i16vec3, i16vec3);"
+            "u16vec4 absoluteDifference(i16vec4, i16vec4);"
+
+            "uint64_t absoluteDifference(int64_t, int64_t);"
+            "u64vec2 absoluteDifference(i64vec2, i64vec2);"
+            "u64vec3 absoluteDifference(i64vec3, i64vec3);"
+            "u64vec4 absoluteDifference(i64vec4, i64vec4);"
+
+            "uint absoluteDifference(uint, uint);"
+            "uvec2 absoluteDifference(uvec2, uvec2);"
+            "uvec3 absoluteDifference(uvec3, uvec3);"
+            "uvec4 absoluteDifference(uvec4, uvec4);"
+
+            "uint16_t absoluteDifference(uint16_t, uint16_t);"
+            "u16vec2 absoluteDifference(u16vec2, u16vec2);"
+            "u16vec3 absoluteDifference(u16vec3, u16vec3);"
+            "u16vec4 absoluteDifference(u16vec4, u16vec4);"
+
+            "uint64_t absoluteDifference(uint64_t, uint64_t);"
+            "u64vec2 absoluteDifference(u64vec2, u64vec2);"
+            "u64vec3 absoluteDifference(u64vec3, u64vec3);"
+            "u64vec4 absoluteDifference(u64vec4, u64vec4);"
+
+            "int addSaturate(int, int);"
+            "ivec2 addSaturate(ivec2, ivec2);"
+            "ivec3 addSaturate(ivec3, ivec3);"
+            "ivec4 addSaturate(ivec4, ivec4);"
+
+            "int16_t addSaturate(int16_t, int16_t);"
+            "i16vec2 addSaturate(i16vec2, i16vec2);"
+            "i16vec3 addSaturate(i16vec3, i16vec3);"
+            "i16vec4 addSaturate(i16vec4, i16vec4);"
+
+            "int64_t addSaturate(int64_t, int64_t);"
+            "i64vec2 addSaturate(i64vec2, i64vec2);"
+            "i64vec3 addSaturate(i64vec3, i64vec3);"
+            "i64vec4 addSaturate(i64vec4, i64vec4);"
+
+            "uint addSaturate(uint, uint);"
+            "uvec2 addSaturate(uvec2, uvec2);"
+            "uvec3 addSaturate(uvec3, uvec3);"
+            "uvec4 addSaturate(uvec4, uvec4);"
+
+            "uint16_t addSaturate(uint16_t, uint16_t);"
+            "u16vec2 addSaturate(u16vec2, u16vec2);"
+            "u16vec3 addSaturate(u16vec3, u16vec3);"
+            "u16vec4 addSaturate(u16vec4, u16vec4);"
+
+            "uint64_t addSaturate(uint64_t, uint64_t);"
+            "u64vec2 addSaturate(u64vec2, u64vec2);"
+            "u64vec3 addSaturate(u64vec3, u64vec3);"
+            "u64vec4 addSaturate(u64vec4, u64vec4);"
+
+            "int subtractSaturate(int, int);"
+            "ivec2 subtractSaturate(ivec2, ivec2);"
+            "ivec3 subtractSaturate(ivec3, ivec3);"
+            "ivec4 subtractSaturate(ivec4, ivec4);"
+
+            "int16_t subtractSaturate(int16_t, int16_t);"
+            "i16vec2 subtractSaturate(i16vec2, i16vec2);"
+            "i16vec3 subtractSaturate(i16vec3, i16vec3);"
+            "i16vec4 subtractSaturate(i16vec4, i16vec4);"
+
+            "int64_t subtractSaturate(int64_t, int64_t);"
+            "i64vec2 subtractSaturate(i64vec2, i64vec2);"
+            "i64vec3 subtractSaturate(i64vec3, i64vec3);"
+            "i64vec4 subtractSaturate(i64vec4, i64vec4);"
+
+            "uint subtractSaturate(uint, uint);"
+            "uvec2 subtractSaturate(uvec2, uvec2);"
+            "uvec3 subtractSaturate(uvec3, uvec3);"
+            "uvec4 subtractSaturate(uvec4, uvec4);"
+
+            "uint16_t subtractSaturate(uint16_t, uint16_t);"
+            "u16vec2 subtractSaturate(u16vec2, u16vec2);"
+            "u16vec3 subtractSaturate(u16vec3, u16vec3);"
+            "u16vec4 subtractSaturate(u16vec4, u16vec4);"
+
+            "uint64_t subtractSaturate(uint64_t, uint64_t);"
+            "u64vec2 subtractSaturate(u64vec2, u64vec2);"
+            "u64vec3 subtractSaturate(u64vec3, u64vec3);"
+            "u64vec4 subtractSaturate(u64vec4, u64vec4);"
+
+            "int average(int, int);"
+            "ivec2 average(ivec2, ivec2);"
+            "ivec3 average(ivec3, ivec3);"
+            "ivec4 average(ivec4, ivec4);"
+
+            "int16_t average(int16_t, int16_t);"
+            "i16vec2 average(i16vec2, i16vec2);"
+            "i16vec3 average(i16vec3, i16vec3);"
+            "i16vec4 average(i16vec4, i16vec4);"
+
+            "int64_t average(int64_t, int64_t);"
+            "i64vec2 average(i64vec2, i64vec2);"
+            "i64vec3 average(i64vec3, i64vec3);"
+            "i64vec4 average(i64vec4, i64vec4);"
+
+            "uint average(uint, uint);"
+            "uvec2 average(uvec2, uvec2);"
+            "uvec3 average(uvec3, uvec3);"
+            "uvec4 average(uvec4, uvec4);"
+
+            "uint16_t average(uint16_t, uint16_t);"
+            "u16vec2 average(u16vec2, u16vec2);"
+            "u16vec3 average(u16vec3, u16vec3);"
+            "u16vec4 average(u16vec4, u16vec4);"
+
+            "uint64_t average(uint64_t, uint64_t);"
+            "u64vec2 average(u64vec2, u64vec2);"
+            "u64vec3 average(u64vec3, u64vec3);"
+            "u64vec4 average(u64vec4, u64vec4);"
+
+            "int averageRounded(int, int);"
+            "ivec2 averageRounded(ivec2, ivec2);"
+            "ivec3 averageRounded(ivec3, ivec3);"
+            "ivec4 averageRounded(ivec4, ivec4);"
+
+            "int16_t averageRounded(int16_t, int16_t);"
+            "i16vec2 averageRounded(i16vec2, i16vec2);"
+            "i16vec3 averageRounded(i16vec3, i16vec3);"
+            "i16vec4 averageRounded(i16vec4, i16vec4);"
+
+            "int64_t averageRounded(int64_t, int64_t);"
+            "i64vec2 averageRounded(i64vec2, i64vec2);"
+            "i64vec3 averageRounded(i64vec3, i64vec3);"
+            "i64vec4 averageRounded(i64vec4, i64vec4);"
+
+            "uint averageRounded(uint, uint);"
+            "uvec2 averageRounded(uvec2, uvec2);"
+            "uvec3 averageRounded(uvec3, uvec3);"
+            "uvec4 averageRounded(uvec4, uvec4);"
+
+            "uint16_t averageRounded(uint16_t, uint16_t);"
+            "u16vec2 averageRounded(u16vec2, u16vec2);"
+            "u16vec3 averageRounded(u16vec3, u16vec3);"
+            "u16vec4 averageRounded(u16vec4, u16vec4);"
+
+            "uint64_t averageRounded(uint64_t, uint64_t);"
+            "u64vec2 averageRounded(u64vec2, u64vec2);"
+            "u64vec3 averageRounded(u64vec3, u64vec3);"
+            "u64vec4 averageRounded(u64vec4, u64vec4);"
+
+            "int multiply32x16(int, int);"
+            "ivec2 multiply32x16(ivec2, ivec2);"
+            "ivec3 multiply32x16(ivec3, ivec3);"
+            "ivec4 multiply32x16(ivec4, ivec4);"
+
+            "uint multiply32x16(uint, uint);"
+            "uvec2 multiply32x16(uvec2, uvec2);"
+            "uvec3 multiply32x16(uvec3, uvec3);"
+            "uvec4 multiply32x16(uvec4, uvec4);"
+            "\n");
+    }
+
     if ((profile != EEsProfile && version >= 450) ||
         (profile == EEsProfile && version >= 320)) {
         commonBuiltins.append(
@@ -3771,7 +3946,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
     //
     // Geometric Functions.
     //
-    if (IncludeLegacy(version, profile, spvVersion))
+    if (spvVersion.vulkan == 0 && IncludeLegacy(version, profile, spvVersion))
         stageBuiltins[EShLangVertex].append("vec4 ftransform();");
 
     //
@@ -5003,18 +5178,24 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "flat in int gl_PrimitiveID;"
                 );
 
-        if (version >= 400) {
+        if (version >= 130) { // ARB_sample_shading
             stageBuiltins[EShLangFragment].append(
                 "flat in  int  gl_SampleID;"
                 "     in  vec2 gl_SamplePosition;"
-                "flat in  int  gl_SampleMaskIn[];"
                 "     out int  gl_SampleMask[];"
                 );
-            if (spvVersion.spv == 0)
+
+            if (spvVersion.spv == 0) {
                 stageBuiltins[EShLangFragment].append(
                     "uniform int gl_NumSamples;"
-                    );
+                );
+            }
         }
+
+        if (version >= 400)
+            stageBuiltins[EShLangFragment].append(
+                "flat in  int  gl_SampleMaskIn[];"
+            );
 
         if (version >= 430)
             stageBuiltins[EShLangFragment].append(
@@ -6443,8 +6624,33 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
             }
         }
 
+        if (version >= 320) {
+            // tessellation
+
+            snprintf(builtInConstant, maxSize, "const int gl_MaxTessControlImageUniforms = %d;", resources.maxTessControlImageUniforms);
+            s.append(builtInConstant);
+            snprintf(builtInConstant, maxSize, "const int gl_MaxTessEvaluationImageUniforms = %d;", resources.maxTessEvaluationImageUniforms);
+            s.append(builtInConstant);
+            snprintf(builtInConstant, maxSize, "const int gl_MaxTessControlAtomicCounters = %d;", resources.maxTessControlAtomicCounters);
+            s.append(builtInConstant);
+            snprintf(builtInConstant, maxSize, "const int gl_MaxTessEvaluationAtomicCounters = %d;", resources.maxTessEvaluationAtomicCounters);
+            s.append(builtInConstant);
+            snprintf(builtInConstant, maxSize, "const int gl_MaxTessControlAtomicCounterBuffers = %d;", resources.maxTessControlAtomicCounterBuffers);
+            s.append(builtInConstant);
+            snprintf(builtInConstant, maxSize, "const int gl_MaxTessEvaluationAtomicCounterBuffers = %d;", resources.maxTessEvaluationAtomicCounterBuffers);
+            s.append(builtInConstant);
+        }
+
     } else {
         // non-ES profile
+
+        if (version > 400) {
+            snprintf(builtInConstant, maxSize, "const int  gl_MaxVertexUniformVectors = %d;", resources.maxVertexUniformVectors);
+            s.append(builtInConstant);
+
+            snprintf(builtInConstant, maxSize, "const int  gl_MaxFragmentUniformVectors = %d;", resources.maxFragmentUniformVectors);
+            s.append(builtInConstant);
+        }
 
         snprintf(builtInConstant, maxSize, "const int  gl_MaxVertexAttribs = %d;", resources.maxVertexAttribs);
         s.append(builtInConstant);
@@ -6974,6 +7180,15 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setFunctionExtensions("fragmentFetchAMD",     1, &E_GL_AMD_shader_fragment_mask);
         }
 
+        symbolTable.setFunctionExtensions("countLeadingZeros",  1, &E_GL_INTEL_shader_integer_functions2);
+        symbolTable.setFunctionExtensions("countTrailingZeros", 1, &E_GL_INTEL_shader_integer_functions2);
+        symbolTable.setFunctionExtensions("absoluteDifference", 1, &E_GL_INTEL_shader_integer_functions2);
+        symbolTable.setFunctionExtensions("addSaturate",        1, &E_GL_INTEL_shader_integer_functions2);
+        symbolTable.setFunctionExtensions("subtractSaturate",   1, &E_GL_INTEL_shader_integer_functions2);
+        symbolTable.setFunctionExtensions("average",            1, &E_GL_INTEL_shader_integer_functions2);
+        symbolTable.setFunctionExtensions("averageRounded",     1, &E_GL_INTEL_shader_integer_functions2);
+        symbolTable.setFunctionExtensions("multiply32x16",      1, &E_GL_INTEL_shader_integer_functions2);
+
         symbolTable.setFunctionExtensions("textureFootprintNV",          1, &E_GL_NV_shader_texture_footprint);
         symbolTable.setFunctionExtensions("textureFootprintClampNV",     1, &E_GL_NV_shader_texture_footprint);
         symbolTable.setFunctionExtensions("textureFootprintLodNV",       1, &E_GL_NV_shader_texture_footprint);
@@ -7238,18 +7453,29 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             BuiltInVariable("gl_FragStencilRefARB", EbvFragStencilRef, symbolTable);
         }
 
-        if ((profile != EEsProfile && version >= 400) ||
+        if ((profile != EEsProfile && version >= 130) ||
             (profile == EEsProfile && version >= 310)) {
-            BuiltInVariable("gl_SampleID",        EbvSampleId,       symbolTable);
-            BuiltInVariable("gl_SamplePosition",  EbvSamplePosition, symbolTable);
-            BuiltInVariable("gl_SampleMaskIn",    EbvSampleMask,     symbolTable);
-            BuiltInVariable("gl_SampleMask",      EbvSampleMask,     symbolTable);
-            if (profile == EEsProfile && version < 320) {
-                symbolTable.setVariableExtensions("gl_SampleID",       1, &E_GL_OES_sample_variables);
-                symbolTable.setVariableExtensions("gl_SamplePosition", 1, &E_GL_OES_sample_variables);
-                symbolTable.setVariableExtensions("gl_SampleMaskIn",   1, &E_GL_OES_sample_variables);
-                symbolTable.setVariableExtensions("gl_SampleMask",     1, &E_GL_OES_sample_variables);
-                symbolTable.setVariableExtensions("gl_NumSamples",     1, &E_GL_OES_sample_variables);
+            BuiltInVariable("gl_SampleID",           EbvSampleId,       symbolTable);
+            BuiltInVariable("gl_SamplePosition",     EbvSamplePosition, symbolTable);
+            BuiltInVariable("gl_SampleMask",         EbvSampleMask,     symbolTable);
+
+            if (profile != EEsProfile && version < 400) {
+                BuiltInVariable("gl_NumSamples",     EbvSampleMask,     symbolTable);
+
+                symbolTable.setVariableExtensions("gl_SampleMask",     1, &E_GL_ARB_sample_shading);
+                symbolTable.setVariableExtensions("gl_SampleID",       1, &E_GL_ARB_sample_shading);
+                symbolTable.setVariableExtensions("gl_SamplePosition", 1, &E_GL_ARB_sample_shading);
+                symbolTable.setVariableExtensions("gl_NumSamples",     1, &E_GL_ARB_sample_shading);
+            } else {
+                BuiltInVariable("gl_SampleMaskIn",    EbvSampleMask,     symbolTable);
+
+                if (profile == EEsProfile && version < 320) {
+                    symbolTable.setVariableExtensions("gl_SampleID", 1, &E_GL_OES_sample_variables);
+                    symbolTable.setVariableExtensions("gl_SamplePosition", 1, &E_GL_OES_sample_variables);
+                    symbolTable.setVariableExtensions("gl_SampleMaskIn", 1, &E_GL_OES_sample_variables);
+                    symbolTable.setVariableExtensions("gl_SampleMask", 1, &E_GL_OES_sample_variables);
+                    symbolTable.setVariableExtensions("gl_NumSamples", 1, &E_GL_OES_sample_variables);
+                }
             }
         }
 
@@ -8217,6 +8443,15 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
 
     symbolTable.relateToOperator("helperInvocationEXT",  EOpIsHelperInvocation);
 
+    symbolTable.relateToOperator("countLeadingZeros",  EOpCountLeadingZeros);
+    symbolTable.relateToOperator("countTrailingZeros", EOpCountTrailingZeros);
+    symbolTable.relateToOperator("absoluteDifference", EOpAbsDifference);
+    symbolTable.relateToOperator("addSaturate",        EOpAddSaturate);
+    symbolTable.relateToOperator("subtractSaturate",   EOpSubSaturate);
+    symbolTable.relateToOperator("average",            EOpAverage);
+    symbolTable.relateToOperator("averageRounded",     EOpAverageRounded);
+    symbolTable.relateToOperator("multiply32x16",      EOpMul32x16);
+
     if (PureOperatorBuiltins) {
         symbolTable.relateToOperator("imageSize",               EOpImageQuerySize);
         symbolTable.relateToOperator("imageSamples",            EOpImageQuerySamples);
@@ -8251,9 +8486,11 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         symbolTable.relateToOperator("textureFootprintGradNV",      EOpImageSampleFootprintGradNV);
         symbolTable.relateToOperator("textureFootprintGradClampNV", EOpImageSampleFootprintGradClampNV);
 
+        if (spvVersion.spv == 0 && IncludeLegacy(version, profile, spvVersion))
+            symbolTable.relateToOperator("ftransform", EOpFtransform);
+
         if (spvVersion.spv == 0 && (IncludeLegacy(version, profile, spvVersion) ||
             (profile == EEsProfile && version == 100))) {
-            symbolTable.relateToOperator("ftransform",               EOpFtransform);
 
             symbolTable.relateToOperator("texture1D",                EOpTexture);
             symbolTable.relateToOperator("texture1DGradARB",         EOpTextureGrad);
