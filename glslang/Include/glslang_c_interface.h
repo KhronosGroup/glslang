@@ -33,6 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef GLSLANG_C_IFACE_H_INCLUDED
 #define GLSLANG_C_IFACE_H_INCLUDED
 
+#include <stdbool.h>
 #include <stdlib.h>
 
 #include "glslang_c_shader_types.h"
