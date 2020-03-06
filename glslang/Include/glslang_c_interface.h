@@ -205,8 +205,6 @@ extern "C" {
 int glslang_initialize_process();
 void glslang_finalize_process();
 
-const glslang_resource_t* glslang_default_resource(void);
-
 glslang_shader_t* glslang_shader_create(const glslang_input_t* input);
 void glslang_shader_delete(glslang_shader_t* shader);
 int glslang_shader_preprocess(glslang_shader_t* shader, const glslang_input_t* input);
