@@ -29,6 +29,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "resource_limits_c.h"
 #include "ResourceLimits.h"
 #include <stdlib.h>
+#include <string.h>
 #include <string>
 
 const glslang_resource_t* glslang_default_resource(void)
