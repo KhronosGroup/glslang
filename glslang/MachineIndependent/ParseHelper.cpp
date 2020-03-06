@@ -1353,6 +1353,9 @@ void TParseContext::computeBuiltinPrecisions(TIntermTyped& node, const TFunction
         case EOpInterpolateAtSample:
             numArgs = 1;
             break;
+        case EOpDebugPrintf:
+            numArgs = 0;
+            break;
         default:
             break;
         }
@@ -6082,6 +6085,15 @@ const TFunction* TParseContext::findFunction(const TSourceLoc& loc, const TFunct
 #endif
 
     const TFunction* function = nullptr;
+
+    // debugPrintfEXT has var args and is in the symbol table as "debugPrintfEXT()",
+    // mangled to "debugPrintfEXT("
+    if (call.getName() == "debugPrintfEXT") {
+        TSymbol* symbol = symbolTable.find("debugPrintfEXT(", &builtIn);
+        if (symbol)
+            return symbol->getAsFunction();
+    }
+
     bool explicitTypesEnabled = extensionTurnedOn(E_GL_EXT_shader_explicit_arithmetic_types) ||
                                 extensionTurnedOn(E_GL_EXT_shader_explicit_arithmetic_types_int8) ||
                                 extensionTurnedOn(E_GL_EXT_shader_explicit_arithmetic_types_int16) ||

@@ -94,6 +94,7 @@ public:
         const char* file_c_str = str.c_str();
         fileString->addStringOperand(file_c_str);
         strings.push_back(std::unique_ptr<Instruction>(fileString));
+        module.mapInstruction(fileString);
         stringIds[file_c_str] = strId;
         return strId;
     }

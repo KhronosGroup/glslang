@@ -70,6 +70,7 @@ source_set("glslang_sources") {
     "SPIRV/InReadableOrder.cpp",
     "SPIRV/Logger.cpp",
     "SPIRV/Logger.h",
+    "SPIRV/NonSemanticDebugPrintf.h",
     "SPIRV/SPVRemapper.cpp",
     "SPIRV/SPVRemapper.h",
     "SPIRV/SpvBuilder.cpp",
