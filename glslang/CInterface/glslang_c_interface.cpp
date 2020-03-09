@@ -167,11 +167,6 @@ int glslang_initialize_process() { return static_cast<int>(glslang::InitializePr
 
 void glslang_finalize_process() { glslang::FinalizeProcess(); }
 
-const glslang_resource_t* glslang_default_resource(void)
-{
-    return reinterpret_cast<const glslang_resource_t*>(&glslang::DefaultTBuiltInResource);
-}
-
 static EShLanguage c_shader_stage(glslang_stage_t stage)
 {
     switch (stage) {
