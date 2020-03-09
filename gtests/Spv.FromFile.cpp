@@ -356,6 +356,8 @@ INSTANTIATE_TEST_CASE_P(
         "spv.nonSquare.vert",
         "spv.nonuniform.frag",
         "spv.nonuniform2.frag",
+        "spv.nonuniform3.frag",
+        "spv.nonuniform4.frag",
         "spv.noWorkgroup.comp",
         "spv.offsets.frag",
         "spv.Operations.frag",
