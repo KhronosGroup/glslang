@@ -40,6 +40,7 @@ spv.RayGenShaderArray.rgen
                               Decorate 60(accNV1) DescriptorSet 0
                               Decorate 60(accNV1) Binding 1
                               Decorate 75 DecorationNonUniformEXT
+                              Decorate 76 DecorationNonUniformEXT
                               Decorate 77 DecorationNonUniformEXT
                               Decorate 88(payload) Location 0
                2:             TypeVoid
