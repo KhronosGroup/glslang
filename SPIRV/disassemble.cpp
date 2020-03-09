@@ -481,9 +481,9 @@ void SpirvStream::disassembleInstruction(Id resultId, Id /*typeId*/, Op opCode, 
             if (opCode == OpExtInst) {
                 ExtInstSet extInstSet = GLSL450Inst;
                 const char* name = idDescriptor[stream[word - 2]].c_str();
-                if (0 == memcmp("OpenCL", name, 6)) {
+                if (strlen(name) >= 6 && 0 == memcmp("OpenCL", name, 6)) {
                     extInstSet = OpenCLExtInst;
-                } else if (0 == memcmp("NonSemantic.DebugPrintf", name, 23)) {
+                } else if (strlen(name) >= 23 && 0 == memcmp("NonSemantic.DebugPrintf", name, 23)) {
                     extInstSet = NonSemanticDebugPrintfExtInst;
                 } else if (strcmp(spv::E_SPV_AMD_shader_ballot, name) == 0 ||
                            strcmp(spv::E_SPV_AMD_shader_trinary_minmax, name) == 0 ||
