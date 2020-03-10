@@ -3089,7 +3089,7 @@ bool TParseContext::constructorError(const TSourceLoc& loc, TIntermNode* node, T
         error(loc, "constructor argument does not have a type", "constructor", "");
         return true;
     }
-    if (op != EOpConstructStruct && typed->getBasicType() == EbtSampler) {
+    if (op != EOpConstructStruct && op != EOpConstructNonuniform && typed->getBasicType() == EbtSampler) {
         error(loc, "cannot convert a sampler", "constructor", "");
         return true;
     }

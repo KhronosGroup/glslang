@@ -59,7 +59,9 @@ spv.nonuniform.frag
                               Name 203  "S"
                               MemberName 203(S) 0  "a"
                               Name 205  "s"
+                              Decorate 9(nupi) DecorationNonUniformEXT
                               Decorate 13 DecorationNonUniformEXT
+                              Decorate 17(nu_li) DecorationNonUniformEXT
                               Decorate 17(nu_li) DecorationNonUniformEXT
                               Decorate 19 DecorationNonUniformEXT
                               Decorate 24 DecorationNonUniformEXT
@@ -67,7 +69,9 @@ spv.nonuniform.frag
                               Decorate 29 DecorationNonUniformEXT
                               Decorate 35(nu_inv4) Location 0
                               Decorate 35(nu_inv4) DecorationNonUniformEXT
+                              Decorate 39 DecorationNonUniformEXT
                               Decorate 40 DecorationNonUniformEXT
+                              Decorate 41(nu_gf) DecorationNonUniformEXT
                               Decorate 41(nu_gf) DecorationNonUniformEXT
                               Decorate 42 DecorationNonUniformEXT
                               Decorate 43 DecorationNonUniformEXT
@@ -85,47 +89,71 @@ spv.nonuniform.frag
                               Decorate 92(nu_ii) Flat
                               Decorate 92(nu_ii) Location 1
                               Decorate 92(nu_ii) DecorationNonUniformEXT
+                              Decorate 92(nu_ii) DecorationNonUniformEXT
                               Decorate 93 DecorationNonUniformEXT
+                              Decorate 95 DecorationNonUniformEXT
                               Decorate 96 DecorationNonUniformEXT
                               MemberDecorate 99(bname) 0 Offset 0
                               Decorate 99(bname) BufferBlock
                               Decorate 102(storageBuffer) DescriptorSet 0
                               Decorate 102(storageBuffer) Binding 4
+                              Decorate 92(nu_ii) DecorationNonUniformEXT
                               Decorate 103 DecorationNonUniformEXT
+                              Decorate 104 DecorationNonUniformEXT
                               Decorate 105 DecorationNonUniformEXT
                               Decorate 112(sampledImage) DescriptorSet 0
                               Decorate 112(sampledImage) Binding 5
+                              Decorate 92(nu_ii) DecorationNonUniformEXT
                               Decorate 113 DecorationNonUniformEXT
+                              Decorate 115 DecorationNonUniformEXT
                               Decorate 116 DecorationNonUniformEXT
                               Decorate 127(storageImage) DescriptorSet 0
                               Decorate 127(storageImage) Binding 6
+                              Decorate 92(nu_ii) DecorationNonUniformEXT
                               Decorate 128 DecorationNonUniformEXT
+                              Decorate 130 DecorationNonUniformEXT
                               Decorate 131 DecorationNonUniformEXT
                               Decorate 139(inputAttachment) DescriptorSet 0
                               Decorate 139(inputAttachment) Binding 7
                               Decorate 139(inputAttachment) InputAttachmentIndex 1
+                              Decorate 92(nu_ii) DecorationNonUniformEXT
                               Decorate 140 DecorationNonUniformEXT
+                              Decorate 141 DecorationNonUniformEXT
                               Decorate 142 DecorationNonUniformEXT
                               Decorate 149(uniformTexelBuffer) DescriptorSet 0
                               Decorate 149(uniformTexelBuffer) Binding 8
+                              Decorate 92(nu_ii) DecorationNonUniformEXT
                               Decorate 150 DecorationNonUniformEXT
+                              Decorate 151 DecorationNonUniformEXT
                               Decorate 152 DecorationNonUniformEXT
                               Decorate 160(storageTexelBuffer) DescriptorSet 0
                               Decorate 160(storageTexelBuffer) Binding 9
+                              Decorate 92(nu_ii) DecorationNonUniformEXT
                               Decorate 161 DecorationNonUniformEXT
+                              Decorate 162 DecorationNonUniformEXT
                               Decorate 163 DecorationNonUniformEXT
                               Decorate 170(v) DecorationNonUniformEXT
+                              Decorate 172 DecorationNonUniformEXT
                               Decorate 173 DecorationNonUniformEXT
+                              Decorate 174 DecorationNonUniformEXT
                               Decorate 175 DecorationNonUniformEXT
+                              Decorate 179 DecorationNonUniformEXT
                               Decorate 180 DecorationNonUniformEXT
+                              Decorate 181 DecorationNonUniformEXT
                               Decorate 182 DecorationNonUniformEXT
+                              Decorate 92(nu_ii) DecorationNonUniformEXT
                               Decorate 186 DecorationNonUniformEXT
+                              Decorate 187 DecorationNonUniformEXT
                               Decorate 188 DecorationNonUniformEXT
+                              Decorate 189 DecorationNonUniformEXT
                               Decorate 190 DecorationNonUniformEXT
                               Decorate 195(m) DecorationNonUniformEXT
+                              Decorate 196 DecorationNonUniformEXT
                               Decorate 197 DecorationNonUniformEXT
                               Decorate 205(s) DecorationNonUniformEXT
+                              Decorate 206 DecorationNonUniformEXT
                               Decorate 207 DecorationNonUniformEXT
+                              Decorate 208 DecorationNonUniformEXT
                               Decorate 209 DecorationNonUniformEXT
                2:             TypeVoid
                3:             TypeFunction 2

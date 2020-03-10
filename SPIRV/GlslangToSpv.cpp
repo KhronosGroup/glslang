@@ -4835,6 +4835,9 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
                 resultTypeId = builder.makePointer(spv::StorageClassImage, resultType());
             }
             spv::Id pointer = builder.createOp(spv::OpImageTexelPointer, resultTypeId, operands);
+            if (imageType.getQualifier().nonUniform) {
+                builder.addDecoration(pointer, spv::DecorationNonUniformEXT);
+            }
 
             std::vector<spv::Id> operands;
             operands.push_back(pointer);
