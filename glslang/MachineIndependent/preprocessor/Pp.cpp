@@ -722,7 +722,9 @@ int TPpContext::CPPline(TPpToken* ppToken)
     const char* sourceName = nullptr; // Optional source file name.
     bool lineErr = false;
     bool fileErr = false;
+    disableEscapeSequences = true;
     token = eval(token, MIN_PRECEDENCE, false, lineRes, lineErr, ppToken);
+    disableEscapeSequences = false;
     if (! lineErr) {
         lineToken = lineRes;
         if (token == '\n')
@@ -765,7 +767,9 @@ int TPpContext::CPPline(TPpToken* ppToken)
 // Handle #error
 int TPpContext::CPPerror(TPpToken* ppToken)
 {
+    disableEscapeSequences = true;
     int token = scanToken(ppToken);
+    disableEscapeSequences = false;
     std::string message;
     TSourceLoc loc = ppToken->loc;
 

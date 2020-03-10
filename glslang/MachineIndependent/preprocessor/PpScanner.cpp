@@ -1030,7 +1030,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
             ch = getch();
             while (ch != '"' && ch != '\n' && ch != EndOfInput) {
                 if (len < MaxTokenLength) {
-                    if (ch == '\\') {
+                    if (ch == '\\' && !pp->disableEscapeSequences) {
                         int nextCh = getch();
                         switch (nextCh) {
                         case '\'': ch = 0x27; break;
