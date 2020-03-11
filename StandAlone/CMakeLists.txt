@@ -60,7 +60,7 @@ if(ENABLE_GLSLANG_INSTALL)
         install(EXPORT spirv-remapTargets DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake)
     endif()
 
-    if(BUILD_SHARED_LIBS)
+    if(GLSLANG_BUILD_SHARED_LIBS)
         install(TARGETS glslang-default-resource-limits EXPORT glslang-default-resource-limitsTargets
                 LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
         install(EXPORT glslang-default-resource-limitsTargets DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake)

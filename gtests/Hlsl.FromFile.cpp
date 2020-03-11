@@ -41,15 +41,15 @@ namespace glslangtest {
 namespace {
 
 struct FileNameEntryPointPair {
-  const char* fileName;
-  const char* entryPoint;
+    const char* fileName;
+    const char* entryPoint;
 };
 
 // We are using FileNameEntryPointPair objects as parameters for instantiating
 // the template, so the global FileNameAsCustomTestSuffix() won't work since
 // it assumes std::string as parameters. Thus, an overriding one here.
-std::string FileNameAsCustomTestSuffix(
-    const ::testing::TestParamInfo<FileNameEntryPointPair>& info) {
+std::string FileNameAsCustomTestSuffix(const ::testing::TestParamInfo<FileNameEntryPointPair>& info)
+{
     std::string name = info.param.fileName;
     // A valid test case suffix cannot have '.' and '-' inside.
     std::replace(name.begin(), name.end(), '.', '_');
@@ -69,51 +69,47 @@ using HlslLegalDebugTest = GlslangTest<::testing::TestWithParam<FileNameEntryPoi
 // to successfully generate both AST and SPIR-V.
 TEST_P(HlslCompileTest, FromFile)
 {
-    loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam().fileName,
-                            Source::HLSL, Semantics::Vulkan, glslang::EShTargetVulkan_1_0,  glslang::EShTargetSpv_1_0,
-                            Target::BothASTAndSpv, true, GetParam().entryPoint);
+    loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam().fileName, Source::HLSL, Semantics::Vulkan,
+                            glslang::EShTargetVulkan_1_0, glslang::EShTargetSpv_1_0, Target::BothASTAndSpv, true,
+                            GetParam().entryPoint);
 }
 
 TEST_P(HlslVulkan1_1CompileTest, FromFile)
 {
-    loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam().fileName,
-                            Source::HLSL, Semantics::Vulkan, glslang::EShTargetVulkan_1_1, glslang::EShTargetSpv_1_3,
-                            Target::BothASTAndSpv, true, GetParam().entryPoint);
+    loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam().fileName, Source::HLSL, Semantics::Vulkan,
+                            glslang::EShTargetVulkan_1_1, glslang::EShTargetSpv_1_3, Target::BothASTAndSpv, true,
+                            GetParam().entryPoint);
 }
 
 TEST_P(HlslCompileAndFlattenTest, FromFile)
 {
-    loadFileCompileFlattenUniformsAndCheck(GlobalTestSettings.testRoot, GetParam().fileName,
-                                           Source::HLSL, Semantics::Vulkan,
-                                           Target::BothASTAndSpv, GetParam().entryPoint);
+    loadFileCompileFlattenUniformsAndCheck(GlobalTestSettings.testRoot, GetParam().fileName, Source::HLSL,
+                                           Semantics::Vulkan, Target::BothASTAndSpv, GetParam().entryPoint);
 }
 
 // Compiling HLSL to legal SPIR-V under Vulkan semantics. Expected to
 // successfully generate SPIR-V.
 TEST_P(HlslLegalizeTest, FromFile)
 {
-    loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam().fileName,
-                            Source::HLSL, Semantics::Vulkan, glslang::EShTargetVulkan_1_0,  glslang::EShTargetSpv_1_0,
-                            Target::Spv, true, GetParam().entryPoint,
-                            "/baseLegalResults/", true);
+    loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam().fileName, Source::HLSL, Semantics::Vulkan,
+                            glslang::EShTargetVulkan_1_0, glslang::EShTargetSpv_1_0, Target::Spv, true,
+                            GetParam().entryPoint, "/baseLegalResults/", true);
 }
 
 // Compiling HLSL to pre-legalized SPIR-V. Expected to successfully generate
 // SPIR-V with debug instructions, particularly line info.
 TEST_P(HlslDebugTest, FromFile)
 {
-    loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam().fileName,
-                            Source::HLSL, Semantics::Vulkan, glslang::EShTargetVulkan_1_0, glslang::EShTargetSpv_1_0,
-                            Target::Spv, true, GetParam().entryPoint,
-                            "/baseResults/", false, true);
+    loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam().fileName, Source::HLSL, Semantics::Vulkan,
+                            glslang::EShTargetVulkan_1_0, glslang::EShTargetSpv_1_0, Target::Spv, true,
+                            GetParam().entryPoint, "/baseResults/", false, true);
 }
 
 TEST_P(HlslDX9CompatibleTest, FromFile)
 {
     loadFileCompileAndCheckWithOptions(GlobalTestSettings.testRoot, GetParam().fileName, Source::HLSL,
                                        Semantics::Vulkan, glslang::EShTargetVulkan_1_0, glslang::EShTargetSpv_1_0,
-                                       Target::BothASTAndSpv, true,
-                                       GetParam().entryPoint, "/baseResults/",
+                                       Target::BothASTAndSpv, true, GetParam().entryPoint, "/baseResults/",
                                        EShMessages::EShMsgHlslDX9Compatible);
 }
 
@@ -122,10 +118,9 @@ TEST_P(HlslDX9CompatibleTest, FromFile)
 // legalization, particularly line info.
 TEST_P(HlslLegalDebugTest, FromFile)
 {
-    loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam().fileName,
-                            Source::HLSL, Semantics::Vulkan, glslang::EShTargetVulkan_1_0, glslang::EShTargetSpv_1_0,
-                            Target::Spv, true, GetParam().entryPoint,
-                            "/baseResults/", true, true);
+    loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam().fileName, Source::HLSL, Semantics::Vulkan,
+                            glslang::EShTargetVulkan_1_0, glslang::EShTargetSpv_1_0, Target::Spv, true,
+                            GetParam().entryPoint, "/baseResults/", true, true);
 }
 
 // clang-format off
@@ -455,7 +450,7 @@ INSTANTIATE_TEST_CASE_P(
 );
 // clang-format on
 
-#if ENABLE_OPT
+#if GLSLANG_ENABLE_OPT
 // clang-format off
 INSTANTIATE_TEST_CASE_P(
     ToSpirv, HlslLegalizeTest,
@@ -503,5 +498,5 @@ INSTANTIATE_TEST_CASE_P(
 
 // clang-format on
 
-}  // anonymous namespace
-}  // namespace glslangtest
+} // anonymous namespace
+} // namespace glslangtest

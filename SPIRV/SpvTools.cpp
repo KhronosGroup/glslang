@@ -37,14 +37,14 @@
 // Call into SPIRV-Tools to disassemble, validate, and optimize.
 //
 
-#if ENABLE_OPT
+#if GLSLANG_ENABLE_OPT
 
 #include <cstdio>
 #include <iostream>
 
 #include "SpvTools.h"
-#include "spirv-tools/optimizer.hpp"
 #include "spirv-tools/libspirv.h"
+#include "spirv-tools/optimizer.hpp"
 
 namespace glslang {
 
@@ -80,7 +80,6 @@ spv_target_env MapToSpirvToolsEnv(const SpvVersion& spvVersion, spv::SpvBuildLog
     return spv_target_env::SPV_ENV_UNIVERSAL_1_0;
 }
 
-
 // Use the SPIRV-Tools disassembler to print SPIR-V.
 void SpirvToolsDisassemble(std::ostream& out, const std::vector<unsigned int>& spirv)
 {
@@ -89,8 +88,7 @@ void SpirvToolsDisassemble(std::ostream& out, const std::vector<unsigned int>& s
     spv_text text;
     spv_diagnostic diagnostic = nullptr;
     spvBinaryToText(context, spirv.data(), spirv.size(),
-        SPV_BINARY_TO_TEXT_OPTION_FRIENDLY_NAMES | SPV_BINARY_TO_TEXT_OPTION_INDENT,
-        &text, &diagnostic);
+                    SPV_BINARY_TO_TEXT_OPTION_FRIENDLY_NAMES | SPV_BINARY_TO_TEXT_OPTION_INDENT, &text, &diagnostic);
 
     // dump
     if (diagnostic == nullptr)
@@ -109,7 +107,7 @@ void SpirvToolsValidate(const glslang::TIntermediate& intermediate, std::vector<
 {
     // validate
     spv_context context = spvContextCreate(MapToSpirvToolsEnv(intermediate.getSpv(), logger));
-    spv_const_binary_t binary = { spirv.data(), spirv.size() };
+    spv_const_binary_t binary = {spirv.data(), spirv.size()};
     spv_diagnostic diagnostic = nullptr;
     spv_validator_options options = spvValidatorOptionsCreate();
     spvValidatorOptionsSetRelaxBlockLayout(options, intermediate.usingHlslOffsets());
@@ -137,10 +135,9 @@ void SpirvToolsLegalize(const glslang::TIntermediate& intermediate, std::vector<
 
     spvtools::Optimizer optimizer(target_env);
     optimizer.SetMessageConsumer(
-        [](spv_message_level_t level, const char *source, const spv_position_t &position, const char *message) {
-            auto &out = std::cerr;
-            switch (level)
-            {
+        [](spv_message_level_t level, const char* source, const spv_position_t& position, const char* message) {
+            auto& out = std::cerr;
+            switch (level) {
             case SPV_MSG_FATAL:
             case SPV_MSG_INTERNAL_ERROR:
             case SPV_MSG_ERROR:
@@ -156,13 +153,11 @@ void SpirvToolsLegalize(const glslang::TIntermediate& intermediate, std::vector<
             default:
                 break;
             }
-            if (source)
-            {
+            if (source) {
                 out << source << ":";
             }
             out << position.line << ":" << position.column << ":" << position.index << ":";
-            if (message)
-            {
+            if (message) {
                 out << " " << message;
             }
             out << std::endl;

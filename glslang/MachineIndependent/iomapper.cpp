@@ -963,7 +963,7 @@ struct TDefaultIoResolver : public TDefaultIoResolverBase {
     }
 };
 
-#ifdef ENABLE_HLSL
+#ifdef GLSLANG_ENABLE_HLSL
 /********************************************************************************
 The following IO resolver maps types in HLSL register space, as follows:
 
@@ -1068,7 +1068,7 @@ bool TIoMapper::addStage(EShLanguage stage, TIntermediate& intermediate, TInfoSi
         return false;
     // if no resolver is provided, use the default resolver with the given shifts and auto map settings
     TDefaultIoResolver defaultResolver(intermediate);
-#ifdef ENABLE_HLSL
+#ifdef GLSLANG_ENABLE_HLSL
     TDefaultHlslIoResolver defaultHlslResolver(intermediate);
     if (resolver == nullptr) {
         // TODO: use a passed in IO mapper for this

@@ -90,11 +90,11 @@ target_include_directories(glslang PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
-if(WIN32 AND BUILD_SHARED_LIBS)
+if(WIN32 AND GLSLANG_BUILD_SHARED_LIBS)
     set_target_properties(glslang PROPERTIES PREFIX "")
 endif()
 
-if(ENABLE_HLSL)
+if(GLSLANG_ENABLE_HLSL)
     target_link_libraries(glslang HLSL)
 endif()
 
@@ -107,7 +107,7 @@ if(WIN32)
 endif(WIN32)
 
 if(ENABLE_GLSLANG_INSTALL)
-    if(BUILD_SHARED_LIBS)
+    if(GLSLANG_BUILD_SHARED_LIBS)
         install(TARGETS glslang EXPORT glslangTargets
                 ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
                 LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}

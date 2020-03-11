@@ -444,7 +444,7 @@ public:
     void addUniformLocationOverride(const char* name, int loc);
     void setUniformLocationBase(int base);
     void setInvertY(bool invert);
-#ifdef ENABLE_HLSL
+#ifdef GLSLANG_ENABLE_HLSL
     void setHlslIoMapping(bool hlslIoMap);
     void setFlattenUniformArrays(bool flatten);
 #endif
@@ -500,7 +500,7 @@ public:
 
     void getStrings(const char* const* &s, int& n) { s = strings; n = numStrings; }
 
-#ifdef ENABLE_HLSL
+#ifdef GLSLANG_ENABLE_HLSL
     void setEnvTargetHlslFunctionality1() { environment.target.hlslFunctionality1 = true; }
     bool getEnvTargetHlslFunctionality1() const { return environment.target.hlslFunctionality1; }
 #else

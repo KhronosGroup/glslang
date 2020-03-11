@@ -41,7 +41,7 @@
 #ifndef GLSLANG_SPV_TOOLS_H
 #define GLSLANG_SPV_TOOLS_H
 
-#ifdef ENABLE_OPT
+#ifdef GLSLANG_ENABLE_OPT
 #include <vector>
 #include <ostream>
 #endif
@@ -61,7 +61,7 @@ struct SpvOptions {
     bool validate;
 };
 
-#ifdef ENABLE_OPT
+#ifdef GLSLANG_ENABLE_OPT
 
 // Use the SPIRV-Tools disassembler to print SPIR-V.
 void SpirvToolsDisassemble(std::ostream& out, const std::vector<unsigned int>& spirv);

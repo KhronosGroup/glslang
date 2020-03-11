@@ -15,12 +15,12 @@ include(GNUInstallDirs)
 # Needed for CMAKE_DEPENDENT_OPTION macro
 include(CMakeDependentOption)
 
-option(BUILD_SHARED_LIBS "Build Shared Libraries" OFF)
-option(BUILD_EXTERNAL "Build external dependencies in /External" ON)
+option(GLSLANG_BUILD_SHARED_LIBS "Build Shared Libraries" OFF)
+option(GLSLANG_BUILD_EXTERNAL "Build external dependencies in /External" ON)
 
 set(LIB_TYPE STATIC)
 
-if(BUILD_SHARED_LIBS)
+if(GLSLANG_BUILD_SHARED_LIBS)
     set(LIB_TYPE SHARED)
 endif()
 
@@ -51,22 +51,23 @@ CMAKE_DEPENDENT_OPTION(ENABLE_EMSCRIPTEN_ENVIRONMENT_NODE
     OFF "ENABLE_GLSLANG_JS AND EMSCRIPTEN"
     OFF)
 
-CMAKE_DEPENDENT_OPTION(ENABLE_HLSL
+CMAKE_DEPENDENT_OPTION(GLSLANG_ENABLE_HLSL
     "Enables HLSL input support"
     ON "NOT ENABLE_GLSLANG_WEBMIN"
     OFF)
 
-option(ENABLE_RTTI "Enables RTTI" OFF)
-option(ENABLE_OPT "Enables spirv-opt capability if present" ON)
-option(ENABLE_PCH "Enables Precompiled header" ON)
-option(ENABLE_CTEST "Enables testing" ON)
+option(GLSLANG_ENABLE_RTTI "Enables RTTI" OFF)
+option(GLSLANG_ENABLE_OPT "Enables spirv-opt capability if present" ON)
+option(GLSLANG_ENABLE_PCH "Enables Precompiled header" ON)
+option(GLSLANG_ENABLE_CTEST "Enables testing" ON)
+option(GLSLANG_BUILD_TESTING "Builds tests" ON)
 
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT AND WIN32)
     set(CMAKE_INSTALL_PREFIX "install" CACHE STRING "..." FORCE)
 endif()
 
-option(USE_CCACHE "Use ccache" OFF)
-if(USE_CCACHE)
+option(GLSLANG_USE_CCACHE "Use ccache" OFF)
+if(GLSLANG_USE_CCACHE)
     find_program(CCACHE_FOUND ccache)
     if(CCACHE_FOUND)
         set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
@@ -75,7 +76,7 @@ endif()
 
 # Precompiled header macro. Parameters are source file list and filename for pch cpp file.
 macro(glslang_pch SRCS PCHCPP)
-  if(MSVC AND CMAKE_GENERATOR MATCHES "^Visual Studio" AND ENABLE_PCH)
+  if(MSVC AND CMAKE_GENERATOR MATCHES "^Visual Studio" AND GLSLANG_ENABLE_PCH)
     set(PCH_NAME "$(IntDir)\\pch.pch")
     # make source files use/depend on PCH_NAME
     set_source_files_properties(${${SRCS}} PROPERTIES COMPILE_FLAGS "/Yupch.h /FIpch.h /Fp${PCH_NAME} /Zm300" OBJECT_DEPENDS "${PCH_NAME}")
@@ -87,13 +88,13 @@ endmacro(glslang_pch)
 
 project(glslang)
 
-if(ENABLE_CTEST)
+if(GLSLANG_ENABLE_CTEST)
     include(CTest)
 endif()
 
-if(ENABLE_HLSL)
-    add_definitions(-DENABLE_HLSL)
-endif(ENABLE_HLSL)
+if(GLSLANG_ENABLE_HLSL)
+    add_definitions(-DGLSLANG_ENABLE_HLSL)
+endif(GLSLANG_ENABLE_HLSL)
 
 if(ENABLE_GLSLANG_WEBMIN)
     add_definitions(-DGLSLANG_WEB)
@@ -118,7 +119,7 @@ if(${CMAKE_CXX_COMPILER_ID} MATCHES "GNU")
     add_compile_options(-Wall -Wmaybe-uninitialized -Wuninitialized -Wunused -Wunused-local-typedefs
                         -Wunused-parameter -Wunused-value  -Wunused-variable -Wunused-but-set-parameter -Wunused-but-set-variable -fno-exceptions)
     add_compile_options(-Wno-reorder)  # disable this from -Wall, since it happens all over.
-    if(NOT ENABLE_RTTI)
+    if(NOT GLSLANG_ENABLE_RTTI)
         add_compile_options(-fno-rtti)
     endif()
     if(NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS "9.0.0")
@@ -128,11 +129,11 @@ elseif(${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
     add_compile_options(-Wall -Wuninitialized -Wunused -Wunused-local-typedefs
                         -Wunused-parameter -Wunused-value  -Wunused-variable)
     add_compile_options(-Wno-reorder)  # disable this from -Wall, since it happens all over.
-    if(NOT ENABLE_RTTI)
+    if(NOT GLSLANG_ENABLE_RTTI)
         add_compile_options(-fno-rtti)
     endif()
 elseif(${CMAKE_CXX_COMPILER_ID} MATCHES "MSVC")
-    if(NOT ENABLE_RTTI)
+    if(NOT GLSLANG_ENABLE_RTTI)
         add_compile_options(/GR-) # Disable RTTI
     endif()
 endif()
@@ -168,7 +169,7 @@ endfunction(glslang_set_link_args)
 
 # CMake needs to find the right version of python, right from the beginning,
 # otherwise, it will find the wrong version and fail later
-if(BUILD_EXTERNAL AND IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/External)
+if(GLSLANG_BUILD_EXTERNAL AND IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/External)
     find_package(PythonInterp 3 REQUIRED)
 
 	# We depend on these for later projects, so they should come first.
@@ -176,17 +177,17 @@ if(BUILD_EXTERNAL AND IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/External)
 endif()
 
 if(NOT TARGET SPIRV-Tools-opt)
-    set(ENABLE_OPT OFF)
+    set(GLSLANG_ENABLE_OPT OFF)
 endif()
 
-if(ENABLE_OPT)
+if(GLSLANG_ENABLE_OPT)
     message(STATUS "optimizer enabled")
-    add_definitions(-DENABLE_OPT=1)
+    add_definitions(-DGLSLANG_ENABLE_OPT=1)
 else()
-    if(ENABLE_HLSL)
+    if(GLSLANG_ENABLE_HLSL)
         message(STATUS "spirv-tools not linked - illegal SPIRV may be generated for HLSL")
     endif()
-    add_definitions(-DENABLE_OPT=0)
+    add_definitions(-DGLSLANG_ENABLE_OPT=0)
 endif()
 
 add_subdirectory(glslang)
@@ -195,14 +196,14 @@ if(ENABLE_GLSLANG_BINARIES)
     add_subdirectory(StandAlone)
 endif()
 add_subdirectory(SPIRV)
-if(ENABLE_HLSL)
+if(GLSLANG_ENABLE_HLSL)
     add_subdirectory(hlsl)
-endif(ENABLE_HLSL)
-if(ENABLE_CTEST)
+endif(GLSLANG_ENABLE_HLSL)
+if(GLSLANG_ENABLE_CTEST)
     add_subdirectory(gtests)
 endif()
 
-if(BUILD_TESTING)
+if(GLSLANG_BUILD_TESTING)
     # glslang-testsuite runs a bash script on Windows.
     # Make sure to use '-o igncr' flag to ignore carriage returns (\r).
     set(IGNORE_CR_FLAG "")
@@ -223,4 +224,4 @@ if(BUILD_TESTING)
     add_test(NAME glslang-testsuite
         COMMAND bash ${IGNORE_CR_FLAG} runtests ${RESULTS_PATH} ${VALIDATOR_PATH} ${REMAP_PATH}
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Test/)
-endif(BUILD_TESTING)
+endif(GLSLANG_BUILD_TESTING)

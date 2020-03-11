@@ -66,8 +66,8 @@ cc_library(
     copts = COMMON_COPTS,
     defines = [
         "AMD_EXTENSIONS",
-        "ENABLE_HLSL=0",
-        "ENABLE_OPT=0",
+        "GLSLANG_ENABLE_HLSL=0",
+        "GLSLANG_ENABLE_OPT=0",
         "NV_EXTENSIONS",
     ],
     linkopts = select({

@@ -376,7 +376,7 @@ public:
     }
     bool getInvertY() const { return invertY; }
 
-#ifdef ENABLE_HLSL
+#ifdef GLSLANG_ENABLE_HLSL
     void setSource(EShSource s) { source = s; }
     EShSource getSource() const { return source; }
 #else
@@ -575,7 +575,7 @@ public:
     }
     bool getAutoMapLocations() const { return autoMapLocations; }
 
-#ifdef ENABLE_HLSL
+#ifdef GLSLANG_ENABLE_HLSL
     void setFlattenUniformArrays(bool flatten)
     {
         flattenUniformArrays = flatten;
@@ -609,7 +609,7 @@ public:
     }
     bool usingVariablePointers() const { return useVariablePointers; }
 
-#ifdef ENABLE_HLSL
+#ifdef GLSLANG_ENABLE_HLSL
     template<class T> T addCounterBufferName(const T& name) const { return name + implicitCounterName; }
     bool hasCounterBufferName(const TString& name) const {
         size_t len = strlen(implicitCounterName);
@@ -761,7 +761,7 @@ public:
     bool getBinaryDoubleOutput() { return binaryDoubleOutput; }
 #endif // GLSLANG_WEB
 
-#ifdef ENABLE_HLSL
+#ifdef GLSLANG_ENABLE_HLSL
     void setHlslFunctionality1() { hlslFunctionality1 = true; }
     bool getHlslFunctionality1() const { return hlslFunctionality1; }
     void setHlslOffsets()

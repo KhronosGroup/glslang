@@ -227,7 +227,7 @@ public:
             shader.setAutoMapBindings(true);
         }
         shader.setTextureSamplerTransformMode(texSampTransMode);
-#ifdef ENABLE_HLSL
+#ifdef GLSLANG_ENABLE_HLSL
         shader.setFlattenUniformArrays(flattenUniformArrays);
 #endif
 
@@ -302,7 +302,7 @@ public:
         shader.setShiftSsboBinding(baseSsboBinding);
         shader.setAutoMapBindings(autoMapBindings);
         shader.setAutoMapLocations(true);
-#ifdef ENABLE_HLSL
+#ifdef GLSLANG_ENABLE_HLSL
         shader.setFlattenUniformArrays(flattenUniformArrays);
 #endif
 
