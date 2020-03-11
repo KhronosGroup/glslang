@@ -16,6 +16,7 @@ spv.OVR_multiview.vert
                               MemberName 11(gl_PerVertex) 0  "gl_Position"
                               MemberName 11(gl_PerVertex) 1  "gl_PointSize"
                               MemberName 11(gl_PerVertex) 2  "gl_ClipDistance"
+                              MemberName 11(gl_PerVertex) 3  "gl_CullDistance"
                               Name 13  ""
                               Name 17  "gl_ViewID_OVR"
                               Name 25  "gl_VertexID"
@@ -23,6 +24,7 @@ spv.OVR_multiview.vert
                               MemberDecorate 11(gl_PerVertex) 0 BuiltIn Position
                               MemberDecorate 11(gl_PerVertex) 1 BuiltIn PointSize
                               MemberDecorate 11(gl_PerVertex) 2 BuiltIn ClipDistance
+                              MemberDecorate 11(gl_PerVertex) 3 BuiltIn CullDistance
                               Decorate 11(gl_PerVertex) Block
                               Decorate 17(gl_ViewID_OVR) BuiltIn ViewIndex
                               Decorate 25(gl_VertexID) BuiltIn VertexId
@@ -34,7 +36,7 @@ spv.OVR_multiview.vert
                8:             TypeInt 32 0
                9:      8(int) Constant 1
               10:             TypeArray 6(float) 9
-11(gl_PerVertex):             TypeStruct 7(fvec4) 6(float) 10
+11(gl_PerVertex):             TypeStruct 7(fvec4) 6(float) 10 10
               12:             TypePointer Output 11(gl_PerVertex)
               13:     12(ptr) Variable Output
               14:             TypeInt 32 1

@@ -442,6 +442,14 @@ TIntermTyped* TParseContext::handleBracketDereference(const TSourceLoc& loc, TIn
 #ifndef GLSLANG_WEB
         if (base->getType().isUnsizedArray()) {
             base->getWritableType().updateImplicitArraySize(indexValue + 1);
+            if (base->getQualifier().builtIn == EbvClipDistance &&
+                indexValue >= resources.maxClipDistances) {
+                error(loc, "gl_ClipDistance", "[", "array index out of range '%d'", indexValue);
+            }
+            else if (base->getQualifier().builtIn == EbvCullDistance &&
+                indexValue >= resources.maxCullDistances) {
+                error(loc, "gl_CullDistance", "[", "array index out of range '%d'", indexValue);
+            }
             // For 2D per-view builtin arrays, update the inner dimension size in parent type
             if (base->getQualifier().isPerView() && base->getQualifier().builtIn != EbvNone) {
                 TIntermBinary* binaryNode = base->getAsBinaryNode();

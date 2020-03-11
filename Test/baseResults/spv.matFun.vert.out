@@ -22,6 +22,7 @@ spv.matFun.vert
                               MemberName 74(gl_PerVertex) 0  "gl_Position"
                               MemberName 74(gl_PerVertex) 1  "gl_PointSize"
                               MemberName 74(gl_PerVertex) 2  "gl_ClipDistance"
+                              MemberName 74(gl_PerVertex) 3  "gl_CullDistance"
                               Name 76  ""
                               Name 77  "bl"
                               MemberName 77(bl) 0  "m4"
@@ -35,6 +36,7 @@ spv.matFun.vert
                               MemberDecorate 74(gl_PerVertex) 0 BuiltIn Position
                               MemberDecorate 74(gl_PerVertex) 1 BuiltIn PointSize
                               MemberDecorate 74(gl_PerVertex) 2 BuiltIn ClipDistance
+                              MemberDecorate 74(gl_PerVertex) 3 BuiltIn CullDistance
                               Decorate 74(gl_PerVertex) Block
                               MemberDecorate 77(bl) 0 ColMajor
                               MemberDecorate 77(bl) 0 Offset 0
@@ -68,7 +70,7 @@ spv.matFun.vert
               71:             TypeInt 32 0
               72:     71(int) Constant 1
               73:             TypeArray 6(float) 72
-74(gl_PerVertex):             TypeStruct 16(fvec4) 6(float) 73
+74(gl_PerVertex):             TypeStruct 16(fvec4) 6(float) 73 73
               75:             TypePointer Output 74(gl_PerVertex)
               76:     75(ptr) Variable Output
           77(bl):             TypeStruct 17 8
