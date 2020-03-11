@@ -310,6 +310,7 @@ INSTANTIATE_TEST_CASE_P(
         "spv.dataOutIndirect.frag",
         "spv.dataOutIndirect.vert",
         "spv.debugPrintf.frag",
+        "spv.debugPrintf_Error.frag",
         "spv.demoteDisabled.frag",
         "spv.deepRvalue.frag",
         "spv.depthOut.frag",
