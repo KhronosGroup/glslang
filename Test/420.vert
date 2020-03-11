@@ -159,3 +159,15 @@ void qlod()
 }
 
 layout(binding=0) writeonly uniform image1D badArray[];
+
+buffer fblock   // error
+{
+    int value;
+} fblock;
+
+#extension GL_ARB_shader_storage_buffer_object : enable
+
+buffer fblock1
+{
+    int value;
+} fblock1;

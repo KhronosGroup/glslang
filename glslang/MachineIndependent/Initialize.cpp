@@ -148,6 +148,7 @@ EProfile EDesktopProfile = static_cast<EProfile>(ENoProfile | ECoreProfile | ECo
 #ifdef GLSLANG_WEB
     const Versioning* Es300Desktop130 = nullptr;
     const Versioning* Es310Desktop430 = nullptr;
+    const Versioning* Es310Desktop400 = nullptr;
 #else
     const Versioning Es300Desktop130Version[] = { { EEsProfile,      0, 300, 0, nullptr },
                                                   { EDesktopProfile, 0, 130, 0, nullptr },
@@ -163,6 +164,11 @@ EProfile EDesktopProfile = static_cast<EProfile>(ENoProfile | ECoreProfile | ECo
                                                   { EDesktopProfile, 0, 450, 0, nullptr },
                                                   { EBadProfile } };
     const Versioning* Es310Desktop450 = &Es310Desktop450Version[0];
+
+    const Versioning Es310Desktop400Version[] = { { EEsProfile,      0, 310, 0, nullptr },
+                                                  { EDesktopProfile, 0, 400, 0, nullptr },
+                                                  { EBadProfile } };
+    const Versioning* Es310Desktop400 = &Es310Desktop400Version[0];
 #endif
 
 // The main descriptor of what a set of function prototypes can look like, and
@@ -257,14 +263,14 @@ const BuiltInFunction BaseFunctions[] = {
     { EOpGreaterThanEqual, "greaterThanEqual", 2,   TypeU,     ClassBNS,     Es300Desktop130 },
     { EOpVectorEqual,      "equal",            2,   TypeU,     ClassBNS,     Es300Desktop130 },
     { EOpVectorNotEqual,   "notEqual",         2,   TypeU,     ClassBNS,     Es300Desktop130 },
-    { EOpAtomicAdd,        "atomicAdd",        2,   TypeIU,    ClassV1FIOCV, Es310Desktop430 },
-    { EOpAtomicMin,        "atomicMin",        2,   TypeIU,    ClassV1FIOCV, Es310Desktop430 },
-    { EOpAtomicMax,        "atomicMax",        2,   TypeIU,    ClassV1FIOCV, Es310Desktop430 },
-    { EOpAtomicAnd,        "atomicAnd",        2,   TypeIU,    ClassV1FIOCV, Es310Desktop430 },
-    { EOpAtomicOr,         "atomicOr",         2,   TypeIU,    ClassV1FIOCV, Es310Desktop430 },
-    { EOpAtomicXor,        "atomicXor",        2,   TypeIU,    ClassV1FIOCV, Es310Desktop430 },
-    { EOpAtomicExchange,   "atomicExchange",   2,   TypeIU,    ClassV1FIOCV, Es310Desktop430 },
-    { EOpAtomicCompSwap,   "atomicCompSwap",   3,   TypeIU,    ClassV1FIOCV, Es310Desktop430 },
+    { EOpAtomicAdd,        "atomicAdd",        2,   TypeIU,    ClassV1FIOCV, Es310Desktop400 },
+    { EOpAtomicMin,        "atomicMin",        2,   TypeIU,    ClassV1FIOCV, Es310Desktop400 },
+    { EOpAtomicMax,        "atomicMax",        2,   TypeIU,    ClassV1FIOCV, Es310Desktop400 },
+    { EOpAtomicAnd,        "atomicAnd",        2,   TypeIU,    ClassV1FIOCV, Es310Desktop400 },
+    { EOpAtomicOr,         "atomicOr",         2,   TypeIU,    ClassV1FIOCV, Es310Desktop400 },
+    { EOpAtomicXor,        "atomicXor",        2,   TypeIU,    ClassV1FIOCV, Es310Desktop400 },
+    { EOpAtomicExchange,   "atomicExchange",   2,   TypeIU,    ClassV1FIOCV, Es310Desktop400 },
+    { EOpAtomicCompSwap,   "atomicCompSwap",   3,   TypeIU,    ClassV1FIOCV, Es310Desktop400 },
 #ifndef GLSLANG_WEB
     { EOpMix,              "mix",              3,   TypeB,     ClassRegular, Es310Desktop450 },
     { EOpMix,              "mix",              3,   TypeIU,    ClassLB,      Es310Desktop450 },
@@ -7497,6 +7503,18 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         BuiltInVariable("gl_SecondaryColor", EbvSecondaryColor, symbolTable);
 
         // built-in functions
+
+        // ARB_shader_storage_buffer_object
+        if (profile != EEsProfile && version < 430 && version >= 400) {
+            symbolTable.setFunctionExtensions("atomicAdd", 1, &E_GL_ARB_shader_storage_buffer_object);
+            symbolTable.setFunctionExtensions("atomicMin", 1, &E_GL_ARB_shader_storage_buffer_object);
+            symbolTable.setFunctionExtensions("atomicMax", 1, &E_GL_ARB_shader_storage_buffer_object);
+            symbolTable.setFunctionExtensions("atomicAnd", 1, &E_GL_ARB_shader_storage_buffer_object);
+            symbolTable.setFunctionExtensions("atomicOr", 1, &E_GL_ARB_shader_storage_buffer_object);
+            symbolTable.setFunctionExtensions("atomicXor", 1, &E_GL_ARB_shader_storage_buffer_object);
+            symbolTable.setFunctionExtensions("atomicExchange", 1, &E_GL_ARB_shader_storage_buffer_object);
+            symbolTable.setFunctionExtensions("atomicCompSwap", 1, &E_GL_ARB_shader_storage_buffer_object);
+        }
 
         if (profile == EEsProfile) {
             if (spvVersion.spv == 0) {

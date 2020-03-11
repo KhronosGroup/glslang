@@ -169,6 +169,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_ARB_gpu_shader5]                  = EBhDisablePartial;
     extensionBehavior[E_GL_ARB_separate_shader_objects]      = EBhDisable;
     extensionBehavior[E_GL_ARB_compute_shader]               = EBhDisable;
+    extensionBehavior[E_GL_ARB_shader_storage_buffer_object] = EBhDisable;
     extensionBehavior[E_GL_ARB_tessellation_shader]          = EBhDisable;
     extensionBehavior[E_GL_ARB_enhanced_layouts]             = EBhDisable;
     extensionBehavior[E_GL_ARB_texture_cube_map_array]       = EBhDisable;
@@ -380,6 +381,7 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_ARB_gpu_shader5 1\n"
             "#define GL_ARB_separate_shader_objects 1\n"
             "#define GL_ARB_compute_shader 1\n"
+            "#define GL_ARB_shader_storage_buffer_object 1\n"
             "#define GL_ARB_tessellation_shader 1\n"
             "#define GL_ARB_enhanced_layouts 1\n"
             "#define GL_ARB_texture_cube_map_array 1\n"

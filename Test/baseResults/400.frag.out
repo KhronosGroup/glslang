@@ -3,7 +3,7 @@ ERROR: 0:18: 'textureGatherOffsets(...)' : must be a compile-time constant: offs
 ERROR: 0:22: 'textureGatherOffset(...)' : must be a compile-time constant: component argument
 ERROR: 0:23: 'textureGatherOffset(...)' : must be 0, 1, 2, or 3: component argument
 ERROR: 0:30: 'location qualifier on input' : not supported for this version or the enabled extensions 
-ERROR: 0:38: 'location qualifier on uniform or buffer' : not supported for this version or the enabled extensions 
+ERROR: 0:38: 'location qualifier on uniform' : not supported for this version or the enabled extensions 
 ERROR: 0:40: 'redeclaration' : cannot apply layout qualifier to gl_Color
 ERROR: 0:41: 'redeclaration' : cannot change qualification of gl_ClipDistance
 ERROR: 0:43: 'gl_FragCoord' : cannot redeclare after use 

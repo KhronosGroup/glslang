@@ -124,6 +124,7 @@ const char* const E_GL_ARB_texture_gather               = "GL_ARB_texture_gather
 const char* const E_GL_ARB_gpu_shader5                  = "GL_ARB_gpu_shader5";
 const char* const E_GL_ARB_separate_shader_objects      = "GL_ARB_separate_shader_objects";
 const char* const E_GL_ARB_compute_shader               = "GL_ARB_compute_shader";
+const char* const E_GL_ARB_shader_storage_buffer_object = "GL_ARB_shader_storage_buffer_object";
 const char* const E_GL_ARB_tessellation_shader          = "GL_ARB_tessellation_shader";
 const char* const E_GL_ARB_enhanced_layouts             = "GL_ARB_enhanced_layouts";
 const char* const E_GL_ARB_texture_cube_map_array       = "GL_ARB_texture_cube_map_array";
@@ -312,6 +313,9 @@ const int Num_AEP_texture_buffer = sizeof(AEP_texture_buffer)/sizeof(AEP_texture
 
 const char* const AEP_texture_cube_map_array[] = { E_GL_EXT_texture_cube_map_array, E_GL_OES_texture_cube_map_array };
 const int Num_AEP_texture_cube_map_array = sizeof(AEP_texture_cube_map_array)/sizeof(AEP_texture_cube_map_array[0]);
+
+const char* const ARB_shader_storage_buffer_location[] = { E_GL_ARB_explicit_uniform_location, E_GL_ARB_shader_storage_buffer_object };
+const int Num_ARB_shader_storage_buffer_location = sizeof(ARB_shader_storage_buffer_location)/sizeof(ARB_shader_storage_buffer_location[0]);
 
 } // end namespace glslang
 
