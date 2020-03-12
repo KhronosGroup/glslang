@@ -1494,7 +1494,9 @@ int TIntermediate::getBaseAlignment(const TType& type, int& size, int& stride, T
         RoundToPow2(size, alignment);
         stride = size;  // uses full matrix size for stride of an array of matrices (not quite what rule 6/8, but what's expected)
                         // uses the assumption for rule 10 in the comment above
-        size = stride * type.getOuterArraySize();
+        // use one element to represent the last member of SSBO which is unsized array
+        int arraySize = (type.isUnsizedArray() && (type.getOuterArraySize() == 0)) ? 1 : type.getOuterArraySize();
+        size = stride * arraySize;
         return alignment;
     }
 
