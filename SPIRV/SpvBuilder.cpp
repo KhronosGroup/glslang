@@ -2731,7 +2731,13 @@ Id Builder::accessChainLoad(Decoration precision, Decoration nonUniform, Id resu
         }
 
         // load through the access chain
-        id = createLoad(collapseAccessChain(), memoryAccess, scope, alignment);
+        id = collapseAccessChain();
+        // Apply nonuniform both to the access chain and the loaded value.
+        // Buffer accesses need the access chain decorated, and this is where
+        // loaded image types get decorated. TODO: This should maybe move to
+        // createImageTextureFunctionCall.
+        addDecoration(id, nonUniform);
+        id = createLoad(id, memoryAccess, scope, alignment);
         setPrecision(id, precision);
         addDecoration(id, nonUniform);
     }

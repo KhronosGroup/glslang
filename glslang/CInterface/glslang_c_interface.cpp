@@ -54,6 +54,8 @@ static_assert(int(GLSLANG_TEX_SAMP_TRANS_COUNT) == EShTexSampTransCount, "");
 static_assert(int(GLSLANG_MSG_COUNT) == EShMsgCount, "");
 static_assert(int(GLSLANG_REFLECTION_COUNT) == EShReflectionCount, "");
 static_assert(int(GLSLANG_PROFILE_COUNT) == EProfileCount, "");
+static_assert(sizeof(glslang_limits_t) == sizeof(TLimits), "");
+static_assert(sizeof(glslang_resource_t) == sizeof(TBuiltInResource), "");
 
 typedef struct glslang_shader_s {
     glslang::TShader* shader;
@@ -355,7 +357,7 @@ int glslang_shader_preprocess(glslang_shader_t* shader, const glslang_input_t* i
     DirStackFileIncluder Includer;
     /* TODO: use custom callbacks if they are available in 'i->callbacks' */
     return shader->shader->preprocess(
-        input->resource,
+        reinterpret_cast<const TBuiltInResource*>(input->resource),
         input->default_version,
         c_shader_profile(input->default_profile),
         input->force_default_version_and_profile != 0,
@@ -372,7 +374,7 @@ int glslang_shader_parse(glslang_shader_t* shader, const glslang_input_t* input)
     shader->shader->setStrings(&preprocessedCStr, 1);
 
     return shader->shader->parse(
-        input->resource,
+        reinterpret_cast<const TBuiltInResource*>(input->resource),
         input->default_version,
         input->forward_compatible != 0,
         (EShMessages)c_shader_messages(input->messages)
