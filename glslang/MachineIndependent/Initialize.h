@@ -93,6 +93,7 @@ public:
 protected:
     void addTabledBuiltins(int version, EProfile profile, const SpvVersion& spvVersion);
     void relateTabledBuiltins(int version, EProfile profile, const SpvVersion& spvVersion, EShLanguage, TSymbolTable&);
+    void setTabledBuiltinExtensions(int version, EProfile profile, const SpvVersion& spvVersion, EShLanguage, TSymbolTable&);
     void add2ndGenerationSamplingImaging(int version, EProfile profile, const SpvVersion& spvVersion);
     void addSubpassSampling(TSampler, const TString& typeName, int version, EProfile profile);
     void addQueryFunctions(TSampler, const TString& typeName, int version, EProfile profile);

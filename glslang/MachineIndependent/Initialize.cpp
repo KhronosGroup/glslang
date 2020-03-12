@@ -78,10 +78,36 @@ const char* TypeString[] = {
    "int",   "ivec2", "ivec3", "ivec4",
    "uint",  "uvec2", "uvec3", "uvec4",
 };
+
 const int TypeStringCount = sizeof(TypeString) / sizeof(char*); // number of entries in 'TypeString'
 const int TypeStringRowShift = 2;                               // shift amount to go downe one row in 'TypeString'
 const int TypeStringColumnMask = (1 << TypeStringRowShift) - 1; // reduce type to its column number in 'TypeString'
 const int TypeStringScalarMask = ~TypeStringColumnMask;         // take type to its scalar column in 'TypeString'
+
+// TType objects for GetTableBuiltinArgTypes
+const TType TypeBool(EbtBool, EvqTemporary, 1);
+const TType TypeBvec2(EbtBool, EvqTemporary, 2);
+const TType TypeBvec3(EbtBool, EvqTemporary, 3);
+const TType TypeBvec4(EbtBool, EvqTemporary, 4);
+const TType TypeFloat(EbtFloat, EvqTemporary, 1);
+const TType TypeVec2(EbtFloat, EvqTemporary, 2);
+const TType TypeVec3(EbtFloat, EvqTemporary, 3);
+const TType TypeVec4(EbtFloat, EvqTemporary, 4);
+const TType TypeInt(EbtInt, EvqTemporary, 1);
+const TType TypeIvec2(EbtInt, EvqTemporary, 2);
+const TType TypeIvec3(EbtInt, EvqTemporary, 3);
+const TType TypeIvec4(EbtInt, EvqTemporary, 4);
+const TType TypeUint(EbtUint, EvqTemporary, 1);
+const TType TypeUvec2(EbtUint, EvqTemporary, 2);
+const TType TypeUvec3(EbtUint, EvqTemporary, 3);
+const TType TypeUvec4(EbtUint, EvqTemporary, 4);
+
+const TType* const TypeObject[] = {
+    &TypeBool,  &TypeBvec2, &TypeBvec3, &TypeBvec4,
+    &TypeFloat, &TypeVec2,  &TypeVec3,  &TypeVec4,
+    &TypeInt,   &TypeIvec2, &TypeIvec3, &TypeIvec4,
+    &TypeUint,  &TypeUvec2, &TypeUvec3, &TypeUvec4,
+};
 
 enum ArgType {
     // numbers hardcoded to correspond to 'TypeString'; order and value matter
@@ -163,6 +189,11 @@ EProfile EDesktopProfile = static_cast<EProfile>(ENoProfile | ECoreProfile | ECo
                                                   { EDesktopProfile, 0, 450, 0, nullptr },
                                                   { EBadProfile } };
     const Versioning* Es310Desktop450 = &Es310Desktop450Version[0];
+
+    const char* ShaderIntegerMix[] = { E_GL_EXT_shader_integer_mix };
+    const Versioning ShaderIntergerMixVersion[] = { { EEsProfile,      0, 310, 0, nullptr },
+                                                    { EDesktopProfile, 130, 450, 1, ShaderIntegerMix},
+                                                    { EBadProfile } };
 #endif
 
 // The main descriptor of what a set of function prototypes can look like, and
@@ -266,8 +297,8 @@ const BuiltInFunction BaseFunctions[] = {
     { EOpAtomicExchange,   "atomicExchange",   2,   TypeIU,    ClassV1FIOCV, Es310Desktop430 },
     { EOpAtomicCompSwap,   "atomicCompSwap",   3,   TypeIU,    ClassV1FIOCV, Es310Desktop430 },
 #ifndef GLSLANG_WEB
-    { EOpMix,              "mix",              3,   TypeB,     ClassRegular, Es310Desktop450 },
-    { EOpMix,              "mix",              3,   TypeIU,    ClassLB,      Es310Desktop450 },
+    { EOpMix,              "mix",              3,   TypeB,     ClassRegular, ShaderIntergerMixVersion },
+    { EOpMix,              "mix",              3,   TypeIU,    ClassLB,      ShaderIntergerMixVersion },
 #endif
 
     { EOpNull }
@@ -413,6 +444,59 @@ void AddTabledBuiltin(TString& decls, const BuiltInFunction& function)
     }
 }
 
+// Gets all the function argument types for the given builtin function, result is returned in argTypes.
+void GetTableBuiltinArgTypes(TVector<const TType*>& argTypes, const BuiltInFunction& function)
+{
+    const auto isScalarType = [](int type) { return (type & TypeStringColumnMask) == 0; };
+
+    // loop across these two:
+    //  0: the varying arg set, and
+    //  1: the fixed scalar args
+    const ArgClass ClassFixed = (ArgClass)(ClassLS | ClassXLS | ClassLS2 | ClassFS | ClassFS2);
+    for (int fixed = 0; fixed < ((function.classes & ClassFixed) > 0 ? 2 : 1); ++fixed) {
+
+        if (fixed == 0 && (function.classes & ClassXLS))
+            continue;
+
+        // walk the type strings in TypeString[]
+        for (int type = 0; type < TypeStringCount; ++type) {
+            // skip types not selected: go from type to row number to type bit
+            if ((function.types & (1 << (type >> TypeStringRowShift))) == 0)
+                continue;
+
+            // if we aren't on a scalar, and should be, skip
+            if ((function.classes & ClassV1) && !isScalarType(type))
+                continue;
+
+            // if we aren't on a 3-vector, and should be, skip
+            if ((function.classes & ClassV3) && (type & TypeStringColumnMask) != 2)
+                continue;
+
+            // skip replication of all arg scalars between the varying arg set and the fixed args
+            if (fixed == 1 && type == (type & TypeStringScalarMask) && (function.classes & ClassXLS) == 0)
+                continue;
+
+            // skip scalars when we are told to
+            if ((function.classes & ClassNS) && isScalarType(type))
+                continue;
+
+            // arguments
+            for (int arg = 0; arg < function.numArguments; ++arg) {
+                if ((function.classes & ClassLB) && arg == function.numArguments - 1)
+                    argTypes.push_back(TypeObject[type & TypeStringColumnMask]);
+                else if (fixed && ((arg == function.numArguments - 1 && (function.classes & (ClassLS | ClassXLS |
+                    ClassLS2))) ||
+                    (arg == function.numArguments - 2 && (function.classes & ClassLS2)) ||
+                    (arg == 0 && (function.classes & (ClassFS | ClassFS2))) ||
+                    (arg == 1 && (function.classes & ClassFS2))))
+                    argTypes.push_back(TypeObject[type & TypeStringScalarMask]);
+                else
+                    argTypes.push_back(TypeObject[type]);
+            }
+        }
+    }
+}
+
 // See if the tabled versioning information allows the current version.
 bool ValidVersion(const BuiltInFunction& function, int version, EProfile profile, const SpvVersion& /* spVersion */)
 {
@@ -450,6 +534,49 @@ void RelateTabledBuiltins(const FunctionT* functions, TSymbolTable& symbolTable)
     }
 }
 
+// Set the required extension for all functions in a BuiltInFunction table
+void SetTabledBuiltinExtensions(int  version, EProfile  profile, const BuiltInFunction* functions, TSymbolTable& symbolTable)
+{
+    while (functions->op != EOpNull) {
+        // nullptr means always valid
+        if (functions->versioning != nullptr) {
+            // check for what is said about our current profile
+            for (const Versioning* v = functions->versioning; v->profiles != EBadProfile; ++v) {
+                if ((v->profiles & profile) != 0) {
+                    if ((version < v->minCoreVersion) && (v->numExtensions > 0) && (version >= v->minExtendedVersion)) {
+                        TVector<const TType*> argLists;
+                        GetTableBuiltinArgTypes(argLists, *functions);
+                        for (int i = 0; i < argLists.size() / functions->numArguments; ++i) {
+                            symbolTable.setFunctionExtensions(functions->name, v->numExtensions, v->extensions,
+                                functions->numArguments, &argLists[i * functions->numArguments]);
+                        }
+                    }
+                }
+            }
+        }
+        ++functions;
+    }
+}
+
+// Set the required extension for all functions in a CustomFunction table
+void SetTabledBuiltinExtensions(int  version, EProfile  profile, const CustomFunction* functions, TSymbolTable& symbolTable)
+{
+    while (functions->op != EOpNull) {
+        // nullptr means always valid
+        if (functions->versioning != nullptr) {
+            // check for what is said about our current profile
+            for (const Versioning* v = functions->versioning; v->profiles != EBadProfile; ++v) {
+                if ((v->profiles & profile) != 0) {
+                    if ((version < v->minCoreVersion) && (v->numExtensions > 0) && (version >= v->minExtendedVersion)) {
+                        symbolTable.setFunctionExtensions(functions->name, v->numExtensions, v->extensions);
+                    }
+                }
+            }
+        }
+        ++functions;
+    }
+}
+
 } // end anonymous namespace
 
 // Add declarations for all tables of built-in functions.
@@ -476,6 +603,14 @@ void TBuiltIns::relateTabledBuiltins(int /* version */, EProfile /* profile */, 
     RelateTabledBuiltins(BaseFunctions, symbolTable);
     RelateTabledBuiltins(DerivativeFunctions, symbolTable);
     RelateTabledBuiltins(CustomFunctions, symbolTable);
+}
+
+// Set the required extension for all tables of built-ins.
+void TBuiltIns::setTabledBuiltinExtensions(int  version, EProfile  profile, const SpvVersion& /* spvVersion */, EShLanguage /* stage */, TSymbolTable& symbolTable)
+{
+    SetTabledBuiltinExtensions(version, profile, BaseFunctions, symbolTable);
+    SetTabledBuiltinExtensions(version, profile, DerivativeFunctions, symbolTable);
+    SetTabledBuiltinExtensions(version, profile, CustomFunctions, symbolTable);
 }
 
 inline bool IncludeLegacy(int version, EProfile profile, const SpvVersion& spvVersion)
@@ -7497,6 +7632,7 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         BuiltInVariable("gl_SecondaryColor", EbvSecondaryColor, symbolTable);
 
         // built-in functions
+        setTabledBuiltinExtensions(version, profile, spvVersion, language, symbolTable);
 
         if (profile == EEsProfile) {
             if (spvVersion.spv == 0) {
