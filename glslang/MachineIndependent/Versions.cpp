@@ -222,6 +222,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_EXT_buffer_reference_uvec2]                  = EBhDisable;
     extensionBehavior[E_GL_EXT_demote_to_helper_invocation]             = EBhDisable;
     extensionBehavior[E_GL_EXT_debug_printf]                            = EBhDisable;
+    extensionBehavior[E_GL_EXT_shader_implicit_conversions]             = EBhDisable;
 
     extensionBehavior[E_GL_EXT_shader_16bit_storage]                    = EBhDisable;
     extensionBehavior[E_GL_EXT_shader_8bit_storage]                     = EBhDisable;
@@ -353,6 +354,7 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_EXT_tessellation_point_size 1\n"
             "#define GL_EXT_texture_buffer 1\n"
             "#define GL_EXT_texture_cube_map_array 1\n"
+            "#define GL_EXT_shader_implicit_conversions 1\n"
 
             // OES matching AEP
             "#define GL_OES_geometry_shader 1\n"

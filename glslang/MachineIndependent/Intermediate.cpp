@@ -1620,7 +1620,7 @@ bool TIntermediate::isFPIntegralConversion(TBasicType from, TBasicType to) const
 //
 bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperator op) const
 {
-    if (isEsProfile() || version == 110)
+    if (!extensionRequested(E_GL_EXT_shader_implicit_conversions) && (isEsProfile() || version == 110))
         return false;
 
     if (from == to)
@@ -1739,7 +1739,8 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
         case EbtUint:
             switch (from) {
             case EbtInt:
-                 return version >= 400 || getSource() == EShSourceHlsl;
+                 return version >= 400 || getSource() == EShSourceHlsl
+                        || extensionRequested(E_GL_EXT_shader_implicit_conversions);
             case EbtUint:
                 return true;
             case EbtBool:
@@ -1931,7 +1932,8 @@ std::tuple<TBasicType, TBasicType> TIntermediate::getConversionDestinatonType(TB
     TBasicType res0 = EbtNumTypes;
     TBasicType res1 = EbtNumTypes;
 
-    if (isEsProfile() || version == 110)
+    if (!extensionRequested(E_GL_EXT_shader_implicit_conversions) &&
+       (isEsProfile() || version == 110))
         return std::make_tuple(res0, res1);
 
     if (getSource() == EShSourceHlsl) {
