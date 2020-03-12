@@ -5487,8 +5487,10 @@ void TParseContext::mergeObjectLayoutQualifiers(TQualifier& dst, const TQualifie
     if (! inheritOnly) {
         if (src.hasLocation())
             dst.layoutLocation = src.layoutLocation;
-        if (src.hasOffset())
+        if (src.hasOffset()) {
             dst.layoutOffset = src.layoutOffset;
+            dst.explicitOffset = src.explicitOffset;
+        }
         if (src.hasSet())
             dst.layoutSet = src.layoutSet;
         if (src.layoutBinding != TQualifier::layoutBindingEnd)

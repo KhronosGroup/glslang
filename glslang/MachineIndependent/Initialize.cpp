@@ -7462,8 +7462,6 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             BuiltInVariable("gl_SampleMask",         EbvSampleMask,     symbolTable);
 
             if (profile != EEsProfile && version < 400) {
-                BuiltInVariable("gl_NumSamples",     EbvSampleMask,     symbolTable);
-
                 symbolTable.setVariableExtensions("gl_SampleMask",     1, &E_GL_ARB_sample_shading);
                 symbolTable.setVariableExtensions("gl_SampleID",       1, &E_GL_ARB_sample_shading);
                 symbolTable.setVariableExtensions("gl_SamplePosition", 1, &E_GL_ARB_sample_shading);

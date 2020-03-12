@@ -679,7 +679,7 @@ int TDefaultGlslIoResolver::resolveUniformLocation(EShLanguage /*stage*/, TVarEn
         return ent.newLocation = type.getQualifier().layoutLocation;
     } else {
         // no locations added if already present, a built-in variable, a block, or an opaque
-        if (type.getQualifier().hasLocation() || type.isBuiltIn() || type.getBasicType() == EbtBlock ||
+        if (type.getQualifier().hasLocation() || type.getBasicType() == EbtBlock ||
             type.isAtomic() || (type.containsOpaque() && intermediate.getSpv().openGl == 0)) {
             return ent.newLocation = -1;
         }
@@ -818,10 +818,12 @@ void TDefaultGlslIoResolver::endCollect(EShLanguage /*stage*/) {
 
 void TDefaultGlslIoResolver::reserverStorageSlot(TVarEntryInfo& ent, TInfoSink& infoSink) {
     const TType& type = ent.symbol->getType();
-    const TString& name = IsAnonymous(ent.symbol->getName()) ?
-                            ent.symbol->getType().getTypeName()
-                            :
-                            ent.symbol->getName();
+    TString name;
+    if (ent.symbol->getBasicType() == EbtBlock) {
+        name = ent.symbol->getType().getTypeName();
+    } else {
+        name = ent.symbol->getName();
+    }
     TStorageQualifier storage = type.getQualifier().storage;
     EShLanguage stage(EShLangCount);
     switch (storage) {
@@ -881,10 +883,12 @@ void TDefaultGlslIoResolver::reserverStorageSlot(TVarEntryInfo& ent, TInfoSink& 
 
 void TDefaultGlslIoResolver::reserverResourceSlot(TVarEntryInfo& ent, TInfoSink& infoSink) {
     const TType& type = ent.symbol->getType();
-    const TString& name = IsAnonymous(ent.symbol->getName()) ?
-                            ent.symbol->getType().getTypeName()
-                            :
-                            ent.symbol->getName();
+    TString name;
+    if (ent.symbol->getBasicType() == EbtBlock) {
+        name = ent.symbol->getType().getTypeName();
+    } else {
+        name = ent.symbol->getName();
+    }
     int resource = getResourceType(type);
     if (type.getQualifier().hasBinding()) {
         TVarSlotMap& varSlotMap = resourceSlotMap[resource];
