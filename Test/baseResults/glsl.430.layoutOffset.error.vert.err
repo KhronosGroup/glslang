@@ -1,0 +1,5 @@
+glsl.430.layoutOffset.error.vert
+ERROR: 0:5: 'offset on block member' : not supported for this version or the enabled extensions 
+ERROR: 1 compilation errors.  No code generated.
+
+

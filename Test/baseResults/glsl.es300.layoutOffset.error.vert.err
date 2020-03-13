@@ -1,0 +1,6 @@
+glsl.es300.layoutOffset.error.vert
+ERROR: 0:5: 'offset' : not supported for this version or the enabled extensions 
+ERROR: 0:5: 'offset on block member' : not supported with this profile: es
+ERROR: 2 compilation errors.  No code generated.
+
+

@@ -1,0 +1,5 @@
+xfbUnsizedArray.error.vert
+ERROR: 0:4: 'xfb_offset' : unsized array at in buffer 0
+ERROR: 1 compilation errors.  No code generated.
+
+
