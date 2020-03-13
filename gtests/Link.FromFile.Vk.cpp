@@ -50,6 +50,7 @@ TEST_P(LinkTestVulkan, FromFile)
     const size_t fileCount = fileNames.size();
     const EShMessages controls = DeriveOptions(Source::GLSL, Semantics::Vulkan, Target::AST);
     GlslangResult result;
+    result.validationResult = false;
 
     // Compile each input shader file.
     bool success = true;
