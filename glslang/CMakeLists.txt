@@ -116,7 +116,7 @@ if(ENABLE_GLSLANG_INSTALL)
         install(TARGETS glslang EXPORT glslangTargets
                 ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
     endif()
-    install(EXPORT glslangTargets DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake)
+    install(EXPORT glslangTargets DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME})
 endif(ENABLE_GLSLANG_INSTALL)
 
 if(ENABLE_GLSLANG_INSTALL)
