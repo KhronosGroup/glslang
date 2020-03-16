@@ -138,7 +138,11 @@ void TIntermediate::mergeModes(TInfoSink& infoSink, TIntermediate& unit)
     MERGE_MAX(spvVersion.openGl);
 
     numErrors += unit.getNumErrors();
-    numPushConstants += unit.numPushConstants;
+    // Only one push_constant is allowed, mergeLinkerObjects() will ensure the push_constant
+    // is the same for all units.
+    if (numPushConstants > 1 || unit.numPushConstants > 1)
+        error(infoSink, "Only one push_constant block is allowed per stage");
+    numPushConstants = std::min(numPushConstants + unit.numPushConstants, 1);
 
     if (unit.invocations != TQualifier::layoutNotSet) {
         if (invocations == TQualifier::layoutNotSet)
@@ -462,6 +466,9 @@ void TIntermediate::mergeLinkerObjects(TInfoSink& infoSink, TIntermSequence& lin
                 // Check for consistent types/qualification/initializers etc.
                 mergeErrorCheck(infoSink, *symbol, *unitSymbol, false);
             }
+            // If different symbols, verify they arn't push_constant since there can only be one per stage
+            else if (symbol->getQualifier().isPushConstant() && unitSymbol->getQualifier().isPushConstant())
+                error(infoSink, "Only one push_constant block is allowed per stage");
         }
         if (merge)
             linkerObjects.push_back(unitLinkerObjects[unitLinkObj]);
