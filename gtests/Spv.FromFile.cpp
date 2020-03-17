@@ -271,6 +271,7 @@ INSTANTIATE_TEST_CASE_P(
         "spv.always-discard2.frag",
         "spv.arbPostDepthCoverage.frag",
         "spv.arbPostDepthCoverage_Error.frag",
+        "spv.atomicCounter.comp",
         "spv.bitCast.frag",
         "spv.bool.vert",
         "spv.boolInBlock.frag",
