@@ -205,6 +205,7 @@ extern int yylex(YYSTYPE*, TParseContext&);
 %token <lex> ATOMIC_UINT
 %token <lex> ACCSTRUCTNV
 %token <lex> ACCSTRUCTEXT
+%token <lex> RAYQUERYEXT
 %token <lex> FCOOPMATNV ICOOPMATNV UCOOPMATNV
 
 // combined image/sampler
@@ -2405,6 +2406,10 @@ type_specifier_nonarray
     | ACCSTRUCTEXT {
        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
        $$.basicType = EbtAccStruct;
+    }
+    | RAYQUERYEXT {
+       $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+       $$.basicType = EbtRayQuery;
     }
     | ATOMIC_UINT {
         parseContext.vulkanRemoved($1.loc, "atomic counter types");

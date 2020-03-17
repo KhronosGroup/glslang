@@ -3,6 +3,7 @@
 // Copyright (C) 2012-2013 LunarG, Inc.
 // Copyright (C) 2017 ARM Limited.
 // Copyright (C) 2015-2020 Google, Inc.
+// Modifications Copyright (C) 2020 Advanced Micro Devices, Inc. All rights reserved.
 //
 // All rights reserved.
 //
@@ -280,6 +281,9 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_EXT_texture_buffer]                       = EBhDisable;
     extensionBehavior[E_GL_EXT_texture_cube_map_array]               = EBhDisable;
 
+    // ray query
+    extensionBehavior[E_GL_EXT_ray_query]                            = EBhDisable;
+
     // OES matching AEP
     extensionBehavior[E_GL_OES_geometry_shader]          = EBhDisable;
     extensionBehavior[E_GL_OES_geometry_point_size]      = EBhDisable;
@@ -431,6 +435,8 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_KHR_shader_subgroup_shuffle_relative 1\n"
             "#define GL_KHR_shader_subgroup_clustered 1\n"
             "#define GL_KHR_shader_subgroup_quad 1\n"
+
+            "#define GL_KHR_ray_query 1\n"
 
             "#define E_GL_EXT_shader_atomic_int64 1\n"
             "#define E_GL_EXT_shader_realtime_clock 1\n"

@@ -1,5 +1,6 @@
 //
 // Copyright (C) 2014-2015 LunarG, Inc.
+// Modifications Copyright (C) 2020 Advanced Micro Devices, Inc. All rights reserved.
 //
 // All rights reserved.
 //
@@ -892,6 +893,8 @@ const char* CapabilityString(int info)
     case CapabilityGroupNonUniformPartitionedNV:    return "GroupNonUniformPartitionedNV";
     case CapabilityRayTracingNV:                    return "RayTracingNV";
     case CapabilityRayTracingProvisionalKHR:        return "RayTracingProvisionalKHR";
+    case CapabilityRayQueryProvisionalKHR:          return "RayQueryProvisionalKHR";
+    case CapabilityRayTraversalPrimitiveCullingProvisionalKHR: return "RayTraversalPrimitiveCullingProvisionalKHR";
     case CapabilityComputeDerivativeGroupQuadsNV:   return "ComputeDerivativeGroupQuadsNV";
     case CapabilityComputeDerivativeGroupLinearNV:  return "ComputeDerivativeGroupLinearNV";
     case CapabilityFragmentBarycentricNV:           return "FragmentBarycentricNV";

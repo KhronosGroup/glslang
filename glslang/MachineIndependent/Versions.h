@@ -3,6 +3,7 @@
 // Copyright (C) 2012-2013 LunarG, Inc.
 // Copyright (C) 2017 ARM Limited.
 // Copyright (C) 2015-2018 Google, Inc.
+// Modifications Copyright (C) 2020 Advanced Micro Devices, Inc. All rights reserved.
 //
 // All rights reserved.
 //
@@ -284,6 +285,8 @@ const char* const E_GL_EXT_shader_subgroup_extended_types_int8    = "GL_EXT_shad
 const char* const E_GL_EXT_shader_subgroup_extended_types_int16   = "GL_EXT_shader_subgroup_extended_types_int16";
 const char* const E_GL_EXT_shader_subgroup_extended_types_int64   = "GL_EXT_shader_subgroup_extended_types_int64";
 const char* const E_GL_EXT_shader_subgroup_extended_types_float16 = "GL_EXT_shader_subgroup_extended_types_float16";
+
+const char* const E_GL_EXT_ray_query                              = "GL_EXT_ray_query";
 
 // Arrays of extensions for the above AEP duplications
 
