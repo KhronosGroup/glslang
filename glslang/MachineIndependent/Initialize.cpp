@@ -4067,10 +4067,10 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
     }
 #ifndef GLSLANG_WEB
     if ((profile != EEsProfile && version >= 420) || esBarrier) {
-        commonBuiltins.append(
-            "void memoryBarrierAtomicCounter();"
-            "void memoryBarrierImage();"
-            );
+        if (spvVersion.vulkan == 0) {
+            commonBuiltins.append("void memoryBarrierAtomicCounter();");
+        }
+        commonBuiltins.append("void memoryBarrierImage();");
     }
     if ((profile != EEsProfile && version >= 450) || (profile == EEsProfile && version >= 320)) {
         stageBuiltins[EShLangMeshNV].append(
