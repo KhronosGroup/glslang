@@ -1,4 +1,4 @@
-if(BUILD_TESTING)
+if(GLSLANG_BUILD_TESTING)
     if(TARGET gmock)
         message(STATUS "Google Mock found - building tests")
 
@@ -58,9 +58,9 @@ if(BUILD_TESTING)
             set(LIBRARIES ${LIBRARIES} SPVRemapper)
         endif()
 
-        if(ENABLE_HLSL)
+        if(GLSLANG_ENABLE_HLSL)
             set(LIBRARIES ${LIBRARIES} HLSL)
-        endif(ENABLE_HLSL)
+        endif(GLSLANG_ENABLE_HLSL)
         target_link_libraries(glslangtests PRIVATE ${LIBRARIES} gmock)
 
         add_test(NAME glslang-gtests

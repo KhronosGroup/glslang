@@ -47,14 +47,14 @@ if (ENABLE_SPVREMAPPER)
     set_property(TARGET SPVRemapper PROPERTY POSITION_INDEPENDENT_CODE ON)
 endif()
 
-if(WIN32 AND BUILD_SHARED_LIBS)
+if(WIN32 AND GLSLANG_BUILD_SHARED_LIBS)
     set_target_properties(SPIRV PROPERTIES PREFIX "")
     if (ENABLE_SPVREMAPPER)
         set_target_properties(SPVRemapper PROPERTIES PREFIX "")
     endif()
 endif()
 
-if(ENABLE_OPT)
+if(GLSLANG_ENABLE_OPT)
     target_include_directories(SPIRV
         PRIVATE ${spirv-tools_SOURCE_DIR}/include
         PRIVATE ${spirv-tools_SOURCE_DIR}/source
@@ -65,7 +65,7 @@ if(ENABLE_OPT)
 		$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/External>)
 else()
     target_link_libraries(SPIRV glslang)
-endif(ENABLE_OPT)
+endif(GLSLANG_ENABLE_OPT)
 
 if(WIN32)
     source_group("Source" FILES ${SOURCES} ${HEADERS})
@@ -73,7 +73,7 @@ if(WIN32)
 endif(WIN32)
 
 if(ENABLE_GLSLANG_INSTALL)
-    if(BUILD_SHARED_LIBS)
+    if(GLSLANG_BUILD_SHARED_LIBS)
         if (ENABLE_SPVREMAPPER)
             install(TARGETS SPVRemapper EXPORT SPVRemapperTargets
                     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}

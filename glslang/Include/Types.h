@@ -106,7 +106,7 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
     bool   external : 1;  // GL_OES_EGL_image_external
     bool        yuv : 1;  // GL_EXT_YUV_target
 
-#ifdef ENABLE_HLSL
+#ifdef GLSLANG_ENABLE_HLSL
     unsigned int getVectorSize() const { return vectorSize; }
     void clearReturnStruct() { structReturnIndex = noReturnStruct; }
     bool hasReturnStruct() const { return structReturnIndex != noReturnStruct; }
@@ -149,7 +149,7 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
         yuv = false;
 #endif
 
-#ifdef ENABLE_HLSL
+#ifdef GLSLANG_ENABLE_HLSL
         clearReturnStruct();
         // by default, returns a single vec4;
         vectorSize = 4;
@@ -223,7 +223,7 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
          isPureSampler() == right.isPureSampler() &&
             isExternal() == right.isExternal() &&
                  isYuv() == right.isYuv()
-#ifdef ENABLE_HLSL
+#ifdef GLSLANG_ENABLE_HLSL
       && getVectorSize() == right.getVectorSize() &&
   getStructReturnIndex() == right.getStructReturnIndex()
 #endif

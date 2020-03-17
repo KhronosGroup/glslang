@@ -114,7 +114,7 @@ void TType::buildMangledName(TString& mangledName) const
         default: break; // some compilers want this
         }
 
-#ifdef ENABLE_HLSL
+#ifdef GLSLANG_ENABLE_HLSL
         if (sampler.hasReturnStruct()) {
             // Name mangle for sampler return struct uses struct table index.
             mangledName += "-tx-struct";

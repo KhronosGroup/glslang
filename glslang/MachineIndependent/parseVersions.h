@@ -204,7 +204,7 @@ public:
     void setCurrentString(int string) { currentScanner->setString(string); }
 
     void getPreamble(std::string&);
-#ifdef ENABLE_HLSL
+#ifdef GLSLANG_ENABLE_HLSL
     bool isReadingHLSL()    const { return (messages & EShMsgReadHlsl) == EShMsgReadHlsl; }
     bool hlslEnable16BitTypes() const { return (messages & EShMsgHlslEnable16BitTypes) != 0; }
     bool hlslDX9Compatible() const { return (messages & EShMsgHlslDX9Compatible) != 0; }

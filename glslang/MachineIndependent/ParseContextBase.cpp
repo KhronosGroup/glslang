@@ -576,7 +576,7 @@ void TParseContextBase::parseSwizzleSelector(const TSourceLoc& loc, const TStrin
         selector.push_back(0);
 }
 
-#ifdef ENABLE_HLSL
+#ifdef GLSLANG_ENABLE_HLSL
 //
 // Make the passed-in variable information become a member of the
 // global uniform block.  If this doesn't exist yet, make it.

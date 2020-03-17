@@ -1093,7 +1093,7 @@ void TReflection::buildAttributeReflection(EShLanguage stage, const TIntermediat
 // build counter block index associations for buffers
 void TReflection::buildCounterIndices(const TIntermediate& intermediate)
 {
-#ifdef ENABLE_HLSL
+#ifdef GLSLANG_ENABLE_HLSL
     // search for ones that have counters
     for (int i = 0; i < int(indexToUniformBlock.size()); ++i) {
         const TString counterName(intermediate.addCounterBufferName(indexToUniformBlock[i].name).c_str());

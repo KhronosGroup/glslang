@@ -152,7 +152,7 @@ public:
             extensionCallback(line, extension, behavior);
     }
 
-#ifdef ENABLE_HLSL
+#ifdef GLSLANG_ENABLE_HLSL
     // Manage the global uniform block (default uniforms in GLSL, $Global in HLSL)
     virtual void growGlobalUniformBlock(const TSourceLoc&, TType&, const TString& memberName, TTypeList* typeList = nullptr);
 #endif

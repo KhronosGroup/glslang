@@ -51,7 +51,7 @@ spirv_tools_dir = glslang_spirv_tools_dir
 config("glslang_public") {
   include_dirs = [ "." ]
 
-  defines = [ "ENABLE_HLSL=1" ]
+  defines = [ "GLSLANG_ENABLE_HLSL=1" ]
 }
 
 source_set("glslang_sources") {
@@ -164,7 +164,7 @@ source_set("glslang_sources") {
     "hlsl/hlslTokens.h",
   ]
 
-  defines = [ "ENABLE_OPT=1" ]
+  defines = [ "GLSLANG_ENABLE_OPT=1" ]
 
   if (is_win) {
     sources += [ "glslang/OSDependent/Windows/ossource.cpp" ]
@@ -224,7 +224,7 @@ executable("glslang_validator") {
   if (!is_win) {
     cflags = [ "-Woverflow" ]
   }
-  defines = [ "ENABLE_OPT=1" ]
+  defines = [ "GLSLANG_ENABLE_OPT=1" ]
   deps = [
     ":glslang_default_resource_limits_sources",
     ":glslang_sources",
@@ -238,7 +238,7 @@ executable("spirv-remap") {
   sources = [
     "StandAlone/spirv-remap.cpp",
   ]
-  defines = [ "ENABLE_OPT=1" ]
+  defines = [ "GLSLANG_ENABLE_OPT=1" ]
   deps = [
     ":glslang_sources",
   ]

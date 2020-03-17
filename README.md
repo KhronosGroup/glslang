@@ -6,14 +6,14 @@
 ## Planned Deprecations/Removals
 
 1. **SPIRV Folder, 1-May, 2020.** Glslang, when installed through CMake,
-will install a `SPIRV` folder into `${CMAKE_INSTALL_INCLUDEDIR}`.
-This `SPIRV` folder is being moved to `glslang/SPIRV`.
-During the transition the `SPIRV` folder will be installed into both locations.
-The old install of `SPIRV/` will be removed as a CMake install target no sooner than May 1, 2020.
-See issue #1964.
+   will install a `SPIRV` folder into `${CMAKE_INSTALL_INCLUDEDIR}`.
+   This `SPIRV` folder is being moved to `glslang/SPIRV`.
+   During the transition the `SPIRV` folder will be installed into both locations.
+   The old install of `SPIRV/` will be removed as a CMake install target no sooner than May 1, 2020.
+   See issue #1964.
 
 2. **Visual Studio 2013, 20-July, 2020.** Keeping code compiling for MS Visual Studio 2013 will no longer be
-a goal as of July 20, 2020, the fifth anniversary of the release of Visual Studio 2015.
+   a goal as of July 20, 2020, the fifth anniversary of the release of Visual Studio 2015.
 
 # Glslang Components and Status
 
@@ -44,7 +44,7 @@ Translates glslang's AST to the Khronos-specified SPIR-V intermediate language.
 
 An API for getting reflection information from the AST, reflection types/variables/etc. from the HLL source (not the SPIR-V).
 
-**Status**: There is a large amount of functionality present, but no specification/goal to measure completeness against.  It is accurate for the input HLL and AST, but only approximate for what would later be emitted for SPIR-V.
+**Status**: There is a large amount of functionality present, but no specification/goal to measure completeness against. It is accurate for the input HLL and AST, but only approximate for what would later be emitted for SPIR-V.
 
 ### Standalone Wrapper
 
@@ -67,19 +67,21 @@ The above page, while not kept up to date, includes additional information regar
 ## Execution of Standalone Wrapper
 
 To use the standalone binary form, execute `glslangValidator`, and it will print
-a usage statement.  Basic operation is to give it a file containing a shader,
+a usage statement. Basic operation is to give it a file containing a shader,
 and it will print out warnings/errors and optionally an AST.
 
 The applied stage-specific rules are based on the file extension:
-* `.vert` for a vertex shader
-* `.tesc` for a tessellation control shader
-* `.tese` for a tessellation evaluation shader
-* `.geom` for a geometry shader
-* `.frag` for a fragment shader
-* `.comp` for a compute shader
+
+- `.vert` for a vertex shader
+- `.tesc` for a tessellation control shader
+- `.tese` for a tessellation evaluation shader
+- `.geom` for a geometry shader
+- `.frag` for a fragment shader
+- `.comp` for a compute shader
 
 There is also a non-shader extension
-* `.conf` for a configuration file of limits, see usage statement for example
+
+- `.conf` for a configuration file of limits, see usage statement for example
 
 ## Building
 
@@ -91,13 +93,13 @@ branch.
 
 ### Dependencies
 
-* A C++11 compiler.
+- A C++11 compiler.
   (For MSVS: 2015 is recommended, 2013 is fully supported/tested, and 2010 support is attempted, but not tested.)
-* [CMake][cmake]: for generating compilation targets.
-* make: _Linux_, ninja is an alternative, if configured.
-* [Python 3.x][python]: for executing SPIRV-Tools scripts. (Optional if not using SPIRV-Tools and the 'External' subdirectory does not exist.)
-* [bison][bison]: _optional_, but needed when changing the grammar (glslang.y).
-* [googletest][googletest]: _optional_, but should use if making any changes to glslang.
+- [CMake][cmake]: for generating compilation targets.
+- make: _Linux_, ninja is an alternative, if configured.
+- [Python 3.x][python]: for executing SPIRV-Tools scripts. (Optional if not using SPIRV-Tools and the 'External' subdirectory does not exist.)
+- [bison][bison]: _optional_, but needed when changing the grammar (glslang.y).
+- [googletest][googletest]: _optional_, but should use if making any changes to glslang.
 
 ### Build steps
 
@@ -153,6 +155,7 @@ cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$(pwd)/install" $SOURCE
 ```
 
 For building on Android:
+
 ```bash
 cmake $SOURCE_DIR -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="$(pwd)/install" -DANDROID_ABI=arm64-v8a -DCMAKE_BUILD_TYPE=Release -DANDROID_STL=c++_static -DANDROID_PLATFORM=android-24 -DCMAKE_SYSTEM_NAME=Android -DANDROID_TOOLCHAIN=clang -DANDROID_ARM_MODE=arm -DCMAKE_MAKE_PROGRAM=$ANDROID_NDK_ROOT/prebuilt/linux-x86_64/bin/make -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_ROOT/build/cmake/android.toolchain.cmake
 # If on Windows will be -DCMAKE_MAKE_PROGRAM=%ANDROID_NDK_ROOT%\prebuilt\windows-x86_64\bin\make.exe
@@ -211,26 +214,27 @@ the web grammar subset (see more about the web subset in the next section).
 ### Building to WASM for the Web and Node
 
 Use the steps in [Build Steps](#build-steps), with the following notes/exceptions:
-* For building the web subset of core glslang:
-  + execute `updateGrammar web` from the glslang subdirectory
+
+- For building the web subset of core glslang:
+  - execute `updateGrammar web` from the glslang subdirectory
     (or if using your own scripts, `m4` needs a `-DGLSLANG_WEB` argument)
-  + set `-DENABLE_HLSL=OFF -DBUILD_TESTING=OFF -DENABLE_OPT=OFF -DINSTALL_GTEST=OFF`
-  + turn on `-DENABLE_GLSLANG_JS=ON`
-  + optionally, for a minimum-size binary, turn on `-DENABLE_GLSLANG_WEBMIN=ON`
-  + optionally, for GLSL compilation error messages, turn on `-DENABLE_GLSLANG_WEB_DEVEL=ON`
-* `emsdk` needs to be present in your executable search path, *PATH* for
+  - set `-DGLSLANG_ENABLE_HLSL=OFF -DGLSLANG_BUILD_TESTING=OFF -DGLSLANG_ENABLE_OPT=OFF -DINSTALL_GTEST=OFF`
+  - turn on `-DENABLE_GLSLANG_JS=ON`
+  - optionally, for a minimum-size binary, turn on `-DENABLE_GLSLANG_WEBMIN=ON`
+  - optionally, for GLSL compilation error messages, turn on `-DENABLE_GLSLANG_WEB_DEVEL=ON`
+- `emsdk` needs to be present in your executable search path, _PATH_ for
   Bash-like environments
-  + [Instructions located
+  - [Instructions located
     here](https://emscripten.org/docs/getting_started/downloads.html#sdk-download-and-install)
-* Wrap cmake call: `emcmake cmake`
-* To get a fully minimized build, make sure to use `brotli` to compress the .js
+- Wrap cmake call: `emcmake cmake`
+- To get a fully minimized build, make sure to use `brotli` to compress the .js
   and .wasm files
 
 Example:
 
 ```sh
 emcmake cmake -DCMAKE_BUILD_TYPE=Release -DENABLE_GLSLANG_WEB=ON \
-    -DENABLE_HLSL=OFF -DBUILD_TESTING=OFF -DENABLE_OPT=OFF -DINSTALL_GTEST=OFF ..
+    -DGLSLANG_ENABLE_HLSL=OFF -DGLSLANG_BUILD_TESTING=OFF -DGLSLANG_ENABLE_OPT=OFF -DINSTALL_GTEST=OFF ..
 ```
 
 ## Building glslang - Using vcpkg
@@ -282,8 +286,8 @@ cd $SOURCE_DIR/Test && ./runtests
 ```
 
 If some tests fail with validation errors, there may be a mismatch between the
-version of `spirv-val` on the system and the version of glslang.  In this
-case, it is necessary to run `update_glslang_sources.py`.  See "Check-Out
+version of `spirv-val` on the system and the version of glslang. In this
+case, it is necessary to run `update_glslang_sources.py`. See "Check-Out
 External Projects" above for more details.
 
 ### Contributing tests
@@ -296,7 +300,7 @@ place the tests under the `gtests/` directory.
 
 Integration tests are placed in the `Test/` directory. It contains test input
 and a subdirectory `baseResults/` that contains the expected results of the
-tests.  Both the tests and `baseResults/` are under source-code control.
+tests. Both the tests and `baseResults/` are under source-code control.
 
 Google Test runs those integration tests by reading the test input, compiling
 them, and then compare against the expected results in `baseResults/`. The
@@ -310,25 +314,26 @@ For more information, please check `gtests/` directory's
 For the `runtests` script, it will generate current results in the
 `localResults/` directory and `diff` them against the `baseResults/`.
 When you want to update the tracked test results, they need to be
-copied from `localResults/` to `baseResults/`.  This can be done by
+copied from `localResults/` to `baseResults/`. This can be done by
 the `bump` shell script.
 
 You can add your own private list of tests, not tracked publicly, by using
-`localtestlist` to list non-tracked tests.  This is automatically read
+`localtestlist` to list non-tracked tests. This is automatically read
 by `runtests` and included in the `diff` and `bump` process.
 
 ## Programmatic Interfaces
 
 Another piece of software can programmatically translate shaders to an AST
 using one of two different interfaces:
-* A new C++ class-oriented interface, or
-* The original C functional interface
+
+- A new C++ class-oriented interface, or
+- The original C functional interface
 
 The `main()` in `StandAlone/StandAlone.cpp` shows examples using both styles.
 
 ### C++ Class Interface (new, preferred)
 
-This interface is in roughly the last 1/3 of `ShaderLang.h`.  It is in the
+This interface is in roughly the last 1/3 of `ShaderLang.h`. It is in the
 glslang namespace and contains the following, here with suggested calls
 for generating SPIR-V:
 
@@ -384,37 +389,37 @@ warning/error and other options for controlling compilation.
 
 ## Basic Internal Operation
 
-* Initial lexical analysis is done by the preprocessor in
+- Initial lexical analysis is done by the preprocessor in
   `MachineIndependent/Preprocessor`, and then refined by a GLSL scanner
-  in `MachineIndependent/Scan.cpp`.  There is currently no use of flex.
+  in `MachineIndependent/Scan.cpp`. There is currently no use of flex.
 
-* Code is parsed using bison on `MachineIndependent/glslang.y` with the
-  aid of a symbol table and an AST.  The symbol table is not passed on to
+- Code is parsed using bison on `MachineIndependent/glslang.y` with the
+  aid of a symbol table and an AST. The symbol table is not passed on to
   the back-end; the intermediate representation stands on its own.
   The tree is built by the grammar productions, many of which are
   offloaded into `ParseHelper.cpp`, and by `Intermediate.cpp`.
 
-* The intermediate representation is very high-level, and represented
-  as an in-memory tree.   This serves to lose no information from the
+- The intermediate representation is very high-level, and represented
+  as an in-memory tree. This serves to lose no information from the
   original program, and to have efficient transfer of the result from
-  parsing to the back-end.  In the AST, constants are propagated and
+  parsing to the back-end. In the AST, constants are propagated and
   folded, and a very small amount of dead code is eliminated.
 
   To aid linking and reflection, the last top-level branch in the AST
   lists all global symbols.
 
-* The primary algorithm of the back-end compiler is to traverse the
+- The primary algorithm of the back-end compiler is to traverse the
   tree (high-level intermediate representation), and create an internal
-  object code representation.  There is an example of how to do this
+  object code representation. There is an example of how to do this
   in `MachineIndependent/intermOut.cpp`.
 
-* Reduction of the tree to a linear byte-code style low-level intermediate
+- Reduction of the tree to a linear byte-code style low-level intermediate
   representation is likely a good way to generate fully optimized code.
 
-* There is currently some dead old-style linker-type code still lying around.
+- There is currently some dead old-style linker-type code still lying around.
 
-* Memory pool: parsing uses types derived from C++ `std` types, using a
-  custom allocator that puts them in a memory pool.  This makes allocation
+- Memory pool: parsing uses types derived from C++ `std` types, using a
+  custom allocator that puts them in a memory pool. This makes allocation
   of individual container/contents just few cycles and deallocation free.
   This pool is popped after the AST is made and processed.
 
@@ -429,7 +434,7 @@ warning/error and other options for controlling compilation.
   - the object does not come from the pool, and you have to do normal
     C++ memory management of what you `new`
 
-* Features can be protected by version/extension/stage/profile:
+- Features can be protected by version/extension/stage/profile:
   See the comment in `glslang/MachineIndependent/Versions.cpp`.
 
 [cmake]: https://cmake.org/

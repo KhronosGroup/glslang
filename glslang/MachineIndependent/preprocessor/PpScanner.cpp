@@ -142,7 +142,7 @@ int TPpContext::lFloatConst(int len, int ch, TPpToken* ppToken)
         ch = getChar();
         int firstDecimal = len;
 
-#ifdef ENABLE_HLSL
+#ifdef GLSLANG_ENABLE_HLSL
         // 1.#INF or -1.#INF
         if (ch == '#' && (ifdepth > 0 || parseContext.intermediate.getSource() == EShSourceHlsl)) {
             if ((len <  2) ||
