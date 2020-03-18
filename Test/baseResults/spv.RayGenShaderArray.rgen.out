@@ -10,7 +10,7 @@ spv.RayGenShaderArray.rgen
                               Extension  "SPV_NV_ray_tracing"
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint RayGenerationNV 4  "main" 11 21
+                              EntryPoint RayGenerationKHR 4  "main" 11 21
                               Source GLSL 460
                               SourceExtension  "GL_EXT_nonuniform_qualifier"
                               SourceExtension  "GL_NV_ray_tracing"
@@ -29,8 +29,8 @@ spv.RayGenShaderArray.rgen
                               Name 36  ""
                               Name 60  "accNV1"
                               Name 88  "payload"
-                              Decorate 11(gl_LaunchIDNV) BuiltIn LaunchIdNV
-                              Decorate 21(gl_LaunchSizeNV) BuiltIn LaunchSizeNV
+                              Decorate 11(gl_LaunchIDNV) BuiltIn LaunchIdKHR
+                              Decorate 21(gl_LaunchSizeNV) BuiltIn LaunchSizeKHR
                               Decorate 30(accNV0) DescriptorSet 0
                               Decorate 30(accNV0) Binding 0
                               MemberDecorate 34(block) 0 Offset 0
@@ -54,7 +54,7 @@ spv.RayGenShaderArray.rgen
               13:             TypePointer Input 6(int)
               17:      6(int) Constant 1
 21(gl_LaunchSizeNV):     10(ptr) Variable Input
-              27:             TypeAccelerationStructureNV
+              27:             TypeAccelerationStructureKHR
               28:             TypeRuntimeArray 27
               29:             TypePointer UniformConstant 28
       30(accNV0):     29(ptr) Variable UniformConstant
@@ -62,13 +62,13 @@ spv.RayGenShaderArray.rgen
               32:             TypeVector 31(float) 3
               33:             TypeInt 32 1
        34(block):             TypeStruct 32(fvec3) 32(fvec3) 33(int)
-              35:             TypePointer ShaderRecordBufferNV 34(block)
-              36:     35(ptr) Variable ShaderRecordBufferNV
+              35:             TypePointer ShaderRecordBufferKHR 34(block)
+              36:     35(ptr) Variable ShaderRecordBufferKHR
               37:     33(int) Constant 2
-              38:             TypePointer ShaderRecordBufferNV 33(int)
+              38:             TypePointer ShaderRecordBufferKHR 33(int)
               41:             TypePointer UniformConstant 27
               48:     33(int) Constant 1
-              49:             TypePointer ShaderRecordBufferNV 32(fvec3)
+              49:             TypePointer ShaderRecordBufferKHR 32(fvec3)
               52:   31(float) Constant 1056964608
               53:     33(int) Constant 0
               56:   31(float) Constant 1061158912
@@ -77,8 +77,8 @@ spv.RayGenShaderArray.rgen
               59:             TypePointer UniformConstant 58
       60(accNV1):     59(ptr) Variable UniformConstant
               86:             TypeVector 31(float) 4
-              87:             TypePointer RayPayloadNV 86(fvec4)
-     88(payload):     87(ptr) Variable RayPayloadNV
+              87:             TypePointer RayPayloadKHR 86(fvec4)
+     88(payload):     87(ptr) Variable RayPayloadKHR
          4(main):           2 Function None 3
                5:             Label
            8(lx):      7(ptr) Variable Function
@@ -109,7 +109,7 @@ spv.RayGenShaderArray.rgen
               51:   32(fvec3) Load 50
               54:     49(ptr) AccessChain 36 53
               55:   32(fvec3) Load 54
-                              TraceNV 43 44 45 46 47 12 51 52 55 56 48
+                              TraceRayKHR 43 44 45 46 47 12 51 52 55 56 48
               61:     38(ptr) AccessChain 36 37
               62:     33(int) Load 61
               63:     41(ptr) AccessChain 60(accNV1) 62
@@ -122,7 +122,7 @@ spv.RayGenShaderArray.rgen
               70:   32(fvec3) Load 69
               71:     49(ptr) AccessChain 36 53
               72:   32(fvec3) Load 71
-                              TraceNV 64 65 66 67 68 12 70 52 72 56 48
+                              TraceRayKHR 64 65 66 67 68 12 70 52 72 56 48
               73:     38(ptr) AccessChain 36 37
               74:     33(int) Load 73
               75:     33(int) CopyObject 74
@@ -136,6 +136,6 @@ spv.RayGenShaderArray.rgen
               83:   32(fvec3) Load 82
               84:     49(ptr) AccessChain 36 53
               85:   32(fvec3) Load 84
-                              TraceNV 77 78 79 80 81 12 83 52 85 56 48
+                              TraceRayKHR 77 78 79 80 81 12 83 52 85 56 48
                               Return
                               FunctionEnd
