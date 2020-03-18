@@ -7,7 +7,7 @@ spv.RayConstants.rgen
                               Extension  "SPV_NV_ray_tracing"
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint RayGenerationNV 4  "main"
+                              EntryPoint RayGenerationKHR 4  "main"
                               Source GLSL 460
                               SourceExtension  "GL_NV_ray_tracing"
                               Name 4  "main"
@@ -18,7 +18,7 @@ spv.RayConstants.rgen
                               Decorate 26(payload) Location 0
                2:             TypeVoid
                3:             TypeFunction 2
-               6:             TypeAccelerationStructureNV
+               6:             TypeAccelerationStructureKHR
                7:             TypePointer UniformConstant 6
         8(accNV):      7(ptr) Variable UniformConstant
               10:             TypeInt 32 0
@@ -36,11 +36,11 @@ spv.RayConstants.rgen
               22:             TypeInt 32 1
               23:     22(int) Constant 1
               24:             TypeVector 14(float) 4
-              25:             TypePointer RayPayloadNV 24(fvec4)
-     26(payload):     25(ptr) Variable RayPayloadNV
+              25:             TypePointer RayPayloadKHR 24(fvec4)
+     26(payload):     25(ptr) Variable RayPayloadKHR
          4(main):           2 Function None 3
                5:             Label
                9:           6 Load 8(accNV)
-                              TraceNV 9 11 12 13 13 12 17 18 20 21 23
+                              TraceRayKHR 9 11 12 13 13 12 17 18 20 21 23
                               Return
                               FunctionEnd

@@ -7,7 +7,7 @@ spv.IntersectShader.rint
                               Extension  "SPV_NV_ray_tracing"
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint IntersectionNV 4  "main" 11 14 20 23 26 33 36 39 42 47 50 56 59
+                              EntryPoint IntersectionKHR 4  "main" 11 14 20 23 26 33 36 39 42 47 50 56 59
                               Source GLSL 460
                               SourceExtension  "GL_NV_ray_tracing"
                               Name 4  "main"
@@ -38,19 +38,19 @@ spv.IntersectShader.rint
                               Name 58  "v12"
                               Name 59  "gl_WorldToObjectNV"
                               Name 63  "iAttr"
-                              Decorate 11(gl_LaunchIDNV) BuiltIn LaunchIdNV
-                              Decorate 14(gl_LaunchSizeNV) BuiltIn LaunchSizeNV
+                              Decorate 11(gl_LaunchIDNV) BuiltIn LaunchIdKHR
+                              Decorate 14(gl_LaunchSizeNV) BuiltIn LaunchSizeKHR
                               Decorate 20(gl_PrimitiveID) BuiltIn PrimitiveId
                               Decorate 23(gl_InstanceID) BuiltIn InstanceId
-                              Decorate 26(gl_InstanceCustomIndexNV) BuiltIn InstanceCustomIndexNV
-                              Decorate 33(gl_WorldRayOriginNV) BuiltIn WorldRayOriginNV
-                              Decorate 36(gl_WorldRayDirectionNV) BuiltIn WorldRayDirectionNV
-                              Decorate 39(gl_ObjectRayOriginNV) BuiltIn ObjectRayOriginNV
-                              Decorate 42(gl_ObjectRayDirectionNV) BuiltIn ObjectRayDirectionNV
-                              Decorate 47(gl_RayTminNV) BuiltIn RayTminNV
-                              Decorate 50(gl_RayTmaxNV) BuiltIn RayTmaxNV
-                              Decorate 56(gl_ObjectToWorldNV) BuiltIn ObjectToWorldNV
-                              Decorate 59(gl_WorldToObjectNV) BuiltIn WorldToObjectNV
+                              Decorate 26(gl_InstanceCustomIndexNV) BuiltIn InstanceCustomIndexKHR
+                              Decorate 33(gl_WorldRayOriginNV) BuiltIn WorldRayOriginKHR
+                              Decorate 36(gl_WorldRayDirectionNV) BuiltIn WorldRayDirectionKHR
+                              Decorate 39(gl_ObjectRayOriginNV) BuiltIn ObjectRayOriginKHR
+                              Decorate 42(gl_ObjectRayDirectionNV) BuiltIn ObjectRayDirectionKHR
+                              Decorate 47(gl_RayTminNV) BuiltIn RayTminKHR
+                              Decorate 50(gl_RayTmaxNV) BuiltIn RayTmaxKHR
+                              Decorate 56(gl_ObjectToWorldNV) BuiltIn ObjectToWorldKHR
+                              Decorate 59(gl_WorldToObjectNV) BuiltIn WorldToObjectKHR
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 0
@@ -83,8 +83,8 @@ spv.IntersectShader.rint
 56(gl_ObjectToWorldNV):     55(ptr) Variable Input
 59(gl_WorldToObjectNV):     55(ptr) Variable Input
               61:             TypeVector 28(float) 4
-              62:             TypePointer HitAttributeNV 61(fvec4)
-       63(iAttr):     62(ptr) Variable HitAttributeNV
+              62:             TypePointer HitAttributeKHR 61(fvec4)
+       63(iAttr):     62(ptr) Variable HitAttributeKHR
               64:   28(float) Constant 1056964608
               65:   28(float) Constant 0
               66:   28(float) Constant 1065353216
@@ -133,6 +133,6 @@ spv.IntersectShader.rint
               60:          52 Load 59(gl_WorldToObjectNV)
                               Store 58(v12) 60
                               Store 63(iAttr) 67
-              70:    69(bool) ReportIntersectionNV 64 68
+              70:    69(bool) ReportIntersectionKHR 64 68
                               Return
                               FunctionEnd

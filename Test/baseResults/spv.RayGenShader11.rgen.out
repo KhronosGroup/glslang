@@ -7,7 +7,7 @@ spv.RayGenShader11.rgen
                               Extension  "SPV_NV_ray_tracing"
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint RayGenerationNV 4  "main" 11 21
+                              EntryPoint RayGenerationKHR 4  "main" 11 21
                               Source GLSL 460
                               SourceExtension  "GL_NV_ray_tracing"
                               Name 4  "main"
@@ -23,8 +23,8 @@ spv.RayGenShader11.rgen
                               MemberName 37(block) 1  "origin"
                               Name 39  ""
                               Name 52  "payload"
-                              Decorate 11(gl_LaunchIDNV) BuiltIn LaunchIdNV
-                              Decorate 21(gl_LaunchSizeNV) BuiltIn LaunchSizeNV
+                              Decorate 11(gl_LaunchIDNV) BuiltIn LaunchIdKHR
+                              Decorate 21(gl_LaunchSizeNV) BuiltIn LaunchSizeKHR
                               Decorate 29(accNV) DescriptorSet 0
                               Decorate 29(accNV) Binding 0
                               MemberDecorate 37(block) 0 Offset 0
@@ -42,23 +42,23 @@ spv.RayGenShader11.rgen
               13:             TypePointer Input 6(int)
               17:      6(int) Constant 1
 21(gl_LaunchSizeNV):     10(ptr) Variable Input
-              27:             TypeAccelerationStructureNV
+              27:             TypeAccelerationStructureKHR
               28:             TypePointer UniformConstant 27
        29(accNV):     28(ptr) Variable UniformConstant
               35:             TypeFloat 32
               36:             TypeVector 35(float) 3
        37(block):             TypeStruct 36(fvec3) 36(fvec3)
-              38:             TypePointer ShaderRecordBufferNV 37(block)
-              39:     38(ptr) Variable ShaderRecordBufferNV
+              38:             TypePointer ShaderRecordBufferKHR 37(block)
+              39:     38(ptr) Variable ShaderRecordBufferKHR
               40:             TypeInt 32 1
               41:     40(int) Constant 1
-              42:             TypePointer ShaderRecordBufferNV 36(fvec3)
+              42:             TypePointer ShaderRecordBufferKHR 36(fvec3)
               45:   35(float) Constant 1056964608
               46:     40(int) Constant 0
               49:   35(float) Constant 1061158912
               50:             TypeVector 35(float) 4
-              51:             TypePointer RayPayloadNV 50(fvec4)
-     52(payload):     51(ptr) Variable RayPayloadNV
+              51:             TypePointer RayPayloadKHR 50(fvec4)
+     52(payload):     51(ptr) Variable RayPayloadKHR
          4(main):           2 Function None 3
                5:             Label
            8(lx):      7(ptr) Variable Function
@@ -86,6 +86,6 @@ spv.RayGenShader11.rgen
               44:   36(fvec3) Load 43
               47:     42(ptr) AccessChain 39 46
               48:   36(fvec3) Load 47
-                              TraceNV 30 31 32 33 34 12 44 45 48 49 41
+                              TraceRayKHR 30 31 32 33 34 12 44 45 48 49 41
                               Return
                               FunctionEnd
