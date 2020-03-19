@@ -3,6 +3,7 @@
 // Copyright (C) 2012-2015 LunarG, Inc.
 // Copyright (C) 2015-2020 Google, Inc.
 // Copyright (C) 2017 ARM Limited.
+// Modifications Copyright (C) 2020 Advanced Micro Devices, Inc. All rights reserved.
 //
 // All rights reserved.
 //
@@ -539,6 +540,7 @@ bool TIntermediate::isConversionAllowed(TOperator op, TIntermTyped* node) const
     case EbtAtomicUint:
     case EbtSampler:
     case EbtAccStruct:
+    case EbtRayQuery:
         // opaque types can be passed to functions
         if (op == EOpFunction)
             break;
