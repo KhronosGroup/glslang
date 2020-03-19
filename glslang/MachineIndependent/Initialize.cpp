@@ -4323,7 +4323,11 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "\n");
         }
 
+<<<<<<< HEAD
     // Builtins for GL_NV_ray_tracing/GL_EXT_ray_tracing/GL_EXT_ray_query
+=======
+    // Builtins for GL_NV_ray_tracing/GL_EXT_ray_tracing//GL_EXT_ray_query
+>>>>>>> 74d6d6a2... GL_EXT_ray_query updates
     if (profile != EEsProfile && version >= 460) {
          commonBuiltins.append("void rayQueryInitializeEXT(rayQueryEXT, accelerationStructureEXT, uint, uint, vec3, float, vec3, float);"
             "bool rayQueryProceedEXT(rayQueryEXT);"
