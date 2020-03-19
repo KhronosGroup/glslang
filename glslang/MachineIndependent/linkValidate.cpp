@@ -447,7 +447,20 @@ void TIntermediate::mergeLinkerObjects(TInfoSink& infoSink, TIntermSequence& lin
             TIntermSymbol* symbol = linkerObjects[linkObj]->getAsSymbolNode();
             TIntermSymbol* unitSymbol = unitLinkerObjects[unitLinkObj]->getAsSymbolNode();
             assert(symbol && unitSymbol);
-            if (symbol->getName() == unitSymbol->getName()) {
+
+            bool isSameSymbol = false;
+            // If they are both blocks, match up by the block-name
+            // not the identifier name
+            if (symbol->getType().getBasicType() == EbtBlock &&
+                unitSymbol->getType().getBasicType() == EbtBlock) {
+
+                isSameSymbol = symbol->getType().getTypeName() ==
+                                unitSymbol->getType().getTypeName();
+            } else if (symbol->getName() == unitSymbol->getName()) {
+                isSameSymbol = true;
+			}
+
+            if (isSameSymbol) {
                 // filter out copy
                 merge = false;
 

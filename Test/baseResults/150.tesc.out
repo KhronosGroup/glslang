@@ -960,6 +960,9 @@ Linked tessellation evaluation stage:
 ERROR: Linking tessellation evaluation stage: can't handle multiple entry points per stage
 ERROR: Linking tessellation evaluation stage: Multiple function bodies in multiple compilation units for the same signature in the same stage:
     main(
+ERROR: Linking tessellation evaluation stage: Types must match:
+ERROR: Linking tessellation evaluation stage: Storage qualifiers must match:
+    anon@0: " out block{ gl_Position 4-component vector of float Position gl_Position,  gl_PointSize float PointSize gl_PointSize,  out unsized 3-element array of float ClipDistance gl_ClipDistance}" versus " in 32-element array of block{ in 1-element array of float ClipDistance gl_ClipDistance}"
 ERROR: Linking tessellation evaluation stage: can't handle multiple entry points per stage
 ERROR: Linking tessellation evaluation stage: Contradictory input layout primitives
 ERROR: Linking tessellation evaluation stage: Contradictory input vertex spacing
@@ -1590,7 +1593,6 @@ ERROR: node is still EOpNull!
 0:?     'badp2' ( flat patch in 4-component vector of float)
 0:?     'badp3' ( noperspective patch in 4-component vector of float)
 0:?     'badp4' ( patch sample in 3-component vector of float)
-0:?     'gl_in' ( in 32-element array of block{ in 1-element array of float ClipDistance gl_ClipDistance})
 0:?     'ina' ( in 2-component vector of float)
 0:?     'inb' ( in 32-element array of 2-component vector of float)
 0:?     'inc' ( in 32-element array of 2-component vector of float)
