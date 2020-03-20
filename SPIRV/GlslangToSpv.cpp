@@ -1477,6 +1477,7 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion,
             builder.addExecutionMode(shaderEntry, spv::ExecutionModeDepthReplacing);
 
 #ifndef GLSLANG_WEB
+
         switch(glslangIntermediate->getDepth()) {
         case glslang::EldGreater:  mode = spv::ExecutionModeDepthGreater; break;
         case glslang::EldLess:     mode = spv::ExecutionModeDepthLess;    break;
@@ -1514,7 +1515,7 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion,
             builder.addExtension(spv::E_SPV_EXT_fragment_shader_interlock);
         }
 #endif
-        break;
+    break;
 
     case EShLangCompute:
         builder.addCapability(spv::CapabilityShader);
@@ -2289,6 +2290,13 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
     case glslang::EOpEndStreamPrimitive:
         builder.createNoResultOp(spv::OpEndStreamPrimitive, operand);
         return false;
+    case glslang::EOpRayQueryTerminate:
+        builder.createNoResultOp(spv::OpRayQueryTerminateKHR, operand);
+        return false;
+    case glslang::EOpRayQueryConfirmIntersection:
+        builder.createNoResultOp(spv::OpRayQueryConfirmIntersectionKHR, operand);
+        return false;
+    
 #endif
 
     default:
@@ -2710,9 +2718,32 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
     case glslang::EOpRayQueryTerminate:
     case glslang::EOpRayQueryGenerateIntersection:
     case glslang::EOpRayQueryConfirmIntersection:
+        builder.addExtension("SPV_KHR_ray_query");
+        builder.addCapability(spv::CapabilityRayQueryProvisionalKHR);
         noReturnValue = true;
         break;
-
+    case glslang::EOpRayQueryProceed:
+    case glslang::EOpRayQueryGetIntersectionType:
+    case glslang::EOpRayQueryGetRayTMin:
+    case glslang::EOpRayQueryGetRayFlags:
+    case glslang::EOpRayQueryGetIntersectionT:
+    case glslang::EOpRayQueryGetIntersectionInstanceCustomIndex:
+    case glslang::EOpRayQueryGetIntersectionInstanceId:
+    case glslang::EOpRayQueryGetIntersectionInstanceShaderBindingTableRecordOffset:
+    case glslang::EOpRayQueryGetIntersectionGeometryIndex:
+    case glslang::EOpRayQueryGetIntersectionPrimitiveIndex:
+    case glslang::EOpRayQueryGetIntersectionBarycentrics:
+    case glslang::EOpRayQueryGetIntersectionFrontFace:
+    case glslang::EOpRayQueryGetIntersectionCandidateAABBOpaque:
+    case glslang::EOpRayQueryGetIntersectionObjectRayDirection:
+    case glslang::EOpRayQueryGetIntersectionObjectRayOrigin:
+    case glslang::EOpRayQueryGetWorldRayDirection:
+    case glslang::EOpRayQueryGetWorldRayOrigin:
+    case glslang::EOpRayQueryGetIntersectionObjectToWorld:
+    case glslang::EOpRayQueryGetIntersectionWorldToObject:
+        builder.addExtension("SPV_KHR_ray_query");
+        builder.addCapability(spv::CapabilityRayQueryProvisionalKHR);
+        break;
     case glslang::EOpCooperativeMatrixLoad:
     case glslang::EOpCooperativeMatrixStore:
         noReturnValue = true;
@@ -2780,6 +2811,9 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
             break;
 
         case glslang::EOpRayQueryInitialize:
+        case glslang::EOpRayQueryTerminate:
+        case glslang::EOpRayQueryConfirmIntersection:
+        case glslang::EOpRayQueryProceed:
         case glslang::EOpRayQueryGenerateIntersection:
         case glslang::EOpRayQueryGetIntersectionType:
         case glslang::EOpRayQueryGetIntersectionT:
@@ -5947,6 +5981,24 @@ spv::Id TGlslangToSpvTraverser::createUnaryOperation(glslang::TOperator op, OpDe
     case glslang::EOpFwidthCoarse:
         unaryOp = spv::OpFwidthCoarse;
         break;
+    case glslang::EOpRayQueryProceed:
+        unaryOp = spv::OpRayQueryProceedKHR;
+        break;
+    case glslang::EOpRayQueryGetRayTMin:
+        unaryOp = spv::OpRayQueryGetRayTMinKHR;
+        break;
+    case glslang::EOpRayQueryGetRayFlags:
+        unaryOp = spv::OpRayQueryGetRayFlagsKHR;
+        break;
+    case glslang::EOpRayQueryGetWorldRayOrigin:
+        unaryOp = spv::OpRayQueryGetWorldRayOriginKHR;
+        break;
+    case glslang::EOpRayQueryGetWorldRayDirection:
+        unaryOp = spv::OpRayQueryGetWorldRayDirectionKHR;
+        break;
+    case glslang::EOpRayQueryGetIntersectionCandidateAABBOpaque:
+        unaryOp = spv::OpRayQueryGetIntersectionCandidateAABBOpaqueKHR;
+        break;
     case glslang::EOpInterpolateAtCentroid:
         if (typeProxy == glslang::EbtFloat16)
             builder.addExtension(spv::E_SPV_AMD_gpu_shader_half_float);
@@ -7688,10 +7740,9 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
     case glslang::EOpRayQueryProceed: {
         typeId = builder.makeBoolType();
         opCode = spv::OpRayQueryProceedKHR;
-    }
-    break;
+    } break;
     case glslang::EOpRayQueryGetIntersectionType: {
-        typeId = builder.makeIntType(32);
+        typeId = builder.makeUintType(32);
         opCode = spv::OpRayQueryGetIntersectionTypeKHR;
     } break;
     case glslang::EOpRayQueryGetRayTMin: {
@@ -7703,7 +7754,7 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
         opCode = spv::OpRayQueryGetRayFlagsKHR;
     } break;
     case glslang::EOpRayQueryGetIntersectionT: {
-        typeId = builder.makeIntType(32);
+        typeId = builder.makeFloatType(32);
         opCode = spv::OpRayQueryGetIntersectionTKHR;
     } break;
     case glslang::EOpRayQueryGetIntersectionInstanceCustomIndex: {
@@ -7756,14 +7807,10 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
     } break;
     case glslang::EOpRayQueryGetIntersectionObjectToWorld: {
         typeId = builder.makeMatrixType(builder.makeFloatType(32), 4, 3);
-        // https://gitlab.khronos.org/spirv/spirv-extensions/blob/cdf44fd4b854a5297bf2191d4f57f9bccbc49098/SPV_KHR_ray_query.asciidoc#ray_query_candidate_intersection_type
-        // or per description is it typeId = builder.makeVectorType(builder.makeVectorType(builder.makeFloatType(32), 3), 4);
         opCode = spv::OpRayQueryGetIntersectionObjectToWorldKHR;
     } break;
     case glslang::EOpRayQueryGetIntersectionWorldToObject: {
         typeId = builder.makeMatrixType(builder.makeFloatType(32), 4, 3);
-        // https://gitlab.khronos.org/spirv/spirv-extensions/blob/cdf44fd4b854a5297bf2191d4f57f9bccbc49098/SPV_KHR_ray_query.asciidoc#ray_query_candidate_intersection_type
-        // or per description is it typeId = builder.makeVectorType(builder.makeVectorType(builder.makeFloatType(32), 3), 4);
         opCode = spv::OpRayQueryGetIntersectionWorldToObjectKHR;
     } break;
     case glslang::EOpWritePackedPrimitiveIndices4x8NV:

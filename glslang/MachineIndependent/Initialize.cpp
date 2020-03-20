@@ -4326,10 +4326,10 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
     // Builtins for GL_NV_ray_tracing/GL_EXT_ray_tracing/GL_EXT_ray_query
     if (profile != EEsProfile && version >= 460) {
          commonBuiltins.append("void rayQueryInitializeEXT(rayQueryEXT, accelerationStructureEXT, uint, uint, vec3, float, vec3, float);"
-            "bool rayQueryProceedEXT(rayQueryEXT);"
             "void rayQueryTerminateEXT(rayQueryEXT);"
             "void rayQueryGenerateIntersectionEXT(rayQueryEXT, float);"
             "void rayQueryConfirmIntersectionEXT(rayQueryEXT);"
+            "bool rayQueryProceedEXT(rayQueryEXT);"
             "uint rayQueryGetIntersectionTypeEXT(rayQueryEXT, bool);"
             "float rayQueryGetRayTMinEXT(rayQueryEXT);"
             "uint rayQueryGetRayFlagsEXT(rayQueryEXT);"

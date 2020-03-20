@@ -1674,7 +1674,7 @@ public:
     }
     virtual bool isOpaque() const { return basicType == EbtSampler
 #ifndef GLSLANG_WEB
-         || basicType == EbtAtomicUint || basicType == EbtAccStruct || basicType == EbtRayQuery
+         || basicType == EbtAtomicUint || basicType == EbtAccStruct
 #endif
         ; }
     virtual bool isBuiltIn() const { return getQualifier().builtIn != EbvNone; }
