@@ -236,8 +236,6 @@ INSTANTIATE_TEST_CASE_P(
         //"rayQuery-no-cse.rgen",
         //"rayQuery-initialize.rgen",
         //"rayQuery-allOps.rgen",
-        //"rayQuery-committed.Error.rgen",
-        //"rayQuery-allOps.Error.rgen",
         "spv.set.vert",
         "spv.double.comp",
         "spv.100ops.frag",
