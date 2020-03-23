@@ -43,7 +43,7 @@ addons:
     packages:
       - clang-3.6
 
-install:
+install: travis_wait 30 mvn install 
   # Make sure that clang-3.6 is selected on Linux.
   - if [[ "$TRAVIS_OS_NAME" == "linux" && "$CC" == "clang" ]]; then
       export CC=clang-3.6 CXX=clang++-3.6;
