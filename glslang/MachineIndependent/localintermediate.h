@@ -222,6 +222,15 @@ enum ComputeDerivativeMode {
     LayoutDerivativeGroupLinear,  // derivative_group_linearNV
 };
 
+class TIdMaps {
+public:
+    TMap<TString, int>& operator[](int i) { return maps[i]; };
+    const TMap<TString, int>& operator[](int i) const { return maps[i]; };
+private:
+    TMap<TString, int> maps[EsiLast];
+};
+
+
 //
 // Set of helper functions to help parse and build the tree.
 //
@@ -859,8 +868,8 @@ protected:
     void mergeCallGraphs(TInfoSink&, TIntermediate&);
     void mergeModes(TInfoSink&, TIntermediate&);
     void mergeTrees(TInfoSink&, TIntermediate&);
-    void seedIdMap(TMap<TString, int>& idMap, int& maxId);
-    void remapIds(const TMap<TString, int>& idMap, int idShift, TIntermediate&);
+    void seedIdMap(TIdMaps& idMaps, int& maxId);
+    void remapIds(const TIdMaps& idMaps, int idShift, TIntermediate&);
     void mergeBodies(TInfoSink&, TIntermSequence& globals, const TIntermSequence& unitGlobals);
     void mergeLinkerObjects(TInfoSink&, TIntermSequence& linkerObjects, const TIntermSequence& unitLinkerObjects);
     void mergeImplicitArraySizes(TType&, const TType&);
