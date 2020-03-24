@@ -945,7 +945,7 @@ public:
     bool hasAttachment() const { return false; }
     TLayoutFormat getFormat() const { return ElfNone; }
     bool isPushConstant() const { return false; }
-    bool isShaderRecordNV() const { return false; }
+    bool isShaderRecord() const { return false; }
     bool hasBufferReference() const { return false; }
     bool hasBufferReferenceAlign() const { return false; }
     bool isNonUniform() const { return false; }

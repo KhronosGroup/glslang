@@ -209,27 +209,29 @@ With no arguments it builds the full grammar, and with a "web" argument,
 the web grammar subset (see more about the web subset in the next section).
 
 ### Building to WASM for the Web and Node
+### Building a standalone JS/WASM library for the Web and Node
 
 Use the steps in [Build Steps](#build-steps), with the following notes/exceptions:
-* For building the web subset of core glslang:
+* `emsdk` needs to be present in your executable search path, *PATH* for
+  Bash-like environments:
+  + [Instructions located here](https://emscripten.org/docs/getting_started/downloads.html#sdk-download-and-install)
+* Wrap cmake call: `emcmake cmake`
+* Set `-DBUILD_TESTING=OFF -DENABLE_OPT=OFF -DINSTALL_GTEST=OFF`.
+* Set `-DENABLE_HLSL=OFF` if HLSL is not needed.
+* For a standalone JS/WASM library, turn on `-DENABLE_GLSLANG_JS=ON`.
+* For building a minimum-size web subset of core glslang:
+  + turn on `-DENABLE_GLSLANG_WEBMIN=ON` (disables HLSL)
   + execute `updateGrammar web` from the glslang subdirectory
     (or if using your own scripts, `m4` needs a `-DGLSLANG_WEB` argument)
-  + set `-DENABLE_HLSL=OFF -DBUILD_TESTING=OFF -DENABLE_OPT=OFF -DINSTALL_GTEST=OFF`
-  + turn on `-DENABLE_GLSLANG_JS=ON`
-  + optionally, for a minimum-size binary, turn on `-DENABLE_GLSLANG_WEBMIN=ON`
-  + optionally, for GLSL compilation error messages, turn on `-DENABLE_GLSLANG_WEB_DEVEL=ON`
-* `emsdk` needs to be present in your executable search path, *PATH* for
-  Bash-like environments
-  + [Instructions located
-    here](https://emscripten.org/docs/getting_started/downloads.html#sdk-download-and-install)
-* Wrap cmake call: `emcmake cmake`
+  + optionally, for GLSL compilation error messages, turn on
+    `-DENABLE_GLSLANG_WEBMIN_DEVEL=ON`
 * To get a fully minimized build, make sure to use `brotli` to compress the .js
   and .wasm files
 
 Example:
 
 ```sh
-emcmake cmake -DCMAKE_BUILD_TYPE=Release -DENABLE_GLSLANG_WEB=ON \
+emcmake cmake -DCMAKE_BUILD_TYPE=Release -DENABLE_GLSLANG_JS=ON \
     -DENABLE_HLSL=OFF -DBUILD_TESTING=OFF -DENABLE_OPT=OFF -DINSTALL_GTEST=OFF ..
 ```
 
