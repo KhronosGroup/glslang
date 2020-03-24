@@ -3259,11 +3259,6 @@ void TParseContext::accStructCheck(const TSourceLoc& loc, const TType& type, con
 
 }
 
-void TParseContext::rayQueryCheck(const TSourceLoc& loc, const TType& type, const TString& identifier)
-{
-    return;
-}
-
 #endif // GLSLANG_WEB
 
 void TParseContext::transparentOpaqueCheck(const TSourceLoc& loc, const TType& type, const TString& identifier)
@@ -6511,7 +6506,6 @@ TIntermNode* TParseContext::declareVariable(const TSourceLoc& loc, TString& iden
 #ifndef GLSLANG_WEB
     atomicUintCheck(loc, type, identifier);
     accStructCheck(loc, type, identifier);
-    rayQueryCheck(loc, type, identifier);
     checkAndResizeMeshViewDim(loc, type, /*isBlockMember*/ false);
 #endif
     if (type.getQualifier().storage == EvqConst && type.containsReference()) {
