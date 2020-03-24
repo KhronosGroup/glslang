@@ -1,5 +1,4 @@
 // Copyright (c) 2014-2020 The Khronos Group Inc.
-// Modifications Copyright (C) 2020 Advanced Micro Devices, Inc. All rights reserved.
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and/or associated documentation files (the "Materials"),
@@ -1940,31 +1939,6 @@ inline void HasResultAndType(Op opcode, bool *hasResult, bool *hasResultType) {
     case OpRayQueryGetIntersectionObjectToWorldKHR: *hasResult = true; *hasResultType = true; break;
     case OpRayQueryGetIntersectionWorldToObjectKHR: *hasResult = true; *hasResultType = true; break;
     case OpExecuteCallableNV: *hasResult = false; *hasResultType = false; break;
-    case OpTypeAccelerationStructureKHR: *hasResult = true; *hasResultType = false; break;
-    case OpTypeRayQueryProvisionalKHR: *hasResult = true; *hasResultType = false; break;
-    case OpRayQueryInitializeKHR: *hasResult = false; *hasResultType = false; break;
-    case OpRayQueryTerminateKHR: *hasResult = false; *hasResultType = false; break;
-    case OpRayQueryGenerateIntersectionKHR: *hasResult = false; *hasResultType = false; break;
-    case OpRayQueryConfirmIntersectionKHR: *hasResult = false; *hasResultType = false; break;
-    case OpRayQueryProceedKHR: *hasResult = true; *hasResultType = true; break;
-    case OpRayQueryGetIntersectionTypeKHR: *hasResult = true; *hasResultType = true; break;
-    case OpRayQueryGetRayTMinKHR: *hasResult = true; *hasResultType = true; break;
-    case OpRayQueryGetRayFlagsKHR: *hasResult = true; *hasResultType = true; break;
-    case OpRayQueryGetIntersectionTKHR: *hasResult = true; *hasResultType = true; break;
-    case OpRayQueryGetIntersectionInstanceCustomIndexKHR: *hasResult = true; *hasResultType = true; break;
-    case OpRayQueryGetIntersectionInstanceIdKHR: *hasResult = true; *hasResultType = true; break;
-    case OpRayQueryGetIntersectionInstanceShaderBindingTableRecordOffsetKHR: *hasResult = true; *hasResultType = true; break;
-    case OpRayQueryGetIntersectionGeometryIndexKHR: *hasResult = true; *hasResultType = true; break;
-    case OpRayQueryGetIntersectionPrimitiveIndexKHR: *hasResult = true; *hasResultType = true; break;
-    case OpRayQueryGetIntersectionBarycentricsKHR: *hasResult = true; *hasResultType = true; break;
-    case OpRayQueryGetIntersectionFrontFaceKHR: *hasResult = true; *hasResultType = true; break;
-    case OpRayQueryGetIntersectionCandidateAABBOpaqueKHR: *hasResult = true; *hasResultType = true; break;
-    case OpRayQueryGetIntersectionObjectRayDirectionKHR: *hasResult = true; *hasResultType = true; break;
-    case OpRayQueryGetIntersectionObjectRayOriginKHR: *hasResult = true; *hasResultType = true; break;
-    case OpRayQueryGetWorldRayDirectionKHR: *hasResult = true; *hasResultType = true; break;
-    case OpRayQueryGetWorldRayOriginKHR: *hasResult = true; *hasResultType = true; break;
-    case OpRayQueryGetIntersectionObjectToWorldKHR: *hasResult = true; *hasResultType = true; break;
-    case OpRayQueryGetIntersectionWorldToObjectKHR: *hasResult = true; *hasResultType = true; break;
     case OpTypeCooperativeMatrixNV: *hasResult = true; *hasResultType = false; break;
     case OpCooperativeMatrixLoadNV: *hasResult = true; *hasResultType = true; break;
     case OpCooperativeMatrixStoreNV: *hasResult = false; *hasResultType = false; break;
@@ -2137,4 +2111,3 @@ inline RayFlagsMask operator|(RayFlagsMask a, RayFlagsMask b) { return RayFlagsM
 }  // end namespace spv
 
 #endif  // #ifndef spirv_HPP
-
