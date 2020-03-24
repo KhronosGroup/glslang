@@ -230,12 +230,16 @@ INSTANTIATE_TEST_CASE_P(
         "spv.while-continue-break.vert",
         "spv.while-simple.vert",
         // vulkan-specific tests
-        //"rayQuery.rgen",
-        //"rayQuery-array-2d-dynamic.rgen",
-        //"rayQuery-decls.rgen",
-        //"rayQuery-no-cse.rgen",
-        //"rayQuery-initialize.rgen",
-        //"rayQuery-allOps.rgen",
+        "rayQuery.rgen",
+        "rayQuery-array-2d-dynamic.rgen",
+        "rayQuery-decls.rgen",
+        "rayQuery-no-cse.rgen",
+        "rayQuery-initialize.rgen",
+        "rayQuery-allOps.rgen",
+        "rayQuery-allOps.Error.rgen",
+        "rayQuery-committed.Error.rgen",
+        //"rayQuery-allOps.comp",
+        //"rayQuery-allOps.frag",
         "spv.set.vert",
         "spv.double.comp",
         "spv.100ops.frag",
@@ -453,7 +457,6 @@ INSTANTIATE_TEST_CASE_P(
     })),
     FileNameAsCustomTestSuffix
 );
-
 
 // Cases with deliberately unreachable code.
 // By default the compiler will aggressively eliminate
