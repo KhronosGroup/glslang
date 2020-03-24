@@ -39,7 +39,7 @@ void main()
     bool committed_true = true;
     bool committed_false = false;
 
-    rayQueryInitializeEXT(rayQuery, rtas, 1, 2, ray.pos, ray.tmin, ray.dir, ray.tmax);
+    rayQueryInitializeEXT(rayQuery, rtas, gl_RayFlagsOpaqueEXT, gl_RayFlagsCullBackFacingTrianglesEXT, ray.pos, ray.tmin, ray.dir, ray.tmax);
     while (rayQueryProceedEXT(rayQuery))
     {
         mat4x3 mat_o2w;

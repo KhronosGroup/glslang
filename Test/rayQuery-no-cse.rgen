@@ -20,7 +20,7 @@ uint launchIndex()
 
 void doInitialize(rayQueryEXT rayQuery, Ray ray)
 {
-    rayQueryInitializeEXT(rayQuery, rtas, 0, 1, ray.pos, ray.tmin, ray.dir, ray.tmax);
+    rayQueryInitializeEXT(rayQuery, rtas, gl_RayFlagsNoneEXT, gl_RayFlagsCullBackFacingTrianglesEXT, ray.pos, ray.tmin, ray.dir, ray.tmax);
 }
 
 void main()
@@ -30,6 +30,6 @@ void main()
     rayQueryEXT rayQuery1;
     rayQueryEXT rayQuery2;
     doInitialize(rayQuery1, ray);
-    rayQueryInitializeEXT(rayQuery1, rtas, 1, 2, ray.pos, ray.tmin, ray.dir, ray.tmax);
+    rayQueryInitializeEXT(rayQuery1, rtas, gl_RayFlagsOpaqueEXT, gl_RayFlagsCullFrontFacingTrianglesEXT, ray.pos, ray.tmin, ray.dir, ray.tmax);
     doInitialize(rayQuery2, ray);
 }

@@ -37,9 +37,9 @@ Ray makeRayDesc()
 
 void main()
 {
-    Ray ray;// = makeRayDesc();
+    Ray ray = makeRayDesc();
     rayQueryEXT rayQuery;
-    rayQueryInitializeEXT(rayQuery, rtas, 0, 0xFF, ray.pos, ray.tmin, ray.dir, ray.tmax);
+    rayQueryInitializeEXT(rayQuery, rtas, gl_RayFlagsNoneEXT, 0xFF, ray.pos, ray.tmin, ray.dir, ray.tmax);
 
     mat4x3 _mat4x3;
     mat3x4 _mat3x4;

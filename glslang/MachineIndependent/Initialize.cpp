@@ -5573,24 +5573,14 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
 
 
         commonBuiltins.append(constRayQueryIntersection);
+        commonBuiltins.append(constRayFlags);
 
         stageBuiltins[EShLangRayGen].append(rayGenDecls);
-        stageBuiltins[EShLangRayGen].append(constRayFlags);
-
         stageBuiltins[EShLangIntersect].append(intersectDecls);
-        stageBuiltins[EShLangIntersect].append(constRayFlags);
-
         stageBuiltins[EShLangAnyHit].append(hitDecls);
-        stageBuiltins[EShLangAnyHit].append(constRayFlags);
-
         stageBuiltins[EShLangClosestHit].append(hitDecls);
-        stageBuiltins[EShLangClosestHit].append(constRayFlags);
-
         stageBuiltins[EShLangMiss].append(missDecls);
-        stageBuiltins[EShLangMiss].append(constRayFlags);
-
         stageBuiltins[EShLangCallable].append(callableDecls);
-        stageBuiltins[EShLangCallable].append(constRayFlags);
 
     }
     if ((profile != EEsProfile && version >= 140)) {

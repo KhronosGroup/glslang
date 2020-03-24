@@ -41,13 +41,13 @@ void main()
     rayQueryEXT rayQuery0c = g_rayQueryArray[idx];
 
     // rayQuery0a is the one actually used here
-    rayQueryInitializeEXT(rayQuery0c, rtas, gl_RayFlagsOpaqueEXT, 2, ray.pos, ray.tmin, ray.dir, ray.tmax);
+    rayQueryInitializeEXT(rayQuery0c, rtas, gl_RayFlagsOpaqueEXT, gl_RayFlagsCullBackFacingTrianglesEXT, ray.pos, ray.tmin, ray.dir, ray.tmax);
 
     // AllocateRayQuery occurs here, rather than next to allocas
     // Should not be extray allocate, since above should allocate and copy
     rayQueryEXT rayQuery1c;
      // update the rayFlags as RAY_FLAG_FORCE_OPAQUE
-    rayQueryInitializeEXT(rayQuery1c, rtas, gl_RayFlagsOpaqueEXT, 1, ray.pos, ray.tmin, ray.dir, ray.tmax);
+    rayQueryInitializeEXT(rayQuery1c, rtas, gl_RayFlagsOpaqueEXT, gl_RayFlagsCullFrontFacingTrianglesEXT, ray.pos, ray.tmin, ray.dir, ray.tmax);
 
-    rayQueryInitializeEXT(rayQuery1c, rtas, 3, 4, ray.pos, ray.tmin, ray.dir, ray.tmax);
+    rayQueryInitializeEXT(rayQuery1c, rtas, gl_RayFlagsOpaqueEXT|gl_RayFlagsNoOpaqueEXT, gl_RayFlagsCullOpaqueEXT, ray.pos, ray.tmin, ray.dir, ray.tmax);
 }
