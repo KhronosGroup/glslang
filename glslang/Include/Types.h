@@ -3,6 +3,7 @@
 // Copyright (C) 2012-2016 LunarG, Inc.
 // Copyright (C) 2015-2016 Google, Inc.
 // Copyright (C) 2017 ARM Limited.
+// Modifications Copyright (C) 2020 Advanced Micro Devices, Inc. All rights reserved.
 //
 // All rights reserved.
 //
@@ -1950,6 +1951,7 @@ public:
         case EbtStruct:            return "structure";
         case EbtBlock:             return "block";
         case EbtAccStruct:         return "accelerationStructureNV";
+        case EbtRayQuery:          return "rayQueryEXT";
         case EbtReference:         return "reference";
 #endif
         default:                   return "unknown type";
