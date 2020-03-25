@@ -7704,115 +7704,104 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
         break;
 
     case glslang::EOpReportIntersection:
-    {
         typeId = builder.makeBoolType();
         opCode = spv::OpReportIntersectionKHR;
-    }
-    break;
+        break;
     case glslang::EOpTrace:
-    {
         builder.createNoResultOp(spv::OpTraceRayKHR, operands);
         return 0;
-    }
-    break;
     case glslang::EOpExecuteCallable:
-    {
         builder.createNoResultOp(spv::OpExecuteCallableKHR, operands);
         return 0;
-    }
-    break;
-    case glslang::EOpRayQueryInitialize: {
+
+    case glslang::EOpRayQueryInitialize:
         builder.createNoResultOp(spv::OpRayQueryInitializeKHR, operands);
         return 0;
-    } break;
-    case glslang::EOpRayQueryTerminate: {
+    case glslang::EOpRayQueryTerminate:
         builder.createNoResultOp(spv::OpRayQueryTerminateKHR, operands);
         return 0;
-    } break;
-    case glslang::EOpRayQueryGenerateIntersection: {
+    case glslang::EOpRayQueryGenerateIntersection:
         builder.createNoResultOp(spv::OpRayQueryGenerateIntersectionKHR, operands);
         return 0;
-    } break;
-    case glslang::EOpRayQueryConfirmIntersection: {
+    case glslang::EOpRayQueryConfirmIntersection:
         builder.createNoResultOp(spv::OpRayQueryConfirmIntersectionKHR, operands);
         return 0;
-    } break;
-    case glslang::EOpRayQueryProceed: {
+    case glslang::EOpRayQueryProceed:
         typeId = builder.makeBoolType();
         opCode = spv::OpRayQueryProceedKHR;
-    } break;
-    case glslang::EOpRayQueryGetIntersectionType: {
+        break;
+    case glslang::EOpRayQueryGetIntersectionType:
         typeId = builder.makeUintType(32);
         opCode = spv::OpRayQueryGetIntersectionTypeKHR;
-    } break;
-    case glslang::EOpRayQueryGetRayTMin: {
+        break;
+    case glslang::EOpRayQueryGetRayTMin:
         typeId = builder.makeFloatType(32);
         opCode = spv::OpRayQueryGetRayTMinKHR;
-    } break;
-    case glslang::EOpRayQueryGetRayFlags: {
+        break;
+    case glslang::EOpRayQueryGetRayFlags:
         typeId = builder.makeIntType(32);
         opCode = spv::OpRayQueryGetRayFlagsKHR;
-    } break;
-    case glslang::EOpRayQueryGetIntersectionT: {
+        break;
+    case glslang::EOpRayQueryGetIntersectionT:
         typeId = builder.makeFloatType(32);
         opCode = spv::OpRayQueryGetIntersectionTKHR;
-    } break;
-    case glslang::EOpRayQueryGetIntersectionInstanceCustomIndex: {
+        break;
+    case glslang::EOpRayQueryGetIntersectionInstanceCustomIndex:
         typeId = builder.makeIntType(32);
         opCode = spv::OpRayQueryGetIntersectionInstanceCustomIndexKHR;
-    } break;
-    case glslang::EOpRayQueryGetIntersectionInstanceId: {
+        break;
+    case glslang::EOpRayQueryGetIntersectionInstanceId:
         typeId = builder.makeIntType(32);
         opCode = spv::OpRayQueryGetIntersectionInstanceIdKHR;
-    } break;
-    case glslang::EOpRayQueryGetIntersectionInstanceShaderBindingTableRecordOffset: {
+        break;
+    case glslang::EOpRayQueryGetIntersectionInstanceShaderBindingTableRecordOffset:
         typeId = builder.makeIntType(32);
         opCode = spv::OpRayQueryGetIntersectionInstanceShaderBindingTableRecordOffsetKHR;
-    } break;
-    case glslang::EOpRayQueryGetIntersectionGeometryIndex: {
+        break;
+    case glslang::EOpRayQueryGetIntersectionGeometryIndex:
         typeId = builder.makeIntType(32);
         opCode = spv::OpRayQueryGetIntersectionGeometryIndexKHR;
-    } break;
-    case glslang::EOpRayQueryGetIntersectionPrimitiveIndex: {
+        break;
+    case glslang::EOpRayQueryGetIntersectionPrimitiveIndex:
         typeId = builder.makeIntType(32);
         opCode = spv::OpRayQueryGetIntersectionPrimitiveIndexKHR;
-    } break;
-    case glslang::EOpRayQueryGetIntersectionBarycentrics: {
+        break;
+    case glslang::EOpRayQueryGetIntersectionBarycentrics:
         typeId = builder.makeVectorType(builder.makeFloatType(32), 2);
         opCode = spv::OpRayQueryGetIntersectionBarycentricsKHR;
-    } break;
-    case glslang::EOpRayQueryGetIntersectionFrontFace: {
+        break;
+    case glslang::EOpRayQueryGetIntersectionFrontFace:
         typeId = builder.makeBoolType();
         opCode = spv::OpRayQueryGetIntersectionFrontFaceKHR;
-    } break;
-    case glslang::EOpRayQueryGetIntersectionCandidateAABBOpaque: {
+        break;
+    case glslang::EOpRayQueryGetIntersectionCandidateAABBOpaque:
         typeId = builder.makeBoolType();
         opCode = spv::OpRayQueryGetIntersectionCandidateAABBOpaqueKHR;
-    } break;
-    case glslang::EOpRayQueryGetIntersectionObjectRayDirection: {
+        break;
+    case glslang::EOpRayQueryGetIntersectionObjectRayDirection:
         typeId = builder.makeVectorType(builder.makeFloatType(32), 3);
         opCode = spv::OpRayQueryGetIntersectionObjectRayDirectionKHR;
-    } break;
-    case glslang::EOpRayQueryGetIntersectionObjectRayOrigin: {
+        break;
+    case glslang::EOpRayQueryGetIntersectionObjectRayOrigin:
         typeId = builder.makeVectorType(builder.makeFloatType(32), 3);
         opCode = spv::OpRayQueryGetIntersectionObjectRayOriginKHR;
-    } break;
-    case glslang::EOpRayQueryGetWorldRayDirection: {
+        break;
+    case glslang::EOpRayQueryGetWorldRayDirection:
         typeId = builder.makeVectorType(builder.makeFloatType(32), 3);
         opCode = spv::OpRayQueryGetWorldRayDirectionKHR;
-    } break;
-    case glslang::EOpRayQueryGetWorldRayOrigin: {
+        break;
+    case glslang::EOpRayQueryGetWorldRayOrigin:
         typeId = builder.makeVectorType(builder.makeFloatType(32), 3);
         opCode = spv::OpRayQueryGetWorldRayOriginKHR;
-    } break;
-    case glslang::EOpRayQueryGetIntersectionObjectToWorld: {
+        break;
+    case glslang::EOpRayQueryGetIntersectionObjectToWorld:
         typeId = builder.makeMatrixType(builder.makeFloatType(32), 4, 3);
         opCode = spv::OpRayQueryGetIntersectionObjectToWorldKHR;
-    } break;
-    case glslang::EOpRayQueryGetIntersectionWorldToObject: {
+        break;
+    case glslang::EOpRayQueryGetIntersectionWorldToObject:
         typeId = builder.makeMatrixType(builder.makeFloatType(32), 4, 3);
         opCode = spv::OpRayQueryGetIntersectionWorldToObjectKHR;
-    } break;
+        break;
     case glslang::EOpWritePackedPrimitiveIndices4x8NV:
         builder.createNoResultOp(spv::OpWritePackedPrimitiveIndices4x8NV, operands);
         return 0;
