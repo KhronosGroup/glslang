@@ -10,7 +10,7 @@ struct Ray
     float tmax;
 };
 
-layout(binding = 0, set = 0) uniform accelerationStructureNV rtas;
+layout(binding = 0, set = 0) uniform accelerationStructureEXT rtas;
 layout(std430, set = 0, binding = 2) buffer Rays { Ray rays[]; };
 
 uint launchIndex()
