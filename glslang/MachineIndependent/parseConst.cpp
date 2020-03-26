@@ -175,7 +175,7 @@ void TConstTraverser::visitConstantUnion(TIntermConstantUnion* node)
                     if (nodeComps == 1) {
                         // If there is a single scalar parameter to a matrix
                         // constructor, it is used to initialize all the
-                        // components on the matrix’s diagonal, with the
+                        // components on the matrix's diagonal, with the
                         // remaining components initialized to 0.0.
                         if (i == startIndex || (i - startIndex) % (matrixRows + 1) == 0 )
                             leftUnionArray[i] = rightUnionArray[count];

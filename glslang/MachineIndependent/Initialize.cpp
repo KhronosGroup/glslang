@@ -8983,9 +8983,10 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         }
         break;
     case EShLangIntersect:
-        if (profile != EEsProfile && version >= 460)
+        if (profile != EEsProfile && version >= 460) {
             symbolTable.relateToOperator("reportIntersectionNV", EOpReportIntersection);
             symbolTable.relateToOperator("reportIntersectionEXT", EOpReportIntersection);
+	}
         break;
     case EShLangAnyHit:
         if (profile != EEsProfile && version >= 460) {
