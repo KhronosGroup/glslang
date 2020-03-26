@@ -99,6 +99,7 @@ ERROR: Linking vertex stage: Types must match:
 ERROR: Linking vertex stage: Types must match:
     anon@1: "layout( column_major shared) buffer block{layout( column_major shared) buffer 4-component vector of float b}" versus anon@3: "layout( column_major shared) buffer block{layout( column_major shared) buffer 4-component vector of float a}"
 ERROR: Linking vertex stage: Matched Uniform or Storage blocks must all be anonymous, or all be named:
+WARNING: Linking vertex stage: Matched shader interfaces are using different instance names.
     myName: "layout( column_major std140) uniform block{layout( column_major std140 offset=0) uniform 4X4 matrix of float m}" versus anon@4: "layout( column_major std140) uniform block{layout( column_major std140 offset=0) uniform 4X4 matrix of float m}"
 
 Shader version: 430

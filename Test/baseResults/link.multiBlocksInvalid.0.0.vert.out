@@ -84,10 +84,13 @@ Shader version: 430
 Linked vertex stage:
 
 ERROR: Linking vertex stage: Types must match:
+WARNING: Linking vertex stage: Matched shader interfaces are using different instance names.
     uC: "layout( column_major std140) uniform block{layout( column_major std140 offset=0) uniform 4-component vector of float color1}" versus uColorB: "layout( column_major std140) uniform block{layout( column_major std140 offset=0) uniform 4-component vector of float color2}"
 ERROR: Linking vertex stage: Types must match:
+WARNING: Linking vertex stage: Matched shader interfaces are using different instance names.
     uD: "layout( column_major std140) uniform block{layout( column_major std140 offset=0) uniform 4X4 matrix of float uProj}" versus uDefaultB: "layout( column_major std140) uniform block{layout( column_major std140 offset=0) uniform 4X4 matrix of float uWorld}"
 ERROR: Linking vertex stage: Types must match:
+WARNING: Linking vertex stage: Matched shader interfaces are using different instance names.
     oV: " out block{ out 4-component vector of float v1}" versus oVert: " out block{ out 4-component vector of float v2}"
 
 Shader version: 430

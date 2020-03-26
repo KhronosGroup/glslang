@@ -564,6 +564,11 @@ void TIntermediate::mergeErrorCheck(TInfoSink& infoSink, const TIntermSymbol& sy
         writeTypeComparison = true;
     }
 
+    if ((IsAnonymous(symbol.getName()) != IsAnonymous(unitSymbol.getName()) ||
+         (!IsAnonymous(symbol.getName()) && symbol.getName() != unitSymbol.getName()))) {
+		warn(infoSink, "Matched shader interfaces are using different instance names.");
+		writeTypeComparison = true;
+    }
 
     // Precision...
     if (symbol.getQualifier().precision != unitSymbol.getQualifier().precision) {
