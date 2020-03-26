@@ -1183,7 +1183,7 @@ spv::LoopControlMask TGlslangToSpvTraverser::TranslateLoopControl(const glslang:
 spv::StorageClass TGlslangToSpvTraverser::TranslateStorageClass(const glslang::TType& type)
 {
     if (type.getBasicType() == glslang::EbtRayQuery)
-        return spv::StorageClassWorkgroup;
+        return spv::StorageClassFunction;
     if (type.getQualifier().isPipeInput())
         return spv::StorageClassInput;
     if (type.getQualifier().isPipeOutput())
@@ -2727,8 +2727,6 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
     case glslang::EOpRayQueryConfirmIntersection:
         builder.addExtension("SPV_KHR_ray_query");
         builder.addCapability(spv::CapabilityRayQueryProvisionalKHR);
-        builder.addExtension("SPV_KHR_variable_pointers");
-        builder.addCapability(spv::CapabilityVariablePointers);
         noReturnValue = true;
         break;
     case glslang::EOpRayQueryProceed:
@@ -2752,8 +2750,6 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
     case glslang::EOpRayQueryGetIntersectionWorldToObject:
         builder.addExtension("SPV_KHR_ray_query");
         builder.addCapability(spv::CapabilityRayQueryProvisionalKHR);
-        builder.addExtension("SPV_KHR_variable_pointers");
-        builder.addCapability(spv::CapabilityVariablePointers);
         break;
     case glslang::EOpCooperativeMatrixLoad:
     case glslang::EOpCooperativeMatrixStore:
