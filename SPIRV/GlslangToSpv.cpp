@@ -1183,7 +1183,7 @@ spv::LoopControlMask TGlslangToSpvTraverser::TranslateLoopControl(const glslang:
 spv::StorageClass TGlslangToSpvTraverser::TranslateStorageClass(const glslang::TType& type)
 {
     if (type.getBasicType() == glslang::EbtRayQuery)
-        return spv::StorageClassFunction;
+        return spv::StorageClassWorkgroup;
     if (type.getQualifier().isPipeInput())
         return spv::StorageClassInput;
     if (type.getQualifier().isPipeOutput())
@@ -2197,7 +2197,15 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
     if (node->getOp() == glslang::EOpAtomicCounterIncrement ||
         node->getOp() == glslang::EOpAtomicCounterDecrement ||
         node->getOp() == glslang::EOpAtomicCounter          ||
-        node->getOp() == glslang::EOpInterpolateAtCentroid) {
+        node->getOp() == glslang::EOpInterpolateAtCentroid  ||
+        node->getOp() == glslang::EOpRayQueryProceed        ||
+        node->getOp() == glslang::EOpRayQueryGetRayTMin     ||
+        node->getOp() == glslang::EOpRayQueryGetRayFlags    ||
+        node->getOp() == glslang::EOpRayQueryGetWorldRayOrigin ||
+        node->getOp() == glslang::EOpRayQueryGetWorldRayDirection ||
+        node->getOp() == glslang::EOpRayQueryGetIntersectionCandidateAABBOpaque ||
+        node->getOp() == glslang::EOpRayQueryTerminate ||
+        node->getOp() == glslang::EOpRayQueryConfirmIntersection) {
         operand = builder.accessChainGetLValue(); // Special case l-value operands
         lvalueCoherentFlags = builder.getAccessChain().coherentFlags;
         lvalueCoherentFlags |= TranslateCoherent(operandNode->getAsTyped()->getType());
@@ -2296,7 +2304,6 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
     case glslang::EOpRayQueryConfirmIntersection:
         builder.createNoResultOp(spv::OpRayQueryConfirmIntersectionKHR, operand);
         return false;
-    
 #endif
 
     default:
@@ -2720,6 +2727,8 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
     case glslang::EOpRayQueryConfirmIntersection:
         builder.addExtension("SPV_KHR_ray_query");
         builder.addCapability(spv::CapabilityRayQueryProvisionalKHR);
+        builder.addExtension("SPV_KHR_variable_pointers");
+        builder.addCapability(spv::CapabilityVariablePointers);
         noReturnValue = true;
         break;
     case glslang::EOpRayQueryProceed:
@@ -2743,6 +2752,8 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
     case glslang::EOpRayQueryGetIntersectionWorldToObject:
         builder.addExtension("SPV_KHR_ray_query");
         builder.addCapability(spv::CapabilityRayQueryProvisionalKHR);
+        builder.addExtension("SPV_KHR_variable_pointers");
+        builder.addCapability(spv::CapabilityVariablePointers);
         break;
     case glslang::EOpCooperativeMatrixLoad:
     case glslang::EOpCooperativeMatrixStore:
