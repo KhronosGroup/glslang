@@ -1030,6 +1030,7 @@ int TScanContext::tokenizeIdentifier()
     case CALLDATAINEXT:
     case ACCSTRUCTEXT:
         if (parseContext.symbolTable.atBuiltInLevel() ||
+            parseContext.extensionTurnedOn(E_GL_EXT_ray_tracing) ||
             parseContext.extensionTurnedOn(E_GL_EXT_ray_query))
             return keyword;
         return identifierOrType();
