@@ -2197,7 +2197,15 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
     if (node->getOp() == glslang::EOpAtomicCounterIncrement ||
         node->getOp() == glslang::EOpAtomicCounterDecrement ||
         node->getOp() == glslang::EOpAtomicCounter          ||
-        node->getOp() == glslang::EOpInterpolateAtCentroid) {
+        node->getOp() == glslang::EOpInterpolateAtCentroid  ||
+        node->getOp() == glslang::EOpRayQueryProceed        ||
+        node->getOp() == glslang::EOpRayQueryGetRayTMin     ||
+        node->getOp() == glslang::EOpRayQueryGetRayFlags    ||
+        node->getOp() == glslang::EOpRayQueryGetWorldRayOrigin ||
+        node->getOp() == glslang::EOpRayQueryGetWorldRayDirection ||
+        node->getOp() == glslang::EOpRayQueryGetIntersectionCandidateAABBOpaque ||
+        node->getOp() == glslang::EOpRayQueryTerminate ||
+        node->getOp() == glslang::EOpRayQueryConfirmIntersection) {
         operand = builder.accessChainGetLValue(); // Special case l-value operands
         lvalueCoherentFlags = builder.getAccessChain().coherentFlags;
         lvalueCoherentFlags |= TranslateCoherent(operandNode->getAsTyped()->getType());
@@ -2296,7 +2304,6 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
     case glslang::EOpRayQueryConfirmIntersection:
         builder.createNoResultOp(spv::OpRayQueryConfirmIntersectionKHR, operand);
         return false;
-    
 #endif
 
     default:
