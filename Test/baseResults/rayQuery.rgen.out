@@ -18,13 +18,13 @@ rayQuery.rgen
                               Name 12  "tMin"
                               Name 14  "tMax"
                               Name 18  "localRayQuery"
-                              Name 21  "accNV0"
+                              Name 21  "acc0"
                               Name 26  "block"
                               MemberName 26(block) 0  "dir"
                               MemberName 26(block) 1  "origin"
                               Name 28  ""
-                              Decorate 21(accNV0) DescriptorSet 0
-                              Decorate 21(accNV0) Binding 0
+                              Decorate 21(acc0) DescriptorSet 0
+                              Decorate 21(acc0) Binding 0
                               MemberDecorate 26(block) 0 Offset 0
                               MemberDecorate 26(block) 1 Offset 16
                               Decorate 26(block) BufferBlock
@@ -41,7 +41,7 @@ rayQuery.rgen
               17:             TypePointer Function 16
               19:             TypeAccelerationStructureKHR
               20:             TypePointer UniformConstant 19
-      21(accNV0):     20(ptr) Variable UniformConstant
+        21(acc0):     20(ptr) Variable UniformConstant
               24:      6(int) Constant 255
               25:             TypeVector 10(float) 3
        26(block):             TypeStruct 25(fvec3) 25(fvec3)
@@ -61,7 +61,7 @@ rayQuery.rgen
                               Store 8(rayFlags) 9
                               Store 12(tMin) 13
                               Store 14(tMax) 15
-              22:          19 Load 21(accNV0)
+              22:          19 Load 21(acc0)
               23:      6(int) Load 8(rayFlags)
               32:     31(ptr) AccessChain 28 30
               33:   25(fvec3) Load 32
