@@ -1139,7 +1139,6 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
             for (int stage = 0; stage < EShLangCount; ++stage) {
                 if (program.getIntermediate((EShLanguage)stage)) {
                     std::vector<unsigned int> spirv;
-                    std::string warningsErrors;
                     spv::SpvBuildLogger logger;
                     glslang::SpvOptions spvOptions;
                     if (Options & EOptionDebug)
