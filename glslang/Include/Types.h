@@ -1638,14 +1638,14 @@ public:
             return EsiNone;
         case EvqVaryingIn:
             return EsiInput;
-		case EvqVaryingOut:
+        case EvqVaryingOut:
             return EsiOutput;
         case EvqUniform:
             return EsiUniform;
         case EvqBuffer:
             return EsiBuffer;
-		}
-	}
+        }
+    }
 
     virtual TBasicType getBasicType() const { return basicType; }
     virtual const TSampler& getSampler() const { return sampler; }
