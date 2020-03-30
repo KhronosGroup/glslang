@@ -231,7 +231,6 @@ INSTANTIATE_TEST_CASE_P(
         "spv.while-simple.vert",
         // vulkan-specific tests
         "rayQuery.rgen",
-        "rayQuery-decls.rgen",
         "rayQuery-no-cse.rgen",
         "rayQuery-initialize.rgen",
         "rayQuery-allOps.rgen",
