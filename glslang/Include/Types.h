@@ -475,13 +475,13 @@ enum TInterlockOrdering {
 
 enum TShaderInterface
 {
+    // Includes both uniform blocks and buffer blocks
     EsiUniform = 0,
-    EsiBuffer,
     EsiInput,
     EsiOutput,
     EsiNone,
 
-    EsiLast
+    EsiCount
 };
 
 
@@ -1641,9 +1641,8 @@ public:
         case EvqVaryingOut:
             return EsiOutput;
         case EvqUniform:
-            return EsiUniform;
         case EvqBuffer:
-            return EsiBuffer;
+            return EsiUniform;
         }
     }
 

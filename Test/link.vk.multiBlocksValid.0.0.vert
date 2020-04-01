@@ -29,9 +29,7 @@ layout (std430, binding = 1) buffer BufferBlock
 	mat4 p;
 } uBuf;
 
-// OK: Duplicate block names are allowed between
-// different shader interface types
-layout (std430, binding = 0) buffer ColorBlock
+layout (std430, binding = 0) buffer SecondaryColorBlock
 {
 	vec4 c;
 } uColorBuf;

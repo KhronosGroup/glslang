@@ -230,7 +230,7 @@ public:
     TMap<TString, int>& operator[](int i) { return maps[i]; };
     const TMap<TString, int>& operator[](int i) const { return maps[i]; };
 private:
-    TMap<TString, int> maps[EsiLast];
+    TMap<TString, int> maps[EsiCount];
 };
 
 

@@ -18,6 +18,13 @@ layout (std140) uniform ColorBlock
 	vec4 color1;
 } uC;
 
+// Error, buffer blocks and uniform blocks share the
+// same namespace for their block name
+layout (std430) buffer ColorBlock
+{
+	vec4 color1;
+} uBufC;
+
 vec4 getWorld();
 vec4 getColor2();
 
@@ -27,7 +34,7 @@ void
 main()
 {
 	oColor = uC.color1 * getColor2();
-	oV.v1 = uC.color1;
+	oV.v1 = uC.color1 + uBufC.color1;
 
 	gl_Position = uD.uProj * getWorld();
 }
