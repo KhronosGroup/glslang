@@ -16,7 +16,7 @@ layout(std430, set = 0, binding = 0) buffer Log
     uint y;
 };
 
-layout(binding = 1, set = 0) uniform accelerationStructureNV rtas;
+layout(binding = 1, set = 0) uniform accelerationStructureEXT rtas;
 layout(std430, set = 0, binding = 2) buffer Rays { Ray rays[]; };
 
 void doSomething()

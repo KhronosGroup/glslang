@@ -1,7 +1,7 @@
 #version 460
 #extension GL_NV_ray_tracing : enable
 #extension GL_EXT_ray_query : enable
-layout(binding = 0, set = 0) uniform accelerationStructureNV accNV0;
+layout(binding = 0, set = 0) uniform accelerationStructureEXT acc0;
 
 layout(shaderRecordNV) buffer block
 {
@@ -15,7 +15,7 @@ void main()
     uint rayFlags = gl_RayFlagsOpaqueEXT | gl_RayFlagsSkipClosestHitShaderEXT;
     float tMin = 0.f;
     float tMax = 1000.f;
-    rayQueryInitializeEXT(localRayQuery, accNV0, rayFlags, 0xFF , origin, tMin, dir, tMax);
+    rayQueryInitializeEXT(localRayQuery, acc0, rayFlags, 0xFF , origin, tMin, dir, tMax);
     if (!rayQueryProceedEXT(localRayQuery))
     {
         rayQueryTerminateEXT(localRayQuery);
