@@ -115,6 +115,10 @@ INSTANTIATE_TEST_CASE_P(
 			"link.vk.differentPC.0.2.frag"},
 		{"link.vk.differentPC.1.0.frag", "link.vk.differentPC.1.1.frag",
 			"link.vk.differentPC.1.2.frag"},
+        {"link.vk.pcNamingValid.0.0.vert", "link.vk.pcNamingValid.0.1.vert"},
+        {"link.vk.pcNamingInvalid.0.0.vert", "link.vk.pcNamingInvalid.0.1.vert"},
+        {"link.vk.multiBlocksValid.0.0.vert", "link.vk.multiBlocksValid.0.1.vert"},
+        {"link.vk.multiBlocksValid.1.0.geom", "link.vk.multiBlocksValid.1.1.geom"},
     }))
 );
 // clang-format on
