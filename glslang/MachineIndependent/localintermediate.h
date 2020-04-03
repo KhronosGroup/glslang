@@ -227,8 +227,8 @@ enum ComputeDerivativeMode {
 
 class TIdMaps {
 public:
-    TMap<TString, int>& operator[](int i) { return maps[i]; };
-    const TMap<TString, int>& operator[](int i) const { return maps[i]; };
+    TMap<TString, int>& operator[](int i) { return maps[i]; }
+    const TMap<TString, int>& operator[](int i) const { return maps[i]; }
 private:
     TMap<TString, int> maps[EsiCount];
 };
@@ -256,7 +256,7 @@ public:
         inputPrimitive(ElgNone), outputPrimitive(ElgNone),
         pixelCenterInteger(false), originUpperLeft(false),
         vertexSpacing(EvsNone), vertexOrder(EvoNone), interlockOrdering(EioNone), pointMode(false), earlyFragmentTests(false),
-        postDepthCoverage(false), depthLayout(EldNone), 
+        postDepthCoverage(false), depthLayout(EldNone),
         hlslFunctionality1(false),
         blendEquations(0), xfbMode(false), multiStream(false),
         layoutOverrideCoverage(false),
@@ -595,7 +595,7 @@ public:
             processes.addProcess("flatten-uniform-arrays");
     }
     bool getFlattenUniformArrays() const { return flattenUniformArrays; }
-#endif 
+#endif
     void setNoStorageFormat(bool b)
     {
         useUnknownFormat = b;
