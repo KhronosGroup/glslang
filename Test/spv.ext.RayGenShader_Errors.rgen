@@ -34,6 +34,7 @@ void main()
     mat4x3 e11 = gl_WorldToObjectEXT;                        // ERROR, unsupported builtin in stage
     float e12 = gl_HitTEXT;                                  // ERROR, unsupported builtin in stage
     float e13 = gl_HitKindEXT;                               // ERROR, unsupported builtin in stage
+    int e14 = gl_RayFlagsSkipAABBEXT;                        // ERROR, unsupported builtin in stage
     reportIntersectionEXT(1.0, 1U);                          // ERROR, unsupported builtin in stage
     ignoreIntersectionEXT();                                 // ERROR, unsupported builtin in stage
     terminateRayEXT();                                       // ERROR, unsupported builtin in stage
