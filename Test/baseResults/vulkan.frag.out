@@ -7,14 +7,14 @@ ERROR: 0:8: 'binding' : sampler/texture/image requires layout(binding=X)
 ERROR: 0:9: 'binding' : sampler/texture/image requires layout(binding=X) 
 ERROR: 0:10: 'binding' : sampler/texture/image requires layout(binding=X) 
 ERROR: 0:14: 'sampler2D' : sampler-constructor requires two arguments 
-ERROR: 0:15: 'sampler2D' : sampler-constructor first argument must be a scalar textureXXX type 
-ERROR: 0:16: 'sampler2D' : sampler-constructor first argument must be a scalar textureXXX type 
-ERROR: 0:17: 'sampler2D' : sampler-constructor second argument must be a scalar type 'sampler' 
-ERROR: 0:18: 'sampler2D' : sampler-constructor second argument must be a scalar type 'sampler' 
-ERROR: 0:19: 'sampler2D' : sampler-constructor second argument must be a scalar type 'sampler' 
+ERROR: 0:15: 'sampler2D' : sampler-constructor first argument must be a scalar *texture* type 
+ERROR: 0:16: 'sampler2D' : sampler-constructor first argument must be a scalar *texture* type 
+ERROR: 0:17: 'sampler2D' : sampler-constructor second argument must be a scalar sampler or samplerShadow 
+ERROR: 0:18: 'sampler2D' : sampler-constructor second argument must be a scalar sampler or samplerShadow 
+ERROR: 0:19: 'sampler2D' : sampler-constructor second argument must be a scalar sampler or samplerShadow 
 ERROR: 0:21: 'sampler3D' : sampler-constructor cannot make an array of samplers 
-ERROR: 0:22: 'sampler2D' : sampler-constructor first argument must be a scalar textureXXX type 
-ERROR: 0:23: 'sampler2D' : sampler-constructor first argument must match type and dimensionality of constructor type 
+ERROR: 0:22: 'sampler2D' : sampler-constructor first argument must be a scalar *texture* type 
+ERROR: 0:23: 'sampler2D' : sampler-constructor first argument must be a *texture* type matching the dimensionality and sampled type of the constructor 
 ERROR: 0:28: 'sampler2D' : sampler/image types can only be used in uniform variables or function parameters: s2D
 ERROR: 0:29: 'sampler3D' : sampler-constructor cannot make an array of samplers 
 ERROR: 0:29: 'sampler3D' : sampler/image types can only be used in uniform variables or function parameters: s3d
