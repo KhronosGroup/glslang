@@ -1,5 +1,6 @@
 #version 460
 #extension GL_EXT_ray_tracing : enable
+#extension GL_EXT_ray_flags_primitive_culling : enable
 layout(binding = 0, set = 0) uniform accelerationStructureEXT accEXT0;
 layout(binding = 1, set = 0) uniform accelerationStructureEXT accEXT1; // Unused
 layout(binding = 2, r32ui) shadercallcoherent uniform uimage2D imageu;
@@ -16,5 +17,5 @@ void main()
     uint ly = gl_LaunchIDEXT.y;
     uint sx = gl_LaunchSizeEXT.x;
     uint sy = gl_LaunchSizeEXT.y;
-    traceRayEXT(accEXT0, lx, ly, sx, sy, 0u, origin, 0.5f, dir, 0.75f, 1);
+    traceRayEXT(accEXT0, lx, ly, sx, sy, gl_RayFlagsSkipTrianglesEXT | gl_RayFlagsSkipAABBEXT, origin, 0.5f, dir, 0.75f, 1);
 }

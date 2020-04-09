@@ -1,6 +1,6 @@
 #version 460
-#extension GL_NV_ray_tracing : enable
 #extension GL_EXT_ray_query : enable
+#extension GL_EXT_ray_flags_primitive_culling : enable
 
 struct Ray
 {
@@ -192,7 +192,7 @@ void main()
         doSomething();
     }
 
-    if (rayQueryGetRayFlagsEXT(rayQuery) > 0)
+    if (rayQueryGetRayFlagsEXT(rayQuery) > gl_RayFlagsSkipTrianglesEXT)
     {
         doSomething();
     }

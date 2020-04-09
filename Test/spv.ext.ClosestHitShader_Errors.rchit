@@ -9,4 +9,5 @@ void main()
     reportIntersectionEXT(1.0, 1U);                          // ERROR, unsupported builtin in stage 
     terminateRayEXT();
     ignoreIntersectionEXT();
+    bool e1 = gl_IncomingRayFlagsEXT == gl_RayFlagsSkipAABBEXT;
 }
