@@ -598,6 +598,7 @@ INSTANTIATE_TEST_CASE_P(
         "spv.glFragColor.frag",
         "spv.rankShift.comp",
         "spv.specConst.vert",
+        "spv.specTexture.frag",
         "spv.OVR_multiview.vert",
         "spv.xfbOffsetOnBlockMembersAssignment.vert",
         "spv.xfbOffsetOnStructMembersAssignment.vert",
