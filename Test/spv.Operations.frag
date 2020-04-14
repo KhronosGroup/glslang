@@ -97,6 +97,13 @@ void main()
     u += max(u, uui);
     u += clamp(u, uui, uui);
 
+    // multiple out operands
+    uvec4 msb;
+    uvec4 lsb;
+    umulExtended(uuv4.xyz, uuv4.xyz, msb.xyz, lsb.xyz);
+    u += msb.x + msb.y + msb.z;
+    u += lsb.x + lsb.y + lsb.z;
+
 	//// bool
 	b = isnan(uf);
     b = isinf(f);
