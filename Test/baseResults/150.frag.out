@@ -10,12 +10,14 @@ ERROR: 0:53: 'double' : not supported for this version or the enabled extensions
 ERROR: 0:53: 'double' : must be qualified as flat in
 ERROR: 0:57: '=' :  cannot convert from ' global double' to ' global int'
 ERROR: 0:80: 'floatBitsToInt' : required extension not requested: GL_ARB_shader_bit_encoding
-ERROR: 11 compilation errors.  No code generated.
+ERROR: 0:100: 'packSnorm2x16' : required extension not requested: GL_ARB_shading_language_packing
+ERROR: 12 compilation errors.  No code generated.
 
 
 Shader version: 150
 Requested GL_ARB_gpu_shader_fp64
 Requested GL_ARB_shader_bit_encoding
+Requested GL_ARB_shading_language_packing
 gl_FragCoord pixel center is integer
 gl_FragCoord origin is upper left
 ERROR: node is still EOpNull!
@@ -167,6 +169,47 @@ ERROR: node is still EOpNull!
 0:80          'i' ( temp int)
 0:80          floatBitsToInt ( global int)
 0:80            'f' ( global float)
+0:87  Function Definition: packingPass( ( global void)
+0:87    Function Parameters: 
+0:89    Sequence
+0:89      Sequence
+0:89        move second child to first child ( temp uint)
+0:89          'u19' ( temp uint)
+0:89          packSnorm2x16 ( global uint)
+0:89            'v2a' ( global 2-component vector of float)
+0:90      Sequence
+0:90        move second child to first child ( temp 2-component vector of float)
+0:90          'v20' ( temp 2-component vector of float)
+0:90          unpackSnorm2x16 ( global 2-component vector of float)
+0:90            'uy' ( global uint)
+0:91      Sequence
+0:91        move second child to first child ( temp uint)
+0:91          'u15' ( temp uint)
+0:91          packUnorm2x16 ( global uint)
+0:91            'v2a' ( global 2-component vector of float)
+0:92      Sequence
+0:92        move second child to first child ( temp 2-component vector of float)
+0:92          'v16' ( temp 2-component vector of float)
+0:92          unpackUnorm2x16 ( global 2-component vector of float)
+0:92            'uy' ( global uint)
+0:93      Sequence
+0:93        move second child to first child ( temp uint)
+0:93          'u17' ( temp uint)
+0:93          packHalf2x16 ( global uint)
+0:93            'v2a' ( global 2-component vector of float)
+0:94      Sequence
+0:94        move second child to first child ( temp 2-component vector of float)
+0:94          'v18' ( temp 2-component vector of float)
+0:94          unpackHalf2x16 ( global 2-component vector of float)
+0:94            'uy' ( global uint)
+0:98  Function Definition: packingFail( ( global void)
+0:98    Function Parameters: 
+0:100    Sequence
+0:100      Sequence
+0:100        move second child to first child ( temp uint)
+0:100          'u19' ( temp uint)
+0:100          packSnorm2x16 ( global uint)
+0:100            'v2a' ( global 2-component vector of float)
 0:?   Linker Objects
 0:?     'gl_FragCoord' ( gl_FragCoord 4-component vector of float FragCoord)
 0:?     'foo' ( smooth in 4-component vector of float)
@@ -192,6 +235,8 @@ ERROR: node is still EOpNull!
 0:?     'v4' ( global 4-component vector of float)
 0:?     'iv4a' ( global 4-component vector of int)
 0:?     'uv2c' ( global 2-component vector of uint)
+0:?     'v2a' ( global 2-component vector of float)
+0:?     'uy' ( global uint)
 
 
 Linked fragment stage:
@@ -200,6 +245,7 @@ Linked fragment stage:
 Shader version: 150
 Requested GL_ARB_gpu_shader_fp64
 Requested GL_ARB_shader_bit_encoding
+Requested GL_ARB_shading_language_packing
 gl_FragCoord pixel center is integer
 gl_FragCoord origin is upper left
 ERROR: node is still EOpNull!
@@ -260,4 +306,6 @@ ERROR: node is still EOpNull!
 0:?     'v4' ( global 4-component vector of float)
 0:?     'iv4a' ( global 4-component vector of int)
 0:?     'uv2c' ( global 2-component vector of uint)
+0:?     'v2a' ( global 2-component vector of float)
+0:?     'uy' ( global uint)
 

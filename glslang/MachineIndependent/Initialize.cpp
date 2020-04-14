@@ -1349,7 +1349,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
 #endif
 
     if ((profile == EEsProfile && version >= 300) ||
-        (profile != EEsProfile && version >= 400)) {
+        (profile != EEsProfile && version >= 150)) {
         commonBuiltins.append(
             "highp uint packUnorm2x16(vec2);"
                   "vec2 unpackUnorm2x16(highp uint);"
@@ -1357,7 +1357,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
     }
 
     if ((profile == EEsProfile && version >= 300) ||
-        (profile != EEsProfile && version >= 420)) {
+        (profile != EEsProfile && version >= 150)) {
         commonBuiltins.append(
             "highp uint packSnorm2x16(vec2);"
             "      vec2 unpackSnorm2x16(highp uint);"
@@ -1369,7 +1369,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
         commonBuiltins.append(
             "mediump vec2 unpackHalf2x16(highp uint);"
             "\n");
-    } else if (profile != EEsProfile && version >= 420) {
+    } else if (profile != EEsProfile && version >= 150) {
         commonBuiltins.append(
             "        vec2 unpackHalf2x16(highp uint);"
             "\n");
@@ -1377,7 +1377,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
 
 #ifndef GLSLANG_WEB
     if ((profile == EEsProfile && version >= 310) ||
-        (profile != EEsProfile && version >= 400)) {
+        (profile != EEsProfile && version >= 150)) {
         commonBuiltins.append(
             "highp uint packSnorm4x8(vec4);"
             "highp uint packUnorm4x8(vec4);"
@@ -1389,7 +1389,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "mediump vec4 unpackSnorm4x8(highp uint);"
             "mediump vec4 unpackUnorm4x8(highp uint);"
             "\n");
-    } else if (profile != EEsProfile && version >= 400) {
+    } else if (profile != EEsProfile && version >= 150) {
         commonBuiltins.append(
                     "vec4 unpackSnorm4x8(highp uint);"
                     "vec4 unpackUnorm4x8(highp uint);"
@@ -7842,6 +7842,22 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setFunctionExtensions("atomicXor", 1, &E_GL_ARB_shader_storage_buffer_object);
             symbolTable.setFunctionExtensions("atomicExchange", 1, &E_GL_ARB_shader_storage_buffer_object);
             symbolTable.setFunctionExtensions("atomicCompSwap", 1, &E_GL_ARB_shader_storage_buffer_object);
+        }
+
+        // GL_ARB_shading_language_packing
+        if (profile != EEsProfile && version < 400 ) {
+            symbolTable.setFunctionExtensions("packUnorm2x16", 1, &E_GL_ARB_shading_language_packing);
+            symbolTable.setFunctionExtensions("unpackUnorm2x16", 1, &E_GL_ARB_shading_language_packing);
+            symbolTable.setFunctionExtensions("packSnorm4x8", 1, &E_GL_ARB_shading_language_packing);
+            symbolTable.setFunctionExtensions("packUnorm4x8", 1, &E_GL_ARB_shading_language_packing);
+            symbolTable.setFunctionExtensions("unpackSnorm4x8", 1, &E_GL_ARB_shading_language_packing);
+            symbolTable.setFunctionExtensions("unpackUnorm4x8", 1, &E_GL_ARB_shading_language_packing);
+        }
+        if (profile != EEsProfile && version < 420 ) {
+            symbolTable.setFunctionExtensions("packSnorm2x16", 1, &E_GL_ARB_shading_language_packing);
+            symbolTable.setFunctionExtensions("unpackSnorm2x16", 1, &E_GL_ARB_shading_language_packing);
+            symbolTable.setFunctionExtensions("unpackHalf2x16", 1, &E_GL_ARB_shading_language_packing);
+            symbolTable.setFunctionExtensions("packHalf2x16", 1, &E_GL_ARB_shading_language_packing);
         }
 
         symbolTable.setVariableExtensions("gl_DeviceIndex",  1, &E_GL_EXT_device_group);
