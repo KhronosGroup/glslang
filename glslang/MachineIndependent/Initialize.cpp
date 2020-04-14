@@ -5805,7 +5805,7 @@ void TBuiltIns::addQueryFunctions(TSampler sampler, const TString& typeName, int
     return;
 #endif
 
-    if (sampler.isImage() && ((profile == EEsProfile && version < 310) || (profile != EEsProfile && version < 430)))
+    if (sampler.isImage() && ((profile == EEsProfile && version < 310) || (profile != EEsProfile && version < 420)))
         return;
 
     if (profile == EEsProfile)
@@ -7821,6 +7821,10 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setFunctionExtensions("floatBitsToUint", 1, &E_GL_ARB_shader_bit_encoding);
             symbolTable.setFunctionExtensions("intBitsToFloat", 1, &E_GL_ARB_shader_bit_encoding);
             symbolTable.setFunctionExtensions("uintBitsToFloat", 1, &E_GL_ARB_shader_bit_encoding);
+        }
+
+        if (profile != EEsProfile && version < 430 ) {
+            symbolTable.setFunctionExtensions("imageSize", 1, &E_GL_ARB_shader_image_size);
         }
 
         symbolTable.setVariableExtensions("gl_DeviceIndex",  1, &E_GL_EXT_device_group);
