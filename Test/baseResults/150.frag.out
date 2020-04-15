@@ -9,11 +9,13 @@ ERROR: 0:53: 'double' : Reserved word.
 ERROR: 0:53: 'double' : not supported for this version or the enabled extensions 
 ERROR: 0:53: 'double' : must be qualified as flat in
 ERROR: 0:57: '=' :  cannot convert from ' global double' to ' global int'
-ERROR: 10 compilation errors.  No code generated.
+ERROR: 0:80: 'floatBitsToInt' : required extension not requested: GL_ARB_shader_bit_encoding
+ERROR: 11 compilation errors.  No code generated.
 
 
 Shader version: 150
 Requested GL_ARB_gpu_shader_fp64
+Requested GL_ARB_shader_bit_encoding
 gl_FragCoord pixel center is integer
 gl_FragCoord origin is upper left
 ERROR: node is still EOpNull!
@@ -134,6 +136,37 @@ ERROR: node is still EOpNull!
 0:60      'dk' ( global float)
 0:60      Constant:
 0:60        3.316625
+0:68  Function Definition: bitEncodingPass( ( global void)
+0:68    Function Parameters: 
+0:70    Sequence
+0:70      Sequence
+0:70        move second child to first child ( temp int)
+0:70          'i' ( temp int)
+0:70          floatBitsToInt ( global int)
+0:70            'f' ( global float)
+0:71      Sequence
+0:71        move second child to first child ( temp 4-component vector of uint)
+0:71          'uv11' ( temp 4-component vector of uint)
+0:71          floatBitsToUint ( global 4-component vector of uint)
+0:71            'v4' ( global 4-component vector of float)
+0:72      Sequence
+0:72        move second child to first child ( temp 4-component vector of float)
+0:72          'v14' ( temp 4-component vector of float)
+0:72          intBitsToFloat ( global 4-component vector of float)
+0:72            'iv4a' ( global 4-component vector of int)
+0:73      Sequence
+0:73        move second child to first child ( temp 2-component vector of float)
+0:73          'v15' ( temp 2-component vector of float)
+0:73          uintBitsToFloat ( global 2-component vector of float)
+0:73            'uv2c' ( global 2-component vector of uint)
+0:78  Function Definition: bitEncodingFail( ( global void)
+0:78    Function Parameters: 
+0:80    Sequence
+0:80      Sequence
+0:80        move second child to first child ( temp int)
+0:80          'i' ( temp int)
+0:80          floatBitsToInt ( global int)
+0:80            'f' ( global float)
 0:?   Linker Objects
 0:?     'gl_FragCoord' ( gl_FragCoord 4-component vector of float FragCoord)
 0:?     'foo' ( smooth in 4-component vector of float)
@@ -155,6 +188,10 @@ ERROR: node is still EOpNull!
 0:?     'absTest2' ( global double)
 0:?     'absTest3' ( global double)
 0:?     'dk' ( global float)
+0:?     'f' ( global float)
+0:?     'v4' ( global 4-component vector of float)
+0:?     'iv4a' ( global 4-component vector of int)
+0:?     'uv2c' ( global 2-component vector of uint)
 
 
 Linked fragment stage:
@@ -162,6 +199,7 @@ Linked fragment stage:
 
 Shader version: 150
 Requested GL_ARB_gpu_shader_fp64
+Requested GL_ARB_shader_bit_encoding
 gl_FragCoord pixel center is integer
 gl_FragCoord origin is upper left
 ERROR: node is still EOpNull!
@@ -218,4 +256,8 @@ ERROR: node is still EOpNull!
 0:?     'absTest2' ( global double)
 0:?     'absTest3' ( global double)
 0:?     'dk' ( global float)
+0:?     'f' ( global float)
+0:?     'v4' ( global 4-component vector of float)
+0:?     'iv4a' ( global 4-component vector of int)
+0:?     'uv2c' ( global 2-component vector of uint)
 
