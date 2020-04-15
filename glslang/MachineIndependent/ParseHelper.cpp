@@ -5685,7 +5685,7 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
         if (repeated >= 0)
             error(loc, "overlapping offsets at", "xfb_offset", "offset %d in buffer %d", repeated, qualifier.layoutXfbBuffer);
         if (type.isUnsizedArray())
-            error(loc, "unsized array at", "xfb_offset", "in buffer %d", qualifier.layoutXfbBuffer);
+            error(loc, "unsized array", "xfb_offset", "in buffer %d", qualifier.layoutXfbBuffer);
 
         // "The offset must be a multiple of the size of the first component of the first
         // qualified variable or block member, or a compile-time error results. Further, if applied to an aggregate
