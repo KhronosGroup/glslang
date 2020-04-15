@@ -11,13 +11,20 @@ ERROR: 0:53: 'double' : must be qualified as flat in
 ERROR: 0:57: '=' :  cannot convert from ' global double' to ' global int'
 ERROR: 0:80: 'floatBitsToInt' : required extension not requested: GL_ARB_shader_bit_encoding
 ERROR: 0:100: 'packSnorm2x16' : required extension not requested: GL_ARB_shading_language_packing
-ERROR: 12 compilation errors.  No code generated.
+ERROR: 0:114: 'textureQueryLod' : required extension not requested: GL_ARB_texture_query_lod
+ERROR: 0:115: 'textureQueryLod' : required extension not requested: GL_ARB_texture_query_lod
+ERROR: 0:154: 'textureQueryLod' : no matching overloaded function found 
+ERROR: 0:154: 'assign' :  cannot convert from ' const float' to ' temp 2-component vector of float'
+ERROR: 0:155: 'textureQueryLod' : no matching overloaded function found 
+ERROR: 0:155: 'assign' :  cannot convert from ' const float' to ' temp 2-component vector of float'
+ERROR: 18 compilation errors.  No code generated.
 
 
 Shader version: 150
 Requested GL_ARB_gpu_shader_fp64
 Requested GL_ARB_shader_bit_encoding
 Requested GL_ARB_shading_language_packing
+Requested GL_ARB_texture_query_lod
 gl_FragCoord pixel center is integer
 gl_FragCoord origin is upper left
 ERROR: node is still EOpNull!
@@ -210,6 +217,79 @@ ERROR: node is still EOpNull!
 0:100          'u19' ( temp uint)
 0:100          packSnorm2x16 ( global uint)
 0:100            'v2a' ( global 2-component vector of float)
+0:107  Function Definition: qlodFail( ( global void)
+0:107    Function Parameters: 
+0:?     Sequence
+0:114      move second child to first child ( temp 2-component vector of float)
+0:114        'lod' ( temp 2-component vector of float)
+0:114        textureQueryLod ( global 2-component vector of float)
+0:114          'samp1D' ( uniform sampler1D)
+0:114          'pf' ( temp float)
+0:115      move second child to first child ( temp 2-component vector of float)
+0:115        'lod' ( temp 2-component vector of float)
+0:115        textureQueryLod ( global 2-component vector of float)
+0:115          'samp2Ds' ( uniform sampler2DShadow)
+0:115          'pf2' ( temp 2-component vector of float)
+0:134  Function Definition: qlodPass( ( global void)
+0:134    Function Parameters: 
+0:?     Sequence
+0:141      move second child to first child ( temp 2-component vector of float)
+0:141        'lod' ( temp 2-component vector of float)
+0:141        textureQueryLod ( global 2-component vector of float)
+0:141          'samp1D' ( uniform sampler1D)
+0:141          'pf' ( temp float)
+0:142      move second child to first child ( temp 2-component vector of float)
+0:142        'lod' ( temp 2-component vector of float)
+0:142        textureQueryLod ( global 2-component vector of float)
+0:142          'isamp2D' ( uniform isampler2D)
+0:142          'pf2' ( temp 2-component vector of float)
+0:143      move second child to first child ( temp 2-component vector of float)
+0:143        'lod' ( temp 2-component vector of float)
+0:143        textureQueryLod ( global 2-component vector of float)
+0:143          'usamp3D' ( uniform usampler3D)
+0:143          'pf3' ( temp 3-component vector of float)
+0:144      move second child to first child ( temp 2-component vector of float)
+0:144        'lod' ( temp 2-component vector of float)
+0:144        textureQueryLod ( global 2-component vector of float)
+0:144          'sampCube' ( uniform samplerCube)
+0:144          'pf3' ( temp 3-component vector of float)
+0:145      move second child to first child ( temp 2-component vector of float)
+0:145        'lod' ( temp 2-component vector of float)
+0:145        textureQueryLod ( global 2-component vector of float)
+0:145          'isamp1DA' ( uniform isampler1DArray)
+0:145          'pf' ( temp float)
+0:146      move second child to first child ( temp 2-component vector of float)
+0:146        'lod' ( temp 2-component vector of float)
+0:146        textureQueryLod ( global 2-component vector of float)
+0:146          'usamp2DA' ( uniform usampler2DArray)
+0:146          'pf2' ( temp 2-component vector of float)
+0:148      move second child to first child ( temp 2-component vector of float)
+0:148        'lod' ( temp 2-component vector of float)
+0:148        textureQueryLod ( global 2-component vector of float)
+0:148          'samp1Ds' ( uniform sampler1DShadow)
+0:148          'pf' ( temp float)
+0:149      move second child to first child ( temp 2-component vector of float)
+0:149        'lod' ( temp 2-component vector of float)
+0:149        textureQueryLod ( global 2-component vector of float)
+0:149          'samp2Ds' ( uniform sampler2DShadow)
+0:149          'pf2' ( temp 2-component vector of float)
+0:150      move second child to first child ( temp 2-component vector of float)
+0:150        'lod' ( temp 2-component vector of float)
+0:150        textureQueryLod ( global 2-component vector of float)
+0:150          'sampCubes' ( uniform samplerCubeShadow)
+0:150          'pf3' ( temp 3-component vector of float)
+0:151      move second child to first child ( temp 2-component vector of float)
+0:151        'lod' ( temp 2-component vector of float)
+0:151        textureQueryLod ( global 2-component vector of float)
+0:151          'samp1DAs' ( uniform sampler1DArrayShadow)
+0:151          'pf' ( temp float)
+0:152      move second child to first child ( temp 2-component vector of float)
+0:152        'lod' ( temp 2-component vector of float)
+0:152        textureQueryLod ( global 2-component vector of float)
+0:152          'samp2DAs' ( uniform sampler2DArrayShadow)
+0:152          'pf2' ( temp 2-component vector of float)
+0:154      'lod' ( temp 2-component vector of float)
+0:155      'lod' ( temp 2-component vector of float)
 0:?   Linker Objects
 0:?     'gl_FragCoord' ( gl_FragCoord 4-component vector of float FragCoord)
 0:?     'foo' ( smooth in 4-component vector of float)
@@ -237,6 +317,19 @@ ERROR: node is still EOpNull!
 0:?     'uv2c' ( global 2-component vector of uint)
 0:?     'v2a' ( global 2-component vector of float)
 0:?     'uy' ( global uint)
+0:?     'samp1D' ( uniform sampler1D)
+0:?     'samp2Ds' ( uniform sampler2DShadow)
+0:?     'isamp2D' ( uniform isampler2D)
+0:?     'usamp3D' ( uniform usampler3D)
+0:?     'sampCube' ( uniform samplerCube)
+0:?     'isamp1DA' ( uniform isampler1DArray)
+0:?     'usamp2DA' ( uniform usampler2DArray)
+0:?     'samp1Ds' ( uniform sampler1DShadow)
+0:?     'sampCubes' ( uniform samplerCubeShadow)
+0:?     'samp1DAs' ( uniform sampler1DArrayShadow)
+0:?     'samp2DAs' ( uniform sampler2DArrayShadow)
+0:?     'sampBuf' ( uniform samplerBuffer)
+0:?     'sampRect' ( uniform sampler2DRect)
 
 
 Linked fragment stage:
@@ -246,6 +339,7 @@ Shader version: 150
 Requested GL_ARB_gpu_shader_fp64
 Requested GL_ARB_shader_bit_encoding
 Requested GL_ARB_shading_language_packing
+Requested GL_ARB_texture_query_lod
 gl_FragCoord pixel center is integer
 gl_FragCoord origin is upper left
 ERROR: node is still EOpNull!
@@ -308,4 +402,17 @@ ERROR: node is still EOpNull!
 0:?     'uv2c' ( global 2-component vector of uint)
 0:?     'v2a' ( global 2-component vector of float)
 0:?     'uy' ( global uint)
+0:?     'samp1D' ( uniform sampler1D)
+0:?     'samp2Ds' ( uniform sampler2DShadow)
+0:?     'isamp2D' ( uniform isampler2D)
+0:?     'usamp3D' ( uniform usampler3D)
+0:?     'sampCube' ( uniform samplerCube)
+0:?     'isamp1DA' ( uniform isampler1DArray)
+0:?     'usamp2DA' ( uniform usampler2DArray)
+0:?     'samp1Ds' ( uniform sampler1DShadow)
+0:?     'sampCubes' ( uniform samplerCubeShadow)
+0:?     'samp1DAs' ( uniform sampler1DArrayShadow)
+0:?     'samp2DAs' ( uniform sampler2DArrayShadow)
+0:?     'sampBuf' ( uniform samplerBuffer)
+0:?     'sampRect' ( uniform sampler2DRect)
 

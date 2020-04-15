@@ -156,6 +156,7 @@ const char* const E_GL_ARB_shader_bit_encoding          = "GL_ARB_shader_bit_enc
 const char* const E_GL_ARB_shader_image_size            = "GL_ARB_shader_image_size";
 const char* const E_GL_ARB_shader_storage_buffer_object = "GL_ARB_shader_storage_buffer_object";
 const char* const E_GL_ARB_shading_language_packing     = "GL_ARB_shading_language_packing";
+const char* const E_GL_ARB_texture_query_lod            = "GL_ARB_texture_query_lod";
 
 const char* const E_GL_KHR_shader_subgroup_basic            = "GL_KHR_shader_subgroup_basic";
 const char* const E_GL_KHR_shader_subgroup_vote             = "GL_KHR_shader_subgroup_vote";

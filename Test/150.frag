@@ -99,3 +99,58 @@ void packingFail()
 {
     uint u19 = packSnorm2x16(v2a); // Error, extension GL_ARB_shading_language_packing is disabled
 }
+
+// Testing extension GL_ARB_texture_query_lod
+uniform sampler1D samp1D;
+uniform sampler2DShadow samp2Ds;
+
+void qlodFail()
+{
+    vec2 lod;
+    float pf;
+    vec2 pf2;
+    vec3 pf3;
+
+    lod = textureQueryLod(samp1D, pf);      // ERROR, extension GL_ARB_texture_query_lod needed
+    lod = textureQueryLod(samp2Ds, pf2);    // ERROR, extension GL_ARB_texture_query_lod needed
+}
+
+#extension GL_ARB_texture_query_lod : enable
+
+uniform isampler2D isamp2D;
+uniform usampler3D usamp3D;
+uniform samplerCube sampCube;
+uniform isampler1DArray isamp1DA;
+uniform usampler2DArray usamp2DA;
+
+uniform sampler1DShadow samp1Ds;
+uniform samplerCubeShadow sampCubes;
+uniform sampler1DArrayShadow samp1DAs;
+uniform sampler2DArrayShadow samp2DAs;
+
+uniform samplerBuffer sampBuf;
+uniform sampler2DRect sampRect;
+
+void qlodPass()
+{
+    vec2 lod;
+    float pf;
+    vec2 pf2;
+    vec3 pf3;
+
+    lod = textureQueryLod(samp1D, pf);
+    lod = textureQueryLod(isamp2D, pf2);
+    lod = textureQueryLod(usamp3D, pf3);
+    lod = textureQueryLod(sampCube, pf3);
+    lod = textureQueryLod(isamp1DA, pf);
+    lod = textureQueryLod(usamp2DA, pf2);
+
+    lod = textureQueryLod(samp1Ds, pf);
+    lod = textureQueryLod(samp2Ds, pf2);
+    lod = textureQueryLod(sampCubes, pf3);
+    lod = textureQueryLod(samp1DAs, pf);
+    lod = textureQueryLod(samp2DAs, pf2);
+
+    lod = textureQueryLod(sampBuf, pf);     // ERROR
+    lod = textureQueryLod(sampRect, pf2);   // ERROR
+}
