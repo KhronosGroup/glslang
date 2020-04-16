@@ -106,17 +106,14 @@ shell or some other shell of your choosing.
 
 #### 1) Check-Out this project
 
+Clone the repository recursively to initialize all submodules, omit the `--recursive`-flag if you do not intend to use googletest.
+
 ```bash
 cd <parent of where you want glslang to be>
-git clone https://github.com/KhronosGroup/glslang.git
+git clone --recursive https://github.com/KhronosGroup/glslang.git
 ```
 
 #### 2) Check-Out External Projects
-
-```bash
-cd <the directory glslang was cloned to, "External" will be a subdirectory>
-git clone https://github.com/google/googletest.git External/googletest
-```
 
 If you want to use googletest with Visual Studio 2013, you also need to check out an older version:
 

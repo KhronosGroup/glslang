@@ -44,6 +44,7 @@ addons:
       - clang-3.6
 
 install:
+  - git submodule sync && git submodule update --init --recursive
   # Make sure that clang-3.6 is selected on Linux.
   - if [[ "$TRAVIS_OS_NAME" == "linux" && "$CC" == "clang" ]]; then
       export CC=clang-3.6 CXX=clang++-3.6;
@@ -61,7 +62,6 @@ install:
     fi
 
 before_script:
-  - git clone --depth=1 https://github.com/google/googletest.git External/googletest
   - ./update_glslang_sources.py
 
 script:
