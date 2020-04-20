@@ -34,7 +34,7 @@ set(SPVREMAP_HEADERS
     SPVRemapper.h
     doc.h)
 
-add_library(SPIRV ${LIB_TYPE} ${SOURCES} ${HEADERS})
+add_library(SPIRV STATIC ${SOURCES} ${HEADERS})
 set_property(TARGET SPIRV PROPERTY FOLDER glslang)
 set_property(TARGET SPIRV PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_include_directories(SPIRV PUBLIC
@@ -48,7 +48,6 @@ if (ENABLE_SPVREMAPPER)
 endif()
 
 if(WIN32 AND BUILD_SHARED_LIBS)
-    set_target_properties(SPIRV PROPERTIES PREFIX "")
     if (ENABLE_SPVREMAPPER)
         set_target_properties(SPVRemapper PROPERTIES PREFIX "")
     endif()
@@ -59,12 +58,12 @@ if(ENABLE_OPT)
         PRIVATE ${spirv-tools_SOURCE_DIR}/include
         PRIVATE ${spirv-tools_SOURCE_DIR}/source
     )
-    target_link_libraries(SPIRV glslang SPIRV-Tools-opt)
+    target_link_libraries(SPIRV SPIRV-Tools-opt)
     target_include_directories(SPIRV PUBLIC
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../External>
 		$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/External>)
 else()
-    target_link_libraries(SPIRV glslang)
+    target_link_libraries(SPIRV)
 endif(ENABLE_OPT)
 
 if(WIN32)
@@ -79,18 +78,15 @@ if(ENABLE_GLSLANG_INSTALL)
                     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
                     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
         endif()
-        install(TARGETS SPIRV EXPORT SPIRVTargets
-                ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-                LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-                RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
     else()
         if (ENABLE_SPVREMAPPER)
             install(TARGETS SPVRemapper EXPORT SPVRemapperTargets
                     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
         endif()
-        install(TARGETS SPIRV EXPORT SPIRVTargets
-                ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
     endif()
+
+    install(TARGETS SPIRV EXPORT SPIRVTargets
+            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
     if (ENABLE_SPVREMAPPER)
         install(EXPORT SPVRemapperTargets DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake)

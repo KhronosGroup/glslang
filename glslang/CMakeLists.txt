@@ -98,6 +98,8 @@ if(ENABLE_HLSL)
     target_link_libraries(glslang HLSL)
 endif()
 
+target_link_libraries(glslang SPIRV)
+
 if(WIN32)
     source_group("Public" REGULAR_EXPRESSION "Public/*")
     source_group("MachineIndependent" REGULAR_EXPRESSION "MachineIndependent/[^/]*")
