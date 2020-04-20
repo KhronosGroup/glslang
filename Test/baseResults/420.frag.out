@@ -3,10 +3,12 @@ ERROR: 0:4: 'redeclaration' : all redeclarations must use the same depth layout 
 ERROR: 0:11: 'layout qualifier' : can only apply depth layout to gl_FragDepth 
 ERROR: 0:12: 'gl_FragDepth' : cannot redeclare after use 
 ERROR: 0:14: 'atomic_uint' : array must be explicitly sized 
-ERROR: 4 compilation errors.  No code generated.
+ERROR: 0:17: 'imageSize' : required extension not requested: GL_ARB_shader_image_size
+ERROR: 5 compilation errors.  No code generated.
 
 
 Shader version: 420
+Requested GL_ARB_shader_image_size
 using depth_any
 ERROR: node is still EOpNull!
 0:6  Function Definition: main( ( global void)
@@ -16,16 +18,30 @@ ERROR: node is still EOpNull!
 0:8        'gl_FragDepth' ( gl_FragDepth float FragDepth)
 0:8        Constant:
 0:8          0.300000
+0:17  Sequence
+0:17    move second child to first child ( temp 2-component vector of int)
+0:17      'iv2dim' ( global 2-component vector of int)
+0:17      imageQuerySize ( global 2-component vector of int)
+0:17        'i2D' ( writeonly uniform image2D)
+0:19  Sequence
+0:19    move second child to first child ( temp 2-component vector of int)
+0:19      'iv2dim1' ( global 2-component vector of int)
+0:19      imageQuerySize ( global 2-component vector of int)
+0:19        'i2D' ( writeonly uniform image2D)
 0:?   Linker Objects
 0:?     'gl_FragDepth' ( gl_FragDepth float FragDepth)
 0:?     'depth' ( smooth in float)
 0:?     'a' (layout( binding=0 offset=0) uniform unsized 1-element array of atomic_uint)
+0:?     'i2D' ( writeonly uniform image2D)
+0:?     'iv2dim' ( global 2-component vector of int)
+0:?     'iv2dim1' ( global 2-component vector of int)
 
 
 Linked fragment stage:
 
 
 Shader version: 420
+Requested GL_ARB_shader_image_size
 using depth_any
 ERROR: node is still EOpNull!
 0:6  Function Definition: main( ( global void)
@@ -35,8 +51,21 @@ ERROR: node is still EOpNull!
 0:8        'gl_FragDepth' ( gl_FragDepth float FragDepth)
 0:8        Constant:
 0:8          0.300000
+0:17  Sequence
+0:17    move second child to first child ( temp 2-component vector of int)
+0:17      'iv2dim' ( global 2-component vector of int)
+0:17      imageQuerySize ( global 2-component vector of int)
+0:17        'i2D' ( writeonly uniform image2D)
+0:19  Sequence
+0:19    move second child to first child ( temp 2-component vector of int)
+0:19      'iv2dim1' ( global 2-component vector of int)
+0:19      imageQuerySize ( global 2-component vector of int)
+0:19        'i2D' ( writeonly uniform image2D)
 0:?   Linker Objects
 0:?     'gl_FragDepth' ( gl_FragDepth float FragDepth)
 0:?     'depth' ( smooth in float)
 0:?     'a' (layout( binding=0 offset=0) uniform 1-element array of atomic_uint)
+0:?     'i2D' ( writeonly uniform image2D)
+0:?     'iv2dim' ( global 2-component vector of int)
+0:?     'iv2dim1' ( global 2-component vector of int)
 

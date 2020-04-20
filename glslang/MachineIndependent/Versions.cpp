@@ -198,6 +198,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_ARB_uniform_buffer_object]        = EBhDisable;
     extensionBehavior[E_GL_ARB_sample_shading]               = EBhDisable;
     extensionBehavior[E_GL_ARB_shader_bit_encoding]          = EBhDisable;
+    extensionBehavior[E_GL_ARB_shader_image_size]            = EBhDisable;
 
     extensionBehavior[E_GL_KHR_shader_subgroup_basic]            = EBhDisable;
     extensionBehavior[E_GL_KHR_shader_subgroup_vote]             = EBhDisable;
@@ -406,6 +407,7 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_ARB_sparse_texture_clamp 1\n"
             "#define GL_ARB_shader_stencil_export 1\n"
             "#define GL_ARB_sample_shading 1\n"
+            "#define GL_ARB_shader_image_size 1\n"
 //            "#define GL_ARB_cull_distance 1\n"    // present for 4.5, but need extension control over block members
             "#define GL_ARB_post_depth_coverage 1\n"
             "#define GL_ARB_fragment_shader_interlock 1\n"
