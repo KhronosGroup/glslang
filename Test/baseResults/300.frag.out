@@ -41,15 +41,18 @@ ERROR: 0:129: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset,
 ERROR: 0:148: 'qualifier' : cannot use auxiliary, memory, interpolation, or precision qualifier in a default qualifier declaration (declaration with no type) 
 ERROR: 0:150: 'early_fragment_tests' : not supported for this version or the enabled extensions 
 ERROR: 0:177: 'specific signature of builtin mix' : required extension not requested: GL_EXT_shader_integer_mix
-ERROR: 0:184: 'invariant' : can only apply to an output 
-ERROR: 0:185: 'invariant' : can only apply to an output 
-ERROR: 0:186: 'invariant' : can only apply to an output 
-ERROR: 0:188: 'imageBuffer' : Reserved word. 
-ERROR: 0:188: '' :  syntax error, unexpected IMAGEBUFFER, expecting COMMA or SEMICOLON
-ERROR: 47 compilation errors.  No code generated.
+ERROR: 0:181: 'index layout qualifier on fragment output' : not supported for this version or the enabled extensions 
+ERROR: 0:183: 'index' : value must be 0 or 1 
+ERROR: 0:189: 'invariant' : can only apply to an output 
+ERROR: 0:190: 'invariant' : can only apply to an output 
+ERROR: 0:191: 'invariant' : can only apply to an output 
+ERROR: 0:193: 'imageBuffer' : Reserved word. 
+ERROR: 0:193: '' :  syntax error, unexpected IMAGEBUFFER, expecting COMMA or SEMICOLON
+ERROR: 49 compilation errors.  No code generated.
 
 
 Shader version: 300
+Requested GL_EXT_blend_func_extended
 Requested GL_EXT_shader_integer_mix
 using early_fragment_tests
 ERROR: node is still EOpNull!
@@ -530,6 +533,8 @@ ERROR: node is still EOpNull!
 0:?     'y' ( global mediump int)
 0:?     'z' ( global mediump uint)
 0:?     'w' ( global mediump uint)
+0:?     'outVarFail' (layout( location=0 index=1) out lowp 4-component vector of float)
+0:?     'outVarPass' (layout( location=0 index=0) out lowp 4-component vector of float)
 0:?     'fooinv' ( invariant smooth in lowp 4-component vector of float)
 
 
@@ -538,6 +543,7 @@ Linked fragment stage:
 ERROR: Linking fragment stage: when more than one fragment shader output, all must have location qualifiers
 
 Shader version: 300
+Requested GL_EXT_blend_func_extended
 Requested GL_EXT_shader_integer_mix
 using early_fragment_tests
 ERROR: node is still EOpNull!
@@ -769,5 +775,7 @@ ERROR: node is still EOpNull!
 0:?     'y' ( global mediump int)
 0:?     'z' ( global mediump uint)
 0:?     'w' ( global mediump uint)
+0:?     'outVarFail' (layout( location=0 index=1) out lowp 4-component vector of float)
+0:?     'outVarPass' (layout( location=0 index=0) out lowp 4-component vector of float)
 0:?     'fooinv' ( invariant smooth in lowp 4-component vector of float)
 

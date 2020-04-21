@@ -5412,10 +5412,10 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
 
     case EShLangFragment:
         if (id == "index") {
-            requireProfile(loc, ECompatibilityProfile | ECoreProfile, "index layout qualifier on fragment output");
+            requireProfile(loc, ECompatibilityProfile | ECoreProfile | EEsProfile, "index layout qualifier on fragment output");
             const char* exts[2] = { E_GL_ARB_separate_shader_objects, E_GL_ARB_explicit_attrib_location };
             profileRequires(loc, ECompatibilityProfile | ECoreProfile, 330, 2, exts, "index layout qualifier on fragment output");
-
+            profileRequires(loc, EEsProfile ,310, E_GL_EXT_blend_func_extended, "index layout qualifier on fragment output");
             // "It is also a compile-time error if a fragment shader sets a layout index to less than 0 or greater than 1."
             if (value < 0 || value > 1) {
                 value = 0;

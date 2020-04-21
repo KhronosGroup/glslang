@@ -201,6 +201,19 @@ float fooinittest()
     return fooinit();
 }
 
+// Test extension GL_EXT_blend_func_extended
+void blendFuncFail() // Error since extension GL_EXT_blend_func_extended is disabled
+{
+    gl_SecondaryFragColorEXT = vec4(1.0);   
+    gl_SecondaryFragDataEXT[gl_MaxDualSourceDrawBuffersEXT - 1] = vec4(0.1);
+}
+#extension GL_EXT_blend_func_extended : enable
+void blendFunc() 
+{
+    gl_SecondaryFragColorEXT = vec4(1.0);
+    gl_SecondaryFragDataEXT[gl_MaxDualSourceDrawBuffersEXT - 1] = vec4(0.1);
+}
+
 // Test extra-function initializers
 const float fi1 = 3.0;
 const float fi2 = 4.0;
