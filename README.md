@@ -3,8 +3,6 @@
 [![Build Status](https://travis-ci.org/KhronosGroup/glslang.svg?branch=master)](https://travis-ci.org/KhronosGroup/glslang)
 [![Build status](https://ci.appveyor.com/api/projects/status/q6fi9cb0qnhkla68/branch/master?svg=true)](https://ci.appveyor.com/project/Khronoswebmaster/glslang/branch/master)
 
-Note: Current master failed for process reasons in Travis CI, but is okay.
-
 ## Planned Deprecations/Removals
 
 1. **SPIRV Folder, 1-May, 2020.** Glslang, when installed through CMake,
