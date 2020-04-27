@@ -8270,6 +8270,18 @@ spv::Id TGlslangToSpvTraverser::createSpvConstant(const glslang::TIntermTyped& n
 
     // We now know we have a specialization constant to build
 
+    // Extra capabilities may be needed.
+    if (node.getType().contains8BitInt())
+        builder.addCapability(spv::CapabilityInt8);
+    if (node.getType().contains16BitFloat())
+        builder.addCapability(spv::CapabilityFloat16);
+    if (node.getType().contains16BitInt())
+        builder.addCapability(spv::CapabilityInt16);
+    if (node.getType().contains64BitInt())
+        builder.addCapability(spv::CapabilityInt64);
+    if (node.getType().containsDouble())
+        builder.addCapability(spv::CapabilityFloat64);
+
     // gl_WorkGroupSize is a special case until the front-end handles hierarchical specialization constants,
     // even then, it's specialization ids are handled by special case syntax in GLSL: layout(local_size_x = ...
     if (node.getType().getQualifier().builtIn == glslang::EbvWorkGroupSize) {
