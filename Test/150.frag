@@ -79,3 +79,23 @@ void bitEncodingFail()
 {
     int i = floatBitsToInt(f); // Error, extention GL_ARB_bit_encoding is diabled
 }
+
+#extension GL_ARB_shading_language_packing : enable
+vec2 v2a;
+uint uy;
+
+void packingPass()
+{
+    uint u19 = packSnorm2x16(v2a);
+    vec2 v20 = unpackSnorm2x16(uy);
+    uint u15 = packUnorm2x16(v2a);
+    vec2 v16 = unpackUnorm2x16(uy);
+    uint u17 = packHalf2x16(v2a);
+    vec2 v18 = unpackHalf2x16(uy);
+}
+
+#extension GL_ARB_shading_language_packing : disable
+void packingFail()
+{
+    uint u19 = packSnorm2x16(v2a); // Error, extension GL_ARB_shading_language_packing is disabled
+}
