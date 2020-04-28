@@ -5843,9 +5843,9 @@ void TBuiltIns::addQueryFunctions(TSampler sampler, const TString& typeName, int
 
     //
     // textureQueryLod(), fragment stage only
-    //
+    // Also enabled with extension GL_ARB_texture_query_lod
 
-    if (profile != EEsProfile && version >= 400 && sampler.isCombined() && sampler.dim != EsdRect &&
+    if (profile != EEsProfile && version >= 150 && sampler.isCombined() && sampler.dim != EsdRect &&
         ! sampler.isMultiSample() && ! sampler.isBuffer()) {
         for (int f16TexAddr = 0; f16TexAddr < 2; ++f16TexAddr) {
             if (f16TexAddr && sampler.type != EbtFloat16)
@@ -7549,6 +7549,10 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             BuiltInVariable("gl_FragStencilRefARB", EbvFragStencilRef, symbolTable);
         }
 
+        if (profile != EEsProfile && version < 400) {
+            symbolTable.setFunctionExtensions("textureQueryLod", 1, &E_GL_ARB_texture_query_lod);
+        }
+
         if (profile != EEsProfile && version >= 460) {
             symbolTable.setFunctionExtensions("rayQueryInitializeEXT",                                            1, &E_GL_EXT_ray_query);
             symbolTable.setFunctionExtensions("rayQueryTerminateEXT",                                             1, &E_GL_EXT_ray_query);
@@ -8064,6 +8068,7 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setFunctionExtensions("memoryBarrierShared",        1, &E_GL_ARB_compute_shader);
             symbolTable.setFunctionExtensions("groupMemoryBarrier",         1, &E_GL_ARB_compute_shader);
         }
+
 
         symbolTable.setFunctionExtensions("controlBarrier",                 1, &E_GL_KHR_memory_scope_semantics);
         symbolTable.setFunctionExtensions("debugPrintfEXT",                 1, &E_GL_EXT_debug_printf);

@@ -127,20 +127,6 @@ layout(location=0, index=0) in; // ERROR, not just on in
 layout(location=0, index=0) out; // ERROR, need a variable
 layout(location=26, index=0) out indexBlock { int a; } indexBlockI; // ERROR, not on a block
 
-uniform sampler1D samp1D;
-uniform sampler2DShadow samp2Ds;
-
-void qlod()
-{
-    vec2 lod;
-    float pf;
-    vec2 pf2;
-    vec3 pf3;
-
-    lod = textureQueryLod(samp1D, pf);      // ERROR, not until 400
-    lod = textureQueryLod(samp2Ds, pf2);    // ERROR, not until 400
-}
-
 int precise;                // okay, not a keyword yet
 struct SKeyMem { int precise; } KeyMem; // okay, not a keyword yet
 
