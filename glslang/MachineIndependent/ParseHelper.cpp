@@ -2198,6 +2198,28 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
             memorySemanticsCheck(loc, fnCandidate, callNode);
         }
         break;
+
+    case EOpMix:
+        if (profile == EEsProfile && version < 310) {
+            // Look for specific signatures
+            if ((*argp)[0]->getAsTyped()->getBasicType() != EbtFloat &&
+                (*argp)[1]->getAsTyped()->getBasicType() != EbtFloat &&
+                (*argp)[2]->getAsTyped()->getBasicType() == EbtBool) {
+                requireExtensions(loc, 1, &E_GL_EXT_shader_integer_mix, "specific signature of builtin mix");
+            }
+        }
+
+        if (profile != EEsProfile && version < 450) {
+            if ((*argp)[0]->getAsTyped()->getBasicType() != EbtFloat && 
+                (*argp)[0]->getAsTyped()->getBasicType() != EbtDouble &&
+                (*argp)[1]->getAsTyped()->getBasicType() != EbtFloat &&
+                (*argp)[1]->getAsTyped()->getBasicType() != EbtDouble &&
+                (*argp)[2]->getAsTyped()->getBasicType() == EbtBool) {
+                requireExtensions(loc, 1, &E_GL_EXT_shader_integer_mix, fnCandidate.getName().c_str());
+            }
+        }
+
+        break;
 #endif
 
     default:

@@ -3060,6 +3060,24 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "\n");
     }
 
+    if ((profile == EEsProfile && version >= 300 && version < 310) ||
+        (profile != EEsProfile && version >= 150 && version < 450)) { // GL_EXT_shader_integer_mix
+        commonBuiltins.append("int mix(int, int, bool);"
+                              "ivec2 mix(ivec2, ivec2, bvec2);"
+                              "ivec3 mix(ivec3, ivec3, bvec3);"
+                              "ivec4 mix(ivec4, ivec4, bvec4);"
+                              "uint  mix(uint,  uint,  bool );"
+                              "uvec2 mix(uvec2, uvec2, bvec2);"
+                              "uvec3 mix(uvec3, uvec3, bvec3);"
+                              "uvec4 mix(uvec4, uvec4, bvec4);"
+                              "bool  mix(bool,  bool,  bool );"
+                              "bvec2 mix(bvec2, bvec2, bvec2);"
+                              "bvec3 mix(bvec3, bvec3, bvec3);"
+                              "bvec4 mix(bvec4, bvec4, bvec4);"
+
+                              "\n");
+    }
+
     // GL_AMD_gpu_shader_half_float/Explicit types
     if (profile != EEsProfile && version >= 450) {
         commonBuiltins.append(
