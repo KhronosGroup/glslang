@@ -3354,6 +3354,11 @@ void TParseContext::globalQualifierTypeCheck(const TSourceLoc& loc, const TQuali
         !qualifier.hasBufferReference())
         error(loc, "buffers can be declared only as blocks", "buffer", "");
 
+    if (qualifier.storage != EvqVaryingIn && publicType.basicType == EbtDouble &&
+        extensionTurnedOn(E_GL_ARB_vertex_attrib_64bit) && language == EShLangVertex &&
+        version < 400) {
+        profileRequires(loc, ECoreProfile | ECompatibilityProfile, 410, E_GL_ARB_gpu_shader_fp64, "vertex-shader `double` type");
+    }
     if (qualifier.storage != EvqVaryingIn && qualifier.storage != EvqVaryingOut)
         return;
 
@@ -3404,7 +3409,7 @@ void TParseContext::globalQualifierTypeCheck(const TSourceLoc& loc, const TQuali
                 profileRequires(loc, ENoProfile, 150, nullptr, "vertex input arrays");
             }
             if (publicType.basicType == EbtDouble)
-                profileRequires(loc, ~EEsProfile, 410, nullptr, "vertex-shader `double` type input");
+                profileRequires(loc, ~EEsProfile, 410, E_GL_ARB_vertex_attrib_64bit, "vertex-shader `double` type input");
             if (qualifier.isAuxiliary() || qualifier.isInterpolation() || qualifier.isMemory() || qualifier.invariant)
                 error(loc, "vertex input cannot be further qualified", "", "");
             break;
