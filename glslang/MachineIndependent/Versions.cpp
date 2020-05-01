@@ -297,6 +297,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_OES_tessellation_point_size]  = EBhDisable;
     extensionBehavior[E_GL_OES_texture_buffer]           = EBhDisable;
     extensionBehavior[E_GL_OES_texture_cube_map_array]   = EBhDisable;
+    extensionBehavior[E_GL_EXT_shader_integer_mix]       = EBhDisable;
 
     // EXT extensions
     extensionBehavior[E_GL_EXT_device_group]                = EBhDisable;
@@ -365,6 +366,7 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_EXT_texture_buffer 1\n"
             "#define GL_EXT_texture_cube_map_array 1\n"
             "#define GL_EXT_shader_implicit_conversions 1\n"
+            "#define GL_EXT_shader_integer_mix 1\n"
 
             // OES matching AEP
             "#define GL_OES_geometry_shader 1\n"
