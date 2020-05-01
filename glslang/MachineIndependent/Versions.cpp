@@ -306,6 +306,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_EXT_ray_tracing]                 = EBhDisable;
     extensionBehavior[E_GL_EXT_ray_query]                   = EBhDisable;
     extensionBehavior[E_GL_EXT_ray_flags_primitive_culling] = EBhDisable;
+    extensionBehavior[E_GL_EXT_shader_implicit_conversions] = EBhDisable;
 
     // OVR extensions
     extensionBehavior[E_GL_OVR_multiview]                = EBhDisable;
@@ -364,6 +365,7 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_EXT_tessellation_point_size 1\n"
             "#define GL_EXT_texture_buffer 1\n"
             "#define GL_EXT_texture_cube_map_array 1\n"
+            "#define GL_EXT_shader_implicit_conversions 1\n"
             "#define GL_EXT_shader_integer_mix 1\n"
 
             // OES matching AEP
@@ -921,8 +923,8 @@ void TParseVersions::updateExtensionBehavior(const char* extension, TExtensionBe
         } else {
             if (iter->second == EBhDisablePartial)
                 warn(getCurrentLoc(), "extension is only partially supported:", "#extension", extension);
-            if (behavior == EBhEnable || behavior == EBhRequire)
-                intermediate.addRequestedExtension(extension);
+            if (behavior == EBhEnable || behavior == EBhRequire || behavior == EBhDisable)
+                intermediate.updateRequestedExtension(extension, behavior);
             iter->second = behavior;
         }
     }
