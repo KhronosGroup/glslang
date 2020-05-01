@@ -822,50 +822,7 @@ TIntermTyped* TParseContext::handleDotDereference(const TSourceLoc& loc, TInterm
     TIntermTyped* result = base;
     if ((base->isVector() || base->isScalar()) &&
         (base->isFloatingDomain() || base->isIntegerDomain() || base->getBasicType() == EbtBool)) {
-        if (base->isScalar()) {
-            const char* dotFeature = "scalar swizzle";
-            requireProfile(loc, ~EEsProfile, dotFeature);
-            profileRequires(loc, ~EEsProfile, 420, E_GL_ARB_shading_language_420pack, dotFeature);
-        }
-
-        TSwizzleSelectors<TVectorSelector> selectors;
-        parseSwizzleSelector(loc, field, base->getVectorSize(), selectors);
-
-        if (base->isVector() && selectors.size() != 1 && base->getType().contains16BitFloat())
-            requireFloat16Arithmetic(loc, ".", "can't swizzle types containing float16");
-        if (base->isVector() && selectors.size() != 1 && base->getType().contains16BitInt())
-            requireInt16Arithmetic(loc, ".", "can't swizzle types containing (u)int16");
-        if (base->isVector() && selectors.size() != 1 && base->getType().contains8BitInt())
-            requireInt8Arithmetic(loc, ".", "can't swizzle types containing (u)int8");
-
-        if (base->isScalar()) {
-            if (selectors.size() == 1)
-                return result;
-            else {
-                TType type(base->getBasicType(), EvqTemporary, selectors.size());
-                // Swizzle operations propagate specialization-constantness
-                if (base->getQualifier().isSpecConstant())
-                    type.getQualifier().makeSpecConstant();
-                return addConstructor(loc, base, type);
-            }
-        }
-
-        if (base->getType().getQualifier().isFrontEndConstant())
-            result = intermediate.foldSwizzle(base, selectors, loc);
-        else {
-            if (selectors.size() == 1) {
-                TIntermTyped* index = intermediate.addConstantUnion(selectors[0], loc);
-                result = intermediate.addIndex(EOpIndexDirect, base, index, loc);
-                result->setType(TType(base->getBasicType(), EvqTemporary, base->getType().getQualifier().precision));
-            } else {
-                TIntermTyped* index = intermediate.addSwizzle(selectors, loc);
-                result = intermediate.addIndex(EOpVectorSwizzle, base, index, loc);
-                result->setType(TType(base->getBasicType(), EvqTemporary, base->getType().getQualifier().precision, selectors.size()));
-            }
-            // Swizzle operations propagate specialization-constantness
-            if (base->getType().getQualifier().isSpecConstant())
-                result->getWritableType().getQualifier().makeSpecConstant();
-        }
+        result = handleDotSwizzle(loc, base, field);
     } else if (base->isStruct() || base->isReference()) {
         const TTypeList* fields = base->isReference() ?
                                   base->getType().getReferentType()->getStruct() :
@@ -902,6 +859,60 @@ TIntermTyped* TParseContext::handleDotDereference(const TSourceLoc& loc, TInterm
     // Propagate nonuniform
     if (base->getQualifier().isNonUniform())
         result->getWritableType().getQualifier().nonUniform = true;
+
+    return result;
+}
+
+//
+// Handle seeing a base.swizzle, a subset of base.identifier in the grammar.
+//
+TIntermTyped* TParseContext::handleDotSwizzle(const TSourceLoc& loc, TIntermTyped* base, const TString& field)
+{
+    TIntermTyped* result = base;
+    if (base->isScalar()) {
+        const char* dotFeature = "scalar swizzle";
+        requireProfile(loc, ~EEsProfile, dotFeature);
+        profileRequires(loc, ~EEsProfile, 420, E_GL_ARB_shading_language_420pack, dotFeature);
+    }
+
+    TSwizzleSelectors<TVectorSelector> selectors;
+    parseSwizzleSelector(loc, field, base->getVectorSize(), selectors);
+
+    if (base->isVector() && selectors.size() != 1 && base->getType().contains16BitFloat())
+        requireFloat16Arithmetic(loc, ".", "can't swizzle types containing float16");
+    if (base->isVector() && selectors.size() != 1 && base->getType().contains16BitInt())
+        requireInt16Arithmetic(loc, ".", "can't swizzle types containing (u)int16");
+    if (base->isVector() && selectors.size() != 1 && base->getType().contains8BitInt())
+        requireInt8Arithmetic(loc, ".", "can't swizzle types containing (u)int8");
+
+    if (base->isScalar()) {
+        if (selectors.size() == 1)
+            return result;
+        else {
+            TType type(base->getBasicType(), EvqTemporary, selectors.size());
+            // Swizzle operations propagate specialization-constantness
+            if (base->getQualifier().isSpecConstant())
+                type.getQualifier().makeSpecConstant();
+            return addConstructor(loc, base, type);
+        }
+    }
+
+    if (base->getType().getQualifier().isFrontEndConstant())
+        result = intermediate.foldSwizzle(base, selectors, loc);
+    else {
+        if (selectors.size() == 1) {
+            TIntermTyped* index = intermediate.addConstantUnion(selectors[0], loc);
+            result = intermediate.addIndex(EOpIndexDirect, base, index, loc);
+            result->setType(TType(base->getBasicType(), EvqTemporary, base->getType().getQualifier().precision));
+        } else {
+            TIntermTyped* index = intermediate.addSwizzle(selectors, loc);
+            result = intermediate.addIndex(EOpVectorSwizzle, base, index, loc);
+            result->setType(TType(base->getBasicType(), EvqTemporary, base->getType().getQualifier().precision, selectors.size()));
+        }
+        // Swizzle operations propagate specialization-constantness
+        if (base->getType().getQualifier().isSpecConstant())
+            result->getWritableType().getQualifier().makeSpecConstant();
+    }
 
     return result;
 }
