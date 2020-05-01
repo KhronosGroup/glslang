@@ -267,6 +267,7 @@ const char* const E_GL_EXT_tessellation_shader                  = "GL_EXT_tessel
 const char* const E_GL_EXT_tessellation_point_size              = "GL_EXT_tessellation_point_size";
 const char* const E_GL_EXT_texture_buffer                       = "GL_EXT_texture_buffer";
 const char* const E_GL_EXT_texture_cube_map_array               = "GL_EXT_texture_cube_map_array";
+const char* const E_GL_EXT_shader_integer_mix                   = "GL_EXT_shader_integer_mix"; 
 
 // OES matching AEP
 const char* const E_GL_OES_geometry_shader                      = "GL_OES_geometry_shader";
