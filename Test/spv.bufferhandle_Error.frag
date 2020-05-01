@@ -29,6 +29,7 @@ void f()
     bufType6 b;
     b.x.length();
     b4.b6.x.length();
+    b[2];               // ERROR, can't index due to unsized array
 }
 
 void main() {

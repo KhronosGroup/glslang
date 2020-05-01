@@ -428,8 +428,18 @@ TIntermTyped* TParseContext::handleBracketDereference(const TSourceLoc& loc, TIn
 #ifndef GLSLANG_WEB
     if (base->isReference() && ! base->isArray()) {
         requireExtensions(loc, 1, &E_GL_EXT_buffer_reference2, "buffer reference indexing");
-        result = intermediate.addBinaryMath(EOpAdd, base, index, loc);
-        result->setType(base->getType());
+        if (base->getType().getReferentType()->containsUnsizedArray()) {
+            error(loc, "cannot index reference to buffer containing an unsized array", "", "");
+            result = nullptr;
+        } else {
+            result = intermediate.addBinaryMath(EOpAdd, base, index, loc);
+            if (result != nullptr)
+                result->setType(base->getType());
+        }
+        if (result == nullptr) {
+            error(loc, "cannot index buffer reference", "", "");
+            result = intermediate.addConstantUnion(0.0, EbtFloat, loc);
+        }
         return result;
     }
     if (base->getAsSymbolNode() && isIoResizeArray(base->getType()))
