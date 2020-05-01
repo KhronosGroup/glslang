@@ -177,6 +177,11 @@ void testmixFail()
     int ival  = mix(x, y, b); // Error since extenson GL_EXT_shader_integer_mix is disabled
 }
 
+// Test layout qualifier "index" with extension GL_EXT_blend_func_extended
+layout(location = 0, index = 1) out vec4 outVarFail; // Error Index supported with extension GL_EXT_blend_func_extended enabled
+#extension GL_EXT_blend_func_extended : enable
+layout(location = 0, index = 2) out vec4 outVarPass;
+
 #ifndef GL_FRAGMENT_PRECISION_HIGH
 #error missing GL_FRAGMENT_PRECISION_HIGH
 #endif
