@@ -886,7 +886,8 @@ TIntermTyped* TParseContext::handleDotSwizzle(const TSourceLoc& loc, TIntermType
     }
 
     TSwizzleSelectors<TVectorSelector> selectors;
-    parseSwizzleSelector(loc, field, base->getVectorSize(), selectors);
+    bool numeric = false;
+    parseSwizzleSelector(loc, field, base->getVectorSize(), selectors, numeric);
 
     if (base->isVector() && selectors.size() != 1 && base->getType().contains16BitFloat())
         requireFloat16Arithmetic(loc, ".", "can't swizzle types containing float16");
@@ -894,6 +895,9 @@ TIntermTyped* TParseContext::handleDotSwizzle(const TSourceLoc& loc, TIntermType
         requireInt16Arithmetic(loc, ".", "can't swizzle types containing (u)int16");
     if (base->isVector() && selectors.size() != 1 && base->getType().contains8BitInt())
         requireInt8Arithmetic(loc, ".", "can't swizzle types containing (u)int8");
+
+    if (numeric)
+        return handleNumericDotSwizzle(loc, base, selectors);
 
     if (base->isScalar()) {
         if (selectors.size() == 1)
@@ -925,6 +929,93 @@ TIntermTyped* TParseContext::handleDotSwizzle(const TSourceLoc& loc, TIntermType
     }
 
     return result;
+}
+
+// Handle a swizzle operation where at least one selector is numeric.
+//
+// Can return
+//  - a scalar constant (e.g. for ._1), but converted to the right type
+//    and constant folded
+//  - a vector constructor
+//  - a sequence containing
+//     1. evaluation of 'base'
+//     2. a scalar constant, converted, folded
+//  - a sequence containing
+//     1. evaluation of 'base'
+//     2. a vector constructor
+//
+// Note that none of the above include swizzle operations.
+//
+// Note: A vector constructor might require copies of the rvalue being swizzled,
+//       to avoid the tree accidentally becoming a DAG when there are multiple
+//       letter swizzles present needing multiple operations to get the
+//       components.  This is quite unlike how swizzles are handled, or any
+//       other native GLSL operation.
+//
+TIntermTyped* TParseContext::handleNumericDotSwizzle(const TSourceLoc& loc, TIntermTyped* base,
+    const TSwizzleSelectors<TVectorSelector>& selectors)
+{
+    const auto isLetter = [](int selector) { return selector < MaxSwizzleSelectors; };
+    const auto isNumber = [isLetter](int selector) { return !isLetter(selector); };
+    const auto getNumber = [](int selector) { return selector - MaxSwizzleSelectors; };
+
+    // The type of the result has the 'base' component type,
+    // but the component-count of 'selectors'.
+    TType type(base->getBasicType(), EvqTemporary, selectors.size());
+
+    // If only one selector, the result is a scalar.
+    // But, its type might be changing, so add a constructor.
+    // This will always result in an already folded scalar front-end constant.
+    if (selectors.size() == 1) {
+        assert(isNumber(selectors[0]));
+        return addConstructor(loc, intermediate.addConstantUnion(getNumber(selectors[0]), loc), type);
+
+        // WIP: this is incorrect if 'base' had side effects, it still needs to
+        // be evaluated as part of a sequence operation, unless the
+        // specification for this operation says those side effects are ignored.
+    }
+
+    // Otherwise, the result is like making a vector constructor,
+    // where we know we have more than one argument.
+
+    // Collect the arguments.
+    // This is complicated by the presence of more than one letter selector,
+    // because we need to reuse the r-value for each one, so it is a rare
+    // situation of needing to replicate the r-value.
+
+    // count the letter selectors (unless the base is a constant))
+    int letterCount = 0;
+    if (!base->getType().getQualifier().isFrontEndConstant()) {
+        for (int s = 0; s < selectors.size(); ++s)
+            letterCount += isLetter(selectors[s]) ? 1 : 0;
+    }
+    // get the replicates
+    TVector<TIntermTyped*> replicates;
+    replicateRValue(base, letterCount, replicates);
+
+    // process all the selectors to make the vector
+    TIntermAggregate* args = nullptr;
+    for (int s = 0; s < (int)selectors.size(); ++s) {
+        if (isNumber(selectors[s])) {
+            args = intermediate.growAggregate(args, intermediate.addConstantUnion(getNumber(selectors[s]), loc));
+        } else {
+            // traditional swizzle selector, which needs to consume the replicates
+            // (unless base is a constant)
+            TIntermTyped* arg;
+            if (base->getType().getQualifier().isFrontEndConstant()) {
+                arg = intermediate.foldDereference(base, selectors[s], loc);
+            } else {
+                TIntermTyped* rep = replicates.back();
+                replicates.pop_back();
+                TIntermTyped* index = intermediate.addConstantUnion(selectors[s], loc);
+                arg = intermediate.addIndex(EOpIndexDirect, rep, index, loc);
+            }
+            args = intermediate.growAggregate(args, arg);
+        }
+    }
+
+    // form the constructor
+    return addConstructor(loc, args, type)->getAsAggregate();
 }
 
 void TParseContext::blockMemberExtensionCheck(const TSourceLoc& loc, const TIntermTyped* base, int member, const TString& memberName)
