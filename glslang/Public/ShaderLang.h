@@ -109,7 +109,7 @@ typedef enum {
     LAST_ELEMENT_MARKER(EShLangCount),
 } EShLanguage;         // would be better as stage, but this is ancient now
 
-typedef enum {
+typedef enum : unsigned {
     EShLangVertexMask         = (1 << EShLangVertex),
     EShLangTessControlMask    = (1 << EShLangTessControl),
     EShLangTessEvaluationMask = (1 << EShLangTessEvaluation),
@@ -240,7 +240,7 @@ typedef enum {
 //
 // Message choices for what errors and warnings are given.
 //
-enum EShMessages {
+enum EShMessages : unsigned {
     EShMsgDefault          = 0,         // default is to give all required errors and extra warnings
     EShMsgRelaxedErrors    = (1 << 0),  // be liberal in accepting input
     EShMsgSuppressWarnings = (1 << 1),  // suppress all warnings, except those required by the specification
