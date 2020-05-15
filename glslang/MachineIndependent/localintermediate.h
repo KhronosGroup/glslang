@@ -276,7 +276,8 @@ public:
         needToLegalize(false),
         binaryDoubleOutput(false),
         usePhysicalStorageBuffer(false),
-        uniformLocationBase(0)
+        uniformLocationBase(0),
+        layoutPrimitiveCulling(false)
 #endif
     {
         localSize[0] = 1;
@@ -742,6 +743,8 @@ public:
     void setLayoutDerivativeMode(ComputeDerivativeMode mode) { computeDerivativeMode = mode; }
     bool hasLayoutDerivativeModeNone() const { return computeDerivativeMode != LayoutDerivativeNone; }
     ComputeDerivativeMode getLayoutDerivativeModeNone() const { return computeDerivativeMode; }
+    void setLayoutPrimitiveCulling() { layoutPrimitiveCulling = true; }
+    bool getLayoutPrimitiveCulling() const { return layoutPrimitiveCulling; }
     bool setPrimitives(int m)
     {
         if (primitives != TQualifier::layoutNotSet)
@@ -974,6 +977,7 @@ protected:
     ComputeDerivativeMode computeDerivativeMode;
     int primitives;
     int numTaskNVBlocks;
+    bool layoutPrimitiveCulling;
 
     // Base shift values
     std::array<unsigned int, EResCount> shiftBinding;

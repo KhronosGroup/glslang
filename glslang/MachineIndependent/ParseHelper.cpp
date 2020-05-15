@@ -5173,6 +5173,12 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
             }
         }
     }
+
+    if (id == "primitive_culling") {
+        requireExtensions(loc, 1, &E_GL_EXT_ray_flags_primitive_culling, "primitive culling");
+        publicType.shaderQualifiers.layoutPrimitiveCulling = true;
+        return;
+    }
 #endif
 
     error(loc, "unrecognized layout identifier, or qualifier requires assignment (e.g., binding = 4)", id.c_str(), "");
@@ -8367,6 +8373,12 @@ void TParseContext::updateStandaloneQualifierDefaults(const TSourceLoc& loc, con
         (intermediate.getOutputPrimitive() != ElgNone))
     {
         checkIoArraysConsistency(loc);
+    }
+
+    if (publicType.shaderQualifiers.layoutPrimitiveCulling) {
+        // Exit early as this qualifier has no default storage class
+        intermediate.setLayoutPrimitiveCulling();
+        return;
     }
 #endif 
     const TQualifier& qualifier = publicType.qualifier;

@@ -11,6 +11,7 @@ layout(shaderRecordEXT) buffer block
 	vec3 origin;
 
 };
+layout(primitive_culling);
 void main()
 {
     uint lx = gl_LaunchIDEXT.x;

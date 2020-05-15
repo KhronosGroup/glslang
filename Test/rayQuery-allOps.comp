@@ -2,6 +2,7 @@
 #extension GL_EXT_ray_query : enable
 #extension GL_EXT_ray_flags_primitive_culling : enable
 
+layout(primitive_culling);
 struct Ray
 {
     vec3 pos;
