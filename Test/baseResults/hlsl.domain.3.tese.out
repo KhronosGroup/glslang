@@ -49,9 +49,55 @@ triangle order = none
 0:24  Function Definition: main( ( temp void)
 0:24    Function Parameters: 
 0:?     Sequence
-0:24      move second child to first child ( temp 2-element array of structure{ temp 4-component vector of float pos,  temp 3-component vector of float norm})
-0:?         'i' ( temp 2-element array of structure{ temp 4-component vector of float pos,  temp 3-component vector of float norm})
-0:?         'i' (layout( location=0) in 2-element array of structure{ temp 4-component vector of float pos,  temp 3-component vector of float norm})
+0:24      Sequence
+0:24        move second child to first child ( temp 4-component vector of float)
+0:24          pos: direct index for structure ( temp 4-component vector of float)
+0:24            direct index ( temp structure{ temp 4-component vector of float pos,  temp 3-component vector of float norm})
+0:?               'i' ( temp 2-element array of structure{ temp 4-component vector of float pos,  temp 3-component vector of float norm})
+0:24              Constant:
+0:24                0 (const int)
+0:24            Constant:
+0:24              0 (const int)
+0:24          direct index (layout( location=0) in 4-component vector of float)
+0:?             'i.pos' (layout( location=0) in 2-element array of 4-component vector of float)
+0:24            Constant:
+0:24              0 (const int)
+0:24        move second child to first child ( temp 3-component vector of float)
+0:24          norm: direct index for structure ( temp 3-component vector of float)
+0:24            direct index ( temp structure{ temp 4-component vector of float pos,  temp 3-component vector of float norm})
+0:?               'i' ( temp 2-element array of structure{ temp 4-component vector of float pos,  temp 3-component vector of float norm})
+0:24              Constant:
+0:24                0 (const int)
+0:24            Constant:
+0:24              1 (const int)
+0:24          direct index (layout( location=1) in 3-component vector of float)
+0:?             'i.norm' (layout( location=1) in 2-element array of 3-component vector of float)
+0:24            Constant:
+0:24              0 (const int)
+0:24        move second child to first child ( temp 4-component vector of float)
+0:24          pos: direct index for structure ( temp 4-component vector of float)
+0:24            direct index ( temp structure{ temp 4-component vector of float pos,  temp 3-component vector of float norm})
+0:?               'i' ( temp 2-element array of structure{ temp 4-component vector of float pos,  temp 3-component vector of float norm})
+0:24              Constant:
+0:24                1 (const int)
+0:24            Constant:
+0:24              0 (const int)
+0:24          direct index (layout( location=0) in 4-component vector of float)
+0:?             'i.pos' (layout( location=0) in 2-element array of 4-component vector of float)
+0:24            Constant:
+0:24              1 (const int)
+0:24        move second child to first child ( temp 3-component vector of float)
+0:24          norm: direct index for structure ( temp 3-component vector of float)
+0:24            direct index ( temp structure{ temp 4-component vector of float pos,  temp 3-component vector of float norm})
+0:?               'i' ( temp 2-element array of structure{ temp 4-component vector of float pos,  temp 3-component vector of float norm})
+0:24              Constant:
+0:24                1 (const int)
+0:24            Constant:
+0:24              1 (const int)
+0:24          direct index (layout( location=1) in 3-component vector of float)
+0:?             'i.norm' (layout( location=1) in 2-element array of 3-component vector of float)
+0:24            Constant:
+0:24              1 (const int)
 0:24      move second child to first child ( temp 2-component vector of float)
 0:?         'tesscoord' ( temp 2-component vector of float)
 0:?         Construct vec2 ( temp 2-component vector of float)
@@ -124,7 +170,8 @@ triangle order = none
 0:?   Linker Objects
 0:?     '@entryPointOutput.pos' (layout( location=0) out 4-component vector of float)
 0:?     '@entryPointOutput.norm' (layout( location=1) out 3-component vector of float)
-0:?     'i' (layout( location=0) in 2-element array of structure{ temp 4-component vector of float pos,  temp 3-component vector of float norm})
+0:?     'i.pos' (layout( location=0) in 2-element array of 4-component vector of float)
+0:?     'i.norm' (layout( location=1) in 2-element array of 3-component vector of float)
 0:?     'tesscoord' ( patch in 3-component vector of float TessCoord)
 0:?     'pcf_data.flTessFactor' ( patch in 4-element array of float TessLevelOuter)
 0:?     'pcf_data.flInsideTessFactor' ( patch in 2-element array of float TessLevelInner)
@@ -183,9 +230,55 @@ triangle order = none
 0:24  Function Definition: main( ( temp void)
 0:24    Function Parameters: 
 0:?     Sequence
-0:24      move second child to first child ( temp 2-element array of structure{ temp 4-component vector of float pos,  temp 3-component vector of float norm})
-0:?         'i' ( temp 2-element array of structure{ temp 4-component vector of float pos,  temp 3-component vector of float norm})
-0:?         'i' (layout( location=0) in 2-element array of structure{ temp 4-component vector of float pos,  temp 3-component vector of float norm})
+0:24      Sequence
+0:24        move second child to first child ( temp 4-component vector of float)
+0:24          pos: direct index for structure ( temp 4-component vector of float)
+0:24            direct index ( temp structure{ temp 4-component vector of float pos,  temp 3-component vector of float norm})
+0:?               'i' ( temp 2-element array of structure{ temp 4-component vector of float pos,  temp 3-component vector of float norm})
+0:24              Constant:
+0:24                0 (const int)
+0:24            Constant:
+0:24              0 (const int)
+0:24          direct index (layout( location=0) in 4-component vector of float)
+0:?             'i.pos' (layout( location=0) in 2-element array of 4-component vector of float)
+0:24            Constant:
+0:24              0 (const int)
+0:24        move second child to first child ( temp 3-component vector of float)
+0:24          norm: direct index for structure ( temp 3-component vector of float)
+0:24            direct index ( temp structure{ temp 4-component vector of float pos,  temp 3-component vector of float norm})
+0:?               'i' ( temp 2-element array of structure{ temp 4-component vector of float pos,  temp 3-component vector of float norm})
+0:24              Constant:
+0:24                0 (const int)
+0:24            Constant:
+0:24              1 (const int)
+0:24          direct index (layout( location=1) in 3-component vector of float)
+0:?             'i.norm' (layout( location=1) in 2-element array of 3-component vector of float)
+0:24            Constant:
+0:24              0 (const int)
+0:24        move second child to first child ( temp 4-component vector of float)
+0:24          pos: direct index for structure ( temp 4-component vector of float)
+0:24            direct index ( temp structure{ temp 4-component vector of float pos,  temp 3-component vector of float norm})
+0:?               'i' ( temp 2-element array of structure{ temp 4-component vector of float pos,  temp 3-component vector of float norm})
+0:24              Constant:
+0:24                1 (const int)
+0:24            Constant:
+0:24              0 (const int)
+0:24          direct index (layout( location=0) in 4-component vector of float)
+0:?             'i.pos' (layout( location=0) in 2-element array of 4-component vector of float)
+0:24            Constant:
+0:24              1 (const int)
+0:24        move second child to first child ( temp 3-component vector of float)
+0:24          norm: direct index for structure ( temp 3-component vector of float)
+0:24            direct index ( temp structure{ temp 4-component vector of float pos,  temp 3-component vector of float norm})
+0:?               'i' ( temp 2-element array of structure{ temp 4-component vector of float pos,  temp 3-component vector of float norm})
+0:24              Constant:
+0:24                1 (const int)
+0:24            Constant:
+0:24              1 (const int)
+0:24          direct index (layout( location=1) in 3-component vector of float)
+0:?             'i.norm' (layout( location=1) in 2-element array of 3-component vector of float)
+0:24            Constant:
+0:24              1 (const int)
 0:24      move second child to first child ( temp 2-component vector of float)
 0:?         'tesscoord' ( temp 2-component vector of float)
 0:?         Construct vec2 ( temp 2-component vector of float)
@@ -258,19 +351,20 @@ triangle order = none
 0:?   Linker Objects
 0:?     '@entryPointOutput.pos' (layout( location=0) out 4-component vector of float)
 0:?     '@entryPointOutput.norm' (layout( location=1) out 3-component vector of float)
-0:?     'i' (layout( location=0) in 2-element array of structure{ temp 4-component vector of float pos,  temp 3-component vector of float norm})
+0:?     'i.pos' (layout( location=0) in 2-element array of 4-component vector of float)
+0:?     'i.norm' (layout( location=1) in 2-element array of 3-component vector of float)
 0:?     'tesscoord' ( patch in 3-component vector of float TessCoord)
 0:?     'pcf_data.flTessFactor' ( patch in 4-element array of float TessLevelOuter)
 0:?     'pcf_data.flInsideTessFactor' ( patch in 2-element array of float TessLevelInner)
 
 // Module Version 10000
 // Generated by (magic number): 80008
-// Id's are bound by 100
+// Id's are bound by 116
 
                               Capability Tessellation
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint TessellationEvaluation 4  "main" 54 58 67 81 93 97
+                              EntryPoint TessellationEvaluation 4  "main" 55 62 74 83 97 109 113
                               ExecutionMode 4 Isolines
                               Source HLSL 500
                               Name 4  "main"
@@ -289,26 +383,28 @@ triangle order = none
                               Name 23  "pcf_data"
                               Name 27  "o"
                               Name 52  "i"
-                              Name 54  "i"
-                              Name 56  "tesscoord"
-                              Name 58  "tesscoord"
-                              Name 63  "pcf_data"
-                              Name 67  "pcf_data.flTessFactor"
-                              Name 81  "pcf_data.flInsideTessFactor"
-                              Name 85  "flattenTemp"
-                              Name 87  "param"
-                              Name 89  "param"
-                              Name 93  "@entryPointOutput.pos"
-                              Name 97  "@entryPointOutput.norm"
-                              Decorate 54(i) Location 0
-                              Decorate 58(tesscoord) Patch
-                              Decorate 58(tesscoord) BuiltIn TessCoord
-                              Decorate 67(pcf_data.flTessFactor) Patch
-                              Decorate 67(pcf_data.flTessFactor) BuiltIn TessLevelOuter
-                              Decorate 81(pcf_data.flInsideTessFactor) Patch
-                              Decorate 81(pcf_data.flInsideTessFactor) BuiltIn TessLevelInner
-                              Decorate 93(@entryPointOutput.pos) Location 0
-                              Decorate 97(@entryPointOutput.norm) Location 1
+                              Name 55  "i.pos"
+                              Name 62  "i.norm"
+                              Name 73  "tesscoord"
+                              Name 74  "tesscoord"
+                              Name 79  "pcf_data"
+                              Name 83  "pcf_data.flTessFactor"
+                              Name 97  "pcf_data.flInsideTessFactor"
+                              Name 101  "flattenTemp"
+                              Name 103  "param"
+                              Name 105  "param"
+                              Name 109  "@entryPointOutput.pos"
+                              Name 113  "@entryPointOutput.norm"
+                              Decorate 55(i.pos) Location 0
+                              Decorate 62(i.norm) Location 1
+                              Decorate 74(tesscoord) Patch
+                              Decorate 74(tesscoord) BuiltIn TessCoord
+                              Decorate 83(pcf_data.flTessFactor) Patch
+                              Decorate 83(pcf_data.flTessFactor) BuiltIn TessLevelOuter
+                              Decorate 97(pcf_data.flInsideTessFactor) Patch
+                              Decorate 97(pcf_data.flInsideTessFactor) BuiltIn TessLevelInner
+                              Decorate 109(@entryPointOutput.pos) Location 0
+                              Decorate 113(@entryPointOutput.norm) Location 1
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32
@@ -336,67 +432,86 @@ triangle order = none
               41:     10(int) Constant 1
               46:             TypePointer Function 8(fvec3)
               51:             TypePointer Function 12
-              53:             TypePointer Input 12
-           54(i):     53(ptr) Variable Input
-              57:             TypePointer Input 8(fvec3)
-   58(tesscoord):     57(ptr) Variable Input
-              64:     10(int) Constant 4
-              65:             TypeArray 6(float) 64
-              66:             TypePointer Input 65
-67(pcf_data.flTessFactor):     66(ptr) Variable Input
-              68:             TypePointer Input 6(float)
-              75:     28(int) Constant 2
-              79:             TypeArray 6(float) 11
-              80:             TypePointer Input 79
-81(pcf_data.flInsideTessFactor):     80(ptr) Variable Input
-              92:             TypePointer Output 7(fvec4)
-93(@entryPointOutput.pos):     92(ptr) Variable Output
-              96:             TypePointer Output 8(fvec3)
-97(@entryPointOutput.norm):     96(ptr) Variable Output
+              53:             TypeArray 7(fvec4) 11
+              54:             TypePointer Input 53
+       55(i.pos):     54(ptr) Variable Input
+              56:             TypePointer Input 7(fvec4)
+              60:             TypeArray 8(fvec3) 11
+              61:             TypePointer Input 60
+      62(i.norm):     61(ptr) Variable Input
+              63:             TypePointer Input 8(fvec3)
+   74(tesscoord):     63(ptr) Variable Input
+              80:     10(int) Constant 4
+              81:             TypeArray 6(float) 80
+              82:             TypePointer Input 81
+83(pcf_data.flTessFactor):     82(ptr) Variable Input
+              84:             TypePointer Input 6(float)
+              91:     28(int) Constant 2
+              95:             TypeArray 6(float) 11
+              96:             TypePointer Input 95
+97(pcf_data.flInsideTessFactor):     96(ptr) Variable Input
+             108:             TypePointer Output 7(fvec4)
+109(@entryPointOutput.pos):    108(ptr) Variable Output
+             112:             TypePointer Output 8(fvec3)
+113(@entryPointOutput.norm):    112(ptr) Variable Output
          4(main):           2 Function None 3
                5:             Label
            52(i):     51(ptr) Variable Function
-   56(tesscoord):     14(ptr) Variable Function
-    63(pcf_data):     18(ptr) Variable Function
- 85(flattenTemp):     26(ptr) Variable Function
-       87(param):     14(ptr) Variable Function
-       89(param):     18(ptr) Variable Function
-              55:          12 Load 54(i)
-                              Store 52(i) 55
-              59:    8(fvec3) Load 58(tesscoord)
-              60:    6(float) CompositeExtract 59 0
-              61:    6(float) CompositeExtract 59 1
-              62:   13(fvec2) CompositeConstruct 60 61
-                              Store 56(tesscoord) 62
-              69:     68(ptr) AccessChain 67(pcf_data.flTessFactor) 29
-              70:    6(float) Load 69
-              71:     32(ptr) AccessChain 63(pcf_data) 29 29
-                              Store 71 70
-              72:     68(ptr) AccessChain 67(pcf_data.flTessFactor) 39
-              73:    6(float) Load 72
-              74:     32(ptr) AccessChain 63(pcf_data) 29 39
-                              Store 74 73
-              76:     68(ptr) AccessChain 67(pcf_data.flTessFactor) 75
-              77:    6(float) Load 76
-              78:     32(ptr) AccessChain 63(pcf_data) 29 75
-                              Store 78 77
-              82:     68(ptr) AccessChain 81(pcf_data.flInsideTessFactor) 29
-              83:    6(float) Load 82
-              84:     32(ptr) AccessChain 63(pcf_data) 39
-                              Store 84 83
-              86:          12 Load 52(i)
-              88:   13(fvec2) Load 56(tesscoord)
-                              Store 87(param) 88
-              90:17(pcf_in_t) Load 63(pcf_data)
-                              Store 89(param) 90
-              91: 19(gs_in_t) FunctionCall 24(@main(struct-ds_in_t-vf4-vf31[2];vf2;struct-pcf_in_t-f1[3]-f11;) 86 87(param) 89(param)
-                              Store 85(flattenTemp) 91
-              94:     37(ptr) AccessChain 85(flattenTemp) 29
-              95:    7(fvec4) Load 94
-                              Store 93(@entryPointOutput.pos) 95
-              98:     46(ptr) AccessChain 85(flattenTemp) 39
-              99:    8(fvec3) Load 98
-                              Store 97(@entryPointOutput.norm) 99
+   73(tesscoord):     14(ptr) Variable Function
+    79(pcf_data):     18(ptr) Variable Function
+101(flattenTemp):     26(ptr) Variable Function
+      103(param):     14(ptr) Variable Function
+      105(param):     18(ptr) Variable Function
+              57:     56(ptr) AccessChain 55(i.pos) 29
+              58:    7(fvec4) Load 57
+              59:     37(ptr) AccessChain 52(i) 29 29
+                              Store 59 58
+              64:     63(ptr) AccessChain 62(i.norm) 29
+              65:    8(fvec3) Load 64
+              66:     46(ptr) AccessChain 52(i) 29 39
+                              Store 66 65
+              67:     56(ptr) AccessChain 55(i.pos) 39
+              68:    7(fvec4) Load 67
+              69:     37(ptr) AccessChain 52(i) 39 29
+                              Store 69 68
+              70:     63(ptr) AccessChain 62(i.norm) 39
+              71:    8(fvec3) Load 70
+              72:     46(ptr) AccessChain 52(i) 39 39
+                              Store 72 71
+              75:    8(fvec3) Load 74(tesscoord)
+              76:    6(float) CompositeExtract 75 0
+              77:    6(float) CompositeExtract 75 1
+              78:   13(fvec2) CompositeConstruct 76 77
+                              Store 73(tesscoord) 78
+              85:     84(ptr) AccessChain 83(pcf_data.flTessFactor) 29
+              86:    6(float) Load 85
+              87:     32(ptr) AccessChain 79(pcf_data) 29 29
+                              Store 87 86
+              88:     84(ptr) AccessChain 83(pcf_data.flTessFactor) 39
+              89:    6(float) Load 88
+              90:     32(ptr) AccessChain 79(pcf_data) 29 39
+                              Store 90 89
+              92:     84(ptr) AccessChain 83(pcf_data.flTessFactor) 91
+              93:    6(float) Load 92
+              94:     32(ptr) AccessChain 79(pcf_data) 29 91
+                              Store 94 93
+              98:     84(ptr) AccessChain 97(pcf_data.flInsideTessFactor) 29
+              99:    6(float) Load 98
+             100:     32(ptr) AccessChain 79(pcf_data) 39
+                              Store 100 99
+             102:          12 Load 52(i)
+             104:   13(fvec2) Load 73(tesscoord)
+                              Store 103(param) 104
+             106:17(pcf_in_t) Load 79(pcf_data)
+                              Store 105(param) 106
+             107: 19(gs_in_t) FunctionCall 24(@main(struct-ds_in_t-vf4-vf31[2];vf2;struct-pcf_in_t-f1[3]-f11;) 102 103(param) 105(param)
+                              Store 101(flattenTemp) 107
+             110:     37(ptr) AccessChain 101(flattenTemp) 29
+             111:    7(fvec4) Load 110
+                              Store 109(@entryPointOutput.pos) 111
+             114:     46(ptr) AccessChain 101(flattenTemp) 39
+             115:    8(fvec3) Load 114
+                              Store 113(@entryPointOutput.norm) 115
                               Return
                               FunctionEnd
 24(@main(struct-ds_in_t-vf4-vf31[2];vf2;struct-pcf_in_t-f1[3]-f11;): 19(gs_in_t) Function None 20
