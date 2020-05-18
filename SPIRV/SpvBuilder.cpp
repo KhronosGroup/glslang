@@ -1202,7 +1202,7 @@ void Builder::addMemberName(Id id, int memberNumber, const char* string)
     names.push_back(std::unique_ptr<Instruction>(name));
 }
 
-void Builder::addDecoration(Id id, Decoration decoration, int num)
+void Builder::addDecoration(Id id, Decoration decoration, int num, bool allowIllegal)
 {
     if (decoration == spv::DecorationMax)
         return;
@@ -1210,7 +1210,7 @@ void Builder::addDecoration(Id id, Decoration decoration, int num)
     Instruction* dec = new Instruction(OpDecorate);
     dec->addIdOperand(id);
     dec->addImmediateOperand(decoration);
-    if (num >= 0)
+    if (allowIllegal || num >= 0)
         dec->addImmediateOperand(num);
 
     decorations.push_back(std::unique_ptr<Instruction>(dec));

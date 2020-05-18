@@ -53,12 +53,14 @@ namespace glslang {
 
 struct SpvOptions {
     SpvOptions() : generateDebugInfo(false), disableOptimizer(true),
-        optimizeSize(false), disassemble(false), validate(false) { }
+        optimizeSize(false), disassemble(false), validate(false),
+        defaultBinding(true) { }
     bool generateDebugInfo;
     bool disableOptimizer;
     bool optimizeSize;
     bool disassemble;
     bool validate;
+    bool defaultBinding;
 };
 
 #ifdef ENABLE_OPT

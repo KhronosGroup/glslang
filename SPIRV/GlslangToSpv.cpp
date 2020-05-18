@@ -8121,7 +8121,11 @@ spv::Id TGlslangToSpvTraverser::getSymbolId(const glslang::TIntermSymbol* symbol
         builder.addDecoration(id, spv::DecorationBinding, symbol->getQualifier().layoutBinding);
     else if (IsDescriptorResource(symbol->getType())) {
         // default to 0
-        builder.addDecoration(id, spv::DecorationBinding, 0);
+        // If default is disable, binding to -1
+        if (options.defaultBinding)
+            builder.addDecoration(id, spv::DecorationBinding, 0);
+        else
+            builder.addDecoration(id, spv::DecorationBinding, -1, true);
     }
     if (symbol->getQualifier().hasAttachment())
         builder.addDecoration(id, spv::DecorationInputAttachmentIndex, symbol->getQualifier().layoutAttachment);
