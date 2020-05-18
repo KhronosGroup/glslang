@@ -83,6 +83,22 @@ ERROR: node is still EOpNull!
 0:135        'KeyMem' ( global structure{ global int precise})
 0:135        Constant:
 0:135          0 (const int)
+0:152  Function Definition: testOverload( ( global void)
+0:152    Function Parameters: 
+0:153    Sequence
+0:153      Sequence
+0:153        move second child to first child ( temp float)
+0:153          'overloadTest' ( temp float)
+0:153          Constant:
+0:153            42.000000
+0:154      move second child to first child ( temp float)
+0:154        'overloadTest' ( temp float)
+0:154        smoothstep ( global float)
+0:154          Constant:
+0:154            0.000000
+0:154          Constant:
+0:154            1.000000
+0:154          'overloadTest' ( temp float)
 0:?   Linker Objects
 0:?     'inVar' ( smooth in 4-component vector of float)
 0:?     'outVar' (layout( location=0 index=0) out 4-component vector of float)

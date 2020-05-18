@@ -149,3 +149,7 @@ layout(location=6) uniform ColorsBuffer // ERROR: location cannot be applied in 
 } colorsBuffer;
 
 
+void testOverload() {
+    float overloadTest = 42;
+    overloadTest = smoothstep(0, 1, overloadTest);
+}
