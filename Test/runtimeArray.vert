@@ -37,7 +37,7 @@ layout(binding=4)                             buffer  bname { float b; }  storag
 layout(binding=5)                             uniform sampler2D           sampledImage[];
 layout(binding=6, r32f)                       uniform image2D             storageImage[];
 layout(binding=8)                             uniform samplerBuffer       uniformTexelBuffer[];
-layout(binding=9, r32f)                       uniform imageBuffer         storageTexelBuffer[];
+layout(binding=9, r32f)                       uniform imageBuffer         storageTexelBuffer[]; // ERROR
 
 int i;
 

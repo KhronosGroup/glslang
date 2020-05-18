@@ -5808,6 +5808,10 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
         case EvqBuffer:
             if (type.getBasicType() == EbtBlock)
                 error(loc, "cannot apply to uniform or buffer block", "location", "");
+
+            // "It is a compile-time error to apply location layout qualifier to atomic counter."
+            else if (type.getBasicType() == EbtAtomicUint)
+                error(loc, "cannot apply to atomic counter", "location", "");
             break;
 #ifndef GLSLANG_WEB
         case EvqPayload:
@@ -5870,55 +5874,74 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
         // an array of size N, all elements of the array from binding through binding + N - 1 must be within this
         // range."
         //
+        unsigned int lastBinding = qualifier.layoutBinding;
+        if (type.isArray()) {
+            if (spvVersion.vulkan == 0 && !type.isAtomic()) {
+                if (type.isSizedArray())
+                    lastBinding += type.getCumulativeArraySize() - 1;
+                else {
+#ifndef GLSLANG_WEB
+                    warn(loc, "assuming binding count of one for compile-time checking of binding numbers for unsized array", "[]", "");
+#endif
+                }
+            }
+        }
+
         if (! type.isOpaque() && type.getBasicType() != EbtBlock)
             error(loc, "requires block, or sampler/image, or atomic-counter type", "binding", "");
         if (type.getBasicType() == EbtSampler) {
-            int lastBinding = qualifier.layoutBinding;
-            if (type.isArray()) {
-                if (spvVersion.vulkan > 0)
-                    lastBinding += 1;
-                else {
-                    if (type.isSizedArray())
-                        lastBinding += type.getCumulativeArraySize();
-                    else {
-                        lastBinding += 1;
 #ifndef GLSLANG_WEB
-                        if (spvVersion.vulkan == 0)
-                            warn(loc, "assuming binding count of one for compile-time checking of binding numbers for unsized array", "[]", "");
-#endif
-                    }
-                }
+            if (type.isImage()) {
+                if (spvVersion.vulkan == 0 && lastBinding >= (unsigned int)resources.maxImageUnits)
+                    error(loc, "sampler binding not less than gl_MaxImageUnits", "binding", type.isArray() ? "(using array)" : "");
             }
-#ifndef GLSLANG_WEB
-            if (spvVersion.vulkan == 0 && lastBinding >= resources.maxCombinedTextureImageUnits)
-                error(loc, "sampler binding not less than gl_MaxCombinedTextureImageUnits", "binding", type.isArray() ? "(using array)" : "");
+            else {
+                if (spvVersion.vulkan == 0 && lastBinding >= (unsigned int)resources.maxCombinedTextureImageUnits)
+                    error(loc, "sampler binding not less than gl_MaxCombinedTextureImageUnits", "binding", type.isArray() ? "(using array)" : "");
+            }
 #endif
         }
         if (type.isAtomic()) {
-            if (qualifier.layoutBinding >= (unsigned int)resources.maxAtomicCounterBindings) {
+            if (lastBinding >= (unsigned int)resources.maxAtomicCounterBindings) {
                 error(loc, "atomic_uint binding is too large; see gl_MaxAtomicCounterBindings", "binding", "");
                 return;
             }
         }
-    } else if (!intermediate.getAutoMapBindings()) {
-        // some types require bindings
 
+        if (type.getBasicType() == EbtBlock) {
+            if (qualifier.storage == EvqBuffer) {
+                if (lastBinding >= (unsigned int)resources.maxStorageBufferBindings) {
+                    error(loc, "buffer binding is too large; no more than ", "binding", "%d", resources.maxStorageBufferBindings);
+                    return;
+                }
+            } else {
+                if (lastBinding >= (unsigned int)resources.maxUniformBufferBindings) {
+                    error(loc, "uniform block binding is too large; no more than ", "binding", "%d", resources.maxUniformBufferBindings);
+                    return;
+                }
+            }
+        }
+    } else {
+        // some types can auto map binding by glslang
+        if (!intermediate.getAutoMapBindings()) {
+            // SPIR-V
+            if (spvVersion.spv > 0) {
+                if (qualifier.isUniformOrBuffer()) {
+                    if (type.getBasicType() == EbtBlock && !qualifier.isPushConstant() &&
+                        !qualifier.isShaderRecord() &&
+                        !qualifier.hasAttachment() &&
+                        !qualifier.hasBufferReference())
+                        error(loc, "uniform/buffer blocks require layout(binding=X)", "binding", "");
+                    else if (spvVersion.vulkan > 0 && type.getBasicType() == EbtSampler)
+                        error(loc, "sampler/texture/image requires layout(binding=X)", "binding", "");
+                }
+            }
+        }
+
+        // some types can't auto map binding by glslang
         // atomic_uint
         if (type.isAtomic())
             error(loc, "layout(binding=X) is required", "atomic_uint", "");
-
-        // SPIR-V
-        if (spvVersion.spv > 0) {
-            if (qualifier.isUniformOrBuffer()) {
-                if (type.getBasicType() == EbtBlock && !qualifier.isPushConstant() &&
-                       !qualifier.isShaderRecord() &&
-                       !qualifier.hasAttachment() &&
-                       !qualifier.hasBufferReference())
-                    error(loc, "uniform/buffer blocks require layout(binding=X)", "binding", "");
-                else if (spvVersion.vulkan > 0 && type.getBasicType() == EbtSampler)
-                    error(loc, "sampler/texture/image requires layout(binding=X)", "binding", "");
-            }
-        }
     }
 
     // some things can't have arrays of arrays

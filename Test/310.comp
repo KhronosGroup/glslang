@@ -254,3 +254,10 @@ void devie()
     gl_DeviceIndex;
     gl_ViewIndex;   // ERROR, never this stage
 }
+
+layout(binding=16384, std430) buffer buffer_block_bindingMax_block_bindingMax {
+    float bufferMax_a[2];
+} ; // ERROR
+layout(binding=16384, std140) uniform uniform_block_bindingMax {
+    float uniformMax_a[2];
+} ; // ERROR

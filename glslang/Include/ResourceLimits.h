@@ -128,6 +128,8 @@ struct TBuiltInResource {
     int maxFragmentAtomicCounterBuffers;
     int maxCombinedAtomicCounterBuffers;
     int maxAtomicCounterBufferSize;
+    int maxUniformBufferBindings;
+    int maxStorageBufferBindings;
     int maxTransformFeedbackBuffers;
     int maxTransformFeedbackInterleavedComponents;
     int maxCullDistances;
