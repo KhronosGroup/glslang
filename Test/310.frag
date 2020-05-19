@@ -495,4 +495,4 @@ struct s {
 };
 
 const vec4 v = (vec4(1,2,3,4), vec4(5,6,7,8));  // ERROR
-const s commaTest = (s(9.0, vec3(10,11,12)), s(13.0, vec3(14,15,16)));
+const s commaTest = (s(9.0, vec3(10,11,12)), s(13.0, vec3(14,15,16)));  //ERROR
