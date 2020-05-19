@@ -42,6 +42,7 @@
 
 #include "../OSDependent/osinclude.h"
 #include <algorithm>
+#include <cstdint>
 
 #include "preprocessor/PpContext.h"
 
