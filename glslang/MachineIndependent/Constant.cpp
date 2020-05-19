@@ -1047,6 +1047,8 @@ TIntermTyped* TIntermediate::fold(TIntermAggregate* aggrNode)
         objectSize = std::max(children[0]->getAsTyped()->getType().getVectorSize(),
                               children[2]->getAsTyped()->getType().getVectorSize());
         break;
+    case EOpComma:
+        return children.back()->getAsTyped();
     default:
         return aggrNode;
     }

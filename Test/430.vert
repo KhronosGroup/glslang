@@ -7,6 +7,9 @@ layout(location = 4) uniform vec4 uv4;
 layout(location = 2) in   inb1 { vec4 v; } b1;  // ERROR
 layout(location = 2) out outb1 { vec4 v; } b2;  // ERROR
 
+layout(location = 0) in vec4 vs_in_attrib_max1[16];
+layout(location = 0) in vec4 vs_in_attrib_max1[16348]; //ERROR
+
 out gl_PerVertex {
     float gl_ClipDistance[];
 };

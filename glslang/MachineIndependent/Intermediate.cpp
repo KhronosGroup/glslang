@@ -2450,7 +2450,7 @@ TIntermTyped* TIntermediate::addComma(TIntermTyped* left, TIntermTyped* right, c
     commaAggregate->setType(right->getType());
     commaAggregate->getWritableType().getQualifier().makeTemporary();
 
-    return commaAggregate;
+    return fold(commaAggregate->getAsAggregate());
 }
 
 TIntermTyped* TIntermediate::addMethod(TIntermTyped* object, const TType& type, const TString* name, const TSourceLoc& loc)

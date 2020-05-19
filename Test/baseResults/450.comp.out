@@ -1,16 +1,25 @@
 450.comp
 ERROR: 0:2: 'local_size_x' : must be at least 1 
 ERROR: 0:4: 'binding' : atomic_uint binding is too large 
-ERROR: 0:8: 'shared' : not allowed in nested scope 
+ERROR: 0:12: 'shared' : not allowed in nested scope 
 ERROR: 3 compilation errors.  No code generated.
 
 
 Shader version: 450
 local_size = (1, 1, 1)
 ERROR: node is still EOpNull!
-0:6  Function Definition: main( ( global void)
-0:6    Function Parameters: 
+0:10  Function Definition: main( ( global void)
+0:10    Function Parameters: 
+0:?     Sequence
+0:13      move second child to first child ( temp int)
+0:13        data: direct index for structure (layout( column_major std430 offset=0) buffer int)
+0:13          'g_out' (layout( column_major std430) buffer block{layout( column_major std430 offset=0) buffer int data})
+0:13          Constant:
+0:13            0 (const int)
+0:13        Constant:
+0:13          8 (const int)
 0:?   Linker Objects
+0:?     'g_out' (layout( column_major std430) buffer block{layout( column_major std430 offset=0) buffer int data})
 
 
 Linked compute stage:
@@ -19,7 +28,16 @@ Linked compute stage:
 Shader version: 450
 local_size = (1, 1, 1)
 ERROR: node is still EOpNull!
-0:6  Function Definition: main( ( global void)
-0:6    Function Parameters: 
+0:10  Function Definition: main( ( global void)
+0:10    Function Parameters: 
+0:?     Sequence
+0:13      move second child to first child ( temp int)
+0:13        data: direct index for structure (layout( column_major std430 offset=0) buffer int)
+0:13          'g_out' (layout( column_major std430) buffer block{layout( column_major std430 offset=0) buffer int data})
+0:13          Constant:
+0:13            0 (const int)
+0:13        Constant:
+0:13          8 (const int)
 0:?   Linker Objects
+0:?     'g_out' (layout( column_major std430) buffer block{layout( column_major std430 offset=0) buffer int data})
 

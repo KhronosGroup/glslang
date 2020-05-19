@@ -622,7 +622,8 @@ void TIntermediate::mergeErrorCheck(TInfoSink& infoSink, const TIntermSymbol& sy
     //       current implementation only has one offset.
     if (symbol.getQualifier().layoutMatrix    != unitSymbol.getQualifier().layoutMatrix ||
         symbol.getQualifier().layoutPacking   != unitSymbol.getQualifier().layoutPacking ||
-        symbol.getQualifier().layoutLocation  != unitSymbol.getQualifier().layoutLocation ||
+        (symbol.getQualifier().hasLocation() && unitSymbol.getQualifier().hasLocation() &&
+         (symbol.getQualifier().layoutLocation  != unitSymbol.getQualifier().layoutLocation)) ||
         symbol.getQualifier().layoutComponent != unitSymbol.getQualifier().layoutComponent ||
         symbol.getQualifier().layoutIndex     != unitSymbol.getQualifier().layoutIndex ||
         symbol.getQualifier().layoutBinding   != unitSymbol.getQualifier().layoutBinding ||

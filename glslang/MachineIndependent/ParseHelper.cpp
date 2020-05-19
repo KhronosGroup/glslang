@@ -5713,6 +5713,11 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
                 if (qualifier.layoutLocation >= (unsigned int)resources.maxDrawBuffers)
                     error(loc, "too large for fragment output", "location", "");
             }
+            if (qualifier.storage == EvqVaryingIn && language == EShLangVertex) {
+                if (qualifier.layoutLocation + TIntermediate::computeTypeLocationSize(type, language) >
+                    (unsigned int)resources.maxVertexAttribs)
+                    error(loc, "too large for vertex input", "location", "");
+            }
         }
         if (qualifier.hasComponent()) {
             // "It is a compile-time error if this sequence of components gets larger than 3."
