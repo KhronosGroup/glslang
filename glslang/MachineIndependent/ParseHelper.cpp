@@ -5864,9 +5864,9 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
 
     // "The offset qualifier can only be used on block members of blocks..."
     if (qualifier.hasOffset()) {
+        profileRequires(loc, EEsProfile, 300, E_GL_ARB_enhanced_layouts, "\"offset\" can only use to atomic counter layout qualifiers");
         if (version <= 430) {
             profileRequires(loc, ~EEsProfile, 140, E_GL_ARB_enhanced_layouts, "\"offset\" can only use to atomic counter layout qualifiers");
-            profileRequires(loc, EEsProfile, 300, E_GL_ARB_enhanced_layouts, "\"offset\" can only use to atomic counter layout qualifiers");
         }
         if (type.getBasicType() == EbtBlock)
             error(loc, "only applies to block members, not blocks", "offset", "");
