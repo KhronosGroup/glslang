@@ -485,3 +485,14 @@ void testimplicitFail() {
     uint a = b; // Error GL_EXT_shader_implicit_conversions is disabled
 }
 
+// Comma test
+struct s {
+
+    float f;
+
+    vec3 v;
+
+};
+
+const vec4 v = (vec4(1,2,3,4), vec4(5,6,7,8));  // ERROR
+const s commaTest = (s(9.0, vec3(10,11,12)), s(13.0, vec3(14,15,16)));

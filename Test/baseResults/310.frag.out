@@ -139,7 +139,9 @@ ERROR: 0:461: 'func' : function already has a body
 ERROR: 0:463: 'return' : void function cannot return a value 
 ERROR: 0:472: '=' :  cannot convert from ' temp mediump uint' to ' temp mediump int'
 ERROR: 0:485: '=' :  cannot convert from ' global mediump int' to ' temp mediump uint'
-ERROR: 132 compilation errors.  No code generated.
+ERROR: 0:497: '=' : global const initializers must be constant ' const mediump 4-component vector of float'
+ERROR: 0:498: '=' : global const initializers must be constant ' const structure{ global mediump float f,  global mediump 3-component vector of float v}'
+ERROR: 134 compilation errors.  No code generated.
 
 
 Shader version: 310
@@ -1114,6 +1116,8 @@ ERROR: node is still EOpNull!
 0:?     'badout' ( out mediump 4-component vector of float)
 0:?     'outAA' ( out 2-element array of 2-element array of mediump 4-component vector of float)
 0:?     'b' ( global mediump int)
+0:?     'v' ( temp mediump 4-component vector of float)
+0:?     'commaTest' ( temp structure{ global mediump float f,  global mediump 3-component vector of float v})
 
 
 Linked fragment stage:
@@ -1327,4 +1331,6 @@ ERROR: node is still EOpNull!
 0:?     'badout' ( out mediump 4-component vector of float)
 0:?     'outAA' ( out 2-element array of 2-element array of mediump 4-component vector of float)
 0:?     'b' ( global mediump int)
+0:?     'v' ( temp mediump 4-component vector of float)
+0:?     'commaTest' ( temp structure{ global mediump float f,  global mediump 3-component vector of float v})
 
