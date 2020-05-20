@@ -1333,6 +1333,8 @@ struct TShaderQualifiers {
             primitives = src.primitives;
         if (src.interlockOrdering != EioNone)
             interlockOrdering = src.interlockOrdering;
+        if (src.layoutPrimitiveCulling)
+            layoutPrimitiveCulling = src.layoutPrimitiveCulling;
 #endif
     }
 };

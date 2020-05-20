@@ -6110,6 +6110,8 @@ void TParseContext::checkNoShaderLayouts(const TSourceLoc& loc, const TShaderQua
         error(loc, message, "num_views", "");
     if (shaderQualifiers.interlockOrdering != EioNone)
         error(loc, message, TQualifier::getInterlockOrderingString(shaderQualifiers.interlockOrdering), "");
+    if (shaderQualifiers.layoutPrimitiveCulling)
+        error(loc, "can only be applied as standalone", "primitive_culling", "");
 #endif
 }
 
@@ -8376,8 +8378,12 @@ void TParseContext::updateStandaloneQualifierDefaults(const TSourceLoc& loc, con
     }
 
     if (publicType.shaderQualifiers.layoutPrimitiveCulling) {
-        // Exit early as this qualifier has no default storage class
-        intermediate.setLayoutPrimitiveCulling();
+        if (publicType.qualifier.storage != EvqTemporary)
+            error(loc, "layout qualifier can not have storage qualifiers", "primitive_culling","", "");
+        else {
+            intermediate.setLayoutPrimitiveCulling();
+        }
+        // Exit early as further checks are not valid
         return;
     }
 #endif 
