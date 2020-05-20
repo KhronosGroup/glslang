@@ -46,6 +46,7 @@ spv.bufferhandle3.frag
                               Decorate 40(x) DescriptorSet 1
                               Decorate 40(x) Binding 2
                               Decorate 42(k) Flat
+                              Decorate 42(k) Location 0
                               Decorate 42(k) DecorationAliasedPointerEXT
                               Decorate 23(param) DecorationAliasedPointerEXT
                2:             TypeVoid

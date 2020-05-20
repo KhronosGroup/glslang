@@ -22,14 +22,17 @@ spv.100ops.frag
                               Decorate 13(face2) RelaxedPrecision
                               Decorate 17(z) RelaxedPrecision
                               Decorate 21(low) RelaxedPrecision
+                              Decorate 21(low) Location 0
                               Decorate 22 RelaxedPrecision
                               Decorate 23 RelaxedPrecision
                               Decorate 25 RelaxedPrecision
                               Decorate 26(high) RelaxedPrecision
+                              Decorate 26(high) Location 1
                               Decorate 27 RelaxedPrecision
                               Decorate 32 RelaxedPrecision
                               Decorate 34 RelaxedPrecision
                               Decorate 37(Color) RelaxedPrecision
+                              Decorate 37(Color) Location 0
                               Decorate 38 RelaxedPrecision
                               Decorate 39 RelaxedPrecision
                               Decorate 40 RelaxedPrecision

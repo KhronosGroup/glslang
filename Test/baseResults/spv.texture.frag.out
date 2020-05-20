@@ -41,17 +41,22 @@ WARNING: 0:12: varying deprecated in version 130; may be removed in future relea
                               Name 304  "t"
                               Decorate 32(texSampler1D) DescriptorSet 0
                               Decorate 32(texSampler1D) Binding 0
+                              Decorate 47(coords2D) Location 4
                               Decorate 76(texSampler2D) DescriptorSet 0
-                              Decorate 76(texSampler2D) Binding 0
+                              Decorate 76(texSampler2D) Binding 1
                               Decorate 104(texSampler3D) DescriptorSet 0
-                              Decorate 104(texSampler3D) Binding 0
+                              Decorate 104(texSampler3D) Binding 2
                               Decorate 130(texSamplerCube) DescriptorSet 0
-                              Decorate 130(texSamplerCube) Binding 0
+                              Decorate 130(texSamplerCube) Binding 3
                               Decorate 145(shadowSampler1D) DescriptorSet 0
-                              Decorate 145(shadowSampler1D) Binding 0
+                              Decorate 145(shadowSampler1D) Binding 4
                               Decorate 164(shadowSampler2D) DescriptorSet 0
-                              Decorate 164(shadowSampler2D) Binding 0
+                              Decorate 164(shadowSampler2D) Binding 5
                               Decorate 291(gl_FragColor) Location 0
+                              Decorate 294(u) Location 2
+                              Decorate 297(blend) Location 0
+                              Decorate 303(scale) Location 1
+                              Decorate 304(t) Location 3
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

@@ -21,14 +21,17 @@ spv.300layout.frag
                               Decorate 9(c) RelaxedPrecision
                               Decorate 9(c) Location 7
                               Decorate 11(color) RelaxedPrecision
+                              Decorate 11(color) Location 1
                               Decorate 12 RelaxedPrecision
                               MemberDecorate 13(S) 0 RelaxedPrecision
                               MemberDecorate 13(S) 1 RelaxedPrecision
+                              Decorate 15(s) Location 2
                               Decorate 19 RelaxedPrecision
                               Decorate 20 RelaxedPrecision
                               Decorate 26(p) RelaxedPrecision
                               Decorate 26(p) Location 3
                               Decorate 29(pos) RelaxedPrecision
+                              Decorate 29(pos) Location 0
                               Decorate 30 RelaxedPrecision
                               Decorate 33 RelaxedPrecision
                               Decorate 34 RelaxedPrecision

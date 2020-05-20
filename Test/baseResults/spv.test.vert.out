@@ -16,7 +16,11 @@ WARNING: 0:5: attribute deprecated in version 130; may be removed in future rele
                               Name 15  "gl_Position"
                               Name 18  "transform"
                               Name 21  "position"
+                              Decorate 9(uv) Location 0
+                              Decorate 11(uv_in) Location 5
                               Decorate 15(gl_Position) BuiltIn Position
+                              Decorate 18(transform) Location 0
+                              Decorate 21(position) Location 4
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

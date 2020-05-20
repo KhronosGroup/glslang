@@ -60,12 +60,14 @@ WARNING: 0:139: 'switch' : last case/default label not followed by statements
                               Decorate 60(local) RelaxedPrecision
                               Decorate 62(c) RelaxedPrecision
                               Decorate 62(c) Flat
+                              Decorate 62(c) Location 0
                               Decorate 63 RelaxedPrecision
                               Decorate 64 RelaxedPrecision
                               Decorate 66 RelaxedPrecision
                               Decorate 67 RelaxedPrecision
                               Decorate 73(f) RelaxedPrecision
                               Decorate 75(x) RelaxedPrecision
+                              Decorate 75(x) Location 2
                               Decorate 76 RelaxedPrecision
                               Decorate 77 RelaxedPrecision
                               Decorate 79 RelaxedPrecision
@@ -101,6 +103,7 @@ WARNING: 0:139: 'switch' : last case/default label not followed by statements
                               Decorate 127 RelaxedPrecision
                               Decorate 129(d) RelaxedPrecision
                               Decorate 129(d) Flat
+                              Decorate 129(d) Location 1
                               Decorate 130 RelaxedPrecision
                               Decorate 134 RelaxedPrecision
                               Decorate 135 RelaxedPrecision
@@ -149,11 +152,13 @@ WARNING: 0:139: 'switch' : last case/default label not followed by statements
                               Decorate 221 RelaxedPrecision
                               Decorate 222 RelaxedPrecision
                               Decorate 227(color) RelaxedPrecision
+                              Decorate 227(color) Location 0
                               Decorate 228 RelaxedPrecision
                               Decorate 229 RelaxedPrecision
                               Decorate 230 RelaxedPrecision
                               Decorate 231 RelaxedPrecision
                               Decorate 233(v) RelaxedPrecision
+                              Decorate 233(v) Location 3
                               Decorate 235 RelaxedPrecision
                               Decorate 237 RelaxedPrecision
                               Decorate 239 RelaxedPrecision

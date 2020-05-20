@@ -41,7 +41,9 @@ spv.bufferhandleUvec2.frag
                               Decorate 8(blockType) Block
                               Decorate 13(b1) DecorationAliasedPointerEXT
                               Decorate 16(h) Flat
+                              Decorate 16(h) Location 0
                               Decorate 19(i) Flat
+                              Decorate 19(i) Location 1
                               Decorate 34(b2) DecorationAliasedPointerEXT
                               Decorate 37(b3) DecorationAliasedPointerEXT
                               MemberDecorate 68(t2) 0 Offset 0

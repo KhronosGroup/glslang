@@ -253,6 +253,9 @@ public:
         glslang::TProgram program;
         program.addShader(&shader);
         success &= program.link(controls);
+#ifndef GLSLANG_WEB
+        success &= program.mapIO();
+#endif
 
         spv::SpvBuildLogger logger;
 
@@ -356,6 +359,9 @@ public:
         glslang::TProgram program;
         program.addShader(&shader);
         success &= program.link(controls);
+#ifndef GLSLANG_WEB
+        success &= program.mapIO();
+#endif
 
         spv::SpvBuildLogger logger;
 

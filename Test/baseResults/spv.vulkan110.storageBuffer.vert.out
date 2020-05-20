@@ -33,7 +33,7 @@ spv.vulkan110.storageBuffer.vert
                               MemberDecorate 22(bb) 0 Offset 0
                               Decorate 22(bb) Block
                               Decorate 24(bbi) DescriptorSet 0
-                              Decorate 24(bbi) Binding 0
+                              Decorate 24(bbi) Binding 1
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

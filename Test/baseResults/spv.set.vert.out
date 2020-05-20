@@ -14,6 +14,7 @@ spv.set.vert
                               MemberName 10(setBuf) 0  "color"
                               Name 12  "setBufInst"
                               Name 21  "samp2D"
+                              Decorate 9(color) Location 0
                               MemberDecorate 10(setBuf) 0 Offset 0
                               Decorate 10(setBuf) BufferBlock
                               Decorate 12(setBufInst) DescriptorSet 0

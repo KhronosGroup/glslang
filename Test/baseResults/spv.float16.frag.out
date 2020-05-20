@@ -115,6 +115,7 @@ Validation failed
                               Name 531  "f16_to_d"
                               Name 532  "f_to_f16"
                               Name 533  "d_to_f16"
+                              Decorate 465(if16v) Location 0
                               Decorate 512 ArrayStride 16
                               Decorate 513 ArrayStride 32
                               MemberDecorate 514(S) 0 Offset 0

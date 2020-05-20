@@ -39,7 +39,7 @@ spv.meshTaskShader.task
                               MemberDecorate 47(block0) 0 Offset 0
                               Decorate 47(block0) Block
                               Decorate 49 DescriptorSet 0
-                              Decorate 49 Binding 0
+                              Decorate 49 Binding 1
                               Decorate 65(uni_image) DescriptorSet 0
                               Decorate 65(uni_image) Binding 0
                               Decorate 65(uni_image) NonReadable
@@ -51,6 +51,7 @@ spv.meshTaskShader.task
                               MemberDecorate 88(Task) 2 PerTaskNV
                               MemberDecorate 88(Task) 2 Offset 32
                               Decorate 88(Task) Block
+                              Decorate 90(mytask) Location 0
                               Decorate 113(gl_TaskCountNV) BuiltIn TaskCountNV
                               Decorate 115 BuiltIn WorkgroupSize
                2:             TypeVoid

@@ -22,23 +22,26 @@ spv.subpass.frag
                               Name 53  "ucolor"
                               Name 56  "usub"
                               Name 61  "usubMS"
+                              Decorate 15(icolor) Location 1
+                              Decorate 27(color) Location 0
                               Decorate 30(sub) DescriptorSet 0
                               Decorate 30(sub) Binding 0
                               Decorate 30(sub) InputAttachmentIndex 1
                               Decorate 35(subMS) DescriptorSet 0
-                              Decorate 35(subMS) Binding 0
+                              Decorate 35(subMS) Binding 1
                               Decorate 35(subMS) InputAttachmentIndex 2
                               Decorate 42(isub) DescriptorSet 0
-                              Decorate 42(isub) Binding 0
+                              Decorate 42(isub) Binding 2
                               Decorate 42(isub) InputAttachmentIndex 3
                               Decorate 45(isubMS) DescriptorSet 0
-                              Decorate 45(isubMS) Binding 0
+                              Decorate 45(isubMS) Binding 3
                               Decorate 45(isubMS) InputAttachmentIndex 4
+                              Decorate 53(ucolor) Location 2
                               Decorate 56(usub) DescriptorSet 0
-                              Decorate 56(usub) Binding 0
+                              Decorate 56(usub) Binding 4
                               Decorate 56(usub) InputAttachmentIndex 5
                               Decorate 61(usubMS) DescriptorSet 0
-                              Decorate 61(usubMS) Binding 0
+                              Decorate 61(usubMS) Binding 5
                               Decorate 61(usubMS) InputAttachmentIndex 6
                2:             TypeVoid
                3:             TypeFunction 2

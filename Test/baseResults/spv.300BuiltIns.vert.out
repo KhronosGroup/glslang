@@ -21,6 +21,7 @@ spv.300BuiltIns.vert
                               MemberDecorate 8(gl_PerVertex) 1 BuiltIn PointSize
                               Decorate 8(gl_PerVertex) Block
                               Decorate 14(ps) RelaxedPrecision
+                              Decorate 14(ps) Location 0
                               Decorate 15 RelaxedPrecision
                               Decorate 21(gl_VertexIndex) BuiltIn VertexIndex
                               Decorate 30 RelaxedPrecision

@@ -26,3 +26,4 @@ float4 VertexShaderFunction4(float4 inF0, float4 inF1)
 #define MATFNS() \
     frexp(inF0, inF1);
 
+void main() { }

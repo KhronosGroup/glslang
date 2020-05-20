@@ -15,10 +15,12 @@ spv.dataOutIndirect.frag
                               MemberName 14(b) 0  "i"
                               Name 16  "bName"
                               Name 22  "Color"
+                              Decorate 12(fcolor) Location 0
                               MemberDecorate 14(b) 0 Offset 0
                               Decorate 14(b) Block
                               Decorate 16(bName) DescriptorSet 0
                               Decorate 16(bName) Binding 0
+                              Decorate 22(Color) Location 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

@@ -42,6 +42,7 @@ spv.functionSemantics.frag
                               Name 133  "param"
                               Name 136  "arg"
                               Name 152  "gl_FragColor"
+                              Decorate 76(u) Location 0
                               Decorate 152(gl_FragColor) Location 0
                2:             TypeVoid
                3:             TypeFunction 2

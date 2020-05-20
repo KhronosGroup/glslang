@@ -8,6 +8,8 @@ remap.basic.strip.frag
                               MemoryModel Logical GLSL450
                               EntryPoint Fragment 4  "main" 17 19
                               ExecutionMode 4 OriginUpperLeft
+                              Decorate 17 Location 0
+                              Decorate 19 Location 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

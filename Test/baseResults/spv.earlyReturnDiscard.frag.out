@@ -24,7 +24,17 @@ spv.earlyReturnDiscard.frag
                               Name 77  "b"
                               Name 105  "gl_FragColor"
                               Name 109  "threshhold3"
+                              Decorate 11(BaseColor) Location 9
+                              Decorate 14(otherColor) Location 3
+                              Decorate 17(c) Location 4
+                              Decorate 19(d) Location 0
+                              Decorate 25(bigColor) Location 1
+                              Decorate 30(smallColor) Location 2
+                              Decorate 39(minimum) Location 8
+                              Decorate 51(threshhold) Location 5
+                              Decorate 63(threshhold2) Location 6
                               Decorate 105(gl_FragColor) Location 0
+                              Decorate 109(threshhold3) Location 7
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

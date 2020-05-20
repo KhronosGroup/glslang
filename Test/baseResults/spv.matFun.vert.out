@@ -45,6 +45,7 @@ spv.matFun.vert
                               Decorate 77(bl) Block
                               Decorate 79(bName) DescriptorSet 0
                               Decorate 79(bName) Binding 0
+                              Decorate 81(v3) Location 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

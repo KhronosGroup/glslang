@@ -13,8 +13,10 @@ spv.texture.sampler.transform.frag
                               Name 9  "color"
                               Name 13  "tex"
                               Name 17  "coord"
+                              Decorate 9(color) Location 0
                               Decorate 13(tex) DescriptorSet 0
                               Decorate 13(tex) Binding 0
+                              Decorate 17(coord) Location 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

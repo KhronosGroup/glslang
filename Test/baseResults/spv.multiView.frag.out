@@ -14,6 +14,7 @@ spv.multiView.frag
                               Name 4  "main"
                               Name 9  "color"
                               Name 12  "gl_ViewIndex"
+                              Decorate 9(color) Location 0
                               Decorate 12(gl_ViewIndex) Flat
                               Decorate 12(gl_ViewIndex) BuiltIn ViewIndex
                2:             TypeVoid

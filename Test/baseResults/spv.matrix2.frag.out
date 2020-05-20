@@ -27,6 +27,18 @@ spv.matrix2.frag
                               Name 218  "colorTransform"
                               Name 219  "m"
                               Name 220  "n"
+                              Decorate 12(v) Location 28
+                              Decorate 16(u) Location 29
+                              Decorate 37(FragColor) Location 0
+                              Decorate 38(Color) Location 3
+                              Decorate 65(un34) Location 16
+                              Decorate 87(um43) Location 12
+                              Decorate 147(um4) Location 24
+                              Decorate 158(um2) Location 19
+                              Decorate 181(um3) Location 21
+                              Decorate 218(colorTransform) Location 0
+                              Decorate 219(m) Location 4
+                              Decorate 220(n) Location 8
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

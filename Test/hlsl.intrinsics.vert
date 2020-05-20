@@ -412,3 +412,5 @@ void TestGenMulNxM(float inF0, float inF1,
     float2x4 r15 = mul(inFM2x3, inFM3x4);
     float3x4 r16 = mul(inFM3x2, inFM2x4);
 }
+
+void main() { }

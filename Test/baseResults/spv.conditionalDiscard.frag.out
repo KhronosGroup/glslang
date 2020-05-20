@@ -16,6 +16,7 @@ spv.conditionalDiscard.frag
                               Name 34  "gl_FragColor"
                               Decorate 13(tex) DescriptorSet 0
                               Decorate 13(tex) Binding 0
+                              Decorate 17(coord) Location 0
                               Decorate 34(gl_FragColor) Location 0
                2:             TypeVoid
                3:             TypeFunction 2

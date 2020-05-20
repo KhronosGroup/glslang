@@ -966,9 +966,9 @@ gl_FragCoord origin is upper left
                               Decorate 21 DescriptorSet 0
                               Decorate 21 Binding 0
                               Decorate 258(g_tTexbfs) DescriptorSet 0
-                              Decorate 258(g_tTexbfs) Binding 0
+                              Decorate 258(g_tTexbfs) Binding 1
                               Decorate 277(g_tTex1df4) DescriptorSet 0
-                              Decorate 277(g_tTex1df4) Binding 0
+                              Decorate 277(g_tTex1df4) Binding 2
                               Decorate 319(@entryPointOutput.color) Location 0
                2:             TypeVoid
                3:             TypeFunction 2

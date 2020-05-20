@@ -1893,25 +1893,25 @@ gl_FragCoord origin is upper left
                               MemberDecorate 63($Global) 10 Offset 128
                               Decorate 63($Global) Block
                               Decorate 65 DescriptorSet 0
-                              Decorate 65 Binding 0
+                              Decorate 65 Binding 9
                               Decorate 75(g_tTex1df4) DescriptorSet 0
                               Decorate 75(g_tTex1df4) Binding 0
                               Decorate 89(g_tTex1di4) DescriptorSet 0
-                              Decorate 89(g_tTex1di4) Binding 0
+                              Decorate 89(g_tTex1di4) Binding 1
                               Decorate 97(g_tTex1du4) DescriptorSet 0
-                              Decorate 97(g_tTex1du4) Binding 0
+                              Decorate 97(g_tTex1du4) Binding 2
                               Decorate 105(g_tTex2df4) DescriptorSet 0
-                              Decorate 105(g_tTex2df4) Binding 0
+                              Decorate 105(g_tTex2df4) Binding 3
                               Decorate 115(g_tTex2di4) DescriptorSet 0
-                              Decorate 115(g_tTex2di4) Binding 0
+                              Decorate 115(g_tTex2di4) Binding 4
                               Decorate 123(g_tTex2du4) DescriptorSet 0
-                              Decorate 123(g_tTex2du4) Binding 0
+                              Decorate 123(g_tTex2du4) Binding 5
                               Decorate 131(g_tTex3df4) DescriptorSet 0
-                              Decorate 131(g_tTex3df4) Binding 0
+                              Decorate 131(g_tTex3df4) Binding 6
                               Decorate 141(g_tTex3di4) DescriptorSet 0
-                              Decorate 141(g_tTex3di4) Binding 0
+                              Decorate 141(g_tTex3di4) Binding 7
                               Decorate 149(g_tTex3du4) DescriptorSet 0
-                              Decorate 149(g_tTex3du4) Binding 0
+                              Decorate 149(g_tTex3du4) Binding 8
                               Decorate 583(@entryPointOutput.Color) Location 0
                               Decorate 588(g_sSamp) DescriptorSet 0
                               Decorate 588(g_sSamp) Binding 0

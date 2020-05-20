@@ -26,34 +26,46 @@ spv.310.bitcast.frag
                               Name 139  "u3"
                               Name 148  "u4"
                               Decorate 14(f1) RelaxedPrecision
+                              Decorate 14(f1) Location 8
                               Decorate 15 RelaxedPrecision
                               Decorate 26(f2) RelaxedPrecision
+                              Decorate 26(f2) Location 9
                               Decorate 27 RelaxedPrecision
                               Decorate 37(f3) RelaxedPrecision
+                              Decorate 37(f3) Location 10
                               Decorate 38 RelaxedPrecision
+                              Decorate 48(f4) Location 11
                               Decorate 57 RelaxedPrecision
                               Decorate 64 RelaxedPrecision
                               Decorate 72 RelaxedPrecision
                               Decorate 89(i1) RelaxedPrecision
                               Decorate 89(i1) Flat
+                              Decorate 89(i1) Location 0
                               Decorate 90 RelaxedPrecision
                               Decorate 98(i2) RelaxedPrecision
                               Decorate 98(i2) Flat
+                              Decorate 98(i2) Location 1
                               Decorate 99 RelaxedPrecision
                               Decorate 107(i3) RelaxedPrecision
                               Decorate 107(i3) Flat
+                              Decorate 107(i3) Location 2
                               Decorate 108 RelaxedPrecision
                               Decorate 116(i4) Flat
+                              Decorate 116(i4) Location 3
                               Decorate 122(u1) RelaxedPrecision
                               Decorate 122(u1) Flat
+                              Decorate 122(u1) Location 4
                               Decorate 123 RelaxedPrecision
                               Decorate 130(u2) RelaxedPrecision
                               Decorate 130(u2) Flat
+                              Decorate 130(u2) Location 5
                               Decorate 131 RelaxedPrecision
                               Decorate 139(u3) RelaxedPrecision
                               Decorate 139(u3) Flat
+                              Decorate 139(u3) Location 6
                               Decorate 140 RelaxedPrecision
                               Decorate 148(u4) Flat
+                              Decorate 148(u4) Location 7
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 1

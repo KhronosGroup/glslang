@@ -105,6 +105,7 @@ Validation failed
                               Name 522  "f_to_f16"
                               Name 523  "d_to_f16"
                               Decorate 461(if64v) Flat
+                              Decorate 461(if64v) Location 0
                               Decorate 508 ArrayStride 16
                               Decorate 509 ArrayStride 64
                               MemberDecorate 510(S) 0 Offset 0

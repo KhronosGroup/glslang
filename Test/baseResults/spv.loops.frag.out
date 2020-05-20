@@ -48,8 +48,38 @@ spv.loops.frag
                               Name 649  "d16"
                               Name 687  "d18"
                               Name 698  "d17"
+                              Decorate 11(BaseColor) Location 11
+                              Decorate 54(d) Location 12
+                              Decorate 57(bigColor) Location 0
+                              Decorate 71(bigColor1_1) Location 1
+                              Decorate 106(d2) Location 13
+                              Decorate 114(d3) Location 14
+                              Decorate 118(bigColor1_2) Location 2
+                              Decorate 131(bigColor1_3) Location 3
+                              Decorate 137(d4) Location 15
                               Decorate 157(Count) Flat
+                              Decorate 157(Count) Location 29
+                              Decorate 160(bigColor2) Location 4
+                              Decorate 171(bigColor3) Location 5
+                              Decorate 308(bigColor4) Location 6
+                              Decorate 344(bigColor5) Location 7
+                              Decorate 350(d5) Location 16
+                              Decorate 366(d6) Location 17
+                              Decorate 380(bigColor6) Location 8
+                              Decorate 418(d7) Location 18
+                              Decorate 450(bigColor7) Location 9
+                              Decorate 469(d8) Location 19
+                              Decorate 512(d9) Location 20
+                              Decorate 544(d10) Location 21
+                              Decorate 552(d11) Location 22
+                              Decorate 562(d12) Location 23
+                              Decorate 588(bigColor8) Location 10
                               Decorate 615(gl_FragColor) Location 0
+                              Decorate 624(d14) Location 24
+                              Decorate 629(d15) Location 25
+                              Decorate 649(d16) Location 26
+                              Decorate 687(d18) Location 28
+                              Decorate 698(d17) Location 27
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

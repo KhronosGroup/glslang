@@ -26,6 +26,7 @@ spv.1.4.image.frag
                               Decorate 26(i2D) DescriptorSet 0
                               Decorate 26(i2D) Binding 1
                               Decorate 30(ic2D) Flat
+                              Decorate 30(ic2D) Location 0
                               Decorate 40(ii2D) DescriptorSet 0
                               Decorate 40(ii2D) Binding 12
                               Decorate 52(ui2D) DescriptorSet 0
@@ -36,7 +37,9 @@ spv.1.4.image.frag
                               Decorate 77(ii2DMS) Binding 13
                               Decorate 89(ui2DMS) DescriptorSet 0
                               Decorate 89(ui2DMS) Binding 13
+                              Decorate 100(fragData) Location 0
                               Decorate 103(value) Flat
+                              Decorate 103(value) Location 1
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

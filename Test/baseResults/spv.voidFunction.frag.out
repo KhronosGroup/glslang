@@ -18,7 +18,10 @@ spv.voidFunction.frag
                               Name 37  "gl_FragColor"
                               Name 40  "BaseColor"
                               Name 42  "d"
+                              Decorate 24(bigColor) Location 0
                               Decorate 37(gl_FragColor) Location 0
+                              Decorate 40(BaseColor) Location 1
+                              Decorate 42(d) Location 2
                2:             TypeVoid
                3:             TypeFunction 2
               10:             TypeFloat 32

@@ -23,6 +23,12 @@ spv.matrix.frag
                               Name 174  "m43"
                               Name 179  "m4"
                               Name 187  "color"
+                              Decorate 12(m1) Location 0
+                              Decorate 14(m2) Location 3
+                              Decorate 28(f) Location 6
+                              Decorate 161(v4) Location 8
+                              Decorate 169(v3) Location 7
+                              Decorate 187(color) Location 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

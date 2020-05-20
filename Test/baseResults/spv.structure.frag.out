@@ -27,6 +27,7 @@ spv.structure.frag
                               Decorate 45(gl_FragColor) Location 0
                               Decorate 50(samp2D) DescriptorSet 0
                               Decorate 50(samp2D) Binding 0
+                              Decorate 54(coord) Location 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

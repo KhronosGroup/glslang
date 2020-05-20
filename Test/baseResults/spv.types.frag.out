@@ -48,13 +48,29 @@ spv.types.frag
                               Name 161  "i_f4"
                               Name 165  "gl_FragColor"
                               Decorate 96(u_i) Flat
+                              Decorate 96(u_i) Location 0
                               Decorate 98(i_i) Flat
+                              Decorate 98(i_i) Location 8
                               Decorate 105(u_i2) Flat
+                              Decorate 105(u_i2) Location 1
                               Decorate 107(i_i2) Flat
+                              Decorate 107(i_i2) Location 9
                               Decorate 114(u_i3) Flat
+                              Decorate 114(u_i3) Location 2
                               Decorate 116(i_i3) Flat
+                              Decorate 116(i_i3) Location 10
                               Decorate 123(u_i4) Flat
+                              Decorate 123(u_i4) Location 3
                               Decorate 125(i_i4) Flat
+                              Decorate 125(i_i4) Location 11
+                              Decorate 132(u_f) Location 4
+                              Decorate 134(i_f) Location 12
+                              Decorate 141(u_f2) Location 5
+                              Decorate 143(i_f2) Location 13
+                              Decorate 150(u_f3) Location 6
+                              Decorate 152(i_f3) Location 14
+                              Decorate 159(u_f4) Location 7
+                              Decorate 161(i_f4) Location 15
                               Decorate 165(gl_FragColor) Location 0
                2:             TypeVoid
                3:             TypeFunction 2

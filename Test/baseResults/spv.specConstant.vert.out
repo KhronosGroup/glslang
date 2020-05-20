@@ -31,11 +31,15 @@ spv.specConstant.vert
                               Name 76  "result"
                               Name 77  "gl_MaxImageUnits"
                               Decorate 9(arraySize) SpecId 16
+                              Decorate 20(color) Location 0
+                              Decorate 22(ucol) Location 0
+                              Decorate 28(size) Location 1
                               Decorate 30(spBool) SpecId 17
                               Decorate 34(scale) SpecId 22
                               Decorate 39(spDouble) SpecId 19
                               Decorate 40(spFloat) SpecId 18
                               Decorate 50(dupArraySize) SpecId 116
+                              Decorate 53(dupUcol) Location 5
                               Decorate 60(spDupBool) SpecId 117
                               Decorate 63(dupScale) SpecId 122
                               Decorate 67(spDupDouble) SpecId 119

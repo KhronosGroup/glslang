@@ -47,7 +47,7 @@ spv.bufferhandle7.frag
                               MemberDecorate 15(t2) 1 Offset 8
                               Decorate 15(t2) Block
                               Decorate 17(u) DescriptorSet 0
-                              Decorate 17(u) Binding 0
+                              Decorate 17(u) Binding 1
                2:             TypeVoid
                3:             TypeFunction 2
                               TypeForwardPointer 6 PhysicalStorageBufferEXT

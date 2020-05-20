@@ -49,19 +49,26 @@ spv.1.4.sparseTexture.frag
                               Name 212  "offsets"
                               Decorate 29(s2D) DescriptorSet 0
                               Decorate 29(s2D) Binding 0
+                              Decorate 33(c2) Location 0
                               Decorate 46(is2D) DescriptorSet 0
-                              Decorate 46(is2D) Binding 0
+                              Decorate 46(is2D) Binding 1
                               Decorate 63(us2D) DescriptorSet 0
-                              Decorate 63(us2D) Binding 0
+                              Decorate 63(us2D) Binding 2
                               Decorate 149(i2D) DescriptorSet 0
-                              Decorate 149(i2D) Binding 0
+                              Decorate 149(i2D) Binding 3
                               Decorate 152(ic2) Flat
+                              Decorate 152(ic2) Location 3
                               Decorate 162(ii2DMS) DescriptorSet 0
-                              Decorate 162(ii2DMS) Binding 0
+                              Decorate 162(ii2DMS) Binding 4
                               Decorate 177(ui3D) DescriptorSet 0
-                              Decorate 177(ui3D) Binding 0
+                              Decorate 177(ui3D) Binding 5
                               Decorate 181(ic3) Flat
+                              Decorate 181(ic3) Location 4
+                              Decorate 189(outColor) Location 0
+                              Decorate 206(c3) Location 1
+                              Decorate 208(c4) Location 2
                               Decorate 212(offsets) Flat
+                              Decorate 212(offsets) Location 5
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 1

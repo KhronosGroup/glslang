@@ -17,27 +17,27 @@ WARNING: 0:4: 'immediate sampler state' : unimplemented
                               Decorate 49 DescriptorSet 0
                               Decorate 49 Binding 0
                               Decorate 60 DescriptorSet 0
-                              Decorate 60 Binding 0
+                              Decorate 60 Binding 2
                               Decorate 73 DescriptorSet 0
-                              Decorate 73 Binding 0
+                              Decorate 73 Binding 3
                               Decorate 83 DescriptorSet 0
-                              Decorate 83 Binding 0
+                              Decorate 83 Binding 4
                               Decorate 94 DescriptorSet 0
-                              Decorate 94 Binding 0
+                              Decorate 94 Binding 5
                               Decorate 105 DescriptorSet 0
-                              Decorate 105 Binding 0
+                              Decorate 105 Binding 6
                               Decorate 117 DescriptorSet 0
-                              Decorate 117 Binding 0
+                              Decorate 117 Binding 7
                               Decorate 128 DescriptorSet 0
-                              Decorate 128 Binding 0
+                              Decorate 128 Binding 8
                               Decorate 138 DescriptorSet 0
-                              Decorate 138 Binding 0
+                              Decorate 138 Binding 9
                               Decorate 151 DescriptorSet 0
-                              Decorate 151 Binding 0
+                              Decorate 151 Binding 10
                               Decorate 160 DescriptorSet 0
-                              Decorate 160 Binding 0
+                              Decorate 160 Binding 11
                               Decorate 169 DescriptorSet 0
-                              Decorate 169 Binding 0
+                              Decorate 169 Binding 12
                               Decorate 188 Location 0
                               Decorate 192 BuiltIn FragDepth
                               Decorate 195 DescriptorSet 0

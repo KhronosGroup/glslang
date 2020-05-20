@@ -30,9 +30,15 @@ Validation failed
                               Name 94  "uAofA"
                               MemberName 94(uAofA) 0  "f"
                               Name 98  "nameAofA"
+                              Decorate 39(outfloat) Location 0
+                              Decorate 44(g5) Location 1
                               Decorate 68(i) Flat
+                              Decorate 68(i) Location 36
                               Decorate 70(j) Flat
+                              Decorate 70(j) Location 37
                               Decorate 72(k) Flat
+                              Decorate 72(k) Location 38
+                              Decorate 78(infloat) Location 0
                               Decorate 92 ArrayStride 16
                               Decorate 93 ArrayStride 64
                               MemberDecorate 94(uAofA) 0 Offset 0

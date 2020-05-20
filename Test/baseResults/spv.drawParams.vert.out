@@ -21,6 +21,7 @@ spv.drawParams.vert
                               Decorate 10(gl_BaseVertexARB) BuiltIn BaseVertex
                               Decorate 13(gl_BaseInstanceARB) BuiltIn BaseInstance
                               Decorate 16(gl_DrawIDARB) BuiltIn DrawIndex
+                              Decorate 21(pos) Location 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 1

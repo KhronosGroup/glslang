@@ -39,12 +39,18 @@ spv.localAggregates.frag
                               Name 134  "foo"
                               Name 135  "foo2"
                               Decorate 15(foo3) Flat
+                              Decorate 15(foo3) Location 9
+                              Decorate 40(coord) Location 0
                               Decorate 90(condition) Flat
+                              Decorate 90(condition) Location 18
+                              Decorate 98(color) Location 1
                               Decorate 108(gl_FragColor) Location 0
                               Decorate 128(samp2D) DescriptorSet 0
                               Decorate 128(samp2D) Binding 0
                               Decorate 134(foo) Flat
+                              Decorate 134(foo) Location 2
                               Decorate 135(foo2) Flat
+                              Decorate 135(foo2) Location 4
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 1

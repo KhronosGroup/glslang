@@ -21,12 +21,17 @@ spv.1.4.texture.frag
                               Name 78  "color"
                               Decorate 15(texSampler2D) DescriptorSet 0
                               Decorate 15(texSampler2D) Binding 0
+                              Decorate 19(coords2D) Location 1
                               Decorate 28(itexSampler2D) DescriptorSet 0
-                              Decorate 28(itexSampler2D) Binding 0
+                              Decorate 28(itexSampler2D) Binding 1
                               Decorate 40(utexSampler2D) DescriptorSet 0
-                              Decorate 40(utexSampler2D) Binding 0
+                              Decorate 40(utexSampler2D) Binding 2
                               Decorate 51(iCoords2D) Flat
+                              Decorate 51(iCoords2D) Location 2
                               Decorate 54(iLod) Flat
+                              Decorate 54(iLod) Location 3
+                              Decorate 76(t) Location 0
+                              Decorate 78(color) Location 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32
