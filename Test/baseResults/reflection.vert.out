@@ -90,8 +90,8 @@ deepA[1].d2.d1[2].b: offset -1, type 8b56, size 1, index -1, binding -1, stages 
 deepA[1].d2.d1[3].va: offset -1, type 8b50, size 3, index -1, binding -1, stages 1, arrayStride 8, topLevelArrayStride 176
 deepA[1].d2.d1[3].b: offset -1, type 8b56, size 1, index -1, binding -1, stages 1, topLevelArrayStride 176
 ufDead3: offset -1, type 1406, size 1, index -1, binding -1, stages 1
-abl.foo: offset 0, type 1406, size 1, index 7, binding -1, stages 1
-abl2.foo: offset 0, type 1406, size 1, index 11, binding -1, stages 1
+abl.foo: offset 0, type 1406, size 1, index 4, binding -1, stages 1
+abl2.foo: offset 0, type 1406, size 1, index 8, binding -1, stages 1
 buf1.runtimeArray: offset 4, type 1406, size 4, index 12, binding -1, stages 1, arrayStride 4, topLevelArrayStride 4
 buf2.runtimeArray.c: offset 8, type 1406, size 1, index 13, binding -1, stages 1, topLevelArrayStride 12
 buf3.runtimeArray: offset 4, type 1406, size 0, index 14, binding -1, stages 1, arrayStride 4, topLevelArrayStride 4
@@ -145,24 +145,24 @@ t[4].v[2].position: offset 336, type 1406, size 3, index 17, binding -1, stages 
 t[4].v[2].normal: offset 348, type 1406, size 3, index 17, binding -1, stages 1, arrayStride 4, topLevelArrayStride 72
 
 Uniform block reflection:
-named: offset -1, type ffffffff, size 304, index -1, binding -1, stages 1, numMembers 10
-nameless: offset -1, type ffffffff, size 496, index -1, binding -1, stages 1, numMembers 9
-c_nameless: offset -1, type ffffffff, size 112, index -1, binding -1, stages 1, numMembers 5
-nested: offset -1, type ffffffff, size 32, index -1, binding -1, stages 1, numMembers 4
-abl[0]: offset -1, type ffffffff, size 4, index -1, binding -1, stages 1, numMembers 1
-abl[1]: offset -1, type ffffffff, size 4, index -1, binding -1, stages 1, numMembers 1
-abl[2]: offset -1, type ffffffff, size 4, index -1, binding -1, stages 1, numMembers 1
-abl[3]: offset -1, type ffffffff, size 4, index -1, binding -1, stages 1, numMembers 1
-abl2[0]: offset -1, type ffffffff, size 4, index -1, binding -1, stages 1, numMembers 1
-abl2[1]: offset -1, type ffffffff, size 4, index -1, binding -1, stages 1, numMembers 1
-abl2[2]: offset -1, type ffffffff, size 4, index -1, binding -1, stages 1, numMembers 1
-abl2[3]: offset -1, type ffffffff, size 4, index -1, binding -1, stages 1, numMembers 1
-buf1: offset -1, type ffffffff, size 4, index -1, binding -1, stages 1, numMembers 2
-buf2: offset -1, type ffffffff, size 4, index -1, binding -1, stages 1, numMembers 4
-buf3: offset -1, type ffffffff, size 4, index -1, binding -1, stages 1, numMembers 2
-buf4: offset -1, type ffffffff, size 4, index -1, binding -1, stages 1, numMembers 4
-nested2: offset -1, type ffffffff, size 208, index -1, binding -1, stages 1, numMembers 15
-VertexCollection: offset -1, type ffffffff, size 400, index -1, binding -1, stages 1, numMembers 31
+named: offset -1, type ffffffff, size 304, index 0, binding -1, stages 1, numMembers 10
+nameless: offset -1, type ffffffff, size 496, index 1, binding -1, stages 1, numMembers 9
+c_nameless: offset -1, type ffffffff, size 112, index 2, binding -1, stages 1, numMembers 5
+nested: offset -1, type ffffffff, size 32, index 3, binding -1, stages 1, numMembers 4
+abl[0]: offset -1, type ffffffff, size 4, index 4, binding -1, stages 1, numMembers 1
+abl[1]: offset -1, type ffffffff, size 4, index 5, binding -1, stages 1, numMembers 1
+abl[2]: offset -1, type ffffffff, size 4, index 6, binding -1, stages 1, numMembers 1
+abl[3]: offset -1, type ffffffff, size 4, index 7, binding -1, stages 1, numMembers 1
+abl2[0]: offset -1, type ffffffff, size 4, index 8, binding -1, stages 1, numMembers 1
+abl2[1]: offset -1, type ffffffff, size 4, index 9, binding -1, stages 1, numMembers 1
+abl2[2]: offset -1, type ffffffff, size 4, index 10, binding -1, stages 1, numMembers 1
+abl2[3]: offset -1, type ffffffff, size 4, index 11, binding -1, stages 1, numMembers 1
+buf1: offset -1, type ffffffff, size 8, index 12, binding -1, stages 1, numMembers 2
+buf2: offset -1, type ffffffff, size 16, index 13, binding -1, stages 1, numMembers 4
+buf3: offset -1, type ffffffff, size 8, index 14, binding -1, stages 1, numMembers 2
+buf4: offset -1, type ffffffff, size 16, index 15, binding -1, stages 1, numMembers 4
+nested2: offset -1, type ffffffff, size 208, index 16, binding -1, stages 1, numMembers 15
+VertexCollection: offset -1, type ffffffff, size 400, index 17, binding -1, stages 1, numMembers 31
 
 Buffer variable reflection:
 

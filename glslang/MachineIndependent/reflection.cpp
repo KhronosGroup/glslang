@@ -113,7 +113,7 @@ public:
             // Use a degenerate (empty) set of dereferences to immediately put as at the end of
             // the dereference change expected by blowUpActiveAggregate.
             blowUpActiveAggregate(base.getType(), baseName, derefs, derefs.end(), offset, blockIndex, 0, -1, 0,
-                                    base.getQualifier().storage, true);
+                                    base.getQualifier().storage, updateStageMasks);
         }
     }
 
