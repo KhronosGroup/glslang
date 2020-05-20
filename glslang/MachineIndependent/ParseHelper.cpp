@@ -5864,10 +5864,6 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
 
     // "The offset qualifier can only be used on block members of blocks..."
     if (qualifier.hasOffset()) {
-        if (version <= 430) {
-            profileRequires(loc, ~EEsProfile, 140, E_GL_ARB_enhanced_layouts, "\"offset\" can only use to atomic counter layout qualifiers");
-            profileRequires(loc, EEsProfile, 300, E_GL_ARB_enhanced_layouts, "\"offset\" can only use to atomic counter layout qualifiers");
-        }
         if (type.getBasicType() == EbtBlock)
             error(loc, "only applies to block members, not blocks", "offset", "");
     }
@@ -7458,10 +7454,8 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
         if (memberType.isArray())
             arraySizesCheck(memberLoc, currentBlockQualifier, memberType.getArraySizes(), nullptr, member == typeList.size() - 1);
         if (memberQualifier.hasOffset()) {
-            if (spvVersion.spv == 0) {
-                requireProfile(memberLoc, ~EEsProfile, "offset on block member");
-                profileRequires(memberLoc, ~EEsProfile, 440, E_GL_ARB_enhanced_layouts, "offset on block member");
-            }
+            profileRequires(memberLoc, ~EEsProfile, 440, E_GL_ARB_enhanced_layouts, "\"offset\" on block member");
+            profileRequires(memberLoc, EEsProfile, 300, E_GL_ARB_enhanced_layouts, "\"offset\" on block member");
         }
 
         if (memberType.containsOpaque())

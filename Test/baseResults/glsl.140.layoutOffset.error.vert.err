@@ -1,6 +1,6 @@
 glsl.140.layoutOffset.error.vert
 ERROR: 0:5: 'offset' : not supported with this profile: none
-ERROR: 0:5: 'offset on block member' : not supported for this version or the enabled extensions 
+ERROR: 0:5: '"offset" on block member' : not supported for this version or the enabled extensions 
 ERROR: 2 compilation errors.  No code generated.
 
 
