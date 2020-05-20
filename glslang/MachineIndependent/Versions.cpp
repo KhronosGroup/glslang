@@ -1227,7 +1227,7 @@ void TParseVersions::requireSpv(const TSourceLoc& loc, const char *op, unsigned 
 {
 #ifndef GLSLANG_WEB
     if (spvVersion.spv < version)
-        error(loc, "not supported for current targetted SPIR-V version", op, "");
+        error(loc, "not supported for current targeted SPIR-V version", op, "");
 #endif
 }
 
