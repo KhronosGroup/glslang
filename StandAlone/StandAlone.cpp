@@ -555,6 +555,12 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                         ReflectOptions |= EShReflectionAllBlockVariables;
                     } else if (lowerword == "reflect-unwrap-io-blocks") {
                         ReflectOptions |= EShReflectionUnwrapIOBlocks;
+                    } else if (lowerword == "reflect-all-io-variables") {
+                        ReflectOptions |= EShReflectionAllIOVariables;
+                    } else if (lowerword == "reflect-shared-std140-ubo") {
+                        ReflectOptions |= EShReflectionSharedStd140UBO;
+                    } else if (lowerword == "reflect-shared-std140-ssbo") {
+                        ReflectOptions |= EShReflectionSharedStd140SSBO;
                     } else if (lowerword == "resource-set-bindings" ||  // synonyms
                                lowerword == "resource-set-binding"  ||
                                lowerword == "rsb") {

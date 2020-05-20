@@ -4,8 +4,8 @@ ERROR: 0:11: 'layout qualifier' : can only apply depth layout to gl_FragDepth
 ERROR: 0:12: 'gl_FragDepth' : cannot redeclare after use 
 ERROR: 0:14: 'atomic_uint' : array must be explicitly sized 
 ERROR: 0:17: 'imageSize' : required extension not requested: GL_ARB_shader_image_size
-ERROR: 0:39: 'std430' : not supported for this version or the enabled extensions 
-ERROR: 0:39: '' :  syntax error, unexpected IDENTIFIER, expecting LEFT_BRACE or COMMA or SEMICOLON
+ERROR: 0:54: 'std430' : not supported for this version or the enabled extensions 
+ERROR: 0:54: '' :  syntax error, unexpected IDENTIFIER, expecting LEFT_BRACE or COMMA or SEMICOLON
 ERROR: 7 compilation errors.  No code generated.
 
 
@@ -82,6 +82,8 @@ ERROR: node is still EOpNull!
 0:?     'iv2dim' ( global 2-component vector of int)
 0:?     'iv2dim1' ( global 2-component vector of int)
 0:?     'anon@0' (layout( binding=0 column_major std430) buffer block{layout( column_major std430 offset=0) buffer int atomi, layout( column_major std430 offset=4) buffer uint atomu})
+0:?     'ssboStd430Arr' (layout( binding=2 column_major std430) buffer 2-element array of block{layout( column_major std430 offset=0) buffer int member01, layout( column_major std430 offset=4) buffer 2-element array of int memberArr01, layout( column_major std430 offset=12) buffer unsized 1-element array of int memberUnsizedArr01})
+0:?     'ssboSharedArr' (layout( binding=3 column_major shared) buffer 2-element array of block{layout( column_major shared) buffer int member02, layout( column_major shared) buffer 2-element array of int memberArr02, layout( column_major shared) buffer unsized 1-element array of int memberUnsizedArr02})
 
 
 Linked fragment stage:
@@ -117,4 +119,6 @@ ERROR: node is still EOpNull!
 0:?     'iv2dim' ( global 2-component vector of int)
 0:?     'iv2dim1' ( global 2-component vector of int)
 0:?     'anon@0' (layout( binding=0 column_major std430) buffer block{layout( column_major std430 offset=0) buffer int atomi, layout( column_major std430 offset=4) buffer uint atomu})
+0:?     'ssboStd430Arr' (layout( binding=2 column_major std430) buffer 2-element array of block{layout( column_major std430 offset=0) buffer int member01, layout( column_major std430 offset=4) buffer 2-element array of int memberArr01, layout( column_major std430 offset=12) buffer unsized 1-element array of int memberUnsizedArr01})
+0:?     'ssboSharedArr' (layout( binding=3 column_major shared) buffer 2-element array of block{layout( column_major shared) buffer int member02, layout( column_major shared) buffer 2-element array of int memberArr02, layout( column_major shared) buffer unsized 1-element array of int memberUnsizedArr02})
 
