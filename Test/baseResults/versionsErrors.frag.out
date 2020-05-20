@@ -7,6 +7,7 @@ ERROR: 4 compilation errors.  No code generated.
 
 
 Shader version: 110
+Requested GL_ARB_texture_rectangle
 ERROR: node is still EOpNull!
 0:42  Function Definition: main( ( global void)
 0:42    Function Parameters: 
@@ -27,6 +28,7 @@ Linked fragment stage:
 
 
 Shader version: 110
+Requested GL_ARB_texture_rectangle
 ERROR: node is still EOpNull!
 0:42  Function Definition: main( ( global void)
 0:42    Function Parameters: 

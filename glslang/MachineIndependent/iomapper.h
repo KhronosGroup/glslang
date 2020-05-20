@@ -238,12 +238,13 @@ typedef std::map<TString, TVarEntryInfo> TVarLiveMap;
 // In the future, if the vc++ compiler can handle such a situation,
 // this part of the code will be removed.
 struct TVarLivePair : std::pair<const TString, TVarEntryInfo> {
-    TVarLivePair(std::pair<const TString, TVarEntryInfo>& _Right) : pair(_Right.first, _Right.second) {}
+    TVarLivePair(const std::pair<const TString, TVarEntryInfo>& _Right) : pair(_Right.first, _Right.second) {}
     TVarLivePair& operator=(const TVarLivePair& _Right) {
         const_cast<TString&>(first) = _Right.first;
         second = _Right.second;
         return (*this);
     }
+    TVarLivePair(const TVarLivePair& src) : pair(src) { }
 };
 typedef std::vector<TVarLivePair> TVarLiveVector;
 
@@ -261,10 +262,10 @@ public:
 class TGlslIoMapper : public TIoMapper {
 public:
     TGlslIoMapper() {
-        memset(inVarMaps,     0, sizeof(TVarLiveMap*)   * (EShLangCount + 1));
-        memset(outVarMaps,    0, sizeof(TVarLiveMap*)   * (EShLangCount + 1));
-        memset(uniformVarMap, 0, sizeof(TVarLiveMap*)   * (EShLangCount + 1));
-        memset(intermediates, 0, sizeof(TIntermediate*) * (EShLangCount + 1));
+        memset(inVarMaps,     0, sizeof(TVarLiveMap*)   * EShLangCount);
+        memset(outVarMaps,    0, sizeof(TVarLiveMap*)   * EShLangCount);
+        memset(uniformVarMap, 0, sizeof(TVarLiveMap*)   * EShLangCount);
+        memset(intermediates, 0, sizeof(TIntermediate*) * EShLangCount);
     }
     virtual ~TGlslIoMapper() {
         for (size_t stage = 0; stage < EShLangCount; stage++) {

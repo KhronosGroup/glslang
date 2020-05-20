@@ -82,15 +82,19 @@ ERROR: 0:192: '.' : cannot apply to an array: nothing
 ERROR: 0:193: '.length' : not supported for this version or the enabled extensions 
 ERROR: 0:194: '.' : cannot apply to an array: method
 ERROR: 0:194: 'a' : can't use function syntax on variable 
-ERROR: 0:214: 'non-constant global initializer (needs GL_EXT_shader_non_constant_global_initializers)' : not supported for this version or the enabled extensions 
-ERROR: 0:222: '#define' : names containing consecutive underscores are reserved, and an error if version < 300: A__B
-ERROR: 0:223: 'a__b' : identifiers containing consecutive underscores ("__") are reserved, and an error if version < 300 
+ERROR: 0:207: 'gl_SecondaryFragColorEXT' : required extension not requested: GL_EXT_blend_func_extended
+ERROR: 0:208: 'gl_SecondaryFragDataEXT' : required extension not requested: GL_EXT_blend_func_extended
+ERROR: 0:208: 'gl_MaxDualSourceDrawBuffersEXT' : required extension not requested: GL_EXT_blend_func_extended
+ERROR: 0:227: 'non-constant global initializer (needs GL_EXT_shader_non_constant_global_initializers)' : not supported for this version or the enabled extensions 
+ERROR: 0:235: '#define' : names containing consecutive underscores are reserved, and an error if version < 300: A__B
+ERROR: 0:236: 'a__b' : identifiers containing consecutive underscores ("__") are reserved, and an error if version < 300 
 ERROR: 0:3000: '#error' : line of this error should be 3000  
 ERROR: 0:3002: '' :  syntax error, unexpected IDENTIFIER, expecting LEFT_BRACE or COMMA or SEMICOLON
-ERROR: 79 compilation errors.  No code generated.
+ERROR: 82 compilation errors.  No code generated.
 
 
 Shader version: 100
+Requested GL_EXT_blend_func_extended
 Requested GL_EXT_frag_depth
 Requested GL_EXT_shader_non_constant_global_initializers
 Requested GL_EXT_shader_texture_lod
@@ -361,36 +365,76 @@ ERROR: node is still EOpNull!
 0:201    Sequence
 0:201      Branch: Return with expression
 0:201        Function Call: fooinit( ( global mediump float)
-0:209  Function Definition: fooinit( ( global mediump float)
-0:209    Function Parameters: 
-0:211    Sequence
-0:211      Branch: Return with expression
-0:211        Constant:
-0:211          12.000000
-0:214  Sequence
-0:214    move second child to first child ( temp mediump int)
-0:214      'init1' ( global mediump int)
-0:214      Test condition and select ( temp mediump int)
-0:214        Condition
-0:214        'gl_FrontFacing' ( gl_FrontFacing bool Face)
-0:214        true case
+0:205  Function Definition: blendFuncFail( ( global void)
+0:205    Function Parameters: 
+0:207    Sequence
+0:207      move second child to first child ( temp mediump 4-component vector of float)
+0:207        'gl_SecondaryFragColorEXT' ( out mediump 4-component vector of float SecondaryFragColorEXT)
+0:207        Constant:
+0:207          1.000000
+0:207          1.000000
+0:207          1.000000
+0:207          1.000000
+0:208      move second child to first child ( temp mediump 4-component vector of float)
+0:208        direct index ( temp mediump 4-component vector of float SecondaryFragDataEXT)
+0:208          'gl_SecondaryFragDataEXT' ( out 1-element array of mediump 4-component vector of float SecondaryFragDataEXT)
+0:208          Constant:
+0:208            0 (const int)
+0:208        Constant:
+0:208          0.100000
+0:208          0.100000
+0:208          0.100000
+0:208          0.100000
+0:211  Function Definition: blendFunc( ( global void)
+0:211    Function Parameters: 
+0:213    Sequence
+0:213      move second child to first child ( temp mediump 4-component vector of float)
+0:213        'gl_SecondaryFragColorEXT' ( out mediump 4-component vector of float SecondaryFragColorEXT)
+0:213        Constant:
+0:213          1.000000
+0:213          1.000000
+0:213          1.000000
+0:213          1.000000
+0:214      move second child to first child ( temp mediump 4-component vector of float)
+0:214        direct index ( temp mediump 4-component vector of float SecondaryFragDataEXT)
+0:214          'gl_SecondaryFragDataEXT' ( out 1-element array of mediump 4-component vector of float SecondaryFragDataEXT)
+0:214          Constant:
+0:214            0 (const int)
 0:214        Constant:
-0:214          1 (const int)
-0:214        false case
-0:214        Constant:
-0:214          2 (const int)
-0:220  Sequence
-0:220    move second child to first child ( temp mediump int)
-0:220      'init2' ( global mediump int)
-0:220      Test condition and select ( temp mediump int)
-0:220        Condition
-0:220        'gl_FrontFacing' ( gl_FrontFacing bool Face)
-0:220        true case
-0:220        Constant:
-0:220          1 (const int)
-0:220        false case
-0:220        Constant:
-0:220          2 (const int)
+0:214          0.100000
+0:214          0.100000
+0:214          0.100000
+0:214          0.100000
+0:222  Function Definition: fooinit( ( global mediump float)
+0:222    Function Parameters: 
+0:224    Sequence
+0:224      Branch: Return with expression
+0:224        Constant:
+0:224          12.000000
+0:227  Sequence
+0:227    move second child to first child ( temp mediump int)
+0:227      'init1' ( global mediump int)
+0:227      Test condition and select ( temp mediump int)
+0:227        Condition
+0:227        'gl_FrontFacing' ( gl_FrontFacing bool Face)
+0:227        true case
+0:227        Constant:
+0:227          1 (const int)
+0:227        false case
+0:227        Constant:
+0:227          2 (const int)
+0:233  Sequence
+0:233    move second child to first child ( temp mediump int)
+0:233      'init2' ( global mediump int)
+0:233      Test condition and select ( temp mediump int)
+0:233        Condition
+0:233        'gl_FrontFacing' ( gl_FrontFacing bool Face)
+0:233        true case
+0:233        Constant:
+0:233          1 (const int)
+0:233        false case
+0:233        Constant:
+0:233          2 (const int)
 0:?   Linker Objects
 0:?     'a' ( global 3-element array of mediump int)
 0:?     'uint' ( global mediump int)
@@ -430,6 +474,7 @@ Linked fragment stage:
 
 
 Shader version: 100
+Requested GL_EXT_blend_func_extended
 Requested GL_EXT_frag_depth
 Requested GL_EXT_shader_non_constant_global_initializers
 Requested GL_EXT_shader_texture_lod
@@ -520,30 +565,30 @@ ERROR: node is still EOpNull!
 0:152      'f124' ( global mediump float)
 0:152      Constant:
 0:152        50000000000.000000
-0:214  Sequence
-0:214    move second child to first child ( temp mediump int)
-0:214      'init1' ( global mediump int)
-0:214      Test condition and select ( temp mediump int)
-0:214        Condition
-0:214        'gl_FrontFacing' ( gl_FrontFacing bool Face)
-0:214        true case
-0:214        Constant:
-0:214          1 (const int)
-0:214        false case
-0:214        Constant:
-0:214          2 (const int)
-0:220  Sequence
-0:220    move second child to first child ( temp mediump int)
-0:220      'init2' ( global mediump int)
-0:220      Test condition and select ( temp mediump int)
-0:220        Condition
-0:220        'gl_FrontFacing' ( gl_FrontFacing bool Face)
-0:220        true case
-0:220        Constant:
-0:220          1 (const int)
-0:220        false case
-0:220        Constant:
-0:220          2 (const int)
+0:227  Sequence
+0:227    move second child to first child ( temp mediump int)
+0:227      'init1' ( global mediump int)
+0:227      Test condition and select ( temp mediump int)
+0:227        Condition
+0:227        'gl_FrontFacing' ( gl_FrontFacing bool Face)
+0:227        true case
+0:227        Constant:
+0:227          1 (const int)
+0:227        false case
+0:227        Constant:
+0:227          2 (const int)
+0:233  Sequence
+0:233    move second child to first child ( temp mediump int)
+0:233      'init2' ( global mediump int)
+0:233      Test condition and select ( temp mediump int)
+0:233        Condition
+0:233        'gl_FrontFacing' ( gl_FrontFacing bool Face)
+0:233        true case
+0:233        Constant:
+0:233          1 (const int)
+0:233        false case
+0:233        Constant:
+0:233          2 (const int)
 0:?   Linker Objects
 0:?     'a' ( global 3-element array of mediump int)
 0:?     'uint' ( global mediump int)

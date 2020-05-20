@@ -134,12 +134,18 @@ ERROR: 0:429: 'blend_support' : unknown blend equation
 ERROR: 0:431: 'fragment-shader array-of-array output' : not supported with this profile: es
 ERROR: 0:435: 'gl_DeviceIndex' : required extension not requested: GL_EXT_device_group
 ERROR: 0:436: 'gl_ViewIndex' : required extension not requested: GL_EXT_multiview
-ERROR: 127 compilation errors.  No code generated.
+ERROR: 0:461: 'func' : overloaded functions must have the same return type 
+ERROR: 0:461: 'func' : function already has a body 
+ERROR: 0:463: 'return' : void function cannot return a value 
+ERROR: 0:472: '=' :  cannot convert from ' temp mediump uint' to ' temp mediump int'
+ERROR: 0:485: '=' :  cannot convert from ' global mediump int' to ' temp mediump uint'
+ERROR: 132 compilation errors.  No code generated.
 
 
 Shader version: 310
 Requested GL_EXT_device_group
 Requested GL_EXT_multiview
+Requested GL_EXT_shader_implicit_conversions
 Requested GL_EXT_shader_io_blocks
 Requested GL_EXT_texture_cube_map_array
 Requested GL_KHR_blend_equation_advanced
@@ -939,6 +945,80 @@ ERROR: node is still EOpNull!
 0:449    Sequence
 0:449      'gl_DeviceIndex' ( flat in highp int DeviceIndex)
 0:450      'gl_ViewIndex' ( flat in highp int ViewIndex)
+0:456  Function Definition: func(u1;vu4; ( global void)
+0:456    Function Parameters: 
+0:456      'a' ( in mediump uint)
+0:456      'b' ( in mediump 4-component vector of uint)
+0:461  Function Definition: func(u1;vu4; ( global mediump int)
+0:461    Function Parameters: 
+0:461      'a' ( in mediump uint)
+0:461      'b' ( in mediump 4-component vector of uint)
+0:463    Sequence
+0:463      Branch: Return
+0:468  Function Definition: testimplicit( ( global void)
+0:468    Function Parameters: 
+0:470    Sequence
+0:470      Sequence
+0:470        move second child to first child ( temp mediump uint)
+0:470          'a' ( temp mediump uint)
+0:470          Convert int to uint ( temp mediump uint)
+0:470            'b' ( global mediump int)
+0:471      Sequence
+0:471        move second child to first child ( temp mediump 4-component vector of float)
+0:471          'col' ( temp mediump 4-component vector of float)
+0:471          Constant:
+0:471            1.000000
+0:471            2.000000
+0:471            3.000000
+0:471            4.000000
+0:475      Sequence
+0:475        move second child to first child ( temp mediump uint)
+0:475          'c' ( temp mediump uint)
+0:475          Convert int to uint ( temp mediump uint)
+0:475            component-wise multiply ( temp mediump int)
+0:475              'b' ( temp mediump int)
+0:475              Constant:
+0:475                3 (const int)
+0:476      Sequence
+0:476        move second child to first child ( temp mediump uint)
+0:476          'd' ( temp mediump uint)
+0:476          component-wise multiply ( temp mediump uint)
+0:476            Convert int to uint ( temp mediump uint)
+0:476              'b' ( temp mediump int)
+0:476            Constant:
+0:476              3 (const uint)
+0:477      Sequence
+0:477        move second child to first child ( temp mediump uint)
+0:477          'e' ( temp mediump uint)
+0:477          Convert int to uint ( temp mediump uint)
+0:477            mod ( temp mediump int)
+0:477              'b' ( temp mediump int)
+0:477              Constant:
+0:477                3 (const int)
+0:478      Sequence
+0:478        move second child to first child ( temp mediump uint)
+0:478          'f' ( temp mediump uint)
+0:478          Test condition and select ( temp mediump uint)
+0:478            Condition
+0:478            Compare Greater Than ( temp bool)
+0:478              'b' ( temp mediump int)
+0:478              Constant:
+0:478                3 (const int)
+0:478            true case
+0:478            Convert int to uint ( temp uint)
+0:478              'b' ( temp mediump int)
+0:478            false case
+0:478            'c' ( temp mediump uint)
+0:479      Function Call: func(u1;vu4; ( global void)
+0:479        Convert int to uint ( temp uint)
+0:479          'b' ( temp mediump int)
+0:479        Constant:
+0:479          1 (const uint)
+0:479          2 (const uint)
+0:479          3 (const uint)
+0:479          4 (const uint)
+0:484  Function Definition: testimplicitFail( ( global void)
+0:484    Function Parameters: 
 0:?   Linker Objects
 0:?     'gl_FragCoord' ( smooth in mediump 4-component vector of float)
 0:?     'v3' (layout( location=2) smooth in mediump 3-component vector of float)
@@ -1033,6 +1113,7 @@ ERROR: node is still EOpNull!
 0:?     'sampInArray' ( smooth sample in 4-element array of mediump 3-component vector of float)
 0:?     'badout' ( out mediump 4-component vector of float)
 0:?     'outAA' ( out 2-element array of 2-element array of mediump 4-component vector of float)
+0:?     'b' ( global mediump int)
 
 
 Linked fragment stage:
@@ -1042,6 +1123,7 @@ ERROR: Linking fragment stage: when more than one fragment shader output, all mu
 Shader version: 310
 Requested GL_EXT_device_group
 Requested GL_EXT_multiview
+Requested GL_EXT_shader_implicit_conversions
 Requested GL_EXT_shader_io_blocks
 Requested GL_EXT_texture_cube_map_array
 Requested GL_KHR_blend_equation_advanced
@@ -1244,4 +1326,5 @@ ERROR: node is still EOpNull!
 0:?     'sampInArray' ( smooth sample in 4-element array of mediump 3-component vector of float)
 0:?     'badout' ( out mediump 4-component vector of float)
 0:?     'outAA' ( out 2-element array of 2-element array of mediump 4-component vector of float)
+0:?     'b' ( global mediump int)
 
