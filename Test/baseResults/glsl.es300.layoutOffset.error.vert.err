@@ -1,7 +1,0 @@
-glsl.es300.layoutOffset.error.vert
-ERROR: 0:3: 'binding' : not supported for this version or the enabled extensions 
-ERROR: 0:3: 'offset' : not supported for this version or the enabled extensions 
-ERROR: 0:3: 'offset' : only applies to block members, not blocks 
-ERROR: 3 compilation errors.  No code generated.
-
-
