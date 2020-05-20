@@ -64,6 +64,7 @@
 //        checkDeprecated()
 //        requireNotRemoved()
 //        requireExtensions()
+//        extensionRequires()
 //
 //    Typically, only the first two calls are needed.  They go into a code path that
 //    implements Feature F, and will log the proper error/warning messages.  Parsing
@@ -140,6 +141,8 @@
 //    set of extensions that both enable them and are necessary, given the version of the symbol
 //    table. (There is a different symbol table for each version.)
 //
+// 7) If the extension has additional requirements like minimum SPIR-V version required, add them
+//    to extensionRequires()
 
 #include "parseVersions.h"
 #include "localintermediate.h"
@@ -828,6 +831,9 @@ void TParseVersions::updateExtensionBehavior(int line, const char* extension, co
     // check if extension is used with correct shader stage
     checkExtensionStage(getCurrentLoc(), extension);
 
+    // check if extension has additional requirements
+    extensionRequires(getCurrentLoc(), extension ,behaviorString);
+
     // update the requested extension
     updateExtensionBehavior(extension, behavior);
 
@@ -941,6 +947,22 @@ void TParseVersions::checkExtensionStage(const TSourceLoc& loc, const char * con
                      "#extension GL_NV_mesh_shader");
         profileRequires(loc, ECoreProfile, 450, 0, "#extension GL_NV_mesh_shader");
         profileRequires(loc, EEsProfile, 320, 0, "#extension GL_NV_mesh_shader");
+    }
+}
+
+// Check if extension has additional requirements
+void TParseVersions::extensionRequires(const TSourceLoc &loc, const char * const extension, const char *behaviorString)
+{
+    bool isEnabled = false;
+    if (!strcmp("require", behaviorString))
+        isEnabled = true;
+    else if (!strcmp("enable", behaviorString))
+        isEnabled = true;
+
+    if (isEnabled) {
+        if (strcmp(extension, "GL_EXT_ray_tracing") == 0) {
+            requireSpv(loc, extension, EShTargetSpv_1_4);
+        }
     }
 }
 
@@ -1199,6 +1221,13 @@ void TParseVersions::requireSpv(const TSourceLoc& loc, const char* op)
 #ifndef GLSLANG_WEB
     if (spvVersion.spv == 0)
         error(loc, "only allowed when generating SPIR-V", op, "");
+#endif
+}
+void TParseVersions::requireSpv(const TSourceLoc& loc, const char *op, unsigned int version)
+{
+#ifndef GLSLANG_WEB
+    if (spvVersion.spv < version)
+        error(loc, "not supported for current targetted SPIR-V version", op, "");
 #endif
 }
 
