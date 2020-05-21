@@ -215,7 +215,7 @@ if(ENABLE_CTEST)
     add_subdirectory(gtests)
 endif()
 
-if(BUILD_TESTING)
+if(ENABLE_CTEST AND BUILD_TESTING)
     # glslang-testsuite runs a bash script on Windows.
     # Make sure to use '-o igncr' flag to ignore carriage returns (\r).
     set(IGNORE_CR_FLAG "")
@@ -236,4 +236,4 @@ if(BUILD_TESTING)
     add_test(NAME glslang-testsuite
         COMMAND bash ${IGNORE_CR_FLAG} runtests ${RESULTS_PATH} ${VALIDATOR_PATH} ${REMAP_PATH}
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Test/)
-endif(BUILD_TESTING)
+endif()
