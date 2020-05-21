@@ -265,6 +265,7 @@ public:
         computeDerivativeMode(LayoutDerivativeNone),
         primitives(TQualifier::layoutNotSet),
         numTaskNVBlocks(0),
+        layoutPrimitiveCulling(false),
         autoMapBindings(false),
         autoMapLocations(false),
         flattenUniformArrays(false),
@@ -276,8 +277,7 @@ public:
         needToLegalize(false),
         binaryDoubleOutput(false),
         usePhysicalStorageBuffer(false),
-        uniformLocationBase(0),
-        layoutPrimitiveCulling(false)
+        uniformLocationBase(0)
 #endif
     {
         localSize[0] = 1;
