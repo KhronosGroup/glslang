@@ -337,6 +337,7 @@ INSTANTIATE_TEST_CASE_P(
         "spv.ext.IntersectShader_Errors.rint",
         "spv.ext.MissShader.rmiss",
         "spv.ext.MissShader_Errors.rmiss",
+        "spv.ext.RayPrimCull_Errors.rgen",
         "spv.ext.RayCallable.rcall",
         "spv.ext.RayCallable_Errors.rcall",
         "spv.ext.RayConstants.rgen",
