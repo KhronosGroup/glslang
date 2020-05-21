@@ -142,14 +142,14 @@ elseif(MSVC)
     if(NOT ENABLE_RTTI)
         add_compile_options(/GR-) # Disable RTTI
     endif()
-    if(NOT ENABLE_EXCEPTIONS)
-        add_compile_options(/GX-) # Disable Exceptions
+    if(ENABLE_EXCEPTIONS)
+        add_compile_options(/EHsc) # Enable Exceptions
     endif()
 endif()
 
 if(ENABLE_GLSLANG_JS)
     if(MSVC)
-        add_compile_options(/Os /GR- /GX-)
+        add_compile_options(/Os /GR-)
     else()
         add_compile_options(-Os -fno-rtti -fno-exceptions)
         if(${CMAKE_CXX_COMPILER_ID} MATCHES "Clang" AND NOT MSVC)
