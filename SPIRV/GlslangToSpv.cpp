@@ -251,7 +251,7 @@ protected:
     bool nanMinMaxClamp;               // true if use NMin/NMax/NClamp instead of FMin/FMax/FClamp
     spv::Id stdBuiltins;
     spv::Id nonSemanticDebugPrintf;
-    std::unordered_map<const char*, spv::Id> extBuiltinMap;
+    std::unordered_map<std::string, spv::Id> extBuiltinMap;
 
     std::unordered_map<int, spv::Id> symbolValues;
     std::unordered_set<int> rValueParameters;  // set of formal function parameters passed as rValues,
