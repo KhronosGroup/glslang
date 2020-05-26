@@ -36,6 +36,7 @@
 // ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
+
 #ifndef _VERSIONS_INCLUDED_
 #define _VERSIONS_INCLUDED_
 
@@ -326,6 +327,13 @@ const int Num_AEP_texture_buffer = sizeof(AEP_texture_buffer)/sizeof(AEP_texture
 const char* const AEP_texture_cube_map_array[] = { E_GL_EXT_texture_cube_map_array, E_GL_OES_texture_cube_map_array };
 const int Num_AEP_texture_cube_map_array = sizeof(AEP_texture_cube_map_array)/sizeof(AEP_texture_cube_map_array[0]);
 
+//#include "./../Public/ShaderLang.h"
+//typedef struct {
+//    const char *const extensionName;
+//    unsigned int minSpvVersion;
+//}extensionData;
+//
+//const extensionData exts[] = { {E_GL_EXT_ray_tracing, EShTargetSpv_1_4} };
 } // end namespace glslang
 
 #endif // _VERSIONS_INCLUDED_

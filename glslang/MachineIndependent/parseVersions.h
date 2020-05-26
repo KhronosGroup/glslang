@@ -89,6 +89,7 @@ public:
         profileRequires(loc, profileMask, minVersion, extension ? 1 : 0, &extension, featureDesc);
     }
     void initializeExtensionBehavior() { }
+    void initializeExtensionData() { }
     void checkDeprecated(const TSourceLoc&, int queryProfiles, int depVersion, const char* featureDesc) { }
     void requireNotRemoved(const TSourceLoc&, int queryProfiles, int removedVersion, const char* featureDesc) { }
     void requireExtensions(const TSourceLoc&, int numExtensions, const char* const extensions[],
@@ -126,6 +127,7 @@ public:
     void profileRequires(const TSourceLoc& loc, int profileMask, int minVersion, const char* extension,
         const char* featureDesc);
     virtual void initializeExtensionBehavior();
+    virtual void initializeExtensionData();
     virtual void checkDeprecated(const TSourceLoc&, int queryProfiles, int depVersion, const char* featureDesc);
     virtual void requireNotRemoved(const TSourceLoc&, int queryProfiles, int removedVersion, const char* featureDesc);
     virtual void requireExtensions(const TSourceLoc&, int numExtensions, const char* const extensions[],
@@ -225,6 +227,7 @@ public:
 
 protected:
     TMap<TString, TExtensionBehavior> extensionBehavior;    // for each extension string, what its current behavior is set to
+    TMap<TString, unsigned int> extensionMinSpv;            // for each extension string, store minimum spirv required
     EShMessages messages;        // errors/warnings/rule-sets
     int numErrors;               // number of compile-time errors encountered
     TInputScanner* currentScanner;

@@ -78,18 +78,23 @@
 //
 //     const char* const XXX_extension_X = "XXX_extension_X";
 //
-// 2) Add extension initialization to TParseVersions::initializeExtensionBehavior(),
+// 2) Add a data entry for the extension string to the extensionData in
+//    TParseVersions::initializeExtensionData()
+//
+//     exts[] = {XXX_extension_X, EShTargetSpv_1_4}
+//
+// 3) Add extension initialization to TParseVersions::initializeExtensionBehavior(),
 //    the first function below:
 //
 //     extensionBehavior[XXX_extension_X] = EBhDisable;
 //
-// 3) Add any preprocessor directives etc. in the next function, TParseVersions::getPreamble():
+// 4) Add any preprocessor directives etc. in the next function, TParseVersions::getPreamble():
 //
 //           "#define XXX_extension_X 1\n"
 //
 //    The new-line is important, as that ends preprocess tokens.
 //
-// 4) Insert a profile check in the feature's path (unless all profiles support the feature,
+// 5) Insert a profile check in the feature's path (unless all profiles support the feature,
 //    for some version level).  That is, call requireProfile() to constrain the profiles, e.g.:
 //
 //         // ... in a path specific to Feature F...
@@ -97,7 +102,7 @@
 //                        ECoreProfile | ECompatibilityProfile,
 //                        "Feature F");
 //
-// 5) For each profile that supports the feature, insert version/extension checks:
+// 6) For each profile that supports the feature, insert version/extension checks:
 //
 //    The mostly likely scenario is that Feature F can only be used with a
 //    particular profile if XXX_extension_X is present or the version is
@@ -134,14 +139,14 @@
 //
 //        ~EEsProfile
 //
-// 6) If built-in symbols are added by the extension, add them in Initialize.cpp:  Their use
+// 7) If built-in symbols are added by the extension, add them in Initialize.cpp:  Their use
 //    will be automatically error checked against the extensions enabled at that moment.
 //    see the comment at the top of Initialize.cpp for where to put them.  Establish them at
 //    the earliest release that supports the extension.  Then, tag them with the
 //    set of extensions that both enable them and are necessary, given the version of the symbol
 //    table. (There is a different symbol table for each version.)
 //
-// 7) If the extension has additional requirements like minimum SPIR-V version required, add them
+// 8) If the extension has additional requirements like minimum SPIR-V version required, add them
 //    to extensionRequires()
 
 #include "parseVersions.h"
@@ -331,6 +336,23 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_EXT_shader_subgroup_extended_types_int16]   = EBhDisable;
     extensionBehavior[E_GL_EXT_shader_subgroup_extended_types_int64]   = EBhDisable;
     extensionBehavior[E_GL_EXT_shader_subgroup_extended_types_float16] = EBhDisable;
+}
+
+void TParseVersions::initializeExtensionData()
+{
+    typedef struct {
+        const char *const extensionName;
+        EShTargetLanguageVersion minSpvVersion;
+    }extensionData;
+
+    const extensionData exts[] = { {E_GL_EXT_ray_tracing, EShTargetSpv_1_4} };
+
+    for (int ii = 0; ii < sizeof(exts) / sizeof(exts[0]); ii++) {
+        // Add only extensions which require > spv1.0 to save space in map
+        if (exts[ii].minSpvVersion > EShTargetSpv_1_0) {
+            extensionMinSpv[E_GL_EXT_ray_tracing] = exts[ii].minSpvVersion;
+        }
+    }
 }
 #endif // GLSLANG_WEB
 
@@ -960,9 +982,11 @@ void TParseVersions::extensionRequires(const TSourceLoc &loc, const char * const
         isEnabled = true;
 
     if (isEnabled) {
-        if (strcmp(extension, "GL_EXT_ray_tracing") == 0) {
-            requireSpv(loc, extension, EShTargetSpv_1_4);
-        }
+        unsigned int minSpvVersion = 0;
+        auto iter = extensionMinSpv.find(TString(extension));
+        if (iter != extensionMinSpv.end())
+            minSpvVersion = iter->second;
+        requireSpv(loc, extension, minSpvVersion);
     }
 }
 
