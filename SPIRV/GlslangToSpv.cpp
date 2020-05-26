@@ -3459,6 +3459,7 @@ bool TGlslangToSpvTraverser::visitBranch(glslang::TVisit /* visit */, glslang::T
         builder.makeDiscard();
         break;
     case glslang::EOpTerminateInvocation:
+        builder.addExtension(spv::E_SPV_KHR_terminate_invocation);
         builder.makeTerminateInvocation();
         break;
     case glslang::EOpBreak:
