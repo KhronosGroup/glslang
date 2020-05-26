@@ -1409,14 +1409,15 @@ bool TOutputTraverser::visitBranch(TVisit /* visit*/, TIntermBranch* node)
     OutputTreeText(out, node, depth);
 
     switch (node->getFlowOp()) {
-    case EOpKill:      out.debug << "Branch: Kill";           break;
-    case EOpBreak:     out.debug << "Branch: Break";          break;
-    case EOpContinue:  out.debug << "Branch: Continue";       break;
-    case EOpReturn:    out.debug << "Branch: Return";         break;
-    case EOpCase:      out.debug << "case: ";                 break;
-    case EOpDemote:    out.debug << "Demote";                 break;
-    case EOpDefault:   out.debug << "default: ";              break;
-    default:               out.debug << "Branch: Unknown Branch"; break;
+    case EOpKill:                out.debug << "Branch: Kill";                break;
+    case EOpTerminateInvocation: out.debug << "Branch: TerminateInvocation"; break;
+    case EOpBreak:               out.debug << "Branch: Break";               break;
+    case EOpContinue:            out.debug << "Branch: Continue";            break;
+    case EOpReturn:              out.debug << "Branch: Return";              break;
+    case EOpCase:                out.debug << "case: ";                      break;
+    case EOpDemote:              out.debug << "Demote";                      break;
+    case EOpDefault:             out.debug << "default: ";                   break;
+    default:                     out.debug << "Branch: Unknown Branch";      break;
     }
 
     if (node->getExpression()) {

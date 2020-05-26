@@ -628,13 +628,14 @@ enum TOperator {
     // Branch
     //
 
-    EOpKill,            // Fragment only
+    EOpKill,                // Fragment only
+    EOpTerminateInvocation, // Fragment only
+    EOpDemote,              // Fragment only
     EOpReturn,
     EOpBreak,
     EOpContinue,
     EOpCase,
     EOpDefault,
-    EOpDemote,          // Fragment only
 
     //
     // Constructors
