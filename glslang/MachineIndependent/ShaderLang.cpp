@@ -972,7 +972,6 @@ bool ProcessDeferred(
 #endif
 
     parseContext->initializeExtensionBehavior();
-    parseContext->initializeExtensionData();
 
     // Fill in the strings as outlined above.
     std::string preamble;

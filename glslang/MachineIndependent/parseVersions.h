@@ -89,7 +89,6 @@ public:
         profileRequires(loc, profileMask, minVersion, extension ? 1 : 0, &extension, featureDesc);
     }
     void initializeExtensionBehavior() { }
-    void initializeExtensionData() { }
     void checkDeprecated(const TSourceLoc&, int queryProfiles, int depVersion, const char* featureDesc) { }
     void requireNotRemoved(const TSourceLoc&, int queryProfiles, int removedVersion, const char* featureDesc) { }
     void requireExtensions(const TSourceLoc&, int numExtensions, const char* const extensions[],
@@ -127,7 +126,6 @@ public:
     void profileRequires(const TSourceLoc& loc, int profileMask, int minVersion, const char* extension,
         const char* featureDesc);
     virtual void initializeExtensionBehavior();
-    virtual void initializeExtensionData();
     virtual void checkDeprecated(const TSourceLoc&, int queryProfiles, int depVersion, const char* featureDesc);
     virtual void requireNotRemoved(const TSourceLoc&, int queryProfiles, int removedVersion, const char* featureDesc);
     virtual void requireExtensions(const TSourceLoc&, int numExtensions, const char* const extensions[],
