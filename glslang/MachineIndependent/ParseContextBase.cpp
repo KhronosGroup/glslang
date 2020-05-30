@@ -481,13 +481,32 @@ const TFunction* TParseContextBase::selectFunction(
 // Look at a '.' field selector string and change it into numerical selectors
 // for a vector or scalar.
 //
+// These are returned as indexes in selector.
+// E.g. ".zy" will become selector = {2, 1}.
+//
 // Always return some form of swizzle, so the result is always usable.
 //
+// '0' and '1' in the field will mean to use the numeric values of 0 and 1
+// rather than the result of an index into the vector.
+// These are represented by:
+//   '0':  MaxSwizzleSelectors
+//   '1':  MaxSwizzleSelectors + 1
+// E.g., ".z01" will become selector = {2, 4, 5} (if MasSwizzleSelectors == 4).
+//
+// A leading underscore (prefix) will get ignored.
+//
 void TParseContextBase::parseSwizzleSelector(const TSourceLoc& loc, const TString& compString, int vecSize,
-                                             TSwizzleSelectors<TVectorSelector>& selector)
+                                             TSwizzleSelectors<TVectorSelector>& selector, bool& numeric)
 {
+    // a swizzle does not contain numerics unless there are actually numbers
+    // in it, independent of whether there is a prefix
+    numeric = false;
+
+    // If the field uses prefix syntax, normalize it.
+    const int firstChar = compString[0] == '_';
+
     // Too long?
-    if (compString.size() > MaxSwizzleSelectors)
+    if (compString.size() - firstChar > MaxSwizzleSelectors)
         error(loc, "vector swizzle too long", compString.c_str(), "");
 
     // Use this to test that all swizzle characters are from the same swizzle-namespace-set
@@ -495,12 +514,13 @@ void TParseContextBase::parseSwizzleSelector(const TSourceLoc& loc, const TStrin
         exyzw,
         ergba,
         estpq,
-    } fieldSet[MaxSwizzleSelectors];
+        enumeric,
+    } fieldSet[MaxSwizzleSelectors + 1];
 
     // Decode the swizzle string.
-    int size = std::min(MaxSwizzleSelectors, (int)compString.size());
+    const int size = std::min(MaxSwizzleSelectors, (int)compString.size() - firstChar);
     for (int i = 0; i < size; ++i) {
-        switch (compString[i])  {
+        switch (compString[i + firstChar])  {
         case 'x':
             selector.push_back(0);
             fieldSet[i] = exyzw;
@@ -553,6 +573,17 @@ void TParseContextBase::parseSwizzleSelector(const TSourceLoc& loc, const TStrin
             fieldSet[i] = estpq;
             break;
 
+        case '0':
+            selector.push_back(MaxSwizzleSelectors);
+            fieldSet[i] = enumeric;
+            numeric = true;
+            break;
+        case '1':
+            selector.push_back(MaxSwizzleSelectors + 1);
+            fieldSet[i] = enumeric;
+            numeric = true;
+            break;
+
         default:
             error(loc, "unknown swizzle selection", compString.c_str(), "");
             break;
@@ -561,13 +592,14 @@ void TParseContextBase::parseSwizzleSelector(const TSourceLoc& loc, const TStrin
 
     // Additional error checking.
     for (int i = 0; i < selector.size(); ++i) {
-        if (selector[i] >= vecSize) {
+        if (selector[i] < MaxSwizzleSelectors && selector[i] >= vecSize) {
             error(loc, "vector swizzle selection out of range",  compString.c_str(), "");
             selector.resize(i);
             break;
         }
 
-        if (i > 0 && fieldSet[i] != fieldSet[i-1]) {
+        if (i > 0 && fieldSet[i] != enumeric && fieldSet[i-1] != enumeric &&
+                     fieldSet[i] != fieldSet[i-1]) {
             error(loc, "vector swizzle selectors not from the same set", compString.c_str(), "");
             selector.resize(i);
             break;
@@ -577,6 +609,24 @@ void TParseContextBase::parseSwizzleSelector(const TSourceLoc& loc, const TStrin
     // Ensure it is valid.
     if (selector.size() == 0)
         selector.push_back(0);
+}
+
+void TParseContextBase::replicateRValue(TIntermTyped* node, int num, TVector<TIntermTyped*>& replicates)
+{
+    if (num == 0)
+        return;
+    if (num == 1) {
+        replicates.push_back(node);
+        return;
+    }
+    if (node->getAsSymbolNode()) {
+        replicates.push_back(node);
+        for (int i = 1; i < num; ++i)
+            replicates.push_back(intermediate.addSymbol(*node->getAsSymbolNode()));
+    }
+
+    // WIP: a complex expression needs to be evaluated exactly once, and then
+    // copies of the result put into the replicates.
 }
 
 #ifdef ENABLE_HLSL

@@ -952,7 +952,8 @@ TIntermTyped* HlslParseContext::handleDotDereference(const TSourceLoc& loc, TInt
         }
     } else if (base->isVector() || base->isScalar()) {
         TSwizzleSelectors<TVectorSelector> selectors;
-        parseSwizzleSelector(loc, field, base->getVectorSize(), selectors);
+        bool numeric = false;
+        parseSwizzleSelector(loc, field, base->getVectorSize(), selectors, numeric);
 
         if (base->isScalar()) {
             if (selectors.size() == 1)

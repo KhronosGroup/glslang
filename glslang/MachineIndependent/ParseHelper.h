@@ -218,7 +218,8 @@ protected:
         /* output */ bool& tie);
 
     virtual void parseSwizzleSelector(const TSourceLoc&, const TString&, int size,
-                                      TSwizzleSelectors<TVectorSelector>&);
+                                      TSwizzleSelectors<TVectorSelector>&, bool& numeric);
+    virtual void replicateRValue(TIntermTyped* node, int n, TVector<TIntermTyped*>& replicates);
 
     // Manage the global uniform block (default uniforms in GLSL, $Global in HLSL)
     TVariable* globalUniformBlock;     // the actual block, inserted into the symbol table
@@ -317,6 +318,8 @@ public:
     TIntermTyped* handleUnaryMath(const TSourceLoc&, const char* str, TOperator op, TIntermTyped* childNode);
     TIntermTyped* handleDotDereference(const TSourceLoc&, TIntermTyped* base, const TString& field);
     TIntermTyped* handleDotSwizzle(const TSourceLoc&, TIntermTyped* base, const TString& field);
+    TIntermTyped* handleNumericDotSwizzle(const TSourceLoc&, TIntermTyped* base,
+        const TSwizzleSelectors<TVectorSelector>&);
     void blockMemberExtensionCheck(const TSourceLoc&, const TIntermTyped* base, int member, const TString& memberName);
     TFunction* handleFunctionDeclarator(const TSourceLoc&, TFunction& function, bool prototype);
     TIntermAggregate* handleFunctionDefinition(const TSourceLoc&, TFunction&);
