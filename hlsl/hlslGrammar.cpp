@@ -697,7 +697,9 @@ bool HlslGrammar::acceptQualifier(TQualifier& qualifier)
             qualifier.noContraction = true;
             break;
         case EHTokIn:
-            qualifier.storage = (qualifier.storage == EvqOut) ? EvqInOut : EvqIn;
+            if (qualifier.storage != EvqUniform) {
+                qualifier.storage = (qualifier.storage == EvqOut) ? EvqInOut : EvqIn;
+            }
             break;
         case EHTokOut:
             qualifier.storage = (qualifier.storage == EvqIn) ? EvqInOut : EvqOut;
