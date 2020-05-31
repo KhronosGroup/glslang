@@ -2111,6 +2111,15 @@ TIntermNode* HlslParseContext::transformEntryPoint(const TSourceLoc& loc, TFunct
                 makeVariableInOut(*(*it));
     }
 
+    // Add uniform parameters to the $Global uniform block.
+    for (int i = 0; i < userFunction.getParamCount(); i++) {
+        TType& paramType = *userFunction[i].type;
+        TString& paramName = *userFunction[i].name;
+        if (paramType.getQualifier().storage == EvqUniform) {
+            growGlobalUniformBlock(loc, paramType, paramName);
+        }
+    }
+
     // Synthesize the call
 
     pushScope(); // matches the one in handleFunctionBody()
@@ -2148,6 +2157,11 @@ TIntermNode* HlslParseContext::transformEntryPoint(const TSourceLoc& loc, TFunct
             intermediate.growAggregate(synthBody, handleAssign(loc, EOpAssign, arg,
                                                                intermediate.addSymbol(**inputIt)));
             inputIt++;
+        }
+        if (param.type->getQualifier().storage == EvqUniform) {
+            // Look it up in the $Global uniform block.
+            intermediate.growAggregate(synthBody, handleAssign(loc, EOpAssign, arg,
+                                                               handleVariable(loc, param.name)));
         }
     }
 
@@ -6914,7 +6928,6 @@ void HlslParseContext::paramFix(TType& type)
         type.getQualifier().storage = EvqConstReadOnly;
         break;
     case EvqGlobal:
-    case EvqUniform:
     case EvqTemporary:
         type.getQualifier().storage = EvqIn;
         break;

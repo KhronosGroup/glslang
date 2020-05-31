@@ -4388,8 +4388,10 @@ bool TGlslangToSpvTraverser::writableParam(glslang::TStorageQualifier qualifier)
     assert(qualifier == glslang::EvqIn ||
            qualifier == glslang::EvqOut ||
            qualifier == glslang::EvqInOut ||
+           qualifier == glslang::EvqUniform ||
            qualifier == glslang::EvqConstReadOnly);
-    return qualifier != glslang::EvqConstReadOnly;
+    return qualifier != glslang::EvqConstReadOnly &&
+           qualifier != glslang::EvqUniform;
 }
 
 // Is parameter pass-by-original?
