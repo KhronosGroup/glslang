@@ -2112,11 +2112,19 @@ TIntermNode* HlslParseContext::transformEntryPoint(const TSourceLoc& loc, TFunct
     }
 
     // Add uniform parameters to the $Global uniform block.
+    TVector<TVariable*> opaque_uniforms;
     for (int i = 0; i < userFunction.getParamCount(); i++) {
         TType& paramType = *userFunction[i].type;
         TString& paramName = *userFunction[i].name;
         if (paramType.getQualifier().storage == EvqUniform) {
-            growGlobalUniformBlock(loc, paramType, paramName);
+            if (!paramType.containsOpaque()) {
+                // Add it to the global uniform block.
+                growGlobalUniformBlock(loc, paramType, paramName);
+            } else {
+                // Declare it as a separate variable.
+                TVariable *var = makeInternalVariable(paramName.c_str(), paramType);
+                opaque_uniforms.push_back(var);
+            }
         }
     }
 
@@ -2140,6 +2148,7 @@ TIntermNode* HlslParseContext::transformEntryPoint(const TSourceLoc& loc, TFunct
     TVector<TVariable*> argVars;
     TIntermAggregate* synthBody = new TIntermAggregate();
     auto inputIt = inputs.begin();
+    auto opaqueUniformIt = opaque_uniforms.begin();
     TIntermTyped* callingArgs = nullptr;
 
     for (int i = 0; i < userFunction.getParamCount(); i++) {
@@ -2159,9 +2168,15 @@ TIntermNode* HlslParseContext::transformEntryPoint(const TSourceLoc& loc, TFunct
             inputIt++;
         }
         if (param.type->getQualifier().storage == EvqUniform) {
-            // Look it up in the $Global uniform block.
-            intermediate.growAggregate(synthBody, handleAssign(loc, EOpAssign, arg,
-                                                               handleVariable(loc, param.name)));
+            if (!param.type->containsOpaque()) {
+                // Look it up in the $Global uniform block.
+                intermediate.growAggregate(synthBody, handleAssign(loc, EOpAssign, arg,
+                                                                   handleVariable(loc, param.name)));
+            } else {
+                intermediate.growAggregate(synthBody, handleAssign(loc, EOpAssign, arg,
+                                                                   intermediate.addSymbol(**opaqueUniformIt)));
+                ++opaqueUniformIt;
+            }
         }
     }
 
