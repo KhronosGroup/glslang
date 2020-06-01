@@ -239,6 +239,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.implicitBool.frag", "main"},
         {"hlsl.inf.vert", "main"},
         {"hlsl.inoutquals.frag", "main"},
+        {"hlsl.inoutquals.negative.frag", "main"},
         {"hlsl.init.frag", "ShaderFunction"},
         {"hlsl.init2.frag", "main"},
         {"hlsl.isfinite.frag", "main"},
