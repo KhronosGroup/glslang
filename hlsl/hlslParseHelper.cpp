@@ -6129,6 +6129,32 @@ void HlslParseContext::handleSemantic(TSourceLoc loc, TQualifier& qualifier, TBu
         return semanticNum;
     };
 
+    if (builtIn == EbvNone && hlslDX9Compatible()) {
+        if (language == EShLangVertex) {
+            if (qualifier.isParamOutput()) {
+                if (upperCase == "POSITION") {
+                    builtIn = EbvPosition;
+                }
+                if (upperCase == "PSIZE") {
+                    builtIn = EbvPointSize;
+                }
+            }
+        } else if (language == EShLangFragment) {
+            if (qualifier.isParamInput() && upperCase == "VPOS") {
+                builtIn = EbvFragCoord;
+            }
+            if (qualifier.isParamOutput()) {
+                if (upperCase.compare(0, 5, "COLOR") == 0) {
+                    qualifier.layoutLocation = getSemanticNumber(upperCase, 0, nullptr);
+                    nextOutLocation = std::max(nextOutLocation, qualifier.layoutLocation + 1u);
+                }
+                if (upperCase == "DEPTH") {
+                    builtIn = EbvFragDepth;
+                }
+            }
+        }
+    }
+
     switch(builtIn) {
     case EbvNone:
         // Get location numbers from fragment outputs, instead of
