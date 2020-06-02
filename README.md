@@ -5,14 +5,7 @@
 
 ## Planned Deprecations/Removals
 
-1. **SPIRV Folder, 1-May, 2020.** Glslang, when installed through CMake,
-will install a `SPIRV` folder into `${CMAKE_INSTALL_INCLUDEDIR}`.
-This `SPIRV` folder is being moved to `glslang/SPIRV`.
-During the transition the `SPIRV` folder will be installed into both locations.
-The old install of `SPIRV/` will be removed as a CMake install target no sooner than May 1, 2020.
-See issue #1964.
-
-2. **Visual Studio 2013, 20-July, 2020.** Keeping code compiling for MS Visual Studio 2013 will no longer be
+1. **Visual Studio 2013, 20-July, 2020.** Keeping code compiling for MS Visual Studio 2013 will no longer be
 a goal as of July 20, 2020, the fifth anniversary of the release of Visual Studio 2015.
 
 # Glslang Components and Status
