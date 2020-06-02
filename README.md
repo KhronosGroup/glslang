@@ -1,5 +1,16 @@
 # News
 
+If you get a new **compilation error due to a missing header**, it might be caused by this planned removal:
+
+**SPIRV Folder, 1-May, 2020.** Glslang, when installed through CMake,
+will install a `SPIRV` folder into `${CMAKE_INSTALL_INCLUDEDIR}`.
+This `SPIRV` folder is being moved to `glslang/SPIRV`.
+During the transition the `SPIRV` folder will be installed into both locations.
+The old install of `SPIRV/` will be removed as a CMake install target no sooner than May 1, 2020.
+See issue #1964.
+
+If people are only using this location to get spirv.hpp, I recommend they get that from [SPIRV-Headers](https://github.com/KhronosGroup/SPIRV-Headers) instead.
+
 [![Build Status](https://travis-ci.org/KhronosGroup/glslang.svg?branch=master)](https://travis-ci.org/KhronosGroup/glslang)
 [![Build status](https://ci.appveyor.com/api/projects/status/q6fi9cb0qnhkla68/branch/master?svg=true)](https://ci.appveyor.com/project/Khronoswebmaster/glslang/branch/master)
 
