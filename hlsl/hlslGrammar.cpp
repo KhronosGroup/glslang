@@ -382,6 +382,16 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& nodeList)
     if (forbidDeclarators)
         return true;
 
+    // Check if there are invalid in/out qualifiers
+    switch (declaredType.getQualifier().storage) {
+    case EvqIn:
+    case EvqOut:
+    case EvqInOut:
+        parseContext.error(token.loc, "in/out qualifiers are only valid on parameters", token.string->c_str(), "");
+    default:
+        break;
+    }
+
     // declarator_list
     //    : declarator
     //         : identifier
