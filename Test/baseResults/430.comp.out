@@ -5,7 +5,7 @@ ERROR: 0:43: 'in' : global storage input qualifier cannot be used in a compute s
 ERROR: 0:43: 'location qualifier on input' : not supported in this stage: compute
 ERROR: 0:44: 'in' : global storage input qualifier cannot be used in a compute shader 
 ERROR: 0:45: 'out' : global storage output qualifier cannot be used in a compute shader 
-ERROR: 0:48: 'shared' : cannot apply layout qualifiers to a shared variable 
+ERROR: 0:48: 'shared block' : not supported for this version or the enabled extensions 
 ERROR: 0:48: 'location' : can only apply to uniform, buffer, in, or out storage qualifiers 
 ERROR: 0:49: 'shared' : initializer can only be a null initializer ('{}') 
 ERROR: 0:52: 'local_size' : cannot change previously set size 

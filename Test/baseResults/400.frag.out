@@ -34,7 +34,7 @@ ERROR: 0:183: 'assign' :  cannot convert from ' const float' to ' temp 2-compone
 ERROR: 0:184: 'textureQueryLod' : no matching overloaded function found 
 ERROR: 0:184: 'assign' :  cannot convert from ' const float' to ' temp 2-component vector of float'
 ERROR: 0:197: 'subroutine' : feature not yet implemented 
-ERROR: 0:197: '' : default qualifier requires 'uniform', 'buffer', 'in', or 'out' storage qualification 
+ERROR: 0:197: '' : default qualifier requires 'uniform', 'buffer', 'in', 'out' or 'shared' storage qualification 
 ERROR: 0:198: 'subroutine' : feature not yet implemented 
 ERROR: 0:199: 'subroutine' : feature not yet implemented 
 ERROR: 0:201: '' :  syntax error, unexpected PRECISE, expecting IDENTIFIER
