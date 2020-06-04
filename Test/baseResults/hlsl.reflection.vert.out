@@ -63,12 +63,12 @@ foo1: offset 0, type 1406, size 1, index 4, binding -1, stages 1
 foo2: offset 0, type 1406, size 1, index 5, binding -1, stages 1
 
 Uniform block reflection:
-nameless: offset -1, type ffffffff, size 496, index -1, binding -1, stages 1, numMembers 9
-$Global: offset -1, type ffffffff, size 3088, index -1, binding -1, stages 1, numMembers 106
-c_nameless: offset -1, type ffffffff, size 96, index -1, binding -1, stages 1, numMembers 5
-nested: offset -1, type ffffffff, size 32, index -1, binding -1, stages 1, numMembers 4
-abl: offset -1, type ffffffff, size 4, index -1, binding -1, stages 1, numMembers 1
-abl2: offset -1, type ffffffff, size 4, index -1, binding -1, stages 1, numMembers 1
+nameless: offset -1, type ffffffff, size 496, index 0, binding -1, stages 1, numMembers 9
+$Global: offset -1, type ffffffff, size 3088, index 1, binding -1, stages 1, numMembers 106
+c_nameless: offset -1, type ffffffff, size 96, index 2, binding -1, stages 1, numMembers 5
+nested: offset -1, type ffffffff, size 32, index 3, binding -1, stages 1, numMembers 4
+abl: offset -1, type ffffffff, size 4, index 4, binding -1, stages 1, numMembers 1
+abl2: offset -1, type ffffffff, size 4, index 5, binding -1, stages 1, numMembers 1
 
 Buffer variable reflection:
 
