@@ -3525,7 +3525,18 @@ spv::Id TGlslangToSpvTraverser::createSpvVariable(const glslang::TIntermSymbol* 
     if (glslang::IsAnonymous(name))
         name = "";
 
-    return builder.createVariable(storageClass, spvType, name);
+    spv::Id initializer = spv::NoResult;
+
+    if (node->getType().getQualifier().storage == glslang::EvqUniform &&
+        !node->getConstArray().empty()) {
+            int nextConst = 0;
+            initializer = createSpvConstantFromConstUnionArray(node->getType(),
+                                                               node->getConstArray(),
+                                                               nextConst,
+                                                               false /* specConst */);
+    }
+
+    return builder.createVariable(storageClass, spvType, name, initializer);
 }
 
 // Return type Id of the sampled type.
