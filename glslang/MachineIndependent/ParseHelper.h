@@ -470,6 +470,8 @@ public:
     void handleSwitchAttributes(const TAttributes& attributes, TIntermNode*);
     // Determine loop control from attributes
     void handleLoopAttributes(const TAttributes& attributes, TIntermNode*);
+    // Function attributes
+    void handleFunctionAttributes(const TSourceLoc&, const TAttributes&, TFunction*);
 #endif
 
     void checkAndResizeMeshViewDim(const TSourceLoc&, TType&, bool isBlockMember);

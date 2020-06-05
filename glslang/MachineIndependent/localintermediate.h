@@ -328,6 +328,7 @@ public:
         textureSamplerTransformMode(EShTexSampTransKeep),
         needToLegalize(false),
         binaryDoubleOutput(false),
+        subgroupUniformControlFlow(false),
         usePhysicalStorageBuffer(false),
         uniformLocationBase(0)
 #endif
@@ -864,6 +865,9 @@ public:
 
     void setBinaryDoubleOutput() { binaryDoubleOutput = true; }
     bool getBinaryDoubleOutput() { return binaryDoubleOutput; }
+
+    void setSubgroupUniformControlFlow() { subgroupUniformControlFlow = true; }
+    bool getSubgroupUniformControlFlow() const { return subgroupUniformControlFlow; }
 #endif // GLSLANG_WEB
 
     void addBlockStorageOverride(const char* nameStr, TBlockStorageClass backing)
@@ -1115,6 +1119,7 @@ protected:
 
     bool needToLegalize;
     bool binaryDoubleOutput;
+    bool subgroupUniformControlFlow;
     bool usePhysicalStorageBuffer;
 
     std::unordered_map<std::string, int> uniformLocationOverrides;

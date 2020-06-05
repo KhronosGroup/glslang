@@ -204,6 +204,7 @@ const char* const E_GL_EXT_fragment_shading_rate            = "GL_EXT_fragment_s
 const char* const E_GL_EXT_shader_image_int64               = "GL_EXT_shader_image_int64";
 const char* const E_GL_EXT_null_initializer                 = "GL_EXT_null_initializer";
 const char* const E_GL_EXT_shared_memory_block              = "GL_EXT_shared_memory_block";
+const char* const E_GL_EXT_subgroup_uniform_control_flow    = "GL_EXT_subgroup_uniform_control_flow";
 
 // Arrays of extensions for the above viewportEXTs duplications
 
