@@ -224,7 +224,7 @@ spv.300layout.vert
                               Store 136 134
              139:    138(ptr) AccessChain 47 102 24
              140:   14(fvec3) Load 139
-             144:  143(bvec3) FOrdNotEqual 140 142
+             144:  143(bvec3) FUnordNotEqual 140 142
              145:   137(bool) Any 144
              146:   137(bool) LogicalNot 145
                               SelectionMerge 148 None

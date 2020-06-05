@@ -390,7 +390,7 @@ gl_FragCoord origin is upper left
               85:     81(ptr) AccessChain 16(input) 84
               86:    6(float) Load 85
                               Store 82(ii) 86
-              88:    21(bool) FOrdNotEqual 86 87
+              88:    21(bool) FUnordNotEqual 86 87
                               SelectionMerge 90 None
                               BranchConditional 88 89 90
               89:               Label

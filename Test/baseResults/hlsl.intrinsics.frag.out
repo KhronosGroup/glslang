@@ -6389,7 +6389,7 @@ Validation failed
        341(r060):      7(ptr) Variable Function
        344(r061):      7(ptr) Variable Function
              140:    6(float) Load 13(inF0)
-             142:   137(bool) FOrdNotEqual 140 141
+             142:   137(bool) FUnordNotEqual 140 141
              143:   137(bool) All 142
                               Store 139(r000) 143
              145:    6(float) Load 13(inF0)
@@ -6399,7 +6399,7 @@ Validation failed
              149:    6(float) ExtInst 1(GLSL.std.450) 17(Acos) 148
                               Store 147(r002) 149
              151:    6(float) Load 13(inF0)
-             152:   137(bool) FOrdNotEqual 151 141
+             152:   137(bool) FUnordNotEqual 151 141
              153:   137(bool) Any 152
                               Store 150(r003) 153
              155:    6(float) Load 13(inF0)
@@ -6674,7 +6674,7 @@ Validation failed
        583(r065):     27(ptr) Variable Function
        586(r066):     27(ptr) Variable Function
              352:   26(fvec2) Load 31(inF0)
-             355:  353(bvec2) FOrdNotEqual 352 354
+             355:  353(bvec2) FUnordNotEqual 352 354
              356:   137(bool) All 355
                               Store 351(r000) 356
              358:   26(fvec2) Load 31(inF0)
@@ -6684,7 +6684,7 @@ Validation failed
              362:   26(fvec2) ExtInst 1(GLSL.std.450) 17(Acos) 361
                               Store 360(r002) 362
              364:   26(fvec2) Load 31(inF0)
-             365:  353(bvec2) FOrdNotEqual 364 354
+             365:  353(bvec2) FUnordNotEqual 364 354
              366:   137(bool) Any 365
                               Store 363(r003) 366
              368:   26(fvec2) Load 31(inF0)
@@ -6976,7 +6976,7 @@ Validation failed
        831(r066):     39(ptr) Variable Function
        834(r067):     39(ptr) Variable Function
              593:   38(fvec3) Load 43(inF0)
-             596:  594(bvec3) FOrdNotEqual 593 595
+             596:  594(bvec3) FUnordNotEqual 593 595
              597:   137(bool) All 596
                               Store 592(r000) 597
              599:   38(fvec3) Load 43(inF0)
@@ -6986,7 +6986,7 @@ Validation failed
              603:   38(fvec3) ExtInst 1(GLSL.std.450) 17(Acos) 602
                               Store 601(r002) 603
              605:   38(fvec3) Load 43(inF0)
-             606:  594(bvec3) FOrdNotEqual 605 595
+             606:  594(bvec3) FUnordNotEqual 605 595
              607:   137(bool) Any 606
                               Store 604(r003) 607
              609:   38(fvec3) Load 43(inF0)
@@ -7286,7 +7286,7 @@ Validation failed
       1080(r066):     51(ptr) Variable Function
       1083(r067):     51(ptr) Variable Function
              842:   50(fvec4) Load 55(inF0)
-             845:  843(bvec4) FOrdNotEqual 842 844
+             845:  843(bvec4) FUnordNotEqual 842 844
              846:   137(bool) All 845
                               Store 841(r000) 846
              848:   50(fvec4) Load 55(inF0)
@@ -7296,7 +7296,7 @@ Validation failed
              852:   50(fvec4) ExtInst 1(GLSL.std.450) 17(Acos) 851
                               Store 850(r002) 852
              854:   50(fvec4) Load 55(inF0)
-             855:  843(bvec4) FOrdNotEqual 854 844
+             855:  843(bvec4) FUnordNotEqual 854 844
              856:   137(bool) Any 855
                               Store 853(r003) 856
              858:   50(fvec4) Load 55(inF0)
@@ -7578,7 +7578,7 @@ Validation failed
       1257(r044):     63(ptr) Variable Function
       1262(r046):     63(ptr) Variable Function
             1091:          62 Load 65(inF0)
-            1093:        1092 FOrdNotEqual 1091 141
+            1093:        1092 FUnordNotEqual 1091 141
             1094:   137(bool) All 1093
                               Store 1090(r000) 1094
             1096:          62 Load 65(inF0)
@@ -7587,7 +7587,7 @@ Validation failed
             1098:          62 Load 65(inF0)
             1099:          62 ExtInst 1(GLSL.std.450) 17(Acos) 1098
             1101:          62 Load 65(inF0)
-            1102:        1092 FOrdNotEqual 1101 141
+            1102:        1092 FUnordNotEqual 1101 141
             1103:   137(bool) Any 1102
                               Store 1100(r003) 1103
             1105:          62 Load 65(inF0)
@@ -7807,7 +7807,7 @@ Validation failed
       1439(r044):     71(ptr) Variable Function
       1444(r046):     71(ptr) Variable Function
             1270:          70 Load 73(inF0)
-            1272:        1271 FOrdNotEqual 1270 141
+            1272:        1271 FUnordNotEqual 1270 141
             1273:   137(bool) All 1272
                               Store 1269(r000) 1273
             1275:          70 Load 73(inF0)
@@ -7816,7 +7816,7 @@ Validation failed
             1277:          70 Load 73(inF0)
             1278:          70 ExtInst 1(GLSL.std.450) 17(Acos) 1277
             1280:          70 Load 73(inF0)
-            1281:        1271 FOrdNotEqual 1280 141
+            1281:        1271 FUnordNotEqual 1280 141
             1282:   137(bool) Any 1281
                               Store 1279(r003) 1282
             1284:          70 Load 73(inF0)
@@ -8039,7 +8039,7 @@ Validation failed
       1624(r044):     79(ptr) Variable Function
       1629(r046):     79(ptr) Variable Function
             1452:          78 Load 81(inF0)
-            1454:        1453 FOrdNotEqual 1452 141
+            1454:        1453 FUnordNotEqual 1452 141
             1455:   137(bool) All 1454
                               Store 1451(r000) 1455
             1457:          78 Load 81(inF0)
@@ -8048,7 +8048,7 @@ Validation failed
             1459:          78 Load 81(inF0)
             1460:          78 ExtInst 1(GLSL.std.450) 17(Acos) 1459
             1462:          78 Load 81(inF0)
-            1463:        1453 FOrdNotEqual 1462 141
+            1463:        1453 FUnordNotEqual 1462 141
             1464:   137(bool) Any 1463
                               Store 1461(r003) 1464
             1466:          78 Load 81(inF0)
