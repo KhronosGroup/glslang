@@ -643,7 +643,7 @@ public:
         if (type.isArray()) {
             TType derefType(type, 0);
             for (int e = 0; e < type.getOuterArraySize(); ++e) {
-                uint32_t memberBlockIndex = addBlockName(name + "[" + String(e) + "]", derefType, size);
+                int memberBlockIndex = addBlockName(name + "[" + String(e) + "]", derefType, size);
                 if (e == 0)
                     blockIndex = memberBlockIndex;
             }
