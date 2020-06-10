@@ -317,7 +317,7 @@ void HlslScanContext::fillInKeywordMap()
     (*KeywordMap)["sampler1D"] =               EHTokSampler1d;
     (*KeywordMap)["sampler2D"] =               EHTokSampler2d;
     (*KeywordMap)["sampler3D"] =               EHTokSampler3d;
-    (*KeywordMap)["samplerCube"] =             EHTokSamplerCube;
+    (*KeywordMap)["samplerCUBE"] =             EHTokSamplerCube;
     (*KeywordMap)["sampler_state"] =           EHTokSamplerState;
     (*KeywordMap)["SamplerState"] =            EHTokSamplerState;
     (*KeywordMap)["SamplerComparisonState"] =  EHTokSamplerComparisonState;
