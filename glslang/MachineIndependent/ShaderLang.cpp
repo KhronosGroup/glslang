@@ -159,7 +159,7 @@ int MapVersionToIndex(int version)
     return index;
 }
 
-const int SpvVersionCount = 3;  // index range in MapSpvVersionToIndex
+const int SpvVersionCount = 4;  // index range in MapSpvVersionToIndex
 
 int MapSpvVersionToIndex(const SpvVersion& spvVersion)
 {
@@ -167,8 +167,12 @@ int MapSpvVersionToIndex(const SpvVersion& spvVersion)
 
     if (spvVersion.openGl > 0)
         index = 1;
-    else if (spvVersion.vulkan > 0)
-        index = 2;
+    else if (spvVersion.vulkan > 0) {
+        if (!spvVersion.vulkanRelaxed)
+            index = 2;
+        else
+            index = 3;
+    }
 
     assert(index < SpvVersionCount);
 
@@ -723,6 +727,7 @@ void TranslateEnvironment(const TEnvironment* environment, EShMessages& messages
                 break;
             case EShClientVulkan:
                 spvVersion.vulkanGlsl = environment->input.dialectVersion;
+                spvVersion.vulkanRelaxed = environment->input.VulkanRulesRelaxed;
                 break;
             case EShClientOpenGL:
                 spvVersion.openGl = environment->input.dialectVersion;
@@ -1868,6 +1873,15 @@ void TShader::setResourceSetBinding(const std::vector<std::string>& base)   { in
 void TShader::setTextureSamplerTransformMode(EShTextureSamplerTransformMode mode) { intermediate->setTextureSamplerTransformMode(mode); }
 #endif
 
+void TShader::addBlockStorageOverride(const char* nameStr, TBlockStorageClass backing) { intermediate->addBlockStorageOverride(nameStr, backing); }
+
+void TShader::setGlobalUniformBlockName(const char* name) { intermediate->setGlobalUniformBlockName(name); }
+void TShader::setGlobalUniformSet(unsigned int set) { intermediate->setGlobalUniformSet(set); }
+void TShader::setGlobalUniformBinding(unsigned int binding) { intermediate->setGlobalUniformBinding(binding); }
+
+void TShader::setAtomicCounterBlockName(const char* name) { intermediate->setAtomicCounterBlockName(name); }
+void TShader::setAtomicCounterBlockSet(unsigned int set) { intermediate->setAtomicCounterBlockSet(set); }
+
 #ifdef ENABLE_HLSL
 // See comment above TDefaultHlslIoMapper in iomapper.cpp:
 void TShader::setHlslIoMapping(bool hlslIoMap)          { intermediate->setHlslIoMapping(hlslIoMap); }
@@ -1983,7 +1997,10 @@ bool TProgram::link(EShMessages messages)
             error = true;
     }
 
-    // TODO: Link: cross-stage error checking
+    if (!error) {
+        if (! crossStageCheck(messages))
+            error = true;
+    }
 
     return ! error;
 }
@@ -2058,6 +2075,64 @@ bool TProgram::linkStage(EShLanguage stage, EShMessages messages)
 #endif
 
     return intermediate[stage]->getNumErrors() == 0;
+}
+
+//
+// Check that there are no errors in linker objects accross stages
+//
+// Return true if no errors.
+//
+bool TProgram::crossStageCheck(EShMessages) {
+
+    // make temporary intermediates to hold the linkage symbols for each linking interface
+    // while we do the checks
+    // Independent interfaces are:
+    //                  all uniform variables and blocks
+    //                  all buffer blocks
+    //                  all in/out on a stage boundary
+
+    TVector<TIntermediate*> activeStages;
+    for (int s = 0; s < EShLangCount; ++s) {
+        if (intermediate[s])
+            activeStages.push_back(intermediate[s]);
+    }
+
+    // no extra linking if there is only one stage
+    if (! (activeStages.size() > 1))
+        return true;
+
+    // setup temporary tree to hold unfirom objects from different stages
+    TIntermediate* firstIntermediate = activeStages.front();
+    TIntermediate uniforms(EShLangCount,
+                           firstIntermediate->getVersion(),
+                           firstIntermediate->getProfile());
+    uniforms.setSpv(firstIntermediate->getSpv());
+
+    TIntermAggregate uniformObjects(EOpLinkerObjects);
+    TIntermAggregate root(EOpSequence);
+    root.getSequence().push_back(&uniformObjects);
+    uniforms.setTreeRoot(&root);
+
+    bool error = false;
+
+    // merge uniforms from all stages into a single intermediate
+    for (unsigned int i = 0; i < activeStages.size(); ++i) {
+        uniforms.mergeUniformObjects(*infoSink, *activeStages[i]);
+    }
+    error |= uniforms.getNumErrors() != 0;
+
+    // copy final definition of global block back into each stage
+    for (unsigned int i = 0; i < activeStages.size(); ++i) {
+        activeStages[i]->mergeGlobalUniformBlocks(*infoSink, uniforms);
+    }
+
+    // compare cross stage symbols for each stage boundary
+    for (unsigned int i = 1; i < activeStages.size(); ++i) {
+        activeStages[i - 1]->checkStageIO(*infoSink, *activeStages[i]);
+        error |= (activeStages[i - 1]->getNumErrors() != 0);
+    }
+
+    return !error;
 }
 
 const char* TProgram::getInfoLog()
