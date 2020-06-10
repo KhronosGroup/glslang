@@ -404,6 +404,13 @@ bool InitializeProcess();
 // Call once per process to tear down everything
 void FinalizeProcess();
 
+#ifdef ENABLE_HLSL
+// Call to enable HLSL language support before doing any other compiler/linker
+// operations.
+// Implemented in the HLSL library.
+void RegisterHlslLanguage();
+#endif
+
 // Resource type for IO resolver
 enum TResourceType {
     EResSampler,

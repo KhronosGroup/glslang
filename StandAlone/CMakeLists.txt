@@ -20,6 +20,10 @@ set(LIBRARIES
     SPIRV
     glslang-default-resource-limits)
 
+if(ENABLE_HLSL)
+    set(LIBRARIES ${LIBRARIES} HLSL)
+endif()
+
 if(ENABLE_SPVREMAPPER)
     set(LIBRARIES ${LIBRARIES} SPVRemapper)
 endif()

@@ -1250,6 +1250,10 @@ void CompileAndLinkShaderFiles(glslang::TWorklist& Worklist)
 
 int singleMain()
 {
+#ifdef ENABLE_HLSL
+    glslang::RegisterHlslLanguage();
+#endif
+
     glslang::TWorklist workList;
     std::for_each(WorkItems.begin(), WorkItems.end(), [&workList](std::unique_ptr<glslang::TWorkItem>& item) {
         assert(item);

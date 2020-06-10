@@ -29,6 +29,7 @@ LOCAL_CXXFLAGS:=-std=c++11 -fno-exceptions -fno-rtti $(GLSLANG_DEFINES)
 LOCAL_SRC_FILES:= \
 		hlsl/hlslAttributes.cpp \
 		hlsl/hlslGrammar.cpp \
+		hlsl/hlslLanguage.cpp \
 		hlsl/hlslOpMap.cpp \
 		hlsl/hlslParseables.cpp \
 		hlsl/hlslParseHelper.cpp \
@@ -58,6 +59,7 @@ LOCAL_SRC_FILES:= \
 		glslang/MachineIndependent/iomapper.cpp \
 		glslang/MachineIndependent/limits.cpp \
 		glslang/MachineIndependent/linkValidate.cpp \
+    	glslang/MachineIndependent/Language.cpp \
 		glslang/MachineIndependent/parseConst.cpp \
 		glslang/MachineIndependent/ParseContextBase.cpp \
 		glslang/MachineIndependent/ParseHelper.cpp \

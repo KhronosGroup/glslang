@@ -1,5 +1,6 @@
 set(SOURCES
     hlslAttributes.cpp
+    hlslLanguage.cpp
     hlslParseHelper.cpp
     hlslScanContext.cpp
     hlslOpMap.cpp
@@ -22,6 +23,8 @@ glslang_pch(SOURCES pch.cpp)
 add_library(HLSL ${LIB_TYPE} ${SOURCES} ${HEADERS})
 set_property(TARGET HLSL PROPERTY FOLDER hlsl)
 set_property(TARGET HLSL PROPERTY POSITION_INDEPENDENT_CODE ON)
+
+target_link_libraries(HLSL glslang)
 
 if(WIN32 AND BUILD_SHARED_LIBS)
     set_target_properties(HLSL PROPERTIES PREFIX "")

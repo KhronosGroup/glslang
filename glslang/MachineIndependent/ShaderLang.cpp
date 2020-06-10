@@ -45,16 +45,11 @@
 #include <iostream>
 #include <sstream>
 #include <memory>
+#include "Language.h"
 #include "SymbolTable.h"
 #include "ParseHelper.h"
 #include "Scan.h"
 #include "ScanContext.h"
-
-#ifdef ENABLE_HLSL
-#include "../../hlsl/hlslParseHelper.h"
-#include "../../hlsl/hlslParseables.h"
-#include "../../hlsl/hlslScanContext.h"
-#endif
 
 #include "../Include/ShHandle.h"
 #include "../../OGLCompilersDLL/InitializeDll.h"
@@ -83,16 +78,11 @@ using namespace glslang;
 // Create a language specific version of parseables.
 TBuiltInParseables* CreateBuiltInParseables(TInfoSink& infoSink, EShSource source)
 {
-    switch (source) {
-    case EShSourceGlsl: return new TBuiltIns();              // GLSL builtIns
-#ifdef ENABLE_HLSL
-    case EShSourceHlsl: return new TBuiltInParseablesHlsl(); // HLSL intrinsics
-#endif
-
-    default:
-        infoSink.info.message(EPrefixInternalError, "Unable to determine source language");
-        return nullptr;
+    if (Language* language = Language::Get(source)) {
+        return language->CreateBuiltInParseables(infoSink);
     }
+    infoSink.info.message(EPrefixInternalError, "Unable to determine source language");
+    return nullptr;
 }
 
 // Create a language specific version of a parse context.
@@ -102,23 +92,14 @@ TParseContextBase* CreateParseContext(TSymbolTable& symbolTable, TIntermediate& 
                                       SpvVersion spvVersion, bool forwardCompatible, EShMessages messages,
                                       bool parsingBuiltIns, std::string sourceEntryPointName = "")
 {
-    switch (source) {
-    case EShSourceGlsl: {
-        if (sourceEntryPointName.size() == 0)
-            intermediate.setEntryPointName("main");
-        TString entryPoint = sourceEntryPointName.c_str();
-        return new TParseContext(symbolTable, intermediate, parsingBuiltIns, version, profile, spvVersion,
-                                 language, infoSink, forwardCompatible, messages, &entryPoint);
+    if (Language* lang = Language::Get(source)) {
+        return lang->CreateParseContext(symbolTable, intermediate,
+            version, profile, language, infoSink,
+            spvVersion, forwardCompatible, messages,
+            parsingBuiltIns,  sourceEntryPointName);
     }
-#ifdef ENABLE_HLSL
-    case EShSourceHlsl:
-        return new HlslParseContext(symbolTable, intermediate, parsingBuiltIns, version, profile, spvVersion,
-                                    language, infoSink, sourceEntryPointName.c_str(), forwardCompatible, messages);
-#endif
-    default:
-        infoSink.info.message(EPrefixInternalError, "Unable to determine source language");
-        return nullptr;
-    }
+    infoSink.info.message(EPrefixInternalError, "Unable to determine source language");
+    return nullptr;
 }
 
 // Local mapping functions for making arrays of symbol tables....
@@ -1322,10 +1303,7 @@ int ShInitialize()
     if (PerProcessGPA == nullptr)
         PerProcessGPA = new TPoolAllocator();
 
-    glslang::TScanContext::fillInKeywordMap();
-#ifdef ENABLE_HLSL
-    glslang::HlslScanContext::fillInKeywordMap();
-#endif
+    Language::InitializeAll();
 
     return 1;
 }
@@ -1424,10 +1402,7 @@ int ShFinalize()
         PerProcessGPA = nullptr;
     }
 
-    glslang::TScanContext::deleteKeywordMap();
-#ifdef ENABLE_HLSL
-    glslang::HlslScanContext::deleteKeywordMap();
-#endif
+    Language::TerminateAll();
 
     return 1;
 }
