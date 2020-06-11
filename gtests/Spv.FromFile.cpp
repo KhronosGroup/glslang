@@ -376,6 +376,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.nonuniform4.frag",
         "spv.nonuniform5.frag",
         "spv.noWorkgroup.comp",
+        "spv.nullInit.comp",
         "spv.offsets.frag",
         "spv.Operations.frag",
         "spv.paramMemory.frag",

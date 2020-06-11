@@ -9,7 +9,7 @@ ERROR: 0:40: 'in' : global storage input qualifier cannot be used in a compute s
 ERROR: 0:41: 'out' : global storage output qualifier cannot be used in a compute shader 
 ERROR: 0:44: 'shared' : cannot apply layout qualifiers to a shared variable 
 ERROR: 0:44: 'location' : can only apply to uniform, buffer, in, or out storage qualifiers 
-ERROR: 0:45: 'shared' :  cannot initialize this type of qualifier  
+ERROR: 0:45: 'shared' : initializer can only be a null initializer ('{}') 
 ERROR: 0:47: 'local_size' : can only apply to 'in' 
 ERROR: 0:47: 'local_size' : can only apply to 'in' 
 ERROR: 0:47: 'local_size' : can only apply to 'in' 
@@ -115,6 +115,11 @@ ERROR: node is still EOpNull!
 0:36              Constant:
 0:36                1 (const uint)
 0:36            'gl_LocalInvocationIndex' ( in highp uint LocalInvocationIndex)
+0:45  Sequence
+0:45    move second child to first child ( temp highp float)
+0:45      'fs' ( shared highp float)
+0:45      Constant:
+0:45        4.200000
 0:59  Function Definition: foo( ( global void)
 0:59    Function Parameters: 
 0:61    Sequence
@@ -553,6 +558,11 @@ ERROR: node is still EOpNull!
 0:36              Constant:
 0:36                1 (const uint)
 0:36            'gl_LocalInvocationIndex' ( in highp uint LocalInvocationIndex)
+0:45  Sequence
+0:45    move second child to first child ( temp highp float)
+0:45      'fs' ( shared highp float)
+0:45      Constant:
+0:45        4.200000
 0:?   Linker Objects
 0:?     'gl_WorkGroupSize' ( const highp 3-component vector of uint WorkGroupSize)
 0:?       2 (const uint)
