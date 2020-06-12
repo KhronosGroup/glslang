@@ -20,7 +20,7 @@ layout(shaderRecordEXT) buffer bblock4 {                     // ERROR, cannot ha
 };
 void main()
 {
-    accelerationStructureEXT a = 0;
+    accelerationStructureEXT a = accelerationStructureEXT(c);
     int e0 = gl_PrimitiveID;                                // ERROR, unsupported builtin in stage
     int e1 = gl_InstanceID;                                 // ERROR, unsupported builtin in stage
     int e3 = gl_InstanceCustomIndexEXT;                      // ERROR, unsupported builtin in stage

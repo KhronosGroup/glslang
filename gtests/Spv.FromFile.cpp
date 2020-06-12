@@ -567,6 +567,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.ext.RayCallable_Errors.rcall",
         "spv.ext.RayConstants.rgen",
         "spv.ext.RayGenShader.rgen",
+        "spv.ext.RayGenShader_Errors.rgen",
         "spv.ext.RayGenShader11.rgen",
         "spv.ext.RayGenShaderArray.rgen",
         "spv.ext.World3x4.rahit",

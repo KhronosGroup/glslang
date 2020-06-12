@@ -7478,6 +7478,19 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
 
         return node;
 
+    case EOpConstructAccStruct:
+        if ((node->getType().isScalar() && node->getType().getBasicType() == EbtUint64)) {
+            // construct acceleration structure from uint64
+            requireExtensions(loc, 1, &E_GL_EXT_ray_tracing, "uint64_t conversion to acclerationStructureEXT");
+            return intermediate.addBuiltInFunctionCall(node->getLoc(), EOpConvUint64ToAccStruct, true, node,
+                type);
+        } else if (node->getType().isVector() && node->getType().getBasicType() == EbtUint && node->getVectorSize() == 2) {
+            // construct acceleration structure from uint64
+            requireExtensions(loc, 1, &E_GL_EXT_ray_tracing, "uvec2 conversion to accelerationStructureEXT");
+            return intermediate.addBuiltInFunctionCall(node->getLoc(), EOpConvUvec2ToAccStruct, true, node,
+                type);
+        } else
+            return nullptr;
 #endif // GLSLANG_WEB
 
     default:

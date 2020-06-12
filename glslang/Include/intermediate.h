@@ -280,6 +280,12 @@ enum TOperator {
     EOpConvUvec2ToPtr,
     EOpConvPtrToUvec2,
 
+    // uint64_t -> accelerationStructureEXT
+    EOpConvUint64ToAccStruct,
+
+    // uvec2 -> accelerationStructureEXT
+    EOpConvUvec2ToAccStruct,
+
     //
     // binary operations
     //
@@ -752,6 +758,7 @@ enum TOperator {
     EOpConstructNonuniform,     // expected to be transformed away, not present in final AST
     EOpConstructReference,
     EOpConstructCooperativeMatrix,
+    EOpConstructAccStruct,
     EOpConstructGuardEnd,
 
     //
