@@ -324,7 +324,7 @@ glslang::TString& AppendTypeName(glslang::TString& s, const char* argOrder, cons
             case 1: s += "1D";                   break;
             case 2: s += (isMS ? "2DMS" : "2D"); break;
             case 3: s += "3D";                   break;
-            case 4: s += "Cube";                 break;
+            case 4: s += (type == 'S'? "CUBE" : "Cube"); break;
             default: s += "UNKNOWN_SAMPLER";     break;
             }
         }
