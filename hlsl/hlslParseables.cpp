@@ -334,7 +334,6 @@ glslang::TString& AppendTypeName(glslang::TString& s, const char* argOrder, cons
 inline bool IsValid(const char* cname, char retOrder, char retType, char argOrder, char argType, int dim0, int dim1)
 {
     const bool isVec = (argOrder == 'V');
-    const bool isMat = (argOrder == 'M');
 
     const std::string name(cname);
 
