@@ -56,16 +56,6 @@
 
 namespace {  // anonymous namespace functions
 
-const char* BaseTypeName(const char argOrder, const char* scalarName, const char* vecName, const char* matName)
-{
-    switch (argOrder) {
-    case 'S': return scalarName;
-    case 'V': return vecName;
-    case 'M': return matName;
-    default:  return "UNKNOWN_TYPE";
-    }
-}
-
 // arg order queries
 bool IsSamplerType(const char argType)     { return argType == 'S' || argType == 's'; }
 bool IsArrayed(const char argOrder)        { return argOrder == '@' || argOrder == '&' || argOrder == '#'; }
@@ -863,7 +853,7 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
         { "WaveActiveAllEqual",               "S",     "B",       "SV",             "DFUI",           EShLangPSCS,  false},
         { "WaveActiveAllEqualBool",           "S",     "B",       "S",              "B",              EShLangPSCS,  false},
         { "WaveActiveCountBits",              "S",     "U",       "S",              "B",              EShLangPSCS,  false},
-        
+
         { "WaveActiveSum",                    nullptr, nullptr,   "SV",             "DFUI",           EShLangPSCS,  false},
         { "WaveActiveProduct",                nullptr, nullptr,   "SV",             "DFUI",           EShLangPSCS,  false},
         { "WaveActiveBitAnd",                 nullptr, nullptr,   "SV",             "DFUI",           EShLangPSCS,  false},
