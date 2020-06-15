@@ -67,7 +67,7 @@ public:
         spvVersion(spvVersion), 
         intermediate(interm), messages(messages), numErrors(0), currentScanner(0) { }
     virtual ~TParseVersions() { }
-    void requireStage(const TSourceLoc&, EShLanguageMask, const char* featureDesc);
+    void requireStage(const TSourceLoc&, int, const char* featureDesc);
     void requireStage(const TSourceLoc&, EShLanguage, const char* featureDesc);
 #ifdef GLSLANG_WEB
     const EProfile profile = EEsProfile;

@@ -5255,7 +5255,7 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
         // setup."
         intermediate.setXfbMode();
         const char* feature = "transform feedback qualifier";
-        requireStage(loc, (EShLanguageMask)(EShLangVertexMask | EShLangGeometryMask | EShLangTessControlMask | EShLangTessEvaluationMask), feature);
+        requireStage(loc, EShLangVertexMask | EShLangGeometryMask | EShLangTessControlMask | EShLangTessEvaluationMask, feature);
         requireProfile(loc, ECoreProfile | ECompatibilityProfile, feature);
         profileRequires(loc, ECoreProfile | ECompatibilityProfile, 440, E_GL_ARB_enhanced_layouts, feature);
         if (id == "xfb_buffer") {
@@ -5913,7 +5913,7 @@ void TParseContext::layoutQualifierCheck(const TSourceLoc& loc, const TQualifier
             if (isEsProfile() && version < 310)
                 requireStage(loc, EShLangVertex, feature);
             else
-                requireStage(loc, (EShLanguageMask)~EShLangComputeMask, feature);
+                requireStage(loc, ~EShLangComputeMask, feature);
             if (language == EShLangVertex) {
                 const char* exts[2] = { E_GL_ARB_separate_shader_objects, E_GL_ARB_explicit_attrib_location };
                 profileRequires(loc, ~EEsProfile, 330, 2, exts, feature);
@@ -5930,7 +5930,7 @@ void TParseContext::layoutQualifierCheck(const TSourceLoc& loc, const TQualifier
             if (isEsProfile() && version < 310)
                 requireStage(loc, EShLangFragment, feature);
             else
-                requireStage(loc, (EShLanguageMask)~EShLangComputeMask, feature);
+                requireStage(loc, ~EShLangComputeMask, feature);
             if (language == EShLangFragment) {
                 const char* exts[2] = { E_GL_ARB_separate_shader_objects, E_GL_ARB_explicit_attrib_location };
                 profileRequires(loc, ~EEsProfile, 330, 2, exts, feature);
@@ -7673,8 +7673,8 @@ void TParseContext::blockStageIoCheck(const TSourceLoc& loc, const TQualifier& q
         profileRequires(loc, ~EEsProfile, 150, E_GL_ARB_separate_shader_objects, "input block");
         // It is a compile-time error to have an input block in a vertex shader or an output block in a fragment shader
         // "Compute shaders do not permit user-defined input variables..."
-        requireStage(loc, (EShLanguageMask)(EShLangTessControlMask|EShLangTessEvaluationMask|EShLangGeometryMask|
-            EShLangFragmentMask|EShLangMeshNVMask), "input block");
+        requireStage(loc, EShLangTessControlMask|EShLangTessEvaluationMask|EShLangGeometryMask|
+            EShLangFragmentMask|EShLangMeshNVMask, "input block");
         if (language == EShLangFragment) {
             profileRequires(loc, EEsProfile, 320, Num_AEP_shader_io_blocks, AEP_shader_io_blocks, "fragment input block");
         } else if (language == EShLangMeshNV && ! qualifier.isTaskMemory()) {
@@ -7683,8 +7683,8 @@ void TParseContext::blockStageIoCheck(const TSourceLoc& loc, const TQualifier& q
         break;
     case EvqVaryingOut:
         profileRequires(loc, ~EEsProfile, 150, E_GL_ARB_separate_shader_objects, "output block");
-        requireStage(loc, (EShLanguageMask)(EShLangVertexMask|EShLangTessControlMask|EShLangTessEvaluationMask|
-            EShLangGeometryMask|EShLangMeshNVMask|EShLangTaskNVMask), "output block");
+        requireStage(loc, EShLangVertexMask|EShLangTessControlMask|EShLangTessEvaluationMask|
+            EShLangGeometryMask|EShLangMeshNVMask|EShLangTaskNVMask, "output block");
         // ES 310 can have a block before shader_io is turned on, so skip this test for built-ins
         if (language == EShLangVertex && ! parsingBuiltins) {
             profileRequires(loc, EEsProfile, 320, Num_AEP_shader_io_blocks, AEP_shader_io_blocks, "vertex output block");
@@ -7697,26 +7697,26 @@ void TParseContext::blockStageIoCheck(const TSourceLoc& loc, const TQualifier& q
 #ifndef GLSLANG_WEB
     case EvqPayload:
         profileRequires(loc, ~EEsProfile, 460, 2, extsrt, "rayPayloadNV block");
-        requireStage(loc, (EShLanguageMask)(EShLangRayGenMask | EShLangAnyHitMask | EShLangClosestHitMask | EShLangMissMask),
+        requireStage(loc, EShLangRayGenMask | EShLangAnyHitMask | EShLangClosestHitMask | EShLangMissMask,
             "rayPayloadNV block");
         break;
     case EvqPayloadIn:
         profileRequires(loc, ~EEsProfile, 460, 2, extsrt, "rayPayloadInNV block");
-        requireStage(loc, (EShLanguageMask)(EShLangAnyHitMask | EShLangClosestHitMask | EShLangMissMask),
+        requireStage(loc, EShLangAnyHitMask | EShLangClosestHitMask | EShLangMissMask,
             "rayPayloadInNV block");
         break;
     case EvqHitAttr:
         profileRequires(loc, ~EEsProfile, 460, 2, extsrt, "hitAttributeNV block");
-        requireStage(loc, (EShLanguageMask)(EShLangIntersectMask | EShLangAnyHitMask | EShLangClosestHitMask), "hitAttributeNV block");
+        requireStage(loc, EShLangIntersectMask | EShLangAnyHitMask | EShLangClosestHitMask, "hitAttributeNV block");
         break;
     case EvqCallableData:
         profileRequires(loc, ~EEsProfile, 460, 2, extsrt, "callableDataNV block");
-        requireStage(loc, (EShLanguageMask)(EShLangRayGenMask | EShLangClosestHitMask | EShLangMissMask | EShLangCallableMask),
+        requireStage(loc, EShLangRayGenMask | EShLangClosestHitMask | EShLangMissMask | EShLangCallableMask,
             "callableDataNV block");
         break;
     case EvqCallableDataIn:
         profileRequires(loc, ~EEsProfile, 460, 2, extsrt, "callableDataInNV block");
-        requireStage(loc, (EShLanguageMask)(EShLangCallableMask), "callableDataInNV block");
+        requireStage(loc, EShLangCallableMask, "callableDataInNV block");
         break;
 #endif
     default:

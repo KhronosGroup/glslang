@@ -5628,7 +5628,7 @@ yyreduce:
     {
         // No need for profile version or extension check. Shader stage already checks both.
         parseContext.globalCheck((yyvsp[0].lex).loc, "perprimitiveNV");
-        parseContext.requireStage((yyvsp[0].lex).loc, (EShLanguageMask)(EShLangFragmentMask | EShLangMeshNVMask), "perprimitiveNV");
+        parseContext.requireStage((yyvsp[0].lex).loc, EShLangFragmentMask | EShLangMeshNVMask, "perprimitiveNV");
         // Fragment shader stage doesn't check for extension. So we explicitly add below extension check.
         if (parseContext.language == EShLangFragment)
             parseContext.requireExtensions((yyvsp[0].lex).loc, 1, &E_GL_NV_mesh_shader, "perprimitiveNV");
@@ -5655,7 +5655,7 @@ yyreduce:
     {
         // No need for profile version or extension check. Shader stage already checks both.
         parseContext.globalCheck((yyvsp[0].lex).loc, "taskNV");
-        parseContext.requireStage((yyvsp[0].lex).loc, (EShLanguageMask)(EShLangTaskNVMask | EShLangMeshNVMask), "taskNV");
+        parseContext.requireStage((yyvsp[0].lex).loc, EShLangTaskNVMask | EShLangMeshNVMask, "taskNV");
         (yyval.interm.type).init((yyvsp[0].lex).loc);
         (yyval.interm.type).qualifier.perTaskNV = true;
     }
@@ -5877,7 +5877,7 @@ yyreduce:
         parseContext.globalCheck((yyvsp[0].lex).loc, "shared");
         parseContext.profileRequires((yyvsp[0].lex).loc, ECoreProfile | ECompatibilityProfile, 430, E_GL_ARB_compute_shader, "shared");
         parseContext.profileRequires((yyvsp[0].lex).loc, EEsProfile, 310, 0, "shared");
-        parseContext.requireStage((yyvsp[0].lex).loc, (EShLanguageMask)(EShLangComputeMask | EShLangMeshNVMask | EShLangTaskNVMask), "shared");
+        parseContext.requireStage((yyvsp[0].lex).loc, EShLangComputeMask | EShLangMeshNVMask | EShLangTaskNVMask, "shared");
         (yyval.interm.type).init((yyvsp[0].lex).loc);
         (yyval.interm.type).qualifier.storage = EvqShared;
     }
@@ -5934,7 +5934,7 @@ yyreduce:
 #line 1413 "glslang.y" /* yacc.c:1646  */
     {
         parseContext.globalCheck((yyvsp[0].lex).loc, "patch");
-        parseContext.requireStage((yyvsp[0].lex).loc, (EShLanguageMask)(EShLangTessControlMask | EShLangTessEvaluationMask), "patch");
+        parseContext.requireStage((yyvsp[0].lex).loc, EShLangTessControlMask | EShLangTessEvaluationMask, "patch");
         (yyval.interm.type).init((yyvsp[0].lex).loc);
         (yyval.interm.type).qualifier.patch = true;
     }
@@ -5955,8 +5955,8 @@ yyreduce:
 #line 1424 "glslang.y" /* yacc.c:1646  */
     {
         parseContext.globalCheck((yyvsp[0].lex).loc, "hitAttributeNV");
-        parseContext.requireStage((yyvsp[0].lex).loc, (EShLanguageMask)(EShLangIntersectMask | EShLangClosestHitMask
-            | EShLangAnyHitMask), "hitAttributeNV");
+        parseContext.requireStage((yyvsp[0].lex).loc, EShLangIntersectMask | EShLangClosestHitMask
+            | EShLangAnyHitMask, "hitAttributeNV");
         parseContext.profileRequires((yyvsp[0].lex).loc, ECoreProfile, 460, E_GL_NV_ray_tracing, "hitAttributeNV");
         (yyval.interm.type).init((yyvsp[0].lex).loc);
         (yyval.interm.type).qualifier.storage = EvqHitAttr;
@@ -5968,8 +5968,8 @@ yyreduce:
 #line 1432 "glslang.y" /* yacc.c:1646  */
     {
         parseContext.globalCheck((yyvsp[0].lex).loc, "hitAttributeEXT");
-        parseContext.requireStage((yyvsp[0].lex).loc, (EShLanguageMask)(EShLangIntersectMask | EShLangClosestHitMask
-            | EShLangAnyHitMask), "hitAttributeEXT");
+        parseContext.requireStage((yyvsp[0].lex).loc, EShLangIntersectMask | EShLangClosestHitMask
+            | EShLangAnyHitMask, "hitAttributeEXT");
         parseContext.profileRequires((yyvsp[0].lex).loc, ECoreProfile, 460, E_GL_EXT_ray_tracing, "hitAttributeNV");
         (yyval.interm.type).init((yyvsp[0].lex).loc);
         (yyval.interm.type).qualifier.storage = EvqHitAttr;
@@ -5981,8 +5981,8 @@ yyreduce:
 #line 1440 "glslang.y" /* yacc.c:1646  */
     {
         parseContext.globalCheck((yyvsp[0].lex).loc, "rayPayloadNV");
-        parseContext.requireStage((yyvsp[0].lex).loc, (EShLanguageMask)(EShLangRayGenMask | EShLangClosestHitMask |
-            EShLangAnyHitMask | EShLangMissMask), "rayPayloadNV");
+        parseContext.requireStage((yyvsp[0].lex).loc, EShLangRayGenMask | EShLangClosestHitMask |
+            EShLangAnyHitMask | EShLangMissMask, "rayPayloadNV");
         parseContext.profileRequires((yyvsp[0].lex).loc, ECoreProfile, 460, E_GL_NV_ray_tracing, "rayPayloadNV");
         (yyval.interm.type).init((yyvsp[0].lex).loc);
         (yyval.interm.type).qualifier.storage = EvqPayload;
@@ -5994,8 +5994,8 @@ yyreduce:
 #line 1448 "glslang.y" /* yacc.c:1646  */
     {
         parseContext.globalCheck((yyvsp[0].lex).loc, "rayPayloadEXT");
-        parseContext.requireStage((yyvsp[0].lex).loc, (EShLanguageMask)(EShLangRayGenMask | EShLangClosestHitMask |
-            EShLangAnyHitMask | EShLangMissMask), "rayPayloadEXT");
+        parseContext.requireStage((yyvsp[0].lex).loc, EShLangRayGenMask | EShLangClosestHitMask |
+            EShLangAnyHitMask | EShLangMissMask, "rayPayloadEXT");
         parseContext.profileRequires((yyvsp[0].lex).loc, ECoreProfile, 460, E_GL_EXT_ray_tracing, "rayPayloadEXT");
         (yyval.interm.type).init((yyvsp[0].lex).loc);
         (yyval.interm.type).qualifier.storage = EvqPayload;
@@ -6007,8 +6007,8 @@ yyreduce:
 #line 1456 "glslang.y" /* yacc.c:1646  */
     {
         parseContext.globalCheck((yyvsp[0].lex).loc, "rayPayloadInNV");
-        parseContext.requireStage((yyvsp[0].lex).loc, (EShLanguageMask)(EShLangClosestHitMask |
-            EShLangAnyHitMask | EShLangMissMask), "rayPayloadInNV");
+        parseContext.requireStage((yyvsp[0].lex).loc, EShLangClosestHitMask |
+            EShLangAnyHitMask | EShLangMissMask, "rayPayloadInNV");
         parseContext.profileRequires((yyvsp[0].lex).loc, ECoreProfile, 460, E_GL_NV_ray_tracing, "rayPayloadInNV");
         (yyval.interm.type).init((yyvsp[0].lex).loc);
         (yyval.interm.type).qualifier.storage = EvqPayloadIn;
@@ -6020,8 +6020,8 @@ yyreduce:
 #line 1464 "glslang.y" /* yacc.c:1646  */
     {
         parseContext.globalCheck((yyvsp[0].lex).loc, "rayPayloadInEXT");
-        parseContext.requireStage((yyvsp[0].lex).loc, (EShLanguageMask)(EShLangClosestHitMask |
-            EShLangAnyHitMask | EShLangMissMask), "rayPayloadInEXT");
+        parseContext.requireStage((yyvsp[0].lex).loc, EShLangClosestHitMask |
+            EShLangAnyHitMask | EShLangMissMask, "rayPayloadInEXT");
         parseContext.profileRequires((yyvsp[0].lex).loc, ECoreProfile, 460, E_GL_EXT_ray_tracing, "rayPayloadInEXT");
         (yyval.interm.type).init((yyvsp[0].lex).loc);
         (yyval.interm.type).qualifier.storage = EvqPayloadIn;
@@ -6033,8 +6033,8 @@ yyreduce:
 #line 1472 "glslang.y" /* yacc.c:1646  */
     {
         parseContext.globalCheck((yyvsp[0].lex).loc, "callableDataNV");
-        parseContext.requireStage((yyvsp[0].lex).loc, (EShLanguageMask)(EShLangRayGenMask |
-            EShLangClosestHitMask | EShLangMissMask | EShLangCallableMask), "callableDataNV");
+        parseContext.requireStage((yyvsp[0].lex).loc, EShLangRayGenMask |
+            EShLangClosestHitMask | EShLangMissMask | EShLangCallableMask, "callableDataNV");
         parseContext.profileRequires((yyvsp[0].lex).loc, ECoreProfile, 460, E_GL_NV_ray_tracing, "callableDataNV");
         (yyval.interm.type).init((yyvsp[0].lex).loc);
         (yyval.interm.type).qualifier.storage = EvqCallableData;
@@ -6046,8 +6046,8 @@ yyreduce:
 #line 1480 "glslang.y" /* yacc.c:1646  */
     {
         parseContext.globalCheck((yyvsp[0].lex).loc, "callableDataEXT");
-        parseContext.requireStage((yyvsp[0].lex).loc, (EShLanguageMask)(EShLangRayGenMask |
-            EShLangClosestHitMask | EShLangMissMask | EShLangCallableMask), "callableDataEXT");
+        parseContext.requireStage((yyvsp[0].lex).loc, EShLangRayGenMask |
+            EShLangClosestHitMask | EShLangMissMask | EShLangCallableMask, "callableDataEXT");
         parseContext.profileRequires((yyvsp[0].lex).loc, ECoreProfile, 460, E_GL_EXT_ray_tracing, "callableDataEXT");
         (yyval.interm.type).init((yyvsp[0].lex).loc);
         (yyval.interm.type).qualifier.storage = EvqCallableData;
@@ -6059,7 +6059,7 @@ yyreduce:
 #line 1488 "glslang.y" /* yacc.c:1646  */
     {
         parseContext.globalCheck((yyvsp[0].lex).loc, "callableDataInNV");
-        parseContext.requireStage((yyvsp[0].lex).loc, (EShLanguageMask)(EShLangCallableMask), "callableDataInNV");
+        parseContext.requireStage((yyvsp[0].lex).loc, EShLangCallableMask, "callableDataInNV");
         parseContext.profileRequires((yyvsp[0].lex).loc, ECoreProfile, 460, E_GL_NV_ray_tracing, "callableDataInNV");
         (yyval.interm.type).init((yyvsp[0].lex).loc);
         (yyval.interm.type).qualifier.storage = EvqCallableDataIn;
@@ -6071,7 +6071,7 @@ yyreduce:
 #line 1495 "glslang.y" /* yacc.c:1646  */
     {
         parseContext.globalCheck((yyvsp[0].lex).loc, "callableDataInEXT");
-        parseContext.requireStage((yyvsp[0].lex).loc, (EShLanguageMask)(EShLangCallableMask), "callableDataInEXT");
+        parseContext.requireStage((yyvsp[0].lex).loc, EShLangCallableMask, "callableDataInEXT");
         parseContext.profileRequires((yyvsp[0].lex).loc, ECoreProfile, 460, E_GL_EXT_ray_tracing, "callableDataInEXT");
         (yyval.interm.type).init((yyvsp[0].lex).loc);
         (yyval.interm.type).qualifier.storage = EvqCallableDataIn;

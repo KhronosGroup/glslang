@@ -1225,7 +1225,7 @@ GLSLANG_WEB_EXCLUDE_ON
     | PERPRIMITIVENV {
         // No need for profile version or extension check. Shader stage already checks both.
         parseContext.globalCheck($1.loc, "perprimitiveNV");
-        parseContext.requireStage($1.loc, (EShLanguageMask)(EShLangFragmentMask | EShLangMeshNVMask), "perprimitiveNV");
+        parseContext.requireStage($1.loc, EShLangFragmentMask | EShLangMeshNVMask, "perprimitiveNV");
         // Fragment shader stage doesn't check for extension. So we explicitly add below extension check.
         if (parseContext.language == EShLangFragment)
             parseContext.requireExtensions($1.loc, 1, &E_GL_NV_mesh_shader, "perprimitiveNV");
@@ -1242,7 +1242,7 @@ GLSLANG_WEB_EXCLUDE_ON
     | PERTASKNV {
         // No need for profile version or extension check. Shader stage already checks both.
         parseContext.globalCheck($1.loc, "taskNV");
-        parseContext.requireStage($1.loc, (EShLanguageMask)(EShLangTaskNVMask | EShLangMeshNVMask), "taskNV");
+        parseContext.requireStage($1.loc, EShLangTaskNVMask | EShLangMeshNVMask, "taskNV");
         $$.init($1.loc);
         $$.qualifier.perTaskNV = true;
     }
@@ -1374,7 +1374,7 @@ storage_qualifier
         parseContext.globalCheck($1.loc, "shared");
         parseContext.profileRequires($1.loc, ECoreProfile | ECompatibilityProfile, 430, E_GL_ARB_compute_shader, "shared");
         parseContext.profileRequires($1.loc, EEsProfile, 310, 0, "shared");
-        parseContext.requireStage($1.loc, (EShLanguageMask)(EShLangComputeMask | EShLangMeshNVMask | EShLangTaskNVMask), "shared");
+        parseContext.requireStage($1.loc, EShLangComputeMask | EShLangMeshNVMask | EShLangTaskNVMask, "shared");
         $$.init($1.loc);
         $$.qualifier.storage = EvqShared;
     }
@@ -1412,7 +1412,7 @@ GLSLANG_WEB_EXCLUDE_ON
     }
     | PATCH {
         parseContext.globalCheck($1.loc, "patch");
-        parseContext.requireStage($1.loc, (EShLanguageMask)(EShLangTessControlMask | EShLangTessEvaluationMask), "patch");
+        parseContext.requireStage($1.loc, EShLangTessControlMask | EShLangTessEvaluationMask, "patch");
         $$.init($1.loc);
         $$.qualifier.patch = true;
     }
@@ -1423,78 +1423,78 @@ GLSLANG_WEB_EXCLUDE_ON
     }
     | HITATTRNV {
         parseContext.globalCheck($1.loc, "hitAttributeNV");
-        parseContext.requireStage($1.loc, (EShLanguageMask)(EShLangIntersectMask | EShLangClosestHitMask
-            | EShLangAnyHitMask), "hitAttributeNV");
+        parseContext.requireStage($1.loc, EShLangIntersectMask | EShLangClosestHitMask
+            | EShLangAnyHitMask, "hitAttributeNV");
         parseContext.profileRequires($1.loc, ECoreProfile, 460, E_GL_NV_ray_tracing, "hitAttributeNV");
         $$.init($1.loc);
         $$.qualifier.storage = EvqHitAttr;
     }
     | HITATTREXT {
         parseContext.globalCheck($1.loc, "hitAttributeEXT");
-        parseContext.requireStage($1.loc, (EShLanguageMask)(EShLangIntersectMask | EShLangClosestHitMask
-            | EShLangAnyHitMask), "hitAttributeEXT");
+        parseContext.requireStage($1.loc, EShLangIntersectMask | EShLangClosestHitMask
+            | EShLangAnyHitMask, "hitAttributeEXT");
         parseContext.profileRequires($1.loc, ECoreProfile, 460, E_GL_EXT_ray_tracing, "hitAttributeNV");
         $$.init($1.loc);
         $$.qualifier.storage = EvqHitAttr;
     }
     | PAYLOADNV {
         parseContext.globalCheck($1.loc, "rayPayloadNV");
-        parseContext.requireStage($1.loc, (EShLanguageMask)(EShLangRayGenMask | EShLangClosestHitMask |
-            EShLangAnyHitMask | EShLangMissMask), "rayPayloadNV");
+        parseContext.requireStage($1.loc, EShLangRayGenMask | EShLangClosestHitMask |
+            EShLangAnyHitMask | EShLangMissMask, "rayPayloadNV");
         parseContext.profileRequires($1.loc, ECoreProfile, 460, E_GL_NV_ray_tracing, "rayPayloadNV");
         $$.init($1.loc);
         $$.qualifier.storage = EvqPayload;
     }
     | PAYLOADEXT {
         parseContext.globalCheck($1.loc, "rayPayloadEXT");
-        parseContext.requireStage($1.loc, (EShLanguageMask)(EShLangRayGenMask | EShLangClosestHitMask |
-            EShLangAnyHitMask | EShLangMissMask), "rayPayloadEXT");
+        parseContext.requireStage($1.loc, EShLangRayGenMask | EShLangClosestHitMask |
+            EShLangAnyHitMask | EShLangMissMask, "rayPayloadEXT");
         parseContext.profileRequires($1.loc, ECoreProfile, 460, E_GL_EXT_ray_tracing, "rayPayloadEXT");
         $$.init($1.loc);
         $$.qualifier.storage = EvqPayload;
     }
     | PAYLOADINNV {
         parseContext.globalCheck($1.loc, "rayPayloadInNV");
-        parseContext.requireStage($1.loc, (EShLanguageMask)(EShLangClosestHitMask |
-            EShLangAnyHitMask | EShLangMissMask), "rayPayloadInNV");
+        parseContext.requireStage($1.loc, EShLangClosestHitMask |
+            EShLangAnyHitMask | EShLangMissMask, "rayPayloadInNV");
         parseContext.profileRequires($1.loc, ECoreProfile, 460, E_GL_NV_ray_tracing, "rayPayloadInNV");
         $$.init($1.loc);
         $$.qualifier.storage = EvqPayloadIn;
     }
     | PAYLOADINEXT {
         parseContext.globalCheck($1.loc, "rayPayloadInEXT");
-        parseContext.requireStage($1.loc, (EShLanguageMask)(EShLangClosestHitMask |
-            EShLangAnyHitMask | EShLangMissMask), "rayPayloadInEXT");
+        parseContext.requireStage($1.loc, EShLangClosestHitMask |
+            EShLangAnyHitMask | EShLangMissMask, "rayPayloadInEXT");
         parseContext.profileRequires($1.loc, ECoreProfile, 460, E_GL_EXT_ray_tracing, "rayPayloadInEXT");
         $$.init($1.loc);
         $$.qualifier.storage = EvqPayloadIn;
     }
     | CALLDATANV {
         parseContext.globalCheck($1.loc, "callableDataNV");
-        parseContext.requireStage($1.loc, (EShLanguageMask)(EShLangRayGenMask |
-            EShLangClosestHitMask | EShLangMissMask | EShLangCallableMask), "callableDataNV");
+        parseContext.requireStage($1.loc, EShLangRayGenMask |
+            EShLangClosestHitMask | EShLangMissMask | EShLangCallableMask, "callableDataNV");
         parseContext.profileRequires($1.loc, ECoreProfile, 460, E_GL_NV_ray_tracing, "callableDataNV");
         $$.init($1.loc);
         $$.qualifier.storage = EvqCallableData;
     }
     | CALLDATAEXT {
         parseContext.globalCheck($1.loc, "callableDataEXT");
-        parseContext.requireStage($1.loc, (EShLanguageMask)(EShLangRayGenMask |
-            EShLangClosestHitMask | EShLangMissMask | EShLangCallableMask), "callableDataEXT");
+        parseContext.requireStage($1.loc, EShLangRayGenMask |
+            EShLangClosestHitMask | EShLangMissMask | EShLangCallableMask, "callableDataEXT");
         parseContext.profileRequires($1.loc, ECoreProfile, 460, E_GL_EXT_ray_tracing, "callableDataEXT");
         $$.init($1.loc);
         $$.qualifier.storage = EvqCallableData;
     }
     | CALLDATAINNV {
         parseContext.globalCheck($1.loc, "callableDataInNV");
-        parseContext.requireStage($1.loc, (EShLanguageMask)(EShLangCallableMask), "callableDataInNV");
+        parseContext.requireStage($1.loc, EShLangCallableMask, "callableDataInNV");
         parseContext.profileRequires($1.loc, ECoreProfile, 460, E_GL_NV_ray_tracing, "callableDataInNV");
         $$.init($1.loc);
         $$.qualifier.storage = EvqCallableDataIn;
     }
     | CALLDATAINEXT {
         parseContext.globalCheck($1.loc, "callableDataInEXT");
-        parseContext.requireStage($1.loc, (EShLanguageMask)(EShLangCallableMask), "callableDataInEXT");
+        parseContext.requireStage($1.loc, EShLangCallableMask, "callableDataInEXT");
         parseContext.profileRequires($1.loc, ECoreProfile, 460, E_GL_EXT_ray_tracing, "callableDataInEXT");
         $$.init($1.loc);
         $$.qualifier.storage = EvqCallableDataIn;

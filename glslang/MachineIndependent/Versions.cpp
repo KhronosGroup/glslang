@@ -571,7 +571,7 @@ const char* StageName(EShLanguage stage)
 //
 // Operation: If the current stage is not present, give an error message.
 //
-void TParseVersions::requireStage(const TSourceLoc& loc, EShLanguageMask languageMask, const char* featureDesc)
+void TParseVersions::requireStage(const TSourceLoc& loc, int languageMask, const char* featureDesc)
 {
     if (((1 << language) & languageMask) == 0)
         error(loc, "not supported in this stage:", featureDesc, StageName(language));
@@ -917,7 +917,7 @@ void TParseVersions::checkExtensionStage(const TSourceLoc& loc, const char * con
 {
     // GL_NV_mesh_shader extension is only allowed in task/mesh shaders
     if (strcmp(extension, "GL_NV_mesh_shader") == 0) {
-        requireStage(loc, (EShLanguageMask)(EShLangTaskNVMask | EShLangMeshNVMask | EShLangFragmentMask),
+        requireStage(loc, EShLangTaskNVMask | EShLangMeshNVMask | EShLangFragmentMask,
                      "#extension GL_NV_mesh_shader");
         profileRequires(loc, ECoreProfile, 450, 0, "#extension GL_NV_mesh_shader");
         profileRequires(loc, EEsProfile, 320, 0, "#extension GL_NV_mesh_shader");
