@@ -34,15 +34,15 @@ cc_library(
     srcs = glob(
         [
             "glslang/GenericCodeGen/*.cpp",
+            "glslang/HLSL/*.cpp",
             "glslang/MachineIndependent/*.cpp",
             "glslang/MachineIndependent/preprocessor/*.cpp",
-            "hlsl/*.cpp",
         ],
         exclude = [
+            "glslang/HLSL/pch.cpp",
+            "glslang/HLSL/pch.h",
             "glslang/MachineIndependent/pch.cpp",
             "glslang/MachineIndependent/pch.h",
-            "hlsl/pch.cpp",
-            "hlsl/pch.h",
         ],
     ) + [
         "OGLCompilersDLL/InitializeDll.cpp",
@@ -53,10 +53,10 @@ cc_library(
             ["glslang/OSDependent/Unix/ossource.cpp"],
     }),
     hdrs = glob([
+        "glslang/HLSL/*.h",
         "glslang/Include/*.h",
         "glslang/MachineIndependent/*.h",
         "glslang/MachineIndependent/preprocessor/*.h",
-        "hlsl/*.h",
     ]) + [
         "OGLCompilersDLL/InitializeDll.h",
         "StandAlone/DirStackFileIncluder.h",

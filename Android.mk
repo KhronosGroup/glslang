@@ -27,15 +27,15 @@ include $(CLEAR_VARS)
 LOCAL_MODULE:=HLSL
 LOCAL_CXXFLAGS:=-std=c++11 -fno-exceptions -fno-rtti $(GLSLANG_DEFINES)
 LOCAL_SRC_FILES:= \
-		hlsl/hlslAttributes.cpp \
-		hlsl/hlslGrammar.cpp \
-		hlsl/hlslOpMap.cpp \
-		hlsl/hlslParseables.cpp \
-		hlsl/hlslParseHelper.cpp \
-		hlsl/hlslScanContext.cpp \
-		hlsl/hlslTokenStream.cpp
+		glslang/HLSL/hlslAttributes.cpp \
+		glslang/HLSL/hlslGrammar.cpp \
+		glslang/HLSL/hlslOpMap.cpp \
+		glslang/HLSL/hlslParseables.cpp \
+		glslang/HLSL/hlslParseHelper.cpp \
+		glslang/HLSL/hlslScanContext.cpp \
+		glslang/HLSL/hlslTokenStream.cpp
 LOCAL_C_INCLUDES:=$(LOCAL_PATH) \
-	$(LOCAL_PATH)/hlsl
+	$(LOCAL_PATH)/glslang/HLSL
 include $(BUILD_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)

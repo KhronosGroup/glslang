@@ -84,23 +84,23 @@ glslang_pch(SOURCES MachineIndependent/pch.cpp)
 
 if(ENABLE_HLSL)
     list(APPEND SOURCES
-        ../hlsl/hlslAttributes.cpp
-        ../hlsl/hlslParseHelper.cpp
-        ../hlsl/hlslScanContext.cpp
-        ../hlsl/hlslOpMap.cpp
-        ../hlsl/hlslTokenStream.cpp
-        ../hlsl/hlslGrammar.cpp
-        ../hlsl/hlslParseables.cpp)
+        HLSL/hlslAttributes.cpp
+        HLSL/hlslParseHelper.cpp
+        HLSL/hlslScanContext.cpp
+        HLSL/hlslOpMap.cpp
+        HLSL/hlslTokenStream.cpp
+        HLSL/hlslGrammar.cpp
+        HLSL/hlslParseables.cpp)
 
     list(APPEND HEADERS
-        ../hlsl/hlslAttributes.h
-        ../hlsl/hlslParseHelper.h
-        ../hlsl/hlslTokens.h
-        ../hlsl/hlslScanContext.h
-        ../hlsl/hlslOpMap.h
-        ../hlsl/hlslTokenStream.h
-        ../hlsl/hlslGrammar.h
-        ../hlsl/hlslParseables.h)
+        HLSL/hlslAttributes.h
+        HLSL/hlslParseHelper.h
+        HLSL/hlslTokens.h
+        HLSL/hlslScanContext.h
+        HLSL/hlslOpMap.h
+        HLSL/hlslTokenStream.h
+        HLSL/hlslGrammar.h
+        HLSL/hlslParseables.h)
 endif(ENABLE_HLSL)
 
 add_library(glslang ${LIB_TYPE} ${BISON_GLSLParser_OUTPUT_SOURCE} ${SOURCES} ${HEADERS})
