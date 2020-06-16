@@ -121,6 +121,8 @@ if(WIN32)
     source_group("Include" REGULAR_EXPRESSION "Include/[^/]*")
     source_group("GenericCodeGen" REGULAR_EXPRESSION "GenericCodeGen/*")
     source_group("MachineIndependent\\Preprocessor" REGULAR_EXPRESSION "MachineIndependent/preprocessor/*")
+    source_group("HLSL" REGULAR_EXPRESSION "HLSL/*")
+    source_group("CInterface" REGULAR_EXPRESSION "CInterface/*")
 endif(WIN32)
 
 if(ENABLE_GLSLANG_INSTALL)
