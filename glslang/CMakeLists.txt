@@ -82,20 +82,37 @@ set(HEADERS
 
 glslang_pch(SOURCES MachineIndependent/pch.cpp)
 
+if(ENABLE_HLSL)
+    list(APPEND SOURCES
+        ../hlsl/hlslAttributes.cpp
+        ../hlsl/hlslParseHelper.cpp
+        ../hlsl/hlslScanContext.cpp
+        ../hlsl/hlslOpMap.cpp
+        ../hlsl/hlslTokenStream.cpp
+        ../hlsl/hlslGrammar.cpp
+        ../hlsl/hlslParseables.cpp)
+
+    list(APPEND HEADERS
+        ../hlsl/hlslAttributes.h
+        ../hlsl/hlslParseHelper.h
+        ../hlsl/hlslTokens.h
+        ../hlsl/hlslScanContext.h
+        ../hlsl/hlslOpMap.h
+        ../hlsl/hlslTokenStream.h
+        ../hlsl/hlslGrammar.h
+        ../hlsl/hlslParseables.h)
+endif(ENABLE_HLSL)
+
 add_library(glslang ${LIB_TYPE} ${BISON_GLSLParser_OUTPUT_SOURCE} ${SOURCES} ${HEADERS})
 set_property(TARGET glslang PROPERTY FOLDER glslang)
 set_property(TARGET glslang PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_link_libraries(glslang OGLCompiler OSDependent)
-target_include_directories(glslang PUBLIC 
+target_include_directories(glslang PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
 if(WIN32 AND BUILD_SHARED_LIBS)
     set_target_properties(glslang PROPERTIES PREFIX "")
-endif()
-
-if(ENABLE_HLSL)
-    target_link_libraries(glslang HLSL)
 endif()
 
 if(WIN32)
