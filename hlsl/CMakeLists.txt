@@ -1,6 +1,7 @@
 
 # The HLSL source is directly embedded into the glslang target when ENABLE_HLSL
 # is set.
+# This source now lives at: glslang/HLSL/
 # The HLSL target is now just a stub that exists for backwards compatibility for
 # projects that referenced this target.
 
