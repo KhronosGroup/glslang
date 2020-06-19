@@ -25,8 +25,8 @@ ERROR: 0:69: 'location/component/index' : cannot declare a default, use a full d
 ERROR: 0:70: 'input block' : not supported in this stage: vertex
 ERROR: 0:70: 'binding' : requires uniform or buffer storage qualifier 
 ERROR: 0:71: 'binding' : binding is too large 
-ERROR: 0:74: 'binding' : sampler binding not less than gl_MaxCombinedTextureImageUnits 
-ERROR: 0:76: 'binding' : sampler binding not less than gl_MaxCombinedTextureImageUnits (using array)
+ERROR: 0:74: 'sampler binding' : must be less than gl_MaxCombinedTextureImageUnits (80)
+ERROR: 0:76: 'sampler binding (using array)' : must be less than gl_MaxCombinedTextureImageUnits (80)
 ERROR: 0:85: 'patch' : not supported in this stage: vertex
 ERROR: 0:85: '' : vertex input cannot be further qualified 
 ERROR: 0:86: 'patch' : not supported in this stage: vertex

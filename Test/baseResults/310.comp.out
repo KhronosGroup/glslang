@@ -45,8 +45,8 @@ ERROR: 0:130: 'return' : type does not match, or is not convertible to, the func
 ERROR: 0:136: 'atomic_uint' : atomic_uints can only be used in uniform variables or function parameters: non_uniform_counter
 ERROR: 0:136: 'atomic_uint' : layout(binding=X) is required 
 ERROR: 0:141: 'atomic_uint' : atomic counters can only be highp 
-ERROR: 0:141: 'binding' : atomic_uint binding is too large; see gl_MaxAtomicCounterBindings 
-ERROR: 0:143: 'binding' : atomic_uint binding is too large; see gl_MaxAtomicCounterBindings 
+ERROR: 0:141: 'atomic_uint binding' : must be less than gl_MaxAtomicCounterBindings (1)
+ERROR: 0:143: 'atomic_uint binding' : must be less than gl_MaxAtomicCounterBindings (1)
 ERROR: 0:149: '[]' : scalar integer expression required 
 ERROR: 0:166: 'precision' : can only apply highp to atomic_uint 
 ERROR: 0:168: 'precise' : Reserved word. 
@@ -87,8 +87,8 @@ WARNING: 0:238: '#define' : names containing consecutive underscores are reserve
 ERROR: 0:244: 'gl_DeviceIndex' : required extension not requested: GL_EXT_device_group
 ERROR: 0:245: 'gl_ViewIndex' : undeclared identifier 
 ERROR: 0:255: 'gl_ViewIndex' : undeclared identifier 
-ERROR: 0:258: 'binding' : buffer binding is too large; no more than  16384
-ERROR: 0:261: 'binding' : uniform block binding is too large; no more than  16384
+ERROR: 0:258: 'binding' : buffer binding is too large; no more than or equal to  16384
+ERROR: 0:261: 'binding' : uniform block binding is too large; no more than or equal to  16384
 ERROR: 88 compilation errors.  No code generated.
 
 

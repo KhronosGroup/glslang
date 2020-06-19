@@ -10,7 +10,7 @@ ERROR: 0:48: 'gl_ClipDistance' : no such field in structure
 ERROR: 0:48: 'expression' :  left of '[' is not of type array, matrix, or vector  
 ERROR: 0:47: 'assign' :  l-value required (can't modify a const)
 ERROR: 0:55: 'selecting output stream' : not supported with this profile: es
-ERROR: 0:62: 'max_vertices' : too large, must be less than gl_MaxGeometryOutputVertices 
+ERROR: 0:62: 'max_vertices' : must be less than or equal to gl_MaxGeometryOutputVertices (256)
 ERROR: 0:62: 'max_vertices' : cannot change previously set layout value 
 ERROR: 0:63: 'max_vertices' : can only apply to a standalone qualifier 
 ERROR: 0:68: 'points' : cannot change previously set output primitive 

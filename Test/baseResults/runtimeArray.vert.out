@@ -7,7 +7,7 @@ WARNING: 0:37: '[]' : assuming binding count of one for compile-time checking of
 WARNING: 0:38: '[]' : assuming binding count of one for compile-time checking of binding numbers for unsized array 
 WARNING: 0:39: '[]' : assuming binding count of one for compile-time checking of binding numbers for unsized array 
 WARNING: 0:40: '[]' : assuming binding count of one for compile-time checking of binding numbers for unsized array 
-ERROR: 0:40: 'binding' : sampler binding not less than gl_MaxImageUnits (using array)
+ERROR: 0:40: 'sampler binding (using array)' : must be less than gl_MaxImageUnits (8)
 ERROR: 0:61: '[' :  array must be redeclared with a size before being indexed with a variable
 ERROR: 0:62: '[' :  array must be redeclared with a size before being indexed with a variable
 ERROR: 0:63: '[' :  array must be redeclared with a size before being indexed with a variable

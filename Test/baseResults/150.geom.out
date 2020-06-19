@@ -10,7 +10,7 @@ ERROR: 0:46: 'stream' : can only be used on an output
 ERROR: 0:47: 'stream' : can only be used on an output 
 ERROR: 0:47: 'stream' : can only be used on an output 
 ERROR: 0:60: 'stream' : member cannot contradict block 
-ERROR: 0:66: 'max_vertices' : too large, must be less than gl_MaxGeometryOutputVertices 
+ERROR: 0:66: 'max_vertices' : must be less than or equal to gl_MaxGeometryOutputVertices (256)
 ERROR: 0:66: 'max_vertices' : cannot change previously set layout value 
 ERROR: 0:67: 'max_vertices' : can only apply to a standalone qualifier 
 ERROR: 0:72: 'points' : cannot change previously set output primitive 

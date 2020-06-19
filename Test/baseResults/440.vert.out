@@ -37,15 +37,15 @@ ERROR: 0:129: 'xfb_stride' : all stride settings must match for xfb buffer 3
 ERROR: 0:133: 'xfb_stride' : all stride settings must match for xfb buffer 3
 ERROR: 0:131: 'xfb_stride' : all stride settings must match for xfb buffer 3
 ERROR: 0:152: 'xfb_offset' : overlapping offsets at offset 64 in buffer 0
-ERROR: 0:157: 'xfb_buffer' : buffer is too large: gl_MaxTransformFeedbackBuffers is 4
+ERROR: 0:157: 'xfb_buffer' : must be less than gl_MaxTransformFeedbackBuffers (4)
 ERROR: 0:158: 'xfb_offset' : must be a multiple of size of first component 
 ERROR: 0:159: 'xfb_offset' : type contains double or 64-bit integer; xfb_offset must be a multiple of 8 
 ERROR: 0:161: 'xfb_offset' : must be a multiple of size of first component 
 ERROR: 0:162: 'xfb_offset' : type contains double or 64-bit integer; xfb_offset must be a multiple of 8 
-ERROR: 0:166: 'xfb_buffer' : buffer is too large: gl_MaxTransformFeedbackBuffers is 4
-ERROR: 0:169: 'xfb_buffer' : buffer is too large: gl_MaxTransformFeedbackBuffers is 4
-ERROR: 0:169: 'xfb_stride' : 1/4 stride is too large: gl_MaxTransformFeedbackInterleavedComponents is 64
-ERROR: 0:171: 'xfb_buffer' : buffer is too large: gl_MaxTransformFeedbackBuffers is 4
+ERROR: 0:166: 'xfb_buffer' : must be less than gl_MaxTransformFeedbackBuffers (4)
+ERROR: 0:169: 'xfb_buffer' : must be less than gl_MaxTransformFeedbackBuffers (4)
+ERROR: 0:169: '1/4 xfb_stride' : must be less than or equal to gl_MaxTransformFeedbackInterleavedComponents (64)
+ERROR: 0:171: 'xfb_buffer' : must be less than gl_MaxTransformFeedbackBuffers (4)
 ERROR: 0:178: 'xfb_offset' : overlapping offsets at offset 36 in buffer 3
 ERROR: 0:179: 'xfb_buffer' : member cannot contradict block (or what block inherited from global) 
 ERROR: 0:178: 'xfb_offset' : overlapping offsets at offset 32 in buffer 3
