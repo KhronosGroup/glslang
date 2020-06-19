@@ -4878,27 +4878,30 @@ void TParseContext::inductiveLoopCheck(const TSourceLoc& loc, TIntermNode* init,
 void TParseContext::arrayLimitCheck(const TSourceLoc& loc, const TString& identifier, int size)
 {
     if (identifier.compare("gl_TexCoord") == 0)
-        limitCheck(loc, size, "gl_MaxTextureCoords", "gl_TexCoord array size");
+        limitCheck(loc, size, "gl_MaxTextureCoords", "gl_TexCoord array size", true);
     else if (identifier.compare("gl_ClipDistance") == 0)
-        limitCheck(loc, size, "gl_MaxClipDistances", "gl_ClipDistance array size");
+        limitCheck(loc, size, "gl_MaxClipDistances", "gl_ClipDistance array size", true);
     else if (identifier.compare("gl_CullDistance") == 0)
-        limitCheck(loc, size, "gl_MaxCullDistances", "gl_CullDistance array size");
+        limitCheck(loc, size, "gl_MaxCullDistances", "gl_CullDistance array size", true);
     else if (identifier.compare("gl_ClipDistancePerViewNV") == 0)
-        limitCheck(loc, size, "gl_MaxClipDistances", "gl_ClipDistancePerViewNV array size");
+        limitCheck(loc, size, "gl_MaxClipDistances", "gl_ClipDistancePerViewNV array size", true);
     else if (identifier.compare("gl_CullDistancePerViewNV") == 0)
-        limitCheck(loc, size, "gl_MaxCullDistances", "gl_CullDistancePerViewNV array size");
+        limitCheck(loc, size, "gl_MaxCullDistances", "gl_CullDistancePerViewNV array size", true);
 }
 #endif // GLSLANG_WEB
 
 // See if the provided value is less than or equal to the symbol indicated by limit,
 // which should be a constant in the symbol table.
-void TParseContext::limitCheck(const TSourceLoc& loc, int value, const char* limit, const char* feature)
+// When 'couldBeEqual' set to false, the limitation turns to be "less than the limit" only.
+void TParseContext::limitCheck(const TSourceLoc& loc, int value, const char* limit, const char* feature, const bool couldBeEqual)
 {
     TSymbol* symbol = symbolTable.find(limit);
     assert(symbol->getAsVariable());
     const TConstUnionArray& constArray = symbol->getAsVariable()->getConstArray();
     assert(! constArray.empty());
-    if (value > constArray[0].getIConst())
+    if (couldBeEqual == false && value >= constArray[0].getIConst())
+        error(loc, "must be less than", feature, "%s (%d)", limit, constArray[0].getIConst());
+    else if (couldBeEqual == true && value > constArray[0].getIConst())
         error(loc, "must be less than or equal to", feature, "%s (%d)", limit, constArray[0].getIConst());
 }
 
@@ -5379,8 +5382,7 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
         if (id == "xfb_buffer") {
             // "It is a compile-time error to specify an *xfb_buffer* that is greater than
             // the implementation-dependent constant gl_MaxTransformFeedbackBuffers."
-            if (value >= resources.maxTransformFeedbackBuffers)
-                error(loc, "buffer is too large:", id.c_str(), "gl_MaxTransformFeedbackBuffers is %d", resources.maxTransformFeedbackBuffers);
+            limitCheck(loc, value, "gl_MaxTransformFeedbackBuffers", "xfb_buffer", false);
             if (value >= (int)TQualifier::layoutXfbBufferEnd)
                 error(loc, "buffer is too large:", id.c_str(), "internal max is %d", TQualifier::layoutXfbBufferEnd-1);
             else
@@ -5399,10 +5401,8 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
         } else if (id == "xfb_stride") {
             // "The resulting stride (implicit or explicit), when divided by 4, must be less than or equal to the
             // implementation-dependent constant gl_MaxTransformFeedbackInterleavedComponents."
-            if (value > 4 * resources.maxTransformFeedbackInterleavedComponents) {
-                error(loc, "1/4 stride is too large:", id.c_str(), "gl_MaxTransformFeedbackInterleavedComponents is %d",
-                    resources.maxTransformFeedbackInterleavedComponents);
-            }
+            limitCheck(loc, static_cast<int>((value + 3) / 4), "gl_MaxTransformFeedbackInterleavedComponents",
+                       "1/4 xfb_stride", true);
             if (value >= (int)TQualifier::layoutXfbStrideEnd)
                 error(loc, "stride is too large:", id.c_str(), "internal max is %d", TQualifier::layoutXfbStrideEnd-1);
             else
@@ -5481,8 +5481,7 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
         }
         if (id == "max_vertices") {
             publicType.shaderQualifiers.vertices = value;
-            if (value > resources.maxGeometryOutputVertices)
-                error(loc, "too large, must be less than gl_MaxGeometryOutputVertices", "max_vertices", "");
+            limitCheck(loc, value, "gl_MaxGeometryOutputVertices", "max_vertices", true);
             if (nonLiteral)
                 error(loc, "needs a literal integer", "max_vertices", "");
             return;
@@ -5521,8 +5520,7 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
         if (id == "max_vertices") {
             requireExtensions(loc, 1, &E_GL_NV_mesh_shader, "max_vertices");
             publicType.shaderQualifiers.vertices = value;
-            if (value > resources.maxMeshOutputVerticesNV)
-                error(loc, "too large, must be less than gl_MaxMeshOutputVerticesNV", "max_vertices", "");
+            limitCheck(loc, value, "gl_MaxMeshOutputVerticesNV", "max_vertices", true);
             if (nonLiteral)
                 error(loc, "needs a literal integer", "max_vertices", "");
             return;
@@ -5530,8 +5528,7 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
         if (id == "max_primitives") {
             requireExtensions(loc, 1, &E_GL_NV_mesh_shader, "max_primitives");
             publicType.shaderQualifiers.primitives = value;
-            if (value > resources.maxMeshOutputPrimitivesNV)
-                error(loc, "too large, must be less than gl_MaxMeshOutputPrimitivesNV", "max_primitives", "");
+            limitCheck(loc, value, "gl_MaxMeshOutputPrimitivesNV", "max_primitives", true);
             if (nonLiteral)
                 error(loc, "needs a literal integer", "max_primitives", "");
             return;
@@ -5777,8 +5774,7 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
     if (qualifier.hasAnyLocation()) {
         if (qualifier.hasLocation()) {
             if (qualifier.storage == EvqVaryingOut && language == EShLangFragment) {
-                if (qualifier.layoutLocation >= (unsigned int)resources.maxDrawBuffers)
-                    error(loc, "too large for fragment output", "location", "");
+                limitCheck(loc, qualifier.layoutLocation, "gl_MaxDrawBuffers", "fragment output", false);
             }
         }
         if (qualifier.hasComponent()) {
@@ -5809,9 +5805,9 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
             if (type.getBasicType() == EbtBlock)
                 error(loc, "cannot apply to uniform or buffer block", "location", "");
 
-            // "It is a compile-time error to apply location layout qualifier to atomic counter."
+            // "It is a compile-time error to apply location layout qualifier to an atomic counter."
             else if (type.getBasicType() == EbtAtomicUint)
-                error(loc, "cannot apply to atomic counter", "location", "");
+                error(loc, "cannot apply to an atomic counter", "location", "");
             break;
 #ifndef GLSLANG_WEB
         case EvqPayload:
@@ -5892,31 +5888,30 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
         if (type.getBasicType() == EbtSampler) {
 #ifndef GLSLANG_WEB
             if (type.isImage()) {
-                if (spvVersion.vulkan == 0 && lastBinding >= (unsigned int)resources.maxImageUnits)
-                    error(loc, "sampler binding not less than gl_MaxImageUnits", "binding", type.isArray() ? "(using array)" : "");
+                if (spvVersion.vulkan == 0)
+                    limitCheck(loc, lastBinding, "gl_MaxImageUnits", type.isArray() ?
+                               "sampler binding (using array)" : "sampler binding", false);
             }
             else {
-                if (spvVersion.vulkan == 0 && lastBinding >= (unsigned int)resources.maxCombinedTextureImageUnits)
-                    error(loc, "sampler binding not less than gl_MaxCombinedTextureImageUnits", "binding", type.isArray() ? "(using array)" : "");
+                if (spvVersion.vulkan == 0)
+                    limitCheck(loc, lastBinding, "gl_MaxCombinedTextureImageUnits", type.isArray() ?
+                               "sampler binding (using array)" : "sampler binding", false);
             }
 #endif
         }
         if (type.isAtomic()) {
-            if (lastBinding >= (unsigned int)resources.maxAtomicCounterBindings) {
-                error(loc, "atomic_uint binding is too large; see gl_MaxAtomicCounterBindings", "binding", "");
-                return;
-            }
+            limitCheck(loc, lastBinding, "gl_MaxAtomicCounterBindings", "atomic_uint binding", false);
         }
 
         if (type.getBasicType() == EbtBlock) {
             if (qualifier.storage == EvqBuffer) {
                 if (lastBinding >= (unsigned int)resources.maxStorageBufferBindings) {
-                    error(loc, "buffer binding is too large; no more than ", "binding", "%d", resources.maxStorageBufferBindings);
+                    error(loc, "buffer binding is too large; no more than or equal to ", "binding", "%d", resources.maxStorageBufferBindings);
                     return;
                 }
             } else {
                 if (lastBinding >= (unsigned int)resources.maxUniformBufferBindings) {
-                    error(loc, "uniform block binding is too large; no more than ", "binding", "%d", resources.maxUniformBufferBindings);
+                    error(loc, "uniform block binding is too large; no more than or equal to ", "binding", "%d", resources.maxUniformBufferBindings);
                     return;
                 }
             }
@@ -6577,11 +6572,9 @@ void TParseContext::declareTypeDefaults(const TSourceLoc& loc, const TPublicType
 {
 #ifndef GLSLANG_WEB
     if (publicType.basicType == EbtAtomicUint && publicType.qualifier.hasBinding()) {
-        if (publicType.qualifier.layoutBinding >= (unsigned int)resources.maxAtomicCounterBindings) {
-            error(loc, "atomic_uint binding is too large", "binding", "");
-            return;
-        }
-        if (publicType.qualifier.hasOffset())
+        limitCheck(loc, publicType.qualifier.layoutBinding, "gl_MaxAtomicCounterBindings", "atomic_uint binding", false);
+
+        if(publicType.qualifier.hasOffset()) {
             atomicUintOffsets[publicType.qualifier.layoutBinding] = publicType.qualifier.layoutOffset;
         return;
     }

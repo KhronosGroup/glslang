@@ -390,7 +390,7 @@ public:
     void structTypeCheck(const TSourceLoc&, TPublicType&);
     void inductiveLoopCheck(const TSourceLoc&, TIntermNode* init, TIntermLoop* loop);
     void arrayLimitCheck(const TSourceLoc&, const TString&, int size);
-    void limitCheck(const TSourceLoc&, int value, const char* limit, const char* feature);
+    void limitCheck(const TSourceLoc&, int value, const char* limit, const char* feature, const bool couldBeEqual);
 
     void inductiveLoopBodyCheck(TIntermNode*, int loopIndexId, TSymbolTable&);
     void constantIndexExpressionCheck(TIntermNode*);
