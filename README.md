@@ -1,6 +1,8 @@
 # News
 
-If you get a new **compilation error due to a missing header**, it might be caused by this planned removal:
+1. The versioning scheme is being improved, and you might notice some differences.  This is currently WIP, but will be coming soon.  See, for example, PR #2277.
+
+2. If you get a new **compilation error due to a missing header**, it might be caused by this planned removal:
 
 **SPIRV Folder, 1-May, 2020.** Glslang, when installed through CMake,
 will install a `SPIRV` folder into `${CMAKE_INSTALL_INCLUDEDIR}`.
