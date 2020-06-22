@@ -5616,7 +5616,7 @@ spv::Id TGlslangToSpvTraverser::createBinaryOperation(glslang::TOperator op, OpD
     case glslang::EOpNotEqual:
     case glslang::EOpVectorNotEqual:
         if (isFloat)
-            binOp = spv::OpFOrdNotEqual;
+            binOp = spv::OpFUnordNotEqual;
         else if (isBool)
             binOp = spv::OpLogicalNotEqual;
         else
@@ -6314,7 +6314,7 @@ spv::Id TGlslangToSpvTraverser::createConversion(glslang::TOperator op, OpDecora
     case glslang::EOpConvFloatToBool:
         zero = builder.makeFloatConstant(0.0F);
         zero = makeSmearedConstant(zero, vectorSize);
-        return builder.createBinOp(spv::OpFOrdNotEqual, destType, operand, zero);
+        return builder.createBinOp(spv::OpFUnordNotEqual, destType, operand, zero);
     case glslang::EOpConvBoolToFloat:
         convOp = spv::OpSelect;
         zero = builder.makeFloatConstant(0.0F);
@@ -6463,11 +6463,11 @@ spv::Id TGlslangToSpvTraverser::createConversion(glslang::TOperator op, OpDecora
     case glslang::EOpConvDoubleToBool:
         zero = builder.makeDoubleConstant(0.0);
         zero = makeSmearedConstant(zero, vectorSize);
-        return builder.createBinOp(spv::OpFOrdNotEqual, destType, operand, zero);
+        return builder.createBinOp(spv::OpFUnordNotEqual, destType, operand, zero);
     case glslang::EOpConvFloat16ToBool:
         zero = builder.makeFloat16Constant(0.0F);
         zero = makeSmearedConstant(zero, vectorSize);
-        return builder.createBinOp(spv::OpFOrdNotEqual, destType, operand, zero);
+        return builder.createBinOp(spv::OpFUnordNotEqual, destType, operand, zero);
     case glslang::EOpConvBoolToDouble:
         convOp = spv::OpSelect;
         zero = builder.makeDoubleConstant(0.0);
@@ -8655,7 +8655,8 @@ int GetSpirvGeneratorVersion()
                  // versions 4 and 6 each generate OpArrayLength as it has long been done
     // return 7; // GLSL volatile keyword maps to both SPIR-V decorations Volatile and Coherent
     // return 8; // switch to new dead block eliminator; use OpUnreachable
-    return 9; // don't include opaque function parameters in OpEntryPoint global's operand list
+    // return 9; // don't include opaque function parameters in OpEntryPoint global's operand list
+    return 10; // Generate OpFUnordNotEqual for != comparisons
 }
 
 // Write SPIR-V out to a binary file
