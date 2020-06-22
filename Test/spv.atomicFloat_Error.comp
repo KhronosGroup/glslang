@@ -17,6 +17,7 @@ shared double atomd;
 
 layout(binding = 0, r32f) volatile coherent uniform image1D fimage1D;
 layout(binding = 1, r32f) volatile coherent uniform image2D fimage2D;
+layout(binding = 9, r32f) volatile coherent uniform image3D fimage3D; // ERROR max binding
 
 void undeclared_errors()
 {

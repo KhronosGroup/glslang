@@ -66,7 +66,7 @@ spv.atomicFloat.comp
                               Decorate 392(fimageCubeArray) Binding 6
                               Decorate 430(fimage3D) Location 7
                               Decorate 430(fimage3D) DescriptorSet 0
-                              Decorate 430(fimage3D) Binding 9
+                              Decorate 430(fimage3D) Binding 7
                               Decorate 469 BuiltIn WorkgroupSize
                2:             TypeVoid
                3:             TypeFunction 2

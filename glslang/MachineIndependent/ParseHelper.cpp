@@ -6574,7 +6574,7 @@ void TParseContext::declareTypeDefaults(const TSourceLoc& loc, const TPublicType
     if (publicType.basicType == EbtAtomicUint && publicType.qualifier.hasBinding()) {
         limitCheck(loc, publicType.qualifier.layoutBinding, "gl_MaxAtomicCounterBindings", "atomic_uint binding", false);
 
-        if(publicType.qualifier.hasOffset()) {
+        if(publicType.qualifier.hasOffset())
             atomicUintOffsets[publicType.qualifier.layoutBinding] = publicType.qualifier.layoutOffset;
         return;
     }

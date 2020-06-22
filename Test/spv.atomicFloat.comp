@@ -22,7 +22,7 @@ layout(binding = 3, r32f) volatile coherent uniform image2DArray   fimage2DArray
 layout(binding = 4, r32f) volatile coherent uniform image2DRect    fimage2DRect;
 layout(binding = 5, r32f) volatile coherent uniform imageCube      fimageCube;
 layout(binding = 6, r32f) volatile coherent uniform imageCubeArray fimageCubeArray;
-layout(binding = 9, r32f) volatile coherent uniform image3D        fimage3D;
+layout(binding = 7, r32f) volatile coherent uniform image3D        fimage3D;
 
 void main()
 {
