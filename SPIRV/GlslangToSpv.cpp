@@ -8738,9 +8738,13 @@ void GlslangToSpv(const TIntermediate& intermediate, std::vector<unsigned int>& 
     // If from HLSL, run spirv-opt to "legalize" the SPIR-V for Vulkan
     // eg. forward and remove memory writes of opaque types.
     bool prelegalization = intermediate.getSource() == EShSourceHlsl;
-    if ((intermediate.getSource() == EShSourceHlsl || options->optimizeSize) && !options->disableOptimizer) {
-        SpirvToolsLegalize(intermediate, spirv, logger, options);
+    if ((prelegalization || options->optimizeSize) && !options->disableOptimizer) {
+        SpirvToolsTransform(intermediate, spirv, logger, options);
         prelegalization = false;
+    }
+    else if (options->stripDebugInfo) {
+        // Strip debug info even if optimization is disabled.
+        SpirvToolsStripDebugInfo(intermediate, spirv, logger);
     }
 
     if (options->validate)
