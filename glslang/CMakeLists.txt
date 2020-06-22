@@ -111,8 +111,16 @@ target_include_directories(glslang PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
-if(WIN32 AND BUILD_SHARED_LIBS)
-    set_target_properties(glslang PROPERTIES PREFIX "")
+if(BUILD_SHARED_LIBS)
+    target_compile_definitions(glslang PUBLIC "GLSLANG_IS_SHARED_LIBRARY=1")
+    if(WIN32)
+        target_compile_definitions(glslang PRIVATE "GLSLANG_EXPORTING=1")
+        set_target_properties(glslang PROPERTIES PREFIX "")
+    elseif(LINUX)
+        target_compile_options(glslang PRIVATE "-fvisibility=hidden")
+        set_target_properties(glslang PROPERTIES
+            LINK_FLAGS "-Wl,--no-undefined")
+    endif()
 endif()
 
 if(WIN32)
@@ -136,9 +144,7 @@ if(ENABLE_GLSLANG_INSTALL)
                 ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
     endif()
     install(EXPORT glslangTargets DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake)
-endif(ENABLE_GLSLANG_INSTALL)
 
-if(ENABLE_GLSLANG_INSTALL)
     foreach(file ${HEADERS})
         get_filename_component(dir ${file} DIRECTORY)
         install(FILES ${file} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/glslang/${dir})

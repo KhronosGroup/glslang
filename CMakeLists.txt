@@ -15,6 +15,18 @@ include(GNUInstallDirs)
 # Needed for CMAKE_DEPENDENT_OPTION macro
 include(CMakeDependentOption)
 
+project(glslang)
+
+################################################################################
+# System defines
+################################################################################
+if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+    set(LINUX TRUE)
+endif()
+
+################################################################################
+# Options
+################################################################################
 option(BUILD_SHARED_LIBS "Build Shared Libraries" OFF)
 option(BUILD_EXTERNAL "Build external dependencies in /External" ON)
 
@@ -85,8 +97,6 @@ macro(glslang_pch SRCS PCHCPP)
     list(APPEND ${SRCS} "${PCHCPP}")
   endif()
 endmacro(glslang_pch)
-
-project(glslang)
 
 if(ENABLE_CTEST)
     include(CTest)

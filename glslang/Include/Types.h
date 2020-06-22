@@ -316,16 +316,6 @@ typedef TVector<TString*> TIdentifierList;
 // used for TPublicType, TType, others.
 //
 
-enum TLayoutPacking {
-    ElpNone,
-    ElpShared,      // default, but different than saying nothing
-    ElpStd140,
-    ElpStd430,
-    ElpPacked,
-    ElpScalar,
-    ElpCount        // If expanding, see bitfield width below
-};
-
 enum TLayoutMatrix {
     ElmNone,
     ElmRowMajor,
@@ -2214,7 +2204,7 @@ public:
             bool hasHiddenMember = true;
             for (size_t i = 0; i < structure->size(); ++i) {
                 if (! (*structure)[i].type->hiddenMember()) {
-                    if (!hasHiddenMember) 
+                    if (!hasHiddenMember)
                         appendStr(", ");
                     typeString.append((*structure)[i].type->getCompleteString());
                     typeString.append(" ");
@@ -2245,7 +2235,7 @@ public:
     void setStruct(TTypeList* s) { assert(isStruct()); structure = s; }
     TTypeList* getWritableStruct() const { assert(isStruct()); return structure; }  // This should only be used when known to not be sharing with other threads
     void setBasicType(const TBasicType& t) { basicType = t; }
-    
+
     int computeNumComponents() const
     {
         int components = 0;

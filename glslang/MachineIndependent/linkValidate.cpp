@@ -769,8 +769,8 @@ void TIntermediate::finalCheck(TInfoSink& infoSink, bool keepUncalled)
             error(infoSink, "At least one shader must specify a layout(max_vertices = value)");
         break;
     case EShLangFragment:
-        // for GL_ARB_post_depth_coverage, EarlyFragmentTest is set automatically in 
-        // ParseHelper.cpp. So if we reach here, this must be GL_EXT_post_depth_coverage 
+        // for GL_ARB_post_depth_coverage, EarlyFragmentTest is set automatically in
+        // ParseHelper.cpp. So if we reach here, this must be GL_EXT_post_depth_coverage
         // requiring explicit early_fragment_tests
         if (getPostDepthCoverage() && !getEarlyFragmentTests())
             error(infoSink, "post_depth_coverage requires early_fragment_tests");
@@ -1228,6 +1228,11 @@ bool TIntermediate::addUsedConstantId(int id)
 // Return the size of type, as measured by "locations".
 int TIntermediate::computeTypeLocationSize(const TType& type, EShLanguage stage)
 {
+    return glslang::computeTypeLocationSize(type, stage);
+}
+
+int computeTypeLocationSize(const TType& type, EShLanguage stage)
+{
     // "If the declared input is an array of size n and each element takes m locations, it will be assigned m * n
     // consecutive locations..."
     if (type.isArray()) {
@@ -1444,6 +1449,11 @@ const int baseAlignmentVec4Std140 = 16;
 // Return value is the alignment..
 int TIntermediate::getBaseAlignmentScalar(const TType& type, int& size)
 {
+    return glslang::getBaseAlignmentScalar(type, size);
+}
+
+int getBaseAlignmentScalar(const TType& type, int& size)
+{
 #ifdef GLSLANG_WEB
     size = 4; return 4;
 #endif
@@ -1626,6 +1636,11 @@ int TIntermediate::getBaseAlignment(const TType& type, int& size, int& stride, T
 // To aid the basic HLSL rule about crossing vec4 boundaries.
 bool TIntermediate::improperStraddle(const TType& type, int size, int offset)
 {
+    return glslang::improperStraddle(type, size, offset);
+}
+
+bool improperStraddle(const TType& type, int size, int offset)
+{
     if (! type.isVector() || type.isArray())
         return false;
 
@@ -1675,7 +1690,7 @@ int TIntermediate::getScalarAlignment(const TType& type, int& size, int& stride,
 
     if (type.isVector()) {
         int scalarAlign = getBaseAlignmentScalar(type, size);
-        
+
         size *= type.getVectorSize();
         return scalarAlign;
     }
@@ -1696,15 +1711,21 @@ int TIntermediate::getScalarAlignment(const TType& type, int& size, int& stride,
 
     assert(0);  // all cases should be covered above
     size = 1;
-    return 1;    
+    return 1;
 }
 
-int TIntermediate::getMemberAlignment(const TType& type, int& size, int& stride, TLayoutPacking layoutPacking, bool rowMajor)
+int TIntermediate::getMemberAlignment(const TType& type, int& size, int& stride, TLayoutPacking layoutPacking,
+                                      bool rowMajor)
+{
+    return glslang::getMemberAlignment(type, size, stride, layoutPacking, rowMajor);
+}
+
+int getMemberAlignment(const TType& type, int& size, int& stride, TLayoutPacking layoutPacking, bool rowMajor)
 {
     if (layoutPacking == glslang::ElpScalar) {
-        return getScalarAlignment(type, size, stride, rowMajor);
+        return TIntermediate::getScalarAlignment(type, size, stride, rowMajor);
     } else {
-        return getBaseAlignment(type, size, stride, layoutPacking, rowMajor);
+        return TIntermediate::getBaseAlignment(type, size, stride, layoutPacking, rowMajor);
     }
 }
 

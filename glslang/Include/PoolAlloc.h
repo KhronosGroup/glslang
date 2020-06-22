@@ -37,6 +37,8 @@
 #ifndef _POOLALLOC_INCLUDED_
 #define _POOLALLOC_INCLUDED_
 
+#include "Export.h"
+
 #ifdef _DEBUG
 #  define GUARD_BLOCKS  // define to enable guard block sanity checking
 #endif
@@ -146,35 +148,35 @@ private:
 //
 class TPoolAllocator {
 public:
-    TPoolAllocator(int growthIncrement = 8*1024, int allocationAlignment = 16);
+    GLSLANG_EXPORT TPoolAllocator(int growthIncrement = 8*1024, int allocationAlignment = 16);
 
     //
     // Don't call the destructor just to free up the memory, call pop()
     //
-    ~TPoolAllocator();
+    GLSLANG_EXPORT ~TPoolAllocator();
 
     //
     // Call push() to establish a new place to pop memory too.  Does not
     // have to be called to get things started.
     //
-    void push();
+    GLSLANG_EXPORT void push();
 
     //
     // Call pop() to free all memory allocated since the last call to push(),
     // or if no last call to push, frees all memory since first allocation.
     //
-    void pop();
+    GLSLANG_EXPORT void pop();
 
     //
     // Call popAll() to free all memory allocated.
     //
-    void popAll();
+    GLSLANG_EXPORT void popAll();
 
     //
     // Call allocate() to actually acquire memory.  Returns 0 if no memory
     // available, otherwise a properly aligned pointer to 'numBytes' of memory.
     //
-    void* allocate(size_t numBytes);
+    GLSLANG_EXPORT void* allocate(size_t numBytes);
 
     //
     // There is no deallocate.  The point of this class is that
@@ -250,8 +252,8 @@ private:
 // different times.  But a simple use is to have a global pop
 // with everyone using the same global allocator.
 //
-extern TPoolAllocator& GetThreadPoolAllocator();
-void SetThreadPoolAllocator(TPoolAllocator* poolAllocator);
+GLSLANG_EXPORT extern TPoolAllocator& GetThreadPoolAllocator();
+GLSLANG_EXPORT void SetThreadPoolAllocator(TPoolAllocator* poolAllocator);
 
 //
 // This STL compatible allocator is intended to be used as the allocator

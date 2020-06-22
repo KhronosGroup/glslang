@@ -357,11 +357,11 @@ public:
     }
     const SpvVersion& getSpv() const { return spvVersion; }
     EShLanguage getStage() const { return language; }
-    void updateRequestedExtension(const char* extension, TExtensionBehavior behavior) { 
+    void updateRequestedExtension(const char* extension, TExtensionBehavior behavior) {
         if(requestedExtensions.find(extension) != requestedExtensions.end()) {
-            requestedExtensions[extension] = behavior; 
+            requestedExtensions[extension] = behavior;
         } else {
-            requestedExtensions.insert(std::make_pair(extension, behavior)); 
+            requestedExtensions.insert(std::make_pair(extension, behavior));
         }
     }
 
@@ -820,14 +820,14 @@ public:
     int checkLocationRange(int set, const TIoRange& range, const TType&, bool& typeCollision);
     int addUsedOffsets(int binding, int offset, int numOffsets);
     bool addUsedConstantId(int id);
-    static int computeTypeLocationSize(const TType&, EShLanguage);
+    static int computeTypeLocationSize(const TType&, EShLanguage); // DEPRECATED: Use glslang::computeTypeLocationSize()
     static int computeTypeUniformLocationSize(const TType&);
 
-    static int getBaseAlignmentScalar(const TType&, int& size);
+    static int getBaseAlignmentScalar(const TType&, int& size); // DEPRECATED: Use glslang::getBaseAlignmentScalar()
     static int getBaseAlignment(const TType&, int& size, int& stride, TLayoutPacking layoutPacking, bool rowMajor);
     static int getScalarAlignment(const TType&, int& size, int& stride, bool rowMajor);
-    static int getMemberAlignment(const TType&, int& size, int& stride, TLayoutPacking layoutPacking, bool rowMajor);
-    static bool improperStraddle(const TType& type, int size, int offset);
+    static int getMemberAlignment(const TType&, int& size, int& stride, TLayoutPacking layoutPacking, bool rowMajor); // DEPRECATED: Use glslang::getMemberAlignment()
+    static bool improperStraddle(const TType& type, int size, int offset);  // DEPRECATED: Use glslang::improperStraddle()
     static void updateOffset(const TType& parentType, const TType& memberType, int& offset, int& memberSize);
     static int getOffset(const TType& type, int index);
     static int getBlockSize(const TType& blockType);
