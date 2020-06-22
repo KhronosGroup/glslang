@@ -8655,7 +8655,8 @@ int GetSpirvGeneratorVersion()
                  // versions 4 and 6 each generate OpArrayLength as it has long been done
     // return 7; // GLSL volatile keyword maps to both SPIR-V decorations Volatile and Coherent
     // return 8; // switch to new dead block eliminator; use OpUnreachable
-    return 9; // don't include opaque function parameters in OpEntryPoint global's operand list
+    // return 9; // don't include opaque function parameters in OpEntryPoint global's operand list
+    return 10; // Generate OpFUnordNotEqual for != comparisons
 }
 
 // Write SPIR-V out to a binary file
