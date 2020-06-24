@@ -140,7 +140,12 @@ elseif(${CMAKE_CXX_COMPILER_ID} MATCHES "Clang" AND NOT MSVC)
     endif()
 elseif(MSVC)
     if(NOT ENABLE_RTTI)
-        add_compile_options(/GR-) # Disable RTTI
+        string(FIND "${CMAKE_CXX_FLAGS}" "/GR" MSVC_HAS_GR)
+        if(MSVC_HAS_GR)
+            string(REGEX REPLACE /GR /GR- CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
+        else()
+            add_compile_options(/GR-) # Disable RTTI
+        endif()
     endif()
     if(ENABLE_EXCEPTIONS)
         add_compile_options(/EHsc) # Enable Exceptions
