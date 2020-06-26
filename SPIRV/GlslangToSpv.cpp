@@ -5336,6 +5336,8 @@ spv::Id TGlslangToSpvTraverser::handleUserFunctionCall(const glslang::TIntermAgg
             // need space to hold the copy
             arg = builder.createVariable(spv::StorageClassFunction,
                 builder.getContainedTypeId(function->getParamType(a)), "param");
+            if (function->isReducedPrecisionParam(a))
+                builder.setPrecision(arg, spv::DecorationRelaxedPrecision);
             if (qualifiers[a] == glslang::EvqIn || qualifiers[a] == glslang::EvqInOut) {
                 // need to copy the input into output space
                 builder.setAccessChain(lValues[lValueCount]);

@@ -154,15 +154,21 @@ WARNING: 0:139: 'switch' : last case/default label not followed by statements
                               Decorate 230 RelaxedPrecision
                               Decorate 231 RelaxedPrecision
                               Decorate 233(v) RelaxedPrecision
+                              Decorate 234(param) RelaxedPrecision
                               Decorate 235 RelaxedPrecision
+                              Decorate 236(param) RelaxedPrecision
                               Decorate 237 RelaxedPrecision
+                              Decorate 238(param) RelaxedPrecision
                               Decorate 239 RelaxedPrecision
                               Decorate 240 RelaxedPrecision
                               Decorate 243 RelaxedPrecision
                               Decorate 244 RelaxedPrecision
                               Decorate 245 RelaxedPrecision
+                              Decorate 246(param) RelaxedPrecision
                               Decorate 247 RelaxedPrecision
+                              Decorate 248(param) RelaxedPrecision
                               Decorate 249 RelaxedPrecision
+                              Decorate 250(param) RelaxedPrecision
                               Decorate 251 RelaxedPrecision
                               Decorate 252 RelaxedPrecision
                               Decorate 254 RelaxedPrecision
