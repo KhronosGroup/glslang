@@ -55,6 +55,7 @@
 #include <iostream>
 #include <memory>
 #include <vector>
+#include <set>
 
 namespace spv {
 
@@ -355,6 +356,10 @@ public:
     void setImplicitThis() { implicitThis = true; }
     bool hasImplicitThis() const { return implicitThis; }
 
+    void addReducedPrecisionParam(int p) { reducedPrecisionParams.insert(p); }
+    bool isReducedPrecisionParam(int p) const
+        { return reducedPrecisionParams.find(p) != reducedPrecisionParams.end(); }
+
     void dump(std::vector<unsigned int>& out) const
     {
         // OpFunction
@@ -379,6 +384,7 @@ protected:
     std::vector<Instruction*> parameterInstructions;
     std::vector<Block*> blocks;
     bool implicitThis;  // true if this is a member function expecting to be passed a 'this' as the first argument
+    std::set<int> reducedPrecisionParams;  // list of parameter indexes that need a relaxed precision arg
 };
 
 //

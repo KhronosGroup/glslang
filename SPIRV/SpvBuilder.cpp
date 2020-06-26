@@ -1298,8 +1298,11 @@ Function* Builder::makeFunctionEntry(Decoration precision, Id returnType, const 
     // Set up the precisions
     setPrecision(function->getId(), precision);
     for (unsigned p = 0; p < (unsigned)decorations.size(); ++p) {
-        for (int d = 0; d < (int)decorations[p].size(); ++d)
+        for (int d = 0; d < (int)decorations[p].size(); ++d) {
             addDecoration(firstParamId + p, decorations[p][d]);
+            if (decorations[p][d] == DecorationRelaxedPrecision)
+                function->addReducedPrecisionParam(p);
+        }
     }
 
     // CFG

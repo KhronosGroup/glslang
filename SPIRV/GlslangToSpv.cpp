@@ -5346,13 +5346,21 @@ spv::Id TGlslangToSpvTraverser::handleUserFunctionCall(const glslang::TIntermAgg
             }
             ++lValueCount;
         } else {
+            const bool argIsRelaxedPrecision = TranslatePrecisionDecoration(*argTypes[a]) ==
+                spv::DecorationRelaxedPrecision;
             // process r-value, which involves a copy for a type mismatch
-            if (function->getParamType(a) != convertGlslangToSpvType(*argTypes[a])) {
+            if (function->getParamType(a) != convertGlslangToSpvType(*argTypes[a]) ||
+                argIsRelaxedPrecision != function->isReducedPrecisionParam(a))
+            {
                 spv::Id argCopy = builder.createVariable(spv::StorageClassFunction, function->getParamType(a), "arg");
+                if (function->isReducedPrecisionParam(a))
+                    builder.setPrecision(argCopy, spv::DecorationRelaxedPrecision);
                 builder.clearAccessChain();
                 builder.setAccessChainLValue(argCopy);
                 multiTypeStore(*argTypes[a], rValues[rValueCount]);
                 arg = builder.createLoad(argCopy);
+                if (function->isReducedPrecisionParam(a))
+                    builder.setPrecision(arg, spv::DecorationRelaxedPrecision);
             } else
                 arg = rValues[rValueCount];
             ++rValueCount;
