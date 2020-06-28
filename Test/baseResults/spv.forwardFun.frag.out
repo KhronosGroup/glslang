@@ -26,6 +26,7 @@ spv.forwardFun.frag
                               Decorate 15(bar) RelaxedPrecision
                               Decorate 18(color) RelaxedPrecision
                               Decorate 20(BaseColor) RelaxedPrecision
+                              Decorate 21(param) RelaxedPrecision
                               Decorate 22 RelaxedPrecision
                               Decorate 23 RelaxedPrecision
                               Decorate 24 RelaxedPrecision
