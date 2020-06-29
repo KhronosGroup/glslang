@@ -557,6 +557,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.ext.AnyHitShader.rahit",
         "spv.ext.AnyHitShader_Errors.rahit",
         "spv.ext.ClosestHitShader.rchit",
+        "spv.ext.ClosestHitShader_Subgroup.rchit",
         "spv.ext.ClosestHitShader_Errors.rchit",
         "spv.ext.IntersectShader.rint",
         "spv.ext.IntersectShader_Errors.rint",
