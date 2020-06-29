@@ -128,6 +128,9 @@ if(${CMAKE_CXX_COMPILER_ID} MATCHES "GNU")
     if(NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS "9.0.0")
         add_compile_options(-Werror=deprecated-copy)
     endif()
+
+    # Error if there's symbols that are not found at link time.
+    add_link_options("-Wl,--no-undefined")
 elseif(${CMAKE_CXX_COMPILER_ID} MATCHES "Clang" AND NOT MSVC)
     add_compile_options(-Wall -Wuninitialized -Wunused -Wunused-local-typedefs
                         -Wunused-parameter -Wunused-value  -Wunused-variable)
@@ -138,6 +141,9 @@ elseif(${CMAKE_CXX_COMPILER_ID} MATCHES "Clang" AND NOT MSVC)
     if(NOT ENABLE_EXCEPTIONS)
         add_compile_options(-fno-exceptions)
     endif()
+
+    # Error if there's symbols that are not found at link time.
+    add_link_options("-Wl,-undefined,error")
 elseif(MSVC)
     if(NOT ENABLE_RTTI)
         string(FIND "${CMAKE_CXX_FLAGS}" "/GR" MSVC_HAS_GR)
