@@ -43,5 +43,6 @@ docker run --rm -i \
   --workdir "${ROOT_DIR}" \
   --env ROOT_DIR="${ROOT_DIR}" \
   --env SCRIPT_DIR="${SCRIPT_DIR}" \
+  --env BUILD_SHARED_LIBS="${BUILD_SHARED_LIBS:-0}" \
   --entrypoint "${SCRIPT_DIR}/build-docker.sh" \
   "gcr.io/shaderc-build/radial-build:latest"
