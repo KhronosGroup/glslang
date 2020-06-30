@@ -1,6 +1,3 @@
-# Suppress all warnings from external projects.
-set_property(DIRECTORY APPEND PROPERTY COMPILE_OPTIONS -w)
-
 if(BUILD_TESTING)
     if(TARGET gmock)
         message(STATUS "Google Mock already configured - use it")
@@ -19,7 +16,12 @@ if(BUILD_TESTING)
             gmock_main)
         foreach(target ${GTEST_TARGETS})
             set_property(TARGET ${target} PROPERTY FOLDER gtest)
+            set_property(TARGET ${target} PROPERTY COMPILE_OPTIONS -w)
         endforeach()
+        if(MSVC)
+            set_property(TARGET gmock PROPERTY COMPILE_OPTIONS /wd5046)
+        endif()
+
         mark_as_advanced(gmock_build_tests
             BUILD_GMOCK
             BUILD_GTEST
@@ -41,4 +43,3 @@ if(ENABLE_OPT AND NOT TARGET SPIRV-Tools-opt)
         add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/spirv-tools spirv-tools)
     endif()
 endif()
-
