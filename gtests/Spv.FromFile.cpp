@@ -377,6 +377,7 @@ INSTANTIATE_TEST_CASE_P(
         "spv.precision.frag",
         "spv.precisionArgs.frag",
         "spv.precisionNonESSamp.frag",
+        "spv.precisionTexture.frag",
         "spv.prepost.frag",
         "spv.privateVariableTypes.frag",
         "spv.qualifiers.vert",
