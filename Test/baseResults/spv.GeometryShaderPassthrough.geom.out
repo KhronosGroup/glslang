@@ -27,6 +27,7 @@ spv.GeometryShaderPassthrough.geom
                               Decorate 8(gl_PerVertex) Block
                               Decorate 10 PassthroughNV
                               Decorate 12(Inputs) Block
+                              Decorate 14 Location 0
                               Decorate 14 PassthroughNV
                2:             TypeVoid
                3:             TypeFunction 2

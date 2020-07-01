@@ -35,6 +35,7 @@ spv.precision.frag
                               Name 119  "s"
                               Decorate 12(foo(vf3;) RelaxedPrecision
                               Decorate 11(mv3) RelaxedPrecision
+                              Decorate 23(highfin) Location 2
                               Decorate 27 RelaxedPrecision
                               Decorate 28 RelaxedPrecision
                               Decorate 41(sum) RelaxedPrecision
@@ -49,11 +50,14 @@ spv.precision.frag
                               Decorate 58(arg2) RelaxedPrecision
                               Decorate 60(d) RelaxedPrecision
                               Decorate 62(lowfin) RelaxedPrecision
+                              Decorate 62(lowfin) Location 0
                               Decorate 63 RelaxedPrecision
                               Decorate 64(mediumfin) RelaxedPrecision
+                              Decorate 64(mediumfin) Location 1
                               Decorate 65 RelaxedPrecision
                               Decorate 66 RelaxedPrecision
                               Decorate 76(mediumfout) RelaxedPrecision
+                              Decorate 76(mediumfout) Location 0
                               Decorate 77 RelaxedPrecision
                               Decorate 78 RelaxedPrecision
                               Decorate 79 RelaxedPrecision
@@ -79,6 +83,7 @@ spv.precision.frag
                               Decorate 115 RelaxedPrecision
                               Decorate 116 RelaxedPrecision
                               MemberDecorate 117(S) 1 RelaxedPrecision
+                              Decorate 119(s) Location 3
                               Decorate 123 RelaxedPrecision
                               Decorate 127 RelaxedPrecision
                               Decorate 128 RelaxedPrecision

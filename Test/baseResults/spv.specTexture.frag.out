@@ -14,6 +14,7 @@ spv.specTexture.frag
                               Name 13  "tex"
                               Name 19  "offs"
                               Decorate 9(color_out) Location 0
+                              Decorate 13(tex) Location 0
                               Decorate 13(tex) DescriptorSet 0
                               Decorate 13(tex) Binding 0
                               Decorate 19(offs) SpecId 1

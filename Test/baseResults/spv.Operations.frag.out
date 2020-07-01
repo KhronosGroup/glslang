@@ -33,10 +33,17 @@ spv.Operations.frag
                               Name 564  "m2"
                               Name 580  "uiv4"
                               Name 582  "ub"
+                              Decorate 11(uv4) Location 1
                               Decorate 22(ui) Flat
+                              Decorate 22(ui) Location 3
+                              Decorate 220(uf) Location 2
                               Decorate 296(uui) Flat
+                              Decorate 296(uui) Location 5
                               Decorate 314(uuv4) Flat
+                              Decorate 314(uuv4) Location 4
+                              Decorate 539(FragColor) Location 0
                               Decorate 580(uiv4) Flat
+                              Decorate 580(uiv4) Location 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

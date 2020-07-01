@@ -19,7 +19,11 @@ spv.varyingArray.frag
                               Name 48  "foo"
                               Decorate 13(texSampler2D) DescriptorSet 0
                               Decorate 13(texSampler2D) Binding 0
+                              Decorate 19(TexCoord) Location 2
+                              Decorate 34(color) Location 0
+                              Decorate 39(alpha) Location 1
                               Decorate 45(gl_FragColor) Location 0
+                              Decorate 48(foo) Location 8
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

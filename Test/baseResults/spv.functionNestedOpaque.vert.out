@@ -19,6 +19,8 @@ Validation failed
                               Name 21  "bar(struct-S-s211;"
                               Name 20  "p"
                               Name 36  "si"
+                              Decorate 36(si) DescriptorSet 0
+                              Decorate 36(si) Binding 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

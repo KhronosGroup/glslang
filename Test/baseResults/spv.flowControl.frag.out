@@ -19,6 +19,12 @@ spv.flowControl.frag
                               Name 25  "bigColor"
                               Name 30  "smallColor"
                               Name 35  "gl_FragColor"
+                              Decorate 11(BaseColor) Location 5
+                              Decorate 14(otherColor) Location 3
+                              Decorate 17(c) Location 4
+                              Decorate 19(d) Location 0
+                              Decorate 25(bigColor) Location 1
+                              Decorate 30(smallColor) Location 2
                               Decorate 35(gl_FragColor) Location 0
                2:             TypeVoid
                3:             TypeFunction 2

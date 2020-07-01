@@ -75,6 +75,11 @@ TEST_P(LinkTestVulkan, FromFile)
     result.linkingOutput = program.getInfoLog();
     result.linkingError = program.getInfoDebugLog();
 
+#ifndef GLSLANG_WEB
+        if (success)
+            program.mapIO();
+#endif
+
     if (success && (controls & EShMsgSpvRules)) {
         spv::SpvBuildLogger logger;
         std::vector<uint32_t> spirv_binary;

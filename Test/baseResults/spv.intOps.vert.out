@@ -38,6 +38,21 @@ spv.intOps.vert
                               Name 173  "u3"
                               Name 182  "i3"
                               Name 247  "v4"
+                              Decorate 9(iout) Location 1
+                              Decorate 15(uout) Location 0
+                              Decorate 21(fout) Location 2
+                              Decorate 26(u2) Location 1
+                              Decorate 47(u1) Location 0
+                              Decorate 67(u4) Location 3
+                              Decorate 83(i4) Location 11
+                              Decorate 100(v3) Location 6
+                              Decorate 121(v1) Location 4
+                              Decorate 142(v2) Location 5
+                              Decorate 146(i2) Location 9
+                              Decorate 156(i1) Location 8
+                              Decorate 173(u3) Location 2
+                              Decorate 182(i3) Location 10
+                              Decorate 247(v4) Location 7
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 1

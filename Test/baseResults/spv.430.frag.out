@@ -15,6 +15,7 @@ spv.430.frag
                               Name 9  "color"
                               Name 14  "gl_Layer"
                               Name 19  "gl_ViewportIndex"
+                              Decorate 9(color) Location 0
                               Decorate 14(gl_Layer) Flat
                               Decorate 14(gl_Layer) BuiltIn Layer
                               Decorate 19(gl_ViewportIndex) Flat

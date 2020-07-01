@@ -18,6 +18,7 @@ spv.pushConstant.vert
                               MemberDecorate 11(Material) 0 Offset 0
                               MemberDecorate 11(Material) 1 Offset 4
                               Decorate 11(Material) Block
+                              Decorate 24(color) Location 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 1

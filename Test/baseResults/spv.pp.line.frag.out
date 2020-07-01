@@ -60,8 +60,11 @@ void main()
                               Decorate 22(texSampler1D) DescriptorSet 0
                               Decorate 22(texSampler1D) Binding 0
                               Decorate 37(texSampler2D) DescriptorSet 0
-                              Decorate 37(texSampler2D) Binding 0
+                              Decorate 37(texSampler2D) Binding 1
+                              Decorate 41(coords2D) Location 2
                               Decorate 53(gl_FragColor) Location 0
+                              Decorate 56(u) Location 1
+                              Decorate 59(blend) Location 0
                3:             TypeVoid
                4:             TypeFunction 3
                7:             TypeFloat 32

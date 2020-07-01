@@ -16,6 +16,8 @@ spv.depthOut.frag
                               Name 10  "Depth"
                               Name 14  "Color"
                               Decorate 8(gl_FragDepth) BuiltIn FragDepth
+                              Decorate 10(Depth) Location 1
+                              Decorate 14(Color) Location 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

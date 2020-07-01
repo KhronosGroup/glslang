@@ -56,15 +56,17 @@ Validation failed
                               Name 283  "tex1D"
                               Name 293  "tex3D"
                               Name 304  "tex2DRect"
+                              Decorate 11(color) Location 0
                               Decorate 14(t2d) DescriptorSet 0
-                              Decorate 14(t2d) Binding 0
+                              Decorate 14(t2d) Binding 2
                               Decorate 18(s) DescriptorSet 0
                               Decorate 18(s) Binding 0
                               Decorate 31(t3d) DescriptorSet 0
-                              Decorate 31(t3d) Binding 0
+                              Decorate 31(t3d) Binding 3
                               Decorate 34(i) Flat
+                              Decorate 34(i) Location 0
                               Decorate 41(sA) DescriptorSet 0
-                              Decorate 41(sA) Binding 0
+                              Decorate 41(sA) Binding 1
                               Decorate 58(tex2D) DescriptorSet 0
                               Decorate 58(tex2D) Binding 0
                               Decorate 64(texCube) DescriptorSet 0

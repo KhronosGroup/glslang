@@ -38,6 +38,7 @@ spv.meshShaderTaskMem.mesh
                               MemberDecorate 28(taskBlock) 1 PerTaskNV
                               MemberDecorate 28(taskBlock) 1 Offset 16
                               Decorate 28(taskBlock) Block
+                              Decorate 30(mytask) Location 0
                               Decorate 35 ArrayStride 4
                               MemberDecorate 36(bufferBlock) 0 Offset 0
                               MemberDecorate 36(bufferBlock) 1 Offset 16

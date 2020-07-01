@@ -794,39 +794,39 @@ using depth_any
                               Decorate 17(g_tTex1df4) DescriptorSet 0
                               Decorate 17(g_tTex1df4) Binding 0
                               Decorate 26(g_tTex1di4) DescriptorSet 0
-                              Decorate 26(g_tTex1di4) Binding 0
+                              Decorate 26(g_tTex1di4) Binding 1
                               Decorate 33(g_tTex1du4) DescriptorSet 0
-                              Decorate 33(g_tTex1du4) Binding 0
+                              Decorate 33(g_tTex1du4) Binding 2
                               Decorate 40(g_tBuffF) DescriptorSet 0
-                              Decorate 40(g_tBuffF) Binding 0
+                              Decorate 40(g_tBuffF) Binding 15
                               Decorate 47(g_tBuffI) DescriptorSet 0
-                              Decorate 47(g_tBuffI) Binding 0
+                              Decorate 47(g_tBuffI) Binding 16
                               Decorate 54(g_tBuffU) DescriptorSet 0
-                              Decorate 54(g_tBuffU) Binding 0
+                              Decorate 54(g_tBuffU) Binding 17
                               Decorate 63(g_tTex1df4a) DescriptorSet 0
-                              Decorate 63(g_tTex1df4a) Binding 0
+                              Decorate 63(g_tTex1df4a) Binding 9
                               Decorate 76(g_tTex1di4a) DescriptorSet 0
-                              Decorate 76(g_tTex1di4a) Binding 0
+                              Decorate 76(g_tTex1di4a) Binding 10
                               Decorate 86(g_tTex1du4a) DescriptorSet 0
-                              Decorate 86(g_tTex1du4a) Binding 0
+                              Decorate 86(g_tTex1du4a) Binding 11
                               Decorate 96(g_tTex2df4) DescriptorSet 0
-                              Decorate 96(g_tTex2df4) Binding 0
+                              Decorate 96(g_tTex2df4) Binding 3
                               Decorate 107(g_tTex2di4) DescriptorSet 0
-                              Decorate 107(g_tTex2di4) Binding 0
+                              Decorate 107(g_tTex2di4) Binding 4
                               Decorate 117(g_tTex2du4) DescriptorSet 0
-                              Decorate 117(g_tTex2du4) Binding 0
+                              Decorate 117(g_tTex2du4) Binding 5
                               Decorate 129(g_tTex2df4a) DescriptorSet 0
-                              Decorate 129(g_tTex2df4a) Binding 0
+                              Decorate 129(g_tTex2df4a) Binding 12
                               Decorate 142(g_tTex2di4a) DescriptorSet 0
-                              Decorate 142(g_tTex2di4a) Binding 0
+                              Decorate 142(g_tTex2di4a) Binding 13
                               Decorate 154(g_tTex2du4a) DescriptorSet 0
-                              Decorate 154(g_tTex2du4a) Binding 0
+                              Decorate 154(g_tTex2du4a) Binding 14
                               Decorate 166(g_tTex3df4) DescriptorSet 0
-                              Decorate 166(g_tTex3df4) Binding 0
+                              Decorate 166(g_tTex3df4) Binding 6
                               Decorate 179(g_tTex3di4) DescriptorSet 0
-                              Decorate 179(g_tTex3di4) Binding 0
+                              Decorate 179(g_tTex3di4) Binding 7
                               Decorate 191(g_tTex3du4) DescriptorSet 0
-                              Decorate 191(g_tTex3du4) Binding 0
+                              Decorate 191(g_tTex3du4) Binding 8
                               Decorate 216(@entryPointOutput.Color) Location 0
                               Decorate 220(@entryPointOutput.Depth) BuiltIn FragDepth
                               Decorate 225(g_sSamp) DescriptorSet 0

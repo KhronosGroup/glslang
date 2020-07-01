@@ -28,6 +28,8 @@ rayQuery.rgen
                               MemberDecorate 26(block) 0 Offset 0
                               MemberDecorate 26(block) 1 Offset 16
                               Decorate 26(block) BufferBlock
+                              Decorate 28 DescriptorSet 0
+                              Decorate 28 Binding 1
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 0

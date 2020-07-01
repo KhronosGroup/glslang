@@ -32,12 +32,18 @@ spv.textureGatherBiasLod.frag
                               Name 296  "fragColor"
                               Decorate 16(s2D) DescriptorSet 0
                               Decorate 16(s2D) Binding 0
+                              Decorate 20(c2) Location 0
+                              Decorate 25(bias) Location 4
                               Decorate 33(s2DArray) DescriptorSet 0
-                              Decorate 33(s2DArray) Binding 0
+                              Decorate 33(s2DArray) Binding 1
+                              Decorate 37(c3) Location 1
                               Decorate 47(sCube) DescriptorSet 0
-                              Decorate 47(sCube) Binding 0
+                              Decorate 47(sCube) Binding 2
                               Decorate 58(sCubeArray) DescriptorSet 0
-                              Decorate 58(sCubeArray) Binding 0
+                              Decorate 58(sCubeArray) Binding 3
+                              Decorate 61(c4) Location 2
+                              Decorate 176(lod) Location 3
+                              Decorate 296(fragColor) Location 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

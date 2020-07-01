@@ -16,10 +16,16 @@ spv.qualifiers.vert
                               Name 17  "outVn"
                               Name 19  "outVcn"
                               Decorate 9(outVc) Centroid
+                              Decorate 9(outVc) Location 0
+                              Decorate 11(inV) Location 0
+                              Decorate 13(outVs) Location 1
                               Decorate 15(outVf) Flat
+                              Decorate 15(outVf) Location 2
                               Decorate 17(outVn) NoPerspective
+                              Decorate 17(outVn) Location 3
                               Decorate 19(outVcn) NoPerspective
                               Decorate 19(outVcn) Centroid
+                              Decorate 19(outVcn) Location 4
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

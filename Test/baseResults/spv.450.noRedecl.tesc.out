@@ -24,6 +24,7 @@ spv.450.noRedecl.tesc
                               MemberDecorate 11(gl_PerVertex) 3 BuiltIn CullDistance
                               Decorate 11(gl_PerVertex) Block
                               Decorate 20(patchOut) Patch
+                              Decorate 20(patchOut) Location 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

@@ -167,11 +167,13 @@ spv.layoutNested.vert
                               Decorate 60(bBtn3) DescriptorSet 1
                               Decorate 60(bBtn3) Binding 0
                               Decorate 62(sout) Flat
+                              Decorate 62(sout) Location 0
                               MemberDecorate 63(S) 0 Invariant
                               MemberDecorate 63(S) 1 RelaxedPrecision
                               MemberDecorate 63(S) 1 Invariant
                               MemberDecorate 63(S) 2 RelaxedPrecision
                               MemberDecorate 63(S) 2 Invariant
+                              Decorate 65(soutinv) Location 10
                               Decorate 65(soutinv) Invariant
                2:             TypeVoid
                3:             TypeFunction 2

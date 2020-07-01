@@ -8,6 +8,8 @@ remap.basic.everything.frag
                               MemoryModel Logical GLSL450
                               EntryPoint Fragment 5663  "main" 4539 3773
                               ExecutionMode 5663 OriginUpperLeft
+                              Decorate 4539 Location 0
+                              Decorate 3773 Location 0
                8:             TypeVoid
             1282:             TypeFunction 8
               13:             TypeFloat 32

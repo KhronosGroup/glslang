@@ -42,6 +42,7 @@ spv.420.geom
                               Decorate 33(gl_InvocationID) BuiltIn InvocationId
                               Decorate 41(s2D) DescriptorSet 0
                               Decorate 41(s2D) Binding 0
+                              Decorate 46(coord) Location 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

@@ -302,23 +302,23 @@ using depth_any
                               MemberDecorate 20($Global) 7 Offset 80
                               Decorate 20($Global) Block
                               Decorate 22 DescriptorSet 0
-                              Decorate 22 Binding 0
+                              Decorate 22 Binding 9
                               Decorate 30(g_tTex1di4) DescriptorSet 0
-                              Decorate 30(g_tTex1di4) Binding 0
+                              Decorate 30(g_tTex1di4) Binding 1
                               Decorate 38(g_tTex1du4) DescriptorSet 0
-                              Decorate 38(g_tTex1du4) Binding 0
+                              Decorate 38(g_tTex1du4) Binding 2
                               Decorate 46(g_tTex2df4) DescriptorSet 0
-                              Decorate 46(g_tTex2df4) Binding 0
+                              Decorate 46(g_tTex2df4) Binding 3
                               Decorate 55(g_tTex2di4) DescriptorSet 0
-                              Decorate 55(g_tTex2di4) Binding 0
+                              Decorate 55(g_tTex2di4) Binding 4
                               Decorate 62(g_tTex2du4) DescriptorSet 0
-                              Decorate 62(g_tTex2du4) Binding 0
+                              Decorate 62(g_tTex2du4) Binding 5
                               Decorate 69(g_tTex3df4) DescriptorSet 0
-                              Decorate 69(g_tTex3df4) Binding 0
+                              Decorate 69(g_tTex3df4) Binding 6
                               Decorate 78(g_tTex3di4) DescriptorSet 0
-                              Decorate 78(g_tTex3di4) Binding 0
+                              Decorate 78(g_tTex3di4) Binding 7
                               Decorate 85(g_tTex3du4) DescriptorSet 0
-                              Decorate 85(g_tTex3du4) Binding 0
+                              Decorate 85(g_tTex3du4) Binding 8
                               Decorate 104(@entryPointOutput.Color) Location 0
                               Decorate 108(@entryPointOutput.Depth) BuiltIn FragDepth
                               Decorate 113(g_sSamp) DescriptorSet 0
