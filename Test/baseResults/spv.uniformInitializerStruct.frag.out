@@ -19,6 +19,8 @@ spv.uniformInitializerStruct.frag
                               Name 34  "parts"
                               Decorate 9(color) Location 0
                               Decorate 34(parts) Location 0
+                              Decorate 34(parts) DescriptorSet 0
+                              Decorate 34(parts) Binding 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

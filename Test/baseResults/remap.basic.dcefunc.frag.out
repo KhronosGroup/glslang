@@ -12,6 +12,8 @@ remap.basic.dcefunc.frag
                               Name 4  "main"
                               Name 17  "outf4"
                               Name 19  "inf"
+                              Decorate 17(outf4) Location 0
+                              Decorate 19(inf) Location 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

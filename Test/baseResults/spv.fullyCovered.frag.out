@@ -15,6 +15,7 @@ spv.fullyCovered.frag
                               Name 4  "main"
                               Name 9  "color"
                               Name 12  "gl_FragFullyCoveredNV"
+                              Decorate 9(color) Location 0
                               Decorate 12(gl_FragFullyCoveredNV) BuiltIn FullyCoveredEXT
                2:             TypeVoid
                3:             TypeFunction 2

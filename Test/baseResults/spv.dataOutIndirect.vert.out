@@ -15,6 +15,8 @@ WARNING: 0:3: attribute deprecated in version 130; may be removed in future rele
                               Name 25  "colorOut"
                               Name 28  "color"
                               Name 34  "gl_Position"
+                              Decorate 25(colorOut) Location 0
+                              Decorate 28(color) Location 0
                               Decorate 34(gl_Position) BuiltIn Position
                2:             TypeVoid
                3:             TypeFunction 2

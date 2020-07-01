@@ -33,12 +33,17 @@ spv.variableArrayIndex.frag
                               Name 63  "coord"
                               Name 69  "constructed"
                               Decorate 10(Count) Flat
+                              Decorate 10(Count) Location 39
                               Decorate 20(foo3) Flat
+                              Decorate 20(foo3) Location 23
                               Decorate 34(foo2) Flat
+                              Decorate 34(foo2) Location 3
                               Decorate 36(foo) Flat
+                              Decorate 36(foo) Location 1
                               Decorate 54(gl_FragColor) Location 0
                               Decorate 59(samp2D) DescriptorSet 0
                               Decorate 59(samp2D) Binding 0
+                              Decorate 63(coord) Location 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 1

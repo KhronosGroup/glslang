@@ -151,11 +151,11 @@ gl_FragCoord origin is upper left
                               MemberDecorate 20($Global) 7 Offset 80
                               Decorate 20($Global) Block
                               Decorate 22 DescriptorSet 0
-                              Decorate 22 Binding 0
+                              Decorate 22 Binding 3
                               Decorate 31(g_tBuffU) DescriptorSet 0
-                              Decorate 31(g_tBuffU) Binding 0
+                              Decorate 31(g_tBuffU) Binding 2
                               Decorate 39(g_tBuffI) DescriptorSet 0
-                              Decorate 39(g_tBuffI) Binding 0
+                              Decorate 39(g_tBuffI) Binding 1
                               Decorate 54(@entryPointOutput.Color) Location 0
                2:             TypeVoid
                3:             TypeFunction 2

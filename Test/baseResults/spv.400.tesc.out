@@ -59,6 +59,9 @@ spv.400.tesc
                               Decorate 72(gl_TessLevelInner) Patch
                               Decorate 72(gl_TessLevelInner) BuiltIn TessLevelInner
                               Decorate 78(patchOut) Patch
+                              Decorate 78(patchOut) Location 0
+                              Decorate 82(inb) Location 0
+                              Decorate 83(ind) Location 1
                               Decorate 86(ivla) Location 3
                               Decorate 87(ivlb) Location 4
                               Decorate 90(ovla) Location 3

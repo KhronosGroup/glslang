@@ -217,6 +217,8 @@ gl_FragCoord origin is upper left
                               Name 67  "a1"
                               Name 68  "a2"
                               Decorate 25(gl_FragCoord) BuiltIn FragCoord
+                              Decorate 37(cin) Location 0
+                              Decorate 57(cout) Location 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

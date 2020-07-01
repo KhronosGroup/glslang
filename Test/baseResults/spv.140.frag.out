@@ -37,11 +37,13 @@ Validation failed
                               MemberName 92(bi) 0  "v"
                               Name 95  "bname"
                               Decorate 14(gl_FrontFacing) BuiltIn FrontFacing
+                              Decorate 23(o) Location 0
                               Decorate 28(gl_ClipDistance) BuiltIn ClipDistance
+                              Decorate 38(k) Location 0
                               Decorate 50(sampR) DescriptorSet 0
                               Decorate 50(sampR) Binding 0
                               Decorate 58(sampB) DescriptorSet 0
-                              Decorate 58(sampB) Binding 0
+                              Decorate 58(sampB) Binding 1
                               Decorate 82(samp2Da) DescriptorSet 0
                               Decorate 82(samp2Da) Binding 0
                               Decorate 85 ArrayStride 64

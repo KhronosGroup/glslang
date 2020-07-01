@@ -30,8 +30,26 @@ spv.loopsArtificial.frag
                               Name 153  "d2"
                               Name 154  "d3"
                               Name 157  "Count"
+                              Decorate 11(BaseColor) Location 11
+                              Decorate 17(bigColor4) Location 6
+                              Decorate 27(d4) Location 15
+                              Decorate 80(d13) Location 16
                               Decorate 140(gl_FragColor) Location 0
+                              Decorate 142(bigColor) Location 0
+                              Decorate 143(bigColor1_1) Location 1
+                              Decorate 144(bigColor1_2) Location 2
+                              Decorate 145(bigColor1_3) Location 3
+                              Decorate 146(bigColor2) Location 4
+                              Decorate 147(bigColor3) Location 5
+                              Decorate 148(bigColor5) Location 7
+                              Decorate 149(bigColor6) Location 8
+                              Decorate 150(bigColor7) Location 9
+                              Decorate 151(bigColor8) Location 10
+                              Decorate 152(d) Location 12
+                              Decorate 153(d2) Location 13
+                              Decorate 154(d3) Location 14
                               Decorate 157(Count) Flat
+                              Decorate 157(Count) Location 17
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

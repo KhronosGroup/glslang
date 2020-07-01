@@ -255,7 +255,7 @@ using depth_any
                               Name 115  "g_tTex3di4"
                               Name 118  "g_tTex3du4"
                               Decorate 14(g_tTex1df4a) DescriptorSet 0
-                              Decorate 14(g_tTex1df4a) Binding 0
+                              Decorate 14(g_tTex1df4a) Binding 1
                               MemberDecorate 20($Global) 0 Offset 0
                               MemberDecorate 20($Global) 1 Offset 8
                               MemberDecorate 20($Global) 2 Offset 16
@@ -266,17 +266,17 @@ using depth_any
                               MemberDecorate 20($Global) 7 Offset 80
                               Decorate 20($Global) Block
                               Decorate 22 DescriptorSet 0
-                              Decorate 22 Binding 0
+                              Decorate 22 Binding 7
                               Decorate 30(g_tTex1di4a) DescriptorSet 0
-                              Decorate 30(g_tTex1di4a) Binding 0
+                              Decorate 30(g_tTex1di4a) Binding 2
                               Decorate 38(g_tTex1du4a) DescriptorSet 0
-                              Decorate 38(g_tTex1du4a) Binding 0
+                              Decorate 38(g_tTex1du4a) Binding 3
                               Decorate 46(g_tTex2df4a) DescriptorSet 0
-                              Decorate 46(g_tTex2df4a) Binding 0
+                              Decorate 46(g_tTex2df4a) Binding 4
                               Decorate 55(g_tTex2di4a) DescriptorSet 0
-                              Decorate 55(g_tTex2di4a) Binding 0
+                              Decorate 55(g_tTex2di4a) Binding 5
                               Decorate 62(g_tTex2du4a) DescriptorSet 0
-                              Decorate 62(g_tTex2du4a) Binding 0
+                              Decorate 62(g_tTex2du4a) Binding 6
                               Decorate 82(@entryPointOutput.Color) Location 0
                               Decorate 86(@entryPointOutput.Depth) BuiltIn FragDepth
                               Decorate 91(g_sSamp) DescriptorSet 0

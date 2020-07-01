@@ -38,8 +38,10 @@ spv.150.geom
                               MemberName 68(toFragment) 0  "color"
                               Name 70  "toF"
                               Decorate 8(fromVertex) Block
+                              Decorate 10 Location 1
                               Decorate 10 Stream 3
                               Decorate 13(fromVertex) Block
+                              Decorate 18(fromV) Location 0
                               MemberDecorate 27(gl_PerVertex) 0 BuiltIn Position
                               MemberDecorate 27(gl_PerVertex) 1 BuiltIn PointSize
                               MemberDecorate 27(gl_PerVertex) 2 BuiltIn ClipDistance
@@ -55,6 +57,7 @@ spv.150.geom
                               Decorate 51(gl_Layer) Stream 0
                               Decorate 51(gl_Layer) BuiltIn Layer
                               Decorate 68(toFragment) Block
+                              Decorate 70(toF) Location 0
                               Decorate 70(toF) Stream 3
                2:             TypeVoid
                3:             TypeFunction 2

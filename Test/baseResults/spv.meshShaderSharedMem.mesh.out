@@ -31,7 +31,7 @@ spv.meshShaderSharedMem.mesh
                               MemberDecorate 37(block0) 0 Offset 0
                               Decorate 37(block0) Block
                               Decorate 39 DescriptorSet 0
-                              Decorate 39 Binding 0
+                              Decorate 39 Binding 1
                               Decorate 55(uni_image) DescriptorSet 0
                               Decorate 55(uni_image) Binding 0
                               Decorate 55(uni_image) NonReadable

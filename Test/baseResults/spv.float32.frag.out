@@ -104,6 +104,7 @@ spv.float32.frag
                               Name 530  "f16_to_d"
                               Name 531  "f_to_f16"
                               Name 532  "d_to_f16"
+                              Decorate 471(if32v) Location 0
                               Decorate 518 ArrayStride 16
                               Decorate 519 ArrayStride 32
                               MemberDecorate 520(S) 0 Offset 0

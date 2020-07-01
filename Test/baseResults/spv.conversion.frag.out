@@ -50,10 +50,18 @@ spv.conversion.frag
                               Name 452  "i_f3"
                               Name 454  "i_f4"
                               Decorate 39(i_i) Flat
+                              Decorate 39(i_i) Location 0
+                              Decorate 53(i_f) Location 4
                               Decorate 157(i_i4) Flat
+                              Decorate 157(i_i4) Location 3
                               Decorate 322(gl_FragColor) Location 0
                               Decorate 446(i_i2) Flat
+                              Decorate 446(i_i2) Location 1
                               Decorate 448(i_i3) Flat
+                              Decorate 448(i_i3) Location 2
+                              Decorate 450(i_f2) Location 5
+                              Decorate 452(i_f3) Location 6
+                              Decorate 454(i_f4) Location 7
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeBool

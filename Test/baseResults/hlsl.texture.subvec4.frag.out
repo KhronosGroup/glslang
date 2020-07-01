@@ -388,21 +388,21 @@ gl_FragCoord origin is upper left
                               Decorate 17(g_tTex2dmsf1) DescriptorSet 0
                               Decorate 17(g_tTex2dmsf1) Binding 0
                               Decorate 33(g_tTex2dmsf2) DescriptorSet 0
-                              Decorate 33(g_tTex2dmsf2) Binding 0
+                              Decorate 33(g_tTex2dmsf2) Binding 1
                               Decorate 43(g_tTex2dmsf3) DescriptorSet 0
-                              Decorate 43(g_tTex2dmsf3) Binding 0
+                              Decorate 43(g_tTex2dmsf3) Binding 2
                               Decorate 53(g_tTex2dmsf4) DescriptorSet 0
-                              Decorate 53(g_tTex2dmsf4) Binding 0
+                              Decorate 53(g_tTex2dmsf4) Binding 3
                               Decorate 88(g_tTex2df1) DescriptorSet 0
-                              Decorate 88(g_tTex2df1) Binding 0
+                              Decorate 88(g_tTex2df1) Binding 4
                               Decorate 92(g_sSamp) DescriptorSet 0
-                              Decorate 92(g_sSamp) Binding 0
+                              Decorate 92(g_sSamp) Binding 8
                               Decorate 101(g_tTex2df2) DescriptorSet 0
-                              Decorate 101(g_tTex2df2) Binding 0
+                              Decorate 101(g_tTex2df2) Binding 5
                               Decorate 109(g_tTex2df3) DescriptorSet 0
-                              Decorate 109(g_tTex2df3) Binding 0
+                              Decorate 109(g_tTex2df3) Binding 6
                               Decorate 118(g_tTex2df4) DescriptorSet 0
-                              Decorate 118(g_tTex2df4) Binding 0
+                              Decorate 118(g_tTex2df4) Binding 7
                               Decorate 128(@entryPointOutput) Location 0
                2:             TypeVoid
                3:             TypeFunction 2

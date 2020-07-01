@@ -116,7 +116,7 @@ Shader version: 500
                               Decorate 24(tex[0]) DescriptorSet 0
                               Decorate 24(tex[0]) Binding 0
                               Decorate 28(tex[1]) DescriptorSet 0
-                              Decorate 28(tex[1]) Binding 0
+                              Decorate 28(tex[1]) Binding 1
                               Decorate 36(pos) Location 0
                               Decorate 39(@entryPointOutput) BuiltIn Position
                2:             TypeVoid

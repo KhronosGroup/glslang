@@ -116,7 +116,7 @@ gl_FragCoord origin is upper left
                               Decorate 16(test_texture) DescriptorSet 0
                               Decorate 16(test_texture) Binding 0
                               Decorate 20(test_texture_ss) DescriptorSet 0
-                              Decorate 20(test_texture_ss) Binding 0
+                              Decorate 20(test_texture_ss) Binding 1
                               Decorate 33(input) Location 0
                               Decorate 36(@entryPointOutput) Location 0
                2:             TypeVoid

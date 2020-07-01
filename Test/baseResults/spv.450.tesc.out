@@ -72,6 +72,7 @@ spv.450.tesc
                               MemberDecorate 42(bn) 2 Patch
                               MemberDecorate 42(bn) 2 Location 25
                               Decorate 42(bn) Block
+                              Decorate 44 Location 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

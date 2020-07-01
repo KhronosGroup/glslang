@@ -9,6 +9,9 @@ remap.similar_1b.everything.frag
                               EntryPoint Fragment 5663  "main" 4201 4539 3773
                               ExecutionMode 5663 OriginUpperLeft
                               Decorate 4201 Flat
+                              Decorate 4201 Location 0
+                              Decorate 4539 Location 0
+                              Decorate 3773 Location 1
                8:             TypeVoid
             1282:             TypeFunction 8
               12:             TypeInt 32 1

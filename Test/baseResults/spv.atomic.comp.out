@@ -30,8 +30,10 @@ spv.atomic.comp
                               Name 72  "arrY"
                               Name 73  "arrZ"
                               Decorate 20(counter) Offset 0
+                              Decorate 20(counter) DescriptorSet 0
                               Decorate 20(counter) Binding 0
                               Decorate 27(countArr) Offset 4
+                              Decorate 27(countArr) DescriptorSet 0
                               Decorate 27(countArr) Binding 0
                               MemberDecorate 62(dataSSB) 0 Restrict
                               MemberDecorate 62(dataSSB) 0 Offset 0

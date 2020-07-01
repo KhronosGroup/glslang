@@ -211,6 +211,7 @@ Shader version: 430
                               Name 70  "BufferBlock"
                               MemberName 70(BufferBlock) 0  "p"
                               Name 72  "uBuf"
+                              Decorate 14(oColor) Location 4
                               MemberDecorate 16(ColorBlock) 0 Offset 0
                               MemberDecorate 16(ColorBlock) 1 Offset 16
                               MemberDecorate 16(ColorBlock) 2 Offset 32
@@ -223,6 +224,7 @@ Shader version: 430
                               Decorate 28(uColorBuf) DescriptorSet 0
                               Decorate 28(uColorBuf) Binding 0
                               Decorate 32(Vertex) Block
+                              Decorate 34(oV) Location 2
                               MemberDecorate 40(gl_PerVertex) 0 BuiltIn Position
                               MemberDecorate 40(gl_PerVertex) 1 BuiltIn PointSize
                               MemberDecorate 40(gl_PerVertex) 2 BuiltIn ClipDistance
@@ -236,6 +238,7 @@ Shader version: 430
                               Decorate 44(MatrixBlock) Block
                               Decorate 46(uM) DescriptorSet 0
                               Decorate 46(uM) Binding 0
+                              Decorate 65(P) Location 0
                               MemberDecorate 70(BufferBlock) 0 ColMajor
                               MemberDecorate 70(BufferBlock) 0 Offset 0
                               MemberDecorate 70(BufferBlock) 0 MatrixStride 16

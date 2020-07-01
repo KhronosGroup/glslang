@@ -4010,25 +4010,25 @@ gl_FragCoord origin is upper left
                               MemberDecorate 21($Global) 9 Offset 64
                               Decorate 21($Global) Block
                               Decorate 23 DescriptorSet 0
-                              Decorate 23 Binding 0
+                              Decorate 23 Binding 10
                               Decorate 121(g_tTex1du1) DescriptorSet 0
-                              Decorate 121(g_tTex1du1) Binding 0
+                              Decorate 121(g_tTex1du1) Binding 1
                               Decorate 217(g_tTex2di1) DescriptorSet 0
-                              Decorate 217(g_tTex2di1) Binding 0
+                              Decorate 217(g_tTex2di1) Binding 2
                               Decorate 308(g_tTex2du1) DescriptorSet 0
-                              Decorate 308(g_tTex2du1) Binding 0
+                              Decorate 308(g_tTex2du1) Binding 3
                               Decorate 399(g_tTex3di1) DescriptorSet 0
-                              Decorate 399(g_tTex3di1) Binding 0
+                              Decorate 399(g_tTex3di1) Binding 4
                               Decorate 490(g_tTex3du1) DescriptorSet 0
-                              Decorate 490(g_tTex3du1) Binding 0
+                              Decorate 490(g_tTex3du1) Binding 5
                               Decorate 581(g_tTex1di1a) DescriptorSet 0
-                              Decorate 581(g_tTex1di1a) Binding 0
+                              Decorate 581(g_tTex1di1a) Binding 6
                               Decorate 670(g_tTex1du1a) DescriptorSet 0
-                              Decorate 670(g_tTex1du1a) Binding 0
+                              Decorate 670(g_tTex1du1a) Binding 7
                               Decorate 931(g_tBuffI) DescriptorSet 0
-                              Decorate 931(g_tBuffI) Binding 0
+                              Decorate 931(g_tBuffI) Binding 8
                               Decorate 1020(g_tBuffU) DescriptorSet 0
-                              Decorate 1020(g_tBuffU) Binding 0
+                              Decorate 1020(g_tBuffU) Binding 9
                               Decorate 1117(@entryPointOutput.Color) Location 0
                               Decorate 1122(g_sSamp) DescriptorSet 0
                               Decorate 1122(g_sSamp) Binding 0

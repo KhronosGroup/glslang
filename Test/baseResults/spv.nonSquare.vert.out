@@ -16,7 +16,10 @@ spv.nonSquare.vert
                               Name 22  "m32"
                               Name 28  "gl_Position"
                               Name 55  "v4"
+                              Decorate 12(v3) Location 0
+                              Decorate 22(m32) Location 0
                               Decorate 28(gl_Position) BuiltIn Position
+                              Decorate 55(v4) Location 1
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

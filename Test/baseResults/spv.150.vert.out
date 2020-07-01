@@ -33,8 +33,12 @@ spv.150.vert
                               MemberDecorate 11(gl_PerVertex) 1 BuiltIn PointSize
                               MemberDecorate 11(gl_PerVertex) 2 BuiltIn ClipDistance
                               Decorate 11(gl_PerVertex) Block
+                              Decorate 17(iv4) Location 0
+                              Decorate 23(ps) Location 1
+                              Decorate 38(s2out) Location 0
                               Decorate 47(s2D) DescriptorSet 0
                               Decorate 47(s2D) Binding 0
+                              Decorate 62(ui) Location 2
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

@@ -68,13 +68,17 @@ Validation failed
                               Decorate 108(i2DMSArray) DescriptorSet 0
                               Decorate 108(i2DMSArray) Binding 10
                               Decorate 132(ic1D) Flat
+                              Decorate 132(ic1D) Location 0
                               Decorate 142(ic2D) Flat
+                              Decorate 142(ic2D) Location 1
                               Decorate 152(ic3D) Flat
+                              Decorate 152(ic3D) Location 2
                               Decorate 232(ii1D) DescriptorSet 0
                               Decorate 232(ii1D) Binding 11
                               Decorate 245(ui2D) DescriptorSet 0
                               Decorate 245(ui2D) Binding 12
                               Decorate 248(value) Flat
+                              Decorate 248(value) Location 4
                               Decorate 357(ii2DMS) DescriptorSet 0
                               Decorate 357(ii2DMS) Binding 13
                               Decorate 367(ui2DMSArray) DescriptorSet 0
@@ -82,7 +86,9 @@ Validation failed
                               Decorate 376(wo2D) DescriptorSet 0
                               Decorate 376(wo2D) Binding 1
                               Decorate 376(wo2D) NonReadable
+                              Decorate 381(fragData) Location 0
                               Decorate 394(ic4D) Flat
+                              Decorate 394(ic4D) Location 3
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 1

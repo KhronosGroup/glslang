@@ -37,6 +37,8 @@ spv.RayGenShaderArray.rgen
                               MemberDecorate 34(block) 1 Offset 16
                               MemberDecorate 34(block) 2 Offset 28
                               Decorate 34(block) BufferBlock
+                              Decorate 36 DescriptorSet 0
+                              Decorate 36 Binding 2
                               Decorate 60(accNV1) DescriptorSet 0
                               Decorate 60(accNV1) Binding 1
                               Decorate 75 DecorationNonUniformEXT

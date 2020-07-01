@@ -16,6 +16,7 @@ spv.460.frag
                               Name 8  "aui"
                               Name 10  "ui"
                               Decorate 8(aui) Offset 0
+                              Decorate 8(aui) DescriptorSet 0
                               Decorate 8(aui) Binding 0
                2:             TypeVoid
                3:             TypeFunction 2

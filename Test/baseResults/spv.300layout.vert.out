@@ -36,6 +36,7 @@ spv.300layout.vert
                               MemberName 126(S) 0  "c"
                               MemberName 126(S) 1  "f"
                               Name 128  "s"
+                              Decorate 9(pos) Location 0
                               Decorate 11(p) Location 3
                               MemberDecorate 17(Transform) 0 RowMajor
                               MemberDecorate 17(Transform) 0 Offset 0
@@ -63,17 +64,21 @@ spv.300layout.vert
                               MemberDecorate 45(T3) 3 Offset 2048
                               Decorate 45(T3) Block
                               Decorate 47 DescriptorSet 0
-                              Decorate 47 Binding 0
+                              Decorate 47 Binding 2
                               MemberDecorate 78(T2) 0 Offset 0
                               MemberDecorate 78(T2) 1 RowMajor
                               MemberDecorate 78(T2) 1 Offset 16
                               MemberDecorate 78(T2) 1 MatrixStride 16
                               Decorate 78(T2) Block
                               Decorate 80 DescriptorSet 0
-                              Decorate 80 Binding 0
+                              Decorate 80 Binding 1
+                              Decorate 98(color) Location 1
                               Decorate 100(c) Location 7
                               Decorate 108(iout) Flat
+                              Decorate 108(iout) Location 2
+                              Decorate 114(uiuin) Location 0
                               Decorate 120(aiv2) Location 9
+                              Decorate 128(s) Location 3
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

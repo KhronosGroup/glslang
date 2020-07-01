@@ -17,6 +17,12 @@ WARNING: 0:3: varying deprecated in version 130; may be removed in future releas
                               Name 19  "f"
                               Name 23  "am3"
                               Name 34  "arraym"
+                              Decorate 9(glPos) Location 5
+                              Decorate 12(mvp) Location 0
+                              Decorate 15(v) Location 0
+                              Decorate 19(f) Location 4
+                              Decorate 23(am3) Location 1
+                              Decorate 34(arraym) Location 4
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

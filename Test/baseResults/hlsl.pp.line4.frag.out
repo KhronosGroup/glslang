@@ -79,7 +79,7 @@ PS_OUTPUT MainPs ( PS_INPUT i )
                               Decorate 48(g_tColor) DescriptorSet 0
                               Decorate 48(g_tColor) Binding 0
                               Decorate 55(g_sAniso) DescriptorSet 0
-                              Decorate 55(g_sAniso) Binding 0
+                              Decorate 55(g_sAniso) Binding 1
                               Decorate 70(i.vTextureCoords) Location 0
                               Decorate 74(@entryPointOutput.vColor) Location 0
                3:             TypeVoid

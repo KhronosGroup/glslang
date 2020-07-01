@@ -23,6 +23,9 @@ remap.similar_1a.none.frag
                               Name 78  "param"
                               Name 82  "param"
                               Decorate 53(ini4) Flat
+                              Decorate 53(ini4) Location 1
+                              Decorate 73(outf4) Location 0
+                              Decorate 75(inf) Location 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 1
