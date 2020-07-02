@@ -210,8 +210,8 @@ endif()
 # GLSLANG_IS_SHARED_LIBRARY define, and GLSLANG_EXPORTING to 1 when specifically
 # building <target>.
 function(glslang_only_export_explicit_symbols target)
-    target_compile_definitions(${target} PUBLIC "GLSLANG_IS_SHARED_LIBRARY=1")
     if(BUILD_SHARED_LIBS)
+        target_compile_definitions(${target} PUBLIC "GLSLANG_IS_SHARED_LIBRARY=1")
         if(WIN32)
             target_compile_definitions(${target} PRIVATE "GLSLANG_EXPORTING=1")
         else()
