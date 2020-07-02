@@ -205,6 +205,21 @@ if(BUILD_EXTERNAL AND IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/External)
 	add_subdirectory(External)
 endif()
 
+# glslang_only_export_explicit_symbols() makes the symbol visibility hidden by
+# default for <target> when building shared libraries, and sets the
+# GLSLANG_IS_SHARED_LIBRARY define, and GLSLANG_EXPORTING to 1 when specifically
+# building <target>.
+function(glslang_only_export_explicit_symbols target)
+    target_compile_definitions(${target} PUBLIC "GLSLANG_IS_SHARED_LIBRARY=1")
+    if(BUILD_SHARED_LIBS)
+        if(WIN32)
+            target_compile_definitions(${target} PRIVATE "GLSLANG_EXPORTING=1")
+        else()
+            target_compile_options(${target} PRIVATE "-fvisibility=hidden")
+        endif()
+    endif()
+endfunction()
+
 if(NOT TARGET SPIRV-Tools-opt)
     set(ENABLE_OPT OFF)
 endif()
