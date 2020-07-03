@@ -1,4 +1,6 @@
-# Copyright (C) 2020 The Khronos Group Inc.
+#!/bin/bash
+
+# Copyright (C) 2020 Google, Inc.
 #
 # All rights reserved.
 #
@@ -31,18 +33,15 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-set(SOURCES InitializeDll.cpp InitializeDll.h)
+set -e # Fail on any error.
 
-add_library(OGLCompiler STATIC ${SOURCES})
-set_property(TARGET OGLCompiler PROPERTY FOLDER glslang)
-set_property(TARGET OGLCompiler PROPERTY POSITION_INDEPENDENT_CODE ON)
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd )"
+ROOT_DIR="$( cd "${SCRIPT_DIR}/../.." >/dev/null 2>&1 && pwd )"
 
-if(WIN32)
-    source_group("Source" FILES ${SOURCES})
-endif(WIN32)
-
-if(ENABLE_GLSLANG_INSTALL)
-    install(TARGETS OGLCompiler EXPORT OGLCompilerTargets
-            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
-	install(EXPORT OGLCompilerTargets DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake)
-endif(ENABLE_GLSLANG_INSTALL)
+docker run --rm -i \
+  --volume "${ROOT_DIR}:${ROOT_DIR}:ro" \
+  --workdir "${ROOT_DIR}" \
+  --env ROOT_DIR="${ROOT_DIR}" \
+  --env SCRIPT_DIR="${SCRIPT_DIR}" \
+  --entrypoint "${SCRIPT_DIR}/build-docker.sh" \
+  "gcr.io/shaderc-build/radial-build:latest"
