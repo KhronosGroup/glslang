@@ -109,7 +109,6 @@ template("glslang_sources_common") {
       "SPIRV/SpvBuilder.cpp",
       "SPIRV/SpvBuilder.h",
       "SPIRV/SpvPostProcess.cpp",
-      "SPIRV/SpvTools.cpp",
       "SPIRV/SpvTools.h",
       "SPIRV/bitutils.h",
       "SPIRV/disassemble.cpp",
@@ -208,7 +207,11 @@ template("glslang_sources_common") {
 
     defines = []
     if (invoker.enable_opt) {
+      sources += [ "SPIRV/SpvTools.cpp" ]
       defines += [ "ENABLE_OPT=1" ]
+    }
+    if (invoker.is_angle) {
+      defines += [ "GLSLANG_ANGLE" ]
     }
 
     if (is_win) {
@@ -257,11 +260,13 @@ template("glslang_sources_common") {
 glslang_sources_common("glslang_lib_sources") {
   enable_opt = !glslang_angle
   enable_hlsl = !glslang_angle
+  is_angle = glslang_angle
 }
 
 glslang_sources_common("glslang_sources") {
   enable_opt = true
   enable_hlsl = true
+  is_angle = false
 }
 
 source_set("glslang_default_resource_limits_sources") {

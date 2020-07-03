@@ -36,7 +36,7 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 
-#ifndef GLSLANG_WEB
+#if !defined(GLSLANG_WEB) && !defined(GLSLANG_ANGLE)
 
 #include "localintermediate.h"
 #include "../Include/InfoSink.h"
@@ -1562,4 +1562,4 @@ void TIntermediate::output(TInfoSink& infoSink, bool tree)
 
 } // end namespace glslang
 
-#endif // not GLSLANG_WEB
+#endif // !GLSLANG_WEB && !GLSLANG_ANGLE
