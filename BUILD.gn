@@ -130,7 +130,7 @@ template("glslang_sources_common") {
       "glslang/MachineIndependent/attribute.cpp",
       "glslang/MachineIndependent/attribute.h",
       "glslang/MachineIndependent/gl_types.h",
-      "glslang/MachineIndependent/glslang_tab.cpp",
+      "glslang/MachineIndependent/glslang_angle_tab.cpp.h",
       "glslang/MachineIndependent/glslang_tab.cpp.h",
       "glslang/MachineIndependent/intermOut.cpp",
       "glslang/MachineIndependent/iomapper.cpp",
@@ -181,6 +181,18 @@ template("glslang_sources_common") {
     }
 
     defines = []
+    if (invoker.is_angle) {
+      sources += [
+        "glslang/MachineIndependent/glslang_angle_tab.cpp",
+      ]
+      defines += [ "GLSLANG_ANGLE" ]
+    }
+    else {
+      sources += [
+        "glslang/MachineIndependent/glslang_tab.cpp",
+      ]
+    }
+
     if (invoker.enable_opt) {
       sources += [ "SPIRV/SpvTools.cpp" ]
       defines += [ "ENABLE_OPT=1" ]
