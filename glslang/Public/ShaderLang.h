@@ -58,12 +58,12 @@
         #endif
     #elif __GNUC__ >= 4
         #define GLSLANG_EXPORT __attribute__((visibility("default")))
-    #else
-        #define GLSLANG_EXPORT
     #endif
-#else // GLSLANG_IS_SHARED_LIBRARY
-    #define GLSLANG_EXPORT
 #endif // GLSLANG_IS_SHARED_LIBRARY
+
+#ifndef GLSLANG_EXPORT
+#define GLSLANG_EXPORT
+#endif
 
 //
 // This is the platform independent interface between an OGL driver
