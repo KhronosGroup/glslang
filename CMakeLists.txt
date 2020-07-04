@@ -107,6 +107,14 @@ if(USE_CCACHE)
     endif(CCACHE_FOUND)
 endif()
 
+# If projects are statically importing glslang targets into a shared library
+# then they'll likely need to build with -fPIC. This can be enabled by setting
+# GLSLANG_BUILD_PIC to 1 before calling add_subdirectory() to import glslang.
+# Note: -fPIC is automatically used when BUILD_SHARED_LIBS is enabled.
+if(NOT DEFINED GLSLANG_BUILD_PIC)
+    option(GLSLANG_BUILD_PIC "Compile glslang with -fPIC" OFF)
+endif()
+
 # Precompiled header macro. Parameters are source file list and filename for pch cpp file.
 macro(glslang_pch SRCS PCHCPP)
   if(MSVC AND CMAKE_GENERATOR MATCHES "^Visual Studio" AND NOT ${CMAKE_CXX_COMPILER_ID} MATCHES "Clang" AND ENABLE_PCH)
@@ -152,7 +160,7 @@ if(${CMAKE_CXX_COMPILER_ID} MATCHES "GNU")
     add_compile_options(-Wall -Wmaybe-uninitialized -Wuninitialized -Wunused -Wunused-local-typedefs
                         -Wunused-parameter -Wunused-value  -Wunused-variable -Wunused-but-set-parameter -Wunused-but-set-variable -fno-exceptions)
     add_compile_options(-Wno-reorder)  # disable this from -Wall, since it happens all over.
-    if(BUILD_SHARED_LIBS)
+    if(BUILD_SHARED_LIBS OR GLSLANG_BUILD_PIC)
         add_compile_options(-fPIC)
     endif()
     if(NOT ENABLE_RTTI)
@@ -175,7 +183,7 @@ elseif(${CMAKE_CXX_COMPILER_ID} MATCHES "Clang" AND NOT MSVC)
     add_compile_options(-Wall -Wuninitialized -Wunused -Wunused-local-typedefs
                         -Wunused-parameter -Wunused-value  -Wunused-variable)
     add_compile_options(-Wno-reorder)  # disable this from -Wall, since it happens all over.
-    if(BUILD_SHARED_LIBS)
+    if(BUILD_SHARED_LIBS OR GLSLANG_BUILD_PIC)
         add_compile_options(-fPIC)
     endif()
     if(NOT ENABLE_RTTI)
