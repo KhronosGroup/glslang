@@ -165,8 +165,12 @@ if(${CMAKE_CXX_COMPILER_ID} MATCHES "GNU")
         add_compile_options(-Werror=deprecated-copy)
     endif()
 
-    # Error if there's symbols that are not found at link time.
-    add_link_options("-Wl,--no-undefined")
+    if(NOT CMAKE_VERSION VERSION_LESS "3.13")
+        # Error if there's symbols that are not found at link time.
+        # add_link_options() was added in CMake 3.13 - if using an earlier
+        # version don't set this - it should be caught by presubmits anyway.
+        add_link_options("-Wl,--no-undefined")
+    endif()
 elseif(${CMAKE_CXX_COMPILER_ID} MATCHES "Clang" AND NOT MSVC)
     add_compile_options(-Wall -Wuninitialized -Wunused -Wunused-local-typedefs
                         -Wunused-parameter -Wunused-value  -Wunused-variable)
@@ -181,8 +185,12 @@ elseif(${CMAKE_CXX_COMPILER_ID} MATCHES "Clang" AND NOT MSVC)
         add_compile_options(-fno-exceptions)
     endif()
 
-    # Error if there's symbols that are not found at link time.
-    add_link_options("-Wl,-undefined,error")
+    if(NOT CMAKE_VERSION VERSION_LESS "3.13")
+        # Error if there's symbols that are not found at link time.
+        # add_link_options() was added in CMake 3.13 - if using an earlier
+        # version don't set this - it should be caught by presubmits anyway.
+        add_link_options("-Wl,-undefined,error")
+    endif()
 elseif(MSVC)
     if(NOT ENABLE_RTTI)
         string(FIND "${CMAKE_CXX_FLAGS}" "/GR" MSVC_HAS_GR)
