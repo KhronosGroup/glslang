@@ -226,6 +226,7 @@ glslang_sources_common("glslang_standalone_sources") {
 
 source_set("glslang_default_resource_limits_sources") {
   sources = [
+    "glslang/Include/ResourceLimits.h",
     "StandAlone/ResourceLimits.cpp",
     "StandAlone/ResourceLimits.h",
   ]
