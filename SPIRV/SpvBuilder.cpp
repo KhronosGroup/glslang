@@ -1414,6 +1414,9 @@ Function* Builder::makeFunctionEntry(Decoration precision, Id returnType, const 
     Id firstParamId = paramTypes.size() == 0 ? 0 : getUniqueIds((int)paramTypes.size());
     Function* function = new Function(getUniqueId(), returnType, typeId, firstParamId, module);
 
+    if (emitOpLines)
+        function->setSourceLine(sourceFileStringId, currentLine);
+
     // Set up the precisions
     setPrecision(function->getId(), precision);
     function->setReturnPrecision(precision);
@@ -1431,8 +1434,10 @@ Function* Builder::makeFunctionEntry(Decoration precision, Id returnType, const 
         setBuildPoint(*entry);
     }
 
-    if (name)
+    if (name) {
         addName(function->getId(), name);
+        functionNames[name] = functions.size();
+    }
 
     functions.push_back(std::unique_ptr<Function>(function));
 
@@ -1451,6 +1456,21 @@ void Builder::makeReturn(bool implicit, Id retVal)
 
     if (! implicit)
         createAndSetNoPredecessorBlock("post-return");
+}
+
+// Comments in header
+void Builder::updateFunctionEntrySourceLine(const char* name, const char* filename, int line)
+{
+    if (emitOpLines) {
+        spv::Id strId = filename ? getStringId(filename) : sourceFileStringId;
+        
+        const char* nonMangledEnd = strchr(name, '(');
+        std::string nonMangled(name, nonMangledEnd ? nonMangledEnd - name : strlen(name));
+
+        auto it = functionNames.find(nonMangled);
+        if (it != functionNames.end())
+            functions[it->second]->setSourceLine(strId, line);
+    }
 }
 
 // Comments in header

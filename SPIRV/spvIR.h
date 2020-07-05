@@ -375,8 +375,23 @@ public:
             DecorationRelaxedPrecision : NoPrecision;
     }
 
+    void setSourceLine(Id inSource, int inLine)
+    {
+        sourceFileStringId = inSource;
+        line = inLine;
+    }
+
     void dump(std::vector<unsigned int>& out) const
     {
+        // OpLine
+        if (sourceFileStringId != NoResult) {
+            Instruction line(OpLine);
+            line.addIdOperand(sourceFileStringId);
+            line.addImmediateOperand(this->line);
+            line.addImmediateOperand(0);
+            line.dump(out);
+        }
+
         // OpFunction
         functionInstruction.dump(out);
 
@@ -401,6 +416,8 @@ protected:
     bool implicitThis;  // true if this is a member function expecting to be passed a 'this' as the first argument
     bool reducedPrecisionReturn;
     std::set<int> reducedPrecisionParams;  // list of parameter indexes that need a relaxed precision arg
+    Id sourceFileStringId;
+    int line;
 };
 
 //
@@ -462,7 +479,7 @@ protected:
 // - all the OpFunctionParameter instructions
 __inline Function::Function(Id id, Id resultType, Id functionType, Id firstParamId, Module& parent)
     : parent(parent), functionInstruction(id, resultType, OpFunction), implicitThis(false),
-      reducedPrecisionReturn(false)
+      reducedPrecisionReturn(false), sourceFileStringId(NoResult), line(0)
 {
     // OpFunction
     functionInstruction.addImmediateOperand(FunctionControlMaskNone);

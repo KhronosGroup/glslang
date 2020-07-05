@@ -351,6 +351,10 @@ public:
     Function* makeFunctionEntry(Decoration precision, Id returnType, const char* name,
         const std::vector<Id>& paramTypes, const std::vector<std::vector<Decoration>>& precisions, Block **entry = 0);
 
+    // Update an existing function made with makeFunctionEntry() to given
+    // source-line association. Improves debug information quality.
+    void updateFunctionEntrySourceLine(const char* name, const char* filename, int line);
+
     // Create a return. An 'implicit' return is one not appearing in the source
     // code.  In the case of an implicit return, no post-return block is inserted.
     void makeReturn(bool implicit, Id retVal = 0);
@@ -853,6 +857,9 @@ public:
 
     // map from include file name ids to their contents
     std::map<spv::Id, const std::string*> includeFiles;
+
+    // map from entry point names to their function indices
+    std::unordered_map<std::string, size_t> functionNames;
 
     // The stream for outputting warnings and errors.
     SpvBuildLogger* logger;

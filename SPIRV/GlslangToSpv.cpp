@@ -4623,8 +4623,14 @@ void TGlslangToSpvTraverser::makeFunctions(const glslang::TIntermSequence& glslF
 
     for (int f = 0; f < (int)glslFunctions.size(); ++f) {
         glslang::TIntermAggregate* glslFunction = glslFunctions[f]->getAsAggregate();
-        if (! glslFunction || glslFunction->getOp() != glslang::EOpFunction || isShaderEntryPoint(glslFunction))
+        if (! glslFunction || glslFunction->getOp() != glslang::EOpFunction)
             continue;
+        if (isShaderEntryPoint(glslFunction)) {
+            // Update the line number association for the entry point.
+            const glslang::TSourceLoc& loc = glslFunction->getLoc();
+            builder.updateFunctionEntrySourceLine(glslFunction->getName().c_str(), loc.getFilename(), loc.line);
+            continue;
+        }
 
         // We're on a user function.  Set up the basic interface for the function now,
         // so that it's available to call.  Translating the body will happen later.
@@ -4664,6 +4670,9 @@ void TGlslangToSpvTraverser::makeFunctions(const glslang::TIntermSequence& glslF
             getParamDecorations(paramDecorations[p], paramType, glslangIntermediate->usingVulkanMemoryModel());
             paramTypes.push_back(typeId);
         }
+
+        const glslang::TSourceLoc& loc = glslFunction->getLoc();
+        builder.setLine(loc.line, loc.getFilename());
 
         spv::Block* functionBlock;
         spv::Function *function = builder.makeFunctionEntry(TranslatePrecisionDecoration(glslFunction->getType()),
