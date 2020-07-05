@@ -50,15 +50,19 @@ spirv_tools_dir = glslang_spirv_tools_dir
 
 config("glslang_public") {
   include_dirs = [ "." ]
+}
 
-  if (!glslang_angle) {
-    defines = [ "ENABLE_HLSL=1" ]
-  }
+config("glslang_hlsl") {
+  defines = [ "ENABLE_HLSL=1" ]
 }
 
 template("glslang_sources_common") {
   source_set(target_name) {
     public_configs = [ ":glslang_public" ]
+
+    if (invoker.enable_hlsl) {
+      public_configs += [ ":glslang_hlsl" ]
+    }
 
     sources = [
       "OGLCompilersDLL/InitializeDll.cpp",
@@ -152,7 +156,16 @@ template("glslang_sources_common") {
       "glslang/Public/ShaderLang.h",
     ]
 
-    if (!glslang_angle) {
+    # Workaround gn issue complaining about these not being allowed even though GLSLANG_HLSL is not
+    # defined.
+    sources += [
+      "glslang/HLSL/hlslParseHelper.h",
+      "glslang/HLSL/hlslParseables.h",
+      "glslang/HLSL/hlslScanContext.h",
+      "glslang/HLSL/hlslTokens.h",
+    ]
+
+    if (invoker.enable_hlsl) {
       sources += [
         "glslang/HLSL/hlslAttributes.cpp",
         "glslang/HLSL/hlslAttributes.h",
@@ -160,13 +173,9 @@ template("glslang_sources_common") {
         "glslang/HLSL/hlslGrammar.h",
         "glslang/HLSL/hlslOpMap.cpp",
         "glslang/HLSL/hlslOpMap.h",
-        "glslang/HLSL/hlslParseables.cpp",
-        "glslang/HLSL/hlslParseables.h",
         "glslang/HLSL/hlslParseHelper.cpp",
-        "glslang/HLSL/hlslParseHelper.h",
+        "glslang/HLSL/hlslParseables.cpp",
         "glslang/HLSL/hlslScanContext.cpp",
-        "glslang/HLSL/hlslScanContext.h",
-        "glslang/HLSL/hlslTokens.h",
         "glslang/HLSL/hlslTokenStream.cpp",
         "glslang/HLSL/hlslTokenStream.h",
       ]
@@ -207,7 +216,7 @@ template("glslang_sources_common") {
     if (invoker.enable_opt) {
       deps = [
         "${spirv_tools_dir}:spvtools_opt",
-        "${spirv_tools_dir}:spvtools_val"
+        "${spirv_tools_dir}:spvtools_val",
       ]
     }
 
@@ -216,19 +225,21 @@ template("glslang_sources_common") {
   }
 }
 
-glslang_sources_common("glslang_sources") {
+glslang_sources_common("glslang_lib_sources") {
   enable_opt = !glslang_angle
+  enable_hlsl = !glslang_angle
 }
 
-glslang_sources_common("glslang_standalone_sources") {
+glslang_sources_common("glslang_sources") {
   enable_opt = true
+  enable_hlsl = true
 }
 
 source_set("glslang_default_resource_limits_sources") {
   sources = [
-    "glslang/Include/ResourceLimits.h",
     "StandAlone/ResourceLimits.cpp",
     "StandAlone/ResourceLimits.h",
+    "glslang/Include/ResourceLimits.h",
   ]
   public_configs = [ ":glslang_public" ]
 
@@ -247,21 +258,18 @@ executable("glslang_validator") {
   defines = [ "ENABLE_OPT=1" ]
   deps = [
     ":glslang_default_resource_limits_sources",
-    ":glslang_standalone_sources",
+    ":glslang_sources",
   ]
+  public_configs = [ ":glslang_hlsl" ]
 
   configs -= _configs_to_remove
   configs += _configs_to_add
 }
 
 executable("spirv-remap") {
-  sources = [
-    "StandAlone/spirv-remap.cpp",
-  ]
+  sources = [ "StandAlone/spirv-remap.cpp" ]
   defines = [ "ENABLE_OPT=1" ]
-  deps = [
-    ":glslang_standalone_sources",
-  ]
+  deps = [ ":glslang_sources" ]
 
   configs -= _configs_to_remove
   configs += _configs_to_add
