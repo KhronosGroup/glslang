@@ -107,6 +107,7 @@ bool SpvToolsDisassembler = false;
 bool SpvToolsValidate = false;
 bool NaNClamp = false;
 bool stripDebugInfo = false;
+bool beQuiet = false;
 
 //
 // Return codes from main/exit().
@@ -661,6 +662,8 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                         variableName = argv[1];
                         bumpArg();
                         break;
+                    } else if (lowerword == "quiet") {
+                        beQuiet = true;
                     } else if (lowerword == "version") {
                         Options |= EOptionDumpVersions;
                     } else if (lowerword == "help") {
@@ -1108,7 +1111,8 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
 
         if (! (Options & EOptionSuppressInfolog) &&
             ! (Options & EOptionMemoryLeakMode)) {
-            PutsIfNonEmpty(compUnit.fileName[0].c_str());
+            if (!beQuiet)
+                PutsIfNonEmpty(compUnit.fileName[0].c_str());
             PutsIfNonEmpty(shader->getInfoLog());
             PutsIfNonEmpty(shader->getInfoDebugLog());
         }
@@ -1615,6 +1619,8 @@ void usage()
            "  --keep-uncalled | --ku            don't eliminate uncalled functions\n"
            "  --nan-clamp                       favor non-NaN operand in min, max, and clamp\n"
            "  --no-storage-format | --nsf       use Unknown image format\n"
+           "  --quiet                           do not print anything to stdout, unless\n"
+           "                                    requested by another option\n"
            "  --reflect-strict-array-suffix     use strict array suffix rules when\n"
            "                                    reflecting\n"
            "  --reflect-basic-array-suffix      arrays of basic types will have trailing [0]\n"
