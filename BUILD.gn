@@ -47,6 +47,9 @@ if (defined(is_fuchsia_tree) && is_fuchsia_tree) {
 }
 
 spirv_tools_dir = glslang_spirv_tools_dir
+if (!defined(glslang_angle)) {
+  glslang_angle = false
+}
 
 config("glslang_public") {
   include_dirs = [ "." ]
