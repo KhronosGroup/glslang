@@ -50,6 +50,8 @@ endif(EMSCRIPTEN OR ENABLE_GLSLANG_JS)
 add_library(GenericCodeGen STATIC
     GenericCodeGen/CodeGen.cpp
     GenericCodeGen/Link.cpp)
+set_property(TARGET GenericCodeGen PROPERTY POSITION_INDEPENDENT_CODE ON)
+set_property(TARGET GenericCodeGen PROPERTY FOLDER glslang)
 
 ################################################################################
 # MachineIndependent
@@ -129,7 +131,8 @@ if(ENABLE_HLSL)
 endif(ENABLE_HLSL)
 
 add_library(MachineIndependent STATIC ${MACHINEINDEPENDENT_SOURCES} ${MACHINEINDEPENDENT_HEADERS})
-
+set_property(TARGET MachineIndependent PROPERTY POSITION_INDEPENDENT_CODE ON)
+set_property(TARGET MachineIndependent PROPERTY FOLDER glslang)
 glslang_pch(SOURCES MachineIndependent/pch.cpp)
 
 target_link_libraries(MachineIndependent PRIVATE OGLCompiler OSDependent GenericCodeGen)
