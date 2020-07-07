@@ -107,18 +107,6 @@ if(USE_CCACHE)
     endif(CCACHE_FOUND)
 endif()
 
-# Precompiled header macro. Parameters are source file list and filename for pch cpp file.
-macro(glslang_pch SRCS PCHCPP)
-  if(MSVC AND CMAKE_GENERATOR MATCHES "^Visual Studio" AND NOT ${CMAKE_CXX_COMPILER_ID} MATCHES "Clang" AND ENABLE_PCH)
-    set(PCH_NAME "$(IntDir)\\pch.pch")
-    # make source files use/depend on PCH_NAME
-    set_source_files_properties(${${SRCS}} PROPERTIES COMPILE_FLAGS "/Yupch.h /FIpch.h /Fp${PCH_NAME} /Zm300" OBJECT_DEPENDS "${PCH_NAME}")
-    # make PCHCPP file compile and generate PCH_NAME
-    set_source_files_properties(${PCHCPP} PROPERTIES COMPILE_FLAGS "/Ycpch.h /Fp${PCH_NAME} /Zm300" OBJECT_OUTPUTS "${PCH_NAME}")
-    list(APPEND ${SRCS} "${PCHCPP}")
-  endif()
-endmacro(glslang_pch)
-
 project(glslang)
 
 if(ENABLE_CTEST)
@@ -254,6 +242,19 @@ function(glslang_only_export_explicit_symbols target)
         endif()
     endif()
 endfunction()
+
+# glslang_pch() adds precompiled header rules to <target> for the pre-compiled
+# header file <pch>. As target_precompile_headers() was added in CMake 3.16,
+# this is a no-op if called on earlier versions of CMake.
+if(NOT CMAKE_VERSION VERSION_LESS "3.16")
+    function(glslang_pch target pch)
+        target_precompile_headers(${target} PRIVATE ${pch})
+    endfunction()
+else()
+    function(glslang_pch target pch)
+    endfunction()
+    message(NOTICE "Your CMake version is ${CMAKE_VERSION}. Update to at least 3.16 to enable precompiled headers to speed up incremental builds")
+endif()
 
 if(NOT TARGET SPIRV-Tools-opt)
     set(ENABLE_OPT OFF)

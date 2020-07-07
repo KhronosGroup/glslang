@@ -72,9 +72,7 @@ cc_library(
             "glslang/MachineIndependent/preprocessor/*.cpp",
         ],
         exclude = [
-            "glslang/HLSL/pch.cpp",
             "glslang/HLSL/pch.h",
-            "glslang/MachineIndependent/pch.cpp",
             "glslang/MachineIndependent/pch.h",
         ],
     ) + [
