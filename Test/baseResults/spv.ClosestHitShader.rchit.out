@@ -164,6 +164,6 @@ spv.ClosestHitShader.rchit
               68:          60 Load 67(gl_WorldToObjectNV)
                               Store 66(v14) 68
               72:          69 Load 71(accNV)
-                              TraceRayKHR 72 73 74 75 76 73 78 77 80 81 82
+                              TraceNV 72 73 74 75 76 73 78 77 80 81 82
                               Return
                               FunctionEnd

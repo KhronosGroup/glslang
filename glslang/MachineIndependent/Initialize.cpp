@@ -9286,10 +9286,10 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
     case EShLangClosestHit:
     case EShLangMiss:
         if (profile != EEsProfile && version >= 460) {
-            symbolTable.relateToOperator("traceNV", EOpTrace);
-            symbolTable.relateToOperator("traceRayEXT", EOpTrace);
-            symbolTable.relateToOperator("executeCallableNV", EOpExecuteCallable);
-            symbolTable.relateToOperator("executeCallableEXT", EOpExecuteCallable);
+            symbolTable.relateToOperator("traceNV", EOpTraceNV);
+            symbolTable.relateToOperator("traceRayEXT", EOpTraceKHR);
+            symbolTable.relateToOperator("executeCallableNV", EOpExecuteCallableNV);
+            symbolTable.relateToOperator("executeCallableEXT", EOpExecuteCallableKHR);
         }
         break;
     case EShLangIntersect:
@@ -9308,8 +9308,8 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         break;
     case EShLangCallable:
         if (profile != EEsProfile && version >= 460) {
-            symbolTable.relateToOperator("executeCallableNV", EOpExecuteCallable);
-            symbolTable.relateToOperator("executeCallableEXT", EOpExecuteCallable);
+            symbolTable.relateToOperator("executeCallableNV", EOpExecuteCallableNV);
+            symbolTable.relateToOperator("executeCallableEXT", EOpExecuteCallableKHR);
         }
         break;
     case EShLangMeshNV:

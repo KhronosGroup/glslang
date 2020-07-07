@@ -4,8 +4,8 @@ rayQuery-allOps.comp
 // Id's are bound by 258
 
                               Capability Shader
-                              Capability RayQueryProvisionalKHR
-                              Capability RayTraversalPrimitiveCullingProvisionalKHR
+                              Capability RayQueryKHR
+                              Capability RayTraversalPrimitiveCullingKHR
                               Extension  "SPV_KHR_ray_query"
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450

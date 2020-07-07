@@ -16,7 +16,7 @@ void main()
     uint ly = gl_LaunchIDEXT.y;
     uint sx = gl_LaunchSizeEXT.x;
     uint sy = gl_LaunchSizeEXT.y;
-    traceRayEXT(accEXT0[i], lx, ly, sx, sy, 0u, origin, 0.5f, dir, 0.75f, 1);
-    traceRayEXT(accEXT1[i], lx, ly, sx, sy, 0u, origin, 0.5f, dir, 0.75f, 1);
-    traceRayEXT(accEXT0[nonuniformEXT(i)], lx, ly, sx, sy, 0u, origin, 0.5f, dir, 0.75f, 1);
+    traceRayEXT(accEXT0[i], lx, ly, sx, sy, 0u, origin, 0.5f, dir, 0.75f, 0);
+    traceRayEXT(accEXT1[i], lx, ly, sx, sy, 0u, origin, 0.5f, dir, 0.75f, 0);
+    traceRayEXT(accEXT0[nonuniformEXT(i)], lx, ly, sx, sy, 0u, origin, 0.5f, dir, 0.75f, 0);
 }

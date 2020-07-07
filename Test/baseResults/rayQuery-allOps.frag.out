@@ -4,7 +4,7 @@ rayQuery-allOps.frag
 // Id's are bound by 257
 
                               Capability Shader
-                              Capability RayQueryProvisionalKHR
+                              Capability RayQueryKHR
                               Extension  "SPV_KHR_ray_query"
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450

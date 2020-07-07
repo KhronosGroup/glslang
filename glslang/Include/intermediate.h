@@ -912,11 +912,13 @@ enum TOperator {
     EOpAverageRounded,
     EOpMul32x16,
 
-    EOpTrace,
+    EOpTraceNV,
+    EOpTraceKHR,
     EOpReportIntersection,
     EOpIgnoreIntersection,
     EOpTerminateRay,
-    EOpExecuteCallable,
+    EOpExecuteCallableNV,
+    EOpExecuteCallableKHR,
     EOpWritePackedPrimitiveIndices4x8NV,
 
     //

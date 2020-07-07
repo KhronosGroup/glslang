@@ -2076,13 +2076,31 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
     }
 
 #ifndef GLSLANG_WEB
-    case EOpTrace:
+    case EOpTraceNV:
         if (!(*argp)[10]->getAsConstantUnion())
-            error(loc, "argument must be compile-time constant", "payload number", "");
+            error(loc, "argument must be compile-time constant", "payload number", "a");
         break;
-    case EOpExecuteCallable:
+    case EOpTraceKHR:
+        if (!(*argp)[10]->getAsConstantUnion())
+            error(loc, "argument must be compile-time constant", "payload number", "a");
+        else {
+            unsigned int location = (*argp)[10]->getAsConstantUnion()->getAsConstantUnion()->getConstArray()[0].getUConst();
+            if (intermediate.checkLocationRT(0, location) < 0)
+                error(loc, "with layout(location =", "no rayPayloadEXT/rayPayloadInEXT declared", "%d)", location);
+        }
+        break;
+    case EOpExecuteCallableNV:
         if (!(*argp)[1]->getAsConstantUnion())
             error(loc, "argument must be compile-time constant", "callable data number", "");
+        break;
+    case EOpExecuteCallableKHR:
+        if (!(*argp)[1]->getAsConstantUnion())
+            error(loc, "argument must be compile-time constant", "callable data number", "");
+        else {
+            unsigned int location = (*argp)[1]->getAsConstantUnion()->getAsConstantUnion()->getConstArray()[0].getUConst();
+            if (intermediate.checkLocationRT(1, location) < 0)
+                error(loc, "with layout(location =", "no callableDataEXT/callableDataInEXT declared", "%d)", location);
+        }
         break;
 
     case EOpRayQueryGetIntersectionType:
