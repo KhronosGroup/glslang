@@ -60,9 +60,9 @@ if(BUILD_TESTING)
                 ${CMAKE_CURRENT_SOURCE_DIR}/Remap.FromFile.cpp)
         endif()
 
-        glslang_pch(TEST_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/pch.cpp)
 
         add_executable(glslangtests ${TEST_SOURCES})
+        glslang_pch(glslangtests ${CMAKE_CURRENT_SOURCE_DIR}/pch.h)
         set_property(TARGET glslangtests PROPERTY FOLDER tests)
         glslang_set_link_args(glslangtests)
         if(ENABLE_GLSLANG_INSTALL)

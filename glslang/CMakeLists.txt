@@ -133,7 +133,7 @@ endif(ENABLE_HLSL)
 add_library(MachineIndependent STATIC ${MACHINEINDEPENDENT_SOURCES} ${MACHINEINDEPENDENT_HEADERS})
 set_property(TARGET MachineIndependent PROPERTY POSITION_INDEPENDENT_CODE ON)
 set_property(TARGET MachineIndependent PROPERTY FOLDER glslang)
-glslang_pch(SOURCES MachineIndependent/pch.cpp)
+glslang_pch(MachineIndependent MachineIndependent/pch.h)
 
 target_link_libraries(MachineIndependent PRIVATE OGLCompiler OSDependent GenericCodeGen)
 
