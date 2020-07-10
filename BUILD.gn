@@ -242,7 +242,6 @@ template("glslang_sources_common") {
 
     if (invoker.enable_opt) {
       deps += [
-        ":glslang_build_info",
         "${spirv_tools_dir}:spvtools_opt",
         "${spirv_tools_dir}:spvtools_val",
       ]
@@ -289,6 +288,7 @@ executable("glslang_validator") {
   deps = [
     ":glslang_default_resource_limits_sources",
     ":glslang_sources",
+    ":glslang_build_info",
   ]
   public_configs = [ ":glslang_hlsl" ]
 
