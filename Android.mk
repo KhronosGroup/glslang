@@ -33,6 +33,24 @@
 
 LOCAL_PATH := $(call my-dir)
 
+# Generate glslang/build_info.h
+GLSLANG_GENERATED_INCLUDEDIR:=$(TARGET_OUT)/include
+GLSLANG_BUILD_INFO_H:=$(GLSLANG_GENERATED_INCLUDEDIR)/glslang/build_info.h
+
+define gen_glslang_build_info_h
+$(call generate-file-dir,$(GLSLANG_GENERATED_INCLUDEDIR)/dummy_filename)
+$(GLSLANG_BUILD_INFO_H): \
+		$(LOCAL_PATH)/build_info.py \
+		$(LOCAL_PATH)/build_info.h.tmpl \
+		$(LOCAL_PATH)/CHANGES.md
+		@$(HOST_PYTHON) $(LOCAL_PATH)/build_info.py \
+						$(LOCAL_PATH) \
+						-i $(LOCAL_PATH)/build_info.h.tmpl \
+						-o $(GLSLANG_BUILD_INFO_H)
+		@echo "[$(TARGET_ARCH_ABI)] Generate       : $(GLSLANG_BUILD_INFO_H) <= CHANGES.md"
+endef
+$(eval $(call gen_glslang_build_info_h))
+
 GLSLANG_OS_FLAGS := -DGLSLANG_OSINCLUDE_UNIX
 # AMD and NV extensions are turned on by default in upstream Glslang.
 GLSLANG_DEFINES:= -DAMD_EXTENSIONS -DNV_EXTENSIONS -DENABLE_HLSL $(GLSLANG_OS_FLAGS)
@@ -55,18 +73,14 @@ LOCAL_C_INCLUDES:=$(LOCAL_PATH)/OGLCompiler
 LOCAL_STATIC_LIBRARIES:=OSDependent
 include $(BUILD_STATIC_LIBRARY)
 
-# Build Glslang's HLSL parser library.
+# Build the stubbed HLSL library.
+# The HLSL source is now directly referenced by the glslang static library
+# instead.
 include $(CLEAR_VARS)
 LOCAL_MODULE:=HLSL
 LOCAL_CXXFLAGS:=-std=c++11 -fno-exceptions -fno-rtti $(GLSLANG_DEFINES)
 LOCAL_SRC_FILES:= \
-		glslang/HLSL/hlslAttributes.cpp \
-		glslang/HLSL/hlslGrammar.cpp \
-		glslang/HLSL/hlslOpMap.cpp \
-		glslang/HLSL/hlslParseables.cpp \
-		glslang/HLSL/hlslParseHelper.cpp \
-		glslang/HLSL/hlslScanContext.cpp \
-		glslang/HLSL/hlslTokenStream.cpp
+	hlsl/stub.cpp
 LOCAL_C_INCLUDES:=$(LOCAL_PATH) \
 	$(LOCAL_PATH)/glslang/HLSL
 include $(BUILD_STATIC_LIBRARY)
@@ -74,12 +88,23 @@ include $(BUILD_STATIC_LIBRARY)
 include $(CLEAR_VARS)
 GLSLANG_OUT_PATH=$(if $(call host-path-is-absolute,$(TARGET_OUT)),$(TARGET_OUT),$(abspath $(TARGET_OUT)))
 
+# ShaderLang.cpp depends on the generated build_info.h
+$(LOCAL_PATH)/glslang/MachineIndependent/ShaderLang.cpp: \
+	$(GLSLANG_BUILD_INFO_H)
+
 LOCAL_MODULE:=glslang
 LOCAL_CXXFLAGS:=-std=c++11 -fno-exceptions -fno-rtti $(GLSLANG_DEFINES)
 LOCAL_EXPORT_C_INCLUDES:=$(LOCAL_PATH)
 LOCAL_SRC_FILES:= \
 		glslang/GenericCodeGen/CodeGen.cpp \
 		glslang/GenericCodeGen/Link.cpp \
+		glslang/HLSL/hlslAttributes.cpp \
+		glslang/HLSL/hlslGrammar.cpp \
+		glslang/HLSL/hlslOpMap.cpp \
+		glslang/HLSL/hlslParseables.cpp \
+		glslang/HLSL/hlslParseHelper.cpp \
+		glslang/HLSL/hlslScanContext.cpp \
+		glslang/HLSL/hlslTokenStream.cpp \
 		glslang/MachineIndependent/attribute.cpp \
 		glslang/MachineIndependent/Constant.cpp \
 		glslang/MachineIndependent/glslang_tab.cpp \
@@ -109,14 +134,19 @@ LOCAL_SRC_FILES:= \
 		glslang/MachineIndependent/preprocessor/PpTokens.cpp
 LOCAL_C_INCLUDES:=$(LOCAL_PATH) \
 	$(LOCAL_PATH)/glslang/MachineIndependent \
+	$(GLSLANG_GENERATED_INCLUDEDIR) \
 	$(GLSLANG_OUT_PATH)
 LOCAL_STATIC_LIBRARIES:=OSDependent OGLCompiler HLSL
 include $(BUILD_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
+
+# GlslangToSpv.cpp depends on the generated build_info.h
+$(LOCAL_PATH)/SPIRV/GlslangToSpv.cpp: \
+	$(GLSLANG_BUILD_INFO_H)
+
 LOCAL_MODULE:=SPIRV
 LOCAL_CXXFLAGS:=-std=c++11 -fno-exceptions -fno-rtti -Werror $(GLSLANG_DEFINES)
-LOCAL_EXPORT_C_INCLUDES:=$(LOCAL_PATH)
 LOCAL_SRC_FILES:= \
 	SPIRV/GlslangToSpv.cpp \
 	SPIRV/InReadableOrder.cpp \
@@ -127,7 +157,9 @@ LOCAL_SRC_FILES:= \
 	SPIRV/SpvTools.cpp \
 	SPIRV/disassemble.cpp \
 	SPIRV/doc.cpp
-LOCAL_C_INCLUDES:=$(LOCAL_PATH) $(LOCAL_PATH)/glslang/SPIRV
+LOCAL_C_INCLUDES:=$(LOCAL_PATH) \
+	$(LOCAL_PATH)/glslang/SPIRV \
+	$(GLSLANG_GENERATED_INCLUDEDIR)
 LOCAL_EXPORT_C_INCLUDES:=$(LOCAL_PATH)/glslang/SPIRV
 LOCAL_STATIC_LIBRARIES:=glslang
 include $(BUILD_STATIC_LIBRARY)

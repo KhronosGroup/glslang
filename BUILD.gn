@@ -46,6 +46,29 @@ if (defined(is_fuchsia_tree) && is_fuchsia_tree) {
   _configs_to_add = [ "//build/config/compiler:no_chromium_code" ]
 }
 
+action("glslang_build_info") {
+  script = "build_info.py"
+
+  src_dir = "."
+  changes_file = "CHANGES.md"
+  template_file = "build_info.h.tmpl"
+  out_file = "${target_gen_dir}/include/glslang/build_info.h"
+
+  inputs = [
+    changes_file,
+    script,
+    template_file,
+  ]
+  outputs = [
+    out_file
+  ]
+  args = [
+    rebase_path(src_dir, root_build_dir),
+    "-i", rebase_path(template_file, root_build_dir),
+    "-o", rebase_path(out_file, root_build_dir),
+  ]
+}
+
 spirv_tools_dir = glslang_spirv_tools_dir
 if (!defined(glslang_angle)) {
   glslang_angle = false
@@ -109,7 +132,6 @@ template("glslang_sources_common") {
       "glslang/Include/Types.h",
       "glslang/Include/arrays.h",
       "glslang/Include/intermediate.h",
-      "glslang/Include/revision.h",
       "glslang/MachineIndependent/Constant.cpp",
       "glslang/MachineIndependent/InfoSink.cpp",
       "glslang/MachineIndependent/Initialize.cpp",
@@ -216,12 +238,17 @@ template("glslang_sources_common") {
       ]
     }
 
+    deps = [ ":glslang_build_info" ]
+
     if (invoker.enable_opt) {
-      deps = [
+      deps += [
+        ":glslang_build_info",
         "${spirv_tools_dir}:spvtools_opt",
         "${spirv_tools_dir}:spvtools_val",
       ]
     }
+
+    include_dirs = [ "${target_gen_dir}/include" ]
 
     configs -= _configs_to_remove
     configs += _configs_to_add
@@ -264,6 +291,8 @@ executable("glslang_validator") {
     ":glslang_sources",
   ]
   public_configs = [ ":glslang_hlsl" ]
+
+  include_dirs = [ "${target_gen_dir}/include" ]
 
   configs -= _configs_to_remove
   configs += _configs_to_add

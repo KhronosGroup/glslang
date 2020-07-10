@@ -43,6 +43,20 @@ licenses(["notice"])
 
 exports_files(["LICENSE"])
 
+# Build information generation script
+py_binary(
+    name = "build_info",
+    srcs = ["build_info.py"],
+)
+
+genrule(
+    name = "gen_build_info_h",
+    srcs = ["CHANGES.md", "build_info.h.tmpl"],
+    outs = ["glslang/build_info.h"],
+    cmd = "$(location build_info) $$(dirname $(location CHANGES.md)) -i $(location build_info.h.tmpl) -o $(location glslang/build_info.h)",
+    tools = [":build_info"],
+)
+
 COMMON_COPTS = select({
     "@bazel_tools//src/conditions:windows": [""],
     "//conditions:default": [
@@ -93,6 +107,7 @@ cc_library(
         "StandAlone/DirStackFileIncluder.h",
         "glslang/OSDependent/osinclude.h",
         "glslang/Public/ShaderLang.h",
+        ":gen_build_info_h",
     ],
     copts = COMMON_COPTS,
     defines = [
