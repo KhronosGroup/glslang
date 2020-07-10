@@ -237,9 +237,9 @@ set(GLSLANG_GENERATED_INCLUDEDIR "${CMAKE_BINARY_DIR}/include")
 ################################################################################
 # Build version information generation
 ################################################################################
-set(GLSLANG_CHANGES_FILE      "${CMAKE_SOURCE_DIR}/CHANGES.md")
-set(GLSLANG_BUILD_INFO_PY     "${CMAKE_SOURCE_DIR}/build_info.py")
-set(GLSLANG_BUILD_INFO_H_TMPL "${CMAKE_SOURCE_DIR}/build_info.h.tmpl")
+set(GLSLANG_CHANGES_FILE      "${CMAKE_CURRENT_SOURCE_DIR}/CHANGES.md")
+set(GLSLANG_BUILD_INFO_PY     "${CMAKE_CURRENT_SOURCE_DIR}/build_info.py")
+set(GLSLANG_BUILD_INFO_H_TMPL "${CMAKE_CURRENT_SOURCE_DIR}/build_info.h.tmpl")
 set(GLSLANG_BUILD_INFO_H      "${GLSLANG_GENERATED_INCLUDEDIR}/glslang/build_info.h")
 
 # Command to build the build_info.h file
