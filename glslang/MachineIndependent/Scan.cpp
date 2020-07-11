@@ -49,9 +49,14 @@
 #include "SymbolTable.h"
 #include "ParseHelper.h"
 #include "attribute.h"
-#include "glslang_tab.cpp.h"
 #include "ScanContext.h"
 #include "Scan.h"
+
+#ifdef GLSLANG_ANGLE
+#include "glslang_angle_tab.cpp.h"
+#else
+#include "glslang_tab.cpp.h"
+#endif
 
 // preprocessor includes
 #include "preprocessor/PpContext.h"
@@ -406,25 +411,28 @@ void TScanContext::fillInKeywordMap()
     (*KeywordMap)["uvec4"] =                   UVEC4;
 
 #ifndef GLSLANG_WEB
-    (*KeywordMap)["nonuniformEXT"] =           NONUNIFORM;
-    (*KeywordMap)["demote"] =                  DEMOTE;
     (*KeywordMap)["attribute"] =               ATTRIBUTE;
     (*KeywordMap)["varying"] =                 VARYING;
     (*KeywordMap)["noperspective"] =           NOPERSPECTIVE;
+    (*KeywordMap)["precise"] =                 PRECISE;
     (*KeywordMap)["coherent"] =                COHERENT;
+    (*KeywordMap)["restrict"] =                RESTRICT;
+    (*KeywordMap)["readonly"] =                READONLY;
+    (*KeywordMap)["writeonly"] =               WRITEONLY;
+    (*KeywordMap)["volatile"] =                VOLATILE;
+    (*KeywordMap)["patch"] =                   PATCH;
+    (*KeywordMap)["sample"] =                  SAMPLE;
+
+#ifndef GLSLANG_ANGLE
+    (*KeywordMap)["nonuniformEXT"] =           NONUNIFORM;
+    (*KeywordMap)["demote"] =                  DEMOTE;
     (*KeywordMap)["devicecoherent"] =          DEVICECOHERENT;
     (*KeywordMap)["queuefamilycoherent"] =     QUEUEFAMILYCOHERENT;
     (*KeywordMap)["workgroupcoherent"] =       WORKGROUPCOHERENT;
     (*KeywordMap)["subgroupcoherent"] =        SUBGROUPCOHERENT;
     (*KeywordMap)["shadercallcoherent"] =      SHADERCALLCOHERENT;
     (*KeywordMap)["nonprivate"] =              NONPRIVATE;
-    (*KeywordMap)["restrict"] =                RESTRICT;
-    (*KeywordMap)["readonly"] =                READONLY;
-    (*KeywordMap)["writeonly"] =               WRITEONLY;
     (*KeywordMap)["atomic_uint"] =             ATOMIC_UINT;
-    (*KeywordMap)["volatile"] =                VOLATILE;
-    (*KeywordMap)["patch"] =                   PATCH;
-    (*KeywordMap)["sample"] =                  SAMPLE;
     (*KeywordMap)["subroutine"] =              SUBROUTINE;
     (*KeywordMap)["dmat2"] =                   DMAT2;
     (*KeywordMap)["dmat3"] =                   DMAT3;
@@ -441,6 +449,10 @@ void TScanContext::fillInKeywordMap()
     (*KeywordMap)["image1D"] =                 IMAGE1D;
     (*KeywordMap)["iimage1D"] =                IIMAGE1D;
     (*KeywordMap)["uimage1D"] =                UIMAGE1D;
+    (*KeywordMap)["image1DArray"] =            IMAGE1DARRAY;
+    (*KeywordMap)["iimage1DArray"] =           IIMAGE1DARRAY;
+    (*KeywordMap)["uimage1DArray"] =           UIMAGE1DARRAY;
+#endif
     (*KeywordMap)["image2D"] =                 IMAGE2D;
     (*KeywordMap)["iimage2D"] =                IIMAGE2D;
     (*KeywordMap)["uimage2D"] =                UIMAGE2D;
@@ -456,9 +468,6 @@ void TScanContext::fillInKeywordMap()
     (*KeywordMap)["imageBuffer"] =             IMAGEBUFFER;
     (*KeywordMap)["iimageBuffer"] =            IIMAGEBUFFER;
     (*KeywordMap)["uimageBuffer"] =            UIMAGEBUFFER;
-    (*KeywordMap)["image1DArray"] =            IMAGE1DARRAY;
-    (*KeywordMap)["iimage1DArray"] =           IIMAGE1DARRAY;
-    (*KeywordMap)["uimage1DArray"] =           UIMAGE1DARRAY;
     (*KeywordMap)["image2DArray"] =            IMAGE2DARRAY;
     (*KeywordMap)["iimage2DArray"] =           IIMAGE2DARRAY;
     (*KeywordMap)["uimage2DArray"] =           UIMAGE2DARRAY;
@@ -471,6 +480,7 @@ void TScanContext::fillInKeywordMap()
     (*KeywordMap)["image2DMSArray"] =          IMAGE2DMSARRAY;
     (*KeywordMap)["iimage2DMSArray"] =         IIMAGE2DMSARRAY;
     (*KeywordMap)["uimage2DMSArray"] =         UIMAGE2DMSARRAY;
+#ifndef GLSLANG_ANGLE
     (*KeywordMap)["double"] =                  DOUBLE;
     (*KeywordMap)["dvec2"] =                   DVEC2;
     (*KeywordMap)["dvec3"] =                   DVEC3;
@@ -562,6 +572,7 @@ void TScanContext::fillInKeywordMap()
     (*KeywordMap)["f64mat4x3"] =               F64MAT4X3;
     (*KeywordMap)["f64mat4x4"] =               F64MAT4X4;
 #endif
+#endif
 
     (*KeywordMap)["sampler2D"] =               SAMPLER2D;
     (*KeywordMap)["samplerCube"] =             SAMPLERCUBE;
@@ -603,11 +614,16 @@ void TScanContext::fillInKeywordMap()
     (*KeywordMap)["samplerCubeArrayShadow"] =  SAMPLERCUBEARRAYSHADOW;
     (*KeywordMap)["isamplerCubeArray"] =       ISAMPLERCUBEARRAY;
     (*KeywordMap)["usamplerCubeArray"] =       USAMPLERCUBEARRAY;
-    (*KeywordMap)["sampler1DArrayShadow"] =    SAMPLER1DARRAYSHADOW;
-    (*KeywordMap)["isampler1DArray"] =         ISAMPLER1DARRAY;
-    (*KeywordMap)["usampler1D"] =              USAMPLER1D;
+#ifndef GLSLANG_ANGLE
+    (*KeywordMap)["sampler1D"] =               SAMPLER1D;
     (*KeywordMap)["isampler1D"] =              ISAMPLER1D;
+    (*KeywordMap)["usampler1D"] =              USAMPLER1D;
+    (*KeywordMap)["sampler1DArray"] =          SAMPLER1DARRAY;
+    (*KeywordMap)["isampler1DArray"] =         ISAMPLER1DARRAY;
     (*KeywordMap)["usampler1DArray"] =         USAMPLER1DARRAY;
+    (*KeywordMap)["sampler1DShadow"] =         SAMPLER1DSHADOW;
+    (*KeywordMap)["sampler1DArrayShadow"] =    SAMPLER1DARRAYSHADOW;
+#endif
     (*KeywordMap)["samplerBuffer"] =           SAMPLERBUFFER;
     (*KeywordMap)["isampler2DRect"] =          ISAMPLER2DRECT;
     (*KeywordMap)["usampler2DRect"] =          USAMPLER2DRECT;
@@ -619,20 +635,21 @@ void TScanContext::fillInKeywordMap()
     (*KeywordMap)["sampler2DMSArray"] =        SAMPLER2DMSARRAY;
     (*KeywordMap)["isampler2DMSArray"] =       ISAMPLER2DMSARRAY;
     (*KeywordMap)["usampler2DMSArray"] =       USAMPLER2DMSARRAY;
-    (*KeywordMap)["sampler1D"] =               SAMPLER1D;
-    (*KeywordMap)["sampler1DShadow"] =         SAMPLER1DSHADOW;
     (*KeywordMap)["sampler2DRect"] =           SAMPLER2DRECT;
     (*KeywordMap)["sampler2DRectShadow"] =     SAMPLER2DRECTSHADOW;
-    (*KeywordMap)["sampler1DArray"] =          SAMPLER1DARRAY;
 
     (*KeywordMap)["samplerExternalOES"] =      SAMPLEREXTERNALOES; // GL_OES_EGL_image_external
 
     (*KeywordMap)["__samplerExternal2DY2YEXT"] = SAMPLEREXTERNAL2DY2YEXT; // GL_EXT_YUV_target
 
-    (*KeywordMap)["itexture1DArray"] =         ITEXTURE1DARRAY;
-    (*KeywordMap)["utexture1D"] =              UTEXTURE1D;
+#ifndef GLSLANG_ANGLE
+    (*KeywordMap)["texture1D"] =               TEXTURE1D;
     (*KeywordMap)["itexture1D"] =              ITEXTURE1D;
+    (*KeywordMap)["utexture1D"] =              UTEXTURE1D;
+    (*KeywordMap)["texture1DArray"] =          TEXTURE1DARRAY;
+    (*KeywordMap)["itexture1DArray"] =         ITEXTURE1DARRAY;
     (*KeywordMap)["utexture1DArray"] =         UTEXTURE1DARRAY;
+#endif
     (*KeywordMap)["textureBuffer"] =           TEXTUREBUFFER;
     (*KeywordMap)["itexture2DRect"] =          ITEXTURE2DRECT;
     (*KeywordMap)["utexture2DRect"] =          UTEXTURE2DRECT;
@@ -644,10 +661,9 @@ void TScanContext::fillInKeywordMap()
     (*KeywordMap)["texture2DMSArray"] =        TEXTURE2DMSARRAY;
     (*KeywordMap)["itexture2DMSArray"] =       ITEXTURE2DMSARRAY;
     (*KeywordMap)["utexture2DMSArray"] =       UTEXTURE2DMSARRAY;
-    (*KeywordMap)["texture1D"] =               TEXTURE1D;
     (*KeywordMap)["texture2DRect"] =           TEXTURE2DRECT;
-    (*KeywordMap)["texture1DArray"] =          TEXTURE1DARRAY;
 
+#ifndef GLSLANG_ANGLE
     (*KeywordMap)["subpassInput"] =            SUBPASSINPUT;
     (*KeywordMap)["subpassInputMS"] =          SUBPASSINPUTMS;
     (*KeywordMap)["isubpassInput"] =           ISUBPASSINPUT;
@@ -702,7 +718,6 @@ void TScanContext::fillInKeywordMap()
     (*KeywordMap)["f16subpassInputMS"] =            F16SUBPASSINPUTMS;
     (*KeywordMap)["__explicitInterpAMD"] =     EXPLICITINTERPAMD;
     (*KeywordMap)["pervertexNV"] =             PERVERTEXNV;
-    (*KeywordMap)["precise"] =                 PRECISE;
 
     (*KeywordMap)["rayPayloadNV"] =            PAYLOADNV;
     (*KeywordMap)["rayPayloadEXT"] =           PAYLOADEXT;
@@ -724,6 +739,7 @@ void TScanContext::fillInKeywordMap()
     (*KeywordMap)["fcoopmatNV"] =              FCOOPMATNV;
     (*KeywordMap)["icoopmatNV"] =              ICOOPMATNV;
     (*KeywordMap)["ucoopmatNV"] =              UCOOPMATNV;
+#endif
 
     ReservedSet = new std::unordered_set<const char*, str_hash, str_eq>;
 
@@ -855,7 +871,7 @@ int TScanContext::tokenize(TPpContext* pp, TParserToken& token)
         case PpAtomConstInt:           parserToken->sType.lex.i    = ppToken.ival;       return INTCONSTANT;
         case PpAtomConstUint:          parserToken->sType.lex.i    = ppToken.ival;       return UINTCONSTANT;
         case PpAtomConstFloat:         parserToken->sType.lex.d    = ppToken.dval;       return FLOATCONSTANT;
-#ifndef GLSLANG_WEB
+#if !defined(GLSLANG_WEB) && !defined(GLSLANG_ANGLE)
         case PpAtomConstInt16:         parserToken->sType.lex.i    = ppToken.ival;       return INT16CONSTANT;
         case PpAtomConstUint16:        parserToken->sType.lex.i    = ppToken.ival;       return UINT16CONSTANT;
         case PpAtomConstInt64:         parserToken->sType.lex.i64  = ppToken.i64val;     return INT64CONSTANT;
@@ -1004,16 +1020,17 @@ int TScanContext::tokenizeIdentifier()
             return keyword;
         return es30ReservedFromGLSL(130);
 
-    case NONUNIFORM:
-        if (parseContext.extensionTurnedOn(E_GL_EXT_nonuniform_qualifier))
-            return keyword;
-        else
-            return identifierOrType();
     case ATTRIBUTE:
     case VARYING:
         if (parseContext.isEsProfile() && parseContext.version >= 300)
             reservedWord();
         return keyword;
+#ifndef GLSLANG_ANGLE
+    case NONUNIFORM:
+        if (parseContext.extensionTurnedOn(E_GL_EXT_nonuniform_qualifier))
+            return keyword;
+        else
+            return identifierOrType();
     case PAYLOADNV:
     case PAYLOADINNV:
     case HITATTRNV:
@@ -1047,13 +1064,17 @@ int TScanContext::tokenizeIdentifier()
             return keyword;
         return es30ReservedFromGLSL(420);
 
-    case COHERENT:
+    case SUBROUTINE:
+        return es30ReservedFromGLSL(400);
+
     case DEVICECOHERENT:
     case QUEUEFAMILYCOHERENT:
     case WORKGROUPCOHERENT:
     case SUBGROUPCOHERENT:
     case SHADERCALLCOHERENT:
     case NONPRIVATE:
+#endif
+    case COHERENT:
     case RESTRICT:
     case READONLY:
     case WRITEONLY:
@@ -1081,9 +1102,6 @@ int TScanContext::tokenizeIdentifier()
         if ((parseContext.isEsProfile() && parseContext.version >= 320) ||
             parseContext.extensionsTurnedOn(1, &E_GL_OES_shader_multisample_interpolation))
             return keyword;
-        return es30ReservedFromGLSL(400);
-
-    case SUBROUTINE:
         return es30ReservedFromGLSL(400);
 #endif
     case SHARED:
@@ -1121,6 +1139,7 @@ int TScanContext::tokenizeIdentifier()
         return matNxM();
 
 #ifndef GLSLANG_WEB
+#ifndef GLSLANG_ANGLE
     case DMAT2:
     case DMAT3:
     case DMAT4:
@@ -1141,6 +1160,7 @@ int TScanContext::tokenizeIdentifier()
     case IMAGE1DARRAY:
     case IIMAGE1DARRAY:
     case UIMAGE1DARRAY:
+#endif
     case IMAGE2DRECT:
     case IIMAGE2DRECT:
     case UIMAGE2DRECT:
@@ -1189,6 +1209,7 @@ int TScanContext::tokenizeIdentifier()
         afterType = true;
         return secondGenerationImage();
 
+#ifndef GLSLANG_ANGLE
     case DOUBLE:
     case DVEC2:
     case DVEC3:
@@ -1343,6 +1364,7 @@ int TScanContext::tokenizeIdentifier()
             return keyword;
 
         return identifierOrType();
+#endif
 
     case SAMPLERCUBEARRAY:
     case SAMPLERCUBEARRAYSHADOW:
@@ -1419,6 +1441,7 @@ int TScanContext::tokenizeIdentifier()
             return identifierOrType();
 
 #ifndef GLSLANG_WEB
+#ifndef GLSLANG_ANGLE
     case ISAMPLER1D:
     case ISAMPLER1DARRAY:
     case SAMPLER1DARRAYSHADOW:
@@ -1426,6 +1449,23 @@ int TScanContext::tokenizeIdentifier()
     case USAMPLER1DARRAY:
         afterType = true;
         return es30ReservedFromGLSL(130);
+
+    case SAMPLER1D:
+    case SAMPLER1DSHADOW:
+        afterType = true;
+        if (parseContext.isEsProfile())
+            reservedWord();
+        return keyword;
+
+    case SAMPLER1DARRAY:
+        afterType = true;
+        if (parseContext.isEsProfile() && parseContext.version == 300)
+            reservedWord();
+        else if ((parseContext.isEsProfile() && parseContext.version < 300) ||
+                 (!parseContext.isEsProfile() && parseContext.version < 130))
+            return identifierOrType();
+        return keyword;
+#endif
     case ISAMPLER2DRECT:
     case USAMPLER2DRECT:
         afterType = true;
@@ -1469,13 +1509,6 @@ int TScanContext::tokenizeIdentifier()
             return keyword;
         return es30ReservedFromGLSL(150);
 
-    case SAMPLER1D:
-    case SAMPLER1DSHADOW:
-        afterType = true;
-        if (parseContext.isEsProfile())
-            reservedWord();
-        return keyword;
-
     case SAMPLER2DRECT:
     case SAMPLER2DRECTSHADOW:
         afterType = true;
@@ -1487,15 +1520,6 @@ int TScanContext::tokenizeIdentifier()
             else
                 reservedWord();
         }
-        return keyword;
-
-    case SAMPLER1DARRAY:
-        afterType = true;
-        if (parseContext.isEsProfile() && parseContext.version == 300)
-            reservedWord();
-        else if ((parseContext.isEsProfile() && parseContext.version < 300) ||
-                 (!parseContext.isEsProfile() && parseContext.version < 130))
-            return identifierOrType();
         return keyword;
 
     case SAMPLEREXTERNALOES:
@@ -1513,10 +1537,14 @@ int TScanContext::tokenizeIdentifier()
             return keyword;
         return identifierOrType();
 
-    case ITEXTURE1DARRAY:
-    case UTEXTURE1D:
+#ifndef GLSLANG_ANGLE
+    case TEXTURE1D:
     case ITEXTURE1D:
+    case UTEXTURE1D:
+    case TEXTURE1DARRAY:
+    case ITEXTURE1DARRAY:
     case UTEXTURE1DARRAY:
+#endif
     case TEXTUREBUFFER:
     case ITEXTURE2DRECT:
     case UTEXTURE2DRECT:
@@ -1528,14 +1556,24 @@ int TScanContext::tokenizeIdentifier()
     case TEXTURE2DMSARRAY:
     case ITEXTURE2DMSARRAY:
     case UTEXTURE2DMSARRAY:
-    case TEXTURE1D:
     case TEXTURE2DRECT:
-    case TEXTURE1DARRAY:
         if (parseContext.spvVersion.vulkan > 0)
             return keyword;
         else
             return identifierOrType();
 
+    case PRECISE:
+        if ((parseContext.isEsProfile() &&
+             (parseContext.version >= 320 || parseContext.extensionsTurnedOn(Num_AEP_gpu_shader5, AEP_gpu_shader5))) ||
+            (!parseContext.isEsProfile() && parseContext.version >= 400))
+            return keyword;
+        if (parseContext.isEsProfile() && parseContext.version == 310) {
+            reservedWord();
+            return keyword;
+        }
+        return identifierOrType();
+
+#ifndef GLSLANG_ANGLE
     case SUBPASSINPUT:
     case SUBPASSINPUTMS:
     case ISUBPASSINPUT:
@@ -1609,17 +1647,6 @@ int TScanContext::tokenizeIdentifier()
             return keyword;
         return identifierOrType();
 
-    case PRECISE:
-        if ((parseContext.isEsProfile() &&
-             (parseContext.version >= 320 || parseContext.extensionsTurnedOn(Num_AEP_gpu_shader5, AEP_gpu_shader5))) ||
-            (!parseContext.isEsProfile() && parseContext.version >= 400))
-            return keyword;
-        if (parseContext.isEsProfile() && parseContext.version == 310) {
-            reservedWord();
-            return keyword;
-        }
-        return identifierOrType();
-
     case PERPRIMITIVENV:
     case PERVIEWNV:
     case PERTASKNV:
@@ -1649,6 +1676,7 @@ int TScanContext::tokenizeIdentifier()
             return keyword;
         else
             return identifierOrType();
+#endif
 #endif
 
     default:

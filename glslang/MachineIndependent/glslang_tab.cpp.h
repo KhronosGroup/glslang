@@ -1,8 +1,9 @@
-/* A Bison parser, made by GNU Bison 3.0.4.  */
+/* A Bison parser, made by GNU Bison 3.5.1.  */
 
 /* Bison interface for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2020 Free Software Foundation,
+   Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -30,8 +31,11 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-#ifndef YY_YY_GLSLANG_TAB_CPP_H_INCLUDED
-# define YY_YY_GLSLANG_TAB_CPP_H_INCLUDED
+/* Undocumented macros, especially those whose name start with YY_,
+   are private implementation details.  Do not rely on them.  */
+
+#ifndef YY_YY_MACHINEINDEPENDENT_GLSLANG_TAB_CPP_H_INCLUDED
+# define YY_YY_MACHINEINDEPENDENT_GLSLANG_TAB_CPP_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 1
@@ -212,26 +216,26 @@ extern int yydebug;
     SAMPLERCUBEARRAYSHADOW = 422,
     ISAMPLERCUBEARRAY = 423,
     USAMPLERCUBEARRAY = 424,
-    SAMPLER1D = 425,
-    SAMPLER1DARRAY = 426,
-    SAMPLER1DARRAYSHADOW = 427,
-    ISAMPLER1D = 428,
-    SAMPLER1DSHADOW = 429,
-    SAMPLER2DRECT = 430,
-    SAMPLER2DRECTSHADOW = 431,
-    ISAMPLER2DRECT = 432,
-    USAMPLER2DRECT = 433,
-    SAMPLERBUFFER = 434,
-    ISAMPLERBUFFER = 435,
-    USAMPLERBUFFER = 436,
-    SAMPLER2DMS = 437,
-    ISAMPLER2DMS = 438,
-    USAMPLER2DMS = 439,
-    SAMPLER2DMSARRAY = 440,
-    ISAMPLER2DMSARRAY = 441,
-    USAMPLER2DMSARRAY = 442,
-    SAMPLEREXTERNALOES = 443,
-    SAMPLEREXTERNAL2DY2YEXT = 444,
+    SAMPLER2DRECT = 425,
+    SAMPLER2DRECTSHADOW = 426,
+    ISAMPLER2DRECT = 427,
+    USAMPLER2DRECT = 428,
+    SAMPLERBUFFER = 429,
+    ISAMPLERBUFFER = 430,
+    USAMPLERBUFFER = 431,
+    SAMPLER2DMS = 432,
+    ISAMPLER2DMS = 433,
+    USAMPLER2DMS = 434,
+    SAMPLER2DMSARRAY = 435,
+    ISAMPLER2DMSARRAY = 436,
+    USAMPLER2DMSARRAY = 437,
+    SAMPLEREXTERNALOES = 438,
+    SAMPLEREXTERNAL2DY2YEXT = 439,
+    SAMPLER1D = 440,
+    SAMPLER1DARRAY = 441,
+    SAMPLER1DARRAYSHADOW = 442,
+    ISAMPLER1D = 443,
+    SAMPLER1DSHADOW = 444,
     ISAMPLER1DARRAY = 445,
     USAMPLER1D = 446,
     USAMPLER1DARRAY = 447,
@@ -441,36 +445,35 @@ extern int yydebug;
     HITATTREXT = 651,
     CALLDATAEXT = 652,
     CALLDATAINEXT = 653,
-    PATCH = 654,
-    SAMPLE = 655,
-    NONUNIFORM = 656,
-    COHERENT = 657,
-    VOLATILE = 658,
-    RESTRICT = 659,
-    READONLY = 660,
-    WRITEONLY = 661,
-    DEVICECOHERENT = 662,
-    QUEUEFAMILYCOHERENT = 663,
-    WORKGROUPCOHERENT = 664,
-    SUBGROUPCOHERENT = 665,
-    NONPRIVATE = 666,
-    SHADERCALLCOHERENT = 667,
-    NOPERSPECTIVE = 668,
-    EXPLICITINTERPAMD = 669,
-    PERVERTEXNV = 670,
-    PERPRIMITIVENV = 671,
-    PERVIEWNV = 672,
-    PERTASKNV = 673,
+    NONUNIFORM = 654,
+    DEVICECOHERENT = 655,
+    QUEUEFAMILYCOHERENT = 656,
+    WORKGROUPCOHERENT = 657,
+    SUBGROUPCOHERENT = 658,
+    NONPRIVATE = 659,
+    SHADERCALLCOHERENT = 660,
+    EXPLICITINTERPAMD = 661,
+    PERVERTEXNV = 662,
+    PERPRIMITIVENV = 663,
+    PERVIEWNV = 664,
+    PERTASKNV = 665,
+    PATCH = 666,
+    SAMPLE = 667,
+    COHERENT = 668,
+    VOLATILE = 669,
+    RESTRICT = 670,
+    READONLY = 671,
+    WRITEONLY = 672,
+    NOPERSPECTIVE = 673,
     PRECISE = 674
   };
 #endif
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-
 union YYSTYPE
 {
-#line 97 "glslang.y" /* yacc.c:1909  */
+#line 103 "MachineIndependent/glslang.y"
 
     struct {
         glslang::TSourceLoc loc;
@@ -506,9 +509,9 @@ union YYSTYPE
         glslang::TArraySizes* typeParameters;
     } interm;
 
-#line 510 "glslang_tab.cpp.h" /* yacc.c:1909  */
-};
+#line 513 "MachineIndependent/glslang_tab.cpp.h"
 
+};
 typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
@@ -518,4 +521,4 @@ typedef union YYSTYPE YYSTYPE;
 
 int yyparse (glslang::TParseContext* pParseContext);
 
-#endif /* !YY_YY_GLSLANG_TAB_CPP_H_INCLUDED  */
+#endif /* !YY_YY_MACHINEINDEPENDENT_GLSLANG_TAB_CPP_H_INCLUDED  */

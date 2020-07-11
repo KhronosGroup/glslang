@@ -75,7 +75,7 @@ TEST_P(LinkTestVulkan, FromFile)
     result.linkingOutput = program.getInfoLog();
     result.linkingError = program.getInfoDebugLog();
 
-#ifndef GLSLANG_WEB
+#if !defined(GLSLANG_WEB) && !defined(GLSLANG_ANGLE)
         if (success)
             program.mapIO();
 #endif
