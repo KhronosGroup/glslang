@@ -2726,10 +2726,12 @@ Id Builder::accessChainLoad(Decoration precision, Decoration nonUniform, Id resu
                     // make a new function variable for this r-value, using an initializer,
                     // and mark it as NonWritable so that downstream it can be detected as a lookup
                     // table
-                    lValue = createVariable(NoPrecision, StorageClassFunction, getTypeId(accessChain.base), "indexable", accessChain.base);
+                    lValue = createVariable(NoPrecision, StorageClassFunction, getTypeId(accessChain.base),
+                        "indexable", accessChain.base);
                     addDecoration(lValue, DecorationNonWritable);
                 } else {
-                    lValue = createVariable(NoPrecision, StorageClassFunction, getTypeId(accessChain.base), "indexable");
+                    lValue = createVariable(NoPrecision, StorageClassFunction, getTypeId(accessChain.base),
+                        "indexable");
                     // store into it
                     createStore(accessChain.base, lValue);
                 }
