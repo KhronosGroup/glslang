@@ -82,7 +82,7 @@ void TIntermediate::warn(TInfoSink& infoSink, const char* message)
 //
 void TIntermediate::merge(TInfoSink& infoSink, TIntermediate& unit)
 {
-#if !defined(GLSLANG_WEB) && !defined(GLSLANG_ANGLE)
+#ifndef GLSLANG_WEB
     mergeCallGraphs(infoSink, unit);
     mergeModes(infoSink, unit);
     mergeTrees(infoSink, unit);
@@ -104,7 +104,7 @@ void TIntermediate::mergeCallGraphs(TInfoSink& infoSink, TIntermediate& unit)
     callGraph.insert(callGraph.end(), unit.callGraph.begin(), unit.callGraph.end());
 }
 
-#if !defined(GLSLANG_WEB) && !defined(GLSLANG_ANGLE)
+#ifndef GLSLANG_WEB
 
 #define MERGE_MAX(member) member = std::max(member, unit.member)
 #define MERGE_TRUE(member) if (unit.member) member = unit.member;
@@ -533,7 +533,7 @@ void TIntermediate::mergeImplicitArraySizes(TType& type, const TType& unitType)
 //
 void TIntermediate::mergeErrorCheck(TInfoSink& infoSink, const TIntermSymbol& symbol, const TIntermSymbol& unitSymbol, bool crossStage)
 {
-#if !defined(GLSLANG_WEB) && !defined(GLSLANG_ANGLE)
+#ifndef GLSLANG_WEB
     bool writeTypeComparison = false;
 
     // Types have to match

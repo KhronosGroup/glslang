@@ -39,7 +39,6 @@ then
 elif [ "$#" -eq 0 ]
 then
     m4 -P MachineIndependent/glslang.m4 > MachineIndependent/glslang.y
-    m4 -P -DGLSLANG_ANGLE MachineIndependent/glslang.m4 > MachineIndependent/glslang_angle.y
 else
     echo usage:
     echo $0 web
@@ -48,7 +47,3 @@ else
 fi
 
 bison --defines=MachineIndependent/glslang_tab.cpp.h -t MachineIndependent/glslang.y -o MachineIndependent/glslang_tab.cpp
-if [ "$1" != 'web' ]
-then
-    bison --defines=MachineIndependent/glslang_angle_tab.cpp.h -t MachineIndependent/glslang_angle.y -o MachineIndependent/glslang_angle_tab.cpp
-fi

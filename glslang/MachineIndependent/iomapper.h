@@ -33,7 +33,7 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 
-#if !defined(GLSLANG_WEB) && !defined(GLSLANG_ANGLE)
+#ifndef GLSLANG_WEB
 
 #ifndef _IOMAPPER_INCLUDED
 #define _IOMAPPER_INCLUDED
@@ -186,7 +186,7 @@ protected:
     }
 };
 
-// Default I/O resolver for OpenGL
+// Defaulf I/O resolver for OpenGL
 struct TDefaultGlslIoResolver : public TDefaultIoResolverBase {
 public:
     typedef std::map<TString, int> TVarSlotMap;  // <resourceName, location/binding>
@@ -299,4 +299,4 @@ public:
 
 #endif // _IOMAPPER_INCLUDED
 
-#endif // !GLSLANG_WEB && !GLSLANG_ANGLE
+#endif //  GLSLANG_WEB
