@@ -178,7 +178,7 @@ void TType::buildMangledName(TString& mangledName) const
     }
 }
 
-#if !defined(GLSLANG_WEB) && !defined(GLSLANG_ANGLE)
+#ifndef GLSLANG_WEB
 
 //
 // Dump functions.
