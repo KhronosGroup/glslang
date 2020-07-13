@@ -43,8 +43,20 @@ using cmake-3.17.2
 using clang-10.0.0
 using ninja-1.10.0
 
-echo "Building..."
-mkdir /build && cd /build
+echo "Fetching dependencies..."
+cd "$ROOT_DIR"
+python3 update_glslang_sources.py
 
-cmake "$ROOT_DIR" -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$(pwd)/install" -DBUILD_SHARED_LIBS=$BUILD_SHARED_LIBS
+echo "Building..."
+mkdir "$ROOT_DIR/build" && cd "$ROOT_DIR/build"
+
+cmake "$ROOT_DIR" \
+    -GNinja \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX="$ROOT_DIR/build/install" \
+    -DBUILD_SHARED_LIBS=$BUILD_SHARED_LIBS
+
 ninja install
+
+cd "$ROOT_DIR/Test"
+./runtests

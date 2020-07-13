@@ -38,8 +38,10 @@ set -e # Fail on any error.
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd )"
 ROOT_DIR="$( cd "${SCRIPT_DIR}/../.." >/dev/null 2>&1 && pwd )"
 
+docker images # Print the known images.
+
 docker run --rm -i \
-  --volume "${ROOT_DIR}:${ROOT_DIR}:ro" \
+  --volume "${ROOT_DIR}:${ROOT_DIR}" \
   --workdir "${ROOT_DIR}" \
   --env ROOT_DIR="${ROOT_DIR}" \
   --env SCRIPT_DIR="${SCRIPT_DIR}" \
