@@ -31,6 +31,9 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
+project(glslang
+    LANGUAGES CXX)
+
 # increase to 3.1 once all major distributions
 # include a version of CMake >= 3.1
 cmake_minimum_required(VERSION 2.8.12)
@@ -114,8 +117,6 @@ if(USE_CCACHE)
         set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
     endif(CCACHE_FOUND)
 endif()
-
-project(glslang)
 
 if(ENABLE_CTEST)
     include(CTest)
@@ -303,7 +304,7 @@ if(NOT CMAKE_VERSION VERSION_LESS "3.16")
 else()
     function(glslang_pch target pch)
     endfunction()
-    message(NOTICE "Your CMake version is ${CMAKE_VERSION}. Update to at least 3.16 to enable precompiled headers to speed up incremental builds")
+    message("Your CMake version is ${CMAKE_VERSION}. Update to at least 3.16 to enable precompiled headers to speed up incremental builds")
 endif()
 
 if(BUILD_EXTERNAL AND IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/External)
