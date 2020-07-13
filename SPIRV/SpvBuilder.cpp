@@ -2722,7 +2722,7 @@ Id Builder::accessChainLoad(Decoration precision, Decoration nonUniform, Id resu
                 setPrecision(id, precision);
             } else {
                 Id lValue = NoResult;
-                if (spvVersion >= Spv_1_4) {
+                if (spvVersion >= Spv_1_4 && isValidInitializer(accessChain.base)) {
                     // make a new function variable for this r-value, using an initializer,
                     // and mark it as NonWritable so that downstream it can be detected as a lookup
                     // table

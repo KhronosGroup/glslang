@@ -560,6 +560,7 @@ INSTANTIATE_TEST_CASE_P(
         "spv.ext.RayGenShader.rgen",
         "spv.ext.RayGenShader11.rgen",
         "spv.ext.RayGenShaderArray.rgen",
+        "spv.ext.World3x4.rahit",
     })),
     FileNameAsCustomTestSuffix
 );
