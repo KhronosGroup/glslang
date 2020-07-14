@@ -279,17 +279,23 @@ function(glslang_add_build_info_dependency target)
     add_dependencies(${target} glslang-build-info)
 endfunction()
 
+# glslang_default_to_hidden_visibility() makes the symbol visibility hidden by
+# default for <target>.
+function(glslang_default_to_hidden_visibility target)
+    if(NOT WIN32)
+        target_compile_options(${target} PRIVATE "-fvisibility=hidden")
+    endif()
+endfunction()
+
 # glslang_only_export_explicit_symbols() makes the symbol visibility hidden by
-# default for <target> when building shared libraries, and sets the
-# GLSLANG_IS_SHARED_LIBRARY define, and GLSLANG_EXPORTING to 1 when specifically
-# building <target>.
+# default for <target>, and sets the GLSLANG_IS_SHARED_LIBRARY define, and 
+# GLSLANG_EXPORTING to 1 when specifically building <target>.
 function(glslang_only_export_explicit_symbols target)
+    glslang_default_to_hidden_visibility(${target})
     if(BUILD_SHARED_LIBS)
         target_compile_definitions(${target} PUBLIC "GLSLANG_IS_SHARED_LIBRARY=1")
         if(WIN32)
             target_compile_definitions(${target} PRIVATE "GLSLANG_EXPORTING=1")
-        else()
-            target_compile_options(${target} PRIVATE "-fvisibility=hidden")
         endif()
     endif()
 endfunction()
