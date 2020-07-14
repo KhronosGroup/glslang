@@ -50,21 +50,21 @@ spv.ext.World3x4.rahit
 43(gl_LaunchIDEXT):     42(ptr) Variable Input
               44:             TypeVector 40(int) 2
               47:             TypeVector 10(int) 2
-              55:             TypeVector 6(float) 4
-              56:             TypeMatrix 55(fvec4) 3
-              57:             TypeVector 6(float) 3
-              58:             TypeMatrix 57(fvec3) 4
-              59:             TypePointer Input 58
+              55:             TypeVector 6(float) 3
+              56:             TypeMatrix 55(fvec3) 4
+              57:             TypeVector 6(float) 4
+              58:             TypeMatrix 57(fvec4) 3
+              59:             TypePointer Input 56
 60(gl_WorldToObject3x4EXT):     59(ptr) Variable Input
-              65:             TypePointer Function 56
+              65:             TypePointer Function 58
               70:             TypeVector 10(int) 4
               71:             TypePointer Function 70(ivec4)
               76:             TypeImage 10(int) 3D nonsampled format:R32i
               77:             TypePointer UniformConstant 76
       78(result):     77(ptr) Variable UniformConstant
-              86:             TypePointer HitAttributeKHR 57(fvec3)
+              86:             TypePointer HitAttributeKHR 55(fvec3)
      87(attribs):     86(ptr) Variable HitAttributeKHR
-              88:             TypePointer IncomingRayPayloadKHR 57(fvec3)
+              88:             TypePointer IncomingRayPayloadKHR 55(fvec3)
     89(hitValue):     88(ptr) Variable IncomingRayPayloadKHR
          4(main):           2 Function None 3
                5:             Label
@@ -110,8 +110,8 @@ spv.ext.World3x4.rahit
               52:   37(ivec3)     CompositeConstruct 50 51 49
                                   Store 39(p) 52
               54:    6(float)     Load 8(k)
-              61:          58     Load 60(gl_WorldToObject3x4EXT)
-              62:          56     Transpose 61
+              61:          56     Load 60(gl_WorldToObject3x4EXT)
+              62:          58     Transpose 61
               63:     10(int)     Load 14(col)
               64:     10(int)     Load 25(row)
                                   Store 66(indexable) 62
