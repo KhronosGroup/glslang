@@ -2121,9 +2121,15 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
     {
         // Make sure the image types have the correct layout() format and correct argument types
         const TType& imageType = arg0->getType();
-        if (imageType.getSampler().type == EbtInt || imageType.getSampler().type == EbtUint) {
-            if (imageType.getQualifier().getFormat() != ElfR32i && imageType.getQualifier().getFormat() != ElfR32ui)
+        if (imageType.getSampler().type == EbtInt || imageType.getSampler().type == EbtUint ||
+            imageType.getSampler().type == EbtInt64 || imageType.getSampler().type == EbtUint64) {
+            if (imageType.getQualifier().getFormat() != ElfR32i && imageType.getQualifier().getFormat() != ElfR32ui &&
+                imageType.getQualifier().getFormat() != ElfR64i && imageType.getQualifier().getFormat() != ElfR64ui)
                 error(loc, "only supported on image with format r32i or r32ui", fnCandidate.getName().c_str(), "");
+            if (callNode.getType().getBasicType() == EbtInt64 && imageType.getQualifier().getFormat() != ElfR64i)
+                error(loc, "only supported on image with format r64i", fnCandidate.getName().c_str(), "");
+            else if (callNode.getType().getBasicType() == EbtUint64 && imageType.getQualifier().getFormat() != ElfR64ui)
+                error(loc, "only supported on image with format r64ui", fnCandidate.getName().c_str(), "");
         } else {
             bool isImageAtomicOnFloatAllowed = ((fnCandidate.getName().compare(0, 14, "imageAtomicAdd") == 0) ||
                 (fnCandidate.getName().compare(0, 15, "imageAtomicLoad") == 0) ||
