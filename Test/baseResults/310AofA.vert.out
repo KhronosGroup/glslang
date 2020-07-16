@@ -61,7 +61,7 @@ ERROR: node is still EOpNull!
 0:49      Constant:
 0:49        0.000000
 0:50      Branch: Return with expression
-0:50        Construct float ( temp 4-element array of 7-element array of float)
+0:50        Construct float ( temp 4-element array of 7-element array of highp float)
 0:50          direct index ( temp 7-element array of highp float)
 0:50            'a' ( in 5-element array of 7-element array of highp float)
 0:50            Constant:
@@ -76,7 +76,7 @@ ERROR: node is still EOpNull!
 0:50            Constant:
 0:50              3 (const int)
 0:51      Branch: Return with expression
-0:51        Construct float ( temp 4-element array of 7-element array of float)
+0:51        Construct float ( temp 4-element array of 7-element array of highp float)
 0:51          direct index ( temp 7-element array of highp float)
 0:51            'a' ( in 5-element array of 7-element array of highp float)
 0:51            Constant:
@@ -91,7 +91,7 @@ ERROR: node is still EOpNull!
 0:51            Constant:
 0:51              3 (const int)
 0:52      Branch: Return with expression
-0:52        Construct float ( temp 4-element array of 7-element array of float)
+0:52        Construct float ( temp 4-element array of 7-element array of highp float)
 0:52          direct index ( temp 7-element array of highp float)
 0:52            'a' ( in 5-element array of 7-element array of highp float)
 0:52            Constant:

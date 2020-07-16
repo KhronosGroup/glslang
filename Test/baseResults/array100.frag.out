@@ -31,7 +31,7 @@ ERROR: node is still EOpNull!
 0:9      'a' ( in 5-element array of mediump float)
 0:11    Sequence
 0:11      Branch: Return with expression
-0:11        Construct float ( temp 4-element array of float)
+0:11        Construct float ( temp 4-element array of mediump float)
 0:11          direct index ( temp mediump float)
 0:11            'a' ( in 5-element array of mediump float)
 0:11            Constant:
@@ -168,7 +168,7 @@ ERROR: node is still EOpNull!
 0:9      'a' ( in 5-element array of mediump float)
 0:11    Sequence
 0:11      Branch: Return with expression
-0:11        Construct float ( temp 4-element array of float)
+0:11        Construct float ( temp 4-element array of mediump float)
 0:11          direct index ( temp mediump float)
 0:11            'a' ( in 5-element array of mediump float)
 0:11            Constant:
