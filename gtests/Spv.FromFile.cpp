@@ -603,6 +603,8 @@ INSTANTIATE_TEST_CASE_P(
         "spv.460.vert",
         "spv.460.comp",
         "spv.atomic.comp",
+        "spv.atomicFloat.comp",
+        "spv.atomicFloat_Error.comp",
         "spv.glFragColor.frag",
         "spv.rankShift.comp",
         "spv.specConst.vert",
