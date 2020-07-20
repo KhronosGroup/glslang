@@ -5,7 +5,13 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ## 11.0.0 2020-07-20
 
-[Put `11.0.0` release notes here]
+### Breaking changes
+
+#### Visual Studio 2013 is no longer supported
+
+[As scheduled](https://github.com/KhronosGroup/glslang/blob/9eef54b2513ca6b40b47b07d24f453848b65c0df/README.md#planned-deprecationsremovals),
+Microsoft Visual Studio 2013 is no longer officially supported. Please upgrade
+to at least Visual Studio 2015.
 
 ## 10.15.3847 2020-07-20
 
