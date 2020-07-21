@@ -4,7 +4,7 @@
 # build version format
 version: "{build}"
 
-os: Visual Studio 2013
+os: Visual Studio 2015
 
 platform:
   - x64
@@ -58,7 +58,7 @@ build:
 
 build_script:
   - mkdir build && cd build
-  - cmake -G "Visual Studio 12 2013 Win64" -DCMAKE_INSTALL_PREFIX=install ..
+  - cmake -G "Visual Studio 14 2015 Win64" -DCMAKE_INSTALL_PREFIX=install ..
   - cmake --build . --config %CONFIGURATION% --target install
 
 test_script:
@@ -105,4 +105,4 @@ deploy:
     force_update: true
     on:
       branch: master
-      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
