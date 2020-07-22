@@ -5625,7 +5625,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "in    float  gl_RayTminNV;"
             "in    float  gl_RayTminEXT;"
             "in    float  gl_RayTmaxNV;"
-            "in    float  gl_RayTmaxEXT;"
+            "in volatile float gl_RayTmaxEXT;"
             "in    mat4x3 gl_ObjectToWorldNV;"
             "in    mat4x3 gl_ObjectToWorldEXT;"
             "in    mat3x4 gl_ObjectToWorld3x4EXT;"
