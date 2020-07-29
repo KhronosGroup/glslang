@@ -1823,7 +1823,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             );
 
         // Generate all flavors of subgroup ops.
-        static const char *subgroupOps[] = 
+        static const char *subgroupOps[] =
         {
             "bool   subgroupAllEqual(%s);\n",
             "%s     subgroupBroadcast(%s, uint);\n",
@@ -1888,25 +1888,25 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "%s     subgroupPartitionedExclusiveXorNV(%s, uvec4 ballot);\n",
         };
 
-        static const char *floatTypes[] = { 
-            "float", "vec2", "vec3", "vec4", 
-            "float16_t", "f16vec2", "f16vec3", "f16vec4", 
+        static const char *floatTypes[] = {
+            "float", "vec2", "vec3", "vec4",
+            "float16_t", "f16vec2", "f16vec3", "f16vec4",
         };
-        static const char *doubleTypes[] = { 
-            "double", "dvec2", "dvec3", "dvec4", 
+        static const char *doubleTypes[] = {
+            "double", "dvec2", "dvec3", "dvec4",
         };
-        static const char *intTypes[] = { 
-            "int8_t", "i8vec2", "i8vec3", "i8vec4", 
-            "int16_t", "i16vec2", "i16vec3", "i16vec4", 
-            "int", "ivec2", "ivec3", "ivec4", 
-            "int64_t", "i64vec2", "i64vec3", "i64vec4", 
-            "uint8_t", "u8vec2", "u8vec3", "u8vec4", 
-            "uint16_t", "u16vec2", "u16vec3", "u16vec4", 
-            "uint", "uvec2", "uvec3", "uvec4", 
-            "uint64_t", "u64vec2", "u64vec3", "u64vec4", 
+        static const char *intTypes[] = {
+            "int8_t", "i8vec2", "i8vec3", "i8vec4",
+            "int16_t", "i16vec2", "i16vec3", "i16vec4",
+            "int", "ivec2", "ivec3", "ivec4",
+            "int64_t", "i64vec2", "i64vec3", "i64vec4",
+            "uint8_t", "u8vec2", "u8vec3", "u8vec4",
+            "uint16_t", "u16vec2", "u16vec3", "u16vec4",
+            "uint", "uvec2", "uvec3", "uvec4",
+            "uint64_t", "u64vec2", "u64vec3", "u64vec4",
         };
-        static const char *boolTypes[] = { 
-            "bool", "bvec2", "bvec3", "bvec4", 
+        static const char *boolTypes[] = {
+            "bool", "bvec2", "bvec3", "bvec4",
         };
 
         for (size_t i = 0; i < sizeof(subgroupOps)/sizeof(subgroupOps[0]); ++i) {
@@ -6185,7 +6185,7 @@ void TBuiltIns::addSamplingFunctions(TSampler sampler, const TString& typeName, 
                             for (int extraProj = 0; extraProj <= 1; ++extraProj) {
                                 bool compare = false;
                                 int totalDims = dimMap[sampler.dim] + (sampler.arrayed ? 1 : 0);
-                                // skip dummy unused second component for 1D non-array shadows
+                                // skip placeholder unused second component for 1D non-array shadows
                                 if (sampler.shadow && totalDims < 2)
                                     totalDims = 2;
                                 totalDims += (sampler.shadow ? 1 : 0) + proj;

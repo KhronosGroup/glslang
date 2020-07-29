@@ -366,7 +366,7 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& nodeList)
     // DX9 sampler declaration use a different syntax
     // DX9 shaders need to run through HLSL compiler (fxc) via a back compat mode, it isn't going to
     // be possible to simultaneously compile D3D10+ style shaders and DX9 shaders. If we want to compile DX9
-    // HLSL shaders, this will have to be a master level switch
+    // HLSL shaders, this will have to be a top level switch
     // As such, the sampler keyword in D3D10+ turns into an automatic sampler type, and is commonly used
     // For that reason, this line is commented out
     // if (acceptSamplerDeclarationDX9(declaredType))
@@ -497,7 +497,7 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& nodeList)
                         // Declare the variable and add any initializer code to the AST.
                         // The top-level node is always made into an aggregate, as that's
                         // historically how the AST has been.
-                        initializers = intermediate.growAggregate(initializers, 
+                        initializers = intermediate.growAggregate(initializers,
                             parseContext.declareVariable(idToken.loc, *fullName, variableType, expressionNode),
                             idToken.loc);
                     }
@@ -620,7 +620,7 @@ bool HlslGrammar::acceptFullySpecifiedType(TType& type, TIntermNode*& nodeList, 
     if (type.getBasicType() == EbtBlock) {
         // the type was a block, which set some parts of the qualifier
         parseContext.mergeQualifiers(type.getQualifier(), qualifier);
-    
+
         // merge in the attributes
         parseContext.transferTypeAttributes(token.loc, attributes, type);
 
@@ -1016,7 +1016,7 @@ bool HlslGrammar::acceptTessellationPatchTemplateType(TType& type)
 
     if (! acceptTessellationDeclType(patchType))
         return false;
-    
+
     if (! acceptTokenClass(EHTokLeftAngle))
         return false;
 
@@ -1050,7 +1050,7 @@ bool HlslGrammar::acceptTessellationPatchTemplateType(TType& type)
 
     return true;
 }
-    
+
 // stream_out_template_type
 //      : output_primitive_geometry_type LEFT_ANGLE type RIGHT_ANGLE
 //
@@ -1175,7 +1175,7 @@ bool HlslGrammar::acceptSubpassInputType(TType& type)
     return true;
 }
 
-// sampler_type for DX9 compatibility 
+// sampler_type for DX9 compatibility
 //      : SAMPLER
 //      | SAMPLER1D
 //      | SAMPLER2D
@@ -1424,7 +1424,7 @@ bool HlslGrammar::acceptType(TType& type)
 }
 bool HlslGrammar::acceptType(TType& type, TIntermNode*& nodeList)
 {
-    // Basic types for min* types, use native halfs if the option allows them.
+    // Basic types for min* types, use halfs if the option allows them.
     bool enable16BitTypes = parseContext.hlslEnable16BitTypes();
 
     const TBasicType min16float_bt = enable16BitTypes ? EbtFloat16 : EbtFloat;
@@ -2209,7 +2209,7 @@ bool HlslGrammar::acceptConstantBufferType(TType& type)
         expected("left angle bracket");
         return false;
     }
-    
+
     TType templateType;
     if (! acceptType(templateType)) {
         expected("type");
@@ -2250,7 +2250,7 @@ bool HlslGrammar::acceptTextureBufferType(TType& type)
         expected("left angle bracket");
         return false;
     }
-    
+
     TType templateType;
     if (! acceptType(templateType)) {
         expected("type");
@@ -2331,7 +2331,7 @@ bool HlslGrammar::acceptStructBufferType(TType& type)
             expected("left angle bracket");
             return false;
         }
-    
+
         if (! acceptType(*templateType)) {
             expected("type");
             return false;
@@ -2413,7 +2413,7 @@ bool HlslGrammar::acceptStructDeclarationList(TTypeList*& typeList, TIntermNode*
             expected("member type");
             return false;
         }
-        
+
         // merge in the attributes
         parseContext.transferTypeAttributes(token.loc, attributes, memberType);
 

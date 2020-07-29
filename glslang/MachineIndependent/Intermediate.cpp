@@ -1225,7 +1225,7 @@ TIntermTyped* TIntermediate::addUniShapeConversion(TOperator op, const TType& ty
         break;
 
     case EOpMulAssign:
-        // want to support vector *= scalar native ops in AST and lower, not smear, similarly for
+        // want to support vector *= scalar ops in AST and lower, not smear, similarly for
         // matrix *= scalar, etc.
 
     case EOpAddAssign:
@@ -1295,7 +1295,7 @@ void TIntermediate::addBiShapeConversion(TOperator op, TIntermTyped*& lhsNode, T
     case EOpAdd:
     case EOpSub:
     case EOpDiv:
-        // want to support vector * scalar native ops in AST and lower, not smear, similarly for
+        // want to support vector * scalar ops in AST and lower, not smear, similarly for
         // matrix * vector, etc.
         if (lhsNode->getVectorSize() == 1 || rhsNode->getVectorSize() == 1)
             return;
@@ -1303,7 +1303,7 @@ void TIntermediate::addBiShapeConversion(TOperator op, TIntermTyped*& lhsNode, T
 
     case EOpRightShift:
     case EOpLeftShift:
-        // can natively support the right operand being a scalar and the left a vector,
+        // can support the right operand being a scalar and the left a vector,
         // but not the reverse
         if (rhsNode->getVectorSize() == 1)
             return;
@@ -1667,7 +1667,7 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
                                 extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_float16) ||
                                 extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_float32) ||
                                 extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_float64);
-    
+
     if (explicitTypesEnabled) {
         // integral promotions
         if (isIntegralPromotion(from, to)) {
@@ -1722,7 +1722,7 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
                 }
             default:
                 return false;
-        }        
+        }
     } else {
         switch (to) {
         case EbtDouble:
@@ -1756,7 +1756,7 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
             case EbtUint16:
                 return extensionRequested(E_GL_AMD_gpu_shader_int16);
             case EbtFloat16:
-                return 
+                return
                     extensionRequested(E_GL_AMD_gpu_shader_half_float) || getSource() == EShSourceHlsl;
             default:
                  return false;
@@ -1956,8 +1956,8 @@ std::tuple<TBasicType, TBasicType> TIntermediate::getConversionDestinatonType(TB
     TBasicType res0 = EbtNumTypes;
     TBasicType res1 = EbtNumTypes;
 
-    if ((isEsProfile() && 
-        (version < 310 || !extensionRequested(E_GL_EXT_shader_implicit_conversions))) || 
+    if ((isEsProfile() &&
+        (version < 310 || !extensionRequested(E_GL_EXT_shader_implicit_conversions))) ||
         version == 110)
         return std::make_tuple(res0, res1);
 

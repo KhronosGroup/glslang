@@ -58,7 +58,7 @@ inline OS_TLSIndex ToGenericTLSIndex (DWORD handle)
     return (OS_TLSIndex)((uintptr_t)handle + 1);
 }
 
-inline DWORD ToNativeTLSIndex (OS_TLSIndex nIndex)
+inline DWORD ToHostTLSIndex (OS_TLSIndex nIndex)
 {
     return (DWORD)((uintptr_t)nIndex - 1);
 }
@@ -84,7 +84,7 @@ bool OS_SetTLSValue(OS_TLSIndex nIndex, void *lpvValue)
         return false;
     }
 
-    if (TlsSetValue(ToNativeTLSIndex(nIndex), lpvValue))
+    if (TlsSetValue(ToHostTLSIndex(nIndex), lpvValue))
         return true;
     else
         return false;
@@ -93,7 +93,7 @@ bool OS_SetTLSValue(OS_TLSIndex nIndex, void *lpvValue)
 void* OS_GetTLSValue(OS_TLSIndex nIndex)
 {
     assert(nIndex != OS_INVALID_TLS_INDEX);
-    return TlsGetValue(ToNativeTLSIndex(nIndex));
+    return TlsGetValue(ToHostTLSIndex(nIndex));
 }
 
 bool OS_FreeTLSIndex(OS_TLSIndex nIndex)
@@ -103,7 +103,7 @@ bool OS_FreeTLSIndex(OS_TLSIndex nIndex)
         return false;
     }
 
-    if (TlsFree(ToNativeTLSIndex(nIndex)))
+    if (TlsFree(ToHostTLSIndex(nIndex)))
         return true;
     else
         return false;

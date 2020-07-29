@@ -38,7 +38,7 @@
 #define _POOLALLOC_INCLUDED_
 
 #ifdef _DEBUG
-#  define GUARD_BLOCKS  // define to enable guard block sanity checking
+#  define GUARD_BLOCKS  // define to enable guard block checking
 #endif
 
 //

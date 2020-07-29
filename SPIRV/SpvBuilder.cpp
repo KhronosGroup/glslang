@@ -1405,7 +1405,7 @@ spv::MemoryAccessMask Builder::sanitizeMemoryAccessForStorageClass(spv::MemoryAc
     case spv::StorageClassPhysicalStorageBufferEXT:
         break;
     default:
-        memoryAccess = spv::MemoryAccessMask(memoryAccess & 
+        memoryAccess = spv::MemoryAccessMask(memoryAccess &
                         ~(spv::MemoryAccessMakePointerAvailableKHRMask |
                           spv::MemoryAccessMakePointerVisibleKHRMask |
                           spv::MemoryAccessNonPrivatePointerKHRMask));
@@ -1890,7 +1890,7 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool sparse, 
         texArgs[numArgs++] = parameters.granularity;
     if (parameters.coarse != NoResult)
         texArgs[numArgs++] = parameters.coarse;
-#endif 
+#endif
 
     //
     // Set up the optional arguments
@@ -3009,7 +3009,7 @@ void Builder::transferAccessChainSwizzle(bool dynamic)
 }
 
 // Utility method for creating a new block and setting the insert point to
-// be in it. This is useful for flow-control operations that need a "dummy"
+// be in it. This is useful for flow-control operations that need a "placeholder"
 // block proceeding them (e.g. instructions after a discard, etc).
 void Builder::createAndSetNoPredecessorBlock(const char* /*name*/)
 {

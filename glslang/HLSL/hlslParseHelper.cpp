@@ -846,7 +846,7 @@ TIntermTyped* HlslParseContext::handleBracketDereference(const TSourceLoc& loc, 
     }
 
     if (result == nullptr) {
-        // Insert dummy error-recovery result
+        // Insert placeholder error-recovery result
         result = intermediate.addConstantUnion(0.0, EbtFloat, loc);
     } else {
         // If the array reference was flattened, it has the correct type.  E.g, if it was
@@ -4756,7 +4756,7 @@ void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& 
         return intermediate.addSymbol(*(symbol->getAsVariable()), loc);
     };
 
-    // HLSL intrinsics can be pass through to native AST opcodes, or decomposed here to existing AST
+    // HLSL intrinsics can be pass through to AST opcodes, or decomposed here to existing AST
     // opcodes for compatibility with existing software stacks.
     static const bool decomposeHlslIntrinsics = true;
 
@@ -5040,7 +5040,7 @@ void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& 
             // HLSL uses int2 offset on a 16x16 grid in [-8..7] on x & y:
             //   iU = (iU<<28)>>28
             //   fU = ((float)iU)/16
-            // Targets might handle this natively, in which case they can disable
+            // Targets might handle this, in which case they can disable
             // decompositions.
 
             TIntermTyped* arg0 = argAggregate->getSequence()[0]->getAsTyped();  // value
@@ -6376,7 +6376,7 @@ void HlslParseContext::binaryOpError(const TSourceLoc& loc, const char* op, TStr
 //
 // A basic type of EbtVoid is a key that the name string was seen in the source, but
 // it was not found as a variable in the symbol table.  If so, give the error
-// message and insert a dummy variable in the symbol table to prevent future errors.
+// message and insert a placeholder variable in the symbol table to prevent future errors.
 //
 void HlslParseContext::variableCheck(TIntermTyped*& nodePtr)
 {
@@ -7450,8 +7450,8 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, TFunction
     }
 
     // first, look for an exact match
-    bool dummyScope;
-    TSymbol* symbol = symbolTable.find(call.getMangledName(), &builtIn, &dummyScope, &thisDepth);
+    bool placeholderScope;
+    TSymbol* symbol = symbolTable.find(call.getMangledName(), &builtIn, &placeholderScope, &thisDepth);
     if (symbol)
         return symbol->getAsFunction();
 
@@ -8905,8 +8905,8 @@ void HlslParseContext::fixBlockUniformOffsets(const TQualifier& qualifier, TType
 
         // modify just the children's view of matrix layout, if there is one for this member
         TLayoutMatrix subMatrixLayout = typeList[member].type->getQualifier().layoutMatrix;
-        int dummyStride;
-        int memberAlignment = intermediate.getMemberAlignment(*typeList[member].type, memberSize, dummyStride,
+        int placeholderStride;
+        int memberAlignment = intermediate.getMemberAlignment(*typeList[member].type, memberSize, placeholderStride,
                                                               qualifier.layoutPacking,
                                                               subMatrixLayout != ElmNone
                                                                   ? subMatrixLayout == ElmRowMajor

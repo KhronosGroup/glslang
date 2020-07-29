@@ -27,7 +27,7 @@ spv.meshTaskShader.task
                               Name 49  ""
                               Name 65  "uni_image"
                               Name 88  "Task"
-                              MemberName 88(Task) 0  "dummy"
+                              MemberName 88(Task) 0  "placeholder"
                               MemberName 88(Task) 1  "submesh"
                               MemberName 88(Task) 2  "viewID"
                               Name 90  "mytask"

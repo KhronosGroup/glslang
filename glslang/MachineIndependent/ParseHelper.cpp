@@ -402,7 +402,7 @@ TIntermTyped* TParseContext::handleBracketDereference(const TSourceLoc& loc, TIn
         else
             error(loc, " left of '[' is not of type array, matrix, or vector ", "expression", "");
 
-        // Insert dummy error-recovery result
+        // Insert placeholder error-recovery result
         return intermediate.addConstantUnion(0.0, EbtFloat, loc);
     }
 
@@ -1763,18 +1763,18 @@ void TParseContext::memorySemanticsCheck(const TSourceLoc& loc, const TFunction&
         break;
     }
 
-    if ((semantics & gl_SemanticsAcquire) && 
+    if ((semantics & gl_SemanticsAcquire) &&
         (callNode.getOp() == EOpAtomicStore || callNode.getOp() == EOpImageAtomicStore)) {
         error(loc, "gl_SemanticsAcquire must not be used with (image) atomic store",
               fnCandidate.getName().c_str(), "");
     }
-    if ((semantics & gl_SemanticsRelease) && 
+    if ((semantics & gl_SemanticsRelease) &&
         (callNode.getOp() == EOpAtomicLoad || callNode.getOp() == EOpImageAtomicLoad)) {
         error(loc, "gl_SemanticsRelease must not be used with (image) atomic load",
               fnCandidate.getName().c_str(), "");
     }
-    if ((semantics & gl_SemanticsAcquireRelease) && 
-        (callNode.getOp() == EOpAtomicStore || callNode.getOp() == EOpImageAtomicStore || 
+    if ((semantics & gl_SemanticsAcquireRelease) &&
+        (callNode.getOp() == EOpAtomicStore || callNode.getOp() == EOpImageAtomicStore ||
          callNode.getOp() == EOpAtomicLoad  || callNode.getOp() == EOpImageAtomicLoad)) {
         error(loc, "gl_SemanticsAcquireRelease must not be used with (image) atomic load/store",
               fnCandidate.getName().c_str(), "");
@@ -2251,7 +2251,7 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
         }
 
         if (profile != EEsProfile && version < 450) {
-            if ((*argp)[0]->getAsTyped()->getBasicType() != EbtFloat && 
+            if ((*argp)[0]->getAsTyped()->getBasicType() != EbtFloat &&
                 (*argp)[0]->getAsTyped()->getBasicType() != EbtDouble &&
                 (*argp)[1]->getAsTyped()->getBasicType() != EbtFloat &&
                 (*argp)[1]->getAsTyped()->getBasicType() != EbtDouble &&
@@ -2551,7 +2551,7 @@ void TParseContext::binaryOpError(const TSourceLoc& loc, const char* op, TString
 //
 // A basic type of EbtVoid is a key that the name string was seen in the source, but
 // it was not found as a variable in the symbol table.  If so, give the error
-// message and insert a dummy variable in the symbol table to prevent future errors.
+// message and insert a placeholder variable in the symbol table to prevent future errors.
 //
 void TParseContext::variableCheck(TIntermTyped*& nodePtr)
 {
@@ -3072,7 +3072,7 @@ bool TParseContext::constructorError(const TSourceLoc& loc, TIntermNode* node, T
                 makeSpecConst = ! floatArgument && ! type.isArray();
                 break;
             default:
-                // anything else wasn't white-listed in the spec as a conversion
+                // anything else wasn't allowed in the spec as a conversion
                 makeSpecConst = false;
                 break;
             }
@@ -3614,7 +3614,7 @@ void TParseContext::mergeQualifiers(const TSourceLoc& loc, TQualifier& dst, cons
                    (src.workgroupcoherent && (dst.coherent || dst.devicecoherent || dst.queuefamilycoherent || dst.subgroupcoherent || dst.shadercallcoherent)) ||
                    (src.subgroupcoherent  && (dst.coherent || dst.devicecoherent || dst.queuefamilycoherent || dst.workgroupcoherent || dst.shadercallcoherent)) ||
                    (src.shadercallcoherent && (dst.coherent || dst.devicecoherent || dst.queuefamilycoherent || dst.workgroupcoherent || dst.subgroupcoherent)))) {
-        error(loc, "only one coherent/devicecoherent/queuefamilycoherent/workgroupcoherent/subgroupcoherent/shadercallcoherent qualifier allowed", 
+        error(loc, "only one coherent/devicecoherent/queuefamilycoherent/workgroupcoherent/subgroupcoherent/shadercallcoherent qualifier allowed",
             GetPrecisionQualifierString(src.precision), "");
     }
 #endif
@@ -5266,7 +5266,7 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
         return;
     } else if (id == "location") {
         profileRequires(loc, EEsProfile, 300, nullptr, "location");
-        const char* exts[2] = { E_GL_ARB_separate_shader_objects, E_GL_ARB_explicit_attrib_location }; 
+        const char* exts[2] = { E_GL_ARB_separate_shader_objects, E_GL_ARB_explicit_attrib_location };
         // GL_ARB_explicit_uniform_location requires 330 or GL_ARB_explicit_attrib_location we do not need to add it here
         profileRequires(loc, ~EEsProfile, 330, 2, exts, "location");
         if ((unsigned int)value >= TQualifier::layoutLocationEnd)
@@ -7953,8 +7953,8 @@ void TParseContext::fixBlockUniformOffsets(TQualifier& qualifier, TTypeList& typ
 
         // modify just the children's view of matrix layout, if there is one for this member
         TLayoutMatrix subMatrixLayout = typeList[member].type->getQualifier().layoutMatrix;
-        int dummyStride;
-        int memberAlignment = intermediate.getMemberAlignment(*typeList[member].type, memberSize, dummyStride, qualifier.layoutPacking,
+        int placeholderStride;
+        int memberAlignment = intermediate.getMemberAlignment(*typeList[member].type, memberSize, placeholderStride, qualifier.layoutPacking,
                                                               subMatrixLayout != ElmNone ? subMatrixLayout == ElmRowMajor : qualifier.layoutMatrix == ElmRowMajor);
         if (memberQualifier.hasOffset()) {
             // "The specified offset must be a multiple
@@ -8408,7 +8408,7 @@ void TParseContext::updateStandaloneQualifierDefaults(const TSourceLoc& loc, con
         // Exit early as further checks are not valid
         return;
     }
-#endif 
+#endif
     const TQualifier& qualifier = publicType.qualifier;
 
     if (qualifier.isAuxiliary() ||

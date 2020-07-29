@@ -44,7 +44,7 @@ namespace {
 
     typedef unsigned int SpvWord;
 
-    // Poor man's basename: given a complete path, return file portion.
+    // Simple basename: given a complete path, return file portion.
     // E.g:
     //      Linux:  /foo/bar/test  -> test
     //      Win:   c:\foo\bar\test -> test

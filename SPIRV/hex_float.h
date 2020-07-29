@@ -183,7 +183,7 @@ struct HexFloatTraits {
   // The numerical type that this HexFloat represents.
   typedef void underlying_type;
   // The type needed to construct the underlying type.
-  typedef void native_type;
+  typedef void origin_type;
   // The number of bits that are actually relevant in the uint_type.
   // This allows us to deal with, for example, 24-bit values in a 32-bit
   // integer.
@@ -204,7 +204,7 @@ struct HexFloatTraits<FloatProxy<float>> {
   typedef uint32_t uint_type;
   typedef int32_t int_type;
   typedef FloatProxy<float> underlying_type;
-  typedef float native_type;
+  typedef float origin_type;
   static const uint_type num_used_bits = 32;
   static const uint_type num_exponent_bits = 8;
   static const uint_type num_fraction_bits = 23;
@@ -218,7 +218,7 @@ struct HexFloatTraits<FloatProxy<double>> {
   typedef uint64_t uint_type;
   typedef int64_t int_type;
   typedef FloatProxy<double> underlying_type;
-  typedef double native_type;
+  typedef double origin_type;
   static const uint_type num_used_bits = 64;
   static const uint_type num_exponent_bits = 11;
   static const uint_type num_fraction_bits = 52;
@@ -232,7 +232,7 @@ struct HexFloatTraits<FloatProxy<Float16>> {
   typedef uint16_t uint_type;
   typedef int16_t int_type;
   typedef uint16_t underlying_type;
-  typedef uint16_t native_type;
+  typedef uint16_t origin_type;
   static const uint_type num_used_bits = 16;
   static const uint_type num_exponent_bits = 5;
   static const uint_type num_fraction_bits = 10;
@@ -255,7 +255,7 @@ class HexFloat {
   typedef typename Traits::uint_type uint_type;
   typedef typename Traits::int_type int_type;
   typedef typename Traits::underlying_type underlying_type;
-  typedef typename Traits::native_type native_type;
+  typedef typename Traits::origin_type origin_type;
 
   explicit HexFloat(T f) : value_(f) {}
 
@@ -568,7 +568,7 @@ class HexFloat {
   // underflow to (0 or min depending on rounding) if the number underflows.
   template <typename other_T>
   void castTo(other_T& other, round_direction round_dir) {
-    other = other_T(static_cast<typename other_T::native_type>(0));
+    other = other_T(static_cast<typename other_T::origin_type>(0));
     bool negate = isNegative();
     if (getUnsignedBits() == 0) {
       if (negate) {
@@ -850,7 +850,7 @@ std::istream& operator>>(std::istream& is, HexFloat<T, Traits>& value) {
   using uint_type = typename HF::uint_type;
   using int_type = typename HF::int_type;
 
-  value.set_value(static_cast<typename HF::native_type>(0.f));
+  value.set_value(static_cast<typename HF::origin_type>(0.f));
 
   if (is.flags() & std::ios::skipws) {
     // If the user wants to skip whitespace , then we should obey that.
