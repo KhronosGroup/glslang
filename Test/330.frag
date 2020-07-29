@@ -127,20 +127,6 @@ layout(location=0, index=0) in; // ERROR, not just on in
 layout(location=0, index=0) out; // ERROR, need a variable
 layout(location=26, index=0) out indexBlock { int a; } indexBlockI; // ERROR, not on a block
 
-uniform sampler1D samp1D;
-uniform sampler2DShadow samp2Ds;
-
-void qlod()
-{
-    vec2 lod;
-    float pf;
-    vec2 pf2;
-    vec3 pf3;
-
-    lod = textureQueryLod(samp1D, pf);      // ERROR, not until 400
-    lod = textureQueryLod(samp2Ds, pf2);    // ERROR, not until 400
-}
-
 int precise;                // okay, not a keyword yet
 struct SKeyMem { int precise; } KeyMem; // okay, not a keyword yet
 
@@ -150,3 +136,20 @@ void fooKeyMem()
 }
 
 layout(location=28, index=2) out vec4 outIndex2; // ERROR index out of range
+
+layout(location=4) uniform vec4 ucolor0; // ERROR: extension is not enabled
+
+#extension GL_ARB_explicit_uniform_location : enable
+
+layout(location=5) uniform vec4 ucolor1;
+
+layout(location=6) uniform ColorsBuffer // ERROR: location cannot be applied in uniform buffer block
+{
+    vec4 colors[128];
+} colorsBuffer;
+
+
+void testOverload() {
+    float overloadTest = 42;
+    overloadTest = smoothstep(0, 1, overloadTest);
+}

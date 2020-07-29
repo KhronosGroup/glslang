@@ -58,8 +58,8 @@ void foo23()
     b1 = mix(b2, b3, b);
     uvec3 um3 = mix(uvec3(i), uvec3(i), bvec3(b));
     ivec4 im4 = mix(ivec4(i), ivec4(i), bvec4(b));
+    1 << mix(1u, 1u, false);  // does not require folding
 }
-
 layout(binding=3) uniform sampler2D s1;
 layout(binding=3) uniform sampler2D s2; // ERROR: overlapping bindings?  Don't see that in the 310 spec.
 highp layout(binding=2) uniform writeonly image2D      i2D;
@@ -440,7 +440,7 @@ void devi()
 #extension GL_EXT_device_group : enable
 #endif
 
-#ifdef GL_EXT_device_group
+#ifdef GL_EXT_multiview
 #extension GL_EXT_multiview : enable
 #endif
 
@@ -449,3 +449,39 @@ void devie()
     gl_DeviceIndex;
     gl_ViewIndex;
 }
+
+#extension GL_EXT_shader_implicit_conversions : enable
+
+// Test function overloading
+void func(uint a, uvec4 b)
+{
+
+}
+
+int func(uint a, uvec4 b) // Error function overloading because of same signature and different return type
+{
+    return 0;
+}
+
+int b;
+
+void testimplicit() {
+
+    uint a = b; // int->uint
+    mediump vec4 col = vec4(1, 2, 3, 4); // ivec4 -> vec4
+    int  b = a + 2; // ERROR: cannot convert from ' temp uint' to ' temp int'
+
+    // Test binary ops
+    uint c = b * 3; 
+    uint d = b * 3u;
+    uint e = b%3;
+    uint f = (b > 3)? b : c;     
+    func(b, ivec4(1,2,3,4)); 
+}
+
+#extension GL_EXT_shader_implicit_conversions : disable
+
+void testimplicitFail() {
+    uint a = b; // Error GL_EXT_shader_implicit_conversions is disabled
+}
+

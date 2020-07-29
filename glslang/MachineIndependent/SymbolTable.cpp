@@ -3,6 +3,7 @@
 // Copyright (C) 2012-2013 LunarG, Inc.
 // Copyright (C) 2017 ARM Limited.
 // Copyright (C) 2015-2018 Google, Inc.
+// Modifications Copyright (C) 2020 Advanced Micro Devices, Inc. All rights reserved.
 //
 // All rights reserved.
 //
@@ -61,63 +62,67 @@ void TType::buildMangledName(TString& mangledName) const
 
     switch (basicType) {
     case EbtFloat:              mangledName += 'f';      break;
-    case EbtDouble:             mangledName += 'd';      break;
-    case EbtFloat16:            mangledName += "f16";    break;
     case EbtInt:                mangledName += 'i';      break;
     case EbtUint:               mangledName += 'u';      break;
+    case EbtBool:               mangledName += 'b';      break;
+#ifndef GLSLANG_WEB
+    case EbtDouble:             mangledName += 'd';      break;
+    case EbtFloat16:            mangledName += "f16";    break;
     case EbtInt8:               mangledName += "i8";     break;
     case EbtUint8:              mangledName += "u8";     break;
     case EbtInt16:              mangledName += "i16";    break;
     case EbtUint16:             mangledName += "u16";    break;
     case EbtInt64:              mangledName += "i64";    break;
     case EbtUint64:             mangledName += "u64";    break;
-    case EbtBool:               mangledName += 'b';      break;
     case EbtAtomicUint:         mangledName += "au";     break;
-#ifdef NV_EXTENSIONS
-    case EbtAccStructNV:        mangledName += "asnv";   break;
+    case EbtAccStruct:          mangledName += "as";     break;
+    case EbtRayQuery:           mangledName += "rq";     break;
 #endif
     case EbtSampler:
         switch (sampler.type) {
-#ifdef AMD_EXTENSIONS
+#ifndef GLSLANG_WEB
         case EbtFloat16: mangledName += "f16"; break;
 #endif
         case EbtInt:   mangledName += "i"; break;
         case EbtUint:  mangledName += "u"; break;
         default: break; // some compilers want this
         }
-        if (sampler.image)
-            mangledName += "I";  // a normal image
-        else if (sampler.sampler)
+        if (sampler.isImageClass())
+            mangledName += "I";  // a normal image or subpass
+        else if (sampler.isPureSampler())
             mangledName += "p";  // a "pure" sampler
-        else if (!sampler.combined)
+        else if (!sampler.isCombined())
             mangledName += "t";  // a "pure" texture
         else
             mangledName += "s";  // traditional combined sampler
-        if (sampler.arrayed)
+        if (sampler.isArrayed())
             mangledName += "A";
-        if (sampler.shadow)
+        if (sampler.isShadow())
             mangledName += "S";
-        if (sampler.external)
+        if (sampler.isExternal())
             mangledName += "E";
-        if (sampler.yuv)
+        if (sampler.isYuv())
             mangledName += "Y";
         switch (sampler.dim) {
-        case Esd1D:       mangledName += "1";  break;
         case Esd2D:       mangledName += "2";  break;
         case Esd3D:       mangledName += "3";  break;
         case EsdCube:     mangledName += "C";  break;
+#ifndef GLSLANG_WEB
+        case Esd1D:       mangledName += "1";  break;
         case EsdRect:     mangledName += "R2"; break;
         case EsdBuffer:   mangledName += "B";  break;
         case EsdSubpass:  mangledName += "P";  break;
+#endif
         default: break; // some compilers want this
         }
 
+#ifdef ENABLE_HLSL
         if (sampler.hasReturnStruct()) {
             // Name mangle for sampler return struct uses struct table index.
             mangledName += "-tx-struct";
 
             char text[16]; // plenty enough space for the small integers.
-            snprintf(text, sizeof(text), "%d-", sampler.structReturnIndex);
+            snprintf(text, sizeof(text), "%u-", sampler.getStructReturnIndex());
             mangledName += text;
         } else {
             switch (sampler.getVectorSize()) {
@@ -127,8 +132,9 @@ void TType::buildMangledName(TString& mangledName) const
             case 4: break; // default to prior name mangle behavior
             }
         }
+#endif
 
-        if (sampler.ms)
+        if (sampler.isMultiSample())
             mangledName += "M";
         break;
     case EbtStruct:
@@ -172,43 +178,87 @@ void TType::buildMangledName(TString& mangledName) const
     }
 }
 
+#ifndef GLSLANG_WEB
+
 //
 // Dump functions.
 //
 
-void TVariable::dump(TInfoSink& infoSink) const
+void TSymbol::dumpExtensions(TInfoSink& infoSink) const
 {
-    infoSink.debug << getName().c_str() << ": " << type.getStorageQualifierString() << " " << type.getBasicTypeString();
-    if (type.isArray()) {
-        infoSink.debug << "[0]";
+    int numExtensions = getNumExtensions();
+    if (numExtensions) {
+        infoSink.debug << " <";
+
+        for (int i = 0; i < numExtensions; i++)
+            infoSink.debug << getExtensions()[i] << ",";
+
+        infoSink.debug << ">";
     }
+}
+
+void TVariable::dump(TInfoSink& infoSink, bool complete) const
+{
+    if (complete) {
+        infoSink.debug << getName().c_str() << ": " << type.getCompleteString();
+        dumpExtensions(infoSink);
+    } else {
+        infoSink.debug << getName().c_str() << ": " << type.getStorageQualifierString() << " "
+                       << type.getBasicTypeString();
+
+        if (type.isArray())
+            infoSink.debug << "[0]";
+    }
+
     infoSink.debug << "\n";
 }
 
-void TFunction::dump(TInfoSink& infoSink) const
+void TFunction::dump(TInfoSink& infoSink, bool complete) const
 {
-    infoSink.debug << getName().c_str() << ": " <<  returnType.getBasicTypeString() << " " << getMangledName().c_str() << "\n";
+    if (complete) {
+        infoSink.debug << getName().c_str() << ": " << returnType.getCompleteString() << " " << getName().c_str()
+                       << "(";
+
+        int numParams = getParamCount();
+        for (int i = 0; i < numParams; i++) {
+            const TParameter &param = parameters[i];
+            infoSink.debug << param.type->getCompleteString() << " "
+                           << (param.type->isStruct() ? "of " + param.type->getTypeName() + " " : "")
+                           << (param.name ? *param.name : "") << (i < numParams - 1 ? "," : "");
+        }
+
+        infoSink.debug << ")";
+        dumpExtensions(infoSink);
+    } else {
+        infoSink.debug << getName().c_str() << ": " << returnType.getBasicTypeString() << " "
+                       << getMangledName().c_str() << "n";
+    }
+
+    infoSink.debug << "\n";
 }
 
-void TAnonMember::dump(TInfoSink& TInfoSink) const
+void TAnonMember::dump(TInfoSink& TInfoSink, bool) const
 {
-    TInfoSink.debug << "anonymous member " << getMemberNumber() << " of " << getAnonContainer().getName().c_str() << "\n";
+    TInfoSink.debug << "anonymous member " << getMemberNumber() << " of " << getAnonContainer().getName().c_str()
+                    << "\n";
 }
 
-void TSymbolTableLevel::dump(TInfoSink &infoSink) const
+void TSymbolTableLevel::dump(TInfoSink& infoSink, bool complete) const
 {
     tLevel::const_iterator it;
     for (it = level.begin(); it != level.end(); ++it)
-        (*it).second->dump(infoSink);
+        (*it).second->dump(infoSink, complete);
 }
 
-void TSymbolTable::dump(TInfoSink &infoSink) const
+void TSymbolTable::dump(TInfoSink& infoSink, bool complete) const
 {
     for (int level = currentLevel(); level >= 0; --level) {
         infoSink.debug << "LEVEL " << level << "\n";
-        table[level]->dump(infoSink);
+        table[level]->dump(infoSink, complete);
     }
 }
+
+#endif
 
 //
 // Functions have buried pointers to delete.

@@ -57,4 +57,6 @@ void main()
     
     mediumfout *= s.a;
     mediumfout *= s.b;
+
+    mediumfout = ((mediumfin * mediumfin > 4.2) ? 2.0 * mediumfout : 3.0 * mediumfout);
 }

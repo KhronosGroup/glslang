@@ -1,5 +1,9 @@
 hlsl.reflection.vert
 Uniform reflection:
+anonDeadMember2: offset 64, type 8b52, size 1, index 0, binding -1, stages 1
+ufDead4: offset 28, type 1406, size 1, index 1, binding -1, stages 1
+anonMember1: offset 0, type 8b51, size 1, index 0, binding -1, stages 1
+uf1: offset 16, type 1406, size 1, index 1, binding -1, stages 1
 anonMember3: offset 80, type 8b52, size 1, index 0, binding -1, stages 1
 s.a: offset 0, type 1404, size 1, index 1, binding -1, stages 1
 m23: offset 16, type 8b67, size 1, index 0, binding -1, stages 1
@@ -54,18 +58,17 @@ deepD[1].d2.d1[2].b: offset 2896, type 8b56, size 1, index 1, binding -1, stages
 deepD[1].d2.d1[3].va: offset 2904, type 8b50, size 3, index 1, binding -1, stages 1, arrayStride 8, topLevelArrayStride 304
 deepD[1].d2.d1[3].b: offset 2928, type 8b56, size 1, index 1, binding -1, stages 1, topLevelArrayStride 304
 deepD[1].v3: offset 2944, type 8b54, size 1, index 1, binding -1, stages 1, topLevelArrayStride 304
+ufDead3: offset 24, type 1406, size 1, index 1, binding -1, stages 1
 foo1: offset 0, type 1406, size 1, index 4, binding -1, stages 1
 foo2: offset 0, type 1406, size 1, index 5, binding -1, stages 1
-anonMember1: offset 0, type 8b51, size 1, index 0, binding -1, stages 1
-uf1: offset 16, type 1406, size 1, index 1, binding -1, stages 1
 
 Uniform block reflection:
-nameless: offset -1, type ffffffff, size 496, index -1, binding -1, stages 1, numMembers 9
-$Global: offset -1, type ffffffff, size 3088, index -1, binding -1, stages 1, numMembers 106
-c_nameless: offset -1, type ffffffff, size 96, index -1, binding -1, stages 1, numMembers 5
-nested: offset -1, type ffffffff, size 32, index -1, binding -1, stages 1, numMembers 4
-abl: offset -1, type ffffffff, size 4, index -1, binding -1, stages 1, numMembers 1
-abl2: offset -1, type ffffffff, size 4, index -1, binding -1, stages 1, numMembers 1
+nameless: offset -1, type ffffffff, size 496, index 0, binding -1, stages 1, numMembers 9
+$Global: offset -1, type ffffffff, size 3088, index 1, binding -1, stages 1, numMembers 106
+c_nameless: offset -1, type ffffffff, size 96, index 2, binding -1, stages 1, numMembers 5
+nested: offset -1, type ffffffff, size 32, index 3, binding -1, stages 1, numMembers 4
+abl: offset -1, type ffffffff, size 4, index 4, binding -1, stages 1, numMembers 1
+abl2: offset -1, type ffffffff, size 4, index 5, binding -1, stages 1, numMembers 1
 
 Buffer variable reflection:
 

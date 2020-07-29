@@ -70,14 +70,14 @@ using HlslLegalDebugTest = GlslangTest<::testing::TestWithParam<FileNameEntryPoi
 TEST_P(HlslCompileTest, FromFile)
 {
     loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam().fileName,
-                            Source::HLSL, Semantics::Vulkan, glslang::EShTargetVulkan_1_0,
+                            Source::HLSL, Semantics::Vulkan, glslang::EShTargetVulkan_1_0,  glslang::EShTargetSpv_1_0,
                             Target::BothASTAndSpv, true, GetParam().entryPoint);
 }
 
 TEST_P(HlslVulkan1_1CompileTest, FromFile)
 {
     loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam().fileName,
-                            Source::HLSL, Semantics::Vulkan, glslang::EShTargetVulkan_1_1,
+                            Source::HLSL, Semantics::Vulkan, glslang::EShTargetVulkan_1_1, glslang::EShTargetSpv_1_3,
                             Target::BothASTAndSpv, true, GetParam().entryPoint);
 }
 
@@ -93,7 +93,7 @@ TEST_P(HlslCompileAndFlattenTest, FromFile)
 TEST_P(HlslLegalizeTest, FromFile)
 {
     loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam().fileName,
-                            Source::HLSL, Semantics::Vulkan, glslang::EShTargetVulkan_1_0,
+                            Source::HLSL, Semantics::Vulkan, glslang::EShTargetVulkan_1_0,  glslang::EShTargetSpv_1_0,
                             Target::Spv, true, GetParam().entryPoint,
                             "/baseLegalResults/", true);
 }
@@ -103,7 +103,7 @@ TEST_P(HlslLegalizeTest, FromFile)
 TEST_P(HlslDebugTest, FromFile)
 {
     loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam().fileName,
-                            Source::HLSL, Semantics::Vulkan, glslang::EShTargetVulkan_1_0,
+                            Source::HLSL, Semantics::Vulkan, glslang::EShTargetVulkan_1_0, glslang::EShTargetSpv_1_0,
                             Target::Spv, true, GetParam().entryPoint,
                             "/baseResults/", false, true);
 }
@@ -111,7 +111,8 @@ TEST_P(HlslDebugTest, FromFile)
 TEST_P(HlslDX9CompatibleTest, FromFile)
 {
     loadFileCompileAndCheckWithOptions(GlobalTestSettings.testRoot, GetParam().fileName, Source::HLSL,
-                                       Semantics::Vulkan, glslang::EShTargetVulkan_1_0, Target::BothASTAndSpv, true,
+                                       Semantics::Vulkan, glslang::EShTargetVulkan_1_0, glslang::EShTargetSpv_1_0,
+                                       Target::BothASTAndSpv, true,
                                        GetParam().entryPoint, "/baseResults/",
                                        EShMessages::EShMsgHlslDX9Compatible);
 }
@@ -122,7 +123,7 @@ TEST_P(HlslDX9CompatibleTest, FromFile)
 TEST_P(HlslLegalDebugTest, FromFile)
 {
     loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam().fileName,
-                            Source::HLSL, Semantics::Vulkan, glslang::EShTargetVulkan_1_0,
+                            Source::HLSL, Semantics::Vulkan, glslang::EShTargetVulkan_1_0, glslang::EShTargetSpv_1_0,
                             Target::Spv, true, GetParam().entryPoint,
                             "/baseResults/", true, true);
 }
@@ -226,9 +227,11 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.hull.3.tesc", "main"},
         {"hlsl.hull.4.tesc", "main"},
         {"hlsl.hull.5.tesc", "main"},
+        {"hlsl.hull.6.tesc", "main"},
         {"hlsl.hull.void.tesc", "main"},
         {"hlsl.hull.ctrlpt-1.tesc", "main"},
         {"hlsl.hull.ctrlpt-2.tesc", "main"},
+        {"hlsl.format.rwtexture.frag", "main"},
         {"hlsl.groupid.comp", "main"},
         {"hlsl.identifier.sample.frag", "main"},
         {"hlsl.if.frag", "PixelShaderFunction"},
@@ -236,6 +239,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.implicitBool.frag", "main"},
         {"hlsl.inf.vert", "main"},
         {"hlsl.inoutquals.frag", "main"},
+        {"hlsl.inoutquals.negative.frag", "main"},
         {"hlsl.init.frag", "ShaderFunction"},
         {"hlsl.init2.frag", "main"},
         {"hlsl.isfinite.frag", "main"},
@@ -275,6 +279,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.logical.unary.frag", "main"},
         {"hlsl.loopattr.frag", "main"},
         {"hlsl.matpack-pragma.frag", "main"},
+        {"hlsl.matpack-pragma-global.frag", "main"},
         {"hlsl.mip.operator.frag", "main"},
         {"hlsl.mip.negative.frag", "main"},
         {"hlsl.mip.negative2.frag", "main"},
@@ -348,8 +353,10 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.semicolons.frag", "main"},
         {"hlsl.shapeConv.frag", "main"},
         {"hlsl.shapeConvRet.frag", "main"},
+        {"hlsl.singleArgIntPromo.vert", "main"},
         {"hlsl.self_cast.frag", "main"},
         {"hlsl.snorm.uav.comp", "main"},
+        {"hlsl.specConstant.frag", "main"},
         {"hlsl.staticMemberFunction.frag", "main"},
         {"hlsl.staticFuncInit.frag", "main"},
         {"hlsl.store.rwbyteaddressbuffer.type.comp", "main"},

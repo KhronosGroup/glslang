@@ -3,7 +3,7 @@ sampler            g_sam     : register(t0);
 sampler1D          g_sam1D   : register(t1);
 sampler2D          g_sam2D   : register(t2);
 sampler3D          g_sam3D	 : register(t3);
-samplerCube        g_samCube : register(t4);
+samplerCUBE        g_samCube : register(t4);
 
 struct PS_OUTPUT
 {

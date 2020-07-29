@@ -41,26 +41,22 @@ namespace {
 
 using CompileToAstTest = GlslangTest<::testing::TestWithParam<std::string>>;
 
-#ifdef NV_EXTENSIONS
 using CompileToAstTestNV = GlslangTest<::testing::TestWithParam<std::string>>;
-#endif
 
 TEST_P(CompileToAstTest, FromFile)
 {
     loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam(),
-                            Source::GLSL, Semantics::OpenGL, glslang::EShTargetVulkan_1_0,
+                            Source::GLSL, Semantics::OpenGL, glslang::EShTargetVulkan_1_0, glslang::EShTargetSpv_1_0,
                             Target::AST);
 }
 
-#ifdef NV_EXTENSIONS
 // Compiling GLSL to SPIR-V under OpenGL semantics (NV extensions enabled).
 TEST_P(CompileToAstTestNV, FromFile)
 {
     loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam(),
-                            Source::GLSL, Semantics::OpenGL, glslang::EShTargetVulkan_1_0,
+                            Source::GLSL, Semantics::OpenGL, glslang::EShTargetVulkan_1_0, glslang::EShTargetSpv_1_0,
                             Target::AST);
 }
-#endif
 
 // clang-format off
 INSTANTIATE_TEST_CASE_P(
@@ -125,6 +121,7 @@ INSTANTIATE_TEST_CASE_P(
         "310.tesc",
         "310.tese",
         "310implicitSizeArrayError.vert",
+        "310.inheritMemory.frag",
         "310AofA.vert",
         "310runtimeArray.vert",
         "320.comp",
@@ -237,6 +234,9 @@ INSTANTIATE_TEST_CASE_P(
         "maxClipDistances.vert",
         "findFunction.frag",
         "constantUnaryConversion.comp",
+        "xfbUnsizedArray.error.vert",
+        "glsl.140.layoutOffset.error.vert",
+        "glsl.430.layoutOffset.error.vert",
         "glsl.450.subgroup.frag",
         "glsl.450.subgroup.geom",
         "glsl.450.subgroup.tesc",
@@ -253,6 +253,15 @@ INSTANTIATE_TEST_CASE_P(
         "glsl.450.subgroupShuffleRelative.comp",
         "glsl.450.subgroupQuad.comp",
         "glsl.450.subgroupVote.comp",
+        "glsl.460.subgroup.mesh",
+        "glsl.460.subgroup.task",
+        "glsl.460.subgroup.rahit",
+        "glsl.460.subgroup.rcall",
+        "glsl.460.subgroup.rchit",
+        "glsl.460.subgroup.rgen",
+        "glsl.460.subgroup.rint",
+        "glsl.460.subgroup.rmiss",
+        "glsl.es300.layoutOffset.error.vert",
         "glsl.es320.subgroup.frag",
         "glsl.es320.subgroup.geom",
         "glsl.es320.subgroup.tesc",
@@ -273,7 +282,6 @@ INSTANTIATE_TEST_CASE_P(
     FileNameAsCustomTestSuffix
 );
 
-#ifdef NV_EXTENSIONS
 INSTANTIATE_TEST_CASE_P(
     Glsl, CompileToAstTestNV,
     ::testing::ValuesIn(std::vector<std::string>({
@@ -281,7 +289,7 @@ INSTANTIATE_TEST_CASE_P(
     })),
     FileNameAsCustomTestSuffix
 );
-#endif
+
 // clang-format on
 
 }  // anonymous namespace

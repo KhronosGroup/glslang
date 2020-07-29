@@ -116,7 +116,11 @@ public:
     }
     virtual int getNumExtensions() const { return extensions == nullptr ? 0 : (int)extensions->size(); }
     virtual const char** getExtensions() const { return extensions->data(); }
-    virtual void dump(TInfoSink &infoSink) const = 0;
+
+#ifndef GLSLANG_WEB
+    virtual void dump(TInfoSink& infoSink, bool complete = false) const = 0;
+    void dumpExtensions(TInfoSink& infoSink) const;
+#endif
 
     virtual bool isReadOnly() const { return ! writable; }
     virtual void makeReadOnly() { writable = false; }
@@ -192,7 +196,9 @@ public:
     }
     virtual const char** getMemberExtensions(int member) const { return (*memberExtensions)[member].data(); }
 
-    virtual void dump(TInfoSink &infoSink) const;
+#ifndef GLSLANG_WEB
+    virtual void dump(TInfoSink& infoSink, bool complete = false) const;
+#endif
 
 protected:
     explicit TVariable(const TVariable&);
@@ -313,7 +319,9 @@ public:
     virtual TParameter& operator[](int i) { assert(writable); return parameters[i]; }
     virtual const TParameter& operator[](int i) const { return parameters[i]; }
 
-    virtual void dump(TInfoSink &infoSink) const override;
+#ifndef GLSLANG_WEB
+    virtual void dump(TInfoSink& infoSink, bool complete = false) const override;
+#endif
 
 protected:
     explicit TFunction(const TFunction&);
@@ -373,7 +381,9 @@ public:
     virtual const char** getExtensions() const override { return anonContainer.getMemberExtensions(memberNumber); }
 
     virtual int getAnonId() const { return anonId; }
-    virtual void dump(TInfoSink &infoSink) const override;
+#ifndef GLSLANG_WEB
+    virtual void dump(TInfoSink& infoSink, bool complete = false) const override;
+#endif
 
 protected:
     explicit TAnonMember(const TAnonMember&);
@@ -541,7 +551,9 @@ public:
 
     void relateToOperator(const char* name, TOperator op);
     void setFunctionExtensions(const char* name, int num, const char* const extensions[]);
-    void dump(TInfoSink &infoSink) const;
+#ifndef GLSLANG_WEB
+    void dump(TInfoSink& infoSink, bool complete = false) const;
+#endif
     TSymbolTableLevel* clone() const;
     void readOnly();
 
@@ -842,7 +854,9 @@ public:
     }
 
     int getMaxSymbolId() { return uniqueId; }
-    void dump(TInfoSink &infoSink) const;
+#ifndef GLSLANG_WEB
+    void dump(TInfoSink& infoSink, bool complete = false) const;
+#endif
     void copyTable(const TSymbolTable& copyOf);
 
     void setPreviousDefaultPrecisions(TPrecisionQualifier *p) { table[currentLevel()]->setPreviousDefaultPrecisions(p); }
