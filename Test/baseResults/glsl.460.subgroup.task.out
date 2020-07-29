@@ -107,7 +107,7 @@ Requested GL_NV_shader_subgroup_partitioned
 local_size = (32, 1, 1)
 ERROR: node is still EOpNull!
 0:3  Function Definition: undeclared_errors(vf4; ( global 4-component vector of float)
-0:3    Function Parameters:
+0:3    Function Parameters: 
 0:3      'f4' ( in 4-component vector of float)
 0:?     Sequence
 0:6      'gl_SubgroupSize' ( in uint SubgroupSize)
@@ -334,7 +334,7 @@ ERROR: node is still EOpNull!
 0:100      Branch: Return with expression
 0:100        'result' ( temp 4-component vector of float)
 0:127  Function Definition: main( ( global void)
-0:127    Function Parameters:
+0:127    Function Parameters: 
 0:129    Sequence
 0:129      Sequence
 0:129        move second child to first child ( temp uint)
@@ -469,7 +469,7 @@ ERROR: node is still EOpNull!
 0:153        Constant:
 0:153          3 (const uint)
 0:157  Function Definition: basic_works( ( global void)
-0:157    Function Parameters:
+0:157    Function Parameters: 
 0:159    Sequence
 0:159      'gl_SubgroupSize' ( in uint SubgroupSize)
 0:160      'gl_SubgroupInvocationID' ( in uint SubgroupInvocationID)
@@ -482,7 +482,7 @@ ERROR: node is still EOpNull!
 0:167      'gl_SubgroupID' ( in uint SubgroupID)
 0:168      subgroupMemoryBarrierShared ( global void)
 0:172  Function Definition: ballot_works(vf4; ( global void)
-0:172    Function Parameters:
+0:172    Function Parameters: 
 0:172      'f4' ( in 4-component vector of float)
 0:173    Sequence
 0:173      'gl_SubgroupEqMask' ( in 4-component vector of uint SubgroupEqMask)
@@ -523,7 +523,7 @@ ERROR: node is still EOpNull!
 0:187      subgroupBallotFindMSB ( global uint)
 0:187        'ballot' ( temp 4-component vector of uint)
 0:191  Function Definition: vote_works(vf4; ( global void)
-0:191    Function Parameters:
+0:191    Function Parameters: 
 0:191      'f4' ( in 4-component vector of float)
 0:193    Sequence
 0:193      subgroupAll ( global bool)
@@ -535,7 +535,7 @@ ERROR: node is still EOpNull!
 0:195      subgroupAllEqual ( global bool)
 0:195        'f4' ( in 4-component vector of float)
 0:200  Function Definition: shuffle_works(vf4; ( global void)
-0:200    Function Parameters:
+0:200    Function Parameters: 
 0:200      'f4' ( in 4-component vector of float)
 0:202    Sequence
 0:202      subgroupShuffle ( global 4-component vector of float)
@@ -555,7 +555,7 @@ ERROR: node is still EOpNull!
 0:205        Constant:
 0:205          1 (const uint)
 0:209  Function Definition: arith_works(vf4; ( global void)
-0:209    Function Parameters:
+0:209    Function Parameters: 
 0:209      'f4' ( in 4-component vector of float)
 0:?     Sequence
 0:212      subgroupAdd ( global 4-component vector of float)
@@ -601,7 +601,7 @@ ERROR: node is still EOpNull!
 0:232      subgroupExclusiveXor ( global 4-component vector of uint)
 0:232        'ballot' ( temp 4-component vector of uint)
 0:236  Function Definition: clustered_works(vf4; ( global void)
-0:236    Function Parameters:
+0:236    Function Parameters: 
 0:236      'f4' ( in 4-component vector of float)
 0:238    Sequence
 0:238      Sequence
@@ -641,7 +641,7 @@ ERROR: node is still EOpNull!
 0:245        Constant:
 0:245          2 (const uint)
 0:249  Function Definition: quad_works(vf4; ( global void)
-0:249    Function Parameters:
+0:249    Function Parameters: 
 0:249      'f4' ( in 4-component vector of float)
 0:251    Sequence
 0:251      subgroupQuadBroadcast ( global 4-component vector of float)
@@ -655,7 +655,7 @@ ERROR: node is still EOpNull!
 0:254      subgroupQuadSwapDiagonal ( global 4-component vector of float)
 0:254        'f4' ( in 4-component vector of float)
 0:258  Function Definition: partitioned_works(vf4; ( global void)
-0:258    Function Parameters:
+0:258    Function Parameters: 
 0:258      'f4' ( in 4-component vector of float)
 0:260    Sequence
 0:260      Sequence
@@ -735,14 +735,14 @@ ERROR: node is still EOpNull!
 0:282        'ballot' ( temp 4-component vector of uint)
 0:282        'parti' ( temp 4-component vector of uint)
 0:286  Function Definition: sm_builtins_err( ( global void)
-0:286    Function Parameters:
+0:286    Function Parameters: 
 0:288    Sequence
 0:288      'gl_WarpsPerSMNV' ( in uint WarpsPerSMNV)
 0:289      'gl_SMCountNV' ( in uint SMCountNV)
 0:290      'gl_WarpIDNV' ( in uint WarpIDNV)
 0:291      'gl_SMIDNV' ( in uint SMIDNV)
 0:298  Function Definition: sm_builtins( ( global void)
-0:298    Function Parameters:
+0:298    Function Parameters: 
 0:300    Sequence
 0:300      'gl_WarpsPerSMNV' ( in uint WarpsPerSMNV)
 0:301      'gl_SMCountNV' ( in uint SMCountNV)
@@ -777,7 +777,7 @@ Requested GL_NV_shader_subgroup_partitioned
 local_size = (32, 1, 1)
 ERROR: node is still EOpNull!
 0:127  Function Definition: main( ( global void)
-0:127    Function Parameters:
+0:127    Function Parameters: 
 0:129    Sequence
 0:129      Sequence
 0:129        move second child to first child ( temp uint)
