@@ -241,7 +241,10 @@ class TIntermediate {
 public:
     explicit TIntermediate(EShLanguage l, int v = 0, EProfile p = ENoProfile) :
         language(l),
-        profile(p), version(v), treeRoot(0),
+#ifndef GLSLANG_ANGLE
+        profile(p), version(v),
+#endif
+        treeRoot(0),
         numEntryPoints(0), numErrors(0), numPushConstants(0), recursive(false),
         invertY(false),
         useStorageBuffer(false),
@@ -295,9 +298,20 @@ public:
 #endif
     }
 
-    void setVersion(int v) { version = v; }
+    void setVersion(int v)
+    {
+#ifndef GLSLANG_ANGLE
+        version = v;
+#endif
+    }
+    void setProfile(EProfile p)
+    {
+#ifndef GLSLANG_ANGLE
+        profile = p;
+#endif
+    }
+
     int getVersion() const { return version; }
-    void setProfile(EProfile p) { profile = p; }
     EProfile getProfile() const { return profile; }
     void setSpv(const SpvVersion& s)
     {
@@ -929,8 +943,13 @@ protected:
     typedef std::list<TCall> TGraph;
     TGraph callGraph;
 
+#ifdef GLSLANG_ANGLE
+    const EProfile profile = ECoreProfile;
+    const int version = 450;
+#else
     EProfile profile;                           // source profile
     int version;                                // source version
+#endif
     SpvVersion spvVersion;
     TIntermNode* treeRoot;
     std::map<std::string, TExtensionBehavior> requestedExtensions;  // cumulation of all enabled or required extensions; not connected to what subset of the shader used them
