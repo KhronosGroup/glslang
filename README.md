@@ -99,7 +99,7 @@ branch.
 ### Dependencies
 
 * A C++11 compiler.
-  (For MSVS: 2015 is recommended, 2013 is fully supported/tested, and 2010 support is attempted, but not tested.)
+  (For MSVS: use 2015 or later.)
 * [CMake][cmake]: for generating compilation targets.
 * make: _Linux_, ninja is an alternative, if configured.
 * [Python 3.x][python]: for executing SPIRV-Tools scripts. (Optional if not using SPIRV-Tools and the 'External' subdirectory does not exist.)
@@ -123,15 +123,6 @@ git clone https://github.com/KhronosGroup/glslang.git
 ```bash
 cd <the directory glslang was cloned to, "External" will be a subdirectory>
 git clone https://github.com/google/googletest.git External/googletest
-```
-
-If you want to use googletest with Visual Studio 2013, you also need to check out an older version:
-
-```bash
-# to use googletest with Visual Studio 2013
-cd External/googletest
-git checkout 440527a61e1c91188195f7de212c63c77e8f0a45
-cd ../..
 ```
 
 If you wish to assure that SPIR-V generated from HLSL is legal for Vulkan,
