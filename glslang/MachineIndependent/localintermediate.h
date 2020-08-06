@@ -494,11 +494,7 @@ public:
     void addSymbolLinkageNodes(TIntermAggregate*& linkage, EShLanguage, TSymbolTable&);
     void addSymbolLinkageNode(TIntermAggregate*& linkage, const TSymbol&);
 
-    void setUseStorageBuffer()
-    {
-        useStorageBuffer = true;
-        processes.addProcess("use-storage-buffer");
-    }
+    void setUseStorageBuffer() { useStorageBuffer = true; }
     bool usingStorageBuffer() const { return useStorageBuffer; }
     void setDepthReplacing() { depthReplacing = true; }
     bool isDepthReplacing() const { return depthReplacing; }
