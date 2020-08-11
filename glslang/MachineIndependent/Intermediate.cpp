@@ -177,7 +177,7 @@ TIntermTyped* TIntermediate::addBinaryMath(TOperator op, TIntermTyped* left, TIn
         return nullptr;
 
     // Try converting the children's base types to compatible types.
-    auto children = addConversion(op, left, right);
+    auto children = addPairConversion(op, left, right);
     left = std::get<0>(children);
     right = std::get<1>(children);
 
@@ -887,7 +887,7 @@ TIntermTyped* TIntermediate::addConversion(TBasicType convertTo, TIntermTyped* n
 // Returns the converted pair of nodes.
 // Returns <nullptr, nullptr> when there is no conversion.
 std::tuple<TIntermTyped*, TIntermTyped*>
-TIntermediate::addConversion(TOperator op, TIntermTyped* node0, TIntermTyped* node1)
+TIntermediate::addPairConversion(TOperator op, TIntermTyped* node0, TIntermTyped* node1)
 {
     if (!isConversionAllowed(op, node0) || !isConversionAllowed(op, node1))
         return std::make_tuple(nullptr, nullptr);
@@ -940,7 +940,7 @@ TIntermediate::addConversion(TOperator op, TIntermTyped* node0, TIntermTyped* no
         if (node0->getBasicType() == node1->getBasicType())
             return std::make_tuple(node0, node1);
 
-        promoteTo = getConversionDestinatonType(node0->getBasicType(), node1->getBasicType(), op);
+        promoteTo = getConversionDestinationType(node0->getBasicType(), node1->getBasicType(), op);
         if (std::get<0>(promoteTo) == EbtNumTypes || std::get<1>(promoteTo) == EbtNumTypes)
             return std::make_tuple(nullptr, nullptr);
 
@@ -1951,7 +1951,7 @@ static TBasicType getCorrespondingUnsignedType(TBasicType type)
 //        integer type corresponding to the type of the operand with signed
 //        integer type.
 
-std::tuple<TBasicType, TBasicType> TIntermediate::getConversionDestinatonType(TBasicType type0, TBasicType type1, TOperator op) const
+std::tuple<TBasicType, TBasicType> TIntermediate::getConversionDestinationType(TBasicType type0, TBasicType type1, TOperator op) const
 {
     TBasicType res0 = EbtNumTypes;
     TBasicType res1 = EbtNumTypes;
@@ -2490,7 +2490,7 @@ TIntermTyped* TIntermediate::addSelection(TIntermTyped* cond, TIntermTyped* true
     //
     // Get compatible types.
     //
-    auto children = addConversion(EOpSequence, trueBlock, falseBlock);
+    auto children = addPairConversion(EOpSequence, trueBlock, falseBlock);
     trueBlock = std::get<0>(children);
     falseBlock = std::get<1>(children);
 
