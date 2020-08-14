@@ -7316,6 +7316,8 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
         if (!node->getType().isCoopMat()) {
             if (type.getBasicType() != node->getType().getBasicType()) {
                 node = intermediate.addConversion(type.getBasicType(), node);
+                if (node == nullptr)
+                    return nullptr;
             }
             node = intermediate.setAggregateOperator(node, EOpConstructCooperativeMatrix, type, node->getLoc());
         } else {

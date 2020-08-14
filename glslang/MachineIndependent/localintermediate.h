@@ -233,6 +233,31 @@ private:
     TMap<TString, int> maps[EsiCount];
 };
 
+class TNumericFeatures {
+public:
+    TNumericFeatures() : features(0) { }
+    TNumericFeatures(const TNumericFeatures&) = delete;
+    TNumericFeatures& operator=(const TNumericFeatures&) = delete;
+    typedef enum : unsigned int {
+        shader_explicit_arithmetic_types          = 1 << 0,
+        shader_explicit_arithmetic_types_int8     = 1 << 1,
+        shader_explicit_arithmetic_types_int16    = 1 << 2,
+        shader_explicit_arithmetic_types_int32    = 1 << 3,
+        shader_explicit_arithmetic_types_int64    = 1 << 4,
+        shader_explicit_arithmetic_types_float16  = 1 << 5,
+        shader_explicit_arithmetic_types_float32  = 1 << 6,
+        shader_explicit_arithmetic_types_float64  = 1 << 7,
+        shader_implicit_conversions               = 1 << 8,
+        gpu_shader_fp64                           = 1 << 9,
+        gpu_shader_int16                          = 1 << 10,
+        gpu_shader_half_float                     = 1 << 11,
+    } feature;
+    void insert(feature f) { features |= f; }
+    void erase(feature f) { features &= ~f; }
+    bool contains(feature f) const { return (features & f) != 0; }
+private:
+    unsigned int features;
+};
 
 //
 // Set of helper functions to help parse and build the tree.
@@ -371,15 +396,8 @@ public:
     }
     const SpvVersion& getSpv() const { return spvVersion; }
     EShLanguage getStage() const { return language; }
-    void updateRequestedExtension(const char* extension, TExtensionBehavior behavior) { 
-        if(requestedExtensions.find(extension) != requestedExtensions.end()) {
-            requestedExtensions[extension] = behavior; 
-        } else {
-            requestedExtensions.insert(std::make_pair(extension, behavior)); 
-        }
-    }
-
-    const std::map<std::string, TExtensionBehavior>& getRequestedExtensions() const { return requestedExtensions; }
+    void addRequestedExtension(const char* extension) { requestedExtensions.insert(extension); }
+    const std::set<std::string>& getRequestedExtensions() const { return requestedExtensions; }
 
     void setTreeRoot(TIntermNode* r) { treeRoot = r; }
     TIntermNode* getTreeRoot() const { return treeRoot; }
@@ -867,22 +885,25 @@ public:
     bool getArithemeticInt8Enabled() const { return false; }
     bool getArithemeticInt16Enabled() const { return false; }
     bool getArithemeticFloat16Enabled() const { return false; }
+    void updateNumericFeature(TNumericFeatures::feature f, bool on) { }
 #else
     bool getArithemeticInt8Enabled() const {
-        return extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types) ||
-               extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_int8);
+        return numericFeatures.contains(TNumericFeatures::shader_explicit_arithmetic_types) ||
+               numericFeatures.contains(TNumericFeatures::shader_explicit_arithmetic_types_int8);
     }
     bool getArithemeticInt16Enabled() const {
-        return extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types) ||
-               extensionRequested(E_GL_AMD_gpu_shader_int16) ||
-               extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_int16);
+        return numericFeatures.contains(TNumericFeatures::shader_explicit_arithmetic_types) ||
+               numericFeatures.contains(TNumericFeatures::gpu_shader_int16) ||
+               numericFeatures.contains(TNumericFeatures::shader_explicit_arithmetic_types_int16);
     }
 
     bool getArithemeticFloat16Enabled() const {
-        return extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types) ||
-               extensionRequested(E_GL_AMD_gpu_shader_half_float) ||
-               extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_float16);
+        return numericFeatures.contains(TNumericFeatures::shader_explicit_arithmetic_types) ||
+               numericFeatures.contains(TNumericFeatures::gpu_shader_half_float) ||
+               numericFeatures.contains(TNumericFeatures::shader_explicit_arithmetic_types_float16);
     }
+    void updateNumericFeature(TNumericFeatures::feature f, bool on)
+        { on ? numericFeatures.insert(f) : numericFeatures.erase(f); }
 #endif
 
 protected:
@@ -916,22 +937,6 @@ protected:
     bool isConversionAllowed(TOperator op, TIntermTyped* node) const;
     std::tuple<TBasicType, TBasicType> getConversionDestinationType(TBasicType type0, TBasicType type1, TOperator op) const;
 
-    // JohnK: I think this function should go away.
-    // This data structure is just a log to pass on to back ends.
-    // Versioning and extensions are handled in Version.cpp, with a rich
-    // set of functions for querying stages, versions, extension enable/disabled, etc.
-#ifdef GLSLANG_WEB
-    bool extensionRequested(const char *extension) const { return false; }
-#else
-    bool extensionRequested(const char *extension) const {
-        auto it = requestedExtensions.find(extension);
-        if (it != requestedExtensions.end()) {
-            return (it->second == EBhDisable) ? false : true;
-        }
-        return false;
-    }
-#endif
-
     static const char* getResourceName(TResourceType);
 
     const EShLanguage language;  // stage, known at construction time
@@ -949,7 +954,7 @@ protected:
 #endif
     SpvVersion spvVersion;
     TIntermNode* treeRoot;
-    std::map<std::string, TExtensionBehavior> requestedExtensions;  // cumulation of all enabled or required extensions; not connected to what subset of the shader used them
+    std::set<std::string> requestedExtensions;  // cumulation of all enabled or required extensions; not connected to what subset of the shader used them
     TBuiltInResource resources;
     int numEntryPoints;
     int numErrors;
@@ -1020,6 +1025,7 @@ protected:
 
     std::unordered_map<std::string, int> uniformLocationOverrides;
     int uniformLocationBase;
+    TNumericFeatures numericFeatures;
 #endif
 
     std::unordered_set<int> usedConstantId; // specialization constant ids used

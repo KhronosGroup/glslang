@@ -1162,18 +1162,18 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
     //  - at the time of this writing (14-Aug-2020), no test results are changed by this.
     switch (op) {
     case EOpConstructFloat16:
-        canPromoteConstant = extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types) ||
-                             extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_float16);
+        canPromoteConstant = numericFeatures.contains(TNumericFeatures::shader_explicit_arithmetic_types) ||
+                             numericFeatures.contains(TNumericFeatures::shader_explicit_arithmetic_types_float16);
         break;
     case EOpConstructInt8:
     case EOpConstructUint8:
-        canPromoteConstant = extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types) ||
-                             extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_int8);
+        canPromoteConstant = numericFeatures.contains(TNumericFeatures::shader_explicit_arithmetic_types) ||
+                             numericFeatures.contains(TNumericFeatures::shader_explicit_arithmetic_types_int8);
         break;
     case EOpConstructInt16:
     case EOpConstructUint16:
-        canPromoteConstant = extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types) ||
-                             extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_int16);
+        canPromoteConstant = numericFeatures.contains(TNumericFeatures::shader_explicit_arithmetic_types) ||
+                             numericFeatures.contains(TNumericFeatures::shader_explicit_arithmetic_types_int16);
         break;
     }
 #endif
@@ -1665,14 +1665,14 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
             isFPConversion(from, to) ||
             isFPIntegralConversion(from, to)) {
 
-            if (extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types) ||
-                extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_int8) ||
-                extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_int16) ||
-                extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_int32) ||
-                extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_int64) ||
-                extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_float16) ||
-                extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_float32) ||
-                extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_float64)) {
+            if (numericFeatures.contains(TNumericFeatures::shader_explicit_arithmetic_types) ||
+                numericFeatures.contains(TNumericFeatures::shader_explicit_arithmetic_types_int8) ||
+                numericFeatures.contains(TNumericFeatures::shader_explicit_arithmetic_types_int16) ||
+                numericFeatures.contains(TNumericFeatures::shader_explicit_arithmetic_types_int32) ||
+                numericFeatures.contains(TNumericFeatures::shader_explicit_arithmetic_types_int64) ||
+                numericFeatures.contains(TNumericFeatures::shader_explicit_arithmetic_types_float16) ||
+                numericFeatures.contains(TNumericFeatures::shader_explicit_arithmetic_types_float32) ||
+                numericFeatures.contains(TNumericFeatures::shader_explicit_arithmetic_types_float64)) {
                 return true;
             }
         }
@@ -1684,14 +1684,14 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
                 switch (from) {
                 case EbtInt:
                 case EbtUint:
-                    return extensionRequested(E_GL_EXT_shader_implicit_conversions);
+                    return numericFeatures.contains(TNumericFeatures::shader_implicit_conversions);
                 default:
                     return false;
                 }
             case EbtUint:
                 switch (from) {
                 case EbtInt:
-                    return extensionRequested(E_GL_EXT_shader_implicit_conversions);
+                    return numericFeatures.contains(TNumericFeatures::shader_implicit_conversions);
                 default:
                     return false;
                 }
@@ -1707,14 +1707,14 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
             case EbtInt64:
             case EbtUint64:
             case EbtFloat:
-                return version >= 400 || extensionRequested(E_GL_ARB_gpu_shader_fp64);
+                return version >= 400 || numericFeatures.contains(TNumericFeatures::gpu_shader_fp64);
             case EbtInt16:
             case EbtUint16:
-                return (version >= 400 || extensionRequested(E_GL_ARB_gpu_shader_fp64)) &&
-                       extensionRequested(E_GL_AMD_gpu_shader_int16);
+                return (version >= 400 || numericFeatures.contains(TNumericFeatures::gpu_shader_fp64)) &&
+                                          numericFeatures.contains(TNumericFeatures::gpu_shader_int16);
             case EbtFloat16:
-                return (version >= 400 || extensionRequested(E_GL_ARB_gpu_shader_fp64)) &&
-                       extensionRequested(E_GL_AMD_gpu_shader_half_float);
+                return (version >= 400 || numericFeatures.contains(TNumericFeatures::gpu_shader_fp64)) &&
+                                          numericFeatures.contains(TNumericFeatures::gpu_shader_half_float);
             default:
                 return false;
            }
@@ -1727,10 +1727,10 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
                  return getSource() == EShSourceHlsl;
             case EbtInt16:
             case EbtUint16:
-                return extensionRequested(E_GL_AMD_gpu_shader_int16);
+                return numericFeatures.contains(TNumericFeatures::gpu_shader_int16);
             case EbtFloat16:
-                return 
-                    extensionRequested(E_GL_AMD_gpu_shader_half_float) || getSource() == EShSourceHlsl;
+                return numericFeatures.contains(TNumericFeatures::gpu_shader_half_float) ||
+                    getSource() == EShSourceHlsl;
             default:
                  return false;
             }
@@ -1742,7 +1742,7 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
                 return getSource() == EShSourceHlsl;
             case EbtInt16:
             case EbtUint16:
-                return extensionRequested(E_GL_AMD_gpu_shader_int16);
+                return numericFeatures.contains(TNumericFeatures::gpu_shader_int16);
             default:
                 return false;
             }
@@ -1751,7 +1751,7 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
             case EbtBool:
                 return getSource() == EShSourceHlsl;
             case EbtInt16:
-                return extensionRequested(E_GL_AMD_gpu_shader_int16);
+                return numericFeatures.contains(TNumericFeatures::gpu_shader_int16);
             default:
                 return false;
             }
@@ -1763,7 +1763,7 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
                 return true;
             case EbtInt16:
             case EbtUint16:
-                return extensionRequested(E_GL_AMD_gpu_shader_int16);
+                return numericFeatures.contains(TNumericFeatures::gpu_shader_int16);
             default:
                 return false;
             }
@@ -1772,7 +1772,7 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
             case EbtInt:
                 return true;
             case EbtInt16:
-                return extensionRequested(E_GL_AMD_gpu_shader_int16);
+                return numericFeatures.contains(TNumericFeatures::gpu_shader_int16);
             default:
                 return false;
             }
@@ -1780,7 +1780,7 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
             switch (from) {
             case EbtInt16:
             case EbtUint16:
-                return extensionRequested(E_GL_AMD_gpu_shader_int16);
+                return numericFeatures.contains(TNumericFeatures::gpu_shader_int16);
             default:
                 break;
             }
@@ -1788,7 +1788,7 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
         case EbtUint16:
             switch (from) {
             case EbtInt16:
-                return extensionRequested(E_GL_AMD_gpu_shader_int16);
+                return numericFeatures.contains(TNumericFeatures::gpu_shader_int16);
             default:
                 break;
             }
@@ -1921,7 +1921,7 @@ std::tuple<TBasicType, TBasicType> TIntermediate::getConversionDestinationType(T
     TBasicType res1 = EbtNumTypes;
 
     if ((isEsProfile() && 
-        (version < 310 || !extensionRequested(E_GL_EXT_shader_implicit_conversions))) || 
+        (version < 310 || !numericFeatures.contains(TNumericFeatures::shader_implicit_conversions))) || 
         version == 110)
         return std::make_tuple(res0, res1);
 
