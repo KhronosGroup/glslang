@@ -819,22 +819,25 @@ TIntermTyped* TIntermediate::createConversion(TBasicType convertTo, TIntermTyped
                                   node->getBasicType() == EbtFloat ||
                                   node->getBasicType() == EbtDouble);
 
-    if (! getArithemeticInt8Enabled()) {
-        if (((convertTo == EbtInt8 || convertTo == EbtUint8) && ! convertFromIntTypes) ||
-            ((node->getBasicType() == EbtInt8 || node->getBasicType() == EbtUint8) && ! convertToIntTypes))
+    if (((convertTo == EbtInt8 || convertTo == EbtUint8) && ! convertFromIntTypes) ||
+        ((node->getBasicType() == EbtInt8 || node->getBasicType() == EbtUint8) && ! convertToIntTypes)) {
+        if (! getArithemeticInt8Enabled()) {
             return nullptr;
+        }
     }
 
-    if (! getArithemeticInt16Enabled()) {
-        if (((convertTo == EbtInt16 || convertTo == EbtUint16) && ! convertFromIntTypes) ||
-            ((node->getBasicType() == EbtInt16 || node->getBasicType() == EbtUint16) && ! convertToIntTypes))
+    if (((convertTo == EbtInt16 || convertTo == EbtUint16) && ! convertFromIntTypes) ||
+        ((node->getBasicType() == EbtInt16 || node->getBasicType() == EbtUint16) && ! convertToIntTypes)) {
+        if (! getArithemeticInt16Enabled()) {
             return nullptr;
+        }
     }
 
-    if (! getArithemeticFloat16Enabled()) {
-        if ((convertTo == EbtFloat16 && ! convertFromFloatTypes) ||
-            (node->getBasicType() == EbtFloat16 && ! convertToFloatTypes))
+    if ((convertTo == EbtFloat16 && ! convertFromFloatTypes) ||
+        (node->getBasicType() == EbtFloat16 && ! convertToFloatTypes)) {
+        if (! getArithemeticFloat16Enabled()) {
             return nullptr;
+        }
     }
 #endif
 
@@ -1650,55 +1653,38 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
         }
     }
 
-    bool explicitTypesEnabled = extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types) ||
-                                extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_int8) ||
-                                extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_int16) ||
-                                extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_int32) ||
-                                extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_int64) ||
-                                extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_float16) ||
-                                extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_float32) ||
-                                extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_float64);
-    
-    if (explicitTypesEnabled) {
-        // integral promotions
-        if (isIntegralPromotion(from, to)) {
+    if (getSource() == EShSourceHlsl) {
+        // HLSL
+        if (from == EbtBool && (to == EbtInt || to == EbtUint || to == EbtFloat))
             return true;
-        }
+    } else {
+        // GLSL
+        if (isIntegralPromotion(from, to) ||
+            isFPPromotion(from, to) ||
+            isIntegralConversion(from, to) ||
+            isFPConversion(from, to) ||
+            isFPIntegralConversion(from, to)) {
 
-        // floating-point promotions
-        if (isFPPromotion(from, to)) {
-            return true;
-        }
-
-        // integral conversions
-        if (isIntegralConversion(from, to)) {
-            return true;
-        }
-
-        // floating-point conversions
-        if (isFPConversion(from, to)) {
-           return true;
-        }
-
-        // floating-integral conversions
-        if (isFPIntegralConversion(from, to)) {
-           return true;
-        }
-
-        // hlsl supported conversions
-        if (getSource() == EShSourceHlsl) {
-            if (from == EbtBool && (to == EbtInt || to == EbtUint || to == EbtFloat))
+            if (extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types) ||
+                extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_int8) ||
+                extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_int16) ||
+                extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_int32) ||
+                extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_int64) ||
+                extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_float16) ||
+                extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_float32) ||
+                extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_float64)) {
                 return true;
+            }
         }
-    } else if (isEsProfile()) {
+    }
+
+    if (isEsProfile()) {
         switch (to) {
             case EbtFloat:
                 switch (from) {
                 case EbtInt:
                 case EbtUint:
                     return extensionRequested(E_GL_EXT_shader_implicit_conversions);
-                case EbtFloat:
-                    return true;
                 default:
                     return false;
                 }
@@ -1706,8 +1692,6 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
                 switch (from) {
                 case EbtInt:
                     return extensionRequested(E_GL_EXT_shader_implicit_conversions);
-                case EbtUint:
-                    return true;
                 default:
                     return false;
                 }
@@ -1723,7 +1707,6 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
             case EbtInt64:
             case EbtUint64:
             case EbtFloat:
-            case EbtDouble:
                 return version >= 400 || extensionRequested(E_GL_ARB_gpu_shader_fp64);
             case EbtInt16:
             case EbtUint16:
@@ -1739,7 +1722,6 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
             switch (from) {
             case EbtInt:
             case EbtUint:
-            case EbtFloat:
                  return true;
             case EbtBool:
                  return getSource() == EShSourceHlsl;
@@ -1756,8 +1738,6 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
             switch (from) {
             case EbtInt:
                 return version >= 400 || getSource() == EShSourceHlsl;
-            case EbtUint:
-                return true;
             case EbtBool:
                 return getSource() == EShSourceHlsl;
             case EbtInt16:
@@ -1768,8 +1748,6 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
             }
         case EbtInt:
             switch (from) {
-            case EbtInt:
-                return true;
             case EbtBool:
                 return getSource() == EShSourceHlsl;
             case EbtInt16:
@@ -1782,7 +1760,6 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
             case EbtInt:
             case EbtUint:
             case EbtInt64:
-            case EbtUint64:
                 return true;
             case EbtInt16:
             case EbtUint16:
@@ -1793,7 +1770,6 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
         case EbtInt64:
             switch (from) {
             case EbtInt:
-            case EbtInt64:
                 return true;
             case EbtInt16:
                 return extensionRequested(E_GL_AMD_gpu_shader_int16);
@@ -1805,8 +1781,6 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
             case EbtInt16:
             case EbtUint16:
                 return extensionRequested(E_GL_AMD_gpu_shader_int16);
-            case EbtFloat16:
-                return extensionRequested(E_GL_AMD_gpu_shader_half_float);
             default:
                 break;
             }
@@ -1814,7 +1788,6 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
         case EbtUint16:
             switch (from) {
             case EbtInt16:
-            case EbtUint16:
                 return extensionRequested(E_GL_AMD_gpu_shader_int16);
             default:
                 break;
