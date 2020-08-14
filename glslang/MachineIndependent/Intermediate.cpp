@@ -1040,64 +1040,30 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
     // Note: callers are responsible for other aspects of shape,
     // like vector and matrix sizes.
 
-    TBasicType promoteTo;
-    // GL_EXT_shader_16bit_storage can't do OpConstantComposite with
-    // 16-bit types, so disable promotion for those types.
-    bool canPromoteConstant = true;
-
     switch (op) {
     //
     // Explicit conversions (unary operations)
     //
     case EOpConstructBool:
-        promoteTo = EbtBool;
-        break;
     case EOpConstructFloat:
-        promoteTo = EbtFloat;
-        break;
     case EOpConstructInt:
-        promoteTo = EbtInt;
-        break;
     case EOpConstructUint:
-        promoteTo = EbtUint;
-        break;
 #ifndef GLSLANG_WEB
     case EOpConstructDouble:
-        promoteTo = EbtDouble;
-        break;
     case EOpConstructFloat16:
-        promoteTo = EbtFloat16;
-        canPromoteConstant = extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types) ||
-                             extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_float16);
-        break;
     case EOpConstructInt8:
-        promoteTo = EbtInt8;
-        canPromoteConstant = extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types) ||
-                             extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_int8);
-        break;
     case EOpConstructUint8:
-        promoteTo = EbtUint8;
-        canPromoteConstant = extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types) ||
-                             extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_int8);
-        break;
     case EOpConstructInt16:
-        promoteTo = EbtInt16;
-        canPromoteConstant = extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types) ||
-                             extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_int16);
-        break;
     case EOpConstructUint16:
-        promoteTo = EbtUint16;
-        canPromoteConstant = extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types) ||
-                             extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_int16);
-        break;
     case EOpConstructInt64:
-        promoteTo = EbtInt64;
-        break;
     case EOpConstructUint64:
-        promoteTo = EbtUint64;
         break;
+
 #endif
 
+    //
+    // Implicit conversions
+    //
     case EOpLogicalNot:
 
     case EOpFunctionCall:
@@ -1152,9 +1118,7 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
         if (type.getBasicType() == node->getType().getBasicType())
             return node;
 
-        if (canImplicitlyPromote(node->getBasicType(), type.getBasicType(), op))
-            promoteTo = type.getBasicType();
-        else
+        if (! canImplicitlyPromote(node->getBasicType(), type.getBasicType(), op))
             return nullptr;
         break;
 
@@ -1164,9 +1128,7 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
     case EOpLeftShiftAssign:
     case EOpRightShiftAssign:
     {
-        if (getSource() == EShSourceHlsl && node->getType().getBasicType() == EbtBool)
-            promoteTo = type.getBasicType();
-        else {
+        if (!(getSource() == EShSourceHlsl && node->getType().getBasicType() == EbtBool)) {
             if (isTypeInt(type.getBasicType()) && isTypeInt(node->getBasicType()))
                 return node;
             else
@@ -1184,13 +1146,42 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
             return nullptr;
     }
 
+    bool canPromoteConstant = true;
+#ifndef GLSLANG_WEB
+    // GL_EXT_shader_16bit_storage can't do OpConstantComposite with
+    // 16-bit types, so disable promotion for those types.
+    // Many issues with this, from JohnK:
+    //  - this isn't really right to discuss SPIR-V here
+    //  - this could easily be entirely about scalars, so is overstepping
+    //  - we should be looking at what the shader asked for, and saying whether or
+    //    not it can be done, in the parser, by calling requireExtensions(), not
+    //    changing language sementics on the fly by asking what extensions are in use
+    //  - at the time of this writing (14-Aug-2020), no test results are changed by this.
+    switch (op) {
+    case EOpConstructFloat16:
+        canPromoteConstant = extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types) ||
+                             extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_float16);
+        break;
+    case EOpConstructInt8:
+    case EOpConstructUint8:
+        canPromoteConstant = extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types) ||
+                             extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_int8);
+        break;
+    case EOpConstructInt16:
+    case EOpConstructUint16:
+        canPromoteConstant = extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types) ||
+                             extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_int16);
+        break;
+    }
+#endif
+
     if (canPromoteConstant && node->getAsConstantUnion())
-        return promoteConstantUnion(promoteTo, node->getAsConstantUnion());
+        return promoteConstantUnion(type.getBasicType(), node->getAsConstantUnion());
 
     //
     // Add a new newNode for the conversion.
     //
-    TIntermTyped* newNode = createConversion(promoteTo, node);
+    TIntermTyped* newNode = createConversion(type.getBasicType(), node);
 
     return newNode;
 }
