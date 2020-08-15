@@ -1175,6 +1175,8 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
         canPromoteConstant = numericFeatures.contains(TNumericFeatures::shader_explicit_arithmetic_types) ||
                              numericFeatures.contains(TNumericFeatures::shader_explicit_arithmetic_types_int16);
         break;
+    default:
+        break;
     }
 #endif
 
