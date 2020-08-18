@@ -34,6 +34,7 @@
 add_library(glslang-default-resource-limits
             ${CMAKE_CURRENT_SOURCE_DIR}/ResourceLimits.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/resource_limits_c.cpp)
+set_target_properties(glslang-default-resource-limits PROPERTIES VERSION "${GLSLANG_VERSION}" SOVERSION "${GLSLANG_VERSION_MAJOR}")
 set_property(TARGET glslang-default-resource-limits PROPERTY FOLDER glslang)
 set_property(TARGET glslang-default-resource-limits PROPERTY POSITION_INDEPENDENT_CODE ON)
 

@@ -69,6 +69,7 @@ set(SPVREMAP_HEADERS
     doc.h)
 
 add_library(SPIRV ${LIB_TYPE} ${SOURCES} ${HEADERS})
+set_target_properties(SPIRV PROPERTIES VERSION "${GLSLANG_VERSION}" SOVERSION "${GLSLANG_VERSION_MAJOR}")
 set_property(TARGET SPIRV PROPERTY FOLDER glslang)
 set_property(TARGET SPIRV PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_include_directories(SPIRV PUBLIC
@@ -79,6 +80,7 @@ glslang_add_build_info_dependency(SPIRV)
 
 if (ENABLE_SPVREMAPPER)
     add_library(SPVRemapper ${LIB_TYPE} ${SPVREMAP_SOURCES} ${SPVREMAP_HEADERS})
+    set_target_properties(SPVRemapper PROPERTIES VERSION "${GLSLANG_VERSION}" SOVERSION "${GLSLANG_VERSION_MAJOR}")
     set_property(TARGET SPVRemapper PROPERTY FOLDER glslang)
     set_property(TARGET SPVRemapper PROPERTY POSITION_INDEPENDENT_CODE ON)
 endif()
