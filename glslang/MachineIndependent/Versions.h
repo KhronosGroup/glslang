@@ -146,7 +146,7 @@ const char* const E_GL_ARB_shader_ballot                = "GL_ARB_shader_ballot"
 const char* const E_GL_ARB_sparse_texture2              = "GL_ARB_sparse_texture2";
 const char* const E_GL_ARB_sparse_texture_clamp         = "GL_ARB_sparse_texture_clamp";
 const char* const E_GL_ARB_shader_stencil_export        = "GL_ARB_shader_stencil_export";
-// const char* const E_GL_ARB_cull_distance            = "GL_ARB_cull_distance";  // present for 4.5, but need extension control over block members
+const char* const E_GL_ARB_cull_distance                = "GL_ARB_cull_distance";
 const char* const E_GL_ARB_post_depth_coverage          = "GL_ARB_post_depth_coverage";
 const char* const E_GL_ARB_shader_viewport_layer_array  = "GL_ARB_shader_viewport_layer_array";
 const char* const E_GL_ARB_fragment_shader_interlock    = "GL_ARB_fragment_shader_interlock";
@@ -199,6 +199,7 @@ const char* const E_GL_EXT_ray_query                        = "GL_EXT_ray_query"
 const char* const E_GL_EXT_ray_flags_primitive_culling      = "GL_EXT_ray_flags_primitive_culling";
 const char* const E_GL_EXT_blend_func_extended              = "GL_EXT_blend_func_extended";
 const char* const E_GL_EXT_shader_implicit_conversions      = "GL_EXT_shader_implicit_conversions";
+const char* const E_GL_EXT_clip_cull_distance               = "GL_EXT_clip_cull_distance";
 
 // Arrays of extensions for the above viewportEXTs duplications
 

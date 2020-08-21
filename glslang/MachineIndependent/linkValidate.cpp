@@ -271,6 +271,26 @@ void TIntermediate::mergeModes(TInfoSink& infoSink, TIntermediate& unit)
     MERGE_TRUE(needToLegalize);
     MERGE_TRUE(binaryDoubleOutput);
     MERGE_TRUE(usePhysicalStorageBuffer);
+
+    // Merge primitive info of 'this' AST to the 'unit' AST.
+    // (In the other case, primitive info will be merged during merge trees)
+    // That includes input and output primitive layouts. Merged results will be copied into both AST.
+    // Also unmatched primitive layouts would be reported.
+    if (getStage() == EShLangGeometry && unit.getStage() == EShLangGeometry) {
+
+        if (unit.getInputPrimitive() == ElgNone) {
+            unit.setInputPrimitive(getInputPrimitive());
+        }
+
+        if (unit.getOutputPrimitive() == ElgNone) {
+            unit.setOutputPrimitive(getOutputPrimitive());
+        }
+
+        if ((getOutputPrimitive() != unit.getOutputPrimitive() && getOutputPrimitive() != ElgNone) ||
+            (getInputPrimitive() != unit.getInputPrimitive() && getInputPrimitive() != ElgNone)) {
+            infoSink.info.message(EPrefixError, "Can't merge two Geometry/Tessellation Evaluation shaders with different in/out primitive layouts.");
+        }
+    }
 }
 
 //
@@ -489,6 +509,15 @@ void TIntermediate::mergeLinkerObjects(TInfoSink& infoSink, TIntermSequence& lin
                     symbol->getQualifier().layoutBinding = unitSymbol->getQualifier().layoutBinding;
 
                 // Update implicit array sizes
+                if (symbol->getWritableType().isUnsizedArray() && unitSymbol->getType().isSizedArray()) {
+                    if (symbol->getWritableType().getImplicitArraySize() > unitSymbol->getType().getOuterArraySize())
+                        error(infoSink, "Implicit size of unsized array aren't match same symbol among multiple shaders.");
+                }
+                else if (unitSymbol->getType().isUnsizedArray() && symbol->getWritableType().isSizedArray()) {
+                    if (unitSymbol->getType().getImplicitArraySize() > symbol->getWritableType().getOuterArraySize())
+                        error(infoSink, "Implicit size of unsized array aren't match same symbol among multiple shaders.");
+                }
+
                 mergeImplicitArraySizes(symbol->getWritableType(), unitSymbol->getType());
 
                 // Check for consistent types/qualification/initializers etc.
@@ -500,6 +529,31 @@ void TIntermediate::mergeLinkerObjects(TInfoSink& infoSink, TIntermSequence& lin
         }
         if (merge)
             linkerObjects.push_back(unitLinkerObjects[unitLinkObj]);
+    }
+
+    // Geometry primitive and array size check.
+    if (getStage() == EShLangGeometry)
+    {
+        for (uint32_t i = 0; i < linkerObjects.size(); i++)
+        {
+            const TType& linkerObjectType = linkerObjects[i]->getAsTyped()->getType();
+            if (!linkerObjectType.getQualifier().isArrayedIo(EShLangGeometry))
+                continue;
+
+            int primitiveExplicitArraySize = linkerObjectType.getOuterArraySize();
+            int primitiveImplicitArraySize = linkerObjectType.getImplicitArraySize();
+
+            // Explicitly sized I/O array should be equal to primitive/vertices setting.
+            // Implicitly sized I/O array should be equal to explicit sizing or no larger than primitive/vertices setting.
+            if (primitiveImplicitArraySize == 0) {
+                if (primitiveExplicitArraySize != TQualifier::mapGeometryToSize(inputPrimitive))
+                    error(infoSink, "Explicit input array size should be equal to static usage size of primitive layouts");
+            }
+            else {
+                if (primitiveImplicitArraySize > TQualifier::mapGeometryToSize(inputPrimitive))
+                    error(infoSink, "Implicit input array size should be no larger than static usage size of primitive layouts");
+            }
+        }
     }
 }
 
@@ -1079,10 +1133,12 @@ int TIntermediate::addUsedLocation(const TQualifier& qualifier, const TType& typ
     else
         return -1;
 
-    int size;
+    size_t size;
     if (qualifier.isUniformOrBuffer() || qualifier.isTaskMemory()) {
         if (type.isSizedArray())
             size = type.getCumulativeArraySize();
+        else if (type.isStruct())
+            size = type.getStruct()->size();
         else
             size = 1;
     } else {
