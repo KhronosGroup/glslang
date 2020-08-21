@@ -5293,7 +5293,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "     out int  gl_SampleMask[];"
                 );
 
-            if (spvVersion.spv == 0) {
+            if (spvVersion.spv == 0)
                 stageBuiltins[EShLangFragment].append(
                     "uniform int gl_NumSamples;"
                 );

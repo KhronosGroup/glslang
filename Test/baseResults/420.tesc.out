@@ -20,8 +20,8 @@ ERROR: node is still EOpNull!
 0:17        move second child to first child ( temp 4-component vector of float)
 0:17          'p' ( temp 4-component vector of float)
 0:17          gl_Position: direct index for structure ( in 4-component vector of float Position)
-0:17            direct index ( temp block{ in 4-component vector of float Position gl_Position,  in float PointSize gl_PointSize,  in unsized 3-element array of float ClipDistance gl_ClipDistance})
-0:17              'gl_in' ( in 32-element array of block{ in 4-component vector of float Position gl_Position,  in float PointSize gl_PointSize,  in unsized 3-element array of float ClipDistance gl_ClipDistance})
+0:17            direct index ( temp block{ in 4-component vector of float Position gl_Position,  in float PointSize gl_PointSize,  in unsized 3-element array of float ClipDistance gl_ClipDistance,  in unsized 0-element array of float CullDistance gl_CullDistance,  in 4-component vector of float ClipVertex gl_ClipVertex,  in 4-component vector of float FrontColor gl_FrontColor,  in 4-component vector of float BackColor gl_BackColor,  in 4-component vector of float FrontSecondaryColor gl_FrontSecondaryColor,  in 4-component vector of float BackSecondaryColor gl_BackSecondaryColor,  in unsized 0-element array of 4-component vector of float TexCoord gl_TexCoord,  in float FogFragCoord gl_FogFragCoord})
+0:17              'gl_in' ( in 32-element array of block{ in 4-component vector of float Position gl_Position,  in float PointSize gl_PointSize,  in unsized 3-element array of float ClipDistance gl_ClipDistance,  in unsized 0-element array of float CullDistance gl_CullDistance,  in 4-component vector of float ClipVertex gl_ClipVertex,  in 4-component vector of float FrontColor gl_FrontColor,  in 4-component vector of float BackColor gl_BackColor,  in 4-component vector of float FrontSecondaryColor gl_FrontSecondaryColor,  in 4-component vector of float BackSecondaryColor gl_BackSecondaryColor,  in unsized 0-element array of 4-component vector of float TexCoord gl_TexCoord,  in float FogFragCoord gl_FogFragCoord})
 0:17              Constant:
 0:17                1 (const int)
 0:17            Constant:
@@ -30,8 +30,8 @@ ERROR: node is still EOpNull!
 0:18        move second child to first child ( temp float)
 0:18          'ps' ( temp float)
 0:18          gl_PointSize: direct index for structure ( in float PointSize)
-0:18            direct index ( temp block{ in 4-component vector of float Position gl_Position,  in float PointSize gl_PointSize,  in unsized 3-element array of float ClipDistance gl_ClipDistance})
-0:18              'gl_in' ( in 32-element array of block{ in 4-component vector of float Position gl_Position,  in float PointSize gl_PointSize,  in unsized 3-element array of float ClipDistance gl_ClipDistance})
+0:18            direct index ( temp block{ in 4-component vector of float Position gl_Position,  in float PointSize gl_PointSize,  in unsized 3-element array of float ClipDistance gl_ClipDistance,  in unsized 0-element array of float CullDistance gl_CullDistance,  in 4-component vector of float ClipVertex gl_ClipVertex,  in 4-component vector of float FrontColor gl_FrontColor,  in 4-component vector of float BackColor gl_BackColor,  in 4-component vector of float FrontSecondaryColor gl_FrontSecondaryColor,  in 4-component vector of float BackSecondaryColor gl_BackSecondaryColor,  in unsized 0-element array of 4-component vector of float TexCoord gl_TexCoord,  in float FogFragCoord gl_FogFragCoord})
+0:18              'gl_in' ( in 32-element array of block{ in 4-component vector of float Position gl_Position,  in float PointSize gl_PointSize,  in unsized 3-element array of float ClipDistance gl_ClipDistance,  in unsized 0-element array of float CullDistance gl_CullDistance,  in 4-component vector of float ClipVertex gl_ClipVertex,  in 4-component vector of float FrontColor gl_FrontColor,  in 4-component vector of float BackColor gl_BackColor,  in 4-component vector of float FrontSecondaryColor gl_FrontSecondaryColor,  in 4-component vector of float BackSecondaryColor gl_BackSecondaryColor,  in unsized 0-element array of 4-component vector of float TexCoord gl_TexCoord,  in float FogFragCoord gl_FogFragCoord})
 0:18              Constant:
 0:18                1 (const int)
 0:18            Constant:
@@ -41,8 +41,8 @@ ERROR: node is still EOpNull!
 0:19          'cd' ( temp float)
 0:19          direct index ( temp float ClipDistance)
 0:19            gl_ClipDistance: direct index for structure ( in unsized 3-element array of float ClipDistance)
-0:19              direct index ( temp block{ in 4-component vector of float Position gl_Position,  in float PointSize gl_PointSize,  in unsized 3-element array of float ClipDistance gl_ClipDistance})
-0:19                'gl_in' ( in 32-element array of block{ in 4-component vector of float Position gl_Position,  in float PointSize gl_PointSize,  in unsized 3-element array of float ClipDistance gl_ClipDistance})
+0:19              direct index ( temp block{ in 4-component vector of float Position gl_Position,  in float PointSize gl_PointSize,  in unsized 3-element array of float ClipDistance gl_ClipDistance,  in unsized 0-element array of float CullDistance gl_CullDistance,  in 4-component vector of float ClipVertex gl_ClipVertex,  in 4-component vector of float FrontColor gl_FrontColor,  in 4-component vector of float BackColor gl_BackColor,  in 4-component vector of float FrontSecondaryColor gl_FrontSecondaryColor,  in 4-component vector of float BackSecondaryColor gl_BackSecondaryColor,  in unsized 0-element array of 4-component vector of float TexCoord gl_TexCoord,  in float FogFragCoord gl_FogFragCoord})
+0:19                'gl_in' ( in 32-element array of block{ in 4-component vector of float Position gl_Position,  in float PointSize gl_PointSize,  in unsized 3-element array of float ClipDistance gl_ClipDistance,  in unsized 0-element array of float CullDistance gl_CullDistance,  in 4-component vector of float ClipVertex gl_ClipVertex,  in 4-component vector of float FrontColor gl_FrontColor,  in 4-component vector of float BackColor gl_BackColor,  in 4-component vector of float FrontSecondaryColor gl_FrontSecondaryColor,  in 4-component vector of float BackSecondaryColor gl_BackSecondaryColor,  in unsized 0-element array of 4-component vector of float TexCoord gl_TexCoord,  in float FogFragCoord gl_FogFragCoord})
 0:19                Constant:
 0:19                  1 (const int)
 0:19              Constant:
@@ -131,8 +131,8 @@ ERROR: node is still EOpNull!
 0:17        move second child to first child ( temp 4-component vector of float)
 0:17          'p' ( temp 4-component vector of float)
 0:17          gl_Position: direct index for structure ( in 4-component vector of float Position)
-0:17            direct index ( temp block{ in 4-component vector of float Position gl_Position,  in float PointSize gl_PointSize,  in 3-element array of float ClipDistance gl_ClipDistance})
-0:17              'gl_in' ( in 32-element array of block{ in 4-component vector of float Position gl_Position,  in float PointSize gl_PointSize,  in 3-element array of float ClipDistance gl_ClipDistance})
+0:17            direct index ( temp block{ in 4-component vector of float Position gl_Position,  in float PointSize gl_PointSize,  in 3-element array of float ClipDistance gl_ClipDistance,  in 1-element array of float CullDistance gl_CullDistance,  in 4-component vector of float ClipVertex gl_ClipVertex,  in 4-component vector of float FrontColor gl_FrontColor,  in 4-component vector of float BackColor gl_BackColor,  in 4-component vector of float FrontSecondaryColor gl_FrontSecondaryColor,  in 4-component vector of float BackSecondaryColor gl_BackSecondaryColor,  in 1-element array of 4-component vector of float TexCoord gl_TexCoord,  in float FogFragCoord gl_FogFragCoord})
+0:17              'gl_in' ( in 32-element array of block{ in 4-component vector of float Position gl_Position,  in float PointSize gl_PointSize,  in 3-element array of float ClipDistance gl_ClipDistance,  in 1-element array of float CullDistance gl_CullDistance,  in 4-component vector of float ClipVertex gl_ClipVertex,  in 4-component vector of float FrontColor gl_FrontColor,  in 4-component vector of float BackColor gl_BackColor,  in 4-component vector of float FrontSecondaryColor gl_FrontSecondaryColor,  in 4-component vector of float BackSecondaryColor gl_BackSecondaryColor,  in 1-element array of 4-component vector of float TexCoord gl_TexCoord,  in float FogFragCoord gl_FogFragCoord})
 0:17              Constant:
 0:17                1 (const int)
 0:17            Constant:
@@ -141,8 +141,8 @@ ERROR: node is still EOpNull!
 0:18        move second child to first child ( temp float)
 0:18          'ps' ( temp float)
 0:18          gl_PointSize: direct index for structure ( in float PointSize)
-0:18            direct index ( temp block{ in 4-component vector of float Position gl_Position,  in float PointSize gl_PointSize,  in 3-element array of float ClipDistance gl_ClipDistance})
-0:18              'gl_in' ( in 32-element array of block{ in 4-component vector of float Position gl_Position,  in float PointSize gl_PointSize,  in 3-element array of float ClipDistance gl_ClipDistance})
+0:18            direct index ( temp block{ in 4-component vector of float Position gl_Position,  in float PointSize gl_PointSize,  in 3-element array of float ClipDistance gl_ClipDistance,  in 1-element array of float CullDistance gl_CullDistance,  in 4-component vector of float ClipVertex gl_ClipVertex,  in 4-component vector of float FrontColor gl_FrontColor,  in 4-component vector of float BackColor gl_BackColor,  in 4-component vector of float FrontSecondaryColor gl_FrontSecondaryColor,  in 4-component vector of float BackSecondaryColor gl_BackSecondaryColor,  in 1-element array of 4-component vector of float TexCoord gl_TexCoord,  in float FogFragCoord gl_FogFragCoord})
+0:18              'gl_in' ( in 32-element array of block{ in 4-component vector of float Position gl_Position,  in float PointSize gl_PointSize,  in 3-element array of float ClipDistance gl_ClipDistance,  in 1-element array of float CullDistance gl_CullDistance,  in 4-component vector of float ClipVertex gl_ClipVertex,  in 4-component vector of float FrontColor gl_FrontColor,  in 4-component vector of float BackColor gl_BackColor,  in 4-component vector of float FrontSecondaryColor gl_FrontSecondaryColor,  in 4-component vector of float BackSecondaryColor gl_BackSecondaryColor,  in 1-element array of 4-component vector of float TexCoord gl_TexCoord,  in float FogFragCoord gl_FogFragCoord})
 0:18              Constant:
 0:18                1 (const int)
 0:18            Constant:
@@ -152,8 +152,8 @@ ERROR: node is still EOpNull!
 0:19          'cd' ( temp float)
 0:19          direct index ( temp float ClipDistance)
 0:19            gl_ClipDistance: direct index for structure ( in 3-element array of float ClipDistance)
-0:19              direct index ( temp block{ in 4-component vector of float Position gl_Position,  in float PointSize gl_PointSize,  in 3-element array of float ClipDistance gl_ClipDistance})
-0:19                'gl_in' ( in 32-element array of block{ in 4-component vector of float Position gl_Position,  in float PointSize gl_PointSize,  in 3-element array of float ClipDistance gl_ClipDistance})
+0:19              direct index ( temp block{ in 4-component vector of float Position gl_Position,  in float PointSize gl_PointSize,  in 3-element array of float ClipDistance gl_ClipDistance,  in 1-element array of float CullDistance gl_CullDistance,  in 4-component vector of float ClipVertex gl_ClipVertex,  in 4-component vector of float FrontColor gl_FrontColor,  in 4-component vector of float BackColor gl_BackColor,  in 4-component vector of float FrontSecondaryColor gl_FrontSecondaryColor,  in 4-component vector of float BackSecondaryColor gl_BackSecondaryColor,  in 1-element array of 4-component vector of float TexCoord gl_TexCoord,  in float FogFragCoord gl_FogFragCoord})
+0:19                'gl_in' ( in 32-element array of block{ in 4-component vector of float Position gl_Position,  in float PointSize gl_PointSize,  in 3-element array of float ClipDistance gl_ClipDistance,  in 1-element array of float CullDistance gl_CullDistance,  in 4-component vector of float ClipVertex gl_ClipVertex,  in 4-component vector of float FrontColor gl_FrontColor,  in 4-component vector of float BackColor gl_BackColor,  in 4-component vector of float FrontSecondaryColor gl_FrontSecondaryColor,  in 4-component vector of float BackSecondaryColor gl_BackSecondaryColor,  in 1-element array of 4-component vector of float TexCoord gl_TexCoord,  in float FogFragCoord gl_FogFragCoord})
 0:19                Constant:
 0:19                  1 (const int)
 0:19              Constant:

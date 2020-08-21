@@ -10,7 +10,7 @@ ERROR: 0:24: 'array assignment' : not supported for this version or the enabled 
 ERROR: 0:25: 'array assignment' : not supported for this version or the enabled extensions 
 ERROR: 0:25: 'assign' :  cannot convert from ' global 4-element array of mediump float' to ' global 5-element array of mediump float'
 ERROR: 0:26: 'array assignment' : not supported for this version or the enabled extensions 
-ERROR: 0:26: 'assign' :  cannot convert from ' global 4-element array of mediump float' to ' global unsized 1-element array of mediump float'
+ERROR: 0:26: 'assign' :  cannot convert from ' global 4-element array of mediump float' to ' global unsized 0-element array of mediump float'
 ERROR: 0:28: 'foo' : no matching overloaded function found 
 ERROR: 0:31: 'arrayed constructor' : not supported for this version or the enabled extensions 
 ERROR: 0:31: 'array comparison' : not supported for this version or the enabled extensions 

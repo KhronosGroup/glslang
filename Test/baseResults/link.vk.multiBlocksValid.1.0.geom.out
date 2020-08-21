@@ -36,7 +36,7 @@ output primitive = triangle_strip
 0:56          Sequence
 0:56            move second child to first child ( temp highp 4-component vector of float)
 0:56              gl_Position: direct index for structure (layout( stream=0) gl_Position highp 4-component vector of float Position)
-0:56                'anon@0' (layout( stream=0) out block{layout( stream=0) gl_Position 4-component vector of float Position gl_Position, layout( stream=0) gl_PointSize float PointSize gl_PointSize, layout( stream=0) out unsized 1-element array of float ClipDistance gl_ClipDistance})
+0:56                'anon@0' (layout( stream=0) out block{layout( stream=0) gl_Position 4-component vector of float Position gl_Position, layout( stream=0) gl_PointSize float PointSize gl_PointSize, layout( stream=0) out unsized 0-element array of float ClipDistance gl_ClipDistance, layout( stream=0) out unsized 0-element array of float CullDistance gl_CullDistance})
 0:56                Constant:
 0:56                  0 (const uint)
 0:56              matrix-times-vector ( temp highp 4-component vector of float)
@@ -77,7 +77,7 @@ output primitive = triangle_strip
 0:?     'uBuf' (layout( binding=1 column_major std430) buffer block{layout( column_major std430 offset=0) buffer highp 4X4 matrix of float p})
 0:?     'oColor' (layout( stream=0) out highp 4-component vector of float)
 0:?     'globalF' ( global highp float)
-0:?     'anon@0' (layout( stream=0) out block{layout( stream=0) gl_Position 4-component vector of float Position gl_Position, layout( stream=0) gl_PointSize float PointSize gl_PointSize, layout( stream=0) out unsized 1-element array of float ClipDistance gl_ClipDistance})
+0:?     'anon@0' (layout( stream=0) out block{layout( stream=0) gl_Position 4-component vector of float Position gl_Position, layout( stream=0) gl_PointSize float PointSize gl_PointSize, layout( stream=0) out unsized 0-element array of float ClipDistance gl_ClipDistance, layout( stream=0) out unsized 0-element array of float CullDistance gl_CullDistance})
 
 link.vk.multiBlocksValid.1.1.geom
 Shader version: 430
@@ -179,7 +179,7 @@ output primitive = triangle_strip
 0:56          Sequence
 0:56            move second child to first child ( temp highp 4-component vector of float)
 0:56              gl_Position: direct index for structure (layout( stream=0) gl_Position highp 4-component vector of float Position)
-0:56                'anon@0' (layout( stream=0) out block{layout( stream=0) gl_Position 4-component vector of float Position gl_Position, layout( stream=0) gl_PointSize float PointSize gl_PointSize, layout( stream=0) out 1-element array of float ClipDistance gl_ClipDistance})
+0:56                'anon@0' (layout( stream=0) out block{layout( stream=0) gl_Position 4-component vector of float Position gl_Position, layout( stream=0) gl_PointSize float PointSize gl_PointSize, layout( stream=0) out 1-element array of float ClipDistance gl_ClipDistance, layout( stream=0) out 1-element array of float CullDistance gl_CullDistance})
 0:56                Constant:
 0:56                  0 (const uint)
 0:56              matrix-times-vector ( temp highp 4-component vector of float)
@@ -254,7 +254,7 @@ output primitive = triangle_strip
 0:?     'uBuf' (layout( binding=1 column_major std430) buffer block{layout( column_major std430 offset=0) buffer highp 4X4 matrix of float p})
 0:?     'oColor' (layout( stream=0) out highp 4-component vector of float)
 0:?     'globalF' ( global highp float)
-0:?     'anon@0' (layout( stream=0) out block{layout( stream=0) gl_Position 4-component vector of float Position gl_Position, layout( stream=0) gl_PointSize float PointSize gl_PointSize, layout( stream=0) out 1-element array of float ClipDistance gl_ClipDistance})
+0:?     'anon@0' (layout( stream=0) out block{layout( stream=0) gl_Position 4-component vector of float Position gl_Position, layout( stream=0) gl_PointSize float PointSize gl_PointSize, layout( stream=0) out 1-element array of float ClipDistance gl_ClipDistance, layout( stream=0) out 1-element array of float CullDistance gl_CullDistance})
 0:?     'P' ( in 3-element array of highp 4-component vector of float)
 
 // Module Version 10000
@@ -287,6 +287,7 @@ output primitive = triangle_strip
                               MemberName 44(gl_PerVertex) 0  "gl_Position"
                               MemberName 44(gl_PerVertex) 1  "gl_PointSize"
                               MemberName 44(gl_PerVertex) 2  "gl_ClipDistance"
+                              MemberName 44(gl_PerVertex) 3  "gl_CullDistance"
                               Name 46  ""
                               Name 48  "MatrixBlock"
                               MemberName 48(MatrixBlock) 0  "uProj"
@@ -315,6 +316,7 @@ output primitive = triangle_strip
                               MemberDecorate 44(gl_PerVertex) 0 BuiltIn Position
                               MemberDecorate 44(gl_PerVertex) 1 BuiltIn PointSize
                               MemberDecorate 44(gl_PerVertex) 2 BuiltIn ClipDistance
+                              MemberDecorate 44(gl_PerVertex) 3 BuiltIn CullDistance
                               Decorate 44(gl_PerVertex) Block
                               MemberDecorate 48(MatrixBlock) 0 ColMajor
                               MemberDecorate 48(MatrixBlock) 0 Offset 0
@@ -359,7 +361,7 @@ output primitive = triangle_strip
               40:             TypeBool
               42:     19(int) Constant 1
               43:             TypeArray 6(float) 42
-44(gl_PerVertex):             TypeStruct 7(fvec4) 6(float) 43
+44(gl_PerVertex):             TypeStruct 7(fvec4) 6(float) 43 43
               45:             TypePointer Output 44(gl_PerVertex)
               46:     45(ptr) Variable Output
               47:             TypeMatrix 7(fvec4) 4
