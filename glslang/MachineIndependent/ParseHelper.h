@@ -469,7 +469,6 @@ public:
     const TString* blockName;
     TQualifier currentBlockQualifier;
     TPrecisionQualifier defaultPrecision[EbtNumTypes];
-    TBuiltInResource resources;
     TLimits& limits;
 
 protected:

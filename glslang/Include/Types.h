@@ -1903,8 +1903,12 @@ public:
     // an explicit array.
     void adoptImplicitArraySizes(bool skipNonvariablyIndexed)
     {
-        if (isUnsizedArray() && !(skipNonvariablyIndexed || isArrayVariablyIndexed()))
-            changeOuterArraySize(getImplicitArraySize());
+        if (isUnsizedArray() &&
+            (qualifier.builtIn == EbvSampleMask ||
+                !(skipNonvariablyIndexed || isArrayVariablyIndexed()))) {
+            changeOuterArraySize(getImplicitArraySize() == 0 ? 1 : getImplicitArraySize());
+            updateImplicitArraySize(getImplicitArraySize() == 0 ? 1 : getImplicitArraySize());
+        }
         // For multi-dim per-view arrays, set unsized inner dimension size to 1
         if (qualifier.isPerView() && arraySizes && arraySizes->isInnerUnsized())
             arraySizes->clearInnerUnsized();
