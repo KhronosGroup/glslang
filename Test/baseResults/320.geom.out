@@ -4,11 +4,6 @@ ERROR: 0:23: 'fromVertex' : redefinition
 ERROR: 0:25: 'fooC' : block instance name redefinition 
 ERROR: 0:33: 'EmitStreamVertex' : no matching overloaded function found 
 ERROR: 0:34: 'EndStreamPrimitive' : no matching overloaded function found 
-ERROR: 0:37: 'gl_ClipDistance' : undeclared identifier 
-ERROR: 0:37: 'gl_ClipDistance' :  left of '[' is not of type array, matrix, or vector  
-ERROR: 0:38: 'gl_ClipDistance' : no such field in structure 
-ERROR: 0:38: 'expression' :  left of '[' is not of type array, matrix, or vector  
-ERROR: 0:37: 'assign' :  l-value required (can't modify a const)
 ERROR: 0:45: 'selecting output stream' : not supported with this profile: es
 ERROR: 0:52: 'max_vertices' : too large, must be less than gl_MaxGeometryOutputVertices 
 ERROR: 0:52: 'max_vertices' : cannot change previously set layout value 
@@ -39,7 +34,7 @@ GL_OES_geometry_point_size
 ERROR: 0:133: 'gl_PointSize' : required extension not requested: Possible extensions include:
 GL_EXT_geometry_point_size
 GL_OES_geometry_point_size
-ERROR: 36 compilation errors.  No code generated.
+ERROR: 31 compilation errors.  No code generated.
 
 
 Shader version: 320
@@ -69,19 +64,32 @@ ERROR: node is still EOpNull!
 0:36              0 (const int)
 0:36          Constant:
 0:36            0 (const int)
-0:37      move second child to first child ( temp float)
-0:37        Constant:
-0:37          0.000000
-0:38        Constant:
-0:38          0.000000
+0:37      move second child to first child ( temp highp float)
+0:37        direct index (layout( stream=0) temp highp float ClipDistance)
+0:37          gl_ClipDistance: direct index for structure (layout( stream=0) out unsized 4-element array of highp float ClipDistance)
+0:37            'anon@1' (layout( stream=0) out block{layout( stream=0) gl_Position highp 4-component vector of float Position gl_Position, layout( stream=0) gl_PointSize highp float PointSize gl_PointSize, layout( stream=0) out unsized 4-element array of highp float ClipDistance gl_ClipDistance, layout( stream=0) out unsized 0-element array of highp float CullDistance gl_CullDistance})
+0:37            Constant:
+0:37              2 (const uint)
+0:37          Constant:
+0:37            3 (const int)
+0:38        direct index ( temp highp float ClipDistance)
+0:38          gl_ClipDistance: direct index for structure ( in unsized 3-element array of highp float ClipDistance)
+0:38            direct index ( temp block{ in highp 4-component vector of float Position gl_Position,  in highp float PointSize gl_PointSize,  in unsized 3-element array of highp float ClipDistance gl_ClipDistance,  in unsized 0-element array of highp float CullDistance gl_CullDistance})
+0:38              'gl_in' ( in 4-element array of block{ in highp 4-component vector of float Position gl_Position,  in highp float PointSize gl_PointSize,  in unsized 3-element array of highp float ClipDistance gl_ClipDistance,  in unsized 0-element array of highp float CullDistance gl_CullDistance})
+0:38              Constant:
+0:38                1 (const int)
+0:38            Constant:
+0:38              2 (const int)
+0:38          Constant:
+0:38            2 (const int)
 0:39      move second child to first child ( temp highp 4-component vector of float)
 0:39        gl_Position: direct index for structure (layout( stream=0) gl_Position highp 4-component vector of float Position)
-0:39          'anon@1' (layout( stream=0) out block{layout( stream=0) gl_Position highp 4-component vector of float Position gl_Position, layout( stream=0) gl_PointSize highp float PointSize gl_PointSize})
+0:39          'anon@1' (layout( stream=0) out block{layout( stream=0) gl_Position highp 4-component vector of float Position gl_Position, layout( stream=0) gl_PointSize highp float PointSize gl_PointSize, layout( stream=0) out unsized 4-element array of highp float ClipDistance gl_ClipDistance, layout( stream=0) out unsized 0-element array of highp float CullDistance gl_CullDistance})
 0:39          Constant:
 0:39            0 (const uint)
 0:39        gl_Position: direct index for structure ( in highp 4-component vector of float Position)
-0:39          direct index ( temp block{ in highp 4-component vector of float Position gl_Position,  in highp float PointSize gl_PointSize})
-0:39            'gl_in' ( in 4-element array of block{ in highp 4-component vector of float Position gl_Position,  in highp float PointSize gl_PointSize})
+0:39          direct index ( temp block{ in highp 4-component vector of float Position gl_Position,  in highp float PointSize gl_PointSize,  in unsized 3-element array of highp float ClipDistance gl_ClipDistance,  in unsized 0-element array of highp float CullDistance gl_CullDistance})
+0:39            'gl_in' ( in 4-element array of block{ in highp 4-component vector of float Position gl_Position,  in highp float PointSize gl_PointSize,  in unsized 3-element array of highp float ClipDistance gl_ClipDistance,  in unsized 0-element array of highp float CullDistance gl_CullDistance})
 0:39            Constant:
 0:39              0 (const int)
 0:39          Constant:
@@ -130,15 +138,15 @@ ERROR: node is still EOpNull!
 0:132        move second child to first child ( temp highp float)
 0:132          'ps' ( temp highp float)
 0:132          gl_PointSize: direct index for structure ( in highp float PointSize)
-0:132            direct index ( temp block{ in highp 4-component vector of float Position gl_Position,  in highp float PointSize gl_PointSize})
-0:132              'gl_in' ( in 4-element array of block{ in highp 4-component vector of float Position gl_Position,  in highp float PointSize gl_PointSize})
+0:132            direct index ( temp block{ in highp 4-component vector of float Position gl_Position,  in highp float PointSize gl_PointSize,  in unsized 3-element array of highp float ClipDistance gl_ClipDistance,  in unsized 0-element array of highp float CullDistance gl_CullDistance})
+0:132              'gl_in' ( in 4-element array of block{ in highp 4-component vector of float Position gl_Position,  in highp float PointSize gl_PointSize,  in unsized 3-element array of highp float ClipDistance gl_ClipDistance,  in unsized 0-element array of highp float CullDistance gl_CullDistance})
 0:132              Constant:
 0:132                3 (const int)
 0:132            Constant:
 0:132              1 (const int)
 0:133      move second child to first child ( temp highp float)
 0:133        gl_PointSize: direct index for structure (layout( stream=0) gl_PointSize highp float PointSize)
-0:133          'anon@1' (layout( stream=0) out block{layout( stream=0) gl_Position highp 4-component vector of float Position gl_Position, layout( stream=0) gl_PointSize highp float PointSize gl_PointSize})
+0:133          'anon@1' (layout( stream=0) out block{layout( stream=0) gl_Position highp 4-component vector of float Position gl_Position, layout( stream=0) gl_PointSize highp float PointSize gl_PointSize, layout( stream=0) out unsized 4-element array of highp float ClipDistance gl_ClipDistance, layout( stream=0) out unsized 0-element array of highp float CullDistance gl_CullDistance})
 0:133          Constant:
 0:133            1 (const uint)
 0:133        'ps' ( temp highp float)
@@ -147,16 +155,17 @@ ERROR: node is still EOpNull!
 0:?     'nonBlockUnsized' ( in 4-element array of mediump 4-component vector of float)
 0:?     'toF' (layout( stream=0) out block{layout( stream=0) out mediump 3-component vector of float color})
 0:?     'anon@0' (layout( stream=0) out block{layout( stream=0) out mediump 3-component vector of float color})
-0:?     'gl_in' ( in 4-element array of block{ in highp 4-component vector of float Position gl_Position,  in highp float PointSize gl_PointSize})
+0:?     'anon@1' (layout( stream=0) out block{layout( stream=0) gl_Position highp 4-component vector of float Position gl_Position, layout( stream=0) gl_PointSize highp float PointSize gl_PointSize, layout( stream=0) out unsized 4-element array of highp float ClipDistance gl_ClipDistance, layout( stream=0) out unsized 0-element array of highp float CullDistance gl_CullDistance})
+0:?     'gl_in' ( in 4-element array of block{ in highp 4-component vector of float Position gl_Position,  in highp float PointSize gl_PointSize,  in unsized 3-element array of highp float ClipDistance gl_ClipDistance,  in unsized 0-element array of highp float CullDistance gl_CullDistance})
 0:?     'ov4' (layout( stream=4) out mediump 4-component vector of float)
 0:?     'ouuaa6' (layout( stream=0) out block{layout( stream=0) out mediump 4-component vector of float a})
 0:?     'badv4' (layout( stream=0) out mediump 4-component vector of float)
 0:?     'bad2v4' ( in 4-element array of mediump 4-component vector of float)
-0:?     'anon@1' (layout( stream=0) out block{layout( stream=0) out highp int a})
+0:?     'anon@2' (layout( stream=0) out block{layout( stream=0) out highp int a})
 0:?     'outbi' (layout( stream=0) out block{layout( stream=0) out highp int a, layout( stream=0) out highp int b, layout( stream=0) out highp int c})
 0:?     'insn' ( in 4-element array of block{ in highp int a15})
-0:?     'anon@2' (layout( stream=0) out block{layout( stream=0) out mediump float f15})
-0:?     'anon@3' (layout( column_major shared) uniform block{layout( column_major shared) uniform bool b15})
+0:?     'anon@3' (layout( stream=0) out block{layout( stream=0) out mediump float f15})
+0:?     'anon@4' (layout( column_major shared) uniform block{layout( column_major shared) uniform bool b15})
 0:?     'summ' ( const highp int)
 0:?       2752 (const int)
 0:?     'explArray' ( in 4-element array of mediump 4-component vector of float)
@@ -199,19 +208,32 @@ ERROR: node is still EOpNull!
 0:36              0 (const int)
 0:36          Constant:
 0:36            0 (const int)
-0:37      move second child to first child ( temp float)
-0:37        Constant:
-0:37          0.000000
-0:38        Constant:
-0:38          0.000000
+0:37      move second child to first child ( temp highp float)
+0:37        direct index (layout( stream=0) temp highp float ClipDistance)
+0:37          gl_ClipDistance: direct index for structure (layout( stream=0) out 4-element array of highp float ClipDistance)
+0:37            'anon@1' (layout( stream=0) out block{layout( stream=0) gl_Position highp 4-component vector of float Position gl_Position, layout( stream=0) gl_PointSize highp float PointSize gl_PointSize, layout( stream=0) out 4-element array of highp float ClipDistance gl_ClipDistance, layout( stream=0) out 1-element array of highp float CullDistance gl_CullDistance})
+0:37            Constant:
+0:37              2 (const uint)
+0:37          Constant:
+0:37            3 (const int)
+0:38        direct index ( temp highp float ClipDistance)
+0:38          gl_ClipDistance: direct index for structure ( in 3-element array of highp float ClipDistance)
+0:38            direct index ( temp block{ in highp 4-component vector of float Position gl_Position,  in highp float PointSize gl_PointSize,  in 3-element array of highp float ClipDistance gl_ClipDistance,  in 1-element array of highp float CullDistance gl_CullDistance})
+0:38              'gl_in' ( in 4-element array of block{ in highp 4-component vector of float Position gl_Position,  in highp float PointSize gl_PointSize,  in 3-element array of highp float ClipDistance gl_ClipDistance,  in 1-element array of highp float CullDistance gl_CullDistance})
+0:38              Constant:
+0:38                1 (const int)
+0:38            Constant:
+0:38              2 (const int)
+0:38          Constant:
+0:38            2 (const int)
 0:39      move second child to first child ( temp highp 4-component vector of float)
 0:39        gl_Position: direct index for structure (layout( stream=0) gl_Position highp 4-component vector of float Position)
-0:39          'anon@1' (layout( stream=0) out block{layout( stream=0) gl_Position highp 4-component vector of float Position gl_Position, layout( stream=0) gl_PointSize highp float PointSize gl_PointSize})
+0:39          'anon@1' (layout( stream=0) out block{layout( stream=0) gl_Position highp 4-component vector of float Position gl_Position, layout( stream=0) gl_PointSize highp float PointSize gl_PointSize, layout( stream=0) out 4-element array of highp float ClipDistance gl_ClipDistance, layout( stream=0) out 1-element array of highp float CullDistance gl_CullDistance})
 0:39          Constant:
 0:39            0 (const uint)
 0:39        gl_Position: direct index for structure ( in highp 4-component vector of float Position)
-0:39          direct index ( temp block{ in highp 4-component vector of float Position gl_Position,  in highp float PointSize gl_PointSize})
-0:39            'gl_in' ( in 4-element array of block{ in highp 4-component vector of float Position gl_Position,  in highp float PointSize gl_PointSize})
+0:39          direct index ( temp block{ in highp 4-component vector of float Position gl_Position,  in highp float PointSize gl_PointSize,  in 3-element array of highp float ClipDistance gl_ClipDistance,  in 1-element array of highp float CullDistance gl_CullDistance})
+0:39            'gl_in' ( in 4-element array of block{ in highp 4-component vector of float Position gl_Position,  in highp float PointSize gl_PointSize,  in 3-element array of highp float ClipDistance gl_ClipDistance,  in 1-element array of highp float CullDistance gl_CullDistance})
 0:39            Constant:
 0:39              0 (const int)
 0:39          Constant:
@@ -228,16 +250,17 @@ ERROR: node is still EOpNull!
 0:?     'nonBlockUnsized' ( in 4-element array of mediump 4-component vector of float)
 0:?     'toF' (layout( stream=0) out block{layout( stream=0) out mediump 3-component vector of float color})
 0:?     'anon@0' (layout( stream=0) out block{layout( stream=0) out mediump 3-component vector of float color})
-0:?     'gl_in' ( in 4-element array of block{ in highp 4-component vector of float Position gl_Position,  in highp float PointSize gl_PointSize})
+0:?     'anon@1' (layout( stream=0) out block{layout( stream=0) gl_Position highp 4-component vector of float Position gl_Position, layout( stream=0) gl_PointSize highp float PointSize gl_PointSize, layout( stream=0) out 4-element array of highp float ClipDistance gl_ClipDistance, layout( stream=0) out 1-element array of highp float CullDistance gl_CullDistance})
+0:?     'gl_in' ( in 4-element array of block{ in highp 4-component vector of float Position gl_Position,  in highp float PointSize gl_PointSize,  in 3-element array of highp float ClipDistance gl_ClipDistance,  in 1-element array of highp float CullDistance gl_CullDistance})
 0:?     'ov4' (layout( stream=4) out mediump 4-component vector of float)
 0:?     'ouuaa6' (layout( stream=0) out block{layout( stream=0) out mediump 4-component vector of float a})
 0:?     'badv4' (layout( stream=0) out mediump 4-component vector of float)
 0:?     'bad2v4' ( in 4-element array of mediump 4-component vector of float)
-0:?     'anon@1' (layout( stream=0) out block{layout( stream=0) out highp int a})
+0:?     'anon@2' (layout( stream=0) out block{layout( stream=0) out highp int a})
 0:?     'outbi' (layout( stream=0) out block{layout( stream=0) out highp int a, layout( stream=0) out highp int b, layout( stream=0) out highp int c})
 0:?     'insn' ( in 4-element array of block{ in highp int a15})
-0:?     'anon@2' (layout( stream=0) out block{layout( stream=0) out mediump float f15})
-0:?     'anon@3' (layout( column_major shared) uniform block{layout( column_major shared) uniform bool b15})
+0:?     'anon@3' (layout( stream=0) out block{layout( stream=0) out mediump float f15})
+0:?     'anon@4' (layout( column_major shared) uniform block{layout( column_major shared) uniform bool b15})
 0:?     'summ' ( const highp int)
 0:?       2752 (const int)
 0:?     'explArray' ( in 4-element array of mediump 4-component vector of float)

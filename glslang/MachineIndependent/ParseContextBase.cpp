@@ -273,10 +273,6 @@ void TParseContextBase::checkIndex(const TSourceLoc& loc, const TType& type, int
             error(loc, "", "[", "array index out of range '%d'", index);
             index = type.getOuterArraySize() - 1;
         }
-        else if (type.getQualifier().builtIn == EbvSampleMask && index >= static_cast<int>((resources.maxSamples + 31u) / 32u)) {
-            error(loc, "", "[", "array index out of range '%d'", index);
-            index = static_cast<int>((resources.maxSamples + 31u) / 32u) - 1;
-        }
     } else if (type.isVector()) {
         if (index >= type.getVectorSize()) {
             error(loc, "", "[", "vector index out of range '%d'", index);

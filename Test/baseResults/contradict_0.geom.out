@@ -37,6 +37,7 @@ Linked geometry stage:
 ERROR: Linking geometry stage: Contradictory layout max_vertices values
 ERROR: Linking geometry stage: Contradictory input layout primitives
 ERROR: Linking geometry stage: Contradictory output layout primitives
+ERROR: Can't merge two Geometry/Tessellation Evaluation shaders with different in/out primitive layouts.
 
 Shader version: 330
 invocations = 1
