@@ -277,18 +277,12 @@ void TIntermediate::mergeModes(TInfoSink& infoSink, TIntermediate& unit)
     // That includes input and output primitive layouts. Merged results will be copied into both AST.
     // Also unmatched primitive layouts would be reported.
     if (getStage() == EShLangGeometry && unit.getStage() == EShLangGeometry) {
-
         if (unit.getInputPrimitive() == ElgNone) {
             unit.setInputPrimitive(getInputPrimitive());
         }
 
-        if (unit.getOutputPrimitive() == ElgNone) {
-            unit.setOutputPrimitive(getOutputPrimitive());
-        }
-
-        if ((getOutputPrimitive() != unit.getOutputPrimitive() && getOutputPrimitive() != ElgNone) ||
-            (getInputPrimitive() != unit.getInputPrimitive() && getInputPrimitive() != ElgNone)) {
-            infoSink.info.message(EPrefixError, "Can't merge two Geometry/Tessellation Evaluation shaders with different in/out primitive layouts.");
+        if (getInputPrimitive() != unit.getInputPrimitive() && getInputPrimitive() != ElgNone) {
+            infoSink.info.message(EPrefixError, "Can't merge two Geometry shaders with different input primitive layouts.");
         }
     }
 }
