@@ -524,12 +524,13 @@ public:
         TReflection::TMapIndexToReflection &ioItems =
             input ? reflection.indexToPipeInput : reflection.indexToPipeOutput;
 
-        std::string namespacedName = input ? "in " : "out ";
-        namespacedName += name.c_str();
+        // should also add for aggregate pipe io variables.
+        TReflection::TNameToIndex &ioMapper =
+            input ? reflection.pipeInNameToIndex : reflection.pipeOutNameToIndex;
 
-        TReflection::TNameToIndex::const_iterator it = reflection.nameToIndex.find(namespacedName);
-        if (it == reflection.nameToIndex.end()) {
-            reflection.nameToIndex[namespacedName] = (int)ioItems.size();
+        TReflection::TNameToIndex::const_iterator it = ioMapper.find(name.c_str());
+        if (it == ioMapper.end()) {
+            ioMapper[name.c_str()] = (int)ioItems.size();
             ioItems.push_back(
                 TObjectReflection(name.c_str(), type, 0, mapToGlType(type), mapToGlArraySize(type), 0));
 
