@@ -51,10 +51,7 @@ py_binary(
 
 genrule(
     name = "gen_build_info_h",
-    srcs = [
-        "CHANGES.md",
-        "build_info.h.tmpl",
-    ],
+    srcs = ["CHANGES.md", "build_info.h.tmpl"],
     outs = ["glslang/build_info.h"],
     cmd = "$(location build_info) $$(dirname $(location CHANGES.md)) -i $(location build_info.h.tmpl) -o $(location glslang/build_info.h)",
     tools = [":build_info"],
@@ -95,8 +92,10 @@ cc_library(
     ) + [
         "OGLCompilersDLL/InitializeDll.cpp",
     ] + select({
-        "@bazel_tools//src/conditions:windows": ["glslang/OSDependent/Windows/ossource.cpp"],
-        "//conditions:default": ["glslang/OSDependent/Unix/ossource.cpp"],
+        "@bazel_tools//src/conditions:windows":
+            ["glslang/OSDependent/Windows/ossource.cpp"],
+        "//conditions:default":
+            ["glslang/OSDependent/Unix/ossource.cpp"],
     }),
     hdrs = glob([
         "glslang/HLSL/*.h",
@@ -119,10 +118,7 @@ cc_library(
     ],
     linkopts = select({
         "@bazel_tools//src/conditions:windows": [""],
-        "//conditions:default": [
-            "-lm",
-            "-lpthread",
-        ],
+        "//conditions:default": ["-lm", "-lpthread"],
     }),
     linkstatic = 1,
 )
@@ -228,6 +224,18 @@ cc_binary(
     ],
 )
 
+filegroup(
+    name = "test_files",
+    srcs = glob(
+        ["Test/**"],
+        exclude = [
+            "Test/bump",
+            "Test/glslangValidator",
+            "Test/runtests",
+        ],
+    ),
+)
+
 cc_library(
     name = "glslang_test_lib",
     testonly = 1,
@@ -241,9 +249,16 @@ cc_library(
         "gtests/main.cpp",
     ],
     copts = COMMON_COPTS,
-    defines = [
-        "GLSLANG_TEST_DIRECTORY='\"USE_FLAG_INSTEAD\"'",
-    ],
+    data = [":test_files"],
+    defines = select({
+        # Unfortunately we can't use $(location) in cc_library at the moment.
+        # See https://github.com/bazelbuild/bazel/issues/1023
+        # So we'll specify the path manually.
+        "@bazel_tools//src/conditions:windows":
+            ["GLSLANG_TEST_DIRECTORY='\"../../../../../Test\"'"],
+        "//conditions:default":
+            ["GLSLANG_TEST_DIRECTORY='\"Test\"'"],
+    }),
     linkstatic = 1,
     deps = [
         ":SPIRV",
@@ -266,13 +281,9 @@ GLSLANG_TESTS = glob(
 [cc_test(
     name = test_file.replace("gtests/", "").replace(".FromFile.cpp", "") + "_test",
     srcs = [test_file],
-    args = [
-        "--test-root",
-        "$(rootpath Test)",
-    ],
     copts = COMMON_COPTS,
     data = [
-        "Test",
+        ":test_files",
     ],
     deps = [
         ":SPIRV",
