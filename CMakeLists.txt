@@ -297,14 +297,16 @@ endfunction()
 # glslang_pch() adds precompiled header rules to <target> for the pre-compiled
 # header file <pch>. As target_precompile_headers() was added in CMake 3.16,
 # this is a no-op if called on earlier versions of CMake.
-if(NOT CMAKE_VERSION VERSION_LESS "3.16")
+if(NOT CMAKE_VERSION VERSION_LESS "3.16" AND ENABLE_PCH)
     function(glslang_pch target pch)
         target_precompile_headers(${target} PRIVATE ${pch})
     endfunction()
 else()
     function(glslang_pch target pch)
     endfunction()
-    message("Your CMake version is ${CMAKE_VERSION}. Update to at least 3.16 to enable precompiled headers to speed up incremental builds")
+    if(ENABLE_PCH)
+        message("Your CMake version is ${CMAKE_VERSION}. Update to at least 3.16 to enable precompiled headers to speed up incremental builds")
+    endif()
 endif()
 
 if(BUILD_EXTERNAL AND IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/External)
