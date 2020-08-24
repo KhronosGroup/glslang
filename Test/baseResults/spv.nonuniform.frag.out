@@ -64,9 +64,12 @@ spv.nonuniform.frag
                               Decorate 17(nu_li) DecorationNonUniformEXT
                               Decorate 17(nu_li) DecorationNonUniformEXT
                               Decorate 19 DecorationNonUniformEXT
+                              Decorate 18(param) DecorationNonUniformEXT
+                              Decorate 17(nu_li) DecorationNonUniformEXT
                               Decorate 24 DecorationNonUniformEXT
                               Decorate 28 DecorationNonUniformEXT
                               Decorate 29 DecorationNonUniformEXT
+                              Decorate 17(nu_li) DecorationNonUniformEXT
                               Decorate 35(nu_inv4) Location 0
                               Decorate 35(nu_inv4) DecorationNonUniformEXT
                               Decorate 39 DecorationNonUniformEXT
@@ -126,6 +129,7 @@ spv.nonuniform.frag
                               Decorate 150 DecorationNonUniformEXT
                               Decorate 151 DecorationNonUniformEXT
                               Decorate 152 DecorationNonUniformEXT
+                              Decorate 153 DecorationNonUniformEXT
                               Decorate 160(storageTexelBuffer) DescriptorSet 0
                               Decorate 160(storageTexelBuffer) Binding 9
                               Decorate 92(nu_ii) DecorationNonUniformEXT
