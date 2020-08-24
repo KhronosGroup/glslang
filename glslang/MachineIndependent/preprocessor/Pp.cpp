@@ -890,14 +890,6 @@ int TPpContext::CPPextension(TPpToken* ppToken)
         return token;
     }
 
-    if (identifierSeen){
-        if (parseContext.currentFunctionType != nullptr) {
-            parseContext.ppError(ppToken->loc, "the extension directives must occur before any non-preprocessor tokens",
-            "#extension", "");
-            return token;
-        }
-    }
-
     if (token != PpAtomIdentifier)
         parseContext.ppError(ppToken->loc, "extension name expected", "#extension", "");
 

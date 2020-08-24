@@ -88,10 +88,10 @@ ERROR: 12:9504: '#if' : unexpected tokens following directive
 ERROR: 12:9506: '#error' : \ 377  
 ERROR: 12:9507: '#error' : \ 376  
 ERROR: 12:9508: '#error' : \ 377  
-ERROR: 12:9602: 'defined' : cannot use in preprocessor expression when expanded from macros 
+WARNING: 12:9602: 'defined' : nonportable when expanded from macros for preprocessor expression 
 ERROR: 12:9603: '#error' : DEF_DEFINED then  
 ERROR: 12:10002: '' : missing #endif 
-ERROR: 88 compilation errors.  No code generated.
+ERROR: 87 compilation errors.  No code generated.
 
 
 Shader version: 400
