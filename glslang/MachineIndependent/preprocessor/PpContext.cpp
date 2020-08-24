@@ -86,7 +86,7 @@ namespace glslang {
 
 TPpContext::TPpContext(TParseContextBase& pc, const std::string& rootFileName, TShader::Includer& inclr) :
     preamble(0), strings(0), previous_token('\n'), parseContext(pc), includer(inclr), inComment(false),
-    rootFileName(rootFileName),
+    rootFileName(rootFileName), shaderSource(false), identifierSeen(false),
     currentSourceFile(rootFileName),
     disableEscapeSequences(false)
 {
@@ -115,6 +115,16 @@ void TPpContext::setInput(TInputScanner& input, bool versionWillBeError)
 
     errorOnVersion = versionWillBeError;
     versionSeen = false;
+
+    // When scan user shader source, the num of source is 4, which is defined in ProcessDeferred()
+    //   string 0:                system preamble
+    //   string 1:                custom preamble
+    //   string 2...numStrings+1: user's shader
+    //   string numStrings+2:     "int;"
+    if (input.getNumSources() > 1)
+    {
+        shaderSource = true;
+    }
 }
 
 } // end namespace glslang

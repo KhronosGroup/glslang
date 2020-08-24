@@ -445,6 +445,8 @@ protected:
     std::vector<tInput*> inputStack;
     bool errorOnVersion;
     bool versionSeen;
+    bool shaderSource;
+    bool identifierSeen;
 
     //
     // from Pp.cpp
