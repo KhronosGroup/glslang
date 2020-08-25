@@ -222,7 +222,7 @@ protected:
 struct TArraySizes {
     POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
 
-    TArraySizes() : implicitArraySize(0), variablyIndexed(false){ }
+    TArraySizes() : implicitArraySize(1), implicitlySized(true), variablyIndexed(false){ }
 
     // For breaking into two non-shared copies, independently modifiable.
     TArraySizes& operator=(const TArraySizes& from)
@@ -254,9 +254,14 @@ struct TArraySizes {
     void addInnerSize() { addInnerSize((unsigned)UnsizedArraySize); }
     void addInnerSize(int s) { addInnerSize((unsigned)s, nullptr); }
     void addInnerSize(int s, TIntermTyped* n) { sizes.push_back((unsigned)s, n); }
-    void addInnerSize(TArraySize pair) { sizes.push_back(pair.size, pair.node); }
+    void addInnerSize(TArraySize pair) {
+        sizes.push_back(pair.size, pair.node);
+    }
     void addInnerSizes(const TArraySizes& s) { sizes.push_back(s.sizes); }
-    void changeOuterSize(int s) { sizes.changeFront((unsigned)s); }
+    void changeOuterSize(int s) {
+        sizes.changeFront((unsigned)s);
+        implicitlySized = false;
+    }
     int getImplicitSize() const { return implicitArraySize; }
     void updateImplicitSize(int s) { implicitArraySize = std::max(implicitArraySize, s); }
     bool isInnerUnsized() const
@@ -293,6 +298,8 @@ struct TArraySizes {
 
     bool hasUnsized() const { return getOuterSize() == UnsizedArraySize || isInnerUnsized(); }
     bool isSized() const { return getOuterSize() != UnsizedArraySize; }
+    bool isImplicitlySized() const { return implicitlySized; }
+    void setImplicitlySized(bool isImplicitSizing) { implicitlySized = isImplicitSizing; }
     void dereference() { sizes.pop_front(); }
     void copyDereferenced(const TArraySizes& rhs)
     {
@@ -331,6 +338,7 @@ protected:
     // the implicit size of the array, if not variably indexed and
     // otherwise legal.
     int implicitArraySize;
+    bool implicitlySized;
     bool variablyIndexed;  // true if array is indexed with a non compile-time constant
 };
 

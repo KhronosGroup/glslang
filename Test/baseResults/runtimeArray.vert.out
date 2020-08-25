@@ -313,8 +313,8 @@ ERROR: node is still EOpNull!
 0:107        'storageTexelBuffer' (layout( binding=9 r32f) uniform runtime-sized array of imageBuffer)
 0:107        'i' ( global int)
 0:109      Sequence
-0:109        move second child to first child ( temp unsized 0-element array of float)
-0:109          'local' ( temp unsized 0-element array of float)
+0:109        move second child to first child ( temp unsized 1-element array of float)
+0:109          'local' ( temp unsized 1-element array of float)
 0:109          b: direct index for structure (layout( column_major shared) uniform runtime-sized array of float)
 0:109            'ubuf' (layout( column_major shared) uniform block{layout( column_major shared) uniform runtime-sized array of int a, layout( column_major shared) uniform runtime-sized array of float b})
 0:109            Constant:

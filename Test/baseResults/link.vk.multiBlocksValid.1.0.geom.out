@@ -36,7 +36,7 @@ output primitive = triangle_strip
 0:56          Sequence
 0:56            move second child to first child ( temp highp 4-component vector of float)
 0:56              gl_Position: direct index for structure (layout( stream=0) gl_Position highp 4-component vector of float Position)
-0:56                'anon@0' (layout( stream=0) out block{layout( stream=0) gl_Position 4-component vector of float Position gl_Position, layout( stream=0) gl_PointSize float PointSize gl_PointSize, layout( stream=0) out unsized 0-element array of float ClipDistance gl_ClipDistance, layout( stream=0) out unsized 0-element array of float CullDistance gl_CullDistance})
+0:56                'anon@0' (layout( stream=0) out block{layout( stream=0) gl_Position 4-component vector of float Position gl_Position, layout( stream=0) gl_PointSize float PointSize gl_PointSize, layout( stream=0) out unsized 1-element array of float ClipDistance gl_ClipDistance, layout( stream=0) out unsized 1-element array of float CullDistance gl_CullDistance})
 0:56                Constant:
 0:56                  0 (const uint)
 0:56              matrix-times-vector ( temp highp 4-component vector of float)
@@ -77,7 +77,7 @@ output primitive = triangle_strip
 0:?     'uBuf' (layout( binding=1 column_major std430) buffer block{layout( column_major std430 offset=0) buffer highp 4X4 matrix of float p})
 0:?     'oColor' (layout( stream=0) out highp 4-component vector of float)
 0:?     'globalF' ( global highp float)
-0:?     'anon@0' (layout( stream=0) out block{layout( stream=0) gl_Position 4-component vector of float Position gl_Position, layout( stream=0) gl_PointSize float PointSize gl_PointSize, layout( stream=0) out unsized 0-element array of float ClipDistance gl_ClipDistance, layout( stream=0) out unsized 0-element array of float CullDistance gl_CullDistance})
+0:?     'anon@0' (layout( stream=0) out block{layout( stream=0) gl_Position 4-component vector of float Position gl_Position, layout( stream=0) gl_PointSize float PointSize gl_PointSize, layout( stream=0) out unsized 1-element array of float ClipDistance gl_ClipDistance, layout( stream=0) out unsized 1-element array of float CullDistance gl_CullDistance})
 
 link.vk.multiBlocksValid.1.1.geom
 Shader version: 430

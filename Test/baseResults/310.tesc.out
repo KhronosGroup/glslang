@@ -68,8 +68,8 @@ ERROR: node is still EOpNull!
 0:25        move second child to first child ( temp highp 4-component vector of float)
 0:25          'p' ( temp highp 4-component vector of float)
 0:25          gl_Position: direct index for structure ( in highp 4-component vector of float Position)
-0:25            direct index ( temp block{ in highp 4-component vector of float Position gl_Position,  in highp float PointSize gl_PointSize,  in highp 4-component vector of float SecondaryPositionNV gl_SecondaryPositionNV,  in unsized 0-element array of highp 4-component vector of float PositionPerViewNV gl_PositionPerViewNV,  in unsized 3-element array of highp float ClipDistance gl_ClipDistance,  in unsized 0-element array of highp float CullDistance gl_CullDistance})
-0:25              'gl_in' ( in 32-element array of block{ in highp 4-component vector of float Position gl_Position,  in highp float PointSize gl_PointSize,  in highp 4-component vector of float SecondaryPositionNV gl_SecondaryPositionNV,  in unsized 0-element array of highp 4-component vector of float PositionPerViewNV gl_PositionPerViewNV,  in unsized 3-element array of highp float ClipDistance gl_ClipDistance,  in unsized 0-element array of highp float CullDistance gl_CullDistance})
+0:25            direct index ( temp block{ in highp 4-component vector of float Position gl_Position,  in highp float PointSize gl_PointSize,  in highp 4-component vector of float SecondaryPositionNV gl_SecondaryPositionNV,  in unsized 1-element array of highp 4-component vector of float PositionPerViewNV gl_PositionPerViewNV,  in unsized 3-element array of highp float ClipDistance gl_ClipDistance,  in unsized 1-element array of highp float CullDistance gl_CullDistance})
+0:25              'gl_in' ( in 32-element array of block{ in highp 4-component vector of float Position gl_Position,  in highp float PointSize gl_PointSize,  in highp 4-component vector of float SecondaryPositionNV gl_SecondaryPositionNV,  in unsized 1-element array of highp 4-component vector of float PositionPerViewNV gl_PositionPerViewNV,  in unsized 3-element array of highp float ClipDistance gl_ClipDistance,  in unsized 1-element array of highp float CullDistance gl_CullDistance})
 0:25              Constant:
 0:25                1 (const int)
 0:25            Constant:
@@ -78,8 +78,8 @@ ERROR: node is still EOpNull!
 0:26        move second child to first child ( temp highp float)
 0:26          'ps' ( temp highp float)
 0:26          gl_PointSize: direct index for structure ( in highp float PointSize)
-0:26            direct index ( temp block{ in highp 4-component vector of float Position gl_Position,  in highp float PointSize gl_PointSize,  in highp 4-component vector of float SecondaryPositionNV gl_SecondaryPositionNV,  in unsized 0-element array of highp 4-component vector of float PositionPerViewNV gl_PositionPerViewNV,  in unsized 3-element array of highp float ClipDistance gl_ClipDistance,  in unsized 0-element array of highp float CullDistance gl_CullDistance})
-0:26              'gl_in' ( in 32-element array of block{ in highp 4-component vector of float Position gl_Position,  in highp float PointSize gl_PointSize,  in highp 4-component vector of float SecondaryPositionNV gl_SecondaryPositionNV,  in unsized 0-element array of highp 4-component vector of float PositionPerViewNV gl_PositionPerViewNV,  in unsized 3-element array of highp float ClipDistance gl_ClipDistance,  in unsized 0-element array of highp float CullDistance gl_CullDistance})
+0:26            direct index ( temp block{ in highp 4-component vector of float Position gl_Position,  in highp float PointSize gl_PointSize,  in highp 4-component vector of float SecondaryPositionNV gl_SecondaryPositionNV,  in unsized 1-element array of highp 4-component vector of float PositionPerViewNV gl_PositionPerViewNV,  in unsized 3-element array of highp float ClipDistance gl_ClipDistance,  in unsized 1-element array of highp float CullDistance gl_CullDistance})
+0:26              'gl_in' ( in 32-element array of block{ in highp 4-component vector of float Position gl_Position,  in highp float PointSize gl_PointSize,  in highp 4-component vector of float SecondaryPositionNV gl_SecondaryPositionNV,  in unsized 1-element array of highp 4-component vector of float PositionPerViewNV gl_PositionPerViewNV,  in unsized 3-element array of highp float ClipDistance gl_ClipDistance,  in unsized 1-element array of highp float CullDistance gl_CullDistance})
 0:26              Constant:
 0:26                1 (const int)
 0:26            Constant:
@@ -89,8 +89,8 @@ ERROR: node is still EOpNull!
 0:27          'cd' ( temp highp float)
 0:27          direct index ( temp highp float ClipDistance)
 0:27            gl_ClipDistance: direct index for structure ( in unsized 3-element array of highp float ClipDistance)
-0:27              direct index ( temp block{ in highp 4-component vector of float Position gl_Position,  in highp float PointSize gl_PointSize,  in highp 4-component vector of float SecondaryPositionNV gl_SecondaryPositionNV,  in unsized 0-element array of highp 4-component vector of float PositionPerViewNV gl_PositionPerViewNV,  in unsized 3-element array of highp float ClipDistance gl_ClipDistance,  in unsized 0-element array of highp float CullDistance gl_CullDistance})
-0:27                'gl_in' ( in 32-element array of block{ in highp 4-component vector of float Position gl_Position,  in highp float PointSize gl_PointSize,  in highp 4-component vector of float SecondaryPositionNV gl_SecondaryPositionNV,  in unsized 0-element array of highp 4-component vector of float PositionPerViewNV gl_PositionPerViewNV,  in unsized 3-element array of highp float ClipDistance gl_ClipDistance,  in unsized 0-element array of highp float CullDistance gl_CullDistance})
+0:27              direct index ( temp block{ in highp 4-component vector of float Position gl_Position,  in highp float PointSize gl_PointSize,  in highp 4-component vector of float SecondaryPositionNV gl_SecondaryPositionNV,  in unsized 1-element array of highp 4-component vector of float PositionPerViewNV gl_PositionPerViewNV,  in unsized 3-element array of highp float ClipDistance gl_ClipDistance,  in unsized 1-element array of highp float CullDistance gl_CullDistance})
+0:27                'gl_in' ( in 32-element array of block{ in highp 4-component vector of float Position gl_Position,  in highp float PointSize gl_PointSize,  in highp 4-component vector of float SecondaryPositionNV gl_SecondaryPositionNV,  in unsized 1-element array of highp 4-component vector of float PositionPerViewNV gl_PositionPerViewNV,  in unsized 3-element array of highp float ClipDistance gl_ClipDistance,  in unsized 1-element array of highp float CullDistance gl_CullDistance})
 0:27                Constant:
 0:27                  1 (const int)
 0:27              Constant:
@@ -111,16 +111,16 @@ ERROR: node is still EOpNull!
 0:31          'gl_InvocationID' ( in highp int InvocationID)
 0:33      move second child to first child ( temp highp 4-component vector of float)
 0:33        gl_Position: direct index for structure ( out highp 4-component vector of float Position)
-0:33          indirect index ( temp block{ out highp 4-component vector of float Position gl_Position,  out highp float PointSize gl_PointSize,  out unsized 2-element array of highp float ClipDistance gl_ClipDistance,  out unsized 0-element array of highp float CullDistance gl_CullDistance})
-0:33            'gl_out' ( out 4-element array of block{ out highp 4-component vector of float Position gl_Position,  out highp float PointSize gl_PointSize,  out unsized 2-element array of highp float ClipDistance gl_ClipDistance,  out unsized 0-element array of highp float CullDistance gl_CullDistance})
+0:33          indirect index ( temp block{ out highp 4-component vector of float Position gl_Position,  out highp float PointSize gl_PointSize,  out unsized 2-element array of highp float ClipDistance gl_ClipDistance,  out unsized 1-element array of highp float CullDistance gl_CullDistance})
+0:33            'gl_out' ( out 4-element array of block{ out highp 4-component vector of float Position gl_Position,  out highp float PointSize gl_PointSize,  out unsized 2-element array of highp float ClipDistance gl_ClipDistance,  out unsized 1-element array of highp float CullDistance gl_CullDistance})
 0:33            'gl_InvocationID' ( in highp int InvocationID)
 0:33          Constant:
 0:33            0 (const int)
 0:33        'p' ( temp highp 4-component vector of float)
 0:34      move second child to first child ( temp highp float)
 0:34        gl_PointSize: direct index for structure ( out highp float PointSize)
-0:34          indirect index ( temp block{ out highp 4-component vector of float Position gl_Position,  out highp float PointSize gl_PointSize,  out unsized 2-element array of highp float ClipDistance gl_ClipDistance,  out unsized 0-element array of highp float CullDistance gl_CullDistance})
-0:34            'gl_out' ( out 4-element array of block{ out highp 4-component vector of float Position gl_Position,  out highp float PointSize gl_PointSize,  out unsized 2-element array of highp float ClipDistance gl_ClipDistance,  out unsized 0-element array of highp float CullDistance gl_CullDistance})
+0:34          indirect index ( temp block{ out highp 4-component vector of float Position gl_Position,  out highp float PointSize gl_PointSize,  out unsized 2-element array of highp float ClipDistance gl_ClipDistance,  out unsized 1-element array of highp float CullDistance gl_CullDistance})
+0:34            'gl_out' ( out 4-element array of block{ out highp 4-component vector of float Position gl_Position,  out highp float PointSize gl_PointSize,  out unsized 2-element array of highp float ClipDistance gl_ClipDistance,  out unsized 1-element array of highp float CullDistance gl_CullDistance})
 0:34            'gl_InvocationID' ( in highp int InvocationID)
 0:34          Constant:
 0:34            1 (const int)
@@ -128,8 +128,8 @@ ERROR: node is still EOpNull!
 0:35      move second child to first child ( temp highp float)
 0:35        direct index ( temp highp float ClipDistance)
 0:35          gl_ClipDistance: direct index for structure ( out unsized 2-element array of highp float ClipDistance)
-0:35            indirect index ( temp block{ out highp 4-component vector of float Position gl_Position,  out highp float PointSize gl_PointSize,  out unsized 2-element array of highp float ClipDistance gl_ClipDistance,  out unsized 0-element array of highp float CullDistance gl_CullDistance})
-0:35              'gl_out' ( out 4-element array of block{ out highp 4-component vector of float Position gl_Position,  out highp float PointSize gl_PointSize,  out unsized 2-element array of highp float ClipDistance gl_ClipDistance,  out unsized 0-element array of highp float CullDistance gl_CullDistance})
+0:35            indirect index ( temp block{ out highp 4-component vector of float Position gl_Position,  out highp float PointSize gl_PointSize,  out unsized 2-element array of highp float ClipDistance gl_ClipDistance,  out unsized 1-element array of highp float CullDistance gl_CullDistance})
+0:35              'gl_out' ( out 4-element array of block{ out highp 4-component vector of float Position gl_Position,  out highp float PointSize gl_PointSize,  out unsized 2-element array of highp float ClipDistance gl_ClipDistance,  out unsized 1-element array of highp float CullDistance gl_CullDistance})
 0:35              'gl_InvocationID' ( in highp int InvocationID)
 0:35            Constant:
 0:35              2 (const int)
@@ -199,8 +199,8 @@ ERROR: node is still EOpNull!
 0:69    Function Parameters: 
 0:71    Sequence
 0:71      gl_Position: direct index for structure ( out highp 4-component vector of float Position)
-0:71        direct index ( temp block{ out highp 4-component vector of float Position gl_Position,  out highp float PointSize gl_PointSize,  out unsized 2-element array of highp float ClipDistance gl_ClipDistance,  out unsized 0-element array of highp float CullDistance gl_CullDistance})
-0:71          'gl_out' ( out 4-element array of block{ out highp 4-component vector of float Position gl_Position,  out highp float PointSize gl_PointSize,  out unsized 2-element array of highp float ClipDistance gl_ClipDistance,  out unsized 0-element array of highp float CullDistance gl_CullDistance})
+0:71        direct index ( temp block{ out highp 4-component vector of float Position gl_Position,  out highp float PointSize gl_PointSize,  out unsized 2-element array of highp float ClipDistance gl_ClipDistance,  out unsized 1-element array of highp float CullDistance gl_CullDistance})
+0:71          'gl_out' ( out 4-element array of block{ out highp 4-component vector of float Position gl_Position,  out highp float PointSize gl_PointSize,  out unsized 2-element array of highp float ClipDistance gl_ClipDistance,  out unsized 1-element array of highp float CullDistance gl_CullDistance})
 0:71          Constant:
 0:71            4 (const int)
 0:71        Constant:
@@ -222,16 +222,16 @@ ERROR: node is still EOpNull!
 0:114        move second child to first child ( temp highp float)
 0:114          'ps' ( temp highp float)
 0:114          gl_PointSize: direct index for structure ( in highp float PointSize)
-0:114            direct index ( temp block{ in highp 4-component vector of float Position gl_Position,  in highp float PointSize gl_PointSize,  in highp 4-component vector of float SecondaryPositionNV gl_SecondaryPositionNV,  in unsized 0-element array of highp 4-component vector of float PositionPerViewNV gl_PositionPerViewNV,  in unsized 3-element array of highp float ClipDistance gl_ClipDistance,  in unsized 0-element array of highp float CullDistance gl_CullDistance})
-0:114              'gl_in' ( in 32-element array of block{ in highp 4-component vector of float Position gl_Position,  in highp float PointSize gl_PointSize,  in highp 4-component vector of float SecondaryPositionNV gl_SecondaryPositionNV,  in unsized 0-element array of highp 4-component vector of float PositionPerViewNV gl_PositionPerViewNV,  in unsized 3-element array of highp float ClipDistance gl_ClipDistance,  in unsized 0-element array of highp float CullDistance gl_CullDistance})
+0:114            direct index ( temp block{ in highp 4-component vector of float Position gl_Position,  in highp float PointSize gl_PointSize,  in highp 4-component vector of float SecondaryPositionNV gl_SecondaryPositionNV,  in unsized 1-element array of highp 4-component vector of float PositionPerViewNV gl_PositionPerViewNV,  in unsized 3-element array of highp float ClipDistance gl_ClipDistance,  in unsized 1-element array of highp float CullDistance gl_CullDistance})
+0:114              'gl_in' ( in 32-element array of block{ in highp 4-component vector of float Position gl_Position,  in highp float PointSize gl_PointSize,  in highp 4-component vector of float SecondaryPositionNV gl_SecondaryPositionNV,  in unsized 1-element array of highp 4-component vector of float PositionPerViewNV gl_PositionPerViewNV,  in unsized 3-element array of highp float ClipDistance gl_ClipDistance,  in unsized 1-element array of highp float CullDistance gl_CullDistance})
 0:114              Constant:
 0:114                1 (const int)
 0:114            Constant:
 0:114              1 (const int)
 0:115      move second child to first child ( temp highp float)
 0:115        gl_PointSize: direct index for structure ( out highp float PointSize)
-0:115          indirect index ( temp block{ out highp 4-component vector of float Position gl_Position,  out highp float PointSize gl_PointSize,  out unsized 2-element array of highp float ClipDistance gl_ClipDistance,  out unsized 0-element array of highp float CullDistance gl_CullDistance})
-0:115            'gl_out' ( out 4-element array of block{ out highp 4-component vector of float Position gl_Position,  out highp float PointSize gl_PointSize,  out unsized 2-element array of highp float ClipDistance gl_ClipDistance,  out unsized 0-element array of highp float CullDistance gl_CullDistance})
+0:115          indirect index ( temp block{ out highp 4-component vector of float Position gl_Position,  out highp float PointSize gl_PointSize,  out unsized 2-element array of highp float ClipDistance gl_ClipDistance,  out unsized 1-element array of highp float CullDistance gl_CullDistance})
+0:115            'gl_out' ( out 4-element array of block{ out highp 4-component vector of float Position gl_Position,  out highp float PointSize gl_PointSize,  out unsized 2-element array of highp float ClipDistance gl_ClipDistance,  out unsized 1-element array of highp float CullDistance gl_CullDistance})
 0:115            'gl_InvocationID' ( in highp int InvocationID)
 0:115          Constant:
 0:115            1 (const int)
@@ -355,8 +355,8 @@ ERROR: node is still EOpNull!
 0:176          2 (const int)
 0:177      move second child to first child ( temp highp 4-component vector of float)
 0:177        gl_Position: direct index for structure ( out highp 4-component vector of float Position)
-0:177          direct index ( temp block{ out highp 4-component vector of float Position gl_Position,  out highp float PointSize gl_PointSize,  out unsized 2-element array of highp float ClipDistance gl_ClipDistance,  out unsized 0-element array of highp float CullDistance gl_CullDistance})
-0:177            'gl_out' ( out 4-element array of block{ out highp 4-component vector of float Position gl_Position,  out highp float PointSize gl_PointSize,  out unsized 2-element array of highp float ClipDistance gl_ClipDistance,  out unsized 0-element array of highp float CullDistance gl_CullDistance})
+0:177          direct index ( temp block{ out highp 4-component vector of float Position gl_Position,  out highp float PointSize gl_PointSize,  out unsized 2-element array of highp float ClipDistance gl_ClipDistance,  out unsized 1-element array of highp float CullDistance gl_CullDistance})
+0:177            'gl_out' ( out 4-element array of block{ out highp 4-component vector of float Position gl_Position,  out highp float PointSize gl_PointSize,  out unsized 2-element array of highp float ClipDistance gl_ClipDistance,  out unsized 1-element array of highp float CullDistance gl_CullDistance})
 0:177            Constant:
 0:177              0 (const int)
 0:177          Constant:
@@ -370,8 +370,8 @@ ERROR: node is still EOpNull!
 0:178        'outa' ( out 4-element array of highp int)
 0:178        Constant:
 0:178          1 (const int)
-0:179      direct index ( temp block{ out highp 4-component vector of float Position gl_Position,  out highp float PointSize gl_PointSize,  out unsized 2-element array of highp float ClipDistance gl_ClipDistance,  out unsized 0-element array of highp float CullDistance gl_CullDistance})
-0:179        'gl_out' ( out 4-element array of block{ out highp 4-component vector of float Position gl_Position,  out highp float PointSize gl_PointSize,  out unsized 2-element array of highp float ClipDistance gl_ClipDistance,  out unsized 0-element array of highp float CullDistance gl_CullDistance})
+0:179      direct index ( temp block{ out highp 4-component vector of float Position gl_Position,  out highp float PointSize gl_PointSize,  out unsized 2-element array of highp float ClipDistance gl_ClipDistance,  out unsized 1-element array of highp float CullDistance gl_CullDistance})
+0:179        'gl_out' ( out 4-element array of block{ out highp 4-component vector of float Position gl_Position,  out highp float PointSize gl_PointSize,  out unsized 2-element array of highp float ClipDistance gl_ClipDistance,  out unsized 1-element array of highp float CullDistance gl_CullDistance})
 0:179        Constant:
 0:179          0 (const int)
 0:180      Function Call: outputtingOutparam(i1; ( global void)
@@ -400,7 +400,7 @@ ERROR: node is still EOpNull!
 0:183        Constant:
 0:183          2 (const int)
 0:?   Linker Objects
-0:?     'gl_out' ( out 4-element array of block{ out highp 4-component vector of float Position gl_Position,  out highp float PointSize gl_PointSize,  out unsized 2-element array of highp float ClipDistance gl_ClipDistance,  out unsized 0-element array of highp float CullDistance gl_CullDistance})
+0:?     'gl_out' ( out 4-element array of block{ out highp 4-component vector of float Position gl_Position,  out highp float PointSize gl_PointSize,  out unsized 2-element array of highp float ClipDistance gl_ClipDistance,  out unsized 1-element array of highp float CullDistance gl_CullDistance})
 0:?     'outa' ( out 4-element array of highp int)
 0:?     'patchIn' ( patch in highp 4-component vector of float)
 0:?     'patchOut' ( patch out highp 4-component vector of float)
@@ -408,7 +408,7 @@ ERROR: node is still EOpNull!
 0:?     'inb' ( in 32-element array of highp 2-component vector of float)
 0:?     'inc' ( in 32-element array of highp 2-component vector of float)
 0:?     'ind' ( in 32-element array of highp 2-component vector of float)
-0:?     'implA' ( patch out unsized 0-element array of highp float)
+0:?     'implA' ( patch out unsized 1-element array of highp float)
 0:?     'ivla' (layout( location=3) in 32-element array of highp 4-component vector of float)
 0:?     'ivlb' (layout( location=4) in 32-element array of highp 4-component vector of float)
 0:?     'ivlc' (layout( location=4) in 32-element array of highp 4-component vector of float)
@@ -423,7 +423,7 @@ ERROR: node is still EOpNull!
 0:?     'misSized' ( out 5-element array of highp float)
 0:?     'okaySize' ( out 4-element array of highp float)
 0:?     'pv3' ( noContraction temp highp 3-component vector of float)
-0:?     'badpatchIName' ( patch out unsized 0-element array of block{ out highp float f})
+0:?     'badpatchIName' ( patch out unsized 1-element array of block{ out highp float f})
 0:?     'patchIName' ( patch out 4-element array of block{ out highp float f})
 
 

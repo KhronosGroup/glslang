@@ -28,7 +28,7 @@ Shader version: 430
 0:46            0 (const int)
 0:48      move second child to first child ( temp highp 4-component vector of float)
 0:48        gl_Position: direct index for structure ( gl_Position highp 4-component vector of float Position)
-0:48          'anon@0' ( out block{ gl_Position 4-component vector of float Position gl_Position,  gl_PointSize float PointSize gl_PointSize,  out unsized 0-element array of float ClipDistance gl_ClipDistance,  out unsized 0-element array of float CullDistance gl_CullDistance})
+0:48          'anon@0' ( out block{ gl_Position 4-component vector of float Position gl_Position,  gl_PointSize float PointSize gl_PointSize,  out unsized 1-element array of float ClipDistance gl_ClipDistance,  out unsized 1-element array of float CullDistance gl_CullDistance})
 0:48          Constant:
 0:48            0 (const uint)
 0:48        matrix-times-vector ( temp highp 4-component vector of float)
@@ -44,7 +44,7 @@ Shader version: 430
 0:?     'uBuf' (layout( binding=1 column_major std430) buffer block{layout( column_major std430 offset=0) buffer highp 4X4 matrix of float p})
 0:?     'uColorBuf' (layout( binding=0 column_major std430) buffer block{layout( column_major std430 offset=0) buffer highp 4-component vector of float c})
 0:?     'oColor' ( smooth out highp 4-component vector of float)
-0:?     'anon@0' ( out block{ gl_Position 4-component vector of float Position gl_Position,  gl_PointSize float PointSize gl_PointSize,  out unsized 0-element array of float ClipDistance gl_ClipDistance,  out unsized 0-element array of float CullDistance gl_CullDistance})
+0:?     'anon@0' ( out block{ gl_Position 4-component vector of float Position gl_Position,  gl_PointSize float PointSize gl_PointSize,  out unsized 1-element array of float ClipDistance gl_ClipDistance,  out unsized 1-element array of float CullDistance gl_CullDistance})
 
 link.vk.multiBlocksValid.0.1.vert
 Shader version: 430

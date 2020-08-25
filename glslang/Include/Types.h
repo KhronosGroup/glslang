@@ -1682,9 +1682,11 @@ public:
     virtual bool isArray()  const { return arraySizes != nullptr; }
     virtual bool isSizedArray() const { return isArray() && arraySizes->isSized(); }
     virtual bool isUnsizedArray() const { return isArray() && !arraySizes->isSized(); }
+    virtual bool isImplicitlySizedArray() const { return isArray() && arraySizes->isImplicitlySized(); }
     virtual bool isArrayVariablyIndexed() const { assert(isArray()); return arraySizes->isVariablyIndexed(); }
     virtual void setArrayVariablyIndexed() { assert(isArray()); arraySizes->setVariablyIndexed(); }
     virtual void updateImplicitArraySize(int size) { assert(isArray()); arraySizes->updateImplicitSize(size); }
+    virtual void setImplicitlySized(bool isImplicitSized) { arraySizes->setImplicitlySized(isImplicitSized); }
     virtual bool isStruct() const { return basicType == EbtStruct || basicType == EbtBlock; }
     virtual bool isFloatingDomain() const { return basicType == EbtFloat || basicType == EbtDouble || basicType == EbtFloat16; }
     virtual bool isIntegerDomain() const
@@ -1906,8 +1908,8 @@ public:
         if (isUnsizedArray() &&
             (qualifier.builtIn == EbvSampleMask ||
                 !(skipNonvariablyIndexed || isArrayVariablyIndexed()))) {
-            changeOuterArraySize(getImplicitArraySize() == 0 ? 1 : getImplicitArraySize());
-            updateImplicitArraySize(getImplicitArraySize() == 0 ? 1 : getImplicitArraySize());
+            changeOuterArraySize(getImplicitArraySize());
+            setImplicitlySized(true);
         }
         // For multi-dim per-view arrays, set unsized inner dimension size to 1
         if (qualifier.isPerView() && arraySizes && arraySizes->isInnerUnsized())

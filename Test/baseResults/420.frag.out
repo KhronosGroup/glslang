@@ -77,13 +77,13 @@ ERROR: node is still EOpNull!
 0:?   Linker Objects
 0:?     'gl_FragDepth' ( gl_FragDepth float FragDepth)
 0:?     'depth' ( smooth in float)
-0:?     'a' (layout( binding=0 offset=0) uniform unsized 0-element array of atomic_uint)
+0:?     'a' (layout( binding=0 offset=0) uniform unsized 1-element array of atomic_uint)
 0:?     'i2D' ( writeonly uniform image2D)
 0:?     'iv2dim' ( global 2-component vector of int)
 0:?     'iv2dim1' ( global 2-component vector of int)
 0:?     'anon@0' (layout( binding=0 column_major std430) buffer block{layout( column_major std430 offset=0) buffer int atomi, layout( column_major std430 offset=4) buffer uint atomu})
-0:?     'ssboStd430Arr' (layout( binding=2 column_major std430) buffer 2-element array of block{layout( column_major std430 offset=0) buffer int member01, layout( column_major std430 offset=4) buffer 2-element array of int memberArr01, layout( column_major std430 offset=12) buffer unsized 0-element array of int memberUnsizedArr01})
-0:?     'ssboSharedArr' (layout( binding=3 column_major shared) buffer 2-element array of block{layout( column_major shared) buffer int member02, layout( column_major shared) buffer 2-element array of int memberArr02, layout( column_major shared) buffer unsized 0-element array of int memberUnsizedArr02})
+0:?     'ssboStd430Arr' (layout( binding=2 column_major std430) buffer 2-element array of block{layout( column_major std430 offset=0) buffer int member01, layout( column_major std430 offset=4) buffer 2-element array of int memberArr01, layout( column_major std430 offset=12) buffer unsized 1-element array of int memberUnsizedArr01})
+0:?     'ssboSharedArr' (layout( binding=3 column_major shared) buffer 2-element array of block{layout( column_major shared) buffer int member02, layout( column_major shared) buffer 2-element array of int memberArr02, layout( column_major shared) buffer unsized 1-element array of int memberUnsizedArr02})
 
 
 Linked fragment stage:
@@ -119,6 +119,6 @@ ERROR: node is still EOpNull!
 0:?     'iv2dim' ( global 2-component vector of int)
 0:?     'iv2dim1' ( global 2-component vector of int)
 0:?     'anon@0' (layout( binding=0 column_major std430) buffer block{layout( column_major std430 offset=0) buffer int atomi, layout( column_major std430 offset=4) buffer uint atomu})
-0:?     'ssboStd430Arr' (layout( binding=2 column_major std430) buffer 2-element array of block{layout( column_major std430 offset=0) buffer int member01, layout( column_major std430 offset=4) buffer 2-element array of int memberArr01, layout( column_major std430 offset=12) buffer unsized 0-element array of int memberUnsizedArr01})
-0:?     'ssboSharedArr' (layout( binding=3 column_major shared) buffer 2-element array of block{layout( column_major shared) buffer int member02, layout( column_major shared) buffer 2-element array of int memberArr02, layout( column_major shared) buffer unsized 0-element array of int memberUnsizedArr02})
+0:?     'ssboStd430Arr' (layout( binding=2 column_major std430) buffer 2-element array of block{layout( column_major std430 offset=0) buffer int member01, layout( column_major std430 offset=4) buffer 2-element array of int memberArr01, layout( column_major std430 offset=12) buffer unsized 1-element array of int memberUnsizedArr01})
+0:?     'ssboSharedArr' (layout( binding=3 column_major shared) buffer 2-element array of block{layout( column_major shared) buffer int member02, layout( column_major shared) buffer 2-element array of int memberArr02, layout( column_major shared) buffer unsized 1-element array of int memberUnsizedArr02})
 

@@ -7638,7 +7638,7 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setVariableExtensions("gl_out", "gl_CullDistance", 1, &E_GL_ARB_cull_distance);
         }
 
-        if (profile == EEsProfile && version >= 300 && version < 320) {
+        if (profile == EEsProfile && version >= 300) {
             symbolTable.setVariableExtensions("gl_CullDistance", 1, &E_GL_EXT_clip_cull_distance);
             symbolTable.setVariableExtensions("gl_in", "gl_CullDistance", 1, &E_GL_EXT_clip_cull_distance);
             symbolTable.setVariableExtensions("gl_out", "gl_CullDistance", 1, &E_GL_EXT_clip_cull_distance);
