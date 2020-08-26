@@ -320,6 +320,35 @@ void TSymbolTableLevel::setFunctionExtensions(const char* name, int num, const c
     }
 }
 
+// Make the function with the given name and argument types require an extension(s).
+// Should only be used for a version/profile that actually needs the extension(s).
+void TSymbolTableLevel::setFunctionExtensions(const char* name, int num, const char* const extensions[], int argNum, const TType* const args[])
+{
+    tLevel::const_iterator candidate = level.lower_bound(name);
+    while (candidate != level.end()) {
+        const TString& candidateName = (*candidate).first;
+        TString::size_type parenAt = candidateName.find_first_of('(');
+        if (parenAt != candidateName.npos && candidateName.compare(0, parenAt, name) == 0) {
+            TFunction* function = (*candidate).second->getAsFunction();
+            bool match = true;
+            // Check whether argument types match
+            for (int argIdx = 0; argIdx < argNum; ++argIdx) {
+                auto pArgType = (*function)[argIdx].type;
+                if (!pArgType->sameElementType(*args[argIdx])) {
+                    match = false;
+                    break;
+                }
+            }
+            if (match) {
+                function->setExtensions(num, extensions);
+                break;
+            }
+        }
+        else
+            break;
+        ++candidate;
+    }
+}
 //
 // Make all symbols in this table level read only.
 //

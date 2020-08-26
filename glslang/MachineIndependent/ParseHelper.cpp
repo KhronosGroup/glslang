@@ -494,8 +494,10 @@ TIntermTyped* TParseContext::handleBracketDereference(const TSourceLoc& loc, TIn
             else {
                 // input/output blocks either don't exist or can't be variably indexed
             }
-        } else if (language == EShLangFragment && base->getQualifier().isPipeOutput())
-            requireProfile(base->getLoc(), ~EEsProfile, "variable indexing fragment shader output array");
+        } else if (language == EShLangFragment && base->getQualifier().isPipeOutput()) {
+            if (base->getQualifier().builtIn != EbvSampleMask && base->getQualifier().builtIn != EbvFragData)
+                requireProfile(base->getLoc(), ~EEsProfile, "variable indexing fragment shader output array");
+        }
         else if (base->getBasicType() == EbtSampler && version >= 130) {
             const char* explanation = "variable indexing sampler array";
             requireProfile(base->getLoc(), EEsProfile | ECoreProfile | ECompatibilityProfile, explanation);
@@ -1540,7 +1542,11 @@ TIntermTyped* TParseContext::handleLengthMethod(const TSourceLoc& loc, TFunction
                     else if (isRuntimeLength(*intermNode->getAsTyped())) {
                         // Create a unary op and let the back end handle it
                         return intermediate.addBuiltInFunctionCall(loc, EOpArrayLength, true, intermNode, TType(EbtInt));
-                    } else
+                    }
+                    else if (type.getQualifier().builtIn == EbvSampleMask) {
+                        length = (intermediate.getBuiltinResources().maxSamples + 31) / 32;
+                    }
+                    else
 #endif
                         error(loc, "", function->getName().c_str(), "array must be declared with a size before using this method");
                 }
@@ -2032,8 +2038,17 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
     case EOpTextureProjOffset:
     case EOpTextureLodOffset:
     case EOpTextureProjLodOffset:
-    case EOpTextureGradOffset:
     case EOpTextureProjGradOffset:
+        if (fnCandidate[0].type->getSampler().shadow &&
+            fnCandidate[0].type->getSampler().arrayed)
+        {
+            featureString = fnCandidate.getName();
+            featureString += "with sampler1D(2D)ArrayShadow argument";
+            feature = featureString.c_str();
+            requireProfile(loc, ~EEsProfile, feature);
+        }
+        // Fall through
+    case EOpTextureGradOffset:
     {
         // Handle texture-offset limits checking
         // Pick which argument has to hold constant offsets
@@ -2164,6 +2179,17 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
     case EOpAtomicLoad:
     case EOpAtomicStore:
     {
+        TStorageQualifier storageType = arg0->getType().getQualifier().storage;
+        if (storageType == EvqTemporary) {
+            const TIntermTyped* pBase = TIntermediate::findLValueBase(arg0, true);
+            if (pBase != nullptr) {
+                storageType = pBase->getType().getQualifier().storage;
+            }
+        }
+        if (storageType != EvqBuffer && storageType != EvqShared) {
+            error(loc, "atomic operations only can perform on buffer or shared storage.", fnCandidate.getName().c_str(), "");
+            break;
+        }
         if (argp->size() > 3) {
             requireExtensions(loc, 1, &E_GL_KHR_memory_scope_semantics, fnCandidate.getName().c_str());
             memorySemanticsCheck(loc, fnCandidate, callNode);
@@ -2186,6 +2212,8 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
     case EOpInterpolateAtCentroid:
     case EOpInterpolateAtSample:
     case EOpInterpolateAtOffset:
+        if (arg0->getAsOperator() != nullptr && arg0->getAsOperator()->getOp() == EOpIndexDirectStruct)
+            error(loc, "interpolate arguments should be input variables, not their members", fnCandidate.getName().c_str(), "");
     case EOpInterpolateAtVertex:
         // Make sure the first argument is an interpolant, or an array element of an interpolant
         if (arg0->getType().getQualifier().storage != EvqVaryingIn) {

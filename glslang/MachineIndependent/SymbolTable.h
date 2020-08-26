@@ -551,6 +551,7 @@ public:
 
     void relateToOperator(const char* name, TOperator op);
     void setFunctionExtensions(const char* name, int num, const char* const extensions[]);
+    void setFunctionExtensions(const char* name, int num, const char* const extensions[], int argNum, const TType* const args[]);
 #if !defined(GLSLANG_WEB) && !defined(GLSLANG_ANGLE)
     void dump(TInfoSink& infoSink, bool complete = false) const;
 #endif
@@ -831,6 +832,12 @@ public:
     {
         for (unsigned int level = 0; level < table.size(); ++level)
             table[level]->setFunctionExtensions(name, num, extensions);
+    }
+
+    void setFunctionExtensions(const char* name, int num, const char* const extensions[], int argNum, const TType* const args[])
+    {
+        for (unsigned int level = 0; level < table.size(); ++level)
+            table[level]->setFunctionExtensions(name, num, extensions, argNum, args);
     }
 
     void setVariableExtensions(const char* name, int numExts, const char* const extensions[])
