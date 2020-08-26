@@ -206,7 +206,6 @@ public:
     }
 
     bool atEndOfInput() const { return endOfFileReached; }
-    int getNumSources() const { return numSources; }
 
     const TSourceLoc& getSourceLoc() const
     {

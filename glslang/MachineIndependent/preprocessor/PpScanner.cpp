@@ -1184,9 +1184,6 @@ int TPpContext::tokenize(TPpToken& ppToken)
         case PpAtomConstUint16:
         case PpAtomConstDouble:
         case PpAtomConstFloat16:
-            if (shaderSource) {
-                identifierSeen = true;
-            }
             if (ppToken.name[0] == '\0')
                 continue;
             break;
