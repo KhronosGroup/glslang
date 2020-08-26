@@ -78,11 +78,85 @@ const char* TypeString[] = {
    "float",  "vec2",  "vec3",  "vec4",
    "int",   "ivec2", "ivec3", "ivec4",
    "uint",  "uvec2", "uvec3", "uvec4",
+   "float16_t", "f16vec2","f16vec3", "f16vec4",
+   "double", "dvec2", "dvec3", "dvec4",
+   "int8_t", "i8vec2", "i8vec3", "i8vec4",
+   "int16_t", "i16vec2", "i16vec3", "i16vec4",
+   "int64_t", "i64vec2", "i64vec3", "i64vec4",
+   "uint8_t", "u8vec2", "u8vec3", "u8vec4",
+   "uint16_t", "u16vec2", "u16vec3", "u16vec4",
+   "uint64_t", "u64vec2", "u64vec3", "u64vec4",
 };
+
 const int TypeStringCount = sizeof(TypeString) / sizeof(char*); // number of entries in 'TypeString'
 const int TypeStringRowShift = 2;                               // shift amount to go downe one row in 'TypeString'
 const int TypeStringColumnMask = (1 << TypeStringRowShift) - 1; // reduce type to its column number in 'TypeString'
 const int TypeStringScalarMask = ~TypeStringColumnMask;         // take type to its scalar column in 'TypeString'
+
+// TType objects for GetTableBuiltinArgTypes
+const TType TypeBool(EbtBool, EvqTemporary, 1);
+const TType TypeBvec2(EbtBool, EvqTemporary, 2);
+const TType TypeBvec3(EbtBool, EvqTemporary, 3);
+const TType TypeBvec4(EbtBool, EvqTemporary, 4);
+const TType TypeFloat(EbtFloat, EvqTemporary, 1);
+const TType TypeVec2(EbtFloat, EvqTemporary, 2);
+const TType TypeVec3(EbtFloat, EvqTemporary, 3);
+const TType TypeVec4(EbtFloat, EvqTemporary, 4);
+const TType TypeInt(EbtInt, EvqTemporary, 1);
+const TType TypeIvec2(EbtInt, EvqTemporary, 2);
+const TType TypeIvec3(EbtInt, EvqTemporary, 3);
+const TType TypeIvec4(EbtInt, EvqTemporary, 4);
+const TType TypeUint(EbtUint, EvqTemporary, 1);
+const TType TypeUvec2(EbtUint, EvqTemporary, 2);
+const TType TypeUvec3(EbtUint, EvqTemporary, 3);
+const TType TypeUvec4(EbtUint, EvqTemporary, 4);
+const TType TypeFloat16(EbtFloat16, EvqTemporary, 1);
+const TType TypeF16vec2(EbtFloat16, EvqTemporary, 2);
+const TType TypeF16vec3(EbtFloat16, EvqTemporary, 3);
+const TType TypeF16vec4(EbtFloat16, EvqTemporary, 4);
+const TType TypeFloat64(EbtDouble, EvqTemporary, 1);
+const TType TypeF64vec2(EbtDouble, EvqTemporary, 2);
+const TType TypeF64vec3(EbtDouble, EvqTemporary, 3);
+const TType TypeF64vec4(EbtDouble, EvqTemporary, 4);
+const TType TypeInt8(EbtInt8, EvqTemporary, 1);
+const TType TypeI8vec2(EbtInt8, EvqTemporary, 2);
+const TType TypeI8vec3(EbtInt8, EvqTemporary, 3);
+const TType TypeI8vec4(EbtInt8, EvqTemporary, 4);
+const TType TypeInt16(EbtInt16, EvqTemporary, 1);
+const TType TypeI16vec2(EbtInt16, EvqTemporary, 2);
+const TType TypeI16vec3(EbtInt16, EvqTemporary, 3);
+const TType TypeI16vec4(EbtInt16, EvqTemporary, 4);
+const TType TypeInt64(EbtInt64, EvqTemporary, 1);
+const TType TypeI64vec2(EbtInt64, EvqTemporary, 2);
+const TType TypeI64vec3(EbtInt64, EvqTemporary, 3);
+const TType TypeI64vec4(EbtInt64, EvqTemporary, 4);
+const TType TypeUint8(EbtUint8, EvqTemporary, 1);
+const TType TypeU8vec2(EbtUint8, EvqTemporary, 2);
+const TType TypeU8vec3(EbtUint8, EvqTemporary, 3);
+const TType TypeU8vec4(EbtUint8, EvqTemporary, 4);
+const TType TypeUint16(EbtUint16, EvqTemporary, 1);
+const TType TypeU16vec2(EbtUint16, EvqTemporary, 2);
+const TType TypeU16vec3(EbtUint16, EvqTemporary, 3);
+const TType TypeU16vec4(EbtUint16, EvqTemporary, 4);
+const TType TypeUint64(EbtUint64, EvqTemporary, 1);
+const TType TypeU64vec2(EbtUint64, EvqTemporary, 2);
+const TType TypeU64vec3(EbtUint64, EvqTemporary, 3);
+const TType TypeU64vec4(EbtUint64, EvqTemporary, 4);
+
+const TType* const TypeObject[] = {
+    &TypeBool,   &TypeBvec2,   &TypeBvec3,   &TypeBvec4,
+    &TypeFloat,  &TypeVec2,    &TypeVec3,    &TypeVec4,
+    &TypeInt,    &TypeIvec2,   &TypeIvec3,   &TypeIvec4,
+    &TypeUint,   &TypeUvec2,   &TypeUvec3,   &TypeUvec4,
+    &TypeFloat16,&TypeF16vec2, &TypeF16vec3, &TypeF16vec4,
+    &TypeFloat64,&TypeF64vec2, &TypeF64vec3, &TypeF64vec4,
+    &TypeInt8,   &TypeI8vec2,  &TypeI8vec3,  &TypeI8vec4,
+    &TypeInt16,  &TypeI16vec2, &TypeI16vec3, &TypeI16vec4,
+    &TypeInt64,  &TypeI64vec2, &TypeI64vec3, &TypeI64vec4,
+    &TypeUint8,  &TypeU8vec2,  &TypeU8vec3,  &TypeU8vec4,
+    &TypeUint16, &TypeU16vec2, &TypeU16vec3, &TypeU16vec4,
+    &TypeUint64, &TypeU64vec2, &TypeU64vec3, &TypeU64vec4,
+};
 
 enum ArgType {
     // numbers hardcoded to correspond to 'TypeString'; order and value matter
@@ -166,6 +240,14 @@ EProfile EDesktopProfile = static_cast<EProfile>(ENoProfile | ECoreProfile | ECo
                                                   { EDesktopProfile, 0, 450, 0, nullptr },
                                                   { EBadProfile } };
     const Versioning* Es310Desktop450 = &Es310Desktop450Version[0];
+    const char* ShaderIntegerMix[] = { E_GL_EXT_shader_integer_mix };
+    const Versioning ShaderIntergerMixVersion[] = { { EEsProfile,      0, 310, 0, nullptr },
+                                                    { EDesktopProfile, 130, 450, 1, ShaderIntegerMix},
+                                                    { EBadProfile } };
+
+    const char* GpuShaderFloat64[] = { E_GL_ARB_gpu_shader_fp64 };
+    const Versioning GpuShaderFloat64Version[] = { { EDesktopProfile, 150, 400, 1, GpuShaderFloat64},
+                                                  { EBadProfile } };
 #endif
 
 // The main descriptor of what a set of function prototypes can look like, and
@@ -268,9 +350,44 @@ const BuiltInFunction BaseFunctions[] = {
     { EOpAtomicXor,        "atomicXor",        2,   TypeIU,    ClassV1FIOCV, Es310Desktop420 },
     { EOpAtomicExchange,   "atomicExchange",   2,   TypeIU,    ClassV1FIOCV, Es310Desktop420 },
     { EOpAtomicCompSwap,   "atomicCompSwap",   3,   TypeIU,    ClassV1FIOCV, Es310Desktop420 },
+    { EOpSqrt,             "sqrt",             1,   TypeF64,   ClassRegular, GpuShaderFloat64Version },
+    { EOpInverseSqrt,      "inversesqrt",      1,   TypeF64,   ClassRegular, GpuShaderFloat64Version },
+    { EOpAbs,              "abs",              1,   TypeF64,   ClassRegular, GpuShaderFloat64Version },
+    { EOpSign,             "sign",             1,   TypeF64,   ClassRegular, GpuShaderFloat64Version },
+    { EOpFloor,            "floor",            1,   TypeF64,   ClassRegular, GpuShaderFloat64Version },
+    { EOpTrunc,            "trunc",            1,   TypeF64,   ClassRegular, GpuShaderFloat64Version },
+    { EOpRound,            "round",            1,   TypeF64,   ClassRegular, GpuShaderFloat64Version },
+    { EOpRoundEven,        "roundEven",        1,   TypeF64,   ClassRegular, GpuShaderFloat64Version },
+    { EOpCeil,             "ceil",             1,   TypeF64,   ClassRegular, GpuShaderFloat64Version },
+    { EOpFract,            "fract",            1,   TypeF64,   ClassRegular, GpuShaderFloat64Version },
+    { EOpMod,              "mod",              2,   TypeF64,   ClassLS,      GpuShaderFloat64Version },
+    { EOpModf,             "modf",             2,   TypeF64,   ClassLO,      GpuShaderFloat64Version },
+    { EOpMin,              "min",              2,   TypeF64,   ClassLS,      GpuShaderFloat64Version },
+    { EOpMax,              "max",              2,   TypeF64,   ClassLS,      GpuShaderFloat64Version },
+    { EOpClamp,            "clamp",            3,   TypeF64,   ClassLS2,     GpuShaderFloat64Version },
+    { EOpMix,              "mix",              3,   TypeF64,   ClassLS,      GpuShaderFloat64Version },
+    { EOpMix,              "mix",              3,   TypeF64,   ClassLB,      GpuShaderFloat64Version },
+    { EOpStep,             "step",             2,   TypeF64,   ClassFS,      GpuShaderFloat64Version },
+    { EOpSmoothStep,       "smoothstep",       3,   TypeF64,   ClassFS2,     GpuShaderFloat64Version },
+    { EOpIsNan,            "isnan",            1,   TypeF64,   ClassB,       GpuShaderFloat64Version },
+    { EOpIsInf,            "isinf",            1,   TypeF64,   ClassB,       GpuShaderFloat64Version },
+    { EOpLength,           "length",           1,   TypeF64,   ClassRS,      GpuShaderFloat64Version },
+    { EOpDistance,         "distance",         2,   TypeF64,   ClassRS,      GpuShaderFloat64Version },
+    { EOpDot,              "dot",              2,   TypeF64,   ClassRS,      GpuShaderFloat64Version },
+    { EOpCross,            "cross",            2,   TypeF64,   ClassV3,      GpuShaderFloat64Version },
+    { EOpNormalize,        "normalize",        1,   TypeF64,   ClassRegular, GpuShaderFloat64Version },
+    { EOpFaceForward,      "faceforward",      3,   TypeF64,   ClassRegular, GpuShaderFloat64Version },
+    { EOpReflect,          "reflect",          2,   TypeF64,   ClassRegular, GpuShaderFloat64Version },
+    { EOpRefract,          "refract",          3,   TypeF64,   ClassXLS,     GpuShaderFloat64Version },
+    { EOpLessThan,         "lessThan",         2,   TypeF64,   ClassBNS,     GpuShaderFloat64Version },
+    { EOpLessThanEqual,    "lessThanEqual",    2,   TypeF64,   ClassBNS,     GpuShaderFloat64Version },
+    { EOpGreaterThan,      "greaterThan",      2,   TypeF64,   ClassBNS,     GpuShaderFloat64Version },
+    { EOpGreaterThanEqual, "greaterThanEqual", 2,   TypeF64,   ClassBNS,     GpuShaderFloat64Version },
+    { EOpVectorEqual,      "equal",            2,   TypeF64,   ClassBNS,     GpuShaderFloat64Version },
+    { EOpVectorNotEqual,   "notEqual",         2,   TypeF64,   ClassBNS,     GpuShaderFloat64Version },
 #ifndef GLSLANG_WEB
-    { EOpMix,              "mix",              3,   TypeB,     ClassRegular, Es310Desktop450 },
-    { EOpMix,              "mix",              3,   TypeIU,    ClassLB,      Es310Desktop450 },
+    { EOpMix,              "mix",              3,   TypeB,     ClassRegular, ShaderIntergerMixVersion },
+    { EOpMix,              "mix",              3,   TypeIU,    ClassLB,      ShaderIntergerMixVersion },
 #endif
 
     { EOpNull }
@@ -416,6 +533,59 @@ void AddTabledBuiltin(TString& decls, const BuiltInFunction& function)
     }
 }
 
+// Gets all the function argument types for the given builtin function, result is returned in argTypes.
+void GetTableBuiltinArgTypes(TVector<const TType*>& argTypes, const BuiltInFunction& function)
+{
+    const auto isScalarType = [](int type) { return (type & TypeStringColumnMask) == 0; };
+
+    // loop across these two:
+    //  0: the varying arg set, and
+    //  1: the fixed scalar args
+    const ArgClass ClassFixed = (ArgClass)(ClassLS | ClassXLS | ClassLS2 | ClassFS | ClassFS2);
+    for (int fixed = 0; fixed < ((function.classes & ClassFixed) > 0 ? 2 : 1); ++fixed) {
+
+        if (fixed == 0 && (function.classes & ClassXLS))
+            continue;
+
+        // walk the type strings in TypeString[]
+        for (int type = 0; type < TypeStringCount; ++type) {
+            // skip types not selected: go from type to row number to type bit
+            if ((function.types & (1 << (type >> TypeStringRowShift))) == 0)
+                continue;
+
+            // if we aren't on a scalar, and should be, skip
+            if ((function.classes & ClassV1) && !isScalarType(type))
+                continue;
+
+            // if we aren't on a 3-vector, and should be, skip
+            if ((function.classes & ClassV3) && (type & TypeStringColumnMask) != 2)
+                continue;
+
+            // skip replication of all arg scalars between the varying arg set and the fixed args
+            if (fixed == 1 && type == (type & TypeStringScalarMask) && (function.classes & ClassXLS) == 0)
+                continue;
+
+            // skip scalars when we are told to
+            if ((function.classes & ClassNS) && isScalarType(type))
+                continue;
+
+            // arguments
+            for (int arg = 0; arg < function.numArguments; ++arg) {
+                if ((function.classes & ClassLB) && arg == function.numArguments - 1)
+                    argTypes.push_back(TypeObject[type & TypeStringColumnMask]);
+                else if (fixed && ((arg == function.numArguments - 1 && (function.classes & (ClassLS | ClassXLS |
+                    ClassLS2))) ||
+                    (arg == function.numArguments - 2 && (function.classes & ClassLS2)) ||
+                    (arg == 0 && (function.classes & (ClassFS | ClassFS2))) ||
+                    (arg == 1 && (function.classes & ClassFS2))))
+                    argTypes.push_back(TypeObject[type & TypeStringScalarMask]);
+                else
+                    argTypes.push_back(TypeObject[type]);
+            }
+        }
+    }
+}
+
 // See if the tabled versioning information allows the current version.
 bool ValidVersion(const BuiltInFunction& function, int version, EProfile profile, const SpvVersion& /* spVersion */)
 {
@@ -453,6 +623,49 @@ void RelateTabledBuiltins(const FunctionT* functions, TSymbolTable& symbolTable)
     }
 }
 
+// Set the required extension for all functions in a BuiltInFunction table
+void SetTabledBuiltinExtensions(int  version, EProfile  profile, const BuiltInFunction* functions, TSymbolTable& symbolTable)
+{
+    while (functions->op != EOpNull) {
+        // nullptr means always valid
+        if (functions->versioning != nullptr) {
+            // check for what is said about our current profile
+            for (const Versioning* v = functions->versioning; v->profiles != EBadProfile; ++v) {
+                if ((v->profiles & profile) != 0) {
+                    if ((version < v->minCoreVersion) && (v->numExtensions > 0) && (version >= v->minExtendedVersion)) {
+                        TVector<const TType*> argLists;
+                        GetTableBuiltinArgTypes(argLists, *functions);
+                        for (size_t i = 0; i < argLists.size() / functions->numArguments; ++i) {
+                            symbolTable.setFunctionExtensions(functions->name, v->numExtensions, v->extensions,
+                                functions->numArguments, &argLists[i * functions->numArguments]);
+                        }
+                    }
+                }
+            }
+        }
+        ++functions;
+    }
+}
+
+// Set the required extension for all functions in a CustomFunction table
+void SetTabledBuiltinExtensions(int  version, EProfile  profile, const CustomFunction* functions, TSymbolTable& symbolTable)
+{
+    while (functions->op != EOpNull) {
+        // nullptr means always valid
+        if (functions->versioning != nullptr) {
+            // check for what is said about our current profile
+            for (const Versioning* v = functions->versioning; v->profiles != EBadProfile; ++v) {
+                if ((v->profiles & profile) != 0) {
+                    if ((version < v->minCoreVersion) && (v->numExtensions > 0) && (version >= v->minExtendedVersion)) {
+                        symbolTable.setFunctionExtensions(functions->name, v->numExtensions, v->extensions);
+                    }
+                }
+            }
+        }
+        ++functions;
+    }
+}
+
 } // end anonymous namespace
 
 // Add declarations for all tables of built-in functions.
@@ -479,6 +692,14 @@ void TBuiltIns::relateTabledBuiltins(int /* version */, EProfile /* profile */, 
     RelateTabledBuiltins(BaseFunctions, symbolTable);
     RelateTabledBuiltins(DerivativeFunctions, symbolTable);
     RelateTabledBuiltins(CustomFunctions, symbolTable);
+}
+
+// Set the required extension for all tables of built-ins.
+void TBuiltIns::setTabledBuiltinExtensions(int  version, EProfile  profile, const SpvVersion& /* spvVersion */, EShLanguage /* stage */, TSymbolTable& symbolTable)
+{
+    SetTabledBuiltinExtensions(version, profile, BaseFunctions, symbolTable);
+    SetTabledBuiltinExtensions(version, profile, DerivativeFunctions, symbolTable);
+    SetTabledBuiltinExtensions(version, profile, CustomFunctions, symbolTable);
 }
 
 inline bool IncludeLegacy(int version, EProfile profile, const SpvVersion& spvVersion)
@@ -703,169 +924,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
     //
     if (profile != EEsProfile && version >= 150) {  // ARB_gpu_shader_fp64
         commonBuiltins.append(
-
-            "double sqrt(double);"
-            "dvec2  sqrt(dvec2);"
-            "dvec3  sqrt(dvec3);"
-            "dvec4  sqrt(dvec4);"
-
-            "double inversesqrt(double);"
-            "dvec2  inversesqrt(dvec2);"
-            "dvec3  inversesqrt(dvec3);"
-            "dvec4  inversesqrt(dvec4);"
-
-            "double abs(double);"
-            "dvec2  abs(dvec2);"
-            "dvec3  abs(dvec3);"
-            "dvec4  abs(dvec4);"
-
-            "double sign(double);"
-            "dvec2  sign(dvec2);"
-            "dvec3  sign(dvec3);"
-            "dvec4  sign(dvec4);"
-
-            "double floor(double);"
-            "dvec2  floor(dvec2);"
-            "dvec3  floor(dvec3);"
-            "dvec4  floor(dvec4);"
-
-            "double trunc(double);"
-            "dvec2  trunc(dvec2);"
-            "dvec3  trunc(dvec3);"
-            "dvec4  trunc(dvec4);"
-
-            "double round(double);"
-            "dvec2  round(dvec2);"
-            "dvec3  round(dvec3);"
-            "dvec4  round(dvec4);"
-
-            "double roundEven(double);"
-            "dvec2  roundEven(dvec2);"
-            "dvec3  roundEven(dvec3);"
-            "dvec4  roundEven(dvec4);"
-
-            "double ceil(double);"
-            "dvec2  ceil(dvec2);"
-            "dvec3  ceil(dvec3);"
-            "dvec4  ceil(dvec4);"
-
-            "double fract(double);"
-            "dvec2  fract(dvec2);"
-            "dvec3  fract(dvec3);"
-            "dvec4  fract(dvec4);"
-
-            "double mod(double, double);"
-            "dvec2  mod(dvec2 , double);"
-            "dvec3  mod(dvec3 , double);"
-            "dvec4  mod(dvec4 , double);"
-            "dvec2  mod(dvec2 , dvec2);"
-            "dvec3  mod(dvec3 , dvec3);"
-            "dvec4  mod(dvec4 , dvec4);"
-
-            "double modf(double, out double);"
-            "dvec2  modf(dvec2,  out dvec2);"
-            "dvec3  modf(dvec3,  out dvec3);"
-            "dvec4  modf(dvec4,  out dvec4);"
-
-            "double min(double, double);"
-            "dvec2  min(dvec2,  double);"
-            "dvec3  min(dvec3,  double);"
-            "dvec4  min(dvec4,  double);"
-            "dvec2  min(dvec2,  dvec2);"
-            "dvec3  min(dvec3,  dvec3);"
-            "dvec4  min(dvec4,  dvec4);"
-
-            "double max(double, double);"
-            "dvec2  max(dvec2 , double);"
-            "dvec3  max(dvec3 , double);"
-            "dvec4  max(dvec4 , double);"
-            "dvec2  max(dvec2 , dvec2);"
-            "dvec3  max(dvec3 , dvec3);"
-            "dvec4  max(dvec4 , dvec4);"
-
-            "double clamp(double, double, double);"
-            "dvec2  clamp(dvec2 , double, double);"
-            "dvec3  clamp(dvec3 , double, double);"
-            "dvec4  clamp(dvec4 , double, double);"
-            "dvec2  clamp(dvec2 , dvec2 , dvec2);"
-            "dvec3  clamp(dvec3 , dvec3 , dvec3);"
-            "dvec4  clamp(dvec4 , dvec4 , dvec4);"
-
-            "double mix(double, double, double);"
-            "dvec2  mix(dvec2,  dvec2,  double);"
-            "dvec3  mix(dvec3,  dvec3,  double);"
-            "dvec4  mix(dvec4,  dvec4,  double);"
-            "dvec2  mix(dvec2,  dvec2,  dvec2);"
-            "dvec3  mix(dvec3,  dvec3,  dvec3);"
-            "dvec4  mix(dvec4,  dvec4,  dvec4);"
-            "double mix(double, double, bool);"
-            "dvec2  mix(dvec2,  dvec2,  bvec2);"
-            "dvec3  mix(dvec3,  dvec3,  bvec3);"
-            "dvec4  mix(dvec4,  dvec4,  bvec4);"
-
-            "double step(double, double);"
-            "dvec2  step(dvec2 , dvec2);"
-            "dvec3  step(dvec3 , dvec3);"
-            "dvec4  step(dvec4 , dvec4);"
-            "dvec2  step(double, dvec2);"
-            "dvec3  step(double, dvec3);"
-            "dvec4  step(double, dvec4);"
-
-            "double smoothstep(double, double, double);"
-            "dvec2  smoothstep(dvec2 , dvec2 , dvec2);"
-            "dvec3  smoothstep(dvec3 , dvec3 , dvec3);"
-            "dvec4  smoothstep(dvec4 , dvec4 , dvec4);"
-            "dvec2  smoothstep(double, double, dvec2);"
-            "dvec3  smoothstep(double, double, dvec3);"
-            "dvec4  smoothstep(double, double, dvec4);"
-
-            "bool  isnan(double);"
-            "bvec2 isnan(dvec2);"
-            "bvec3 isnan(dvec3);"
-            "bvec4 isnan(dvec4);"
-
-            "bool  isinf(double);"
-            "bvec2 isinf(dvec2);"
-            "bvec3 isinf(dvec3);"
-            "bvec4 isinf(dvec4);"
-
-            "double length(double);"
-            "double length(dvec2);"
-            "double length(dvec3);"
-            "double length(dvec4);"
-
-            "double distance(double, double);"
-            "double distance(dvec2 , dvec2);"
-            "double distance(dvec3 , dvec3);"
-            "double distance(dvec4 , dvec4);"
-
-            "double dot(double, double);"
-            "double dot(dvec2 , dvec2);"
-            "double dot(dvec3 , dvec3);"
-            "double dot(dvec4 , dvec4);"
-
-            "dvec3 cross(dvec3, dvec3);"
-
-            "double normalize(double);"
-            "dvec2  normalize(dvec2);"
-            "dvec3  normalize(dvec3);"
-            "dvec4  normalize(dvec4);"
-
-            "double faceforward(double, double, double);"
-            "dvec2  faceforward(dvec2,  dvec2,  dvec2);"
-            "dvec3  faceforward(dvec3,  dvec3,  dvec3);"
-            "dvec4  faceforward(dvec4,  dvec4,  dvec4);"
-
-            "double reflect(double, double);"
-            "dvec2  reflect(dvec2 , dvec2 );"
-            "dvec3  reflect(dvec3 , dvec3 );"
-            "dvec4  reflect(dvec4 , dvec4 );"
-
-            "double refract(double, double, double);"
-            "dvec2  refract(dvec2 , dvec2 , double);"
-            "dvec3  refract(dvec3 , dvec3 , double);"
-            "dvec4  refract(dvec4 , dvec4 , double);"
-
             "dmat2 matrixCompMult(dmat2, dmat2);"
             "dmat3 matrixCompMult(dmat3, dmat3);"
             "dmat4 matrixCompMult(dmat4, dmat4);"
@@ -903,31 +961,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "dmat2 inverse(dmat2);"
             "dmat3 inverse(dmat3);"
             "dmat4 inverse(dmat4);"
-
-            "bvec2 lessThan(dvec2, dvec2);"
-            "bvec3 lessThan(dvec3, dvec3);"
-            "bvec4 lessThan(dvec4, dvec4);"
-
-            "bvec2 lessThanEqual(dvec2, dvec2);"
-            "bvec3 lessThanEqual(dvec3, dvec3);"
-            "bvec4 lessThanEqual(dvec4, dvec4);"
-
-            "bvec2 greaterThan(dvec2, dvec2);"
-            "bvec3 greaterThan(dvec3, dvec3);"
-            "bvec4 greaterThan(dvec4, dvec4);"
-
-            "bvec2 greaterThanEqual(dvec2, dvec2);"
-            "bvec3 greaterThanEqual(dvec3, dvec3);"
-            "bvec4 greaterThanEqual(dvec4, dvec4);"
-
-            "bvec2 equal(dvec2, dvec2);"
-            "bvec3 equal(dvec3, dvec3);"
-            "bvec4 equal(dvec4, dvec4);"
-
-            "bvec2 notEqual(dvec2, dvec2);"
-            "bvec3 notEqual(dvec3, dvec3);"
-            "bvec4 notEqual(dvec4, dvec4);"
-
             "\n");
     }
 
@@ -7848,6 +7881,7 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         BuiltInVariable("gl_SecondaryColor", EbvSecondaryColor, symbolTable);
 
         // built-in functions
+        setTabledBuiltinExtensions(version, profile, spvVersion, language, symbolTable);
 
         if (profile == EEsProfile) {
             if (spvVersion.spv == 0) {
