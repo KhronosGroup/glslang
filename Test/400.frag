@@ -126,7 +126,7 @@ void interp()
 
     interpolateAtSample(sampInArray, 1);        // ERROR
     interpolateAtSample(sampInArray[i], 0);
-    interpolateAtSample(s1.x, 2);
+    interpolateAtSample(s1.x, 2);   // ERROR
     interpolateAtSample(scalarIn, 1);
 
     interpolateAtOffset(sampInArray, vec2(0.2));         // ERROR

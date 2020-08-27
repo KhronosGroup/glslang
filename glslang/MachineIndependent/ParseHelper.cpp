@@ -2179,7 +2179,15 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
     case EOpAtomicLoad:
     case EOpAtomicStore:
     {
-        TStorageQualifier storageType = arg0->getType().getQualifier().storage;
+        TStorageQualifier storageType;
+        TIntermOperator* op = (*argp)[0]->getAsOperator();
+        if (!op)
+            // Array declaration
+            storageType = arg0->getType().getQualifier().storage;
+        else
+            // Parameter storage check
+            storageType = (*argp)[0]->getAsBinaryNode()->getLeft()->getType().getQualifier().storage;
+
         if (storageType == EvqTemporary) {
             const TIntermTyped* pBase = TIntermediate::findLValueBase(arg0, true);
             if (pBase != nullptr) {
@@ -2298,17 +2306,6 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
                 requireExtensions(loc, 1, &E_GL_EXT_shader_integer_mix, "specific signature of builtin mix");
             }
         }
-
-        if (profile != EEsProfile && version < 450) {
-            if ((*argp)[0]->getAsTyped()->getBasicType() != EbtFloat && 
-                (*argp)[0]->getAsTyped()->getBasicType() != EbtDouble &&
-                (*argp)[1]->getAsTyped()->getBasicType() != EbtFloat &&
-                (*argp)[1]->getAsTyped()->getBasicType() != EbtDouble &&
-                (*argp)[2]->getAsTyped()->getBasicType() == EbtBool) {
-                requireExtensions(loc, 1, &E_GL_EXT_shader_integer_mix, fnCandidate.getName().c_str());
-            }
-        }
-
         break;
 #endif
 

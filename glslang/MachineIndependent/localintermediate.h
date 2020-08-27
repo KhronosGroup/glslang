@@ -424,7 +424,7 @@ public:
     int getNumErrors() const { return numErrors; }
     void addPushConstantCount() { ++numPushConstants; }
     void setLimits(const TBuiltInResource& r) { resources = r; }
-    const TBuiltInResource& getLimits() const { return resources; }
+    const TBuiltInResource getBuiltinResources() { return resources; }
 
     bool postProcess(TIntermNode*, EShLanguage);
     void removeTree();
