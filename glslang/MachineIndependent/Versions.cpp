@@ -482,6 +482,7 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_EXT_shader_image_int64 1\n"
             "#define GL_EXT_shader_atomic_int64 1\n"
             "#define GL_EXT_shader_realtime_clock 1\n"
+            "#define GL_EXT_shader_integer_mix 1\n"
             "#define GL_EXT_ray_tracing 1\n"
             "#define GL_EXT_ray_query 1\n"
             "#define GL_EXT_ray_flags_primitive_culling 1\n"
