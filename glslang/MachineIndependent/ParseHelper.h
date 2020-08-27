@@ -364,7 +364,7 @@ public:
     void accStructCheck(const TSourceLoc & loc, const TType & type, const TString & identifier);
     void transparentOpaqueCheck(const TSourceLoc&, const TType&, const TString& identifier);
     void memberQualifierCheck(glslang::TPublicType&);
-    void globalQualifierFixCheck(const TSourceLoc&, TQualifier&);
+    void globalQualifierFixCheck(const TSourceLoc&, TQualifier&, bool isMemberCheck = false);
     void globalQualifierTypeCheck(const TSourceLoc&, const TQualifier&, const TPublicType&);
     bool structQualifierErrorCheck(const TSourceLoc&, const TPublicType& pType);
     void mergeQualifiers(const TSourceLoc&, TQualifier& dst, const TQualifier& src, bool force);

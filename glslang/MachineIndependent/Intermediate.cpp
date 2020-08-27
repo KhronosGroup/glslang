@@ -512,6 +512,8 @@ TIntermTyped* TIntermediate::setAggregateOperator(TIntermNode* node, TOperator o
             //
             aggNode = new TIntermAggregate();
             aggNode->getSequence().push_back(node);
+            if (loc.line == 0)
+                loc = node->getLoc();
         }
     } else
         aggNode = new TIntermAggregate();

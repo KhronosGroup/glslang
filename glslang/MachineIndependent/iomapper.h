@@ -263,10 +263,12 @@ public:
 class TGlslIoMapper : public TIoMapper {
 public:
     TGlslIoMapper() {
-        memset(inVarMaps,     0, sizeof(TVarLiveMap*)   * EShLangCount);
-        memset(outVarMaps,    0, sizeof(TVarLiveMap*)   * EShLangCount);
-        memset(uniformVarMap, 0, sizeof(TVarLiveMap*)   * EShLangCount);
-        memset(intermediates, 0, sizeof(TIntermediate*) * EShLangCount);
+        memset(inVarMaps,     0, sizeof(TVarLiveMap*)   * (EShLangCount + 1));
+        memset(outVarMaps,    0, sizeof(TVarLiveMap*)   * (EShLangCount + 1));
+        memset(uniformVarMap, 0, sizeof(TVarLiveMap*)   * (EShLangCount + 1));
+        memset(intermediates, 0, sizeof(TIntermediate*) * (EShLangCount + 1));
+        profile = ENoProfile;
+        version = 0;
     }
     virtual ~TGlslIoMapper() {
         for (size_t stage = 0; stage < EShLangCount; stage++) {
@@ -293,6 +295,8 @@ public:
                 *uniformVarMap[EShLangCount];
     TIntermediate* intermediates[EShLangCount];
     bool hadError = false;
+    EProfile profile;
+    int version;
 };
 
 } // end namespace glslang

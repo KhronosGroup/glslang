@@ -127,22 +127,6 @@ bool TParseContextBase::lValueErrorCheck(const TSourceLoc& loc, const char* op, 
 {
     TIntermBinary* binaryNode = node->getAsBinaryNode();
 
-    if (binaryNode) {
-        switch(binaryNode->getOp()) {
-        case EOpIndexDirect:
-        case EOpIndexIndirect:     // fall through
-        case EOpIndexDirectStruct: // fall through
-        case EOpVectorSwizzle:
-        case EOpMatrixSwizzle:
-            return lValueErrorCheck(loc, op, binaryNode->getLeft());
-        default:
-            break;
-        }
-        error(loc, " l-value required", op, "", "");
-
-        return true;
-    }
-
     const char* symbol = nullptr;
     TIntermSymbol* symNode = node->getAsSymbolNode();
     if (symNode != nullptr)
@@ -203,7 +187,24 @@ bool TParseContextBase::lValueErrorCheck(const TSourceLoc& loc, const char* op, 
     // Everything else is okay, no error.
     //
     if (message == nullptr)
+    {
+        if (binaryNode) {
+            switch (binaryNode->getOp()) {
+            case EOpIndexDirect:
+            case EOpIndexIndirect:     // fall through
+            case EOpIndexDirectStruct: // fall through
+            case EOpVectorSwizzle:
+            case EOpMatrixSwizzle:
+                return lValueErrorCheck(loc, op, binaryNode->getLeft());
+            default:
+                break;
+            }
+            error(loc, " l-value required", op, "", "");
+
+            return true;
+        }
         return false;
+    }
 
     //
     // If we get here, we have an error and a message.
@@ -222,25 +223,24 @@ void TParseContextBase::rValueErrorCheck(const TSourceLoc& loc, const char* op, 
     if (! node)
         return;
 
-    TIntermBinary* binaryNode = node->getAsBinaryNode();
-    if (binaryNode) {
-        switch(binaryNode->getOp()) {
-        case EOpIndexDirect:
-        case EOpIndexIndirect:
-        case EOpIndexDirectStruct:
-        case EOpVectorSwizzle:
-        case EOpMatrixSwizzle:
-            rValueErrorCheck(loc, op, binaryNode->getLeft());
-        default:
-            break;
-        }
-
-        return;
-    }
-
     TIntermSymbol* symNode = node->getAsSymbolNode();
-    if (symNode && symNode->getQualifier().isWriteOnly())
-        error(loc, "can't read from writeonly object: ", op, symNode->getName().c_str());
+    if (node->getQualifier().isWriteOnly()) {
+        error(loc, "can't read from writeonly object: ", op, symNode != nullptr ? symNode->getName().c_str() : "");
+    } else {
+        TIntermBinary* binaryNode = node->getAsBinaryNode();
+        if (binaryNode) {
+            switch (binaryNode->getOp()) {
+            case EOpIndexDirect:
+            case EOpIndexIndirect:
+            case EOpIndexDirectStruct:
+            case EOpVectorSwizzle:
+            case EOpMatrixSwizzle:
+                rValueErrorCheck(loc, op, binaryNode->getLeft());
+            default:
+                break;
+            }
+        }
+    }
 }
 
 // Add 'symbol' to the list of deferred linkage symbols, which
@@ -272,6 +272,10 @@ void TParseContextBase::checkIndex(const TSourceLoc& loc, const TType& type, int
             index >= type.getOuterArraySize()) {
             error(loc, "", "[", "array index out of range '%d'", index);
             index = type.getOuterArraySize() - 1;
+        }
+        else if (type.getQualifier().builtIn == EbvSampleMask && index >= static_cast<int>((resources.maxSamples + 31u) / 32u)) {
+            error(loc, "", "[", "array index out of range '%d'", index);
+            index = static_cast<int>((resources.maxSamples + 31u) / 32u) - 1;
         }
     } else if (type.isVector()) {
         if (index >= type.getVectorSize()) {

@@ -982,7 +982,7 @@ int TScanContext::tokenizeIdentifier()
         return keyword;
     case PACKED:
         if ((parseContext.isEsProfile() && parseContext.version < 300) ||
-            (!parseContext.isEsProfile() && parseContext.version < 330))
+            (!parseContext.isEsProfile() && parseContext.version < 140))
             return reservedWord();
         return identifierOrType();
 
