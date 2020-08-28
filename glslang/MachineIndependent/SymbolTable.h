@@ -886,7 +886,7 @@ protected:
     TSymbolTable& operator=(TSymbolTableLevel&);
 
     int currentLevel() const { return static_cast<int>(table.size()) - 1; }
-
+    static const uint32_t LevelFlagBitOffset = 28;
     std::vector<TSymbolTableLevel*> table;
     int uniqueId;     // for unique identification in code generation
     bool noBuiltInRedeclarations;

@@ -1454,9 +1454,10 @@ bool TIoMapper::addStage(EShLanguage stage, TIntermediate& intermediate, TInfoSi
         return TVarEntryInfo::TOrderByPriority()(p1.second, p2.second);
     });
     bool hadError = false;
+    TVarLiveMap* dummyUniformVarMap[EShLangCount] = {};
     TNotifyInOutAdaptor inOutNotify(stage, *resolver);
     TNotifyUniformAdaptor uniformNotify(stage, *resolver);
-    TResolverUniformAdaptor uniformResolve(stage, *resolver, infoSink, hadError);
+    TResolverUniformAdaptor uniformResolve(stage, *resolver, dummyUniformVarMap, infoSink, hadError);
     TResolverInOutAdaptor inOutResolve(stage, *resolver, infoSink, hadError);
     resolver->beginNotifications(stage);
     std::for_each(inVector.begin(), inVector.end(), inOutNotify);
@@ -1563,9 +1564,10 @@ bool TGlslIoMapper::doMap(TIoMapResolver* resolver, TInfoSink& infoSink) {
     resolver->endResolve(EShLangCount);
     if (!hadError) {
         //Resolve uniform location, ubo/ssbo/opaque bindings across stages
-        TResolverUniformAdaptor uniformResolve(EShLangCount, *resolver, infoSink, hadError);
+        TResolverUniformAdaptor uniformResolve(EShLangCount, *resolver, uniformVarMap, infoSink, hadError);
         TResolverInOutAdaptor inOutResolve(EShLangCount, *resolver, infoSink, hadError);
-        TSymbolValidater symbolValidater(*resolver, infoSink, inVarMaps, outVarMaps, uniformVarMap, hadError);
+        TSymbolValidater symbolValidater(*resolver, infoSink, inVarMaps,
+                                         outVarMaps, uniformVarMap, hadError, profile, version);
         TVarLiveVector uniformVector;
         resolver->beginResolve(EShLangCount);
         for (int stage = EShLangVertex; stage < EShLangCount; stage++) {

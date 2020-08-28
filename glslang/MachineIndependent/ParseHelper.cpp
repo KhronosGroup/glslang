@@ -3401,7 +3401,7 @@ void TParseContext::globalQualifierFixCheck(const TSourceLoc& loc, TQualifier& q
         // According to GLSL spec: The std430 qualifier is supported only for shader storage blocks; a shader using
         // the std430 qualifier on a uniform block will fail to compile.
         // Only check the global declaration: layout(std430) uniform;
-        if (blockName == nullptr &&  ((messages & EShMsgIgnoreStd430Errors) == 0) &&
+        if (blockName == nullptr &&
             qualifier.layoutPacking == ElpStd430)
         {
             error(loc, "it is invalid to declare std430 qualifier on uniform", "", "");
