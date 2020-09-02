@@ -5186,7 +5186,7 @@ yyreduce:
   case 104:
 #line 907 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
-        --parseContext.structNestingLevel;
+        --parseContext.blockNestingLevel;
         parseContext.blockName = (yyvsp[-4].lex).string;
         parseContext.globalQualifierFixCheck((yyvsp[-5].interm.type).loc, (yyvsp[-5].interm.type).qualifier);
         parseContext.checkNoShaderLayouts((yyvsp[-5].interm.type).loc, (yyvsp[-5].interm.type).shaderQualifiers);

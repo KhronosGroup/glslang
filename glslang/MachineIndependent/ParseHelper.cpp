@@ -3375,7 +3375,6 @@ void TParseContext::memberQualifierCheck(glslang::TPublicType& publicType)
 void TParseContext::globalQualifierFixCheck(const TSourceLoc& loc, TQualifier& qualifier, bool isMemberCheck)
 {
     bool nonuniformOkay = false;
-    bool isInterface = true;
 
     // move from parameter/unknown qualifiers to pipeline in/out qualifiers
     switch (qualifier.storage) {
@@ -3395,6 +3394,7 @@ void TParseContext::globalQualifierFixCheck(const TSourceLoc& loc, TQualifier& q
         error(loc, "cannot use 'inout' at global scope", "", "");
         break;
     case EvqGlobal:
+    case EvqTemporary:
         nonuniformOkay = true;
         break;
     case EvqUniform:
@@ -3407,13 +3407,7 @@ void TParseContext::globalQualifierFixCheck(const TSourceLoc& loc, TQualifier& q
             error(loc, "it is invalid to declare std430 qualifier on uniform", "", "");
         }
         break;
-    case EvqBuffer:
-    case EvqShared:
-        break;
-    case EvqTemporary:
-        nonuniformOkay = true;
     default:
-        isInterface = false;
         break;
     }
 
@@ -3421,7 +3415,7 @@ void TParseContext::globalQualifierFixCheck(const TSourceLoc& loc, TQualifier& q
         error(loc, "for non-parameter, can only apply to 'in' or no storage qualifier", "nonuniformEXT", "");
 
     // Storage qualifier isn't ready for memberQualifierCheck, we should skip invariantCheck for it.
-    if (!isMemberCheck || !isInterface)
+    if (!isMemberCheck || structNestingLevel > 0)
         invariantCheck(loc, qualifier);
 }
 
@@ -4646,14 +4640,14 @@ void TParseContext::paramCheckFix(const TSourceLoc& loc, const TQualifier& quali
 
 void TParseContext::nestedBlockCheck(const TSourceLoc& loc)
 {
-    if (structNestingLevel > 0)
+    if (structNestingLevel > 0 || blockNestingLevel > 0)
         error(loc, "cannot nest a block definition inside a structure or block", "", "");
-    ++structNestingLevel;
+    ++blockNestingLevel;
 }
 
 void TParseContext::nestedStructCheck(const TSourceLoc& loc)
 {
-    if (structNestingLevel > 0)
+    if (structNestingLevel > 0 || blockNestingLevel > 0)
         error(loc, "cannot nest a structure definition inside a structure or block", "", "");
     ++structNestingLevel;
 }
@@ -8232,7 +8226,6 @@ void TParseContext::invariantCheck(const TSourceLoc& loc, const TQualifier& qual
     } else {
         if ((language == EShLangVertex && pipeIn) || (! pipeOut && ! pipeIn))
             error(loc, "can only apply to an output, or to an input in a non-vertex stage\n", "invariant", "");
-        
     }
 }
 
