@@ -4753,12 +4753,15 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
 
     const bool isUnsignedResult = node->getType().getBasicType() == glslang::EbtUint;
 
+    if (builder.isSampledImage(params.sampler) &&
+        ((cracked.query && node->getOp() != glslang::EOpTextureQueryLod) || cracked.fragMask || cracked.fetch)) {
+        params.sampler = builder.createUnaryOp(spv::OpImage, builder.getImageType(params.sampler), params.sampler);
+        if (imageType.getQualifier().isNonUniform()) {
+            builder.addDecoration(params.sampler, spv::DecorationNonUniformEXT);
+        }
+    }
     // Check for queries
     if (cracked.query) {
-        // OpImageQueryLod works on a sampled image, for other queries the image has to be extracted first
-        if (node->getOp() != glslang::EOpTextureQueryLod && builder.isSampledImage(params.sampler))
-            params.sampler = builder.createUnaryOp(spv::OpImage, builder.getImageType(params.sampler), params.sampler);
-
         switch (node->getOp()) {
         case glslang::EOpImageQuerySize:
         case glslang::EOpTextureQuerySize:
@@ -5012,10 +5015,6 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
         auto opIt = arguments.begin();
         std::vector<spv::Id> operands;
 
-        // Extract the image if necessary
-        if (builder.isSampledImage(params.sampler))
-            params.sampler = builder.createUnaryOp(spv::OpImage, builder.getImageType(params.sampler), params.sampler);
-
         operands.push_back(params.sampler);
         ++opIt;
 
@@ -5074,13 +5073,6 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
             nonBiasArgCount += 3;
         if ((int)arguments.size() > nonBiasArgCount)
             bias = true;
-    }
-
-    // See if the sampler param should really be just the SPV image part
-    if (cracked.fetch) {
-        // a fetch needs to have the image extracted first
-        if (builder.isSampledImage(params.sampler))
-            params.sampler = builder.createUnaryOp(spv::OpImage, builder.getImageType(params.sampler), params.sampler);
     }
 
 #ifndef GLSLANG_WEB
