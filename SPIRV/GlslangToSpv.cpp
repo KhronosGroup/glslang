@@ -2613,6 +2613,10 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         else
             constructed = builder.createConstructor(precision, arguments, resultType());
 
+        if (node->getType().getQualifier().isNonUniform()) {
+            builder.addDecoration(constructed, spv::DecorationNonUniformEXT);
+        }
+
         builder.clearAccessChain();
         builder.setAccessChainRValue(constructed);
 
