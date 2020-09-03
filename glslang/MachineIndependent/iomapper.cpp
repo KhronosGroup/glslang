@@ -84,7 +84,7 @@ public:
         // If a global is being visited, then we should also traverse it incase it's evaluation
         // ends up visiting inputs we want to tag as live
         else if (base->getQualifier().storage == EvqGlobal)
-            addGlobalReference(base->getName());
+            addGlobalReference(base->getAccessName());
 
         if (target) {
             TVarEntryInfo ent = {base->getId(), base, ! traverseAll};
@@ -93,16 +93,10 @@ public:
                 ent.symbol->getName()); // std::lower_bound(target->begin(), target->end(), ent, TVarEntryInfo::TOrderById());
             if (at != target->end() && at->second.id == ent.id)
                 at->second.live = at->second.live || ! traverseAll; // update live state
+            
             else {
-
-                TString baseName;
-                if (ent.symbol->getBasicType() == EbtBlock) {
-                    baseName = ent.symbol->getType().getTypeName();
-                }
-                else {
-                    baseName = ent.symbol->getName();
-                }
-                (*target)[baseName] = ent;
+                //(*target)[ent.symbol->getName()] = ent;
+                (*target)[ent.symbol->getAccessName()] = ent;
             }
         }
     }
@@ -137,8 +131,8 @@ public:
 
         TVarEntryInfo ent = { base->getId() };
         // Fix a defect, when block has no instance name, we need to find its block name
-        const TString& name = IsAnonymous(base->getName()) ? base->getType().getTypeName() : base->getName();
-        TVarLiveMap::const_iterator at = source->find(name);
+        //TVarLiveMap::const_iterator at = source->find(base->getName());
+        TVarLiveMap::const_iterator at = source->find(base->getAccessName());
         if (at == source->end())
             return;
 
@@ -821,7 +815,7 @@ int TDefaultIoResolverBase::resolveSet(EShLanguage /*stage*/, TVarEntryInfo& ent
 
 int TDefaultIoResolverBase::resolveUniformLocation(EShLanguage /*stage*/, TVarEntryInfo& ent) {
     const TType& type = ent.symbol->getType();
-    const char* name = ent.symbol->getName().c_str();
+    const char* name = ent.symbol->getAccessName().c_str();
     // kick out of not doing this
     if (! doAutoLocationMapping()) {
         return ent.newLocation = -1;
@@ -930,7 +924,7 @@ TDefaultGlslIoResolver::TDefaultGlslIoResolver(const TIntermediate& intermediate
 
 int TDefaultGlslIoResolver::resolveInOutLocation(EShLanguage stage, TVarEntryInfo& ent) {
     const TType& type = ent.symbol->getType();
-    const TString& name = getAccessName(ent.symbol);
+    const TString& name = ent.symbol->getAccessName();
     if (currentStage != stage) {
         preStage = currentStage;
         currentStage = stage;
@@ -1014,7 +1008,7 @@ int TDefaultGlslIoResolver::resolveInOutLocation(EShLanguage stage, TVarEntryInf
 
 int TDefaultGlslIoResolver::resolveUniformLocation(EShLanguage /*stage*/, TVarEntryInfo& ent) {
     const TType& type = ent.symbol->getType();
-    const TString& name = getAccessName(ent.symbol);
+    const TString& name = ent.symbol->getAccessName();
     // kick out of not doing this
     if (! doAutoLocationMapping()) {
         return ent.newLocation = -1;
@@ -1085,7 +1079,7 @@ int TDefaultGlslIoResolver::resolveUniformLocation(EShLanguage /*stage*/, TVarEn
 
 int TDefaultGlslIoResolver::resolveBinding(EShLanguage /*stage*/, TVarEntryInfo& ent) {
     const TType& type = ent.symbol->getType();
-    const TString& name = getAccessName(ent.symbol);
+    const TString& name = ent.symbol->getAccessName();
     // On OpenGL arrays of opaque types take a separate binding for each element
     int numBindings = intermediate.getSpv().openGl != 0 && type.isSizedArray() ? type.getCumulativeArraySize() : 1;
     TResourceType resource = getResourceType(type);
@@ -1160,7 +1154,7 @@ void TDefaultGlslIoResolver::endCollect(EShLanguage /*stage*/) {
 
 void TDefaultGlslIoResolver::reserverStorageSlot(TVarEntryInfo& ent, TInfoSink& infoSink) {
     const TType& type = ent.symbol->getType();
-    const TString& name = getAccessName(ent.symbol);
+    const TString& name = ent.symbol->getAccessName();
     TStorageQualifier storage = type.getQualifier().storage;
     EShLanguage stage(EShLangCount);
     switch (storage) {
@@ -1220,7 +1214,7 @@ void TDefaultGlslIoResolver::reserverStorageSlot(TVarEntryInfo& ent, TInfoSink& 
 
 void TDefaultGlslIoResolver::reserverResourceSlot(TVarEntryInfo& ent, TInfoSink& infoSink) {
     const TType& type = ent.symbol->getType();
-    const TString& name = getAccessName(ent.symbol);
+    const TString& name = ent.symbol->getAccessName();
     int resource = getResourceType(type);
     if (type.getQualifier().hasBinding()) {
         TVarSlotMap& varSlotMap = resourceSlotMap[resource];
@@ -1241,13 +1235,6 @@ void TDefaultGlslIoResolver::reserverResourceSlot(TVarEntryInfo& ent, TInfoSink&
             }
         }
     }
-}
-
-const TString& TDefaultGlslIoResolver::getAccessName(const TIntermSymbol* symbol)
-{
-    return symbol->getBasicType() == EbtBlock ?
-        symbol->getType().getTypeName() :
-        symbol->getName();
 }
 
 //TDefaultGlslIoResolver end
@@ -1467,19 +1454,19 @@ bool TIoMapper::addStage(EShLanguage stage, TIntermediate& intermediate, TInfoSi
     resolver->beginResolve(stage);
     std::for_each(inVector.begin(), inVector.end(), inOutResolve);
     std::for_each(inVector.begin(), inVector.end(), [&inVarMap](TVarLivePair p) {
-        auto at = inVarMap.find(p.second.symbol->getName());
+        auto at = inVarMap.find(p.second.symbol->getAccessName());
         if (at != inVarMap.end())
             at->second = p.second;
     });
     std::for_each(outVector.begin(), outVector.end(), inOutResolve);
     std::for_each(outVector.begin(), outVector.end(), [&outVarMap](TVarLivePair p) {
-        auto at = outVarMap.find(p.second.symbol->getName());
+        auto at = outVarMap.find(p.second.symbol->getAccessName());
         if (at != outVarMap.end())
             at->second = p.second;
     });
     std::for_each(uniformVector.begin(), uniformVector.end(), uniformResolve);
     std::for_each(uniformVector.begin(), uniformVector.end(), [&uniformVarMap](TVarLivePair p) {
-        auto at = uniformVarMap.find(p.second.symbol->getName());
+        auto at = uniformVarMap.find(p.second.symbol->getAccessName());
         if (at != uniformVarMap.end())
             at->second = p.second;
     });
@@ -1600,7 +1587,7 @@ bool TGlslIoMapper::doMap(TIoMapResolver* resolver, TInfoSink& infoSink) {
                 // ubo, ssbo and opaque symbols
                 TVarLiveMap** pUniformVarMap = uniformVarMap;
                 std::for_each(uniformVector.begin(), uniformVector.end(), [pUniformVarMap, stage](TVarLivePair p) {
-                    auto at = pUniformVarMap[stage]->find(p.second.symbol->getName());
+                    auto at = pUniformVarMap[stage]->find(p.second.symbol->getAccessName());
                     if (at != pUniformVarMap[stage]->end())
                         at->second = p.second;
                 });

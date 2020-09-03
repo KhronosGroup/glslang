@@ -71,6 +71,12 @@ void TIntermConstantUnion::traverse(TIntermTraverser *it)
     it->visitConstantUnion(this);
 }
 
+const TString& TIntermSymbol::getAccessName(){
+    return IsAnonymous(getName()) && getBasicType() == EbtBlock ?
+        getType().getTypeName() :
+        getName();
+}
+
 //
 // Traverse a binary node.
 //
