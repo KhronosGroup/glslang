@@ -6561,6 +6561,12 @@ TIntermNode* TParseContext::declareVariable(const TSourceLoc& loc, TString& iden
     type.copyArrayInnerSizes(publicType.arraySizes);
     arrayOfArrayVersionCheck(loc, type.getArraySizes());
 
+    if (initializer) {
+        if (type.getBasicType() == EbtRayQuery) {
+            error(loc, "ray queries can only be initialized by using the rayQueryInitializeEXT intrinsic:", "=", identifier.c_str());
+        }
+    }
+
     if (type.isCoopMat()) {
         intermediate.setUseVulkanMemoryModel();
         intermediate.setUseStorageBuffer();

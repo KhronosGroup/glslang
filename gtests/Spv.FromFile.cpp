@@ -238,6 +238,7 @@ INSTANTIATE_TEST_SUITE_P(
         "rayQuery-committed.Error.rgen",
         "rayQuery-allOps.comp",
         "rayQuery-allOps.frag",
+        "rayQuery-initialization.Error.comp",
         "spv.set.vert",
         "spv.double.comp",
         "spv.100ops.frag",
