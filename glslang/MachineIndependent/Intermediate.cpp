@@ -113,7 +113,7 @@ TIntermSymbol* TIntermediate::addSymbol(const TType& type, const TSourceLoc& loc
 //
 // Returns nullptr if the working conversions and promotions could not be found.
 //
-TIntermTyped* TIntermediate::addBinaryMath(TOperator op, TIntermTyped* left, TIntermTyped* right, const TSourceLoc& loc)
+TIntermTyped* TIntermediate::addBinaryMath(TOperator op, TIntermTyped* left, TIntermTyped* right, TSourceLoc loc)
 {
     // No operations work on blocks
     if (left->getType().getBasicType() == EbtBlock || right->getType().getBasicType() == EbtBlock)
@@ -227,8 +227,7 @@ TIntermTyped* TIntermediate::addBinaryMath(TOperator op, TIntermTyped* left, TIn
 //
 // Low level: add binary node (no promotions or other argument modifications)
 //
-TIntermBinary* TIntermediate::addBinaryNode(TOperator op, TIntermTyped* left, TIntermTyped* right,
-    const TSourceLoc& loc) const
+TIntermBinary* TIntermediate::addBinaryNode(TOperator op, TIntermTyped* left, TIntermTyped* right, TSourceLoc loc) const
 {
     // build the node
     TIntermBinary* node = new TIntermBinary(op);
@@ -242,8 +241,7 @@ TIntermBinary* TIntermediate::addBinaryNode(TOperator op, TIntermTyped* left, TI
 //
 // like non-type form, but sets node's type.
 //
-TIntermBinary* TIntermediate::addBinaryNode(TOperator op, TIntermTyped* left, TIntermTyped* right,
-    const TSourceLoc& loc, const TType& type) const
+TIntermBinary* TIntermediate::addBinaryNode(TOperator op, TIntermTyped* left, TIntermTyped* right, TSourceLoc loc, const TType& type) const
 {
     TIntermBinary* node = addBinaryNode(op, left, right, loc);
     node->setType(type);
@@ -253,7 +251,7 @@ TIntermBinary* TIntermediate::addBinaryNode(TOperator op, TIntermTyped* left, TI
 //
 // Low level: add unary node (no promotions or other argument modifications)
 //
-TIntermUnary* TIntermediate::addUnaryNode(TOperator op, TIntermTyped* child, const TSourceLoc& loc) const
+TIntermUnary* TIntermediate::addUnaryNode(TOperator op, TIntermTyped* child, TSourceLoc loc) const
 {
     TIntermUnary* node = new TIntermUnary(op);
     node->setLoc(loc.line != 0 ? loc : child->getLoc());
@@ -265,8 +263,7 @@ TIntermUnary* TIntermediate::addUnaryNode(TOperator op, TIntermTyped* child, con
 //
 // like non-type form, but sets node's type.
 //
-TIntermUnary* TIntermediate::addUnaryNode(TOperator op, TIntermTyped* child, const TSourceLoc& loc, const TType& type)
-    const
+TIntermUnary* TIntermediate::addUnaryNode(TOperator op, TIntermTyped* child, TSourceLoc loc, const TType& type) const
 {
     TIntermUnary* node = addUnaryNode(op, child, loc);
     node->setType(type);
@@ -281,8 +278,7 @@ TIntermUnary* TIntermediate::addUnaryNode(TOperator op, TIntermTyped* child, con
 // Returns nullptr if the 'right' type could not be converted to match the 'left' type,
 // or the resulting operation cannot be properly promoted.
 //
-TIntermTyped* TIntermediate::addAssign(TOperator op, TIntermTyped* left, TIntermTyped* right,
-    const TSourceLoc& loc)
+TIntermTyped* TIntermediate::addAssign(TOperator op, TIntermTyped* left, TIntermTyped* right, TSourceLoc loc)
 {
     // No block assignment
     if (left->getType().getBasicType() == EbtBlock || right->getType().getBasicType() == EbtBlock)
@@ -337,8 +333,7 @@ TIntermTyped* TIntermediate::addAssign(TOperator op, TIntermTyped* left, TInterm
 // Returns the added node.
 // The caller should set the type of the returned node.
 //
-TIntermTyped* TIntermediate::addIndex(TOperator op, TIntermTyped* base, TIntermTyped* index,
-    const TSourceLoc& loc)
+TIntermTyped* TIntermediate::addIndex(TOperator op, TIntermTyped* base, TIntermTyped* index, TSourceLoc loc)
 {
     // caller should set the type
     return addBinaryNode(op, base, index, loc);
@@ -349,8 +344,7 @@ TIntermTyped* TIntermediate::addIndex(TOperator op, TIntermTyped* base, TIntermT
 //
 // Returns the added node.
 //
-TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermTyped* child,
-    const TSourceLoc& loc)
+TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermTyped* child, TSourceLoc loc)
 {
     if (child == 0)
         return nullptr;
@@ -496,8 +490,7 @@ TIntermTyped* TIntermediate::addBuiltInFunctionCall(const TSourceLoc& loc, TOper
 // Returns an aggregate node, which could be the one passed in if
 // it was already an aggregate.
 //
-TIntermTyped* TIntermediate::setAggregateOperator(TIntermNode* node, TOperator op, const TType& type,
-    const TSourceLoc& loc)
+TIntermTyped* TIntermediate::setAggregateOperator(TIntermNode* node, TOperator op, const TType& type, TSourceLoc loc)
 {
     TIntermAggregate* aggNode;
 
@@ -512,6 +505,8 @@ TIntermTyped* TIntermediate::setAggregateOperator(TIntermNode* node, TOperator o
             //
             aggNode = new TIntermAggregate();
             aggNode->getSequence().push_back(node);
+            if (loc.line == 0)
+                loc = node->getLoc();
         }
     } else
         aggNode = new TIntermAggregate();
@@ -520,8 +515,8 @@ TIntermTyped* TIntermediate::setAggregateOperator(TIntermNode* node, TOperator o
     // Set the operator.
     //
     aggNode->setOperator(op);
-    if (loc.line != 0 || node != nullptr)
-        aggNode->setLoc(loc.line != 0 ? loc : node->getLoc());
+    if (loc.line != 0)
+        aggNode->setLoc(loc);
 
     aggNode->setType(type);
 

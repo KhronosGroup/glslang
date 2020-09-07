@@ -212,7 +212,10 @@ bool TParseContextBase::lValueErrorCheck(const TSourceLoc& loc, const char* op, 
     if (symNode)
         error(loc, " l-value required", op, "\"%s\" (%s)", symbol, message);
     else
-        error(loc, " l-value required", op, "(%s)", message);
+        if (binaryNode && binaryNode->getAsOperator()->getOp() == EOpIndexDirectStruct)
+            error(loc, " l-value required", op, "\"%s\" (%s)", binaryNode->getLeft()->getAsSymbolNode()->getAccessName().c_str(), message);
+        else
+            error(loc, " l-value required", op, "(%s)", message);
 
     return true;
 }
@@ -225,7 +228,19 @@ void TParseContextBase::rValueErrorCheck(const TSourceLoc& loc, const char* op, 
 
     TIntermSymbol* symNode = node->getAsSymbolNode();
     if (node->getQualifier().isWriteOnly()) {
-        error(loc, "can't read from writeonly object: ", op, symNode != nullptr ? symNode->getName().c_str() : "");
+        TIntermBinary* binaryNode = node->getAsBinaryNode();
+
+        if (symNode != nullptr)
+            error(loc, "can't read from writeonly object: ", op, symNode->getName().c_str());
+        else if (binaryNode && binaryNode->getLeft() && binaryNode->getLeft()->getAsSymbolNode() &&
+                 binaryNode->getAsOperator()->getOp() == EOpIndexDirectStruct)
+            error(loc, "can't read from writeonly object: ", op, binaryNode->getLeft()->getAsSymbolNode()->getAccessName().c_str());
+        else if (binaryNode && binaryNode->getLeft()->getAsBinaryNode() && binaryNode->getLeft()->getAsBinaryNode()->getLeft()->getAsSymbolNode() &&
+                 binaryNode->getAsOperator()->getOp() == EOpIndexDirect)
+            error(loc, "can't read from writeonly object: ", op, binaryNode->getLeft()->getAsBinaryNode()->getLeft()->getAsSymbolNode()->getAccessName().c_str());
+        else
+            error(loc, "can't read from writeonly object: ", op, "");
+
     } else {
         TIntermBinary* binaryNode = node->getAsBinaryNode();
         if (binaryNode) {
