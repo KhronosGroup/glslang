@@ -213,11 +213,11 @@ bool TParseContextBase::lValueErrorCheck(const TSourceLoc& loc, const char* op, 
 
     if (symNode)
         error(loc, " l-value required", op, "\"%s\" (%s)", symbol, message);
-    else if (leftMostTypeNode && leftMostTypeNode->getAsSymbolNode() &&
-            binaryNode->getAsOperator()->getOp() == EOpIndexDirectStruct)
-        error(loc, " l-value required", op, "\"%s\" (%s)", leftMostTypeNode->getAsSymbolNode()->getAccessName().c_str(), message);
     else
-        error(loc, " l-value required", op, "(%s)", message);
+        if (binaryNode && binaryNode->getAsOperator()->getOp() == EOpIndexDirectStruct)
+            error(loc, " l-value required", op, "\"%s\" (%s)", leftMostTypeNode->getAsSymbolNode()->getAccessName().c_str(), message);
+        else
+            error(loc, " l-value required", op, "(%s)", message);
 
     return true;
 }
@@ -232,17 +232,17 @@ void TParseContextBase::rValueErrorCheck(const TSourceLoc& loc, const char* op, 
         return;
 
     if (node->getQualifier().isWriteOnly()) {
-        TIntermBinary* binaryNode = node->getAsBinaryNode();
         const TIntermTyped* leftMostTypeNode = TIntermediate::findLValueBase(node, true);
 
         if (symNode != nullptr)
             error(loc, "can't read from writeonly object: ", op, symNode->getName().c_str());
-        else if (leftMostTypeNode && leftMostTypeNode->getAsSymbolNode() &&
-                 (binaryNode->getAsOperator()->getOp() == EOpIndexDirectStruct ||
+        else if (binaryNode &&
+                (binaryNode->getAsOperator()->getOp() == EOpIndexDirectStruct ||
                  binaryNode->getAsOperator()->getOp() == EOpIndexDirect))
             error(loc, "can't read from writeonly object: ", op, leftMostTypeNode->getAsSymbolNode()->getAccessName().c_str());
         else
             error(loc, "can't read from writeonly object: ", op, "");
+
     } else {
         if (binaryNode) {
             switch (binaryNode->getOp()) {
