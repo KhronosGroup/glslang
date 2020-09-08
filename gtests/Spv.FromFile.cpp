@@ -1,6 +1,7 @@
  //
 // Copyright (C) 2016 Google, Inc.
 // Copyright (C) 2019 ARM Limited.
+// Modifications Copyright (C) 2020 Advanced Micro Devices, Inc. All rights reserved.
 //
 // All rights reserved.
 //
