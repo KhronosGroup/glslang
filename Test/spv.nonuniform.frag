@@ -52,4 +52,6 @@ void main()
     b += uniformBuffer[uv[nu_ii]].a;
     b += uniformBuffer[int(m[2].z)].a;
     b += uniformBuffer[s.a].a;
+
+    storageBuffer[nu_ii].b = b;
 }
