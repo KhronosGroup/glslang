@@ -5417,7 +5417,7 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
         if (! IsPow2(value))
             error(loc, "must be a power of 2", "buffer_reference_align", "");
         else
-            publicType.qualifier.layoutBufferReferenceAlign = (unsigned int)std::log2(value);
+            publicType.qualifier.layoutBufferReferenceAlign = (unsigned int)log2(value);
         if (nonLiteral)
             error(loc, "needs a literal integer", "buffer_reference_align", "");
         return;
