@@ -30,7 +30,7 @@ void main()
 
     gl_out[gl_InvocationID].gl_Position = p;
     gl_out[gl_InvocationID].gl_PointSize = ps;        // ERROR, need point_size extension
-    gl_out[gl_InvocationID].gl_ClipDistance[1] = cd;
+    gl_out[gl_InvocationID].gl_ClipDistance[1] = cd;  // ERROR, not in ES
 
     gl_TessLevelOuter[3] = 3.2;
     gl_TessLevelInner[1] = 1.3;

@@ -10,6 +10,7 @@ ERROR: 0:22: 'barrier' : no matching overloaded function found
 ERROR: 0:33: 'gl_PointSize' : required extension not requested: Possible extensions include:
 GL_EXT_tessellation_point_size
 GL_OES_tessellation_point_size
+ERROR: 0:34: 'gl_ClipDistance' : required extension not requested: GL_EXT_clip_cull_distance
 ERROR: 0:43: 'gl_PointSize' : required extension not requested: Possible extensions include:
 GL_EXT_tessellation_point_size
 GL_OES_tessellation_point_size
@@ -38,7 +39,7 @@ ERROR: 0:96: 'location' : overlapping use of location 24
 ERROR: 0:99: 'location' : overlapping use of location 24
 ERROR: 0:101: 'gl_TessLevelOuter' : identifiers starting with "gl_" are reserved 
 ERROR: 0:113: 'gl_BoundingBoxOES' : undeclared identifier 
-ERROR: 35 compilation errors.  No code generated.
+ERROR: 36 compilation errors.  No code generated.
 
 
 Shader version: 320

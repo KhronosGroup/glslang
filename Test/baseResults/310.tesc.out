@@ -6,6 +6,7 @@ ERROR: 0:12: 'patch' : can only use on output in tessellation-control shader
 ERROR: 0:26: 'gl_PointSize' : required extension not requested: Possible extensions include:
 GL_EXT_tessellation_point_size
 GL_OES_tessellation_point_size
+ERROR: 0:27: 'gl_ClipDistance' : required extension not requested: GL_EXT_clip_cull_distance
 ERROR: 0:34: 'gl_PointSize' : required extension not requested: Possible extensions include:
 GL_EXT_tessellation_point_size
 GL_OES_tessellation_point_size
@@ -42,7 +43,7 @@ ERROR: 0:160: '' : array size required
 ERROR: 0:176: '[]' : tessellation-control per-vertex output l-value must be indexed with gl_InvocationID 
 ERROR: 0:177: '[]' : tessellation-control per-vertex output l-value must be indexed with gl_InvocationID 
 ERROR: 0:180: '[]' : tessellation-control per-vertex output l-value must be indexed with gl_InvocationID 
-ERROR: 37 compilation errors.  No code generated.
+ERROR: 38 compilation errors.  No code generated.
 
 
 Shader version: 310

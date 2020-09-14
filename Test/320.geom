@@ -34,8 +34,8 @@ void main()
     EndStreamPrimitive(0);  // ERROR
 
     color = fromV[0].color;
-    gl_ClipDistance[3] =
-        gl_in[1].gl_ClipDistance[2];
+    gl_ClipDistance[3] =              // ERROR, no ClipDistance
+        gl_in[1].gl_ClipDistance[2];  // ERROR, no ClipDistance
     gl_Position = gl_in[0].gl_Position;
 
     gl_PrimitiveID = gl_PrimitiveIDIn;

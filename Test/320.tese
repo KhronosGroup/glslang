@@ -31,7 +31,7 @@ void main()
 
     vec4 p = gl_in[1].gl_Position;
     float ps = gl_in[1].gl_PointSize;        // ERROR, need point_size extension
-    float cd = gl_in[1].gl_ClipDistance[2];
+    float cd = gl_in[1].gl_ClipDistance[2];  // ERROR, not in ES
 
     int pvi = gl_PatchVerticesIn;
     int pid = gl_PrimitiveID;

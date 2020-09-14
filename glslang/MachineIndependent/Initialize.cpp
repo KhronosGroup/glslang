@@ -7638,7 +7638,7 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setVariableExtensions("gl_out", "gl_CullDistance", 1, &E_GL_ARB_cull_distance);
         }
 
-        if (profile == EEsProfile && version >= 300) {
+        if (profile == EEsProfile) {
             symbolTable.setVariableExtensions("gl_CullDistance", 1, &E_GL_EXT_clip_cull_distance);
             symbolTable.setVariableExtensions("gl_in", "gl_CullDistance", 1, &E_GL_EXT_clip_cull_distance);
             symbolTable.setVariableExtensions("gl_out", "gl_CullDistance", 1, &E_GL_EXT_clip_cull_distance);
@@ -7720,7 +7720,7 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setVariableExtensions("gl_CullDistance", 1, &E_GL_ARB_cull_distance);
         }
 
-        if (profile == EEsProfile && version >= 300) {
+        if (profile == EEsProfile) {
             symbolTable.setVariableExtensions("gl_CullDistance", 1, &E_GL_EXT_clip_cull_distance);
             symbolTable.setVariableExtensions("gl_ClipDistance", 1, &E_GL_EXT_clip_cull_distance);
         }
@@ -9327,6 +9327,8 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         // extension requirements
         if (profile == EEsProfile) {
             symbolTable.setVariableExtensions("gl_in", "gl_PointSize", Num_AEP_tessellation_point_size, AEP_tessellation_point_size);
+            symbolTable.setVariableExtensions("gl_in", "gl_ClipDistance", 1, &E_GL_EXT_clip_cull_distance);
+            symbolTable.setVariableExtensions("gl_in", "gl_CullDistance", 1, &E_GL_EXT_clip_cull_distance);
         }
 
         break;
