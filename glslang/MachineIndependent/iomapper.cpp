@@ -90,14 +90,11 @@ public:
             TVarEntryInfo ent = {base->getId(), base, ! traverseAll};
             ent.stage = intermediate.getStage();
             TVarLiveMap::iterator at = target->find(
-                ent.symbol->getName()); // std::lower_bound(target->begin(), target->end(), ent, TVarEntryInfo::TOrderById());
+                ent.symbol->getAccessName()); // std::lower_bound(target->begin(), target->end(), ent, TVarEntryInfo::TOrderById());
             if (at != target->end() && at->second.id == ent.id)
                 at->second.live = at->second.live || ! traverseAll; // update live state
-            
-            else {
-                //(*target)[ent.symbol->getName()] = ent;
+            else
                 (*target)[ent.symbol->getAccessName()] = ent;
-            }
         }
     }
 
@@ -131,7 +128,6 @@ public:
 
         TVarEntryInfo ent = { base->getId() };
         // Fix a defect, when block has no instance name, we need to find its block name
-        //TVarLiveMap::const_iterator at = source->find(base->getName());
         TVarLiveMap::const_iterator at = source->find(base->getAccessName());
         if (at == source->end())
             return;
@@ -188,7 +184,7 @@ struct TNotifyInOutAdaptor
 
     inline void operator()(std::pair<const TString, TVarEntryInfo>& entKey)
     {
-        resolver.notifyInOut(stage, entKey.second);
+        resolver.notifyInOut(entKey.second.stage, entKey.second);
     }
 
 private:
@@ -214,9 +210,9 @@ struct TResolverUniformAdaptor {
         ent.newIndex = -1;
         const bool isValid = resolver.validateBinding(stage, ent);
         if (isValid) {
-            resolver.resolveBinding(stage, ent);
-            resolver.resolveSet(stage, ent);
-            resolver.resolveUniformLocation(stage, ent);
+            resolver.resolveBinding(ent.stage, ent);
+            resolver.resolveSet(ent.stage, ent);
+            resolver.resolveUniformLocation(ent.stage, ent);
 
             if (ent.newBinding != -1) {
                 if (ent.newBinding >= int(TQualifier::layoutBindingEnd)) {
@@ -228,7 +224,7 @@ struct TResolverUniformAdaptor {
 
                 if (ent.symbol->getQualifier().hasBinding()) {
                     for (uint32_t idx = EShLangVertex; idx < EShLangCount; ++idx) {
-                        if ((idx == stage) || (uniformVarMap[idx] == nullptr))
+                        if (idx == ent.stage || uniformVarMap[idx] == nullptr)
                             continue;
                         auto entKey2 = uniformVarMap[idx]->find(entKey.first);
                         if (entKey2 != uniformVarMap[idx]->end()) {
@@ -290,7 +286,7 @@ struct TResolverInOutAdaptor {
         ent.newBinding = -1;
         ent.newSet = -1;
         ent.newIndex = -1;
-        const bool isValid = resolver.validateInOut(stage, ent);
+        const bool isValid = resolver.validateInOut(ent.stage, ent);
         if (isValid) {
             resolver.resolveInOutLocation(stage, ent);
             resolver.resolveInOutComponent(stage, ent);
@@ -350,7 +346,7 @@ struct TSymbolValidater
                 {
                     TIntermSymbol* pSymbol = uniformVar.second.symbol;
                     TQualifier qualifier = uniformVar.second.symbol->getQualifier();
-                    TString symbolName = pSymbol->getName();
+                    TString symbolName = pSymbol->getAccessName();
 
                     // All the uniform needs multi-stage location check (block/default)
                     int uniformLocation = qualifier.layoutLocation;
@@ -534,7 +530,7 @@ struct TSymbolValidater
                 return;
             if (TSymbolTable::isBuiltInSymbol(base->getId()))
                 return;
-            if (outVarMaps[nextStage] != nullptr) {
+            if (inVarMaps[nextStage] != nullptr) {
                 auto ent2 = inVarMaps[nextStage]->find(name);
                 if (ent2 != inVarMaps[nextStage]->end()) {
                     if (ent2->second.symbol->getType().getQualifier().isArrayedIo(nextStage)) {
@@ -815,7 +811,7 @@ int TDefaultIoResolverBase::resolveSet(EShLanguage /*stage*/, TVarEntryInfo& ent
 
 int TDefaultIoResolverBase::resolveUniformLocation(EShLanguage /*stage*/, TVarEntryInfo& ent) {
     const TType& type = ent.symbol->getType();
-    const char* name = ent.symbol->getAccessName().c_str();
+    const char* name =  ent.symbol->getAccessName().c_str();
     // kick out of not doing this
     if (! doAutoLocationMapping()) {
         return ent.newLocation = -1;
@@ -1425,18 +1421,15 @@ bool TIoMapper::addStage(EShLanguage stage, TIntermediate& intermediate, TInfoSi
     }
 
     // sort entries by priority. see TVarEntryInfo::TOrderByPriority for info.
-    std::for_each(inVarMap.begin(), inVarMap.end(),
-                  [&inVector](TVarLivePair p) { inVector.push_back(p); });
+    for (auto& var : inVarMap) { inVector.push_back(var); }
     std::sort(inVector.begin(), inVector.end(), [](const TVarLivePair& p1, const TVarLivePair& p2) -> bool {
         return TVarEntryInfo::TOrderByPriority()(p1.second, p2.second);
     });
-    std::for_each(outVarMap.begin(), outVarMap.end(),
-                  [&outVector](TVarLivePair p) { outVector.push_back(p); });
+    for (auto& var : outVarMap) { outVector.push_back(var); }
     std::sort(outVector.begin(), outVector.end(), [](const TVarLivePair& p1, const TVarLivePair& p2) -> bool {
         return TVarEntryInfo::TOrderByPriority()(p1.second, p2.second);
     });
-    std::for_each(uniformVarMap.begin(), uniformVarMap.end(),
-                  [&uniformVector](TVarLivePair p) { uniformVector.push_back(p); });
+    for (auto& var : uniformVarMap) { uniformVector.push_back(var); }
     std::sort(uniformVector.begin(), uniformVector.end(), [](const TVarLivePair& p1, const TVarLivePair& p2) -> bool {
         return TVarEntryInfo::TOrderByPriority()(p1.second, p2.second);
     });
@@ -1452,22 +1445,22 @@ bool TIoMapper::addStage(EShLanguage stage, TIntermediate& intermediate, TInfoSi
     std::for_each(uniformVector.begin(), uniformVector.end(), uniformNotify);
     resolver->endNotifications(stage);
     resolver->beginResolve(stage);
-    std::for_each(inVector.begin(), inVector.end(), inOutResolve);
+    for (auto& var : inVector) { inOutResolve(var); }
     std::for_each(inVector.begin(), inVector.end(), [&inVarMap](TVarLivePair p) {
         auto at = inVarMap.find(p.second.symbol->getAccessName());
-        if (at != inVarMap.end())
+        if (at != inVarMap.end() && p.second.id == at->second.id)
             at->second = p.second;
     });
-    std::for_each(outVector.begin(), outVector.end(), inOutResolve);
+    for (auto& var : outVector) { inOutResolve(var); }
     std::for_each(outVector.begin(), outVector.end(), [&outVarMap](TVarLivePair p) {
         auto at = outVarMap.find(p.second.symbol->getAccessName());
-        if (at != outVarMap.end())
+        if (at != outVarMap.end() && p.second.id == at->second.id)
             at->second = p.second;
     });
     std::for_each(uniformVector.begin(), uniformVector.end(), uniformResolve);
     std::for_each(uniformVector.begin(), uniformVector.end(), [&uniformVarMap](TVarLivePair p) {
         auto at = uniformVarMap.find(p.second.symbol->getAccessName());
-        if (at != uniformVarMap.end())
+        if (at != uniformVarMap.end() && p.second.id == at->second.id)
             at->second = p.second;
     });
     resolver->endResolve(stage);
@@ -1483,7 +1476,6 @@ bool TIoMapper::addStage(EShLanguage stage, TIntermediate& intermediate, TInfoSi
 //
 // Returns false if the input is too malformed to do this.
 bool TGlslIoMapper::addStage(EShLanguage stage, TIntermediate& intermediate, TInfoSink& infoSink, TIoMapResolver* resolver) {
-
     bool somethingToDo = !intermediate.getResourceSetBinding().empty() ||
         intermediate.getAutoMapBindings() ||
         intermediate.getAutoMapLocations();
@@ -1560,23 +1552,21 @@ bool TGlslIoMapper::doMap(TIoMapResolver* resolver, TInfoSink& infoSink) {
         for (int stage = EShLangVertex; stage < EShLangCount; stage++) {
             if (inVarMaps[stage] != nullptr) {
                 inOutResolve.setStage(EShLanguage(stage));
-                std::for_each(inVarMaps[stage]->begin(), inVarMaps[stage]->end(), symbolValidater);
-                std::for_each(inVarMaps[stage]->begin(), inVarMaps[stage]->end(), inOutResolve);
-                std::for_each(outVarMaps[stage]->begin(), outVarMaps[stage]->end(), symbolValidater);
-                std::for_each(outVarMaps[stage]->begin(), outVarMaps[stage]->end(), inOutResolve);
+                for (auto& var : *(inVarMaps[stage])) { symbolValidater(var); }
+                for (auto& var : *(inVarMaps[stage])) { inOutResolve(var); }
+                for (auto& var : *(outVarMaps[stage])) { symbolValidater(var); }
+                for (auto& var : *(outVarMaps[stage])) { inOutResolve(var); }
             }
             if (uniformVarMap[stage] != nullptr) {
                 uniformResolve.setStage(EShLanguage(stage));
-                // sort entries by priority. see TVarEntryInfo::TOrderByPriority for info.
-                std::for_each(uniformVarMap[stage]->begin(), uniformVarMap[stage]->end(),
-                              [&uniformVector](TVarLivePair p) { uniformVector.push_back(p); });
+                for (auto& var : *(uniformVarMap[stage])) { uniformVector.push_back(var); }
             }
         }
         std::sort(uniformVector.begin(), uniformVector.end(), [](const TVarLivePair& p1, const TVarLivePair& p2) -> bool {
             return TVarEntryInfo::TOrderByPriority()(p1.second, p2.second);
         });
-        std::for_each(uniformVector.begin(), uniformVector.end(), symbolValidater);
-        std::for_each(uniformVector.begin(), uniformVector.end(), uniformResolve);
+        for (auto& var : uniformVector) { symbolValidater(var); }
+        for (auto& var : uniformVector) { uniformResolve(var); }
         std::sort(uniformVector.begin(), uniformVector.end(), [](const TVarLivePair& p1, const TVarLivePair& p2) -> bool {
             return TVarEntryInfo::TOrderByPriority()(p1.second, p2.second);
         });
@@ -1585,14 +1575,18 @@ bool TGlslIoMapper::doMap(TIoMapResolver* resolver, TInfoSink& infoSink) {
             if (intermediates[stage] != nullptr) {
                 // traverse each stage, set new location to each input/output and unifom symbol, set new binding to
                 // ubo, ssbo and opaque symbols
-                TVarLiveMap** pUniformVarMap = uniformVarMap;
+                TVarLiveMap** pUniformVarMap = uniformResolve.uniformVarMap;
                 std::for_each(uniformVector.begin(), uniformVector.end(), [pUniformVarMap, stage](TVarLivePair p) {
                     auto at = pUniformVarMap[stage]->find(p.second.symbol->getAccessName());
-                    if (at != pUniformVarMap[stage]->end())
+                    if (at != pUniformVarMap[stage]->end() && at->second.id == p.second.id){
+                        int resolvedBinding = at->second.newBinding;
                         at->second = p.second;
+                        if (resolvedBinding > 0)
+                            at->second.newBinding = resolvedBinding;
+                    }
                 });
                 TVarSetTraverser iter_iomap(*intermediates[stage], *inVarMaps[stage], *outVarMaps[stage],
-                                            *uniformVarMap[stage]);
+                                            *uniformResolve.uniformVarMap[stage]);
                 intermediates[stage]->getTreeRoot()->traverse(&iter_iomap);
             }
         }

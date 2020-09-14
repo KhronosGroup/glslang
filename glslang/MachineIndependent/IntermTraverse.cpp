@@ -72,9 +72,10 @@ void TIntermConstantUnion::traverse(TIntermTraverser *it)
 }
 
 const TString& TIntermSymbol::getAccessName() const {
-    return IsAnonymous(getName()) && getBasicType() == EbtBlock ?
-        getType().getTypeName() :
-        getName();
+    if (getBasicType() == EbtBlock)
+        return getType().getTypeName();
+    else
+        return getName();
 }
 
 //

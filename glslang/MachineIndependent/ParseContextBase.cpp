@@ -215,7 +215,10 @@ bool TParseContextBase::lValueErrorCheck(const TSourceLoc& loc, const char* op, 
         error(loc, " l-value required", op, "\"%s\" (%s)", symbol, message);
     else
         if (binaryNode && binaryNode->getAsOperator()->getOp() == EOpIndexDirectStruct)
-            error(loc, " l-value required", op, "\"%s\" (%s)", leftMostTypeNode->getAsSymbolNode()->getAccessName().c_str(), message);
+            if(IsAnonymous(leftMostTypeNode->getAsSymbolNode()->getName()))
+                error(loc, " l-value required", op, "\"%s\" (%s)", leftMostTypeNode->getAsSymbolNode()->getAccessName().c_str(), message);
+            else
+                error(loc, " l-value required", op, "\"%s\" (%s)", leftMostTypeNode->getAsSymbolNode()->getName().c_str(), message);
         else
             error(loc, " l-value required", op, "(%s)", message);
 
@@ -239,7 +242,10 @@ void TParseContextBase::rValueErrorCheck(const TSourceLoc& loc, const char* op, 
         else if (binaryNode &&
                 (binaryNode->getAsOperator()->getOp() == EOpIndexDirectStruct ||
                  binaryNode->getAsOperator()->getOp() == EOpIndexDirect))
-            error(loc, "can't read from writeonly object: ", op, leftMostTypeNode->getAsSymbolNode()->getAccessName().c_str());
+            if(IsAnonymous(leftMostTypeNode->getAsSymbolNode()->getName()))
+                error(loc, "can't read from writeonly object: ", op, leftMostTypeNode->getAsSymbolNode()->getAccessName().c_str());
+            else
+                error(loc, "can't read from writeonly object: ", op, leftMostTypeNode->getAsSymbolNode()->getName().c_str());
         else
             error(loc, "can't read from writeonly object: ", op, "");
 
@@ -288,10 +294,6 @@ void TParseContextBase::checkIndex(const TSourceLoc& loc, const TType& type, int
             index >= type.getOuterArraySize()) {
             error(loc, "", "[", "array index out of range '%d'", index);
             index = type.getOuterArraySize() - 1;
-        }
-        else if (type.getQualifier().builtIn == EbvSampleMask && index >= static_cast<int>((resources.maxSamples + 31u) / 32u)) {
-            error(loc, "", "[", "array index out of range '%d'", index);
-            index = static_cast<int>((resources.maxSamples + 31u) / 32u) - 1;
         }
     } else if (type.isVector()) {
         if (index >= type.getVectorSize()) {
