@@ -249,8 +249,6 @@ void TParseContext::handlePragma(const TSourceLoc& loc, const TVector<TString>& 
             if(relaxedErrors())
                 //  If an implementation does not recognize the tokens following #pragma, then it will ignore that pragma.
                 warn(loc, "\"on\" or \"off\" expected after '(' for 'optimize' pragma", "#pragma", "");
-            else
-                error(loc, "\"on\" or \"off\" expected after '(' for 'optimize' pragma", "#pragma", "");
             return;
         }
 
@@ -277,8 +275,6 @@ void TParseContext::handlePragma(const TSourceLoc& loc, const TVector<TString>& 
             if(relaxedErrors())
                 //  If an implementation does not recognize the tokens following #pragma, then it will ignore that pragma.
                 warn(loc, "\"on\" or \"off\" expected after '(' for 'debug' pragma", "#pragma", "");
-            else
-                error(loc, "\"on\" or \"off\" expected after '(' for 'debug' pragma", "#pragma", "");
             return;
         }
 
