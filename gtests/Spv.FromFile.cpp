@@ -571,6 +571,10 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.ext.RayGenShader_Errors.rgen",
         "spv.ext.RayGenShader11.rgen",
         "spv.ext.RayGenShaderArray.rgen",
+        "spv.ext.RayGenSBTlayout.rgen",
+        "spv.ext.RayGenSBTlayout140.rgen",
+        "spv.ext.RayGenSBTlayout430.rgen",
+        "spv.ext.RayGenSBTlayoutscalar.rgen",
         "spv.ext.World3x4.rahit",
     })),
     FileNameAsCustomTestSuffix
