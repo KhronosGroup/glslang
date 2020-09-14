@@ -1727,7 +1727,7 @@ void Parameterize()
 
     InstructionDesc[OpDecorateStringGOOGLE].operands.push(OperandId, "'Target'");
     InstructionDesc[OpDecorateStringGOOGLE].operands.push(OperandDecoration, "");
-    InstructionDesc[OpDecorateStringGOOGLE].operands.push(OperandLiteralString, "'Literal String'");
+    InstructionDesc[OpDecorateStringGOOGLE].operands.push(OperandVariableLiteralStrings, "'Literal Strings'");
 
     InstructionDesc[OpMemberDecorate].operands.push(OperandId, "'Structure Type'");
     InstructionDesc[OpMemberDecorate].operands.push(OperandLiteralNumber, "'Member'");
@@ -1737,7 +1737,7 @@ void Parameterize()
     InstructionDesc[OpMemberDecorateStringGOOGLE].operands.push(OperandId, "'Structure Type'");
     InstructionDesc[OpMemberDecorateStringGOOGLE].operands.push(OperandLiteralNumber, "'Member'");
     InstructionDesc[OpMemberDecorateStringGOOGLE].operands.push(OperandDecoration, "");
-    InstructionDesc[OpMemberDecorateStringGOOGLE].operands.push(OperandLiteralString, "'Literal String'");
+    InstructionDesc[OpMemberDecorateStringGOOGLE].operands.push(OperandVariableLiteralStrings, "'Literal Strings'");
 
     InstructionDesc[OpGroupDecorate].operands.push(OperandId, "'Decoration Group'");
     InstructionDesc[OpGroupDecorate].operands.push(OperandVariableIds, "'Targets'");
