@@ -1,6 +1,7 @@
  //
 // Copyright (C) 2016 Google, Inc.
 // Copyright (C) 2019 ARM Limited.
+// Modifications Copyright (C) 2020 Advanced Micro Devices, Inc. All rights reserved.
 //
 // All rights reserved.
 //
@@ -238,6 +239,7 @@ INSTANTIATE_TEST_SUITE_P(
         "rayQuery-committed.Error.rgen",
         "rayQuery-allOps.comp",
         "rayQuery-allOps.frag",
+        "rayQuery-initialization.Error.comp",
         "spv.set.vert",
         "spv.double.comp",
         "spv.100ops.frag",

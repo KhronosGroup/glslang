@@ -228,9 +228,15 @@ function(glslang_set_link_args TARGET)
     endif()
 endfunction(glslang_set_link_args)
 
+if(NOT COMMAND find_host_package)
+    macro(find_host_package)
+        find_package(${ARGN})
+    endmacro()
+endif()
+
 # CMake needs to find the right version of python, right from the beginning,
 # otherwise, it will find the wrong version and fail later
-find_package(PythonInterp 3 REQUIRED)
+find_host_package(PythonInterp 3 REQUIRED)
 
 # Root directory for build-time generated include files
 set(GLSLANG_GENERATED_INCLUDEDIR "${CMAKE_BINARY_DIR}/include")
