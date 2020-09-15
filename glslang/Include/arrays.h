@@ -230,6 +230,7 @@ struct TArraySizes {
         implicitArraySize = from.implicitArraySize;
         variablyIndexed = from.variablyIndexed;
         sizes = from.sizes;
+        implicitlySized = from.implicitlySized;
 
         return *this;
     }
@@ -256,6 +257,7 @@ struct TArraySizes {
     void addInnerSize(int s, TIntermTyped* n) { sizes.push_back((unsigned)s, n); }
     void addInnerSize(TArraySize pair) {
         sizes.push_back(pair.size, pair.node);
+        implicitlySized = false;
     }
     void addInnerSizes(const TArraySizes& s) { sizes.push_back(s.sizes); }
     void changeOuterSize(int s) {
@@ -263,7 +265,9 @@ struct TArraySizes {
         implicitlySized = false;
     }
     int getImplicitSize() const { return implicitArraySize; }
-    void updateImplicitSize(int s) { implicitArraySize = std::max(implicitArraySize, s); }
+    void updateImplicitSize(int s) {
+        implicitArraySize = std::max(implicitArraySize, s);
+    }
     bool isInnerUnsized() const
     {
         for (int d = 1; d < sizes.size(); ++d) {

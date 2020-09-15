@@ -539,7 +539,7 @@ void TIntermediate::mergeLinkerObjects(TInfoSink& infoSink, TIntermSequence& lin
 
             // Explicitly sized I/O array should be equal to primitive/vertices setting.
             // Implicitly sized I/O array should be equal to explicit sizing or no larger than primitive/vertices setting.
-            if (primitiveImplicitArraySize == 0) {
+            if (linkerObjectType.isImplicitlySizedArray() == false) {
                 if (primitiveExplicitArraySize != TQualifier::mapGeometryToSize(inputPrimitive))
                     error(infoSink, "Explicit input array size should be equal to static usage size of primitive layouts");
             }
