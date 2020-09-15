@@ -2220,8 +2220,6 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
     case EOpInterpolateAtCentroid:
     case EOpInterpolateAtSample:
     case EOpInterpolateAtOffset:
-        if (arg0->getAsOperator() != nullptr && arg0->getAsOperator()->getOp() == EOpIndexDirectStruct)
-            error(loc, "interpolate arguments should be input variables, not their members", fnCandidate.getName().c_str(), "");
     case EOpInterpolateAtVertex:
         // Make sure the first argument is an interpolant, or an array element of an interpolant
         if (arg0->getType().getQualifier().storage != EvqVaryingIn) {
