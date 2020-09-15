@@ -1,10 +1,9 @@
 460.frag
-ERROR: 0:12: 'interpolateAtCentroid' : interpolate arguments should be input variables, not their members 
 ERROR: 0:22: 'attribute' : required extension not requested: GL_EXT_control_flow_attributes
 ERROR: 0:23: 'attribute' : required extension not requested: GL_EXT_control_flow_attributes
 ERROR: 0:30: 'dependency_length' : must be positive 
 ERROR: 0:31: 'dependency_length' : must be positive 
-ERROR: 5 compilation errors.  No code generated.
+ERROR: 4 compilation errors.  No code generated.
 
 
 Shader version: 460
