@@ -122,23 +122,16 @@ float16 float32ToFloat16(float input)
 
     in.f = input;
 
-    if (in.u32 == 0)
-    {
+    if (in.u32 == 0) {
         out.u16 = 0;
-    }
-    else if (in.bits.exp > (127 + 15))
-    {
+    } else if (in.bits.exp > (127 + 15)) {
         out.bits.sign = in.bits.sign;
         out.bits.exp = 0x1f;
         out.bits.mantissa = 0x3ff;
-    }
-    else if (in.bits.exp < (127 - 15))
-    {
+    } else if (in.bits.exp < (127 - 15)) {
         // Flush to zero
         out.u16 = 0;
-    }
-    else
-    {
+    } else {
         out.bits.sign = in.bits.sign;
         out.bits.exp = in.bits.exp - 112;
         out.bits.mantissa = in.bits.mantissa >> 13;
@@ -152,12 +145,9 @@ float16 float32ToFloat16(float input)
 {
     SP_IEEE out;
 
-    if (in.u16 == 0)
-    {
+    if (in.u16 == 0) {
         out.u32 = 0;
-    }
-    else
-    {
+    } else {
         out.bits.sign = in.bits.sign;
         out.bits.exp = in.bits.exp + 112;
         out.bits.mantissa = in.bits.mantissa << 13;
@@ -189,13 +179,10 @@ void invserseMat2(const double* mat, double* inversedMat)
     inversedMat[2] = -mat[2];
     inversedMat[3] = mat[0];
 
-    if (fabs(determinant) < 1e-8)
-    {
+    if (fabs(determinant) < 1e-8) {
         for (int i = 0; i < 4; ++i)
             inversedMat[i] = 0.0;
-    }
-    else
-    {
+    } else {
         for (int i = 0; i < 4; ++i)
             inversedMat[i] /= determinant;
     }
@@ -218,13 +205,10 @@ void invserseMat3(const double* mat, double* inversedMat)
     inversedMat[6 + 1] = mat[0 + 1] * mat[6 + 0] - mat[0 + 0] * mat[6 + 1];
     inversedMat[6 + 2] = mat[0 + 0] * mat[3 + 1] - mat[0 + 1] * mat[3 + 0];
 
-    if (fabs(determinant) < 1e-8)
-    {
+    if (fabs(determinant) < 1e-8) {
         for (int i = 0; i < 9; ++i)
             inversedMat[i] = 0.0;
-    }
-    else
-    {
+    } else {
         for (int i = 0; i < 9; ++i)
             inversedMat[i] /= determinant;
     }
@@ -263,13 +247,10 @@ void invserseMat4(const double* mat, double* inversedMat)
     inversedMat[8 + 3] = -mat[8 + 0] * fA4 + mat[8 + 1] * fA2 - mat[8 + 3] * fA0;
     inversedMat[12 + 3] = +mat[8 + 0] * fA3 - mat[8 + 1] * fA1 + mat[8 + 2] * fA0;
 
-    if (fabs(determinant) < 1e-8)
-    {
+    if (fabs(determinant) < 1e-8) {
         for (int i = 0; i < 16; ++i)
             inversedMat[i] = 0.0;
-    }
-    else
-    {
+    } else {
         for (int i = 0; i < 16; ++i)
             inversedMat[i] /= determinant;
     }

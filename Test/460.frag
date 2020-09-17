@@ -9,7 +9,7 @@ in S s;
 
 void main()
 {
-    interpolateAtCentroid(s.v); // ERROR interpolate arguments should be input variables, not their members 
+    interpolateAtCentroid(s.v);
     bool b1;
     b1 = anyInvocation(b1);
     b1 = allInvocations(b1);
