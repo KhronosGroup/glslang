@@ -44,7 +44,6 @@
 #ifdef ENABLE_OPT
 #include <vector>
 #include <ostream>
-#include "spirv-tools/libspirv.h"
 #endif
 
 #include "glslang/MachineIndependent/localintermediate.h"
@@ -65,12 +64,8 @@ struct SpvOptions {
 
 #ifdef ENABLE_OPT
 
-// Use the SPIRV-Tools disassembler to print SPIR-V using a SPV_ENV_UNIVERSAL_1_3 environment.
+// Use the SPIRV-Tools disassembler to print SPIR-V.
 void SpirvToolsDisassemble(std::ostream& out, const std::vector<unsigned int>& spirv);
-
-// Use the SPIRV-Tools disassembler to print SPIR-V with a provided SPIR-V environment.
-void SpirvToolsDisassemble(std::ostream& out, const std::vector<unsigned int>& spirv,
-                           spv_target_env requested_context);
 
 // Apply the SPIRV-Tools validator to generated SPIR-V.
 void SpirvToolsValidate(const glslang::TIntermediate& intermediate, std::vector<unsigned int>& spirv,

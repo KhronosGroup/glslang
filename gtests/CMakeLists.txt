@@ -83,12 +83,6 @@ if(BUILD_TESTING)
                                    ${gmock_SOURCE_DIR}/include
                                    ${gtest_SOURCE_DIR}/include)
 
-        if(ENABLE_OPT)
-            target_include_directories(glslangtests PUBLIC
-                $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../External/spirv-tools/include>
-                $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/External/spirv-tools/include>)
-        endif()
-
         set(LIBRARIES
             glslang OSDependent OGLCompiler glslang
             SPIRV glslang-default-resource-limits)
