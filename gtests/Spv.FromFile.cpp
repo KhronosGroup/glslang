@@ -376,6 +376,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.offsets.frag",
         "spv.Operations.frag",
         "spv.paramMemory.frag",
+        "spv.paramMemory.420.frag",
         "spv.precision.frag",
         "spv.precisionArgs.frag",
         "spv.precisionNonESSamp.frag",
