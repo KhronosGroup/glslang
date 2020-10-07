@@ -76,7 +76,9 @@ if (!defined(glslang_angle)) {
 
 config("glslang_public") {
   include_dirs = [ "." ]
-  cflags = [ "-Wno-conversion" ]
+  if (!is_win || is_clang) {
+    cflags = [ "-Wno-conversion" ]
+  }
 }
 
 config("glslang_hlsl") {
