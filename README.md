@@ -88,7 +88,7 @@ The applied stage-specific rules are based on the file extension:
 There is also a non-shader extension
 * `.conf` for a configuration file of limits, see usage statement for example
 
-## Building
+## Building (CMake)
 
 Instead of building manually, you can also download the binaries for your
 platform directly from the [master-tot release][master-tot-release] on GitHub.
@@ -183,6 +183,35 @@ cmake --build . --config Release --target install
 
 If using MSVC, after running CMake to configure, use the
 Configuration Manager to check the `INSTALL` project.
+
+### Building (GN)
+
+glslang can also be built with the [GN build system](https://gn.googlesource.com/gn/).
+
+#### 1) Install `depot_tools`
+
+Download [depot_tools.zip](https://storage.googleapis.com/chrome-infra/depot_tools.zip),
+extract to a directory, and add this directory to your `PATH`.
+
+#### 2) Synchronize dependencies and generate build files
+
+This only needs to be done once after updating `glslang`.
+
+With the current directory set to your `glslang` checkout, type:
+
+```bash
+gclient sync --gclientfile=standalone.gclient
+gn gen out/Default
+```
+
+#### 3) Build
+
+With the current directory set to your `glslang` checkout, type:
+
+```bash
+cd out/Default
+ninja
+```
 
 ### If you need to change the GLSL grammar
 
