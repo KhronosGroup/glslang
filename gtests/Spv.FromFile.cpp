@@ -240,6 +240,7 @@ INSTANTIATE_TEST_SUITE_P(
         "rayQuery-allOps.comp",
         "rayQuery-allOps.frag",
         "rayQuery-initialization.Error.comp",
+        "rayQuery-global.rgen",
         "spv.set.vert",
         "spv.double.comp",
         "spv.100ops.frag",

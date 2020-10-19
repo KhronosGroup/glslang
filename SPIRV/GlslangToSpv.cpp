@@ -1236,7 +1236,7 @@ spv::LoopControlMask TGlslangToSpvTraverser::TranslateLoopControl(const glslang:
 spv::StorageClass TGlslangToSpvTraverser::TranslateStorageClass(const glslang::TType& type)
 {
     if (type.getBasicType() == glslang::EbtRayQuery)
-        return spv::StorageClassFunction;
+        return spv::StorageClassPrivate;
     if (type.getQualifier().isPipeInput())
         return spv::StorageClassInput;
     if (type.getQualifier().isPipeOutput())
