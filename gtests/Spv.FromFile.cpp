@@ -446,6 +446,8 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.samplerlessTextureFunctions.frag",
         "spv.smBuiltins.vert",
         "spv.smBuiltins.frag",
+        "spv.builtin.PrimitiveShadingRateEXT.vert",
+        "spv.builtin.ShadingRateEXT.frag",
     })),
     FileNameAsCustomTestSuffix
 );

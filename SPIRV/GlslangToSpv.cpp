@@ -769,6 +769,16 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
         builder.addCapability(spv::CapabilityStencilExportEXT);
         return spv::BuiltInFragStencilRefEXT;
 
+    case glslang::EbvShadingRateKHR:
+        builder.addExtension(spv::E_SPV_KHR_fragment_shading_rate);
+        builder.addCapability(spv::CapabilityFragmentShadingRateKHR);
+        return spv::BuiltInShadingRateKHR;
+
+    case glslang::EbvPrimitiveShadingRateKHR:
+        builder.addExtension(spv::E_SPV_KHR_fragment_shading_rate);
+        builder.addCapability(spv::CapabilityFragmentShadingRateKHR);
+        return spv::BuiltInPrimitiveShadingRateKHR;
+
     case glslang::EbvInvocationId:         return spv::BuiltInInvocationId;
     case glslang::EbvTessLevelInner:       return spv::BuiltInTessLevelInner;
     case glslang::EbvTessLevelOuter:       return spv::BuiltInTessLevelOuter;
