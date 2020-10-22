@@ -7548,7 +7548,7 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         BuiltInVariable("gl_Layer",           EbvLayer,          symbolTable);
         BuiltInVariable("gl_ViewportIndex",   EbvViewportIndex,  symbolTable);
 
-        if (language != EShLangGeometry) {
+        if (language != EShLangGeometry && spvVersion.spv < glslang::EShTargetSpv_1_5) {
             symbolTable.setVariableExtensions("gl_Layer",         Num_viewportEXTs, viewportEXTs);
             symbolTable.setVariableExtensions("gl_ViewportIndex", Num_viewportEXTs, viewportEXTs);
         }
