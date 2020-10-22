@@ -714,7 +714,8 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
             glslangIntermediate->getStage() == EShLangTessControl ||
             glslangIntermediate->getStage() == EShLangTessEvaluation) {
 
-            if (builder.getSpvVersion() < spv::Spv_1_5) {
+            if (builder.getSpvVersion() < spv::Spv_1_5 ||
+                builder.hasAnySourceExtension(glslang::viewportEXTs, glslang::Num_viewportEXTs)) {
                 builder.addIncorporatedExtension(spv::E_SPV_EXT_shader_viewport_index_layer, spv::Spv_1_5);
                 builder.addCapability(spv::CapabilityShaderViewportIndexLayerEXT);
             }
@@ -743,7 +744,8 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
             glslangIntermediate->getStage() == EShLangTessControl ||
             glslangIntermediate->getStage() == EShLangTessEvaluation) {
 
-            if (builder.getSpvVersion() < spv::Spv_1_5) {
+            if (builder.getSpvVersion() < spv::Spv_1_5 ||
+                builder.hasAnySourceExtension(glslang::viewportEXTs, glslang::Num_viewportEXTs)) {
                 builder.addIncorporatedExtension(spv::E_SPV_EXT_shader_viewport_index_layer, spv::Spv_1_5);
                 builder.addCapability(spv::CapabilityShaderViewportIndexLayerEXT);
             } else
