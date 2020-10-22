@@ -200,6 +200,7 @@ This only needs to be done once after updating `glslang`.
 With the current directory set to your `glslang` checkout, type:
 
 ```bash
+./update_glslang_sources.py
 gclient sync --gclientfile=standalone.gclient
 gn gen out/Default
 ```

@@ -2,7 +2,6 @@
 *.a
 *.so
 *.exe
-*.gclient_entries
 .vscode/
 tags
 TAGS
@@ -12,4 +11,10 @@ Test/localResults/
 External/googletest
 External/spirv-tools
 out/
-third_party/llvm-build
+
+# GN generated files
+.cipd/
+*.gclient_entries
+third_party/
+buildtools/
+tools/
