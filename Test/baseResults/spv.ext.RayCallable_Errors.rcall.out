@@ -28,8 +28,8 @@ ERROR: 0:22: 'gl_HitKindEXT' : undeclared identifier
 ERROR: 0:23: 'gl_IncomingRayFlagsEXT' : undeclared identifier 
 ERROR: 0:23: '=' :  cannot convert from ' temp float' to ' temp highp uint'
 ERROR: 0:24: 'reportIntersectionEXT' : no matching overloaded function found 
-ERROR: 0:25: 'ignoreIntersectionEXT' : no matching overloaded function found 
-ERROR: 0:26: 'terminateRayEXT' : no matching overloaded function found 
+ERROR: 0:25: 'ignoreIntersectionEXT' : not supported in this stage: callable
+ERROR: 0:26: 'terminateRayEXT' : not supported in this stage: callable
 ERROR: 0:27: 'no callableDataEXT/callableDataInEXT declared' : with layout(location = 1)
 ERROR: 32 compilation errors.  No code generated.
 

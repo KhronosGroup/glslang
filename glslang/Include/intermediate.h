@@ -637,6 +637,8 @@ enum TOperator {
     EOpKill,                // Fragment only
     EOpTerminateInvocation, // Fragment only
     EOpDemote,              // Fragment only
+    EOpTerminateRayKHR,         // Any-hit only
+    EOpIgnoreIntersectionKHR,   // Any-hit only
     EOpReturn,
     EOpBreak,
     EOpContinue,
@@ -922,8 +924,8 @@ enum TOperator {
     EOpTraceNV,
     EOpTraceKHR,
     EOpReportIntersection,
-    EOpIgnoreIntersection,
-    EOpTerminateRay,
+    EOpIgnoreIntersectionNV,
+    EOpTerminateRayNV,
     EOpExecuteCallableNV,
     EOpExecuteCallableKHR,
     EOpWritePackedPrimitiveIndices4x8NV,

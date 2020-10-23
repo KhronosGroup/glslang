@@ -1447,17 +1447,10 @@ void Builder::leaveFunction()
 }
 
 // Comments in header
-void Builder::makeDiscard()
+void Builder::makeStatementTerminator(spv::Op opcode, const char *name)
 {
-    buildPoint->addInstruction(std::unique_ptr<Instruction>(new Instruction(OpKill)));
-    createAndSetNoPredecessorBlock("post-discard");
-}
-
-// Comments in header
-void Builder::makeTerminateInvocation()
-{
-    buildPoint->addInstruction(std::unique_ptr<Instruction>(new Instruction(OpTerminateInvocation)));
-    createAndSetNoPredecessorBlock("post-terminate-invocation");
+    buildPoint->addInstruction(std::unique_ptr<Instruction>(new Instruction(opcode)));
+    createAndSetNoPredecessorBlock(name);
 }
 
 // Comments in header

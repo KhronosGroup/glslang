@@ -8,8 +8,8 @@ void main()
 {
     payload.x = 1.0f;                                       // ERROR, cannot write to hitattributeEXT in stage
     reportIntersectionEXT(1.0, 1U);                          // ERROR, unsupported builtin in stage 
-    terminateRayEXT();
-    ignoreIntersectionEXT();
+    terminateRayEXT;
+    ignoreIntersectionEXT;
     bool e1 = gl_IncomingRayFlagsEXT == gl_RayFlagsSkipAABBEXT;
     traceRayEXT(accEXT, 0, 0, 0, 0, 0, vec3(0.0), 0.0, vec3(1.0), 1.0, 0); //ERROR no payload variable with location = 0
 }

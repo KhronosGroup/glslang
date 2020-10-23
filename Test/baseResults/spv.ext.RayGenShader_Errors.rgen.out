@@ -32,8 +32,8 @@ ERROR: 0:36: 'gl_HitKindEXT' : undeclared identifier
 ERROR: 0:37: 'gl_RayFlagsSkipAABBEXT' : required extension not requested: GL_EXT_ray_flags_primitive_culling
 ERROR: 0:37: '=' :  cannot convert from ' const uint' to ' temp highp int'
 ERROR: 0:38: 'reportIntersectionEXT' : no matching overloaded function found 
-ERROR: 0:39: 'ignoreIntersectionEXT' : no matching overloaded function found 
-ERROR: 0:40: 'terminateRayEXT' : no matching overloaded function found 
+ERROR: 0:39: 'ignoreIntersectionEXT' : not supported in this stage: ray-generation
+ERROR: 0:40: 'terminateRayEXT' : not supported in this stage: ray-generation
 ERROR: 0:41: 'assign' :  l-value required "anon@3" (can't modify a shaderrecordnv qualified buffer)
 ERROR: 36 compilation errors.  No code generated.
 

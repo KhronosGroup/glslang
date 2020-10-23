@@ -357,9 +357,9 @@ public:
     // Generate all the code needed to finish up a function.
     void leaveFunction();
 
-    // Create a discard or terminate-invocation.
-    void makeDiscard();
-    void makeTerminateInvocation();
+    // Create block terminator instruction for certain statements like
+    // discard, terminate-invocation, terminateRayEXT, or ignoreIntersectionEXT
+    void makeStatementTerminator(spv::Op opcode, const char *name);
 
     // Create a global or function local or IO variable.
     Id createVariable(Decoration precision, StorageClass, Id type, const char* name = nullptr,

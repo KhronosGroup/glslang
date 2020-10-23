@@ -1086,8 +1086,10 @@ bool TOutputTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node
     case EOpTraceNV:                          out.debug << "traceNV"; break;
     case EOpTraceKHR:                         out.debug << "traceRayKHR"; break;
     case EOpReportIntersection:               out.debug << "reportIntersectionNV"; break;
-    case EOpIgnoreIntersection:               out.debug << "ignoreIntersectionNV"; break;
-    case EOpTerminateRay:                     out.debug << "terminateRayNV"; break;
+    case EOpIgnoreIntersectionNV:             out.debug << "ignoreIntersectionNV"; break;
+    case EOpIgnoreIntersectionKHR:            out.debug << "ignoreIntersectionKHR"; break;
+    case EOpTerminateRayNV:                   out.debug << "terminateRayNV"; break;
+    case EOpTerminateRayKHR:                  out.debug << "terminateRayKHR"; break;
     case EOpExecuteCallableNV:                out.debug << "executeCallableNV"; break;
     case EOpExecuteCallableKHR:               out.debug << "executeCallableKHR"; break;
     case EOpWritePackedPrimitiveIndices4x8NV: out.debug << "writePackedPrimitiveIndices4x8NV"; break;
@@ -1415,15 +1417,17 @@ bool TOutputTraverser::visitBranch(TVisit /* visit*/, TIntermBranch* node)
     OutputTreeText(out, node, depth);
 
     switch (node->getFlowOp()) {
-    case EOpKill:                out.debug << "Branch: Kill";                break;
-    case EOpTerminateInvocation: out.debug << "Branch: TerminateInvocation"; break;
-    case EOpBreak:               out.debug << "Branch: Break";               break;
-    case EOpContinue:            out.debug << "Branch: Continue";            break;
-    case EOpReturn:              out.debug << "Branch: Return";              break;
-    case EOpCase:                out.debug << "case: ";                      break;
-    case EOpDemote:              out.debug << "Demote";                      break;
-    case EOpDefault:             out.debug << "default: ";                   break;
-    default:                     out.debug << "Branch: Unknown Branch";      break;
+    case EOpKill:                   out.debug << "Branch: Kill";                  break;
+    case EOpTerminateInvocation:    out.debug << "Branch: TerminateInvocation";   break;
+    case EOpIgnoreIntersectionKHR:  out.debug << "Branch: IgnoreIntersectionKHR"; break;
+    case EOpTerminateRayKHR:        out.debug << "Branch: TerminateRayKHR";       break;
+    case EOpBreak:                  out.debug << "Branch: Break";                 break;
+    case EOpContinue:               out.debug << "Branch: Continue";              break;
+    case EOpReturn:                 out.debug << "Branch: Return";                break;
+    case EOpCase:                   out.debug << "case: ";                        break;
+    case EOpDemote:                 out.debug << "Demote";                        break;
+    case EOpDefault:                out.debug << "default: ";                     break;
+    default:                        out.debug << "Branch: Unknown Branch";        break;
     }
 
     if (node->getExpression()) {

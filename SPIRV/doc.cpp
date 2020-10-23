@@ -1365,7 +1365,9 @@ const char* OpcodeString(int op)
     case OpMemberDecorateStringGOOGLE: return "OpMemberDecorateStringGOOGLE";
 
     case OpReportIntersectionKHR:             return "OpReportIntersectionKHR";
+    case OpIgnoreIntersectionNV:              return "OpIgnoreIntersectionNV";
     case OpIgnoreIntersectionKHR:             return "OpIgnoreIntersectionKHR";
+    case OpTerminateRayNV:                    return "OpTerminateRayNV";
     case OpTerminateRayKHR:                   return "OpTerminateRayKHR";
     case OpTraceNV:                           return "OpTraceNV";
     case OpTraceRayKHR:                       return "OpTraceRayKHR";
@@ -2804,7 +2806,11 @@ void Parameterize()
     InstructionDesc[OpReportIntersectionKHR].operands.push(OperandId, "'Hit Parameter'");
     InstructionDesc[OpReportIntersectionKHR].operands.push(OperandId, "'Hit Kind'");
 
+    InstructionDesc[OpIgnoreIntersectionNV].setResultAndType(false, false);
+
     InstructionDesc[OpIgnoreIntersectionKHR].setResultAndType(false, false);
+
+    InstructionDesc[OpTerminateRayNV].setResultAndType(false, false);
 
     InstructionDesc[OpTerminateRayKHR].setResultAndType(false, false);
     
