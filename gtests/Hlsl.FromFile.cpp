@@ -308,6 +308,7 @@ INSTANTIATE_TEST_SUITE_P(
         {"hlsl.pp.vert", "main"},
         {"hlsl.pp.line.frag", "main"},
         {"hlsl.precise.frag", "main"},
+        {"hlsl.printf.comp", "main"},
         {"hlsl.promote.atomic.frag", "main"},
         {"hlsl.promote.binary.frag", "main"},
         {"hlsl.promote.vec1.frag", "main"},
