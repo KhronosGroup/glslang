@@ -80,23 +80,6 @@ public:
 
     unsigned int getSpvVersion() const { return spvVersion; }
 
-    bool hasSourceExtension(const char* ext) const
-    {
-        for (auto& extension : sourceExtensions)
-            if (strcmp(extension, ext) == 0)
-                return true;
-
-        return false;
-    }
-    bool hasAnySourceExtension(const char* const exts[], int count) const
-    {
-        for (int i = 0; i < count; ++i)
-            if (hasSourceExtension(exts[i]))
-                return true;
-
-        return false;
-    }
-
     void setSource(spv::SourceLanguage lang, int version)
     {
         source = lang;
