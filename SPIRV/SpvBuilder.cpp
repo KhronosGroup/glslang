@@ -2798,8 +2798,9 @@ void Builder::accessChainStore(Id rvalue, Decoration nonUniform, spv::MemoryAcce
 }
 
 // Comments in header
-Id Builder::accessChainLoad(Decoration precision, Decoration nonUniform, Id resultType,
-    spv::MemoryAccessMask memoryAccess, spv::Scope scope, unsigned int alignment)
+Id Builder::accessChainLoad(Decoration precision, Decoration l_nonUniform,
+    Decoration r_nonUniform, Id resultType, spv::MemoryAccessMask memoryAccess,
+    spv::Scope scope, unsigned int alignment)
 {
     Id id;
 
@@ -2863,9 +2864,9 @@ Id Builder::accessChainLoad(Decoration precision, Decoration nonUniform, Id resu
         // Buffer accesses need the access chain decorated, and this is where
         // loaded image types get decorated. TODO: This should maybe move to
         // createImageTextureFunctionCall.
-        addDecoration(id, nonUniform);
+        addDecoration(id, l_nonUniform);
         id = createLoad(id, precision, memoryAccess, scope, alignment);
-        addDecoration(id, nonUniform);
+        addDecoration(id, r_nonUniform);
     }
 
     // Done, unless there are swizzles to do
@@ -2886,7 +2887,7 @@ Id Builder::accessChainLoad(Decoration precision, Decoration nonUniform, Id resu
     if (accessChain.component != NoResult)
         id = setPrecision(createVectorExtractDynamic(id, resultType, accessChain.component), precision);
 
-    addDecoration(id, nonUniform);
+    addDecoration(id, r_nonUniform);
     return id;
 }
 

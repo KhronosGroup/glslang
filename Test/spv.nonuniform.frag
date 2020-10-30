@@ -28,10 +28,12 @@ nonuniformEXT int foo(nonuniformEXT int nupi, nonuniformEXT out int f)
 void main()
 {
     nonuniformEXT int nu_li;
+    nonuniformEXT int nu_li2;
     int dyn_i;
 
     int a = foo(nu_li, nu_li);
     nu_li = nonuniformEXT(a) + nonuniformEXT(a * 2);
+    nu_li2 = a + nonuniformEXT(a * 2);
 
     float b;
     b = nu_inv4.x * nu_gf;
@@ -46,16 +48,25 @@ void main()
     b += texelFetch(uniformTexelBuffer[nu_ii], 1).x;
     b += imageLoad(storageTexelBuffer[nu_ii], 1).x;
     b += texture(sampler2D(uniformTexArr[nu_ii], uniformSampler), inTexcoord.xy).x;
+    b += texture(nonuniformEXT(sampler2D(uniformTexArr[nu_ii], uniformSampler)), inTexcoord.xy).x;
 
     nonuniformEXT ivec4 v;
     nonuniformEXT mat4 m;
     nonuniformEXT struct S { int a; } s;
+    nonuniformEXT int arr[10];
     ivec4 uv;
+    mat4 um;
+    struct US { int a[10]; } us;
+    int uarr[10];
     b += uniformBuffer[v.y].a;
     b += uniformBuffer[v[2]].a;
     b += uniformBuffer[uv[nu_ii]].a;
     b += uniformBuffer[int(m[2].z)].a;
     b += uniformBuffer[s.a].a;
+    b += uniformBuffer[arr[2]].a;
+    b += uniformBuffer[int(um[nu_ii].z)].a;
+    b += uniformBuffer[us.a[nu_ii]].a;
+    b += uniformBuffer[uarr[nu_ii]].a;
 
     storageBuffer[nu_ii].b = b;
 }
