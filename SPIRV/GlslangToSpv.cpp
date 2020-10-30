@@ -2308,7 +2308,8 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
 
             // The result of operation is always stored, but conditionally the
             // consumed result.  The consumed result is always an r-value.
-            builder.accessChainStore(result);
+            builder.accessChainStore(result,
+                                     TranslateNonUniformDecoration(node->getOperand()->getType().getQualifier()));
             builder.clearAccessChain();
             if (node->getOp() == glslang::EOpPreIncrement ||
                 node->getOp() == glslang::EOpPreDecrement)
@@ -2384,6 +2385,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
     spv::Id invertedType = spv::NoType;                     // to use to override the natural type of the node
     std::vector<spv::Builder::AccessChain> complexLvalues;  // for holding swizzling l-values too complex for
                                                             // SPIR-V, for an out parameter
+    std::vector<glslang::TQualifier> complexLValueQualifiers;
     std::vector<spv::Id> temporaryLvalues;                  // temporaries to pass, as proxies for complexLValues
 
     auto resultType = [&invertedType, &node, this](){ return invertedType != spv::NoType ?
@@ -2626,6 +2628,10 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
             constructed = builder.createMatrixConstructor(precision, arguments, resultType());
         else
             constructed = builder.createConstructor(precision, arguments, resultType());
+
+        if (node->getType().getQualifier().isNonUniform()) {
+            builder.addDecoration(constructed, spv::DecorationNonUniformEXT);
+        }
 
         builder.clearAccessChain();
         builder.setAccessChainRValue(constructed);
@@ -3001,6 +3007,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
                 // receive the result, and must later swizzle that into the original
                 // l-value.
                 complexLvalues.push_back(builder.getAccessChain());
+                complexLValueQualifiers.push_back(glslangOperands[arg]->getAsTyped()->getType().getQualifier());
                 temporaryLvalues.push_back(builder.createVariable(
                     spv::NoPrecision, spv::StorageClassFunction,
                     builder.accessChainGetInferredType(), "swizzleTemp"));
@@ -3105,7 +3112,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
 
         for (unsigned int i = 0; i < temporaryLvalues.size(); ++i) {
             builder.setAccessChain(complexLvalues[i]);
-            builder.accessChainStore(builder.createLoad(temporaryLvalues[i], spv::NoPrecision));
+            builder.accessChainStore(builder.createLoad(temporaryLvalues[i], spv::NoPrecision), TranslateNonUniformDecoration(complexLValueQualifiers[i]));
         }
     }
 
@@ -4170,7 +4177,7 @@ void TGlslangToSpvTraverser::accessChainStore(const glslang::TType& type, spv::I
     unsigned int alignment = builder.getAccessChain().alignment;
     alignment |= type.getBufferReferenceAlignment();
 
-    builder.accessChainStore(rvalue,
+    builder.accessChainStore(rvalue, TranslateNonUniformDecoration(type.getQualifier()),
                              spv::MemoryAccessMask(TranslateMemoryAccess(coherentFlags) &
                                 ~spv::MemoryAccessMakePointerVisibleKHRMask),
                              TranslateMemoryScope(coherentFlags), alignment);
@@ -4766,12 +4773,15 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
 
     const bool isUnsignedResult = node->getType().getBasicType() == glslang::EbtUint;
 
+    if (builder.isSampledImage(params.sampler) &&
+        ((cracked.query && node->getOp() != glslang::EOpTextureQueryLod) || cracked.fragMask || cracked.fetch)) {
+        params.sampler = builder.createUnaryOp(spv::OpImage, builder.getImageType(params.sampler), params.sampler);
+        if (imageType.getQualifier().isNonUniform()) {
+            builder.addDecoration(params.sampler, spv::DecorationNonUniformEXT);
+        }
+    }
     // Check for queries
     if (cracked.query) {
-        // OpImageQueryLod works on a sampled image, for other queries the image has to be extracted first
-        if (node->getOp() != glslang::EOpTextureQueryLod && builder.isSampledImage(params.sampler))
-            params.sampler = builder.createUnaryOp(spv::OpImage, builder.getImageType(params.sampler), params.sampler);
-
         switch (node->getOp()) {
         case glslang::EOpImageQuerySize:
         case glslang::EOpTextureQuerySize:
@@ -5025,10 +5035,6 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
         auto opIt = arguments.begin();
         std::vector<spv::Id> operands;
 
-        // Extract the image if necessary
-        if (builder.isSampledImage(params.sampler))
-            params.sampler = builder.createUnaryOp(spv::OpImage, builder.getImageType(params.sampler), params.sampler);
-
         operands.push_back(params.sampler);
         ++opIt;
 
@@ -5087,13 +5093,6 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
             nonBiasArgCount += 3;
         if ((int)arguments.size() > nonBiasArgCount)
             bias = true;
-    }
-
-    // See if the sampler param should really be just the SPV image part
-    if (cracked.fetch) {
-        // a fetch needs to have the image extracted first
-        if (builder.isSampledImage(params.sampler))
-            params.sampler = builder.createUnaryOp(spv::OpImage, builder.getImageType(params.sampler), params.sampler);
     }
 
 #ifndef GLSLANG_WEB
@@ -5255,7 +5254,7 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
 
             builder.accessChainPush(builder.makeIntConstant(i), flags, 0);
             builder.accessChainStore(builder.createCompositeExtract(res, builder.getContainedTypeId(resType, i+1),
-                i+1));
+                i+1), TranslateNonUniformDecoration(imageType.getQualifier()));
         }
         return builder.createCompositeExtract(res, resultType(), 0);
     }
