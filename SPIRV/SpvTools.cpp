@@ -174,10 +174,7 @@ void SpirvToolsTransform(const glslang::TIntermediate& intermediate, std::vector
     // line information into all SPIR-V instructions. This avoids loss of
     // information when instructions are deleted or moved. Later, remove
     // redundant information to minimize final SPRIR-V size.
-    if (options->generateDebugInfo) {
-        optimizer.RegisterPass(spvtools::CreatePropagateLineInfoPass());
-    }
-    else if (options->stripDebugInfo) {
+    if (options->stripDebugInfo) {
         optimizer.RegisterPass(spvtools::CreateStripDebugInfoPass());
     }
     optimizer.RegisterPass(spvtools::CreateWrapOpKillPass());
@@ -207,9 +204,6 @@ void SpirvToolsTransform(const glslang::TIntermediate& intermediate, std::vector
     }
     optimizer.RegisterPass(spvtools::CreateAggressiveDCEPass());
     optimizer.RegisterPass(spvtools::CreateCFGCleanupPass());
-    if (options->generateDebugInfo) {
-        optimizer.RegisterPass(spvtools::CreateRedundantLineInfoElimPass());
-    }
 
     spvtools::OptimizerOptions spvOptOptions;
     optimizer.SetTargetEnv(MapToSpirvToolsEnv(intermediate.getSpv(), logger));
