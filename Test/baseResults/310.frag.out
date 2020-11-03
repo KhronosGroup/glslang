@@ -40,10 +40,14 @@ ERROR: 0:112: 'out' : cannot be a matrix
 ERROR: 0:114: 'in' : cannot be bool 
 ERROR: 0:115: 'sampler2D' : sampler/image types can only be used in uniform variables or function parameters: ino
 ERROR: 0:117: 'fragment-shader array-of-array input' : not supported with this profile: es
+ERROR: 0:120: 'S' : A structure containing an array is not allowed as input in ES 
 ERROR: 0:120: 'fragment-shader array-of-struct input' : not supported with this profile: es
+ERROR: 0:121: 'S' : A structure containing an array is not allowed as input in ES 
 ERROR: 0:121: 'fragment-shader array-of-struct input' : not supported with this profile: es
 ERROR: 0:123: 'fragment-shader struct input containing an array' : not supported with this profile: es
+ERROR: 0:123: 'SA' : A structure containing an array is not allowed as input in ES 
 ERROR: 0:125: 'fragment-shader struct input containing structure' : not supported with this profile: es
+ERROR: 0:125: 'SS' : A structure containing an struct is not allowed as input in ES 
 ERROR: 0:133: 'output block' : not supported in this stage: fragment
 ERROR: 0:138: '' : cannot nest a structure definition inside a structure or block 
 ERROR: 0:146: 'location' : overlapping use of location 13
@@ -139,7 +143,7 @@ ERROR: 0:461: 'func' : function already has a body
 ERROR: 0:463: 'return' : void function cannot return a value 
 ERROR: 0:472: '=' :  cannot convert from ' temp mediump uint' to ' temp mediump int'
 ERROR: 0:485: '=' :  cannot convert from ' global mediump int' to ' temp mediump uint'
-ERROR: 132 compilation errors.  No code generated.
+ERROR: 136 compilation errors.  No code generated.
 
 
 Shader version: 310

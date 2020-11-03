@@ -146,6 +146,8 @@ void TType::buildMangledName(TString& mangledName) const
         if (typeName)
             mangledName += *typeName;
         for (unsigned int i = 0; i < structure->size(); ++i) {
+            if ((*structure)[i].type->getBasicType() == EbtVoid)
+                continue;
             mangledName += '-';
             (*structure)[i].type->buildMangledName(mangledName);
         }

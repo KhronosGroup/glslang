@@ -905,7 +905,7 @@ declaration
 
 block_structure
     : type_qualifier IDENTIFIER LEFT_BRACE { parseContext.nestedBlockCheck($1.loc); } struct_declaration_list RIGHT_BRACE {
-        --parseContext.structNestingLevel;
+        --parseContext.blockNestingLevel;
         parseContext.blockName = $2.string;
         parseContext.globalQualifierFixCheck($1.loc, $1.qualifier);
         parseContext.checkNoShaderLayouts($1.loc, $1.shaderQualifiers);
