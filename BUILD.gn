@@ -317,7 +317,7 @@ executable("spirv-remap") {
   defines = [ "ENABLE_OPT=1" ]
   deps = [ ":glslang_sources" ]
 
-  include_dirs += [ "${spirv_tools_dir}/include" ]
+  include_dirs = [ "${spirv_tools_dir}/include" ]
 
   configs -= _configs_to_remove
   configs += _configs_to_add
