@@ -371,13 +371,13 @@ struct TSymbolValidater
                         }
                         else if (overlapLocation >= 0) {
                             if (diffLocation == true) {
-                                TString err = "Uniform location should be equal for same uniforms: " + overlapLocation;
+                                TString err = ("Uniform location should be equal for same uniforms: " +std::to_string(overlapLocation)).c_str();
                                 infoSink.info.message(EPrefixInternalError, err.c_str());
                                 hadError = true;
                                 break;
                             }
                             else {
-                                TString err = "Uniform location overlaps across stages: " + overlapLocation;
+                                TString err = ("Uniform location overlaps across stages: " + std::to_string(overlapLocation)).c_str();
                                 infoSink.info.message(EPrefixInternalError, err.c_str());
                                 hadError = true;
                                 break;
@@ -626,8 +626,8 @@ private:
         const TQualifier& qualifier1 = type1->getQualifier();
         const TQualifier& qualifier2 = type2->getQualifier();
 
-        if (isBlock == false &&
-            (type1->getQualifier().storage == EvqUniform && type2->getQualifier().storage == EvqUniform) ||
+        if (((isBlock == false) &&
+            (type1->getQualifier().storage == EvqUniform && type2->getQualifier().storage == EvqUniform)) ||
             (type1->getQualifier().storage == EvqGlobal && type2->getQualifier().storage == EvqGlobal)) {
             if (qualifier1.precision != qualifier2.precision) {
                 hasError = true;
