@@ -1341,7 +1341,7 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType) 
     return newNode;
 }
 
-bool TIntermediate::isFullFoldedOp(TOperator op) const
+bool TIntermediate::isFullFoldedOp(TOperator op, const TType& operandType) const
 {
     // Warning would only reported at loc of detected operators which are not portable.
     // Flag foldingWarning will be used in parseContext to report warnings outside if enabling full-fold.
@@ -1371,6 +1371,13 @@ bool TIntermediate::isFullFoldedOp(TOperator op) const
         {
             return true;
         }
+        case EOpMul: // EOpMul <-> matrixCompMult
+        {
+            if (operandType.isMatrix())
+                return true;
+            else
+                return false;
+        }
         // Other operations
         default:
             return false;
@@ -1384,7 +1391,7 @@ bool TIntermediate::isFullFoldedOp(TOperator op) const
 TIntermTyped* TIntermediate::fullFoldUnary(TIntermTyped* node, const TIntermConstantUnion* child,
         TOperator op, const TType& unaryReturnType)
 {
-    bool isCustomFunctionFolded = isFullFoldedOp(op);
+    bool isCustomFunctionFolded = isFullFoldedOp(op, unaryReturnType);
     TIntermTyped* result = child->fold(op, unaryReturnType);
 
     // Full folding check, skip folding if the option is disabled
@@ -1407,7 +1414,7 @@ TIntermTyped* TIntermediate::fullFoldUnary(TIntermTyped* node, const TIntermCons
 TIntermTyped* TIntermediate::fullFoldBinary(TIntermTyped* node, const TIntermConstantUnion* leftConstantNode,
     TOperator op, const TIntermTyped* rightConstantNode)
 {
-    bool isCustomFunctionFolded = isFullFoldedOp(op);
+    bool isCustomFunctionFolded = isFullFoldedOp(op, rightConstantNode->getType());
     TIntermTyped* result = leftConstantNode->fold(op, rightConstantNode);
 
     // Full folding check, skip folding if the option is disabled
@@ -1442,7 +1449,7 @@ TIntermTyped* TIntermediate::fold(TIntermAggregate* aggrNode)
     TIntermSequence& children = aggrNode->getSequence();
 
     // Root node may be included in full-fold warning scope.
-    if (isFullFoldedOp(aggrNode->getOp())) {
+    if (isFullFoldedOp(aggrNode->getOp(), aggrNode->getType())) {
         if (getFullFoldingOption())
             setFullFoldingTriggled(true);
         else

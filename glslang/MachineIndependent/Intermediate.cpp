@@ -446,7 +446,7 @@ TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermTyped* child,
     // If it's a (non-specialization) constant, it must be folded.
     if (node->getOperand()->getAsConstantUnion()) {
         TIntermTyped* result = node->getAsTyped();
-        result = fullFoldUnary(result, child->getAsConstantUnion(), node->getOp(), node->getType());
+        result = fullFoldUnary(result, node->getOperand()->getAsConstantUnion(), op, node->getType());
         return result;
     }
 

@@ -522,7 +522,7 @@ public:
     TIntermUnary* addUnaryNode(TOperator op, TIntermTyped* child, const TSourceLoc&, const TType&) const;
 
     // Constant folding (in Constant.cpp)
-    bool isFullFoldedOp(TOperator op) const;
+    bool isFullFoldedOp(TOperator op, const TType& operandType) const;
     TIntermTyped* fullFoldUnary(TIntermTyped* , const TIntermConstantUnion* child, TOperator, const TType& unaryReturnType);
     TIntermTyped* fullFoldBinary(TIntermTyped* , const TIntermConstantUnion* leftConstantNode, TOperator ,const TIntermTyped* rightConstantNode);
     TIntermTyped* fold(TIntermAggregate* aggrNode);
