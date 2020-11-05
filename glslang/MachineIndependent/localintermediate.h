@@ -316,6 +316,8 @@ public:
         autoMapLocations(false),
         flattenUniformArrays(false),
         useUnknownFormat(false),
+        fullFoldingEnabled(false),
+        fullFoldingTrigged(false),
         hlslOffsets(false),
         hlslIoMapping(false),
         useVariablePointers(false),
@@ -424,7 +426,7 @@ public:
     int getNumErrors() const { return numErrors; }
     void addPushConstantCount() { ++numPushConstants; }
     void setLimits(const TBuiltInResource& r) { resources = r; }
-    const TBuiltInResource getBuiltinResources() { return resources; }
+    const TBuiltInResource& getLimits() const { return resources; }
 
     bool postProcess(TIntermNode*, EShLanguage);
     void removeTree();
@@ -520,6 +522,9 @@ public:
     TIntermUnary* addUnaryNode(TOperator op, TIntermTyped* child, const TSourceLoc&, const TType&) const;
 
     // Constant folding (in Constant.cpp)
+    bool isFullFoldedOp(TOperator op) const;
+    TIntermTyped* fullFoldUnary(TIntermTyped* , const TIntermConstantUnion* child, TOperator, const TType& unaryReturnType);
+    TIntermTyped* fullFoldBinary(TIntermTyped* , const TIntermConstantUnion* leftConstantNode, TOperator ,const TIntermTyped* rightConstantNode);
     TIntermTyped* fold(TIntermAggregate* aggrNode);
     TIntermTyped* foldConstructor(TIntermAggregate* aggrNode);
     TIntermTyped* foldDereference(TIntermTyped* node, int index, const TSourceLoc&);
@@ -652,6 +657,19 @@ public:
     }
     bool getFlattenUniformArrays() const { return flattenUniformArrays; }
 #endif
+    void setFullFoldingOption(bool f)
+    {
+        fullFoldingEnabled = f;
+        if (fullFoldingEnabled)
+            processes.addProcess("full-fold");
+    }
+    bool getFullFoldingOption() const { return fullFoldingEnabled; }
+    void setFullFoldingTriggled(bool b)
+    {
+        fullFoldingTrigged = b;
+    }
+    bool getFullFoldingTriggled() const { return fullFoldingTrigged; }
+
     void setNoStorageFormat(bool b)
     {
         useUnknownFormat = b;
@@ -1030,6 +1048,8 @@ protected:
     bool autoMapLocations;
     bool flattenUniformArrays;
     bool useUnknownFormat;
+    bool fullFoldingEnabled;
+    bool fullFoldingTrigged;
     bool hlslOffsets;
     bool hlslIoMapping;
     bool useVariablePointers;

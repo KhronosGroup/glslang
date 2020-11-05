@@ -206,9 +206,10 @@ TIntermTyped* TIntermediate::addBinaryMath(TOperator op, TIntermTyped* left, TIn
     TIntermConstantUnion *leftTempConstant = node->getLeft()->getAsConstantUnion();
     TIntermConstantUnion *rightTempConstant = node->getRight()->getAsConstantUnion();
     if (leftTempConstant && rightTempConstant) {
-        TIntermTyped* folded = leftTempConstant->fold(node->getOp(), rightTempConstant);
-        if (folded)
-            return folded;
+        TIntermTyped* result = nullptr;
+        result = fullFoldBinary(result, leftTempConstant, node->getOp(), rightTempConstant);
+        if (result)
+            return result;
     }
 
     // If can propagate spec-constantness and if the operation is an allowed
@@ -443,8 +444,11 @@ TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermTyped* child,
     node->updatePrecision();
 
     // If it's a (non-specialization) constant, it must be folded.
-    if (node->getOperand()->getAsConstantUnion())
-        return node->getOperand()->getAsConstantUnion()->fold(op, node->getType());
+    if (node->getOperand()->getAsConstantUnion()) {
+        TIntermTyped* result = node->getAsTyped();
+        result = fullFoldUnary(result, child->getAsConstantUnion(), node->getOp(), node->getType());
+        return result;
+    }
 
     // If it's a specialization constant, the result is too,
     // if the operation is allowed for specialization constants.
@@ -472,9 +476,10 @@ TIntermTyped* TIntermediate::addBuiltInFunctionCall(const TSourceLoc& loc, TOper
             return nullptr;
 
         if (child->getAsConstantUnion()) {
-            TIntermTyped* folded = child->getAsConstantUnion()->fold(op, returnType);
-            if (folded)
-                return folded;
+            TIntermTyped* result = nullptr;
+            result = fullFoldUnary(result, child->getAsConstantUnion(), op, returnType);
+            if (result)
+                return result;
         }
 
         return addUnaryNode(op, child, child->getLoc(), returnType);
@@ -859,6 +864,7 @@ TIntermTyped* TIntermediate::createConversion(TBasicType convertTo, TIntermTyped
             (getArithemeticFloat16Enabled() || !(convertTo == EbtFloat16)))
 #endif
         {
+            // Convert operators won't be checked with full-folding option.
             TIntermTyped* folded = node->getAsConstantUnion()->fold(newOp, newType);
             if (folded)
                 return folded;

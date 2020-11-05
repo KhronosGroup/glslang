@@ -360,13 +360,14 @@ ERROR: node is still EOpNull!
 0:145      Sequence
 0:145        move second child to first child ( temp lowp 3X2 matrix of float)
 0:145          'm32' ( temp lowp 3X2 matrix of float)
-0:145          Constant:
-0:145            10.000000
-0:145            15.000000
-0:145            14.000000
-0:145            21.000000
-0:145            22.000000
-0:145            33.000000
+0:145          outer product ( global lowp 3X2 matrix of float)
+0:145            Constant:
+0:145              2.000000
+0:145              3.000000
+0:145            Constant:
+0:145              5.000000
+0:145              7.000000
+0:145              11.000000
 0:158  Function Definition: testmix( ( global void)
 0:158    Function Parameters: 
 0:160    Sequence

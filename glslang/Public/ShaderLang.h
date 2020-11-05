@@ -261,6 +261,7 @@ enum EShMessages : unsigned {
     EShMsgHlslLegalization  = (1 << 12), // enable HLSL Legalization messages
     EShMsgHlslDX9Compatible = (1 << 13), // enable HLSL DX9 compatible mode (for samplers and semantics)
     EShMsgBuiltinSymbolTable = (1 << 14), // print the builtin symbol table
+    EShMsgFullFold = (1 << 15), // Full Folding.
     LAST_ELEMENT_MARKER(EShMsgCount),
 };
 

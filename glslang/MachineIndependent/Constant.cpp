@@ -719,6 +719,7 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType) 
     case EOpUnpack32:
     case EOpUnpack16:
     case EOpUnpack8:
+        return nullptr;
 
     case EOpUnpackSnorm2x16:
     {
@@ -1340,6 +1341,89 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType) 
     return newNode;
 }
 
+bool TIntermediate::isFullFoldedOp(TOperator op) const
+{
+    // Warning would only reported at loc of detected operators which are not portable.
+    // Flag foldingWarning will be used in parseContext to report warnings outside if enabling full-fold.
+    switch (op)
+    {
+        // Full folding Functions
+        case EOpMatrixInverse:
+        case EOpTranspose:
+        case EOpDeterminant:
+        case EOpOuterProduct:
+
+        case EOpPackSnorm2x16:
+        case EOpPackUnorm2x16:
+        case EOpPackHalf2x16:
+        case EOpUnpackSnorm2x16:
+        case EOpUnpackUnorm2x16:
+        case EOpUnpackHalf2x16:
+
+        case EOpFloatBitsToInt:
+        case EOpFloatBitsToUint:
+        case EOpIntBitsToFloat:
+        case EOpUintBitsToFloat:
+        case EOpDoubleBitsToInt64:
+        case EOpDoubleBitsToUint64:
+        case EOpInt64BitsToDouble:
+        case EOpUint64BitsToDouble:
+        {
+            return true;
+        }
+        // Other operations
+        default:
+            return false;
+    }
+}
+
+//
+// If full-folding option is enabled, FullFoldingTriggled flag will be set within this function.
+// Will return original node if full folding is not allowed, or folded new node if allowed.
+//
+TIntermTyped* TIntermediate::fullFoldUnary(TIntermTyped* node, const TIntermConstantUnion* child,
+        TOperator op, const TType& unaryReturnType)
+{
+    bool isCustomFunctionFolded = isFullFoldedOp(op);
+    TIntermTyped* result = child->fold(op, unaryReturnType);
+
+    // Full folding check, skip folding if the option is disabled
+    if (isCustomFunctionFolded) {
+        if (getFullFoldingOption())
+        {
+            setFullFoldingTriggled(true);
+            return result;
+        }
+    }
+    else
+        return result;
+
+    return node;
+}
+
+//
+// Do full folding for binary constant node, following rules same with fullFoldUnary as above.
+//
+TIntermTyped* TIntermediate::fullFoldBinary(TIntermTyped* node, const TIntermConstantUnion* leftConstantNode,
+    TOperator op, const TIntermTyped* rightConstantNode)
+{
+    bool isCustomFunctionFolded = isFullFoldedOp(op);
+    TIntermTyped* result = leftConstantNode->fold(op, rightConstantNode);
+
+    // Full folding check, skip folding if the option is disabled
+    if (isCustomFunctionFolded) {
+        if (getFullFoldingOption())
+        {
+            setFullFoldingTriggled(true);
+            return result;
+        }
+    }
+    else
+        return result;
+
+    return node;
+}
+
 //
 // Do constant folding for an aggregate node that has all its children
 // as constants and an operator that requires constant folding.
@@ -1356,6 +1440,15 @@ TIntermTyped* TIntermediate::fold(TIntermAggregate* aggrNode)
         return foldConstructor(aggrNode);
 
     TIntermSequence& children = aggrNode->getSequence();
+
+    // Root node may be included in full-fold warning scope.
+    if (isFullFoldedOp(aggrNode->getOp())) {
+        if (getFullFoldingOption())
+            setFullFoldingTriggled(true);
+        else
+            // Disable full folding if option turns off.
+            return aggrNode;
+    }
 
     // First, see if this is an operation to constant fold, kick out if not,
     // see what size the result is if so.

@@ -936,6 +936,11 @@ bool ProcessDeferred(
             intermediate.addSourceText(strings[numPre + s], lengths[numPre + s]);
         }
     }
+
+    if (messages & EShMsgFullFold) {
+        intermediate.setFullFoldingOption(true);
+    }
+
     SetupBuiltinSymbolTable(version, profile, spvVersion, source);
 
     TSymbolTable* cachedTable = SharedSymbolTables[MapVersionToIndex(version)]
@@ -1011,6 +1016,11 @@ bool ProcessDeferred(
     bool success = processingContext(*parseContext, ppContext, fullInput,
                                      versionWillBeError, *symbolTable,
                                      intermediate, optLevel, messages);
+    if (intermediate.getFullFoldingOption() && intermediate.getFullFoldingTriggled()) {
+        TSourceLoc loc;
+        loc.init();
+        parseContext->warn(loc, "Some functions have been folded according to full-fold setting, may lead to portable issues.", "fold", "");
+    }
     return success;
 }
 

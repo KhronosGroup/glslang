@@ -1544,7 +1544,7 @@ TIntermTyped* TParseContext::handleLengthMethod(const TSourceLoc& loc, TFunction
                         return intermediate.addBuiltInFunctionCall(loc, EOpArrayLength, true, intermNode, TType(EbtInt));
                     }
                     else if (type.getQualifier().builtIn == EbvSampleMask) {
-                        length = (intermediate.getBuiltinResources().maxSamples + 31) / 32;
+                        length = (intermediate.getLimits().maxSamples + 31) / 32;
                     }
                     else
 #endif
@@ -7478,7 +7478,12 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
             node = intermediate.addUnaryNode(op, node, node->getLoc(), type);
             // If it's a (non-specialization) constant, it must be folded.
             if (node->getAsUnaryNode()->getOperand()->getAsConstantUnion())
-                return node->getAsUnaryNode()->getOperand()->getAsConstantUnion()->fold(op, node->getType());
+            {
+                TIntermTyped* result = node->getAsTyped();
+                result = intermediate.fullFoldUnary(result, node->getAsUnaryNode()->getOperand()->getAsConstantUnion(),
+                                                    op, node->getType());
+                return result;
+            }
         }
 
         return node;
