@@ -1,7 +1,7 @@
 cppDeepNest.frag
 ERROR: 0:66: '#if/#ifdef/#ifndef' : maximum nesting depth exceeded 
 ERROR: 0:66: '' : missing #endif 
-ERROR: 0:66: '' :  syntax error, unexpected $end
+ERROR: 0:66: '' :  syntax error, unexpected end of file
 ERROR: 3 compilation errors.  No code generated.
 
 

@@ -357,8 +357,9 @@ public:
     // Generate all the code needed to finish up a function.
     void leaveFunction();
 
-    // Create a discard.
+    // Create a discard or terminate-invocation.
     void makeDiscard();
+    void makeTerminateInvocation();
 
     // Create a global or function local or IO variable.
     Id createVariable(Decoration precision, StorageClass, Id type, const char* name = nullptr,

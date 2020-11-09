@@ -1454,6 +1454,13 @@ void Builder::makeDiscard()
 }
 
 // Comments in header
+void Builder::makeTerminateInvocation()
+{
+    buildPoint->addInstruction(std::unique_ptr<Instruction>(new Instruction(OpTerminateInvocation)));
+    createAndSetNoPredecessorBlock("post-terminate-invocation");
+}
+
+// Comments in header
 Id Builder::createVariable(Decoration precision, StorageClass storageClass, Id type, const char* name, Id initializer)
 {
     Id pointerType = makePointer(storageClass, type);
