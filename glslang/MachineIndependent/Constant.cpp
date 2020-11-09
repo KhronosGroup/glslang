@@ -37,6 +37,7 @@
 //
 
 #include "localintermediate.h"
+#include "../../SPIRV/hex_float.h"
 #include <cmath>
 #include <cfloat>
 #include <cstdlib>
@@ -45,6 +46,7 @@
 namespace {
 
 using namespace glslang;
+using namespace spvutils;
 
 typedef union {
     double d;
@@ -75,85 +77,26 @@ bool isInf(double x)
            (bitPatternH & 0xFFFFF) == 0 && bitPatternL == 0;
 }
 
-typedef union
+// Convert from float32 to float16 bits (Round direct to zero)
+uint16_t float32ToFloat16Bits(float input)
 {
-    unsigned int u32;
-    float f;
-    struct
-    {
-#if defined(__BIG_ENDIAN__)
-        unsigned int sign : 1;
-        unsigned int exp : 8;
-        unsigned int mantissa : 23;
-#else
-        unsigned int mantissa : 23;
-        unsigned int exp : 8;
-        unsigned int sign : 1;
-#endif
-    } bits;
-} SP_IEEE;
+    HexFloat<FloatProxy<float>>     in(input);
+    HexFloat<FloatProxy<Float16>>   out(0);
 
-//
-typedef union _float16
-{
-    unsigned short u16;                  ///< 16-bit float (whole)
+    in.castTo(out, kRoundToZero);
 
-    //
-    ///  Individual bits
-    //
-    struct
-    {
-#if defined(__BIG_ENDIAN__)
-        unsigned short sign : 1;        ///< sign
-        unsigned short exp : 5;         ///< exp
-        unsigned short mantissa : 10;   ///< mantissa
-#else
-        unsigned short mantissa : 10;   ///< mantissa
-        unsigned short exp : 5;         ///< exp
-        unsigned short sign : 1;        ///< sign
-#endif
-    } bits;                      ///< individual bits
-} float16;
-
-float16 float32ToFloat16(float input)
-{
-    float16   out;
-    SP_IEEE   in;
-
-    in.f = input;
-
-    if (in.u32 == 0) {
-        out.u16 = 0;
-    } else if (in.bits.exp > (127 + 15)) {
-        out.bits.sign = in.bits.sign;
-        out.bits.exp = 0x1f;
-        out.bits.mantissa = 0x3ff;
-    } else if (in.bits.exp < (127 - 15)) {
-        // Flush to zero
-        out.u16 = 0;
-    } else {
-        out.bits.sign = in.bits.sign;
-        out.bits.exp = in.bits.exp - 112;
-        out.bits.mantissa = in.bits.mantissa >> 13;
-    }
-
-    return (out);
+    return (out.getBits());
 }
 
-// Convert from float16 to float32
- float float16ToFloat32(float16 in)
+// Convert from float16 to float32 (Round direct will be ignored)
+float float16ToFloat32(HexFloat<FloatProxy<Float16>> input)
 {
-    SP_IEEE out;
+     HexFloat<FloatProxy<Float16>> in(input);
+     HexFloat<FloatProxy<float>>   out(float(0));
 
-    if (in.u16 == 0) {
-        out.u32 = 0;
-    } else {
-        out.bits.sign = in.bits.sign;
-        out.bits.exp = in.bits.exp + 112;
-        out.bits.mantissa = in.bits.mantissa << 13;
-    }
+     in.castTo(out, kRoundToZero);
 
-    return (out.f);
+     return out.value().getAsFloat();
 }
 
 double clamp(const double& x, const double& minval, const double& maxval)
@@ -708,8 +651,8 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType) 
     {
         assert(2 == objectSize);
         unsigned int v = 0;
-        v = static_cast<unsigned int>(float32ToFloat16(static_cast<float>(unionArray[0].getDConst())).u16);
-        v |= static_cast<unsigned int>(float32ToFloat16(static_cast<float>(unionArray[1].getDConst())).u16) * 65536;
+        v = float32ToFloat16Bits(static_cast<float>(unionArray[0].getDConst()));
+        v |= float32ToFloat16Bits(static_cast<float>(unionArray[1].getDConst())) * 65536;
         newConstArray[0].setUConst(v);
         break;
     }
@@ -745,9 +688,9 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType) 
     {
         assert(1 == objectSize);
         unsigned int v = unionArray[0].getUConst();
-        float16 v0, v1;
-        v0.u16 = (unsigned short)(v & 0xFFFF);
-        v1.u16 = (unsigned short)(v >> 16);
+        uint16_t b0 = (unsigned short)(v & 0xFFFF);
+        uint16_t b1 = (unsigned short)(v >> 16);
+        HexFloat<FloatProxy<Float16>> v0(b0), v1(b1);
         newConstArray[0].setDConst(float16ToFloat32(v0));
         newConstArray[1].setDConst(float16ToFloat32(v1));
         break;
