@@ -196,12 +196,14 @@ void TIntermediate::mergeModes(TInfoSink& infoSink, TIntermediate& unit)
     MERGE_TRUE(pointMode);
 
     for (int i = 0; i < 3; ++i) {
-        if (!localSizeNotDefault[i] && unit.localSizeNotDefault[i]) {
-            localSize[i] = unit.localSize[i];
-            localSizeNotDefault[i] = true;
+        if (unit.localSizeNotDefault[i]) {
+            if (!localSizeNotDefault[i]) {
+                localSize[i] = unit.localSize[i];
+                localSizeNotDefault[i] = true;
+            }
+            else if (localSize[i] != unit.localSize[i])
+                error(infoSink, "Contradictory local size");
         }
-        else if (localSize[i] != unit.localSize[i])
-            error(infoSink, "Contradictory local size");
 
         if (localSizeSpecId[i] == TQualifier::layoutNotSet)
             localSizeSpecId[i] = unit.localSizeSpecId[i];
