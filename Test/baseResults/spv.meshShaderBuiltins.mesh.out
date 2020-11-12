@@ -5,7 +5,6 @@ spv.meshShaderBuiltins.mesh
 
                               Capability ClipDistance
                               Capability CullDistance
-                              Capability MultiViewport
                               Capability DrawParameters
                               Capability ShaderViewportMaskNV
                               Capability MeshShadingNV
