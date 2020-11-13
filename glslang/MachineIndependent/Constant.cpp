@@ -37,6 +37,7 @@
 //
 
 #include "localintermediate.h"
+#include "../../SPIRV/bitutils.h"
 #include "../../SPIRV/hex_float.h"
 #include <cmath>
 #include <cfloat>

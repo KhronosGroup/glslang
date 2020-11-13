@@ -148,6 +148,8 @@ set(GLSLANG_SOURCES
 
 set(GLSLANG_HEADERS
     Public/ShaderLang.h
+    ../SPIRV/bitutils.h
+    ../SPIRV/hex_float.h
     Include/arrays.h
     Include/BaseTypes.h
     Include/Common.h
