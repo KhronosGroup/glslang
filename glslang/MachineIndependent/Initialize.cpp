@@ -5436,6 +5436,12 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "\n");
     }
 
+    if (version >= 300 /* both ES and non-ES */) {
+        stageBuiltins[EShLangFragment].append(
+            "flat in highp uint gl_ViewID_OVR;"     // GL_OVR_multiview, GL_OVR_multiview2
+            "\n");
+    }
+
 #ifndef GLSLANG_ANGLE
     // GL_ARB_shader_ballot
     if (profile != EEsProfile && version >= 450) {
@@ -5707,14 +5713,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
         commonBuiltins.append("const int gl_StorageSemanticsOutput   = 0x1000;\n");
     }
 
-#endif // !GLSLANG_ANGLE
-
-    if (version >= 300 /* both ES and non-ES */) {
-        stageBuiltins[EShLangFragment].append(
-            "flat in highp uint gl_ViewID_OVR;"     // GL_OVR_multiview, GL_OVR_multiview2
-            "\n");
-    }
-
     // Adding these to common built-ins triggers an assert due to a memory corruption in related code when testing
     // So instead add to each stage individually, avoiding the GLSLang bug
     if ((profile != EEsProfile && version >= 450) || (profile == EEsProfile && version >= 310)) {
@@ -5764,6 +5762,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             }
         }
     }
+#endif // !GLSLANG_ANGLE
     
 #endif // !GLSLANG_WEB
 
