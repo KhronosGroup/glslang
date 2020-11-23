@@ -41,6 +41,6 @@ spv.RayConstants.rgen
          4(main):           2 Function None 3
                5:             Label
                9:           6 Load 8(accNV)
-                              TraceRayKHR 9 11 12 13 13 12 17 18 20 21 23
+                              TraceNV 9 11 12 13 13 12 17 18 20 21 23
                               Return
                               FunctionEnd

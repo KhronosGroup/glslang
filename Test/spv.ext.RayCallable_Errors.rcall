@@ -3,7 +3,8 @@
 hitAttributeEXT vec4 hitattr;                                // ERROR, hitattributeEXT unsupported in this stage 
 rayPayloadEXT vec4 payload;                                  // ERROR, rayPayloadEXT unsupported in this stage
 rayPayloadInEXT vec4 payloadIn;                              // ERROR, rayPayloadInEXT unsupported in this stage
-
+layout(location = 0) callableDataEXT vec4 cd0;
+layout(location = 0) callableDataEXT float cd1;              // ERROR, location already used
 void main()
 {
     int e0 = gl_PrimitiveID;                                // ERROR, unsupported builtin in stage
@@ -21,6 +22,7 @@ void main()
     float e13 = gl_HitKindEXT;                               // ERROR, unsupported builtin in stage
     uint curFlags = gl_IncomingRayFlagsEXT;                  // ERROR, unsupported builtin in stage
     reportIntersectionEXT(1.0, 1U);                          // ERROR, unsupported builtin in stage
-    ignoreIntersectionEXT();                                 // ERROR, unsupported builtin in stage
-    terminateRayEXT();                                       // ERROR, unsupported builtin in stage
+    ignoreIntersectionEXT;                                   // ERROR, unsupported in stage
+    terminateRayEXT;                                         // ERROR, unsupported in stage
+    executeCallableEXT(1,1);                                 // ERROR, no callable data with location 1
 }

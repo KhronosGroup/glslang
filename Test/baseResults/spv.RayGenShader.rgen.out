@@ -92,6 +92,6 @@ spv.RayGenShader.rgen
               44:   36(fvec3) Load 43
               47:     42(ptr) AccessChain 39 46
               48:   36(fvec3) Load 47
-                              TraceRayKHR 30 31 32 33 34 12 44 45 48 49 41
+                              TraceNV 30 31 32 33 34 12 44 45 48 49 41
                               Return
                               FunctionEnd

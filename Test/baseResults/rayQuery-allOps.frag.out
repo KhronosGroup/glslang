@@ -4,7 +4,7 @@ rayQuery-allOps.frag
 // Id's are bound by 257
 
                               Capability Shader
-                              Capability RayQueryProvisionalKHR
+                              Capability RayQueryKHR
                               Extension  "SPV_KHR_ray_query"
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
@@ -86,7 +86,8 @@ rayQuery-allOps.frag
               37:     18(int) Constant 3
               38:    8(float) Constant 1176255488
               45:             TypeRayQueryProvisionalKHR
-              46:             TypePointer Function 45
+              46:             TypePointer Private 45
+    47(rayQuery):     46(ptr) Variable Private
               48:             TypeAccelerationStructureKHR
               49:             TypePointer UniformConstant 48
         50(rtas):     49(ptr) Variable UniformConstant
@@ -112,7 +113,6 @@ rayQuery-allOps.frag
          4(main):           2 Function None 3
                5:             Label
          43(ray):     25(ptr) Variable Function
-    47(rayQuery):     46(ptr) Variable Function
 69(candidateType):     68(ptr) Variable Function
      78(_mat4x3):     77(ptr) Variable Function
      83(_mat3x4):     82(ptr) Variable Function

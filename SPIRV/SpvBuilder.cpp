@@ -621,13 +621,13 @@ Id Builder::makeAccelerationStructureType()
 Id Builder::makeRayQueryType()
 {
     Instruction *type;
-    if (groupedTypes[OpTypeRayQueryProvisionalKHR].size() == 0) {
-        type = new Instruction(getUniqueId(), NoType, OpTypeRayQueryProvisionalKHR);
-        groupedTypes[OpTypeRayQueryProvisionalKHR].push_back(type);
+    if (groupedTypes[OpTypeRayQueryKHR].size() == 0) {
+        type = new Instruction(getUniqueId(), NoType, OpTypeRayQueryKHR);
+        groupedTypes[OpTypeRayQueryKHR].push_back(type);
         constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
         module.mapInstruction(type);
     } else {
-        type = groupedTypes[OpTypeRayQueryProvisionalKHR].back();
+        type = groupedTypes[OpTypeRayQueryKHR].back();
     }
 
     return type->getResultId();
@@ -1447,17 +1447,10 @@ void Builder::leaveFunction()
 }
 
 // Comments in header
-void Builder::makeDiscard()
+void Builder::makeStatementTerminator(spv::Op opcode, const char *name)
 {
-    buildPoint->addInstruction(std::unique_ptr<Instruction>(new Instruction(OpKill)));
-    createAndSetNoPredecessorBlock("post-discard");
-}
-
-// Comments in header
-void Builder::makeTerminateInvocation()
-{
-    buildPoint->addInstruction(std::unique_ptr<Instruction>(new Instruction(OpTerminateInvocation)));
-    createAndSetNoPredecessorBlock("post-terminate-invocation");
+    buildPoint->addInstruction(std::unique_ptr<Instruction>(new Instruction(opcode)));
+    createAndSetNoPredecessorBlock(name);
 }
 
 // Comments in header

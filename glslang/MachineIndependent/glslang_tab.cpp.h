@@ -1,4 +1,4 @@
-/* A Bison parser, made by GNU Bison 3.7.2.  */
+/* A Bison parser, made by GNU Bison 3.7.4.  */
 
 /* Bison interface for Yacc-like parsers in C
 
@@ -35,8 +35,8 @@
    especially those whose name start with YY_ or yy_.  They are
    private implementation details that can be changed or removed.  */
 
-#ifndef YY_YY_GLSLANG_MACHINEINDEPENDENT_GLSLANG_TAB_CPP_H_INCLUDED
-# define YY_YY_GLSLANG_MACHINEINDEPENDENT_GLSLANG_TAB_CPP_H_INCLUDED
+#ifndef YY_YY_MACHINEINDEPENDENT_GLSLANG_TAB_CPP_H_INCLUDED
+# define YY_YY_MACHINEINDEPENDENT_GLSLANG_TAB_CPP_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 1
@@ -447,53 +447,55 @@ extern int yydebug;
     CASE = 648,                    /* CASE  */
     DEFAULT = 649,                 /* DEFAULT  */
     TERMINATE_INVOCATION = 650,    /* TERMINATE_INVOCATION  */
-    UNIFORM = 651,                 /* UNIFORM  */
-    SHARED = 652,                  /* SHARED  */
-    BUFFER = 653,                  /* BUFFER  */
-    FLAT = 654,                    /* FLAT  */
-    SMOOTH = 655,                  /* SMOOTH  */
-    LAYOUT = 656,                  /* LAYOUT  */
-    DOUBLECONSTANT = 657,          /* DOUBLECONSTANT  */
-    INT16CONSTANT = 658,           /* INT16CONSTANT  */
-    UINT16CONSTANT = 659,          /* UINT16CONSTANT  */
-    FLOAT16CONSTANT = 660,         /* FLOAT16CONSTANT  */
-    INT32CONSTANT = 661,           /* INT32CONSTANT  */
-    UINT32CONSTANT = 662,          /* UINT32CONSTANT  */
-    INT64CONSTANT = 663,           /* INT64CONSTANT  */
-    UINT64CONSTANT = 664,          /* UINT64CONSTANT  */
-    SUBROUTINE = 665,              /* SUBROUTINE  */
-    DEMOTE = 666,                  /* DEMOTE  */
-    PAYLOADNV = 667,               /* PAYLOADNV  */
-    PAYLOADINNV = 668,             /* PAYLOADINNV  */
-    HITATTRNV = 669,               /* HITATTRNV  */
-    CALLDATANV = 670,              /* CALLDATANV  */
-    CALLDATAINNV = 671,            /* CALLDATAINNV  */
-    PAYLOADEXT = 672,              /* PAYLOADEXT  */
-    PAYLOADINEXT = 673,            /* PAYLOADINEXT  */
-    HITATTREXT = 674,              /* HITATTREXT  */
-    CALLDATAEXT = 675,             /* CALLDATAEXT  */
-    CALLDATAINEXT = 676,           /* CALLDATAINEXT  */
-    PATCH = 677,                   /* PATCH  */
-    SAMPLE = 678,                  /* SAMPLE  */
-    NONUNIFORM = 679,              /* NONUNIFORM  */
-    COHERENT = 680,                /* COHERENT  */
-    VOLATILE = 681,                /* VOLATILE  */
-    RESTRICT = 682,                /* RESTRICT  */
-    READONLY = 683,                /* READONLY  */
-    WRITEONLY = 684,               /* WRITEONLY  */
-    DEVICECOHERENT = 685,          /* DEVICECOHERENT  */
-    QUEUEFAMILYCOHERENT = 686,     /* QUEUEFAMILYCOHERENT  */
-    WORKGROUPCOHERENT = 687,       /* WORKGROUPCOHERENT  */
-    SUBGROUPCOHERENT = 688,        /* SUBGROUPCOHERENT  */
-    NONPRIVATE = 689,              /* NONPRIVATE  */
-    SHADERCALLCOHERENT = 690,      /* SHADERCALLCOHERENT  */
-    NOPERSPECTIVE = 691,           /* NOPERSPECTIVE  */
-    EXPLICITINTERPAMD = 692,       /* EXPLICITINTERPAMD  */
-    PERVERTEXNV = 693,             /* PERVERTEXNV  */
-    PERPRIMITIVENV = 694,          /* PERPRIMITIVENV  */
-    PERVIEWNV = 695,               /* PERVIEWNV  */
-    PERTASKNV = 696,               /* PERTASKNV  */
-    PRECISE = 697                  /* PRECISE  */
+    TERMINATE_RAY = 651,           /* TERMINATE_RAY  */
+    IGNORE_INTERSECTION = 652,     /* IGNORE_INTERSECTION  */
+    UNIFORM = 653,                 /* UNIFORM  */
+    SHARED = 654,                  /* SHARED  */
+    BUFFER = 655,                  /* BUFFER  */
+    FLAT = 656,                    /* FLAT  */
+    SMOOTH = 657,                  /* SMOOTH  */
+    LAYOUT = 658,                  /* LAYOUT  */
+    DOUBLECONSTANT = 659,          /* DOUBLECONSTANT  */
+    INT16CONSTANT = 660,           /* INT16CONSTANT  */
+    UINT16CONSTANT = 661,          /* UINT16CONSTANT  */
+    FLOAT16CONSTANT = 662,         /* FLOAT16CONSTANT  */
+    INT32CONSTANT = 663,           /* INT32CONSTANT  */
+    UINT32CONSTANT = 664,          /* UINT32CONSTANT  */
+    INT64CONSTANT = 665,           /* INT64CONSTANT  */
+    UINT64CONSTANT = 666,          /* UINT64CONSTANT  */
+    SUBROUTINE = 667,              /* SUBROUTINE  */
+    DEMOTE = 668,                  /* DEMOTE  */
+    PAYLOADNV = 669,               /* PAYLOADNV  */
+    PAYLOADINNV = 670,             /* PAYLOADINNV  */
+    HITATTRNV = 671,               /* HITATTRNV  */
+    CALLDATANV = 672,              /* CALLDATANV  */
+    CALLDATAINNV = 673,            /* CALLDATAINNV  */
+    PAYLOADEXT = 674,              /* PAYLOADEXT  */
+    PAYLOADINEXT = 675,            /* PAYLOADINEXT  */
+    HITATTREXT = 676,              /* HITATTREXT  */
+    CALLDATAEXT = 677,             /* CALLDATAEXT  */
+    CALLDATAINEXT = 678,           /* CALLDATAINEXT  */
+    PATCH = 679,                   /* PATCH  */
+    SAMPLE = 680,                  /* SAMPLE  */
+    NONUNIFORM = 681,              /* NONUNIFORM  */
+    COHERENT = 682,                /* COHERENT  */
+    VOLATILE = 683,                /* VOLATILE  */
+    RESTRICT = 684,                /* RESTRICT  */
+    READONLY = 685,                /* READONLY  */
+    WRITEONLY = 686,               /* WRITEONLY  */
+    DEVICECOHERENT = 687,          /* DEVICECOHERENT  */
+    QUEUEFAMILYCOHERENT = 688,     /* QUEUEFAMILYCOHERENT  */
+    WORKGROUPCOHERENT = 689,       /* WORKGROUPCOHERENT  */
+    SUBGROUPCOHERENT = 690,        /* SUBGROUPCOHERENT  */
+    NONPRIVATE = 691,              /* NONPRIVATE  */
+    SHADERCALLCOHERENT = 692,      /* SHADERCALLCOHERENT  */
+    NOPERSPECTIVE = 693,           /* NOPERSPECTIVE  */
+    EXPLICITINTERPAMD = 694,       /* EXPLICITINTERPAMD  */
+    PERVERTEXNV = 695,             /* PERVERTEXNV  */
+    PERPRIMITIVENV = 696,          /* PERPRIMITIVENV  */
+    PERVIEWNV = 697,               /* PERVIEWNV  */
+    PERTASKNV = 698,               /* PERTASKNV  */
+    PRECISE = 699                  /* PRECISE  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -502,7 +504,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 97 "glslang/MachineIndependent/glslang.y"
+#line 97 "MachineIndependent/glslang.y"
 
     struct {
         glslang::TSourceLoc loc;
@@ -538,7 +540,7 @@ union YYSTYPE
         glslang::TArraySizes* typeParameters;
     } interm;
 
-#line 542 "glslang/MachineIndependent/glslang_tab.cpp.h"
+#line 544 "MachineIndependent/glslang_tab.cpp.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -550,4 +552,4 @@ typedef union YYSTYPE YYSTYPE;
 
 int yyparse (glslang::TParseContext* pParseContext);
 
-#endif /* !YY_YY_GLSLANG_MACHINEINDEPENDENT_GLSLANG_TAB_CPP_H_INCLUDED  */
+#endif /* !YY_YY_MACHINEINDEPENDENT_GLSLANG_TAB_CPP_H_INCLUDED  */

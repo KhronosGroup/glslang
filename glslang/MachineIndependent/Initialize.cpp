@@ -4421,9 +4421,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "\n");
         stageBuiltins[EShLangAnyHit].append(
             "void ignoreIntersectionNV();"
-            "void ignoreIntersectionEXT();"
             "void terminateRayNV();"
-            "void terminateRayEXT();"
             "\n");
         stageBuiltins[EShLangClosestHit].append(
             "void traceNV(accelerationStructureNV,uint,uint,uint,uint,uint,vec3,float,vec3,float,int);"
@@ -5454,6 +5452,15 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "in uint64_t gl_SubGroupLeMaskARB;"
             "in uint64_t gl_SubGroupLtMaskARB;"
             "\n";
+        const char* rtBallotDecls =
+            "uniform volatile uint gl_SubGroupSizeARB;"
+            "in volatile uint     gl_SubGroupInvocationARB;"
+            "in volatile uint64_t gl_SubGroupEqMaskARB;"
+            "in volatile uint64_t gl_SubGroupGeMaskARB;"
+            "in volatile uint64_t gl_SubGroupGtMaskARB;"
+            "in volatile uint64_t gl_SubGroupLeMaskARB;"
+            "in volatile uint64_t gl_SubGroupLtMaskARB;"
+            "\n";
         const char* fragmentBallotDecls =
             "uniform uint gl_SubGroupSizeARB;"
             "flat in uint     gl_SubGroupInvocationARB;"
@@ -5471,6 +5478,13 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
         stageBuiltins[EShLangFragment]      .append(fragmentBallotDecls);
         stageBuiltins[EShLangMeshNV]        .append(ballotDecls);
         stageBuiltins[EShLangTaskNV]        .append(ballotDecls);
+        stageBuiltins[EShLangRayGen]        .append(rtBallotDecls);
+        stageBuiltins[EShLangIntersect]     .append(rtBallotDecls);
+        // No volatile qualifier on these builtins in any-hit
+        stageBuiltins[EShLangAnyHit]        .append(ballotDecls);
+        stageBuiltins[EShLangClosestHit]    .append(rtBallotDecls);
+        stageBuiltins[EShLangMiss]          .append(rtBallotDecls);
+        stageBuiltins[EShLangCallable]      .append(rtBallotDecls);
     }
 
     // GL_KHR_shader_subgroup
@@ -5508,6 +5522,21 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "in highp   uint  gl_NumSubgroups;"
             "in highp   uint  gl_SubgroupID;"
             "\n";
+        // These builtins are volatile for RT stages
+        const char* rtSubgroupDecls =
+            "in mediump volatile uint  gl_SubgroupSize;"
+            "in mediump volatile uint  gl_SubgroupInvocationID;"
+            "in highp   volatile uvec4 gl_SubgroupEqMask;"
+            "in highp   volatile uvec4 gl_SubgroupGeMask;"
+            "in highp   volatile uvec4 gl_SubgroupGtMask;"
+            "in highp   volatile uvec4 gl_SubgroupLeMask;"
+            "in highp   volatile uvec4 gl_SubgroupLtMask;"
+            // GL_NV_shader_sm_builtins
+            "in highp    uint  gl_WarpsPerSMNV;"
+            "in highp    uint  gl_SMCountNV;"
+            "in highp volatile uint  gl_WarpIDNV;"
+            "in highp volatile uint  gl_SMIDNV;"
+            "\n";
 
         stageBuiltins[EShLangVertex]        .append(subgroupDecls);
         stageBuiltins[EShLangTessControl]   .append(subgroupDecls);
@@ -5520,12 +5549,13 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
         stageBuiltins[EShLangMeshNV]        .append(computeSubgroupDecls);
         stageBuiltins[EShLangTaskNV]        .append(subgroupDecls);
         stageBuiltins[EShLangTaskNV]        .append(computeSubgroupDecls);
-        stageBuiltins[EShLangRayGen]        .append(subgroupDecls);
-        stageBuiltins[EShLangIntersect]     .append(subgroupDecls);
+        stageBuiltins[EShLangRayGen]        .append(rtSubgroupDecls);
+        stageBuiltins[EShLangIntersect]     .append(rtSubgroupDecls);
+        // No volatile qualifier on these builtins in any-hit
         stageBuiltins[EShLangAnyHit]        .append(subgroupDecls);
-        stageBuiltins[EShLangClosestHit]    .append(subgroupDecls);
-        stageBuiltins[EShLangMiss]          .append(subgroupDecls);
-        stageBuiltins[EShLangCallable]      .append(subgroupDecls);
+        stageBuiltins[EShLangClosestHit]    .append(rtSubgroupDecls);
+        stageBuiltins[EShLangMiss]          .append(rtSubgroupDecls);
+        stageBuiltins[EShLangCallable]      .append(rtSubgroupDecls);
     }
 
     // GL_NV_ray_tracing/GL_EXT_ray_tracing
@@ -5593,7 +5623,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "in    float  gl_RayTminNV;"
             "in    float  gl_RayTminEXT;"
             "in    float  gl_RayTmaxNV;"
-            "in    float  gl_RayTmaxEXT;"
+            "in volatile float gl_RayTmaxEXT;"
             "in    mat4x3 gl_ObjectToWorldNV;"
             "in    mat4x3 gl_ObjectToWorldEXT;"
             "in    mat3x4 gl_ObjectToWorld3x4EXT;"
@@ -8454,9 +8484,7 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setFunctionExtensions("reportIntersectionNV", 1, &E_GL_NV_ray_tracing);
             symbolTable.setFunctionExtensions("reportIntersectionEXT", 1, &E_GL_EXT_ray_tracing);
             symbolTable.setFunctionExtensions("ignoreIntersectionNV", 1, &E_GL_NV_ray_tracing);
-            symbolTable.setFunctionExtensions("ignoreIntersectionEXT", 1, &E_GL_EXT_ray_tracing);
             symbolTable.setFunctionExtensions("terminateRayNV", 1, &E_GL_NV_ray_tracing);
-            symbolTable.setFunctionExtensions("terminateRayEXT", 1, &E_GL_EXT_ray_tracing);
             symbolTable.setFunctionExtensions("executeCallableNV", 1, &E_GL_NV_ray_tracing);
             symbolTable.setFunctionExtensions("executeCallableEXT", 1, &E_GL_EXT_ray_tracing);
 
@@ -9286,10 +9314,10 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
     case EShLangClosestHit:
     case EShLangMiss:
         if (profile != EEsProfile && version >= 460) {
-            symbolTable.relateToOperator("traceNV", EOpTrace);
-            symbolTable.relateToOperator("traceRayEXT", EOpTrace);
-            symbolTable.relateToOperator("executeCallableNV", EOpExecuteCallable);
-            symbolTable.relateToOperator("executeCallableEXT", EOpExecuteCallable);
+            symbolTable.relateToOperator("traceNV", EOpTraceNV);
+            symbolTable.relateToOperator("traceRayEXT", EOpTraceKHR);
+            symbolTable.relateToOperator("executeCallableNV", EOpExecuteCallableNV);
+            symbolTable.relateToOperator("executeCallableEXT", EOpExecuteCallableKHR);
         }
         break;
     case EShLangIntersect:
@@ -9300,16 +9328,14 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         break;
     case EShLangAnyHit:
         if (profile != EEsProfile && version >= 460) {
-            symbolTable.relateToOperator("ignoreIntersectionNV", EOpIgnoreIntersection);
-            symbolTable.relateToOperator("ignoreIntersectionEXT", EOpIgnoreIntersection);
-            symbolTable.relateToOperator("terminateRayNV", EOpTerminateRay);
-            symbolTable.relateToOperator("terminateRayEXT", EOpTerminateRay);
+            symbolTable.relateToOperator("ignoreIntersectionNV", EOpIgnoreIntersectionNV);
+            symbolTable.relateToOperator("terminateRayNV", EOpTerminateRayNV);
         }
         break;
     case EShLangCallable:
         if (profile != EEsProfile && version >= 460) {
-            symbolTable.relateToOperator("executeCallableNV", EOpExecuteCallable);
-            symbolTable.relateToOperator("executeCallableEXT", EOpExecuteCallable);
+            symbolTable.relateToOperator("executeCallableNV", EOpExecuteCallableNV);
+            symbolTable.relateToOperator("executeCallableEXT", EOpExecuteCallableKHR);
         }
         break;
     case EShLangMeshNV:

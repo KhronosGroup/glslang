@@ -108,6 +108,6 @@ spv.MissShader.rmiss
               39:   16(float) Load 38(gl_RayTmaxNV)
                               Store 37(v7) 39
               43:          40 Load 42(accNV)
-                              TraceRayKHR 43 44 45 46 47 44 49 48 51 52 54
+                              TraceNV 43 44 45 46 47 44 49 48 51 52 54
                               Return
                               FunctionEnd

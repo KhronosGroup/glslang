@@ -1057,8 +1057,8 @@ bool TIntermediate::userOutputUsed() const
     return found;
 }
 
-// Accumulate locations used for inputs, outputs, and uniforms, and check for collisions
-// as the accumulation is done.
+// Accumulate locations used for inputs, outputs, and uniforms, payload and callable data
+// and check for collisions as the accumulation is done.
 //
 // Returns < 0 if no collision, >= 0 if collision and the value returned is a colliding value.
 //
@@ -1070,6 +1070,7 @@ int TIntermediate::addUsedLocation(const TQualifier& qualifier, const TType& typ
     typeCollision = false;
 
     int set;
+    int setRT;
     if (qualifier.isPipeInput())
         set = 0;
     else if (qualifier.isPipeOutput())
@@ -1078,11 +1079,17 @@ int TIntermediate::addUsedLocation(const TQualifier& qualifier, const TType& typ
         set = 2;
     else if (qualifier.storage == EvqBuffer)
         set = 3;
+    else if (qualifier.isAnyPayload())
+        setRT = 0;
+    else if (qualifier.isAnyCallable())
+        setRT = 1;
     else
         return -1;
 
     int size;
-    if (qualifier.isUniformOrBuffer() || qualifier.isTaskMemory()) {
+    if (qualifier.isAnyPayload() || qualifier.isAnyCallable()) {
+        size = 1;
+    } else if (qualifier.isUniformOrBuffer() || qualifier.isTaskMemory()) {
         if (type.isSizedArray())
             size = type.getCumulativeArraySize();
         else
@@ -1110,10 +1117,17 @@ int TIntermediate::addUsedLocation(const TQualifier& qualifier, const TType& typ
     // (A vertex shader input will show using only one location, even for a dvec3/4.)
     //
     // So, for the case of dvec3, we need two independent ioRanges.
-
+    //
+    // For raytracing IO (payloads and callabledata) each declaration occupies a single
+    // slot irrespective of type.
     int collision = -1; // no collision
 #ifndef GLSLANG_WEB
-    if (size == 2 && type.getBasicType() == EbtDouble && type.getVectorSize() == 3 &&
+    if (qualifier.isAnyPayload() || qualifier.isAnyCallable()) {
+        TRange range(qualifier.layoutLocation, qualifier.layoutLocation);
+        collision = checkLocationRT(setRT, qualifier.layoutLocation);
+        if (collision < 0)
+            usedIoRT[setRT].push_back(range);
+    } else if (size == 2 && type.getBasicType() == EbtDouble && type.getVectorSize() == 3 &&
         (qualifier.isPipeInput() || qualifier.isPipeOutput())) {
         // Dealing with dvec3 in/out split across two locations.
         // Need two io-ranges.
@@ -1186,6 +1200,16 @@ int TIntermediate::checkLocationRange(int set, const TIoRange& range, const TTyp
         }
     }
 
+    return -1; // no collision
+}
+
+int TIntermediate::checkLocationRT(int set, int location) {
+    TRange range(location, location);
+    for (size_t r = 0; r < usedIoRT[set].size(); ++r) {
+        if (range.overlap(usedIoRT[set][r])) {
+            return range.start;
+        }
+    }
     return -1; // no collision
 }
 
