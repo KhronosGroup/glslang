@@ -1501,7 +1501,7 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion,
     }
 
     if (glslangIntermediate->getLayoutPrimitiveCulling()) {
-        builder.addCapability(spv::CapabilityRayTraversalPrimitiveCullingProvisionalKHR);
+        builder.addCapability(spv::CapabilityRayTraversalPrimitiveCullingKHR);
     }
 
     unsigned int mode;

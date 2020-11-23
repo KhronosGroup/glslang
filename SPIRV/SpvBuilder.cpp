@@ -621,13 +621,13 @@ Id Builder::makeAccelerationStructureType()
 Id Builder::makeRayQueryType()
 {
     Instruction *type;
-    if (groupedTypes[OpTypeRayQueryProvisionalKHR].size() == 0) {
-        type = new Instruction(getUniqueId(), NoType, OpTypeRayQueryProvisionalKHR);
-        groupedTypes[OpTypeRayQueryProvisionalKHR].push_back(type);
+    if (groupedTypes[OpTypeRayQueryKHR].size() == 0) {
+        type = new Instruction(getUniqueId(), NoType, OpTypeRayQueryKHR);
+        groupedTypes[OpTypeRayQueryKHR].push_back(type);
         constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
         module.mapInstruction(type);
     } else {
-        type = groupedTypes[OpTypeRayQueryProvisionalKHR].back();
+        type = groupedTypes[OpTypeRayQueryKHR].back();
     }
 
     return type->getResultId();
