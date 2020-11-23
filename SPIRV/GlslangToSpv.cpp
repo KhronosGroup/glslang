@@ -2122,8 +2122,9 @@ std::pair<spv::Id, spv::Id> TGlslangToSpvTraverser::getForcedType(glslang::TBuil
             // these require changing a 64-bit scaler -> a vector of 32-bit components
             if (glslangType.isVector())
                 break;
-            std::pair<spv::Id, spv::Id> ret(builder.makeVectorType(builder.makeUintType(32), 4),
-                                            builder.makeUintType(64));
+            spv::Id ivec4_type = builder.makeVectorType(builder.makeUintType(32), 4);
+            spv::Id uint64_type = builder.makeUintType(64);
+            std::pair<spv::Id, spv::Id> ret(ivec4_type, uint64_type);
             return ret;
         }
         // There are no SPIR-V builtins defined for these and map onto original non-transposed
