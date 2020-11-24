@@ -3800,7 +3800,14 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
         spvType = builder.makeAccelerationStructureType();
         break;
     case glslang::EbtRayQuery:
-        spvType = builder.makeRayQueryType();
+        {
+            auto& extensions = glslangIntermediate->getRequestedExtensions();
+            if (extensions.find("GL_EXT_ray_query") != extensions.end()) {
+                builder.addExtension(spv::E_SPV_KHR_ray_query);
+                builder.addCapability(spv::CapabilityRayQueryKHR);
+            }
+            spvType = builder.makeRayQueryType();
+        }
         break;
     case glslang::EbtReference:
         {
