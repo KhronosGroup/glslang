@@ -29,7 +29,7 @@ spv.ext.RayQueryDecl.frag
      9(outColor):      8(ptr) Variable Output
               10:    6(float) Constant 0
               11:    7(fvec4) ConstantComposite 10 10 10 10
-              12:             TypeRayQueryProvisionalKHR
+              12:             TypeRayQueryKHR
               13:             TypePointer Private 12
           14(rq):     13(ptr) Variable Private
          4(main):           2 Function None 3

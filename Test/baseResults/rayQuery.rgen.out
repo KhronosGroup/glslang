@@ -39,7 +39,7 @@ rayQuery.rgen
               11:             TypePointer Function 10(float)
               13:   10(float) Constant 0
               15:   10(float) Constant 1148846080
-              16:             TypeRayQueryProvisionalKHR
+              16:             TypeRayQueryKHR
               17:             TypePointer Private 16
 18(localRayQuery):     17(ptr) Variable Private
               19:             TypeAccelerationStructureKHR
