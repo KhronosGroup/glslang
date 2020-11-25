@@ -26,7 +26,7 @@ rayQuery-global.rgen
                               Decorate 27(rtas) Binding 1
                2:             TypeVoid
                3:             TypeFunction 2
-               6:             TypeRayQueryProvisionalKHR
+               6:             TypeRayQueryKHR
                7:             TypePointer Private 6
                8:             TypeFunction 2 7(ptr)
               15:             TypeBool

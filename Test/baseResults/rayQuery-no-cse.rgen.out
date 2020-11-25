@@ -57,7 +57,7 @@ rayQuery-no-cse.rgen
                3:             TypeFunction 2
                6:             TypeInt 32 0
                7:             TypeFunction 6(int)
-              10:             TypeRayQueryProvisionalKHR
+              10:             TypeRayQueryKHR
               11:             TypePointer Private 10
               12:             TypeFloat 32
               13:             TypeVector 12(float) 3

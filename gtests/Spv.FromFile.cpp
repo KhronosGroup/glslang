@@ -577,6 +577,8 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.ext.RayGenSBTlayout430.rgen",
         "spv.ext.RayGenSBTlayoutscalar.rgen",
         "spv.ext.World3x4.rahit",
+        "spv.ext.AccelDecl.frag",
+        "spv.ext.RayQueryDecl.frag",
     })),
     FileNameAsCustomTestSuffix
 );
