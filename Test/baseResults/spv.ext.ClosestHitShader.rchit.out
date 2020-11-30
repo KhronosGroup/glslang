@@ -61,7 +61,7 @@ spv.ext.ClosestHitShader.rchit
                               Decorate 42(gl_ObjectRayDirectionEXT) BuiltIn ObjectRayDirectionKHR
                               Decorate 47(gl_RayTminEXT) BuiltIn RayTminKHR
                               Decorate 50(gl_RayTmaxEXT) BuiltIn RayTmaxKHR
-                              Decorate 53(gl_HitTEXT) BuiltIn HitTKHR
+                              Decorate 53(gl_HitTEXT) BuiltIn RayTmaxKHR
                               Decorate 58(gl_HitKindEXT) BuiltIn HitKindKHR
                               Decorate 64(gl_ObjectToWorldEXT) BuiltIn ObjectToWorldKHR
                               Decorate 67(gl_WorldToObjectEXT) BuiltIn WorldToObjectKHR

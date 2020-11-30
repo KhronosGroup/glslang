@@ -1006,7 +1006,17 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
     case glslang::EbvInstanceCustomIndex:
         return spv::BuiltInInstanceCustomIndexKHR;
     case glslang::EbvHitT:
-        return spv::BuiltInHitTKHR;
+        {
+            // this is a GLSL alias of RayTmax
+            // in SPV_NV_ray_tracing it has a dedicated builtin
+            // but in SPV_KHR_ray_tracing it gets mapped to RayTmax
+            auto& extensions = glslangIntermediate->getRequestedExtensions();
+            if (extensions.find("GL_NV_ray_tracing") != extensions.end()) {
+                return spv::BuiltInHitTNV;
+            } else {
+                return spv::BuiltInRayTmaxKHR;
+            }
+        }
     case glslang::EbvHitKind:
         return spv::BuiltInHitKindKHR;
     case glslang::EbvObjectToWorld:

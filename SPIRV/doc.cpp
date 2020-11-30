@@ -395,7 +395,7 @@ const char* BuiltInString(int builtIn)
     case BuiltInRayGeometryIndexKHR:         return "RayGeometryIndexKHR";
     case BuiltInObjectToWorldKHR:            return "ObjectToWorldKHR";
     case BuiltInWorldToObjectKHR:            return "WorldToObjectKHR";
-    case BuiltInHitTKHR:                     return "HitTKHR";
+    case BuiltInHitTNV:                      return "HitTNV";
     case BuiltInHitKindKHR:                  return "HitKindKHR";
     case BuiltInIncomingRayFlagsKHR:         return "IncomingRayFlagsKHR";
     case BuiltInViewportMaskNV:              return "ViewportMaskNV";

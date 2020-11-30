@@ -614,7 +614,6 @@ enum BuiltIn {
     BuiltInObjectToWorldNV = 5330,
     BuiltInWorldToObjectKHR = 5331,
     BuiltInWorldToObjectNV = 5331,
-    BuiltInHitTKHR = 5332,
     BuiltInHitTNV = 5332,
     BuiltInHitKindKHR = 5333,
     BuiltInHitKindNV = 5333,
