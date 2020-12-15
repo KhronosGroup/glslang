@@ -46,5 +46,8 @@ using ninja-1.10.0
 echo "Building..."
 mkdir /build && cd /build
 
-cmake "$ROOT_DIR" -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$(pwd)/install" -DBUILD_SHARED_LIBS=$BUILD_SHARED_LIBS
+INSTALLDIR="$(pwd)/install"
+cmake "$ROOT_DIR" -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="INSTALLDIR" -DBUILD_SHARED_LIBS=$BUILD_SHARED_LIBS
+ctest --output-on-failure
 ninja install
+(cd "$ROOT_DIR"/Test && sh ./runtests /build/localResults "$INSTALLDIR"/bin/glslangValidator "$INSTALLDIR"/bin/spirv-remap)
