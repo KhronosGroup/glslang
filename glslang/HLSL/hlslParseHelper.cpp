@@ -9869,7 +9869,7 @@ void HlslParseContext::addPatchConstantInvocation()
                 } else {
                     // Use the original declaration type for the linkage
                     paramType->getQualifier().builtIn = biType;
-                    if (biType == EbvTessLevelInner || biType == EbvTessLevelInner)
+                    if (biType == EbvTessLevelInner || biType == EbvTessLevelOuter)
                         paramType->getQualifier().patch = true;
 
                     if (notInEntryPoint.count(tInterstageIoData(biType, storage)) == 1)
