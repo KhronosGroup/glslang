@@ -1,5 +1,4 @@
 100scope.vert
-ERROR: 0:5: 'a' : redefinition 
 ERROR: 0:17: 'b' : function name is redeclaration of existing name 
 ERROR: 0:20: 'c' : redefinition 
 ERROR: 0:22: 'f' : redefinition 
@@ -13,7 +12,7 @@ ERROR: 0:57: 'z' : undeclared identifier
 ERROR: 0:57: 'z' : redefinition 
 ERROR: 0:73: 'degrees' : can't use function syntax on variable 
 ERROR: 0:76: 'vertex-shader struct output' : not supported for this version or the enabled extensions 
-ERROR: 14 compilation errors.  No code generated.
+ERROR: 13 compilation errors.  No code generated.
 
 
 Shader version: 100
@@ -23,18 +22,22 @@ ERROR: node is still EOpNull!
 0:3      'a' ( in highp int)
 0:3      'b' ( in highp int)
 0:3      'c' ( in highp int)
-0:?     Sequence
+0:5    Sequence
+0:5      Sequence
+0:5        move second child to first child ( temp highp int)
+0:5          'a' ( temp highp int)
+0:5          'b' ( in highp int)
 0:8      Sequence
 0:8        Sequence
 0:8          move second child to first child ( temp highp float)
 0:8            'a' ( temp highp float)
 0:8            add ( temp highp float)
 0:8              Convert int to float ( temp highp float)
-0:8                'a' ( in highp int)
+0:8                'a' ( temp highp int)
 0:8              Constant:
 0:8                1.000000
 0:11      Branch: Return with expression
-0:11        'a' ( in highp int)
+0:11        'a' ( temp highp int)
 0:25  Function Definition: cos(f1; ( global highp float)
 0:25    Function Parameters: 
 0:25      'x' ( in highp float)
@@ -138,18 +141,22 @@ ERROR: node is still EOpNull!
 0:3      'a' ( in highp int)
 0:3      'b' ( in highp int)
 0:3      'c' ( in highp int)
-0:?     Sequence
+0:5    Sequence
+0:5      Sequence
+0:5        move second child to first child ( temp highp int)
+0:5          'a' ( temp highp int)
+0:5          'b' ( in highp int)
 0:8      Sequence
 0:8        Sequence
 0:8          move second child to first child ( temp highp float)
 0:8            'a' ( temp highp float)
 0:8            add ( temp highp float)
 0:8              Convert int to float ( temp highp float)
-0:8                'a' ( in highp int)
+0:8                'a' ( temp highp int)
 0:8              Constant:
 0:8                1.000000
 0:11      Branch: Return with expression
-0:11        'a' ( in highp int)
+0:11        'a' ( temp highp int)
 0:36  Function Definition: main( ( global void)
 0:36    Function Parameters: 
 0:?     Sequence

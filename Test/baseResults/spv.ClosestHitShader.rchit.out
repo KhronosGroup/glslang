@@ -55,7 +55,7 @@ spv.ClosestHitShader.rchit
                               Decorate 42(gl_ObjectRayDirectionNV) BuiltIn ObjectRayDirectionKHR
                               Decorate 47(gl_RayTminNV) BuiltIn RayTminKHR
                               Decorate 50(gl_RayTmaxNV) BuiltIn RayTmaxKHR
-                              Decorate 53(gl_HitTNV) BuiltIn HitTKHR
+                              Decorate 53(gl_HitTNV) BuiltIn HitTNV
                               Decorate 58(gl_HitKindNV) BuiltIn HitKindKHR
                               Decorate 64(gl_ObjectToWorldNV) BuiltIn ObjectToWorldKHR
                               Decorate 67(gl_WorldToObjectNV) BuiltIn WorldToObjectKHR
@@ -164,6 +164,6 @@ spv.ClosestHitShader.rchit
               68:          60 Load 67(gl_WorldToObjectNV)
                               Store 66(v14) 68
               72:          69 Load 71(accNV)
-                              TraceRayKHR 72 73 74 75 76 73 78 77 80 81 82
+                              TraceNV 72 73 74 75 76 73 78 77 80 81 82
                               Return
                               FunctionEnd

@@ -109,8 +109,8 @@ ERROR: node is still EOpNull!
 0:5    Function Parameters: 
 0:5      'f4' ( in 4-component vector of float)
 0:?     Sequence
-0:8      'gl_SubgroupSize' ( in uint SubgroupSize)
-0:9      'gl_SubgroupInvocationID' ( in uint SubgroupInvocationID)
+0:8      'gl_SubgroupSize' ( volatile in uint SubgroupSize)
+0:9      'gl_SubgroupInvocationID' ( volatile in uint SubgroupInvocationID)
 0:10      subgroupBarrier ( global void)
 0:11      subgroupMemoryBarrier ( global void)
 0:12      subgroupMemoryBarrierBuffer ( global void)
@@ -128,11 +128,11 @@ ERROR: node is still EOpNull!
 0:20          false (const bool)
 0:21      subgroupAllEqual ( global bool)
 0:21        'f4' ( in 4-component vector of float)
-0:23      'gl_SubgroupEqMask' ( in 4-component vector of uint SubgroupEqMask)
-0:24      'gl_SubgroupGeMask' ( in 4-component vector of uint SubgroupGeMask)
-0:25      'gl_SubgroupGtMask' ( in 4-component vector of uint SubgroupGtMask)
-0:26      'gl_SubgroupLeMask' ( in 4-component vector of uint SubgroupLeMask)
-0:27      'gl_SubgroupLtMask' ( in 4-component vector of uint SubgroupLtMask)
+0:23      'gl_SubgroupEqMask' ( volatile in 4-component vector of uint SubgroupEqMask)
+0:24      'gl_SubgroupGeMask' ( volatile in 4-component vector of uint SubgroupGeMask)
+0:25      'gl_SubgroupGtMask' ( volatile in 4-component vector of uint SubgroupGtMask)
+0:26      'gl_SubgroupLeMask' ( volatile in 4-component vector of uint SubgroupLeMask)
+0:27      'gl_SubgroupLtMask' ( volatile in 4-component vector of uint SubgroupLtMask)
 0:28      subgroupBroadcast ( global 4-component vector of float)
 0:28        'f4' ( in 4-component vector of float)
 0:28        Constant:
@@ -403,8 +403,8 @@ ERROR: node is still EOpNull!
 0:129  Function Definition: basic_works( ( global void)
 0:129    Function Parameters: 
 0:131    Sequence
-0:131      'gl_SubgroupSize' ( in uint SubgroupSize)
-0:132      'gl_SubgroupInvocationID' ( in uint SubgroupInvocationID)
+0:131      'gl_SubgroupSize' ( volatile in uint SubgroupSize)
+0:132      'gl_SubgroupInvocationID' ( volatile in uint SubgroupInvocationID)
 0:133      subgroupBarrier ( global void)
 0:134      subgroupMemoryBarrier ( global void)
 0:135      subgroupMemoryBarrierBuffer ( global void)
@@ -414,11 +414,11 @@ ERROR: node is still EOpNull!
 0:141    Function Parameters: 
 0:141      'f4' ( in 4-component vector of float)
 0:142    Sequence
-0:142      'gl_SubgroupEqMask' ( in 4-component vector of uint SubgroupEqMask)
-0:143      'gl_SubgroupGeMask' ( in 4-component vector of uint SubgroupGeMask)
-0:144      'gl_SubgroupGtMask' ( in 4-component vector of uint SubgroupGtMask)
-0:145      'gl_SubgroupLeMask' ( in 4-component vector of uint SubgroupLeMask)
-0:146      'gl_SubgroupLtMask' ( in 4-component vector of uint SubgroupLtMask)
+0:142      'gl_SubgroupEqMask' ( volatile in 4-component vector of uint SubgroupEqMask)
+0:143      'gl_SubgroupGeMask' ( volatile in 4-component vector of uint SubgroupGeMask)
+0:144      'gl_SubgroupGtMask' ( volatile in 4-component vector of uint SubgroupGtMask)
+0:145      'gl_SubgroupLeMask' ( volatile in 4-component vector of uint SubgroupLeMask)
+0:146      'gl_SubgroupLtMask' ( volatile in 4-component vector of uint SubgroupLtMask)
 0:147      subgroupBroadcast ( global 4-component vector of float)
 0:147        'f4' ( in 4-component vector of float)
 0:147        Constant:
@@ -668,15 +668,15 @@ ERROR: node is still EOpNull!
 0:257    Sequence
 0:257      'gl_WarpsPerSMNV' ( in uint WarpsPerSMNV)
 0:258      'gl_SMCountNV' ( in uint SMCountNV)
-0:259      'gl_WarpIDNV' ( in uint WarpIDNV)
-0:260      'gl_SMIDNV' ( in uint SMIDNV)
+0:259      'gl_WarpIDNV' ( volatile in uint WarpIDNV)
+0:260      'gl_SMIDNV' ( volatile in uint SMIDNV)
 0:267  Function Definition: sm_builtins( ( global void)
 0:267    Function Parameters: 
 0:269    Sequence
 0:269      'gl_WarpsPerSMNV' ( in uint WarpsPerSMNV)
 0:270      'gl_SMCountNV' ( in uint SMCountNV)
-0:271      'gl_WarpIDNV' ( in uint WarpIDNV)
-0:272      'gl_SMIDNV' ( in uint SMIDNV)
+0:271      'gl_WarpIDNV' ( volatile in uint WarpIDNV)
+0:272      'gl_SMIDNV' ( volatile in uint SMIDNV)
 0:?   Linker Objects
 0:?     'iAttr' ( hitAttributeNV 4-component vector of float)
 

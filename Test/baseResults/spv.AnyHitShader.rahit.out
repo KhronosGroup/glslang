@@ -53,7 +53,7 @@ spv.AnyHitShader.rahit
                               Decorate 42(gl_ObjectRayDirectionNV) BuiltIn ObjectRayDirectionKHR
                               Decorate 47(gl_RayTminNV) BuiltIn RayTminKHR
                               Decorate 50(gl_RayTmaxNV) BuiltIn RayTmaxKHR
-                              Decorate 53(gl_HitTNV) BuiltIn HitTKHR
+                              Decorate 53(gl_HitTNV) BuiltIn HitTNV
                               Decorate 58(gl_HitKindNV) BuiltIn HitKindKHR
                               Decorate 64(gl_ObjectToWorldNV) BuiltIn ObjectToWorldKHR
                               Decorate 67(gl_WorldToObjectNV) BuiltIn WorldToObjectKHR
@@ -153,10 +153,10 @@ spv.AnyHitShader.rahit
                               SelectionMerge 79 None
                               BranchConditional 77 78 80
               78:               Label
-                                IgnoreIntersectionKHR
+                                IgnoreIntersectionNV
                                 Branch 79
               80:               Label
-                                TerminateRayKHR
+                                TerminateRayNV
                                 Branch 79
               79:             Label
                               Return

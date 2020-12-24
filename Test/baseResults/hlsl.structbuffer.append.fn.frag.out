@@ -190,13 +190,13 @@ Validation failed
                               Decorate 9 BufferBlock
                               Decorate 12 BufferBlock
                               Decorate 49(sbuf_a) DescriptorSet 0
-                              Decorate 49(sbuf_a) Binding 4
+                              Decorate 49(sbuf_a) Binding 0
                               Decorate 50(sbuf_a@count) DescriptorSet 0
-                              Decorate 50(sbuf_a@count) Binding 6
+                              Decorate 50(sbuf_a@count) Binding 0
                               Decorate 51(sbuf_c) DescriptorSet 0
-                              Decorate 51(sbuf_c) Binding 5
+                              Decorate 51(sbuf_c) Binding 1
                               Decorate 52(sbuf_c@count) DescriptorSet 0
-                              Decorate 52(sbuf_c@count) Binding 7
+                              Decorate 52(sbuf_c@count) Binding 0
                               Decorate 58(pos) Flat
                               Decorate 58(pos) Location 0
                               Decorate 61(@entryPointOutput) Location 0

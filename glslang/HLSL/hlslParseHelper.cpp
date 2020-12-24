@@ -1953,6 +1953,10 @@ void HlslParseContext::transferTypeAttributes(const TSourceLoc& loc, const TAttr
             break;
         case EatConstantId:
             // specialization constant
+            if (type.getQualifier().storage != EvqConst) {
+                error(loc, "needs a const type", "constant_id", "");
+                break;
+            }
             if (it->getInt(value)) {
                 TSourceLoc loc;
                 loc.init();
@@ -5488,6 +5492,10 @@ TIntermTyped* HlslParseContext::handleFunctionCall(const TSourceLoc& loc, TFunct
 
             op = fnCandidate->getBuiltInOp();
             if (builtIn && op != EOpNull) {
+                // SM 4.0 and above guarantees roundEven semantics for round()
+                if (!hlslDX9Compatible() && op == EOpRound)
+                    op = EOpRoundEven;
+
                 // A function call mapped to a built-in operation.
                 result = intermediate.addBuiltInFunctionCall(loc, op, fnCandidate->getParamCount() == 1, arguments,
                                                              fnCandidate->getType());
@@ -7624,7 +7632,17 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, TFunction
     bool tie = false;
 
     // send to the generic selector
-    const TFunction* bestMatch = selectFunction(candidateList, call, convertible, better, tie);
+    const TFunction* bestMatch = nullptr;
+
+    // printf has var args and is in the symbol table as "printf()",
+    // mangled to "printf("
+    if (call.getName() == "printf") {
+        TSymbol* symbol = symbolTable.find("printf(", &builtIn);
+        if (symbol)
+            return symbol->getAsFunction();
+    }
+
+    bestMatch = selectFunction(candidateList, call, convertible, better, tie);
 
     if (bestMatch == nullptr) {
         // If there is nothing selected by allowing only up-conversions (to a larger linearize() value),
@@ -9851,7 +9869,7 @@ void HlslParseContext::addPatchConstantInvocation()
                 } else {
                     // Use the original declaration type for the linkage
                     paramType->getQualifier().builtIn = biType;
-                    if (biType == EbvTessLevelInner || biType == EbvTessLevelInner)
+                    if (biType == EbvTessLevelInner || biType == EbvTessLevelOuter)
                         paramType->getQualifier().patch = true;
 
                     if (notInEntryPoint.count(tInterstageIoData(biType, storage)) == 1)

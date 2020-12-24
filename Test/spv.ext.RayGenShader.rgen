@@ -4,7 +4,7 @@
 layout(binding = 0) uniform accelerationStructureEXT accEXT0;
 layout(binding = 1, set = 0) uniform accelerationStructureEXT accEXT1; // Unused
 layout(binding = 2, r32ui) shadercallcoherent uniform uimage2D imageu;
-layout(location = 0) rayPayloadEXT vec4 payload;
+layout(location = 1) rayPayloadEXT vec4 payload;
 layout(shaderRecordEXT) buffer block
 {
 	vec3 dir;

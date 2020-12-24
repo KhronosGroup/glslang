@@ -658,14 +658,17 @@ public:
 
                 blocks.back().numMembers = countAggregateMembers(type);
 
-                EShLanguageMask& stages = blocks.back().stages;
-                stages = static_cast<EShLanguageMask>(stages | 1 << intermediate.getStage());
+                if (updateStageMasks) {
+                    EShLanguageMask& stages = blocks.back().stages;
+                    stages = static_cast<EShLanguageMask>(stages | 1 << intermediate.getStage());
+                }
             }
             else {
                 blockIndex = it->second;
-
-                EShLanguageMask& stages = blocks[blockIndex].stages;
-                stages = static_cast<EShLanguageMask>(stages | 1 << intermediate.getStage());
+                if (updateStageMasks) {
+                    EShLanguageMask& stages = blocks[blockIndex].stages;
+                    stages = static_cast<EShLanguageMask>(stages | 1 << intermediate.getStage());
+                }
             }
         }
 
@@ -1135,6 +1138,8 @@ void TReflection::buildCounterIndices(const TIntermediate& intermediate)
         if (index >= 0)
             indexToUniformBlock[i].counterIndex = index;
     }
+#else
+    (void)intermediate;
 #endif
 }
 

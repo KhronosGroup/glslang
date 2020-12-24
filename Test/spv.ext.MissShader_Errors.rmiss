@@ -11,6 +11,6 @@ void main()
     float e12 = gl_HitTEXT;                                 // ERROR, unsupported builtin in stage
     float e13 = gl_HitKindEXT;                              // ERROR, unsupported builtin in stage
     reportIntersectionEXT(1.0, 1U);                         // ERROR, unsupported builtin in stage
-    ignoreIntersectionEXT();                                // ERROR, unsupported builtin in stage
-    terminateRayEXT();                                      // ERROR, unsupported builtin in stage
+    ignoreIntersectionEXT;                                  // ERROR, unsupported in stage
+    terminateRayEXT;                                        // ERROR, unsupported in stage
 }

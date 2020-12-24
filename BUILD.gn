@@ -76,6 +76,9 @@ if (!defined(glslang_angle)) {
 
 config("glslang_public") {
   include_dirs = [ "." ]
+  if (!is_win || is_clang) {
+    cflags = [ "-Wno-conversion" ]
+  }
 }
 
 config("glslang_hlsl") {
@@ -243,6 +246,8 @@ template("glslang_sources_common") {
       ]
     }
 
+    include_dirs = [ "${target_gen_dir}/include" ]
+
     deps = [ ":glslang_build_info" ]
 
     if (invoker.enable_opt) {
@@ -250,9 +255,8 @@ template("glslang_sources_common") {
         "${spirv_tools_dir}:spvtools_opt",
         "${spirv_tools_dir}:spvtools_val",
       ]
+      include_dirs += [ "${spirv_tools_dir}/include" ]
     }
-
-    include_dirs = [ "${target_gen_dir}/include" ]
 
     configs -= _configs_to_remove
     configs += _configs_to_add
@@ -299,7 +303,10 @@ executable("glslang_validator") {
   ]
   public_configs = [ ":glslang_hlsl" ]
 
-  include_dirs = [ "${target_gen_dir}/include" ]
+  include_dirs = [
+    "${target_gen_dir}/include",
+    "${spirv_tools_dir}/include",
+  ]
 
   configs -= _configs_to_remove
   configs += _configs_to_add
@@ -309,6 +316,8 @@ executable("spirv-remap") {
   sources = [ "StandAlone/spirv-remap.cpp" ]
   defines = [ "ENABLE_OPT=1" ]
   deps = [ ":glslang_sources" ]
+
+  include_dirs = [ "${spirv_tools_dir}/include" ]
 
   configs -= _configs_to_remove
   configs += _configs_to_add
