@@ -354,6 +354,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_EXT_shader_subgroup_extended_types_int64]   = EBhDisable;
     extensionBehavior[E_GL_EXT_shader_subgroup_extended_types_float16] = EBhDisable;
     extensionBehavior[E_GL_EXT_shader_atomic_float]                    = EBhDisable;
+    extensionBehavior[E_GL_EXT_shader_atomic_float2]                   = EBhDisable;
 }
 
 #endif // GLSLANG_WEB
@@ -537,6 +538,7 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_EXT_shader_subgroup_extended_types_float16 1\n"
 
             "#define GL_EXT_shader_atomic_float 1\n"
+            "#define GL_EXT_shader_atomic_float2 1\n"
             ;
 
         if (version >= 150) {

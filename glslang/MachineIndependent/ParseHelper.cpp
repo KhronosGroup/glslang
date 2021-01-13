@@ -2279,18 +2279,23 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
                 error(loc, "only supported on image with format r64i", fnCandidate.getName().c_str(), "");
             else if (callNode.getType().getBasicType() == EbtUint64 && imageType.getQualifier().getFormat() != ElfR64ui)
                 error(loc, "only supported on image with format r64ui", fnCandidate.getName().c_str(), "");
-        } else {
-            bool isImageAtomicOnFloatAllowed = ((fnCandidate.getName().compare(0, 14, "imageAtomicAdd") == 0) ||
-                (fnCandidate.getName().compare(0, 15, "imageAtomicLoad") == 0) ||
-                (fnCandidate.getName().compare(0, 16, "imageAtomicStore") == 0) ||
-                (fnCandidate.getName().compare(0, 19, "imageAtomicExchange") == 0));
-            if (imageType.getSampler().type == EbtFloat && isImageAtomicOnFloatAllowed &&
-                (fnCandidate.getName().compare(0, 19, "imageAtomicExchange") != 0)) // imageAtomicExchange doesn't require GL_EXT_shader_atomic_float
+        } else if (imageType.getSampler().type == EbtFloat) {
+            if (fnCandidate.getName().compare(0, 19, "imageAtomicExchange") == 0) {
+                // imageAtomicExchange doesn't require an extension
+            } else if ((fnCandidate.getName().compare(0, 14, "imageAtomicAdd") == 0) ||
+                       (fnCandidate.getName().compare(0, 15, "imageAtomicLoad") == 0) ||
+                       (fnCandidate.getName().compare(0, 16, "imageAtomicStore") == 0)) {
                 requireExtensions(loc, 1, &E_GL_EXT_shader_atomic_float, fnCandidate.getName().c_str());
-            if (!isImageAtomicOnFloatAllowed)
+            } else if ((fnCandidate.getName().compare(0, 14, "imageAtomicMin") == 0) ||
+                       (fnCandidate.getName().compare(0, 14, "imageAtomicMax") == 0)) {
+                requireExtensions(loc, 1, &E_GL_EXT_shader_atomic_float2, fnCandidate.getName().c_str());
+            } else {
                 error(loc, "only supported on integer images", fnCandidate.getName().c_str(), "");
-            else if (imageType.getQualifier().getFormat() != ElfR32f && isEsProfile())
+            }
+            if (imageType.getQualifier().getFormat() != ElfR32f && isEsProfile())
                 error(loc, "only supported on image with format r32f", fnCandidate.getName().c_str(), "");
+        } else {
+            error(loc, "not supported on this image type", fnCandidate.getName().c_str(), "");
         }
 
         const size_t maxArgs = imageType.getSampler().isMultiSample() ? 5 : 4;
@@ -2319,16 +2324,28 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
             memorySemanticsCheck(loc, fnCandidate, callNode);
             if ((callNode.getOp() == EOpAtomicAdd || callNode.getOp() == EOpAtomicExchange ||
                 callNode.getOp() == EOpAtomicLoad || callNode.getOp() == EOpAtomicStore) &&
-                (arg0->getType().isFloatingDomain())) {
+                (arg0->getType().getBasicType() == EbtFloat ||
+                 arg0->getType().getBasicType() == EbtDouble)) {
                 requireExtensions(loc, 1, &E_GL_EXT_shader_atomic_float, fnCandidate.getName().c_str());
+            } else if ((callNode.getOp() == EOpAtomicAdd || callNode.getOp() == EOpAtomicExchange ||
+                        callNode.getOp() == EOpAtomicLoad || callNode.getOp() == EOpAtomicStore ||
+                        callNode.getOp() == EOpAtomicMin || callNode.getOp() == EOpAtomicMax) &&
+                       arg0->getType().isFloatingDomain()) {
+                requireExtensions(loc, 1, &E_GL_EXT_shader_atomic_float2, fnCandidate.getName().c_str());
             }
         } else if (arg0->getType().getBasicType() == EbtInt64 || arg0->getType().getBasicType() == EbtUint64) {
             const char* const extensions[2] = { E_GL_NV_shader_atomic_int64,
                                                 E_GL_EXT_shader_atomic_int64 };
             requireExtensions(loc, 2, extensions, fnCandidate.getName().c_str());
         } else if ((callNode.getOp() == EOpAtomicAdd || callNode.getOp() == EOpAtomicExchange) &&
-                   (arg0->getType().isFloatingDomain())) {
+                   (arg0->getType().getBasicType() == EbtFloat ||
+                    arg0->getType().getBasicType() == EbtDouble)) {
             requireExtensions(loc, 1, &E_GL_EXT_shader_atomic_float, fnCandidate.getName().c_str());
+        } else if ((callNode.getOp() == EOpAtomicAdd || callNode.getOp() == EOpAtomicExchange ||
+                    callNode.getOp() == EOpAtomicLoad || callNode.getOp() == EOpAtomicStore ||
+                    callNode.getOp() == EOpAtomicMin || callNode.getOp() == EOpAtomicMax) &&
+                   arg0->getType().isFloatingDomain()) {
+            requireExtensions(loc, 1, &E_GL_EXT_shader_atomic_float2, fnCandidate.getName().c_str());
         }
         break;
     }
