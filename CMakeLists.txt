@@ -42,6 +42,9 @@ if (POLICY CMP0048)
 endif()
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
+# Debug
+set(CMAKE_VERBOSE_MAKEFILE ON)
+
 # Enable compile commands database
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
@@ -240,7 +243,7 @@ if(CMAKE_VERSION VERSION_LESS "3.12")
     find_host_package(PythonInterp 3 REQUIRED)
 else()
     find_host_package(Python 3 REQUIRED)
-    set(PYTHON_EXECUTABLE ${Python_EXECUTABLE})
+    set(PYTHON_EXECUTABLE "${Python_EXECUTABLE}")
 endif()
 message(STATUS "PYTHON_EXECUTABLE=${PYTHON_EXECUTABLE}")
 
