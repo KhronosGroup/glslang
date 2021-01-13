@@ -242,6 +242,7 @@ else()
     find_host_package(Python 3 REQUIRED)
     set(PYTHON_EXECUTABLE ${Python_EXECUTABLE})
 endif()
+message(STATUS "PYTHON_EXECUTABLE=${PYTHON_EXECUTABLE}")
 
 # Root directory for build-time generated include files
 set(GLSLANG_GENERATED_INCLUDEDIR "${CMAKE_BINARY_DIR}/include")
