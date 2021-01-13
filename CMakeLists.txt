@@ -236,7 +236,12 @@ endif()
 
 # CMake needs to find the right version of python, right from the beginning,
 # otherwise, it will find the wrong version and fail later
-find_host_package(PythonInterp 3 REQUIRED)
+if(CMAKE_VERSION VERSION_LESS "3.12")
+    find_host_package(PythonInterp 3 REQUIRED)
+else()
+    find_host_package(Python 3 REQUIRED)
+    set(PYTHON_EXECUTABLE ${Python_EXECUTABLE})
+endif()
 
 # Root directory for build-time generated include files
 set(GLSLANG_GENERATED_INCLUDEDIR "${CMAKE_BINARY_DIR}/include")
