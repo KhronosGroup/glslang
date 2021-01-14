@@ -243,12 +243,7 @@ if(CMAKE_VERSION VERSION_LESS "3.12")
     find_host_package(PythonInterp 3 REQUIRED)
 else()
     find_host_package(Python 3 REQUIRED)
-    set(PYTHON_EXECUTABLE "${Python_EXECUTABLE}")
-    set(PYTHON_EXECUTABLE:FILEPATH "${Python_EXECUTABLE}")
-    set(PYTHON_LIBRARY "${Python_LIBRARIES}")
-    set(PYTHON_INCLUDE_DIR "${Python_INCLUDE_DIRS}")
 endif()
-message(STATUS "PYTHON_EXECUTABLE=${PYTHON_EXECUTABLE}")
 
 # Root directory for build-time generated include files
 set(GLSLANG_GENERATED_INCLUDEDIR "${CMAKE_BINARY_DIR}/include")
@@ -262,27 +257,48 @@ set(GLSLANG_BUILD_INFO_H_TMPL "${CMAKE_CURRENT_SOURCE_DIR}/build_info.h.tmpl")
 set(GLSLANG_BUILD_INFO_H      "${GLSLANG_GENERATED_INCLUDEDIR}/glslang/build_info.h")
 
 # Command to build the build_info.h file
-add_custom_command(
-    OUTPUT  ${GLSLANG_BUILD_INFO_H}
-    COMMAND ${PYTHON_EXECUTABLE} "${GLSLANG_BUILD_INFO_PY}"
-            ${CMAKE_CURRENT_SOURCE_DIR}
-            "-i" ${GLSLANG_BUILD_INFO_H_TMPL}
-            "-o" ${GLSLANG_BUILD_INFO_H}
-    DEPENDS ${GLSLANG_BUILD_INFO_PY}
-            ${GLSLANG_CHANGES_FILE}
-            ${GLSLANG_BUILD_INFO_H_TMPL}
-    COMMENT "Generating ${GLSLANG_BUILD_INFO_H}")
+if(CMAKE_VERSION VERSION_LESS "3.12")
+    add_custom_command(
+        OUTPUT  ${GLSLANG_BUILD_INFO_H}
+        COMMAND ${PYTHON_EXECUTABLE} "${GLSLANG_BUILD_INFO_PY}"
+                ${CMAKE_CURRENT_SOURCE_DIR}
+                "-i" ${GLSLANG_BUILD_INFO_H_TMPL}
+                "-o" ${GLSLANG_BUILD_INFO_H}
+        DEPENDS ${GLSLANG_BUILD_INFO_PY}
+                ${GLSLANG_CHANGES_FILE}
+                ${GLSLANG_BUILD_INFO_H_TMPL}
+        COMMENT "Generating ${GLSLANG_BUILD_INFO_H}")
+else()
+    add_custom_command(
+        OUTPUT  ${GLSLANG_BUILD_INFO_H}
+        COMMAND ${Python_EXECUTABLE} "${GLSLANG_BUILD_INFO_PY}"
+                ${CMAKE_CURRENT_SOURCE_DIR}
+                "-i" ${GLSLANG_BUILD_INFO_H_TMPL}
+                "-o" ${GLSLANG_BUILD_INFO_H}
+        DEPENDS ${GLSLANG_BUILD_INFO_PY}
+                ${GLSLANG_CHANGES_FILE}
+                ${GLSLANG_BUILD_INFO_H_TMPL}
+        COMMENT "Generating ${GLSLANG_BUILD_INFO_H}")
+endif()
 
 # Target to build the build_info.h file
 add_custom_target(glslang-build-info DEPENDS ${GLSLANG_BUILD_INFO_H})
 
 # Populate the CMake GLSLANG_VERSION* variables with the build version
 # information.
-execute_process(
-    COMMAND ${PYTHON_EXECUTABLE} "${GLSLANG_BUILD_INFO_PY}"
-            ${CMAKE_CURRENT_SOURCE_DIR} "<major>.<minor>.<patch><-flavor>;<major>;<minor>;<patch>;<flavor>"
-    OUTPUT_VARIABLE "GLSLANG_VERSIONS"
-    OUTPUT_STRIP_TRAILING_WHITESPACE)
+if(CMAKE_VERSION VERSION_LESS "3.12")
+    execute_process(
+        COMMAND ${PYTHON_EXECUTABLE} "${GLSLANG_BUILD_INFO_PY}"
+                ${CMAKE_CURRENT_SOURCE_DIR} "<major>.<minor>.<patch><-flavor>;<major>;<minor>;<patch>;<flavor>"
+        OUTPUT_VARIABLE "GLSLANG_VERSIONS"
+        OUTPUT_STRIP_TRAILING_WHITESPACE)
+else()
+    execute_process(
+        COMMAND ${Python_EXECUTABLE} "${GLSLANG_BUILD_INFO_PY}"
+                ${CMAKE_CURRENT_SOURCE_DIR} "<major>.<minor>.<patch><-flavor>;<major>;<minor>;<patch>;<flavor>"
+        OUTPUT_VARIABLE "GLSLANG_VERSIONS"
+        OUTPUT_STRIP_TRAILING_WHITESPACE)
+endif()
 list(GET "GLSLANG_VERSIONS" 0 "GLSLANG_VERSION")
 list(GET "GLSLANG_VERSIONS" 1 "GLSLANG_VERSION_MAJOR")
 list(GET "GLSLANG_VERSIONS" 2 "GLSLANG_VERSION_MINOR")
