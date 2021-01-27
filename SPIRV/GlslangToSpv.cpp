@@ -6996,6 +6996,10 @@ spv::Id TGlslangToSpvTraverser::createAtomicOperation(glslang::TOperator op, spv
         builder.addCapability(spv::CapabilityVulkanMemoryModelKHR);
     }
 
+    if (builder.getConstantScalar(scopeId) == spv::ScopeQueueFamily) {
+        builder.addCapability(spv::CapabilityVulkanMemoryModelKHR);
+    }
+
     if (glslangIntermediate->usingVulkanMemoryModel() && builder.getConstantScalar(scopeId) == spv::ScopeDevice) {
         builder.addCapability(spv::CapabilityVulkanMemoryModelDeviceScopeKHR);
     }

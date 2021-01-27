@@ -503,6 +503,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.memoryScopeSemantics.comp",
         "spv.memoryScopeSemantics_Error.comp",
         "spv.multiView.frag",
+        "spv.queueFamilyScope.comp",
         "spv.RayGenShader11.rgen",
         "spv.subgroup.frag",
         "spv.subgroup.geom",
