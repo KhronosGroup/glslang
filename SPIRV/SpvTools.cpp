@@ -153,6 +153,7 @@ void SpirvToolsValidate(const glslang::TIntermediate& intermediate, std::vector<
     spv_validator_options options = spvValidatorOptionsCreate();
     spvValidatorOptionsSetRelaxBlockLayout(options, intermediate.usingHlslOffsets());
     spvValidatorOptionsSetBeforeHlslLegalization(options, prelegalization);
+    spvValidatorOptionsSetScalarBlockLayout(options, intermediate.usingScalarBlockLayout());
     spvValidateWithOptions(context, options, &binary, &diagnostic);
 
     // report
