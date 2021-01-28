@@ -436,6 +436,13 @@ void Builder::postProcessFeatures() {
             }
         }
     }
+
+    // If any Vulkan memory model-specific functionality is used, update the
+    // OpMemoryModel to match.
+    if (capabilities.find(spv::CapabilityVulkanMemoryModelKHR) != capabilities.end()) {
+        memoryModel = spv::MemoryModelVulkanKHR;
+        addIncorporatedExtension(spv::E_SPV_KHR_vulkan_memory_model, spv::Spv_1_5);
+    }
 }
 #endif
 
