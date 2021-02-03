@@ -864,7 +864,7 @@ public:
                 return true;
         }
         return false;
-    };
+    }
 
     void addToCallGraph(TInfoSink&, const TString& caller, const TString& callee);
     void merge(TInfoSink&, TIntermediate&);
