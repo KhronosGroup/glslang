@@ -47,6 +47,7 @@ if(BUILD_TESTING)
             # Test related source files
             ${CMAKE_CURRENT_SOURCE_DIR}/AST.FromFile.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/BuiltInResource.FromFile.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/Common.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/Config.FromFile.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/HexFloat.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/Hlsl.FromFile.cpp
