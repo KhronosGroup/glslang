@@ -1379,6 +1379,9 @@ int singleMain()
 
 int C_DECL main(int argc, char* argv[])
 {
+    if (false)
+        return 1;
+
     ProcessArguments(WorkItems, argc, argv);
 
     int ret = 0;
