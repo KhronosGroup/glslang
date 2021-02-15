@@ -1274,14 +1274,15 @@ bool PreprocessDeferred(
     EShMessages messages,       // warnings/errors/AST; things to print out
     TShader::Includer& includer,
     TIntermediate& intermediate, // returned tree, etc.
-    std::string* outputString)
+    std::string* outputString,
+    TEnvironment* environment = nullptr)
 {
     DoPreprocessing parser(outputString);
     return ProcessDeferred(compiler, shaderStrings, numStrings, inputLengths, stringNames,
                            preamble, optLevel, resources, defaultVersion,
                            defaultProfile, forceDefaultVersionAndProfile,
                            forwardCompatible, messages, intermediate, parser,
-                           false, includer);
+                           false, includer, "", environment);
 }
 #endif
 
@@ -1918,7 +1919,8 @@ bool TShader::preprocess(const TBuiltInResource* builtInResources,
     return PreprocessDeferred(compiler, strings, numStrings, lengths, stringNames, preamble,
                               EShOptNone, builtInResources, defaultVersion,
                               defaultProfile, forceDefaultVersionAndProfile,
-                              forwardCompatible, message, includer, *intermediate, output_string);
+                              forwardCompatible, message, includer, *intermediate, output_string,
+                              &environment);
 }
 #endif
 
