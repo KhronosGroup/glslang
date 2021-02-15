@@ -949,6 +949,9 @@ bool ProcessDeferred(
     if (cachedTable)
         symbolTable->adoptLevels(*cachedTable);
 
+    if (intermediate.getUniqueId() != 0)
+        symbolTable->overwriteUniqueId(intermediate.getUniqueId());
+
     // Add built-in symbols that are potentially context dependent;
     // they get popped again further down.
     if (! AddContextSpecificSymbols(resources, compiler->infoSink, *symbolTable, version, profile, spvVersion,
@@ -1011,6 +1014,7 @@ bool ProcessDeferred(
     bool success = processingContext(*parseContext, ppContext, fullInput,
                                      versionWillBeError, *symbolTable,
                                      intermediate, optLevel, messages);
+    intermediate.setUniqueId(symbolTable->getMaxSymbolId());
     return success;
 }
 
@@ -1808,6 +1812,11 @@ void TShader::setSourceEntryPoint(const char* name)
 void TShader::addProcesses(const std::vector<std::string>& p)
 {
     intermediate->addProcesses(p);
+}
+
+void  TShader::setUniqueId(unsigned long long id)
+{
+    intermediate->setUniqueId(id);
 }
 
 void TShader::setInvertY(bool invert)                   { intermediate->setInvertY(invert); }

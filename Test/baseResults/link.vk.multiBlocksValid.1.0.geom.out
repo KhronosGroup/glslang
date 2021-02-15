@@ -328,14 +328,14 @@ output primitive = triangle_strip
                               Decorate 59(Vertex) Block
                               Decorate 61(oV) Location 0
                               Decorate 64(Vertex) Block
-                              Decorate 68(iV) Location 1
+                              Decorate 68(iV) Location 0
                               MemberDecorate 95(BufferBlock) 0 ColMajor
                               MemberDecorate 95(BufferBlock) 0 Offset 0
                               MemberDecorate 95(BufferBlock) 0 MatrixStride 16
                               Decorate 95(BufferBlock) BufferBlock
                               Decorate 97(uBuf) DescriptorSet 0
                               Decorate 97(uBuf) Binding 1
-                              Decorate 100(P) Location 0
+                              Decorate 100(P) Location 2
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32
