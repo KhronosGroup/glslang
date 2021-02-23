@@ -5769,6 +5769,8 @@ void TParseContext::layoutObjectCheck(const TSourceLoc& loc, const TSymbol& symb
                     error(loc, "can only specify on a uniform block", "push_constant", "");
                 if (qualifier.isShaderRecord())
                     error(loc, "can only specify on a buffer block", "shaderRecordNV", "");
+                if (qualifier.hasLocation() && type.isAtomic())
+                    error(loc, "cannot specify on atomic counter", "location", "");
             }
             break;
         default:
