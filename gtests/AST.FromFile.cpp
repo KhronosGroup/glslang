@@ -280,6 +280,7 @@ INSTANTIATE_TEST_SUITE_P(
         "glsl.es320.subgroupVote.comp",
         "terminate.frag",
         "terminate.vert",
+        "negativeWorkGroupSize.comp",
     })),
     FileNameAsCustomTestSuffix
 );

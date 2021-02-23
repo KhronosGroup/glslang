@@ -2756,6 +2756,11 @@ void TParseContext::rValueErrorCheck(const TSourceLoc& loc, const char* op, TInt
     if (!(symNode && symNode->getQualifier().isWriteOnly())) // base class checks
         if (symNode && symNode->getQualifier().isExplicitInterpolation())
             error(loc, "can't read from explicitly-interpolated object: ", op, symNode->getName().c_str());
+
+    // local_size_{xyz} must be assigned or specialized before gl_WorkGroupSize can be assigned. 
+    if(node->getQualifier().builtIn == EbvWorkGroupSize &&
+       !(intermediate.isLocalSizeSet() || intermediate.isLocalSizeSpecialized()))
+        error(loc, "can't read from gl_WorkGroupSize before a fixed workgroup size has been declared", op, "");
 }
 
 //
