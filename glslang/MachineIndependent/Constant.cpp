@@ -599,7 +599,7 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType) 
             newConstArray[i].setDConst(log(unionArray[i].getDConst()));
             break;
         case EOpExp2:
-            newConstArray[i].setDConst(exp2(unionArray[i].getDConst());
+            newConstArray[i].setDConst(exp2(unionArray[i].getDConst()));
             break;
         case EOpLog2:
             newConstArray[i].setDConst(log2(unionArray[i].getDConst()));
