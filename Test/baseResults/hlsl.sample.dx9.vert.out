@@ -215,14 +215,17 @@ Shader version: 500
               53:    7(float) Constant 1073741824
               60:             TypePointer Output 8(fvec4)
 61(@entryPointOutput.Pos):     60(ptr) Variable Output
+                              Line 1 11 0
          5(main):           3 Function None 4
                6:             Label
+                              Line 1 11 0
                               Line 1 11 0
               62:9(VS_OUTPUT) FunctionCall 11(@main()
               63:    8(fvec4) CompositeExtract 62 0
                               Store 61(@entryPointOutput.Pos) 63
                               Return
                               FunctionEnd
+                              Line 1 11 0
       11(@main():9(VS_OUTPUT) Function None 10
               12:             Label
       14(PosOut):     13(ptr) Variable Function
