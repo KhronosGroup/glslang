@@ -5913,16 +5913,12 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
         if (type.getBasicType() == EbtSampler) {
             int lastBinding = qualifier.layoutBinding;
             if (type.isArray()) {
-                if (spvVersion.vulkan > 0)
-                    lastBinding += 1;
-                else {
+                if (spvVersion.vulkan == 0) {
                     if (type.isSizedArray())
-                        lastBinding += type.getCumulativeArraySize();
+                        lastBinding += (type.getCumulativeArraySize() - 1);
                     else {
-                        lastBinding += 1;
 #ifndef GLSLANG_WEB
-                        if (spvVersion.vulkan == 0)
-                            warn(loc, "assuming binding count of one for compile-time checking of binding numbers for unsized array", "[]", "");
+                        warn(loc, "assuming binding count of one for compile-time checking of binding numbers for unsized array", "[]", "");
 #endif
                     }
                 }

@@ -306,6 +306,7 @@ ERROR: node is still EOpNull!
 0:?     'samp1D' ( uniform sampler1D)
 0:?     'samp1Ds' ( uniform sampler1DShadow)
 0:?     'badArray' (layout( binding=0) writeonly uniform unsized 1-element array of image1D)
+0:?     'u_sampler0' (layout( binding=74) uniform 6-element array of sampler2D)
 0:?     'gl_VertexID' ( gl_VertexId int VertexId)
 0:?     'gl_InstanceID' ( gl_InstanceId int InstanceId)
 
@@ -388,6 +389,7 @@ ERROR: node is still EOpNull!
 0:?     'samp1D' ( uniform sampler1D)
 0:?     'samp1Ds' ( uniform sampler1DShadow)
 0:?     'badArray' (layout( binding=0) writeonly uniform 1-element array of image1D)
+0:?     'u_sampler0' (layout( binding=74) uniform 6-element array of sampler2D)
 0:?     'gl_VertexID' ( gl_VertexId int VertexId)
 0:?     'gl_InstanceID' ( gl_InstanceId int InstanceId)
 
