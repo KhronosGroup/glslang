@@ -297,7 +297,7 @@ else()
 endif()
 
 if(BUILD_EXTERNAL AND IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/External)
-    find_package(PythonInterp 3 REQUIRED)
+    find_host_package(PythonInterp 3 REQUIRED)
 
     # We depend on these for later projects, so they should come first.
     add_subdirectory(External)
