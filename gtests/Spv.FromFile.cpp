@@ -328,6 +328,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.demoteDisabled.frag",
         "spv.deepRvalue.frag",
         "spv.depthOut.frag",
+        "spv.depthUnchanged.frag",
         "spv.discard-dce.frag",
         "spv.doWhileLoop.frag",
         "spv.earlyReturnDiscard.frag",

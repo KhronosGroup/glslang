@@ -1551,15 +1551,16 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion,
             builder.addExtension(spv::E_SPV_KHR_post_depth_coverage);
         }
 
-        if (glslangIntermediate->getDepth() != glslang::EldUnchanged && glslangIntermediate->isDepthReplacing())
+        if (glslangIntermediate->isDepthReplacing())
             builder.addExecutionMode(shaderEntry, spv::ExecutionModeDepthReplacing);
 
 #ifndef GLSLANG_WEB
 
         switch(glslangIntermediate->getDepth()) {
-        case glslang::EldGreater:  mode = spv::ExecutionModeDepthGreater; break;
-        case glslang::EldLess:     mode = spv::ExecutionModeDepthLess;    break;
-        default:                   mode = spv::ExecutionModeMax;          break;
+        case glslang::EldGreater:   mode = spv::ExecutionModeDepthGreater;   break;
+        case glslang::EldLess:      mode = spv::ExecutionModeDepthLess;      break;
+        case glslang::EldUnchanged: mode = spv::ExecutionModeDepthUnchanged; break;
+        default:                    mode = spv::ExecutionModeMax;            break;
         }
         if (mode != spv::ExecutionModeMax)
             builder.addExecutionMode(shaderEntry, (spv::ExecutionMode)mode);
