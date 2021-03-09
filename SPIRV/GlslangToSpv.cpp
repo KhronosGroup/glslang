@@ -3166,7 +3166,9 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
 #endif
     if (atomic) {
         // Handle all atomics
-        result = createAtomicOperation(node->getOp(), precision, resultType(), operands, node->getBasicType(),
+        glslang::TBasicType typeProxy = (node->getOp() == glslang::EOpAtomicStore)
+            ? node->getSequence()[0]->getAsTyped()->getBasicType() : node->getBasicType();
+        result = createAtomicOperation(node->getOp(), precision, resultType(), operands, typeProxy,
             lvalueCoherentFlags);
     } else if (node->getOp() == glslang::EOpDebugPrintf) {
         if (!nonSemanticDebugPrintf) {

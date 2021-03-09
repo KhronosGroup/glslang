@@ -714,6 +714,7 @@ INSTANTIATE_TEST_SUITE_P(
     "spv.multiviewPerViewAttributes.vert",
     "spv.multiviewPerViewAttributes.tesc",
     "spv.atomicInt64.comp",
+    "spv.atomicStoreInt64.comp",
     "spv.shadingRate.frag",
     "spv.RayGenShader.rgen",
     "spv.RayGenShaderArray.rgen",
