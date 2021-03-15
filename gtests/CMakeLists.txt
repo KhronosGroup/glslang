@@ -53,7 +53,9 @@ if(BUILD_TESTING)
             ${CMAKE_CURRENT_SOURCE_DIR}/Link.FromFile.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/Link.FromFile.Vk.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/Pp.FromFile.cpp
-            ${CMAKE_CURRENT_SOURCE_DIR}/Spv.FromFile.cpp)
+            ${CMAKE_CURRENT_SOURCE_DIR}/Spv.FromFile.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/VkRelaxed.FromFile.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/GlslMapIO.FromFile.cpp)
 
         if(ENABLE_SPVREMAPPER)
             set(TEST_SOURCES ${TEST_SOURCES}
