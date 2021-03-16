@@ -727,7 +727,7 @@ void TranslateEnvironment(const TEnvironment* environment, EShMessages& messages
                 break;
             case EShClientVulkan:
                 spvVersion.vulkanGlsl = environment->input.dialectVersion;
-                spvVersion.vulkanRelaxed = environment->input.VulkanRulesRelaxed;
+                spvVersion.vulkanRelaxed = environment->input.vulkanRulesRelaxed;
                 break;
             case EShClientOpenGL:
                 spvVersion.openGl = environment->input.dialectVersion;
@@ -1767,6 +1767,7 @@ TShader::TShader(EShLanguage s)
     // clear environment (avoid constructors in them for use in a C interface)
     environment.input.languageFamily = EShSourceNone;
     environment.input.dialect = EShClientNone;
+    environment.input.vulkanRulesRelaxed = false;
     environment.client.client = EShClientNone;
     environment.target.language = EShTargetNone;
     environment.target.hlslFunctionality1 = false;
