@@ -915,7 +915,7 @@ public:
     void merge(TInfoSink&, TIntermediate&);
     void finalCheck(TInfoSink&, bool keepUncalled);
 
-    void mergeGlobalUniformBlocks(TInfoSink& infoSink, TIntermediate& unit);
+    void mergeGlobalUniformBlocks(TInfoSink& infoSink, TIntermediate& unit, bool mergeExistingOnly);
     void mergeUniformObjects(TInfoSink& infoSink, TIntermediate& unit);
     void checkStageIO(TInfoSink&, TIntermediate&);
 
