@@ -108,7 +108,8 @@ void TIntermediate::mergeUniformObjects(TInfoSink& infoSink, TIntermediate& unit
     unitLinkerObjects.resize(end - unitLinkerObjects.begin());
 
     // merge uniforms and do error checking
-    mergeGlobalUniformBlocks(infoSink, unit);
+    bool mergeExistingOnly = false;
+    mergeGlobalUniformBlocks(infoSink, unit, mergeExistingOnly);
     mergeLinkerObjects(infoSink, linkerObjects, unitLinkerObjects, unit.getStage());
 }
 
@@ -362,7 +363,8 @@ void TIntermediate::mergeTrees(TInfoSink& infoSink, TIntermediate& unit)
     remapIds(idMaps, idShift + 1, unit);
 
     mergeBodies(infoSink, globals, unitGlobals);
-    mergeGlobalUniformBlocks(infoSink, unit);
+    bool mergeExistingOnly = false;
+    mergeGlobalUniformBlocks(infoSink, unit, mergeExistingOnly);
     mergeLinkerObjects(infoSink, linkerObjects, unitLinkerObjects, unit.getStage());
     ioAccessed.insert(unit.ioAccessed.begin(), unit.ioAccessed.end());
 }
@@ -525,7 +527,7 @@ static inline bool isSameInterface(TIntermSymbol* symbol, EShLanguage stage, TIn
 // merge the members of different stages to allow them to be linked properly
 // as a single block
 //
-void TIntermediate::mergeGlobalUniformBlocks(TInfoSink& infoSink, TIntermediate& unit)
+void TIntermediate::mergeGlobalUniformBlocks(TInfoSink& infoSink, TIntermediate& unit, bool mergeExistingOnly)
 {
     TIntermSequence& linkerObjects = findLinkerObjects()->getSequence();
     TIntermSequence& unitLinkerObjects = unit.findLinkerObjects()->getSequence();
@@ -552,7 +554,7 @@ void TIntermediate::mergeGlobalUniformBlocks(TInfoSink& infoSink, TIntermediate&
     auto itUnitBlock = unitDefaultBlocks.begin();
     for (; itUnitBlock != unitDefaultBlocks.end(); itUnitBlock++) {
 
-        bool add = true;
+        bool add = !mergeExistingOnly;
         auto itBlock = defaultBlocks.begin();
 
         for (; itBlock != defaultBlocks.end(); itBlock++) {

@@ -2124,7 +2124,12 @@ bool TProgram::crossStageCheck(EShMessages) {
 
     // copy final definition of global block back into each stage
     for (unsigned int i = 0; i < activeStages.size(); ++i) {
-        activeStages[i]->mergeGlobalUniformBlocks(*infoSink, uniforms);
+        // We only want to merge into already existing global uniform blocks.
+        // A stage that doesn't already know about the global doesn't care about it's content.
+        // Otherwise we end up pointing to the same object between different stages
+        // and that will break binding/set remappings
+        bool mergeExistingOnly = true;
+        activeStages[i]->mergeGlobalUniformBlocks(*infoSink, uniforms, mergeExistingOnly);
     }
 
     // compare cross stage symbols for each stage boundary

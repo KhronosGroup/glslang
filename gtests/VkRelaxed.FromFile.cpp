@@ -48,6 +48,7 @@ namespace {
 
 struct vkRelaxedData {
     std::vector<std::string> fileNames;
+    std::vector<std::vector<std::string>> resourceSetBindings;
 };
 
 using VulkanRelaxedTest = GlslangTest <::testing::TestWithParam<vkRelaxedData>>;
@@ -191,6 +192,7 @@ bool verifyIOMapping(std::string& linkingError, glslang::TProgram& program) {
 TEST_P(VulkanRelaxedTest, FromFile)
 {
     const auto& fileNames = GetParam().fileNames;
+    const auto& resourceSetBindings = GetParam().resourceSetBindings;
     Semantics semantics = Semantics::Vulkan;
     const size_t fileCount = fileNames.size();
     const EShMessages controls = DeriveOptions(Source::GLSL, semantics, Target::BothASTAndSpv);
@@ -229,6 +231,12 @@ TEST_P(VulkanRelaxedTest, FromFile)
     success &= program.link(controls);
     result.linkingOutput = program.getInfoLog();
     result.linkingError = program.getInfoDebugLog();
+
+    if (!resourceSetBindings.empty()) {
+        assert(resourceSetBindings.size() == fileNames.size());
+        for (int i = 0; i < shaders.size(); i++)
+            shaders[i]->setResourceSetBinding(resourceSetBindings[i]);
+    }
 
     unsigned int stage = 0;
     glslang::TIntermediate* firstIntermediate = nullptr;
@@ -287,6 +295,7 @@ INSTANTIATE_TEST_SUITE_P(
         {{"vk.relaxed.link1.frag", "vk.relaxed.link2.frag"}},
         {{"vk.relaxed.stagelink.vert", "vk.relaxed.stagelink.frag"}},
         {{"vk.relaxed.errorcheck.vert", "vk.relaxed.errorcheck.frag"}},
+        {{"vk.relaxed.changeSet.vert", "vk.relaxed.changeSet.frag" }, { {"0"}, {"1"} } },
     }))
 );
 // clang-format on
