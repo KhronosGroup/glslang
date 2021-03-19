@@ -124,6 +124,7 @@ INSTANTIATE_TEST_SUITE_P(
         {"link.vk.pcNamingInvalid.0.0.vert", "link.vk.pcNamingInvalid.0.1.vert"},
         {"link.vk.multiBlocksValid.0.0.vert", "link.vk.multiBlocksValid.0.1.vert"},
         {"link.vk.multiBlocksValid.1.0.geom", "link.vk.multiBlocksValid.1.1.geom"},
+        {"link.vk.inconsistentGLPerVertex.0.vert", "link.vk.inconsistentGLPerVertex.0.geom"},
     }))
 );
 // clang-format on
