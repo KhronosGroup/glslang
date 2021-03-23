@@ -234,7 +234,7 @@ TEST_P(VulkanRelaxedTest, FromFile)
 
     if (!resourceSetBindings.empty()) {
         assert(resourceSetBindings.size() == fileNames.size());
-        for (int i = 0; i < shaders.size(); i++)
+        for (size_t i = 0; i < shaders.size(); i++)
             shaders[i]->setResourceSetBinding(resourceSetBindings[i]);
     }
 
