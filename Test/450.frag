@@ -48,6 +48,31 @@ void foo()
     float f = imageAtomicExchange(i2dmsa, ivec3(in3), 2, 4.5);
 }
 
+#extension GL_ARB_sparse_texture2: enable
+
+uniform sampler2D               s2D;
+uniform isampler2DArray         is2DArray;
+uniform sampler2DRectShadow     s2DRectShadow;
+
+in flat ivec2 offsets[4];
+in vec2 c2;
+in vec3 c3;
+
+void testOffsets()
+{
+    vec4  texel  = vec4(0.0);
+    ivec4 itexel = ivec4(0);
+    const ivec2 constOffsets[4] = ivec2[4](ivec2(1,2), ivec2(3,4), ivec2(15,16), ivec2(-2,0));
+    sparseTextureGatherOffsetsARB(s2D, c2, constOffsets, texel);
+    sparseTextureGatherOffsetsARB(is2DArray, c3, constOffsets, itexel, 2);
+    sparseTextureGatherOffsetsARB(s2DRectShadow, c2, 2.0, constOffsets, texel);
+
+    sparseTextureGatherOffsetsARB(s2D, c2, offsets, texel); // Error : Non constant offsets
+    sparseTextureGatherOffsetsARB(is2DArray, c3, offsets, itexel, 2); // Error : Non constant offsets
+    sparseTextureGatherOffsetsARB(s2DRectShadow, c2, 2.0, offsets, texel); // Error : Non constant offsets
+
+}
+
 in float gl_CullDistance[6];
 
 float cull(int i)

@@ -2096,7 +2096,13 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
             profileRequires(loc, ~EEsProfile, 450, nullptr, feature);
             requireExtensions(loc, 1, &E_GL_AMD_texture_gather_bias_lod, feature);
         }
-
+        // As per GL_ARB_sparse_texture2 extension "Offsets" parameter must be constant integral expression
+        // for sparseTextureGatherOffsetsARB just as textureGatherOffsets
+        if (callNode.getOp() == EOpSparseTextureGatherOffsets) {
+            int offsetsArg = arg0->getType().getSampler().shadow ? 3 : 2;
+            if (!(*argp)[offsetsArg]->getAsConstantUnion())
+                error(loc, "argument must be compile-time constant", "offsets", "");
+        }
         break;
     }
 
