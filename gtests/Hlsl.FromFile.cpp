@@ -245,7 +245,6 @@ INSTANTIATE_TEST_SUITE_P(
         {"hlsl.isfinite.frag", "main"},
         {"hlsl.intrinsics.barriers.comp", "ComputeShaderFunction"},
         {"hlsl.intrinsics.comp", "ComputeShaderFunction"},
-        {"hlsl.intrinsics.evalfns.frag", "main"},
         {"hlsl.intrinsics.d3dcolortoubyte4.frag", "main"},
         {"hlsl.intrinsics.double.frag", "PixelShaderFunction"},
         {"hlsl.intrinsics.f1632.frag", "main"},
@@ -471,6 +470,7 @@ INSTANTIATE_TEST_SUITE_P(
         {"hlsl.flattenOpaqueInitMix.vert", "main"},
         {"hlsl.flattenSubset.frag", "main"},
         {"hlsl.flattenSubset2.frag", "main"},
+        {"hlsl.intrinsics.evalfns.frag", "main"},
         {"hlsl.partialFlattenLocal.vert", "main"},
         {"hlsl.partialFlattenMixed.vert", "main"}
     }),
