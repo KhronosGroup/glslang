@@ -165,12 +165,13 @@ void TParseVersions::initializeExtensionBehavior()
         EShTargetLanguageVersion minSpvVersion;
     } extensionData;
 
-    const extensionData exts[] = { {E_GL_EXT_ray_tracing, EShTargetSpv_1_4} };
+    const extensionData exts[] = { {E_GL_EXT_ray_tracing, EShTargetSpv_1_4},
+        {E_GL_EXT_buffer_reference, EShTargetSpv_1_3} };
 
     for (size_t ii = 0; ii < sizeof(exts) / sizeof(exts[0]); ii++) {
         // Add only extensions which require > spv1.0 to save space in map
         if (exts[ii].minSpvVersion > EShTargetSpv_1_0) {
-            extensionMinSpv[E_GL_EXT_ray_tracing] = exts[ii].minSpvVersion;
+            extensionMinSpv[exts[ii].extensionName] = exts[ii].minSpvVersion;
         }
     }
 
@@ -875,7 +876,7 @@ void TParseVersions::updateExtensionBehavior(int line, const char* extension, co
     checkExtensionStage(getCurrentLoc(), extension);
 
     // check if extension has additional requirements
-    extensionRequires(getCurrentLoc(), extension ,behaviorString);
+    extensionRequires(getCurrentLoc(), extension, behaviorString);
 
     // update the requested extension
     updateExtensionBehavior(extension, behavior);
