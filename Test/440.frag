@@ -151,3 +151,18 @@ int layer()
 {
     return gl_Layer;
 }
+
+// The std140 layout qualifier should NOT propagate all the way down to
+// the vec3. It is unnecessary and it breaks downstream AST consumers,
+// notably LunarGlass.
+
+struct PointLight_t
+{
+    vec3 vPositionWs ;
+} ;
+
+layout( std140, row_major ) uniform PerViewLightData_t
+{
+
+    PointLight_t g_pointLightData [ 128 ] ;
+} ;

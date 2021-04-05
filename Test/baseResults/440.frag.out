@@ -118,6 +118,7 @@ ERROR: node is still EOpNull!
 0:?     'aconst' ( global 4-element array of int)
 0:?     'bconst' ( global 64-element array of int)
 0:?     'sampInArray' ( smooth sample in 4-element array of 3-component vector of float)
+0:?     'anon@0' (layout( row_major std140) uniform block{layout( row_major std140 offset=0) uniform 128-element array of structure{ global 3-component vector of float vPositionWs} g_pointLightData})
 
 
 Linked fragment stage:
@@ -162,4 +163,5 @@ ERROR: node is still EOpNull!
 0:?     'aconst' ( global 4-element array of int)
 0:?     'bconst' ( global 64-element array of int)
 0:?     'sampInArray' ( smooth sample in 4-element array of 3-component vector of float)
+0:?     'anon@0' (layout( row_major std140) uniform block{layout( row_major std140 offset=0) uniform 128-element array of structure{ global 3-component vector of float vPositionWs} g_pointLightData})
 

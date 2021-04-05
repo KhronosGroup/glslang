@@ -8524,8 +8524,8 @@ void TParseContext::fixBlockUniformLayoutMatrix(TQualifier& qualifier, TTypeList
 }
 
 //
-// Spread LayoutPacking to block member, if a  block member is a struct, we need spread LayoutPacking to
-// this struct member too. and keep this rule for recursive.
+// Spread LayoutPacking to matrix or aggregate block members. If a block member is a struct or
+// array of struct, spread LayoutPacking recursively to its matrix or aggregate members.
 //
 void TParseContext::fixBlockUniformLayoutPacking(TQualifier& qualifier, TTypeList* originTypeList,
                                                  TTypeList* tmpTypeList)
@@ -8534,11 +8534,13 @@ void TParseContext::fixBlockUniformLayoutPacking(TQualifier& qualifier, TTypeLis
     for (unsigned int member = 0; member < originTypeList->size(); ++member) {
         if (qualifier.layoutPacking != ElpNone) {
             if (tmpTypeList == nullptr) {
-                if ((*originTypeList)[member].type->getQualifier().layoutPacking == ElpNone) {
+                if ((*originTypeList)[member].type->getQualifier().layoutPacking == ElpNone &&
+                    !(*originTypeList)[member].type->isScalarOrVector()) {
                     (*originTypeList)[member].type->getQualifier().layoutPacking = qualifier.layoutPacking;
                 }
             } else {
-                if ((*tmpTypeList)[member].type->getQualifier().layoutPacking == ElpNone) {
+                if ((*tmpTypeList)[member].type->getQualifier().layoutPacking == ElpNone &&
+                    !(*tmpTypeList)[member].type->isScalarOrVector()) {
                     (*tmpTypeList)[member].type->getQualifier().layoutPacking = qualifier.layoutPacking;
                 }
             }
