@@ -98,7 +98,14 @@ if(ENABLE_GLSLANG_INSTALL)
         install(EXPORT spirv-remapTargets DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake)
     endif()
 
-    install(TARGETS glslang-default-resource-limits EXPORT glslang-default-resource-limitsTargets
-            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+    if(BUILD_SHARED_LIBS)
+        install(TARGETS glslang-default-resource-limits EXPORT glslang-default-resource-limitsTargets
+                ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+                LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+                RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+    else()
+        install(TARGETS glslang-default-resource-limits EXPORT glslang-default-resource-limitsTargets
+                ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
+    endif()
     install(EXPORT glslang-default-resource-limitsTargets DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake)
 endif(ENABLE_GLSLANG_INSTALL)
