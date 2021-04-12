@@ -1,0 +1,4 @@
+textureoffset_sampler2darrayshadow.vert
+ERROR: 0:9: 'texel offset' : TextureOffset not support the sampler2DArrayShadow :  version <= 420
+ERROR: 0:9: '' : compilation terminated
+ERROR: 2 compilation errors.  No code generated
