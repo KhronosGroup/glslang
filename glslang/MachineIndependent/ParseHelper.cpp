@@ -6424,8 +6424,11 @@ const TFunction* TParseContext::findFunction(const TSourceLoc& loc, const TFunct
                                 extensionTurnedOn(E_GL_EXT_shader_explicit_arithmetic_types_float64);
 
     if (isEsProfile())
-        function = (extensionTurnedOn(E_GL_EXT_shader_implicit_conversions) && version >= 310) ?
-                    findFunction120(loc, call, builtIn) : findFunctionExact(loc, call, builtIn);
+        function = (explicitTypesEnabled && version >= 310)
+                   ? findFunctionExplicitTypes(loc, call, builtIn)
+                   : ((extensionTurnedOn(E_GL_EXT_shader_implicit_conversions) && version >= 310)
+                      ? findFunction120(loc, call, builtIn)
+                      : findFunctionExact(loc, call, builtIn));
     else if (version < 120)
         function = findFunctionExact(loc, call, builtIn);
     else if (version < 400)
