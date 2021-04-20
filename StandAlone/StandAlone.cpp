@@ -111,6 +111,7 @@ bool NaNClamp = false;
 bool stripDebugInfo = false;
 bool beQuiet = false;
 bool VulkanRulesRelaxed = false;
+bool hlslSampledTextures = false;
 
 //
 // Return codes from main/exit().
@@ -655,6 +656,8 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                         HlslEnable16BitTypes = true;
                     } else if (lowerword == "hlsl-dx9-compatible") {
                         HlslDX9compatible = true;
+                    } else if (lowerword == "hlsl-sampled-textures") { 
+                        hlslSampledTextures = true;
                     } else if (lowerword == "invert-y" ||  // synonyms
                                lowerword == "iy") {
                         Options |= EOptionInvertY;
@@ -1188,6 +1191,9 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
         }
         shader->setNoStorageFormat((Options & EOptionNoStorageFormat) != 0);
         shader->setResourceSetBinding(baseResourceSetBinding[compUnit.stage]);
+
+        if (hlslSampledTextures)
+            shader->setTextureSamplerTransformMode(EShTexSampTransUpgradeTextureRemoveSampler);
 
         if (Options & EOptionAutoMapBindings)
             shader->setAutoMapBindings(true);
