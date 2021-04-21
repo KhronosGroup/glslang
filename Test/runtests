@@ -191,6 +191,16 @@ run -D -Od -e MainPs -H -Od -g hlsl.pp.line3.frag > $TARGETDIR/hlsl.pp.line3.fra
 diff -b $BASEDIR/hlsl.pp.line3.frag.out $TARGETDIR/hlsl.pp.line3.frag.out || HASERROR=1
 
 #
+# Testing --depfile
+#
+
+echo "Testing --depfile"
+run -D -Od -e main -H --depfile $TARGETDIR/hlsl.include.vert.d.out -Od ../Test/hlsl.include.vert > $TARGETDIR/hlsl.include.vert.out
+diff -b $BASEDIR/hlsl.include.vert.d.out $TARGETDIR/hlsl.include.vert.d.out || HASERROR=1
+run -D -Od -e main -H --depfile $TARGETDIR/hlsl.dashI.vert.d.out -Od -Iinc1/path1 -Iinc1/path2 hlsl.dashI.vert > $TARGETDIR/hlsl.dashI.vert.out
+diff -b $BASEDIR/hlsl.dashI.vert.d.out $TARGETDIR/hlsl.dashI.vert.d.out || HASERROR=1
+
+#
 # Testing -D and -U
 #
 echo "Testing -D and -U"
