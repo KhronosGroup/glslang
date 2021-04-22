@@ -281,6 +281,15 @@ run --nan-clamp -H --aml --amb spv.400.frag > $TARGETDIR/spv.400.frag.nanclamp.o
 diff -b $BASEDIR/spv.400.frag.nanclamp.out $TARGETDIR/spv.400.frag.nanclamp.out || HASERROR=1
 
 #
+# Test --auto-sampled-textures
+#
+echo "Testing auto-sampled-textures"
+run --auto-sampled-textures -H -Od -e MainPs -D -S frag hlsl.autosampledtextures.frag > $TARGETDIR/hlsl.autosampledtextures.frag.out
+diff -b $BASEDIR/hlsl.autosampledtextures.frag.out $TARGETDIR/hlsl.autosampledtextures.frag.out || HASERROR=1
+run --auto-sampled-textures -H -Od -S frag glsl.autosampledtextures.frag > $TARGETDIR/glsl.autosampledtextures.frag.out
+diff -b $BASEDIR/glsl.autosampledtextures.frag.out $TARGETDIR/glsl.autosampledtextures.frag.out || HASERROR=1
+
+#
 # Final checking
 #
 if [ $HASERROR -eq 0 ]
