@@ -195,7 +195,7 @@ elseif(MSVC)
         add_compile_options(/EHsc) # Enable Exceptions
 	else()
         string(REGEX REPLACE /EHsc "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS}) # Try to remove default /EHsc cxx_flag
-        add_compile_definitions(_HAS_EXCEPTIONS=0)
+        add_compile_options(/D_HAS_EXCEPTIONS=0)
     endif()
 endif()
 
