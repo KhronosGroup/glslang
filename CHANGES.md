@@ -3,6 +3,11 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## 11.4.0 2021-04-22
+
+### Other changes
+* Fix to keep source compatible with CMake 3.10.2
+
 ## 11.3.0 2021-04-21
 
 ### Other changes
