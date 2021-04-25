@@ -333,6 +333,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_EXT_shader_image_int64]   = EBhDisable;
     extensionBehavior[E_GL_EXT_terminate_invocation]        = EBhDisable;
     extensionBehavior[E_GL_EXT_shared_memory_block]         = EBhDisable;
+    extensionBehavior[E_GL_EXT_spirv_intrinsics]            = EBhDisable;
 
     // OVR extensions
     extensionBehavior[E_GL_OVR_multiview]                = EBhDisable;
@@ -493,6 +494,7 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_EXT_ray_tracing 1\n"
             "#define GL_EXT_ray_query 1\n"
             "#define GL_EXT_ray_flags_primitive_culling 1\n"
+            "#define GL_EXT_spirv_intrinsics 1\n"
 
             "#define GL_AMD_shader_ballot 1\n"
             "#define GL_AMD_shader_trinary_minmax 1\n"
@@ -600,6 +602,29 @@ void TParseVersions::getPreamble(std::string& preamble)
         snprintf(numberBuf, numberBufSize, "%d", spvVersion.openGl);
         preamble += numberBuf;
         preamble += "\n";
+    }
+#endif
+
+#ifndef GLSLANG_WEB
+    // GL_EXT_spirv_intrinsics
+    if (!isEsProfile()) {
+        switch (language) {
+        case EShLangVertex:         preamble += "#define GL_VERTEX_SHADER 1 \n";                    break;
+        case EShLangTessControl:    preamble += "#define GL_TESSELLATION_CONTROL_SHADER 1 \n";      break;
+        case EShLangTessEvaluation: preamble += "#define GL_TESSELLATION_EVALUATION_SHADER 1 \n";   break;
+        case EShLangGeometry:       preamble += "#define GL_GEOMETRY_SHADER 1 \n";                  break;
+        case EShLangFragment:       preamble += "#define GL_FRAGMENT_SHADER 1 \n";                  break;
+        case EShLangCompute:        preamble += "#define GL_COMPUTE_SHADER 1 \n";                   break;
+        case EShLangRayGen:         preamble += "#define GL_RAY_GENERATION_SHADER_EXT 1 \n";        break;
+        case EShLangIntersect:      preamble += "#define GL_INTERSECTION_SHADER_EXT 1 \n";          break;
+        case EShLangAnyHit:         preamble += "#define GL_ANY_HIT_SHADER_EXT 1 \n";               break;
+        case EShLangClosestHit:     preamble += "#define GL_CLOSEST_HIT_SHADER_EXT 1 \n";           break;
+        case EShLangMiss:           preamble += "#define GL_MISS_SHADER_EXT 1 \n";                  break;
+        case EShLangCallable:       preamble += "#define GL_CALLABLE_SHADER_EXT 1 \n";              break;
+        case EShLangTaskNV:         preamble += "#define GL_TASK_SHADER_NV 1 \n";                   break;
+        case EShLangMeshNV:         preamble += "#define GL_MESH_SHADER_NV 1 \n";                   break;
+        default:                                                                                    break;
+        }
     }
 #endif
 }

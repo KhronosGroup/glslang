@@ -160,6 +160,7 @@ protected:
     spv::SelectionControlMask TranslateSwitchControl(const glslang::TIntermSwitch&) const;
     spv::LoopControlMask TranslateLoopControl(const glslang::TIntermLoop&, std::vector<unsigned int>& operands) const;
     spv::StorageClass TranslateStorageClass(const glslang::TType&);
+    void TranslateLiterals(const glslang::TVector<const glslang::TIntermConstantUnion*>&, std::vector<unsigned>&) const;
     void addIndirectionIndexCapabilities(const glslang::TType& baseType, const glslang::TType& indexType);
     spv::Id createSpvVariable(const glslang::TIntermSymbol*, spv::Id forcedType);
     spv::Id getSampledType(const glslang::TSampler&);
@@ -1249,6 +1250,10 @@ spv::StorageClass TGlslangToSpvTraverser::TranslateStorageClass(const glslang::T
 {
     if (type.getBasicType() == glslang::EbtRayQuery)
         return spv::StorageClassPrivate;
+#ifndef GLSLANG_WEB
+    if (type.getQualifier().isSpirvByReference())
+        return spv::StorageClassFunction;
+#endif
     if (type.getQualifier().isPipeInput())
         return spv::StorageClassInput;
     if (type.getQualifier().isPipeOutput())
@@ -1297,6 +1302,7 @@ spv::StorageClass TGlslangToSpvTraverser::TranslateStorageClass(const glslang::T
     case glslang::EvqHitAttr:        return spv::StorageClassHitAttributeKHR;
     case glslang::EvqCallableData:   return spv::StorageClassCallableDataKHR;
     case glslang::EvqCallableDataIn: return spv::StorageClassIncomingCallableDataKHR;
+    case glslang::EvqSpirvStorageClass: return static_cast<spv::StorageClass>(type.getQualifier().spirvStorageClass);
 #endif
     default:
         assert(0);
@@ -1304,6 +1310,52 @@ spv::StorageClass TGlslangToSpvTraverser::TranslateStorageClass(const glslang::T
     }
 
     return spv::StorageClassFunction;
+}
+
+// Translate glslang constants to SPIR-V literals
+void TGlslangToSpvTraverser::TranslateLiterals(const glslang::TVector<const glslang::TIntermConstantUnion*>& constants,
+                                               std::vector<unsigned>& literals) const
+{
+    for (auto constant : constants) {
+        if (constant->getBasicType() == glslang::EbtFloat) {
+            float floatValue = static_cast<float>(constant->getConstArray()[0].getDConst());
+            unsigned literal = *reinterpret_cast<unsigned*>(&floatValue);
+            literals.push_back(literal);
+        } else if (constant->getBasicType() == glslang::EbtInt) {
+            unsigned literal = constant->getConstArray()[0].getIConst();
+            literals.push_back(literal);
+        } else if (constant->getBasicType() == glslang::EbtUint) {
+            unsigned literal = constant->getConstArray()[0].getUConst();
+            literals.push_back(literal);
+        } else if (constant->getBasicType() == glslang::EbtBool) {
+            unsigned literal = constant->getConstArray()[0].getBConst();
+            literals.push_back(literal);
+        } else if (constant->getBasicType() == glslang::EbtString) {
+            auto str = constant->getConstArray()[0].getSConst()->c_str();
+            unsigned literal = 0;
+            char* literalPtr = reinterpret_cast<char*>(&literal);
+            unsigned charCount = 0;
+            char ch = 0;
+            do {
+                ch = *(str++);
+                *(literalPtr++) = ch;
+                ++charCount;
+                if (charCount == 4) {
+                    literals.push_back(literal);
+                    literalPtr = reinterpret_cast<char*>(&literal);
+                    charCount = 0;
+                }
+            } while (ch != 0);
+
+            // Partial literal is padded with 0
+            if (charCount > 0) {
+                for (; charCount < 4; ++charCount)
+                    *(literalPtr++) = 0;
+                literals.push_back(literal);
+            }
+        } else
+            assert(0); // Unexpected type
+    }
 }
 
 // Add capabilities pertaining to how an array is indexed.
@@ -1735,6 +1787,53 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion,
     default:
         break;
     }
+
+#ifndef GLSLANG_WEB
+    //
+    // Add SPIR-V requirements (GL_EXT_spirv_intrinsics)
+    //
+    if (glslangIntermediate->hasSpirvRequirement()) {
+        const glslang::TSpirvRequirement& spirvRequirement = glslangIntermediate->getSpirvRequirement();
+
+        // Add SPIR-V extension requirement
+        for (auto& extension : spirvRequirement.extensions)
+            builder.addExtension(extension.c_str());
+
+        // Add SPIR-V capability requirement
+        for (auto capability : spirvRequirement.capabilities)
+            builder.addCapability(static_cast<spv::Capability>(capability));
+    }
+
+    //
+    // Add SPIR-V execution mode qualifiers (GL_EXT_spirv_intrinsics)
+    //
+    if (glslangIntermediate->hasSpirvExecutionMode()) {
+        const glslang::TSpirvExecutionMode spirvExecutionMode = glslangIntermediate->getSpirvExecutionMode();
+
+        // Add spirv_execution_mode
+        for (auto& mode : spirvExecutionMode.modes) {
+            if (!mode.second.empty()) {
+                std::vector<unsigned> literals;
+                TranslateLiterals(mode.second, literals);
+                builder.addExecutionMode(shaderEntry, static_cast<spv::ExecutionMode>(mode.first), literals);
+            } else
+                builder.addExecutionMode(shaderEntry, static_cast<spv::ExecutionMode>(mode.first));
+        }
+
+        // Add spirv_execution_mode_id
+        for (auto& modeId : spirvExecutionMode.modeIds) {
+            std::vector<spv::Id> operandIds;
+            assert(!modeId.second.empty());
+            for (auto extraOperand : modeId.second) {
+                int nextConst = 0;
+                spv::Id operandId = createSpvConstantFromConstUnionArray(
+                    extraOperand->getType(), extraOperand->getConstArray(), nextConst, false);
+                operandIds.push_back(operandId);
+            }
+            builder.addExecutionModeId(shaderEntry, static_cast<spv::ExecutionMode>(modeId.first), operandIds);
+        }
+    }
+#endif
 }
 
 // Finish creating SPV, after the traversal is complete.
@@ -2317,10 +2416,14 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
         node->getOp() == glslang::EOpRayQueryGetWorldRayDirection ||
         node->getOp() == glslang::EOpRayQueryGetIntersectionCandidateAABBOpaque ||
         node->getOp() == glslang::EOpRayQueryTerminate ||
-        node->getOp() == glslang::EOpRayQueryConfirmIntersection) {
+        node->getOp() == glslang::EOpRayQueryConfirmIntersection ||
+        (node->getOp() == glslang::EOpSpirvInst && operandNode->getAsTyped()->getQualifier().isSpirvByReference())) {
         operand = builder.accessChainGetLValue(); // Special case l-value operands
         lvalueCoherentFlags = builder.getAccessChain().coherentFlags;
         lvalueCoherentFlags |= TranslateCoherent(operandNode->getAsTyped()->getType());
+    } else if (operandNode->getAsTyped()->getQualifier().isSpirvLiteral()) {
+        // Will be translated to a literal value, make a placeholder here
+        operand = spv::NoResult;
     } else
 #endif
     {
@@ -2340,6 +2443,38 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
     if (! result)
         result = createUnaryOperation(node->getOp(), decorations, resultType(), operand,
             node->getOperand()->getBasicType(), lvalueCoherentFlags);
+
+#ifndef GLSLANG_WEB
+    // it could be attached to a SPIR-V intruction
+    if (!result) {
+        if (node->getOp() == glslang::EOpSpirvInst) {
+            const auto& spirvInst = node->getSpirvInstruction();
+            if (spirvInst.set == "") {
+                spv::IdImmediate idImmOp = {true, operand};
+                if (operandNode->getAsTyped()->getQualifier().isSpirvLiteral()) {
+                    // Translate the constant to a literal value
+                    std::vector<unsigned> literals;
+                    glslang::TVector<const glslang::TIntermConstantUnion*> constants;
+                    constants.push_back(operandNode->getAsConstantUnion());
+                    TranslateLiterals(constants, literals);
+                    idImmOp = {false, literals[0]};
+                }
+
+                if (node->getBasicType() == glslang::EbtVoid)
+                    builder.createNoResultOp(static_cast<spv::Op>(spirvInst.id), {idImmOp});
+                else
+                    result = builder.createOp(static_cast<spv::Op>(spirvInst.id), resultType(), {idImmOp});
+            } else {
+                result = builder.createBuiltinCall(
+                    resultType(), spirvInst.set == "GLSL.std.450" ? stdBuiltins : getExtBuiltins(spirvInst.set.c_str()),
+                    spirvInst.id, {operand});
+            }
+
+            if (node->getBasicType() == glslang::EbtVoid)
+                return false; // done with this node
+        }
+    }
+#endif
 
     if (result) {
         if (invertedType) {
@@ -3037,6 +3172,10 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
             if (arg == 1)
                 lvalue = true;
             break;
+        case glslang::EOpSpirvInst:
+            if (glslangOperands[arg]->getAsTyped()->getQualifier().isSpirvByReference())
+                lvalue = true;
+            break;
 #endif
         default:
             break;
@@ -3142,7 +3281,12 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
                  visitSymbol(itNode->second);
                  spv::Id symId = getSymbolId(itNode->second);
                  operands.push_back(symId);
-             } else {
+#ifndef GLSLANG_WEB
+             } else if (glslangOperands[arg]->getAsTyped()->getQualifier().isSpirvLiteral()) {
+                 // Will be translated to a literal value, make a placeholder here
+                 operands.push_back(spv::NoResult);
+#endif
+             } else  {
                 operands.push_back(accessChainLoad(glslangOperands[arg]->getAsTyped()->getType()));
              }
         }
@@ -3184,6 +3328,34 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
             ? node->getSequence()[0]->getAsTyped()->getBasicType() : node->getBasicType();
         result = createAtomicOperation(node->getOp(), precision, resultType(), operands, typeProxy,
             lvalueCoherentFlags);
+#ifndef GLSLANG_WEB
+    } else if (node->getOp() == glslang::EOpSpirvInst) {
+        const auto& spirvInst = node->getSpirvInstruction();
+        if (spirvInst.set == "") {
+            std::vector<spv::IdImmediate> idImmOps;
+            for (int i = 0; i < glslangOperands.size(); ++i) {
+                if (glslangOperands[i]->getAsTyped()->getQualifier().isSpirvLiteral()) {
+                    // Translate the constant to a literal value
+                    std::vector<unsigned> literals;
+                    glslang::TVector<const glslang::TIntermConstantUnion*> constants;
+                    constants.push_back(glslangOperands[i]->getAsConstantUnion());
+                    TranslateLiterals(constants, literals);
+                    idImmOps.push_back({false, literals[0]});
+                } else
+                    idImmOps.push_back({true, operands[i]});
+            }
+
+            if (node->getBasicType() == glslang::EbtVoid)
+                builder.createNoResultOp(static_cast<spv::Op>(spirvInst.id), idImmOps);
+            else
+                result = builder.createOp(static_cast<spv::Op>(spirvInst.id), resultType(), idImmOps);
+        } else {
+            result = builder.createBuiltinCall(
+                resultType(), spirvInst.set == "GLSL.std.450" ? stdBuiltins : getExtBuiltins(spirvInst.set.c_str()),
+                spirvInst.id, operands);
+        }
+        noReturnValue = node->getBasicType() == glslang::EbtVoid;
+#endif
     } else if (node->getOp() == glslang::EOpDebugPrintf) {
         if (!nonSemanticDebugPrintf) {
             nonSemanticDebugPrintf = builder.import("NonSemantic.DebugPrintf");
@@ -3464,6 +3636,11 @@ bool TGlslangToSpvTraverser::visitSwitch(glslang::TVisit /* visit */, glslang::T
 
 void TGlslangToSpvTraverser::visitConstantUnion(glslang::TIntermConstantUnion* node)
 {
+#ifndef GLSLANG_WEB
+    if (node->getQualifier().isSpirvLiteral())
+        return; // Translated to a literal value, skip further processing
+#endif
+
     int nextConst = 0;
     spv::Id constant = createSpvConstantFromConstUnionArray(node->getType(), node->getConstArray(), nextConst, false);
 
@@ -3912,6 +4089,77 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
     case glslang::EbtString:
         // no type used for OpString
         return 0;
+#ifndef GLSLANG_WEB
+    case glslang::EbtSpirvType: {
+        // GL_EXT_spirv_intrinsics
+        const auto& spirvType = type.getSpirvType();
+        const auto& spirvInst = spirvType.spirvInst;
+
+        std::vector<spv::Id> operands;
+        for (const auto& typeParam : spirvType.typeParams) {
+            if (typeParam.isConstant) {
+                // Constant expression
+                if (typeParam.constant->isLiteral()) {
+                    if (typeParam.constant->getBasicType() == glslang::EbtFloat) {
+                        float floatValue = static_cast<float>(typeParam.constant->getConstArray()[0].getDConst());
+                        unsigned literal = *reinterpret_cast<unsigned*>(&floatValue);
+                        operands.push_back(literal);
+                    } else if (typeParam.constant->getBasicType() == glslang::EbtInt) {
+                        unsigned literal = typeParam.constant->getConstArray()[0].getIConst();
+                        operands.push_back(literal);
+                    } else if (typeParam.constant->getBasicType() == glslang::EbtUint) {
+                        unsigned literal = typeParam.constant->getConstArray()[0].getUConst();
+                        operands.push_back(literal);
+                    } else if (typeParam.constant->getBasicType() == glslang::EbtBool) {
+                        unsigned literal = typeParam.constant->getConstArray()[0].getBConst();
+                        operands.push_back(literal);
+                    } else if (typeParam.constant->getBasicType() == glslang::EbtString) {
+                        auto str = typeParam.constant->getConstArray()[0].getSConst()->c_str();
+                        unsigned literal = 0;
+                        char* literalPtr = reinterpret_cast<char*>(&literal);
+                        unsigned charCount = 0;
+                        char ch = 0;
+                        do {
+                            ch = *(str++);
+                            *(literalPtr++) = ch;
+                            ++charCount;
+                            if (charCount == 4) {
+                                operands.push_back(literal);
+                                literalPtr = reinterpret_cast<char*>(&literal);
+                                charCount = 0;
+                            }
+                        } while (ch != 0);
+
+                        // Partial literal is padded with 0
+                        if (charCount > 0) {
+                            for (; charCount < 4; ++charCount)
+                                *(literalPtr++) = 0;
+                            operands.push_back(literal);
+                        }
+                    } else
+                        assert(0); // Unexpected type
+                } else {
+                    int nextConst = 0;
+                    spv::Id constant = createSpvConstantFromConstUnionArray(
+                        typeParam.constant->getType(), typeParam.constant->getConstArray(), nextConst, false);
+                    operands.push_back(constant);
+                }
+            } else {
+                // Type specifier
+                spv::Id typeId = convertGlslangToSpvType(*typeParam.type);
+                operands.push_back(typeId);
+            }
+        }
+
+        if (spirvInst.set == "")
+            spvType = builder.createOp(static_cast<spv::Op>(spirvInst.id), spv::NoType, operands);
+        else {
+            spvType = builder.createBuiltinCall(
+                spv::NoType, getExtBuiltins(spirvInst.set.c_str()), spirvInst.id, operands);
+        }
+        break;
+    }
+#endif
     default:
         assert(0);
         break;
@@ -4224,6 +4472,38 @@ void TGlslangToSpvTraverser::decorateStructType(const glslang::TType& type,
             builder.addMemberDecoration(spvType, member, (spv::Decoration)spv::DecorationPassthroughNV);
             builder.addCapability(spv::CapabilityGeometryShaderPassthroughNV);
             builder.addExtension(spv::E_SPV_NV_geometry_shader_passthrough);
+        }
+
+        //
+        // Add SPIR-V decorations for members (GL_EXT_spirv_intrinsics)
+        //
+        if (glslangMember.getQualifier().hasSprivDecorate()) {
+            const glslang::TSpirvDecorate& spirvDecorate = glslangMember.getQualifier().getSpirvDecorate();
+
+            // Add spirv_decorate
+            for (auto& decorate : spirvDecorate.decorates) {
+                if (!decorate.second.empty()) {
+                    std::vector<unsigned> literals;
+                    TranslateLiterals(decorate.second, literals);
+                    builder.addMemberDecoration(spvType, member, static_cast<spv::Decoration>(decorate.first), literals);
+                }
+                else
+                    builder.addMemberDecoration(spvType, member, static_cast<spv::Decoration>(decorate.first));
+            }
+
+            // spirv_decorate_id not applied to members
+            assert(spirvDecorate.decorateIds.empty());
+
+            // Add spirv_decorate_string
+            for (auto& decorateString : spirvDecorate.decorateStrings) {
+                std::vector<const char*> strings;
+                assert(!decorateString.second.empty());
+                for (auto extraOperand : decorateString.second) {
+                    const char* string = extraOperand->getConstArray()[0].getSConst()->c_str();
+                    strings.push_back(string);
+                }
+                builder.addDecoration(spvType, static_cast<spv::Decoration>(decorateString.first), strings);
+            }
         }
 #endif
     }
@@ -4614,6 +4894,9 @@ bool TGlslangToSpvTraverser::originalParam(glslang::TStorageQualifier qualifier,
     if (glslangIntermediate->getSource() == glslang::EShSourceHlsl)
         return paramType.getBasicType() == glslang::EbtBlock;
     return paramType.containsOpaque() ||                                                       // sampler, etc.
+#ifndef GLSLANG_WEB
+           paramType.getQualifier().isSpirvByReference() ||                                    // spirv_by_reference
+#endif
            (paramType.getBasicType() == glslang::EbtBlock && qualifier == glslang::EvqBuffer); // SSBO
 }
 
@@ -8464,6 +8747,48 @@ spv::Id TGlslangToSpvTraverser::getSymbolId(const glslang::TIntermSymbol* symbol
     if (symbol->isReference()) {
         builder.addDecoration(id, symbol->getType().getQualifier().restrict ?
             spv::DecorationRestrictPointerEXT : spv::DecorationAliasedPointerEXT);
+    }
+
+    //
+    // Add SPIR-V decorations for structure (GL_EXT_spirv_intrinsics)
+    //
+    if (symbol->getType().getQualifier().hasSprivDecorate()) {
+        const glslang::TSpirvDecorate& spirvDecorate = symbol->getType().getQualifier().getSpirvDecorate();
+
+        // Add spirv_decorate
+        for (auto& decorate : spirvDecorate.decorates) {
+            if (!decorate.second.empty()) {
+                std::vector<unsigned> literals;
+                TranslateLiterals(decorate.second, literals);
+                builder.addDecoration(id, static_cast<spv::Decoration>(decorate.first), literals);
+            }
+            else
+                builder.addDecoration(id, static_cast<spv::Decoration>(decorate.first));
+        }
+
+        // Add spirv_decorate_id
+        for (auto& decorateId : spirvDecorate.decorateIds) {
+            std::vector<spv::Id> operandIds;
+            assert(!decorateId.second.empty());
+            for (auto extraOperand : decorateId.second) {
+                int nextConst = 0;
+                spv::Id operandId = createSpvConstantFromConstUnionArray(
+                    extraOperand->getType(), extraOperand->getConstArray(), nextConst, false);
+                operandIds.push_back(operandId);
+            }
+            builder.addDecoration(id, static_cast<spv::Decoration>(decorateId.first), operandIds);
+        }
+
+        // Add spirv_decorate_string
+        for (auto& decorateString : spirvDecorate.decorateStrings) {
+            std::vector<const char*> strings;
+            assert(!decorateString.second.empty());
+            for (auto extraOperand : decorateString.second) {
+                const char* string = extraOperand->getConstArray()[0].getSConst()->c_str();
+                strings.push_back(string);
+            }
+            builder.addDecoration(id, static_cast<spv::Decoration>(decorateString.first), strings);
+        }
     }
 #endif
 

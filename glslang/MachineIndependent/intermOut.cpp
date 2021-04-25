@@ -696,6 +696,10 @@ bool TOutputTraverser::visitUnary(TVisit /* visit */, TIntermUnary* node)
 
     case EOpConstructReference: out.debug << "Construct reference type"; break;
 
+#ifndef GLSLANG_WEB
+    case EOpSpirvInst: out.debug << "spirv_instruction"; break;
+#endif
+
     default: out.debug.message(EPrefixError, "Bad unary op");
     }
 
@@ -1125,6 +1129,10 @@ bool TOutputTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node
 
     case EOpIsHelperInvocation: out.debug << "IsHelperInvocation"; break;
     case EOpDebugPrintf:  out.debug << "Debug printf";  break;
+
+#ifndef GLSLANG_WEB
+    case EOpSpirvInst: out.debug << "spirv_instruction"; break;
+#endif
 
     default: out.debug.message(EPrefixError, "Bad aggregation op");
     }
