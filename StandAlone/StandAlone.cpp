@@ -1820,7 +1820,7 @@ void usage()
            "  --auto-map-locations | --aml      automatically locate input/output lacking\n"
            "                                    'location' (fragile, not cross stage)\n"
            "  --auto-sampled-textures           Removes sampler variables and converts\n" 
-           "                                    existing textures to combined image-samplers\n"
+           "                                    existing textures to sampled textures\n"
            "  --client {vulkan<ver>|opengl<ver>} see -V and -G\n"
            "  --depfile <file>                  writes depfile for build systems\n"
            "  --dump-builtin-symbols            prints builtin symbol table prior each compile\n"
