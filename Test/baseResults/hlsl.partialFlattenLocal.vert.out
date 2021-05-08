@@ -20,10 +20,10 @@ Shader version: 500
 0:15              1 (const int)
 0:15          Constant:
 0:15            0 (const int)
-0:?         Constant:
-0:?           0.000000
-0:?           0.000000
-0:?           0.000000
+0:15        Constant:
+0:15          0.000000
+0:15          0.000000
+0:15          0.000000
 0:16      move second child to first child ( temp 2-component vector of float)
 0:16        direct index ( temp 2-component vector of float)
 0:16          uv: direct index for structure ( temp 2-element array of 2-component vector of float)
@@ -32,9 +32,9 @@ Shader version: 500
 0:16              2 (const int)
 0:16          Constant:
 0:16            0 (const int)
-0:?         Constant:
-0:?           0.000000
-0:?           1.000000
+0:16        Constant:
+0:16          0.000000
+0:16          1.000000
 0:17      move second child to first child ( temp float)
 0:17        x: direct index for structure ( temp float)
 0:17          'packed' ( temp structure{ temp texture2D tex,  temp 3-element array of 3-component vector of float pos,  temp 2-element array of 2-component vector of float uv,  temp float x,  temp int n})
@@ -91,7 +91,7 @@ Shader version: 500
 0:26      Branch: Return with expression
 0:26        add ( temp 4-component vector of float)
 0:26          'pos' ( in 4-component vector of float)
-0:?           Construct vec4 ( temp 4-component vector of float)
+0:26          Construct vec4 ( temp 4-component vector of float)
 0:26            direct index ( temp 3-component vector of float)
 0:26              pos: direct index for structure ( temp 3-element array of 3-component vector of float)
 0:26                'packed2' ( temp structure{ temp texture2D tex,  temp 3-element array of 3-component vector of float pos,  temp 2-element array of 2-component vector of float uv,  temp float x,  temp int n})
@@ -140,10 +140,10 @@ Shader version: 500
 0:15              1 (const int)
 0:15          Constant:
 0:15            0 (const int)
-0:?         Constant:
-0:?           0.000000
-0:?           0.000000
-0:?           0.000000
+0:15        Constant:
+0:15          0.000000
+0:15          0.000000
+0:15          0.000000
 0:16      move second child to first child ( temp 2-component vector of float)
 0:16        direct index ( temp 2-component vector of float)
 0:16          uv: direct index for structure ( temp 2-element array of 2-component vector of float)
@@ -152,9 +152,9 @@ Shader version: 500
 0:16              2 (const int)
 0:16          Constant:
 0:16            0 (const int)
-0:?         Constant:
-0:?           0.000000
-0:?           1.000000
+0:16        Constant:
+0:16          0.000000
+0:16          1.000000
 0:17      move second child to first child ( temp float)
 0:17        x: direct index for structure ( temp float)
 0:17          'packed' ( temp structure{ temp texture2D tex,  temp 3-element array of 3-component vector of float pos,  temp 2-element array of 2-component vector of float uv,  temp float x,  temp int n})
@@ -211,7 +211,7 @@ Shader version: 500
 0:26      Branch: Return with expression
 0:26        add ( temp 4-component vector of float)
 0:26          'pos' ( in 4-component vector of float)
-0:?           Construct vec4 ( temp 4-component vector of float)
+0:26          Construct vec4 ( temp 4-component vector of float)
 0:26            direct index ( temp 3-component vector of float)
 0:26              pos: direct index for structure ( temp 3-element array of 3-component vector of float)
 0:26                'packed2' ( temp structure{ temp texture2D tex,  temp 3-element array of 3-component vector of float pos,  temp 2-element array of 2-component vector of float uv,  temp float x,  temp int n})

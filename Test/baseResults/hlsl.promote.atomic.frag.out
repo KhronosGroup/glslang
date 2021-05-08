@@ -14,11 +14,11 @@ gl_FragCoord origin is upper left
 0:13            Convert int to uint ( temp uint)
 0:13              'Inc' ( temp int)
 0:15      Branch: Return with expression
-0:?         Constant:
-0:?           0.000000
-0:?           0.000000
-0:?           0.000000
-0:?           0.000000
+0:15        Constant:
+0:15          0.000000
+0:15          0.000000
+0:15          0.000000
+0:15          0.000000
 0:5  Function Definition: main( ( temp void)
 0:5    Function Parameters: 
 0:?     Sequence
@@ -48,11 +48,11 @@ gl_FragCoord origin is upper left
 0:13            Convert int to uint ( temp uint)
 0:13              'Inc' ( temp int)
 0:15      Branch: Return with expression
-0:?         Constant:
-0:?           0.000000
-0:?           0.000000
-0:?           0.000000
-0:?           0.000000
+0:15        Constant:
+0:15          0.000000
+0:15          0.000000
+0:15          0.000000
+0:15          0.000000
 0:5  Function Definition: main( ( temp void)
 0:5    Function Parameters: 
 0:?     Sequence

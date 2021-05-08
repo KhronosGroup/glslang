@@ -126,9 +126,9 @@ using depth_any
 0:74            Construct combined texture-sampler ( temp sampler2D)
 0:74              'g_tTex2df4' ( uniform texture2D)
 0:74              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.100000
-0:?               0.200000
+0:74            Constant:
+0:74              0.100000
+0:74              0.200000
 0:75      Sequence
 0:75        move second child to first child ( temp 4-component vector of int)
 0:75          'txval21' ( temp 4-component vector of int)
@@ -136,9 +136,9 @@ using depth_any
 0:75            Construct combined texture-sampler ( temp isampler2D)
 0:75              'g_tTex2di4' ( uniform itexture2D)
 0:75              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.300000
-0:?               0.400000
+0:75            Constant:
+0:75              0.300000
+0:75              0.400000
 0:76      Sequence
 0:76        move second child to first child ( temp 4-component vector of uint)
 0:76          'txval22' ( temp 4-component vector of uint)
@@ -146,9 +146,9 @@ using depth_any
 0:76            Construct combined texture-sampler ( temp usampler2D)
 0:76              'g_tTex2du4' ( uniform utexture2D)
 0:76              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.500000
-0:?               0.600000
+0:76            Constant:
+0:76              0.500000
+0:76              0.600000
 0:78      Sequence
 0:78        move second child to first child ( temp 4-component vector of float)
 0:78          'txval30' ( temp 4-component vector of float)
@@ -156,10 +156,10 @@ using depth_any
 0:78            Construct combined texture-sampler ( temp sampler3D)
 0:78              'g_tTex3df4' ( uniform texture3D)
 0:78              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.100000
-0:?               0.200000
-0:?               0.300000
+0:78            Constant:
+0:78              0.100000
+0:78              0.200000
+0:78              0.300000
 0:79      Sequence
 0:79        move second child to first child ( temp 4-component vector of int)
 0:79          'txval31' ( temp 4-component vector of int)
@@ -167,10 +167,10 @@ using depth_any
 0:79            Construct combined texture-sampler ( temp isampler3D)
 0:79              'g_tTex3di4' ( uniform itexture3D)
 0:79              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.400000
-0:?               0.500000
-0:?               0.600000
+0:79            Constant:
+0:79              0.400000
+0:79              0.500000
+0:79              0.600000
 0:80      Sequence
 0:80        move second child to first child ( temp 4-component vector of uint)
 0:80          'txval32' ( temp 4-component vector of uint)
@@ -178,10 +178,10 @@ using depth_any
 0:80            Construct combined texture-sampler ( temp usampler3D)
 0:80              'g_tTex3du4' ( uniform utexture3D)
 0:80              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.700000
-0:?               0.800000
-0:?               0.900000
+0:80            Constant:
+0:80              0.700000
+0:80              0.800000
+0:80              0.900000
 0:82      Sequence
 0:82        move second child to first child ( temp 4-component vector of float)
 0:82          'txval40' ( temp 4-component vector of float)
@@ -189,10 +189,10 @@ using depth_any
 0:82            Construct combined texture-sampler ( temp samplerCube)
 0:82              'g_tTexcdf4' ( uniform textureCube)
 0:82              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.100000
-0:?               0.200000
-0:?               0.300000
+0:82            Constant:
+0:82              0.100000
+0:82              0.200000
+0:82              0.300000
 0:83      Sequence
 0:83        move second child to first child ( temp 4-component vector of int)
 0:83          'txval41' ( temp 4-component vector of int)
@@ -200,10 +200,10 @@ using depth_any
 0:83            Construct combined texture-sampler ( temp isamplerCube)
 0:83              'g_tTexcdi4' ( uniform itextureCube)
 0:83              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.400000
-0:?               0.500000
-0:?               0.600000
+0:83            Constant:
+0:83              0.400000
+0:83              0.500000
+0:83              0.600000
 0:84      Sequence
 0:84        move second child to first child ( temp 4-component vector of uint)
 0:84          'txval42' ( temp 4-component vector of uint)
@@ -211,10 +211,10 @@ using depth_any
 0:84            Construct combined texture-sampler ( temp usamplerCube)
 0:84              'g_tTexcdu4' ( uniform utextureCube)
 0:84              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.700000
-0:?               0.800000
-0:?               0.900000
+0:84            Constant:
+0:84              0.700000
+0:84              0.800000
+0:84              0.900000
 0:86      move second child to first child ( temp 4-component vector of float)
 0:86        Color: direct index for structure ( temp 4-component vector of float)
 0:86          'psout' ( temp structure{ temp 4-component vector of float Color,  temp float Depth})
@@ -402,9 +402,9 @@ using depth_any
 0:74            Construct combined texture-sampler ( temp sampler2D)
 0:74              'g_tTex2df4' ( uniform texture2D)
 0:74              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.100000
-0:?               0.200000
+0:74            Constant:
+0:74              0.100000
+0:74              0.200000
 0:75      Sequence
 0:75        move second child to first child ( temp 4-component vector of int)
 0:75          'txval21' ( temp 4-component vector of int)
@@ -412,9 +412,9 @@ using depth_any
 0:75            Construct combined texture-sampler ( temp isampler2D)
 0:75              'g_tTex2di4' ( uniform itexture2D)
 0:75              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.300000
-0:?               0.400000
+0:75            Constant:
+0:75              0.300000
+0:75              0.400000
 0:76      Sequence
 0:76        move second child to first child ( temp 4-component vector of uint)
 0:76          'txval22' ( temp 4-component vector of uint)
@@ -422,9 +422,9 @@ using depth_any
 0:76            Construct combined texture-sampler ( temp usampler2D)
 0:76              'g_tTex2du4' ( uniform utexture2D)
 0:76              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.500000
-0:?               0.600000
+0:76            Constant:
+0:76              0.500000
+0:76              0.600000
 0:78      Sequence
 0:78        move second child to first child ( temp 4-component vector of float)
 0:78          'txval30' ( temp 4-component vector of float)
@@ -432,10 +432,10 @@ using depth_any
 0:78            Construct combined texture-sampler ( temp sampler3D)
 0:78              'g_tTex3df4' ( uniform texture3D)
 0:78              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.100000
-0:?               0.200000
-0:?               0.300000
+0:78            Constant:
+0:78              0.100000
+0:78              0.200000
+0:78              0.300000
 0:79      Sequence
 0:79        move second child to first child ( temp 4-component vector of int)
 0:79          'txval31' ( temp 4-component vector of int)
@@ -443,10 +443,10 @@ using depth_any
 0:79            Construct combined texture-sampler ( temp isampler3D)
 0:79              'g_tTex3di4' ( uniform itexture3D)
 0:79              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.400000
-0:?               0.500000
-0:?               0.600000
+0:79            Constant:
+0:79              0.400000
+0:79              0.500000
+0:79              0.600000
 0:80      Sequence
 0:80        move second child to first child ( temp 4-component vector of uint)
 0:80          'txval32' ( temp 4-component vector of uint)
@@ -454,10 +454,10 @@ using depth_any
 0:80            Construct combined texture-sampler ( temp usampler3D)
 0:80              'g_tTex3du4' ( uniform utexture3D)
 0:80              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.700000
-0:?               0.800000
-0:?               0.900000
+0:80            Constant:
+0:80              0.700000
+0:80              0.800000
+0:80              0.900000
 0:82      Sequence
 0:82        move second child to first child ( temp 4-component vector of float)
 0:82          'txval40' ( temp 4-component vector of float)
@@ -465,10 +465,10 @@ using depth_any
 0:82            Construct combined texture-sampler ( temp samplerCube)
 0:82              'g_tTexcdf4' ( uniform textureCube)
 0:82              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.100000
-0:?               0.200000
-0:?               0.300000
+0:82            Constant:
+0:82              0.100000
+0:82              0.200000
+0:82              0.300000
 0:83      Sequence
 0:83        move second child to first child ( temp 4-component vector of int)
 0:83          'txval41' ( temp 4-component vector of int)
@@ -476,10 +476,10 @@ using depth_any
 0:83            Construct combined texture-sampler ( temp isamplerCube)
 0:83              'g_tTexcdi4' ( uniform itextureCube)
 0:83              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.400000
-0:?               0.500000
-0:?               0.600000
+0:83            Constant:
+0:83              0.400000
+0:83              0.500000
+0:83              0.600000
 0:84      Sequence
 0:84        move second child to first child ( temp 4-component vector of uint)
 0:84          'txval42' ( temp 4-component vector of uint)
@@ -487,10 +487,10 @@ using depth_any
 0:84            Construct combined texture-sampler ( temp usamplerCube)
 0:84              'g_tTexcdu4' ( uniform utextureCube)
 0:84              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.700000
-0:?               0.800000
-0:?               0.900000
+0:84            Constant:
+0:84              0.700000
+0:84              0.800000
+0:84              0.900000
 0:86      move second child to first child ( temp 4-component vector of float)
 0:86        Color: direct index for structure ( temp 4-component vector of float)
 0:86          'psout' ( temp structure{ temp 4-component vector of float Color,  temp float Depth})

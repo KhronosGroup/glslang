@@ -28,9 +28,9 @@ gl_FragCoord origin is upper left
 0:10            'inF0' ( in 2-component vector of float)
 0:10            'inF1' ( in 2-component vector of float)
 0:11      Branch: Return with expression
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
+0:11        Constant:
+0:11          1.000000
+0:11          2.000000
 0:15  Function Definition: PixelShaderFunction3(vf3;vf3; ( temp 3-component vector of float)
 0:15    Function Parameters: 
 0:15      'inF0' ( in 3-component vector of float)
@@ -43,10 +43,10 @@ gl_FragCoord origin is upper left
 0:16            'inF0' ( in 3-component vector of float)
 0:16            'inF1' ( in 3-component vector of float)
 0:17      Branch: Return with expression
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
-0:?           3.000000
+0:17        Constant:
+0:17          1.000000
+0:17          2.000000
+0:17          3.000000
 0:21  Function Definition: PixelShaderFunction(vf4;vf4; ( temp 4-component vector of float)
 0:21    Function Parameters: 
 0:21      'inF0' ( in 4-component vector of float)
@@ -59,11 +59,11 @@ gl_FragCoord origin is upper left
 0:22            'inF0' ( in 4-component vector of float)
 0:22            'inF1' ( in 4-component vector of float)
 0:23      Branch: Return with expression
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
-0:?           3.000000
-0:?           4.000000
+0:23        Constant:
+0:23          1.000000
+0:23          2.000000
+0:23          3.000000
+0:23          4.000000
 0:33  Function Definition: @main( ( temp structure{ temp 4-component vector of float color})
 0:33    Function Parameters: 
 0:?     Sequence
@@ -125,9 +125,9 @@ gl_FragCoord origin is upper left
 0:10            'inF0' ( in 2-component vector of float)
 0:10            'inF1' ( in 2-component vector of float)
 0:11      Branch: Return with expression
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
+0:11        Constant:
+0:11          1.000000
+0:11          2.000000
 0:15  Function Definition: PixelShaderFunction3(vf3;vf3; ( temp 3-component vector of float)
 0:15    Function Parameters: 
 0:15      'inF0' ( in 3-component vector of float)
@@ -140,10 +140,10 @@ gl_FragCoord origin is upper left
 0:16            'inF0' ( in 3-component vector of float)
 0:16            'inF1' ( in 3-component vector of float)
 0:17      Branch: Return with expression
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
-0:?           3.000000
+0:17        Constant:
+0:17          1.000000
+0:17          2.000000
+0:17          3.000000
 0:21  Function Definition: PixelShaderFunction(vf4;vf4; ( temp 4-component vector of float)
 0:21    Function Parameters: 
 0:21      'inF0' ( in 4-component vector of float)
@@ -156,11 +156,11 @@ gl_FragCoord origin is upper left
 0:22            'inF0' ( in 4-component vector of float)
 0:22            'inF1' ( in 4-component vector of float)
 0:23      Branch: Return with expression
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
-0:?           3.000000
-0:?           4.000000
+0:23        Constant:
+0:23          1.000000
+0:23          2.000000
+0:23          3.000000
+0:23          4.000000
 0:33  Function Definition: @main( ( temp structure{ temp 4-component vector of float color})
 0:33    Function Parameters: 
 0:?     Sequence

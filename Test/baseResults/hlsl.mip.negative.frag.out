@@ -9,11 +9,11 @@ ERROR: node is still EOpNull!
 0:4  Function Definition: @main( ( temp 4-component vector of float)
 0:4    Function Parameters: 
 0:?     Sequence
-0:?       textureFetch ( temp 4-component vector of float)
+0:5      textureFetch ( temp 4-component vector of float)
 0:5        'g_tTex2df4' ( uniform texture2D)
-0:?         Constant:
-0:?           3 (const uint)
-0:?           4 (const uint)
+0:5        Constant:
+0:5          3 (const uint)
+0:5          4 (const uint)
 0:5        Constant:
 0:5          2 (const int)
 0:7      Branch: Return with expression
@@ -42,11 +42,11 @@ ERROR: node is still EOpNull!
 0:4  Function Definition: @main( ( temp 4-component vector of float)
 0:4    Function Parameters: 
 0:?     Sequence
-0:?       textureFetch ( temp 4-component vector of float)
+0:5      textureFetch ( temp 4-component vector of float)
 0:5        'g_tTex2df4' ( uniform texture2D)
-0:?         Constant:
-0:?           3 (const uint)
-0:?           4 (const uint)
+0:5        Constant:
+0:5          3 (const uint)
+0:5          4 (const uint)
 0:5        Constant:
 0:5          2 (const int)
 0:7      Branch: Return with expression

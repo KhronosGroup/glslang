@@ -26,27 +26,27 @@ gl_FragCoord origin is upper left
 0:?     Sequence
 0:46      move second child to first child ( temp 2-component vector of int)
 0:46        'x' ( out 2-component vector of int)
-0:?         Constant:
-0:?           0 (const int)
-0:?           0 (const int)
+0:46        Constant:
+0:46          0 (const int)
+0:46          0 (const int)
 0:47  Function Definition: Fn2(vu2; ( temp void)
 0:47    Function Parameters: 
 0:47      'x' ( out 2-component vector of uint)
 0:?     Sequence
 0:47      move second child to first child ( temp 2-component vector of uint)
 0:47        'x' ( out 2-component vector of uint)
-0:?         Constant:
-0:?           0 (const uint)
-0:?           0 (const uint)
+0:47        Constant:
+0:47          0 (const uint)
+0:47          0 (const uint)
 0:48  Function Definition: Fn2(vf2; ( temp void)
 0:48    Function Parameters: 
 0:48      'x' ( out 2-component vector of float)
 0:?     Sequence
 0:48      move second child to first child ( temp 2-component vector of float)
 0:48        'x' ( out 2-component vector of float)
-0:?         Constant:
-0:?           0.000000
-0:?           0.000000
+0:48        Constant:
+0:48          0.000000
+0:48          0.000000
 0:50  Function Definition: SomeValue( ( temp 2-component vector of float)
 0:50    Function Parameters: 
 0:?     Sequence
@@ -177,9 +177,9 @@ gl_FragCoord origin is upper left
 0:79      Sequence
 0:79        move second child to first child ( temp 2-component vector of int)
 0:79          'storeTemp' ( temp 2-component vector of int)
-0:?           Constant:
-0:?             2 (const int)
-0:?             2 (const int)
+0:79          Constant:
+0:79            2 (const int)
+0:79            2 (const int)
 0:79        imageStore ( temp void)
 0:79          'g_tTex1di2' (layout( rg32i) uniform iimage1D)
 0:79          c1: direct index for structure ( uniform int)
@@ -191,9 +191,9 @@ gl_FragCoord origin is upper left
 0:80      Sequence
 0:80        move second child to first child ( temp 2-component vector of uint)
 0:80          'storeTemp' ( temp 2-component vector of uint)
-0:?           Constant:
-0:?             3 (const uint)
-0:?             2 (const uint)
+0:80          Constant:
+0:80            3 (const uint)
+0:80            2 (const uint)
 0:80        imageStore ( temp void)
 0:80          'g_tTex1du2' (layout( rg32ui) uniform uimage1D)
 0:80          c1: direct index for structure ( uniform int)
@@ -418,9 +418,9 @@ gl_FragCoord origin is upper left
 0:97      Sequence
 0:97        move second child to first child ( temp 2-component vector of int)
 0:97          'storeTemp' ( temp 2-component vector of int)
-0:?           Constant:
-0:?             5 (const int)
-0:?             2 (const int)
+0:97          Constant:
+0:97            5 (const int)
+0:97            2 (const int)
 0:97        imageStore ( temp void)
 0:97          'g_tTex2di2' (layout( rg32i) uniform iimage2D)
 0:97          c2: direct index for structure ( uniform 2-component vector of int)
@@ -432,9 +432,9 @@ gl_FragCoord origin is upper left
 0:98      Sequence
 0:98        move second child to first child ( temp 2-component vector of uint)
 0:98          'storeTemp' ( temp 2-component vector of uint)
-0:?           Constant:
-0:?             6 (const uint)
-0:?             2 (const uint)
+0:98          Constant:
+0:98            6 (const uint)
+0:98            2 (const uint)
 0:98        imageStore ( temp void)
 0:98          'g_tTex2du2' (layout( rg32ui) uniform uimage2D)
 0:98          c2: direct index for structure ( uniform 2-component vector of int)
@@ -467,9 +467,9 @@ gl_FragCoord origin is upper left
 0:103      Sequence
 0:103        move second child to first child ( temp 2-component vector of int)
 0:103          'storeTemp' ( temp 2-component vector of int)
-0:?           Constant:
-0:?             8 (const int)
-0:?             6 (const int)
+0:103          Constant:
+0:103            8 (const int)
+0:103            6 (const int)
 0:103        imageStore ( temp void)
 0:103          'g_tTex3di2' (layout( rg32i) uniform iimage3D)
 0:103          c3: direct index for structure ( uniform 3-component vector of int)
@@ -481,9 +481,9 @@ gl_FragCoord origin is upper left
 0:104      Sequence
 0:104        move second child to first child ( temp 2-component vector of uint)
 0:104          'storeTemp' ( temp 2-component vector of uint)
-0:?           Constant:
-0:?             9 (const uint)
-0:?             2 (const uint)
+0:104          Constant:
+0:104            9 (const uint)
+0:104            2 (const uint)
 0:104        imageStore ( temp void)
 0:104          'g_tTex3du2' (layout( rg32ui) uniform uimage3D)
 0:104          c3: direct index for structure ( uniform 3-component vector of int)
@@ -798,11 +798,11 @@ gl_FragCoord origin is upper left
 0:135      Sequence
 0:135        move second child to first child ( temp 2-component vector of float)
 0:135          'storeTemp' ( temp 2-component vector of float)
-0:?           imageLoad ( temp 2-component vector of float)
+0:135          imageLoad ( temp 2-component vector of float)
 0:135            'g_tTex2df2' (layout( rg32f) uniform image2D)
-0:?             Constant:
-0:?               2 (const int)
-0:?               3 (const int)
+0:135            Constant:
+0:135              2 (const int)
+0:135              3 (const int)
 0:135        imageStore ( temp void)
 0:135          'g_tTex1df2' (layout( rg32f) uniform image1D)
 0:135          Constant:
@@ -882,27 +882,27 @@ gl_FragCoord origin is upper left
 0:?     Sequence
 0:46      move second child to first child ( temp 2-component vector of int)
 0:46        'x' ( out 2-component vector of int)
-0:?         Constant:
-0:?           0 (const int)
-0:?           0 (const int)
+0:46        Constant:
+0:46          0 (const int)
+0:46          0 (const int)
 0:47  Function Definition: Fn2(vu2; ( temp void)
 0:47    Function Parameters: 
 0:47      'x' ( out 2-component vector of uint)
 0:?     Sequence
 0:47      move second child to first child ( temp 2-component vector of uint)
 0:47        'x' ( out 2-component vector of uint)
-0:?         Constant:
-0:?           0 (const uint)
-0:?           0 (const uint)
+0:47        Constant:
+0:47          0 (const uint)
+0:47          0 (const uint)
 0:48  Function Definition: Fn2(vf2; ( temp void)
 0:48    Function Parameters: 
 0:48      'x' ( out 2-component vector of float)
 0:?     Sequence
 0:48      move second child to first child ( temp 2-component vector of float)
 0:48        'x' ( out 2-component vector of float)
-0:?         Constant:
-0:?           0.000000
-0:?           0.000000
+0:48        Constant:
+0:48          0.000000
+0:48          0.000000
 0:50  Function Definition: SomeValue( ( temp 2-component vector of float)
 0:50    Function Parameters: 
 0:?     Sequence
@@ -1033,9 +1033,9 @@ gl_FragCoord origin is upper left
 0:79      Sequence
 0:79        move second child to first child ( temp 2-component vector of int)
 0:79          'storeTemp' ( temp 2-component vector of int)
-0:?           Constant:
-0:?             2 (const int)
-0:?             2 (const int)
+0:79          Constant:
+0:79            2 (const int)
+0:79            2 (const int)
 0:79        imageStore ( temp void)
 0:79          'g_tTex1di2' (layout( rg32i) uniform iimage1D)
 0:79          c1: direct index for structure ( uniform int)
@@ -1047,9 +1047,9 @@ gl_FragCoord origin is upper left
 0:80      Sequence
 0:80        move second child to first child ( temp 2-component vector of uint)
 0:80          'storeTemp' ( temp 2-component vector of uint)
-0:?           Constant:
-0:?             3 (const uint)
-0:?             2 (const uint)
+0:80          Constant:
+0:80            3 (const uint)
+0:80            2 (const uint)
 0:80        imageStore ( temp void)
 0:80          'g_tTex1du2' (layout( rg32ui) uniform uimage1D)
 0:80          c1: direct index for structure ( uniform int)
@@ -1274,9 +1274,9 @@ gl_FragCoord origin is upper left
 0:97      Sequence
 0:97        move second child to first child ( temp 2-component vector of int)
 0:97          'storeTemp' ( temp 2-component vector of int)
-0:?           Constant:
-0:?             5 (const int)
-0:?             2 (const int)
+0:97          Constant:
+0:97            5 (const int)
+0:97            2 (const int)
 0:97        imageStore ( temp void)
 0:97          'g_tTex2di2' (layout( rg32i) uniform iimage2D)
 0:97          c2: direct index for structure ( uniform 2-component vector of int)
@@ -1288,9 +1288,9 @@ gl_FragCoord origin is upper left
 0:98      Sequence
 0:98        move second child to first child ( temp 2-component vector of uint)
 0:98          'storeTemp' ( temp 2-component vector of uint)
-0:?           Constant:
-0:?             6 (const uint)
-0:?             2 (const uint)
+0:98          Constant:
+0:98            6 (const uint)
+0:98            2 (const uint)
 0:98        imageStore ( temp void)
 0:98          'g_tTex2du2' (layout( rg32ui) uniform uimage2D)
 0:98          c2: direct index for structure ( uniform 2-component vector of int)
@@ -1323,9 +1323,9 @@ gl_FragCoord origin is upper left
 0:103      Sequence
 0:103        move second child to first child ( temp 2-component vector of int)
 0:103          'storeTemp' ( temp 2-component vector of int)
-0:?           Constant:
-0:?             8 (const int)
-0:?             6 (const int)
+0:103          Constant:
+0:103            8 (const int)
+0:103            6 (const int)
 0:103        imageStore ( temp void)
 0:103          'g_tTex3di2' (layout( rg32i) uniform iimage3D)
 0:103          c3: direct index for structure ( uniform 3-component vector of int)
@@ -1337,9 +1337,9 @@ gl_FragCoord origin is upper left
 0:104      Sequence
 0:104        move second child to first child ( temp 2-component vector of uint)
 0:104          'storeTemp' ( temp 2-component vector of uint)
-0:?           Constant:
-0:?             9 (const uint)
-0:?             2 (const uint)
+0:104          Constant:
+0:104            9 (const uint)
+0:104            2 (const uint)
 0:104        imageStore ( temp void)
 0:104          'g_tTex3du2' (layout( rg32ui) uniform uimage3D)
 0:104          c3: direct index for structure ( uniform 3-component vector of int)
@@ -1654,11 +1654,11 @@ gl_FragCoord origin is upper left
 0:135      Sequence
 0:135        move second child to first child ( temp 2-component vector of float)
 0:135          'storeTemp' ( temp 2-component vector of float)
-0:?           imageLoad ( temp 2-component vector of float)
+0:135          imageLoad ( temp 2-component vector of float)
 0:135            'g_tTex2df2' (layout( rg32f) uniform image2D)
-0:?             Constant:
-0:?               2 (const int)
-0:?               3 (const int)
+0:135            Constant:
+0:135              2 (const int)
+0:135              3 (const int)
 0:135        imageStore ( temp void)
 0:135          'g_tTex1df2' (layout( rg32f) uniform image1D)
 0:135          Constant:

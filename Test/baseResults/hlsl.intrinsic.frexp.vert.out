@@ -21,9 +21,9 @@ Shader version: 500
 0:9        'inF0' ( in 2-component vector of float)
 0:9        'inF1' ( in 2-component vector of float)
 0:10      Branch: Return with expression
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
+0:10        Constant:
+0:10          1.000000
+0:10          2.000000
 0:14  Function Definition: VertexShaderFunction3(vf3;vf3; ( temp 3-component vector of float)
 0:14    Function Parameters: 
 0:14      'inF0' ( in 3-component vector of float)
@@ -33,10 +33,10 @@ Shader version: 500
 0:15        'inF0' ( in 3-component vector of float)
 0:15        'inF1' ( in 3-component vector of float)
 0:16      Branch: Return with expression
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
-0:?           3.000000
+0:16        Constant:
+0:16          1.000000
+0:16          2.000000
+0:16          3.000000
 0:20  Function Definition: VertexShaderFunction4(vf4;vf4; ( temp 4-component vector of float)
 0:20    Function Parameters: 
 0:20      'inF0' ( in 4-component vector of float)
@@ -46,11 +46,11 @@ Shader version: 500
 0:21        'inF0' ( in 4-component vector of float)
 0:21        'inF1' ( in 4-component vector of float)
 0:22      Branch: Return with expression
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
-0:?           3.000000
-0:?           4.000000
+0:22        Constant:
+0:22          1.000000
+0:22          2.000000
+0:22          3.000000
+0:22          4.000000
 0:?   Linker Objects
 
 
@@ -80,9 +80,9 @@ Shader version: 500
 0:9        'inF0' ( in 2-component vector of float)
 0:9        'inF1' ( in 2-component vector of float)
 0:10      Branch: Return with expression
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
+0:10        Constant:
+0:10          1.000000
+0:10          2.000000
 0:14  Function Definition: VertexShaderFunction3(vf3;vf3; ( temp 3-component vector of float)
 0:14    Function Parameters: 
 0:14      'inF0' ( in 3-component vector of float)
@@ -92,10 +92,10 @@ Shader version: 500
 0:15        'inF0' ( in 3-component vector of float)
 0:15        'inF1' ( in 3-component vector of float)
 0:16      Branch: Return with expression
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
-0:?           3.000000
+0:16        Constant:
+0:16          1.000000
+0:16          2.000000
+0:16          3.000000
 0:20  Function Definition: VertexShaderFunction4(vf4;vf4; ( temp 4-component vector of float)
 0:20    Function Parameters: 
 0:20      'inF0' ( in 4-component vector of float)
@@ -105,11 +105,11 @@ Shader version: 500
 0:21        'inF0' ( in 4-component vector of float)
 0:21        'inF1' ( in 4-component vector of float)
 0:22      Branch: Return with expression
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
-0:?           3.000000
-0:?           4.000000
+0:22        Constant:
+0:22          1.000000
+0:22          2.000000
+0:22          3.000000
+0:22          4.000000
 0:?   Linker Objects
 
 // Module Version 10000

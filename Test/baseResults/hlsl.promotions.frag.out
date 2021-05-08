@@ -757,7 +757,7 @@ gl_FragCoord origin is upper left
 0:196      Sequence
 0:196        move second child to first child ( temp 4-component vector of float)
 0:196          'outval' ( temp 4-component vector of float)
-0:?           Construct vec4 ( temp 4-component vector of float)
+0:196          Construct vec4 ( temp 4-component vector of float)
 0:196            Constant:
 0:196              3.600000
 0:196            Constant:
@@ -1550,7 +1550,7 @@ gl_FragCoord origin is upper left
 0:196      Sequence
 0:196        move second child to first child ( temp 4-component vector of float)
 0:196          'outval' ( temp 4-component vector of float)
-0:?           Construct vec4 ( temp 4-component vector of float)
+0:196          Construct vec4 ( temp 4-component vector of float)
 0:196            Constant:
 0:196              3.600000
 0:196            Constant:

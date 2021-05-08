@@ -12,7 +12,7 @@ gl_FragCoord origin is upper left
 0:14          'pso' ( temp structure{ temp 4-component vector of float o1,  temp 4-component vector of float o2})
 0:14          Constant:
 0:14            0 (const int)
-0:?         Construct vec4 ( temp 4-component vector of float)
+0:14        Construct vec4 ( temp 4-component vector of float)
 0:14          Convert uint to float ( temp float)
 0:14            no_interp: direct index for structure ( temp uint)
 0:14              'input' ( in structure{ temp float interp,  temp uint no_interp})
@@ -106,7 +106,7 @@ gl_FragCoord origin is upper left
 0:14          'pso' ( temp structure{ temp 4-component vector of float o1,  temp 4-component vector of float o2})
 0:14          Constant:
 0:14            0 (const int)
-0:?         Construct vec4 ( temp 4-component vector of float)
+0:14        Construct vec4 ( temp 4-component vector of float)
 0:14          Convert uint to float ( temp float)
 0:14            no_interp: direct index for structure ( temp uint)
 0:14              'input' ( in structure{ temp float interp,  temp uint no_interp})

@@ -14,9 +14,9 @@ using depth_any
 0:42              'g_tTex1df4a' ( uniform texture1DArrayShadow)
 0:42              'g_sSamp' (layout( binding=0) uniform sampler)
 0:42            Construct vec3 ( temp 3-component vector of float)
-0:?               Constant:
-0:?                 0.100000
-0:?                 0.200000
+0:42              Constant:
+0:42                0.100000
+0:42                0.200000
 0:42              Constant:
 0:42                0.750000
 0:42            Constant:
@@ -29,9 +29,9 @@ using depth_any
 0:43              'g_tTex1di4a' ( uniform itexture1DArrayShadow)
 0:43              'g_sSamp' (layout( binding=0) uniform sampler)
 0:43            Construct vec3 ( temp 3-component vector of float)
-0:?               Constant:
-0:?                 0.100000
-0:?                 0.200000
+0:43              Constant:
+0:43                0.100000
+0:43                0.200000
 0:43              Constant:
 0:43                0.750000
 0:43            Constant:
@@ -44,9 +44,9 @@ using depth_any
 0:44              'g_tTex1du4a' ( uniform utexture1DArrayShadow)
 0:44              'g_sSamp' (layout( binding=0) uniform sampler)
 0:44            Construct vec3 ( temp 3-component vector of float)
-0:?               Constant:
-0:?                 0.100000
-0:?                 0.200000
+0:44              Constant:
+0:44                0.100000
+0:44                0.200000
 0:44              Constant:
 0:44                0.750000
 0:44            Constant:
@@ -59,10 +59,10 @@ using depth_any
 0:47              'g_tTex2df4a' ( uniform texture2DArrayShadow)
 0:47              'g_sSamp' (layout( binding=0) uniform sampler)
 0:47            Construct vec4 ( temp 4-component vector of float)
-0:?               Constant:
-0:?                 0.100000
-0:?                 0.200000
-0:?                 0.300000
+0:47              Constant:
+0:47                0.100000
+0:47                0.200000
+0:47                0.300000
 0:47              Constant:
 0:47                0.750000
 0:47            Constant:
@@ -75,10 +75,10 @@ using depth_any
 0:48              'g_tTex2di4a' ( uniform itexture2DArrayShadow)
 0:48              'g_sSamp' (layout( binding=0) uniform sampler)
 0:48            Construct vec4 ( temp 4-component vector of float)
-0:?               Constant:
-0:?                 0.100000
-0:?                 0.200000
-0:?                 0.300000
+0:48              Constant:
+0:48                0.100000
+0:48                0.200000
+0:48                0.300000
 0:48              Constant:
 0:48                0.750000
 0:48            Constant:
@@ -91,10 +91,10 @@ using depth_any
 0:49              'g_tTex2du4a' ( uniform utexture2DArrayShadow)
 0:49              'g_sSamp' (layout( binding=0) uniform sampler)
 0:49            Construct vec4 ( temp 4-component vector of float)
-0:?               Constant:
-0:?                 0.100000
-0:?                 0.200000
-0:?                 0.300000
+0:49              Constant:
+0:49                0.100000
+0:49                0.200000
+0:49                0.300000
 0:49              Constant:
 0:49                0.750000
 0:49            Constant:
@@ -107,11 +107,11 @@ using depth_any
 0:52              'g_tTexcdf4a' ( uniform textureCubeArrayShadow)
 0:52              'g_sSamp' (layout( binding=0) uniform sampler)
 0:52            Construct vec4 ( temp 4-component vector of float)
-0:?               Constant:
-0:?                 0.100000
-0:?                 0.200000
-0:?                 0.300000
-0:?                 0.400000
+0:52              Constant:
+0:52                0.100000
+0:52                0.200000
+0:52                0.300000
+0:52                0.400000
 0:52            Constant:
 0:52              0.750000
 0:52            Constant:
@@ -124,11 +124,11 @@ using depth_any
 0:53              'g_tTexcdi4a' ( uniform itextureCubeArrayShadow)
 0:53              'g_sSamp' (layout( binding=0) uniform sampler)
 0:53            Construct vec4 ( temp 4-component vector of float)
-0:?               Constant:
-0:?                 0.100000
-0:?                 0.200000
-0:?                 0.300000
-0:?                 0.400000
+0:53              Constant:
+0:53                0.100000
+0:53                0.200000
+0:53                0.300000
+0:53                0.400000
 0:53            Constant:
 0:53              0.750000
 0:53            Constant:
@@ -141,11 +141,11 @@ using depth_any
 0:54              'g_tTexcdu4a' ( uniform utextureCubeArrayShadow)
 0:54              'g_sSamp' (layout( binding=0) uniform sampler)
 0:54            Construct vec4 ( temp 4-component vector of float)
-0:?               Constant:
-0:?                 0.100000
-0:?                 0.200000
-0:?                 0.300000
-0:?                 0.400000
+0:54              Constant:
+0:54                0.100000
+0:54                0.200000
+0:54                0.300000
+0:54                0.400000
 0:54            Constant:
 0:54              0.750000
 0:54            Constant:
@@ -233,9 +233,9 @@ using depth_any
 0:42              'g_tTex1df4a' ( uniform texture1DArrayShadow)
 0:42              'g_sSamp' (layout( binding=0) uniform sampler)
 0:42            Construct vec3 ( temp 3-component vector of float)
-0:?               Constant:
-0:?                 0.100000
-0:?                 0.200000
+0:42              Constant:
+0:42                0.100000
+0:42                0.200000
 0:42              Constant:
 0:42                0.750000
 0:42            Constant:
@@ -248,9 +248,9 @@ using depth_any
 0:43              'g_tTex1di4a' ( uniform itexture1DArrayShadow)
 0:43              'g_sSamp' (layout( binding=0) uniform sampler)
 0:43            Construct vec3 ( temp 3-component vector of float)
-0:?               Constant:
-0:?                 0.100000
-0:?                 0.200000
+0:43              Constant:
+0:43                0.100000
+0:43                0.200000
 0:43              Constant:
 0:43                0.750000
 0:43            Constant:
@@ -263,9 +263,9 @@ using depth_any
 0:44              'g_tTex1du4a' ( uniform utexture1DArrayShadow)
 0:44              'g_sSamp' (layout( binding=0) uniform sampler)
 0:44            Construct vec3 ( temp 3-component vector of float)
-0:?               Constant:
-0:?                 0.100000
-0:?                 0.200000
+0:44              Constant:
+0:44                0.100000
+0:44                0.200000
 0:44              Constant:
 0:44                0.750000
 0:44            Constant:
@@ -278,10 +278,10 @@ using depth_any
 0:47              'g_tTex2df4a' ( uniform texture2DArrayShadow)
 0:47              'g_sSamp' (layout( binding=0) uniform sampler)
 0:47            Construct vec4 ( temp 4-component vector of float)
-0:?               Constant:
-0:?                 0.100000
-0:?                 0.200000
-0:?                 0.300000
+0:47              Constant:
+0:47                0.100000
+0:47                0.200000
+0:47                0.300000
 0:47              Constant:
 0:47                0.750000
 0:47            Constant:
@@ -294,10 +294,10 @@ using depth_any
 0:48              'g_tTex2di4a' ( uniform itexture2DArrayShadow)
 0:48              'g_sSamp' (layout( binding=0) uniform sampler)
 0:48            Construct vec4 ( temp 4-component vector of float)
-0:?               Constant:
-0:?                 0.100000
-0:?                 0.200000
-0:?                 0.300000
+0:48              Constant:
+0:48                0.100000
+0:48                0.200000
+0:48                0.300000
 0:48              Constant:
 0:48                0.750000
 0:48            Constant:
@@ -310,10 +310,10 @@ using depth_any
 0:49              'g_tTex2du4a' ( uniform utexture2DArrayShadow)
 0:49              'g_sSamp' (layout( binding=0) uniform sampler)
 0:49            Construct vec4 ( temp 4-component vector of float)
-0:?               Constant:
-0:?                 0.100000
-0:?                 0.200000
-0:?                 0.300000
+0:49              Constant:
+0:49                0.100000
+0:49                0.200000
+0:49                0.300000
 0:49              Constant:
 0:49                0.750000
 0:49            Constant:
@@ -326,11 +326,11 @@ using depth_any
 0:52              'g_tTexcdf4a' ( uniform textureCubeArrayShadow)
 0:52              'g_sSamp' (layout( binding=0) uniform sampler)
 0:52            Construct vec4 ( temp 4-component vector of float)
-0:?               Constant:
-0:?                 0.100000
-0:?                 0.200000
-0:?                 0.300000
-0:?                 0.400000
+0:52              Constant:
+0:52                0.100000
+0:52                0.200000
+0:52                0.300000
+0:52                0.400000
 0:52            Constant:
 0:52              0.750000
 0:52            Constant:
@@ -343,11 +343,11 @@ using depth_any
 0:53              'g_tTexcdi4a' ( uniform itextureCubeArrayShadow)
 0:53              'g_sSamp' (layout( binding=0) uniform sampler)
 0:53            Construct vec4 ( temp 4-component vector of float)
-0:?               Constant:
-0:?                 0.100000
-0:?                 0.200000
-0:?                 0.300000
-0:?                 0.400000
+0:53              Constant:
+0:53                0.100000
+0:53                0.200000
+0:53                0.300000
+0:53                0.400000
 0:53            Constant:
 0:53              0.750000
 0:53            Constant:
@@ -360,11 +360,11 @@ using depth_any
 0:54              'g_tTexcdu4a' ( uniform utextureCubeArrayShadow)
 0:54              'g_sSamp' (layout( binding=0) uniform sampler)
 0:54            Construct vec4 ( temp 4-component vector of float)
-0:?               Constant:
-0:?                 0.100000
-0:?                 0.200000
-0:?                 0.300000
-0:?                 0.400000
+0:54              Constant:
+0:54                0.100000
+0:54                0.200000
+0:54                0.300000
+0:54                0.400000
 0:54            Constant:
 0:54              0.750000
 0:54            Constant:

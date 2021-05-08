@@ -14,11 +14,11 @@ ERROR: node is still EOpNull!
 0:7      'p0' ( in 4-component vector of int)
 0:?     Sequence
 0:7      Branch: Return with expression
-0:?         Constant:
-0:?           1 (const int)
-0:?           2 (const int)
-0:?           3 (const int)
-0:?           4 (const int)
+0:7        Constant:
+0:7          1 (const int)
+0:7          2 (const int)
+0:7          3 (const int)
+0:7          4 (const int)
 0:9  Function Definition: fn1(vi4;b1;b1; ( temp 4-component vector of int)
 0:9    Function Parameters: 
 0:9      'p0' ( in 4-component vector of int)
@@ -51,11 +51,11 @@ ERROR: node is still EOpNull!
 0:23      'x' ( in int)
 0:?     Sequence
 0:24      Branch: Return with expression
-0:?         Constant:
-0:?           10 (const int)
-0:?           11 (const int)
-0:?           12 (const int)
-0:?           13 (const int)
+0:24        Constant:
+0:24          10 (const int)
+0:24          11 (const int)
+0:24          12 (const int)
+0:24          13 (const int)
 0:28  Function Definition: fn2(vi4; ( temp 4-component vector of int)
 0:28    Function Parameters: 
 0:28      'p0' ( in 4-component vector of int)
@@ -63,11 +63,11 @@ ERROR: node is still EOpNull!
 0:29      Branch: Return with expression
 0:29        add ( temp 4-component vector of int)
 0:29          'p0' ( in 4-component vector of int)
-0:?           Constant:
-0:?             20 (const int)
-0:?             21 (const int)
-0:?             22 (const int)
-0:?             23 (const int)
+0:29          Constant:
+0:29            20 (const int)
+0:29            21 (const int)
+0:29            22 (const int)
+0:29            23 (const int)
 0:33  Function Definition: fn3(i1; ( temp void)
 0:33    Function Parameters: 
 0:33      'p0' ( in int)
@@ -204,11 +204,11 @@ ERROR: node is still EOpNull!
 0:7      'p0' ( in 4-component vector of int)
 0:?     Sequence
 0:7      Branch: Return with expression
-0:?         Constant:
-0:?           1 (const int)
-0:?           2 (const int)
-0:?           3 (const int)
-0:?           4 (const int)
+0:7        Constant:
+0:7          1 (const int)
+0:7          2 (const int)
+0:7          3 (const int)
+0:7          4 (const int)
 0:9  Function Definition: fn1(vi4;b1;b1; ( temp 4-component vector of int)
 0:9    Function Parameters: 
 0:9      'p0' ( in 4-component vector of int)
@@ -241,11 +241,11 @@ ERROR: node is still EOpNull!
 0:23      'x' ( in int)
 0:?     Sequence
 0:24      Branch: Return with expression
-0:?         Constant:
-0:?           10 (const int)
-0:?           11 (const int)
-0:?           12 (const int)
-0:?           13 (const int)
+0:24        Constant:
+0:24          10 (const int)
+0:24          11 (const int)
+0:24          12 (const int)
+0:24          13 (const int)
 0:28  Function Definition: fn2(vi4; ( temp 4-component vector of int)
 0:28    Function Parameters: 
 0:28      'p0' ( in 4-component vector of int)
@@ -253,11 +253,11 @@ ERROR: node is still EOpNull!
 0:29      Branch: Return with expression
 0:29        add ( temp 4-component vector of int)
 0:29          'p0' ( in 4-component vector of int)
-0:?           Constant:
-0:?             20 (const int)
-0:?             21 (const int)
-0:?             22 (const int)
-0:?             23 (const int)
+0:29          Constant:
+0:29            20 (const int)
+0:29            21 (const int)
+0:29            22 (const int)
+0:29            23 (const int)
 0:33  Function Definition: fn3(i1; ( temp void)
 0:33    Function Parameters: 
 0:33      'p0' ( in int)

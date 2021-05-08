@@ -9,11 +9,11 @@ local_size = (8, 8, 1)
 0:8      Sequence
 0:8        move second child to first child ( temp 4-component vector of float)
 0:8          'storeTemp' ( temp 4-component vector of float)
-0:?           Constant:
-0:?             1.000000
-0:?             0.000000
-0:?             0.000000
-0:?             1.000000
+0:8          Constant:
+0:8            1.000000
+0:8            0.000000
+0:8            0.000000
+0:8            1.000000
 0:8        imageStore ( temp void)
 0:8          'OutputTexture' (layout( rgba32f) uniform image2D)
 0:8          vector swizzle ( temp 2-component vector of uint)
@@ -52,11 +52,11 @@ local_size = (8, 8, 1)
 0:8      Sequence
 0:8        move second child to first child ( temp 4-component vector of float)
 0:8          'storeTemp' ( temp 4-component vector of float)
-0:?           Constant:
-0:?             1.000000
-0:?             0.000000
-0:?             0.000000
-0:?             1.000000
+0:8          Constant:
+0:8            1.000000
+0:8            0.000000
+0:8            0.000000
+0:8            1.000000
 0:8        imageStore ( temp void)
 0:8          'OutputTexture' (layout( rgba32f) uniform image2D)
 0:8          vector swizzle ( temp 2-component vector of uint)

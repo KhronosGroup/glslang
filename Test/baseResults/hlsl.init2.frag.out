@@ -41,73 +41,73 @@ gl_FragCoord origin is upper left
 0:26          'a' ( const (read only) 8-element array of 3-component vector of float)
 0:26          Construct vec3 ( temp 8-element array of 3-component vector of float)
 0:27            vector-scale ( temp 3-component vector of float)
-0:?               Constant:
-0:?                 0.577350
-0:?                 0.577350
-0:?                 0.577350
+0:27              Constant:
+0:27                0.577350
+0:27                0.577350
+0:27                0.577350
 0:27              add second child into first child ( temp float)
 0:27                'n' ( temp float)
 0:27                Constant:
 0:27                  1.000000
 0:28            vector-scale ( temp 3-component vector of float)
-0:?               Constant:
-0:?                 -0.577350
-0:?                 -0.577350
-0:?                 -0.577350
+0:28              Constant:
+0:28                -0.577350
+0:28                -0.577350
+0:28                -0.577350
 0:28              add second child into first child ( temp float)
 0:28                'n' ( temp float)
 0:28                Constant:
 0:28                  1.000000
 0:29            vector-scale ( temp 3-component vector of float)
-0:?               Constant:
-0:?                 -0.577350
-0:?                 -0.577350
-0:?                 0.577350
+0:29              Constant:
+0:29                -0.577350
+0:29                -0.577350
+0:29                0.577350
 0:29              add second child into first child ( temp float)
 0:29                'n' ( temp float)
 0:29                Constant:
 0:29                  1.000000
 0:30            vector-scale ( temp 3-component vector of float)
-0:?               Constant:
-0:?                 -0.577350
-0:?                 0.577350
-0:?                 -0.577350
+0:30              Constant:
+0:30                -0.577350
+0:30                0.577350
+0:30                -0.577350
 0:30              add second child into first child ( temp float)
 0:30                'n' ( temp float)
 0:30                Constant:
 0:30                  1.000000
 0:31            vector-scale ( temp 3-component vector of float)
-0:?               Constant:
-0:?                 -0.577350
-0:?                 0.577350
-0:?                 0.577350
+0:31              Constant:
+0:31                -0.577350
+0:31                0.577350
+0:31                0.577350
 0:31              add second child into first child ( temp float)
 0:31                'n' ( temp float)
 0:31                Constant:
 0:31                  1.000000
 0:32            vector-scale ( temp 3-component vector of float)
-0:?               Constant:
-0:?                 0.577350
-0:?                 -0.577350
-0:?                 -0.577350
+0:32              Constant:
+0:32                0.577350
+0:32                -0.577350
+0:32                -0.577350
 0:32              add second child into first child ( temp float)
 0:32                'n' ( temp float)
 0:32                Constant:
 0:32                  1.000000
 0:33            vector-scale ( temp 3-component vector of float)
-0:?               Constant:
-0:?                 0.577350
-0:?                 -0.577350
-0:?                 0.577350
+0:33              Constant:
+0:33                0.577350
+0:33                -0.577350
+0:33                0.577350
 0:33              add second child into first child ( temp float)
 0:33                'n' ( temp float)
 0:33                Constant:
 0:33                  1.000000
 0:34            vector-scale ( temp 3-component vector of float)
-0:?               Constant:
-0:?                 0.577350
-0:?                 0.577350
-0:?                 -0.577350
+0:34              Constant:
+0:34                0.577350
+0:34                0.577350
+0:34                -0.577350
 0:34              add second child into first child ( temp float)
 0:34                'n' ( temp float)
 0:34                Constant:
@@ -117,10 +117,10 @@ gl_FragCoord origin is upper left
 0:36          'oneNonConst' ( const (read only) structure{ temp 3-component vector of float a})
 0:36          Construct structure ( temp structure{ temp 3-component vector of float a})
 0:36            vector-scale ( temp 3-component vector of float)
-0:?               Constant:
-0:?                 -0.577350
-0:?                 0.577350
-0:?                 0.577350
+0:36              Constant:
+0:36                -0.577350
+0:36                0.577350
+0:36                0.577350
 0:36              add second child into first child ( temp float)
 0:36                'n' ( temp float)
 0:36                Constant:
@@ -130,19 +130,19 @@ gl_FragCoord origin is upper left
 0:38          'twoNonConst' ( const (read only) structure{ temp 3-component vector of float a,  temp 3-component vector of float b})
 0:38          Construct structure ( temp structure{ temp 3-component vector of float a,  temp 3-component vector of float b})
 0:38            vector-scale ( temp 3-component vector of float)
-0:?               Constant:
-0:?                 -0.577350
-0:?                 0.577350
-0:?                 0.577350
+0:38              Constant:
+0:38                -0.577350
+0:38                0.577350
+0:38                0.577350
 0:38              add second child into first child ( temp float)
 0:38                'n' ( temp float)
 0:38                Constant:
 0:38                  1.000000
 0:39            vector-scale ( temp 3-component vector of float)
-0:?               Constant:
-0:?                 -0.577350
-0:?                 0.577350
-0:?                 0.577350
+0:39              Constant:
+0:39                -0.577350
+0:39                0.577350
+0:39                0.577350
 0:39              add second child into first child ( temp float)
 0:39                'n' ( temp float)
 0:39                Constant:
@@ -222,73 +222,73 @@ gl_FragCoord origin is upper left
 0:26          'a' ( const (read only) 8-element array of 3-component vector of float)
 0:26          Construct vec3 ( temp 8-element array of 3-component vector of float)
 0:27            vector-scale ( temp 3-component vector of float)
-0:?               Constant:
-0:?                 0.577350
-0:?                 0.577350
-0:?                 0.577350
+0:27              Constant:
+0:27                0.577350
+0:27                0.577350
+0:27                0.577350
 0:27              add second child into first child ( temp float)
 0:27                'n' ( temp float)
 0:27                Constant:
 0:27                  1.000000
 0:28            vector-scale ( temp 3-component vector of float)
-0:?               Constant:
-0:?                 -0.577350
-0:?                 -0.577350
-0:?                 -0.577350
+0:28              Constant:
+0:28                -0.577350
+0:28                -0.577350
+0:28                -0.577350
 0:28              add second child into first child ( temp float)
 0:28                'n' ( temp float)
 0:28                Constant:
 0:28                  1.000000
 0:29            vector-scale ( temp 3-component vector of float)
-0:?               Constant:
-0:?                 -0.577350
-0:?                 -0.577350
-0:?                 0.577350
+0:29              Constant:
+0:29                -0.577350
+0:29                -0.577350
+0:29                0.577350
 0:29              add second child into first child ( temp float)
 0:29                'n' ( temp float)
 0:29                Constant:
 0:29                  1.000000
 0:30            vector-scale ( temp 3-component vector of float)
-0:?               Constant:
-0:?                 -0.577350
-0:?                 0.577350
-0:?                 -0.577350
+0:30              Constant:
+0:30                -0.577350
+0:30                0.577350
+0:30                -0.577350
 0:30              add second child into first child ( temp float)
 0:30                'n' ( temp float)
 0:30                Constant:
 0:30                  1.000000
 0:31            vector-scale ( temp 3-component vector of float)
-0:?               Constant:
-0:?                 -0.577350
-0:?                 0.577350
-0:?                 0.577350
+0:31              Constant:
+0:31                -0.577350
+0:31                0.577350
+0:31                0.577350
 0:31              add second child into first child ( temp float)
 0:31                'n' ( temp float)
 0:31                Constant:
 0:31                  1.000000
 0:32            vector-scale ( temp 3-component vector of float)
-0:?               Constant:
-0:?                 0.577350
-0:?                 -0.577350
-0:?                 -0.577350
+0:32              Constant:
+0:32                0.577350
+0:32                -0.577350
+0:32                -0.577350
 0:32              add second child into first child ( temp float)
 0:32                'n' ( temp float)
 0:32                Constant:
 0:32                  1.000000
 0:33            vector-scale ( temp 3-component vector of float)
-0:?               Constant:
-0:?                 0.577350
-0:?                 -0.577350
-0:?                 0.577350
+0:33              Constant:
+0:33                0.577350
+0:33                -0.577350
+0:33                0.577350
 0:33              add second child into first child ( temp float)
 0:33                'n' ( temp float)
 0:33                Constant:
 0:33                  1.000000
 0:34            vector-scale ( temp 3-component vector of float)
-0:?               Constant:
-0:?                 0.577350
-0:?                 0.577350
-0:?                 -0.577350
+0:34              Constant:
+0:34                0.577350
+0:34                0.577350
+0:34                -0.577350
 0:34              add second child into first child ( temp float)
 0:34                'n' ( temp float)
 0:34                Constant:
@@ -298,10 +298,10 @@ gl_FragCoord origin is upper left
 0:36          'oneNonConst' ( const (read only) structure{ temp 3-component vector of float a})
 0:36          Construct structure ( temp structure{ temp 3-component vector of float a})
 0:36            vector-scale ( temp 3-component vector of float)
-0:?               Constant:
-0:?                 -0.577350
-0:?                 0.577350
-0:?                 0.577350
+0:36              Constant:
+0:36                -0.577350
+0:36                0.577350
+0:36                0.577350
 0:36              add second child into first child ( temp float)
 0:36                'n' ( temp float)
 0:36                Constant:
@@ -311,19 +311,19 @@ gl_FragCoord origin is upper left
 0:38          'twoNonConst' ( const (read only) structure{ temp 3-component vector of float a,  temp 3-component vector of float b})
 0:38          Construct structure ( temp structure{ temp 3-component vector of float a,  temp 3-component vector of float b})
 0:38            vector-scale ( temp 3-component vector of float)
-0:?               Constant:
-0:?                 -0.577350
-0:?                 0.577350
-0:?                 0.577350
+0:38              Constant:
+0:38                -0.577350
+0:38                0.577350
+0:38                0.577350
 0:38              add second child into first child ( temp float)
 0:38                'n' ( temp float)
 0:38                Constant:
 0:38                  1.000000
 0:39            vector-scale ( temp 3-component vector of float)
-0:?               Constant:
-0:?                 -0.577350
-0:?                 0.577350
-0:?                 0.577350
+0:39              Constant:
+0:39                -0.577350
+0:39                0.577350
+0:39                0.577350
 0:39              add second child into first child ( temp float)
 0:39                'n' ( temp float)
 0:39                Constant:

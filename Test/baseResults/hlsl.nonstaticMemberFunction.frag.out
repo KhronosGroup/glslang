@@ -5,9 +5,9 @@ gl_FragCoord origin is upper left
 0:1  Sequence
 0:1    move second child to first child ( temp 2-component vector of float)
 0:1      'i' ( global 2-component vector of float)
-0:?       Constant:
-0:?         1.000000
-0:?         2.000000
+0:1      Constant:
+0:1        1.000000
+0:1        2.000000
 0:5  Function Definition: type1::setmem(vf4; ( temp void)
 0:5    Function Parameters: 
 0:5      '@this' ( temp structure{ temp 4-component vector of float memVar,  temp int i})
@@ -85,11 +85,11 @@ gl_FragCoord origin is upper left
 0:?     Sequence
 0:29      Function Call: type1::setmem(vf4; ( temp void)
 0:29        'test' ( temp structure{ temp 4-component vector of float memVar,  temp int i})
-0:?         Constant:
-0:?           2.000000
-0:?           2.000000
-0:?           2.000000
-0:?           2.000000
+0:29        Constant:
+0:29          2.000000
+0:29          2.000000
+0:29          2.000000
+0:29          2.000000
 0:30      Function Call: type1::seti(i1; ( temp void)
 0:30        'test' ( temp structure{ temp 4-component vector of float memVar,  temp int i})
 0:30        Constant:
@@ -97,20 +97,20 @@ gl_FragCoord origin is upper left
 0:31      Sequence
 0:31        move second child to first child ( temp 4-component vector of float)
 0:31          'f4' ( temp 4-component vector of float)
-0:?           Constant:
-0:?             1.000000
-0:?             1.000000
-0:?             1.000000
-0:?             1.000000
+0:31          Constant:
+0:31            1.000000
+0:31            1.000000
+0:31            1.000000
+0:31            1.000000
 0:32      add second child into first child ( temp 4-component vector of float)
 0:32        'f4' ( temp 4-component vector of float)
 0:32        Function Call: type1::memFun(vf4; ( temp 4-component vector of float)
 0:32          'test' ( temp structure{ temp 4-component vector of float memVar,  temp int i})
-0:?           Constant:
-0:?             5.000000
-0:?             5.000000
-0:?             5.000000
-0:?             5.000000
+0:32          Constant:
+0:32            5.000000
+0:32            5.000000
+0:32            5.000000
+0:32            5.000000
 0:33      add second child into first child ( temp 4-component vector of float)
 0:33        'f4' ( temp 4-component vector of float)
 0:33        Convert int to float ( temp float)
@@ -141,9 +141,9 @@ gl_FragCoord origin is upper left
 0:1  Sequence
 0:1    move second child to first child ( temp 2-component vector of float)
 0:1      'i' ( global 2-component vector of float)
-0:?       Constant:
-0:?         1.000000
-0:?         2.000000
+0:1      Constant:
+0:1        1.000000
+0:1        2.000000
 0:5  Function Definition: type1::setmem(vf4; ( temp void)
 0:5    Function Parameters: 
 0:5      '@this' ( temp structure{ temp 4-component vector of float memVar,  temp int i})
@@ -221,11 +221,11 @@ gl_FragCoord origin is upper left
 0:?     Sequence
 0:29      Function Call: type1::setmem(vf4; ( temp void)
 0:29        'test' ( temp structure{ temp 4-component vector of float memVar,  temp int i})
-0:?         Constant:
-0:?           2.000000
-0:?           2.000000
-0:?           2.000000
-0:?           2.000000
+0:29        Constant:
+0:29          2.000000
+0:29          2.000000
+0:29          2.000000
+0:29          2.000000
 0:30      Function Call: type1::seti(i1; ( temp void)
 0:30        'test' ( temp structure{ temp 4-component vector of float memVar,  temp int i})
 0:30        Constant:
@@ -233,20 +233,20 @@ gl_FragCoord origin is upper left
 0:31      Sequence
 0:31        move second child to first child ( temp 4-component vector of float)
 0:31          'f4' ( temp 4-component vector of float)
-0:?           Constant:
-0:?             1.000000
-0:?             1.000000
-0:?             1.000000
-0:?             1.000000
+0:31          Constant:
+0:31            1.000000
+0:31            1.000000
+0:31            1.000000
+0:31            1.000000
 0:32      add second child into first child ( temp 4-component vector of float)
 0:32        'f4' ( temp 4-component vector of float)
 0:32        Function Call: type1::memFun(vf4; ( temp 4-component vector of float)
 0:32          'test' ( temp structure{ temp 4-component vector of float memVar,  temp int i})
-0:?           Constant:
-0:?             5.000000
-0:?             5.000000
-0:?             5.000000
-0:?             5.000000
+0:32          Constant:
+0:32            5.000000
+0:32            5.000000
+0:32            5.000000
+0:32            5.000000
 0:33      add second child into first child ( temp 4-component vector of float)
 0:33        'f4' ( temp 4-component vector of float)
 0:33        Convert int to float ( temp float)

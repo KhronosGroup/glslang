@@ -9,18 +9,18 @@ using depth_any
 0:18      Sequence
 0:18        move second child to first child ( temp 4-component vector of float)
 0:18          'ColorOut' ( temp 4-component vector of float)
-0:?           Constant:
-0:?             0.000000
-0:?             0.000000
-0:?             0.000000
-0:?             0.000000
+0:18          Constant:
+0:18            0.000000
+0:18            0.000000
+0:18            0.000000
+0:18            0.000000
 0:20      add second child into first child ( temp 4-component vector of float)
 0:20        'ColorOut' ( temp 4-component vector of float)
 0:20        texture ( temp 4-component vector of float)
 0:20          'g_sam' (layout( binding=0) uniform sampler2D)
-0:?           Constant:
-0:?             0.400000
-0:?             0.300000
+0:20          Constant:
+0:20            0.400000
+0:20            0.300000
 0:21      add second child into first child ( temp 4-component vector of float)
 0:21        'ColorOut' ( temp 4-component vector of float)
 0:21        texture ( temp 4-component vector of float)
@@ -31,41 +31,41 @@ using depth_any
 0:22        'ColorOut' ( temp 4-component vector of float)
 0:22        texture ( temp 4-component vector of float)
 0:22          'g_sam2D' (layout( binding=2) uniform sampler2D)
-0:?           Constant:
-0:?             0.500000
-0:?             0.600000
+0:22          Constant:
+0:22            0.500000
+0:22            0.600000
 0:23      add second child into first child ( temp 4-component vector of float)
 0:23        'ColorOut' ( temp 4-component vector of float)
 0:23        texture ( temp 4-component vector of float)
 0:23          'g_sam3D' (layout( binding=3) uniform sampler3D)
-0:?           Constant:
-0:?             0.500000
-0:?             0.600000
-0:?             0.400000
+0:23          Constant:
+0:23            0.500000
+0:23            0.600000
+0:23            0.400000
 0:24      add second child into first child ( temp 4-component vector of float)
 0:24        'ColorOut' ( temp 4-component vector of float)
 0:24        texture ( temp 4-component vector of float)
 0:24          'g_samCube' (layout( binding=4) uniform samplerCube)
-0:?           Constant:
-0:?             0.500000
-0:?             0.600000
-0:?             0.400000
+0:24          Constant:
+0:24            0.500000
+0:24            0.600000
+0:24            0.400000
 0:26      add second child into first child ( temp 4-component vector of float)
 0:26        'ColorOut' ( temp 4-component vector of float)
 0:26        textureLod ( temp 4-component vector of float)
 0:26          'g_sam' (layout( binding=0) uniform sampler2D)
 0:26          Construct vec2 ( temp 2-component vector of float)
-0:?             Constant:
-0:?               0.400000
-0:?               0.300000
-0:?               0.000000
-0:?               0.000000
+0:26            Constant:
+0:26              0.400000
+0:26              0.300000
+0:26              0.000000
+0:26              0.000000
 0:26          direct index ( temp float)
-0:?             Constant:
-0:?               0.400000
-0:?               0.300000
-0:?               0.000000
-0:?               0.000000
+0:26            Constant:
+0:26              0.400000
+0:26              0.300000
+0:26              0.000000
+0:26              0.000000
 0:26            Constant:
 0:26              3 (const int)
 0:27      add second child into first child ( temp 4-component vector of float)
@@ -73,17 +73,17 @@ using depth_any
 0:27        textureLod ( temp 4-component vector of float)
 0:27          'g_sam1D' (layout( binding=1) uniform sampler1D)
 0:27          Construct float ( temp float)
-0:?             Constant:
-0:?               0.500000
-0:?               0.000000
-0:?               0.000000
-0:?               0.000000
+0:27            Constant:
+0:27              0.500000
+0:27              0.000000
+0:27              0.000000
+0:27              0.000000
 0:27          direct index ( temp float)
-0:?             Constant:
-0:?               0.500000
-0:?               0.000000
-0:?               0.000000
-0:?               0.000000
+0:27            Constant:
+0:27              0.500000
+0:27              0.000000
+0:27              0.000000
+0:27              0.000000
 0:27            Constant:
 0:27              3 (const int)
 0:28      add second child into first child ( temp 4-component vector of float)
@@ -91,17 +91,17 @@ using depth_any
 0:28        textureLod ( temp 4-component vector of float)
 0:28          'g_sam2D' (layout( binding=2) uniform sampler2D)
 0:28          Construct vec2 ( temp 2-component vector of float)
-0:?             Constant:
-0:?               0.500000
-0:?               0.600000
-0:?               0.000000
-0:?               0.000000
+0:28            Constant:
+0:28              0.500000
+0:28              0.600000
+0:28              0.000000
+0:28              0.000000
 0:28          direct index ( temp float)
-0:?             Constant:
-0:?               0.500000
-0:?               0.600000
-0:?               0.000000
-0:?               0.000000
+0:28            Constant:
+0:28              0.500000
+0:28              0.600000
+0:28              0.000000
+0:28              0.000000
 0:28            Constant:
 0:28              3 (const int)
 0:29      add second child into first child ( temp 4-component vector of float)
@@ -109,17 +109,17 @@ using depth_any
 0:29        textureLod ( temp 4-component vector of float)
 0:29          'g_sam3D' (layout( binding=3) uniform sampler3D)
 0:29          Construct vec3 ( temp 3-component vector of float)
-0:?             Constant:
-0:?               0.500000
-0:?               0.600000
-0:?               0.400000
-0:?               0.000000
+0:29            Constant:
+0:29              0.500000
+0:29              0.600000
+0:29              0.400000
+0:29              0.000000
 0:29          direct index ( temp float)
-0:?             Constant:
-0:?               0.500000
-0:?               0.600000
-0:?               0.400000
-0:?               0.000000
+0:29            Constant:
+0:29              0.500000
+0:29              0.600000
+0:29              0.400000
+0:29              0.000000
 0:29            Constant:
 0:29              3 (const int)
 0:30      add second child into first child ( temp 4-component vector of float)
@@ -127,17 +127,17 @@ using depth_any
 0:30        textureLod ( temp 4-component vector of float)
 0:30          'g_samCube' (layout( binding=4) uniform samplerCube)
 0:30          Construct vec3 ( temp 3-component vector of float)
-0:?             Constant:
-0:?               0.500000
-0:?               0.600000
-0:?               0.400000
-0:?               0.000000
+0:30            Constant:
+0:30              0.500000
+0:30              0.600000
+0:30              0.400000
+0:30              0.000000
 0:30          direct index ( temp float)
-0:?             Constant:
-0:?               0.500000
-0:?               0.600000
-0:?               0.400000
-0:?               0.000000
+0:30            Constant:
+0:30              0.500000
+0:30              0.600000
+0:30              0.400000
+0:30              0.000000
 0:30            Constant:
 0:30              3 (const int)
 0:32      move second child to first child ( temp 4-component vector of float)
@@ -200,18 +200,18 @@ using depth_any
 0:18      Sequence
 0:18        move second child to first child ( temp 4-component vector of float)
 0:18          'ColorOut' ( temp 4-component vector of float)
-0:?           Constant:
-0:?             0.000000
-0:?             0.000000
-0:?             0.000000
-0:?             0.000000
+0:18          Constant:
+0:18            0.000000
+0:18            0.000000
+0:18            0.000000
+0:18            0.000000
 0:20      add second child into first child ( temp 4-component vector of float)
 0:20        'ColorOut' ( temp 4-component vector of float)
 0:20        texture ( temp 4-component vector of float)
 0:20          'g_sam' (layout( binding=0) uniform sampler2D)
-0:?           Constant:
-0:?             0.400000
-0:?             0.300000
+0:20          Constant:
+0:20            0.400000
+0:20            0.300000
 0:21      add second child into first child ( temp 4-component vector of float)
 0:21        'ColorOut' ( temp 4-component vector of float)
 0:21        texture ( temp 4-component vector of float)
@@ -222,41 +222,41 @@ using depth_any
 0:22        'ColorOut' ( temp 4-component vector of float)
 0:22        texture ( temp 4-component vector of float)
 0:22          'g_sam2D' (layout( binding=2) uniform sampler2D)
-0:?           Constant:
-0:?             0.500000
-0:?             0.600000
+0:22          Constant:
+0:22            0.500000
+0:22            0.600000
 0:23      add second child into first child ( temp 4-component vector of float)
 0:23        'ColorOut' ( temp 4-component vector of float)
 0:23        texture ( temp 4-component vector of float)
 0:23          'g_sam3D' (layout( binding=3) uniform sampler3D)
-0:?           Constant:
-0:?             0.500000
-0:?             0.600000
-0:?             0.400000
+0:23          Constant:
+0:23            0.500000
+0:23            0.600000
+0:23            0.400000
 0:24      add second child into first child ( temp 4-component vector of float)
 0:24        'ColorOut' ( temp 4-component vector of float)
 0:24        texture ( temp 4-component vector of float)
 0:24          'g_samCube' (layout( binding=4) uniform samplerCube)
-0:?           Constant:
-0:?             0.500000
-0:?             0.600000
-0:?             0.400000
+0:24          Constant:
+0:24            0.500000
+0:24            0.600000
+0:24            0.400000
 0:26      add second child into first child ( temp 4-component vector of float)
 0:26        'ColorOut' ( temp 4-component vector of float)
 0:26        textureLod ( temp 4-component vector of float)
 0:26          'g_sam' (layout( binding=0) uniform sampler2D)
 0:26          Construct vec2 ( temp 2-component vector of float)
-0:?             Constant:
-0:?               0.400000
-0:?               0.300000
-0:?               0.000000
-0:?               0.000000
+0:26            Constant:
+0:26              0.400000
+0:26              0.300000
+0:26              0.000000
+0:26              0.000000
 0:26          direct index ( temp float)
-0:?             Constant:
-0:?               0.400000
-0:?               0.300000
-0:?               0.000000
-0:?               0.000000
+0:26            Constant:
+0:26              0.400000
+0:26              0.300000
+0:26              0.000000
+0:26              0.000000
 0:26            Constant:
 0:26              3 (const int)
 0:27      add second child into first child ( temp 4-component vector of float)
@@ -264,17 +264,17 @@ using depth_any
 0:27        textureLod ( temp 4-component vector of float)
 0:27          'g_sam1D' (layout( binding=1) uniform sampler1D)
 0:27          Construct float ( temp float)
-0:?             Constant:
-0:?               0.500000
-0:?               0.000000
-0:?               0.000000
-0:?               0.000000
+0:27            Constant:
+0:27              0.500000
+0:27              0.000000
+0:27              0.000000
+0:27              0.000000
 0:27          direct index ( temp float)
-0:?             Constant:
-0:?               0.500000
-0:?               0.000000
-0:?               0.000000
-0:?               0.000000
+0:27            Constant:
+0:27              0.500000
+0:27              0.000000
+0:27              0.000000
+0:27              0.000000
 0:27            Constant:
 0:27              3 (const int)
 0:28      add second child into first child ( temp 4-component vector of float)
@@ -282,17 +282,17 @@ using depth_any
 0:28        textureLod ( temp 4-component vector of float)
 0:28          'g_sam2D' (layout( binding=2) uniform sampler2D)
 0:28          Construct vec2 ( temp 2-component vector of float)
-0:?             Constant:
-0:?               0.500000
-0:?               0.600000
-0:?               0.000000
-0:?               0.000000
+0:28            Constant:
+0:28              0.500000
+0:28              0.600000
+0:28              0.000000
+0:28              0.000000
 0:28          direct index ( temp float)
-0:?             Constant:
-0:?               0.500000
-0:?               0.600000
-0:?               0.000000
-0:?               0.000000
+0:28            Constant:
+0:28              0.500000
+0:28              0.600000
+0:28              0.000000
+0:28              0.000000
 0:28            Constant:
 0:28              3 (const int)
 0:29      add second child into first child ( temp 4-component vector of float)
@@ -300,17 +300,17 @@ using depth_any
 0:29        textureLod ( temp 4-component vector of float)
 0:29          'g_sam3D' (layout( binding=3) uniform sampler3D)
 0:29          Construct vec3 ( temp 3-component vector of float)
-0:?             Constant:
-0:?               0.500000
-0:?               0.600000
-0:?               0.400000
-0:?               0.000000
+0:29            Constant:
+0:29              0.500000
+0:29              0.600000
+0:29              0.400000
+0:29              0.000000
 0:29          direct index ( temp float)
-0:?             Constant:
-0:?               0.500000
-0:?               0.600000
-0:?               0.400000
-0:?               0.000000
+0:29            Constant:
+0:29              0.500000
+0:29              0.600000
+0:29              0.400000
+0:29              0.000000
 0:29            Constant:
 0:29              3 (const int)
 0:30      add second child into first child ( temp 4-component vector of float)
@@ -318,17 +318,17 @@ using depth_any
 0:30        textureLod ( temp 4-component vector of float)
 0:30          'g_samCube' (layout( binding=4) uniform samplerCube)
 0:30          Construct vec3 ( temp 3-component vector of float)
-0:?             Constant:
-0:?               0.500000
-0:?               0.600000
-0:?               0.400000
-0:?               0.000000
+0:30            Constant:
+0:30              0.500000
+0:30              0.600000
+0:30              0.400000
+0:30              0.000000
 0:30          direct index ( temp float)
-0:?             Constant:
-0:?               0.500000
-0:?               0.600000
-0:?               0.400000
-0:?               0.000000
+0:30            Constant:
+0:30              0.500000
+0:30              0.600000
+0:30              0.400000
+0:30              0.000000
 0:30            Constant:
 0:30              3 (const int)
 0:32      move second child to first child ( temp 4-component vector of float)
