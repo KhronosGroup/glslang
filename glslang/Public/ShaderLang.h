@@ -722,7 +722,7 @@ class TObjectReflection {
 public:
     GLSLANG_EXPORT TObjectReflection(const std::string& pName, const TType& pType, int pOffset, int pGLDefineType, int pSize, int pIndex);
 
-    GLSLANG_EXPORT const TType* getType() const { return type; }
+    const TType* getType() const { return type; }
     GLSLANG_EXPORT int getBinding() const;
     GLSLANG_EXPORT void dump() const;
     static TObjectReflection badReflection() { return TObjectReflection(); }
