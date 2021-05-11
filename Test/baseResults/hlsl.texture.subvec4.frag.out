@@ -92,32 +92,32 @@ gl_FragCoord origin is upper left
 0:29      Construct float ( temp float)
 0:?         textureFetch ( temp 4-component vector of float)
 0:29          'g_tTex2dmsf1' ( uniform texture2DMS)
-0:?           Constant:
-0:?             1 (const int)
-0:?             2 (const int)
+0:29          Constant:
+0:29            1 (const int)
+0:29            2 (const int)
 0:29          Constant:
 0:29            3 (const int)
 0:30      Construct vec2 ( temp 2-component vector of float)
 0:?         textureFetch ( temp 4-component vector of float)
 0:30          'g_tTex2dmsf2' ( uniform texture2DMS)
-0:?           Constant:
-0:?             1 (const int)
-0:?             2 (const int)
+0:30          Constant:
+0:30            1 (const int)
+0:30            2 (const int)
 0:30          Constant:
 0:30            3 (const int)
 0:31      Construct vec3 ( temp 3-component vector of float)
 0:?         textureFetch ( temp 4-component vector of float)
 0:31          'g_tTex2dmsf3' ( uniform texture2DMS)
-0:?           Constant:
-0:?             1 (const int)
-0:?             2 (const int)
+0:31          Constant:
+0:31            1 (const int)
+0:31            2 (const int)
 0:31          Constant:
 0:31            3 (const int)
 0:32      textureFetch ( temp 4-component vector of float)
 0:32        'g_tTex2dmsf4' ( uniform texture2DMS)
-0:?         Constant:
-0:?           1 (const int)
-0:?           2 (const int)
+0:32        Constant:
+0:32          1 (const int)
+0:32          2 (const int)
 0:32        Constant:
 0:32          3 (const int)
 0:34      Construct float ( temp float)
@@ -125,32 +125,32 @@ gl_FragCoord origin is upper left
 0:34          Construct combined texture-sampler ( temp sampler2D)
 0:34            'g_tTex2df1' ( uniform texture2D)
 0:34            'g_sSamp' ( uniform sampler)
-0:?           Constant:
-0:?             0.100000
-0:?             0.200000
+0:34          Constant:
+0:34            0.100000
+0:34            0.200000
 0:35      Construct vec2 ( temp 2-component vector of float)
 0:?         texture ( temp 4-component vector of float)
 0:35          Construct combined texture-sampler ( temp sampler2D)
 0:35            'g_tTex2df2' ( uniform texture2D)
 0:35            'g_sSamp' ( uniform sampler)
-0:?           Constant:
-0:?             0.100000
-0:?             0.200000
+0:35          Constant:
+0:35            0.100000
+0:35            0.200000
 0:36      Construct vec3 ( temp 3-component vector of float)
 0:?         texture ( temp 4-component vector of float)
 0:36          Construct combined texture-sampler ( temp sampler2D)
 0:36            'g_tTex2df3' ( uniform texture2D)
 0:36            'g_sSamp' ( uniform sampler)
-0:?           Constant:
-0:?             0.100000
-0:?             0.200000
+0:36          Constant:
+0:36            0.100000
+0:36            0.200000
 0:37      texture ( temp 4-component vector of float)
 0:37        Construct combined texture-sampler ( temp sampler2D)
 0:37          'g_tTex2df4' ( uniform texture2D)
 0:37          'g_sSamp' ( uniform sampler)
-0:?         Constant:
-0:?           0.100000
-0:?           0.200000
+0:37        Constant:
+0:37          0.100000
+0:37          0.200000
 0:39      Branch: Return with expression
 0:39        Constant:
 0:39          0.000000
@@ -272,32 +272,32 @@ gl_FragCoord origin is upper left
 0:29      Construct float ( temp float)
 0:?         textureFetch ( temp 4-component vector of float)
 0:29          'g_tTex2dmsf1' ( uniform texture2DMS)
-0:?           Constant:
-0:?             1 (const int)
-0:?             2 (const int)
+0:29          Constant:
+0:29            1 (const int)
+0:29            2 (const int)
 0:29          Constant:
 0:29            3 (const int)
 0:30      Construct vec2 ( temp 2-component vector of float)
 0:?         textureFetch ( temp 4-component vector of float)
 0:30          'g_tTex2dmsf2' ( uniform texture2DMS)
-0:?           Constant:
-0:?             1 (const int)
-0:?             2 (const int)
+0:30          Constant:
+0:30            1 (const int)
+0:30            2 (const int)
 0:30          Constant:
 0:30            3 (const int)
 0:31      Construct vec3 ( temp 3-component vector of float)
 0:?         textureFetch ( temp 4-component vector of float)
 0:31          'g_tTex2dmsf3' ( uniform texture2DMS)
-0:?           Constant:
-0:?             1 (const int)
-0:?             2 (const int)
+0:31          Constant:
+0:31            1 (const int)
+0:31            2 (const int)
 0:31          Constant:
 0:31            3 (const int)
 0:32      textureFetch ( temp 4-component vector of float)
 0:32        'g_tTex2dmsf4' ( uniform texture2DMS)
-0:?         Constant:
-0:?           1 (const int)
-0:?           2 (const int)
+0:32        Constant:
+0:32          1 (const int)
+0:32          2 (const int)
 0:32        Constant:
 0:32          3 (const int)
 0:34      Construct float ( temp float)
@@ -305,32 +305,32 @@ gl_FragCoord origin is upper left
 0:34          Construct combined texture-sampler ( temp sampler2D)
 0:34            'g_tTex2df1' ( uniform texture2D)
 0:34            'g_sSamp' ( uniform sampler)
-0:?           Constant:
-0:?             0.100000
-0:?             0.200000
+0:34          Constant:
+0:34            0.100000
+0:34            0.200000
 0:35      Construct vec2 ( temp 2-component vector of float)
 0:?         texture ( temp 4-component vector of float)
 0:35          Construct combined texture-sampler ( temp sampler2D)
 0:35            'g_tTex2df2' ( uniform texture2D)
 0:35            'g_sSamp' ( uniform sampler)
-0:?           Constant:
-0:?             0.100000
-0:?             0.200000
+0:35          Constant:
+0:35            0.100000
+0:35            0.200000
 0:36      Construct vec3 ( temp 3-component vector of float)
 0:?         texture ( temp 4-component vector of float)
 0:36          Construct combined texture-sampler ( temp sampler2D)
 0:36            'g_tTex2df3' ( uniform texture2D)
 0:36            'g_sSamp' ( uniform sampler)
-0:?           Constant:
-0:?             0.100000
-0:?             0.200000
+0:36          Constant:
+0:36            0.100000
+0:36            0.200000
 0:37      texture ( temp 4-component vector of float)
 0:37        Construct combined texture-sampler ( temp sampler2D)
 0:37          'g_tTex2df4' ( uniform texture2D)
 0:37          'g_sSamp' ( uniform sampler)
-0:?         Constant:
-0:?           0.100000
-0:?           0.200000
+0:37        Constant:
+0:37          0.100000
+0:37          0.200000
 0:39      Branch: Return with expression
 0:39        Constant:
 0:39          0.000000

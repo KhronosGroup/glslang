@@ -228,17 +228,17 @@ gl_FragCoord origin is upper left
 0:40                'f' ( temp 4-component vector of float)
 0:40              Function Call: vectorCond( ( temp 4-component vector of float)
 0:40            Function Call: scalarCond( ( temp 4-component vector of float)
-0:?           Construct vec4 ( temp 4-component vector of float)
+0:41          Construct vec4 ( temp 4-component vector of float)
 0:41            Function Call: fbSelect(vb2;vf2;vf2; ( temp 2-component vector of float)
-0:?               Constant:
-0:?                 true (const bool)
-0:?                 false (const bool)
-0:?               Constant:
-0:?                 1.000000
-0:?                 2.000000
-0:?               Constant:
-0:?                 3.000000
-0:?                 4.000000
+0:41              Constant:
+0:41                true (const bool)
+0:41                false (const bool)
+0:41              Constant:
+0:41                1.000000
+0:41                2.000000
+0:41              Constant:
+0:41                3.000000
+0:41                4.000000
 0:41            Constant:
 0:41              10.000000
 0:41            Constant:
@@ -491,17 +491,17 @@ gl_FragCoord origin is upper left
 0:40                'f' ( temp 4-component vector of float)
 0:40              Function Call: vectorCond( ( temp 4-component vector of float)
 0:40            Function Call: scalarCond( ( temp 4-component vector of float)
-0:?           Construct vec4 ( temp 4-component vector of float)
+0:41          Construct vec4 ( temp 4-component vector of float)
 0:41            Function Call: fbSelect(vb2;vf2;vf2; ( temp 2-component vector of float)
-0:?               Constant:
-0:?                 true (const bool)
-0:?                 false (const bool)
-0:?               Constant:
-0:?                 1.000000
-0:?                 2.000000
-0:?               Constant:
-0:?                 3.000000
-0:?                 4.000000
+0:41              Constant:
+0:41                true (const bool)
+0:41                false (const bool)
+0:41              Constant:
+0:41                1.000000
+0:41                2.000000
+0:41              Constant:
+0:41                3.000000
+0:41                4.000000
 0:41            Constant:
 0:41              10.000000
 0:41            Constant:

@@ -23,9 +23,9 @@ gl_FragCoord origin is upper left
 0:13                's' ( in structure{ temp sampler ss,  temp float a,  temp texture2D tex})
 0:13                Constant:
 0:13                  0 (const int)
-0:?             Constant:
-0:?               0.200000
-0:?               0.300000
+0:13            Constant:
+0:13              0.200000
+0:13              0.300000
 0:17  Function Definition: @main( ( temp 4-component vector of float)
 0:17    Function Parameters: 
 0:?     Sequence
@@ -96,9 +96,9 @@ gl_FragCoord origin is upper left
 0:13                's' ( in structure{ temp sampler ss,  temp float a,  temp texture2D tex})
 0:13                Constant:
 0:13                  0 (const int)
-0:?             Constant:
-0:?               0.200000
-0:?               0.300000
+0:13            Constant:
+0:13              0.200000
+0:13              0.300000
 0:17  Function Definition: @main( ( temp 4-component vector of float)
 0:17    Function Parameters: 
 0:?     Sequence

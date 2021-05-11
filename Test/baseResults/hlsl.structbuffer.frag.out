@@ -40,7 +40,7 @@ gl_FragCoord origin is upper left
 0:19            1 (const int)
 0:19        true case
 0:20        Branch: Return with expression
-0:?           Construct vec4 ( temp 4-component vector of float)
+0:20          Construct vec4 ( temp 4-component vector of float)
 0:20            add ( temp 3-component vector of float)
 0:20              color: direct index for structure ( temp 3-component vector of float)
 0:20                indirect index (layout( row_major std430) buffer structure{ temp 3-component vector of float color,  temp bool test,  temp bool test2})
@@ -136,7 +136,7 @@ gl_FragCoord origin is upper left
 0:19            1 (const int)
 0:19        true case
 0:20        Branch: Return with expression
-0:?           Construct vec4 ( temp 4-component vector of float)
+0:20          Construct vec4 ( temp 4-component vector of float)
 0:20            add ( temp 3-component vector of float)
 0:20              color: direct index for structure ( temp 3-component vector of float)
 0:20                indirect index (layout( row_major std430) buffer structure{ temp 3-component vector of float color,  temp bool test,  temp bool test2})

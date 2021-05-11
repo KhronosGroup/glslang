@@ -8,19 +8,19 @@ gl_FragCoord origin is upper left
 0:4      Sequence
 0:4        move second child to first child ( temp 4-component vector of float)
 0:4          'r00' ( temp 4-component vector of float)
-0:?           Constant:
-0:?             1.000000
-0:?             2.000000
-0:?             3.000000
-0:?             4.000000
+0:4          Constant:
+0:4            1.000000
+0:4            2.000000
+0:4            3.000000
+0:4            4.000000
 0:5      Sequence
 0:5        move second child to first child ( temp 4-component vector of float)
 0:5          'r01' ( temp 4-component vector of float)
-0:?           Constant:
-0:?             2.000000
-0:?             3.000000
-0:?             4.000000
-0:?             5.000000
+0:5          Constant:
+0:5            2.000000
+0:5            3.000000
+0:5            4.000000
+0:5            5.000000
 0:7      Sequence
 0:7        move second child to first child ( temp 1-component vector of bool)
 0:7          'r12' ( temp 1-component vector of bool)
@@ -49,196 +49,196 @@ gl_FragCoord origin is upper left
 0:13      Sequence
 0:13        move second child to first child ( temp 2-component vector of bool)
 0:13          'r20' ( temp 2-component vector of bool)
-0:?           Constant:
-0:?             false (const bool)
-0:?             true (const bool)
+0:13          Constant:
+0:13            false (const bool)
+0:13            true (const bool)
 0:14      Sequence
 0:14        move second child to first child ( temp 2-component vector of int)
 0:14          'r21' ( temp 2-component vector of int)
-0:?           Constant:
-0:?             1 (const int)
-0:?             2 (const int)
+0:14          Constant:
+0:14            1 (const int)
+0:14            2 (const int)
 0:15      Sequence
 0:15        move second child to first child ( temp 2-component vector of float)
 0:15          'r22' ( temp 2-component vector of float)
-0:?           Constant:
-0:?             1.000000
-0:?             2.000000
+0:15          Constant:
+0:15            1.000000
+0:15            2.000000
 0:16      Sequence
 0:16        move second child to first child ( temp 2-component vector of double)
 0:16          'r23' ( temp 2-component vector of double)
-0:?           Constant:
-0:?             1.000000
-0:?             2.000000
+0:16          Constant:
+0:16            1.000000
+0:16            2.000000
 0:17      Sequence
 0:17        move second child to first child ( temp 2-component vector of uint)
 0:17          'r24' ( temp 2-component vector of uint)
-0:?           Constant:
-0:?             1 (const uint)
-0:?             2 (const uint)
+0:17          Constant:
+0:17            1 (const uint)
+0:17            2 (const uint)
 0:19      Sequence
 0:19        move second child to first child ( temp 3-component vector of bool)
 0:19          'r30' ( temp 3-component vector of bool)
-0:?           Constant:
-0:?             false (const bool)
-0:?             true (const bool)
-0:?             true (const bool)
+0:19          Constant:
+0:19            false (const bool)
+0:19            true (const bool)
+0:19            true (const bool)
 0:20      Sequence
 0:20        move second child to first child ( temp 3-component vector of int)
 0:20          'r31' ( temp 3-component vector of int)
-0:?           Constant:
-0:?             1 (const int)
-0:?             2 (const int)
-0:?             3 (const int)
+0:20          Constant:
+0:20            1 (const int)
+0:20            2 (const int)
+0:20            3 (const int)
 0:21      Sequence
 0:21        move second child to first child ( temp 3-component vector of float)
 0:21          'r32' ( temp 3-component vector of float)
-0:?           Constant:
-0:?             1.000000
-0:?             2.000000
-0:?             3.000000
+0:21          Constant:
+0:21            1.000000
+0:21            2.000000
+0:21            3.000000
 0:22      Sequence
 0:22        move second child to first child ( temp 3-component vector of double)
 0:22          'r33' ( temp 3-component vector of double)
-0:?           Constant:
-0:?             1.000000
-0:?             2.000000
-0:?             3.000000
+0:22          Constant:
+0:22            1.000000
+0:22            2.000000
+0:22            3.000000
 0:23      Sequence
 0:23        move second child to first child ( temp 3-component vector of uint)
 0:23          'r34' ( temp 3-component vector of uint)
-0:?           Constant:
-0:?             1 (const uint)
-0:?             2 (const uint)
-0:?             3 (const uint)
+0:23          Constant:
+0:23            1 (const uint)
+0:23            2 (const uint)
+0:23            3 (const uint)
 0:25      Sequence
 0:25        move second child to first child ( temp 4-component vector of bool)
 0:25          'r40' ( temp 4-component vector of bool)
-0:?           Constant:
-0:?             false (const bool)
-0:?             true (const bool)
-0:?             true (const bool)
-0:?             false (const bool)
+0:25          Constant:
+0:25            false (const bool)
+0:25            true (const bool)
+0:25            true (const bool)
+0:25            false (const bool)
 0:26      Sequence
 0:26        move second child to first child ( temp 4-component vector of int)
 0:26          'r41' ( temp 4-component vector of int)
-0:?           Constant:
-0:?             1 (const int)
-0:?             2 (const int)
-0:?             3 (const int)
-0:?             4 (const int)
+0:26          Constant:
+0:26            1 (const int)
+0:26            2 (const int)
+0:26            3 (const int)
+0:26            4 (const int)
 0:27      Sequence
 0:27        move second child to first child ( temp 4-component vector of float)
 0:27          'r42' ( temp 4-component vector of float)
-0:?           Constant:
-0:?             1.000000
-0:?             2.000000
-0:?             3.000000
-0:?             4.000000
+0:27          Constant:
+0:27            1.000000
+0:27            2.000000
+0:27            3.000000
+0:27            4.000000
 0:28      Sequence
 0:28        move second child to first child ( temp 4-component vector of double)
 0:28          'r43' ( temp 4-component vector of double)
-0:?           Constant:
-0:?             1.000000
-0:?             2.000000
-0:?             3.000000
-0:?             4.000000
+0:28          Constant:
+0:28            1.000000
+0:28            2.000000
+0:28            3.000000
+0:28            4.000000
 0:29      Sequence
 0:29        move second child to first child ( temp 4-component vector of uint)
 0:29          'r44' ( temp 4-component vector of uint)
-0:?           Constant:
-0:?             1 (const uint)
-0:?             2 (const uint)
-0:?             3 (const uint)
-0:?             4 (const uint)
+0:29          Constant:
+0:29            1 (const uint)
+0:29            2 (const uint)
+0:29            3 (const uint)
+0:29            4 (const uint)
 0:31      Sequence
 0:31        move second child to first child ( temp 4X4 matrix of float)
 0:31          'r50' ( temp 4X4 matrix of float)
-0:?           Constant:
-0:?             0.000000
-0:?             1.000000
-0:?             2.000000
-0:?             3.000000
-0:?             4.000000
-0:?             5.000000
-0:?             6.000000
-0:?             7.000000
-0:?             8.000000
-0:?             9.000000
-0:?             10.000000
-0:?             11.000000
-0:?             12.000000
-0:?             13.000000
-0:?             14.000000
-0:?             15.000000
+0:31          Constant:
+0:31            0.000000
+0:31            1.000000
+0:31            2.000000
+0:31            3.000000
+0:31            4.000000
+0:31            5.000000
+0:31            6.000000
+0:31            7.000000
+0:31            8.000000
+0:31            9.000000
+0:31            10.000000
+0:31            11.000000
+0:31            12.000000
+0:31            13.000000
+0:31            14.000000
+0:31            15.000000
 0:32      Sequence
 0:32        move second child to first child ( temp 4X4 matrix of float)
 0:32          'r51' ( temp 4X4 matrix of float)
-0:?           Constant:
-0:?             0.000000
-0:?             1.000000
-0:?             2.000000
-0:?             3.000000
-0:?             4.000000
-0:?             5.000000
-0:?             6.000000
-0:?             7.000000
-0:?             8.000000
-0:?             9.000000
-0:?             10.000000
-0:?             11.000000
-0:?             12.000000
-0:?             13.000000
-0:?             14.000000
-0:?             15.000000
+0:32          Constant:
+0:32            0.000000
+0:32            1.000000
+0:32            2.000000
+0:32            3.000000
+0:32            4.000000
+0:32            5.000000
+0:32            6.000000
+0:32            7.000000
+0:32            8.000000
+0:32            9.000000
+0:32            10.000000
+0:32            11.000000
+0:32            12.000000
+0:32            13.000000
+0:32            14.000000
+0:32            15.000000
 0:35      Sequence
 0:35        move second child to first child ( temp 2X3 matrix of float)
 0:35          'r61' ( temp 2X3 matrix of float)
-0:?           Constant:
-0:?             1.000000
-0:?             2.000000
-0:?             3.000000
-0:?             4.000000
-0:?             5.000000
-0:?             6.000000
+0:35          Constant:
+0:35            1.000000
+0:35            2.000000
+0:35            3.000000
+0:35            4.000000
+0:35            5.000000
+0:35            6.000000
 0:36      Sequence
 0:36        move second child to first child ( temp 3X2 matrix of float)
 0:36          'r62' ( temp 3X2 matrix of float)
-0:?           Constant:
-0:?             1.000000
-0:?             2.000000
-0:?             3.000000
-0:?             4.000000
-0:?             5.000000
-0:?             6.000000
+0:36          Constant:
+0:36            1.000000
+0:36            2.000000
+0:36            3.000000
+0:36            4.000000
+0:36            5.000000
+0:36            6.000000
 0:39      Sequence
 0:39        move second child to first child ( temp 4X2 matrix of float)
 0:39          'r65' ( temp 4X2 matrix of float)
-0:?           Constant:
-0:?             1.000000
-0:?             2.000000
-0:?             3.000000
-0:?             4.000000
-0:?             5.000000
-0:?             6.000000
-0:?             7.000000
-0:?             8.000000
+0:39          Constant:
+0:39            1.000000
+0:39            2.000000
+0:39            3.000000
+0:39            4.000000
+0:39            5.000000
+0:39            6.000000
+0:39            7.000000
+0:39            8.000000
 0:40      Sequence
 0:40        move second child to first child ( temp 4X3 matrix of float)
 0:40          'r66' ( temp 4X3 matrix of float)
-0:?           Constant:
-0:?             1.000000
-0:?             2.000000
-0:?             3.000000
-0:?             4.000000
-0:?             5.000000
-0:?             6.000000
-0:?             7.000000
-0:?             8.000000
-0:?             9.000000
-0:?             10.000000
-0:?             11.000000
-0:?             12.000000
+0:40          Constant:
+0:40            1.000000
+0:40            2.000000
+0:40            3.000000
+0:40            4.000000
+0:40            5.000000
+0:40            6.000000
+0:40            7.000000
+0:40            8.000000
+0:40            9.000000
+0:40            10.000000
+0:40            11.000000
+0:40            12.000000
 0:45      Branch: Return with expression
 0:45        Constant:
 0:45          0.000000
@@ -264,19 +264,19 @@ gl_FragCoord origin is upper left
 0:4      Sequence
 0:4        move second child to first child ( temp 4-component vector of float)
 0:4          'r00' ( temp 4-component vector of float)
-0:?           Constant:
-0:?             1.000000
-0:?             2.000000
-0:?             3.000000
-0:?             4.000000
+0:4          Constant:
+0:4            1.000000
+0:4            2.000000
+0:4            3.000000
+0:4            4.000000
 0:5      Sequence
 0:5        move second child to first child ( temp 4-component vector of float)
 0:5          'r01' ( temp 4-component vector of float)
-0:?           Constant:
-0:?             2.000000
-0:?             3.000000
-0:?             4.000000
-0:?             5.000000
+0:5          Constant:
+0:5            2.000000
+0:5            3.000000
+0:5            4.000000
+0:5            5.000000
 0:7      Sequence
 0:7        move second child to first child ( temp 1-component vector of bool)
 0:7          'r12' ( temp 1-component vector of bool)
@@ -305,196 +305,196 @@ gl_FragCoord origin is upper left
 0:13      Sequence
 0:13        move second child to first child ( temp 2-component vector of bool)
 0:13          'r20' ( temp 2-component vector of bool)
-0:?           Constant:
-0:?             false (const bool)
-0:?             true (const bool)
+0:13          Constant:
+0:13            false (const bool)
+0:13            true (const bool)
 0:14      Sequence
 0:14        move second child to first child ( temp 2-component vector of int)
 0:14          'r21' ( temp 2-component vector of int)
-0:?           Constant:
-0:?             1 (const int)
-0:?             2 (const int)
+0:14          Constant:
+0:14            1 (const int)
+0:14            2 (const int)
 0:15      Sequence
 0:15        move second child to first child ( temp 2-component vector of float)
 0:15          'r22' ( temp 2-component vector of float)
-0:?           Constant:
-0:?             1.000000
-0:?             2.000000
+0:15          Constant:
+0:15            1.000000
+0:15            2.000000
 0:16      Sequence
 0:16        move second child to first child ( temp 2-component vector of double)
 0:16          'r23' ( temp 2-component vector of double)
-0:?           Constant:
-0:?             1.000000
-0:?             2.000000
+0:16          Constant:
+0:16            1.000000
+0:16            2.000000
 0:17      Sequence
 0:17        move second child to first child ( temp 2-component vector of uint)
 0:17          'r24' ( temp 2-component vector of uint)
-0:?           Constant:
-0:?             1 (const uint)
-0:?             2 (const uint)
+0:17          Constant:
+0:17            1 (const uint)
+0:17            2 (const uint)
 0:19      Sequence
 0:19        move second child to first child ( temp 3-component vector of bool)
 0:19          'r30' ( temp 3-component vector of bool)
-0:?           Constant:
-0:?             false (const bool)
-0:?             true (const bool)
-0:?             true (const bool)
+0:19          Constant:
+0:19            false (const bool)
+0:19            true (const bool)
+0:19            true (const bool)
 0:20      Sequence
 0:20        move second child to first child ( temp 3-component vector of int)
 0:20          'r31' ( temp 3-component vector of int)
-0:?           Constant:
-0:?             1 (const int)
-0:?             2 (const int)
-0:?             3 (const int)
+0:20          Constant:
+0:20            1 (const int)
+0:20            2 (const int)
+0:20            3 (const int)
 0:21      Sequence
 0:21        move second child to first child ( temp 3-component vector of float)
 0:21          'r32' ( temp 3-component vector of float)
-0:?           Constant:
-0:?             1.000000
-0:?             2.000000
-0:?             3.000000
+0:21          Constant:
+0:21            1.000000
+0:21            2.000000
+0:21            3.000000
 0:22      Sequence
 0:22        move second child to first child ( temp 3-component vector of double)
 0:22          'r33' ( temp 3-component vector of double)
-0:?           Constant:
-0:?             1.000000
-0:?             2.000000
-0:?             3.000000
+0:22          Constant:
+0:22            1.000000
+0:22            2.000000
+0:22            3.000000
 0:23      Sequence
 0:23        move second child to first child ( temp 3-component vector of uint)
 0:23          'r34' ( temp 3-component vector of uint)
-0:?           Constant:
-0:?             1 (const uint)
-0:?             2 (const uint)
-0:?             3 (const uint)
+0:23          Constant:
+0:23            1 (const uint)
+0:23            2 (const uint)
+0:23            3 (const uint)
 0:25      Sequence
 0:25        move second child to first child ( temp 4-component vector of bool)
 0:25          'r40' ( temp 4-component vector of bool)
-0:?           Constant:
-0:?             false (const bool)
-0:?             true (const bool)
-0:?             true (const bool)
-0:?             false (const bool)
+0:25          Constant:
+0:25            false (const bool)
+0:25            true (const bool)
+0:25            true (const bool)
+0:25            false (const bool)
 0:26      Sequence
 0:26        move second child to first child ( temp 4-component vector of int)
 0:26          'r41' ( temp 4-component vector of int)
-0:?           Constant:
-0:?             1 (const int)
-0:?             2 (const int)
-0:?             3 (const int)
-0:?             4 (const int)
+0:26          Constant:
+0:26            1 (const int)
+0:26            2 (const int)
+0:26            3 (const int)
+0:26            4 (const int)
 0:27      Sequence
 0:27        move second child to first child ( temp 4-component vector of float)
 0:27          'r42' ( temp 4-component vector of float)
-0:?           Constant:
-0:?             1.000000
-0:?             2.000000
-0:?             3.000000
-0:?             4.000000
+0:27          Constant:
+0:27            1.000000
+0:27            2.000000
+0:27            3.000000
+0:27            4.000000
 0:28      Sequence
 0:28        move second child to first child ( temp 4-component vector of double)
 0:28          'r43' ( temp 4-component vector of double)
-0:?           Constant:
-0:?             1.000000
-0:?             2.000000
-0:?             3.000000
-0:?             4.000000
+0:28          Constant:
+0:28            1.000000
+0:28            2.000000
+0:28            3.000000
+0:28            4.000000
 0:29      Sequence
 0:29        move second child to first child ( temp 4-component vector of uint)
 0:29          'r44' ( temp 4-component vector of uint)
-0:?           Constant:
-0:?             1 (const uint)
-0:?             2 (const uint)
-0:?             3 (const uint)
-0:?             4 (const uint)
+0:29          Constant:
+0:29            1 (const uint)
+0:29            2 (const uint)
+0:29            3 (const uint)
+0:29            4 (const uint)
 0:31      Sequence
 0:31        move second child to first child ( temp 4X4 matrix of float)
 0:31          'r50' ( temp 4X4 matrix of float)
-0:?           Constant:
-0:?             0.000000
-0:?             1.000000
-0:?             2.000000
-0:?             3.000000
-0:?             4.000000
-0:?             5.000000
-0:?             6.000000
-0:?             7.000000
-0:?             8.000000
-0:?             9.000000
-0:?             10.000000
-0:?             11.000000
-0:?             12.000000
-0:?             13.000000
-0:?             14.000000
-0:?             15.000000
+0:31          Constant:
+0:31            0.000000
+0:31            1.000000
+0:31            2.000000
+0:31            3.000000
+0:31            4.000000
+0:31            5.000000
+0:31            6.000000
+0:31            7.000000
+0:31            8.000000
+0:31            9.000000
+0:31            10.000000
+0:31            11.000000
+0:31            12.000000
+0:31            13.000000
+0:31            14.000000
+0:31            15.000000
 0:32      Sequence
 0:32        move second child to first child ( temp 4X4 matrix of float)
 0:32          'r51' ( temp 4X4 matrix of float)
-0:?           Constant:
-0:?             0.000000
-0:?             1.000000
-0:?             2.000000
-0:?             3.000000
-0:?             4.000000
-0:?             5.000000
-0:?             6.000000
-0:?             7.000000
-0:?             8.000000
-0:?             9.000000
-0:?             10.000000
-0:?             11.000000
-0:?             12.000000
-0:?             13.000000
-0:?             14.000000
-0:?             15.000000
+0:32          Constant:
+0:32            0.000000
+0:32            1.000000
+0:32            2.000000
+0:32            3.000000
+0:32            4.000000
+0:32            5.000000
+0:32            6.000000
+0:32            7.000000
+0:32            8.000000
+0:32            9.000000
+0:32            10.000000
+0:32            11.000000
+0:32            12.000000
+0:32            13.000000
+0:32            14.000000
+0:32            15.000000
 0:35      Sequence
 0:35        move second child to first child ( temp 2X3 matrix of float)
 0:35          'r61' ( temp 2X3 matrix of float)
-0:?           Constant:
-0:?             1.000000
-0:?             2.000000
-0:?             3.000000
-0:?             4.000000
-0:?             5.000000
-0:?             6.000000
+0:35          Constant:
+0:35            1.000000
+0:35            2.000000
+0:35            3.000000
+0:35            4.000000
+0:35            5.000000
+0:35            6.000000
 0:36      Sequence
 0:36        move second child to first child ( temp 3X2 matrix of float)
 0:36          'r62' ( temp 3X2 matrix of float)
-0:?           Constant:
-0:?             1.000000
-0:?             2.000000
-0:?             3.000000
-0:?             4.000000
-0:?             5.000000
-0:?             6.000000
+0:36          Constant:
+0:36            1.000000
+0:36            2.000000
+0:36            3.000000
+0:36            4.000000
+0:36            5.000000
+0:36            6.000000
 0:39      Sequence
 0:39        move second child to first child ( temp 4X2 matrix of float)
 0:39          'r65' ( temp 4X2 matrix of float)
-0:?           Constant:
-0:?             1.000000
-0:?             2.000000
-0:?             3.000000
-0:?             4.000000
-0:?             5.000000
-0:?             6.000000
-0:?             7.000000
-0:?             8.000000
+0:39          Constant:
+0:39            1.000000
+0:39            2.000000
+0:39            3.000000
+0:39            4.000000
+0:39            5.000000
+0:39            6.000000
+0:39            7.000000
+0:39            8.000000
 0:40      Sequence
 0:40        move second child to first child ( temp 4X3 matrix of float)
 0:40          'r66' ( temp 4X3 matrix of float)
-0:?           Constant:
-0:?             1.000000
-0:?             2.000000
-0:?             3.000000
-0:?             4.000000
-0:?             5.000000
-0:?             6.000000
-0:?             7.000000
-0:?             8.000000
-0:?             9.000000
-0:?             10.000000
-0:?             11.000000
-0:?             12.000000
+0:40          Constant:
+0:40            1.000000
+0:40            2.000000
+0:40            3.000000
+0:40            4.000000
+0:40            5.000000
+0:40            6.000000
+0:40            7.000000
+0:40            8.000000
+0:40            9.000000
+0:40            10.000000
+0:40            11.000000
+0:40            12.000000
 0:45      Branch: Return with expression
 0:45        Constant:
 0:45          0.000000

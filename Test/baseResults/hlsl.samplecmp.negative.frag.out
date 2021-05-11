@@ -14,18 +14,18 @@ ERROR: node is still EOpNull!
 0:9          'g_shadowTex' ( uniform texture2DShadow)
 0:9          'g_shadowSamplerComp' ( uniform sampler)
 0:9        Construct vec3 ( temp 3-component vector of float)
-0:?           Constant:
-0:?             0.000000
-0:?             0.000000
+0:9          Constant:
+0:9            0.000000
+0:9            0.000000
 0:9          Constant:
 0:9            0.000000
 0:10      ERROR: Bad aggregation op
  ( temp float)
 0:10        'g_nonShadowTex' ( uniform texture2D)
 0:10        'g_shadowSampler' ( uniform sampler)
-0:?         Constant:
-0:?           0.000000
-0:?           0.000000
+0:10        Constant:
+0:10          0.000000
+0:10          0.000000
 0:10        Constant:
 0:10          0.000000
 0:12      Branch: Return with expression
@@ -62,18 +62,18 @@ ERROR: node is still EOpNull!
 0:9          'g_shadowTex' ( uniform texture2DShadow)
 0:9          'g_shadowSamplerComp' ( uniform sampler)
 0:9        Construct vec3 ( temp 3-component vector of float)
-0:?           Constant:
-0:?             0.000000
-0:?             0.000000
+0:9          Constant:
+0:9            0.000000
+0:9            0.000000
 0:9          Constant:
 0:9            0.000000
 0:10      ERROR: Bad aggregation op
  ( temp float)
 0:10        'g_nonShadowTex' ( uniform texture2D)
 0:10        'g_shadowSampler' ( uniform sampler)
-0:?         Constant:
-0:?           0.000000
-0:?           0.000000
+0:10        Constant:
+0:10          0.000000
+0:10          0.000000
 0:10        Constant:
 0:10          0.000000
 0:12      Branch: Return with expression

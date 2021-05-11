@@ -6,14 +6,14 @@ gl_FragCoord origin is upper left
 0:11    Function Parameters: 
 0:?     Sequence
 0:12      Branch: Return with expression
-0:?         Constant:
-0:?           1.000000
-0:?           1.000000
-0:?           1.000000
-0:?           1.000000
-0:?           2.000000
-0:?           3.000000
-0:?           4.000000
+0:12        Constant:
+0:12          1.000000
+0:12          1.000000
+0:12          1.000000
+0:12          1.000000
+0:12          2.000000
+0:12          3.000000
+0:12          4.000000
 0:16  Function Definition: @main( ( temp structure{ temp 4-component vector of float color,  temp float other_struct_member1,  temp float other_struct_member2,  temp float other_struct_member3})
 0:16    Function Parameters: 
 0:?     Sequence
@@ -67,14 +67,14 @@ gl_FragCoord origin is upper left
 0:11    Function Parameters: 
 0:?     Sequence
 0:12      Branch: Return with expression
-0:?         Constant:
-0:?           1.000000
-0:?           1.000000
-0:?           1.000000
-0:?           1.000000
-0:?           2.000000
-0:?           3.000000
-0:?           4.000000
+0:12        Constant:
+0:12          1.000000
+0:12          1.000000
+0:12          1.000000
+0:12          1.000000
+0:12          2.000000
+0:12          3.000000
+0:12          4.000000
 0:16  Function Definition: @main( ( temp structure{ temp 4-component vector of float color,  temp float other_struct_member1,  temp float other_struct_member2,  temp float other_struct_member3})
 0:16    Function Parameters: 
 0:?     Sequence

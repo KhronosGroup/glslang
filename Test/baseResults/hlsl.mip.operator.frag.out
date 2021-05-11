@@ -8,30 +8,30 @@ gl_FragCoord origin is upper left
 0:13      Branch: Return with expression
 0:9        add ( temp 4-component vector of float)
 0:6          add ( temp 4-component vector of float)
-0:?             textureFetch ( temp 4-component vector of float)
+0:6            textureFetch ( temp 4-component vector of float)
 0:6              'g_tTex2df4' ( uniform texture2D)
-0:?               Constant:
-0:?                 3 (const uint)
-0:?                 4 (const uint)
+0:6              Constant:
+0:6                3 (const uint)
+0:6                4 (const uint)
 0:6              Constant:
 0:6                2 (const int)
-0:?             textureFetch ( temp 4-component vector of float)
+0:9            textureFetch ( temp 4-component vector of float)
 0:9              'g_tTex2df4a' ( uniform texture2DArray)
-0:?               Constant:
-0:?                 6 (const uint)
-0:?                 7 (const uint)
-0:?                 8 (const uint)
+0:9              Constant:
+0:9                6 (const uint)
+0:9                7 (const uint)
+0:9                8 (const uint)
 0:9              Constant:
 0:9                5 (const uint)
 0:13          textureFetch ( temp 4-component vector of float)
 0:13            'g_tTex2df4' ( uniform texture2D)
 0:13            Convert float to uint ( temp 2-component vector of uint)
 0:13              vector swizzle ( temp 2-component vector of float)
-0:?                 textureFetch ( temp 4-component vector of float)
+0:13                textureFetch ( temp 4-component vector of float)
 0:13                  'g_tTex2df4' ( uniform texture2D)
-0:?                   Constant:
-0:?                     14 (const uint)
-0:?                     15 (const uint)
+0:13                  Constant:
+0:13                    14 (const uint)
+0:13                    15 (const uint)
 0:13                  Constant:
 0:13                    13 (const int)
 0:13                Sequence
@@ -41,11 +41,11 @@ gl_FragCoord origin is upper left
 0:13                    1 (const int)
 0:13            Convert float to uint ( temp uint)
 0:13              direct index ( temp float)
-0:?                 textureFetch ( temp 4-component vector of float)
+0:13                textureFetch ( temp 4-component vector of float)
 0:13                  'g_tTex2df4' ( uniform texture2D)
-0:?                   Constant:
-0:?                     10 (const uint)
-0:?                     11 (const uint)
+0:13                  Constant:
+0:13                    10 (const uint)
+0:13                    11 (const uint)
 0:13                  Constant:
 0:13                    9 (const int)
 0:13                Constant:
@@ -74,30 +74,30 @@ gl_FragCoord origin is upper left
 0:13      Branch: Return with expression
 0:9        add ( temp 4-component vector of float)
 0:6          add ( temp 4-component vector of float)
-0:?             textureFetch ( temp 4-component vector of float)
+0:6            textureFetch ( temp 4-component vector of float)
 0:6              'g_tTex2df4' ( uniform texture2D)
-0:?               Constant:
-0:?                 3 (const uint)
-0:?                 4 (const uint)
+0:6              Constant:
+0:6                3 (const uint)
+0:6                4 (const uint)
 0:6              Constant:
 0:6                2 (const int)
-0:?             textureFetch ( temp 4-component vector of float)
+0:9            textureFetch ( temp 4-component vector of float)
 0:9              'g_tTex2df4a' ( uniform texture2DArray)
-0:?               Constant:
-0:?                 6 (const uint)
-0:?                 7 (const uint)
-0:?                 8 (const uint)
+0:9              Constant:
+0:9                6 (const uint)
+0:9                7 (const uint)
+0:9                8 (const uint)
 0:9              Constant:
 0:9                5 (const uint)
 0:13          textureFetch ( temp 4-component vector of float)
 0:13            'g_tTex2df4' ( uniform texture2D)
 0:13            Convert float to uint ( temp 2-component vector of uint)
 0:13              vector swizzle ( temp 2-component vector of float)
-0:?                 textureFetch ( temp 4-component vector of float)
+0:13                textureFetch ( temp 4-component vector of float)
 0:13                  'g_tTex2df4' ( uniform texture2D)
-0:?                   Constant:
-0:?                     14 (const uint)
-0:?                     15 (const uint)
+0:13                  Constant:
+0:13                    14 (const uint)
+0:13                    15 (const uint)
 0:13                  Constant:
 0:13                    13 (const int)
 0:13                Sequence
@@ -107,11 +107,11 @@ gl_FragCoord origin is upper left
 0:13                    1 (const int)
 0:13            Convert float to uint ( temp uint)
 0:13              direct index ( temp float)
-0:?                 textureFetch ( temp 4-component vector of float)
+0:13                textureFetch ( temp 4-component vector of float)
 0:13                  'g_tTex2df4' ( uniform texture2D)
-0:?                   Constant:
-0:?                     10 (const uint)
-0:?                     11 (const uint)
+0:13                  Constant:
+0:13                    10 (const uint)
+0:13                    11 (const uint)
 0:13                  Constant:
 0:13                    9 (const int)
 0:13                Constant:

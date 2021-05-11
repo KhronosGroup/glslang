@@ -14,11 +14,11 @@ gl_FragCoord origin is upper left
 0:15      Sequence
 0:15        move second child to first child ( temp 4-component vector of float)
 0:15          'sample' ( temp 4-component vector of float)
-0:?           Constant:
-0:?             3.000000
-0:?             4.000000
-0:?             5.000000
-0:?             6.000000
+0:15          Constant:
+0:15            3.000000
+0:15            4.000000
+0:15            5.000000
+0:15            6.000000
 0:17      Branch: Return with expression
 0:17        vector swizzle ( temp 4-component vector of float)
 0:17          'sample' ( temp 4-component vector of float)
@@ -59,11 +59,11 @@ gl_FragCoord origin is upper left
 0:15      Sequence
 0:15        move second child to first child ( temp 4-component vector of float)
 0:15          'sample' ( temp 4-component vector of float)
-0:?           Constant:
-0:?             3.000000
-0:?             4.000000
-0:?             5.000000
-0:?             6.000000
+0:15          Constant:
+0:15            3.000000
+0:15            4.000000
+0:15            5.000000
+0:15            6.000000
 0:17      Branch: Return with expression
 0:17        vector swizzle ( temp 4-component vector of float)
 0:17          'sample' ( temp 4-component vector of float)

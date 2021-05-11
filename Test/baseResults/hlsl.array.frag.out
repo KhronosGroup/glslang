@@ -5,21 +5,21 @@ gl_FragCoord origin is upper left
 0:7  Sequence
 0:7    move second child to first child ( temp 4-component vector of float)
 0:7      'C' ( global 4-component vector of float)
-0:?       Constant:
-0:?         1.000000
-0:?         2.000000
-0:?         3.000000
-0:?         4.000000
+0:7      Constant:
+0:7        1.000000
+0:7        2.000000
+0:7        3.000000
+0:7        4.000000
 0:11  Sequence
 0:11    move second child to first child ( temp 2-element array of 4-component vector of float)
 0:11      'c2' ( global 2-element array of 4-component vector of float)
 0:11      Construct vec4 ( temp 2-element array of 4-component vector of float)
 0:11        'C' ( global 4-component vector of float)
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
-0:?           3.000000
-0:?           4.000000
+0:11        Constant:
+0:11          1.000000
+0:11          2.000000
+0:11          3.000000
+0:11          4.000000
 0:14  Function Definition: @PixelShaderFunction(i1;vf4[3]; ( temp 4-component vector of float)
 0:14    Function Parameters: 
 0:14      'i' ( in int)
@@ -152,21 +152,21 @@ gl_FragCoord origin is upper left
 0:7  Sequence
 0:7    move second child to first child ( temp 4-component vector of float)
 0:7      'C' ( global 4-component vector of float)
-0:?       Constant:
-0:?         1.000000
-0:?         2.000000
-0:?         3.000000
-0:?         4.000000
+0:7      Constant:
+0:7        1.000000
+0:7        2.000000
+0:7        3.000000
+0:7        4.000000
 0:11  Sequence
 0:11    move second child to first child ( temp 2-element array of 4-component vector of float)
 0:11      'c2' ( global 2-element array of 4-component vector of float)
 0:11      Construct vec4 ( temp 2-element array of 4-component vector of float)
 0:11        'C' ( global 4-component vector of float)
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
-0:?           3.000000
-0:?           4.000000
+0:11        Constant:
+0:11          1.000000
+0:11          2.000000
+0:11          3.000000
+0:11          4.000000
 0:14  Function Definition: @PixelShaderFunction(i1;vf4[3]; ( temp 4-component vector of float)
 0:14    Function Parameters: 
 0:14      'i' ( in int)

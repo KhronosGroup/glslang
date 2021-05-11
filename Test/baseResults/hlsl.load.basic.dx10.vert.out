@@ -180,11 +180,11 @@ Shader version: 500
 0:67          'vsout' ( temp structure{ temp 4-component vector of float Pos})
 0:67          Constant:
 0:67            0 (const int)
-0:?         Constant:
-0:?           0.000000
-0:?           0.000000
-0:?           0.000000
-0:?           0.000000
+0:67        Constant:
+0:67          0.000000
+0:67          0.000000
+0:67          0.000000
+0:67          0.000000
 0:69      Branch: Return with expression
 0:69        'vsout' ( temp structure{ temp 4-component vector of float Pos})
 0:47  Function Definition: main( ( temp void)
@@ -408,11 +408,11 @@ Shader version: 500
 0:67          'vsout' ( temp structure{ temp 4-component vector of float Pos})
 0:67          Constant:
 0:67            0 (const int)
-0:?         Constant:
-0:?           0.000000
-0:?           0.000000
-0:?           0.000000
-0:?           0.000000
+0:67        Constant:
+0:67          0.000000
+0:67          0.000000
+0:67          0.000000
+0:67          0.000000
 0:69      Branch: Return with expression
 0:69        'vsout' ( temp structure{ temp 4-component vector of float Pos})
 0:47  Function Definition: main( ( temp void)
