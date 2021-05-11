@@ -22,11 +22,11 @@ gl_FragCoord origin is upper left
 0:9                0 (const int)
 0:9            Constant:
 0:9              1 (const uint)
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
-0:?           3.000000
-0:?           4.000000
+0:9        Constant:
+0:9          1.000000
+0:9          2.000000
+0:9          3.000000
+0:9          4.000000
 0:10      Branch: Return with expression
 0:10        indirect index ( buffer 4-component vector of float)
 0:10          @data: direct index for structure ( buffer unsized 1-element array of 4-component vector of float)
@@ -99,11 +99,11 @@ gl_FragCoord origin is upper left
 0:9                0 (const int)
 0:9            Constant:
 0:9              1 (const uint)
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
-0:?           3.000000
-0:?           4.000000
+0:9        Constant:
+0:9          1.000000
+0:9          2.000000
+0:9          3.000000
+0:9          4.000000
 0:10      Branch: Return with expression
 0:10        indirect index ( buffer 4-component vector of float)
 0:10          @data: direct index for structure ( buffer unsized 1-element array of 4-component vector of float)

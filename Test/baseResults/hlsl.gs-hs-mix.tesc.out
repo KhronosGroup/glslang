@@ -392,7 +392,7 @@ triangle order = ccw
 0:95        move second child to first child ( temp 4-component vector of float)
 0:95          'Q0' ( temp 4-component vector of float)
 0:95          vector-times-matrix ( temp 4-component vector of float)
-0:?             Construct vec4 ( temp 4-component vector of float)
+0:95            Construct vec4 ( temp 4-component vector of float)
 0:95              'P0' ( temp 3-component vector of float)
 0:95              Constant:
 0:95                1.000000
@@ -404,7 +404,7 @@ triangle order = ccw
 0:96        move second child to first child ( temp 4-component vector of float)
 0:96          'Q1' ( temp 4-component vector of float)
 0:96          vector-times-matrix ( temp 4-component vector of float)
-0:?             Construct vec4 ( temp 4-component vector of float)
+0:96            Construct vec4 ( temp 4-component vector of float)
 0:96              'P1' ( temp 3-component vector of float)
 0:96              Constant:
 0:96                1.000000
@@ -416,7 +416,7 @@ triangle order = ccw
 0:97        move second child to first child ( temp 4-component vector of float)
 0:97          'Q2' ( temp 4-component vector of float)
 0:97          vector-times-matrix ( temp 4-component vector of float)
-0:?             Construct vec4 ( temp 4-component vector of float)
+0:97            Construct vec4 ( temp 4-component vector of float)
 0:97              'P2' ( temp 3-component vector of float)
 0:97              Constant:
 0:97                1.000000
@@ -887,7 +887,7 @@ triangle order = ccw
 0:95        move second child to first child ( temp 4-component vector of float)
 0:95          'Q0' ( temp 4-component vector of float)
 0:95          vector-times-matrix ( temp 4-component vector of float)
-0:?             Construct vec4 ( temp 4-component vector of float)
+0:95            Construct vec4 ( temp 4-component vector of float)
 0:95              'P0' ( temp 3-component vector of float)
 0:95              Constant:
 0:95                1.000000
@@ -899,7 +899,7 @@ triangle order = ccw
 0:96        move second child to first child ( temp 4-component vector of float)
 0:96          'Q1' ( temp 4-component vector of float)
 0:96          vector-times-matrix ( temp 4-component vector of float)
-0:?             Construct vec4 ( temp 4-component vector of float)
+0:96            Construct vec4 ( temp 4-component vector of float)
 0:96              'P1' ( temp 3-component vector of float)
 0:96              Constant:
 0:96                1.000000
@@ -911,7 +911,7 @@ triangle order = ccw
 0:97        move second child to first child ( temp 4-component vector of float)
 0:97          'Q2' ( temp 4-component vector of float)
 0:97          vector-times-matrix ( temp 4-component vector of float)
-0:?             Construct vec4 ( temp 4-component vector of float)
+0:97            Construct vec4 ( temp 4-component vector of float)
 0:97              'P2' ( temp 3-component vector of float)
 0:97              Constant:
 0:97                1.000000

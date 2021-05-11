@@ -30,9 +30,9 @@ local_size = (1, 1, 1)
 0:66      'inI0' ( in 2-component vector of int)
 0:?     Sequence
 0:109      Branch: Return with expression
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
+0:109        Constant:
+0:109          1.000000
+0:109          2.000000
 0:113  Function Definition: ComputeShaderFunction3(vf3;vf3;vf3;vi3; ( temp 3-component vector of float)
 0:113    Function Parameters: 
 0:113      'inF0' ( in 3-component vector of float)
@@ -41,10 +41,10 @@ local_size = (1, 1, 1)
 0:113      'inI0' ( in 3-component vector of int)
 0:?     Sequence
 0:154      Branch: Return with expression
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
-0:?           3.000000
+0:154        Constant:
+0:154          1.000000
+0:154          2.000000
+0:154          3.000000
 0:158  Function Definition: @ComputeShaderFunction(vf4;vf4;vf4;vi4; ( temp 4-component vector of float)
 0:158    Function Parameters: 
 0:158      'inF0' ( in 4-component vector of float)
@@ -53,11 +53,11 @@ local_size = (1, 1, 1)
 0:158      'inI0' ( in 4-component vector of int)
 0:?     Sequence
 0:199      Branch: Return with expression
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
-0:?           3.000000
-0:?           4.000000
+0:199        Constant:
+0:199          1.000000
+0:199          2.000000
+0:199          3.000000
+0:199          4.000000
 0:158  Function Definition: ComputeShaderFunction( ( temp void)
 0:158    Function Parameters: 
 0:?     Sequence
@@ -122,9 +122,9 @@ local_size = (1, 1, 1)
 0:66      'inI0' ( in 2-component vector of int)
 0:?     Sequence
 0:109      Branch: Return with expression
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
+0:109        Constant:
+0:109          1.000000
+0:109          2.000000
 0:113  Function Definition: ComputeShaderFunction3(vf3;vf3;vf3;vi3; ( temp 3-component vector of float)
 0:113    Function Parameters: 
 0:113      'inF0' ( in 3-component vector of float)
@@ -133,10 +133,10 @@ local_size = (1, 1, 1)
 0:113      'inI0' ( in 3-component vector of int)
 0:?     Sequence
 0:154      Branch: Return with expression
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
-0:?           3.000000
+0:154        Constant:
+0:154          1.000000
+0:154          2.000000
+0:154          3.000000
 0:158  Function Definition: @ComputeShaderFunction(vf4;vf4;vf4;vi4; ( temp 4-component vector of float)
 0:158    Function Parameters: 
 0:158      'inF0' ( in 4-component vector of float)
@@ -145,11 +145,11 @@ local_size = (1, 1, 1)
 0:158      'inI0' ( in 4-component vector of int)
 0:?     Sequence
 0:199      Branch: Return with expression
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
-0:?           3.000000
-0:?           4.000000
+0:199        Constant:
+0:199          1.000000
+0:199          2.000000
+0:199          3.000000
+0:199          4.000000
 0:158  Function Definition: ComputeShaderFunction( ( temp void)
 0:158    Function Parameters: 
 0:?     Sequence

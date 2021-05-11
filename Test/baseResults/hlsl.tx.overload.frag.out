@@ -14,11 +14,11 @@ gl_FragCoord origin is upper left
 0:9      'DummyTex' ( in texture2D)
 0:?     Sequence
 0:9      Branch: Return with expression
-0:?         Constant:
-0:?           0.000000
-0:?           0.000000
-0:?           0.000000
-0:?           0.000000
+0:9        Constant:
+0:9          0.000000
+0:9          0.000000
+0:9          0.000000
+0:9          0.000000
 0:11  Function Definition: Func(I211; ( temp float)
 0:11    Function Parameters: 
 0:11      'DummyTex' (layout( r32f) in image2D)
@@ -31,11 +31,11 @@ gl_FragCoord origin is upper left
 0:12      'DummyTex' (layout( rgba32f) in image2D)
 0:?     Sequence
 0:12      Branch: Return with expression
-0:?         Constant:
-0:?           0.000000
-0:?           0.000000
-0:?           0.000000
-0:?           0.000000
+0:12        Constant:
+0:12          0.000000
+0:12          0.000000
+0:12          0.000000
+0:12          0.000000
 0:15  Function Definition: @main( ( temp 4-component vector of float)
 0:15    Function Parameters: 
 0:?     Sequence
@@ -83,11 +83,11 @@ gl_FragCoord origin is upper left
 0:9      'DummyTex' ( in texture2D)
 0:?     Sequence
 0:9      Branch: Return with expression
-0:?         Constant:
-0:?           0.000000
-0:?           0.000000
-0:?           0.000000
-0:?           0.000000
+0:9        Constant:
+0:9          0.000000
+0:9          0.000000
+0:9          0.000000
+0:9          0.000000
 0:11  Function Definition: Func(I211; ( temp float)
 0:11    Function Parameters: 
 0:11      'DummyTex' (layout( r32f) in image2D)
@@ -100,11 +100,11 @@ gl_FragCoord origin is upper left
 0:12      'DummyTex' (layout( rgba32f) in image2D)
 0:?     Sequence
 0:12      Branch: Return with expression
-0:?         Constant:
-0:?           0.000000
-0:?           0.000000
-0:?           0.000000
-0:?           0.000000
+0:12        Constant:
+0:12          0.000000
+0:12          0.000000
+0:12          0.000000
+0:12          0.000000
 0:15  Function Definition: @main( ( temp 4-component vector of float)
 0:15    Function Parameters: 
 0:?     Sequence

@@ -11,11 +11,11 @@ gl_FragCoord origin is upper left
 0:17          'o' ( temp structure{ temp 4-component vector of float vColor,  temp uint nCoverageMask})
 0:17          Constant:
 0:17            0 (const int)
-0:?         Constant:
-0:?           1.000000
-0:?           0.000000
-0:?           0.000000
-0:?           1.000000
+0:17        Constant:
+0:17          1.000000
+0:17          0.000000
+0:17          0.000000
+0:17          1.000000
 0:18      move second child to first child ( temp uint)
 0:18        nCoverageMask: direct index for structure ( temp uint)
 0:18          'o' ( temp structure{ temp 4-component vector of float vColor,  temp uint nCoverageMask})
@@ -72,11 +72,11 @@ gl_FragCoord origin is upper left
 0:17          'o' ( temp structure{ temp 4-component vector of float vColor,  temp uint nCoverageMask})
 0:17          Constant:
 0:17            0 (const int)
-0:?         Constant:
-0:?           1.000000
-0:?           0.000000
-0:?           0.000000
-0:?           1.000000
+0:17        Constant:
+0:17          1.000000
+0:17          0.000000
+0:17          0.000000
+0:17          1.000000
 0:18      move second child to first child ( temp uint)
 0:18        nCoverageMask: direct index for structure ( temp uint)
 0:18          'o' ( temp structure{ temp 4-component vector of float vColor,  temp uint nCoverageMask})

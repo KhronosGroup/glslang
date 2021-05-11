@@ -23,11 +23,11 @@ gl_FragCoord origin is upper left
 0:13        Construct float ( in float)
 0:13          'f1b' ( temp 1-component vector of float)
 0:15      Branch: Return with expression
-0:?         Constant:
-0:?           0.000000
-0:?           0.000000
-0:?           0.000000
-0:?           0.000000
+0:15        Constant:
+0:15          0.000000
+0:15          0.000000
+0:15          0.000000
+0:15          0.000000
 0:3  Function Definition: main( ( temp void)
 0:3    Function Parameters: 
 0:?     Sequence
@@ -65,11 +65,11 @@ gl_FragCoord origin is upper left
 0:13        Construct float ( in float)
 0:13          'f1b' ( temp 1-component vector of float)
 0:15      Branch: Return with expression
-0:?         Constant:
-0:?           0.000000
-0:?           0.000000
-0:?           0.000000
-0:?           0.000000
+0:15        Constant:
+0:15          0.000000
+0:15          0.000000
+0:15          0.000000
+0:15          0.000000
 0:3  Function Definition: main( ( temp void)
 0:3    Function Parameters: 
 0:?     Sequence

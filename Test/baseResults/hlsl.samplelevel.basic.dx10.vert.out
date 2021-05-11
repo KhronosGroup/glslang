@@ -44,9 +44,9 @@ Shader version: 500
 0:34            Construct combined texture-sampler ( temp sampler2D)
 0:34              'g_tTex2df4' ( uniform texture2D)
 0:34              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.100000
-0:?               0.200000
+0:34            Constant:
+0:34              0.100000
+0:34              0.200000
 0:34            Constant:
 0:34              0.750000
 0:35      Sequence
@@ -56,9 +56,9 @@ Shader version: 500
 0:35            Construct combined texture-sampler ( temp isampler2D)
 0:35              'g_tTex2di4' ( uniform itexture2D)
 0:35              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.300000
-0:?               0.400000
+0:35            Constant:
+0:35              0.300000
+0:35              0.400000
 0:35            Constant:
 0:35              0.750000
 0:36      Sequence
@@ -68,9 +68,9 @@ Shader version: 500
 0:36            Construct combined texture-sampler ( temp usampler2D)
 0:36              'g_tTex2du4' ( uniform utexture2D)
 0:36              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.500000
-0:?               0.600000
+0:36            Constant:
+0:36              0.500000
+0:36              0.600000
 0:36            Constant:
 0:36              0.750000
 0:38      Sequence
@@ -80,10 +80,10 @@ Shader version: 500
 0:38            Construct combined texture-sampler ( temp sampler3D)
 0:38              'g_tTex3df4' ( uniform texture3D)
 0:38              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.100000
-0:?               0.200000
-0:?               0.300000
+0:38            Constant:
+0:38              0.100000
+0:38              0.200000
+0:38              0.300000
 0:38            Constant:
 0:38              0.750000
 0:39      Sequence
@@ -93,10 +93,10 @@ Shader version: 500
 0:39            Construct combined texture-sampler ( temp isampler3D)
 0:39              'g_tTex3di4' ( uniform itexture3D)
 0:39              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.400000
-0:?               0.500000
-0:?               0.600000
+0:39            Constant:
+0:39              0.400000
+0:39              0.500000
+0:39              0.600000
 0:39            Constant:
 0:39              0.750000
 0:40      Sequence
@@ -106,10 +106,10 @@ Shader version: 500
 0:40            Construct combined texture-sampler ( temp usampler3D)
 0:40              'g_tTex3du4' ( uniform utexture3D)
 0:40              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.700000
-0:?               0.800000
-0:?               0.900000
+0:40            Constant:
+0:40              0.700000
+0:40              0.800000
+0:40              0.900000
 0:40            Constant:
 0:40              0.750000
 0:42      Sequence
@@ -119,10 +119,10 @@ Shader version: 500
 0:42            Construct combined texture-sampler ( temp samplerCube)
 0:42              'g_tTexcdf4' ( uniform textureCube)
 0:42              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.100000
-0:?               0.200000
-0:?               0.300000
+0:42            Constant:
+0:42              0.100000
+0:42              0.200000
+0:42              0.300000
 0:42            Constant:
 0:42              0.750000
 0:43      Sequence
@@ -132,10 +132,10 @@ Shader version: 500
 0:43            Construct combined texture-sampler ( temp isamplerCube)
 0:43              'g_tTexcdi4' ( uniform itextureCube)
 0:43              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.400000
-0:?               0.500000
-0:?               0.600000
+0:43            Constant:
+0:43              0.400000
+0:43              0.500000
+0:43              0.600000
 0:43            Constant:
 0:43              0.750000
 0:44      Sequence
@@ -145,10 +145,10 @@ Shader version: 500
 0:44            Construct combined texture-sampler ( temp usamplerCube)
 0:44              'g_tTexcdu4' ( uniform utextureCube)
 0:44              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.700000
-0:?               0.800000
-0:?               0.900000
+0:44            Constant:
+0:44              0.700000
+0:44              0.800000
+0:44              0.900000
 0:44            Constant:
 0:44              0.750000
 0:46      move second child to first child ( temp 4-component vector of float)
@@ -156,11 +156,11 @@ Shader version: 500
 0:46          'vsout' ( temp structure{ temp 4-component vector of float Pos})
 0:46          Constant:
 0:46            0 (const int)
-0:?         Constant:
-0:?           0.000000
-0:?           0.000000
-0:?           0.000000
-0:?           0.000000
+0:46        Constant:
+0:46          0.000000
+0:46          0.000000
+0:46          0.000000
+0:46          0.000000
 0:48      Branch: Return with expression
 0:48        'vsout' ( temp structure{ temp 4-component vector of float Pos})
 0:27  Function Definition: main( ( temp void)
@@ -239,9 +239,9 @@ Shader version: 500
 0:34            Construct combined texture-sampler ( temp sampler2D)
 0:34              'g_tTex2df4' ( uniform texture2D)
 0:34              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.100000
-0:?               0.200000
+0:34            Constant:
+0:34              0.100000
+0:34              0.200000
 0:34            Constant:
 0:34              0.750000
 0:35      Sequence
@@ -251,9 +251,9 @@ Shader version: 500
 0:35            Construct combined texture-sampler ( temp isampler2D)
 0:35              'g_tTex2di4' ( uniform itexture2D)
 0:35              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.300000
-0:?               0.400000
+0:35            Constant:
+0:35              0.300000
+0:35              0.400000
 0:35            Constant:
 0:35              0.750000
 0:36      Sequence
@@ -263,9 +263,9 @@ Shader version: 500
 0:36            Construct combined texture-sampler ( temp usampler2D)
 0:36              'g_tTex2du4' ( uniform utexture2D)
 0:36              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.500000
-0:?               0.600000
+0:36            Constant:
+0:36              0.500000
+0:36              0.600000
 0:36            Constant:
 0:36              0.750000
 0:38      Sequence
@@ -275,10 +275,10 @@ Shader version: 500
 0:38            Construct combined texture-sampler ( temp sampler3D)
 0:38              'g_tTex3df4' ( uniform texture3D)
 0:38              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.100000
-0:?               0.200000
-0:?               0.300000
+0:38            Constant:
+0:38              0.100000
+0:38              0.200000
+0:38              0.300000
 0:38            Constant:
 0:38              0.750000
 0:39      Sequence
@@ -288,10 +288,10 @@ Shader version: 500
 0:39            Construct combined texture-sampler ( temp isampler3D)
 0:39              'g_tTex3di4' ( uniform itexture3D)
 0:39              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.400000
-0:?               0.500000
-0:?               0.600000
+0:39            Constant:
+0:39              0.400000
+0:39              0.500000
+0:39              0.600000
 0:39            Constant:
 0:39              0.750000
 0:40      Sequence
@@ -301,10 +301,10 @@ Shader version: 500
 0:40            Construct combined texture-sampler ( temp usampler3D)
 0:40              'g_tTex3du4' ( uniform utexture3D)
 0:40              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.700000
-0:?               0.800000
-0:?               0.900000
+0:40            Constant:
+0:40              0.700000
+0:40              0.800000
+0:40              0.900000
 0:40            Constant:
 0:40              0.750000
 0:42      Sequence
@@ -314,10 +314,10 @@ Shader version: 500
 0:42            Construct combined texture-sampler ( temp samplerCube)
 0:42              'g_tTexcdf4' ( uniform textureCube)
 0:42              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.100000
-0:?               0.200000
-0:?               0.300000
+0:42            Constant:
+0:42              0.100000
+0:42              0.200000
+0:42              0.300000
 0:42            Constant:
 0:42              0.750000
 0:43      Sequence
@@ -327,10 +327,10 @@ Shader version: 500
 0:43            Construct combined texture-sampler ( temp isamplerCube)
 0:43              'g_tTexcdi4' ( uniform itextureCube)
 0:43              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.400000
-0:?               0.500000
-0:?               0.600000
+0:43            Constant:
+0:43              0.400000
+0:43              0.500000
+0:43              0.600000
 0:43            Constant:
 0:43              0.750000
 0:44      Sequence
@@ -340,10 +340,10 @@ Shader version: 500
 0:44            Construct combined texture-sampler ( temp usamplerCube)
 0:44              'g_tTexcdu4' ( uniform utextureCube)
 0:44              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.700000
-0:?               0.800000
-0:?               0.900000
+0:44            Constant:
+0:44              0.700000
+0:44              0.800000
+0:44              0.900000
 0:44            Constant:
 0:44              0.750000
 0:46      move second child to first child ( temp 4-component vector of float)
@@ -351,11 +351,11 @@ Shader version: 500
 0:46          'vsout' ( temp structure{ temp 4-component vector of float Pos})
 0:46          Constant:
 0:46            0 (const int)
-0:?         Constant:
-0:?           0.000000
-0:?           0.000000
-0:?           0.000000
-0:?           0.000000
+0:46        Constant:
+0:46          0.000000
+0:46          0.000000
+0:46          0.000000
+0:46          0.000000
 0:48      Branch: Return with expression
 0:48        'vsout' ( temp structure{ temp 4-component vector of float Pos})
 0:27  Function Definition: main( ( temp void)

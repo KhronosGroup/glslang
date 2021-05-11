@@ -789,11 +789,11 @@ gl_FragCoord origin is upper left
 0:135      Sequence
 0:135        move second child to first child ( temp float)
 0:135          'storeTemp' ( temp float)
-0:?           imageLoad ( temp float)
+0:135          imageLoad ( temp float)
 0:135            'g_tTex2df1' (layout( r32f) uniform image2D)
-0:?             Constant:
-0:?               2 (const int)
-0:?               3 (const int)
+0:135            Constant:
+0:135              2 (const int)
+0:135              3 (const int)
 0:135        imageStore ( temp void)
 0:135          'g_tTex1df1' (layout( r32f) uniform image1D)
 0:135          Constant:
@@ -1636,11 +1636,11 @@ gl_FragCoord origin is upper left
 0:135      Sequence
 0:135        move second child to first child ( temp float)
 0:135          'storeTemp' ( temp float)
-0:?           imageLoad ( temp float)
+0:135          imageLoad ( temp float)
 0:135            'g_tTex2df1' (layout( r32f) uniform image2D)
-0:?             Constant:
-0:?               2 (const int)
-0:?               3 (const int)
+0:135            Constant:
+0:135              2 (const int)
+0:135              3 (const int)
 0:135        imageStore ( temp void)
 0:135          'g_tTex1df1' (layout( r32f) uniform image1D)
 0:135          Constant:

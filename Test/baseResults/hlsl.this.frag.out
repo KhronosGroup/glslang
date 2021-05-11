@@ -5,9 +5,9 @@ gl_FragCoord origin is upper left
 0:1  Sequence
 0:1    move second child to first child ( temp 2-component vector of float)
 0:1      'var' ( global 2-component vector of float)
-0:?       Constant:
-0:?         1.000000
-0:?         2.000000
+0:1      Constant:
+0:1        1.000000
+0:1        2.000000
 0:6  Function Definition: type1::memFun1(vi3; ( temp int)
 0:6    Function Parameters: 
 0:6      '@this' ( temp structure{ temp 2-component vector of float bar,  temp int var,  temp int var2})
@@ -36,10 +36,10 @@ gl_FragCoord origin is upper left
 0:11      Sequence
 0:11        move second child to first child ( temp 3-component vector of int)
 0:11          'var' ( temp 3-component vector of int)
-0:?           Constant:
-0:?             1 (const int)
-0:?             2 (const int)
-0:?             3 (const int)
+0:11          Constant:
+0:11            1 (const int)
+0:11            2 (const int)
+0:11            3 (const int)
 0:12      Branch: Return with expression
 0:12        add ( temp int)
 0:12          add ( temp int)
@@ -87,10 +87,10 @@ gl_FragCoord origin is upper left
 0:25          'i' ( temp int)
 0:25          Function Call: type1::memFun1(vi3; ( temp int)
 0:25            'T' ( temp structure{ temp 2-component vector of float bar,  temp int var,  temp int var2})
-0:?             Constant:
-0:?               10 (const int)
-0:?               11 (const int)
-0:?               12 (const int)
+0:25            Constant:
+0:25              10 (const int)
+0:25              11 (const int)
+0:25              12 (const int)
 0:26      add second child into first child ( temp int)
 0:26        'i' ( temp int)
 0:26        Function Call: type1::memFun2(i1; ( temp int)
@@ -98,7 +98,7 @@ gl_FragCoord origin is upper left
 0:26          Constant:
 0:26            17 (const int)
 0:28      Branch: Return with expression
-0:?         Construct vec4 ( temp 4-component vector of float)
+0:28        Construct vec4 ( temp 4-component vector of float)
 0:28          Convert int to float ( temp float)
 0:28            'i' ( temp int)
 0:28          Convert int to float ( temp float)
@@ -127,9 +127,9 @@ gl_FragCoord origin is upper left
 0:1  Sequence
 0:1    move second child to first child ( temp 2-component vector of float)
 0:1      'var' ( global 2-component vector of float)
-0:?       Constant:
-0:?         1.000000
-0:?         2.000000
+0:1      Constant:
+0:1        1.000000
+0:1        2.000000
 0:6  Function Definition: type1::memFun1(vi3; ( temp int)
 0:6    Function Parameters: 
 0:6      '@this' ( temp structure{ temp 2-component vector of float bar,  temp int var,  temp int var2})
@@ -158,10 +158,10 @@ gl_FragCoord origin is upper left
 0:11      Sequence
 0:11        move second child to first child ( temp 3-component vector of int)
 0:11          'var' ( temp 3-component vector of int)
-0:?           Constant:
-0:?             1 (const int)
-0:?             2 (const int)
-0:?             3 (const int)
+0:11          Constant:
+0:11            1 (const int)
+0:11            2 (const int)
+0:11            3 (const int)
 0:12      Branch: Return with expression
 0:12        add ( temp int)
 0:12          add ( temp int)
@@ -209,10 +209,10 @@ gl_FragCoord origin is upper left
 0:25          'i' ( temp int)
 0:25          Function Call: type1::memFun1(vi3; ( temp int)
 0:25            'T' ( temp structure{ temp 2-component vector of float bar,  temp int var,  temp int var2})
-0:?             Constant:
-0:?               10 (const int)
-0:?               11 (const int)
-0:?               12 (const int)
+0:25            Constant:
+0:25              10 (const int)
+0:25              11 (const int)
+0:25              12 (const int)
 0:26      add second child into first child ( temp int)
 0:26        'i' ( temp int)
 0:26        Function Call: type1::memFun2(i1; ( temp int)
@@ -220,7 +220,7 @@ gl_FragCoord origin is upper left
 0:26          Constant:
 0:26            17 (const int)
 0:28      Branch: Return with expression
-0:?         Construct vec4 ( temp 4-component vector of float)
+0:28        Construct vec4 ( temp 4-component vector of float)
 0:28          Convert int to float ( temp float)
 0:28            'i' ( temp int)
 0:28          Convert int to float ( temp float)

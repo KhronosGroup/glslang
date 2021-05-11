@@ -14,9 +14,9 @@ using depth_any
 0:42              'g_tTex1df4a' ( uniform texture1DArrayShadow)
 0:42              'g_sSamp' (layout( binding=0) uniform sampler)
 0:42            Construct vec3 ( temp 3-component vector of float)
-0:?               Constant:
-0:?                 0.100000
-0:?                 0.200000
+0:42              Constant:
+0:42                0.100000
+0:42                0.200000
 0:42              Constant:
 0:42                0.750000
 0:42            Constant:
@@ -29,9 +29,9 @@ using depth_any
 0:43              'g_tTex1di4a' ( uniform itexture1DArrayShadow)
 0:43              'g_sSamp' (layout( binding=0) uniform sampler)
 0:43            Construct vec3 ( temp 3-component vector of float)
-0:?               Constant:
-0:?                 0.100000
-0:?                 0.200000
+0:43              Constant:
+0:43                0.100000
+0:43                0.200000
 0:43              Constant:
 0:43                0.750000
 0:43            Constant:
@@ -44,9 +44,9 @@ using depth_any
 0:44              'g_tTex1du4a' ( uniform utexture1DArrayShadow)
 0:44              'g_sSamp' (layout( binding=0) uniform sampler)
 0:44            Construct vec3 ( temp 3-component vector of float)
-0:?               Constant:
-0:?                 0.100000
-0:?                 0.200000
+0:44              Constant:
+0:44                0.100000
+0:44                0.200000
 0:44              Constant:
 0:44                0.750000
 0:44            Constant:
@@ -59,15 +59,15 @@ using depth_any
 0:47              'g_tTex2df4a' ( uniform texture2DArrayShadow)
 0:47              'g_sSamp' (layout( binding=0) uniform sampler)
 0:47            Construct vec4 ( temp 4-component vector of float)
-0:?               Constant:
-0:?                 0.100000
-0:?                 0.200000
-0:?                 0.300000
+0:47              Constant:
+0:47                0.100000
+0:47                0.200000
+0:47                0.300000
 0:47              Constant:
 0:47                0.750000
-0:?             Constant:
-0:?               2 (const int)
-0:?               3 (const int)
+0:47            Constant:
+0:47              2 (const int)
+0:47              3 (const int)
 0:48      Sequence
 0:48        move second child to first child ( temp float)
 0:48          'r33' ( temp float)
@@ -76,15 +76,15 @@ using depth_any
 0:48              'g_tTex2di4a' ( uniform itexture2DArrayShadow)
 0:48              'g_sSamp' (layout( binding=0) uniform sampler)
 0:48            Construct vec4 ( temp 4-component vector of float)
-0:?               Constant:
-0:?                 0.100000
-0:?                 0.200000
-0:?                 0.300000
+0:48              Constant:
+0:48                0.100000
+0:48                0.200000
+0:48                0.300000
 0:48              Constant:
 0:48                0.750000
-0:?             Constant:
-0:?               2 (const int)
-0:?               3 (const int)
+0:48            Constant:
+0:48              2 (const int)
+0:48              3 (const int)
 0:49      Sequence
 0:49        move second child to first child ( temp float)
 0:49          'r35' ( temp float)
@@ -93,15 +93,15 @@ using depth_any
 0:49              'g_tTex2du4a' ( uniform utexture2DArrayShadow)
 0:49              'g_sSamp' (layout( binding=0) uniform sampler)
 0:49            Construct vec4 ( temp 4-component vector of float)
-0:?               Constant:
-0:?                 0.100000
-0:?                 0.200000
-0:?                 0.300000
+0:49              Constant:
+0:49                0.100000
+0:49                0.200000
+0:49                0.300000
 0:49              Constant:
 0:49                0.750000
-0:?             Constant:
-0:?               2 (const int)
-0:?               3 (const int)
+0:49            Constant:
+0:49              2 (const int)
+0:49              3 (const int)
 0:63      move second child to first child ( temp 4-component vector of float)
 0:63        Color: direct index for structure ( temp 4-component vector of float)
 0:63          'psout' ( temp structure{ temp 4-component vector of float Color,  temp float Depth})
@@ -185,9 +185,9 @@ using depth_any
 0:42              'g_tTex1df4a' ( uniform texture1DArrayShadow)
 0:42              'g_sSamp' (layout( binding=0) uniform sampler)
 0:42            Construct vec3 ( temp 3-component vector of float)
-0:?               Constant:
-0:?                 0.100000
-0:?                 0.200000
+0:42              Constant:
+0:42                0.100000
+0:42                0.200000
 0:42              Constant:
 0:42                0.750000
 0:42            Constant:
@@ -200,9 +200,9 @@ using depth_any
 0:43              'g_tTex1di4a' ( uniform itexture1DArrayShadow)
 0:43              'g_sSamp' (layout( binding=0) uniform sampler)
 0:43            Construct vec3 ( temp 3-component vector of float)
-0:?               Constant:
-0:?                 0.100000
-0:?                 0.200000
+0:43              Constant:
+0:43                0.100000
+0:43                0.200000
 0:43              Constant:
 0:43                0.750000
 0:43            Constant:
@@ -215,9 +215,9 @@ using depth_any
 0:44              'g_tTex1du4a' ( uniform utexture1DArrayShadow)
 0:44              'g_sSamp' (layout( binding=0) uniform sampler)
 0:44            Construct vec3 ( temp 3-component vector of float)
-0:?               Constant:
-0:?                 0.100000
-0:?                 0.200000
+0:44              Constant:
+0:44                0.100000
+0:44                0.200000
 0:44              Constant:
 0:44                0.750000
 0:44            Constant:
@@ -230,15 +230,15 @@ using depth_any
 0:47              'g_tTex2df4a' ( uniform texture2DArrayShadow)
 0:47              'g_sSamp' (layout( binding=0) uniform sampler)
 0:47            Construct vec4 ( temp 4-component vector of float)
-0:?               Constant:
-0:?                 0.100000
-0:?                 0.200000
-0:?                 0.300000
+0:47              Constant:
+0:47                0.100000
+0:47                0.200000
+0:47                0.300000
 0:47              Constant:
 0:47                0.750000
-0:?             Constant:
-0:?               2 (const int)
-0:?               3 (const int)
+0:47            Constant:
+0:47              2 (const int)
+0:47              3 (const int)
 0:48      Sequence
 0:48        move second child to first child ( temp float)
 0:48          'r33' ( temp float)
@@ -247,15 +247,15 @@ using depth_any
 0:48              'g_tTex2di4a' ( uniform itexture2DArrayShadow)
 0:48              'g_sSamp' (layout( binding=0) uniform sampler)
 0:48            Construct vec4 ( temp 4-component vector of float)
-0:?               Constant:
-0:?                 0.100000
-0:?                 0.200000
-0:?                 0.300000
+0:48              Constant:
+0:48                0.100000
+0:48                0.200000
+0:48                0.300000
 0:48              Constant:
 0:48                0.750000
-0:?             Constant:
-0:?               2 (const int)
-0:?               3 (const int)
+0:48            Constant:
+0:48              2 (const int)
+0:48              3 (const int)
 0:49      Sequence
 0:49        move second child to first child ( temp float)
 0:49          'r35' ( temp float)
@@ -264,15 +264,15 @@ using depth_any
 0:49              'g_tTex2du4a' ( uniform utexture2DArrayShadow)
 0:49              'g_sSamp' (layout( binding=0) uniform sampler)
 0:49            Construct vec4 ( temp 4-component vector of float)
-0:?               Constant:
-0:?                 0.100000
-0:?                 0.200000
-0:?                 0.300000
+0:49              Constant:
+0:49                0.100000
+0:49                0.200000
+0:49                0.300000
 0:49              Constant:
 0:49                0.750000
-0:?             Constant:
-0:?               2 (const int)
-0:?               3 (const int)
+0:49            Constant:
+0:49              2 (const int)
+0:49              3 (const int)
 0:63      move second child to first child ( temp 4-component vector of float)
 0:63        Color: direct index for structure ( temp 4-component vector of float)
 0:63          'psout' ( temp structure{ temp 4-component vector of float Color,  temp float Depth})

@@ -18,11 +18,11 @@ output primitive = triangle_strip
 0:27              0 (const int)
 0:27          Constant:
 0:27            0 (const int)
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
-0:?           3.000000
-0:?           4.000000
+0:27        Constant:
+0:27          1.000000
+0:27          2.000000
+0:27          3.000000
+0:27          4.000000
 0:28      move second child to first child ( temp 2-component vector of float)
 0:28        tc: direct index for structure ( temp 2-component vector of float)
 0:28          psIn: direct index for structure ( temp structure{ temp 4-component vector of float pos,  temp 2-component vector of float tc})
@@ -31,9 +31,9 @@ output primitive = triangle_strip
 0:28              0 (const int)
 0:28          Constant:
 0:28            1 (const int)
-0:?         Constant:
-0:?           5.000000
-0:?           6.000000
+0:28        Constant:
+0:28          5.000000
+0:28          6.000000
 0:29      move second child to first child ( temp float)
 0:29        direct index ( temp float)
 0:29          m0_array: direct index for structure ( temp 2-element array of float)
@@ -235,11 +235,11 @@ output primitive = triangle_strip
 0:27              0 (const int)
 0:27          Constant:
 0:27            0 (const int)
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
-0:?           3.000000
-0:?           4.000000
+0:27        Constant:
+0:27          1.000000
+0:27          2.000000
+0:27          3.000000
+0:27          4.000000
 0:28      move second child to first child ( temp 2-component vector of float)
 0:28        tc: direct index for structure ( temp 2-component vector of float)
 0:28          psIn: direct index for structure ( temp structure{ temp 4-component vector of float pos,  temp 2-component vector of float tc})
@@ -248,9 +248,9 @@ output primitive = triangle_strip
 0:28              0 (const int)
 0:28          Constant:
 0:28            1 (const int)
-0:?         Constant:
-0:?           5.000000
-0:?           6.000000
+0:28        Constant:
+0:28          5.000000
+0:28          6.000000
 0:29      move second child to first child ( temp float)
 0:29        direct index ( temp float)
 0:29          m0_array: direct index for structure ( temp 2-element array of float)

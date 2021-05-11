@@ -34,11 +34,11 @@ gl_FragCoord origin is upper left
 0:23      'x' ( in int)
 0:?     Sequence
 0:24      Branch: Return with expression
-0:?         Constant:
-0:?           10 (const int)
-0:?           11 (const int)
-0:?           12 (const int)
-0:?           13 (const int)
+0:24        Constant:
+0:24          10 (const int)
+0:24          11 (const int)
+0:24          12 (const int)
+0:24          13 (const int)
 0:28  Function Definition: fn2(vi4;f1; ( temp 4-component vector of int)
 0:28    Function Parameters: 
 0:28      'p0' ( in 4-component vector of int)
@@ -47,11 +47,11 @@ gl_FragCoord origin is upper left
 0:29      Branch: Return with expression
 0:29        add ( temp 4-component vector of int)
 0:29          'p0' ( in 4-component vector of int)
-0:?           Constant:
-0:?             20 (const int)
-0:?             21 (const int)
-0:?             22 (const int)
-0:?             23 (const int)
+0:29          Constant:
+0:29            20 (const int)
+0:29            21 (const int)
+0:29            22 (const int)
+0:29            23 (const int)
 0:32  Function Definition: fn3(i1; ( temp void)
 0:32    Function Parameters: 
 0:32      'p0' ( in int)
@@ -84,11 +84,11 @@ gl_FragCoord origin is upper left
 0:42                          100 (const int)
 0:42                          100 (const int)
 0:42                          100 (const int)
-0:?                         Constant:
-0:?                           -1 (const int)
-0:?                           -2 (const int)
-0:?                           -3 (const int)
-0:?                           -4 (const int)
+0:14                        Constant:
+0:14                          -1 (const int)
+0:14                          -2 (const int)
+0:14                          -3 (const int)
+0:14                          -4 (const int)
 0:15                        Constant:
 0:15                          1 (const int)
 0:15                          2 (const int)
@@ -224,11 +224,11 @@ gl_FragCoord origin is upper left
 0:23      'x' ( in int)
 0:?     Sequence
 0:24      Branch: Return with expression
-0:?         Constant:
-0:?           10 (const int)
-0:?           11 (const int)
-0:?           12 (const int)
-0:?           13 (const int)
+0:24        Constant:
+0:24          10 (const int)
+0:24          11 (const int)
+0:24          12 (const int)
+0:24          13 (const int)
 0:28  Function Definition: fn2(vi4;f1; ( temp 4-component vector of int)
 0:28    Function Parameters: 
 0:28      'p0' ( in 4-component vector of int)
@@ -237,11 +237,11 @@ gl_FragCoord origin is upper left
 0:29      Branch: Return with expression
 0:29        add ( temp 4-component vector of int)
 0:29          'p0' ( in 4-component vector of int)
-0:?           Constant:
-0:?             20 (const int)
-0:?             21 (const int)
-0:?             22 (const int)
-0:?             23 (const int)
+0:29          Constant:
+0:29            20 (const int)
+0:29            21 (const int)
+0:29            22 (const int)
+0:29            23 (const int)
 0:32  Function Definition: fn3(i1; ( temp void)
 0:32    Function Parameters: 
 0:32      'p0' ( in int)
@@ -274,11 +274,11 @@ gl_FragCoord origin is upper left
 0:42                          100 (const int)
 0:42                          100 (const int)
 0:42                          100 (const int)
-0:?                         Constant:
-0:?                           -1 (const int)
-0:?                           -2 (const int)
-0:?                           -3 (const int)
-0:?                           -4 (const int)
+0:14                        Constant:
+0:14                          -1 (const int)
+0:14                          -2 (const int)
+0:14                          -3 (const int)
+0:14                          -4 (const int)
 0:15                        Constant:
 0:15                          1 (const int)
 0:15                          2 (const int)

@@ -14,9 +14,9 @@ gl_FragCoord origin is upper left
 0:38              Construct combined texture-sampler ( temp sampler2D)
 0:38                't1' ( in texture2D)
 0:38                'g_sSamp' ( uniform sampler)
-0:?               Constant:
-0:?                 0.600000
-0:?                 0.610000
+0:38              Constant:
+0:38                0.600000
+0:38                0.610000
 0:38          move second child to first child ( temp float)
 0:38            c0: direct index for structure ( temp float)
 0:38              '@sampleStructTemp' ( temp structure{ temp float c0,  temp 2-component vector of float c1,  temp float c2})
@@ -72,9 +72,9 @@ gl_FragCoord origin is upper left
 0:39              Construct combined texture-sampler ( temp sampler2D)
 0:39                't2' ( in texture2D)
 0:39                'g_sSamp' ( uniform sampler)
-0:?               Constant:
-0:?                 0.600000
-0:?                 0.610000
+0:39              Constant:
+0:39                0.600000
+0:39                0.610000
 0:39          move second child to first child ( temp float)
 0:39            c0: direct index for structure ( temp float)
 0:39              '@sampleStructTemp' ( temp structure{ temp float c0,  temp 3-component vector of float c1})
@@ -134,9 +134,9 @@ gl_FragCoord origin is upper left
 0:43                Construct combined texture-sampler ( temp sampler2D)
 0:43                  'g_tTex2s1' ( uniform texture2D)
 0:43                  'g_sSamp' ( uniform sampler)
-0:?                 Constant:
-0:?                   0.100000
-0:?                   0.110000
+0:43                Constant:
+0:43                  0.100000
+0:43                  0.110000
 0:43            move second child to first child ( temp float)
 0:43              c0: direct index for structure ( temp float)
 0:43                '@sampleStructTemp' ( temp structure{ temp float c0,  temp 2-component vector of float c1,  temp float c2})
@@ -190,9 +190,9 @@ gl_FragCoord origin is upper left
 0:44                Construct combined texture-sampler ( temp sampler2D)
 0:44                  'g_tTex2s2' ( uniform texture2D)
 0:44                  'g_sSamp' ( uniform sampler)
-0:?                 Constant:
-0:?                   0.200000
-0:?                   0.210000
+0:44                Constant:
+0:44                  0.200000
+0:44                  0.210000
 0:44            move second child to first child ( temp float)
 0:44              c0: direct index for structure ( temp float)
 0:44                '@sampleStructTemp' ( temp structure{ temp float c0,  temp 3-component vector of float c1})
@@ -249,9 +249,9 @@ gl_FragCoord origin is upper left
 0:45                Construct combined texture-sampler ( temp sampler2D)
 0:45                  'g_tTex2s3' ( uniform texture2D)
 0:45                  'g_sSamp' ( uniform sampler)
-0:?                 Constant:
-0:?                   0.300000
-0:?                   0.310000
+0:45                Constant:
+0:45                  0.300000
+0:45                  0.310000
 0:45            move second child to first child ( temp float)
 0:45              direct index ( temp float)
 0:45                c0: direct index for structure ( temp 2-component vector of float)
@@ -299,9 +299,9 @@ gl_FragCoord origin is upper left
 0:46                Construct combined texture-sampler ( temp isampler2D)
 0:46                  'g_tTex2s4' ( uniform itexture2D)
 0:46                  'g_sSamp' ( uniform sampler)
-0:?                 Constant:
-0:?                   0.400000
-0:?                   0.410000
+0:46                Constant:
+0:46                  0.400000
+0:46                  0.410000
 0:46            move second child to first child ( temp int)
 0:46              c0: direct index for structure ( temp int)
 0:46                '@sampleStructTemp' ( temp structure{ temp int c0,  temp 2-component vector of int c1,  temp int c2})
@@ -357,9 +357,9 @@ gl_FragCoord origin is upper left
 0:47                Construct combined texture-sampler ( temp usampler2D)
 0:47                  'g_tTex2s5' ( uniform utexture2D)
 0:47                  'g_sSamp' ( uniform sampler)
-0:?                 Constant:
-0:?                   0.500000
-0:?                   0.510000
+0:47                Constant:
+0:47                  0.500000
+0:47                  0.510000
 0:47            move second child to first child ( temp uint)
 0:47              c0: direct index for structure ( temp uint)
 0:47                '@sampleStructTemp' ( temp structure{ temp uint c0,  temp uint c1})
@@ -435,9 +435,9 @@ gl_FragCoord origin is upper left
 0:38              Construct combined texture-sampler ( temp sampler2D)
 0:38                't1' ( in texture2D)
 0:38                'g_sSamp' ( uniform sampler)
-0:?               Constant:
-0:?                 0.600000
-0:?                 0.610000
+0:38              Constant:
+0:38                0.600000
+0:38                0.610000
 0:38          move second child to first child ( temp float)
 0:38            c0: direct index for structure ( temp float)
 0:38              '@sampleStructTemp' ( temp structure{ temp float c0,  temp 2-component vector of float c1,  temp float c2})
@@ -493,9 +493,9 @@ gl_FragCoord origin is upper left
 0:39              Construct combined texture-sampler ( temp sampler2D)
 0:39                't2' ( in texture2D)
 0:39                'g_sSamp' ( uniform sampler)
-0:?               Constant:
-0:?                 0.600000
-0:?                 0.610000
+0:39              Constant:
+0:39                0.600000
+0:39                0.610000
 0:39          move second child to first child ( temp float)
 0:39            c0: direct index for structure ( temp float)
 0:39              '@sampleStructTemp' ( temp structure{ temp float c0,  temp 3-component vector of float c1})
@@ -555,9 +555,9 @@ gl_FragCoord origin is upper left
 0:43                Construct combined texture-sampler ( temp sampler2D)
 0:43                  'g_tTex2s1' ( uniform texture2D)
 0:43                  'g_sSamp' ( uniform sampler)
-0:?                 Constant:
-0:?                   0.100000
-0:?                   0.110000
+0:43                Constant:
+0:43                  0.100000
+0:43                  0.110000
 0:43            move second child to first child ( temp float)
 0:43              c0: direct index for structure ( temp float)
 0:43                '@sampleStructTemp' ( temp structure{ temp float c0,  temp 2-component vector of float c1,  temp float c2})
@@ -611,9 +611,9 @@ gl_FragCoord origin is upper left
 0:44                Construct combined texture-sampler ( temp sampler2D)
 0:44                  'g_tTex2s2' ( uniform texture2D)
 0:44                  'g_sSamp' ( uniform sampler)
-0:?                 Constant:
-0:?                   0.200000
-0:?                   0.210000
+0:44                Constant:
+0:44                  0.200000
+0:44                  0.210000
 0:44            move second child to first child ( temp float)
 0:44              c0: direct index for structure ( temp float)
 0:44                '@sampleStructTemp' ( temp structure{ temp float c0,  temp 3-component vector of float c1})
@@ -670,9 +670,9 @@ gl_FragCoord origin is upper left
 0:45                Construct combined texture-sampler ( temp sampler2D)
 0:45                  'g_tTex2s3' ( uniform texture2D)
 0:45                  'g_sSamp' ( uniform sampler)
-0:?                 Constant:
-0:?                   0.300000
-0:?                   0.310000
+0:45                Constant:
+0:45                  0.300000
+0:45                  0.310000
 0:45            move second child to first child ( temp float)
 0:45              direct index ( temp float)
 0:45                c0: direct index for structure ( temp 2-component vector of float)
@@ -720,9 +720,9 @@ gl_FragCoord origin is upper left
 0:46                Construct combined texture-sampler ( temp isampler2D)
 0:46                  'g_tTex2s4' ( uniform itexture2D)
 0:46                  'g_sSamp' ( uniform sampler)
-0:?                 Constant:
-0:?                   0.400000
-0:?                   0.410000
+0:46                Constant:
+0:46                  0.400000
+0:46                  0.410000
 0:46            move second child to first child ( temp int)
 0:46              c0: direct index for structure ( temp int)
 0:46                '@sampleStructTemp' ( temp structure{ temp int c0,  temp 2-component vector of int c1,  temp int c2})
@@ -778,9 +778,9 @@ gl_FragCoord origin is upper left
 0:47                Construct combined texture-sampler ( temp usampler2D)
 0:47                  'g_tTex2s5' ( uniform utexture2D)
 0:47                  'g_sSamp' ( uniform sampler)
-0:?                 Constant:
-0:?                   0.500000
-0:?                   0.510000
+0:47                Constant:
+0:47                  0.500000
+0:47                  0.510000
 0:47            move second child to first child ( temp uint)
 0:47              c0: direct index for structure ( temp uint)
 0:47                '@sampleStructTemp' ( temp structure{ temp uint c0,  temp uint c1})

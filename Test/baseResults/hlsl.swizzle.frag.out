@@ -5,11 +5,11 @@ gl_FragCoord origin is upper left
 0:1  Sequence
 0:1    move second child to first child ( temp 4-component vector of float)
 0:1      'AmbientColor' ( global 4-component vector of float)
-0:?       Constant:
-0:?         1.000000
-0:?         0.500000
-0:?         0.000000
-0:?         1.000000
+0:1      Constant:
+0:1        1.000000
+0:1        0.500000
+0:1        0.000000
+0:1        1.000000
 0:4  Function Definition: ShaderFunction(vf4; ( temp 4-component vector of float)
 0:4    Function Parameters: 
 0:4      'input' ( in 4-component vector of float)
@@ -46,11 +46,11 @@ gl_FragCoord origin is upper left
 0:1  Sequence
 0:1    move second child to first child ( temp 4-component vector of float)
 0:1      'AmbientColor' ( global 4-component vector of float)
-0:?       Constant:
-0:?         1.000000
-0:?         0.500000
-0:?         0.000000
-0:?         1.000000
+0:1      Constant:
+0:1        1.000000
+0:1        0.500000
+0:1        0.000000
+0:1        1.000000
 0:4  Function Definition: ShaderFunction(vf4; ( temp 4-component vector of float)
 0:4    Function Parameters: 
 0:4      'input' ( in 4-component vector of float)

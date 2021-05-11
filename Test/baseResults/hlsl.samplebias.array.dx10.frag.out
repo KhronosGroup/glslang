@@ -13,9 +13,9 @@ using depth_any
 0:27            Construct combined texture-sampler ( temp sampler1DArray)
 0:27              'g_tTex1df4' (layout( binding=0) uniform texture1DArray)
 0:27              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.100000
-0:?               0.200000
+0:27            Constant:
+0:27              0.100000
+0:27              0.200000
 0:27            Constant:
 0:27              0.500000
 0:28      Sequence
@@ -25,9 +25,9 @@ using depth_any
 0:28            Construct combined texture-sampler ( temp isampler1DArray)
 0:28              'g_tTex1di4' ( uniform itexture1DArray)
 0:28              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.200000
-0:?               0.300000
+0:28            Constant:
+0:28              0.200000
+0:28              0.300000
 0:28            Constant:
 0:28              0.500000
 0:29      Sequence
@@ -37,9 +37,9 @@ using depth_any
 0:29            Construct combined texture-sampler ( temp usampler1DArray)
 0:29              'g_tTex1du4' ( uniform utexture1DArray)
 0:29              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.300000
-0:?               0.400000
+0:29            Constant:
+0:29              0.300000
+0:29              0.400000
 0:29            Constant:
 0:29              0.500000
 0:31      Sequence
@@ -49,10 +49,10 @@ using depth_any
 0:31            Construct combined texture-sampler ( temp sampler2DArray)
 0:31              'g_tTex2df4' ( uniform texture2DArray)
 0:31              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.100000
-0:?               0.200000
-0:?               0.300000
+0:31            Constant:
+0:31              0.100000
+0:31              0.200000
+0:31              0.300000
 0:31            Constant:
 0:31              0.500000
 0:32      Sequence
@@ -62,10 +62,10 @@ using depth_any
 0:32            Construct combined texture-sampler ( temp isampler2DArray)
 0:32              'g_tTex2di4' ( uniform itexture2DArray)
 0:32              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.300000
-0:?               0.400000
-0:?               0.500000
+0:32            Constant:
+0:32              0.300000
+0:32              0.400000
+0:32              0.500000
 0:32            Constant:
 0:32              0.500000
 0:33      Sequence
@@ -75,10 +75,10 @@ using depth_any
 0:33            Construct combined texture-sampler ( temp usampler2DArray)
 0:33              'g_tTex2du4' ( uniform utexture2DArray)
 0:33              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.500000
-0:?               0.600000
-0:?               0.700000
+0:33            Constant:
+0:33              0.500000
+0:33              0.600000
+0:33              0.700000
 0:33            Constant:
 0:33              0.500000
 0:35      Sequence
@@ -88,11 +88,11 @@ using depth_any
 0:35            Construct combined texture-sampler ( temp samplerCubeArray)
 0:35              'g_tTexcdf4' ( uniform textureCubeArray)
 0:35              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.100000
-0:?               0.200000
-0:?               0.300000
-0:?               0.400000
+0:35            Constant:
+0:35              0.100000
+0:35              0.200000
+0:35              0.300000
+0:35              0.400000
 0:35            Constant:
 0:35              0.500000
 0:36      Sequence
@@ -102,11 +102,11 @@ using depth_any
 0:36            Construct combined texture-sampler ( temp isamplerCubeArray)
 0:36              'g_tTexcdi4' ( uniform itextureCubeArray)
 0:36              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.400000
-0:?               0.500000
-0:?               0.600000
-0:?               0.700000
+0:36            Constant:
+0:36              0.400000
+0:36              0.500000
+0:36              0.600000
+0:36              0.700000
 0:36            Constant:
 0:36              0.500000
 0:37      Sequence
@@ -116,11 +116,11 @@ using depth_any
 0:37            Construct combined texture-sampler ( temp usamplerCubeArray)
 0:37              'g_tTexcdu4' ( uniform utextureCubeArray)
 0:37              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.700000
-0:?               0.800000
-0:?               0.900000
-0:?               1.000000
+0:37            Constant:
+0:37              0.700000
+0:37              0.800000
+0:37              0.900000
+0:37              1.000000
 0:37            Constant:
 0:37              0.500000
 0:39      move second child to first child ( temp 4-component vector of float)
@@ -194,9 +194,9 @@ using depth_any
 0:27            Construct combined texture-sampler ( temp sampler1DArray)
 0:27              'g_tTex1df4' (layout( binding=0) uniform texture1DArray)
 0:27              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.100000
-0:?               0.200000
+0:27            Constant:
+0:27              0.100000
+0:27              0.200000
 0:27            Constant:
 0:27              0.500000
 0:28      Sequence
@@ -206,9 +206,9 @@ using depth_any
 0:28            Construct combined texture-sampler ( temp isampler1DArray)
 0:28              'g_tTex1di4' ( uniform itexture1DArray)
 0:28              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.200000
-0:?               0.300000
+0:28            Constant:
+0:28              0.200000
+0:28              0.300000
 0:28            Constant:
 0:28              0.500000
 0:29      Sequence
@@ -218,9 +218,9 @@ using depth_any
 0:29            Construct combined texture-sampler ( temp usampler1DArray)
 0:29              'g_tTex1du4' ( uniform utexture1DArray)
 0:29              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.300000
-0:?               0.400000
+0:29            Constant:
+0:29              0.300000
+0:29              0.400000
 0:29            Constant:
 0:29              0.500000
 0:31      Sequence
@@ -230,10 +230,10 @@ using depth_any
 0:31            Construct combined texture-sampler ( temp sampler2DArray)
 0:31              'g_tTex2df4' ( uniform texture2DArray)
 0:31              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.100000
-0:?               0.200000
-0:?               0.300000
+0:31            Constant:
+0:31              0.100000
+0:31              0.200000
+0:31              0.300000
 0:31            Constant:
 0:31              0.500000
 0:32      Sequence
@@ -243,10 +243,10 @@ using depth_any
 0:32            Construct combined texture-sampler ( temp isampler2DArray)
 0:32              'g_tTex2di4' ( uniform itexture2DArray)
 0:32              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.300000
-0:?               0.400000
-0:?               0.500000
+0:32            Constant:
+0:32              0.300000
+0:32              0.400000
+0:32              0.500000
 0:32            Constant:
 0:32              0.500000
 0:33      Sequence
@@ -256,10 +256,10 @@ using depth_any
 0:33            Construct combined texture-sampler ( temp usampler2DArray)
 0:33              'g_tTex2du4' ( uniform utexture2DArray)
 0:33              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.500000
-0:?               0.600000
-0:?               0.700000
+0:33            Constant:
+0:33              0.500000
+0:33              0.600000
+0:33              0.700000
 0:33            Constant:
 0:33              0.500000
 0:35      Sequence
@@ -269,11 +269,11 @@ using depth_any
 0:35            Construct combined texture-sampler ( temp samplerCubeArray)
 0:35              'g_tTexcdf4' ( uniform textureCubeArray)
 0:35              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.100000
-0:?               0.200000
-0:?               0.300000
-0:?               0.400000
+0:35            Constant:
+0:35              0.100000
+0:35              0.200000
+0:35              0.300000
+0:35              0.400000
 0:35            Constant:
 0:35              0.500000
 0:36      Sequence
@@ -283,11 +283,11 @@ using depth_any
 0:36            Construct combined texture-sampler ( temp isamplerCubeArray)
 0:36              'g_tTexcdi4' ( uniform itextureCubeArray)
 0:36              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.400000
-0:?               0.500000
-0:?               0.600000
-0:?               0.700000
+0:36            Constant:
+0:36              0.400000
+0:36              0.500000
+0:36              0.600000
+0:36              0.700000
 0:36            Constant:
 0:36              0.500000
 0:37      Sequence
@@ -297,11 +297,11 @@ using depth_any
 0:37            Construct combined texture-sampler ( temp usamplerCubeArray)
 0:37              'g_tTexcdu4' ( uniform utextureCubeArray)
 0:37              'g_sSamp' (layout( binding=0) uniform sampler)
-0:?             Constant:
-0:?               0.700000
-0:?               0.800000
-0:?               0.900000
-0:?               1.000000
+0:37            Constant:
+0:37              0.700000
+0:37              0.800000
+0:37              0.900000
+0:37              1.000000
 0:37            Constant:
 0:37              0.500000
 0:39      move second child to first child ( temp 4-component vector of float)

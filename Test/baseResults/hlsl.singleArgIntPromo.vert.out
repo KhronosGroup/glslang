@@ -12,7 +12,7 @@ Shader version: 500
 0:4      Sequence
 0:4        move second child to first child ( temp 2-component vector of int)
 0:4          'd2' ( temp 2-component vector of int)
-0:?           Construct ivec2 ( temp 2-component vector of int)
+0:4          Construct ivec2 ( temp 2-component vector of int)
 0:4            Constant:
 0:4              5 (const int)
 0:4            'd' ( temp int)
@@ -30,10 +30,10 @@ Shader version: 500
 0:7      Sequence
 0:7        move second child to first child ( temp 3-component vector of float)
 0:7          'f3' ( temp 3-component vector of float)
-0:?           Constant:
-0:?             1.945910
-0:?             0.693147
-0:?             1.098612
+0:7          Constant:
+0:7            1.945910
+0:7            0.693147
+0:7            1.098612
 0:8      Sequence
 0:8        move second child to first child ( temp 2-component vector of float)
 0:8          'f22' ( temp 2-component vector of float)
@@ -111,7 +111,7 @@ Shader version: 500
 0:4      Sequence
 0:4        move second child to first child ( temp 2-component vector of int)
 0:4          'd2' ( temp 2-component vector of int)
-0:?           Construct ivec2 ( temp 2-component vector of int)
+0:4          Construct ivec2 ( temp 2-component vector of int)
 0:4            Constant:
 0:4              5 (const int)
 0:4            'd' ( temp int)
@@ -129,10 +129,10 @@ Shader version: 500
 0:7      Sequence
 0:7        move second child to first child ( temp 3-component vector of float)
 0:7          'f3' ( temp 3-component vector of float)
-0:?           Constant:
-0:?             1.945910
-0:?             0.693147
-0:?             1.098612
+0:7          Constant:
+0:7            1.945910
+0:7            0.693147
+0:7            1.098612
 0:8      Sequence
 0:8        move second child to first child ( temp 2-component vector of float)
 0:8          'f22' ( temp 2-component vector of float)
