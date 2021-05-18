@@ -242,6 +242,36 @@ Shader version: 130
 0:54              'un34' ( uniform 4X4 matrix of float)
 0:54              'um43' ( uniform 4X4 matrix of float)
 0:54            'v' ( smooth in 4-component vector of float)
+0:56      Sequence
+0:56        move second child to first child ( temp 4X2 matrix of float)
+0:56          'm42' ( temp 4X2 matrix of float)
+0:56          Constant:
+0:56            42.000000
+0:56            0.000000
+0:56            0.000000
+0:56            42.000000
+0:56            0.000000
+0:56            0.000000
+0:56            0.000000
+0:56            0.000000
+0:57      Test condition and select ( temp void)
+0:57        Condition
+0:57        Compare Equal ( temp bool)
+0:57          'm42' ( temp 4X2 matrix of float)
+0:57          Constant:
+0:57            42.000000
+0:57            0.000000
+0:57            0.000000
+0:57            42.000000
+0:57            0.000000
+0:57            0.000000
+0:57            0.000000
+0:57            0.000000
+0:57        true case
+0:58        Sequence
+0:58          add second child into first child ( temp 4-component vector of float)
+0:58            'gl_FragColor' ( fragColor 4-component vector of float FragColor)
+0:58            'v' ( smooth in 4-component vector of float)
 0:?   Linker Objects
 0:?     'colorTransform' ( uniform 3X3 matrix of float)
 0:?     'Color' ( smooth in 3-component vector of float)
@@ -495,6 +525,36 @@ Shader version: 130
 0:54              'un34' ( uniform 4X4 matrix of float)
 0:54              'um43' ( uniform 4X4 matrix of float)
 0:54            'v' ( smooth in 4-component vector of float)
+0:56      Sequence
+0:56        move second child to first child ( temp 4X2 matrix of float)
+0:56          'm42' ( temp 4X2 matrix of float)
+0:56          Constant:
+0:56            42.000000
+0:56            0.000000
+0:56            0.000000
+0:56            42.000000
+0:56            0.000000
+0:56            0.000000
+0:56            0.000000
+0:56            0.000000
+0:57      Test condition and select ( temp void)
+0:57        Condition
+0:57        Compare Equal ( temp bool)
+0:57          'm42' ( temp 4X2 matrix of float)
+0:57          Constant:
+0:57            42.000000
+0:57            0.000000
+0:57            0.000000
+0:57            42.000000
+0:57            0.000000
+0:57            0.000000
+0:57            0.000000
+0:57            0.000000
+0:57        true case
+0:58        Sequence
+0:58          add second child into first child ( temp 4-component vector of float)
+0:58            'gl_FragColor' ( fragColor 4-component vector of float FragColor)
+0:58            'v' ( smooth in 4-component vector of float)
 0:?   Linker Objects
 0:?     'colorTransform' ( uniform 3X3 matrix of float)
 0:?     'Color' ( smooth in 3-component vector of float)
