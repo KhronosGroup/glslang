@@ -899,6 +899,8 @@ public:
 
     TLayoutMatrix  layoutMatrix  : 3;
     TLayoutPacking layoutPacking : 4;
+    bool sharedPackingNotDefault : 1;
+    bool std140PackingNotDefault : 1;
     int layoutOffset;
     int layoutAlign;
 
@@ -980,6 +982,14 @@ public:
     bool hasPacking() const
     {
         return layoutPacking != ElpNone;
+    }
+    bool IsDefaultSharedPacking () const 
+    {
+        return sharedPackingNotDefault;
+    }
+    bool IsDefaultStd140Packing () const 
+    {
+        return std140PackingNotDefault;
     }
     bool hasAlign() const
     {

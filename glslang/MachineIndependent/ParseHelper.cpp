@@ -5164,10 +5164,12 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
                 spvRemoved(loc, "shared");
         }
         publicType.qualifier.layoutPacking = ElpShared;
+        publicType.qualifier.sharedPackingNotDefault = true;
         return;
     }
     if (id == TQualifier::getLayoutPackingString(ElpStd140)) {
         publicType.qualifier.layoutPacking = ElpStd140;
+        publicType.qualifier.std140PackingNotDefault = true;
         return;
     }
 #ifndef GLSLANG_WEB
