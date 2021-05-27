@@ -109,8 +109,11 @@ after_success:
       zip ${TARBALL}
         bin/glslangValidator
         include/glslang/*
+        lib/libGenericCodeGen${SUFFIX}.a
         lib/libglslang${SUFFIX}.a
+        lib/libglslang-default-resource-limits${SUFFIX}.a
         lib/libHLSL${SUFFIX}.a
+        lib/libMachineIndependent${SUFFIX}.a
         lib/libOGLCompiler${SUFFIX}.a
         lib/libOSDependent${SUFFIX}.a
         lib/libSPIRV${SUFFIX}.a
