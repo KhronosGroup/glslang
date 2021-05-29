@@ -260,27 +260,27 @@ ERROR: node is still EOpNull!
 0:120                1.000000
 0:120          Constant:
 0:120            3 (const int)
-0:126  Function Definition: foo3( ( global void)
-0:126    Function Parameters: 
-0:128    Sequence
-0:128      Sequence
-0:128        move second child to first child ( temp 3X2 matrix of float)
-0:128          'r32' ( temp 3X2 matrix of float)
-0:128          Constant:
-0:128            43.000000
-0:128            64.000000
-0:128            51.000000
-0:128            76.000000
-0:128            59.000000
-0:128            88.000000
-0:138  Function Definition: foo4( ( global void)
-0:138    Function Parameters: 
-0:140    Sequence
-0:140      Sequence
-0:140        move second child to first child ( temp int)
-0:140          'a' ( temp int)
-0:140          Constant:
-0:140            9 (const int)
+0:129  Function Definition: foo3( ( global void)
+0:129    Function Parameters: 
+0:131    Sequence
+0:131      Sequence
+0:131        move second child to first child ( temp 3X2 matrix of float)
+0:131          'r32' ( temp 3X2 matrix of float)
+0:131          Constant:
+0:131            43.000000
+0:131            64.000000
+0:131            51.000000
+0:131            76.000000
+0:131            59.000000
+0:131            88.000000
+0:141  Function Definition: foo4( ( global void)
+0:141    Function Parameters: 
+0:143    Sequence
+0:143      Sequence
+0:143        move second child to first child ( temp int)
+0:143          'a' ( temp int)
+0:143          Constant:
+0:143            9 (const int)
 0:?   Linker Objects
 0:?     'a' ( const int)
 0:?       1 (const int)
@@ -367,6 +367,29 @@ ERROR: node is still EOpNull!
 0:?       13.000000
 0:?       14.000000
 0:?       15.000000
+0:?     'm22' ( const 2X2 matrix of float)
+0:?       1.000000
+0:?       2.000000
+0:?       3.000000
+0:?       4.000000
+0:?     'mm34' ( const 3X4 matrix of float)
+0:?       7.000000
+0:?       0.000000
+0:?       0.000000
+0:?       0.000000
+0:?       0.000000
+0:?       7.000000
+0:?       0.000000
+0:?       0.000000
+0:?       0.000000
+0:?       0.000000
+0:?       7.000000
+0:?       0.000000
+0:?     'mv4' ( const 4-component vector of float)
+0:?       1.000000
+0:?       2.000000
+0:?       3.000000
+0:?       4.000000
 0:?     'a0' ( const 3-element array of structure{ global int i,  global float f,  global bool b})
 0:?       3 (const int)
 0:?       2.000000
@@ -635,6 +658,29 @@ ERROR: node is still EOpNull!
 0:?       13.000000
 0:?       14.000000
 0:?       15.000000
+0:?     'm22' ( const 2X2 matrix of float)
+0:?       1.000000
+0:?       2.000000
+0:?       3.000000
+0:?       4.000000
+0:?     'mm34' ( const 3X4 matrix of float)
+0:?       7.000000
+0:?       0.000000
+0:?       0.000000
+0:?       0.000000
+0:?       0.000000
+0:?       7.000000
+0:?       0.000000
+0:?       0.000000
+0:?       0.000000
+0:?       0.000000
+0:?       7.000000
+0:?       0.000000
+0:?     'mv4' ( const 4-component vector of float)
+0:?       1.000000
+0:?       2.000000
+0:?       3.000000
+0:?       4.000000
 0:?     'a0' ( const 3-element array of structure{ global int i,  global float f,  global bool b})
 0:?       3 (const int)
 0:?       2.000000

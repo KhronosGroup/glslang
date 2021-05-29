@@ -59,7 +59,7 @@ TEST_P(CompileToAstTestNV, FromFile)
 }
 
 // clang-format off
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
     Glsl, CompileToAstTest,
     ::testing::ValuesIn(std::vector<std::string>({
         "sample.frag",
@@ -234,6 +234,9 @@ INSTANTIATE_TEST_CASE_P(
         "maxClipDistances.vert",
         "findFunction.frag",
         "constantUnaryConversion.comp",
+        "xfbUnsizedArray.error.vert",
+        "glsl.140.layoutOffset.error.vert",
+        "glsl.430.layoutOffset.error.vert",
         "glsl.450.subgroup.frag",
         "glsl.450.subgroup.geom",
         "glsl.450.subgroup.tesc",
@@ -258,6 +261,7 @@ INSTANTIATE_TEST_CASE_P(
         "glsl.460.subgroup.rgen",
         "glsl.460.subgroup.rint",
         "glsl.460.subgroup.rmiss",
+        "glsl.es300.layoutOffset.error.vert",
         "glsl.es320.subgroup.frag",
         "glsl.es320.subgroup.geom",
         "glsl.es320.subgroup.tesc",
@@ -274,17 +278,22 @@ INSTANTIATE_TEST_CASE_P(
         "glsl.es320.subgroupShuffleRelative.comp",
         "glsl.es320.subgroupQuad.comp",
         "glsl.es320.subgroupVote.comp",
+        "terminate.frag",
+        "terminate.vert",
+        "negativeWorkGroupSize.comp",
+        "textureoffset_sampler2darrayshadow.vert",
     })),
     FileNameAsCustomTestSuffix
 );
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
     Glsl, CompileToAstTestNV,
     ::testing::ValuesIn(std::vector<std::string>({
         "nvShaderNoperspectiveInterpolation.frag",
     })),
     FileNameAsCustomTestSuffix
 );
+
 // clang-format on
 
 }  // anonymous namespace

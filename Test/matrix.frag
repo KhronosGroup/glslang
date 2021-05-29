@@ -33,15 +33,15 @@ void main()
         gl_FragColor += m * v;
         gl_FragColor += v * (m - n);
    }
-    
+
 #ifdef TEST_POST_110
     mat3x4 m34 = outerProduct(v, u);
     m34 += mat4(v.x);
     m34 += mat4(u, u.x, u, u.x, u, u.x, u.x);
 #else
-    mat4 m34 = mat4(v.x*u.x, v.x*u.y, v.x*u.z, v.x*u.w, 
-                    v.y*u.x, v.y*u.y, v.y*u.z, v.y*u.w, 
-                    v.z*u.x, v.z*u.y, v.z*u.z, v.z*u.w, 
+    mat4 m34 = mat4(v.x*u.x, v.x*u.y, v.x*u.z, v.x*u.w,
+                    v.y*u.x, v.y*u.y, v.y*u.z, v.y*u.w,
+                    v.z*u.x, v.z*u.y, v.z*u.z, v.z*u.w,
                     v.w*u.x, v.w*u.y, v.w*u.z, v.w*u.w);
     m34 += mat4(v.x);
     m34 += mat4(u, u.x, u, u.x, u, u.x, u.x);
@@ -52,4 +52,9 @@ void main()
         gl_FragColor += m34 * u;
     else
         gl_FragColor += (un34 * um43) * v;
+
+    mat4x2 m42 = mat4x2(42);
+    if (m42 == mat4x2(42, 0, 0, 42, 0, 0, 0, 0)) {
+        gl_FragColor += v;
+    }
 }

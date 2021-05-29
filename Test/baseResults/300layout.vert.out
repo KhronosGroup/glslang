@@ -1,6 +1,7 @@
 300layout.vert
 ERROR: 0:7: 'vertex input arrays' : not supported with this profile: es
 ERROR: 0:8: 'in' : cannot be a structure or array 
+ERROR: 0:8: 's' : A structure containing an array is not allowed as input in ES 
 ERROR: 0:8: 'vertex input arrays' : not supported with this profile: es
 ERROR: 0:8: 'location' : overlapping use of location 10
 ERROR: 0:12: 'layout' : cannot specify matrix layout on a variable declaration 
@@ -18,7 +19,7 @@ ERROR: 0:50: 'shared' : not supported for this version or the enabled extensions
 ERROR: 0:50: 'shared' : not supported in this stage: vertex
 ERROR: 0:54: 'layout' : cannot specify packing on a variable declaration 
 ERROR: 0:57: 'location' : overlapping use of location 40
-ERROR: 19 compilation errors.  No code generated.
+ERROR: 20 compilation errors.  No code generated.
 
 
 Shader version: 300

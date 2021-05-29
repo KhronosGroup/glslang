@@ -21,6 +21,7 @@ ERROR: 0:105: 'location' : overlapping use of location 12
 ERROR: 0:107: 'input block' : not supported in this stage: vertex
 ERROR: 0:109: 'gl_PerVertex' : block redeclaration has extra members 
 ERROR: 0:119: 'gl_PointSize' : member of nameless block was not redeclared 
+ERROR: 0:119: 'assign' :  l-value required "gl_PerVertex" (can't modify void)
 ERROR: 0:119: 'assign' :  cannot convert from ' const float' to ' gl_PointSize highp void PointSize'
 ERROR: 0:122: 'gl_PerVertex' : can only redeclare a built-in block once, and before any use 
 ERROR: 0:127: 'flat/smooth/noperspective' : cannot use interpolation qualifiers on an interface block 
@@ -96,7 +97,7 @@ ERROR: 0:389: 'sample' : Reserved word.
 ERROR: 0:400: 'interpolateAtCentroid' : no matching overloaded function found 
 ERROR: 0:401: 'interpolateAtSample' : no matching overloaded function found 
 ERROR: 0:402: 'interpolateAtOffset' : no matching overloaded function found 
-ERROR: 93 compilation errors.  No code generated.
+ERROR: 94 compilation errors.  No code generated.
 
 
 Shader version: 310

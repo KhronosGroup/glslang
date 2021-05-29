@@ -16,9 +16,9 @@ ERROR: node is still EOpNull!
 0:5            2 (const int)
 0:5          Constant:
 0:5            0 (const int)
-0:?         Constant:
-0:?           3 (const uint)
-0:?           4 (const uint)
+0:5        Constant:
+0:5          3 (const uint)
+0:5          4 (const uint)
 0:7      Branch: Return with expression
 0:7        Constant:
 0:7          0.000000
@@ -52,9 +52,9 @@ ERROR: node is still EOpNull!
 0:5            2 (const int)
 0:5          Constant:
 0:5            0 (const int)
-0:?         Constant:
-0:?           3 (const uint)
-0:?           4 (const uint)
+0:5        Constant:
+0:5          3 (const uint)
+0:5          4 (const uint)
 0:7      Branch: Return with expression
 0:7        Constant:
 0:7          0.000000

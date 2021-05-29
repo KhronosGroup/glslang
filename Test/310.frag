@@ -449,3 +449,39 @@ void devie()
     gl_DeviceIndex;
     gl_ViewIndex;
 }
+
+#extension GL_EXT_shader_implicit_conversions : enable
+
+// Test function overloading
+void func(uint a, uvec4 b)
+{
+
+}
+
+int func(uint a, uvec4 b) // Error function overloading because of same signature and different return type
+{
+    return 0;
+}
+
+int b;
+
+void testimplicit() {
+
+    uint a = b; // int->uint
+    mediump vec4 col = vec4(1, 2, 3, 4); // ivec4 -> vec4
+    int  b = a + 2; // ERROR: cannot convert from ' temp uint' to ' temp int'
+
+    // Test binary ops
+    uint c = b * 3; 
+    uint d = b * 3u;
+    uint e = b%3;
+    uint f = (b > 3)? b : c;     
+    func(b, ivec4(1,2,3,4)); 
+}
+
+#extension GL_EXT_shader_implicit_conversions : disable
+
+void testimplicitFail() {
+    uint a = b; // Error GL_EXT_shader_implicit_conversions is disabled
+}
+

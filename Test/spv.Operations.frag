@@ -55,9 +55,10 @@ void main()
     v += ceil(v);
     v += fract(v);
     v += mod(v, v);
-	v += mod(v, v.x);
+    v += mod(v, v.x);
 
     v += modf(v, v);
+    v += modf(v, v.yzxw);
 
     v += min(v, uv4);
     v += max(v, uv4);
@@ -95,6 +96,13 @@ void main()
     u += min(u, uui);
     u += max(u, uui);
     u += clamp(u, uui, uui);
+
+    // multiple out operands
+    uvec4 msb;
+    uvec4 lsb;
+    umulExtended(uuv4.xyz, uuv4.xyz, msb.xyz, lsb.xyz);
+    u += msb.x + msb.y + msb.z;
+    u += lsb.x + lsb.y + lsb.z;
 
 	//// bool
 	b = isnan(uf);
