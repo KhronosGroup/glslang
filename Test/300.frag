@@ -149,6 +149,39 @@ uniform mediump;       // ERROR
 
 layout(early_fragment_tests) in;  // ERROR
 
+// Test extension GL_EXT_shader_integer_mix
+#extension GL_EXT_shader_integer_mix : enable
+bool b1, b2, b;
+int x,y;
+uint z,w;
+
+void testmix()
+{
+    int ival  = mix(x, y, b);
+    ivec2 iv2 = mix(ivec2(x), ivec2(y), bvec2(b));
+    ivec3 iv3 = mix(ivec3(x), ivec3(y), bvec3(b));
+    ivec4 iv4 = mix(ivec4(x), ivec4(x), bvec4(b));
+    uint  uiv = mix(z, w, b);
+    uvec2 uv2 = mix(uvec2(z), uvec2(z), bvec2(b));
+    uvec3 uv3 = mix(uvec3(z), uvec3(z), bvec3(b));
+    uvec4 uv4 = mix(uvec4(z), uvec4(z), bvec4(b));
+    bool  bv  = mix(b1, b2, b);
+    bvec2 bv2 = mix(bvec2(b1), bvec2(b2), bvec2(b));
+    bvec3 bv3 = mix(bvec3(b1), bvec3(b2), bvec3(b));
+    bvec4 bv4 = mix(bvec4(b1), bvec4(b2), bvec4(b));
+}
+
+#extension GL_EXT_shader_integer_mix : disable
+void testmixFail()
+{
+    int ival  = mix(x, y, b); // Error since extenson GL_EXT_shader_integer_mix is disabled
+}
+
+// Test layout qualifier "index" with extension GL_EXT_blend_func_extended
+layout(location = 0, index = 1) out vec4 outVarFail; // Error Index supported with extension GL_EXT_blend_func_extended enabled
+#extension GL_EXT_blend_func_extended : enable
+layout(location = 0, index = 2) out vec4 outVarPass;
+
 #ifndef GL_FRAGMENT_PRECISION_HIGH
 #error missing GL_FRAGMENT_PRECISION_HIGH
 #endif

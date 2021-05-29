@@ -40,15 +40,20 @@ ERROR: 0:129: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset,
 ERROR: 0:129: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, gl_MaxProgramTexelOffset]
 ERROR: 0:148: 'qualifier' : cannot use auxiliary, memory, interpolation, or precision qualifier in a default qualifier declaration (declaration with no type) 
 ERROR: 0:150: 'early_fragment_tests' : not supported for this version or the enabled extensions 
-ERROR: 0:156: 'invariant' : can only apply to an output 
-ERROR: 0:157: 'invariant' : can only apply to an output 
-ERROR: 0:158: 'invariant' : can only apply to an output 
-ERROR: 0:160: 'imageBuffer' : Reserved word. 
-ERROR: 0:160: '' :  syntax error, unexpected IMAGEBUFFER, expecting COMMA or SEMICOLON
-ERROR: 46 compilation errors.  No code generated.
+ERROR: 0:177: 'specific signature of builtin mix' : required extension not requested: GL_EXT_shader_integer_mix
+ERROR: 0:181: 'index layout qualifier on fragment output' : not supported for this version or the enabled extensions 
+ERROR: 0:183: 'index' : value must be 0 or 1 
+ERROR: 0:189: 'invariant' : can only apply to an output 
+ERROR: 0:190: 'invariant' : can only apply to an output 
+ERROR: 0:191: 'invariant' : can only apply to an output 
+ERROR: 0:193: 'imageBuffer' : Reserved word. 
+ERROR: 0:193: '' :  syntax error, unexpected IMAGEBUFFER, expecting COMMA or SEMICOLON
+ERROR: 49 compilation errors.  No code generated.
 
 
 Shader version: 300
+Requested GL_EXT_blend_func_extended
+Requested GL_EXT_shader_integer_mix
 using early_fragment_tests
 ERROR: node is still EOpNull!
 0:53  Function Definition: main( ( global void)
@@ -362,6 +367,130 @@ ERROR: node is still EOpNull!
 0:145            21.000000
 0:145            22.000000
 0:145            33.000000
+0:158  Function Definition: testmix( ( global void)
+0:158    Function Parameters: 
+0:160    Sequence
+0:160      Sequence
+0:160        move second child to first child ( temp mediump int)
+0:160          'ival' ( temp mediump int)
+0:160          mix ( global mediump int)
+0:160            'x' ( global mediump int)
+0:160            'y' ( global mediump int)
+0:160            'b' ( global bool)
+0:161      Sequence
+0:161        move second child to first child ( temp mediump 2-component vector of int)
+0:161          'iv2' ( temp mediump 2-component vector of int)
+0:161          mix ( global mediump 2-component vector of int)
+0:161            Construct ivec2 ( temp mediump 2-component vector of int)
+0:161              'x' ( global mediump int)
+0:161            Construct ivec2 ( temp mediump 2-component vector of int)
+0:161              'y' ( global mediump int)
+0:161            Construct bvec2 ( temp 2-component vector of bool)
+0:161              'b' ( global bool)
+0:162      Sequence
+0:162        move second child to first child ( temp mediump 3-component vector of int)
+0:162          'iv3' ( temp mediump 3-component vector of int)
+0:162          mix ( global mediump 3-component vector of int)
+0:162            Construct ivec3 ( temp mediump 3-component vector of int)
+0:162              'x' ( global mediump int)
+0:162            Construct ivec3 ( temp mediump 3-component vector of int)
+0:162              'y' ( global mediump int)
+0:162            Construct bvec3 ( temp 3-component vector of bool)
+0:162              'b' ( global bool)
+0:163      Sequence
+0:163        move second child to first child ( temp mediump 4-component vector of int)
+0:163          'iv4' ( temp mediump 4-component vector of int)
+0:163          mix ( global mediump 4-component vector of int)
+0:163            Construct ivec4 ( temp mediump 4-component vector of int)
+0:163              'x' ( global mediump int)
+0:163            Construct ivec4 ( temp mediump 4-component vector of int)
+0:163              'x' ( global mediump int)
+0:163            Construct bvec4 ( temp 4-component vector of bool)
+0:163              'b' ( global bool)
+0:164      Sequence
+0:164        move second child to first child ( temp mediump uint)
+0:164          'uiv' ( temp mediump uint)
+0:164          mix ( global mediump uint)
+0:164            'z' ( global mediump uint)
+0:164            'w' ( global mediump uint)
+0:164            'b' ( global bool)
+0:165      Sequence
+0:165        move second child to first child ( temp mediump 2-component vector of uint)
+0:165          'uv2' ( temp mediump 2-component vector of uint)
+0:165          mix ( global mediump 2-component vector of uint)
+0:165            Construct uvec2 ( temp mediump 2-component vector of uint)
+0:165              'z' ( global mediump uint)
+0:165            Construct uvec2 ( temp mediump 2-component vector of uint)
+0:165              'z' ( global mediump uint)
+0:165            Construct bvec2 ( temp 2-component vector of bool)
+0:165              'b' ( global bool)
+0:166      Sequence
+0:166        move second child to first child ( temp mediump 3-component vector of uint)
+0:166          'uv3' ( temp mediump 3-component vector of uint)
+0:166          mix ( global mediump 3-component vector of uint)
+0:166            Construct uvec3 ( temp mediump 3-component vector of uint)
+0:166              'z' ( global mediump uint)
+0:166            Construct uvec3 ( temp mediump 3-component vector of uint)
+0:166              'z' ( global mediump uint)
+0:166            Construct bvec3 ( temp 3-component vector of bool)
+0:166              'b' ( global bool)
+0:167      Sequence
+0:167        move second child to first child ( temp mediump 4-component vector of uint)
+0:167          'uv4' ( temp mediump 4-component vector of uint)
+0:167          mix ( global mediump 4-component vector of uint)
+0:167            Construct uvec4 ( temp mediump 4-component vector of uint)
+0:167              'z' ( global mediump uint)
+0:167            Construct uvec4 ( temp mediump 4-component vector of uint)
+0:167              'z' ( global mediump uint)
+0:167            Construct bvec4 ( temp 4-component vector of bool)
+0:167              'b' ( global bool)
+0:168      Sequence
+0:168        move second child to first child ( temp bool)
+0:168          'bv' ( temp bool)
+0:168          mix ( global bool)
+0:168            'b1' ( global bool)
+0:168            'b2' ( global bool)
+0:168            'b' ( global bool)
+0:169      Sequence
+0:169        move second child to first child ( temp 2-component vector of bool)
+0:169          'bv2' ( temp 2-component vector of bool)
+0:169          mix ( global 2-component vector of bool)
+0:169            Construct bvec2 ( temp 2-component vector of bool)
+0:169              'b1' ( global bool)
+0:169            Construct bvec2 ( temp 2-component vector of bool)
+0:169              'b2' ( global bool)
+0:169            Construct bvec2 ( temp 2-component vector of bool)
+0:169              'b' ( global bool)
+0:170      Sequence
+0:170        move second child to first child ( temp 3-component vector of bool)
+0:170          'bv3' ( temp 3-component vector of bool)
+0:170          mix ( global 3-component vector of bool)
+0:170            Construct bvec3 ( temp 3-component vector of bool)
+0:170              'b1' ( global bool)
+0:170            Construct bvec3 ( temp 3-component vector of bool)
+0:170              'b2' ( global bool)
+0:170            Construct bvec3 ( temp 3-component vector of bool)
+0:170              'b' ( global bool)
+0:171      Sequence
+0:171        move second child to first child ( temp 4-component vector of bool)
+0:171          'bv4' ( temp 4-component vector of bool)
+0:171          mix ( global 4-component vector of bool)
+0:171            Construct bvec4 ( temp 4-component vector of bool)
+0:171              'b1' ( global bool)
+0:171            Construct bvec4 ( temp 4-component vector of bool)
+0:171              'b2' ( global bool)
+0:171            Construct bvec4 ( temp 4-component vector of bool)
+0:171              'b' ( global bool)
+0:175  Function Definition: testmixFail( ( global void)
+0:175    Function Parameters: 
+0:177    Sequence
+0:177      Sequence
+0:177        move second child to first child ( temp mediump int)
+0:177          'ival' ( temp mediump int)
+0:177          mix ( global mediump int)
+0:177            'x' ( global mediump int)
+0:177            'y' ( global mediump int)
+0:177            'b' ( global bool)
 0:?   Linker Objects
 0:?     's2D' ( uniform lowp sampler2D)
 0:?     's3D' ( uniform lowp sampler3D)
@@ -397,6 +526,15 @@ ERROR: node is still EOpNull!
 0:?     'colors' ( out 4-element array of lowp 4-component vector of float)
 0:?     'st1' ( uniform structure{ global mediump int i,  global lowp sampler2D s})
 0:?     'st2' ( uniform structure{ global mediump int i,  global lowp sampler2D s})
+0:?     'b1' ( global bool)
+0:?     'b2' ( global bool)
+0:?     'b' ( global bool)
+0:?     'x' ( global mediump int)
+0:?     'y' ( global mediump int)
+0:?     'z' ( global mediump uint)
+0:?     'w' ( global mediump uint)
+0:?     'outVarFail' (layout( location=0 index=1) out lowp 4-component vector of float)
+0:?     'outVarPass' (layout( location=0 index=0) out lowp 4-component vector of float)
 0:?     'fooinv' ( invariant smooth in lowp 4-component vector of float)
 
 
@@ -405,6 +543,8 @@ Linked fragment stage:
 ERROR: Linking fragment stage: when more than one fragment shader output, all must have location qualifiers
 
 Shader version: 300
+Requested GL_EXT_blend_func_extended
+Requested GL_EXT_shader_integer_mix
 using early_fragment_tests
 ERROR: node is still EOpNull!
 0:53  Function Definition: main( ( global void)
@@ -628,5 +768,14 @@ ERROR: node is still EOpNull!
 0:?     'colors' ( out 4-element array of lowp 4-component vector of float)
 0:?     'st1' ( uniform structure{ global mediump int i,  global lowp sampler2D s})
 0:?     'st2' ( uniform structure{ global mediump int i,  global lowp sampler2D s})
+0:?     'b1' ( global bool)
+0:?     'b2' ( global bool)
+0:?     'b' ( global bool)
+0:?     'x' ( global mediump int)
+0:?     'y' ( global mediump int)
+0:?     'z' ( global mediump uint)
+0:?     'w' ( global mediump uint)
+0:?     'outVarFail' (layout( location=0 index=1) out lowp 4-component vector of float)
+0:?     'outVarPass' (layout( location=0 index=0) out lowp 4-component vector of float)
 0:?     'fooinv' ( invariant smooth in lowp 4-component vector of float)
 

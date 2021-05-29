@@ -219,12 +219,12 @@ tb1: offset 0, type 1404, size 1, index 5, binding -1, stages 16
 ts6: offset -1, type 8b5f, size 1, index -1, binding 71, stages 16
 
 Uniform block reflection:
-t4: offset -1, type ffffffff, size 0, index -1, binding 21, stages 16, numMembers 1
-t5: offset -1, type ffffffff, size 0, index -1, binding 22, stages 16, numMembers 1
-u5: offset -1, type ffffffff, size 0, index -1, binding 44, stages 16, numMembers 1
-u6: offset -1, type ffffffff, size 0, index -1, binding 34, stages 16, numMembers 1
-cb: offset -1, type ffffffff, size 4, index -1, binding 51, stages 16, numMembers 1
-tb: offset -1, type ffffffff, size 4, index -1, binding 27, stages 16, numMembers 1
+t4: offset -1, type ffffffff, size 16, index 0, binding 21, stages 16, numMembers 1
+t5: offset -1, type ffffffff, size 4, index 1, binding 22, stages 16, numMembers 1
+u5: offset -1, type ffffffff, size 4, index 2, binding 44, stages 16, numMembers 1
+u6: offset -1, type ffffffff, size 4, index 3, binding 34, stages 16, numMembers 1
+cb: offset -1, type ffffffff, size 4, index 4, binding 51, stages 16, numMembers 1
+tb: offset -1, type ffffffff, size 4, index 5, binding 27, stages 16, numMembers 1
 
 Buffer variable reflection:
 

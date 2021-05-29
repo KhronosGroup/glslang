@@ -50,9 +50,9 @@ using depth_any
 0:32              Construct combined texture-sampler ( temp sampler2DArray)
 0:32                'g_tTex2df4a' ( uniform texture2DArray)
 0:32                'g_sSamp' (layout( binding=0) uniform sampler)
-0:?               Constant:
-0:?                 0.100000
-0:?                 0.200000
+0:32              Constant:
+0:32                0.100000
+0:32                0.200000
 0:32            Constant:
 0:32              1 (const int)
 0:33      Sequence
@@ -63,9 +63,9 @@ using depth_any
 0:33              Construct combined texture-sampler ( temp isampler2DArray)
 0:33                'g_tTex2di4a' ( uniform itexture2DArray)
 0:33                'g_sSamp' (layout( binding=0) uniform sampler)
-0:?               Constant:
-0:?                 0.300000
-0:?                 0.400000
+0:33              Constant:
+0:33                0.300000
+0:33                0.400000
 0:33            Constant:
 0:33              1 (const int)
 0:34      Sequence
@@ -76,9 +76,9 @@ using depth_any
 0:34              Construct combined texture-sampler ( temp usampler2DArray)
 0:34                'g_tTex2du4a' ( uniform utexture2DArray)
 0:34                'g_sSamp' (layout( binding=0) uniform sampler)
-0:?               Constant:
-0:?                 0.500000
-0:?                 0.600000
+0:34              Constant:
+0:34                0.500000
+0:34                0.600000
 0:34            Constant:
 0:34              1 (const int)
 0:36      Sequence
@@ -89,10 +89,10 @@ using depth_any
 0:36              Construct combined texture-sampler ( temp samplerCubeArray)
 0:36                'g_tTexcdf4a' ( uniform textureCubeArray)
 0:36                'g_sSamp' (layout( binding=0) uniform sampler)
-0:?               Constant:
-0:?                 0.100000
-0:?                 0.200000
-0:?                 0.300000
+0:36              Constant:
+0:36                0.100000
+0:36                0.200000
+0:36                0.300000
 0:36            Constant:
 0:36              1 (const int)
 0:37      Sequence
@@ -103,10 +103,10 @@ using depth_any
 0:37              Construct combined texture-sampler ( temp isamplerCubeArray)
 0:37                'g_tTexcdi4a' ( uniform itextureCubeArray)
 0:37                'g_sSamp' (layout( binding=0) uniform sampler)
-0:?               Constant:
-0:?                 0.400000
-0:?                 0.500000
-0:?                 0.600000
+0:37              Constant:
+0:37                0.400000
+0:37                0.500000
+0:37                0.600000
 0:37            Constant:
 0:37              1 (const int)
 0:38      Sequence
@@ -117,10 +117,10 @@ using depth_any
 0:38              Construct combined texture-sampler ( temp usamplerCubeArray)
 0:38                'g_tTexcdu4a' ( uniform utextureCubeArray)
 0:38                'g_sSamp' (layout( binding=0) uniform sampler)
-0:?               Constant:
-0:?                 0.700000
-0:?                 0.800000
-0:?                 0.900000
+0:38              Constant:
+0:38                0.700000
+0:38                0.800000
+0:38                0.900000
 0:38            Constant:
 0:38              1 (const int)
 0:40      move second child to first child ( temp 4-component vector of float)
@@ -231,9 +231,9 @@ using depth_any
 0:32              Construct combined texture-sampler ( temp sampler2DArray)
 0:32                'g_tTex2df4a' ( uniform texture2DArray)
 0:32                'g_sSamp' (layout( binding=0) uniform sampler)
-0:?               Constant:
-0:?                 0.100000
-0:?                 0.200000
+0:32              Constant:
+0:32                0.100000
+0:32                0.200000
 0:32            Constant:
 0:32              1 (const int)
 0:33      Sequence
@@ -244,9 +244,9 @@ using depth_any
 0:33              Construct combined texture-sampler ( temp isampler2DArray)
 0:33                'g_tTex2di4a' ( uniform itexture2DArray)
 0:33                'g_sSamp' (layout( binding=0) uniform sampler)
-0:?               Constant:
-0:?                 0.300000
-0:?                 0.400000
+0:33              Constant:
+0:33                0.300000
+0:33                0.400000
 0:33            Constant:
 0:33              1 (const int)
 0:34      Sequence
@@ -257,9 +257,9 @@ using depth_any
 0:34              Construct combined texture-sampler ( temp usampler2DArray)
 0:34                'g_tTex2du4a' ( uniform utexture2DArray)
 0:34                'g_sSamp' (layout( binding=0) uniform sampler)
-0:?               Constant:
-0:?                 0.500000
-0:?                 0.600000
+0:34              Constant:
+0:34                0.500000
+0:34                0.600000
 0:34            Constant:
 0:34              1 (const int)
 0:36      Sequence
@@ -270,10 +270,10 @@ using depth_any
 0:36              Construct combined texture-sampler ( temp samplerCubeArray)
 0:36                'g_tTexcdf4a' ( uniform textureCubeArray)
 0:36                'g_sSamp' (layout( binding=0) uniform sampler)
-0:?               Constant:
-0:?                 0.100000
-0:?                 0.200000
-0:?                 0.300000
+0:36              Constant:
+0:36                0.100000
+0:36                0.200000
+0:36                0.300000
 0:36            Constant:
 0:36              1 (const int)
 0:37      Sequence
@@ -284,10 +284,10 @@ using depth_any
 0:37              Construct combined texture-sampler ( temp isamplerCubeArray)
 0:37                'g_tTexcdi4a' ( uniform itextureCubeArray)
 0:37                'g_sSamp' (layout( binding=0) uniform sampler)
-0:?               Constant:
-0:?                 0.400000
-0:?                 0.500000
-0:?                 0.600000
+0:37              Constant:
+0:37                0.400000
+0:37                0.500000
+0:37                0.600000
 0:37            Constant:
 0:37              1 (const int)
 0:38      Sequence
@@ -298,10 +298,10 @@ using depth_any
 0:38              Construct combined texture-sampler ( temp usamplerCubeArray)
 0:38                'g_tTexcdu4a' ( uniform utextureCubeArray)
 0:38                'g_sSamp' (layout( binding=0) uniform sampler)
-0:?               Constant:
-0:?                 0.700000
-0:?                 0.800000
-0:?                 0.900000
+0:38              Constant:
+0:38                0.700000
+0:38                0.800000
+0:38                0.900000
 0:38            Constant:
 0:38              1 (const int)
 0:40      move second child to first child ( temp 4-component vector of float)
@@ -358,7 +358,7 @@ using depth_any
 0:?     '@entryPointOutput.Color' (layout( location=0) out 4-component vector of float)
 
 // Module Version 10000
-// Generated by (magic number): 80007
+// Generated by (magic number): 8000a
 // Id's are bound by 148
 
                               Capability Shader
@@ -405,21 +405,21 @@ using depth_any
                               Decorate 20(g_sSamp) DescriptorSet 0
                               Decorate 20(g_sSamp) Binding 0
                               Decorate 33(g_tTex1di4a) DescriptorSet 0
-                              Decorate 33(g_tTex1di4a) Binding 0
+                              Decorate 33(g_tTex1di4a) Binding 2
                               Decorate 45(g_tTex1du4a) DescriptorSet 0
-                              Decorate 45(g_tTex1du4a) Binding 0
+                              Decorate 45(g_tTex1du4a) Binding 3
                               Decorate 56(g_tTex2df4a) DescriptorSet 0
-                              Decorate 56(g_tTex2df4a) Binding 0
+                              Decorate 56(g_tTex2df4a) Binding 4
                               Decorate 67(g_tTex2di4a) DescriptorSet 0
-                              Decorate 67(g_tTex2di4a) Binding 0
+                              Decorate 67(g_tTex2di4a) Binding 5
                               Decorate 79(g_tTex2du4a) DescriptorSet 0
-                              Decorate 79(g_tTex2du4a) Binding 0
+                              Decorate 79(g_tTex2du4a) Binding 6
                               Decorate 92(g_tTexcdf4a) DescriptorSet 0
-                              Decorate 92(g_tTexcdf4a) Binding 0
+                              Decorate 92(g_tTexcdf4a) Binding 7
                               Decorate 104(g_tTexcdi4a) DescriptorSet 0
-                              Decorate 104(g_tTexcdi4a) Binding 0
+                              Decorate 104(g_tTexcdi4a) Binding 8
                               Decorate 115(g_tTexcdu4a) DescriptorSet 0
-                              Decorate 115(g_tTexcdu4a) Binding 0
+                              Decorate 115(g_tTexcdu4a) Binding 9
                               Decorate 140(@entryPointOutput.Color) Location 0
                               Decorate 144(@entryPointOutput.Depth) BuiltIn FragDepth
                               Decorate 147(g_tTex1df4) DescriptorSet 0

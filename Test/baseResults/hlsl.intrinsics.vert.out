@@ -191,10 +191,10 @@ Shader version: 500
 0:83        'inF0' ( in 2-component vector of float)
 0:84      hyp. cosine ( temp 2-component vector of float)
 0:84        'inF0' ( in 2-component vector of float)
-0:?       bitCount ( temp 2-component vector of int)
-0:?         Constant:
-0:?           7 (const int)
-0:?           3 (const int)
+0:85      bitCount ( temp 2-component vector of int)
+0:85        Constant:
+0:85          7 (const int)
+0:85          3 (const int)
 0:86      degrees ( temp 2-component vector of float)
 0:86        'inF0' ( in 2-component vector of float)
 0:87      distance ( temp float)
@@ -267,10 +267,10 @@ Shader version: 500
 0:116        'inF1' ( in 2-component vector of float)
 0:116        Constant:
 0:116          2.000000
-0:?       bitFieldReverse ( temp 2-component vector of int)
-0:?         Constant:
-0:?           1 (const int)
-0:?           2 (const int)
+0:117      bitFieldReverse ( temp 2-component vector of int)
+0:117        Constant:
+0:117          1 (const int)
+0:117          2 (const int)
 0:118      roundEven ( temp 2-component vector of float)
 0:118        'inF0' ( in 2-component vector of float)
 0:119      inverse sqrt ( temp 2-component vector of float)
@@ -312,9 +312,9 @@ Shader version: 500
 0:131      trunc ( temp 2-component vector of float)
 0:131        'inF0' ( in 2-component vector of float)
 0:134      Branch: Return with expression
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
+0:134        Constant:
+0:134          1.000000
+0:134          2.000000
 0:138  Function Definition: VertexShaderFunction3(vf3;vf3;vf3;vu3;vu3; ( temp 3-component vector of float)
 0:138    Function Parameters: 
 0:138      'inF0' ( in 3-component vector of float)
@@ -356,11 +356,11 @@ Shader version: 500
 0:152        'inF0' ( in 3-component vector of float)
 0:153      hyp. cosine ( temp 3-component vector of float)
 0:153        'inF0' ( in 3-component vector of float)
-0:?       bitCount ( temp 3-component vector of int)
-0:?         Constant:
-0:?           7 (const int)
-0:?           3 (const int)
-0:?           5 (const int)
+0:154      bitCount ( temp 3-component vector of int)
+0:154        Constant:
+0:154          7 (const int)
+0:154          3 (const int)
+0:154          5 (const int)
 0:155      cross-product ( temp 3-component vector of float)
 0:155        'inF0' ( in 3-component vector of float)
 0:155        'inF1' ( in 3-component vector of float)
@@ -436,11 +436,11 @@ Shader version: 500
 0:186        'inF1' ( in 3-component vector of float)
 0:186        Constant:
 0:186          2.000000
-0:?       bitFieldReverse ( temp 3-component vector of int)
-0:?         Constant:
-0:?           1 (const int)
-0:?           2 (const int)
-0:?           3 (const int)
+0:187      bitFieldReverse ( temp 3-component vector of int)
+0:187        Constant:
+0:187          1 (const int)
+0:187          2 (const int)
+0:187          3 (const int)
 0:188      roundEven ( temp 3-component vector of float)
 0:188        'inF0' ( in 3-component vector of float)
 0:189      inverse sqrt ( temp 3-component vector of float)
@@ -482,10 +482,10 @@ Shader version: 500
 0:201      trunc ( temp 3-component vector of float)
 0:201        'inF0' ( in 3-component vector of float)
 0:204      Branch: Return with expression
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
-0:?           3.000000
+0:204        Constant:
+0:204          1.000000
+0:204          2.000000
+0:204          3.000000
 0:208  Function Definition: VertexShaderFunction4(vf4;vf4;vf4;vu4;vu4; ( temp 4-component vector of float)
 0:208    Function Parameters: 
 0:208      'inF0' ( in 4-component vector of float)
@@ -527,12 +527,12 @@ Shader version: 500
 0:222        'inF0' ( in 4-component vector of float)
 0:223      hyp. cosine ( temp 4-component vector of float)
 0:223        'inF0' ( in 4-component vector of float)
-0:?       bitCount ( temp 4-component vector of int)
-0:?         Constant:
-0:?           7 (const int)
-0:?           3 (const int)
-0:?           5 (const int)
-0:?           2 (const int)
+0:224      bitCount ( temp 4-component vector of int)
+0:224        Constant:
+0:224          7 (const int)
+0:224          3 (const int)
+0:224          5 (const int)
+0:224          2 (const int)
 0:225      degrees ( temp 4-component vector of float)
 0:225        'inF0' ( in 4-component vector of float)
 0:226      distance ( temp float)
@@ -625,12 +625,12 @@ Shader version: 500
 0:256        'inF1' ( in 4-component vector of float)
 0:256        Constant:
 0:256          2.000000
-0:?       bitFieldReverse ( temp 4-component vector of int)
-0:?         Constant:
-0:?           1 (const int)
-0:?           2 (const int)
-0:?           3 (const int)
-0:?           4 (const int)
+0:257      bitFieldReverse ( temp 4-component vector of int)
+0:257        Constant:
+0:257          1 (const int)
+0:257          2 (const int)
+0:257          3 (const int)
+0:257          4 (const int)
 0:258      roundEven ( temp 4-component vector of float)
 0:258        'inF0' ( in 4-component vector of float)
 0:259      inverse sqrt ( temp 4-component vector of float)
@@ -672,11 +672,11 @@ Shader version: 500
 0:271      trunc ( temp 4-component vector of float)
 0:271        'inF0' ( in 4-component vector of float)
 0:274      Branch: Return with expression
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
-0:?           3.000000
-0:?           4.000000
+0:274        Constant:
+0:274          1.000000
+0:274          2.000000
+0:274          3.000000
+0:274          4.000000
 0:331  Function Definition: VertexShaderFunction2x2(mf22;mf22;mf22; ( temp 2X2 matrix of float)
 0:331    Function Parameters: 
 0:331      'inF0' ( in 2X2 matrix of float)
@@ -801,11 +801,11 @@ Shader version: 500
 0:333      trunc ( temp 2X2 matrix of float)
 0:333        'inF0' ( in 2X2 matrix of float)
 0:336      Branch: Return with expression
-0:?         Constant:
-0:?           2.000000
-0:?           2.000000
-0:?           2.000000
-0:?           2.000000
+0:336        Constant:
+0:336          2.000000
+0:336          2.000000
+0:336          2.000000
+0:336          2.000000
 0:340  Function Definition: VertexShaderFunction3x3(mf33;mf33;mf33; ( temp 3X3 matrix of float)
 0:340    Function Parameters: 
 0:340      'inF0' ( in 3X3 matrix of float)
@@ -930,16 +930,16 @@ Shader version: 500
 0:342      trunc ( temp 3X3 matrix of float)
 0:342        'inF0' ( in 3X3 matrix of float)
 0:345      Branch: Return with expression
-0:?         Constant:
-0:?           3.000000
-0:?           3.000000
-0:?           3.000000
-0:?           3.000000
-0:?           3.000000
-0:?           3.000000
-0:?           3.000000
-0:?           3.000000
-0:?           3.000000
+0:345        Constant:
+0:345          3.000000
+0:345          3.000000
+0:345          3.000000
+0:345          3.000000
+0:345          3.000000
+0:345          3.000000
+0:345          3.000000
+0:345          3.000000
+0:345          3.000000
 0:349  Function Definition: VertexShaderFunction4x4(mf44;mf44;mf44; ( temp 4X4 matrix of float)
 0:349    Function Parameters: 
 0:349      'inF0' ( in 4X4 matrix of float)
@@ -1064,23 +1064,23 @@ Shader version: 500
 0:351      trunc ( temp 4X4 matrix of float)
 0:351        'inF0' ( in 4X4 matrix of float)
 0:354      Branch: Return with expression
-0:?         Constant:
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
+0:354        Constant:
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
 0:372  Function Definition: TestGenMul2(f1;f1;vf2;vf2;mf22;mf22; ( temp void)
 0:372    Function Parameters: 
 0:372      'inF0' ( in float)
@@ -1583,10 +1583,10 @@ Shader version: 500
 0:83        'inF0' ( in 2-component vector of float)
 0:84      hyp. cosine ( temp 2-component vector of float)
 0:84        'inF0' ( in 2-component vector of float)
-0:?       bitCount ( temp 2-component vector of int)
-0:?         Constant:
-0:?           7 (const int)
-0:?           3 (const int)
+0:85      bitCount ( temp 2-component vector of int)
+0:85        Constant:
+0:85          7 (const int)
+0:85          3 (const int)
 0:86      degrees ( temp 2-component vector of float)
 0:86        'inF0' ( in 2-component vector of float)
 0:87      distance ( temp float)
@@ -1659,10 +1659,10 @@ Shader version: 500
 0:116        'inF1' ( in 2-component vector of float)
 0:116        Constant:
 0:116          2.000000
-0:?       bitFieldReverse ( temp 2-component vector of int)
-0:?         Constant:
-0:?           1 (const int)
-0:?           2 (const int)
+0:117      bitFieldReverse ( temp 2-component vector of int)
+0:117        Constant:
+0:117          1 (const int)
+0:117          2 (const int)
 0:118      roundEven ( temp 2-component vector of float)
 0:118        'inF0' ( in 2-component vector of float)
 0:119      inverse sqrt ( temp 2-component vector of float)
@@ -1704,9 +1704,9 @@ Shader version: 500
 0:131      trunc ( temp 2-component vector of float)
 0:131        'inF0' ( in 2-component vector of float)
 0:134      Branch: Return with expression
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
+0:134        Constant:
+0:134          1.000000
+0:134          2.000000
 0:138  Function Definition: VertexShaderFunction3(vf3;vf3;vf3;vu3;vu3; ( temp 3-component vector of float)
 0:138    Function Parameters: 
 0:138      'inF0' ( in 3-component vector of float)
@@ -1748,11 +1748,11 @@ Shader version: 500
 0:152        'inF0' ( in 3-component vector of float)
 0:153      hyp. cosine ( temp 3-component vector of float)
 0:153        'inF0' ( in 3-component vector of float)
-0:?       bitCount ( temp 3-component vector of int)
-0:?         Constant:
-0:?           7 (const int)
-0:?           3 (const int)
-0:?           5 (const int)
+0:154      bitCount ( temp 3-component vector of int)
+0:154        Constant:
+0:154          7 (const int)
+0:154          3 (const int)
+0:154          5 (const int)
 0:155      cross-product ( temp 3-component vector of float)
 0:155        'inF0' ( in 3-component vector of float)
 0:155        'inF1' ( in 3-component vector of float)
@@ -1828,11 +1828,11 @@ Shader version: 500
 0:186        'inF1' ( in 3-component vector of float)
 0:186        Constant:
 0:186          2.000000
-0:?       bitFieldReverse ( temp 3-component vector of int)
-0:?         Constant:
-0:?           1 (const int)
-0:?           2 (const int)
-0:?           3 (const int)
+0:187      bitFieldReverse ( temp 3-component vector of int)
+0:187        Constant:
+0:187          1 (const int)
+0:187          2 (const int)
+0:187          3 (const int)
 0:188      roundEven ( temp 3-component vector of float)
 0:188        'inF0' ( in 3-component vector of float)
 0:189      inverse sqrt ( temp 3-component vector of float)
@@ -1874,10 +1874,10 @@ Shader version: 500
 0:201      trunc ( temp 3-component vector of float)
 0:201        'inF0' ( in 3-component vector of float)
 0:204      Branch: Return with expression
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
-0:?           3.000000
+0:204        Constant:
+0:204          1.000000
+0:204          2.000000
+0:204          3.000000
 0:208  Function Definition: VertexShaderFunction4(vf4;vf4;vf4;vu4;vu4; ( temp 4-component vector of float)
 0:208    Function Parameters: 
 0:208      'inF0' ( in 4-component vector of float)
@@ -1919,12 +1919,12 @@ Shader version: 500
 0:222        'inF0' ( in 4-component vector of float)
 0:223      hyp. cosine ( temp 4-component vector of float)
 0:223        'inF0' ( in 4-component vector of float)
-0:?       bitCount ( temp 4-component vector of int)
-0:?         Constant:
-0:?           7 (const int)
-0:?           3 (const int)
-0:?           5 (const int)
-0:?           2 (const int)
+0:224      bitCount ( temp 4-component vector of int)
+0:224        Constant:
+0:224          7 (const int)
+0:224          3 (const int)
+0:224          5 (const int)
+0:224          2 (const int)
 0:225      degrees ( temp 4-component vector of float)
 0:225        'inF0' ( in 4-component vector of float)
 0:226      distance ( temp float)
@@ -2017,12 +2017,12 @@ Shader version: 500
 0:256        'inF1' ( in 4-component vector of float)
 0:256        Constant:
 0:256          2.000000
-0:?       bitFieldReverse ( temp 4-component vector of int)
-0:?         Constant:
-0:?           1 (const int)
-0:?           2 (const int)
-0:?           3 (const int)
-0:?           4 (const int)
+0:257      bitFieldReverse ( temp 4-component vector of int)
+0:257        Constant:
+0:257          1 (const int)
+0:257          2 (const int)
+0:257          3 (const int)
+0:257          4 (const int)
 0:258      roundEven ( temp 4-component vector of float)
 0:258        'inF0' ( in 4-component vector of float)
 0:259      inverse sqrt ( temp 4-component vector of float)
@@ -2064,11 +2064,11 @@ Shader version: 500
 0:271      trunc ( temp 4-component vector of float)
 0:271        'inF0' ( in 4-component vector of float)
 0:274      Branch: Return with expression
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
-0:?           3.000000
-0:?           4.000000
+0:274        Constant:
+0:274          1.000000
+0:274          2.000000
+0:274          3.000000
+0:274          4.000000
 0:331  Function Definition: VertexShaderFunction2x2(mf22;mf22;mf22; ( temp 2X2 matrix of float)
 0:331    Function Parameters: 
 0:331      'inF0' ( in 2X2 matrix of float)
@@ -2193,11 +2193,11 @@ Shader version: 500
 0:333      trunc ( temp 2X2 matrix of float)
 0:333        'inF0' ( in 2X2 matrix of float)
 0:336      Branch: Return with expression
-0:?         Constant:
-0:?           2.000000
-0:?           2.000000
-0:?           2.000000
-0:?           2.000000
+0:336        Constant:
+0:336          2.000000
+0:336          2.000000
+0:336          2.000000
+0:336          2.000000
 0:340  Function Definition: VertexShaderFunction3x3(mf33;mf33;mf33; ( temp 3X3 matrix of float)
 0:340    Function Parameters: 
 0:340      'inF0' ( in 3X3 matrix of float)
@@ -2322,16 +2322,16 @@ Shader version: 500
 0:342      trunc ( temp 3X3 matrix of float)
 0:342        'inF0' ( in 3X3 matrix of float)
 0:345      Branch: Return with expression
-0:?         Constant:
-0:?           3.000000
-0:?           3.000000
-0:?           3.000000
-0:?           3.000000
-0:?           3.000000
-0:?           3.000000
-0:?           3.000000
-0:?           3.000000
-0:?           3.000000
+0:345        Constant:
+0:345          3.000000
+0:345          3.000000
+0:345          3.000000
+0:345          3.000000
+0:345          3.000000
+0:345          3.000000
+0:345          3.000000
+0:345          3.000000
+0:345          3.000000
 0:349  Function Definition: VertexShaderFunction4x4(mf44;mf44;mf44; ( temp 4X4 matrix of float)
 0:349    Function Parameters: 
 0:349      'inF0' ( in 4X4 matrix of float)
@@ -2456,23 +2456,23 @@ Shader version: 500
 0:351      trunc ( temp 4X4 matrix of float)
 0:351        'inF0' ( in 4X4 matrix of float)
 0:354      Branch: Return with expression
-0:?         Constant:
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
+0:354        Constant:
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
 0:372  Function Definition: TestGenMul2(f1;f1;vf2;vf2;mf22;mf22; ( temp void)
 0:372    Function Parameters: 
 0:372      'inF0' ( in float)
@@ -2780,7 +2780,7 @@ Shader version: 500
 
 Validation failed
 // Module Version 10000
-// Generated by (magic number): 80007
+// Generated by (magic number): 8000a
 // Id's are bound by 1225
 
                               Capability Shader
@@ -3004,14 +3004,14 @@ Validation failed
         15(inU1):      9(ptr) FunctionParameter
               17:             Label
              131:    6(float) Load 11(inF0)
-             134:   132(bool) FOrdNotEqual 131 133
+             134:   132(bool) FUnordNotEqual 131 133
              135:   132(bool) All 134
              136:    6(float) Load 11(inF0)
              137:    6(float) ExtInst 1(GLSL.std.450) 4(FAbs) 136
              138:    6(float) Load 11(inF0)
              139:    6(float) ExtInst 1(GLSL.std.450) 17(Acos) 138
              140:    6(float) Load 11(inF0)
-             141:   132(bool) FOrdNotEqual 140 133
+             141:   132(bool) FUnordNotEqual 140 133
              142:   132(bool) Any 141
              143:    6(float) Load 11(inF0)
              144:    6(float) ExtInst 1(GLSL.std.450) 16(Asin) 143
@@ -3132,14 +3132,14 @@ Validation failed
         33(inU1):     27(ptr) FunctionParameter
               35:             Label
              252:   24(fvec2) Load 29(inF0)
-             255:  253(bvec2) FOrdNotEqual 252 254
+             255:  253(bvec2) FUnordNotEqual 252 254
              256:   132(bool) All 255
              257:   24(fvec2) Load 29(inF0)
              258:   24(fvec2) ExtInst 1(GLSL.std.450) 4(FAbs) 257
              259:   24(fvec2) Load 29(inF0)
              260:   24(fvec2) ExtInst 1(GLSL.std.450) 17(Acos) 259
              261:   24(fvec2) Load 29(inF0)
-             262:  253(bvec2) FOrdNotEqual 261 254
+             262:  253(bvec2) FUnordNotEqual 261 254
              263:   132(bool) Any 262
              264:   24(fvec2) Load 29(inF0)
              265:   24(fvec2) ExtInst 1(GLSL.std.450) 16(Asin) 264
@@ -3275,14 +3275,14 @@ Validation failed
         45(inU1):     39(ptr) FunctionParameter
               47:             Label
              395:   36(fvec3) Load 41(inF0)
-             398:  396(bvec3) FOrdNotEqual 395 397
+             398:  396(bvec3) FUnordNotEqual 395 397
              399:   132(bool) All 398
              400:   36(fvec3) Load 41(inF0)
              401:   36(fvec3) ExtInst 1(GLSL.std.450) 4(FAbs) 400
              402:   36(fvec3) Load 41(inF0)
              403:   36(fvec3) ExtInst 1(GLSL.std.450) 17(Acos) 402
              404:   36(fvec3) Load 41(inF0)
-             405:  396(bvec3) FOrdNotEqual 404 397
+             405:  396(bvec3) FUnordNotEqual 404 397
              406:   132(bool) Any 405
              407:   36(fvec3) Load 41(inF0)
              408:   36(fvec3) ExtInst 1(GLSL.std.450) 16(Asin) 407
@@ -3421,14 +3421,14 @@ Validation failed
         57(inU1):     51(ptr) FunctionParameter
               59:             Label
              540:   48(fvec4) Load 53(inF0)
-             543:  541(bvec4) FOrdNotEqual 540 542
+             543:  541(bvec4) FUnordNotEqual 540 542
              544:   132(bool) All 543
              545:   48(fvec4) Load 53(inF0)
              546:   48(fvec4) ExtInst 1(GLSL.std.450) 4(FAbs) 545
              547:   48(fvec4) Load 53(inF0)
              548:   48(fvec4) ExtInst 1(GLSL.std.450) 17(Acos) 547
              549:   48(fvec4) Load 53(inF0)
-             550:  541(bvec4) FOrdNotEqual 549 542
+             550:  541(bvec4) FUnordNotEqual 549 542
              551:   132(bool) Any 550
              552:   48(fvec4) Load 53(inF0)
              553:   48(fvec4) ExtInst 1(GLSL.std.450) 16(Asin) 552
@@ -3572,14 +3572,14 @@ Validation failed
         65(inF2):     61(ptr) FunctionParameter
               67:             Label
              695:          60 Load 63(inF0)
-             697:         696 FOrdNotEqual 695 133
+             697:         696 FUnordNotEqual 695 133
              698:   132(bool) All 697
              699:          60 Load 63(inF0)
              700:          60 ExtInst 1(GLSL.std.450) 4(FAbs) 699
              701:          60 Load 63(inF0)
              702:          60 ExtInst 1(GLSL.std.450) 17(Acos) 701
              703:          60 Load 63(inF0)
-             704:         696 FOrdNotEqual 703 133
+             704:         696 FUnordNotEqual 703 133
              705:   132(bool) Any 704
              706:          60 Load 63(inF0)
              707:          60 ExtInst 1(GLSL.std.450) 16(Asin) 706
@@ -3691,14 +3691,14 @@ Validation failed
         73(inF2):     69(ptr) FunctionParameter
               75:             Label
              810:          68 Load 71(inF0)
-             812:         811 FOrdNotEqual 810 133
+             812:         811 FUnordNotEqual 810 133
              813:   132(bool) All 812
              814:          68 Load 71(inF0)
              815:          68 ExtInst 1(GLSL.std.450) 4(FAbs) 814
              816:          68 Load 71(inF0)
              817:          68 ExtInst 1(GLSL.std.450) 17(Acos) 816
              818:          68 Load 71(inF0)
-             819:         811 FOrdNotEqual 818 133
+             819:         811 FUnordNotEqual 818 133
              820:   132(bool) Any 819
              821:          68 Load 71(inF0)
              822:          68 ExtInst 1(GLSL.std.450) 16(Asin) 821
@@ -3813,14 +3813,14 @@ Validation failed
         81(inF2):     77(ptr) FunctionParameter
               83:             Label
              928:          76 Load 79(inF0)
-             930:         929 FOrdNotEqual 928 133
+             930:         929 FUnordNotEqual 928 133
              931:   132(bool) All 930
              932:          76 Load 79(inF0)
              933:          76 ExtInst 1(GLSL.std.450) 4(FAbs) 932
              934:          76 Load 79(inF0)
              935:          76 ExtInst 1(GLSL.std.450) 17(Acos) 934
              936:          76 Load 79(inF0)
-             937:         929 FOrdNotEqual 936 133
+             937:         929 FUnordNotEqual 936 133
              938:   132(bool) Any 937
              939:          76 Load 79(inF0)
              940:          76 ExtInst 1(GLSL.std.450) 16(Asin) 939

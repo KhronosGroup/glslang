@@ -1,10 +1,14 @@
 150.vert
 ERROR: 0:26: 'a' : cannot redeclare a user-block member array 
+ERROR: 0:28: 'double' : Reserved word. 
+ERROR: 0:28: 'double' : not supported for this version or the enabled extensions 
+ERROR: 0:28: 'vertex-shader `double` type input' : not supported for this version or the enabled extensions 
 ERROR: 0:3001: '#error' : line of this error should be 3001  
-ERROR: 2 compilation errors.  No code generated.
+ERROR: 5 compilation errors.  No code generated.
 
 
 Shader version: 150
+Requested GL_ARB_vertex_attrib_64bit
 ERROR: node is still EOpNull!
 0:13  Function Definition: main( ( global void)
 0:13    Function Parameters: 
@@ -43,6 +47,20 @@ ERROR: node is still EOpNull!
 0:?     'iv4' ( in 4-component vector of float)
 0:?     'ps' ( uniform float)
 0:?     'anon@1' (layout( column_major shared) uniform block{layout( column_major shared) uniform unsized 1-element array of int a})
+0:?     'dvarerr' ( in double)
+0:?     'dvar' ( in double)
+0:?     'dv2var' ( in 2-component vector of double)
+0:?     'dv3var' ( in 3-component vector of double)
+0:?     'dv4var' ( in 4-component vector of double)
+0:?     'dmat2var' ( in 2X2 matrix of double)
+0:?     'dmat3var' ( in 3X3 matrix of double)
+0:?     'dmat4var' ( in 4X4 matrix of double)
+0:?     'dmat23var' ( in 2X3 matrix of double)
+0:?     'dmat24var' ( in 2X4 matrix of double)
+0:?     'dmat32var' ( in 3X2 matrix of double)
+0:?     'dmat34var' ( in 3X4 matrix of double)
+0:?     'dmat42var' ( in 4X2 matrix of double)
+0:?     'dmat43var' ( in 4X3 matrix of double)
 0:?     'gl_VertexID' ( gl_VertexId int VertexId)
 0:?     'gl_InstanceID' ( gl_InstanceId int InstanceId)
 
@@ -52,6 +70,7 @@ Linked vertex stage:
 ERROR: Linking vertex stage: Can only use one of gl_ClipDistance or gl_ClipVertex (gl_ClipDistance is preferred)
 
 Shader version: 150
+Requested GL_ARB_vertex_attrib_64bit
 ERROR: node is still EOpNull!
 0:13  Function Definition: main( ( global void)
 0:13    Function Parameters: 
@@ -90,6 +109,20 @@ ERROR: node is still EOpNull!
 0:?     'iv4' ( in 4-component vector of float)
 0:?     'ps' ( uniform float)
 0:?     'anon@1' (layout( column_major shared) uniform block{layout( column_major shared) uniform 1-element array of int a})
+0:?     'dvarerr' ( in double)
+0:?     'dvar' ( in double)
+0:?     'dv2var' ( in 2-component vector of double)
+0:?     'dv3var' ( in 3-component vector of double)
+0:?     'dv4var' ( in 4-component vector of double)
+0:?     'dmat2var' ( in 2X2 matrix of double)
+0:?     'dmat3var' ( in 3X3 matrix of double)
+0:?     'dmat4var' ( in 4X4 matrix of double)
+0:?     'dmat23var' ( in 2X3 matrix of double)
+0:?     'dmat24var' ( in 2X4 matrix of double)
+0:?     'dmat32var' ( in 3X2 matrix of double)
+0:?     'dmat34var' ( in 3X4 matrix of double)
+0:?     'dmat42var' ( in 4X2 matrix of double)
+0:?     'dmat43var' ( in 4X3 matrix of double)
 0:?     'gl_VertexID' ( gl_VertexId int VertexId)
 0:?     'gl_InstanceID' ( gl_InstanceId int InstanceId)
 

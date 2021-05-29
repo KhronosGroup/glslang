@@ -37,6 +37,17 @@
 #ifndef _COMMON_INCLUDED_
 #define _COMMON_INCLUDED_
 
+#include <algorithm>
+#include <cassert>
+#include <cstdio>
+#include <cstdlib>
+#include <list>
+#include <map>
+#include <set>
+#include <string>
+#include <unordered_map>
+#include <unordered_set>
+#include <vector>
 
 #if defined(__ANDROID__) || (defined(_MSC_VER) && _MSC_VER < 1700)
 #include <sstream>
@@ -92,18 +103,6 @@ std::string to_string(const T& val) {
     #pragma warning(disable : 4514) // unused inline method
     #pragma warning(disable : 4201) // nameless union
 #endif
-
-#include <set>
-#include <unordered_set>
-#include <vector>
-#include <map>
-#include <unordered_map>
-#include <list>
-#include <algorithm>
-#include <string>
-#include <cstdio>
-#include <cstdlib>
-#include <cassert>
 
 #include "PoolAlloc.h"
 
@@ -285,6 +284,18 @@ template <class T> bool IsMultipleOfPow2(T number, int powerOf2)
 {
     assert(IsPow2(powerOf2));
     return ! (number & (powerOf2 - 1));
+}
+
+// Returns log2 of an integer power of 2.
+// T should be integral.
+template <class T> int IntLog2(T n)
+{
+    assert(IsPow2(n));
+    int result = 0;
+    while ((T(1) << result) != n) {
+      result++;
+    }
+    return result;
 }
 
 } // end namespace glslang

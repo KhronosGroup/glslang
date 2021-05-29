@@ -936,7 +936,6 @@ ERROR: Linking tessellation control stage: can't handle multiple entry points pe
 ERROR: Linking tessellation control stage: Multiple function bodies in multiple compilation units for the same signature in the same stage:
     main(
 ERROR: Linking tessellation control stage: can't handle multiple entry points per stage
-ERROR: Linking tessellation control stage: Contradictory layout vertices values
 ERROR: Linking tessellation control stage: Multiple function bodies in multiple compilation units for the same signature in the same stage:
     main(
 ERROR: Linking tessellation control stage: Multiple function bodies in multiple compilation units for the same signature in the same stage:
@@ -961,7 +960,6 @@ ERROR: Linking tessellation evaluation stage: can't handle multiple entry points
 ERROR: Linking tessellation evaluation stage: Multiple function bodies in multiple compilation units for the same signature in the same stage:
     main(
 ERROR: Linking tessellation evaluation stage: can't handle multiple entry points per stage
-ERROR: Linking tessellation evaluation stage: Contradictory input layout primitives
 ERROR: Linking tessellation evaluation stage: Contradictory input vertex spacing
 ERROR: Linking tessellation evaluation stage: Contradictory triangle ordering
 ERROR: Linking tessellation evaluation stage: Multiple function bodies in multiple compilation units for the same signature in the same stage:

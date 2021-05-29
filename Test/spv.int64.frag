@@ -228,6 +228,14 @@ void builtinFuncs()
     // notEqual()
     bv    = notEqual(u64v, u64vec3(u64));
     bv.xy = notEqual(i64v, i64vec2(i64));
+
+    // findLSB()
+    i64   = findLSB(u64);
+    i64v  = findLSB(u64vec2(u64));
+
+    // bitCount()
+    i64   = bitCount(u64);
+    i64v  = bitCount(u64vec2(u64));
 }
 
 // Type conversion for specialization constant

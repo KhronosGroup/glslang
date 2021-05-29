@@ -51,6 +51,18 @@ float simplePaste(ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF01234567
 // non-identifiers
 int a = simplePaste(11,12);
 
+// should work in #if as well
+#define seahorse 1
+#define sealion 0
+#define marine_animal(suffix) (sea ## suffix)
+
+#if marine_animal(horse) // should pass
+uniform float seahorse_var;
+#endif
+#if !marine_animal(lion) // should pass
+uniform float sealion_var;
+#endif
+
 // operators
 #define MAKE_OP(L, R) L ## R
 const int aop = 10;

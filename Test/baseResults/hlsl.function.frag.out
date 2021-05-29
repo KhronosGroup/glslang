@@ -26,14 +26,14 @@ ERROR: node is still EOpNull!
 0:12  Function Definition: fun4(u1;u1; ( temp 4-component vector of float)
 0:12    Function Parameters: 
 0:12      'id1' ( in uint)
-0:12      'id2' ( in uint)
+0:12      'id2' ( uniform uint)
 0:?     Sequence
 0:13      Branch: Return with expression
 0:13        Construct vec4 ( temp 4-component vector of float)
 0:13          Convert uint to float ( temp float)
 0:13            component-wise multiply ( temp uint)
 0:13              'id1' ( in uint)
-0:13              'id2' ( in uint)
+0:13              'id2' ( uniform uint)
 0:17  Function Definition: fun1(i1; ( temp 4-component vector of float)
 0:17    Function Parameters: 
 0:17      'index' ( in int)
@@ -84,14 +84,14 @@ ERROR: node is still EOpNull!
 0:12  Function Definition: fun4(u1;u1; ( temp 4-component vector of float)
 0:12    Function Parameters: 
 0:12      'id1' ( in uint)
-0:12      'id2' ( in uint)
+0:12      'id2' ( uniform uint)
 0:?     Sequence
 0:13      Branch: Return with expression
 0:13        Construct vec4 ( temp 4-component vector of float)
 0:13          Convert uint to float ( temp float)
 0:13            component-wise multiply ( temp uint)
 0:13              'id1' ( in uint)
-0:13              'id2' ( in uint)
+0:13              'id2' ( uniform uint)
 0:17  Function Definition: fun1(i1; ( temp 4-component vector of float)
 0:17    Function Parameters: 
 0:17      'index' ( in int)

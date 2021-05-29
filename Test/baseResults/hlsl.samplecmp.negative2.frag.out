@@ -13,14 +13,14 @@ ERROR: node is still EOpNull!
  ( temp 4-component vector of float)
 0:7        'g_shadowTex' ( uniform texture2D)
 0:7        'g_shadowSampler' ( uniform sampler)
-0:?         Constant:
-0:?           0.000000
-0:?           0.000000
 0:7        Constant:
 0:7          0.000000
-0:?         Constant:
-0:?           0 (const int)
-0:?           0 (const int)
+0:7          0.000000
+0:7        Constant:
+0:7          0.000000
+0:7        Constant:
+0:7          0 (const int)
+0:7          0 (const int)
 0:9      Branch: Return with expression
 0:9        Constant:
 0:9          0.000000
@@ -52,14 +52,14 @@ ERROR: node is still EOpNull!
  ( temp 4-component vector of float)
 0:7        'g_shadowTex' ( uniform texture2D)
 0:7        'g_shadowSampler' ( uniform sampler)
-0:?         Constant:
-0:?           0.000000
-0:?           0.000000
 0:7        Constant:
 0:7          0.000000
-0:?         Constant:
-0:?           0 (const int)
-0:?           0 (const int)
+0:7          0.000000
+0:7        Constant:
+0:7          0.000000
+0:7        Constant:
+0:7          0 (const int)
+0:7          0 (const int)
 0:9      Branch: Return with expression
 0:9        Constant:
 0:9          0.000000
