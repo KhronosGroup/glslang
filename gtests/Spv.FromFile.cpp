@@ -443,6 +443,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.specConstant.int8.comp",
         "spv.storageBuffer.vert",
         "spv.terminate.frag",
+        "spv.subgroupUniformControlFlow.vert",
         "spv.precise.tese",
         "spv.precise.tesc",
         "spv.viewportindex.tese",

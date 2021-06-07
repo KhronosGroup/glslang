@@ -251,6 +251,7 @@ void TParseVersions::initializeExtensionBehavior()
 
     extensionBehavior[E_GL_EXT_shader_16bit_storage]                    = EBhDisable;
     extensionBehavior[E_GL_EXT_shader_8bit_storage]                     = EBhDisable;
+    extensionBehavior[E_GL_EXT_subgroup_uniform_control_flow]           = EBhDisable;
 
     // #line and #include
     extensionBehavior[E_GL_GOOGLE_cpp_style_line_directive]          = EBhDisable;
@@ -415,6 +416,7 @@ void TParseVersions::getPreamble(std::string& preamble)
             }
             if (version >= 310) {
                 preamble += "#define GL_EXT_null_initializer 1\n";
+                preamble += "#define GL_EXT_subgroup_uniform_control_flow 1\n";
             }
 
     } else { // !isEsProfile()
@@ -546,6 +548,7 @@ void TParseVersions::getPreamble(std::string& preamble)
         }
         if (version >= 140) {
             preamble += "#define GL_EXT_null_initializer 1\n";
+            preamble += "#define GL_EXT_subgroup_uniform_control_flow 1\n";
         }
 #endif // GLSLANG_WEB
     }

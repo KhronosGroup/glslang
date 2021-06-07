@@ -188,6 +188,7 @@ const char* ExecutionModeString(int mode)
     case ExecutionModeRoundingModeRTE:          return "RoundingModeRTE";
     case ExecutionModeRoundingModeRTZ:          return "RoundingModeRTZ";
     case ExecutionModeStencilRefReplacingEXT:   return "StencilRefReplacingEXT";
+    case ExecutionModeSubgroupUniformControlFlowKHR: return "SubgroupUniformControlFlow";
 
     case ExecutionModeOutputLinesNV:            return "OutputLinesNV";
     case ExecutionModeOutputPrimitivesNV:       return "OutputPrimitivesNV";
