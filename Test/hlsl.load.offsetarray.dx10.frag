@@ -39,24 +39,29 @@ uniform int2  c2;
 uniform int3  c3;
 uniform int4  c4;
 
-uniform int   o1;
-uniform int2  o2;
-uniform int3  o3;
-uniform int4  o4;
+int getOffset1()
+{
+   return 1;
+}
+
+int2 getOffset2()
+{
+   return int2(1, 1);
+}
 
 PS_OUTPUT main()
 {
    PS_OUTPUT psout;
 
    // 1DArray
-   g_tTex1df4a.Load(c3, o1);
-   g_tTex1di4a.Load(c3, o1);
-   g_tTex1du4a.Load(c3, o1);
+   g_tTex1df4a.Load(c3, getOffset1());
+   g_tTex1di4a.Load(c3, getOffset1());
+   g_tTex1du4a.Load(c3, getOffset1());
 
    // 2DArray
-   g_tTex2df4a.Load(c4, o2);
-   g_tTex2di4a.Load(c4, o2);
-   g_tTex2du4a.Load(c4, o2);
+   g_tTex2df4a.Load(c4, getOffset2());
+   g_tTex2di4a.Load(c4, getOffset2());
+   g_tTex2du4a.Load(c4, getOffset2());
 
    // TODO:
    // Load, SampleIndex
