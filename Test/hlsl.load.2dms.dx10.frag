@@ -19,10 +19,10 @@ uniform int2  c2;
 uniform int3  c3;
 uniform int4  c4;
 
-uniform int   o1;
-uniform int2  o2;
-uniform int3  o3;
-uniform int4  o4;
+int2 getOffset()
+{
+   return int2(1, 1);
+}
 
 PS_OUTPUT main()
 {
@@ -34,9 +34,9 @@ PS_OUTPUT main()
    g_tTex2dmsu4.Load(c2, 3);
 
    // 2DMS, offset
-   g_tTex2dmsf4.Load(c2, 3, o2);
-   g_tTex2dmsi4.Load(c2, 3, o2);
-   g_tTex2dmsu4.Load(c2, 3, o2);
+   g_tTex2dmsf4.Load(c2, 3, getOffset());
+   g_tTex2dmsi4.Load(c2, 3, getOffset());
+   g_tTex2dmsu4.Load(c2, 3, getOffset());
 
    // 2DMSArray, no offset
    g_tTex2dmsf4a.Load(c3, 3);
@@ -44,9 +44,9 @@ PS_OUTPUT main()
    g_tTex2dmsu4a.Load(c3, 3);
 
    // 2DMSArray, offset
-   g_tTex2dmsf4a.Load(c3, 3, o2);
-   g_tTex2dmsi4a.Load(c3, 3, o2);
-   g_tTex2dmsu4a.Load(c3, 3, o2);
+   g_tTex2dmsf4a.Load(c3, 3, getOffset());
+   g_tTex2dmsi4a.Load(c3, 3, getOffset());
+   g_tTex2dmsu4a.Load(c3, 3, getOffset());
 
    psout.Color = 1.0;
    psout.Depth = 1.0;

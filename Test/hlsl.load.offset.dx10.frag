@@ -39,29 +39,39 @@ uniform int2  c2;
 uniform int3  c3;
 uniform int4  c4;
 
-uniform int   o1;
-uniform int2  o2;
-uniform int3  o3;
-uniform int4  o4;
+int getOffset1()
+{
+   return 1;
+}
+
+int2 getOffset2()
+{
+   return int2(1, 1);
+}
+
+int3 getOffset3()
+{
+   return int3(1, 1, 1);
+}
 
 PS_OUTPUT main()
 {
    PS_OUTPUT psout;
 
    // 1D
-   g_tTex1df4.Load(c2, o1);
-   g_tTex1di4.Load(c2, o1);
-   g_tTex1du4.Load(c2, o1);
+   g_tTex1df4.Load(c2, getOffset1());
+   g_tTex1di4.Load(c2, getOffset1());
+   g_tTex1du4.Load(c2, getOffset1());
 
    // 2D
-   g_tTex2df4.Load(c3, o2);
-   g_tTex2di4.Load(c3, o2);
-   g_tTex2du4.Load(c3, o2);
+   g_tTex2df4.Load(c3, getOffset2());
+   g_tTex2di4.Load(c3, getOffset2());
+   g_tTex2du4.Load(c3, getOffset2());
 
    // 3D
-   g_tTex3df4.Load(c4, o3);
-   g_tTex3di4.Load(c4, o3);
-   g_tTex3du4.Load(c4, o3);
+   g_tTex3df4.Load(c4, getOffset3());
+   g_tTex3di4.Load(c4, getOffset3());
+   g_tTex3du4.Load(c4, getOffset3());
 
    // Offset has no Cube or CubeArray forms
 
