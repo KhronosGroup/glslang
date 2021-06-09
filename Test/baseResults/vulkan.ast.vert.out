@@ -102,18 +102,18 @@ Shader version: 450
 0:38            2 (const int)
 0:38          'sci2' ( specialization-constant const highp int)
 0:38            2 (const int)
-0:40      Construct vec2 ( temp 2-component vector of float)
+0:40      Construct vec2 ( specialization-constant const 2-component vector of float)
 0:40        'scf1' ( specialization-constant const highp float)
 0:40          1.000000
 0:40        'scf1' ( specialization-constant const highp float)
 0:40          1.000000
 0:41      Construct vec2 ( temp 2-element array of 2-component vector of float)
-0:41        Construct vec2 ( temp 2-component vector of float)
+0:41        Construct vec2 ( specialization-constant const 2-component vector of float)
 0:41          'scf1' ( specialization-constant const highp float)
 0:41            1.000000
 0:41          'scf1' ( specialization-constant const highp float)
 0:41            1.000000
-0:41        Construct vec2 ( temp 2-component vector of float)
+0:41        Construct vec2 ( specialization-constant const 2-component vector of float)
 0:41          'scf1' ( specialization-constant const highp float)
 0:41            1.000000
 0:41          'scf1' ( specialization-constant const highp float)
@@ -233,18 +233,18 @@ Shader version: 450
 0:38            2 (const int)
 0:38          'sci2' ( specialization-constant const highp int)
 0:38            2 (const int)
-0:40      Construct vec2 ( temp 2-component vector of float)
+0:40      Construct vec2 ( specialization-constant const 2-component vector of float)
 0:40        'scf1' ( specialization-constant const highp float)
 0:40          1.000000
 0:40        'scf1' ( specialization-constant const highp float)
 0:40          1.000000
 0:41      Construct vec2 ( temp 2-element array of 2-component vector of float)
-0:41        Construct vec2 ( temp 2-component vector of float)
+0:41        Construct vec2 ( specialization-constant const 2-component vector of float)
 0:41          'scf1' ( specialization-constant const highp float)
 0:41            1.000000
 0:41          'scf1' ( specialization-constant const highp float)
 0:41            1.000000
-0:41        Construct vec2 ( temp 2-component vector of float)
+0:41        Construct vec2 ( specialization-constant const 2-component vector of float)
 0:41          'scf1' ( specialization-constant const highp float)
 0:41            1.000000
 0:41          'scf1' ( specialization-constant const highp float)
@@ -303,6 +303,9 @@ Shader version: 450
               41:     14(int) Constant 2
               42:             TypeArray 37(ivec2) 41
               44:             TypeVector 6(float) 2
+              45:   44(fvec2) SpecConstantComposite 7(scf1) 7(scf1)
+              46:   44(fvec2) SpecConstantComposite 7(scf1) 7(scf1)
+              47:   44(fvec2) SpecConstantComposite 7(scf1) 7(scf1)
               48:             TypeArray 44(fvec2) 41
          4(main):           2 Function None 3
                5:             Label
@@ -317,9 +320,6 @@ Shader version: 450
               32:     8(bool) FOrdGreaterThan 7(scf1) 7(scf1)
               34:     8(bool) FUnordNotEqual 7(scf1) 7(scf1)
               43:          42 CompositeConstruct 39 40
-              45:   44(fvec2) CompositeConstruct 7(scf1) 7(scf1)
-              46:   44(fvec2) CompositeConstruct 7(scf1) 7(scf1)
-              47:   44(fvec2) CompositeConstruct 7(scf1) 7(scf1)
               49:          48 CompositeConstruct 46 47
                               Return
                               FunctionEnd
