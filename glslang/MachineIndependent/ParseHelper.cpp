@@ -3115,6 +3115,7 @@ bool TParseContext::constructorError(const TSourceLoc& loc, TIntermNode* node, T
     bool matrixInMatrix = false;
     bool arrayArg = false;
     bool floatArgument = false;
+    bool intArgument = false;
     for (int arg = 0; arg < function.getParamCount(); ++arg) {
         if (function[arg].type->isArray()) {
             if (function[arg].type->isUnsizedArray()) {
@@ -3145,6 +3146,8 @@ bool TParseContext::constructorError(const TSourceLoc& loc, TIntermNode* node, T
             specConstType = true;
         if (function[arg].type->isFloatingDomain())
             floatArgument = true;
+        if (function[arg].type->isIntegerDomain())
+            intArgument = true;
         if (type.isStruct()) {
             if (function[arg].type->contains16BitFloat()) {
                 requireFloat16Arithmetic(loc, "constructor", "can't construct structure containing 16-bit type");
@@ -3250,6 +3253,15 @@ bool TParseContext::constructorError(const TSourceLoc& loc, TIntermNode* node, T
                 // and aren't making an array.
                 makeSpecConst = ! floatArgument && ! type.isArray();
                 break;
+
+            case EOpConstructVec2:
+            case EOpConstructVec3:
+            case EOpConstructVec4:
+                // This was the list of valid ones, if they aren't converting from int
+                // and aren't making an array.
+                makeSpecConst = ! intArgument && !type.isArray();
+                break;
+
             default:
                 // anything else wasn't white-listed in the spec as a conversion
                 makeSpecConst = false;
