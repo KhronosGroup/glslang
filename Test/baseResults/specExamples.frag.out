@@ -16,6 +16,7 @@ ERROR: 0:102: 'color' : redefinition
 ERROR: 0:112: 'redeclaration' : all redeclarations must use the same depth layout on gl_FragDepth
 ERROR: 0:118: 'redeclaration' : all redeclarations must use the same depth layout on gl_FragDepth
 ERROR: 0:121: 'redeclaration' : all redeclarations must use the same depth layout on gl_FragDepth
+ERROR: 0:123: 'gl_Color' : identifiers starting with "gl_" are reserved 
 ERROR: 0:172: 'x' : undeclared identifier 
 ERROR: 0:172: '[]' : scalar integer expression required 
 ERROR: 0:175: 'x' : undeclared identifier 
@@ -37,7 +38,7 @@ ERROR: 0:226: 'in' : not allowed in nested scope
 ERROR: 0:227: 'in' : not allowed in nested scope 
 ERROR: 0:228: 'in' : not allowed in nested scope 
 ERROR: 0:232: 'out' : not allowed in nested scope 
-ERROR: 38 compilation errors.  No code generated.
+ERROR: 39 compilation errors.  No code generated.
 
 
 Shader version: 430
@@ -320,7 +321,7 @@ ERROR: node is still EOpNull!
 0:?     'factor' (layout( location=3 index=1) out 4-component vector of float)
 0:?     'colors' (layout( location=2) out 3-element array of 4-component vector of float)
 0:?     'gl_FragDepth' ( gl_FragDepth float FragDepth)
-0:?     'anon@2' ( in block{ in float FogFragCoord gl_FogFragCoord,  in unsized 1-element array of 4-component vector of float TexCoord gl_TexCoord,  flat in 4-component vector of float Color gl_Color,  in 4-component vector of float SecondaryColor gl_SecondaryColor})
+0:?     'gl_Color' ( flat in 4-component vector of float)
 
 
 Linked fragment stage:
@@ -595,5 +596,5 @@ ERROR: node is still EOpNull!
 0:?     'factor' (layout( location=3 index=1) out 4-component vector of float)
 0:?     'colors' (layout( location=2) out 3-element array of 4-component vector of float)
 0:?     'gl_FragDepth' ( gl_FragDepth float FragDepth)
-0:?     'anon@2' ( in block{ in float FogFragCoord gl_FogFragCoord,  in 1-element array of 4-component vector of float TexCoord gl_TexCoord,  flat in 4-component vector of float Color gl_Color,  in 4-component vector of float SecondaryColor gl_SecondaryColor})
+0:?     'gl_Color' ( flat in 4-component vector of float)
 
