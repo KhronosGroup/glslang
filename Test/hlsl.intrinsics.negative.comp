@@ -1,4 +1,4 @@
-float ComputeShaderFunctionS(float inF0, float inF1, float inF2, int inI0)
+void ComputeShaderFunctionS(float inF0, float inF1, float inF2, int inI0)
 {
     uint out_u1;
 
@@ -49,20 +49,16 @@ float ComputeShaderFunctionS(float inF0, float inF1, float inF2, int inI0)
     // transpose(inF0);                          // expect error: only valid on mats
 
     // TODO: texture intrinsics, when we can declare samplers.
-
-    return 0.0;
 }
 
-float1 ComputeShaderFunction1(float1 inF0, float1 inF1, float1 inF2, int1 inI0)
+void ComputeShaderFunction1(float1 inF0, float1 inF1, float1 inF2, int1 inI0)
 {
     // TODO: ... add when float1 prototypes are generated
 
     // GetRenderTargetSamplePosition(inF0); // expected error: only integer inputs
-
-    return 0.0;
 }
 
-float2 ComputeShaderFunction2(float2 inF0, float2 inF1, float2 inF2, int2 inI0)
+void ComputeShaderFunction2(float2 inF0, float2 inF1, float2 inF2, int2 inI0)
 {
     uint2 out_u2;
 
@@ -105,11 +101,9 @@ float2 ComputeShaderFunction2(float2 inF0, float2 inF1, float2 inF2, int2 inI0)
     // transpose(inF0);              // expect error: only valid on mats
 
     // TODO: texture intrinsics, when we can declare samplers.
-
-    return float2(1,2);
 }
 
-float3 ComputeShaderFunction3(float3 inF0, float3 inF1, float3 inF2, int3 inI0)
+void ComputeShaderFunction3(float3 inF0, float3 inF1, float3 inF2, int3 inI0)
 {
     uint3 out_u3;
 
@@ -150,11 +144,9 @@ float3 ComputeShaderFunction3(float3 inF0, float3 inF1, float3 inF2, int3 inI0)
     // transpose(inF0);                                            // expect error: only valid on mats
 
     // TODO: texture intrinsics, when we can declare samplers.
-
-    return float3(1,2,3);
 }
 
-float4 ComputeShaderFunction(float4 inF0, float4 inF1, float4 inF2, int4 inI0)
+void ComputeShaderFunction(float4 inF0, float4 inF1, float4 inF2, int4 inI0)
 {
     uint4 out_u4;
 
@@ -195,7 +187,5 @@ float4 ComputeShaderFunction(float4 inF0, float4 inF1, float4 inF2, int4 inI0)
     // transpose(inF0);                                            // expect error: only valid on mats
 
     // TODO: texture intrinsics, when we can declare samplers.
-
-    return float4(1,2,3,4);
 }
 
