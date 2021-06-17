@@ -24,7 +24,8 @@ ERROR: 0:95: 'binding' : atomic_uint binding is too large; see gl_MaxAtomicCount
 ERROR: 0:96: 'binding' : atomic_uint binding is too large; see gl_MaxAtomicCounterBindings 
 ERROR: 0:97: 'binding' : atomic_uint binding is too large; see gl_MaxAtomicCounterBindings 
 ERROR: 0:106: '' : vertex input cannot be further qualified 
-ERROR: 0:106: 'redeclaration' : cannot change storage, memory, or auxiliary qualification of gl_FrontColor
+ERROR: 0:106: 'gl_FrontColor' : identifiers starting with "gl_" are reserved 
+ERROR: 0:107: 'redeclaration' : cannot change storage, memory, or auxiliary qualification of gl_FrontColor
 ERROR: 0:112: 'ColorIvn' : identifier not previously declared 
 ERROR: 0:132: 'shared' : not supported in this stage: vertex
 ERROR: 0:134: '' : function does not return a value: funcA
@@ -33,7 +34,7 @@ ERROR: 0:153: '' : function does not return a value: func3
 ERROR: 0:169: 'format' : image formats must match 
 ERROR: 0:170: 'coherent' : argument cannot drop memory qualifier when passed to formal parameter 
 ERROR: 0:170: 'format' : image formats must match 
-ERROR: 34 compilation errors.  No code generated.
+ERROR: 35 compilation errors.  No code generated.
 
 
 Shader version: 430
@@ -297,7 +298,7 @@ ERROR: node is still EOpNull!
 0:?     'b2' (layout( binding=2) uniform atomic_uint)
 0:?     'c2' (layout( binding=3) uniform atomic_uint)
 0:?     'd2' (layout( binding=2) uniform atomic_uint)
-0:?     'anon@5' ( out block{ invariant gl_Position 4-component vector of float Position gl_Position,  gl_PointSize float PointSize gl_PointSize,  out unsized 1-element array of float ClipDistance gl_ClipDistance,  gl_ClipVertex 4-component vector of float ClipVertex gl_ClipVertex,  flat out 4-component vector of float FrontColor gl_FrontColor,  out 4-component vector of float BackColor gl_BackColor,  out 4-component vector of float FrontSecondaryColor gl_FrontSecondaryColor,  out 4-component vector of float BackSecondaryColor gl_BackSecondaryColor,  out unsized 1-element array of 4-component vector of float TexCoord gl_TexCoord,  out float FogFragCoord gl_FogFragCoord})
+0:?     'gl_FrontColor' ( flat in 4-component vector of float)
 0:?     'ColorInv' ( smooth out 3-component vector of float)
 0:?     'Color4' ( invariant centroid smooth out 3-component vector of float)
 0:?     'position' ( noContraction smooth out 4-component vector of float)
@@ -580,7 +581,7 @@ ERROR: node is still EOpNull!
 0:?     'b2' (layout( binding=2) uniform atomic_uint)
 0:?     'c2' (layout( binding=3) uniform atomic_uint)
 0:?     'd2' (layout( binding=2) uniform atomic_uint)
-0:?     'anon@5' ( out block{ invariant gl_Position 4-component vector of float Position gl_Position,  gl_PointSize float PointSize gl_PointSize,  out 1-element array of float ClipDistance gl_ClipDistance,  gl_ClipVertex 4-component vector of float ClipVertex gl_ClipVertex,  flat out 4-component vector of float FrontColor gl_FrontColor,  out 4-component vector of float BackColor gl_BackColor,  out 4-component vector of float FrontSecondaryColor gl_FrontSecondaryColor,  out 4-component vector of float BackSecondaryColor gl_BackSecondaryColor,  out 1-element array of 4-component vector of float TexCoord gl_TexCoord,  out float FogFragCoord gl_FogFragCoord})
+0:?     'gl_FrontColor' ( flat in 4-component vector of float)
 0:?     'ColorInv' ( smooth out 3-component vector of float)
 0:?     'Color4' ( invariant centroid smooth out 3-component vector of float)
 0:?     'position' ( noContraction smooth out 4-component vector of float)
