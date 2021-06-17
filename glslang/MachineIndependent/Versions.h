@@ -307,6 +307,7 @@ const char* const E_GL_EXT_shader_subgroup_extended_types_float16 = "GL_EXT_shad
 const char* const E_GL_EXT_terminate_invocation = "GL_EXT_terminate_invocation";
 
 const char* const E_GL_EXT_shader_atomic_float = "GL_EXT_shader_atomic_float";
+const char* const E_GL_EXT_shader_atomic_float2 = "GL_EXT_shader_atomic_float2";
 
 // Arrays of extensions for the above AEP duplications
 

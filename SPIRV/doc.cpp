@@ -966,8 +966,12 @@ const char* CapabilityString(int info)
 
     case CapabilityIntegerFunctions2INTEL:              return "CapabilityIntegerFunctions2INTEL";
 
+    case CapabilityAtomicFloat16AddEXT:                     return "AtomicFloat16AddEXT";
     case CapabilityAtomicFloat32AddEXT:                     return "AtomicFloat32AddEXT";
     case CapabilityAtomicFloat64AddEXT:                     return "AtomicFloat64AddEXT";
+    case CapabilityAtomicFloat16MinMaxEXT:                  return "AtomicFloat16MinMaxEXT";
+    case CapabilityAtomicFloat32MinMaxEXT:                  return "AtomicFloat32MinMaxEXT";
+    case CapabilityAtomicFloat64MinMaxEXT:                  return "AtomicFloat64MinMaxEXT";
 
     case CapabilityWorkgroupMemoryExplicitLayoutKHR:            return "CapabilityWorkgroupMemoryExplicitLayoutKHR";
     case CapabilityWorkgroupMemoryExplicitLayout8BitAccessKHR:  return "CapabilityWorkgroupMemoryExplicitLayout8BitAccessKHR";
@@ -1352,6 +1356,8 @@ const char* OpcodeString(int op)
     case 4432: return "OpSubgroupReadInvocationKHR";
 
     case OpAtomicFAddEXT: return "OpAtomicFAddEXT";
+    case OpAtomicFMinEXT: return "OpAtomicFMinEXT";
+    case OpAtomicFMaxEXT: return "OpAtomicFMaxEXT";
 
     case 5000: return "OpGroupIAddNonUniformAMD";
     case 5001: return "OpGroupFAddNonUniformAMD";
@@ -2341,6 +2347,16 @@ void Parameterize()
     InstructionDesc[OpAtomicSMax].operands.push(OperandScope, "'Scope'");
     InstructionDesc[OpAtomicSMax].operands.push(OperandMemorySemantics, "'Semantics'");
     InstructionDesc[OpAtomicSMax].operands.push(OperandId, "'Value'");
+
+    InstructionDesc[OpAtomicFMinEXT].operands.push(OperandId, "'Pointer'");
+    InstructionDesc[OpAtomicFMinEXT].operands.push(OperandScope, "'Scope'");
+    InstructionDesc[OpAtomicFMinEXT].operands.push(OperandMemorySemantics, "'Semantics'");
+    InstructionDesc[OpAtomicFMinEXT].operands.push(OperandId, "'Value'");
+
+    InstructionDesc[OpAtomicFMaxEXT].operands.push(OperandId, "'Pointer'");
+    InstructionDesc[OpAtomicFMaxEXT].operands.push(OperandScope, "'Scope'");
+    InstructionDesc[OpAtomicFMaxEXT].operands.push(OperandMemorySemantics, "'Semantics'");
+    InstructionDesc[OpAtomicFMaxEXT].operands.push(OperandId, "'Value'");
 
     InstructionDesc[OpAtomicAnd].operands.push(OperandId, "'Pointer'");
     InstructionDesc[OpAtomicAnd].operands.push(OperandScope, "'Scope'");

@@ -7183,13 +7183,17 @@ spv::Id TGlslangToSpvTraverser::createAtomicOperation(glslang::TOperator op, spv
     case glslang::EOpImageAtomicAdd:
     case glslang::EOpAtomicCounterAdd:
         opCode = spv::OpAtomicIAdd;
-        if (typeProxy == glslang::EbtFloat || typeProxy == glslang::EbtDouble) {
+        if (typeProxy == glslang::EbtFloat16 || typeProxy == glslang::EbtFloat || typeProxy == glslang::EbtDouble) {
             opCode = spv::OpAtomicFAddEXT;
             builder.addExtension(spv::E_SPV_EXT_shader_atomic_float_add);
-            if (typeProxy == glslang::EbtFloat)
+            if (typeProxy == glslang::EbtFloat16) {
+                builder.addExtension(spv::E_SPV_EXT_shader_atomic_float16_add);
+                builder.addCapability(spv::CapabilityAtomicFloat16AddEXT);
+            } else if (typeProxy == glslang::EbtFloat) {
                 builder.addCapability(spv::CapabilityAtomicFloat32AddEXT);
-            else
+            } else {
                 builder.addCapability(spv::CapabilityAtomicFloat64AddEXT);
+            }
         }
         break;
     case glslang::EOpAtomicSubtract:
@@ -7199,14 +7203,38 @@ spv::Id TGlslangToSpvTraverser::createAtomicOperation(glslang::TOperator op, spv
     case glslang::EOpAtomicMin:
     case glslang::EOpImageAtomicMin:
     case glslang::EOpAtomicCounterMin:
-        opCode = (typeProxy == glslang::EbtUint || typeProxy == glslang::EbtUint64) ?
-            spv::OpAtomicUMin : spv::OpAtomicSMin;
+        if (typeProxy == glslang::EbtFloat16 || typeProxy == glslang::EbtFloat || typeProxy == glslang::EbtDouble) {
+            opCode = spv::OpAtomicFMinEXT;
+            builder.addExtension(spv::E_SPV_EXT_shader_atomic_float_min_max);
+            if (typeProxy == glslang::EbtFloat16)
+                builder.addCapability(spv::CapabilityAtomicFloat16MinMaxEXT);
+            else if (typeProxy == glslang::EbtFloat)
+                builder.addCapability(spv::CapabilityAtomicFloat32MinMaxEXT);
+            else
+                builder.addCapability(spv::CapabilityAtomicFloat64MinMaxEXT);
+        } else if (typeProxy == glslang::EbtUint || typeProxy == glslang::EbtUint64) {
+            opCode = spv::OpAtomicUMin;
+        } else {
+            opCode = spv::OpAtomicSMin;
+        }
         break;
     case glslang::EOpAtomicMax:
     case glslang::EOpImageAtomicMax:
     case glslang::EOpAtomicCounterMax:
-        opCode = (typeProxy == glslang::EbtUint || typeProxy == glslang::EbtUint64) ?
-            spv::OpAtomicUMax : spv::OpAtomicSMax;
+        if (typeProxy == glslang::EbtFloat16 || typeProxy == glslang::EbtFloat || typeProxy == glslang::EbtDouble) {
+            opCode = spv::OpAtomicFMaxEXT;
+            builder.addExtension(spv::E_SPV_EXT_shader_atomic_float_min_max);
+            if (typeProxy == glslang::EbtFloat16)
+                builder.addCapability(spv::CapabilityAtomicFloat16MinMaxEXT);
+            else if (typeProxy == glslang::EbtFloat)
+                builder.addCapability(spv::CapabilityAtomicFloat32MinMaxEXT);
+            else
+                builder.addCapability(spv::CapabilityAtomicFloat64MinMaxEXT);
+        } else if (typeProxy == glslang::EbtUint || typeProxy == glslang::EbtUint64) {
+            opCode = spv::OpAtomicUMax;
+        } else {
+            opCode = spv::OpAtomicSMax;
+        }
         break;
     case glslang::EOpAtomicAnd:
     case glslang::EOpImageAtomicAnd:

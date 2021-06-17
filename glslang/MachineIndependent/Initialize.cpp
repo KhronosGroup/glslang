@@ -1436,11 +1436,23 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             " int64_t atomicMin(coherent volatile inout  int64_t,  int64_t);"
             "uint64_t atomicMin(coherent volatile inout uint64_t, uint64_t, int, int, int);"
             " int64_t atomicMin(coherent volatile inout  int64_t,  int64_t, int, int, int);"
+            "float16_t atomicMin(coherent volatile inout float16_t, float16_t);"
+            "float16_t atomicMin(coherent volatile inout float16_t, float16_t, int, int, int);"
+            "   float atomicMin(coherent volatile inout float, float);"
+            "   float atomicMin(coherent volatile inout float, float, int, int, int);"
+            "  double atomicMin(coherent volatile inout double, double);"
+            "  double atomicMin(coherent volatile inout double, double, int, int, int);"
 
             "uint64_t atomicMax(coherent volatile inout uint64_t, uint64_t);"
             " int64_t atomicMax(coherent volatile inout  int64_t,  int64_t);"
             "uint64_t atomicMax(coherent volatile inout uint64_t, uint64_t, int, int, int);"
             " int64_t atomicMax(coherent volatile inout  int64_t,  int64_t, int, int, int);"
+            "float16_t atomicMax(coherent volatile inout float16_t, float16_t);"
+            "float16_t atomicMax(coherent volatile inout float16_t, float16_t, int, int, int);"
+            "   float atomicMax(coherent volatile inout float, float);"
+            "   float atomicMax(coherent volatile inout float, float, int, int, int);"
+            "  double atomicMax(coherent volatile inout double, double);"
+            "  double atomicMax(coherent volatile inout double, double, int, int, int);"
 
             "uint64_t atomicAnd(coherent volatile inout uint64_t, uint64_t);"
             " int64_t atomicAnd(coherent volatile inout  int64_t,  int64_t);"
@@ -1461,6 +1473,8 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             " int64_t atomicAdd(coherent volatile inout  int64_t,  int64_t);"
             "uint64_t atomicAdd(coherent volatile inout uint64_t, uint64_t, int, int, int);"
             " int64_t atomicAdd(coherent volatile inout  int64_t,  int64_t, int, int, int);"
+            "float16_t atomicAdd(coherent volatile inout float16_t, float16_t);"
+            "float16_t atomicAdd(coherent volatile inout float16_t, float16_t, int, int, int);"
             "   float atomicAdd(coherent volatile inout float, float);"
             "   float atomicAdd(coherent volatile inout float, float, int, int, int);"
             "  double atomicAdd(coherent volatile inout double, double);"
@@ -1470,6 +1484,8 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             " int64_t atomicExchange(coherent volatile inout  int64_t,  int64_t);"
             "uint64_t atomicExchange(coherent volatile inout uint64_t, uint64_t, int, int, int);"
             " int64_t atomicExchange(coherent volatile inout  int64_t,  int64_t, int, int, int);"
+            "float16_t atomicExchange(coherent volatile inout float16_t, float16_t);"
+            "float16_t atomicExchange(coherent volatile inout float16_t, float16_t, int, int, int);"
             "   float atomicExchange(coherent volatile inout float, float);"
             "   float atomicExchange(coherent volatile inout float, float, int, int, int);"
             "  double atomicExchange(coherent volatile inout double, double);"
@@ -1482,11 +1498,13 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
 
             "uint64_t atomicLoad(coherent volatile in uint64_t, int, int, int);"
             " int64_t atomicLoad(coherent volatile in  int64_t, int, int, int);"
+            "float16_t atomicLoad(coherent volatile in float16_t, int, int, int);"
             "   float atomicLoad(coherent volatile in float, int, int, int);"
             "  double atomicLoad(coherent volatile in double, int, int, int);"
 
             "void atomicStore(coherent volatile out uint64_t, uint64_t, int, int, int);"
             "void atomicStore(coherent volatile out  int64_t,  int64_t, int, int, int);"
+            "void atomicStore(coherent volatile out float16_t, float16_t, int, int, int);"
             "void atomicStore(coherent volatile out float, float, int, int, int);"
             "void atomicStore(coherent volatile out double, double, int, int, int);"
             "\n");
@@ -6475,6 +6493,24 @@ void TBuiltIns::addImageFunctions(TSampler sampler, const TString& typeName, int
                 commonBuiltins.append(", int, int, int);\n");
 
                 commonBuiltins.append("void imageAtomicStore(writeonly volatile coherent ");
+                commonBuiltins.append(imageParams);
+                commonBuiltins.append(", float");
+                commonBuiltins.append(", int, int, int);\n");
+
+                commonBuiltins.append("float imageAtomicMin(volatile coherent ");
+                commonBuiltins.append(imageParams);
+                commonBuiltins.append(", float);\n");
+
+                commonBuiltins.append("float imageAtomicMin(volatile coherent ");
+                commonBuiltins.append(imageParams);
+                commonBuiltins.append(", float");
+                commonBuiltins.append(", int, int, int);\n");
+
+                commonBuiltins.append("float imageAtomicMax(volatile coherent ");
+                commonBuiltins.append(imageParams);
+                commonBuiltins.append(", float);\n");
+
+                commonBuiltins.append("float imageAtomicMax(volatile coherent ");
                 commonBuiltins.append(imageParams);
                 commonBuiltins.append(", float");
                 commonBuiltins.append(", int, int, int);\n");
