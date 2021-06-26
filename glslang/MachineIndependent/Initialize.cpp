@@ -6601,8 +6601,6 @@ void TBuiltIns::addSamplingFunctions(TSampler sampler, const TString& typeName, 
 
             if (lod && (sampler.isBuffer() || sampler.isRect() || sampler.isMultiSample() || !sampler.isCombined()))
                 continue;
-            if (lod && sampler.dim == Esd2D && sampler.arrayed && sampler.shadow)
-                continue;
             if (lod && sampler.dim == EsdCube && sampler.shadow)
                 continue;
 
