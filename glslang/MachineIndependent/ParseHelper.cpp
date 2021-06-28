@@ -4013,7 +4013,7 @@ void TParseContext::globalQualifierTypeCheck(const TSourceLoc& loc, const TQuali
         switch (language) {
         case EShLangVertex:
             if (publicType.basicType == EbtStruct) {
-                error(loc, "cannot be a structure or array", GetStorageQualifierString(qualifier.storage), "");
+                error(loc, "cannot be a structure", GetStorageQualifierString(qualifier.storage), "");
                 return;
             }
             if (publicType.arraySizes) {

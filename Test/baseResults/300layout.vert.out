@@ -1,6 +1,6 @@
 300layout.vert
 ERROR: 0:7: 'vertex input arrays' : not supported with this profile: es
-ERROR: 0:8: 'in' : cannot be a structure or array 
+ERROR: 0:8: 'in' : cannot be a structure 
 ERROR: 0:8: 's' : A structure containing an array is not allowed as input in ES 
 ERROR: 0:8: 'vertex input arrays' : not supported with this profile: es
 ERROR: 0:8: 'location' : overlapping use of location 10
