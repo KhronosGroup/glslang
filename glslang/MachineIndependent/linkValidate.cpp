@@ -2158,8 +2158,9 @@ int TIntermediate::computeBufferReferenceTypeSize(const TType& type)
 bool TIntermediate::isIoResizeArray(const TType& type, EShLanguage language) {
     return type.isArray() &&
             ((language == EShLangGeometry    && type.getQualifier().storage == EvqVaryingIn) ||
-            (language == EShLangTessControl && type.getQualifier().storage == EvqVaryingOut &&
+            (language == EShLangTessControl && (type.getQualifier().storage == EvqVaryingIn || type.getQualifier().storage == EvqVaryingOut) &&
                 ! type.getQualifier().patch) ||
+            (language == EShLangTessEvaluation && type.getQualifier().storage == EvqVaryingIn) ||
             (language == EShLangFragment && type.getQualifier().storage == EvqVaryingIn &&
                 type.getQualifier().pervertexNV) ||
             (language == EShLangMeshNV && type.getQualifier().storage == EvqVaryingOut &&
