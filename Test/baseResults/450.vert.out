@@ -34,7 +34,7 @@ ERROR: node is still EOpNull!
 0:9          gl_CullDistance: direct index for structure ( out 3-element array of float CullDistance)
 0:9            'anon@0' ( out block{ out 3-element array of float CullDistance gl_CullDistance})
 0:9            Constant:
-0:9              10 (const uint)
+0:9              3 (const uint)
 0:9          Constant:
 0:9            2 (const int)
 0:9        Constant:
@@ -98,7 +98,7 @@ ERROR: node is still EOpNull!
 0:9          gl_CullDistance: direct index for structure ( out 3-element array of float CullDistance)
 0:9            'anon@0' ( out block{ out 3-element array of float CullDistance gl_CullDistance})
 0:9            Constant:
-0:9              10 (const uint)
+0:9              3 (const uint)
 0:9          Constant:
 0:9            2 (const int)
 0:9        Constant:
