@@ -282,7 +282,6 @@ INSTANTIATE_TEST_SUITE_P(
         "terminate.vert",
         "negativeWorkGroupSize.comp",
         "textureoffset_sampler2darrayshadow.vert",
-        "atomicAdd.comp",
     })),
     FileNameAsCustomTestSuffix
 );

@@ -2409,12 +2409,6 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
                    arg0->getType().isFloatingDomain()) {
             requireExtensions(loc, 1, &E_GL_EXT_shader_atomic_float2, fnCandidate.getName().c_str());
         }
-
-        const TIntermTyped* base = TIntermediate::findLValueBase(arg0, true);
-        const TQualifier& qualifier = base->getType().getQualifier();
-        if (qualifier.storage != EvqShared && qualifier.storage != EvqBuffer)
-            error(loc,"Atomic memory function can only be used for shader storage block member or shared variable.", fnCandidate.getName().c_str(), "");
-
         break;
     }
 
