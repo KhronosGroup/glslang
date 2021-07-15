@@ -18,12 +18,12 @@ gl_FragCoord origin is upper left
 0:11      Constant:
 0:11        8 (const int)
 0:12      Comma ( temp 2-component vector of float)
-0:?         Constant:
-0:?           9.000000
-0:?           10.000000
-0:?         Constant:
-0:?           11.000000
-0:?           12.000000
+0:12        Constant:
+0:12          9.000000
+0:12          10.000000
+0:12        Constant:
+0:12          11.000000
+0:12          12.000000
 0:15      move second child to first child ( temp 4-component vector of float)
 0:15        color: direct index for structure ( temp 4-component vector of float)
 0:15          'ps_output' ( temp structure{ temp 4-component vector of float color})
@@ -72,12 +72,12 @@ gl_FragCoord origin is upper left
 0:11      Constant:
 0:11        8 (const int)
 0:12      Comma ( temp 2-component vector of float)
-0:?         Constant:
-0:?           9.000000
-0:?           10.000000
-0:?         Constant:
-0:?           11.000000
-0:?           12.000000
+0:12        Constant:
+0:12          9.000000
+0:12          10.000000
+0:12        Constant:
+0:12          11.000000
+0:12          12.000000
 0:15      move second child to first child ( temp 4-component vector of float)
 0:15        color: direct index for structure ( temp 4-component vector of float)
 0:15          'ps_output' ( temp structure{ temp 4-component vector of float color})

@@ -29,9 +29,9 @@ Shader version: 500
 0:84      'inI0' ( in 2-component vector of int)
 0:?     Sequence
 0:127      Branch: Return with expression
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
+0:127        Constant:
+0:127          1.000000
+0:127          2.000000
 0:131  Function Definition: VertexShaderFunction3(vf3;vf3;vf3;vi3; ( temp 3-component vector of float)
 0:131    Function Parameters: 
 0:131      'inF0' ( in 3-component vector of float)
@@ -40,10 +40,10 @@ Shader version: 500
 0:131      'inI0' ( in 3-component vector of int)
 0:?     Sequence
 0:172      Branch: Return with expression
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
-0:?           3.000000
+0:172        Constant:
+0:172          1.000000
+0:172          2.000000
+0:172          3.000000
 0:176  Function Definition: @VertexShaderFunction(vf4;vf4;vf4;vi4; ( temp 4-component vector of float)
 0:176    Function Parameters: 
 0:176      'inF0' ( in 4-component vector of float)
@@ -52,11 +52,11 @@ Shader version: 500
 0:176      'inI0' ( in 4-component vector of int)
 0:?     Sequence
 0:217      Branch: Return with expression
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
-0:?           3.000000
-0:?           4.000000
+0:217        Constant:
+0:217          1.000000
+0:217          2.000000
+0:217          3.000000
+0:217          4.000000
 0:176  Function Definition: VertexShaderFunction( ( temp void)
 0:176    Function Parameters: 
 0:?     Sequence
@@ -86,11 +86,11 @@ Shader version: 500
 0:226      'inF2' ( in 2X2 matrix of float)
 0:?     Sequence
 0:230      Branch: Return with expression
-0:?         Constant:
-0:?           2.000000
-0:?           2.000000
-0:?           2.000000
-0:?           2.000000
+0:230        Constant:
+0:230          2.000000
+0:230          2.000000
+0:230          2.000000
+0:230          2.000000
 0:234  Function Definition: VertexShaderFunction3x3(mf33;mf33;mf33; ( temp 3X3 matrix of float)
 0:234    Function Parameters: 
 0:234      'inF0' ( in 3X3 matrix of float)
@@ -98,16 +98,16 @@ Shader version: 500
 0:234      'inF2' ( in 3X3 matrix of float)
 0:?     Sequence
 0:238      Branch: Return with expression
-0:?         Constant:
-0:?           3.000000
-0:?           3.000000
-0:?           3.000000
-0:?           3.000000
-0:?           3.000000
-0:?           3.000000
-0:?           3.000000
-0:?           3.000000
-0:?           3.000000
+0:238        Constant:
+0:238          3.000000
+0:238          3.000000
+0:238          3.000000
+0:238          3.000000
+0:238          3.000000
+0:238          3.000000
+0:238          3.000000
+0:238          3.000000
+0:238          3.000000
 0:242  Function Definition: VertexShaderFunction4x4(mf44;mf44;mf44; ( temp 4X4 matrix of float)
 0:242    Function Parameters: 
 0:242      'inF0' ( in 4X4 matrix of float)
@@ -115,23 +115,23 @@ Shader version: 500
 0:242      'inF2' ( in 4X4 matrix of float)
 0:?     Sequence
 0:246      Branch: Return with expression
-0:?         Constant:
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
+0:246        Constant:
+0:246          4.000000
+0:246          4.000000
+0:246          4.000000
+0:246          4.000000
+0:246          4.000000
+0:246          4.000000
+0:246          4.000000
+0:246          4.000000
+0:246          4.000000
+0:246          4.000000
+0:246          4.000000
+0:246          4.000000
+0:246          4.000000
+0:246          4.000000
+0:246          4.000000
+0:246          4.000000
 0:?   Linker Objects
 0:?     'gs_ua' ( global uint)
 0:?     'gs_ub' ( global uint)
@@ -185,9 +185,9 @@ Shader version: 500
 0:84      'inI0' ( in 2-component vector of int)
 0:?     Sequence
 0:127      Branch: Return with expression
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
+0:127        Constant:
+0:127          1.000000
+0:127          2.000000
 0:131  Function Definition: VertexShaderFunction3(vf3;vf3;vf3;vi3; ( temp 3-component vector of float)
 0:131    Function Parameters: 
 0:131      'inF0' ( in 3-component vector of float)
@@ -196,10 +196,10 @@ Shader version: 500
 0:131      'inI0' ( in 3-component vector of int)
 0:?     Sequence
 0:172      Branch: Return with expression
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
-0:?           3.000000
+0:172        Constant:
+0:172          1.000000
+0:172          2.000000
+0:172          3.000000
 0:176  Function Definition: @VertexShaderFunction(vf4;vf4;vf4;vi4; ( temp 4-component vector of float)
 0:176    Function Parameters: 
 0:176      'inF0' ( in 4-component vector of float)
@@ -208,11 +208,11 @@ Shader version: 500
 0:176      'inI0' ( in 4-component vector of int)
 0:?     Sequence
 0:217      Branch: Return with expression
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
-0:?           3.000000
-0:?           4.000000
+0:217        Constant:
+0:217          1.000000
+0:217          2.000000
+0:217          3.000000
+0:217          4.000000
 0:176  Function Definition: VertexShaderFunction( ( temp void)
 0:176    Function Parameters: 
 0:?     Sequence
@@ -242,11 +242,11 @@ Shader version: 500
 0:226      'inF2' ( in 2X2 matrix of float)
 0:?     Sequence
 0:230      Branch: Return with expression
-0:?         Constant:
-0:?           2.000000
-0:?           2.000000
-0:?           2.000000
-0:?           2.000000
+0:230        Constant:
+0:230          2.000000
+0:230          2.000000
+0:230          2.000000
+0:230          2.000000
 0:234  Function Definition: VertexShaderFunction3x3(mf33;mf33;mf33; ( temp 3X3 matrix of float)
 0:234    Function Parameters: 
 0:234      'inF0' ( in 3X3 matrix of float)
@@ -254,16 +254,16 @@ Shader version: 500
 0:234      'inF2' ( in 3X3 matrix of float)
 0:?     Sequence
 0:238      Branch: Return with expression
-0:?         Constant:
-0:?           3.000000
-0:?           3.000000
-0:?           3.000000
-0:?           3.000000
-0:?           3.000000
-0:?           3.000000
-0:?           3.000000
-0:?           3.000000
-0:?           3.000000
+0:238        Constant:
+0:238          3.000000
+0:238          3.000000
+0:238          3.000000
+0:238          3.000000
+0:238          3.000000
+0:238          3.000000
+0:238          3.000000
+0:238          3.000000
+0:238          3.000000
 0:242  Function Definition: VertexShaderFunction4x4(mf44;mf44;mf44; ( temp 4X4 matrix of float)
 0:242    Function Parameters: 
 0:242      'inF0' ( in 4X4 matrix of float)
@@ -271,23 +271,23 @@ Shader version: 500
 0:242      'inF2' ( in 4X4 matrix of float)
 0:?     Sequence
 0:246      Branch: Return with expression
-0:?         Constant:
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
+0:246        Constant:
+0:246          4.000000
+0:246          4.000000
+0:246          4.000000
+0:246          4.000000
+0:246          4.000000
+0:246          4.000000
+0:246          4.000000
+0:246          4.000000
+0:246          4.000000
+0:246          4.000000
+0:246          4.000000
+0:246          4.000000
+0:246          4.000000
+0:246          4.000000
+0:246          4.000000
+0:246          4.000000
 0:?   Linker Objects
 0:?     'gs_ua' ( global uint)
 0:?     'gs_ub' ( global uint)

@@ -155,9 +155,9 @@ local_size = (1, 1, 1)
 0:71          'gs_ua2' ( shared 2-component vector of uint)
 0:71          'gs_ub2' ( shared 2-component vector of uint)
 0:74      Branch: Return with expression
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
+0:74        Constant:
+0:74          1.000000
+0:74          2.000000
 0:78  Function Definition: ComputeShaderFunction3(vf3;vf3;vf3;vu3;vu3; ( temp 3-component vector of float)
 0:78    Function Parameters: 
 0:78      'inF0' ( in 3-component vector of float)
@@ -229,10 +229,10 @@ local_size = (1, 1, 1)
 0:98          'gs_ua3' ( shared 3-component vector of uint)
 0:98          'gs_ub3' ( shared 3-component vector of uint)
 0:101      Branch: Return with expression
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
-0:?           3.000000
+0:101        Constant:
+0:101          1.000000
+0:101          2.000000
+0:101          3.000000
 0:105  Function Definition: @ComputeShaderFunction(vf4;vf4;vf4;vu4;vu4; ( temp 4-component vector of float)
 0:105    Function Parameters: 
 0:105      'inF0' ( in 4-component vector of float)
@@ -304,11 +304,11 @@ local_size = (1, 1, 1)
 0:125          'gs_ua4' ( shared 4-component vector of uint)
 0:125          'gs_ub4' ( shared 4-component vector of uint)
 0:128      Branch: Return with expression
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
-0:?           3.000000
-0:?           4.000000
+0:128        Constant:
+0:128          1.000000
+0:128          2.000000
+0:128          3.000000
+0:128          4.000000
 0:105  Function Definition: ComputeShaderFunction( ( temp void)
 0:105    Function Parameters: 
 0:?     Sequence
@@ -515,9 +515,9 @@ local_size = (1, 1, 1)
 0:71          'gs_ua2' ( shared 2-component vector of uint)
 0:71          'gs_ub2' ( shared 2-component vector of uint)
 0:74      Branch: Return with expression
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
+0:74        Constant:
+0:74          1.000000
+0:74          2.000000
 0:78  Function Definition: ComputeShaderFunction3(vf3;vf3;vf3;vu3;vu3; ( temp 3-component vector of float)
 0:78    Function Parameters: 
 0:78      'inF0' ( in 3-component vector of float)
@@ -589,10 +589,10 @@ local_size = (1, 1, 1)
 0:98          'gs_ua3' ( shared 3-component vector of uint)
 0:98          'gs_ub3' ( shared 3-component vector of uint)
 0:101      Branch: Return with expression
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
-0:?           3.000000
+0:101        Constant:
+0:101          1.000000
+0:101          2.000000
+0:101          3.000000
 0:105  Function Definition: @ComputeShaderFunction(vf4;vf4;vf4;vu4;vu4; ( temp 4-component vector of float)
 0:105    Function Parameters: 
 0:105      'inF0' ( in 4-component vector of float)
@@ -664,11 +664,11 @@ local_size = (1, 1, 1)
 0:125          'gs_ua4' ( shared 4-component vector of uint)
 0:125          'gs_ub4' ( shared 4-component vector of uint)
 0:128      Branch: Return with expression
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
-0:?           3.000000
-0:?           4.000000
+0:128        Constant:
+0:128          1.000000
+0:128          2.000000
+0:128          3.000000
+0:128          4.000000
 0:105  Function Definition: ComputeShaderFunction( ( temp void)
 0:105    Function Parameters: 
 0:?     Sequence

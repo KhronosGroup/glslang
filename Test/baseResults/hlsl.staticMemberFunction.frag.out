@@ -26,19 +26,19 @@ gl_FragCoord origin is upper left
 0:18      Sequence
 0:18        move second child to first child ( temp 4-component vector of float)
 0:18          'f4' ( temp 4-component vector of float)
-0:?           Constant:
-0:?             1.000000
-0:?             1.000000
-0:?             1.000000
-0:?             1.000000
+0:18          Constant:
+0:18            1.000000
+0:18            1.000000
+0:18            1.000000
+0:18            1.000000
 0:19      add second child into first child ( temp 4-component vector of float)
 0:19        'f4' ( temp 4-component vector of float)
 0:19        Function Call: Test::staticMemFun(vf4; ( global 4-component vector of float)
-0:?           Constant:
-0:?             5.000000
-0:?             5.000000
-0:?             5.000000
-0:?             5.000000
+0:19          Constant:
+0:19            5.000000
+0:19            5.000000
+0:19            5.000000
+0:19            5.000000
 0:20      add second child into first child ( temp 4-component vector of float)
 0:20        'f4' ( temp 4-component vector of float)
 0:20        Convert int to float ( temp float)
@@ -87,19 +87,19 @@ gl_FragCoord origin is upper left
 0:18      Sequence
 0:18        move second child to first child ( temp 4-component vector of float)
 0:18          'f4' ( temp 4-component vector of float)
-0:?           Constant:
-0:?             1.000000
-0:?             1.000000
-0:?             1.000000
-0:?             1.000000
+0:18          Constant:
+0:18            1.000000
+0:18            1.000000
+0:18            1.000000
+0:18            1.000000
 0:19      add second child into first child ( temp 4-component vector of float)
 0:19        'f4' ( temp 4-component vector of float)
 0:19        Function Call: Test::staticMemFun(vf4; ( global 4-component vector of float)
-0:?           Constant:
-0:?             5.000000
-0:?             5.000000
-0:?             5.000000
-0:?             5.000000
+0:19          Constant:
+0:19            5.000000
+0:19            5.000000
+0:19            5.000000
+0:19            5.000000
 0:20      add second child into first child ( temp 4-component vector of float)
 0:20        'f4' ( temp 4-component vector of float)
 0:20        Convert int to float ( temp float)

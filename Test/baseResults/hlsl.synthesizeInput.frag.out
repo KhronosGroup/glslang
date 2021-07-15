@@ -7,7 +7,7 @@ gl_FragCoord origin is upper left
 0:7      'input' ( in structure{ temp float interp,  temp uint no_interp})
 0:?     Sequence
 0:8      Branch: Return with expression
-0:?         Construct vec4 ( temp 4-component vector of float)
+0:8        Construct vec4 ( temp 4-component vector of float)
 0:8          Convert uint to float ( temp float)
 0:8            no_interp: direct index for structure ( temp uint)
 0:8              'input' ( in structure{ temp float interp,  temp uint no_interp})
@@ -58,7 +58,7 @@ gl_FragCoord origin is upper left
 0:7      'input' ( in structure{ temp float interp,  temp uint no_interp})
 0:?     Sequence
 0:8      Branch: Return with expression
-0:?         Construct vec4 ( temp 4-component vector of float)
+0:8        Construct vec4 ( temp 4-component vector of float)
 0:8          Convert uint to float ( temp float)
 0:8            no_interp: direct index for structure ( temp uint)
 0:8              'input' ( in structure{ temp float interp,  temp uint no_interp})

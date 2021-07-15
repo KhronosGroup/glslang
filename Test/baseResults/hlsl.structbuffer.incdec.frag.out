@@ -65,7 +65,7 @@ gl_FragCoord origin is upper left
 0:16            Constant:
 0:16              -1 (const int)
 0:18      Branch: Return with expression
-0:?         Construct vec4 ( temp 4-component vector of float)
+0:18        Construct vec4 ( temp 4-component vector of float)
 0:18          Convert uint to float ( temp float)
 0:18            direct index ( temp uint)
 0:18              'result' ( temp 4-component vector of uint)
@@ -169,7 +169,7 @@ gl_FragCoord origin is upper left
 0:16            Constant:
 0:16              -1 (const int)
 0:18      Branch: Return with expression
-0:?         Construct vec4 ( temp 4-component vector of float)
+0:18        Construct vec4 ( temp 4-component vector of float)
 0:18          Convert uint to float ( temp float)
 0:18            direct index ( temp uint)
 0:18              'result' ( temp 4-component vector of uint)

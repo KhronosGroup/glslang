@@ -27,8 +27,6 @@ in vec4 c4;
 in flat ivec2 ic2;
 in flat ivec3 ic3;
 
-in flat ivec2 offsets[4];
-
 out vec4 outColor;
 
 void main()
@@ -79,9 +77,10 @@ void main()
     resident |= sparseTextureGatherOffsetARB(is2DArray, c3, ivec2(5), itexel, 2);
     resident |= sparseTextureGatherOffsetARB(s2DRectShadow, c2, 2.0, ivec2(7), texel);
 
-    resident |= sparseTextureGatherOffsetsARB(s2D, c2, offsets, texel);
-    resident |= sparseTextureGatherOffsetsARB(is2DArray, c3, offsets, itexel, 2);
-    resident |= sparseTextureGatherOffsetsARB(s2DRectShadow, c2, 2.0, offsets, texel);
+    const ivec2 constOffsets[4] = ivec2[4](ivec2(1,2), ivec2(3,4), ivec2(15,16), ivec2(-2,0));
+    resident |= sparseTextureGatherOffsetsARB(s2D, c2, constOffsets, texel);
+    resident |= sparseTextureGatherOffsetsARB(is2DArray, c3, constOffsets, itexel, 2);
+    resident |= sparseTextureGatherOffsetsARB(s2DRectShadow, c2, 2.0, constOffsets, texel);
 
     resident |= sparseImageLoadARB(i2D, ic2, texel);
     resident |= sparseImageLoadARB(ii3D, ic3, itexel);

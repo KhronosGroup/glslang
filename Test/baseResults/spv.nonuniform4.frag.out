@@ -23,6 +23,7 @@ spv.nonuniform4.frag
                               Decorate 13(rIndex) Flat
                               Decorate 13(rIndex) Location 3
                               Decorate 15 DecorationNonUniformEXT
+                              Decorate 17 DecorationNonUniformEXT
                               Decorate 21 DecorationNonUniformEXT
                2:             TypeVoid
                3:             TypeFunction 2

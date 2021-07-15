@@ -55,6 +55,6 @@ spv.RayCallable.rcall
                               Store 13(size) 15
               23:     22(ptr) AccessChain 18 20
                               Store 23 21
-                              ExecuteCallableKHR 24 25
+                              ExecuteCallableNV 24 25
                               Return
                               FunctionEnd

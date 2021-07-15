@@ -4,8 +4,6 @@ spv.viewportArray2.vert
 // Id's are bound by 19
 
                               Capability Shader
-                              Capability Geometry
-                              Capability MultiViewport
                               Capability ShaderViewportIndexLayerNV
                               Capability ShaderViewportMaskNV
                               Extension  "SPV_EXT_shader_viewport_index_layer"

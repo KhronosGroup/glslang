@@ -15,9 +15,9 @@ gl_FragCoord origin is upper left
 0:16              's' ( in structure{ temp sampler s2D})
 0:16              Constant:
 0:16                0 (const int)
-0:?           Constant:
-0:?             0.200000
-0:?             0.300000
+0:16          Constant:
+0:16            0.200000
+0:16            0.300000
 0:20  Function Definition: osCall2(struct-os-p11;vf2; ( temp 4-component vector of float)
 0:20    Function Parameters: 
 0:20      's' ( in structure{ temp sampler s2D})
@@ -47,9 +47,9 @@ gl_FragCoord origin is upper left
 0:26              's' ( in structure{ temp sampler s2D,  temp texture2D tex})
 0:26              Constant:
 0:26                0 (const int)
-0:?           Constant:
-0:?             0.200000
-0:?             0.300000
+0:26          Constant:
+0:26            0.200000
+0:26            0.300000
 0:30  Function Definition: os2Call2(struct-os2-p1-t211;vf2; ( temp 4-component vector of float)
 0:30    Function Parameters: 
 0:30      's' ( in structure{ temp sampler s2D,  temp texture2D tex})
@@ -94,9 +94,9 @@ gl_FragCoord origin is upper left
 0:37                          0 (const int)
 0:?                       's.s2D' ( uniform sampler)
 0:37                  'aggShadow' ( temp structure{ temp sampler s2D})
-0:?                 Constant:
-0:?                   0.200000
-0:?                   0.300000
+0:37                Constant:
+0:37                  0.200000
+0:37                  0.300000
 0:38            Function Call: os2Call1(struct-os2-p1-t211; ( temp 4-component vector of float)
 0:38              Comma ( temp structure{ temp sampler s2D,  temp texture2D tex})
 0:38                Sequence
@@ -129,9 +129,9 @@ gl_FragCoord origin is upper left
 0:39                      1 (const int)
 0:?                   's2.tex' ( uniform texture2D)
 0:39              'aggShadow' ( temp structure{ temp sampler s2D,  temp texture2D tex})
-0:?             Constant:
-0:?               0.200000
-0:?               0.300000
+0:39            Constant:
+0:39              0.200000
+0:39              0.300000
 0:35  Function Definition: main( ( temp void)
 0:35    Function Parameters: 
 0:?     Sequence
@@ -164,9 +164,9 @@ gl_FragCoord origin is upper left
 0:16              's' ( in structure{ temp sampler s2D})
 0:16              Constant:
 0:16                0 (const int)
-0:?           Constant:
-0:?             0.200000
-0:?             0.300000
+0:16          Constant:
+0:16            0.200000
+0:16            0.300000
 0:20  Function Definition: osCall2(struct-os-p11;vf2; ( temp 4-component vector of float)
 0:20    Function Parameters: 
 0:20      's' ( in structure{ temp sampler s2D})
@@ -196,9 +196,9 @@ gl_FragCoord origin is upper left
 0:26              's' ( in structure{ temp sampler s2D,  temp texture2D tex})
 0:26              Constant:
 0:26                0 (const int)
-0:?           Constant:
-0:?             0.200000
-0:?             0.300000
+0:26          Constant:
+0:26            0.200000
+0:26            0.300000
 0:30  Function Definition: os2Call2(struct-os2-p1-t211;vf2; ( temp 4-component vector of float)
 0:30    Function Parameters: 
 0:30      's' ( in structure{ temp sampler s2D,  temp texture2D tex})
@@ -243,9 +243,9 @@ gl_FragCoord origin is upper left
 0:37                          0 (const int)
 0:?                       's.s2D' ( uniform sampler)
 0:37                  'aggShadow' ( temp structure{ temp sampler s2D})
-0:?                 Constant:
-0:?                   0.200000
-0:?                   0.300000
+0:37                Constant:
+0:37                  0.200000
+0:37                  0.300000
 0:38            Function Call: os2Call1(struct-os2-p1-t211; ( temp 4-component vector of float)
 0:38              Comma ( temp structure{ temp sampler s2D,  temp texture2D tex})
 0:38                Sequence
@@ -278,9 +278,9 @@ gl_FragCoord origin is upper left
 0:39                      1 (const int)
 0:?                   's2.tex' ( uniform texture2D)
 0:39              'aggShadow' ( temp structure{ temp sampler s2D,  temp texture2D tex})
-0:?             Constant:
-0:?               0.200000
-0:?               0.300000
+0:39            Constant:
+0:39              0.200000
+0:39              0.300000
 0:35  Function Definition: main( ( temp void)
 0:35    Function Parameters: 
 0:?     Sequence

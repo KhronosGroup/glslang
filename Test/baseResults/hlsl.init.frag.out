@@ -8,18 +8,18 @@ gl_FragCoord origin is upper left
 0:1  Sequence
 0:1    move second child to first child ( temp 4-component vector of float)
 0:1      'a1' ( global 4-component vector of float)
-0:?       Constant:
-0:?         1.000000
-0:?         0.500000
-0:?         0.000000
-0:?         1.000000
+0:1      Constant:
+0:1        1.000000
+0:1        0.500000
+0:1        0.000000
+0:1        1.000000
 0:1    move second child to first child ( temp 4-component vector of float)
 0:1      'b1' ( global 4-component vector of float)
-0:?       Constant:
-0:?         2.000000
-0:?         2.500000
-0:?         2.100000
-0:?         2.200000
+0:1      Constant:
+0:1        2.000000
+0:1        2.500000
+0:1        2.100000
+0:1        2.200000
 0:2  Sequence
 0:2    move second child to first child ( temp 4-component vector of float)
 0:2      'a1i' ( global 4-component vector of float)
@@ -88,11 +88,11 @@ gl_FragCoord origin is upper left
 0:22      Sequence
 0:22        move second child to first child ( temp 4-component vector of float)
 0:22          'a2' ( temp 4-component vector of float)
-0:?           Constant:
-0:?             0.200000
-0:?             0.300000
-0:?             0.400000
-0:?             0.500000
+0:22          Constant:
+0:22            0.200000
+0:22            0.300000
+0:22            0.400000
+0:22            0.500000
 0:32      Sequence
 0:32        move second child to first child ( temp structure{ temp int j,  temp float g,  temp structure{ temp float f,  temp int i} s1})
 0:32          's2i' ( temp structure{ temp int j,  temp float g,  temp structure{ temp float f,  temp int i} s1})
@@ -108,11 +108,11 @@ gl_FragCoord origin is upper left
 0:32                12 (const int)
 0:32        move second child to first child ( temp structure{ temp int j,  temp float g,  temp structure{ temp float f,  temp int i} s1})
 0:32          's2' ( temp structure{ temp int j,  temp float g,  temp structure{ temp float f,  temp int i} s1})
-0:?           Construct structure ( temp structure{ temp int j,  temp float g,  temp structure{ temp float f,  temp int i} s1})
+0:32          Construct structure ( temp structure{ temp int j,  temp float g,  temp structure{ temp float f,  temp int i} s1})
 0:32            Constant:
 0:32              9 (const int)
 0:32            'a5' ( global float)
-0:?             Construct structure ( temp structure{ temp float f,  temp int i})
+0:32            Construct structure ( temp structure{ temp float f,  temp int i})
 0:32              Comma ( temp float)
 0:32                'a3' ( global float)
 0:32                'a4' ( global float)
@@ -174,18 +174,18 @@ gl_FragCoord origin is upper left
 0:1  Sequence
 0:1    move second child to first child ( temp 4-component vector of float)
 0:1      'a1' ( global 4-component vector of float)
-0:?       Constant:
-0:?         1.000000
-0:?         0.500000
-0:?         0.000000
-0:?         1.000000
+0:1      Constant:
+0:1        1.000000
+0:1        0.500000
+0:1        0.000000
+0:1        1.000000
 0:1    move second child to first child ( temp 4-component vector of float)
 0:1      'b1' ( global 4-component vector of float)
-0:?       Constant:
-0:?         2.000000
-0:?         2.500000
-0:?         2.100000
-0:?         2.200000
+0:1      Constant:
+0:1        2.000000
+0:1        2.500000
+0:1        2.100000
+0:1        2.200000
 0:2  Sequence
 0:2    move second child to first child ( temp 4-component vector of float)
 0:2      'a1i' ( global 4-component vector of float)
@@ -254,11 +254,11 @@ gl_FragCoord origin is upper left
 0:22      Sequence
 0:22        move second child to first child ( temp 4-component vector of float)
 0:22          'a2' ( temp 4-component vector of float)
-0:?           Constant:
-0:?             0.200000
-0:?             0.300000
-0:?             0.400000
-0:?             0.500000
+0:22          Constant:
+0:22            0.200000
+0:22            0.300000
+0:22            0.400000
+0:22            0.500000
 0:32      Sequence
 0:32        move second child to first child ( temp structure{ temp int j,  temp float g,  temp structure{ temp float f,  temp int i} s1})
 0:32          's2i' ( temp structure{ temp int j,  temp float g,  temp structure{ temp float f,  temp int i} s1})
@@ -274,11 +274,11 @@ gl_FragCoord origin is upper left
 0:32                12 (const int)
 0:32        move second child to first child ( temp structure{ temp int j,  temp float g,  temp structure{ temp float f,  temp int i} s1})
 0:32          's2' ( temp structure{ temp int j,  temp float g,  temp structure{ temp float f,  temp int i} s1})
-0:?           Construct structure ( temp structure{ temp int j,  temp float g,  temp structure{ temp float f,  temp int i} s1})
+0:32          Construct structure ( temp structure{ temp int j,  temp float g,  temp structure{ temp float f,  temp int i} s1})
 0:32            Constant:
 0:32              9 (const int)
 0:32            'a5' ( global float)
-0:?             Construct structure ( temp structure{ temp float f,  temp int i})
+0:32            Construct structure ( temp structure{ temp float f,  temp int i})
 0:32              Comma ( temp float)
 0:32                'a3' ( global float)
 0:32                'a4' ( global float)

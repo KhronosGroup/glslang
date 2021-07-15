@@ -191,10 +191,10 @@ Shader version: 500
 0:83        'inF0' ( in 2-component vector of float)
 0:84      hyp. cosine ( temp 2-component vector of float)
 0:84        'inF0' ( in 2-component vector of float)
-0:?       bitCount ( temp 2-component vector of int)
-0:?         Constant:
-0:?           7 (const int)
-0:?           3 (const int)
+0:85      bitCount ( temp 2-component vector of int)
+0:85        Constant:
+0:85          7 (const int)
+0:85          3 (const int)
 0:86      degrees ( temp 2-component vector of float)
 0:86        'inF0' ( in 2-component vector of float)
 0:87      distance ( temp float)
@@ -267,10 +267,10 @@ Shader version: 500
 0:116        'inF1' ( in 2-component vector of float)
 0:116        Constant:
 0:116          2.000000
-0:?       bitFieldReverse ( temp 2-component vector of int)
-0:?         Constant:
-0:?           1 (const int)
-0:?           2 (const int)
+0:117      bitFieldReverse ( temp 2-component vector of int)
+0:117        Constant:
+0:117          1 (const int)
+0:117          2 (const int)
 0:118      roundEven ( temp 2-component vector of float)
 0:118        'inF0' ( in 2-component vector of float)
 0:119      inverse sqrt ( temp 2-component vector of float)
@@ -312,9 +312,9 @@ Shader version: 500
 0:131      trunc ( temp 2-component vector of float)
 0:131        'inF0' ( in 2-component vector of float)
 0:134      Branch: Return with expression
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
+0:134        Constant:
+0:134          1.000000
+0:134          2.000000
 0:138  Function Definition: VertexShaderFunction3(vf3;vf3;vf3;vu3;vu3; ( temp 3-component vector of float)
 0:138    Function Parameters: 
 0:138      'inF0' ( in 3-component vector of float)
@@ -356,11 +356,11 @@ Shader version: 500
 0:152        'inF0' ( in 3-component vector of float)
 0:153      hyp. cosine ( temp 3-component vector of float)
 0:153        'inF0' ( in 3-component vector of float)
-0:?       bitCount ( temp 3-component vector of int)
-0:?         Constant:
-0:?           7 (const int)
-0:?           3 (const int)
-0:?           5 (const int)
+0:154      bitCount ( temp 3-component vector of int)
+0:154        Constant:
+0:154          7 (const int)
+0:154          3 (const int)
+0:154          5 (const int)
 0:155      cross-product ( temp 3-component vector of float)
 0:155        'inF0' ( in 3-component vector of float)
 0:155        'inF1' ( in 3-component vector of float)
@@ -436,11 +436,11 @@ Shader version: 500
 0:186        'inF1' ( in 3-component vector of float)
 0:186        Constant:
 0:186          2.000000
-0:?       bitFieldReverse ( temp 3-component vector of int)
-0:?         Constant:
-0:?           1 (const int)
-0:?           2 (const int)
-0:?           3 (const int)
+0:187      bitFieldReverse ( temp 3-component vector of int)
+0:187        Constant:
+0:187          1 (const int)
+0:187          2 (const int)
+0:187          3 (const int)
 0:188      roundEven ( temp 3-component vector of float)
 0:188        'inF0' ( in 3-component vector of float)
 0:189      inverse sqrt ( temp 3-component vector of float)
@@ -482,10 +482,10 @@ Shader version: 500
 0:201      trunc ( temp 3-component vector of float)
 0:201        'inF0' ( in 3-component vector of float)
 0:204      Branch: Return with expression
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
-0:?           3.000000
+0:204        Constant:
+0:204          1.000000
+0:204          2.000000
+0:204          3.000000
 0:208  Function Definition: VertexShaderFunction4(vf4;vf4;vf4;vu4;vu4; ( temp 4-component vector of float)
 0:208    Function Parameters: 
 0:208      'inF0' ( in 4-component vector of float)
@@ -527,12 +527,12 @@ Shader version: 500
 0:222        'inF0' ( in 4-component vector of float)
 0:223      hyp. cosine ( temp 4-component vector of float)
 0:223        'inF0' ( in 4-component vector of float)
-0:?       bitCount ( temp 4-component vector of int)
-0:?         Constant:
-0:?           7 (const int)
-0:?           3 (const int)
-0:?           5 (const int)
-0:?           2 (const int)
+0:224      bitCount ( temp 4-component vector of int)
+0:224        Constant:
+0:224          7 (const int)
+0:224          3 (const int)
+0:224          5 (const int)
+0:224          2 (const int)
 0:225      degrees ( temp 4-component vector of float)
 0:225        'inF0' ( in 4-component vector of float)
 0:226      distance ( temp float)
@@ -625,12 +625,12 @@ Shader version: 500
 0:256        'inF1' ( in 4-component vector of float)
 0:256        Constant:
 0:256          2.000000
-0:?       bitFieldReverse ( temp 4-component vector of int)
-0:?         Constant:
-0:?           1 (const int)
-0:?           2 (const int)
-0:?           3 (const int)
-0:?           4 (const int)
+0:257      bitFieldReverse ( temp 4-component vector of int)
+0:257        Constant:
+0:257          1 (const int)
+0:257          2 (const int)
+0:257          3 (const int)
+0:257          4 (const int)
 0:258      roundEven ( temp 4-component vector of float)
 0:258        'inF0' ( in 4-component vector of float)
 0:259      inverse sqrt ( temp 4-component vector of float)
@@ -672,11 +672,11 @@ Shader version: 500
 0:271      trunc ( temp 4-component vector of float)
 0:271        'inF0' ( in 4-component vector of float)
 0:274      Branch: Return with expression
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
-0:?           3.000000
-0:?           4.000000
+0:274        Constant:
+0:274          1.000000
+0:274          2.000000
+0:274          3.000000
+0:274          4.000000
 0:331  Function Definition: VertexShaderFunction2x2(mf22;mf22;mf22; ( temp 2X2 matrix of float)
 0:331    Function Parameters: 
 0:331      'inF0' ( in 2X2 matrix of float)
@@ -801,11 +801,11 @@ Shader version: 500
 0:333      trunc ( temp 2X2 matrix of float)
 0:333        'inF0' ( in 2X2 matrix of float)
 0:336      Branch: Return with expression
-0:?         Constant:
-0:?           2.000000
-0:?           2.000000
-0:?           2.000000
-0:?           2.000000
+0:336        Constant:
+0:336          2.000000
+0:336          2.000000
+0:336          2.000000
+0:336          2.000000
 0:340  Function Definition: VertexShaderFunction3x3(mf33;mf33;mf33; ( temp 3X3 matrix of float)
 0:340    Function Parameters: 
 0:340      'inF0' ( in 3X3 matrix of float)
@@ -930,16 +930,16 @@ Shader version: 500
 0:342      trunc ( temp 3X3 matrix of float)
 0:342        'inF0' ( in 3X3 matrix of float)
 0:345      Branch: Return with expression
-0:?         Constant:
-0:?           3.000000
-0:?           3.000000
-0:?           3.000000
-0:?           3.000000
-0:?           3.000000
-0:?           3.000000
-0:?           3.000000
-0:?           3.000000
-0:?           3.000000
+0:345        Constant:
+0:345          3.000000
+0:345          3.000000
+0:345          3.000000
+0:345          3.000000
+0:345          3.000000
+0:345          3.000000
+0:345          3.000000
+0:345          3.000000
+0:345          3.000000
 0:349  Function Definition: VertexShaderFunction4x4(mf44;mf44;mf44; ( temp 4X4 matrix of float)
 0:349    Function Parameters: 
 0:349      'inF0' ( in 4X4 matrix of float)
@@ -1064,23 +1064,23 @@ Shader version: 500
 0:351      trunc ( temp 4X4 matrix of float)
 0:351        'inF0' ( in 4X4 matrix of float)
 0:354      Branch: Return with expression
-0:?         Constant:
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
+0:354        Constant:
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
 0:372  Function Definition: TestGenMul2(f1;f1;vf2;vf2;mf22;mf22; ( temp void)
 0:372    Function Parameters: 
 0:372      'inF0' ( in float)
@@ -1583,10 +1583,10 @@ Shader version: 500
 0:83        'inF0' ( in 2-component vector of float)
 0:84      hyp. cosine ( temp 2-component vector of float)
 0:84        'inF0' ( in 2-component vector of float)
-0:?       bitCount ( temp 2-component vector of int)
-0:?         Constant:
-0:?           7 (const int)
-0:?           3 (const int)
+0:85      bitCount ( temp 2-component vector of int)
+0:85        Constant:
+0:85          7 (const int)
+0:85          3 (const int)
 0:86      degrees ( temp 2-component vector of float)
 0:86        'inF0' ( in 2-component vector of float)
 0:87      distance ( temp float)
@@ -1659,10 +1659,10 @@ Shader version: 500
 0:116        'inF1' ( in 2-component vector of float)
 0:116        Constant:
 0:116          2.000000
-0:?       bitFieldReverse ( temp 2-component vector of int)
-0:?         Constant:
-0:?           1 (const int)
-0:?           2 (const int)
+0:117      bitFieldReverse ( temp 2-component vector of int)
+0:117        Constant:
+0:117          1 (const int)
+0:117          2 (const int)
 0:118      roundEven ( temp 2-component vector of float)
 0:118        'inF0' ( in 2-component vector of float)
 0:119      inverse sqrt ( temp 2-component vector of float)
@@ -1704,9 +1704,9 @@ Shader version: 500
 0:131      trunc ( temp 2-component vector of float)
 0:131        'inF0' ( in 2-component vector of float)
 0:134      Branch: Return with expression
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
+0:134        Constant:
+0:134          1.000000
+0:134          2.000000
 0:138  Function Definition: VertexShaderFunction3(vf3;vf3;vf3;vu3;vu3; ( temp 3-component vector of float)
 0:138    Function Parameters: 
 0:138      'inF0' ( in 3-component vector of float)
@@ -1748,11 +1748,11 @@ Shader version: 500
 0:152        'inF0' ( in 3-component vector of float)
 0:153      hyp. cosine ( temp 3-component vector of float)
 0:153        'inF0' ( in 3-component vector of float)
-0:?       bitCount ( temp 3-component vector of int)
-0:?         Constant:
-0:?           7 (const int)
-0:?           3 (const int)
-0:?           5 (const int)
+0:154      bitCount ( temp 3-component vector of int)
+0:154        Constant:
+0:154          7 (const int)
+0:154          3 (const int)
+0:154          5 (const int)
 0:155      cross-product ( temp 3-component vector of float)
 0:155        'inF0' ( in 3-component vector of float)
 0:155        'inF1' ( in 3-component vector of float)
@@ -1828,11 +1828,11 @@ Shader version: 500
 0:186        'inF1' ( in 3-component vector of float)
 0:186        Constant:
 0:186          2.000000
-0:?       bitFieldReverse ( temp 3-component vector of int)
-0:?         Constant:
-0:?           1 (const int)
-0:?           2 (const int)
-0:?           3 (const int)
+0:187      bitFieldReverse ( temp 3-component vector of int)
+0:187        Constant:
+0:187          1 (const int)
+0:187          2 (const int)
+0:187          3 (const int)
 0:188      roundEven ( temp 3-component vector of float)
 0:188        'inF0' ( in 3-component vector of float)
 0:189      inverse sqrt ( temp 3-component vector of float)
@@ -1874,10 +1874,10 @@ Shader version: 500
 0:201      trunc ( temp 3-component vector of float)
 0:201        'inF0' ( in 3-component vector of float)
 0:204      Branch: Return with expression
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
-0:?           3.000000
+0:204        Constant:
+0:204          1.000000
+0:204          2.000000
+0:204          3.000000
 0:208  Function Definition: VertexShaderFunction4(vf4;vf4;vf4;vu4;vu4; ( temp 4-component vector of float)
 0:208    Function Parameters: 
 0:208      'inF0' ( in 4-component vector of float)
@@ -1919,12 +1919,12 @@ Shader version: 500
 0:222        'inF0' ( in 4-component vector of float)
 0:223      hyp. cosine ( temp 4-component vector of float)
 0:223        'inF0' ( in 4-component vector of float)
-0:?       bitCount ( temp 4-component vector of int)
-0:?         Constant:
-0:?           7 (const int)
-0:?           3 (const int)
-0:?           5 (const int)
-0:?           2 (const int)
+0:224      bitCount ( temp 4-component vector of int)
+0:224        Constant:
+0:224          7 (const int)
+0:224          3 (const int)
+0:224          5 (const int)
+0:224          2 (const int)
 0:225      degrees ( temp 4-component vector of float)
 0:225        'inF0' ( in 4-component vector of float)
 0:226      distance ( temp float)
@@ -2017,12 +2017,12 @@ Shader version: 500
 0:256        'inF1' ( in 4-component vector of float)
 0:256        Constant:
 0:256          2.000000
-0:?       bitFieldReverse ( temp 4-component vector of int)
-0:?         Constant:
-0:?           1 (const int)
-0:?           2 (const int)
-0:?           3 (const int)
-0:?           4 (const int)
+0:257      bitFieldReverse ( temp 4-component vector of int)
+0:257        Constant:
+0:257          1 (const int)
+0:257          2 (const int)
+0:257          3 (const int)
+0:257          4 (const int)
 0:258      roundEven ( temp 4-component vector of float)
 0:258        'inF0' ( in 4-component vector of float)
 0:259      inverse sqrt ( temp 4-component vector of float)
@@ -2064,11 +2064,11 @@ Shader version: 500
 0:271      trunc ( temp 4-component vector of float)
 0:271        'inF0' ( in 4-component vector of float)
 0:274      Branch: Return with expression
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
-0:?           3.000000
-0:?           4.000000
+0:274        Constant:
+0:274          1.000000
+0:274          2.000000
+0:274          3.000000
+0:274          4.000000
 0:331  Function Definition: VertexShaderFunction2x2(mf22;mf22;mf22; ( temp 2X2 matrix of float)
 0:331    Function Parameters: 
 0:331      'inF0' ( in 2X2 matrix of float)
@@ -2193,11 +2193,11 @@ Shader version: 500
 0:333      trunc ( temp 2X2 matrix of float)
 0:333        'inF0' ( in 2X2 matrix of float)
 0:336      Branch: Return with expression
-0:?         Constant:
-0:?           2.000000
-0:?           2.000000
-0:?           2.000000
-0:?           2.000000
+0:336        Constant:
+0:336          2.000000
+0:336          2.000000
+0:336          2.000000
+0:336          2.000000
 0:340  Function Definition: VertexShaderFunction3x3(mf33;mf33;mf33; ( temp 3X3 matrix of float)
 0:340    Function Parameters: 
 0:340      'inF0' ( in 3X3 matrix of float)
@@ -2322,16 +2322,16 @@ Shader version: 500
 0:342      trunc ( temp 3X3 matrix of float)
 0:342        'inF0' ( in 3X3 matrix of float)
 0:345      Branch: Return with expression
-0:?         Constant:
-0:?           3.000000
-0:?           3.000000
-0:?           3.000000
-0:?           3.000000
-0:?           3.000000
-0:?           3.000000
-0:?           3.000000
-0:?           3.000000
-0:?           3.000000
+0:345        Constant:
+0:345          3.000000
+0:345          3.000000
+0:345          3.000000
+0:345          3.000000
+0:345          3.000000
+0:345          3.000000
+0:345          3.000000
+0:345          3.000000
+0:345          3.000000
 0:349  Function Definition: VertexShaderFunction4x4(mf44;mf44;mf44; ( temp 4X4 matrix of float)
 0:349    Function Parameters: 
 0:349      'inF0' ( in 4X4 matrix of float)
@@ -2456,23 +2456,23 @@ Shader version: 500
 0:351      trunc ( temp 4X4 matrix of float)
 0:351        'inF0' ( in 4X4 matrix of float)
 0:354      Branch: Return with expression
-0:?         Constant:
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
-0:?           4.000000
+0:354        Constant:
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
+0:354          4.000000
 0:372  Function Definition: TestGenMul2(f1;f1;vf2;vf2;mf22;mf22; ( temp void)
 0:372    Function Parameters: 
 0:372      'inF0' ( in float)

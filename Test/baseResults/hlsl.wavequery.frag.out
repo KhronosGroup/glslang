@@ -11,19 +11,19 @@ gl_FragCoord origin is upper left
 0:3        true case
 0:?         Sequence
 0:5          Branch: Return with expression
-0:?             Constant:
-0:?               1.000000
-0:?               2.000000
-0:?               3.000000
-0:?               4.000000
+0:5            Constant:
+0:5              1.000000
+0:5              2.000000
+0:5              3.000000
+0:5              4.000000
 0:3        false case
 0:?         Sequence
 0:9          Branch: Return with expression
-0:?             Constant:
-0:?               4.000000
-0:?               3.000000
-0:?               2.000000
-0:?               1.000000
+0:9            Constant:
+0:9              4.000000
+0:9              3.000000
+0:9              2.000000
+0:9              1.000000
 0:2  Function Definition: PixelShaderFunction( ( temp void)
 0:2    Function Parameters: 
 0:?     Sequence
@@ -49,19 +49,19 @@ gl_FragCoord origin is upper left
 0:3        true case
 0:?         Sequence
 0:5          Branch: Return with expression
-0:?             Constant:
-0:?               1.000000
-0:?               2.000000
-0:?               3.000000
-0:?               4.000000
+0:5            Constant:
+0:5              1.000000
+0:5              2.000000
+0:5              3.000000
+0:5              4.000000
 0:3        false case
 0:?         Sequence
 0:9          Branch: Return with expression
-0:?             Constant:
-0:?               4.000000
-0:?               3.000000
-0:?               2.000000
-0:?               1.000000
+0:9            Constant:
+0:9              4.000000
+0:9              3.000000
+0:9              2.000000
+0:9              1.000000
 0:2  Function Definition: PixelShaderFunction( ( temp void)
 0:2    Function Parameters: 
 0:?     Sequence

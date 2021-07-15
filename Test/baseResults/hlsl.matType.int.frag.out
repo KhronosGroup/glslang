@@ -176,11 +176,11 @@ gl_FragCoord origin is upper left
 0:95          'ps_output' ( temp structure{ temp 4-component vector of float color})
 0:95          Constant:
 0:95            0 (const int)
-0:?         Constant:
-0:?           0.000000
-0:?           0.000000
-0:?           0.000000
-0:?           0.000000
+0:95        Constant:
+0:95          0.000000
+0:95          0.000000
+0:95          0.000000
+0:95          0.000000
 0:96      Branch: Return with expression
 0:96        'ps_output' ( temp structure{ temp 4-component vector of float color})
 0:93  Function Definition: main( ( temp void)
@@ -377,11 +377,11 @@ gl_FragCoord origin is upper left
 0:95          'ps_output' ( temp structure{ temp 4-component vector of float color})
 0:95          Constant:
 0:95            0 (const int)
-0:?         Constant:
-0:?           0.000000
-0:?           0.000000
-0:?           0.000000
-0:?           0.000000
+0:95        Constant:
+0:95          0.000000
+0:95          0.000000
+0:95          0.000000
+0:95          0.000000
 0:96      Branch: Return with expression
 0:96        'ps_output' ( temp structure{ temp 4-component vector of float color})
 0:93  Function Definition: main( ( temp void)

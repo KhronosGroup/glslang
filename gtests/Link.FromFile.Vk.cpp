@@ -75,7 +75,7 @@ TEST_P(LinkTestVulkan, FromFile)
     result.linkingOutput = program.getInfoLog();
     result.linkingError = program.getInfoDebugLog();
 
-#ifndef GLSLANG_WEB
+#if !defined(GLSLANG_WEB) && !defined(GLSLANG_ANGLE)
         if (success)
             program.mapIO();
 #endif
@@ -109,21 +109,22 @@ TEST_P(LinkTestVulkan, FromFile)
 }
 
 // clang-format off
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
     Glsl, LinkTestVulkan,
     ::testing::ValuesIn(std::vector<std::vector<std::string>>({
         {"link1.vk.frag", "link2.vk.frag"},
         {"spv.unit1.frag", "spv.unit2.frag", "spv.unit3.frag"},
-		{"link.vk.matchingPC.0.0.frag", "link.vk.matchingPC.0.1.frag",
-			"link.vk.matchingPC.0.2.frag"},
-		{"link.vk.differentPC.0.0.frag", "link.vk.differentPC.0.1.frag",
-			"link.vk.differentPC.0.2.frag"},
-		{"link.vk.differentPC.1.0.frag", "link.vk.differentPC.1.1.frag",
-			"link.vk.differentPC.1.2.frag"},
+        {"link.vk.matchingPC.0.0.frag", "link.vk.matchingPC.0.1.frag",
+            "link.vk.matchingPC.0.2.frag"},
+           {"link.vk.differentPC.0.0.frag", "link.vk.differentPC.0.1.frag",
+            "link.vk.differentPC.0.2.frag"},
+        {"link.vk.differentPC.1.0.frag", "link.vk.differentPC.1.1.frag",
+            "link.vk.differentPC.1.2.frag"},
         {"link.vk.pcNamingValid.0.0.vert", "link.vk.pcNamingValid.0.1.vert"},
         {"link.vk.pcNamingInvalid.0.0.vert", "link.vk.pcNamingInvalid.0.1.vert"},
         {"link.vk.multiBlocksValid.0.0.vert", "link.vk.multiBlocksValid.0.1.vert"},
         {"link.vk.multiBlocksValid.1.0.geom", "link.vk.multiBlocksValid.1.1.geom"},
+        {"link.vk.inconsistentGLPerVertex.0.vert", "link.vk.inconsistentGLPerVertex.0.geom"},
     }))
 );
 // clang-format on

@@ -33,7 +33,7 @@
 
 if(WIN32)
     add_subdirectory(OSDependent/Windows)
-elseif(UNIX)
+elseif(UNIX OR "${CMAKE_SYSTEM_NAME}" STREQUAL "Fuchsia")
     add_subdirectory(OSDependent/Unix)
 else(WIN32)
     message("unknown platform")
@@ -52,7 +52,6 @@ add_library(GenericCodeGen STATIC
     GenericCodeGen/Link.cpp)
 set_property(TARGET GenericCodeGen PROPERTY POSITION_INDEPENDENT_CODE ON)
 set_property(TARGET GenericCodeGen PROPERTY FOLDER glslang)
-glslang_default_to_hidden_visibility(GenericCodeGen)
 
 ################################################################################
 # MachineIndependent
@@ -74,6 +73,7 @@ set(MACHINEINDEPENDENT_SOURCES
     MachineIndependent/RemoveTree.cpp
     MachineIndependent/Scan.cpp
     MachineIndependent/ShaderLang.cpp
+    MachineIndependent/SpirvIntrinsics.cpp
     MachineIndependent/SymbolTable.cpp
     MachineIndependent/Versions.cpp
     MachineIndependent/intermOut.cpp
@@ -134,7 +134,6 @@ endif(ENABLE_HLSL)
 add_library(MachineIndependent STATIC ${MACHINEINDEPENDENT_SOURCES} ${MACHINEINDEPENDENT_HEADERS})
 set_property(TARGET MachineIndependent PROPERTY POSITION_INDEPENDENT_CODE ON)
 set_property(TARGET MachineIndependent PROPERTY FOLDER glslang)
-glslang_only_export_explicit_symbols(MachineIndependent)
 
 glslang_add_build_info_dependency(MachineIndependent)
 
@@ -162,6 +161,7 @@ set(GLSLANG_HEADERS
     Include/PoolAlloc.h
     Include/ResourceLimits.h
     Include/ShHandle.h
+    Include/SpirvIntrinsics.h
     Include/Types.h)
 
 add_library(glslang ${LIB_TYPE} ${BISON_GLSLParser_OUTPUT_SOURCE} ${GLSLANG_SOURCES} ${GLSLANG_HEADERS})
@@ -170,7 +170,7 @@ set_target_properties(glslang PROPERTIES
     POSITION_INDEPENDENT_CODE ON
     VERSION   "${GLSLANG_VERSION}"
     SOVERSION "${GLSLANG_VERSION_MAJOR}")
-target_link_libraries(glslang PRIVATE OGLCompiler MachineIndependent)
+target_link_libraries(glslang PRIVATE OGLCompiler OSDependent MachineIndependent)
 target_include_directories(glslang PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)

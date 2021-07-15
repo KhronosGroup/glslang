@@ -111,7 +111,7 @@ spv.RayGenShaderArray.rgen
               51:   32(fvec3) Load 50
               54:     49(ptr) AccessChain 36 53
               55:   32(fvec3) Load 54
-                              TraceRayKHR 43 44 45 46 47 12 51 52 55 56 48
+                              TraceNV 43 44 45 46 47 12 51 52 55 56 48
               61:     38(ptr) AccessChain 36 37
               62:     33(int) Load 61
               63:     41(ptr) AccessChain 60(accNV1) 62
@@ -124,7 +124,7 @@ spv.RayGenShaderArray.rgen
               70:   32(fvec3) Load 69
               71:     49(ptr) AccessChain 36 53
               72:   32(fvec3) Load 71
-                              TraceRayKHR 64 65 66 67 68 12 70 52 72 56 48
+                              TraceNV 64 65 66 67 68 12 70 52 72 56 48
               73:     38(ptr) AccessChain 36 37
               74:     33(int) Load 73
               75:     33(int) CopyObject 74
@@ -138,6 +138,6 @@ spv.RayGenShaderArray.rgen
               83:   32(fvec3) Load 82
               84:     49(ptr) AccessChain 36 53
               85:   32(fvec3) Load 84
-                              TraceRayKHR 77 78 79 80 81 12 83 52 85 56 48
+                              TraceNV 77 78 79 80 81 12 83 52 85 56 48
                               Return
                               FunctionEnd

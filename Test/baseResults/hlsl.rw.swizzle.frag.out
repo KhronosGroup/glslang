@@ -6,10 +6,10 @@ gl_FragCoord origin is upper left
 0:4    Function Parameters: 
 0:?     Sequence
 0:4      Branch: Return with expression
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
-0:?           3.000000
+0:4        Constant:
+0:4          1.000000
+0:4          2.000000
+0:4          3.000000
 0:7  Function Definition: @main( ( temp 4-component vector of float)
 0:7    Function Parameters: 
 0:?     Sequence
@@ -35,10 +35,10 @@ gl_FragCoord origin is upper left
 0:12                1 (const int)
 0:12              Constant:
 0:12                0 (const int)
-0:?           Constant:
-0:?             1.000000
-0:?             2.000000
-0:?             3.000000
+0:12          Constant:
+0:12            1.000000
+0:12            2.000000
+0:12            3.000000
 0:12        imageStore ( temp void)
 0:12          'rwtx' (layout( rgba32f) uniform image2D)
 0:12          'tc2' ( temp 2-component vector of int)
@@ -109,10 +109,10 @@ gl_FragCoord origin is upper left
 0:4    Function Parameters: 
 0:?     Sequence
 0:4      Branch: Return with expression
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
-0:?           3.000000
+0:4        Constant:
+0:4          1.000000
+0:4          2.000000
+0:4          3.000000
 0:7  Function Definition: @main( ( temp 4-component vector of float)
 0:7    Function Parameters: 
 0:?     Sequence
@@ -138,10 +138,10 @@ gl_FragCoord origin is upper left
 0:12                1 (const int)
 0:12              Constant:
 0:12                0 (const int)
-0:?           Constant:
-0:?             1.000000
-0:?             2.000000
-0:?             3.000000
+0:12          Constant:
+0:12            1.000000
+0:12            2.000000
+0:12            3.000000
 0:12        imageStore ( temp void)
 0:12          'rwtx' (layout( rgba32f) uniform image2D)
 0:12          'tc2' ( temp 2-component vector of int)

@@ -7,27 +7,27 @@ Shader version: 500
 0:14      Sequence
 0:14        move second child to first child ( temp 4-component vector of float)
 0:14          'PosOut' ( temp 4-component vector of float)
-0:?           Constant:
-0:?             0.000000
-0:?             0.000000
-0:?             0.000000
-0:?             0.000000
+0:14          Constant:
+0:14            0.000000
+0:14            0.000000
+0:14            0.000000
+0:14            0.000000
 0:16      add second child into first child ( temp 4-component vector of float)
 0:16        'PosOut' ( temp 4-component vector of float)
 0:16        textureLod ( temp 4-component vector of float)
 0:16          'g_sam' (layout( binding=0) uniform sampler2D)
 0:16          Construct vec2 ( temp 2-component vector of float)
-0:?             Constant:
-0:?               0.300000
-0:?               0.400000
-0:?               0.000000
-0:?               1.000000
+0:16            Constant:
+0:16              0.300000
+0:16              0.400000
+0:16              0.000000
+0:16              1.000000
 0:16          direct index ( temp float)
-0:?             Constant:
-0:?               0.300000
-0:?               0.400000
-0:?               0.000000
-0:?               1.000000
+0:16            Constant:
+0:16              0.300000
+0:16              0.400000
+0:16              0.000000
+0:16              1.000000
 0:16            Constant:
 0:16              3 (const int)
 0:17      add second child into first child ( temp 4-component vector of float)
@@ -35,17 +35,17 @@ Shader version: 500
 0:17        textureLod ( temp 4-component vector of float)
 0:17          'g_sam2D' (layout( binding=1) uniform sampler2D)
 0:17          Construct vec2 ( temp 2-component vector of float)
-0:?             Constant:
-0:?               0.500000
-0:?               0.600000
-0:?               0.000000
-0:?               1.000000
+0:17            Constant:
+0:17              0.500000
+0:17              0.600000
+0:17              0.000000
+0:17              1.000000
 0:17          direct index ( temp float)
-0:?             Constant:
-0:?               0.500000
-0:?               0.600000
-0:?               0.000000
-0:?               1.000000
+0:17            Constant:
+0:17              0.500000
+0:17              0.600000
+0:17              0.000000
+0:17              1.000000
 0:17            Constant:
 0:17              3 (const int)
 0:19      move second child to first child ( temp 4-component vector of float)
@@ -86,27 +86,27 @@ Shader version: 500
 0:14      Sequence
 0:14        move second child to first child ( temp 4-component vector of float)
 0:14          'PosOut' ( temp 4-component vector of float)
-0:?           Constant:
-0:?             0.000000
-0:?             0.000000
-0:?             0.000000
-0:?             0.000000
+0:14          Constant:
+0:14            0.000000
+0:14            0.000000
+0:14            0.000000
+0:14            0.000000
 0:16      add second child into first child ( temp 4-component vector of float)
 0:16        'PosOut' ( temp 4-component vector of float)
 0:16        textureLod ( temp 4-component vector of float)
 0:16          'g_sam' (layout( binding=0) uniform sampler2D)
 0:16          Construct vec2 ( temp 2-component vector of float)
-0:?             Constant:
-0:?               0.300000
-0:?               0.400000
-0:?               0.000000
-0:?               1.000000
+0:16            Constant:
+0:16              0.300000
+0:16              0.400000
+0:16              0.000000
+0:16              1.000000
 0:16          direct index ( temp float)
-0:?             Constant:
-0:?               0.300000
-0:?               0.400000
-0:?               0.000000
-0:?               1.000000
+0:16            Constant:
+0:16              0.300000
+0:16              0.400000
+0:16              0.000000
+0:16              1.000000
 0:16            Constant:
 0:16              3 (const int)
 0:17      add second child into first child ( temp 4-component vector of float)
@@ -114,17 +114,17 @@ Shader version: 500
 0:17        textureLod ( temp 4-component vector of float)
 0:17          'g_sam2D' (layout( binding=1) uniform sampler2D)
 0:17          Construct vec2 ( temp 2-component vector of float)
-0:?             Constant:
-0:?               0.500000
-0:?               0.600000
-0:?               0.000000
-0:?               1.000000
+0:17            Constant:
+0:17              0.500000
+0:17              0.600000
+0:17              0.000000
+0:17              1.000000
 0:17          direct index ( temp float)
-0:?             Constant:
-0:?               0.500000
-0:?               0.600000
-0:?               0.000000
-0:?               1.000000
+0:17            Constant:
+0:17              0.500000
+0:17              0.600000
+0:17              0.000000
+0:17              1.000000
 0:17            Constant:
 0:17              3 (const int)
 0:19      move second child to first child ( temp 4-component vector of float)

@@ -50,9 +50,9 @@ using depth_any
 0:47              'g_tTex2df4' ( uniform texture2DShadow)
 0:47              'g_sSamp' (layout( binding=0) uniform sampler)
 0:47            Construct vec3 ( temp 3-component vector of float)
-0:?               Constant:
-0:?                 0.100000
-0:?                 0.200000
+0:47              Constant:
+0:47                0.100000
+0:47                0.200000
 0:47              Constant:
 0:47                0.750000
 0:48      Sequence
@@ -63,9 +63,9 @@ using depth_any
 0:48              'g_tTex2di4' ( uniform itexture2DShadow)
 0:48              'g_sSamp' (layout( binding=0) uniform sampler)
 0:48            Construct vec3 ( temp 3-component vector of float)
-0:?               Constant:
-0:?                 0.100000
-0:?                 0.200000
+0:48              Constant:
+0:48                0.100000
+0:48                0.200000
 0:48              Constant:
 0:48                0.750000
 0:49      Sequence
@@ -76,9 +76,9 @@ using depth_any
 0:49              'g_tTex2du4' ( uniform utexture2DShadow)
 0:49              'g_sSamp' (layout( binding=0) uniform sampler)
 0:49            Construct vec3 ( temp 3-component vector of float)
-0:?               Constant:
-0:?                 0.100000
-0:?                 0.200000
+0:49              Constant:
+0:49                0.100000
+0:49                0.200000
 0:49              Constant:
 0:49                0.750000
 0:53      Sequence
@@ -89,10 +89,10 @@ using depth_any
 0:53              'g_tTexcdf4' ( uniform textureCubeShadow)
 0:53              'g_sSamp' (layout( binding=0) uniform sampler)
 0:53            Construct vec4 ( temp 4-component vector of float)
-0:?               Constant:
-0:?                 0.100000
-0:?                 0.200000
-0:?                 0.300000
+0:53              Constant:
+0:53                0.100000
+0:53                0.200000
+0:53                0.300000
 0:53              Constant:
 0:53                0.750000
 0:54      Sequence
@@ -103,10 +103,10 @@ using depth_any
 0:54              'g_tTexcdi4' ( uniform itextureCubeShadow)
 0:54              'g_sSamp' (layout( binding=0) uniform sampler)
 0:54            Construct vec4 ( temp 4-component vector of float)
-0:?               Constant:
-0:?                 0.100000
-0:?                 0.200000
-0:?                 0.300000
+0:54              Constant:
+0:54                0.100000
+0:54                0.200000
+0:54                0.300000
 0:54              Constant:
 0:54                0.750000
 0:55      Sequence
@@ -117,10 +117,10 @@ using depth_any
 0:55              'g_tTexcdu4' ( uniform utextureCubeShadow)
 0:55              'g_sSamp' (layout( binding=0) uniform sampler)
 0:55            Construct vec4 ( temp 4-component vector of float)
-0:?               Constant:
-0:?                 0.100000
-0:?                 0.200000
-0:?                 0.300000
+0:55              Constant:
+0:55                0.100000
+0:55                0.200000
+0:55                0.300000
 0:55              Constant:
 0:55                0.750000
 0:57      move second child to first child ( temp 4-component vector of float)
@@ -242,9 +242,9 @@ using depth_any
 0:47              'g_tTex2df4' ( uniform texture2DShadow)
 0:47              'g_sSamp' (layout( binding=0) uniform sampler)
 0:47            Construct vec3 ( temp 3-component vector of float)
-0:?               Constant:
-0:?                 0.100000
-0:?                 0.200000
+0:47              Constant:
+0:47                0.100000
+0:47                0.200000
 0:47              Constant:
 0:47                0.750000
 0:48      Sequence
@@ -255,9 +255,9 @@ using depth_any
 0:48              'g_tTex2di4' ( uniform itexture2DShadow)
 0:48              'g_sSamp' (layout( binding=0) uniform sampler)
 0:48            Construct vec3 ( temp 3-component vector of float)
-0:?               Constant:
-0:?                 0.100000
-0:?                 0.200000
+0:48              Constant:
+0:48                0.100000
+0:48                0.200000
 0:48              Constant:
 0:48                0.750000
 0:49      Sequence
@@ -268,9 +268,9 @@ using depth_any
 0:49              'g_tTex2du4' ( uniform utexture2DShadow)
 0:49              'g_sSamp' (layout( binding=0) uniform sampler)
 0:49            Construct vec3 ( temp 3-component vector of float)
-0:?               Constant:
-0:?                 0.100000
-0:?                 0.200000
+0:49              Constant:
+0:49                0.100000
+0:49                0.200000
 0:49              Constant:
 0:49                0.750000
 0:53      Sequence
@@ -281,10 +281,10 @@ using depth_any
 0:53              'g_tTexcdf4' ( uniform textureCubeShadow)
 0:53              'g_sSamp' (layout( binding=0) uniform sampler)
 0:53            Construct vec4 ( temp 4-component vector of float)
-0:?               Constant:
-0:?                 0.100000
-0:?                 0.200000
-0:?                 0.300000
+0:53              Constant:
+0:53                0.100000
+0:53                0.200000
+0:53                0.300000
 0:53              Constant:
 0:53                0.750000
 0:54      Sequence
@@ -295,10 +295,10 @@ using depth_any
 0:54              'g_tTexcdi4' ( uniform itextureCubeShadow)
 0:54              'g_sSamp' (layout( binding=0) uniform sampler)
 0:54            Construct vec4 ( temp 4-component vector of float)
-0:?               Constant:
-0:?                 0.100000
-0:?                 0.200000
-0:?                 0.300000
+0:54              Constant:
+0:54                0.100000
+0:54                0.200000
+0:54                0.300000
 0:54              Constant:
 0:54                0.750000
 0:55      Sequence
@@ -309,10 +309,10 @@ using depth_any
 0:55              'g_tTexcdu4' ( uniform utextureCubeShadow)
 0:55              'g_sSamp' (layout( binding=0) uniform sampler)
 0:55            Construct vec4 ( temp 4-component vector of float)
-0:?               Constant:
-0:?                 0.100000
-0:?                 0.200000
-0:?                 0.300000
+0:55              Constant:
+0:55                0.100000
+0:55                0.200000
+0:55                0.300000
 0:55              Constant:
 0:55                0.750000
 0:57      move second child to first child ( temp 4-component vector of float)

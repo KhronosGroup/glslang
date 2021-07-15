@@ -16,7 +16,7 @@ Shader version: 500
 0:19          's' ( temp structure{ temp 4-component vector of float pos,  temp 2-component vector of float UV0,  temp 2-component vector of float UV1,  temp 2-component vector of float UV2,  temp 2-component vector of float UV3})
 0:19          Constant:
 0:19            1 (const int)
-0:?         Construct vec2 ( temp 2-component vector of float)
+0:19        Construct vec2 ( temp 2-component vector of float)
 0:19          direct index ( temp float)
 0:19            'v' ( in 4-component vector of float)
 0:19            Constant:
@@ -30,7 +30,7 @@ Shader version: 500
 0:20          's' ( temp structure{ temp 4-component vector of float pos,  temp 2-component vector of float UV0,  temp 2-component vector of float UV1,  temp 2-component vector of float UV2,  temp 2-component vector of float UV3})
 0:20          Constant:
 0:20            2 (const int)
-0:?         Construct vec2 ( temp 2-component vector of float)
+0:20        Construct vec2 ( temp 2-component vector of float)
 0:20          direct index ( temp float)
 0:20            'v' ( in 4-component vector of float)
 0:20            Constant:
@@ -44,7 +44,7 @@ Shader version: 500
 0:21          's' ( temp structure{ temp 4-component vector of float pos,  temp 2-component vector of float UV0,  temp 2-component vector of float UV1,  temp 2-component vector of float UV2,  temp 2-component vector of float UV3})
 0:21          Constant:
 0:21            3 (const int)
-0:?         Construct vec2 ( temp 2-component vector of float)
+0:21        Construct vec2 ( temp 2-component vector of float)
 0:21          direct index ( temp float)
 0:21            'v' ( in 4-component vector of float)
 0:21            Constant:
@@ -58,7 +58,7 @@ Shader version: 500
 0:22          's' ( temp structure{ temp 4-component vector of float pos,  temp 2-component vector of float UV0,  temp 2-component vector of float UV1,  temp 2-component vector of float UV2,  temp 2-component vector of float UV3})
 0:22          Constant:
 0:22            4 (const int)
-0:?         Construct vec2 ( temp 2-component vector of float)
+0:22        Construct vec2 ( temp 2-component vector of float)
 0:22          direct index ( temp float)
 0:22            'v' ( in 4-component vector of float)
 0:22            Constant:
@@ -139,7 +139,7 @@ Shader version: 500
 0:19          's' ( temp structure{ temp 4-component vector of float pos,  temp 2-component vector of float UV0,  temp 2-component vector of float UV1,  temp 2-component vector of float UV2,  temp 2-component vector of float UV3})
 0:19          Constant:
 0:19            1 (const int)
-0:?         Construct vec2 ( temp 2-component vector of float)
+0:19        Construct vec2 ( temp 2-component vector of float)
 0:19          direct index ( temp float)
 0:19            'v' ( in 4-component vector of float)
 0:19            Constant:
@@ -153,7 +153,7 @@ Shader version: 500
 0:20          's' ( temp structure{ temp 4-component vector of float pos,  temp 2-component vector of float UV0,  temp 2-component vector of float UV1,  temp 2-component vector of float UV2,  temp 2-component vector of float UV3})
 0:20          Constant:
 0:20            2 (const int)
-0:?         Construct vec2 ( temp 2-component vector of float)
+0:20        Construct vec2 ( temp 2-component vector of float)
 0:20          direct index ( temp float)
 0:20            'v' ( in 4-component vector of float)
 0:20            Constant:
@@ -167,7 +167,7 @@ Shader version: 500
 0:21          's' ( temp structure{ temp 4-component vector of float pos,  temp 2-component vector of float UV0,  temp 2-component vector of float UV1,  temp 2-component vector of float UV2,  temp 2-component vector of float UV3})
 0:21          Constant:
 0:21            3 (const int)
-0:?         Construct vec2 ( temp 2-component vector of float)
+0:21        Construct vec2 ( temp 2-component vector of float)
 0:21          direct index ( temp float)
 0:21            'v' ( in 4-component vector of float)
 0:21            Constant:
@@ -181,7 +181,7 @@ Shader version: 500
 0:22          's' ( temp structure{ temp 4-component vector of float pos,  temp 2-component vector of float UV0,  temp 2-component vector of float UV1,  temp 2-component vector of float UV2,  temp 2-component vector of float UV3})
 0:22          Constant:
 0:22            4 (const int)
-0:?         Construct vec2 ( temp 2-component vector of float)
+0:22        Construct vec2 ( temp 2-component vector of float)
 0:22          direct index ( temp float)
 0:22            'v' ( in 4-component vector of float)
 0:22            Constant:

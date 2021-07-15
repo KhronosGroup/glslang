@@ -4,8 +4,8 @@ rayQuery-allOps.comp
 // Id's are bound by 258
 
                               Capability Shader
-                              Capability RayQueryProvisionalKHR
-                              Capability RayTraversalPrimitiveCullingProvisionalKHR
+                              Capability RayQueryKHR
+                              Capability RayTraversalPrimitiveCullingKHR
                               Extension  "SPV_KHR_ray_query"
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
@@ -86,8 +86,9 @@ rayQuery-allOps.comp
               35:             TypePointer Function 8(float)
               37:     18(int) Constant 3
               38:    8(float) Constant 1176255488
-              45:             TypeRayQueryProvisionalKHR
-              46:             TypePointer Function 45
+              45:             TypeRayQueryKHR
+              46:             TypePointer Private 45
+    47(rayQuery):     46(ptr) Variable Private
               48:             TypeAccelerationStructureKHR
               49:             TypePointer UniformConstant 48
         50(rtas):     49(ptr) Variable UniformConstant
@@ -114,7 +115,6 @@ rayQuery-allOps.comp
          4(main):           2 Function None 3
                5:             Label
          43(ray):     25(ptr) Variable Function
-    47(rayQuery):     46(ptr) Variable Function
 69(candidateType):     68(ptr) Variable Function
      78(_mat4x3):     77(ptr) Variable Function
      83(_mat3x4):     82(ptr) Variable Function
@@ -223,7 +223,7 @@ rayQuery-allOps.comp
              129:           2       FunctionCall 6(doSomething()
                                     Branch 128
              128:                 Label
-             130:     18(int)     RayQueryGetIntersectionInstanceShaderBindingTableRecordOffsetKHR 47(rayQuery) 23
+             130:     14(int)     RayQueryGetIntersectionInstanceShaderBindingTableRecordOffsetKHR 47(rayQuery) 23
              131:    66(bool)     UGreaterThan 130 20
                                   SelectionMerge 133 None
                                   BranchConditional 131 132 133

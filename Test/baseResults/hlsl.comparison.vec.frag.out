@@ -9,11 +9,11 @@ gl_FragCoord origin is upper left
 0:5      Sequence
 0:5        move second child to first child ( temp 4-component vector of float)
 0:5          'v04' ( temp 4-component vector of float)
-0:?           Constant:
-0:?             0.000000
-0:?             0.000000
-0:?             0.000000
-0:?             0.000000
+0:5          Constant:
+0:5            0.000000
+0:5            0.000000
+0:5            0.000000
+0:5            0.000000
 0:6      Sequence
 0:6        move second child to first child ( temp float)
 0:6          'v01' ( temp float)
@@ -142,11 +142,11 @@ gl_FragCoord origin is upper left
 0:5      Sequence
 0:5        move second child to first child ( temp 4-component vector of float)
 0:5          'v04' ( temp 4-component vector of float)
-0:?           Constant:
-0:?             0.000000
-0:?             0.000000
-0:?             0.000000
-0:?             0.000000
+0:5          Constant:
+0:5            0.000000
+0:5            0.000000
+0:5            0.000000
+0:5            0.000000
 0:6      Sequence
 0:6        move second child to first child ( temp float)
 0:6          'v01' ( temp float)

@@ -889,19 +889,20 @@ f16vec4 testSparseTextureGatherOffset()
 f16vec4 testSparseTextureGatherOffsets()
 {
     f16vec4 texel = f16vec4(0.0hf);
+    const ivec2 constOffsets[4] = ivec2[4](ivec2(1,2), ivec2(3,4), ivec2(15,16), ivec2(-2,0));
 
-    sparseTextureGatherOffsetsARB(s2D, c2, offsets, texel, 0);
-    sparseTextureGatherOffsetsARB(s2D, f16c2, offsets, texel, 0, f16bias);
-    sparseTextureGatherOffsetsARB(s2DArray, c3, offsets, texel, 0);
-    sparseTextureGatherOffsetsARB(s2DArray, f16c3, offsets, texel, 0, f16bias);
-    sparseTextureGatherOffsetsARB(s2DRect, c2, offsets, texel, 0);
-    sparseTextureGatherOffsetsARB(s2DRect, f16c2, offsets, texel, 0);
-    sparseTextureGatherOffsetsARB(s2DShadow, c2, compare, offsets, texel);
-    sparseTextureGatherOffsetsARB(s2DShadow, f16c2, compare, offsets, texel);
-    sparseTextureGatherOffsetsARB(s2DArrayShadow, c3, compare, offsets, texel);
-    sparseTextureGatherOffsetsARB(s2DArrayShadow, f16c3, compare, offsets, texel);
-    sparseTextureGatherOffsetsARB(s2DRectShadow, c2, compare, offsets, texel);
-    sparseTextureGatherOffsetsARB(s2DRectShadow, f16c2, compare, offsets, texel);
+    sparseTextureGatherOffsetsARB(s2D, c2, constOffsets, texel, 0);
+    sparseTextureGatherOffsetsARB(s2D, f16c2, constOffsets, texel, 0, f16bias);
+    sparseTextureGatherOffsetsARB(s2DArray, c3, constOffsets, texel, 0);
+    sparseTextureGatherOffsetsARB(s2DArray, f16c3, constOffsets, texel, 0, f16bias);
+    sparseTextureGatherOffsetsARB(s2DRect, c2, constOffsets, texel, 0);
+    sparseTextureGatherOffsetsARB(s2DRect, f16c2, constOffsets, texel, 0);
+    sparseTextureGatherOffsetsARB(s2DShadow, c2, compare, constOffsets, texel);
+    sparseTextureGatherOffsetsARB(s2DShadow, f16c2, compare, constOffsets, texel);
+    sparseTextureGatherOffsetsARB(s2DArrayShadow, c3, compare, constOffsets, texel);
+    sparseTextureGatherOffsetsARB(s2DArrayShadow, f16c3, compare, constOffsets, texel);
+    sparseTextureGatherOffsetsARB(s2DRectShadow, c2, compare, constOffsets, texel);
+    sparseTextureGatherOffsetsARB(s2DRectShadow, f16c2, compare, constOffsets, texel);
 
     return texel;
 }
