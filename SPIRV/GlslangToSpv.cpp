@@ -179,6 +179,7 @@ protected:
     spv::Id accessChainLoad(const glslang::TType& type);
     void    accessChainStore(const glslang::TType& type, spv::Id rvalue);
     void multiTypeStore(const glslang::TType&, spv::Id rValue);
+    spv::Id convertLoadedBoolInUniformToUint(const glslang::TType& type, spv::Id nominalTypeId, spv::Id loadedId);
     glslang::TLayoutPacking getExplicitLayout(const glslang::TType& type) const;
     int getArrayStride(const glslang::TType& arrayType, glslang::TLayoutPacking, glslang::TLayoutMatrix);
     int getMatrixStride(const glslang::TType& matrixType, glslang::TLayoutPacking, glslang::TLayoutMatrix);
@@ -2229,6 +2230,49 @@ bool TGlslangToSpvTraverser::visitBinary(glslang::TVisit /* visit */, glslang::T
         builder.setAccessChainRValue(result);
         return false;
     }
+}
+
+spv::Id TGlslangToSpvTraverser::convertLoadedBoolInUniformToUint(const glslang::TType& type,
+                                                                 spv::Id nominalTypeId,
+                                                                 spv::Id loadedId)
+{
+    if (builder.isScalarType(nominalTypeId)) {
+        // Conversion for bool
+        spv::Id boolType = builder.makeBoolType();
+        if (nominalTypeId != boolType)
+            return builder.createBinOp(spv::OpINotEqual, boolType, loadedId, builder.makeUintConstant(0));
+    } else if (builder.isVectorType(nominalTypeId)) {
+        // Conversion for bvec
+        int vecSize = builder.getNumTypeComponents(nominalTypeId);
+        spv::Id bvecType = builder.makeVectorType(builder.makeBoolType(), vecSize);
+        if (nominalTypeId != bvecType)
+            loadedId = builder.createBinOp(spv::OpINotEqual, bvecType, loadedId,
+                makeSmearedConstant(builder.makeUintConstant(0), vecSize));
+    } else if (builder.isArrayType(nominalTypeId)) {
+        // Conversion for bool array
+        spv::Id boolArrayTypeId = convertGlslangToSpvType(type);
+        if (nominalTypeId != boolArrayTypeId)
+        {
+            // Use OpCopyLogical from SPIR-V 1.4 if available.
+            if (glslangIntermediate->getSpv().spv >= glslang::EShTargetSpv_1_4)
+                return builder.createUnaryOp(spv::OpCopyLogical, boolArrayTypeId, loadedId);
+
+            glslang::TType glslangElementType(type, 0);
+            spv::Id elementNominalTypeId = builder.getContainedTypeId(nominalTypeId);
+            std::vector<spv::Id> constituents;
+            for (int index = 0; index < type.getOuterArraySize(); ++index) {
+                // get the element
+                spv::Id elementValue = builder.createCompositeExtract(loadedId, elementNominalTypeId, index);
+
+                // recursively convert it
+                spv::Id elementConvertedValue = convertLoadedBoolInUniformToUint(glslangElementType, elementNominalTypeId, elementValue);
+                constituents.push_back(elementConvertedValue);
+            }
+            return builder.createCompositeConstruct(boolArrayTypeId, constituents);
+        }
+    }
+
+    return loadedId;
 }
 
 // Figure out what, if any, type changes are needed when accessing a specific built-in.
@@ -4560,19 +4604,7 @@ spv::Id TGlslangToSpvTraverser::accessChainLoad(const glslang::TType& type)
 
     // Need to convert to abstract types when necessary
     if (type.getBasicType() == glslang::EbtBool) {
-        if (builder.isScalarType(nominalTypeId)) {
-            // Conversion for bool
-            spv::Id boolType = builder.makeBoolType();
-            if (nominalTypeId != boolType)
-                loadedId = builder.createBinOp(spv::OpINotEqual, boolType, loadedId, builder.makeUintConstant(0));
-        } else if (builder.isVectorType(nominalTypeId)) {
-            // Conversion for bvec
-            int vecSize = builder.getNumTypeComponents(nominalTypeId);
-            spv::Id bvecType = builder.makeVectorType(builder.makeBoolType(), vecSize);
-            if (nominalTypeId != bvecType)
-                loadedId = builder.createBinOp(spv::OpINotEqual, bvecType, loadedId,
-                    makeSmearedConstant(builder.makeUintConstant(0), vecSize));
-        }
+        loadedId = convertLoadedBoolInUniformToUint(type, nominalTypeId, loadedId);
     }
 
     return loadedId;
