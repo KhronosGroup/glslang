@@ -4400,7 +4400,6 @@ void TGlslangToSpvTraverser::decorateStructType(const glslang::TType& type,
 {
     // Name and decorate the non-hidden members
     int offset = -1;
-    int locationOffset = 0;  // for use within the members of this struct
     bool memberLocationInvalid = type.isArrayOfArrays() ||
         (type.isArray() && (type.getQualifier().isArrayedIo(glslangIntermediate->getStage()) == false));
     for (int i = 0; i < (int)glslangMembers->size(); i++) {
@@ -4457,10 +4456,6 @@ void TGlslangToSpvTraverser::decorateStructType(const glslang::TType& type,
         // ill-specified and decisions have been made to not allow this.
         if (!memberLocationInvalid && memberQualifier.hasLocation())
             builder.addMemberDecoration(spvType, member, spv::DecorationLocation, memberQualifier.layoutLocation);
-
-        if (qualifier.hasLocation())      // track for upcoming inheritance
-            locationOffset += glslangIntermediate->computeTypeLocationSize(
-                                            glslangMember, glslangIntermediate->getStage());
 
         // component, XFB, others
         if (glslangMember.getQualifier().hasComponent())
