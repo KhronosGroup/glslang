@@ -5317,7 +5317,10 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
 
     int components = node->getType().getVectorSize();
 
-    if (node->getOp() == glslang::EOpTextureFetch) {
+    if (node->getOp() == glslang::EOpImageLoad ||
+        node->getOp() == glslang::EOpImageLoadLod ||
+        node->getOp() == glslang::EOpTextureFetch ||
+        node->getOp() == glslang::EOpTextureFetchOffset) {
         // These must produce 4 components, per SPIR-V spec.  We'll add a conversion constructor if needed.
         // This will only happen through the HLSL path for operator[], so we do not have to handle e.g.
         // the EOpTexture/Proj/Lod/etc family.  It would be harmless to do so, but would need more logic
