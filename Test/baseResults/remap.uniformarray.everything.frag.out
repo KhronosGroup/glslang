@@ -28,14 +28,17 @@ remap.uniformarray.everything.frag
               24:             TypeVector 13(float) 3
              661:             TypePointer Input 24(fvec3)
             4957:    661(ptr) Variable Input
+            2570:     11(int) Constant 0
+             650:             TypePointer Function 13(float)
+            2573:     11(int) Constant 1
+            2576:     11(int) Constant 2
             2618:     11(int) Constant 16
-             669:             TypeArray 13(float) 2618
-            1306:             TypePointer Input 669
-            4339:   1306(ptr) Variable Input
+             709:             TypeArray 13(float) 2618
+            1346:             TypePointer Input 709
+            4339:   1346(ptr) Variable Input
             2607:     12(int) Constant 12
-             650:             TypePointer Input 13(float)
+             651:             TypePointer Input 13(float)
             2579:     11(int) Constant 3
-             651:             TypePointer Function 13(float)
              668:             TypePointer Output 29(fvec4)
             5139:    668(ptr) Variable Output
             5663:           8 Function None 1282
@@ -49,17 +52,23 @@ remap.uniformarray.everything.frag
                               Store 4902 23084
            21218:   24(fvec3) Load 4957
            13695:   29(fvec4) Load 4902
-           23883:   24(fvec3) VectorShuffle 13695 13695 0 1 2
-           15591:   24(fvec3) FAdd 23883 21218
-           17086:   29(fvec4) Load 4902
-            7051:   29(fvec4) VectorShuffle 17086 15591 4 5 6 3
-                              Store 4902 7051
-           18282:    650(ptr) AccessChain 4339 2607
-            7372:   13(float) Load 18282
-           21371:    651(ptr) AccessChain 4902 2579
+           23959:   24(fvec3) VectorShuffle 13695 13695 0 1 2
+           14937:   24(fvec3) FAdd 23959 21218
+           15653:    650(ptr) AccessChain 4902 2570
+           21354:   13(float) CompositeExtract 14937 0
+                              Store 15653 21354
+           16378:    650(ptr) AccessChain 4902 2573
+           15746:   13(float) CompositeExtract 14937 1
+                              Store 16378 15746
+           16379:    650(ptr) AccessChain 4902 2576
+           15747:   13(float) CompositeExtract 14937 2
+                              Store 16379 15747
+           19895:    651(ptr) AccessChain 4339 2607
+            7372:   13(float) Load 19895
+           21371:    650(ptr) AccessChain 4902 2579
            11412:   13(float) Load 21371
            22584:   13(float) FAdd 11412 7372
-           17318:    651(ptr) AccessChain 4902 2579
+           17318:    650(ptr) AccessChain 4902 2579
                               Store 17318 22584
            17934:   29(fvec4) Load 4902
                               Store 5139 17934
