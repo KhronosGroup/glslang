@@ -466,6 +466,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.smBuiltins.frag",
         "spv.builtin.PrimitiveShadingRateEXT.vert",
         "spv.builtin.ShadingRateEXT.frag",
+        "spv.atomicAdd.bufferReference.comp"
     })),
     FileNameAsCustomTestSuffix
 );
