@@ -363,6 +363,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.intrinsicsSpirvLiteral.vert",
         "spv.intrinsicsSpirvStorageClass.rchit",
         "spv.intrinsicsSpirvType.rgen",
+        "spv.invariantAll.vert",
         "spv.layer.tese",
         "spv.layoutNested.vert",
         "spv.length.frag",

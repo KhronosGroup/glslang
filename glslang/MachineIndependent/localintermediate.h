@@ -291,6 +291,7 @@ public:
         numEntryPoints(0), numErrors(0), numPushConstants(0), recursive(false),
         invertY(false),
         useStorageBuffer(false),
+        invariantAll(false),
         nanMinMaxClamp(false),
         depthReplacing(false),
         uniqueId(0),
@@ -560,6 +561,8 @@ public:
 
     void setUseStorageBuffer() { useStorageBuffer = true; }
     bool usingStorageBuffer() const { return useStorageBuffer; }
+    void setInvariantAll() { invariantAll = true; }
+    bool isInvariantAll() const { return invariantAll; }
     void setDepthReplacing() { depthReplacing = true; }
     bool isDepthReplacing() const { return depthReplacing; }
     bool setLocalSize(int dim, int size)
@@ -1063,6 +1066,7 @@ protected:
     bool recursive;
     bool invertY;
     bool useStorageBuffer;
+    bool invariantAll;
     bool nanMinMaxClamp;            // true if desiring min/max/clamp to favor non-NaN over NaN
     bool depthReplacing;
     int localSize[3];
