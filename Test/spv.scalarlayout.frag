@@ -27,6 +27,8 @@ layout(column_major, scalar) uniform B1
     S          i[2];  // offset = 160 (aligned to multiple of 8) stride = 48
 };
 
+layout (std430) uniform;
+
 void main()
 {
 }
