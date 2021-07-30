@@ -3675,7 +3675,7 @@ void TParseContext::globalQualifierFixCheck(const TSourceLoc& loc, TQualifier& q
         if (blockName == nullptr &&
             qualifier.layoutPacking == ElpStd430)
         {
-            error(loc, "it is invalid to declare std430 qualifier on uniform", "", "");
+            requireExtensions(loc, 1, &E_GL_EXT_scalar_block_layout, "default std430 layout for uniform");
         }
         break;
     default:
