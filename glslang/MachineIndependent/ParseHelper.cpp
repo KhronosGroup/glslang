@@ -6650,8 +6650,10 @@ const TFunction* TParseContext::findFunction(const TSourceLoc& loc, const TFunct
                       : findFunctionExact(loc, call, builtIn));
     else if (version < 120)
         function = findFunctionExact(loc, call, builtIn);
-    else if (version < 400)
-        function = extensionTurnedOn(E_GL_ARB_gpu_shader_fp64) ? findFunction400(loc, call, builtIn) : findFunction120(loc, call, builtIn);
+    else if (version < 400) {
+        bool needfindFunction400 = extensionTurnedOn(E_GL_ARB_gpu_shader_fp64) || extensionTurnedOn(E_GL_ARB_gpu_shader5);
+        function = needfindFunction400 ? findFunction400(loc, call, builtIn) : findFunction120(loc, call, builtIn);
+    }
     else if (explicitTypesEnabled)
         function = findFunctionExplicitTypes(loc, call, builtIn);
     else
