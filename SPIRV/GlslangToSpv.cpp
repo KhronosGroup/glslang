@@ -3384,7 +3384,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         const auto& spirvInst = node->getSpirvInstruction();
         if (spirvInst.set == "") {
             std::vector<spv::IdImmediate> idImmOps;
-            for (int i = 0; i < glslangOperands.size(); ++i) {
+            for (unsigned int i = 0; i < glslangOperands.size(); ++i) {
                 if (glslangOperands[i]->getAsTyped()->getQualifier().isSpirvLiteral()) {
                     // Translate the constant to a literal value
                     std::vector<unsigned> literals;
