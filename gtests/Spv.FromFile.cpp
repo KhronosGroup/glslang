@@ -77,6 +77,7 @@ using HlslIoMap = GlslangTest<::testing::TestWithParam<IoMapData>>;
 using GlslIoMap = GlslangTest<::testing::TestWithParam<IoMapData>>;
 using CompileVulkanToSpirvTestAMD = GlslangTest<::testing::TestWithParam<std::string>>;
 using CompileVulkanToSpirvTestNV = GlslangTest<::testing::TestWithParam<std::string>>;
+using CompileVulkanToSpirv14TestNV = GlslangTest<::testing::TestWithParam<std::string>>;
 using CompileUpgradeTextureToSampledTextureAndDropSamplersTest = GlslangTest<::testing::TestWithParam<std::string>>;
 
 // Compiling GLSL to SPIR-V under Vulkan semantics. Expected to successfully
@@ -201,6 +202,13 @@ TEST_P(CompileVulkanToSpirvTestNV, FromFile)
 {
     loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam(),
                             Source::GLSL, Semantics::Vulkan, glslang::EShTargetVulkan_1_0, glslang::EShTargetSpv_1_0,
+                            Target::Spv);
+}
+
+TEST_P(CompileVulkanToSpirv14TestNV, FromFile)
+{
+    loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam(),
+                            Source::GLSL, Semantics::Vulkan, glslang::EShTargetVulkan_1_1, glslang::EShTargetSpv_1_4,
                             Target::Spv);
 }
 
@@ -765,6 +773,17 @@ INSTANTIATE_TEST_SUITE_P(
 FileNameAsCustomTestSuffix
 );
 
+INSTANTIATE_TEST_SUITE_P(
+    Glsl, CompileVulkanToSpirv14TestNV,
+    ::testing::ValuesIn(std::vector<std::string>({
+    "spv.RayGenShaderMotion.rgen",
+    "spv.IntersectShaderMotion.rint",
+    "spv.AnyHitShaderMotion.rahit",
+    "spv.ClosestHitShaderMotion.rchit",
+    "spv.MissShaderMotion.rmiss",
+})),
+FileNameAsCustomTestSuffix
+);
 INSTANTIATE_TEST_SUITE_P(
     Glsl, CompileUpgradeTextureToSampledTextureAndDropSamplersTest,
     ::testing::ValuesIn(std::vector<std::string>({

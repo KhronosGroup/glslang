@@ -165,7 +165,9 @@ void TParseVersions::initializeExtensionBehavior()
         EShTargetLanguageVersion minSpvVersion;
     } extensionData;
 
-    const extensionData exts[] = { {E_GL_EXT_ray_tracing, EShTargetSpv_1_4} };
+    const extensionData exts[] = { {E_GL_EXT_ray_tracing, EShTargetSpv_1_4},
+                                   {E_GL_NV_ray_tracing_motion_blur, EShTargetSpv_1_4}
+                                 };
 
     for (size_t ii = 0; ii < sizeof(exts) / sizeof(exts[0]); ii++) {
         // Add only extensions which require > spv1.0 to save space in map
@@ -281,6 +283,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_NV_shader_subgroup_partitioned]           = EBhDisable;
     extensionBehavior[E_GL_NV_shading_rate_image]                    = EBhDisable;
     extensionBehavior[E_GL_NV_ray_tracing]                           = EBhDisable;
+    extensionBehavior[E_GL_NV_ray_tracing_motion_blur]               = EBhDisable;
     extensionBehavior[E_GL_NV_fragment_shader_barycentric]           = EBhDisable;
     extensionBehavior[E_GL_NV_compute_shader_derivatives]            = EBhDisable;
     extensionBehavior[E_GL_NV_shader_texture_footprint]              = EBhDisable;
@@ -518,6 +521,7 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_NV_shader_subgroup_partitioned 1\n"
             "#define GL_NV_shading_rate_image 1\n"
             "#define GL_NV_ray_tracing 1\n"
+            "#define GL_NV_ray_tracing_motion_blur 1\n"
             "#define GL_NV_fragment_shader_barycentric 1\n"
             "#define GL_NV_compute_shader_derivatives 1\n"
             "#define GL_NV_shader_texture_footprint 1\n"
