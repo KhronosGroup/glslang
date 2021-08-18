@@ -200,6 +200,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_ARB_explicit_uniform_location]    = EBhDisable;
     extensionBehavior[E_GL_ARB_shader_image_load_store]      = EBhDisable;
     extensionBehavior[E_GL_ARB_shader_atomic_counters]       = EBhDisable;
+    extensionBehavior[E_GL_ARB_shader_atomic_counter_ops]    = EBhDisable;
     extensionBehavior[E_GL_ARB_shader_draw_parameters]       = EBhDisable;
     extensionBehavior[E_GL_ARB_shader_group_vote]            = EBhDisable;
     extensionBehavior[E_GL_ARB_derivative_control]           = EBhDisable;

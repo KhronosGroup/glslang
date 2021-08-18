@@ -1864,6 +1864,22 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
 
                 "\n");
         }
+        if (profile != EEsProfile && version == 450) {
+            commonBuiltins.append(
+                "uint atomicCounterAddARB(atomic_uint, uint);"
+                "uint atomicCounterSubtractARB(atomic_uint, uint);"
+                "uint atomicCounterMinARB(atomic_uint, uint);"
+                "uint atomicCounterMaxARB(atomic_uint, uint);"
+                "uint atomicCounterAndARB(atomic_uint, uint);"
+                "uint atomicCounterOrARB(atomic_uint, uint);"
+                "uint atomicCounterXorARB(atomic_uint, uint);"
+                "uint atomicCounterExchangeARB(atomic_uint, uint);"
+                "uint atomicCounterCompSwapARB(atomic_uint, uint, uint);"
+
+                "\n");
+        }
+
+
         if (profile != EEsProfile && version >= 460) {
             commonBuiltins.append(
                 "uint atomicCounterAdd(atomic_uint, uint);"
@@ -8267,6 +8283,19 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setFunctionExtensions("atomicCounter"         , 1, &E_GL_ARB_shader_atomic_counters);
         }
 
+        // E_GL_ARB_shader_atomic_counter_ops
+        if (profile != EEsProfile && version == 450) {
+            symbolTable.setFunctionExtensions("atomicCounterAddARB"     , 1, &E_GL_ARB_shader_atomic_counter_ops);
+            symbolTable.setFunctionExtensions("atomicCounterSubtractARB", 1, &E_GL_ARB_shader_atomic_counter_ops);
+            symbolTable.setFunctionExtensions("atomicCounterMinARB"     , 1, &E_GL_ARB_shader_atomic_counter_ops);
+            symbolTable.setFunctionExtensions("atomicCounterMaxARB"     , 1, &E_GL_ARB_shader_atomic_counter_ops);
+            symbolTable.setFunctionExtensions("atomicCounterAndARB"     , 1, &E_GL_ARB_shader_atomic_counter_ops);
+            symbolTable.setFunctionExtensions("atomicCounterOrARB"      , 1, &E_GL_ARB_shader_atomic_counter_ops);
+            symbolTable.setFunctionExtensions("atomicCounterXorARB"     , 1, &E_GL_ARB_shader_atomic_counter_ops);
+            symbolTable.setFunctionExtensions("atomicCounterExchangeARB", 1, &E_GL_ARB_shader_atomic_counter_ops);
+            symbolTable.setFunctionExtensions("atomicCounterCompSwapARB", 1, &E_GL_ARB_shader_atomic_counter_ops);
+        }
+
         // E_GL_ARB_derivative_control
         if (profile != EEsProfile && version < 450) {
             symbolTable.setFunctionExtensions("dFdxFine",     1, &E_GL_ARB_derivative_control);
@@ -9269,6 +9298,18 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
 
     symbolTable.relateToOperator("clockRealtimeEXT",     EOpReadClockDeviceKHR);
     symbolTable.relateToOperator("clockRealtime2x32EXT", EOpReadClockDeviceKHR);
+
+    if (profile != EEsProfile && version == 450) {
+        symbolTable.relateToOperator("atomicCounterAddARB",      EOpAtomicCounterAdd);
+        symbolTable.relateToOperator("atomicCounterSubtractARB", EOpAtomicCounterSubtract);
+        symbolTable.relateToOperator("atomicCounterMinARB",      EOpAtomicCounterMin);
+        symbolTable.relateToOperator("atomicCounterMaxARB",      EOpAtomicCounterMax);
+        symbolTable.relateToOperator("atomicCounterAndARB",      EOpAtomicCounterAnd);
+        symbolTable.relateToOperator("atomicCounterOrARB",       EOpAtomicCounterOr);
+        symbolTable.relateToOperator("atomicCounterXorARB",      EOpAtomicCounterXor);
+        symbolTable.relateToOperator("atomicCounterExchangeARB", EOpAtomicCounterExchange);
+        symbolTable.relateToOperator("atomicCounterCompSwapARB", EOpAtomicCounterCompSwap);
+    }
 
     if (profile != EEsProfile && version >= 460) {
         symbolTable.relateToOperator("atomicCounterAdd",      EOpAtomicCounterAdd);
