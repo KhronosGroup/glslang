@@ -630,6 +630,17 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.WorkgroupMemoryExplicitLayout.std140.comp",
         "spv.WorkgroupMemoryExplicitLayout.std430.comp",
         "spv.WorkgroupMemoryExplicitLayout.scalar.comp",
+
+        // SPV_EXT_mesh_shader
+        "spv.ext.meshShaderBuiltins.mesh",
+        "spv.ext.meshShaderRedeclBuiltins.mesh",
+        "spv.ext.meshShaderTaskMem.mesh",
+        "spv.ext.meshShaderUserDefined.mesh",
+        "spv.ext.meshTaskShader.task",
+        "spv.atomiAddEXT.error.mesh",
+        "spv.atomiAddEXT.task",
+        "spv.460.subgroupEXT.task",
+        "spv.460.subgroupEXT.mesh",
     })),
     FileNameAsCustomTestSuffix
 );

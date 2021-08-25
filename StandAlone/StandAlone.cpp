@@ -293,8 +293,8 @@ const char* GetBinaryName(EShLanguage stage)
         case EShLangClosestHit:      name = "rchit.spv";   break;
         case EShLangMiss:            name = "rmiss.spv";   break;
         case EShLangCallable:        name = "rcall.spv";   break;
-        case EShLangMeshNV:          name = "mesh.spv";    break;
-        case EShLangTaskNV:          name = "task.spv";    break;
+        case EShLangMesh :           name = "mesh.spv";    break;
+        case EShLangTask :           name = "task.spv";    break;
         default:                     name = "unknown";     break;
         }
     } else
@@ -1780,9 +1780,9 @@ EShLanguage FindLanguage(const std::string& name, bool parseStageName)
     else if (stageName == "rcall")
         return EShLangCallable;
     else if (stageName == "mesh")
-        return EShLangMeshNV;
+        return EShLangMesh;
     else if (stageName == "task")
-        return EShLangTaskNV;
+        return EShLangTask;
 
     usage();
     return EShLangVertex;

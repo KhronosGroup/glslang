@@ -108,8 +108,10 @@ typedef enum {
     EShLangMissNV = EShLangMiss,
     EShLangCallable,
     EShLangCallableNV = EShLangCallable,
-    EShLangTaskNV,
-    EShLangMeshNV,
+    EShLangTask,
+    EShLangTaskNV = EShLangTask,
+    EShLangMesh,
+    EShLangMeshNV = EShLangMesh,
     LAST_ELEMENT_MARKER(EShLangCount),
 } EShLanguage;         // would be better as stage, but this is ancient now
 
@@ -132,8 +134,10 @@ typedef enum : unsigned {
     EShLangMissNVMask         = EShLangMissMask,
     EShLangCallableMask       = (1 << EShLangCallable),
     EShLangCallableNVMask     = EShLangCallableMask,
-    EShLangTaskNVMask         = (1 << EShLangTaskNV),
-    EShLangMeshNVMask         = (1 << EShLangMeshNV),
+    EShLangTaskMask           = (1 << EShLangTask),
+    EShLangTaskNVMask         = EShLangTaskMask,
+    EShLangMeshMask           = (1 << EShLangMesh),
+    EShLangMeshNVMask         = EShLangMeshMask,
     LAST_ELEMENT_MARKER(EShLanguageMaskCount),
 } EShLanguageMask;
 
