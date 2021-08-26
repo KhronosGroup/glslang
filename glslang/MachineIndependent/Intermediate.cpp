@@ -51,6 +51,26 @@
 
 namespace glslang {
 
+namespace {
+// Is an aggregate operator precision-propagating.
+bool IsPrecisionPropagatingAggregate(const TIntermAggregate& node)
+{
+    if (node.isConstructor())
+    {
+        return true;
+    }
+
+    if (node.isTexture() || node.isImage())
+    {
+        return false;
+    }
+
+    // TODO: comb through all operators and decide which should propagate precision.
+    // See: https://github.com/KhronosGroup/glslang/issues/2740
+    return true;
+}
+}
+
 ////////////////////////////////////////////////////////////////////////////
 //
 // First set of functions are to help build the intermediate representation.
@@ -3822,8 +3842,9 @@ void TIntermTyped::propagatePrecision(TPrecisionQualifier newPrecision)
         return;
     }
 
+    // Propagate precision through constructors and select operators, but not function calls.
     TIntermAggregate* aggregateNode = getAsAggregate();
-    if (aggregateNode) {
+    if (aggregateNode && IsPrecisionPropagatingAggregate(*aggregateNode)) {
         TIntermSequence operands = aggregateNode->getSequence();
         for (unsigned int i = 0; i < operands.size(); ++i) {
             TIntermTyped* typedNode = operands[i]->getAsTyped();
