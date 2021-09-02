@@ -113,7 +113,8 @@ typedef enum {
     GLSLANG_TARGET_SPV_1_3 = (1 << 16) | (3 << 8),
     GLSLANG_TARGET_SPV_1_4 = (1 << 16) | (4 << 8),
     GLSLANG_TARGET_SPV_1_5 = (1 << 16) | (5 << 8),
-    LAST_ELEMENT_MARKER(GLSLANG_TARGET_LANGUAGE_VERSION_COUNT = 6),
+    GLSLANG_TARGET_SPV_1_6 = (1 << 16) | (6 << 8),
+    LAST_ELEMENT_MARKER(GLSLANG_TARGET_LANGUAGE_VERSION_COUNT = 7),
 } glslang_target_language_version_t;
 
 /* EShExecutable counterpart */

@@ -244,6 +244,8 @@ c_shader_target_language_version(glslang_target_language_version_t target_langua
         return glslang::EShTargetSpv_1_4;
     case GLSLANG_TARGET_SPV_1_5:
         return glslang::EShTargetSpv_1_5;
+    case GLSLANG_TARGET_SPV_1_6:
+        return glslang::EShTargetSpv_1_6;
     default:
         break;
     }
