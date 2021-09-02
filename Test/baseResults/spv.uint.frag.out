@@ -75,6 +75,7 @@ spv.uint.frag
                               Decorate 90 RelaxedPrecision
                               Decorate 91 RelaxedPrecision
                               Decorate 92 RelaxedPrecision
+                              Decorate 93 RelaxedPrecision
                               Decorate 97 RelaxedPrecision
                               Decorate 98 RelaxedPrecision
                               Decorate 101 RelaxedPrecision

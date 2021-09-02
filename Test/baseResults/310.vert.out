@@ -330,7 +330,7 @@ ERROR: node is still EOpNull!
 0:164          'sIndex' ( uniform highp int)
 0:164          Constant:
 0:164            2 (const int)
-0:165      textureGatherOffset ( global lowp 4-component vector of float)
+0:165      textureGatherOffset ( global lowp 4-component vector of float, operation at highp)
 0:165        direct index ( temp lowp sampler2D)
 0:165          'sArray' ( uniform 4-element array of lowp sampler2D)
 0:165          Constant:
@@ -338,7 +338,7 @@ ERROR: node is still EOpNull!
 0:165        Constant:
 0:165          0.100000
 0:165          0.100000
-0:165        Convert float to int ( temp lowp 2-component vector of int)
+0:165        Convert float to int ( temp highp 2-component vector of int)
 0:165          'inf' ( in highp 2-component vector of float)
 0:166      textureGatherOffsets ( global lowp 4-component vector of float, operation at highp)
 0:166        direct index ( temp lowp sampler2D)
@@ -394,7 +394,7 @@ ERROR: node is still EOpNull!
 0:179          'sIndex' ( uniform highp int)
 0:179          Constant:
 0:179            2 (const int)
-0:180      textureGatherOffset ( global lowp 4-component vector of float)
+0:180      textureGatherOffset ( global lowp 4-component vector of float, operation at highp)
 0:180        direct index ( temp lowp sampler2D)
 0:180          'sArray' ( uniform 4-element array of lowp sampler2D)
 0:180          Constant:
@@ -402,7 +402,7 @@ ERROR: node is still EOpNull!
 0:180        Constant:
 0:180          0.100000
 0:180          0.100000
-0:180        Convert float to int ( temp lowp 2-component vector of int)
+0:180        Convert float to int ( temp highp 2-component vector of int)
 0:180          'inf' ( in highp 2-component vector of float)
 0:181      textureGatherOffsets ( global lowp 4-component vector of float, operation at highp)
 0:181        direct index ( temp lowp sampler2D)

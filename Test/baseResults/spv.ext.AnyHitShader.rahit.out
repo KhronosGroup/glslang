@@ -73,6 +73,7 @@ spv.ext.AnyHitShader.rahit
                               Decorate 98(gl_SubgroupSize) RelaxedPrecision
                               Decorate 98(gl_SubgroupSize) BuiltIn SubgroupSize
                               Decorate 99 RelaxedPrecision
+                              Decorate 100 RelaxedPrecision
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 0
