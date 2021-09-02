@@ -121,7 +121,7 @@ ERROR: node is still EOpNull!
 0:76          'inf' ( smooth in mediump 2-component vector of float)
 0:76          'ing' ( smooth in mediump 2-component vector of float)
 0:76          'h' ( noContraction temp mediump 2-component vector of float)
-0:77      textureGatherOffset ( global lowp 4-component vector of float)
+0:77      textureGatherOffset ( global lowp 4-component vector of float, operation at mediump)
 0:77        direct index ( temp lowp sampler2D)
 0:77          'sArray' ( uniform 4-element array of lowp sampler2D)
 0:77          Constant:
@@ -129,7 +129,7 @@ ERROR: node is still EOpNull!
 0:77        Constant:
 0:77          0.100000
 0:77          0.100000
-0:77        Convert float to int ( temp lowp 2-component vector of int)
+0:77        Convert float to int ( temp mediump 2-component vector of int)
 0:77          'inf' ( smooth in mediump 2-component vector of float)
 0:78      textureGatherOffsets ( global lowp 4-component vector of float, operation at mediump)
 0:78        direct index ( temp lowp sampler2D)

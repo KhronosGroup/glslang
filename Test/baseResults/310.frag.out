@@ -270,7 +270,7 @@ ERROR: node is still EOpNull!
 0:42        Constant:
 0:42          0.000000
 0:42          0.000000
-0:42        Convert float to int ( temp highp 2-component vector of int)
+0:42        Convert float to int ( temp mediump 2-component vector of int)
 0:42          'c2D' ( smooth in mediump 2-component vector of float)
 0:43      textureProjGradOffset ( global highp 4-component vector of uint)
 0:43        'usamp2d' ( uniform highp usampler2D)
@@ -471,7 +471,7 @@ ERROR: node is still EOpNull!
 0:211        Constant:
 0:211          0.100000
 0:211          0.100000
-0:211        Convert float to int ( temp highp 2-component vector of int)
+0:211        Convert float to int ( temp mediump 2-component vector of int)
 0:211          'inf' ( smooth in mediump 2-component vector of float)
 0:212      textureGatherOffsets ( global highp 4-component vector of float)
 0:212        direct index ( temp highp sampler2D)
@@ -507,7 +507,7 @@ ERROR: node is still EOpNull!
 0:221        Constant:
 0:221          0.100000
 0:221          0.100000
-0:221        Convert float to int ( temp highp 2-component vector of int)
+0:221        Convert float to int ( temp mediump 2-component vector of int)
 0:221          'inf' ( smooth in mediump 2-component vector of float)
 0:222      textureGatherOffsets ( global highp 4-component vector of float)
 0:222        direct index ( temp highp sampler2D)

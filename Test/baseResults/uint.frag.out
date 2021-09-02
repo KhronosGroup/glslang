@@ -134,7 +134,7 @@ ERROR: node is still EOpNull!
 0:59        Condition
 0:59        Compare Equal ( temp bool)
 0:59          'shiftedii' ( temp mediump int)
-0:59          Convert uint to int ( temp int)
+0:59          Convert uint to int ( temp mediump int)
 0:59            'shiftedui' ( temp mediump uint)
 0:59        true case
 0:60        move second child to first child ( temp mediump 4-component vector of uint)
@@ -433,7 +433,7 @@ ERROR: node is still EOpNull!
 0:59        Condition
 0:59        Compare Equal ( temp bool)
 0:59          'shiftedii' ( temp mediump int)
-0:59          Convert uint to int ( temp int)
+0:59          Convert uint to int ( temp mediump int)
 0:59            'shiftedui' ( temp mediump uint)
 0:59        true case
 0:60        move second child to first child ( temp mediump 4-component vector of uint)

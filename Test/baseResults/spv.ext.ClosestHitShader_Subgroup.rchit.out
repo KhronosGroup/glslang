@@ -38,10 +38,21 @@ spv.ext.ClosestHitShader_Subgroup.rchit
                               Decorate 28(gl_SubgroupInvocationID) RelaxedPrecision
                               Decorate 28(gl_SubgroupInvocationID) BuiltIn SubgroupLocalInvocationId
                               Decorate 29 RelaxedPrecision
+                              Decorate 30 RelaxedPrecision
                               Decorate 34(gl_SubGroupGeMaskARB) BuiltIn SubgroupGeMaskKHR
+                              Decorate 41 RelaxedPrecision
+                              Decorate 42 RelaxedPrecision
                               Decorate 43(gl_SubgroupGtMask) BuiltIn SubgroupGtMaskKHR
+                              Decorate 46 RelaxedPrecision
+                              Decorate 46 RelaxedPrecision
+                              Decorate 47 RelaxedPrecision
                               Decorate 48(gl_SubgroupLeMask) BuiltIn SubgroupLeMaskKHR
+                              Decorate 51 RelaxedPrecision
+                              Decorate 51 RelaxedPrecision
+                              Decorate 52 RelaxedPrecision
                               Decorate 53(gl_SubGroupLtMaskARB) BuiltIn SubgroupLtMaskKHR
+                              Decorate 59 RelaxedPrecision
+                              Decorate 60 RelaxedPrecision
                               Decorate 61(gl_SMIDNV) BuiltIn SMIDNV
                2:             TypeVoid
                3:             TypeFunction 2
