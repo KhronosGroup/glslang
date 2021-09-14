@@ -7694,7 +7694,7 @@ TIntermTyped* TParseContext::addConstructor(const TSourceLoc& loc, TIntermNode* 
     TIntermTyped *ret_node = intermediate.setAggregateOperator(aggrNode, op, type, loc);
 
     TIntermAggregate *agg_node = ret_node->getAsAggregate();
-    if (agg_node && agg_node->isVector()) 
+    if (agg_node && (agg_node->isVector() || agg_node->isArray() || agg_node->isMatrix()))
         agg_node->updatePrecision();
 
     return ret_node;
