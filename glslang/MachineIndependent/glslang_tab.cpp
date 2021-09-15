@@ -6204,7 +6204,7 @@ yyreduce:
         (yyval.interm).function = (yyvsp[-2].interm.function);
         (yyval.interm).loc = (yyvsp[-1].lex).loc;
         parseContext.requireExtensions((yyvsp[-1].lex).loc, 1, &E_GL_EXT_subgroup_uniform_control_flow, "attribute");
-        parseContext.handleFunctionAttributes((yyvsp[-1].lex).loc, *(yyvsp[0].interm.attributes), (yyval.interm).function);
+        parseContext.handleFunctionAttributes((yyvsp[-1].lex).loc, *(yyvsp[0].interm.attributes));
     }
 #line 6210 "MachineIndependent/glslang_tab.cpp"
     break;
@@ -6215,7 +6215,7 @@ yyreduce:
         (yyval.interm).function = (yyvsp[-1].interm.function);
         (yyval.interm).loc = (yyvsp[0].lex).loc;
         parseContext.requireExtensions((yyvsp[0].lex).loc, 1, &E_GL_EXT_subgroup_uniform_control_flow, "attribute");
-        parseContext.handleFunctionAttributes((yyvsp[0].lex).loc, *(yyvsp[-2].interm.attributes), (yyval.interm).function);
+        parseContext.handleFunctionAttributes((yyvsp[0].lex).loc, *(yyvsp[-2].interm.attributes));
     }
 #line 6221 "MachineIndependent/glslang_tab.cpp"
     break;
@@ -6226,8 +6226,8 @@ yyreduce:
         (yyval.interm).function = (yyvsp[-2].interm.function);
         (yyval.interm).loc = (yyvsp[-1].lex).loc;
         parseContext.requireExtensions((yyvsp[-1].lex).loc, 1, &E_GL_EXT_subgroup_uniform_control_flow, "attribute");
-        parseContext.handleFunctionAttributes((yyvsp[-1].lex).loc, *(yyvsp[-3].interm.attributes), (yyval.interm).function);
-        parseContext.handleFunctionAttributes((yyvsp[-1].lex).loc, *(yyvsp[0].interm.attributes), (yyval.interm).function);
+        parseContext.handleFunctionAttributes((yyvsp[-1].lex).loc, *(yyvsp[-3].interm.attributes));
+        parseContext.handleFunctionAttributes((yyvsp[-1].lex).loc, *(yyvsp[0].interm.attributes));
     }
 #line 6233 "MachineIndependent/glslang_tab.cpp"
     break;
