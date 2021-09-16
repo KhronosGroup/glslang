@@ -34,8 +34,8 @@ Shader version: 460
 0:?     'Color' ( smooth out highp 4-component vector of float)
 0:?     'UV' ( smooth out highp 2-component vector of float)
 0:?     'anon@1' ( out block{ gl_Position 4-component vector of float Position gl_Position,  gl_PointSize float PointSize gl_PointSize,  out unsized 1-element array of float ClipDistance gl_ClipDistance,  out unsized 1-element array of float CullDistance gl_CullDistance})
-0:?     'gl_VertexID' ( in int VertexIndex)
-0:?     'gl_InstanceID' ( in int InstanceIndex)
+0:?     'gl_VertexIndex' ( in int VertexIndex)
+0:?     'gl_InstanceIndex' ( in int InstanceIndex)
 
 vk.relaxed.changeSet.frag
 Shader version: 460
@@ -108,8 +108,8 @@ Shader version: 460
 0:?     'Color' ( smooth out highp 4-component vector of float)
 0:?     'UV' ( smooth out highp 2-component vector of float)
 0:?     'anon@1' ( out block{ gl_Position 4-component vector of float Position gl_Position,  gl_PointSize float PointSize gl_PointSize,  out 1-element array of float ClipDistance gl_ClipDistance,  out 1-element array of float CullDistance gl_CullDistance})
-0:?     'gl_VertexID' ( in int VertexIndex)
-0:?     'gl_InstanceID' ( in int InstanceIndex)
+0:?     'gl_VertexIndex' ( in int VertexIndex)
+0:?     'gl_InstanceIndex' ( in int InstanceIndex)
 Shader version: 460
 gl_FragCoord origin is upper left
 0:? Sequence
@@ -162,8 +162,8 @@ gl_FragCoord origin is upper left
                               MemberName 28(gl_DefaultUniformBlock) 0  "projectionMatrix"
                               Name 30  ""
                               Name 34  "aPos"
-                              Name 44  "gl_VertexID"
-                              Name 45  "gl_InstanceID"
+                              Name 44  "gl_VertexIndex"
+                              Name 45  "gl_InstanceIndex"
                               Decorate 9(Color) Location 0
                               Decorate 11(aColor) Location 2
                               Decorate 15(UV) Location 1
@@ -180,8 +180,8 @@ gl_FragCoord origin is upper left
                               Decorate 30 DescriptorSet 0
                               Decorate 30 Binding 0
                               Decorate 34(aPos) Location 0
-                              Decorate 44(gl_VertexID) BuiltIn VertexIndex
-                              Decorate 45(gl_InstanceID) BuiltIn InstanceIndex
+                              Decorate 44(gl_VertexIndex) BuiltIn VertexIndex
+                              Decorate 45(gl_InstanceIndex) BuiltIn InstanceIndex
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32
@@ -212,8 +212,8 @@ gl_FragCoord origin is upper left
               36:    6(float) Constant 0
               37:    6(float) Constant 1065353216
               43:             TypePointer Input 25(int)
- 44(gl_VertexID):     43(ptr) Variable Input
-45(gl_InstanceID):     43(ptr) Variable Input
+44(gl_VertexIndex):     43(ptr) Variable Input
+45(gl_InstanceIndex):     43(ptr) Variable Input
          4(main):           2 Function None 3
                5:             Label
               12:    7(fvec4) Load 11(aColor)

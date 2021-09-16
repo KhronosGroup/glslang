@@ -28,8 +28,8 @@ Shader version: 460
 0:?   Linker Objects
 0:?     'io' (layout( location=0) smooth out highp 4-component vector of float)
 0:?     'anon@0' (layout( column_major std140) uniform block{ uniform highp 2-component vector of float a})
-0:?     'gl_VertexID' ( in int VertexIndex)
-0:?     'gl_InstanceID' ( in int InstanceIndex)
+0:?     'gl_VertexIndex' ( in int VertexIndex)
+0:?     'gl_InstanceIndex' ( in int InstanceIndex)
 
 vk.relaxed.errorcheck.frag
 Shader version: 460
@@ -94,8 +94,8 @@ Shader version: 460
 0:?   Linker Objects
 0:?     'io' (layout( location=0) smooth out highp 4-component vector of float)
 0:?     'anon@0' (layout( column_major std140) uniform block{ uniform highp 2-component vector of float a})
-0:?     'gl_VertexID' ( in int VertexIndex)
-0:?     'gl_InstanceID' ( in int InstanceIndex)
+0:?     'gl_VertexIndex' ( in int VertexIndex)
+0:?     'gl_InstanceIndex' ( in int InstanceIndex)
 Shader version: 460
 gl_FragCoord origin is upper left
 0:? Sequence

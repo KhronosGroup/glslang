@@ -25,7 +25,7 @@ vec4 foo() {
 void main() {
 
     vec4 v = foo();
-    v = v + s[gl_VertexID];
-    v.x = v.x - float(gl_InstanceID);
+    v = v + s[gl_VertexID - gl_VertexIndex];
+    v.x = v.x - float(gl_InstanceID - gl_InstanceIndex);
     io = v;
 }
