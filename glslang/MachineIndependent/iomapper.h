@@ -302,6 +302,7 @@ public:
         profile = ENoProfile;
         version = 0;
         autoPushCosntantMaxSize = 128;
+        autoPushConstantBlockPacking = ElpStd430;
     }
     virtual ~TGlslIoMapper() {
         for (size_t stage = 0; stage < EShLangCount; stage++) {
@@ -323,9 +324,10 @@ public:
     }
 	// If set, the uniform block with the given name will be changed to be backed by
 	// push_constant if it's size is <= maxSize
-    void setAutoPushConstantBlock(const char* name, unsigned int maxSize) {
+    void setAutoPushConstantBlock(const char* name, unsigned int maxSize, TLayoutPacking packing) {
         autoPushConstantBlockName = name;
         autoPushCosntantMaxSize = maxSize;
+        autoPushConstantBlockPacking = packing;
     }
     // grow the reflection stage by stage
     bool addStage(EShLanguage, TIntermediate&, TInfoSink&, TIoMapResolver*) override;
@@ -340,6 +342,7 @@ public:
 private:
     TString autoPushConstantBlockName;
     unsigned int autoPushCosntantMaxSize;
+    TLayoutPacking autoPushConstantBlockPacking;
 };
 
 } // end namespace glslang

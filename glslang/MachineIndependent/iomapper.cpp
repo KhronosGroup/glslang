@@ -1649,6 +1649,7 @@ bool TGlslIoMapper::doMap(TIoMapResolver* resolver, TInfoSink& infoSink) {
                     TIntermediate::getBaseAlignment(t, size, stride, ElpStd140, qualifier.layoutMatrix == ElmRowMajor);
                     if (size <= int(autoPushCosntantMaxSize)) {
                         qualifier.setBlockStorage(EbsPushConstant);
+                        qualifier.layoutPacking = autoPushConstantBlockPacking;
                         upgraded = true;
                     }
                 }
