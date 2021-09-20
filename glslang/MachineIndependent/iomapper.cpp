@@ -1646,7 +1646,8 @@ bool TGlslIoMapper::doMap(TIoMapResolver* resolver, TInfoSink& infoSink) {
                         continue;
                     TType& t = at->second.symbol->getWritableType();
                     int size, stride;
-                    TIntermediate::getBaseAlignment(t, size, stride, ElpStd140, qualifier.layoutMatrix == ElmRowMajor);
+                    TIntermediate::getBaseAlignment(t, size, stride, autoPushConstantBlockPacking,
+                                                    qualifier.layoutMatrix == ElmRowMajor);
                     if (size <= int(autoPushCosntantMaxSize)) {
                         qualifier.setBlockStorage(EbsPushConstant);
                         qualifier.layoutPacking = autoPushConstantBlockPacking;
