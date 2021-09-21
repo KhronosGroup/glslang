@@ -301,7 +301,7 @@ public:
         memset(intermediates, 0, sizeof(TIntermediate*) * (EShLangCount + 1));
         profile = ENoProfile;
         version = 0;
-        autoPushCosntantMaxSize = 128;
+        autoPushConstantMaxSize = 128;
         autoPushConstantBlockPacking = ElpStd430;
     }
     virtual ~TGlslIoMapper() {
@@ -326,7 +326,7 @@ public:
 	// push_constant if it's size is <= maxSize
     void setAutoPushConstantBlock(const char* name, unsigned int maxSize, TLayoutPacking packing) {
         autoPushConstantBlockName = name;
-        autoPushCosntantMaxSize = maxSize;
+        autoPushConstantMaxSize = maxSize;
         autoPushConstantBlockPacking = packing;
     }
     // grow the reflection stage by stage
@@ -341,7 +341,7 @@ public:
 
 private:
     TString autoPushConstantBlockName;
-    unsigned int autoPushCosntantMaxSize;
+    unsigned int autoPushConstantMaxSize;
     TLayoutPacking autoPushConstantBlockPacking;
 };
 
