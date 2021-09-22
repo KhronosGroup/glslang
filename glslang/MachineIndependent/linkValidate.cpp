@@ -1934,7 +1934,7 @@ int TIntermediate::getBaseAlignment(const TType& type, int& size, int& stride, T
     }
 
     // rule 9
-    if (type.getBasicType() == EbtStruct) {
+    if (type.getBasicType() == EbtStruct || type.getBasicType() == EbtBlock) {
         const TTypeList& memberList = *type.getStruct();
 
         size = 0;
