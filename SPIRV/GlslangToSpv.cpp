@@ -7506,6 +7506,8 @@ spv::Id TGlslangToSpvTraverser::createInvocationsOperation(glslang::TOperator op
         break;
     case glslang::EOpReadFirstInvocation:
         opCode = spv::OpSubgroupFirstInvocationKHR;
+        if (builder.isVectorType(typeId))
+            return CreateInvocationsVectorOperation(opCode, groupOperation, typeId, operands);
         break;
     case glslang::EOpBallot:
     {
@@ -7630,7 +7632,7 @@ spv::Id TGlslangToSpvTraverser::CreateInvocationsVectorOperation(spv::Op op, spv
     assert(op == spv::OpGroupFMin || op == spv::OpGroupUMin || op == spv::OpGroupSMin ||
            op == spv::OpGroupFMax || op == spv::OpGroupUMax || op == spv::OpGroupSMax ||
            op == spv::OpGroupFAdd || op == spv::OpGroupIAdd || op == spv::OpGroupBroadcast ||
-           op == spv::OpSubgroupReadInvocationKHR ||
+           op == spv::OpSubgroupReadInvocationKHR || op == spv::OpSubgroupFirstInvocationKHR ||
            op == spv::OpGroupFMinNonUniformAMD || op == spv::OpGroupUMinNonUniformAMD ||
            op == spv::OpGroupSMinNonUniformAMD ||
            op == spv::OpGroupFMaxNonUniformAMD || op == spv::OpGroupUMaxNonUniformAMD ||
@@ -7659,6 +7661,8 @@ spv::Id TGlslangToSpvTraverser::CreateInvocationsVectorOperation(spv::Op op, spv
             spvGroupOperands.push_back(scalar);
             spv::IdImmediate operand = { true, operands[1] };
             spvGroupOperands.push_back(operand);
+        } else if (op == spv::OpSubgroupFirstInvocationKHR) {
+            spvGroupOperands.push_back(scalar);
         } else if (op == spv::OpGroupBroadcast) {
             spv::IdImmediate scope = { true, builder.makeUintConstant(spv::ScopeSubgroup) };
             spvGroupOperands.push_back(scope);
