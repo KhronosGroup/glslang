@@ -3926,6 +3926,7 @@ iteration_statement_nonattributed
         --parseContext.controlFlowNestingLevel;
     }
     | DO {
+        parseContext.symbolTable.push();
         ++parseContext.loopNestingLevel;
         ++parseContext.statementNestingLevel;
         ++parseContext.controlFlowNestingLevel;
@@ -3937,6 +3938,7 @@ iteration_statement_nonattributed
         parseContext.boolCheck($8.loc, $6);
 
         $$ = parseContext.intermediate.addLoop($3, $6, 0, false, $4.loc);
+        parseContext.symbolTable.pop(&parseContext.defaultPrecision[0]);
         --parseContext.loopNestingLevel;
         --parseContext.statementNestingLevel;
         --parseContext.controlFlowNestingLevel;
