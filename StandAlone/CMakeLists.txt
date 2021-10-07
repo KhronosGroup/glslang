@@ -62,7 +62,7 @@ elseif(UNIX)
     if(NOT ANDROID)
         set(LIBRARIES ${LIBRARIES} pthread)
     endif()
-endif(WIN32)
+endif()
 
 target_link_libraries(glslangValidator ${LIBRARIES})
 target_include_directories(glslangValidator PUBLIC
@@ -73,7 +73,7 @@ if(ENABLE_OPT)
     target_include_directories(glslangValidator
         PRIVATE ${spirv-tools_SOURCE_DIR}/include
     )
-endif(ENABLE_OPT)
+endif()
 
 if(ENABLE_SPVREMAPPER)
     set(REMAPPER_SOURCES spirv-remap.cpp)
@@ -85,7 +85,7 @@ endif()
 
 if(WIN32)
     source_group("Source" FILES ${SOURCES})
-endif(WIN32)
+endif()
 
 if(ENABLE_GLSLANG_INSTALL)
     install(TARGETS glslangValidator EXPORT glslangValidatorTargets
@@ -108,4 +108,4 @@ if(ENABLE_GLSLANG_INSTALL)
                 ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
     endif()
     install(EXPORT glslang-default-resource-limitsTargets DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake)
-endif(ENABLE_GLSLANG_INSTALL)
+endif()
