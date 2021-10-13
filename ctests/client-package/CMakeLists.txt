@@ -21,5 +21,14 @@ install(TARGETS test-glslang DESTINATION bin)
 find_package(HLSL ${CHECK_VERSION} EXACT REQUIRED)
 # linking could not be tested as the HLSL library does not export any symbol
 
+#
+# target SPIRV
+#
+find_package(SPIRV ${CHECK_VERSION} EXACT REQUIRED)
+
+add_executable(test-spirv test-spirv.cpp)
+target_link_libraries(test-spirv SPIRV)
+install(TARGETS test-spirv DESTINATION bin)
+
 include(FeatureSummary)
 feature_summary(WHAT ALL)
