@@ -30,5 +30,14 @@ add_executable(test-spirv test-spirv.cpp)
 target_link_libraries(test-spirv SPIRV)
 install(TARGETS test-spirv DESTINATION bin)
 
+#
+# target SPVRemapper
+#
+find_package(SPVRemapper ${CHECK_VERSION} EXACT REQUIRED)
+
+add_executable(test-spvremapper test-spvremapper.cpp)
+target_link_libraries(test-spvremapper SPVRemapper)
+install(TARGETS test-spvremapper DESTINATION bin)
+
 include(FeatureSummary)
 feature_summary(WHAT ALL)
