@@ -39,5 +39,15 @@ add_executable(test-spvremapper test-spvremapper.cpp)
 target_link_libraries(test-spvremapper SPVRemapper)
 install(TARGETS test-spvremapper DESTINATION bin)
 
+#
+# target spirv-remap
+#
+find_package(spirv-remap ${CHECK_VERSION} EXACT REQUIRED)
+
+#
+# target glslangvalidator
+#
+find_package(glslangValidator ${CHECK_VERSION} EXACT REQUIRED)
+
 include(FeatureSummary)
 feature_summary(WHAT ALL)
