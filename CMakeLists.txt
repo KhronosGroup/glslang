@@ -347,6 +347,7 @@ if(ENABLE_HLSL)
 endif()
 if(ENABLE_CTEST)
     add_subdirectory(gtests)
+    add_subdirectory(ctests)
 endif()
 
 if(ENABLE_CTEST AND BUILD_TESTING)
