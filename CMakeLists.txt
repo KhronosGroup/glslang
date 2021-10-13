@@ -48,6 +48,9 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 # Enable compile commands database
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+# setup cmake for finding local modules
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+
 # Adhere to GNU filesystem layout conventions
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
@@ -148,7 +151,7 @@ if(WIN32)
     set(CMAKE_DEBUG_POSTFIX "d")
     option(OVERRIDE_MSVCCRT "Overrides runtime of MSVC " ON)
     if(MSVC AND OVERRIDE_MSVCCRT)
-        include(ChooseMSVCCRT.cmake)
+        include(ChooseMSVCCRT)
     endif()
     add_definitions(-DGLSLANG_OSINCLUDE_WIN32)
 elseif(UNIX)
@@ -259,7 +262,7 @@ set(GLSLANG_GENERATED_INCLUDEDIR "${CMAKE_BINARY_DIR}/include")
 ################################################################################
 # Build version information generation
 ################################################################################
-include(parse_version.cmake)
+include(parse_version)
 set(GLSLANG_CHANGES_FILE      "${CMAKE_CURRENT_SOURCE_DIR}/CHANGES.md")
 set(GLSLANG_BUILD_INFO_H_TMPL "${CMAKE_CURRENT_SOURCE_DIR}/build_info.h.tmpl")
 set(GLSLANG_BUILD_INFO_H      "${GLSLANG_GENERATED_INCLUDEDIR}/glslang/build_info.h")
