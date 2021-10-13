@@ -40,6 +40,15 @@ target_link_libraries(test-spvremapper SPVRemapper)
 install(TARGETS test-spvremapper DESTINATION bin)
 
 #
+# target glslang-default-resource-limits
+#
+find_package(glslang-default-resource-limits ${CHECK_VERSION} EXACT REQUIRED)
+
+add_executable(test-glslang-default-resource-limits test-glslang-default-resource-limits.cpp)
+target_link_libraries(test-glslang-default-resource-limits glslang-default-resource-limits)
+install(TARGETS test-glslang-default-resource-limits DESTINATION bin)
+
+#
 # target spirv-remap
 #
 find_package(spirv-remap ${CHECK_VERSION} EXACT REQUIRED)
