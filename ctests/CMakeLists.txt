@@ -4,6 +4,13 @@
 #
 set(TEMP_INSTALL_DIR ${CMAKE_BINARY_DIR}/tmp)
 
+# on native windows CMAKE_INSTALL_PREFIX is an absolute path an cannot be appended to another path
+if(MSVC)
+    set(INSTALL_DIR ${TEMP_INSTALL_DIR})
+else()
+    set(INSTALL_DIR ${TEMP_INSTALL_DIR}${CMAKE_INSTALL_PREFIX})
+endif()
+
 option(ENABLE_CLIENT_PACKAGE_TEST "Enable the test for cmake support with a client package" ON)
 
 if(CMAKE_CROSSCOMPILING)
@@ -30,7 +37,16 @@ if(CMAKE_CROSSCOMPILING)
     endif()
 endif()
 
-if(ENABLE_CLIENT_PACKAGE_TEST AND ENABLE_GLSLANG_INSTALL)
+# handle missing DESTDIR support in MSVC
+if(MSVC AND NOT CMAKE_VERSION VERSION_LESS 3.15)
+    set(INSTALL_COMMAND ${CMAKE_COMMAND} --install ${CMAKE_BINARY_DIR} --prefix ${INSTALL_DIR})
+elseif(NOT MSVC)
+    set(INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} install DESTDIR=${TEMP_INSTALL_DIR})
+else(ENABLE_CLIENT_PACKAGE_TEST AND ENABLE_GLSLANG_INSTALL)
+    message(WARNING "Client package test requested but cannot be enabled because the cmake version used is too old (required is at least version 3.15)")
+endif()
+
+if(ENABLE_CLIENT_PACKAGE_TEST AND ENABLE_GLSLANG_INSTALL AND INSTALL_COMMAND)
     # clean local install directories used by client build/install test
     add_test(
         NAME test-install-local-clean
@@ -41,7 +57,7 @@ if(ENABLE_CLIENT_PACKAGE_TEST AND ENABLE_GLSLANG_INSTALL)
     # install in local directoy for client build/install test
     add_test(
         NAME test-install-local
-        COMMAND ${CMAKE_MAKE_PROGRAM} install DESTDIR=${TEMP_INSTALL_DIR}
+        COMMAND ${INSTALL_COMMAND}
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     )
 
@@ -51,7 +67,7 @@ if(ENABLE_CLIENT_PACKAGE_TEST AND ENABLE_GLSLANG_INSTALL)
         COMMAND ${CMAKE_CTEST_COMMAND}
             --build-and-test
             ${CMAKE_CURRENT_SOURCE_DIR}/client-package
-            ${TEMP_INSTALL_DIR}
+            ${INSTALL_DIR}
             --build-config "${CMAKE_BUILD_TYPE}"
             --build-generator ${CMAKE_GENERATOR}
             --build-makeprogram ${CMAKE_MAKE_PROGRAM}
@@ -59,13 +75,13 @@ if(ENABLE_CLIENT_PACKAGE_TEST AND ENABLE_GLSLANG_INSTALL)
             --build-options
                 #--trace-expand
                 -DBUILD_SHARED_LIBS=${BUILD_SHARED_LIBS}
-                -Dglslang_DIR=${TEMP_INSTALL_DIR}${CMAKE_INSTALL_PREFIX}/${INSTALL_CMAKE_DIR}
+                -Dglslang_DIR=${INSTALL_DIR}/${INSTALL_CMAKE_DIR}
                 -DCHECK_VERSION=${GLSLANG_VERSION}
                 -DCMAKE_CROSSCOMPILING=${CMAKE_CROSSCOMPILING}
                 -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
                 -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
-                -DCMAKE_INSTALL_PREFIX:PATH=${TEMP_INSTALL_DIR}${CMAKE_INSTALL_PREFIX}
-                -DCMAKE_FIND_ROOT_PATH=${TARGET_SYSROOT};${TEMP_INSTALL_DIR}${CMAKE_INSTALL_PREFIX}
+                -DCMAKE_INSTALL_PREFIX:PATH=${INSTALL_DIR}
+                -DCMAKE_FIND_ROOT_PATH=${TARGET_SYSROOT};${INSTALL_DIR}
                 -DCMAKE_FIND_ROOT_PATH_MODE_PROGRAM=NEVER
                 -DCMAKE_FIND_ROOT_PATH_MODE_LIBRARY=ONLY
                 -DCMAKE_FIND_ROOT_PATH_MODE_INCLUDE=ONLY
