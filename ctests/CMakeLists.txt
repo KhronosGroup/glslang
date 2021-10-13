@@ -30,7 +30,7 @@ if(CMAKE_CROSSCOMPILING)
     endif()
 endif()
 
-if(ENABLE_CLIENT_PACKAGE_TEST)
+if(ENABLE_CLIENT_PACKAGE_TEST AND ENABLE_GLSLANG_INSTALL)
     # clean local install directories used by client build/install test
     add_test(
         NAME test-install-local-clean
