@@ -13,6 +13,8 @@ endif()
 
 option(ENABLE_CLIENT_PACKAGE_TEST "Enable the test for cmake support with a client package" ON)
 
+set(FIND_ROOT_PATH ${INSTALL_DIR})
+
 if(CMAKE_CROSSCOMPILING)
     # detect target prefix
     get_filename_component(COMPILER_BASE_NAME ${CMAKE_C_COMPILER} NAME_WE)
@@ -32,8 +34,10 @@ if(CMAKE_CROSSCOMPILING)
         if(RESULT)
             set(ENABLE_CLIENT_PACKAGE_TEST 0)
             message(WARNING "disabled client package build, because sysroot could not be fetched from compiler - error is ${ERROR_VARIABLE}")
+        else()
+            string(REPLACE "\n" "/${TARGET_PREFIX}" TARGET_SYSROOT "${TARGET_SYSROOT}")
+            set(FIND_ROOT_PATH ${TARGET_SYSROOT}${INSTALL_DIR})
         endif()
-        string(REPLACE "\n" "/${TARGET_PREFIX}" TARGET_SYSROOT "${TARGET_SYSROOT}")
     endif()
 endif()
 
@@ -66,8 +70,8 @@ if(ENABLE_CLIENT_PACKAGE_TEST AND ENABLE_GLSLANG_INSTALL AND INSTALL_COMMAND)
         NAME test-install-build-client-package
         COMMAND ${CMAKE_CTEST_COMMAND}
             --build-and-test
-            ${CMAKE_CURRENT_SOURCE_DIR}/client-package
-            ${INSTALL_DIR}
+                ${CMAKE_CURRENT_SOURCE_DIR}/client-package
+                ${TEMP_INSTALL_DIR}
             --build-config "${CMAKE_BUILD_TYPE}"
             --build-generator ${CMAKE_GENERATOR}
             --build-makeprogram ${CMAKE_MAKE_PROGRAM}
@@ -78,16 +82,16 @@ if(ENABLE_CLIENT_PACKAGE_TEST AND ENABLE_GLSLANG_INSTALL AND INSTALL_COMMAND)
                 -Dglslang_DIR=${INSTALL_DIR}/${INSTALL_CMAKE_DIR}
                 -DCHECK_VERSION=${GLSLANG_VERSION}
                 -DCMAKE_CROSSCOMPILING=${CMAKE_CROSSCOMPILING}
-                -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
                 -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
                 -DCMAKE_INSTALL_PREFIX:PATH=${INSTALL_DIR}
-                -DCMAKE_FIND_ROOT_PATH=${TARGET_SYSROOT};${INSTALL_DIR}
+                -DCMAKE_FIND_ROOT_PATH:PATH=${FIND_ROOT_PATH}
                 -DCMAKE_FIND_ROOT_PATH_MODE_PROGRAM=NEVER
                 -DCMAKE_FIND_ROOT_PATH_MODE_LIBRARY=ONLY
                 -DCMAKE_FIND_ROOT_PATH_MODE_INCLUDE=ONLY
                 -DCMAKE_SYSTEM_NAME=${CMAKE_SYSTEM_NAME}
                 -DCMAKE_SYSTEM_PROCESSOR=${CMAKE_SYSTEM_PROCESSOR}
-        )
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    )
 
     set_property(TEST test-install-build-client-package APPEND PROPERTY DEPENDS test-install-local-clean test-install-local)
 endif()

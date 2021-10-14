@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.0)
 
-if(COMMAND cmake_policy)
+if(COMMAND cmake_policy AND POLICY CMP0074)
     cmake_policy(SET CMP0074 NEW)
 endif()
 
-project(test-glslang)
+project(test-glslang LANGUAGES CXX)
 
 #
 # target glslang
