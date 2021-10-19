@@ -117,6 +117,8 @@ void operators()
     int32_t i;
     int16_t i16;
     bool    b;
+    float   arr[4] = {1.0, 2.0, 3.0, 4.0};
+    float   f;
 
     // Unary
     u8v++;
@@ -164,6 +166,9 @@ void operators()
     uv = u8v & uv;
     uv ^= i8;
     u8v = u8v ^ i8;
+
+    // Index
+    f = arr[i8];
 }
 
 void builtinFuncs()
