@@ -34,8 +34,8 @@
 find_host_package(PythonInterp 3 REQUIRED)
 
 set(GLSLANG_INTRINSIC_H          "${GLSLANG_GENERATED_INCLUDEDIR}/glslang/glsl_intrinsic_header.h")
-set(GLSLANG_INTRINSIC_PY         "${CMAKE_SOURCE_DIR}/gen_extension_headers.py")
-set(GLSLANG_INTRINSIC_HEADER_DIR "${CMAKE_SOURCE_DIR}/glslang/ExtensionHeaders")
+set(GLSLANG_INTRINSIC_PY         "${CMAKE_CURRENT_SOURCE_DIR}/../gen_extension_headers.py")
+set(GLSLANG_INTRINSIC_HEADER_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../glslang/ExtensionHeaders")
 
 add_custom_command(
     OUTPUT  ${GLSLANG_INTRINSIC_H}
