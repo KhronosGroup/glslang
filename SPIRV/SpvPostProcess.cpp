@@ -44,10 +44,8 @@
 #include <algorithm>
 
 #include "SpvBuilder.h"
-
 #include "spirv.hpp"
-#include "GlslangToSpv.h"
-#include "SpvBuilder.h"
+
 namespace spv {
     #include "GLSL.std.450.h"
     #include "GLSL.ext.KHR.h"
@@ -161,13 +159,13 @@ void Builder::postProcessType(const Instruction& inst, Id typeId)
         switch (inst.getImmediateOperand(1)) {
         case GLSLstd450Frexp:
         case GLSLstd450FrexpStruct:
-            if (getSpvVersion() < glslang::EShTargetSpv_1_3 && containsType(typeId, OpTypeInt, 16))
+            if (getSpvVersion() < spv::Spv_1_3 && containsType(typeId, OpTypeInt, 16))
                 addExtension(spv::E_SPV_AMD_gpu_shader_int16);
             break;
         case GLSLstd450InterpolateAtCentroid:
         case GLSLstd450InterpolateAtSample:
         case GLSLstd450InterpolateAtOffset:
-            if (getSpvVersion() < glslang::EShTargetSpv_1_3 && containsType(typeId, OpTypeFloat, 16))
+            if (getSpvVersion() < spv::Spv_1_3 && containsType(typeId, OpTypeFloat, 16))
                 addExtension(spv::E_SPV_AMD_gpu_shader_half_float);
             break;
         default:
