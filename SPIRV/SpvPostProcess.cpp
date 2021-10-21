@@ -111,8 +111,6 @@ void Builder::postProcessType(const Instruction& inst, Id typeId)
             }
         }
         break;
-    case OpAccessChain:
-    case OpPtrAccessChain:
     case OpCopyObject:
         break;
     case OpFConvert:
@@ -172,13 +170,30 @@ void Builder::postProcessType(const Instruction& inst, Id typeId)
             break;
         }
         break;
+    case OpAccessChain:
+    case OpPtrAccessChain:
+        if (isPointerType(typeId))
+            break;
+        if (basicTypeOp == OpTypeInt) {
+            if (width == 16)
+                addCapability(CapabilityInt16);
+            else if (width == 8)
+                addCapability(CapabilityInt8);
+        }
     default:
-        if (basicTypeOp == OpTypeFloat && width == 16)
-            addCapability(CapabilityFloat16);
-        if (basicTypeOp == OpTypeInt && width == 16)
-            addCapability(CapabilityInt16);
-        if (basicTypeOp == OpTypeInt && width == 8)
-            addCapability(CapabilityInt8);
+        if (basicTypeOp == OpTypeInt) {
+            if (width == 16)
+                addCapability(CapabilityInt16);
+            else if (width == 8)
+                addCapability(CapabilityInt8);
+            else if (width == 64)
+                addCapability(CapabilityInt64);
+        } else if (basicTypeOp == OpTypeFloat) {
+            if (width == 16)
+                addCapability(CapabilityFloat16);
+            else if (width == 64)
+                addCapability(CapabilityFloat64);
+        }
         break;
     }
 }
