@@ -100,7 +100,7 @@ if(ENABLE_OPT AND spirv-tools_SOURCE_DIR)
     )
     target_include_directories(SPIRV PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../External>
-        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/External>)
+        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 endif()
 
 if(ENABLE_OPT AND TARGET SPIRV-Tools-opt)
