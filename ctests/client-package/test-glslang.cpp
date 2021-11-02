@@ -1,8 +1,8 @@
 
-#include <glslang/Include/glslang_c_interface.h>
+#include <glslang/Public/ShaderLang.h>
 
 int main()
 {
-    glslang_program_t*  program = glslang_program_create();
+    ShInitialize();
     return 0;
 }
