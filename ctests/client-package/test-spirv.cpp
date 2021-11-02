@@ -1,8 +1,8 @@
 
-#include <glslang/Public/ShaderLang.h>
+#include <glslang/SPIRV/doc.h>
 
 int main()
 {
-    ShInitialize();
+    const char *s = spv::AccessQualifierString(0);
     return 0;
 }
