@@ -12,7 +12,7 @@ project(test-glslang LANGUAGES CXX)
 find_package(glslang ${CHECK_VERSION} EXACT REQUIRED)
 
 add_executable(test-glslang test-glslang.cpp)
-target_link_libraries(test-glslang glslang)
+target_link_libraries(test-glslang glslang::glslang)
 install(TARGETS test-glslang DESTINATION bin)
 
 #
@@ -27,7 +27,7 @@ find_package(HLSL ${CHECK_VERSION} EXACT REQUIRED)
 find_package(SPIRV ${CHECK_VERSION} EXACT REQUIRED)
 
 add_executable(test-spirv test-spirv.cpp)
-target_link_libraries(test-spirv SPIRV)
+target_link_libraries(test-spirv SPIRV::SPIRV)
 install(TARGETS test-spirv DESTINATION bin)
 
 #
@@ -36,7 +36,7 @@ install(TARGETS test-spirv DESTINATION bin)
 find_package(SPVRemapper ${CHECK_VERSION} EXACT REQUIRED)
 
 add_executable(test-spvremapper test-spvremapper.cpp)
-target_link_libraries(test-spvremapper SPVRemapper)
+target_link_libraries(test-spvremapper SPVRemapper::SPVRemapper)
 install(TARGETS test-spvremapper DESTINATION bin)
 
 #
@@ -45,7 +45,7 @@ install(TARGETS test-spvremapper DESTINATION bin)
 find_package(glslang-default-resource-limits ${CHECK_VERSION} EXACT REQUIRED)
 
 add_executable(test-glslang-default-resource-limits test-glslang-default-resource-limits.cpp)
-target_link_libraries(test-glslang-default-resource-limits glslang-default-resource-limits)
+target_link_libraries(test-glslang-default-resource-limits glslang-default-resource-limits::glslang-default-resource-limits)
 install(TARGETS test-glslang-default-resource-limits DESTINATION bin)
 
 #
