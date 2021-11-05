@@ -2,6 +2,8 @@
 
 1. Visual Studio 2013 is no longer supported
 
+This is a test.
+
    [As scheduled](https://github.com/KhronosGroup/glslang/blob/9eef54b2513ca6b40b47b07d24f453848b65c0df/README.md#planned-deprecationsremovals),
 Microsoft Visual Studio 2013 is no longer officially supported. \
    Please upgrade to at least Visual Studio 2015.
