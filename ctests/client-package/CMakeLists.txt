@@ -6,6 +6,8 @@ endif()
 
 project(test-glslang LANGUAGES CXX)
 
+add_definitions(-DCHECK_VERSION=\"${CHECK_VERSION}\")
+
 #
 # target glslang
 #
