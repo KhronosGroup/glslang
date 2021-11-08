@@ -285,7 +285,8 @@ INSTANTIATE_TEST_SUITE_P(
         "atomicAdd.comp",
         "GL_ARB_gpu_shader5.u2i.vert",
         "atomicCounterARBOps.vert",
-        "GL_EXT_shader_integer_mix.vert"
+        "GL_EXT_shader_integer_mix.vert",
+        "GL_ARB_draw_instanced.vert",
     })),
     FileNameAsCustomTestSuffix
 );
