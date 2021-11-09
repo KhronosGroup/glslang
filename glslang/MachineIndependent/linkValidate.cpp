@@ -858,9 +858,19 @@ void TIntermediate::mergeErrorCheck(TInfoSink& infoSink, const TIntermSymbol& sy
     if (symbol.getType().getBasicType() == EbtBlock && unitSymbol.getType().getBasicType() == EbtBlock &&
         symbol.getType().getStruct() && unitSymbol.getType().getStruct() &&
         symbol.getType().sameStructType(unitSymbol.getType())) {
-        for (unsigned int i = 0; i < symbol.getType().getStruct()->size(); ++i) {
-            const TQualifier& qualifier = (*symbol.getType().getStruct())[i].type->getQualifier();
-            const TQualifier& unitQualifier = (*unitSymbol.getType().getStruct())[i].type->getQualifier();
+        unsigned int li = 0;
+        unsigned int ri = 0;
+        while (li < symbol.getType().getStruct()->size() && ri < unitSymbol.getType().getStruct()->size()) {
+            if ((*symbol.getType().getStruct())[li].type->hiddenMember()) {
+                ++li;
+                continue;
+            }
+            if ((*unitSymbol.getType().getStruct())[ri].type->hiddenMember()) {
+                ++ri;
+                continue;
+            }
+            const TQualifier& qualifier = (*symbol.getType().getStruct())[li].type->getQualifier();
+            const TQualifier & unitQualifier = (*unitSymbol.getType().getStruct())[ri].type->getQualifier();
             if (qualifier.layoutMatrix     != unitQualifier.layoutMatrix ||
                 qualifier.layoutOffset     != unitQualifier.layoutOffset ||
                 qualifier.layoutAlign      != unitQualifier.layoutAlign ||
@@ -869,6 +879,8 @@ void TIntermediate::mergeErrorCheck(TInfoSink& infoSink, const TIntermSymbol& sy
                 error(infoSink, "Interface block member layout qualifiers must match:");
                 writeTypeComparison = true;
             }
+            ++li;
+            ++ri;
         }
     }
 
