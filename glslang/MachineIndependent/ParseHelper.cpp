@@ -6496,6 +6496,8 @@ void TParseContext::layoutQualifierCheck(const TSourceLoc& loc, const TQualifier
             error(loc, "can only be used with a uniform", "push_constant", "");
         if (qualifier.hasSet())
             error(loc, "cannot be used with push_constant", "set", "");
+        if (qualifier.hasBinding())
+            error(loc, "cannot be used with push_constant", "binding", "");
     }
     if (qualifier.hasBufferReference()) {
         if (qualifier.storage != EvqBuffer)
