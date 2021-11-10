@@ -81,6 +81,8 @@ if (ENABLE_SPVREMAPPER)
     add_library(SPVRemapper ${LIB_TYPE} ${SPVREMAP_SOURCES} ${SPVREMAP_HEADERS})
     set_property(TARGET SPVRemapper PROPERTY FOLDER glslang)
     set_property(TARGET SPVRemapper PROPERTY POSITION_INDEPENDENT_CODE ON)
+    target_include_directories(SPVRemapper PUBLIC
+        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 endif()
 
 if(WIN32 AND BUILD_SHARED_LIBS)
