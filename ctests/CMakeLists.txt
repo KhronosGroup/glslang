@@ -76,6 +76,7 @@ if(ENABLE_CLIENT_PACKAGE_TEST AND ENABLE_GLSLANG_INSTALL AND INSTALL_COMMAND)
             --build-generator ${CMAKE_GENERATOR}
             --build-makeprogram ${CMAKE_MAKE_PROGRAM}
             --build-target install
+            --verbose
             --build-options
                 #--trace-expand
                 -DBUILD_SHARED_LIBS=${BUILD_SHARED_LIBS}
