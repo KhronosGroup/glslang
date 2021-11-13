@@ -6935,6 +6935,9 @@ void HlslParseContext::shareStructBufferType(TType& type)
         if (lhs.isStruct() != rhs.isStruct())
             return false;
 
+        if (lhs.getQualifier().builtIn != rhs.getQualifier().builtIn)
+            return false;
+
         if (lhs.isStruct() && rhs.isStruct()) {
             if (lhs.getStruct()->size() != rhs.getStruct()->size())
                 return false;
