@@ -22,7 +22,9 @@ Validation failed
                               Decorate 11(as) Binding 0
                2:             TypeVoid
                3:             TypeFunction 2
+               6:             TypeRayQueryKHR
                7:             TypePointer Function 6
+               9:             TypeAccelerationStructureKHR
               10:             TypePointer UniformConstant 9
           11(as):     10(ptr) Variable UniformConstant
               13:             TypeInt 32 0
@@ -36,8 +38,6 @@ Validation failed
          4(main):           2 Function None 3
                5:             Label
            8(rq):      7(ptr) Variable Function
-               6:             TypeRayQueryKHR
-               9:             TypeAccelerationStructureKHR
               12:           9 Load 11(as)
                               RayQueryInitializeKHR 8(rq) 12 14 14 18 17 20 19
                               RayQueryTerminateKHR 8(rq)
