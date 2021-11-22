@@ -385,6 +385,7 @@ INSTANTIATE_TEST_SUITE_P(
         {"hlsl.structbuffer.fn2.comp", "main"},
         {"hlsl.structbuffer.rw.frag", "main"},
         {"hlsl.structbuffer.rwbyte.frag", "main"},
+        {"hlsl.structbuffer.rwbyte2.comp", "main"},
         {"hlsl.structin.vert", "main"},
         {"hlsl.structIoFourWay.frag", "main"},
         {"hlsl.structStructName.frag", "main"},

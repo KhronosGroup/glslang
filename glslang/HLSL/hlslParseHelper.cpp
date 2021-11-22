@@ -2167,8 +2167,21 @@ TIntermNode* HlslParseContext::transformEntryPoint(const TSourceLoc& loc, TFunct
         TIntermSymbol* arg = intermediate.addSymbol(*argVars.back());
         handleFunctionArgument(&callee, callingArgs, arg);
         if (param.type->getQualifier().isParamInput()) {
-            intermediate.growAggregate(synthBody, handleAssign(loc, EOpAssign, arg,
-                                                               intermediate.addSymbol(**inputIt)));
+            TIntermTyped* input = intermediate.addSymbol(**inputIt);
+            if (input->getType().getQualifier().builtIn == EbvFragCoord && intermediate.getDxPositionW()) {
+                // Replace FragCoord W with reciprocal
+                auto pos_xyz = handleDotDereference(loc, input, "xyz");
+                auto pos_w   = handleDotDereference(loc, input, "w");
+                auto one     = intermediate.addConstantUnion(1.0, EbtFloat, loc);
+                auto recip_w = intermediate.addBinaryMath(EOpDiv, one, pos_w, loc);
+                TIntermAggregate* dst = new TIntermAggregate(EOpConstructVec4);
+                dst->getSequence().push_back(pos_xyz);
+                dst->getSequence().push_back(recip_w);
+                dst->setType(TType(EbtFloat, EvqTemporary, 4));
+                dst->setLoc(loc);
+                input = dst;
+            }
+            intermediate.growAggregate(synthBody, handleAssign(loc, EOpAssign, arg, input));
             inputIt++;
         }
         if (param.type->getQualifier().storage == EvqUniform) {
@@ -4017,11 +4030,11 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
             txsample->getSequence().push_back(txcombine);
             txsample->getSequence().push_back(argCoord);
 
-            if (argBias != nullptr)
-                txsample->getSequence().push_back(argBias);
-
             if (argOffset != nullptr)
                 txsample->getSequence().push_back(argOffset);
+
+            if (argBias != nullptr)
+              txsample->getSequence().push_back(argBias);
 
             node = convertReturn(txsample, sampler);
 
@@ -6933,6 +6946,9 @@ void HlslParseContext::shareStructBufferType(TType& type)
             return false;
 
         if (lhs.isStruct() != rhs.isStruct())
+            return false;
+
+        if (lhs.getQualifier().builtIn != rhs.getQualifier().builtIn)
             return false;
 
         if (lhs.isStruct() && rhs.isStruct()) {

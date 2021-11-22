@@ -50,8 +50,6 @@ spv.ext.RayGenSBTlayoutscalar.rgen
                               MemberDecorate 36(block) 9 Offset 96
                               MemberDecorate 36(block) 10 Offset 104
                               Decorate 36(block) Block
-                              Decorate 38 DescriptorSet 0
-                              Decorate 38 Binding 0
                               Decorate 60(payload) Location 1
                2:             TypeVoid
                3:             TypeFunction 2

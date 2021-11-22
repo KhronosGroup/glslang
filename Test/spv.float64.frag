@@ -127,36 +127,12 @@ void typeCast()
     u64v = u64vec3(f64v);    // float64 -> uint64
 }
 
-void builtinAngleTrigFuncs()
-{
-    f64vec4 f64v1, f64v2;
+// Trig, pow, exp and log are not supported for f64
 
-    f64v2 = radians(f64v1);
-    f64v2 = degrees(f64v1);
-    f64v2 = sin(f64v1);
-    f64v2 = cos(f64v1);
-    f64v2 = tan(f64v1);
-    f64v2 = asin(f64v1);
-    f64v2 = acos(f64v1);
-    f64v2 = atan(f64v1, f64v2);
-    f64v2 = atan(f64v1);
-    f64v2 = sinh(f64v1);
-    f64v2 = cosh(f64v1);
-    f64v2 = tanh(f64v1);
-    f64v2 = asinh(f64v1);
-    f64v2 = acosh(f64v1);
-    f64v2 = atanh(f64v1);
-}
-
-void builtinExpFuncs()
+void builtinTranscendentalFuncs()
 {
     f64vec2 f64v1, f64v2;
 
-    f64v2 = pow(f64v1, f64v2);
-    f64v2 = exp(f64v1);
-    f64v2 = log(f64v1);
-    f64v2 = exp2(f64v1);
-    f64v2 = log2(f64v1);
     f64v2 = sqrt(f64v1);
     f64v2 = inversesqrt(f64v1);
 }

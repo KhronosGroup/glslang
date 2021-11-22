@@ -36,10 +36,6 @@ spv.precise.tese
                               Decorate 43 NoContraction
                               Decorate 62(in_f_color) RelaxedPrecision
                               Decorate 62(in_f_color) Location 0
-                              Decorate 67 RelaxedPrecision
-                              Decorate 68 RelaxedPrecision
-                              Decorate 69 RelaxedPrecision
-                              Decorate 70 RelaxedPrecision
                               Decorate 97 NoContraction
                               Decorate 99 NoContraction
                               Decorate 101 NoContraction

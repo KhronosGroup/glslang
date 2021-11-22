@@ -48,37 +48,6 @@
 #endif
 #include <cstdint>
 
-namespace {
-
-bool IsInfinity(double x) {
-#ifdef _MSC_VER
-    switch (_fpclass(x)) {
-    case _FPCLASS_NINF:
-    case _FPCLASS_PINF:
-        return true;
-    default:
-        return false;
-    }
-#else
-    return std::isinf(x);
-#endif
-}
-
-bool IsNan(double x) {
-#ifdef _MSC_VER
-    switch (_fpclass(x)) {
-    case _FPCLASS_SNAN:
-    case _FPCLASS_QNAN:
-        return true;
-    default:
-        return false;
-    }
-#else
-  return std::isnan(x);
-#endif
-}
-
-}
 
 namespace glslang {
 
@@ -1089,6 +1058,7 @@ bool TOutputTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node
     case EOpSubpassLoadMS: out.debug << "subpassLoadMS"; break;
 
     case EOpTraceNV:                          out.debug << "traceNV"; break;
+    case EOpTraceRayMotionNV:                 out.debug << "traceRayMotionNV"; break;
     case EOpTraceKHR:                         out.debug << "traceRayKHR"; break;
     case EOpReportIntersection:               out.debug << "reportIntersectionNV"; break;
     case EOpIgnoreIntersectionNV:             out.debug << "ignoreIntersectionNV"; break;

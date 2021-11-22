@@ -13,7 +13,7 @@ layout(binding = 1) buffer bbt {
     float f;
 } bufferv;
 
-layout(binding = 2, push_constant) uniform pushB {
+layout(push_constant) uniform pushB {
     int a;
 } pushv;
 

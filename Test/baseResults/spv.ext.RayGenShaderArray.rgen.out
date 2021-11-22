@@ -43,8 +43,6 @@ spv.ext.RayGenShaderArray.rgen
                               MemberDecorate 36(block) 3 Offset 32
                               MemberDecorate 36(block) 4 Offset 40
                               Decorate 36(block) Block
-                              Decorate 38 DescriptorSet 0
-                              Decorate 38 Binding 2
                               Decorate 61(payload) Location 1
                               Decorate 65(accEXT1) DescriptorSet 0
                               Decorate 65(accEXT1) Binding 1

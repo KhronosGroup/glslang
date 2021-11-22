@@ -31,7 +31,6 @@ spv.1.4.OpEntryPoint.frag
                               Decorate 25(uniformv) Binding 0
                               MemberDecorate 31(pushB) 0 Offset 0
                               Decorate 31(pushB) Block
-                              Decorate 33(pushv) Binding 2
                               MemberDecorate 39(bbt) 0 Offset 0
                               Decorate 39(bbt) Block
                               Decorate 41(bufferv) DescriptorSet 0
