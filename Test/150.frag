@@ -111,8 +111,8 @@ void qlodFail()
     vec2 pf2;
     vec3 pf3;
 
-    lod = textureQueryLod(samp1D, pf);      // ERROR, extension GL_ARB_texture_query_lod needed
-    lod = textureQueryLod(samp2Ds, pf2);    // ERROR, extension GL_ARB_texture_query_lod needed
+    lod = textureQueryLOD(samp1D, pf);      // ERROR, extension GL_ARB_texture_query_lod needed
+    lod = textureQueryLOD(samp2Ds, pf2);    // ERROR, extension GL_ARB_texture_query_lod needed
 }
 
 #extension GL_ARB_texture_query_lod : enable
@@ -138,21 +138,21 @@ void qlodPass()
     vec2 pf2;
     vec3 pf3;
 
-    lod = textureQueryLod(samp1D, pf);
-    lod = textureQueryLod(isamp2D, pf2);
-    lod = textureQueryLod(usamp3D, pf3);
-    lod = textureQueryLod(sampCube, pf3);
-    lod = textureQueryLod(isamp1DA, pf);
-    lod = textureQueryLod(usamp2DA, pf2);
+    lod = textureQueryLOD(samp1D, pf);
+    lod = textureQueryLOD(isamp2D, pf2);
+    lod = textureQueryLOD(usamp3D, pf3);
+    lod = textureQueryLOD(sampCube, pf3);
+    lod = textureQueryLOD(isamp1DA, pf);
+    lod = textureQueryLOD(usamp2DA, pf2);
 
-    lod = textureQueryLod(samp1Ds, pf);
-    lod = textureQueryLod(samp2Ds, pf2);
-    lod = textureQueryLod(sampCubes, pf3);
-    lod = textureQueryLod(samp1DAs, pf);
-    lod = textureQueryLod(samp2DAs, pf2);
+    lod = textureQueryLOD(samp1Ds, pf);
+    lod = textureQueryLOD(samp2Ds, pf2);
+    lod = textureQueryLOD(sampCubes, pf3);
+    lod = textureQueryLOD(samp1DAs, pf);
+    lod = textureQueryLOD(samp2DAs, pf2);
 
-    lod = textureQueryLod(sampBuf, pf);     // ERROR
-    lod = textureQueryLod(sampRect, pf2);   // ERROR
+    lod = textureQueryLOD(sampBuf, pf);     // ERROR
+    lod = textureQueryLOD(sampRect, pf2);   // ERROR
 }
 
 // Test extension GL_EXT_shader_integer_mix
