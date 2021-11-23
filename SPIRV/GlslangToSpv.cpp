@@ -1256,8 +1256,10 @@ spv::StorageClass TGlslangToSpvTraverser::TranslateStorageClass(const glslang::T
     if (type.getBasicType() == glslang::EbtRayQuery)
         return spv::StorageClassPrivate;
 #ifndef GLSLANG_WEB
-    if (type.getQualifier().isSpirvByReference())
-        return spv::StorageClassFunction;
+    if (type.getQualifier().isSpirvByReference()) {
+        if (type.getQualifier().isParamInput() || type.getQualifier().isParamOutput())
+            return spv::StorageClassFunction;
+    }
 #endif
     if (type.getQualifier().isPipeInput())
         return spv::StorageClassInput;
