@@ -226,6 +226,8 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_ARB_texture_query_lod]            = EBhDisable;
     extensionBehavior[E_GL_ARB_vertex_attrib_64bit]          = EBhDisable;
     extensionBehavior[E_GL_ARB_draw_instanced]               = EBhDisable;
+    extensionBehavior[E_GL_ARB_fragment_coord_conventions]   = EBhDisable;
+
 
     extensionBehavior[E_GL_KHR_shader_subgroup_basic]            = EBhDisable;
     extensionBehavior[E_GL_KHR_shader_subgroup_vote]             = EBhDisable;
@@ -467,6 +469,7 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_ARB_texture_query_lod 1\n"
             "#define GL_ARB_vertex_attrib_64bit 1\n"
             "#define GL_ARB_draw_instanced 1\n"
+            "#define GL_ARB_fragment_coord_conventions 1\n"
             "#define GL_EXT_shader_non_constant_global_initializers 1\n"
             "#define GL_EXT_shader_image_load_formatted 1\n"
             "#define GL_EXT_post_depth_coverage 1\n"
