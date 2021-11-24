@@ -1829,6 +1829,7 @@ void  TShader::setUniqueId(unsigned long long id)
 }
 
 void TShader::setInvertY(bool invert)                   { intermediate->setInvertY(invert); }
+void TShader::setDxPositionW(bool invert)               { intermediate->setDxPositionW(invert); }
 void TShader::setNanMinMaxClamp(bool useNonNan)         { intermediate->setNanMinMaxClamp(useNonNan); }
 
 #ifndef GLSLANG_WEB

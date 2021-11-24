@@ -39,7 +39,11 @@
 
 #include <algorithm>
 #include <cassert>
+#ifdef _MSC_VER
+#include <cfloat>
+#else
 #include <cmath>
+#endif
 #include <cstdio>
 #include <cstdlib>
 #include <list>

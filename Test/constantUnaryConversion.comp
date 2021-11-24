@@ -13,10 +13,17 @@ const uint32_t uint32_t_init = uint32_t(3);
 const uint64_t uint64_t_init = uint64_t(4);
 const float16_t float16_t_init = float16_t(42.0);
 const float32_t float32_t_init = float32_t(13.0);
-const float64_t float64_t_init = float64_t(-4.0);
+const float64_t float64_t_init = float64_t(4.0);
+
+const float16_t neg_float16_t_init = float16_t(-42.0);
+const float32_t neg_float32_t_init = float32_t(-13.0);
+const float64_t neg_float64_t_init = float64_t(-4.0);
 
 #define TYPE_TO_TYPE(x, y) \
     const x y##_to_##x = x(y##_init)
+
+#define TYPE_TO_TYPE_PREFIX(prefix, x, y) \
+    const x prefix##_##y##_to_##x = x(prefix##_##y##_init)
 
 #define TYPE_TO(x)              \
     TYPE_TO_TYPE(x, bool);      \
@@ -44,5 +51,19 @@ TYPE_TO(uint64_t);
 TYPE_TO(float16_t);
 TYPE_TO(float32_t);
 TYPE_TO(float64_t);
+
+#define NEG_FLOAT_TO(x) \
+    TYPE_TO_TYPE_PREFIX(neg, x, float16_t); \
+    TYPE_TO_TYPE_PREFIX(neg, x, float32_t); \
+    TYPE_TO_TYPE_PREFIX(neg, x, float64_t)
+
+NEG_FLOAT_TO(bool);
+NEG_FLOAT_TO(int8_t);
+NEG_FLOAT_TO(int16_t);
+NEG_FLOAT_TO(int32_t);
+NEG_FLOAT_TO(int64_t);
+NEG_FLOAT_TO(float16_t);
+NEG_FLOAT_TO(float32_t);
+NEG_FLOAT_TO(float64_t);
 
 void main() {}

@@ -312,6 +312,7 @@ void TIntermediate::mergeModes(TInfoSink& infoSink, TIntermediate& unit)
     MERGE_TRUE(autoMapBindings);
     MERGE_TRUE(autoMapLocations);
     MERGE_TRUE(invertY);
+    MERGE_TRUE(dxPositionW);
     MERGE_TRUE(flattenUniformArrays);
     MERGE_TRUE(useUnknownFormat);
     MERGE_TRUE(hlslOffsets);
@@ -759,7 +760,10 @@ void TIntermediate::mergeLinkerObjects(TInfoSink& infoSink, TIntermSequence& lin
 
                     auto checkName = [this, unitSymbol, &infoSink](const TString& name) {
                         for (unsigned int i = 0; i < unitSymbol->getType().getStruct()->size(); ++i) {
-                            if (name == (*unitSymbol->getType().getStruct())[i].type->getFieldName()) {
+                            if (name == (*unitSymbol->getType().getStruct())[i].type->getFieldName()
+                                && !((*unitSymbol->getType().getStruct())[i].type->getQualifier().hasLocation()
+                                    || unitSymbol->getType().getQualifier().hasLocation())
+                                ) {
                                 error(infoSink, "Anonymous member name used for global variable or other anonymous member: ");
                                 infoSink.info << (*unitSymbol->getType().getStruct())[i].type->getCompleteString() << "\n";
                             }
