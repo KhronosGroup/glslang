@@ -181,6 +181,13 @@ typedef enum {
     LAST_ELEMENT_MARKER(GLSLANG_PROFILE_COUNT),
 } glslang_profile_t;
 
+/* Shader options */
+typedef enum {
+    GLSLANG_SHADER_DEFAULT_BIT = 0,
+    GLSLANG_SHADER_AUTO_MAP_BINDINGS = (1 << 0),
+    GLSLANG_SHADER_AUTO_MAP_LOCATIONS = (2 << 0),
+} glslang_shader_options_t;
+
 #undef LAST_ELEMENT_MARKER
 
 #endif

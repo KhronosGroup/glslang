@@ -367,10 +367,18 @@ GLSLANG_EXPORT int glslang_shader_preprocess(glslang_shader_t* shader, const gls
     );
 }
 
-GLSLANG_EXPORT int glslang_shader_parse(glslang_shader_t* shader, const glslang_input_t* input)
+GLSLANG_EXPORT int glslang_shader_parse(glslang_shader_t* shader, const glslang_input_t* input, int options)
 {
     const char* preprocessedCStr = shader->preprocessedGLSL.c_str();
     shader->shader->setStrings(&preprocessedCStr, 1);
+
+    if (options & GLSLANG_SHADER_AUTO_MAP_BINDINGS) {
+        shader->shader->setAutoMapBindings(true);
+    }
+
+    if (options & GLSLANG_SHADER_AUTO_MAP_LOCATIONS) {
+        shader->shader->setAutoMapLocations(true);
+    }
 
     return shader->shader->parse(
         reinterpret_cast<const TBuiltInResource*>(input->resource),

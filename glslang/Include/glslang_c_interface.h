@@ -225,7 +225,7 @@ GLSLANG_EXPORT void glslang_finalize_process();
 GLSLANG_EXPORT glslang_shader_t* glslang_shader_create(const glslang_input_t* input);
 GLSLANG_EXPORT void glslang_shader_delete(glslang_shader_t* shader);
 GLSLANG_EXPORT int glslang_shader_preprocess(glslang_shader_t* shader, const glslang_input_t* input);
-GLSLANG_EXPORT int glslang_shader_parse(glslang_shader_t* shader, const glslang_input_t* input);
+GLSLANG_EXPORT int glslang_shader_parse(glslang_shader_t* shader, const glslang_input_t* input, int options); // glslang_shader_options_t
 GLSLANG_EXPORT const char* glslang_shader_get_preprocessed_code(glslang_shader_t* shader);
 GLSLANG_EXPORT const char* glslang_shader_get_info_log(glslang_shader_t* shader);
 GLSLANG_EXPORT const char* glslang_shader_get_info_debug_log(glslang_shader_t* shader);
