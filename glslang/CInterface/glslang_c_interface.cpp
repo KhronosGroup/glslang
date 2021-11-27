@@ -346,6 +346,17 @@ GLSLANG_EXPORT glslang_shader_t* glslang_shader_create(const glslang_input_t* in
     return shader;
 }
 
+GLSLANG_EXPORT void glslang_shader_set_options(glslang_shader_t* shader, int options)
+{
+    if (options & GLSLANG_SHADER_AUTO_MAP_BINDINGS) {
+        shader->shader->setAutoMapBindings(true);
+    }
+
+    if (options & GLSLANG_SHADER_AUTO_MAP_LOCATIONS) {
+        shader->shader->setAutoMapLocations(true);
+    }
+}
+
 GLSLANG_EXPORT const char* glslang_shader_get_preprocessed_code(glslang_shader_t* shader)
 {
     return shader->preprocessedGLSL.c_str();
@@ -367,18 +378,10 @@ GLSLANG_EXPORT int glslang_shader_preprocess(glslang_shader_t* shader, const gls
     );
 }
 
-GLSLANG_EXPORT int glslang_shader_parse(glslang_shader_t* shader, const glslang_input_t* input, int options)
+GLSLANG_EXPORT int glslang_shader_parse(glslang_shader_t* shader, const glslang_input_t* input)
 {
-    const char* preprocessedCStr = shader->preprocessedGLSL.c_str();
-    shader->shader->setStrings(&preprocessedCStr, 1);
-
-    if (options & GLSLANG_SHADER_AUTO_MAP_BINDINGS) {
-        shader->shader->setAutoMapBindings(true);
-    }
-
-    if (options & GLSLANG_SHADER_AUTO_MAP_LOCATIONS) {
-        shader->shader->setAutoMapLocations(true);
-    }
+    //const char* preprocessedCStr = shader->preprocessedGLSL.c_str();
+    //shader->shader->setStrings(&preprocessedCStr, 1);
 
     return shader->shader->parse(
         reinterpret_cast<const TBuiltInResource*>(input->resource),
@@ -425,6 +428,11 @@ GLSLANG_EXPORT void glslang_program_add_shader(glslang_program_t* program, glsla
 GLSLANG_EXPORT int glslang_program_link(glslang_program_t* program, int messages)
 {
     return (int)program->program->link((EShMessages)messages);
+}
+
+GLSLANG_EXPORT int glslang_program_map_io(glslang_program_t* program)
+{
+    return (int)program->program->mapIO();
 }
 
 GLSLANG_EXPORT const char* glslang_program_get_info_log(glslang_program_t* program)
