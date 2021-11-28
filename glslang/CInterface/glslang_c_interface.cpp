@@ -346,6 +346,18 @@ GLSLANG_EXPORT glslang_shader_t* glslang_shader_create(const glslang_input_t* in
     return shader;
 }
 
+GLSLANG_EXPORT void glslang_shader_shift_binding(glslang_shader_t* shader, glslang_resource_type_t res, unsigned int base)
+{
+    const glslang::TResourceType res_type = glslang::TResourceType(res);
+    shader->shader->setShiftBinding(res_type, base);
+}
+
+GLSLANG_EXPORT void glslang_shader_shift_binding_for_set(glslang_shader_t* shader, glslang_resource_type_t res, unsigned int base, unsigned int set)
+{
+    const glslang::TResourceType res_type = glslang::TResourceType(res);
+    shader->shader->setShiftBindingForSet(res_type, base, set);
+}
+
 GLSLANG_EXPORT void glslang_shader_set_options(glslang_shader_t* shader, int options)
 {
     if (options & GLSLANG_SHADER_AUTO_MAP_BINDINGS) {
