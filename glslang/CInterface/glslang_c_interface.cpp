@@ -392,8 +392,8 @@ GLSLANG_EXPORT int glslang_shader_preprocess(glslang_shader_t* shader, const gls
 
 GLSLANG_EXPORT int glslang_shader_parse(glslang_shader_t* shader, const glslang_input_t* input)
 {
-    //const char* preprocessedCStr = shader->preprocessedGLSL.c_str();
-    //shader->shader->setStrings(&preprocessedCStr, 1);
+    const char* preprocessedCStr = shader->preprocessedGLSL.c_str();
+    shader->shader->setStrings(&preprocessedCStr, 1);
 
     return shader->shader->parse(
         reinterpret_cast<const TBuiltInResource*>(input->resource),
