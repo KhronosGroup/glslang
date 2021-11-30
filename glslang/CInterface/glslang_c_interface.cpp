@@ -343,6 +343,10 @@ GLSLANG_EXPORT glslang_shader_t* glslang_shader_create(const glslang_input_t* in
     shader->shader->setEnvTarget(c_shader_target_language(input->target_language),
                                  c_shader_target_language_version(input->target_language_version));
 
+    if (input->vulkan_rules_relaxed) {
+        shader->shader->setEnvInputVulkanRulesRelaxed();
+    }
+
     return shader;
 }
 
