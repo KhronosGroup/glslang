@@ -166,7 +166,6 @@ typedef struct glslang_input_s {
     glslang_profile_t default_profile;
     int force_default_version_and_profile;
     int forward_compatible;
-    int vulkan_rules_relaxed;
     glslang_messages_t messages;
     const glslang_resource_t* resource;
 } glslang_input_t;
