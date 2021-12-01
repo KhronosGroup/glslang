@@ -368,7 +368,7 @@ GLSLANG_EXPORT void glslang_shader_set_options(glslang_shader_t* shader, int opt
         shader->shader->setAutoMapLocations(true);
     }
 
-    if (options & GLSLANG_SHADER_AUTO_MAP_LOCATIONS) {
+    if (options & GLSLANG_SHADER_VULKAN_RULES_RELAXED) {
         shader->shader->setEnvInputVulkanRulesRelaxed();
     }
 
