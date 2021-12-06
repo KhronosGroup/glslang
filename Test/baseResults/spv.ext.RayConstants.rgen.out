@@ -15,7 +15,6 @@ spv.ext.RayConstants.rgen
                               Name 26  "payload"
                               Decorate 8(accEXT) DescriptorSet 0
                               Decorate 8(accEXT) Binding 0
-                              Decorate 26(payload) Location 1
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeAccelerationStructureKHR

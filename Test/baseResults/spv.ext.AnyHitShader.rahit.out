@@ -69,7 +69,6 @@ spv.ext.AnyHitShader.rahit
                               Decorate 70(gl_GeometryIndexEXT) BuiltIn RayGeometryIndexKHR
                               Decorate 76(gl_ObjectToWorld3x4EXT) BuiltIn ObjectToWorldKHR
                               Decorate 80(gl_WorldToObject3x4EXT) BuiltIn WorldToObjectKHR
-                              Decorate 84(incomingPayload) Location 1
                               Decorate 98(gl_SubgroupSize) RelaxedPrecision
                               Decorate 98(gl_SubgroupSize) BuiltIn SubgroupSize
                               Decorate 99 RelaxedPrecision

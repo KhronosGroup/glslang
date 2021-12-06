@@ -30,7 +30,6 @@ spv.ext.RayGenShader11.rgen
                               MemberDecorate 37(block) 0 Offset 0
                               MemberDecorate 37(block) 1 Offset 16
                               Decorate 37(block) Block
-                              Decorate 52(payload) Location 1
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 0
