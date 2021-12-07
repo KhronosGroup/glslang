@@ -260,6 +260,8 @@ diff -b $BASEDIR/hlsl.y-negate-3.vert.out $TARGETDIR/hlsl.y-negate-3.vert.out ||
 echo "Testing position W reciprocal"
 run -H -e main -V -D -Od -H -i --hlsl-dx-position-w hlsl.w-recip.frag > $TARGETDIR/hlsl.w-recip.frag.out
 diff -b $BASEDIR/hlsl.w-recip.frag.out $TARGETDIR/hlsl.w-recip.frag.out || HASERROR=1
+run -H -e main -V -D -Od -H -i --hlsl-dx-position-w hlsl.w-recip2.frag > $TARGETDIR/hlsl.w-recip2.frag.out
+diff -b $BASEDIR/hlsl.w-recip2.frag.out $TARGETDIR/hlsl.w-recip2.frag.out || HASERROR=1
 
 #
 # Testing hlsl_functionality1
