@@ -22,8 +22,6 @@ spv.ext.RayCallable.rcall
                               Decorate 11(gl_LaunchIDEXT) BuiltIn LaunchIdKHR
                               Decorate 14(gl_LaunchSizeEXT) BuiltIn LaunchSizeKHR
                               Decorate 16(dataBlock) Block
-                              Decorate 18 Location 1
-                              Decorate 29(data0) Location 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 0

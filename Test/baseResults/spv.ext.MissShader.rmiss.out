@@ -53,7 +53,6 @@ spv.ext.MissShader.rmiss
                               Decorate 32(gl_RayTmaxEXT) BuiltIn RayTmaxKHR
                               Decorate 36(accEXT) DescriptorSet 0
                               Decorate 36(accEXT) Binding 0
-                              Decorate 51(incomingPayload) Location 1
                               Decorate 53(gl_SubGroupSizeARB) BuiltIn SubgroupSize
                               Decorate 53(gl_SubGroupSizeARB) Volatile
                               Decorate 53(gl_SubGroupSizeARB) Coherent
@@ -67,7 +66,6 @@ spv.ext.MissShader.rmiss
                               Decorate 74(s2D) Binding 1
                               Decorate 78(c2) Location 2
                               Decorate 85(lodClamp) Location 3
-                              Decorate 89(localPayload) Location 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 0

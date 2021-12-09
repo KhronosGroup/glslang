@@ -49,7 +49,6 @@ spv.ext.RayGenSBTlayout140.rgen
                               MemberDecorate 36(block) 9 Offset 136
                               MemberDecorate 36(block) 10 Offset 144
                               Decorate 36(block) Block
-                              Decorate 60(payload) Location 1
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 0

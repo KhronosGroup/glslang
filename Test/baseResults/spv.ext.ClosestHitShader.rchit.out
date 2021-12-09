@@ -70,8 +70,6 @@ spv.ext.ClosestHitShader.rchit
                               Decorate 80(gl_WorldToObject3x4EXT) BuiltIn WorldToObjectKHR
                               Decorate 85(accEXT) DescriptorSet 0
                               Decorate 85(accEXT) Binding 0
-                              Decorate 98(incomingPayload) Location 1
-                              Decorate 100(localPayload) Location 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 0
