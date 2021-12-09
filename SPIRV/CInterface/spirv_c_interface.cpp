@@ -86,6 +86,8 @@ GLSLANG_EXPORT void glslang_program_SPIRV_generate(glslang_program_t* program, g
     glslang_spv_options_t spv_options;
     spv_options.generate_debug_info = false;
     spv_options.strip_debug_info = false;
+    spv_options.emit_nonsemantic_shader_debug_info = false;
+    spv_options.emit_nonsemantic_shader_debug_source = false;
     spv_options.disable_optimizer = true;
     spv_options.optimize_size = false;
     spv_options.disassemble = false;

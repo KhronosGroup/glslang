@@ -11085,7 +11085,7 @@ yyreduce:
 #line 3727 "MachineIndependent/glslang.y"
                   {
         if ((yyvsp[-2].interm.intermNode) && (yyvsp[-2].interm.intermNode)->getAsAggregate())
-            (yyvsp[-2].interm.intermNode)->getAsAggregate()->setOperator(EOpSequence);
+            (yyvsp[-2].interm.intermNode)->getAsAggregate()->setOperator(parseContext.intermediate.getDebugInfo() ? EOpScope : EOpSequence);
         (yyval.interm.intermNode) = (yyvsp[-2].interm.intermNode);
     }
 #line 11092 "MachineIndependent/glslang_tab.cpp"

@@ -65,6 +65,7 @@ using HlslLegalizeTest = GlslangTest<::testing::TestWithParam<FileNameEntryPoint
 using HlslDebugTest = GlslangTest<::testing::TestWithParam<FileNameEntryPointPair>>;
 using HlslDX9CompatibleTest = GlslangTest<::testing::TestWithParam<FileNameEntryPointPair>>;
 using HlslLegalDebugTest = GlslangTest<::testing::TestWithParam<FileNameEntryPointPair>>;
+using HlslNonSemanticShaderDebugInfoTest = GlslangTest<::testing::TestWithParam<FileNameEntryPointPair>>;
 
 // Compiling HLSL to pre-legalized SPIR-V under Vulkan semantics. Expected
 // to successfully generate both AST and SPIR-V.
@@ -134,6 +135,13 @@ TEST_P(HlslLegalDebugTest, FromFile)
                             Source::HLSL, Semantics::Vulkan, glslang::EShTargetVulkan_1_0, glslang::EShTargetSpv_1_0,
                             Target::Spv, true, GetParam().entryPoint,
                             "/baseResults/", true, true);
+}
+
+TEST_P(HlslNonSemanticShaderDebugInfoTest, FromFile)
+{
+    loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam().fileName,
+                            Source::HLSL, Semantics::Vulkan, glslang::EShTargetVulkan_1_0,  glslang::EShTargetSpv_1_0,
+                            Target::Spv, true, GetParam().entryPoint, "/baseResults/", false, false, true);
 }
 
 // clang-format off
@@ -527,7 +535,21 @@ INSTANTIATE_TEST_SUITE_P(
     }),
     FileNameAsCustomTestSuffix
 );
+// clang-format on
 
+// clang-format off
+INSTANTIATE_TEST_SUITE_P(
+    ToSpirv, HlslNonSemanticShaderDebugInfoTest,
+    ::testing::ValuesIn(std::vector<FileNameEntryPointPair>{
+        {"spv.debuginfo.hlsl.vert", "main"},
+        {"spv.debuginfo.hlsl.frag", "main"},
+        {"spv.debuginfo.hlsl.comp", "main"},
+        {"spv.debuginfo.hlsl.geom", "main"},
+        {"spv.debuginfo.hlsl.tesc", "main"},
+        {"spv.debuginfo.hlsl.tese", "main"},
+    }),
+    FileNameAsCustomTestSuffix
+);
 // clang-format on
 
 }  // anonymous namespace
