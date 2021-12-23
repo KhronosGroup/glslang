@@ -235,6 +235,7 @@ INSTANTIATE_TEST_SUITE_P(
         "findFunction.frag",
         "constantUnaryConversion.comp",
         "xfbUnsizedArray.error.vert",
+        "xfbUnsizedArray.error.tese",
         "glsl.140.layoutOffset.error.vert",
         "glsl.430.layoutOffset.error.vert",
         "glsl.450.subgroup.frag",
