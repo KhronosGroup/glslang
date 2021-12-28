@@ -233,6 +233,7 @@ INSTANTIATE_TEST_SUITE_P(
         "precise_struct_block.vert",
         "maxClipDistances.vert",
         "findFunction.frag",
+        "noMatchingFunction.frag",
         "constantUnaryConversion.comp",
         "xfbUnsizedArray.error.vert",
         "glsl.140.layoutOffset.error.vert",

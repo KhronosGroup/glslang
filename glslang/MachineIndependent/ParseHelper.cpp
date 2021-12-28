@@ -1321,7 +1321,7 @@ TIntermTyped* TParseContext::handleFunctionCall(const TSourceLoc& loc, TFunction
         // Find it in the symbol table.
         //
         const TFunction* fnCandidate;
-        bool builtIn;
+        bool builtIn {false};
         fnCandidate = findFunction(loc, *function, builtIn);
         if (fnCandidate) {
             // This is a declared function that might map to
