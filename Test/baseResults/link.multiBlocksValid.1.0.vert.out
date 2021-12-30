@@ -83,12 +83,15 @@ Shader version: 430
 
 Linked vertex stage:
 
-WARNING: Linking vertex stage: Matched shader interfaces are using different instance names.
-    c: "layout( column_major std140) uniform block{layout( column_major std140 offset=0) uniform 4-component vector of float color1, layout( column_major std140 offset=16) uniform 4-component vector of float color2}" versus a: "layout( column_major std140) uniform block{layout( column_major std140 offset=0) uniform 4-component vector of float color1, layout( column_major std140 offset=16) uniform 4-component vector of float color2}"
-WARNING: Linking vertex stage: Matched shader interfaces are using different instance names.
-    a: "layout( column_major std140) uniform block{layout( column_major std140 offset=0) uniform 4X4 matrix of float uProj, layout( column_major std140 offset=64) uniform 4X4 matrix of float uWorld}" versus b: "layout( column_major std140) uniform block{layout( column_major std140 offset=0) uniform 4X4 matrix of float uProj, layout( column_major std140 offset=64) uniform 4X4 matrix of float uWorld}"
-WARNING: Linking vertex stage: Matched shader interfaces are using different instance names.
-    b: " out block{ out 4-component vector of float v1,  out 4-component vector of float v2}" versus c: " out block{ out 4-component vector of float v1,  out 4-component vector of float v2}"
+WARNING: Linking vertex and vertex stages: Matched shader interfaces are using different instance names.
+    vertex stage: Block: ColorBlock Instance: c: ""
+    vertex stage: Block: ColorBlock Instance: a: ""
+WARNING: Linking vertex and vertex stages: Matched shader interfaces are using different instance names.
+    vertex stage: Block: Block Instance: a: ""
+    vertex stage: Block: Block Instance: b: ""
+WARNING: Linking vertex and vertex stages: Matched shader interfaces are using different instance names.
+    vertex stage: Block: Vertex Instance: b: ""
+    vertex stage: Block: Vertex Instance: c: ""
 
 Shader version: 430
 0:? Sequence

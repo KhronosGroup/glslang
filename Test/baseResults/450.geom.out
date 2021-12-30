@@ -1,6 +1,6 @@
 450.geom
 ERROR: 0:15: '[' :  array index out of range '3'
-ERROR: 0:15: 'gl_Position' : no such field in structure 
+ERROR: 0:15: 'gl_Position' : no such field in structure 'gl_in'
 ERROR: 0:19: 'points' : can only apply to a standalone qualifier 
 ERROR: 3 compilation errors.  No code generated.
 

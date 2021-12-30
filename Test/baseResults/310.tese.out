@@ -10,7 +10,7 @@ ERROR: 0:26: 'barrier' : no matching overloaded function found
 ERROR: 0:37: 'gl_PointSize' : required extension not requested: Possible extensions include:
 GL_EXT_tessellation_point_size
 GL_OES_tessellation_point_size
-ERROR: 0:38: 'gl_ClipDistance' : no such field in structure 
+ERROR: 0:38: 'gl_ClipDistance' : no such field in structure 'gl_in'
 ERROR: 0:38: 'expression' :  left of '[' is not of type array, matrix, or vector  
 ERROR: 0:47: 'gl_PointSize' : required extension not requested: Possible extensions include:
 GL_EXT_tessellation_point_size
@@ -43,7 +43,7 @@ ERROR: 0:100: 'location' : overlapping use of location 24
 ERROR: 0:103: 'location' : overlapping use of location 24
 ERROR: 0:105: 'gl_TessLevelOuter' : identifiers starting with "gl_" are reserved 
 ERROR: 0:113: 'sample' : Reserved word. 
-ERROR: 0:119: 'gl_PointSize' : no such field in structure 
+ERROR: 0:119: 'gl_PointSize' : no such field in structure 'gl_in'
 ERROR: 0:119: '=' :  cannot convert from ' temp block{ in highp 4-component vector of float Position gl_Position}' to ' temp highp float'
 ERROR: 0:127: 'gl_BoundingBoxOES' : undeclared identifier 
 ERROR: 43 compilation errors.  No code generated.

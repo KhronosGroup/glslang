@@ -299,6 +299,28 @@ run --auto-sampled-textures -H -Od -S frag glsl.autosampledtextures.frag > $TARG
 diff -b $BASEDIR/glsl.autosampledtextures.frag.out $TARGETDIR/glsl.autosampledtextures.frag.out || HASERROR=1
 
 #
+# Test --enhanced-msgs
+#
+
+echo "Testing enhanced-msgs"
+run --enhanced-msgs -V --target-env vulkan1.2 --amb --aml enhanced.0.frag > $TARGETDIR/enhanced.0.frag.out
+diff -b $BASEDIR/enhanced.0.frag.out $TARGETDIR/enhanced.0.frag.out || HASERROR=1
+run --enhanced-msgs -V --target-env vulkan1.2 --amb --aml enhanced.1.frag > $TARGETDIR/enhanced.1.frag.out
+diff -b $BASEDIR/enhanced.1.frag.out $TARGETDIR/enhanced.1.frag.out || HASERROR=1
+run --enhanced-msgs -V --target-env vulkan1.2 --amb --aml enhanced.2.frag > $TARGETDIR/enhanced.2.frag.out
+diff -b $BASEDIR/enhanced.2.frag.out $TARGETDIR/enhanced.2.frag.out || HASERROR=1
+run --enhanced-msgs -V --target-env vulkan1.2 --amb --aml enhanced.3.vert enhanced.3.frag > $TARGETDIR/enhanced.3.link.out
+diff -b $BASEDIR/enhanced.3.link.out $TARGETDIR/enhanced.3.link.out || HASERROR=1
+run --enhanced-msgs -V --target-env vulkan1.2 --amb --aml enhanced.4.vert enhanced.4.frag > $TARGETDIR/enhanced.4.link.out
+diff -b $BASEDIR/enhanced.4.link.out $TARGETDIR/enhanced.4.link.out || HASERROR=1
+run --enhanced-msgs -V --target-env vulkan1.2 --amb --aml enhanced.5.vert enhanced.5.frag > $TARGETDIR/enhanced.5.link.out
+diff -b $BASEDIR/enhanced.5.link.out $TARGETDIR/enhanced.5.link.out || HASERROR=1
+run --enhanced-msgs -V --target-env vulkan1.2 --amb --aml enhanced.6.vert enhanced.6.frag > $TARGETDIR/enhanced.6.link.out
+diff -b $BASEDIR/enhanced.6.link.out $TARGETDIR/enhanced.6.link.out || HASERROR=1
+run --enhanced-msgs -V --target-env vulkan1.2 --amb --aml enhanced.7.vert enhanced.7.frag > $TARGETDIR/enhanced.7.link.out
+diff -b $BASEDIR/enhanced.7.link.out $TARGETDIR/enhanced.7.link.out || HASERROR=1
+
+#
 # Final checking
 #
 if [ $HASERROR -eq 0 ]

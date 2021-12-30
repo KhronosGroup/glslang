@@ -55,22 +55,28 @@ namespace glslang {
 //
 // Link-time error emitter.
 //
-void TIntermediate::error(TInfoSink& infoSink, const char* message)
+void TIntermediate::error(TInfoSink& infoSink, const char* message, EShLanguage unitStage)
 {
 #ifndef GLSLANG_WEB
     infoSink.info.prefix(EPrefixError);
-    infoSink.info << "Linking " << StageName(language) << " stage: " << message << "\n";
+    if (unitStage < EShLangCount)
+        infoSink.info << "Linking " << StageName(getStage()) << " and " << StageName(unitStage) << " stages: " << message << "\n";
+    else
+        infoSink.info << "Linking " << StageName(language) << " stage: " << message << "\n";
 #endif
 
     ++numErrors;
 }
 
 // Link-time warning.
-void TIntermediate::warn(TInfoSink& infoSink, const char* message)
+void TIntermediate::warn(TInfoSink& infoSink, const char* message, EShLanguage unitStage)
 {
 #ifndef GLSLANG_WEB
     infoSink.info.prefix(EPrefixWarning);
-    infoSink.info << "Linking " << StageName(language) << " stage: " << message << "\n";
+    if (unitStage < EShLangCount)
+        infoSink.info << "Linking " << StageName(language) << " and " << StageName(unitStage) << " stages: " << message << "\n";
+    else
+        infoSink.info << "Linking " << StageName(language) << " stage: " << message << "\n";
 #endif
 }
 
@@ -819,6 +825,10 @@ void TIntermediate::mergeErrorCheck(TInfoSink& infoSink, const TIntermSymbol& sy
 #if !defined(GLSLANG_WEB) && !defined(GLSLANG_ANGLE)
     bool crossStage = getStage() != unitStage;
     bool writeTypeComparison = false;
+    bool errorReported = false;
+    bool printQualifiers = false;
+    bool printPrecision = false;
+    bool printType = false;
 
     // Types have to match
     {
@@ -850,11 +860,48 @@ void TIntermediate::mergeErrorCheck(TInfoSink& infoSink, const TIntermSymbol& sy
                 (symbol.getType().isUnsizedArray() || unitSymbol.getType().isUnsizedArray()));
         }
 
-        if (!symbol.getType().sameElementType(unitSymbol.getType()) ||
-            !symbol.getType().sameTypeParameters(unitSymbol.getType()) ||
-            !arraysMatch ) {
+        int lpidx = -1;
+        int rpidx = -1;
+        if (!symbol.getType().sameElementType(unitSymbol.getType(), &lpidx, &rpidx)) {
+            if (lpidx >= 0 && rpidx >= 0) {
+                error(infoSink, "Member names and types must match:", unitStage);
+                infoSink.info << "    Block: " << symbol.getType().getTypeName() << "\n";
+                infoSink.info << "        " << StageName(getStage()) << " stage: \""
+                              << (*symbol.getType().getStruct())[lpidx].type->getCompleteString(true, false, false, true,
+                                      (*symbol.getType().getStruct())[lpidx].type->getFieldName()) << "\"\n";
+                infoSink.info << "        " << StageName(unitStage) << " stage: \""
+                              << (*unitSymbol.getType().getStruct())[rpidx].type->getCompleteString(true, false, false, true,
+                                      (*unitSymbol.getType().getStruct())[rpidx].type->getFieldName()) << "\"\n";
+                errorReported = true;
+            } else if (lpidx >= 0 && rpidx == -1) {
+                  TString errmsg = StageName(getStage());
+                  errmsg.append(" block member has no corresponding member in ").append(StageName(unitStage)).append(" block:");
+                  error(infoSink, errmsg.c_str(), unitStage);
+                  infoSink.info << "    " << StageName(getStage()) << " stage: Block: " << symbol.getType().getTypeName() << ", Member: "
+                    << (*symbol.getType().getStruct())[lpidx].type->getFieldName() << "\n";
+                  infoSink.info << "    " << StageName(unitStage) << " stage: Block: " << unitSymbol.getType().getTypeName() << ", Member: n/a \n";
+                  errorReported = true;
+            } else if (lpidx == -1 && rpidx >= 0) {
+                  TString errmsg = StageName(unitStage);
+                  errmsg.append(" block member has no corresponding member in ").append(StageName(getStage())).append(" block:");
+                  error(infoSink, errmsg.c_str(), unitStage);
+                  infoSink.info << "    " << StageName(unitStage) << " stage: Block: " << unitSymbol.getType().getTypeName() << ", Member: "
+                    << (*unitSymbol.getType().getStruct())[rpidx].type->getFieldName() << "\n";
+                  infoSink.info << "    " << StageName(getStage()) << " stage: Block: " << symbol.getType().getTypeName() << ", Member: n/a \n";
+                  errorReported = true;
+            } else {
+                  error(infoSink, "Types must match:", unitStage);
+                  writeTypeComparison = true;
+                  printType = true;
+            }
+        } else if (!arraysMatch) {
+            error(infoSink, "Array sizes must be compatible:", unitStage);
             writeTypeComparison = true;
-            error(infoSink, "Types must match:");
+            printType = true;
+        } else if (!symbol.getType().sameTypeParameters(unitSymbol.getType())) {
+            error(infoSink, "Type parameters must match:", unitStage);
+            writeTypeComparison = true;
+            printType = true;
         }
     }
 
@@ -875,13 +922,35 @@ void TIntermediate::mergeErrorCheck(TInfoSink& infoSink, const TIntermSymbol& sy
             }
             const TQualifier& qualifier = (*symbol.getType().getStruct())[li].type->getQualifier();
             const TQualifier & unitQualifier = (*unitSymbol.getType().getStruct())[ri].type->getQualifier();
-            if (qualifier.layoutMatrix     != unitQualifier.layoutMatrix ||
-                qualifier.layoutOffset     != unitQualifier.layoutOffset ||
-                qualifier.layoutAlign      != unitQualifier.layoutAlign ||
-                qualifier.layoutLocation   != unitQualifier.layoutLocation ||
-                qualifier.layoutComponent  != unitQualifier.layoutComponent) {
-                error(infoSink, "Interface block member layout qualifiers must match:");
-                writeTypeComparison = true;
+            bool layoutQualifierError = false;
+            if (qualifier.layoutMatrix != unitQualifier.layoutMatrix) {
+                error(infoSink, "Interface block member layout matrix qualifier must match:", unitStage);
+                layoutQualifierError = true;
+            }
+            if (qualifier.layoutOffset != unitQualifier.layoutOffset) {
+                error(infoSink, "Interface block member layout offset qualifier must match:", unitStage);
+                layoutQualifierError = true;
+            }
+            if (qualifier.layoutAlign != unitQualifier.layoutAlign) {
+                error(infoSink, "Interface block member layout align qualifier must match:", unitStage);
+                layoutQualifierError = true;
+            }
+            if (qualifier.layoutLocation != unitQualifier.layoutLocation) {
+                error(infoSink, "Interface block member layout location qualifier must match:", unitStage);
+                layoutQualifierError = true;
+            }
+            if (qualifier.layoutComponent != unitQualifier.layoutComponent) {
+                error(infoSink, "Interface block member layout component qualifier must match:", unitStage);
+                layoutQualifierError = true;
+            }
+            if (layoutQualifierError) {
+                infoSink.info << "    " << StageName(getStage()) << " stage: Block: " << symbol.getType().getTypeName() << ", Member: "
+                              << (*symbol.getType().getStruct())[li].type->getFieldName() << " \""
+                              << (*symbol.getType().getStruct())[li].type->getCompleteString(true, true, false, false) << "\"\n";
+                infoSink.info << "    " << StageName(unitStage) << " stage: Block: " << unitSymbol.getType().getTypeName() << ", Member: "
+                              << (*unitSymbol.getType().getStruct())[ri].type->getFieldName() << " \""
+                              << (*unitSymbol.getType().getStruct())[ri].type->getCompleteString(true, true, false, false) << "\"\n";
+                errorReported = true;
             }
             ++li;
             ++ri;
@@ -895,8 +964,9 @@ void TIntermediate::mergeErrorCheck(TInfoSink& infoSink, const TIntermSymbol& sy
     // Qualifiers have to (almost) match
     // Storage...
     if (!isInOut && symbol.getQualifier().storage != unitSymbol.getQualifier().storage) {
-        error(infoSink, "Storage qualifiers must match:");
+        error(infoSink, "Storage qualifiers must match:", unitStage);
         writeTypeComparison = true;
+        printQualifiers = true;
     }
 
     // Uniform and buffer blocks must either both have an instance name, or
@@ -904,33 +974,36 @@ void TIntermediate::mergeErrorCheck(TInfoSink& infoSink, const TIntermSymbol& sy
     if (symbol.getQualifier().isUniformOrBuffer() &&
         (IsAnonymous(symbol.getName()) != IsAnonymous(unitSymbol.getName()))) {
         error(infoSink, "Matched Uniform or Storage blocks must all be anonymous,"
-                        " or all be named:");
+                        " or all be named:", unitStage);
         writeTypeComparison = true;
     }
 
     if (symbol.getQualifier().storage == unitSymbol.getQualifier().storage &&
         (IsAnonymous(symbol.getName()) != IsAnonymous(unitSymbol.getName()) ||
          (!IsAnonymous(symbol.getName()) && symbol.getName() != unitSymbol.getName()))) {
-        warn(infoSink, "Matched shader interfaces are using different instance names.");
+        warn(infoSink, "Matched shader interfaces are using different instance names.", unitStage);
         writeTypeComparison = true;
     }
 
     // Precision...
     if (!isInOut && symbol.getQualifier().precision != unitSymbol.getQualifier().precision) {
-        error(infoSink, "Precision qualifiers must match:");
+        error(infoSink, "Precision qualifiers must match:", unitStage);
         writeTypeComparison = true;
+        printPrecision = true;
     }
 
     // Invariance...
     if (! crossStage && symbol.getQualifier().invariant != unitSymbol.getQualifier().invariant) {
-        error(infoSink, "Presence of invariant qualifier must match:");
+        error(infoSink, "Presence of invariant qualifier must match:", unitStage);
         writeTypeComparison = true;
+        printQualifiers = true;
     }
 
     // Precise...
     if (! crossStage && symbol.getQualifier().isNoContraction() != unitSymbol.getQualifier().isNoContraction()) {
-        error(infoSink, "Presence of precise qualifier must match:");
+        error(infoSink, "Presence of precise qualifier must match:", unitStage);
         writeTypeComparison = true;
+        printPrecision = true;
     }
 
     // Auxiliary and interpolation...
@@ -944,57 +1017,137 @@ void TIntermediate::mergeErrorCheck(TInfoSink& infoSink, const TIntermSymbol& sy
         symbol.getQualifier().isSample()!= unitSymbol.getQualifier().isSample() ||
         symbol.getQualifier().isPatch() != unitSymbol.getQualifier().isPatch() ||
         symbol.getQualifier().isNonPerspective() != unitSymbol.getQualifier().isNonPerspective())) {
-        error(infoSink, "Interpolation and auxiliary storage qualifiers must match:");
+        error(infoSink, "Interpolation and auxiliary storage qualifiers must match:", unitStage);
         writeTypeComparison = true;
+        printQualifiers = true;
     }
 
     // Memory...
-    if (symbol.getQualifier().coherent          != unitSymbol.getQualifier().coherent ||
-        symbol.getQualifier().devicecoherent    != unitSymbol.getQualifier().devicecoherent ||
-        symbol.getQualifier().queuefamilycoherent  != unitSymbol.getQualifier().queuefamilycoherent ||
-        symbol.getQualifier().workgroupcoherent != unitSymbol.getQualifier().workgroupcoherent ||
-        symbol.getQualifier().subgroupcoherent  != unitSymbol.getQualifier().subgroupcoherent ||
-        symbol.getQualifier().shadercallcoherent!= unitSymbol.getQualifier().shadercallcoherent ||
-        symbol.getQualifier().nonprivate        != unitSymbol.getQualifier().nonprivate ||
-        symbol.getQualifier().volatil           != unitSymbol.getQualifier().volatil ||
-        symbol.getQualifier().restrict          != unitSymbol.getQualifier().restrict ||
-        symbol.getQualifier().readonly          != unitSymbol.getQualifier().readonly ||
-        symbol.getQualifier().writeonly         != unitSymbol.getQualifier().writeonly) {
-        error(infoSink, "Memory qualifiers must match:");
-        writeTypeComparison = true;
+    bool memoryQualifierError = false;
+    if (symbol.getQualifier().coherent != unitSymbol.getQualifier().coherent) {
+        error(infoSink, "Memory coherent qualifier must match:", unitStage);
+        memoryQualifierError = true;
+    }
+    if (symbol.getQualifier().devicecoherent != unitSymbol.getQualifier().devicecoherent) {
+        error(infoSink, "Memory devicecoherent qualifier must match:", unitStage);
+        memoryQualifierError = true;
+    }
+    if (symbol.getQualifier().queuefamilycoherent != unitSymbol.getQualifier().queuefamilycoherent) {
+        error(infoSink, "Memory queuefamilycoherent qualifier must match:", unitStage);
+        memoryQualifierError = true;
+    }
+    if (symbol.getQualifier().workgroupcoherent != unitSymbol.getQualifier().workgroupcoherent) {
+        error(infoSink, "Memory workgroupcoherent qualifier must match:", unitStage);
+        memoryQualifierError = true;
+    }
+    if (symbol.getQualifier().subgroupcoherent != unitSymbol.getQualifier().subgroupcoherent) {
+        error(infoSink, "Memory subgroupcoherent qualifier must match:", unitStage);
+        memoryQualifierError = true;
+    }
+    if (symbol.getQualifier().shadercallcoherent != unitSymbol.getQualifier().shadercallcoherent) {
+        error(infoSink, "Memory shadercallcoherent qualifier must match:", unitStage);
+        memoryQualifierError = true;
+    }
+    if (symbol.getQualifier().nonprivate != unitSymbol.getQualifier().nonprivate) {
+        error(infoSink, "Memory nonprivate qualifier must match:", unitStage);
+        memoryQualifierError = true;
+    }
+    if (symbol.getQualifier().volatil != unitSymbol.getQualifier().volatil) {
+        error(infoSink, "Memory volatil qualifier must match:", unitStage);
+        memoryQualifierError = true;
+    }
+    if (symbol.getQualifier().restrict != unitSymbol.getQualifier().restrict) {
+        error(infoSink, "Memory restrict qualifier must match:", unitStage);
+        memoryQualifierError = true;
+    }
+    if (symbol.getQualifier().readonly != unitSymbol.getQualifier().readonly) {
+        error(infoSink, "Memory readonly qualifier must match:", unitStage);
+        memoryQualifierError = true;
+    }
+    if (symbol.getQualifier().writeonly != unitSymbol.getQualifier().writeonly) {
+        error(infoSink, "Memory writeonly qualifier must match:", unitStage);
+        memoryQualifierError = true;
+    }
+    if (memoryQualifierError) {
+          writeTypeComparison = true;
+          printQualifiers = true;
     }
 
     // Layouts...
     // TODO: 4.4 enhanced layouts: Generalize to include offset/align: current spec
     //       requires separate user-supplied offset from actual computed offset, but
     //       current implementation only has one offset.
-    if (symbol.getQualifier().layoutMatrix    != unitSymbol.getQualifier().layoutMatrix ||
-        symbol.getQualifier().layoutPacking   != unitSymbol.getQualifier().layoutPacking ||
-        (symbol.getQualifier().hasLocation() && unitSymbol.getQualifier().hasLocation() && symbol.getQualifier().layoutLocation != unitSymbol.getQualifier().layoutLocation) ||
-        symbol.getQualifier().layoutComponent != unitSymbol.getQualifier().layoutComponent ||
-        symbol.getQualifier().layoutIndex     != unitSymbol.getQualifier().layoutIndex ||
-        (symbol.getQualifier().hasBinding() && unitSymbol.getQualifier().hasBinding() && symbol.getQualifier().layoutBinding != unitSymbol.getQualifier().layoutBinding) ||
-        (symbol.getQualifier().hasBinding() && (symbol.getQualifier().layoutOffset != unitSymbol.getQualifier().layoutOffset))) {
-        error(infoSink, "Layout qualification must match:");
+    bool layoutQualifierError = false;
+    if (symbol.getQualifier().layoutMatrix != unitSymbol.getQualifier().layoutMatrix) {
+        error(infoSink, "Layout matrix qualifier must match:", unitStage);
+        layoutQualifierError = true;
+    }
+    if (symbol.getQualifier().layoutPacking != unitSymbol.getQualifier().layoutPacking) {
+        error(infoSink, "Layout packing qualifier must match:", unitStage);
+        layoutQualifierError = true;
+    }
+    if (symbol.getQualifier().hasLocation() && unitSymbol.getQualifier().hasLocation() && symbol.getQualifier().layoutLocation != unitSymbol.getQualifier().layoutLocation) {
+        error(infoSink, "Layout location qualifier must match:", unitStage);
+        layoutQualifierError = true;
+    }
+    if (symbol.getQualifier().layoutComponent != unitSymbol.getQualifier().layoutComponent) {
+        error(infoSink, "Layout component qualifier must match:", unitStage);
+        layoutQualifierError = true;
+    }
+    if (symbol.getQualifier().layoutIndex != unitSymbol.getQualifier().layoutIndex) {
+        error(infoSink, "Layout index qualifier must match:", unitStage);
+        layoutQualifierError = true;
+    }
+    if (symbol.getQualifier().hasBinding() && unitSymbol.getQualifier().hasBinding() && symbol.getQualifier().layoutBinding != unitSymbol.getQualifier().layoutBinding) {
+        error(infoSink, "Layout binding qualifier must match:", unitStage);
+        layoutQualifierError = true;
+    }
+    if (symbol.getQualifier().hasBinding() && (symbol.getQualifier().layoutOffset != unitSymbol.getQualifier().layoutOffset)) {
+        error(infoSink, "Layout offset qualifier must match:", unitStage);
+        layoutQualifierError = true;
+    }
+    if (layoutQualifierError) {
         writeTypeComparison = true;
+        printQualifiers = true;
     }
 
     // Initializers have to match, if both are present, and if we don't already know the types don't match
-    if (! writeTypeComparison) {
+    if (! writeTypeComparison && ! errorReported) {
         if (! symbol.getConstArray().empty() && ! unitSymbol.getConstArray().empty()) {
             if (symbol.getConstArray() != unitSymbol.getConstArray()) {
-                error(infoSink, "Initializers must match:");
+                error(infoSink, "Initializers must match:", unitStage);
                 infoSink.info << "    " << symbol.getName() << "\n";
             }
         }
     }
 
     if (writeTypeComparison) {
-        infoSink.info << "    " << symbol.getName() << ": \"" << symbol.getType().getCompleteString() << "\" versus ";
-        if (symbol.getName() != unitSymbol.getName())
-            infoSink.info << unitSymbol.getName() << ": ";
-
-        infoSink.info << "\"" << unitSymbol.getType().getCompleteString() << "\"\n";
+        if (symbol.getType().getBasicType() == EbtBlock && unitSymbol.getType().getBasicType() == EbtBlock &&
+            symbol.getType().getStruct() && unitSymbol.getType().getStruct()) {
+          if (printType) {
+            infoSink.info << "    " << StageName(getStage()) << " stage: \"" << symbol.getType().getCompleteString(true, printQualifiers, printPrecision,
+                                                    printType, symbol.getName(), symbol.getType().getTypeName()) << "\"\n";
+            infoSink.info << "    " << StageName(unitStage) << " stage: \"" << unitSymbol.getType().getCompleteString(true, printQualifiers, printPrecision,
+                                                    printType, unitSymbol.getName(), unitSymbol.getType().getTypeName()) << "\"\n";
+          } else {
+            infoSink.info << "    " << StageName(getStage()) << " stage: Block: " << symbol.getType().getTypeName() << " Instance: " << symbol.getName()
+              << ": \"" << symbol.getType().getCompleteString(true, printQualifiers, printPrecision, printType) << "\"\n";
+            infoSink.info << "    " << StageName(unitStage) << " stage: Block: " << unitSymbol.getType().getTypeName() << " Instance: " << unitSymbol.getName()
+              << ": \"" << unitSymbol.getType().getCompleteString(true, printQualifiers, printPrecision, printType) << "\"\n";
+          }
+        } else {
+          if (printType) {
+            infoSink.info << "    " << StageName(getStage()) << " stage: \""
+              << symbol.getType().getCompleteString(true, printQualifiers, printPrecision, printType, symbol.getName()) << "\"\n";
+            infoSink.info << "    " << StageName(unitStage) << " stage: \""
+              << unitSymbol.getType().getCompleteString(true, printQualifiers, printPrecision, printType, unitSymbol.getName()) << "\"\n";
+          } else {
+            infoSink.info << "    " << StageName(getStage()) << " stage: " << symbol.getName() << " \""
+              << symbol.getType().getCompleteString(true, printQualifiers, printPrecision, printType) << "\"\n";
+            infoSink.info << "    " << StageName(unitStage) << " stage: " << unitSymbol.getName() << " \""
+              << unitSymbol.getType().getCompleteString(true, printQualifiers, printPrecision, printType) << "\"\n";
+          }
+        }
     }
 #endif
 }

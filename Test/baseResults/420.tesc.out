@@ -2,7 +2,7 @@
 ERROR: 0:7: 'vertices' : inconsistent output number of vertices for array size of gl_out
 ERROR: 0:11: 'vertices' : inconsistent output number of vertices for array size of a
 ERROR: 0:12: 'vertices' : inconsistent output number of vertices for array size of outb
-ERROR: 0:26: 'gl_PointSize' : no such field in structure 
+ERROR: 0:26: 'gl_PointSize' : no such field in structure 'gl_out'
 ERROR: 0:26: 'assign' :  cannot convert from ' temp float' to ' temp block{ out 4-component vector of float Position gl_Position}'
 ERROR: 0:29: 'out' : type must be an array: outf
 ERROR: 0:43: 'vertices' : must be greater than 0 

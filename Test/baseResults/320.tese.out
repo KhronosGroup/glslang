@@ -10,7 +10,7 @@ ERROR: 0:22: 'barrier' : no matching overloaded function found
 ERROR: 0:33: 'gl_PointSize' : required extension not requested: Possible extensions include:
 GL_EXT_tessellation_point_size
 GL_OES_tessellation_point_size
-ERROR: 0:34: 'gl_ClipDistance' : no such field in structure 
+ERROR: 0:34: 'gl_ClipDistance' : no such field in structure 'gl_in'
 ERROR: 0:34: 'expression' :  left of '[' is not of type array, matrix, or vector  
 ERROR: 0:43: 'gl_PointSize' : required extension not requested: Possible extensions include:
 GL_EXT_tessellation_point_size

@@ -6,12 +6,12 @@ ERROR: 0:12: 'patch' : can only use on output in tessellation-control shader
 ERROR: 0:26: 'gl_PointSize' : required extension not requested: Possible extensions include:
 GL_EXT_tessellation_point_size
 GL_OES_tessellation_point_size
-ERROR: 0:27: 'gl_ClipDistance' : no such field in structure 
+ERROR: 0:27: 'gl_ClipDistance' : no such field in structure 'gl_in'
 ERROR: 0:27: 'expression' :  left of '[' is not of type array, matrix, or vector  
 ERROR: 0:34: 'gl_PointSize' : required extension not requested: Possible extensions include:
 GL_EXT_tessellation_point_size
 GL_OES_tessellation_point_size
-ERROR: 0:35: 'gl_ClipDistance' : no such field in structure 
+ERROR: 0:35: 'gl_ClipDistance' : no such field in structure 'gl_out'
 ERROR: 0:35: 'expression' :  left of '[' is not of type array, matrix, or vector  
 ERROR: 0:35: 'assign' :  l-value required (can't modify a const)
 ERROR: 0:41: '' : tessellation control barrier() cannot be placed within flow control 
