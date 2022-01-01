@@ -813,6 +813,7 @@ bool ProcessDeferred(
     // set version/profile to defaultVersion/defaultProfile regardless of the #version
     // directive in the source code
     bool forceDefaultVersionAndProfile,
+    int overrideVersion, // overrides version specified by #verison or default version
     bool forwardCompatible,     // give errors for use of deprecated features
     EShMessages messages,       // warnings/errors/AST; things to print out
     TIntermediate& intermediate, // returned tree, etc.
@@ -899,6 +900,9 @@ bool ProcessDeferred(
         }
         version = defaultVersion;
         profile = defaultProfile;
+    }
+    if (source == EShSourceGlsl && overrideVersion != 0) {
+        version = overrideVersion;
     }
 
     bool goodVersion = DeduceVersionProfile(compiler->infoSink, stage,
@@ -1275,6 +1279,7 @@ bool PreprocessDeferred(
     int defaultVersion,         // use 100 for ES environment, 110 for desktop
     EProfile defaultProfile,
     bool forceDefaultVersionAndProfile,
+    int overrideVersion,        // use 0 if not overriding GLSL version
     bool forwardCompatible,     // give errors for use of deprecated features
     EShMessages messages,       // warnings/errors/AST; things to print out
     TShader::Includer& includer,
@@ -1285,7 +1290,7 @@ bool PreprocessDeferred(
     DoPreprocessing parser(outputString);
     return ProcessDeferred(compiler, shaderStrings, numStrings, inputLengths, stringNames,
                            preamble, optLevel, resources, defaultVersion,
-                           defaultProfile, forceDefaultVersionAndProfile,
+                           defaultProfile, forceDefaultVersionAndProfile, overrideVersion,
                            forwardCompatible, messages, intermediate, parser,
                            false, includer, "", environment);
 }
@@ -1314,6 +1319,7 @@ bool CompileDeferred(
     int defaultVersion,         // use 100 for ES environment, 110 for desktop
     EProfile defaultProfile,
     bool forceDefaultVersionAndProfile,
+    int overrideVersion,        // use 0 if not overriding GLSL version
     bool forwardCompatible,     // give errors for use of deprecated features
     EShMessages messages,       // warnings/errors/AST; things to print out
     TIntermediate& intermediate,// returned tree, etc.
@@ -1324,7 +1330,7 @@ bool CompileDeferred(
     DoFullParse parser;
     return ProcessDeferred(compiler, shaderStrings, numStrings, inputLengths, stringNames,
                            preamble, optLevel, resources, defaultVersion,
-                           defaultProfile, forceDefaultVersionAndProfile,
+                           defaultProfile, forceDefaultVersionAndProfile, overrideVersion,
                            forwardCompatible, messages, intermediate, parser,
                            true, includer, sourceEntryPointName, environment);
 }
@@ -1477,6 +1483,7 @@ int ShCompile(
     const TBuiltInResource* resources,
     int /*debugOptions*/,
     int defaultVersion,        // use 100 for ES environment, 110 for desktop
+    int overrideVersion,       // use 0 if not overriding GLSL version
     bool forwardCompatible,    // give errors for use of deprecated features
     EShMessages messages       // warnings/errors/AST; things to print out
     )
@@ -1498,7 +1505,7 @@ int ShCompile(
     TIntermediate intermediate(compiler->getLanguage());
     TShader::ForbidIncluder includer;
     bool success = CompileDeferred(compiler, shaderStrings, numStrings, inputLengths, nullptr,
-                                   "", optLevel, resources, defaultVersion, ENoProfile, false,
+                                   "", optLevel, resources, defaultVersion, ENoProfile, false, overrideVersion,
                                    forwardCompatible, messages, intermediate, includer);
 
     //
@@ -1897,7 +1904,7 @@ void TShader::setFlattenUniformArrays(bool flatten)     { intermediate->setFlatt
 //
 // Returns true for success.
 //
-bool TShader::parse(const TBuiltInResource* builtInResources, int defaultVersion, EProfile defaultProfile, bool forceDefaultVersionAndProfile,
+bool TShader::parse(const TBuiltInResource* builtInResources, int defaultVersion, EProfile defaultProfile, bool forceDefaultVersionAndProfile, int overrideVersion,
                     bool forwardCompatible, EShMessages messages, Includer& includer)
 {
     if (! InitThread())
@@ -1909,7 +1916,7 @@ bool TShader::parse(const TBuiltInResource* builtInResources, int defaultVersion
 
     return CompileDeferred(compiler, strings, numStrings, lengths, stringNames,
                            preamble, EShOptNone, builtInResources, defaultVersion,
-                           defaultProfile, forceDefaultVersionAndProfile,
+                           defaultProfile, forceDefaultVersionAndProfile, overrideVersion,
                            forwardCompatible, messages, *intermediate, includer, sourceEntryPointName,
                            &environment);
 }
@@ -1922,7 +1929,7 @@ bool TShader::parse(const TBuiltInResource* builtInResources, int defaultVersion
 // is not an officially supported or fully working path.
 bool TShader::preprocess(const TBuiltInResource* builtInResources,
                          int defaultVersion, EProfile defaultProfile,
-                         bool forceDefaultVersionAndProfile,
+                         bool forceDefaultVersionAndProfile, int overrideVersion,
                          bool forwardCompatible, EShMessages message,
                          std::string* output_string,
                          Includer& includer)
@@ -1936,7 +1943,7 @@ bool TShader::preprocess(const TBuiltInResource* builtInResources,
 
     return PreprocessDeferred(compiler, strings, numStrings, lengths, stringNames, preamble,
                               EShOptNone, builtInResources, defaultVersion,
-                              defaultProfile, forceDefaultVersionAndProfile,
+                              defaultProfile, forceDefaultVersionAndProfile, overrideVersion,
                               forwardCompatible, message, includer, *intermediate, output_string,
                               &environment);
 }

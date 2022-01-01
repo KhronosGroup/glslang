@@ -57,6 +57,7 @@ static_assert(sizeof(glslang_resource_t) == sizeof(TBuiltInResource), "");
 typedef struct glslang_shader_s {
     glslang::TShader* shader;
     std::string preprocessedGLSL;
+    int glslVersion;
 } glslang_shader_t;
 
 typedef struct glslang_program_s {
@@ -373,7 +374,11 @@ GLSLANG_EXPORT void glslang_shader_set_options(glslang_shader_t* shader, int opt
     if (options & GLSLANG_SHADER_VULKAN_RULES_RELAXED) {
         shader->shader->setEnvInputVulkanRulesRelaxed();
     }
+}
 
+GLSLANG_EXPORT void glslang_shader_set_glsl_version(glslang_shader_t* shader, int version)
+{
+    shader->glslVersion = version;
 }
 
 GLSLANG_EXPORT const char* glslang_shader_get_preprocessed_code(glslang_shader_t* shader)
@@ -390,6 +395,7 @@ GLSLANG_EXPORT int glslang_shader_preprocess(glslang_shader_t* shader, const gls
         input->default_version,
         c_shader_profile(input->default_profile),
         input->force_default_version_and_profile != 0,
+        shader->glslVersion,
         input->forward_compatible != 0,
         (EShMessages)c_shader_messages(input->messages),
         &shader->preprocessedGLSL,
@@ -405,6 +411,7 @@ GLSLANG_EXPORT int glslang_shader_parse(glslang_shader_t* shader, const glslang_
     return shader->shader->parse(
         reinterpret_cast<const TBuiltInResource*>(input->resource),
         input->default_version,
+        shader->glslVersion,
         input->forward_compatible != 0,
         (EShMessages)c_shader_messages(input->messages)
     );
