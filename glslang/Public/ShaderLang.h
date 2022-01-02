@@ -334,7 +334,6 @@ GLSLANG_EXPORT int ShCompile(
     const TBuiltInResource *resources,
     int debugOptions,
     int defaultVersion = 110,            // use 100 for ES environment, overridden by #version in shader
-    int overrideVersion = 0,             // overrides #version in GLSL shader, use 0 to disable
     bool forwardCompatible = false,      // give errors for use of deprecated features
     EShMessages messages = EShMsgDefault // warnings and errors
     );
@@ -471,6 +470,7 @@ public:
     GLSLANG_EXPORT void setSourceEntryPoint(const char* sourceEntryPointName);
     GLSLANG_EXPORT void addProcesses(const std::vector<std::string>&);
     GLSLANG_EXPORT void setUniqueId(unsigned long long id);
+    GLSLANG_EXPORT void setOverrideVersion(int version);
 
     // IO resolver binding data: see comments in ShaderLang.cpp
     GLSLANG_EXPORT void setShiftBinding(TResourceType res, unsigned int base);
@@ -648,33 +648,33 @@ public:
 
     GLSLANG_EXPORT bool parse(
         const TBuiltInResource*, int defaultVersion, EProfile defaultProfile,
-        bool forceDefaultVersionAndProfile, int overrideVersion, bool forwardCompatible,
+        bool forceDefaultVersionAndProfile, bool forwardCompatible,
         EShMessages, Includer&);
 
-    bool parse(const TBuiltInResource* res, int defaultVersion, EProfile defaultProfile, bool forceDefaultVersionAndProfile, int overrideVersion,
+    bool parse(const TBuiltInResource* res, int defaultVersion, EProfile defaultProfile, bool forceDefaultVersionAndProfile,
                bool forwardCompatible, EShMessages messages)
     {
         TShader::ForbidIncluder includer;
-        return parse(res, defaultVersion, defaultProfile, forceDefaultVersionAndProfile, overrideVersion, forwardCompatible, messages, includer);
+        return parse(res, defaultVersion, defaultProfile, forceDefaultVersionAndProfile, forwardCompatible, messages, includer);
     }
 
     // Equivalent to parse() without a default profile and without forcing defaults.
-    bool parse(const TBuiltInResource* builtInResources, int defaultVersion, int overrideVersion, bool forwardCompatible, EShMessages messages)
+    bool parse(const TBuiltInResource* builtInResources, int defaultVersion, bool forwardCompatible, EShMessages messages)
     {
-        return parse(builtInResources, defaultVersion, ENoProfile, false, overrideVersion, forwardCompatible, messages);
+        return parse(builtInResources, defaultVersion, ENoProfile, false, forwardCompatible, messages);
     }
 
-    bool parse(const TBuiltInResource* builtInResources, int defaultVersion, int overrideVersion, bool forwardCompatible, EShMessages messages,
+    bool parse(const TBuiltInResource* builtInResources, int defaultVersion, bool forwardCompatible, EShMessages messages,
                Includer& includer)
     {
-        return parse(builtInResources, defaultVersion, ENoProfile, false, overrideVersion, forwardCompatible, messages, includer);
+        return parse(builtInResources, defaultVersion, ENoProfile, false, forwardCompatible, messages, includer);
     }
 
     // NOTE: Doing just preprocessing to obtain a correct preprocessed shader string
     // is not an officially supported or fully working path.
     GLSLANG_EXPORT bool preprocess(
         const TBuiltInResource* builtInResources, int defaultVersion,
-        EProfile defaultProfile, bool forceDefaultVersionAndProfile, int overrideVersion,
+        EProfile defaultProfile, bool forceDefaultVersionAndProfile,
         bool forwardCompatible, EShMessages message, std::string* outputString,
         Includer& includer);
 
@@ -706,6 +706,9 @@ protected:
 
     // a function in the source string can be renamed FROM this TO the name given in setEntryPoint.
     std::string sourceEntryPointName;
+
+    // overrides #version in shader source or default version if #version isn't present
+    int overrideVersion;
 
     TEnvironment environment;
 

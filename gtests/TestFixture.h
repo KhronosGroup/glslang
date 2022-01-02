@@ -200,7 +200,7 @@ public:
         if (!entryPointName.empty()) shader->setEntryPoint(entryPointName.c_str());
         return shader->parse(
                 (resources ? resources : &glslang::DefaultTBuiltInResource),
-                defaultVersion, 0, isForwardCompatible, controls);
+                defaultVersion, isForwardCompatible, controls);
     }
 
     // Compiles and links the given source |code| of the given shader
@@ -635,7 +635,7 @@ public:
         glslang::TShader::ForbidIncluder includer;
         const bool success = shader.preprocess(
             &glslang::DefaultTBuiltInResource, defaultVersion, defaultProfile,
-            forceVersionProfile, 0, isForwardCompatible, (EShMessages)(EShMsgOnlyPreprocessor | EShMsgCascadingErrors),
+            forceVersionProfile, isForwardCompatible, (EShMessages)(EShMsgOnlyPreprocessor | EShMsgCascadingErrors),
             &ppShader, includer);
 
         std::string log = shader.getInfoLog();

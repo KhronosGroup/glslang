@@ -1483,7 +1483,6 @@ int ShCompile(
     const TBuiltInResource* resources,
     int /*debugOptions*/,
     int defaultVersion,        // use 100 for ES environment, 110 for desktop
-    int overrideVersion,       // use 0 if not overriding GLSL version
     bool forwardCompatible,    // give errors for use of deprecated features
     EShMessages messages       // warnings/errors/AST; things to print out
     )
@@ -1505,7 +1504,7 @@ int ShCompile(
     TIntermediate intermediate(compiler->getLanguage());
     TShader::ForbidIncluder includer;
     bool success = CompileDeferred(compiler, shaderStrings, numStrings, inputLengths, nullptr,
-                                   "", optLevel, resources, defaultVersion, ENoProfile, false, overrideVersion,
+                                   "", optLevel, resources, defaultVersion, ENoProfile, false, 0,
                                    forwardCompatible, messages, intermediate, includer);
 
     //
@@ -1766,7 +1765,7 @@ public:
 };
 
 TShader::TShader(EShLanguage s)
-    : stage(s), lengths(nullptr), stringNames(nullptr), preamble("")
+    : stage(s), lengths(nullptr), stringNames(nullptr), preamble(""), overrideVersion(0)
 {
     pool = new TPoolAllocator;
     infoSink = new TInfoSink;
@@ -1833,6 +1832,11 @@ void TShader::addProcesses(const std::vector<std::string>& p)
 void  TShader::setUniqueId(unsigned long long id)
 {
     intermediate->setUniqueId(id);
+}
+
+void TShader::setOverrideVersion(int version)
+{
+    overrideVersion = version;
 }
 
 void TShader::setInvertY(bool invert)                   { intermediate->setInvertY(invert); }
@@ -1904,7 +1908,7 @@ void TShader::setFlattenUniformArrays(bool flatten)     { intermediate->setFlatt
 //
 // Returns true for success.
 //
-bool TShader::parse(const TBuiltInResource* builtInResources, int defaultVersion, EProfile defaultProfile, bool forceDefaultVersionAndProfile, int overrideVersion,
+bool TShader::parse(const TBuiltInResource* builtInResources, int defaultVersion, EProfile defaultProfile, bool forceDefaultVersionAndProfile,
                     bool forwardCompatible, EShMessages messages, Includer& includer)
 {
     if (! InitThread())
@@ -1929,7 +1933,7 @@ bool TShader::parse(const TBuiltInResource* builtInResources, int defaultVersion
 // is not an officially supported or fully working path.
 bool TShader::preprocess(const TBuiltInResource* builtInResources,
                          int defaultVersion, EProfile defaultProfile,
-                         bool forceDefaultVersionAndProfile, int overrideVersion,
+                         bool forceDefaultVersionAndProfile,
                          bool forwardCompatible, EShMessages message,
                          std::string* output_string,
                          Includer& includer)

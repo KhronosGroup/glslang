@@ -1261,6 +1261,8 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
             shader->setSourceEntryPoint(sourceEntryPointName);
         }
 
+        shader->setOverrideVersion(GlslVersion);
+
         std::string intrinsicString = getIntrinsic(compUnit.text, compUnit.count);
 
         PreambleString = "";
@@ -1362,7 +1364,7 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
 #ifndef GLSLANG_WEB
         if (Options & EOptionOutputPreprocessed) {
             std::string str;
-            if (shader->preprocess(&Resources, defaultVersion, ENoProfile, false, GlslVersion, false, messages, &str, includer)) {
+            if (shader->preprocess(&Resources, defaultVersion, ENoProfile, false, false, messages, &str, includer)) {
                 PutsIfNonEmpty(str.c_str());
             } else {
                 CompileFailed = true;
@@ -1373,7 +1375,7 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
         }
 #endif
 
-        if (! shader->parse(&Resources, defaultVersion, GlslVersion, false, messages, includer))
+        if (! shader->parse(&Resources, defaultVersion, false, messages, includer))
             CompileFailed = true;
 
         program.addShader(shader);
