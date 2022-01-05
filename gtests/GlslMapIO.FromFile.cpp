@@ -113,11 +113,13 @@ bool verifyIOMapping(std::string& linkingError, glslang::TProgram& program) {
                     bool found = false;
                     for (auto outIt : pipeOut) {
                         if (outIt.second->getType()->isStruct()) {
-                            unsigned int baseLoc = outIt.second->getType()->getQualifier().hasLocation() ? outIt.second->getType()->getQualifier().layoutLocation : -1;
-                            for (int j = 0; j < outIt.second->getType()->getStruct()->size(); j++) {
+                            unsigned int baseLoc = outIt.second->getType()->getQualifier().hasLocation() ?
+                                outIt.second->getType()->getQualifier().layoutLocation :
+                                std::numeric_limits<unsigned int>::max();
+                            for (size_t j = 0; j < outIt.second->getType()->getStruct()->size(); j++) {
                                 baseLoc = (*outIt.second->getType()->getStruct())[j].type->getQualifier().hasLocation() ?
                                     (*outIt.second->getType()->getStruct())[j].type->getQualifier().layoutLocation : baseLoc;
-                                if (baseLoc != -1) {
+                                if (baseLoc != std::numeric_limits<unsigned int>::max()) {
                                     if (baseLoc == in.getType()->getQualifier().layoutLocation) {
                                         found = true;
                                         break;
@@ -134,10 +136,10 @@ bool verifyIOMapping(std::string& linkingError, glslang::TProgram& program) {
                 }
                 else {
                     unsigned int baseLoc = in.getType()->getQualifier().hasLocation() ? in.getType()->getQualifier().layoutLocation : -1;
-                    for (int j = 0; j < in.getType()->getStruct()->size(); j++) {
+                    for (size_t j = 0; j < in.getType()->getStruct()->size(); j++) {
                         baseLoc = (*in.getType()->getStruct())[j].type->getQualifier().hasLocation() ?
                             (*in.getType()->getStruct())[j].type->getQualifier().layoutLocation : baseLoc;
-                        if (baseLoc != -1) {
+                        if (baseLoc != std::numeric_limits<unsigned int>::max()) {
                             bool isMemberFound = false;
                             for (auto outIt : pipeOut) {
                                 if (baseLoc == outIt.second->getType()->getQualifier().layoutLocation) {
