@@ -198,6 +198,7 @@ const char* ExecutionModeString(int mode)
     case ExecutionModeStencilRefGreaterBackAMD:      return "StencilRefGreaterBackAMD";
     case ExecutionModeStencilRefReplacingEXT:        return "StencilRefReplacingEXT";
     case ExecutionModeSubgroupUniformControlFlowKHR: return "SubgroupUniformControlFlow";
+    case ExecutionModeMaximallyReconvergesKHR:       return "MaximallyReconverges";
 
     case ExecutionModeOutputLinesNV:                 return "OutputLinesNV";
     case ExecutionModeOutputPrimitivesNV:            return "OutputPrimitivesNV";

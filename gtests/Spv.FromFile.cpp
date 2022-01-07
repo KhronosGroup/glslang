@@ -436,6 +436,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.matFun.vert",
         "spv.matrix.frag",
         "spv.matrix2.frag",
+        "spv.maximalReconvergence.vert",
         "spv.memoryQualifier.frag",
         "spv.merge-unreachable.frag",
         "spv.multiStruct.comp",
