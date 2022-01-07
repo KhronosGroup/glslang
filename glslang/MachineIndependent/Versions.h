@@ -217,6 +217,7 @@ const char* const E_GL_EXT_mesh_shader                      = "GL_EXT_mesh_shade
 const char* const E_GL_EXT_opacity_micromap                 = "GL_EXT_opacity_micromap";
 const char* const E_GL_EXT_draw_instanced                   = "GL_EXT_draw_instanced";
 const char* const E_GL_EXT_texture_array                    = "GL_EXT_texture_array";
+const char* const E_GL_EXT_maximal_reconvergence            = "GL_EXT_maximal_reconvergence";
 
 // Arrays of extensions for the above viewportEXTs duplications
 

@@ -1635,6 +1635,10 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion,
         builder.addExtension(spv::E_SPV_KHR_subgroup_uniform_control_flow);
         builder.addExecutionMode(shaderEntry, spv::ExecutionModeSubgroupUniformControlFlowKHR);
     }
+    if (glslangIntermediate->getMaximalReconvergence()) {
+        builder.addExtension(spv::E_SPV_KHR_maximal_reconvergence);
+        builder.addExecutionMode(shaderEntry, spv::ExecutionModeMaximallyReconvergesKHR);
+    }
 
     unsigned int mode;
     switch (glslangIntermediate->getStage()) {
