@@ -2,8 +2,8 @@
 ERROR: 0:15: 'fromVertex' : block instance name redefinition 
 ERROR: 0:19: 'fromVertex' : redefinition 
 ERROR: 0:21: 'fooC' : block instance name redefinition 
-ERROR: 0:29: 'EmitStreamVertex' : no matching overloaded function found 
-ERROR: 0:30: 'EndStreamPrimitive' : no matching overloaded function found 
+ERROR: 0:29: 'if the verison is 150 , the EmitStreamVertex and EndStreamPrimitive only support at extension GL_ARB_gpu_shader5' : required extension not requested: GL_ARB_gpu_shader5
+ERROR: 0:30: 'if the verison is 150 , the EmitStreamVertex and EndStreamPrimitive only support at extension GL_ARB_gpu_shader5' : required extension not requested: GL_ARB_gpu_shader5
 ERROR: 0:44: 'stream' : can only be used on an output 
 ERROR: 0:45: 'stream' : can only be used on an output 
 ERROR: 0:46: 'stream' : can only be used on an output 
@@ -49,10 +49,12 @@ ERROR: node is still EOpNull!
 0:27    Sequence
 0:27      EmitVertex ( global void)
 0:28      EndPrimitive ( global void)
-0:29      Constant:
-0:29        0.000000
-0:30      Constant:
-0:30        0.000000
+0:29      EmitStreamVertex ( global void)
+0:29        Constant:
+0:29          1 (const int)
+0:30      EndStreamPrimitive ( global void)
+0:30        Constant:
+0:30          0 (const int)
 0:32      move second child to first child ( temp 3-component vector of float)
 0:32        color: direct index for structure (layout( stream=0) out 3-component vector of float)
 0:32          'anon@0' (layout( stream=0) out block{layout( stream=0) out 3-component vector of float color})
@@ -190,10 +192,12 @@ ERROR: node is still EOpNull!
 0:27    Sequence
 0:27      EmitVertex ( global void)
 0:28      EndPrimitive ( global void)
-0:29      Constant:
-0:29        0.000000
-0:30      Constant:
-0:30        0.000000
+0:29      EmitStreamVertex ( global void)
+0:29        Constant:
+0:29          1 (const int)
+0:30      EndStreamPrimitive ( global void)
+0:30        Constant:
+0:30          0 (const int)
 0:32      move second child to first child ( temp 3-component vector of float)
 0:32        color: direct index for structure (layout( stream=0) out 3-component vector of float)
 0:32          'anon@0' (layout( stream=0) out block{layout( stream=0) out 3-component vector of float color})
