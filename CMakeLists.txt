@@ -109,7 +109,7 @@ option(ENABLE_OPT "Enables spirv-opt capability if present" ON)
 option(ENABLE_PCH "Enables Precompiled header" ON)
 option(ENABLE_CTEST "Enables testing" ON)
 
-if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT AND WIN32)
+if(ENABLE_GLSLANG_INSTALL AND CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT AND WIN32)
     set(CMAKE_INSTALL_PREFIX "install" CACHE STRING "..." FORCE)
 endif()
 
