@@ -298,6 +298,22 @@ diff -b $BASEDIR/hlsl.autosampledtextures.frag.out $TARGETDIR/hlsl.autosampledte
 run --auto-sampled-textures -H -Od -S frag glsl.autosampledtextures.frag > $TARGETDIR/glsl.autosampledtextures.frag.out
 diff -b $BASEDIR/glsl.autosampledtextures.frag.out $TARGETDIR/glsl.autosampledtextures.frag.out || HASERROR=1
 
+# Test --glsl-version
+#
+echo "Testing --glsl-version"
+run --glsl-version 410 -V -S vert glsl.versionOverride.vert > $TARGETDIR/glsl.versionOverride.vert.out
+diff -b $BASEDIR/glsl.versionOverride.vert.out $TARGETDIR/glsl.versionOverride.vert.out || HASERROR=1
+run --glsl-version 420 -V -S frag glsl.versionOverride.frag > $TARGETDIR/glsl.versionOverride.frag.out
+diff -b $BASEDIR/glsl.versionOverride.frag.out $TARGETDIR/glsl.versionOverride.frag.out || HASERROR=1
+run --glsl-version 430 -V -S geom glsl.versionOverride.geom > $TARGETDIR/glsl.versionOverride.geom.out
+diff -b $BASEDIR/glsl.versionOverride.geom.out $TARGETDIR/glsl.versionOverride.geom.out || HASERROR=1
+run --glsl-version 440 -V -S tesc glsl.versionOverride.tesc > $TARGETDIR/glsl.versionOverride.tesc.out
+diff -b $BASEDIR/glsl.versionOverride.tesc.out $TARGETDIR/glsl.versionOverride.tesc.out || HASERROR=1
+run --glsl-version 450 -V -S tese glsl.versionOverride.tese > $TARGETDIR/glsl.versionOverride.tese.out
+diff -b $BASEDIR/glsl.versionOverride.tese.out $TARGETDIR/glsl.versionOverride.tese.out || HASERROR=1
+run --glsl-version 460 -V -S comp glsl.versionOverride.comp > $TARGETDIR/glsl.versionOverride.comp.out
+diff -b $BASEDIR/glsl.versionOverride.comp.out $TARGETDIR/glsl.versionOverride.comp.out || HASERROR=1
+
 #
 # Final checking
 #
