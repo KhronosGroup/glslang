@@ -163,7 +163,7 @@ if(${CMAKE_CXX_COMPILER_ID} MATCHES "GNU")
         add_compile_options(-Werror=deprecated-copy)
     endif()
 
-    if(NOT CMAKE_VERSION VERSION_LESS "3.13")
+    if(NOT CMAKE_VERSION VERSION_LESS "3.13" AND NOT CMAKE_SYSTEM_NAME STREQUAL "Darwin")
         # Error if there's symbols that are not found at link time.
         # add_link_options() was added in CMake 3.13 - if using an earlier
         # version don't set this - it should be caught by presubmits anyway.
