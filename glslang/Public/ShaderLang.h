@@ -150,8 +150,8 @@ typedef enum {
 
 typedef enum {
     EShClientNone,               // use when there is no client, e.g. for validation
-    EShClientVulkan,
-    EShClientOpenGL,
+    EShClientVulkan,             // as GLSL dialect, specifies KHR_vulkan_glsl extension
+    EShClientOpenGL,             // as GLSL dialect, specifies ARB_gl_spirv extension
     LAST_ELEMENT_MARKER(EShClientCount),
 } EShClient;
 
@@ -518,6 +518,9 @@ public:
     //                 use EShClientNone and version of 0, e.g. for validation mode.
     //                 Note 'version' does not describe the target environment,
     //                 just the version of the source dialect to compile under.
+    //                 For example, to choose the Vulkan dialect of GLSL defined by
+    //                 version 100 of the KHR_vulkan_glsl extension: lang = EShSourceGlsl,
+    //                 dialect = EShClientVulkan, and version = 100.
     //
     //                 See the definitions of TEnvironment, EShSource, EShLanguage,
     //                 and EShClient for choices and more detail.
