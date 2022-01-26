@@ -580,9 +580,6 @@ void TIntermediate::mergeGlobalUniformBlocks(TInfoSink& infoSink, TIntermediate&
 }
 
 void TIntermediate::mergeBlockDefinitions(TInfoSink& infoSink, TIntermSymbol* block, TIntermSymbol* unitBlock, TIntermediate* unit) {
-    if (block->getType() == unitBlock->getType()) {
-        return;
-    }
 
     if (block->getType().getTypeName() != unitBlock->getType().getTypeName() ||
         block->getType().getBasicType() != unitBlock->getType().getBasicType() ||
@@ -629,44 +626,42 @@ void TIntermediate::mergeBlockDefinitions(TInfoSink& infoSink, TIntermSymbol* bl
         }
     }
 
-    TType unitType;
-    unitType.shallowCopy(unitBlock->getType());
-
     // update symbol node in unit tree,
     // and other nodes that may reference it
     class TMergeBlockTraverser : public TIntermTraverser {
     public:
-        TMergeBlockTraverser(const glslang::TType &type, const glslang::TType& unitType,
-                             glslang::TIntermediate& unit,
-                             const std::map<unsigned int, unsigned int>& memberIdxUpdates) :
-            newType(type), unitType(unitType), unit(unit), memberIndexUpdates(memberIdxUpdates)
-        { }
-        virtual ~TMergeBlockTraverser() { }
+        TMergeBlockTraverser(const TIntermSymbol* newSym)
+            : newSymbol(newSym), unitType(nullptr), unit(nullptr), memberIndexUpdates(nullptr)
+        {
+        }
+        TMergeBlockTraverser(const TIntermSymbol* newSym, const glslang::TType* unitType, glslang::TIntermediate* unit,
+                             const std::map<unsigned int, unsigned int>* memberIdxUpdates)
+            : newSymbol(newSym), unitType(unitType), unit(unit), memberIndexUpdates(memberIdxUpdates)
+        {
+        }
+        virtual ~TMergeBlockTraverser() {}
 
-        const glslang::TType& newType;          // type with modifications
-        const glslang::TType& unitType;         // copy of original type
-        glslang::TIntermediate& unit;           // intermediate that is being updated
-        const std::map<unsigned int, unsigned int>& memberIndexUpdates;
+        const TIntermSymbol* newSymbol;
+        const glslang::TType* unitType; // copy of original type
+        glslang::TIntermediate* unit;   // intermediate that is being updated
+        const std::map<unsigned int, unsigned int>* memberIndexUpdates;
 
         virtual void visitSymbol(TIntermSymbol* symbol)
         {
-            glslang::TType& symType = symbol->getWritableType();
-
-            if (symType == unitType) {
-                // each symbol node has a local copy of the unitType
-                //  if merging involves changing properties that aren't shared objects
-                //  they should be updated in all instances
-
-                // e.g. the struct list is a ptr to an object, so it can be updated
-                // once, outside the traverser
-                //*symType.getWritableStruct() = *newType.getStruct();
+            if (newSymbol->getAccessName() == symbol->getAccessName() &&
+                newSymbol->getQualifier().getBlockStorage() == symbol->getQualifier().getBlockStorage()) {
+                // Each symbol node may have a local copy of the block structure.
+                // Update those structures to match the new one post-merge
+                *(symbol->getWritableType().getWritableStruct()) = *(newSymbol->getType().getStruct());
             }
-
         }
 
         virtual bool visitBinary(TVisit, glslang::TIntermBinary* node)
         {
-            if (node->getOp() == EOpIndexDirectStruct && node->getLeft()->getType() == unitType) {
+            if (!unit || !unitType || !memberIndexUpdates || memberIndexUpdates->empty())
+                return true;
+
+            if (node->getOp() == EOpIndexDirectStruct && node->getLeft()->getType() == *unitType) {
                 // this is a dereference to a member of the block since the
                 // member list changed, need to update this to point to the
                 // right index
@@ -674,8 +669,8 @@ void TIntermediate::mergeBlockDefinitions(TInfoSink& infoSink, TIntermSymbol* bl
 
                 glslang::TIntermConstantUnion* constNode = node->getRight()->getAsConstantUnion();
                 unsigned int memberIdx = constNode->getConstArray()[0].getUConst();
-                unsigned int newIdx = memberIndexUpdates.at(memberIdx);
-                TIntermTyped* newConstNode = unit.addConstantUnion(newIdx, node->getRight()->getLoc());
+                unsigned int newIdx = memberIndexUpdates->at(memberIdx);
+                TIntermTyped* newConstNode = unit->addConstantUnion(newIdx, node->getRight()->getLoc());
 
                 node->setRight(newConstNode);
                 delete constNode;
@@ -684,10 +679,20 @@ void TIntermediate::mergeBlockDefinitions(TInfoSink& infoSink, TIntermSymbol* bl
             }
             return true;
         }
-    } finalLinkTraverser(block->getType(), unitType, *unit, memberIndexUpdates);
+    };
 
-    // update the tree to use the new type
-    unit->getTreeRoot()->traverse(&finalLinkTraverser);
+    // 'this' may have symbols that are using the old block structure, so traverse the tree to update those
+    // in 'visitSymbol'
+    TMergeBlockTraverser finalLinkTraverser(block);
+    getTreeRoot()->traverse(&finalLinkTraverser);
+
+    // The 'unit' intermediate needs the block structures update, but also structure entry indices 
+    // may have changed from the old block to the new one that it was merged into, so update those
+    // in 'visitBinary'
+    TType unitType;
+    unitType.shallowCopy(unitBlock->getType());
+    TMergeBlockTraverser unitFinalLinkTraverser(block, &unitType, unit, &memberIndexUpdates);
+    unit->getTreeRoot()->traverse(&unitFinalLinkTraverser);
 
     // update the member list
     (*unitMemberList) = (*memberList);
