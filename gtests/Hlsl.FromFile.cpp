@@ -59,7 +59,7 @@ std::string FileNameAsCustomTestSuffix(
 
 using HlslCompileTest = GlslangTest<::testing::TestWithParam<FileNameEntryPointPair>>;
 using HlslVulkan1_1CompileTest = GlslangTest<::testing::TestWithParam<FileNameEntryPointPair>>;
-//using HlslSpv1_6CompileTest = GlslangTest<::testing::TestWithParam<FileNameEntryPointPair>>;
+using HlslSpv1_6CompileTest = GlslangTest<::testing::TestWithParam<FileNameEntryPointPair>>;
 using HlslCompileAndFlattenTest = GlslangTest<::testing::TestWithParam<FileNameEntryPointPair>>;
 using HlslLegalizeTest = GlslangTest<::testing::TestWithParam<FileNameEntryPointPair>>;
 using HlslDebugTest = GlslangTest<::testing::TestWithParam<FileNameEntryPointPair>>;
@@ -82,14 +82,12 @@ TEST_P(HlslVulkan1_1CompileTest, FromFile)
                             Target::BothASTAndSpv, true, GetParam().entryPoint);
 }
 
-// TODO(greg-lunarg): Re-enable tests when Vulkan1.3 ClientTarget is available
-
-//TEST_P(HlslSpv1_6CompileTest, FromFile)
-//{
-//    loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam().fileName,
-//                            Source::HLSL, Semantics::Vulkan, glslang::EShTargetUniversal, glslang::EShTargetSpv_1_6,
-//                            Target::BothASTAndSpv, true, GetParam().entryPoint);
-//}
+TEST_P(HlslSpv1_6CompileTest, FromFile)
+{
+    loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam().fileName,
+                            Source::HLSL, Semantics::Vulkan, glslang::EShTargetVulkan_1_3, glslang::EShTargetSpv_1_6,
+                            Target::BothASTAndSpv, true, GetParam().entryPoint);
+}
 
 TEST_P(HlslCompileAndFlattenTest, FromFile)
 {
@@ -461,13 +459,13 @@ INSTANTIATE_TEST_SUITE_P(
 // clang-format on
 
 // clang-format off
-//INSTANTIATE_TEST_SUITE_P(
-//    ToSpirv, HlslSpv1_6CompileTest,
-//    ::testing::ValuesIn(std::vector<FileNameEntryPointPair>{
-//       {"hlsl.spv.1.6.discard.frag", "PixelShaderFunction"}
-//    }),
-//    FileNameAsCustomTestSuffix
-//);
+INSTANTIATE_TEST_SUITE_P(
+    ToSpirv, HlslSpv1_6CompileTest,
+    ::testing::ValuesIn(std::vector<FileNameEntryPointPair>{
+       {"hlsl.spv.1.6.discard.frag", "PixelShaderFunction"}
+    }),
+    FileNameAsCustomTestSuffix
+);
 // clang-format on
 
 // clang-format off

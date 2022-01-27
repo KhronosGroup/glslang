@@ -7,7 +7,7 @@ spv.1.6.conditionalDiscard.frag
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
                               EntryPoint Fragment 4  "main" 13 17 34
-                              ExecutionMode 4 OriginLowerLeft
+                              ExecutionMode 4 OriginUpperLeft
                               Source GLSL 400
                               Name 4  "main"
                               Name 9  "v"
@@ -17,6 +17,7 @@ spv.1.6.conditionalDiscard.frag
                               Decorate 13(tex) DescriptorSet 0
                               Decorate 13(tex) Binding 0
                               Decorate 17(coord) Location 0
+                              Decorate 34(gl_FragColor) Location 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32
