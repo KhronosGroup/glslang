@@ -131,16 +131,21 @@ output primitive = triangle_strip
 
 Linked geometry stage:
 
-WARNING: Linking geometry stage: Matched shader interfaces are using different instance names.
-    uC: "layout( binding=1 column_major std140) uniform block{layout( column_major std140 offset=0) uniform highp 4-component vector of float color1, layout( column_major std140 offset=16) uniform bool b, layout( column_major std140 offset=32) uniform highp 4-component vector of float color2, layout( column_major std140 offset=48) uniform highp 4-component vector of float color3}" versus uColor: "layout( binding=1 column_major std140) uniform block{layout( column_major std140 offset=0) uniform highp 4-component vector of float color1, layout( column_major std140 offset=16) uniform bool b, layout( column_major std140 offset=32) uniform highp 4-component vector of float color2, layout( column_major std140 offset=48) uniform highp 4-component vector of float color3}"
-WARNING: Linking geometry stage: Matched shader interfaces are using different instance names.
-    uBuf: "layout( binding=1 column_major std430) buffer block{layout( column_major std430 offset=0) buffer highp 4X4 matrix of float p}" versus uBuffer: "layout( binding=1 column_major std430) buffer block{layout( column_major std430 offset=0) buffer highp 4X4 matrix of float p}"
-WARNING: Linking geometry stage: Matched shader interfaces are using different instance names.
-    uM: "layout( binding=0 column_major std140) uniform block{layout( column_major std140 offset=0) uniform highp 4X4 matrix of float uProj, layout( column_major std140 offset=64) uniform highp 4X4 matrix of float uWorld}" versus uMatrix: "layout( binding=0 column_major std140) uniform block{layout( column_major std140 offset=0) uniform highp 4X4 matrix of float uProj, layout( column_major std140 offset=64) uniform highp 4X4 matrix of float uWorld}"
-WARNING: Linking geometry stage: Matched shader interfaces are using different instance names.
-    oV: "layout( stream=0) out block{layout( stream=0) out highp 4-component vector of float val1}" versus anon@0: "layout( stream=0) out block{layout( stream=0) out highp 4-component vector of float val1}"
-WARNING: Linking geometry stage: Matched shader interfaces are using different instance names.
-    iV: " in 3-element array of block{ in highp 4-component vector of float v1,  in highp 4-component vector of float v2}" versus iVV: " in 3-element array of block{ in highp 4-component vector of float v1,  in highp 4-component vector of float v2}"
+WARNING: Linking geometry and geometry stages: Matched shader interfaces are using different instance names.
+    geometry stage: Block: ColorBlock Instance: uC: ""
+    geometry stage: Block: ColorBlock Instance: uColor: ""
+WARNING: Linking geometry and geometry stages: Matched shader interfaces are using different instance names.
+    geometry stage: Block: BufferBlock Instance: uBuf: ""
+    geometry stage: Block: BufferBlock Instance: uBuffer: ""
+WARNING: Linking geometry and geometry stages: Matched shader interfaces are using different instance names.
+    geometry stage: Block: MatrixBlock Instance: uM: ""
+    geometry stage: Block: MatrixBlock Instance: uMatrix: ""
+WARNING: Linking geometry and geometry stages: Matched shader interfaces are using different instance names.
+    geometry stage: Block: Vertex Instance: oV: ""
+    geometry stage: Block: Vertex Instance: anon@0: ""
+WARNING: Linking geometry and geometry stages: Matched shader interfaces are using different instance names.
+    geometry stage: Block: Vertex Instance: iV: ""
+    geometry stage: Block: Vertex Instance: iVV: ""
 
 Shader version: 430
 invocations = 1

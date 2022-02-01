@@ -92,15 +92,20 @@ Shader version: 430
 
 Linked vertex stage:
 
-ERROR: Linking vertex stage: Types must match:
-    anon@0: "layout( column_major std140) uniform block{layout( column_major std140 offset=0) uniform 4X4 matrix of float uProj}" versus anon@1: "layout( column_major std140) uniform block{layout( column_major std140 offset=0) uniform 4X4 matrix of float uProj, layout( column_major std140 offset=64) uniform 4X4 matrix of float uWorld}"
-ERROR: Linking vertex stage: Types must match:
-    anon@2: " out block{ out 4-component vector of float v1}" versus " out block{ out 4-component vector of float v1,  out 4-component vector of float v2}"
-ERROR: Linking vertex stage: Types must match:
-    anon@1: "layout( column_major shared) buffer block{layout( column_major shared) buffer 4-component vector of float b}" versus anon@3: "layout( column_major shared) buffer block{layout( column_major shared) buffer 4-component vector of float a}"
-ERROR: Linking vertex stage: Matched Uniform or Storage blocks must all be anonymous, or all be named:
-WARNING: Linking vertex stage: Matched shader interfaces are using different instance names.
-    myName: "layout( column_major std140) uniform block{layout( column_major std140 offset=0) uniform 4X4 matrix of float m}" versus anon@4: "layout( column_major std140) uniform block{layout( column_major std140 offset=0) uniform 4X4 matrix of float m}"
+ERROR: Linking vertex and vertex stages: vertex block member has no corresponding member in vertex block:
+    vertex stage: Block: Block, Member: uWorld
+    vertex stage: Block: Block, Member: n/a 
+ERROR: Linking vertex and vertex stages: vertex block member has no corresponding member in vertex block:
+    vertex stage: Block: Vertex, Member: v2
+    vertex stage: Block: Vertex, Member: n/a 
+ERROR: Linking vertex and vertex stages: Member names and types must match:
+    Block: BufferBlock
+        vertex stage: " vec4 b"
+        vertex stage: " vec4 a"
+ERROR: Linking vertex and vertex stages: Matched Uniform or Storage blocks must all be anonymous, or all be named:
+WARNING: Linking vertex and vertex stages: Matched shader interfaces are using different instance names.
+    vertex stage: Block: NamedBlock Instance: myName: ""
+    vertex stage: Block: NamedBlock Instance: anon@4: ""
 
 Shader version: 430
 ERROR: node is still EOpNull!

@@ -6,7 +6,7 @@ ERROR: 0:33: 'EmitStreamVertex' : no matching overloaded function found
 ERROR: 0:34: 'EndStreamPrimitive' : no matching overloaded function found 
 ERROR: 0:37: 'gl_ClipDistance' : undeclared identifier 
 ERROR: 0:37: 'gl_ClipDistance' :  left of '[' is not of type array, matrix, or vector  
-ERROR: 0:38: 'gl_ClipDistance' : no such field in structure 
+ERROR: 0:38: 'gl_ClipDistance' : no such field in structure 'gl_in'
 ERROR: 0:38: 'expression' :  left of '[' is not of type array, matrix, or vector  
 ERROR: 0:37: 'assign' :  l-value required (can't modify a const)
 ERROR: 0:45: 'selecting output stream' : not supported with this profile: es

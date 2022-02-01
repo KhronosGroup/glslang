@@ -87,14 +87,18 @@ Shader version: 430
 
 Linked vertex stage:
 
-WARNING: Linking vertex stage: Matched shader interfaces are using different instance names.
-    uC: "layout( binding=1 column_major std140) uniform block{layout( column_major std140 offset=0) uniform highp 4-component vector of float color1, layout( column_major std140 offset=16) uniform bool b, layout( column_major std140 offset=32) uniform highp 4-component vector of float color2, layout( column_major std140 offset=48) uniform highp 4-component vector of float color3}" versus uColor: "layout( binding=1 column_major std140) uniform block{layout( column_major std140 offset=0) uniform highp 4-component vector of float color1, layout( column_major std140 offset=16) uniform bool b, layout( column_major std140 offset=32) uniform highp 4-component vector of float color2, layout( column_major std140 offset=48) uniform highp 4-component vector of float color3}"
-WARNING: Linking vertex stage: Matched shader interfaces are using different instance names.
-    uBuf: "layout( binding=1 column_major std430) buffer block{layout( column_major std430 offset=0) buffer highp 4X4 matrix of float p}" versus uBuffer: "layout( binding=1 column_major std430) buffer block{layout( column_major std430 offset=0) buffer highp 4X4 matrix of float p}"
-WARNING: Linking vertex stage: Matched shader interfaces are using different instance names.
-    uM: "layout( binding=0 column_major std140) uniform block{layout( column_major std140 offset=0) uniform highp 4X4 matrix of float uProj, layout( column_major std140 offset=64) uniform highp 4X4 matrix of float uWorld}" versus uMatrix: "layout( binding=0 column_major std140) uniform block{layout( column_major std140 offset=0) uniform highp 4X4 matrix of float uProj, layout( column_major std140 offset=64) uniform highp 4X4 matrix of float uWorld}"
-WARNING: Linking vertex stage: Matched shader interfaces are using different instance names.
-    oV: " out block{ out highp 4-component vector of float v1,  out highp 4-component vector of float v2}" versus anon@0: " out block{ out highp 4-component vector of float v1,  out highp 4-component vector of float v2}"
+WARNING: Linking vertex and vertex stages: Matched shader interfaces are using different instance names.
+    vertex stage: Block: ColorBlock Instance: uC: ""
+    vertex stage: Block: ColorBlock Instance: uColor: ""
+WARNING: Linking vertex and vertex stages: Matched shader interfaces are using different instance names.
+    vertex stage: Block: BufferBlock Instance: uBuf: ""
+    vertex stage: Block: BufferBlock Instance: uBuffer: ""
+WARNING: Linking vertex and vertex stages: Matched shader interfaces are using different instance names.
+    vertex stage: Block: MatrixBlock Instance: uM: ""
+    vertex stage: Block: MatrixBlock Instance: uMatrix: ""
+WARNING: Linking vertex and vertex stages: Matched shader interfaces are using different instance names.
+    vertex stage: Block: Vertex Instance: oV: ""
+    vertex stage: Block: Vertex Instance: anon@0: ""
 
 Shader version: 430
 0:? Sequence

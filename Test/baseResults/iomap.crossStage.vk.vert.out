@@ -194,8 +194,9 @@ Linked geometry stage:
 
 Linked fragment stage:
 
-WARNING: Linking unknown stage stage: Matched shader interfaces are using different instance names.
-    blockName1: "layout( column_major std140) uniform 2-element array of block{layout( column_major std140) uniform highp 4-component vector of float a, layout( column_major std140) uniform highp 2-component vector of float b}" versus blockName2: "layout( column_major std140) uniform 2-element array of block{layout( column_major std140) uniform highp 4-component vector of float a, layout( column_major std140) uniform highp 2-component vector of float b}"
+WARNING: Linking unknown stage and fragment stages: Matched shader interfaces are using different instance names.
+    unknown stage stage: Block: crossStageBlock2 Instance: blockName1: ""
+    fragment stage: Block: crossStageBlock2 Instance: blockName2: ""
 
 Shader version: 460
 0:? Sequence

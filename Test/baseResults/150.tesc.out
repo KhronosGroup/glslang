@@ -627,7 +627,7 @@ ERROR: node is still EOpNull!
 ERROR: 0:7: 'vertices' : inconsistent output number of vertices for array size of gl_out
 ERROR: 0:11: 'vertices' : inconsistent output number of vertices for array size of a
 ERROR: 0:12: 'vertices' : inconsistent output number of vertices for array size of outb
-ERROR: 0:26: 'gl_PointSize' : no such field in structure 
+ERROR: 0:26: 'gl_PointSize' : no such field in structure 'gl_out'
 ERROR: 0:26: 'assign' :  cannot convert from ' temp float' to ' temp block{ out 4-component vector of float Position gl_Position}'
 ERROR: 0:29: 'out' : type must be an array: outf
 ERROR: 0:43: 'vertices' : must be greater than 0 
@@ -940,8 +940,9 @@ ERROR: Linking tessellation control stage: Multiple function bodies in multiple 
     main(
 ERROR: Linking tessellation control stage: Multiple function bodies in multiple compilation units for the same signature in the same stage:
     main(
-ERROR: Linking tessellation control stage: Types must match:
-    outa: " global 4-element array of int" versus " global 1-element array of int"
+ERROR: Linking tessellation control and tessellation control stages: Array sizes must be compatible:
+    tessellation control stage: " int outa[4]"
+    tessellation control stage: " int outa[1]"
 ERROR: Linking tessellation control stage: can't handle multiple entry points per stage
 ERROR: Linking tessellation control stage: Multiple function bodies in multiple compilation units for the same signature in the same stage:
     main(
@@ -951,8 +952,9 @@ ERROR: Linking tessellation control stage: Multiple function bodies in multiple 
     foo(
 ERROR: Linking tessellation control stage: Multiple function bodies in multiple compilation units for the same signature in the same stage:
     main(
-ERROR: Linking tessellation control stage: Types must match:
-    gl_out: " out 4-element array of block{ out 4-component vector of float Position gl_Position,  out float PointSize gl_PointSize,  out unsized 2-element array of float ClipDistance gl_ClipDistance}" versus " out 3-element array of block{ out 4-component vector of float Position gl_Position}"
+ERROR: Linking tessellation control and tessellation control stages: tessellation control block member has no corresponding member in tessellation control block:
+    tessellation control stage: Block: gl_PerVertex, Member: gl_PointSize
+    tessellation control stage: Block: gl_PerVertex, Member: n/a 
 
 Linked tessellation evaluation stage:
 

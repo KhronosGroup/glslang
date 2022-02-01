@@ -52,10 +52,12 @@ gl_FragCoord origin is upper left
 
 Linked fragment stage:
 
-ERROR: Linking fragment stage: Types must match:
-    uPC: "layout( column_major std430 push_constant) uniform block{layout( column_major std430 offset=0) uniform highp 4-component vector of float color, layout( column_major std430 offset=16) uniform highp 4-component vector of float color2, layout( column_major std430 offset=32) uniform highp float scale, layout( column_major std430 offset=36) uniform highp float scale2}" versus "layout( column_major std430 push_constant) uniform block{layout( column_major std430 offset=0) uniform highp 4-component vector of float color, layout( column_major std430 offset=16) uniform highp 4-component vector of float color2, layout( column_major std430 offset=32) uniform highp float scale}"
-ERROR: Linking fragment stage: Types must match:
-    uPC: "layout( column_major std430 push_constant) uniform block{layout( column_major std430 offset=0) uniform highp 4-component vector of float color, layout( column_major std430 offset=16) uniform highp 4-component vector of float color2, layout( column_major std430 offset=32) uniform highp float scale, layout( column_major std430 offset=36) uniform highp float scale2}" versus "layout( column_major std430 push_constant) uniform block{layout( column_major std430 offset=0) uniform highp 4-component vector of float color, layout( column_major std430 offset=16) uniform highp 4-component vector of float color2, layout( column_major std430 offset=32) uniform highp float scale}"
+ERROR: Linking fragment and fragment stages: fragment block member has no corresponding member in fragment block:
+    fragment stage: Block: PushConstantBlock, Member: scale2
+    fragment stage: Block: PushConstantBlock, Member: n/a 
+ERROR: Linking fragment and fragment stages: fragment block member has no corresponding member in fragment block:
+    fragment stage: Block: PushConstantBlock, Member: scale2
+    fragment stage: Block: PushConstantBlock, Member: n/a 
 
 Shader version: 450
 gl_FragCoord origin is upper left

@@ -56,8 +56,9 @@ Shader version: 450
 
 Linked vertex stage:
 
-WARNING: Linking vertex stage: Matched shader interfaces are using different instance names.
-    a: "layout( column_major std430 push_constant) uniform block{layout( column_major std430 offset=0) uniform highp 4X4 matrix of float uWorld, layout( column_major std430 offset=64) uniform highp 4X4 matrix of float uProj, layout( column_major std430 offset=128) uniform highp 4-component vector of float color1, layout( column_major std430 offset=144) uniform highp 4-component vector of float color2}" versus b: "layout( column_major std430 push_constant) uniform block{layout( column_major std430 offset=0) uniform highp 4X4 matrix of float uWorld, layout( column_major std430 offset=64) uniform highp 4X4 matrix of float uProj, layout( column_major std430 offset=128) uniform highp 4-component vector of float color1, layout( column_major std430 offset=144) uniform highp 4-component vector of float color2}"
+WARNING: Linking vertex and vertex stages: Matched shader interfaces are using different instance names.
+    vertex stage: Block: PCBlock Instance: a: ""
+    vertex stage: Block: PCBlock Instance: b: ""
 
 Shader version: 450
 0:? Sequence

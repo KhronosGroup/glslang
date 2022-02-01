@@ -89,19 +89,35 @@ Shader version: 430
 
 Linked vertex stage:
 
-ERROR: Linking vertex stage: Types must match:
-WARNING: Linking vertex stage: Matched shader interfaces are using different instance names.
-    uC: "layout( column_major std140) uniform block{layout( column_major std140 offset=0) uniform 4-component vector of float color1}" versus uColorB: "layout( column_major std140) uniform block{layout( column_major std140 offset=0) uniform 4-component vector of float color2}"
-ERROR: Linking vertex stage: Types must match:
-ERROR: Linking vertex stage: Storage qualifiers must match:
-ERROR: Linking vertex stage: Layout qualification must match:
-    uBufC: "layout( column_major std430) buffer block{layout( column_major std430 offset=0) buffer 4-component vector of float color1}" versus uColorB: "layout( column_major std140) uniform block{layout( column_major std140 offset=0) uniform 4-component vector of float color2}"
-ERROR: Linking vertex stage: Types must match:
-WARNING: Linking vertex stage: Matched shader interfaces are using different instance names.
-    uD: "layout( column_major std140) uniform block{layout( column_major std140 offset=0) uniform 4X4 matrix of float uProj}" versus uDefaultB: "layout( column_major std140) uniform block{layout( column_major std140 offset=0) uniform 4X4 matrix of float uWorld}"
-ERROR: Linking vertex stage: Types must match:
-WARNING: Linking vertex stage: Matched shader interfaces are using different instance names.
-    oV: " out block{ out 4-component vector of float v1}" versus oVert: " out block{ out 4-component vector of float v2}"
+ERROR: Linking vertex and vertex stages: Member names and types must match:
+    Block: ColorBlock
+        vertex stage: " vec4 color1"
+        vertex stage: " vec4 color2"
+WARNING: Linking vertex and vertex stages: Matched shader interfaces are using different instance names.
+    vertex stage: Block: ColorBlock Instance: uC: ""
+    vertex stage: Block: ColorBlock Instance: uColorB: ""
+ERROR: Linking vertex and vertex stages: Member names and types must match:
+    Block: ColorBlock
+        vertex stage: " vec4 color1"
+        vertex stage: " vec4 color2"
+ERROR: Linking vertex and vertex stages: Storage qualifiers must match:
+ERROR: Linking vertex and vertex stages: Layout packing qualifier must match:
+    vertex stage: Block: ColorBlock Instance: uBufC: "layout( column_major std430) buffer"
+    vertex stage: Block: ColorBlock Instance: uColorB: "layout( column_major std140) uniform"
+ERROR: Linking vertex and vertex stages: Member names and types must match:
+    Block: Block
+        vertex stage: " mat4x4 uProj"
+        vertex stage: " mat4x4 uWorld"
+WARNING: Linking vertex and vertex stages: Matched shader interfaces are using different instance names.
+    vertex stage: Block: Block Instance: uD: ""
+    vertex stage: Block: Block Instance: uDefaultB: ""
+ERROR: Linking vertex and vertex stages: Member names and types must match:
+    Block: Vertex
+        vertex stage: " vec4 v1"
+        vertex stage: " vec4 v2"
+WARNING: Linking vertex and vertex stages: Matched shader interfaces are using different instance names.
+    vertex stage: Block: Vertex Instance: oV: ""
+    vertex stage: Block: Vertex Instance: oVert: ""
 
 Shader version: 430
 0:? Sequence
