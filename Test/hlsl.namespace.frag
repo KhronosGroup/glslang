@@ -12,7 +12,7 @@ namespace N2 {
         float4 getVec() { return v2; }
         
         class C1 {
-            float4 getVec() { return v2; }
+            static float4 getVec() { return v2; }
         };
     }
 }
