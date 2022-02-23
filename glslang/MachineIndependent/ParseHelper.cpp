@@ -2799,7 +2799,10 @@ TFunction* TParseContext::handleConstructorCall(const TSourceLoc& loc, const TPu
     TOperator op = intermediate.mapTypeToConstructorOp(type);
 
     if (op == EOpNull) {
-        error(loc, "cannot construct this type", type.getBasicString(), "");
+      if (intermediate.getEnhancedMsgs() && type.getBasicType() == EbtSampler)
+            error(loc, "function not supported in this version; use texture() instead", "texture*D*", "");
+        else
+            error(loc, "cannot construct this type", type.getBasicString(), "");
         op = EOpConstructFloat;
         TType errorType(EbtFloat);
         type.shallowCopy(errorType);
