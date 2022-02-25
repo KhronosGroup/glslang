@@ -43,6 +43,8 @@ endif()
 
 project(glslang LANGUAGES CXX)
 
+message(STATUS "CMake version used: ${CMAKE_VERSION}")
+
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 # Enable compile commands database
