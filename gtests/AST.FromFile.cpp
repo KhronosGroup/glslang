@@ -294,6 +294,7 @@ INSTANTIATE_TEST_SUITE_P(
         "BestMatchFunction.vert",
         "EndStreamPrimitive.geom",
         "floatBitsToInt.vert",
+        "coord_conventions.frag",
     })),
     FileNameAsCustomTestSuffix
 );
