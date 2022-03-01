@@ -4680,8 +4680,11 @@ TSymbol* TParseContext::redeclareBuiltinVariable(const TSourceLoc& loc, const TS
                 symbolQualifier.storage != qualifier.storage)
                 error(loc, "cannot change qualification of", "redeclaration", symbol->getName().c_str());
         } else if (identifier == "gl_FragCoord") {
-            if (intermediate.inIoAccessed("gl_FragCoord"))
-                error(loc, "cannot redeclare after use", "gl_FragCoord", "");
+            if (intermediate.getFirstRedeclFlag() && intermediate.inIoAccessed("gl_FragCoord"))
+                error(loc, "the first redeclarations of gl_FragCoord must appear before any use of gl_FragCoord", "gl_FragCoord", "");
+            else
+                intermediate.clearFirstRedeclFlag();
+
             if (qualifier.nopersp != symbolQualifier.nopersp || qualifier.flat != symbolQualifier.flat ||
                 qualifier.isMemory() || qualifier.isAuxiliary())
                 error(loc, "can only change layout qualification of", "redeclaration", symbol->getName().c_str());

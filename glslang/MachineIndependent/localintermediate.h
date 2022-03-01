@@ -335,7 +335,8 @@ public:
         usePhysicalStorageBuffer(false),
         spirvRequirement(nullptr),
         spirvExecutionMode(nullptr),
-        uniformLocationBase(0)
+        uniformLocationBase(0),
+        firstRedecl(true)
 #endif
     {
         localSize[0] = 1;
@@ -969,6 +970,8 @@ public:
 
     void addIoAccessed(const TString& name) { ioAccessed.insert(name); }
     bool inIoAccessed(const TString& name) const { return ioAccessed.find(name) != ioAccessed.end(); }
+    void clearFirstRedeclFlag() { firstRedecl = false; }
+    bool getFirstRedeclFlag() const  { return firstRedecl; }
 
     int addUsedLocation(const TQualifier&, const TType&, bool& typeCollision);
     int checkLocationRange(int set, const TIoRange& range, const TType&, bool& typeCollision);
@@ -1182,6 +1185,8 @@ protected:
                                             // for callableData/callableDataIn
     // set of names of statically read/written I/O that might need extra checking
     std::set<TString> ioAccessed;
+    bool firstRedecl;                       // for gl_fragCoord
+
     // source code of shader, useful as part of debug information
     std::string sourceFile;
     std::string sourceText;
