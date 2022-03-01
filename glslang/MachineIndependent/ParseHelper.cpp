@@ -4611,7 +4611,7 @@ TSymbol* TParseContext::redeclareBuiltinVariable(const TSourceLoc& loc, const TS
 
     if (ssoPre150 ||
         (identifier == "gl_FragDepth"           && ((nonEsRedecls && version >= 420) || esRedecls)) ||
-        (identifier == "gl_FragCoord"           && ((nonEsRedecls && version >= 150) || esRedecls)) ||
+        (identifier == "gl_FragCoord"           && ((nonEsRedecls && version >= 140) || esRedecls)) ||
          identifier == "gl_ClipDistance"                                                            ||
          identifier == "gl_CullDistance"                                                            ||
          identifier == "gl_ShadingRateEXT"                                                          ||
@@ -5521,12 +5521,19 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
     }
     if (language == EShLangFragment) {
         if (id == "origin_upper_left") {
-            requireProfile(loc, ECoreProfile | ECompatibilityProfile, "origin_upper_left");
+            requireProfile(loc, ECoreProfile | ECompatibilityProfile | ENoProfile, "origin_upper_left");
+            if (profile == ENoProfile) {
+                profileRequires(loc,ECoreProfile | ECompatibilityProfile, 140, E_GL_ARB_fragment_coord_conventions, "origin_upper_left");
+            }
+
             publicType.shaderQualifiers.originUpperLeft = true;
             return;
         }
         if (id == "pixel_center_integer") {
-            requireProfile(loc, ECoreProfile | ECompatibilityProfile, "pixel_center_integer");
+            requireProfile(loc, ECoreProfile | ECompatibilityProfile | ENoProfile, "pixel_center_integer");
+            if (profile == ENoProfile) {
+                profileRequires(loc,ECoreProfile | ECompatibilityProfile, 140, E_GL_ARB_fragment_coord_conventions, "pixel_center_integer");
+            }
             publicType.shaderQualifiers.pixelCenterInteger = true;
             return;
         }
