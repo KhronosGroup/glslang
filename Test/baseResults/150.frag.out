@@ -2,7 +2,6 @@
 ERROR: 0:4: 'redeclaration' : cannot redeclare with different qualification: gl_FragCoord
 ERROR: 0:5: 'redeclaration' : cannot redeclare with different qualification: gl_FragCoord
 ERROR: 0:6: 'layout qualifier' : can only apply origin_upper_left and pixel_center_origin to gl_FragCoord 
-ERROR: 0:14: 'gl_FragCoord' : cannot redeclare after use 
 ERROR: 0:50: 'gl_PerFragment' : undeclared identifier 
 ERROR: 0:53: 'double' : Reserved word. 
 ERROR: 0:53: 'double' : not supported for this version or the enabled extensions 
@@ -19,7 +18,7 @@ ERROR: 0:154: 'assign' :  cannot convert from ' const float' to ' temp 2-compone
 ERROR: 0:155: 'textureQueryLOD' : no matching overloaded function found 
 ERROR: 0:155: 'assign' :  cannot convert from ' const float' to ' temp 2-component vector of float'
 ERROR: 0:183: 'mix' : required extension not requested: GL_EXT_shader_integer_mix
-ERROR: 18 compilation errors.  No code generated.
+ERROR: 17 compilation errors.  No code generated.
 
 
 Shader version: 150
