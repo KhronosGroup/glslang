@@ -263,7 +263,6 @@ enum TBuiltInVariable {
     EbvObjectRayDirection,
     EbvRayTmin,
     EbvRayTmax,
-    EbvHitT,
     EbvHitKind,
     EbvObjectToWorld,
     EbvObjectToWorld3x4,
@@ -471,7 +470,6 @@ __inline const char* GetBuiltInVariableString(TBuiltInVariable v)
     case EbvObjectRayDirection:         return "ObjectRayDirectionNV";
     case EbvRayTmin:                    return "ObjectRayTminNV";
     case EbvRayTmax:                    return "ObjectRayTmaxNV";
-    case EbvHitT:                       return "HitTNV";
     case EbvHitKind:                    return "HitKindNV";
     case EbvIncomingRayFlags:           return "IncomingRayFlagsNV";
     case EbvObjectToWorld:              return "ObjectToWorldNV";
