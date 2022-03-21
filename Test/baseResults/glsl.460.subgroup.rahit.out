@@ -383,7 +383,7 @@ ERROR: node is still EOpNull!
 0:119      Sequence
 0:119        move second child to first child ( temp float)
 0:119          'v11' ( temp float)
-0:119          'gl_HitTNV' ( in float HitTNV)
+0:119          'gl_RayTmaxNV' ( in float ObjectRayTmaxNV)
 0:120      Sequence
 0:120        move second child to first child ( temp uint)
 0:120          'v12' ( temp uint)
@@ -760,7 +760,7 @@ ERROR: node is still EOpNull!
 0:119      Sequence
 0:119        move second child to first child ( temp float)
 0:119          'v11' ( temp float)
-0:119          'gl_HitTNV' ( in float HitTNV)
+0:119          'gl_RayTmaxNV' ( in float ObjectRayTmaxNV)
 0:120      Sequence
 0:120        move second child to first child ( temp uint)
 0:120          'v12' ( temp uint)
