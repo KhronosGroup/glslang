@@ -46,6 +46,9 @@ layout(push_constant) uniform;                // ERROR, needs an object
 layout(binding=2, push_constant) uniform pcbnd1 {  // ERROR, can't have binding
     int a;
 } pcbnd1inst;
+layout(push_constant) uniform pcbnd2 {  // ERROR, can't be array
+    float a;
+} pcbnd2inst[2];
 layout(std430, push_constant) uniform pcb1 { int a; } pcb1inst;
 layout(push_constant) uniform pcb2 {
     int a;
