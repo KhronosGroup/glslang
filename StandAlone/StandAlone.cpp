@@ -1168,6 +1168,27 @@ struct ShaderCompUnit {
     }
 };
 
+// Writes a string into a depfile, escaping some special characters following the Makefile rules.
+static void writeEscapedDepString(std::ofstream& file, const std::string& str)
+{
+    for (char c : str) {
+        switch (c) {
+        case ' ':
+        case ':':
+        case '#':
+        case '[':
+        case ']':
+        case '\\':
+            file << '\\';
+            break;
+        case '$':
+            file << '$';
+            break;
+        }
+        file << c;
+    }
+}
+
 // Writes a depfile similar to gcc -MMD foo.c
 bool writeDepFile(std::string depfile, std::vector<std::string>& binaryFiles, const std::vector<std::string>& sources)
 {
@@ -1175,10 +1196,12 @@ bool writeDepFile(std::string depfile, std::vector<std::string>& binaryFiles, co
     if (file.fail())
         return false;
 
-    for (auto it = binaryFiles.begin(); it != binaryFiles.end(); it++) {
-        file << *it << ":";
-        for (auto it = sources.begin(); it != sources.end(); it++) {
-            file << " " << *it;
+    for (auto binaryFile = binaryFiles.begin(); binaryFile != binaryFiles.end(); binaryFile++) {
+        writeEscapedDepString(file, *binaryFile);
+        file << ":";
+        for (auto sourceFile = sources.begin(); sourceFile != sources.end(); sourceFile++) {
+            file << " ";
+            writeEscapedDepString(file, *sourceFile);
         }
         file << std::endl;
     }
