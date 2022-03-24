@@ -4,7 +4,7 @@ glslangValidator.exe --glsl-version 440 -V -S tesc -o glsl.versionOverride.tesc.
 
 */
 
-#version 330
+#version 110
 
 layout(vertices = 3) out;
 
