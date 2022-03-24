@@ -4,7 +4,7 @@ glslangValidator.exe --glsl-version 450 -V -S tese -o glsl.versionOverride.tese.
 
 */
 
-#version 330
+#version 110
 
 layout(triangles) in;
 
