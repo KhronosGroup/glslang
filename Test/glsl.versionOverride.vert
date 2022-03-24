@@ -4,7 +4,7 @@ glslangValidator.exe --glsl-version 410 -V -S vert -o glsl.versionOverride.vert.
 
 */
 
-#version 330
+#version 110
 
 void main()
 {
