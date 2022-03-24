@@ -4,7 +4,7 @@ glslangValidator.exe --glsl-version 430 -V -S geom -o glsl.versionOverride.geom.
 
 */
 
-#version 330
+#version 110
 
 layout (points) in;
 layout (line_strip, max_vertices = 2) out;
