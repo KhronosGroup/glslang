@@ -85,7 +85,15 @@ The applied stage-specific rules are based on the file extension:
 * `.frag` for a fragment shader
 * `.comp` for a compute shader
 
-There is also a non-shader extension
+For ray tracing pipeline shaders:
+* `.rgen` for a ray generation shader
+* `.rint` for a ray intersection shader
+* `.rahit` for a ray any-hit shader
+* `.rchit` for a ray closest-hit shader
+* `.rmiss` for a ray miss shader
+* `.rcall` for a callable shader
+
+There is also a non-shader extension:
 * `.conf` for a configuration file of limits, see usage statement for example
 
 ## Building (CMake)
