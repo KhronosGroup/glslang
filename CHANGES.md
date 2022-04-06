@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## 11.9.0 2022-04-06
+
+### Other changes
+* Add GLSL version override functionality
+* Add eliminate-dead-input-components to -Os
+* Add enhanced-msgs option
+* Explicitly use Python 3 for builds
+
 ## 11.8.0 2022-01-27
 
 ### Other changes
