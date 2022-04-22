@@ -1126,7 +1126,7 @@ local_size = (32, 16, 1)
 0:54              0 (const int)
 0:54          Constant:
 0:54            0 (const int)
-0:54        subgroupBallotInclusiveBitCount ( temp uint)
+0:54        subgroupBallotExclusiveBitCount ( temp uint)
 0:54          subgroupBallot ( temp 4-component vector of uint)
 0:54            Compare Equal ( temp bool)
 0:54              direct index ( temp uint)
@@ -2289,7 +2289,7 @@ local_size = (32, 16, 1)
 0:54              0 (const int)
 0:54          Constant:
 0:54            0 (const int)
-0:54        subgroupBallotInclusiveBitCount ( temp uint)
+0:54        subgroupBallotExclusiveBitCount ( temp uint)
 0:54          subgroupBallot ( temp 4-component vector of uint)
 0:54            Compare Equal ( temp bool)
 0:54              direct index ( temp uint)
@@ -2818,7 +2818,7 @@ local_size = (32, 16, 1)
              390:      6(int) Load 389
              392:   391(bool) IEqual 390 26
              393:   13(ivec4) GroupNonUniformBallot 35 392
-             394:      6(int) GroupNonUniformBallotBitCount 35 InclusiveScan 393
+             394:      6(int) GroupNonUniformBallotBitCount 35 ExclusiveScan 393
              395:     42(ptr) AccessChain 24(data) 25 386 25 26
                               Store 395 394
                               Return
