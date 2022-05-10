@@ -132,10 +132,6 @@ if(ENABLE_CTEST)
     include(CTest)
 endif()
 
-if(ENABLE_HLSL)
-    add_definitions(-DENABLE_HLSL)
-endif()
-
 if(ENABLE_GLSLANG_WEBMIN)
     add_definitions(-DGLSLANG_WEB)
     if(ENABLE_GLSLANG_WEBMIN_DEVEL)
