@@ -45,5 +45,5 @@
 #include "ParseHelper.h"
 #include "Scan.h"
 #include "ScanContext.h"
-
+#undef ENABLE_HLSL
 #endif /* _PCH_H */
