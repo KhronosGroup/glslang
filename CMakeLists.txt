@@ -77,7 +77,7 @@ if(NOT ${SKIP_GLSLANG_INSTALL})
 endif()
 option(ENABLE_SPVREMAPPER "Enables building of SPVRemapper" ON)
 
-option(ENABLE_GLSLANG_BINARIES "Builds glslangValidator and spirv-remap" ON)
+option(ENABLE_GLSLANG_BINARIES "Builds glslangValidator and spirv-remap" OFF)
 
 option(ENABLE_GLSLANG_JS
     "If using Emscripten, build glslang.js. Otherwise, builds a sample executable for binary-size testing." OFF)
@@ -100,7 +100,7 @@ CMAKE_DEPENDENT_OPTION(ENABLE_EMSCRIPTEN_ENVIRONMENT_NODE
 
 CMAKE_DEPENDENT_OPTION(ENABLE_HLSL
     "Enables HLSL input support"
-    ON "NOT ENABLE_GLSLANG_WEBMIN"
+    OFF "NOT ENABLE_GLSLANG_WEBMIN"
     OFF)
 
 option(ENABLE_RTTI "Enables RTTI" OFF)
@@ -330,16 +330,7 @@ endif()
 
 add_subdirectory(glslang)
 add_subdirectory(OGLCompilersDLL)
-if(ENABLE_GLSLANG_BINARIES)
-    add_subdirectory(StandAlone)
-endif()
 add_subdirectory(SPIRV)
-if(ENABLE_HLSL)
-    add_subdirectory(hlsl)
-endif()
-if(ENABLE_CTEST)
-    add_subdirectory(gtests)
-endif()
 
 if(ENABLE_CTEST AND BUILD_TESTING)
     # glslang-testsuite runs a bash script on Windows.
@@ -358,8 +349,4 @@ if(ENABLE_CTEST AND BUILD_TESTING)
         set(VALIDATOR_PATH ${CMAKE_CURRENT_BINARY_DIR}/StandAlone/glslangValidator)
         set(REMAP_PATH ${CMAKE_CURRENT_BINARY_DIR}/StandAlone/spirv-remap)
     endif()
-
-    add_test(NAME glslang-testsuite
-        COMMAND bash ${IGNORE_CR_FLAG} runtests ${RESULTS_PATH} ${VALIDATOR_PATH} ${REMAP_PATH}
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Test/)
 endif()

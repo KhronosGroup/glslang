@@ -1,0 +1,48 @@
+name: Create automatic pr
+# Set your repository name and the branch you want to pull from
+env:
+  REPO_NAME: "KhronosGroup/glslang"
+  BRANCH: "master"
+  UPSTREAM_BRANCH: "master"
+  NAME: "glslang"
+  
+on:
+  schedule:
+    - cron: "0 5 * * *"
+    - cron: "0 11 * * *"
+    - cron: "0 17 * * *"
+    - cron: "0 23 * * *"
+  push:
+    branches: [master]
+
+jobs:
+  Update-Fork:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checking out code
+        uses: actions/checkout@v3
+        with:
+          ref: master
+          token: ${{ secrets.GITHUB_TOKEN }}
+          lfs: true
+          submodules: true
+          clean: false
+          fetch-depth: 0
+      - name: extract git commit data
+        uses: rlespinasse/git-commit-data-action@v1.x
+      - name: Check for synced branches action
+        id: check
+        uses: MadLadSquad/check-for-synced-branches-action@master
+        with:
+          upstream-url: "https://github.com/${{ env.REPO_NAME }}"
+          first-branch: ${{ env.BRANCH }}
+          second-branch: ${{ env.UPSTREAM_BRANCH }}
+      - name: Issue
+        if: steps.check.outputs.behind > 0
+        uses: JasonEtco/create-an-issue@v2.6.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          filename: .github/auto-issue-template.md
+          update_existing: true
+          search_existing: open

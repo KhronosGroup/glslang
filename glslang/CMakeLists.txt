@@ -110,27 +110,6 @@ set(MACHINEINDEPENDENT_HEADERS
     MachineIndependent/preprocessor/PpTokens.h
 )
 
-if(ENABLE_HLSL)
-    list(APPEND MACHINEINDEPENDENT_SOURCES
-        HLSL/hlslAttributes.cpp
-        HLSL/hlslParseHelper.cpp
-        HLSL/hlslScanContext.cpp
-        HLSL/hlslOpMap.cpp
-        HLSL/hlslTokenStream.cpp
-        HLSL/hlslGrammar.cpp
-        HLSL/hlslParseables.cpp)
-
-    list(APPEND MACHINEINDEPENDENT_HEADERS
-        HLSL/hlslAttributes.h
-        HLSL/hlslParseHelper.h
-        HLSL/hlslTokens.h
-        HLSL/hlslScanContext.h
-        HLSL/hlslOpMap.h
-        HLSL/hlslTokenStream.h
-        HLSL/hlslGrammar.h
-        HLSL/hlslParseables.h)
-endif()
-
 add_library(MachineIndependent STATIC ${MACHINEINDEPENDENT_SOURCES} ${MACHINEINDEPENDENT_HEADERS})
 set_property(TARGET MachineIndependent PROPERTY POSITION_INDEPENDENT_CODE ON)
 set_property(TARGET MachineIndependent PROPERTY FOLDER glslang)
