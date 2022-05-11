@@ -367,11 +367,12 @@ public:
 
         if (success && (controls & EShMsgSpvRules)) {
         spv::SpvBuildLogger logger;
+            std::vector<std::string> whiteListStrings;
             std::vector<uint32_t> spirv_binary;
             glslang::GlslangToSpv(*program.getIntermediate(stage),
                                   spirv_binary, &logger, &options());
 
-            spv::spirvbin_t(0 /*verbosity*/).remap(spirv_binary, remapOptions);
+            spv::spirvbin_t(0 /*verbosity*/).remap(spirv_binary, whiteListStrings, remapOptions);
 
             std::ostringstream disassembly_stream;
             spv::Parameterize();
@@ -394,9 +395,9 @@ public:
     {
         if ((controls & EShMsgSpvRules)) {
             std::vector<uint32_t> spirv_binary(code); // scratch copy
+            std::vector<std::string> whiteListStrings;
+            spv::spirvbin_t(0 /*verbosity*/).remap(spirv_binary, whiteListStrings, remapOptions);
 
-            spv::spirvbin_t(0 /*verbosity*/).remap(spirv_binary, remapOptions);
-            
             std::ostringstream disassembly_stream;
             spv::Parameterize();
             spv::Disassemble(disassembly_stream, spirv_binary);
