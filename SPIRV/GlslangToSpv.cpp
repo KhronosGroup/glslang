@@ -1050,6 +1050,15 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
         builder.addCapability(spv::CapabilityFragmentBarycentricNV);
         return spv::BuiltInBaryCoordNoPerspNV;
 
+    case glslang::EbvBaryCoordEXT:
+        builder.addExtension(spv::E_SPV_KHR_fragment_shader_barycentric);
+        builder.addCapability(spv::CapabilityFragmentBarycentricKHR);
+        return spv::BuiltInBaryCoordKHR;
+    case glslang::EbvBaryCoordNoPerspEXT:
+        builder.addExtension(spv::E_SPV_KHR_fragment_shader_barycentric);
+        builder.addCapability(spv::CapabilityFragmentBarycentricKHR);
+        return spv::BuiltInBaryCoordNoPerspKHR;
+
     // mesh shaders
     case glslang::EbvTaskCountNV:
         return spv::BuiltInTaskCountNV;
@@ -8864,6 +8873,12 @@ spv::Id TGlslangToSpvTraverser::getSymbolId(const glslang::TIntermSymbol* symbol
         builder.addDecoration(id, spv::DecorationPerVertexNV);
         builder.addCapability(spv::CapabilityFragmentBarycentricNV);
         builder.addExtension(spv::E_SPV_NV_fragment_shader_barycentric);
+    }
+
+    if (symbol->getQualifier().pervertexEXT) {
+        builder.addDecoration(id, spv::DecorationPerVertexKHR);
+        builder.addCapability(spv::CapabilityFragmentBarycentricKHR);
+        builder.addExtension(spv::E_SPV_KHR_fragment_shader_barycentric);
     }
 
     if (glslangIntermediate->getHlslFunctionality1() && symbol->getType().getQualifier().semanticName != nullptr) {
