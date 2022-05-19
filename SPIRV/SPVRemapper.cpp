@@ -169,7 +169,6 @@ namespace spv {
         case spv::OpMemberName:
         case spv::OpLine :
         {
-            const spv::Id target = asId(start + 1);
             const std::string name = literalString(start + 2);
 
             std::vector<std::string>::const_iterator it;
