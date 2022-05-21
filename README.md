@@ -429,6 +429,77 @@ ShCompile(shader, compiler) -> compiler(AST) -> <back end>
 In practice, `ShCompile()` takes shader strings, default version, and
 warning/error and other options for controlling compilation.
 
+### C Functional Interface (new)
+
+This interface is located `glslang_c_interface.h` and exposes functionality similar to the C++ interface. The following snippet is a complete example showing how to compile GLSL into SPIR-V 1.5 for Vulkan 1.2.
+
+```cxx
+std::vector<uint32_t> compileShaderToSPIRV_Vulkan(glslang_stage_t stage, const char* shaderSource, const char* fileName)
+{
+    const glslang_input_t input = {
+        .language = GLSLANG_SOURCE_GLSL,
+        .stage = stage,
+        .client = GLSLANG_CLIENT_VULKAN,
+        .client_version = GLSLANG_TARGET_VULKAN_1_2,
+        .target_language = GLSLANG_TARGET_SPV,
+        .target_language_version = GLSLANG_TARGET_SPV_1_5,
+        .code = shaderSource,
+        .default_version = 100,
+        .default_profile = GLSLANG_NO_PROFILE,
+        .force_default_version_and_profile = false,
+        .forward_compatible = false,
+        .messages = GLSLANG_MSG_DEFAULT_BIT,
+        .resource = reinterpret_cast<const glslang_resource_t*>(&glslang::DefaultTBuiltInResource),
+    };
+
+    glslang_shader_t* shader = glslang_shader_create(&input);
+
+    if (!glslang_shader_preprocess(shader, &input))	{
+        printf("GLSL preprocessing failed %s\n", fileName);
+        printf("%s\n", glslang_shader_get_info_log(shader));
+        printf("%s\n", glslang_shader_get_info_debug_log(shader));
+        printf("%s\n", input.code);
+        glslang_shader_delete(shader);
+        return std::vector<uint32_t>();
+    }
+
+    if (!glslang_shader_parse(shader, &input)) {
+        printf("GLSL parsing failed %s\n", fileName);
+        printf("%s\n", glslang_shader_get_info_log(shader));
+        printf("%s\n", glslang_shader_get_info_debug_log(shader));
+        printf("%s\n", glslang_shader_get_preprocessed_code(shader));
+        glslang_shader_delete(shader);
+        return std::vector<uint32_t>();
+    }
+
+    glslang_program_t* program = glslang_program_create();
+    glslang_program_add_shader(program, shader);
+
+    if (!glslang_program_link(program, GLSLANG_MSG_SPV_RULES_BIT | GLSLANG_MSG_VULKAN_RULES_BIT)) {
+        printf("GLSL linking failed %s\n", fileName);
+        printf("%s\n", glslang_program_get_info_log(program));
+        printf("%s\n", glslang_program_get_info_debug_log(program));
+        glslang_program_delete(program);
+        glslang_shader_delete(shader);
+        return std::vector<uint32_t>();
+    }
+
+    glslang_program_SPIRV_generate(program, stage);
+
+    std::vector<uint32_t> outShaderModule(glslang_program_SPIRV_get_size(program));
+    glslang_program_SPIRV_get(program, outShaderModule.data());
+
+    const char* spirv_messages = glslang_program_SPIRV_get_messages(program);
+    if (spirv_messages)
+        printf("(%s) %s\b", fileName, spirv_messages);
+
+    glslang_program_delete(program);
+    glslang_shader_delete(shader);
+
+    return outShaderModule;
+}
+```
+
 ## Basic Internal Operation
 
 * Initial lexical analysis is done by the preprocessor in
