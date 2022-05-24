@@ -60,6 +60,7 @@ gl_FragCoord origin is upper left
                6:             Label
                               Return
                               FunctionEnd
+                              Line 1 2 1
 12(PixelShaderFunction(vf4;):    8(fvec4) Function None 10
        11(input):      9(ptr) FunctionParameter
               13:             Label

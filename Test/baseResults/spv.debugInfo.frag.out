@@ -137,6 +137,7 @@ void main()
              109:      7(int) Constant 1
              111:             TypePointer Output 10(float)
              114:   10(float) Constant 1092616192
+                              Line 1 28 11
          5(main):           3 Function None 4
                6:             Label
        57(param):      9(ptr) Variable Function
@@ -238,6 +239,7 @@ void main()
              118:             Label
                               Return
                               FunctionEnd
+                              Line 1 16 13
 14(foo(struct-S-i11;):   11(fvec4) Function None 12
            13(s):      9(ptr) FunctionParameter
               15:             Label
