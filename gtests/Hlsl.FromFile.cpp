@@ -434,7 +434,8 @@ INSTANTIATE_TEST_SUITE_P(
         {"hlsl.typedef.frag", "PixelShaderFunction"},
         {"hlsl.whileLoop.frag", "PixelShaderFunction"},
         {"hlsl.void.frag", "PixelShaderFunction"},
-        {"hlsl.type.type.conversion.all.frag", "main"}
+        {"hlsl.type.type.conversion.all.frag", "main"},
+        {"hlsl.instance.geom", "GeometryShader"}
     }),
     FileNameAsCustomTestSuffix
 );
