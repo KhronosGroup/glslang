@@ -92,6 +92,7 @@ void main()
            56(u):     55(ptr) Variable Input
               58:             TypePointer Input 7(float)
        59(blend):     58(ptr) Variable Input
+                              Line 1 11 11
          5(main):           3 Function None 4
                6:             Label
    9(blendscale):      8(ptr) Variable Function

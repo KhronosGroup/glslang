@@ -2792,6 +2792,10 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
             } else {
                 handleFunctionEntry(node);
             }
+            if (options.generateDebugInfo) {
+                const auto& loc = node->getLoc();
+                currentFunction->setDebugLineInfo(builder.getSourceFile(), loc.line, loc.column);
+            }
         } else {
             if (inEntryPoint)
                 entryPointTerminated = true;

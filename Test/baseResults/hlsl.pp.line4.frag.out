@@ -112,7 +112,9 @@ PS_OUTPUT MainPs ( PS_INPUT i )
 70(i.vTextureCoords):     69(ptr) Variable Input
               73:             TypePointer Output 11(fvec4)
 74(@entryPointOutput.vColor):     73(ptr) Variable Output
+                              Line 1 25 1
        5(MainPs):           3 Function None 4
+                              NoLine
                6:             Label
                               Line 17 25 0
               71:    8(fvec2) Load 70(i.vTextureCoords)

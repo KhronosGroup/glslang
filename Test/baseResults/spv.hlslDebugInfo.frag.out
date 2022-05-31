@@ -44,6 +44,7 @@ float4 origMain() : SV_Position
               13:    8(fvec4) ConstantComposite 12 12 12 12
               16:             TypePointer Output 8(fvec4)
 17(@entryPointOutput):     16(ptr) Variable Output
+                              Line 1 2 1
       5(newMain):           3 Function None 4
                6:             Label
                               Line 1 2 0
@@ -51,6 +52,7 @@ float4 origMain() : SV_Position
                               Store 17(@entryPointOutput) 18
                               Return
                               FunctionEnd
+                              Line 1 2 1
    10(@newMain():    8(fvec4) Function None 9
               11:             Label
                               Line 1 3 0
