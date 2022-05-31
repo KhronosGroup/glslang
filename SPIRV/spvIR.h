@@ -358,7 +358,7 @@ public:
         { return reducedPrecisionReturn ? DecorationRelaxedPrecision : NoPrecision; }
 
     void setDebugLineInfo(Id fileName, int line, int column) {
-        lineInstruction = std::make_unique<Instruction>(OpLine);
+        lineInstruction = std::unique_ptr<Instruction>{new Instruction(OpLine)};
         lineInstruction->addIdOperand(fileName);
         lineInstruction->addImmediateOperand(line);
         lineInstruction->addImmediateOperand(column);
