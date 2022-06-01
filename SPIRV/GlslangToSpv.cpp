@@ -260,6 +260,7 @@ protected:
     std::unordered_map<std::string, spv::Id> extBuiltinMap;
 
     std::unordered_map<long long, spv::Id> symbolValues;
+    std::unordered_map<uint32_t, spv::Id> builtInVariableIds;
     std::unordered_set<long long> rValueParameters;  // set of formal function parameters passed as rValues,
                                                // rather than a pointer
     std::unordered_map<std::string, spv::Function*> functionMap;
@@ -8750,7 +8751,32 @@ spv::Id TGlslangToSpvTraverser::getSymbolId(const glslang::TIntermSymbol* symbol
     // it was not found, create it
     spv::BuiltIn builtIn = TranslateBuiltInDecoration(symbol->getQualifier().builtIn, false);
     auto forcedType = getForcedType(symbol->getQualifier().builtIn, symbol->getType());
+
+    // There are pairs of symbols that map to the same SPIR-V built-in:
+    // gl_ObjectToWorldEXT and gl_ObjectToWorld3x4EXT, and gl_WorldToObjectEXT
+    // and gl_WorldToObject3x4EXT. SPIR-V forbids having two OpVariables
+    // with the same BuiltIn in the same storage class, so we must re-use one.
+    const bool mayNeedToReuseBuiltIn =
+        builtIn == spv::BuiltInObjectToWorldKHR ||
+        builtIn == spv::BuiltInWorldToObjectKHR;
+
+    if (mayNeedToReuseBuiltIn) {
+        auto iter = builtInVariableIds.find(uint32_t(builtIn));
+        if (builtInVariableIds.end() != iter) {
+            id = iter->second;
+            symbolValues[symbol->getId()] = id;
+            if (forcedType.second != spv::NoType)
+                forceType[id] = forcedType.second;
+            return id;
+        }
+    }
+
     id = createSpvVariable(symbol, forcedType.first);
+
+    if (mayNeedToReuseBuiltIn) {
+        builtInVariableIds.insert({uint32_t(builtIn), id});
+    }
+
     symbolValues[symbol->getId()] = id;
     if (forcedType.second != spv::NoType)
         forceType[id] = forcedType.second;
