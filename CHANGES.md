@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## 11.10.0 2022-06-02
+
+### Other changes
+* Generate OpLine before OpFunction
+* Add support for VK_EXT_fragment_shader_barycentric
+* Add whitelist filtering for debug comments in SPIRV-Remap
+* Add support for GL_EXT_ray_cull_mask
+
 ## 11.9.0 2022-04-06
 
 ### Other changes
