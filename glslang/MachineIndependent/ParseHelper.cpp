@@ -2467,6 +2467,7 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
     case EOpRayQueryGetIntersectionObjectRayOrigin:
     case EOpRayQueryGetIntersectionObjectToWorld:
     case EOpRayQueryGetIntersectionWorldToObject:
+    case EOpRayQueryGetIntersectionTriangleVertexPositionsEXT:
         if (!(*argp)[1]->getAsConstantUnion())
             error(loc, "argument must be compile-time constant", "committed", "");
         break;

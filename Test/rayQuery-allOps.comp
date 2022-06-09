@@ -1,6 +1,7 @@
 #version 460
 #extension GL_EXT_ray_query : enable
 #extension GL_EXT_ray_flags_primitive_culling : enable
+#extension GL_EXT_ray_tracing_position_fetch : enable
 
 layout(primitive_culling);
 struct Ray
@@ -146,6 +147,14 @@ void main()
             if (rayQueryGetIntersectionBarycentricsEXT(rayQuery, true).y == 0)
             {
                 doSomething();
+            }
+            {
+                vec3 positions[3];
+                rayQueryGetIntersectionTriangleVertexPositionsEXT(rayQuery, true, positions);
+                if (positions[0].x < 0 && positions[2].y > 0)
+                {
+                    doSomething();
+                }
             }
             break;
 

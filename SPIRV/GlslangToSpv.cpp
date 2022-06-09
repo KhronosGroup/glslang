@@ -1010,6 +1010,8 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
         return spv::BuiltInRayTmaxKHR;
     case glslang::EbvCullMask:
         return spv::BuiltInCullMaskKHR;
+    case glslang::EbvPositionFetch:
+        return spv::BuiltInHitTriangleVertexPositionsKHR;
     case glslang::EbvInstanceCustomIndex:
         return spv::BuiltInInstanceCustomIndexKHR;
     case glslang::EbvHitT:
@@ -1857,13 +1859,16 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion,
             builder.addCapability(spv::CapabilityRayTracingNV);
             builder.addExtension("SPV_NV_ray_tracing");
         }
-	if (glslangIntermediate->getStage() != EShLangRayGen && glslangIntermediate->getStage() != EShLangCallable)
-	{
-		if (extensions.find("GL_EXT_ray_cull_mask") != extensions.end()) {
-			builder.addCapability(spv::CapabilityRayCullMaskKHR);
-			builder.addExtension("SPV_KHR_ray_cull_mask");
-		}
-	}
+        if (glslangIntermediate->getStage() != EShLangRayGen && glslangIntermediate->getStage() != EShLangCallable) {
+            if (extensions.find("GL_EXT_ray_cull_mask") != extensions.end()) {
+                builder.addCapability(spv::CapabilityRayCullMaskKHR);
+                builder.addExtension("SPV_KHR_ray_cull_mask");
+            }
+            if (extensions.find("GL_EXT_ray_tracing_position_fetch") != extensions.end()) {
+                builder.addCapability(spv::CapabilityRayTracingPositionFetchKHR);
+                builder.addExtension("SPV_KHR_ray_tracing_position_fetch");
+            }
+        }
         break;
     }
     case EShLangTask:
@@ -3301,6 +3306,11 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         builder.addExtension(spv::E_SPV_NV_shader_invocation_reorder);
         builder.addCapability(spv::CapabilityShaderInvocationReorderNV);
         break;
+    case glslang::EOpRayQueryGetIntersectionTriangleVertexPositionsEXT:
+        builder.addExtension(spv::E_SPV_KHR_ray_tracing_position_fetch);
+        builder.addCapability(spv::CapabilityRayQueryPositionFetchKHR);
+        noReturnValue = true;
+        break;
 #endif
 
     case glslang::EOpDebugPrintf:
@@ -3479,6 +3489,10 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
             if (arg == 0 && glslangOperands.size() != 2)
                 lvalue = true;
             break;
+        case glslang::EOpRayQueryGetIntersectionTriangleVertexPositionsEXT:
+            if (arg == 0 || arg == 2)
+                lvalue = true;
+            break;
 #endif
         default:
             break;
@@ -3571,7 +3585,8 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
                  glslangOp == glslang::EOpRayQueryGetIntersectionObjectRayDirection ||
                  glslangOp == glslang::EOpRayQueryGetIntersectionObjectRayOrigin ||
                  glslangOp == glslang::EOpRayQueryGetIntersectionObjectToWorld ||
-                 glslangOp == glslang::EOpRayQueryGetIntersectionWorldToObject
+                 glslangOp == glslang::EOpRayQueryGetIntersectionWorldToObject ||
+                 glslangOp == glslang::EOpRayQueryGetIntersectionTriangleVertexPositionsEXT
                     )) {
                 bool cond = glslangOperands[arg]->getAsConstantUnion()->getConstArray()[0].getBConst();
                 operands.push_back(builder.makeIntConstant(cond ? 1 : 0));
@@ -3636,6 +3651,19 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         idImmOps.insert(idImmOps.end(), memoryAccessOperands.begin(), memoryAccessOperands.end());
 
         builder.createNoResultOp(spv::OpCooperativeMatrixStoreNV, idImmOps);
+        result = 0;
+    } else if (node->getOp() == glslang::EOpRayQueryGetIntersectionTriangleVertexPositionsEXT) {
+        std::vector<spv::IdImmediate> idImmOps;
+
+        idImmOps.push_back(spv::IdImmediate(true, operands[0])); // q
+        idImmOps.push_back(spv::IdImmediate(true, operands[1])); // committed
+
+        spv::Id typeId = builder.makeArrayType(builder.makeVectorType(builder.makeFloatType(32), 3),
+                                               builder.makeUintConstant(3), 0);
+        // do the op
+        spv::Id result = builder.createOp(spv::OpRayQueryGetIntersectionTriangleVertexPositionsKHR, typeId, idImmOps);
+        // store the result to the pointer (out param 'm')
+        builder.createStore(result, operands[2]);
         result = 0;
     } else
 #endif
@@ -5559,6 +5587,10 @@ void TGlslangToSpvTraverser::translateArguments(const glslang::TIntermAggregate&
             break;
         case glslang::EOpImageSampleFootprintGradClampNV:
             if (i == 7)
+                lvalue = true;
+            break;
+        case glslang::EOpRayQueryGetIntersectionTriangleVertexPositionsEXT:
+            if (i == 2)
                 lvalue = true;
             break;
         default:

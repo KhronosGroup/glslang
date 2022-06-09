@@ -404,6 +404,7 @@ const char* BuiltInString(int builtIn)
     case BuiltInRayTminKHR:                  return "RayTminKHR";
     case BuiltInRayTmaxKHR:                  return "RayTmaxKHR";
     case BuiltInCullMaskKHR:                 return "CullMaskKHR";
+    case BuiltInHitTriangleVertexPositionsKHR: return "HitTriangleVertexPositionsKHR";
     case BuiltInInstanceCustomIndexKHR:      return "InstanceCustomIndexKHR";
     case BuiltInRayGeometryIndexKHR:         return "RayGeometryIndexKHR";
     case BuiltInObjectToWorldKHR:            return "ObjectToWorldKHR";
@@ -950,6 +951,8 @@ const char* CapabilityString(int info)
     case CapabilityRayQueryKHR:                     return "RayQueryKHR";
     case CapabilityRayTracingProvisionalKHR:        return "RayTracingProvisionalKHR";
     case CapabilityRayTraversalPrimitiveCullingKHR: return "RayTraversalPrimitiveCullingKHR";
+    case CapabilityRayTracingPositionFetchKHR:      return "RayTracingPositionFetchKHR";
+    case CapabilityRayQueryPositionFetchKHR:        return "RayQueryPositionFetchKHR";
     case CapabilityComputeDerivativeGroupQuadsNV:   return "ComputeDerivativeGroupQuadsNV";
     case CapabilityComputeDerivativeGroupLinearNV:  return "ComputeDerivativeGroupLinearNV";
     case CapabilityFragmentBarycentricKHR:          return "FragmentBarycentricKHR";
@@ -1452,6 +1455,7 @@ const char* OpcodeString(int op)
     case OpRayQueryGetWorldRayOriginKHR:                                      return "OpRayQueryGetWorldRayOriginKHR";
     case OpRayQueryGetIntersectionObjectToWorldKHR:                           return "OpRayQueryGetIntersectionObjectToWorldKHR";
     case OpRayQueryGetIntersectionWorldToObjectKHR:                           return "OpRayQueryGetIntersectionWorldToObjectKHR";
+    case OpRayQueryGetIntersectionTriangleVertexPositionsKHR:                 return "OpRayQueryGetIntersectionTriangleVertexPositionsKHR";
 
     case OpTypeCooperativeMatrixNV:         return "OpTypeCooperativeMatrixNV";
     case OpCooperativeMatrixLoadNV:         return "OpCooperativeMatrixLoadNV";
@@ -3023,6 +3027,10 @@ void Parameterize()
 
     InstructionDesc[OpRayQueryGetIntersectionWorldToObjectKHR].operands.push(OperandId, "'RayQuery'");
     InstructionDesc[OpRayQueryGetIntersectionWorldToObjectKHR].operands.push(OperandId, "'Committed'");
+    InstructionDesc[OpRayQueryGetIntersectionWorldToObjectKHR].setResultAndType(true, true);
+
+    InstructionDesc[OpRayQueryGetIntersectionTriangleVertexPositionsKHR].operands.push(OperandId, "'RayQuery'");
+    InstructionDesc[OpRayQueryGetIntersectionTriangleVertexPositionsKHR].operands.push(OperandId, "'Committed'");
     InstructionDesc[OpRayQueryGetIntersectionWorldToObjectKHR].setResultAndType(true, true);
 
     InstructionDesc[OpImageSampleFootprintNV].operands.push(OperandId, "'Sampled Image'");

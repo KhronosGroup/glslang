@@ -1090,6 +1090,9 @@ enum TOperator {
     // Shader Clock Ops
     EOpReadClockSubgroupKHR,
     EOpReadClockDeviceKHR,
+
+    // GL_EXT_ray_tracing_position_fetch
+    EOpRayQueryGetIntersectionTriangleVertexPositionsEXT,
 };
 
 class TIntermTraverser;
