@@ -1097,6 +1097,7 @@ bool TOutputTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node
     case EOpRayQueryGetWorldRayOrigin:                                     out.debug << "rayQueryGetWorldRayOriginEXT"; break;
     case EOpRayQueryGetIntersectionObjectToWorld:                          out.debug << "rayQueryGetIntersectionObjectToWorldEXT"; break;
     case EOpRayQueryGetIntersectionWorldToObject:                          out.debug << "rayQueryGetIntersectionWorldToObjectEXT"; break;
+    case EOpRayQueryGetIntersectionTriangleVertexPositionsEXT:             out.debug << "rayQueryGetIntersectionTriangleVertexPositionsEXT"; break;
 
     case EOpCooperativeMatrixLoad:  out.debug << "Load cooperative matrix";  break;
     case EOpCooperativeMatrixStore:  out.debug << "Store cooperative matrix";  break;

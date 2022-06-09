@@ -325,6 +325,8 @@ enum TBuiltInVariable {
     EbvWarpIDARM,
     EbvWarpMaxIDARM,
 
+    EbvPositionFetch,
+
     EbvLast
 };
 
