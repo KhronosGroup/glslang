@@ -444,6 +444,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.textureBuffer.vert",
         "spv.image.frag",
         "spv.imageAtomic64.frag",
+        "spv.imageAtomic64.comp",
         "spv.types.frag",
         "spv.uint.frag",
         "spv.uniformArray.frag",

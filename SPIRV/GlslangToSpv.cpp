@@ -5581,10 +5581,12 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
             operands.push_back(sample);
 
             spv::Id resultTypeId;
+            glslang::TBasicType typeProxy = node->getBasicType();
             // imageAtomicStore has a void return type so base the pointer type on
             // the type of the value operand.
             if (node->getOp() == glslang::EOpImageAtomicStore) {
                 resultTypeId = builder.makePointer(spv::StorageClassImage, builder.getTypeId(*opIt));
+                typeProxy = node->getAsAggregate()->getSequence()[0]->getAsTyped()->getType().getSampler().type;
             } else {
                 resultTypeId = builder.makePointer(spv::StorageClassImage, resultType());
             }
@@ -5598,7 +5600,7 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
             for (; opIt != arguments.end(); ++opIt)
                 operands.push_back(*opIt);
 
-            return createAtomicOperation(node->getOp(), precision, resultType(), operands, node->getBasicType(),
+            return createAtomicOperation(node->getOp(), precision, resultType(), operands, typeProxy,
                 lvalueCoherentFlags);
         }
     }
