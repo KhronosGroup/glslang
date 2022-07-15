@@ -10,6 +10,7 @@ spv.shaderStencilExport.frag
                               MemoryModel Logical GLSL450
                               EntryPoint Fragment 4  "main" 8
                               ExecutionMode 4 OriginUpperLeft
+                              ExecutionMode 4 StencilRefReplacingEXT
                               Source GLSL 450
                               SourceExtension  "GL_ARB_shader_stencil_export"
                               Name 4  "main"
