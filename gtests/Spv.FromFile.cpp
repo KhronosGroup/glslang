@@ -258,6 +258,7 @@ INSTANTIATE_TEST_SUITE_P(
         "rayQuery-initialization.Error.comp",
         "rayQuery-global.rgen",
         "rayQuery-types.comp",
+        "rayQuery-OpConvertUToAccelerationStructureKHR.comp",
         "spv.set.vert",
         "spv.double.comp",
         "spv.100ops.frag",
