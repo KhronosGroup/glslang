@@ -77,17 +77,18 @@ jobs:
                   zip ${ARCHIVE} \
                       bin/glslangValidator \
                       include/glslang/* \
-                      lib/libGenericCodeGen${SUFFIX}.a \
-                      lib/libglslang${SUFFIX}.a \
-                      lib/libglslang-default-resource-limits${SUFFIX}.a \
-                      lib/libHLSL${SUFFIX}.a \
-                      lib/libMachineIndependent${SUFFIX}.a \
-                      lib/libOGLCompiler${SUFFIX}.a \
-                      lib/libOSDependent${SUFFIX}.a \
-                      lib/libSPIRV${SUFFIX}.a \
-                      lib/libSPVRemapper${SUFFIX}.a \
-                      lib/libSPIRV-Tools${SUFFIX}.a \
-                      lib/libSPIRV-Tools-opt${SUFFIX}.a
+                      include/glslang/**/* \
+                      lib/libGenericCodeGen.a \
+                      lib/libglslang.a \
+                      lib/libglslang-default-resource-limits.a \
+                      lib/libHLSL.a \
+                      lib/libMachineIndependent.a \
+                      lib/libOGLCompiler.a \
+                      lib/libOSDependent.a \
+                      lib/libSPIRV.a \
+                      lib/libSPVRemapper.a \
+                      lib/libSPIRV-Tools.a \
+                      lib/libSPIRV-Tools-opt.a
             - name: Deploy
               if: ${{ matrix.compiler.cc == 'clang' }}
               env:
@@ -147,17 +148,18 @@ jobs:
                   zip ${ARCHIVE} \
                       bin/glslangValidator \
                       include/glslang/* \
-                      lib/libGenericCodeGen${SUFFIX}.a \
-                      lib/libglslang${SUFFIX}.a \
-                      lib/libglslang-default-resource-limits${SUFFIX}.a \
-                      lib/libHLSL${SUFFIX}.a \
-                      lib/libMachineIndependent${SUFFIX}.a \
-                      lib/libOGLCompiler${SUFFIX}.a \
-                      lib/libOSDependent${SUFFIX}.a \
-                      lib/libSPIRV${SUFFIX}.a \
-                      lib/libSPVRemapper${SUFFIX}.a \
-                      lib/libSPIRV-Tools${SUFFIX}.a \
-                      lib/libSPIRV-Tools-opt${SUFFIX}.a
+                      include/glslang/**/* \
+                      lib/libGenericCodeGen.a \
+                      lib/libglslang.a \
+                      lib/libglslang-default-resource-limits.a \
+                      lib/libHLSL.a \
+                      lib/libMachineIndependent.a \
+                      lib/libOGLCompiler.a \
+                      lib/libOSDependent.a \
+                      lib/libSPIRV.a \
+                      lib/libSPVRemapper.a \
+                      lib/libSPIRV-Tools.a \
+                      lib/libSPIRV-Tools-opt.a
             - name: Deploy
               env:
                   ARCHIVE: glslang-master-${{matrix.os.family}}-${{matrix.cmake_build_type}}.zip
