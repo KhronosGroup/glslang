@@ -1623,6 +1623,12 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion,
         if (glslangIntermediate->getEarlyFragmentTests())
             builder.addExecutionMode(shaderEntry, spv::ExecutionModeEarlyFragmentTests);
 
+        if (glslangIntermediate->getEarlyAndLateFragmentTestsAMD())
+        {
+            builder.addExecutionMode(shaderEntry, spv::ExecutionModeEarlyAndLateFragmentTestsAMD);
+            builder.addExtension(spv::E_SPV_AMD_shader_early_and_late_fragment_tests);
+        }
+
         if (glslangIntermediate->getPostDepthCoverage()) {
             builder.addCapability(spv::CapabilitySampleMaskPostDepthCoverage);
             builder.addExecutionMode(shaderEntry, spv::ExecutionModePostDepthCoverage);
@@ -1632,6 +1638,9 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion,
         if (glslangIntermediate->isDepthReplacing())
             builder.addExecutionMode(shaderEntry, spv::ExecutionModeDepthReplacing);
 
+        if (glslangIntermediate->isStencilReplacing())
+            builder.addExecutionMode(shaderEntry, spv::ExecutionModeStencilRefReplacingEXT);
+
 #ifndef GLSLANG_WEB
 
         switch(glslangIntermediate->getDepth()) {
@@ -1640,6 +1649,20 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion,
         case glslang::EldUnchanged: mode = spv::ExecutionModeDepthUnchanged; break;
         default:                    mode = spv::ExecutionModeMax;            break;
         }
+
+        if (mode != spv::ExecutionModeMax)
+            builder.addExecutionMode(shaderEntry, (spv::ExecutionMode)mode);
+
+        switch (glslangIntermediate->getStencil()) {
+        case glslang::ElsRefUnchangedFrontAMD:  mode = spv::ExecutionModeStencilRefUnchangedFrontAMD; break;
+        case glslang::ElsRefGreaterFrontAMD:    mode = spv::ExecutionModeStencilRefGreaterFrontAMD;   break;
+        case glslang::ElsRefLessFrontAMD:       mode = spv::ExecutionModeStencilRefLessFrontAMD;      break;
+        case glslang::ElsRefUnchangedBackAMD:   mode = spv::ExecutionModeStencilRefUnchangedBackAMD;  break;
+        case glslang::ElsRefGreaterBackAMD:     mode = spv::ExecutionModeStencilRefGreaterBackAMD;    break;
+        case glslang::ElsRefLessBackAMD:        mode = spv::ExecutionModeStencilRefLessBackAMD;       break;
+        default:                       mode = spv::ExecutionModeMax;                         break;
+        }
+
         if (mode != spv::ExecutionModeMax)
             builder.addExecutionMode(shaderEntry, (spv::ExecutionMode)mode);
         switch (glslangIntermediate->getInterlockOrdering()) {
