@@ -106,6 +106,7 @@ jobs:
             matrix:
                 os: [{genus: macos-11, family: osx}]
                 compiler: [{cc: clang, cxx: clang++}]
+                arch: [x86_64, arm64]
                 cmake_build_type: [Debug, Release]
         steps:
             - uses: actions/checkout@v2
@@ -133,7 +134,7 @@ jobs:
                   CXX: ${{matrix.compiler.cxx}}
               run: |
                   mkdir build && cd build
-                  cmake -DCMAKE_BUILD_TYPE=${{matrix.cmake_build_type}} -DCMAKE_INSTALL_PREFIX=`pwd`/install ..
+                  cmake -DCMAKE_BUILD_TYPE=${{matrix.cmake_build_type}} -DCMAKE_INSTALL_PREFIX=`pwd`/install -DCMAKE_OSX_ARCHITECTURES=${{matrix.arch}} ..
                   make -j4 install
             - name: Test
               run: |
@@ -142,7 +143,7 @@ jobs:
                   cd ../Test && ./runtests
             - name: Zip
               env:
-                  ARCHIVE: glslang-master-${{matrix.os.family}}-${{matrix.cmake_build_type}}.zip
+                  ARCHIVE: glslang-master-${{matrix.os.family}}-${{matrix.arch}}-${{matrix.cmake_build_type}}.zip
               run: |
                   cd build/install
                   zip ${ARCHIVE} \
@@ -162,7 +163,7 @@ jobs:
                       lib/libSPIRV-Tools-opt.a
             - name: Deploy
               env:
-                  ARCHIVE: glslang-master-${{matrix.os.family}}-${{matrix.cmake_build_type}}.zip
+                  ARCHIVE: glslang-master-${{matrix.os.family}}-${{matrix.arch}}-${{matrix.cmake_build_type}}.zip
               uses: actions/github-script@v5
               with:
                   script: |
