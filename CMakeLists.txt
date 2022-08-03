@@ -50,6 +50,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Adhere to GNU filesystem layout conventions
 include(GNUInstallDirs)
+include(CMakePackageConfigHelpers)
 
 # Needed for CMAKE_DEPENDENT_OPTION macro
 include(CMakeDependentOption)
@@ -366,4 +367,39 @@ if(ENABLE_CTEST AND BUILD_TESTING)
     add_test(NAME glslang-testsuite
         COMMAND bash ${IGNORE_CR_FLAG} runtests ${RESULTS_PATH} ${VALIDATOR_PATH} ${REMAP_PATH}
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Test/)
+endif()
+
+if(ENABLE_GLSLANG_INSTALL)
+    file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/glslang-config.cmake.in" [=[
+        @PACKAGE_INIT@
+        include("@PACKAGE_PATH_EXPORT_TARGETS@")
+    ]=])
+    
+    set(PATH_EXPORT_TARGETS "${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}/glslang-targets.cmake")
+    configure_package_config_file(
+        "${CMAKE_CURRENT_BINARY_DIR}/glslang-config.cmake.in"
+        "${CMAKE_CURRENT_BINARY_DIR}/glslang-config.cmake"
+        PATH_VARS
+            PATH_EXPORT_TARGETS
+        INSTALL_DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}
+    )
+    
+    write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/glslang-config-version.cmake"
+        VERSION ${GLSLANG_VERSION}
+        COMPATIBILITY SameMajorVersion
+    )
+    
+    install(
+        EXPORT      glslang-targets
+        NAMESPACE   "glslang::"
+        DESTINATION "${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}"
+    )
+    
+    install(
+        FILES
+            "${CMAKE_CURRENT_BINARY_DIR}/glslang-config.cmake"
+            "${CMAKE_CURRENT_BINARY_DIR}/glslang-config-version.cmake"
+        DESTINATION
+            "${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}"
+    )
 endif()
