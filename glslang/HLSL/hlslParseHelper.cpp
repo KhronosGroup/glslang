@@ -2971,7 +2971,7 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
     int leftOffset = leftOffsetStart;
     int rightOffset = rightOffsetStart;
 
-    const auto getMember = [&](bool isLeft, const TType& type, int member, TIntermTyped* splitNode, int splitMember,
+    const auto getMember = [&, leftStorage, rightStorage](bool isLeft, const TType& type, int member, TIntermTyped* splitNode, int splitMember,
                                bool flattened)
                            -> TIntermTyped * {
         const bool split     = isLeft ? isSplitLeft   : isSplitRight;
@@ -3066,7 +3066,7 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
     // whole thing.  So, we'll resort to an explicit type via std::function.
     const std::function<void(TIntermTyped* left, TIntermTyped* right, TIntermTyped* splitLeft, TIntermTyped* splitRight,
                              bool topLevel)>
-    traverse = [&](TIntermTyped* left, TIntermTyped* right, TIntermTyped* splitLeft, TIntermTyped* splitRight,
+    traverse = [&, leftStorage, rightStorage](TIntermTyped* left, TIntermTyped* right, TIntermTyped* splitLeft, TIntermTyped* splitRight,
                    bool topLevel) -> void {
         // If we get here, we are assigning to or from a whole array or struct that must be
         // flattened, so have to do member-by-member assignment:
