@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## 11.11.0 2022-08-11
+
+### Other changes
+* Add OpSource support to C interface
+* Deprecate samplerBuffer for spirv1.6 and later
+* Add support for SPV_AMD_shader_early_and_late_fragment_tests
+
 ## 11.10.0 2022-06-02
 
 ### Other changes
