@@ -32,7 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string.h>
 #include <string>
 
-const glslang_resource_t* glslang_default_resource(void)
+GLSLANG_EXPORT const glslang_resource_t* glslang_default_resource(void)
 {
     return reinterpret_cast<const glslang_resource_t*>(&glslang::DefaultTBuiltInResource);
 }
@@ -45,7 +45,7 @@ const glslang_resource_t* glslang_default_resource(void)
 #pragma warning(disable : 4996)
 #endif
 
-const char* glslang_default_resource_string()
+GLSLANG_EXPORT const char* glslang_default_resource_string()
 {
     std::string cpp_str = glslang::GetDefaultTBuiltInResourceString();
     char* c_str = (char*)malloc(cpp_str.length() + 1);
@@ -59,7 +59,7 @@ const char* glslang_default_resource_string()
 #pragma warning(pop)
 #endif
 
-void glslang_decode_resource_limits(glslang_resource_t* resources, char* config)
+GLSLANG_EXPORT void glslang_decode_resource_limits(glslang_resource_t* resources, char* config)
 {
     glslang::DecodeResourceLimits(reinterpret_cast<TBuiltInResource*>(resources), config);
 }

@@ -57,6 +57,8 @@ target_include_directories(glslang-default-resource-limits
                            PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
                            PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>)
 
+glslang_only_export_explicit_symbols(glslang-default-resource-limits)
+
 set(SOURCES StandAlone.cpp DirStackFileIncluder.h  ${GLSLANG_INTRINSIC_H})
 
 add_executable(glslangValidator ${SOURCES})
