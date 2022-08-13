@@ -76,6 +76,7 @@ target_include_directories(SPIRV PUBLIC
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
 glslang_add_build_info_dependency(SPIRV)
+glslang_only_export_explicit_symbols(SPIRV)
 
 if (ENABLE_SPVREMAPPER)
     add_library(SPVRemapper ${LIB_TYPE} ${SPVREMAP_SOURCES} ${SPVREMAP_HEADERS})
