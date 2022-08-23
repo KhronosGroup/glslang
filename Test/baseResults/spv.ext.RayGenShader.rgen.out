@@ -10,6 +10,7 @@ spv.ext.RayGenShader.rgen
                               MemoryModel Logical GLSL450
                               EntryPoint RayGenerationKHR 4  "main" 11 21 29 40 53 54 57
                               Source GLSL 460
+                              SourceExtension  "GL_EXT_opacity_micromap"
                               SourceExtension  "GL_EXT_ray_flags_primitive_culling"
                               SourceExtension  "GL_EXT_ray_tracing"
                               Name 4  "main"
@@ -52,7 +53,7 @@ spv.ext.RayGenShader.rgen
               27:             TypeAccelerationStructureKHR
               28:             TypePointer UniformConstant 27
      29(accEXT0):     28(ptr) Variable UniformConstant
-              35:      6(int) Constant 768
+              35:      6(int) Constant 1792
               36:             TypeFloat 32
               37:             TypeVector 36(float) 3
        38(block):             TypeStruct 37(fvec3) 37(fvec3)
