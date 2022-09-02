@@ -934,6 +934,8 @@ enum TOperator {
     EOpExecuteCallableNV,
     EOpExecuteCallableKHR,
     EOpWritePackedPrimitiveIndices4x8NV,
+    EOpEmitMeshTasksEXT,
+    EOpSetMeshOutputsEXT,
 
     //
     // GL_EXT_ray_query operations
