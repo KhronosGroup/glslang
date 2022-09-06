@@ -407,3 +407,7 @@ if(ENABLE_GLSLANG_INSTALL)
             "${CMAKE_INSTALL_LIBDIR}/${PROJECT_NAME}"
     )
 endif()
+
+include(FeatureSummary)
+feature_summary(WHAT ALL)
+
