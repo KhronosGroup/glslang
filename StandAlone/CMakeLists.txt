@@ -85,7 +85,8 @@ target_include_directories(glslangValidator PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../External>
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/External>)
 
-if(ENABLE_OPT)
+if(ENABLE_OPT AND spirv-tools_SOURCE_DIR)
+    # use embedded spirv-tools sources
     target_include_directories(glslangValidator
         PRIVATE ${spirv-tools_SOURCE_DIR}/include
     )

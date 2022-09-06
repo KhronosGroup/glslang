@@ -96,7 +96,8 @@ if(BUILD_TESTING)
                                    ${gmock_SOURCE_DIR}/include
                                    ${gtest_SOURCE_DIR}/include)
 
-        if(ENABLE_OPT)
+        if(ENABLE_OPT AND spirv-tools_SOURCE_DIR)
+            # use embedded spirv-tools sources
             target_include_directories(glslangtests
                 PRIVATE ${spirv-tools_SOURCE_DIR}/include
             )

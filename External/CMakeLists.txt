@@ -68,7 +68,8 @@ if(BUILD_TESTING)
     endif()
 endif()
 
-if(ENABLE_OPT AND NOT TARGET SPIRV-Tools-opt)
+# check for embedded spirv-tools source
+if(ENABLE_OPT AND NOT SPIRV-Tools-opt_FOUND)
     if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/spirv-tools)
         set(SPIRV_SKIP_TESTS ON CACHE BOOL "Skip building SPIRV-Tools tests")
         add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/spirv-tools spirv-tools)
