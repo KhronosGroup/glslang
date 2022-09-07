@@ -2846,7 +2846,9 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
             }
             if (options.generateDebugInfo) {
                 const auto& loc = node->getLoc();
-                currentFunction->setDebugLineInfo(builder.getSourceFile(), loc.line, loc.column);
+                const char* sourceFileName = loc.getFilename();
+                spv::Id sourceFileId = sourceFileName ? builder.getStringId(sourceFileName) : builder.getSourceFile();
+                currentFunction->setDebugLineInfo(sourceFileId, loc.line, loc.column);
             }
         } else {
             if (inEntryPoint)
