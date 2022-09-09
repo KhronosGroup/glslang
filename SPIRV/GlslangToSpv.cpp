@@ -8559,6 +8559,8 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
         if(taskPayloadID)
             operands.push_back(taskPayloadID);
         builder.createNoResultOp(spv::OpEmitMeshTasksEXT, operands);
+        // Make it a terminating instruction in the current block
+        builder.createAndSetNoPredecessorBlock("post-OpEmitMeshTasksEXT");
         return 0;
     case glslang::EOpSetMeshOutputsEXT:
         builder.createNoResultOp(spv::OpSetMeshOutputsEXT, operands);
