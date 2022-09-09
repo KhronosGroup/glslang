@@ -80,6 +80,7 @@ using CompileVulkanToSpirvTestAMD = GlslangTest<::testing::TestWithParam<std::st
 using CompileVulkanToSpirvTestNV = GlslangTest<::testing::TestWithParam<std::string>>;
 using CompileVulkanToSpirv14TestNV = GlslangTest<::testing::TestWithParam<std::string>>;
 using CompileUpgradeTextureToSampledTextureAndDropSamplersTest = GlslangTest<::testing::TestWithParam<std::string>>;
+using CompileVulkanToNonSemanticShaderDebugInfoTest = GlslangTest<::testing::TestWithParam<std::string>>;
 
 // Compiling GLSL to SPIR-V under Vulkan semantics. Expected to successfully
 // generate SPIR-V.
@@ -227,6 +228,13 @@ TEST_P(CompileUpgradeTextureToSampledTextureAndDropSamplersTest, FromFile)
                                                                      Source::GLSL,
                                                                      Semantics::Vulkan,
                                                                      Target::Spv);
+}
+
+TEST_P(CompileVulkanToNonSemanticShaderDebugInfoTest, FromFile)
+{
+    loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam(),
+                            Source::GLSL, Semantics::Vulkan, glslang::EShTargetVulkan_1_0, glslang::EShTargetSpv_1_0,
+                            Target::Spv, true, "", "/baseResults/", false, false, true);
 }
 
 // clang-format off
@@ -823,10 +831,24 @@ INSTANTIATE_TEST_SUITE_P(
 })),
 FileNameAsCustomTestSuffix
 );
+
 INSTANTIATE_TEST_SUITE_P(
     Glsl, CompileUpgradeTextureToSampledTextureAndDropSamplersTest,
     ::testing::ValuesIn(std::vector<std::string>({
       "spv.texture.sampler.transform.frag",
+    })),
+    FileNameAsCustomTestSuffix
+);
+
+INSTANTIATE_TEST_SUITE_P(
+    Glsl, CompileVulkanToNonSemanticShaderDebugInfoTest,
+    ::testing::ValuesIn(std::vector<std::string>({
+        "spv.debuginfo.glsl.vert",
+        "spv.debuginfo.glsl.frag",
+        "spv.debuginfo.glsl.comp",
+        "spv.debuginfo.glsl.geom",
+        "spv.debuginfo.glsl.tesc",
+        "spv.debuginfo.glsl.tese"
     })),
     FileNameAsCustomTestSuffix
 );

@@ -151,7 +151,7 @@ extern int yylex(YYSTYPE*, TParseContext&);
 
 %parse-param {glslang::TParseContext* pParseContext}
 %lex-param {parseContext}
-%pure-parser  // enable thread safety
+%define api.pure  // enable thread safety
 %expect 1     // One shift reduce conflict because of if | else
 
 %token <lex> CONST BOOL INT UINT FLOAT
@@ -3743,7 +3743,7 @@ compound_statement
     }
       RIGHT_BRACE {
         if ($3 && $3->getAsAggregate())
-            $3->getAsAggregate()->setOperator(EOpSequence);
+            $3->getAsAggregate()->setOperator(parseContext.intermediate.getDebugInfo() ? EOpScope : EOpSequence);
         $$ = $3;
     }
     ;

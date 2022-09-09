@@ -133,6 +133,7 @@ template("glslang_sources_common") {
       "SPIRV/Logger.cpp",
       "SPIRV/Logger.h",
       "SPIRV/NonSemanticDebugPrintf.h",
+      "SPIRV/NonSemanticShaderDebugInfo100.h",
       "SPIRV/SPVRemapper.cpp",
       "SPIRV/SPVRemapper.h",
       "SPIRV/SpvBuilder.cpp",

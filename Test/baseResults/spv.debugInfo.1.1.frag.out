@@ -196,9 +196,11 @@ void main()
                               Store 97(i) 18
                               Branch 98
               98:             Label
+                              Line 1 46 0
                               LoopMerge 100 101 None
                               Branch 102
              102:             Label
+                              Line 1 46 0
              103:      7(int) Load 97(i)
              105:    37(bool) SLessThan 103 104
                               BranchConditional 105 99 100

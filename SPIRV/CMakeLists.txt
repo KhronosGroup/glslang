@@ -62,7 +62,8 @@ set(HEADERS
     disassemble.h
     GLSL.ext.AMD.h
     GLSL.ext.NV.h
-    NonSemanticDebugPrintf.h)
+    NonSemanticDebugPrintf.h
+    NonSemanticShaderDebugInfo100.h)
 
 set(SPVREMAP_HEADERS
     SPVRemapper.h
