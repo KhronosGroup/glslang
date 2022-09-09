@@ -8594,11 +8594,10 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
         builder.createNoResultOp(spv::OpWritePackedPrimitiveIndices4x8NV, operands);
         return 0;
     case glslang::EOpEmitMeshTasksEXT:
-        if(taskPayloadID)
+        if (taskPayloadID)
             operands.push_back(taskPayloadID);
-        builder.createNoResultOp(spv::OpEmitMeshTasksEXT, operands);
-        // Make it a terminating instruction in the current block
-        builder.createAndSetNoPredecessorBlock("post-OpEmitMeshTasksEXT");
+        // As per SPV_EXT_mesh_shader make it a terminating instruction in the current block
+        builder.makeStatementTerminator(spv::OpEmitMeshTasksEXT, operands, "post-OpEmitMeshTasksEXT");
         return 0;
     case glslang::EOpSetMeshOutputsEXT:
         builder.createNoResultOp(spv::OpSetMeshOutputsEXT, operands);
