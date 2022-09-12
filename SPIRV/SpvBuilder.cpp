@@ -2206,7 +2206,7 @@ void Builder::leaveFunction()
 
     // Clear function scope from debug scope stack
     if (emitNonSemanticShaderDebugInfo)
-        currentDebugScopeId.pop(); 
+        currentDebugScopeId.pop();
 
     emitNonSemanticShaderDebugInfo = restoreNonSemanticShaderDebugInfo;
 }
@@ -2215,6 +2215,16 @@ void Builder::leaveFunction()
 void Builder::makeStatementTerminator(spv::Op opcode, const char *name)
 {
     buildPoint->addInstruction(std::unique_ptr<Instruction>(new Instruction(opcode)));
+    createAndSetNoPredecessorBlock(name);
+}
+
+// Comments in header
+void Builder::makeStatementTerminator(spv::Op opcode, const std::vector<Id>& operands, const char* name)
+{
+    // It's assumed that the terminator instruction is always of void return type
+    // However in future if there is a need for non void return type, new helper
+    // methods can be created.
+    createNoResultOp(opcode, operands);
     createAndSetNoPredecessorBlock(name);
 }
 
@@ -2282,7 +2292,7 @@ spv::MemoryAccessMask Builder::sanitizeMemoryAccessForStorageClass(spv::MemoryAc
     case spv::StorageClassPhysicalStorageBufferEXT:
         break;
     default:
-        memoryAccess = spv::MemoryAccessMask(memoryAccess & 
+        memoryAccess = spv::MemoryAccessMask(memoryAccess &
                         ~(spv::MemoryAccessMakePointerAvailableKHRMask |
                           spv::MemoryAccessMakePointerVisibleKHRMask |
                           spv::MemoryAccessNonPrivatePointerKHRMask));
@@ -2767,7 +2777,7 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool sparse, 
         texArgs[numArgs++] = parameters.granularity;
     if (parameters.coarse != NoResult)
         texArgs[numArgs++] = parameters.coarse;
-#endif 
+#endif
 
     //
     // Set up the optional arguments
