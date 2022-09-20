@@ -638,18 +638,18 @@ void TIntermediate::mergeBlockDefinitions(TInfoSink& infoSink, TIntermSymbol* bl
     class TMergeBlockTraverser : public TIntermTraverser {
     public:
         TMergeBlockTraverser(const TIntermSymbol* newSym)
-            : newSymbol(newSym), unitType(nullptr), unit(nullptr), memberIndexUpdates(nullptr)
+            : newSymbol(newSym), newType(nullptr), unit(nullptr), memberIndexUpdates(nullptr)
         {
         }
         TMergeBlockTraverser(const TIntermSymbol* newSym, const glslang::TType* unitType, glslang::TIntermediate* unit,
                              const std::map<unsigned int, unsigned int>* memberIdxUpdates)
-            : TIntermTraverser(false, true), newSymbol(newSym), unitType(unitType), unit(unit), memberIndexUpdates(memberIdxUpdates)
+            : TIntermTraverser(false, true), newSymbol(newSym), newType(unitType), unit(unit), memberIndexUpdates(memberIdxUpdates)
         {
         }
         virtual ~TMergeBlockTraverser() {}
 
         const TIntermSymbol* newSymbol;
-        const glslang::TType* unitType; // copy of original type
+        const glslang::TType* newType; // shallow copy of the new type
         glslang::TIntermediate* unit;   // intermediate that is being updated
         const std::map<unsigned int, unsigned int>* memberIndexUpdates;
 
@@ -665,10 +665,10 @@ void TIntermediate::mergeBlockDefinitions(TInfoSink& infoSink, TIntermSymbol* bl
 
         virtual bool visitBinary(TVisit, glslang::TIntermBinary* node)
         {
-            if (!unit || !unitType || !memberIndexUpdates || memberIndexUpdates->empty())
+            if (!unit || !newType || !memberIndexUpdates || memberIndexUpdates->empty())
                 return true;
 
-            if (node->getOp() == EOpIndexDirectStruct && node->getLeft()->getType() == *unitType) {
+            if (node->getOp() == EOpIndexDirectStruct && node->getLeft()->getType() == *newType) {
                 // this is a dereference to a member of the block since the
                 // member list changed, need to update this to point to the
                 // right index
@@ -696,9 +696,9 @@ void TIntermediate::mergeBlockDefinitions(TInfoSink& infoSink, TIntermSymbol* bl
     // The 'unit' intermediate needs the block structures update, but also structure entry indices
     // may have changed from the old block to the new one that it was merged into, so update those
     // in 'visitBinary'
-    TType unitType;
-    unitType.shallowCopy(unitBlock->getType());
-    TMergeBlockTraverser unitFinalLinkTraverser(block, &unitType, unit, &memberIndexUpdates);
+    TType newType;
+    newType.shallowCopy(block->getType());
+    TMergeBlockTraverser unitFinalLinkTraverser(block, &newType, unit, &memberIndexUpdates);
     unit->getTreeRoot()->traverse(&unitFinalLinkTraverser);
 
     // update the member list
