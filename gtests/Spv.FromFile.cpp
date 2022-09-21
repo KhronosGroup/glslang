@@ -480,6 +480,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.storageBuffer.vert",
         "spv.terminate.frag",
         "spv.subgroupUniformControlFlow.vert",
+        "spv.subgroupSizeARB.frag",
         "spv.precise.tese",
         "spv.precise.tesc",
         "spv.viewportindex.tese",
