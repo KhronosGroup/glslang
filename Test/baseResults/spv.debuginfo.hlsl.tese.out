@@ -29,7 +29,7 @@ Validation failed
               97:             String  "patch"
              103:             String  "output"
              113:             String  "uv1"
-             116:             String  "int"
+             117:             String  "int"
              131:             String  "uv2"
              151:             String  "n1"
              162:             String  "n2"
@@ -220,22 +220,22 @@ Validation failed
              100:             TypePointer Function 62(DSOutput)
              104:     10(int) Constant 70
              102:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(Pow) 103 76 26 104 15 85 17
-             105:    7(float) Constant 0
-             106:   42(fvec4) ConstantComposite 105 105 105 105
-             107:   44(fvec3) ConstantComposite 105 105 105
-             108:   39(fvec2) ConstantComposite 105 105
-             109:62(DSOutput) ConstantComposite 106 107 108 107 107 107 107
+             106:    7(float) Constant 0
+             107:   42(fvec4) ConstantComposite 106 106 106 106
+             108:   44(fvec3) ConstantComposite 106 106 106
+             109:   39(fvec2) ConstantComposite 106 106
+             110:62(DSOutput) ConstantComposite 107 108 109 108 108 108 108
              114:     10(int) Constant 71
              112:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(Pow) 113 40 26 114 15 85 17
-             115:             TypeInt 32 1
-             117:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 2(RoundEven) 116 13 17 15
-             118:    115(int) Constant 0
-             119:    115(int) Constant 2
-             121:    115(int) Constant 1
-             123:             TypePointer Function 7(float)
+             116:             TypeInt 32 1
+             118:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 2(RoundEven) 117 13 17 15
+             119:    116(int) Constant 0
+             120:    116(int) Constant 2
+             122:    116(int) Constant 1
+             124:             TypePointer Function 7(float)
              132:     10(int) Constant 72
              130:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(Pow) 131 40 26 132 15 85 17
-             133:    115(int) Constant 3
+             134:    116(int) Constant 3
              148:             TypePointer Function 44(fvec3)
              152:     10(int) Constant 75
              150:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(Pow) 151 45 26 152 15 85 17
@@ -292,12 +292,12 @@ Validation failed
              275:             TypePointer Uniform 271(ubo)
              276:    275(ptr) Variable Uniform
              277:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 18(Atan) 27 274 26 215 15 36 27 276 222
-             278:    115(int) Constant 4
+             278:    116(int) Constant 4
              279:             TypePointer Uniform 7(float)
              288:             TypePointer Uniform 242
              300:             TypePointer Uniform 42(fvec4)
-             309:    115(int) Constant 6
-             313:    115(int) Constant 5
+             309:    116(int) Constant 6
+             313:    116(int) Constant 5
              324:             TypePointer Input 18
 325(input.TessLevelOuter):    324(ptr) Variable Input
              326:             TypePointer Input 7(float)
@@ -335,82 +335,82 @@ Validation failed
 403(flattenTemp):    100(ptr) Variable Function
       405(param):     38(ptr) Variable Function
       407(param):     41(ptr) Variable Function
-             327:    326(ptr) AccessChain 325(input.TessLevelOuter) 118
+             327:    326(ptr) AccessChain 325(input.TessLevelOuter) 119
              328:    7(float) Load 327
-             329:    123(ptr) AccessChain 323(input) 118 118
+             329:    124(ptr) AccessChain 323(input) 119 119
                               Store 329 328
-             330:    326(ptr) AccessChain 325(input.TessLevelOuter) 121
+             330:    326(ptr) AccessChain 325(input.TessLevelOuter) 122
              331:    7(float) Load 330
-             332:    123(ptr) AccessChain 323(input) 118 121
+             332:    124(ptr) AccessChain 323(input) 119 122
                               Store 332 331
-             333:    326(ptr) AccessChain 325(input.TessLevelOuter) 119
+             333:    326(ptr) AccessChain 325(input.TessLevelOuter) 120
              334:    7(float) Load 333
-             335:    123(ptr) AccessChain 323(input) 118 119
+             335:    124(ptr) AccessChain 323(input) 119 120
                               Store 335 334
-             336:    326(ptr) AccessChain 325(input.TessLevelOuter) 133
+             336:    326(ptr) AccessChain 325(input.TessLevelOuter) 134
              337:    7(float) Load 336
-             338:    123(ptr) AccessChain 323(input) 118 133
+             338:    124(ptr) AccessChain 323(input) 119 134
                               Store 338 337
-             341:    326(ptr) AccessChain 340(input.TessLevelInner) 118
+             341:    326(ptr) AccessChain 340(input.TessLevelInner) 119
              342:    7(float) Load 341
-             343:    123(ptr) AccessChain 323(input) 121 118
+             343:    124(ptr) AccessChain 323(input) 122 119
                               Store 343 342
-             344:    326(ptr) AccessChain 340(input.TessLevelInner) 121
+             344:    326(ptr) AccessChain 340(input.TessLevelInner) 122
              345:    7(float) Load 344
-             346:    123(ptr) AccessChain 323(input) 121 121
+             346:    124(ptr) AccessChain 323(input) 122 122
                               Store 346 345
              350:   44(fvec3) Load 349(TessCoord)
              351:    7(float) CompositeExtract 350 0
              352:    7(float) CompositeExtract 350 1
              353:   39(fvec2) CompositeConstruct 351 352
                               Store 347(TessCoord) 353
-             360:    359(ptr) AccessChain 358(patch.Pos) 118
+             360:    359(ptr) AccessChain 358(patch.Pos) 119
              361:   42(fvec4) Load 360
-             362:    178(ptr) AccessChain 355(patch) 118 118
+             362:    178(ptr) AccessChain 355(patch) 119 119
                               Store 362 361
-             366:    348(ptr) AccessChain 365(patch.Normal) 118
+             366:    348(ptr) AccessChain 365(patch.Normal) 119
              367:   44(fvec3) Load 366
-             368:    148(ptr) AccessChain 355(patch) 118 121
+             368:    148(ptr) AccessChain 355(patch) 119 122
                               Store 368 367
-             373:    372(ptr) AccessChain 371(patch.UV) 118
+             373:    372(ptr) AccessChain 371(patch.UV) 119
              374:   39(fvec2) Load 373
-             375:     41(ptr) AccessChain 355(patch) 118 119
+             375:     41(ptr) AccessChain 355(patch) 119 120
                               Store 375 374
-             376:    359(ptr) AccessChain 358(patch.Pos) 121
+             376:    359(ptr) AccessChain 358(patch.Pos) 122
              377:   42(fvec4) Load 376
-             378:    178(ptr) AccessChain 355(patch) 121 118
+             378:    178(ptr) AccessChain 355(patch) 122 119
                               Store 378 377
-             379:    348(ptr) AccessChain 365(patch.Normal) 121
+             379:    348(ptr) AccessChain 365(patch.Normal) 122
              380:   44(fvec3) Load 379
-             381:    148(ptr) AccessChain 355(patch) 121 121
+             381:    148(ptr) AccessChain 355(patch) 122 122
                               Store 381 380
-             382:    372(ptr) AccessChain 371(patch.UV) 121
+             382:    372(ptr) AccessChain 371(patch.UV) 122
              383:   39(fvec2) Load 382
-             384:     41(ptr) AccessChain 355(patch) 121 119
+             384:     41(ptr) AccessChain 355(patch) 122 120
                               Store 384 383
-             385:    359(ptr) AccessChain 358(patch.Pos) 119
+             385:    359(ptr) AccessChain 358(patch.Pos) 120
              386:   42(fvec4) Load 385
-             387:    178(ptr) AccessChain 355(patch) 119 118
+             387:    178(ptr) AccessChain 355(patch) 120 119
                               Store 387 386
-             388:    348(ptr) AccessChain 365(patch.Normal) 119
+             388:    348(ptr) AccessChain 365(patch.Normal) 120
              389:   44(fvec3) Load 388
-             390:    148(ptr) AccessChain 355(patch) 119 121
+             390:    148(ptr) AccessChain 355(patch) 120 122
                               Store 390 389
-             391:    372(ptr) AccessChain 371(patch.UV) 119
+             391:    372(ptr) AccessChain 371(patch.UV) 120
              392:   39(fvec2) Load 391
-             393:     41(ptr) AccessChain 355(patch) 119 119
+             393:     41(ptr) AccessChain 355(patch) 120 120
                               Store 393 392
-             394:    359(ptr) AccessChain 358(patch.Pos) 133
+             394:    359(ptr) AccessChain 358(patch.Pos) 134
              395:   42(fvec4) Load 394
-             396:    178(ptr) AccessChain 355(patch) 133 118
+             396:    178(ptr) AccessChain 355(patch) 134 119
                               Store 396 395
-             397:    348(ptr) AccessChain 365(patch.Normal) 133
+             397:    348(ptr) AccessChain 365(patch.Normal) 134
              398:   44(fvec3) Load 397
-             399:    148(ptr) AccessChain 355(patch) 133 121
+             399:    148(ptr) AccessChain 355(patch) 134 122
                               Store 399 398
-             400:    372(ptr) AccessChain 371(patch.UV) 133
+             400:    372(ptr) AccessChain 371(patch.UV) 134
              401:   39(fvec2) Load 400
-             402:     41(ptr) AccessChain 355(patch) 133 119
+             402:     41(ptr) AccessChain 355(patch) 134 120
                               Store 402 401
              404:          60 Load 355(patch)
              406:23(ConstantsHSOutput) Load 323(input)
@@ -419,16 +419,16 @@ Validation failed
                               Store 407(param) 408
              409:62(DSOutput) FunctionCall 83(@main(struct-ConstantsHSOutput-f1[4]-f1[2]1;vf2;struct-HSOutput-vf4-vf3-vf21[4];) 405(param) 407(param) 404
                               Store 403(flattenTemp) 409
-             412:    178(ptr) AccessChain 403(flattenTemp) 118
+             412:    178(ptr) AccessChain 403(flattenTemp) 119
              413:   42(fvec4) Load 412
                               Store 411(@entryPointOutput.Pos) 413
-             416:    148(ptr) AccessChain 403(flattenTemp) 121
+             416:    148(ptr) AccessChain 403(flattenTemp) 122
              417:   44(fvec3) Load 416
                               Store 415(@entryPointOutput.Normal) 417
-             420:     41(ptr) AccessChain 403(flattenTemp) 119
+             420:     41(ptr) AccessChain 403(flattenTemp) 120
              421:   39(fvec2) Load 420
                               Store 419(@entryPointOutput.UV) 421
-             423:    148(ptr) AccessChain 403(flattenTemp) 133
+             423:    148(ptr) AccessChain 403(flattenTemp) 134
              424:   44(fvec3) Load 423
                               Store 422(@entryPointOutput.ViewVec) 424
              426:    148(ptr) AccessChain 403(flattenTemp) 278
@@ -461,113 +461,113 @@ Validation failed
               95:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(Log) 93 81(TessCoord) 92
               98:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(Log) 96 82(patch) 92
               99:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 101 85 83(@main(struct-ConstantsHSOutput-f1[4]-f1[2]1;vf2;struct-HSOutput-vf4-vf3-vf21[4];)
-                              Store 101(output) 109
-             110:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 29(Exp2) 102 109 92
-             120:   39(fvec2) CompositeExtract 82(patch) 0 2
-             122:   39(fvec2) CompositeExtract 82(patch) 1 2
-             124:    123(ptr) AccessChain 81(TessCoord) 15
-             125:    7(float) Load 124
-             126:   39(fvec2) CompositeConstruct 125 125
-             127:   39(fvec2) ExtInst 2(GLSL.std.450) 46(FMix) 120 122 126
-                              Store 111(uv1) 127
-             128:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 29(Exp2) 112 127 92
-             134:   39(fvec2) CompositeExtract 82(patch) 3 2
-             135:   39(fvec2) CompositeExtract 82(patch) 2 2
-             136:    123(ptr) AccessChain 81(TessCoord) 15
-             137:    7(float) Load 136
-             138:   39(fvec2) CompositeConstruct 137 137
-             139:   39(fvec2) ExtInst 2(GLSL.std.450) 46(FMix) 134 135 138
-                              Store 129(uv2) 139
-             140:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 29(Exp2) 130 139 92
+             105:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(Log) 102 101(output) 92
+                              Store 101(output) 110
+             115:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(Log) 112 111(uv1) 92
+             121:   39(fvec2) CompositeExtract 82(patch) 0 2
+             123:   39(fvec2) CompositeExtract 82(patch) 1 2
+             125:    124(ptr) AccessChain 81(TessCoord) 15
+             126:    7(float) Load 125
+             127:   39(fvec2) CompositeConstruct 126 126
+             128:   39(fvec2) ExtInst 2(GLSL.std.450) 46(FMix) 121 123 127
+                              Store 111(uv1) 128
+             133:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(Log) 130 129(uv2) 92
+             135:   39(fvec2) CompositeExtract 82(patch) 3 2
+             136:   39(fvec2) CompositeExtract 82(patch) 2 2
+             137:    124(ptr) AccessChain 81(TessCoord) 15
+             138:    7(float) Load 137
+             139:   39(fvec2) CompositeConstruct 138 138
+             140:   39(fvec2) ExtInst 2(GLSL.std.450) 46(FMix) 135 136 139
+                              Store 129(uv2) 140
              141:   39(fvec2) Load 111(uv1)
              142:   39(fvec2) Load 129(uv2)
-             143:    123(ptr) AccessChain 81(TessCoord) 35
+             143:    124(ptr) AccessChain 81(TessCoord) 35
              144:    7(float) Load 143
              145:   39(fvec2) CompositeConstruct 144 144
              146:   39(fvec2) ExtInst 2(GLSL.std.450) 46(FMix) 141 142 145
-             147:     41(ptr) AccessChain 101(output) 119
+             147:     41(ptr) AccessChain 101(output) 120
                               Store 147 146
-             153:   44(fvec3) CompositeExtract 82(patch) 0 1
-             154:   44(fvec3) CompositeExtract 82(patch) 1 1
-             155:    123(ptr) AccessChain 81(TessCoord) 15
-             156:    7(float) Load 155
-             157:   44(fvec3) CompositeConstruct 156 156 156
-             158:   44(fvec3) ExtInst 2(GLSL.std.450) 46(FMix) 153 154 157
-                              Store 149(n1) 158
-             159:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 29(Exp2) 150 158 92
-             164:   44(fvec3) CompositeExtract 82(patch) 3 1
-             165:   44(fvec3) CompositeExtract 82(patch) 2 1
-             166:    123(ptr) AccessChain 81(TessCoord) 15
-             167:    7(float) Load 166
-             168:   44(fvec3) CompositeConstruct 167 167 167
-             169:   44(fvec3) ExtInst 2(GLSL.std.450) 46(FMix) 164 165 168
-                              Store 160(n2) 169
-             170:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 29(Exp2) 161 169 92
+             153:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(Log) 150 149(n1) 92
+             154:   44(fvec3) CompositeExtract 82(patch) 0 1
+             155:   44(fvec3) CompositeExtract 82(patch) 1 1
+             156:    124(ptr) AccessChain 81(TessCoord) 15
+             157:    7(float) Load 156
+             158:   44(fvec3) CompositeConstruct 157 157 157
+             159:   44(fvec3) ExtInst 2(GLSL.std.450) 46(FMix) 154 155 158
+                              Store 149(n1) 159
+             164:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(Log) 161 160(n2) 92
+             165:   44(fvec3) CompositeExtract 82(patch) 3 1
+             166:   44(fvec3) CompositeExtract 82(patch) 2 1
+             167:    124(ptr) AccessChain 81(TessCoord) 15
+             168:    7(float) Load 167
+             169:   44(fvec3) CompositeConstruct 168 168 168
+             170:   44(fvec3) ExtInst 2(GLSL.std.450) 46(FMix) 165 166 169
+                              Store 160(n2) 170
              171:   44(fvec3) Load 149(n1)
              172:   44(fvec3) Load 160(n2)
-             173:    123(ptr) AccessChain 81(TessCoord) 35
+             173:    124(ptr) AccessChain 81(TessCoord) 35
              174:    7(float) Load 173
              175:   44(fvec3) CompositeConstruct 174 174 174
              176:   44(fvec3) ExtInst 2(GLSL.std.450) 46(FMix) 171 172 175
-             177:    148(ptr) AccessChain 101(output) 121
+             177:    148(ptr) AccessChain 101(output) 122
                               Store 177 176
-             183:   42(fvec4) CompositeExtract 82(patch) 0 0
-             184:   42(fvec4) CompositeExtract 82(patch) 1 0
-             185:    123(ptr) AccessChain 81(TessCoord) 15
-             186:    7(float) Load 185
-             187:   42(fvec4) CompositeConstruct 186 186 186 186
-             188:   42(fvec4) ExtInst 2(GLSL.std.450) 46(FMix) 183 184 187
-                              Store 179(pos1) 188
-             189:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 29(Exp2) 180 188 92
-             194:   42(fvec4) CompositeExtract 82(patch) 3 0
-             195:   42(fvec4) CompositeExtract 82(patch) 2 0
-             196:    123(ptr) AccessChain 81(TessCoord) 15
-             197:    7(float) Load 196
-             198:   42(fvec4) CompositeConstruct 197 197 197 197
-             199:   42(fvec4) ExtInst 2(GLSL.std.450) 46(FMix) 194 195 198
-                              Store 190(pos2) 199
-             200:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 29(Exp2) 191 199 92
-             205:   42(fvec4) Load 179(pos1)
-             206:   42(fvec4) Load 190(pos2)
-             207:    123(ptr) AccessChain 81(TessCoord) 35
-             208:    7(float) Load 207
-             209:   42(fvec4) CompositeConstruct 208 208 208 208
-             210:   42(fvec4) ExtInst 2(GLSL.std.450) 46(FMix) 205 206 209
-                              Store 201(pos) 210
-             211:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 29(Exp2) 202 210 92
+             183:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(Log) 180 179(pos1) 92
+             184:   42(fvec4) CompositeExtract 82(patch) 0 0
+             185:   42(fvec4) CompositeExtract 82(patch) 1 0
+             186:    124(ptr) AccessChain 81(TessCoord) 15
+             187:    7(float) Load 186
+             188:   42(fvec4) CompositeConstruct 187 187 187 187
+             189:   42(fvec4) ExtInst 2(GLSL.std.450) 46(FMix) 184 185 188
+                              Store 179(pos1) 189
+             194:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(Log) 191 190(pos2) 92
+             195:   42(fvec4) CompositeExtract 82(patch) 3 0
+             196:   42(fvec4) CompositeExtract 82(patch) 2 0
+             197:    124(ptr) AccessChain 81(TessCoord) 15
+             198:    7(float) Load 197
+             199:   42(fvec4) CompositeConstruct 198 198 198 198
+             200:   42(fvec4) ExtInst 2(GLSL.std.450) 46(FMix) 195 196 199
+                              Store 190(pos2) 200
+             205:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(Log) 202 201(pos) 92
+             206:   42(fvec4) Load 179(pos1)
+             207:   42(fvec4) Load 190(pos2)
+             208:    124(ptr) AccessChain 81(TessCoord) 35
+             209:    7(float) Load 208
+             210:   42(fvec4) CompositeConstruct 209 209 209 209
+             211:   42(fvec4) ExtInst 2(GLSL.std.450) 46(FMix) 206 207 210
+                              Store 201(pos) 211
              223:         212 Load 219(displacementMapTexture)
              232:         224 Load 229(displacementMapSampler)
              237:         233 SampledImage 223 232
-             238:     41(ptr) AccessChain 101(output) 119
+             238:     41(ptr) AccessChain 101(output) 120
              239:   39(fvec2) Load 238
-             240:   42(fvec4) ImageSampleExplicitLod 237 239 Lod 105
+             240:   42(fvec4) ImageSampleExplicitLod 237 239 Lod 106
              241:    7(float) CompositeExtract 240 0
-             280:    279(ptr) AccessChain 276 118 278
+             280:    279(ptr) AccessChain 276 119 278
              281:    7(float) Load 280
              282:    7(float) FMul 241 281
-             283:    123(ptr) AccessChain 201(pos) 35
+             283:    124(ptr) AccessChain 201(pos) 35
              284:    7(float) Load 283
              285:    7(float) FSub 284 282
-             286:    123(ptr) AccessChain 201(pos) 35
+             286:    124(ptr) AccessChain 201(pos) 35
                               Store 286 285
              287:   42(fvec4) Load 201(pos)
-             289:    288(ptr) AccessChain 276 118 121
+             289:    288(ptr) AccessChain 276 119 122
              290:         242 Load 289
              291:   42(fvec4) VectorTimesMatrix 287 290
-             292:    288(ptr) AccessChain 276 118 118
+             292:    288(ptr) AccessChain 276 119 119
              293:         242 Load 292
              294:   42(fvec4) VectorTimesMatrix 291 293
-             295:    178(ptr) AccessChain 101(output) 118
+             295:    178(ptr) AccessChain 101(output) 119
                               Store 295 294
              296:   42(fvec4) Load 201(pos)
              297:   44(fvec3) VectorShuffle 296 296 0 1 2
              298:   44(fvec3) FNegate 297
-             299:    148(ptr) AccessChain 101(output) 133
+             299:    148(ptr) AccessChain 101(output) 134
                               Store 299 298
-             301:    300(ptr) AccessChain 276 118 119
+             301:    300(ptr) AccessChain 276 119 120
              302:   42(fvec4) Load 301
              303:   44(fvec3) VectorShuffle 302 302 0 1 2
-             304:    148(ptr) AccessChain 101(output) 133
+             304:    148(ptr) AccessChain 101(output) 134
              305:   44(fvec3) Load 304
              306:   44(fvec3) FAdd 303 305
              307:   44(fvec3) ExtInst 2(GLSL.std.450) 69(Normalize) 306
@@ -578,7 +578,7 @@ Validation failed
              312:    148(ptr) AccessChain 101(output) 309
                               Store 312 311
              314:   42(fvec4) Load 201(pos)
-             315:    288(ptr) AccessChain 276 118 121
+             315:    288(ptr) AccessChain 276 119 122
              316:         242 Load 315
              317:   42(fvec4) VectorTimesMatrix 314 316
              318:   44(fvec3) VectorShuffle 317 317 0 1 2
