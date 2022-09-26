@@ -875,7 +875,7 @@ public:
         case EShLangTessEvaluation:
             return ! patch && isPipeInput();
         case EShLangFragment:
-            return pervertexNV && isPipeInput();
+            return (pervertexNV || pervertexEXT) && isPipeInput();
         case EShLangMesh:
             return ! perTaskNV && isPipeOutput();
 
