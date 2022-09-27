@@ -863,6 +863,9 @@ public:
     bool isAnyCallable() const {
         return storage == EvqCallableData || storage == EvqCallableDataIn;
     }
+    bool isHitObjectAttrNV() const {
+        return storage == EvqHitObjectAttrNV;
+    }
 
     // True if this type of IO is supposed to be arrayed with extra level for per-vertex data
     bool isArrayedIo(EShLanguage language) const
@@ -898,6 +901,7 @@ public:
         // -2048 as the default value indicating layoutSecondaryViewportRelative is not set
         layoutSecondaryViewportRelativeOffset = -2048;
         layoutShaderRecord = false;
+        layoutHitObjectShaderRecordNV = false;
         layoutBufferReferenceAlign = layoutBufferReferenceAlignEnd;
         layoutFormat = ElfNone;
 #endif
@@ -997,6 +1001,7 @@ public:
     bool layoutViewportRelative;
     int layoutSecondaryViewportRelativeOffset;
     bool layoutShaderRecord;
+    bool layoutHitObjectShaderRecordNV;
 
     // GL_EXT_spirv_intrinsics
     int spirvStorageClass;
@@ -1123,6 +1128,7 @@ public:
     TLayoutFormat getFormat() const { return layoutFormat; }
     bool isPushConstant() const { return layoutPushConstant; }
     bool isShaderRecord() const { return layoutShaderRecord; }
+    bool hasHitObjectShaderRecordNV() const { return layoutHitObjectShaderRecordNV; }
     bool hasBufferReference() const { return layoutBufferReference; }
     bool hasBufferReferenceAlign() const
     {
@@ -1889,7 +1895,8 @@ public:
     }
     virtual bool isOpaque() const { return basicType == EbtSampler
 #ifndef GLSLANG_WEB
-            || basicType == EbtAtomicUint || basicType == EbtAccStruct || basicType == EbtRayQuery
+            || basicType == EbtAtomicUint || basicType == EbtAccStruct || basicType == EbtRayQuery 
+            || basicType == EbtHitObjectNV
 #endif
         ; }
     virtual bool isBuiltIn() const { return getQualifier().builtIn != EbvNone; }
@@ -2285,6 +2292,8 @@ public:
               }
               if (qualifier.layoutShaderRecord)
                 appendStr(" shaderRecordNV");
+              if (qualifier.layoutHitObjectShaderRecordNV)
+                appendStr(" hitobjectshaderrecordnv");
 
               appendStr(")");
             }
