@@ -201,26 +201,28 @@ endif()
 ################################################################################
 if(ENABLE_GLSLANG_INSTALL)
     install(TARGETS glslang EXPORT glslang-targets)
-    install(TARGETS MachineIndependent EXPORT glslang-targets)
-    install(TARGETS GenericCodeGen EXPORT glslang-targets)
+    if(NOT BUILD_SHARED_LIBS)
+        install(TARGETS MachineIndependent EXPORT glslang-targets)
+        install(TARGETS GenericCodeGen EXPORT glslang-targets)
 
-    # Backward compatibility
-    file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/glslangTargets.cmake" "
-        message(WARNING \"Using `glslangTargets.cmake` is deprecated: use `find_package(glslang)` to find glslang CMake targets.\")
+        # Backward compatibility
+        file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/glslangTargets.cmake" "
+            message(WARNING \"Using `glslangTargets.cmake` is deprecated: use `find_package(glslang)` to find glslang CMake targets.\")
 
-        if (NOT TARGET glslang::glslang)
-            include(\"\${CMAKE_CURRENT_LIST_DIR}/../../${CMAKE_INSTALL_LIBDIR}/${PROJECT_NAME}/glslang-targets.cmake\")
-        endif()
+            if (NOT TARGET glslang::glslang)
+                include(\"\${CMAKE_CURRENT_LIST_DIR}/../../${CMAKE_INSTALL_LIBDIR}/${PROJECT_NAME}/glslang-targets.cmake\")
+            endif()
 
-        if(${BUILD_SHARED_LIBS})
-            add_library(glslang ALIAS glslang::glslang)
-        else()
-            add_library(glslang ALIAS glslang::glslang)
-            add_library(MachineIndependent ALIAS glslang::MachineIndependent)
-            add_library(GenericCodeGen ALIAS glslang::GenericCodeGen)
-        endif()
-    ")
-    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/glslangTargets.cmake" DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake)
+            if(${BUILD_SHARED_LIBS})
+                add_library(glslang ALIAS glslang::glslang)
+            else()
+                add_library(glslang ALIAS glslang::glslang)
+                add_library(MachineIndependent ALIAS glslang::MachineIndependent)
+                add_library(GenericCodeGen ALIAS glslang::GenericCodeGen)
+            endif()
+        ")
+        install(FILES "${CMAKE_CURRENT_BINARY_DIR}/glslangTargets.cmake" DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake)
+    endif()
 
     set(ALL_HEADERS
         ${GLSLANG_HEADERS}

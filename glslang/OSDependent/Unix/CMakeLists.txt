@@ -52,7 +52,7 @@ else()
     target_link_libraries(OSDependent Threads::Threads)
 endif()
 
-if(ENABLE_GLSLANG_INSTALL)
+if(ENABLE_GLSLANG_INSTALL AND NOT BUILD_SHARED_LIBS)
     install(TARGETS OSDependent EXPORT glslang-targets)
 
     # Backward compatibility
