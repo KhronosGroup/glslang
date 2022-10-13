@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## 11.12.0 2022-10-12
+
+### Other changes
+* Update generator version
+* Add support for GL_EXT_mesh_shader
+* Add support for NonSemantic.Shader.DebugInfo.100
+* Make OpEmitMeshTasksEXT a terminal instruction
+* Make gl_SubGroupARB a flat in int in Vulkan
+* Add support for GL_EXT_opacity_micromap
+* Add preamble support to C interface
+
 ## 11.11.0 2022-08-11
 
 ### Other changes
