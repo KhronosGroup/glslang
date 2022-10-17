@@ -4741,6 +4741,16 @@ spv::Id TGlslangToSpvTraverser::accessChainLoad(const glslang::TType& type)
     spv::Builder::AccessChain::CoherentFlags coherentFlags = builder.getAccessChain().coherentFlags;
     coherentFlags |= TranslateCoherent(type);
 
+    spv::MemoryAccessMask accessMask = spv::MemoryAccessMask(TranslateMemoryAccess(coherentFlags) & ~spv::MemoryAccessMakePointerAvailableKHRMask);
+    // If the value being loaded is HelperInvocation, SPIR-V 1.6 is being generated (so that
+    // SPV_EXT_demote_to_helper_invocation is in core) and the memory model is in use, add
+    // the Volatile MemoryAccess semantic.
+    if (type.getQualifier().builtIn == glslang::EbvHelperInvocation &&
+        glslangIntermediate->usingVulkanMemoryModel() &&
+        glslangIntermediate->getSpv().spv >= glslang::EShTargetSpv_1_6) {
+        accessMask = spv::MemoryAccessMask(accessMask | spv::MemoryAccessVolatileMask);
+    }
+
     unsigned int alignment = builder.getAccessChain().alignment;
     alignment |= type.getBufferReferenceAlignment();
 
@@ -4748,7 +4758,7 @@ spv::Id TGlslangToSpvTraverser::accessChainLoad(const glslang::TType& type)
         TranslateNonUniformDecoration(builder.getAccessChain().coherentFlags),
         TranslateNonUniformDecoration(type.getQualifier()),
         nominalTypeId,
-        spv::MemoryAccessMask(TranslateMemoryAccess(coherentFlags) & ~spv::MemoryAccessMakePointerAvailableKHRMask),
+        accessMask,
         TranslateMemoryScope(coherentFlags),
         alignment);
 
@@ -8968,6 +8978,7 @@ spv::Id TGlslangToSpvTraverser::getSymbolId(const glslang::TIntermSymbol* symbol
 
     // Add volatile decoration to HelperInvocation for spirv1.6 and beyond
     if (builtIn == spv::BuiltInHelperInvocation &&
+        !glslangIntermediate->usingVulkanMemoryModel() &&
         glslangIntermediate->getSpv().spv >= glslang::EShTargetSpv_1_6) {
         builder.addDecoration(id, spv::DecorationVolatile);
     }
