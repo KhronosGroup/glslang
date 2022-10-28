@@ -149,6 +149,8 @@ set(GLSLANG_SOURCES
 
 set(GLSLANG_HEADERS
     Public/ShaderLang.h
+    Public/ResourceLimits.h
+    Public/resource_limits_c.h
     Include/arrays.h
     Include/BaseTypes.h
     Include/Common.h

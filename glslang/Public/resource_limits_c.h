@@ -35,6 +35,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 extern "C" {
 #endif
 
+// Returns a struct that can be use to create custom resource values.
+glslang_resource_t* glslang_resource(void);
+
 // These are the default resources for TBuiltInResources, used for both
 //  - parsing this string for the case where the user didn't supply one,
 //  - dumping out a template for user construction of a config file.
