@@ -176,7 +176,7 @@ protected:
     //  - atom -> string
     void addAtomFixed(const char* s, int atom)
     {
-        auto it = atomMap.insert(std::pair<TString, int>(s, atom)).first;
+        auto it = atomMap.emplace(s, atom).first;
         if (stringMap.size() < (size_t)atom + 1)
             stringMap.resize(atom + 100, &badToken);
         stringMap[atom] = &it->first;

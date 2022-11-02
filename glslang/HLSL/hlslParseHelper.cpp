@@ -1177,9 +1177,9 @@ void HlslParseContext::flatten(const TVariable& variable, bool linkage, bool arr
     if (type.isBuiltIn() && !type.isStruct())
         return;
 
-    auto entry = flattenMap.insert(std::make_pair(variable.getUniqueId(),
+    auto entry = flattenMap.emplace(variable.getUniqueId(),
                                                   TFlattenData(type.getQualifier().layoutBinding,
-                                                               type.getQualifier().layoutLocation)));
+                                                               type.getQualifier().layoutLocation));
 
     // if flattening arrayed io struct, array each member of dereferenced type
     if (arrayed) {

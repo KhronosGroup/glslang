@@ -348,7 +348,7 @@ bool TSymbolDefinitionCollectingTraverser::visitUnary(glslang::TVisit /* visit *
         // Gets the symbol ID from the object's access chain.
         ObjectAccessChain id_symbol = getFrontElement(current_object_);
         // Add a mapping from the symbol ID to this assignment operation node.
-        symbol_definition_mapping_.insert(std::make_pair(id_symbol, node));
+        symbol_definition_mapping_.emplace(id_symbol, node);
     }
     // A unary node is not a dereference node, so we clear the access chain which
     // is under construction.
@@ -382,7 +382,7 @@ bool TSymbolDefinitionCollectingTraverser::visitBinary(glslang::TVisit /* visit 
         // first element recorded in the access chain.
         ObjectAccessChain id_symbol = getFrontElement(current_object_);
         // Adds a mapping from the symbol ID to this assignment operation node.
-        symbol_definition_mapping_.insert(std::make_pair(id_symbol, node));
+        symbol_definition_mapping_.emplace(id_symbol, node);
 
         // Traverses the right node, there may be other 'assignment'
         // operations in the right.

@@ -4504,7 +4504,7 @@ spv::Id TGlslangToSpvTraverser::convertGlslangStructToSpvType(const glslang::TTy
             // Make forward pointers for any pointer members.
             if (glslangMember.type->isReference() &&
                 forwardPointers.find(glslangMember.type->getReferentType()) == forwardPointers.end()) {
-                deferredForwardPointers.push_back(std::make_pair(glslangMember.type, memberQualifier));
+                deferredForwardPointers.emplace_back(glslangMember.type, memberQualifier);
             }
 
             // Create the member type.
@@ -5236,7 +5236,7 @@ void TGlslangToSpvTraverser::collectRayTracingLinkerObjects()
                     set = -1;
                 }
                 if (set != -1)
-                    locationToSymbol[set].insert(std::make_pair(location, objNode));
+                    locationToSymbol[set].emplace(location, objNode);
             }
         }
     }

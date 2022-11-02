@@ -415,7 +415,7 @@ public:
     ~TSymbolTableLevel();
 
     bool insert(const TString& name, TSymbol* symbol) {
-        return level.insert(tLevelPair(name, symbol)).second;
+        return level.emplace(name, symbol).second;
     }
 
     bool insert(TSymbol& symbol, bool separateNameSpaces, const TString& forcedKeyName = TString())
@@ -425,7 +425,7 @@ public:
         //
         const TString& name = symbol.getName();
         if (forcedKeyName.length()) {
-            return level.insert(tLevelPair(forcedKeyName, &symbol)).second;
+            return level.emplace(forcedKeyName, &symbol).second;
         }
         else if (name == "") {
             symbol.getAsVariable()->setAnonId(anonId++);
@@ -447,11 +447,11 @@ public:
                     return false;
 
                 // insert, and whatever happens is okay
-                level.insert(tLevelPair(insertName, &symbol));
+                level.emplace(insertName, &symbol);
 
                 return true;
             } else
-                return level.insert(tLevelPair(insertName, &symbol)).second;
+                return level.emplace(insertName, &symbol).second;
         }
     }
 
@@ -472,7 +472,7 @@ public:
         const TTypeList& types = *symbol.getAsVariable()->getType().getStruct();
         for (unsigned int m = firstMember; m < types.size(); ++m) {
             TAnonMember* member = new TAnonMember(&types[m].type->getFieldName(), m, *symbol.getAsVariable(), symbol.getAsVariable()->getAnonId());
-            if (! level.insert(tLevelPair(member->getMangledName(), member)).second)
+            if (! level.emplace(member->getMangledName(), member).second)
                 return false;
         }
 
@@ -596,7 +596,6 @@ protected:
     TSymbolTableLevel& operator=(TSymbolTableLevel&);
 
     typedef std::map<TString, TSymbol*, std::less<TString>, pool_allocator<std::pair<const TString, TSymbol*> > > tLevel;
-    typedef const tLevel::value_type tLevelPair;
     typedef std::pair<tLevel::iterator, bool> tInsertResult;
 
     tLevel level;  // named mappings

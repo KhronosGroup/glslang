@@ -272,7 +272,7 @@ private:
 
    // Add a strip range for a given instruction starting at 'start'
    // Note: avoiding brace initializers to please older versions os MSVC.
-   void stripInst(unsigned start) { stripRange.push_back(range_t(start, start + asWordCount(start))); }
+   void stripInst(unsigned start) { stripRange.emplace_back(start, start + asWordCount(start)); }
 
    // Function start and end.  use unordered_map because we'll have
    // many fewer functions than IDs.
