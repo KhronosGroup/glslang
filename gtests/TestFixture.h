@@ -48,7 +48,7 @@
 #include "SPIRV/disassemble.h"
 #include "SPIRV/doc.h"
 #include "SPIRV/SPVRemapper.h"
-#include "StandAlone/ResourceLimits.h"
+#include "glslang/Public/ResourceLimits.h"
 #include "glslang/Public/ShaderLang.h"
 
 #include "Initializer.h"
@@ -199,7 +199,7 @@ public:
             shader->setStringsWithLengths(&shaderStrings, &shaderLengths, 1);
         if (!entryPointName.empty()) shader->setEntryPoint(entryPointName.c_str());
         return shader->parse(
-                (resources ? resources : &glslang::DefaultTBuiltInResource),
+                (resources ? resources : GetDefaultResources()),
                 defaultVersion, isForwardCompatible, controls);
     }
 
@@ -640,7 +640,7 @@ public:
         std::string ppShader;
         glslang::TShader::ForbidIncluder includer;
         const bool success = shader.preprocess(
-            &glslang::DefaultTBuiltInResource, defaultVersion, defaultProfile,
+            GetDefaultResources(), defaultVersion, defaultProfile,
             forceVersionProfile, isForwardCompatible, (EShMessages)(EShMsgOnlyPreprocessor | EShMsgCascadingErrors),
             &ppShader, includer);
 

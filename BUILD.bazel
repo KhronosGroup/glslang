@@ -210,7 +210,7 @@ cc_library(
 cc_library(
     name = "glslang-default-resource-limits",
     srcs = ["StandAlone/ResourceLimits.cpp"],
-    hdrs = ["StandAlone/ResourceLimits.h"],
+    hdrs = ["glslang/Public/ResourceLimits.h"],
     copts = COMMON_COPTS,
     linkstatic = 1,
     deps = [":glslang"],
