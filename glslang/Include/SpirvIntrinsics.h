@@ -84,7 +84,7 @@ struct TSpirvDecorate {
 struct TSpirvInstruction {
     POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
 
-    TSpirvInstruction() { set = ""; id = -1; }
+    TSpirvInstruction() { set.clear(); id = -1; }
 
     bool operator==(const TSpirvInstruction& rhs) const { return set == rhs.set && id == rhs.id; }
     bool operator!=(const TSpirvInstruction& rhs) const { return !operator==(rhs); }

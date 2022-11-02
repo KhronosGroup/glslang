@@ -171,8 +171,8 @@ struct TXfbBuffer {
 // where everything is textual, and there can be zero or more arguments
 class TProcesses {
 public:
-    TProcesses() {}
-    ~TProcesses() {}
+    TProcesses() = default;
+    ~TProcesses() = default;
 
     void addProcess(const char* process)
     {
@@ -299,8 +299,8 @@ public:
         depthReplacing(false),
         stencilReplacing(false),
         uniqueId(0),
-        globalUniformBlockName(""),
-        atomicCounterBlockName(""),
+        globalUniformBlockName(),
+        atomicCounterBlockName(),
         globalUniformBlockSet(TQualifier::layoutSetEnd),
         globalUniformBlockBinding(TQualifier::layoutBindingEnd),
         atomicCounterBlockSet(TQualifier::layoutSetEnd)

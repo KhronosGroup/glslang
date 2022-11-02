@@ -367,7 +367,7 @@ TVariable::TVariable(const TVariable& copyOf) : TSymbol(copyOf)
     if (! copyOf.constArray.empty()) {
         assert(! copyOf.type.isStruct());
         TConstUnionArray newArray(copyOf.constArray, 0, copyOf.constArray.size());
-        constArray = newArray;
+        constArray = std::move(newArray);
     }
 }
 

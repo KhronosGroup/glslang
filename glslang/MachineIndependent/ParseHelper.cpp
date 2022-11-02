@@ -294,7 +294,7 @@ void TParseContext::growAtomicCounterBlock(int binding, const TSourceLoc& loc, T
 const char* TParseContext::getGlobalUniformBlockName() const
 {
     const char* name = intermediate.getGlobalUniformBlockName();
-    if (std::string(name) == "")
+    if (std::string(name).empty())
         return "gl_DefaultUniformBlock";
     else
         return name;
@@ -312,7 +312,7 @@ void TParseContext::setUniformBlockDefaults(TType& block) const
 const char* TParseContext::getAtomicCounterBlockName() const
 {
     const char* name = intermediate.getAtomicCounterBlockName();
-    if (std::string(name) == "")
+    if (std::string(name).empty())
         return "gl_AtomicCounterBlock";
     else
         return name;
@@ -852,7 +852,7 @@ int TParseContext::getIoArrayImplicitSize(const TQualifier &qualifier, TString *
         }
     }
     if (featureString)
-        *featureString = str;
+        *featureString = std::move(str);
     return expectedSize;
 }
 
@@ -7882,6 +7882,7 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
                 type);
             return newNode;
         }
+        break;
     case EOpConstructUVec3:
     case EOpConstructUVec4:
     case EOpConstructUint:
@@ -8520,7 +8521,7 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
 
     TVariable& variable = *new TVariable(instanceName, blockType);
     if (! symbolTable.insert(variable)) {
-        if (*instanceName == "")
+        if ((*instanceName).empty())
             error(loc, "nameless block contains a member that already has a name at global scope", blockName->c_str(), "");
         else
             error(loc, "block instance name redefinition", variable.getName().c_str(), "");

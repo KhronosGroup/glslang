@@ -6133,12 +6133,6 @@ void TBuiltIns::add2ndGenerationSamplingImaging(int version, EProfile profile, c
                             continue;
                         if ((dim == Esd1D || dim == EsdRect) && profile == EEsProfile)
                             continue;
-                        if (dim == EsdSubpass && spvVersion.vulkan == 0)
-                            continue;
-                        if (dim == EsdSubpass && (image || shadow || arrayed))
-                            continue;
-                        if ((dim == Esd1D || dim == EsdRect) && profile == EEsProfile)
-                            continue;
                         if (dim != Esd2D && dim != EsdSubpass && ms)
                             continue;
                         if (dim == EsdBuffer && skipBuffer)

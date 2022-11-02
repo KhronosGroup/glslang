@@ -427,7 +427,7 @@ public:
         if (forcedKeyName.length()) {
             return level.emplace(forcedKeyName, &symbol).second;
         }
-        else if (name == "") {
+        else if (name.empty()) {
             symbol.getAsVariable()->setAnonId(anonId++);
             // An empty name means an anonymous container, exposing its members to the external scope.
             // Give it a name and insert its members in the symbol table, pointing to the container.

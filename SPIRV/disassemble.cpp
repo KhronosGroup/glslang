@@ -380,7 +380,7 @@ void SpirvStream::disassembleInstruction(Id resultId, Id /*typeId*/, Op opCode, 
             case OpTypeVector:
                 if (idDescriptor[stream[word]].size() > 0) {
                     idDescriptor[resultId].append(idDescriptor[stream[word]].begin(), idDescriptor[stream[word]].begin() + 1);
-                    if (strstr(idDescriptor[stream[word]].c_str(), "8")) {
+                    if (strchr(idDescriptor[stream[word]].c_str(), '8')) {
                         idDescriptor[resultId].append("8");
                     }
                     if (strstr(idDescriptor[stream[word]].c_str(), "16")) {

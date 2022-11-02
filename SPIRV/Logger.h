@@ -44,7 +44,7 @@ namespace spv {
 // missing/TBD functionalities, warnings, and errors.
 class SpvBuildLogger {
 public:
-    SpvBuildLogger() {}
+    SpvBuildLogger() = default;
 
 #ifdef GLSLANG_WEB
     void tbdFunctionality(const std::string& f) { }

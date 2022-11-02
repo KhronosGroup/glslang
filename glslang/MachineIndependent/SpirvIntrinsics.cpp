@@ -121,7 +121,7 @@ void TIntermediate::insertSpirvExecutionMode(int executionMode, const TIntermAgg
             extraOperands.push_back(extraOperand);
         }
     }
-    spirvExecutionMode->modes[executionMode] = extraOperands;
+    spirvExecutionMode->modes[executionMode] = std::move(extraOperands);
 }
 
 void TIntermediate::insertSpirvExecutionModeId(int executionMode, const TIntermAggregate* args)
@@ -137,7 +137,7 @@ void TIntermediate::insertSpirvExecutionModeId(int executionMode, const TIntermA
         assert(extraOperand != nullptr && extraOperand->getQualifier().isConstant());
         extraOperands.push_back(extraOperand);
     }
-    spirvExecutionMode->modeIds[executionMode] = extraOperands;
+    spirvExecutionMode->modeIds[executionMode] = std::move(extraOperands);
 }
 
 //
@@ -156,7 +156,7 @@ void TQualifier::setSpirvDecorate(int decoration, const TIntermAggregate* args)
             extraOperands.push_back(extraOperand);
         }
     }
-    spirvDecorate->decorates[decoration] = extraOperands;
+    spirvDecorate->decorates[decoration] = std::move(extraOperands);
 }
 
 void TQualifier::setSpirvDecorateId(int decoration, const TIntermAggregate* args)
@@ -171,7 +171,7 @@ void TQualifier::setSpirvDecorateId(int decoration, const TIntermAggregate* args
         assert(extraOperand != nullptr && extraOperand->getQualifier().isConstant());
         extraOperands.push_back(extraOperand);
     }
-    spirvDecorate->decorateIds[decoration] = extraOperands;
+    spirvDecorate->decorateIds[decoration] = std::move(extraOperands);
 }
 
 void TQualifier::setSpirvDecorateString(int decoration, const TIntermAggregate* args)
@@ -186,7 +186,7 @@ void TQualifier::setSpirvDecorateString(int decoration, const TIntermAggregate* 
         assert(extraOperand != nullptr);
         extraOperands.push_back(extraOperand);
     }
-    spirvDecorate->decorateStrings[decoration] = extraOperands;
+    spirvDecorate->decorateStrings[decoration] = std::move(extraOperands);
 }
 
 TString TQualifier::getSpirvDecorateQualifierString() const

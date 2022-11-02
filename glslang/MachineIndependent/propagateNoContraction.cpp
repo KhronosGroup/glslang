@@ -193,10 +193,10 @@ public:
     StateSettingGuard(T* state_ptr, T new_state_value)
         : state_ptr_(state_ptr), previous_state_(*state_ptr)
     {
-        *state_ptr = new_state_value;
+        *state_ptr = std::move(new_state_value);
     }
     StateSettingGuard(T* state_ptr) : state_ptr_(state_ptr), previous_state_(*state_ptr) {}
-    void setState(T new_state_value) { *state_ptr_ = new_state_value; }
+    void setState(T new_state_value) { *state_ptr_ = std::move(new_state_value); }
     ~StateSettingGuard() { *state_ptr_ = previous_state_; }
 
 private:
@@ -649,7 +649,7 @@ public:
     // Propagates 'precise' in a given precise return node.
     void propagateNoContractionInReturnNode(glslang::TIntermBranch* return_node)
     {
-        remained_accesschain_ = "";
+        remained_accesschain_.clear();
         assert(return_node->getFlowOp() == glslang::EOpReturn && return_node->getExpression());
         return_node->getExpression()->traverse(this);
     }

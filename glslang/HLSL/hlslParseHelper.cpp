@@ -1784,7 +1784,7 @@ void HlslParseContext::handleEntryPointAttributes(const TSourceLoc& loc, const T
             if (! it->getString(pcfName, 0, false)) {
                 error(loc, "invalid patch constant function", "", "");
             } else {
-                patchConstantFunctionName = pcfName;
+                patchConstantFunctionName = std::move(pcfName);
             }
             break;
         }
@@ -7565,7 +7565,6 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, TFunction
          candidateList[0]->getBuiltInOp() == EOpMethodRestartStrip ||
          candidateList[0]->getBuiltInOp() == EOpMethodIncrementCounter ||
          candidateList[0]->getBuiltInOp() == EOpMethodDecrementCounter ||
-         candidateList[0]->getBuiltInOp() == EOpMethodAppend ||
          candidateList[0]->getBuiltInOp() == EOpMethodConsume)) {
         return candidateList[0];
     }
@@ -8917,7 +8916,7 @@ void HlslParseContext::declareBlock(const TSourceLoc& loc, TType& type, const TS
 
     TVariable& variable = *new TVariable(instanceName, blockType);
     if (! symbolTable.insert(variable)) {
-        if (*instanceName == "")
+        if ((*instanceName).empty())
             error(loc, "nameless block contains a member that already has a name at global scope",
                   "" /* blockName->c_str() */, "");
         else

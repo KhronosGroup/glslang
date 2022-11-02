@@ -231,11 +231,11 @@ bool TParseContextBase::lValueErrorCheck(const TSourceLoc& loc, const char* op, 
 // Test for and give an error if the node can't be read from.
 void TParseContextBase::rValueErrorCheck(const TSourceLoc& loc, const char* op, TIntermTyped* node)
 {
+    if (!node)
+        return;
+
     TIntermBinary* binaryNode = node->getAsBinaryNode();
     const TIntermSymbol* symNode = node->getAsSymbolNode();
-
-    if (! node)
-        return;
 
     if (node->getQualifier().isWriteOnly()) {
         const TIntermTyped* leftMostTypeNode = TIntermediate::findLValueBase(node, true);

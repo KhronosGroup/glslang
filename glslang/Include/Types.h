@@ -2183,7 +2183,7 @@ public:
     TString getBasicTypeString() const { return ""; }
 #else
     TString getCompleteString(bool syntactic = false, bool getQualifiers = true, bool getPrecision = true,
-                              bool getType = true, TString name = "", TString structName = "") const
+                              bool getType = true, const TString& name = "", const TString& structName = "") const
     {
         TString typeString;
 

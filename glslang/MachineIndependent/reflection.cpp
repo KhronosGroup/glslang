@@ -105,7 +105,7 @@ public:
                 if (!anonymous)
                     baseName = blockName;
                 else
-                    baseName = "";
+                    baseName.clear();
 
                 blockIndex = addBlockName(blockName, base.getType(), intermediate.getBlockSize(base.getType()));
             }
@@ -151,7 +151,7 @@ public:
                 }
             } else {
                 TReflection::TNameToIndex::const_iterator it = ioMapper.find(name.c_str());
-                if (it == ioMapper.end()) {
+                if (it == ioMapper.cend()) {
                     // seperate pipe i/o params from uniforms and blocks
                     // in is only for input in first stage as out is only for last stage. check traverse in call stack.
                     ioMapper[name.c_str()] = static_cast<int>(ioItems.size());
@@ -446,7 +446,7 @@ public:
         TReflection::TMapIndexToReflection& variables = reflection.GetVariableMapForStorage(baseStorage);
 
         TReflection::TNameToIndex::const_iterator it = reflection.nameToIndex.find(name.c_str());
-        if (it == reflection.nameToIndex.end()) {
+        if (it == reflection.nameToIndex.cend()) {
             int uniformIndex = (int)variables.size();
             reflection.nameToIndex[name.c_str()] = uniformIndex;
             variables.push_back(TObjectReflection(name.c_str(), *terminalType, offset, mapToGlType(*terminalType),
@@ -528,7 +528,7 @@ public:
         namespacedName += name.c_str();
 
         TReflection::TNameToIndex::const_iterator it = reflection.nameToIndex.find(namespacedName);
-        if (it == reflection.nameToIndex.end()) {
+        if (it == reflection.nameToIndex.cend()) {
             reflection.nameToIndex[namespacedName] = (int)ioItems.size();
             ioItems.push_back(
                 TObjectReflection(name.c_str(), type, 0, mapToGlType(type), mapToGlArraySize(type), 0));
@@ -651,7 +651,7 @@ public:
             TReflection::TMapIndexToReflection& blocks = reflection.GetBlockMapForStorage(type.getQualifier().storage);
 
             TReflection::TNameToIndex::const_iterator it = reflection.nameToIndex.find(name.c_str());
-            if (reflection.nameToIndex.find(name.c_str()) == reflection.nameToIndex.end()) {
+            if (it == reflection.nameToIndex.cend()) {
                 blockIndex = (int)blocks.size();
                 reflection.nameToIndex[name.c_str()] = blockIndex;
                 blocks.push_back(TObjectReflection(name.c_str(), type, -1, -1, size, blockIndex));

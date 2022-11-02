@@ -581,7 +581,7 @@ public:
     class If {
     public:
         If(Id condition, unsigned int ctrl, Builder& builder);
-        ~If() {}
+        ~If() = default;
 
         void makeBeginElse();
         void makeEndIf();

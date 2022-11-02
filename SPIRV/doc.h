@@ -168,7 +168,7 @@ typedef std::vector<Capability> EnumCaps;
 // Parameterize a set of operands with their OperandClass(es) and descriptions.
 class OperandParameters {
 public:
-    OperandParameters() { }
+    OperandParameters() = default;
     void push(OperandClass oc, const char* d, bool opt = false)
     {
         opClass.push_back(oc);

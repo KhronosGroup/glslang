@@ -269,7 +269,7 @@ public:
             int getAtom() const { return atom; }
             bool nonSpaced() const { return !space; }
         protected:
-            Token() {}
+            Token() = default;
             int atom;
             bool space;        // did a space precede the token?
             long long i64val;

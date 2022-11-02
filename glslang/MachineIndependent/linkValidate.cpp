@@ -1400,7 +1400,7 @@ void TIntermediate::checkCallGraphCycles(TInfoSink& infoSink)
         // that is recursive.  This is done by depth-first traversals, seeing
         // if a new call is found that was already in the currentPath (a back edge),
         // thereby detecting recursion.
-        std::list<TCall*> stack;
+        std::vector<TCall*> stack;
         newRoot->currentPath = true; // currentPath will be true iff it is on the stack
         stack.push_back(newRoot);
         while (! stack.empty()) {
@@ -1651,10 +1651,11 @@ int TIntermediate::addUsedLocation(const TQualifier& qualifier, const TType& typ
     int collision = -1; // no collision
 #ifndef GLSLANG_WEB
     if (qualifier.isAnyPayload() || qualifier.isAnyCallable()) {
-        TRange range(qualifier.layoutLocation, qualifier.layoutLocation);
         collision = checkLocationRT(setRT, qualifier.layoutLocation);
-        if (collision < 0)
+        if (collision < 0) {
+            TRange range(qualifier.layoutLocation, qualifier.layoutLocation);
             usedIoRT[setRT].push_back(range);
+        }
     } else if (size == 2 && type.getBasicType() == EbtDouble && type.getVectorSize() == 3 &&
         (qualifier.isPipeInput() || qualifier.isPipeOutput())) {
         // Dealing with dvec3 in/out split across two locations.

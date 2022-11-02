@@ -2607,7 +2607,7 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
     if (!result) {
         if (node->getOp() == glslang::EOpSpirvInst) {
             const auto& spirvInst = node->getSpirvInstruction();
-            if (spirvInst.set == "") {
+            if (spirvInst.set.empty()) {
                 spv::IdImmediate idImmOp = {true, operand};
                 if (operandNode->getAsTyped()->getQualifier().isSpirvLiteral()) {
                     // Translate the constant to a literal value
@@ -3515,7 +3515,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
 #ifndef GLSLANG_WEB
     } else if (node->getOp() == glslang::EOpSpirvInst) {
         const auto& spirvInst = node->getSpirvInstruction();
-        if (spirvInst.set == "") {
+        if (spirvInst.set.empty()) {
             std::vector<spv::IdImmediate> idImmOps;
             for (unsigned int i = 0; i < glslangOperands.size(); ++i) {
                 if (glslangOperands[i]->getAsTyped()->getQualifier().isSpirvLiteral()) {
@@ -4340,7 +4340,7 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
                 operands.push_back({true, createSpvConstant(*typeParam.constant)});
         }
 
-        assert(spirvInst.set == ""); // Currently, couldn't be extended instructions.
+        assert(spirvInst.set.empty()); // Currently, couldn't be extended instructions.
         spvType = builder.makeGenericType(static_cast<spv::Op>(spirvInst.id), operands);
 
         break;
@@ -7555,6 +7555,7 @@ spv::Id TGlslangToSpvTraverser::createAtomicOperation(glslang::TOperator op, spv
     }
 
     std::vector<spv::Id> spvAtomicOperands;  // hold the spv operands
+    spvAtomicOperands.reserve(6);
     spvAtomicOperands.push_back(pointerId);
     spvAtomicOperands.push_back(scopeId);
     spvAtomicOperands.push_back(semanticsId);
@@ -9474,6 +9475,7 @@ spv::Id TGlslangToSpvTraverser::createShortCircuit(glslang::TOperator op, glslan
 
     // Operands to accumulate OpPhi operands
     std::vector<spv::Id> phiOperands;
+    phiOperands.reserve(4);
     // accumulate left operand's phi information
     phiOperands.push_back(leftId);
     phiOperands.push_back(builder.getBuildPoint()->getId());
