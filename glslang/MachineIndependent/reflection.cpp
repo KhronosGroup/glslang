@@ -698,7 +698,7 @@ public:
     //
     // Translate a glslang sampler type into the GL API #define number.
     //
-    int mapSamplerToGlType(TSampler sampler)
+    int mapSamplerToGlType(const TSampler& sampler)
     {
         if (! sampler.image) {
             // a sampler...

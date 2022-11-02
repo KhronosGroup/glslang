@@ -759,7 +759,7 @@ public:
 
     // for external save and restore
     AccessChain getAccessChain() { return accessChain; }
-    void setAccessChain(AccessChain newChain) { accessChain = newChain; }
+    void setAccessChain(const AccessChain& newChain) { accessChain = newChain; }
 
     // clear accessChain
     void clearAccessChain();

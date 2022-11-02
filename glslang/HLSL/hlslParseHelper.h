@@ -106,7 +106,7 @@ public:
     TIntermTyped* addOutputArgumentConversions(const TFunction&, TIntermOperator&);
     void builtInOpCheck(const TSourceLoc&, const TFunction&, TIntermOperator&);
     TFunction* makeConstructorCall(const TSourceLoc&, const TType&);
-    void handleSemantic(TSourceLoc, TQualifier&, TBuiltInVariable, const TString& upperCase);
+    void handleSemantic(const TSourceLoc&, TQualifier&, TBuiltInVariable, const TString& upperCase);
     void handlePackOffset(const TSourceLoc&, TQualifier&, const glslang::TString& location,
                           const glslang::TString* component);
     void handleRegister(const TSourceLoc&, TQualifier&, const glslang::TString* profile, const glslang::TString& desc,
@@ -116,9 +116,9 @@ public:
 
     bool parseMatrixSwizzleSelector(const TSourceLoc&, const TString&, int cols, int rows, TSwizzleSelectors<TMatrixSelector>&);
     int getMatrixComponentsColumn(int rows, const TSwizzleSelectors<TMatrixSelector>&);
-    void assignError(const TSourceLoc&, const char* op, TString left, TString right);
-    void unaryOpError(const TSourceLoc&, const char* op, TString operand);
-    void binaryOpError(const TSourceLoc&, const char* op, TString left, TString right);
+    void assignError(const TSourceLoc&, const char* op, const TString& left, const TString& right);
+    void unaryOpError(const TSourceLoc&, const char* op, const TString& operand);
+    void binaryOpError(const TSourceLoc&, const char* op, const TString& left, const TString& right);
     void variableCheck(TIntermTyped*& nodePtr);
     void constantValueCheck(TIntermTyped* node, const char* token);
     void integerCheck(const TIntermTyped* node, const char* token);
@@ -159,8 +159,8 @@ public:
     void fixBlockLocations(const TSourceLoc&, TQualifier&, TTypeList&, bool memberWithLocation, bool memberWithoutLocation);
     void fixXfbOffsets(TQualifier&, TTypeList&);
     void fixBlockUniformOffsets(const TQualifier&, TTypeList&);
-    void addQualifierToExisting(const TSourceLoc&, TQualifier, const TString& identifier);
-    void addQualifierToExisting(const TSourceLoc&, TQualifier, TIdentifierList&);
+    void addQualifierToExisting(const TSourceLoc&, const TQualifier&, const TString& identifier);
+    void addQualifierToExisting(const TSourceLoc&, const TQualifier&, TIdentifierList&);
     void updateStandaloneQualifierDefaults(const TSourceLoc&, const TPublicType&);
     void wrapupSwitchSubsequence(TIntermAggregate* statements, TIntermNode* branchNode);
     TIntermNode* addSwitch(const TSourceLoc&, TIntermTyped* expression, TIntermAggregate* body, const TAttributes&);
@@ -280,9 +280,9 @@ protected:
     void fixBuiltInIoType(TType&);
 
     void flatten(const TVariable& variable, bool linkage, bool arrayed = false);
-    int flatten(const TVariable& variable, const TType&, TFlattenData&, TString name, bool linkage,
+    int flatten(const TVariable& variable, const TType&, TFlattenData&, const TString& name, bool linkage,
                 const TQualifier& outerQualifier, const TArraySizes* builtInArraySizes);
-    int flattenStruct(const TVariable& variable, const TType&, TFlattenData&, TString name, bool linkage,
+    int flattenStruct(const TVariable& variable, const TType&, TFlattenData&, const TString& name, bool linkage,
                       const TQualifier& outerQualifier, const TArraySizes* builtInArraySizes);
     int flattenArray(const TVariable& variable, const TType&, TFlattenData&, TString name, bool linkage,
                      const TQualifier& outerQualifier);

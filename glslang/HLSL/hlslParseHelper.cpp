@@ -1220,7 +1220,7 @@ void HlslParseContext::flatten(const TVariable& variable, bool linkage, bool arr
 // so the 4th flattened member in traversal order is ours.
 //
 int HlslParseContext::flatten(const TVariable& variable, const TType& type,
-                              TFlattenData& flattenData, TString name, bool linkage,
+                              TFlattenData& flattenData, const TString& name, bool linkage,
                               const TQualifier& outerQualifier,
                               const TArraySizes* builtInArraySizes)
 {
@@ -1285,7 +1285,7 @@ int HlslParseContext::addFlattenedMember(const TVariable& variable, const TType&
 //
 // Assumes shouldFlatten() or equivalent was called first.
 int HlslParseContext::flattenStruct(const TVariable& variable, const TType& type,
-                                    TFlattenData& flattenData, TString name, bool linkage,
+                                    TFlattenData& flattenData, const TString& name, bool linkage,
                                     const TQualifier& outerQualifier,
                                     const TArraySizes* builtInArraySizes)
 {
@@ -6215,7 +6215,7 @@ TFunction* HlslParseContext::makeConstructorCall(const TSourceLoc& loc, const TT
 // Handle seeing a "COLON semantic" at the end of a type declaration,
 // by updating the type according to the semantic.
 //
-void HlslParseContext::handleSemantic(TSourceLoc loc, TQualifier& qualifier, TBuiltInVariable builtIn,
+void HlslParseContext::handleSemantic(const TSourceLoc& loc, TQualifier& qualifier, TBuiltInVariable builtIn,
                                       const TString& upperCase)
 {
     // Parse and return semantic number.  If limit is 0, it will be ignored.  Otherwise, if the parsed
@@ -6448,7 +6448,7 @@ TIntermTyped* HlslParseContext::convertConditionalExpression(const TSourceLoc& l
 //
 // Same error message for all places assignments don't work.
 //
-void HlslParseContext::assignError(const TSourceLoc& loc, const char* op, TString left, TString right)
+void HlslParseContext::assignError(const TSourceLoc& loc, const char* op, const TString& left, const TString& right)
 {
     error(loc, "", op, "cannot convert from '%s' to '%s'",
         right.c_str(), left.c_str());
@@ -6457,7 +6457,7 @@ void HlslParseContext::assignError(const TSourceLoc& loc, const char* op, TStrin
 //
 // Same error message for all places unary operations don't work.
 //
-void HlslParseContext::unaryOpError(const TSourceLoc& loc, const char* op, TString operand)
+void HlslParseContext::unaryOpError(const TSourceLoc& loc, const char* op, const TString& operand)
 {
     error(loc, " wrong operand type", op,
         "no operation '%s' exists that takes an operand of type %s (or there is no acceptable conversion)",
@@ -6467,7 +6467,7 @@ void HlslParseContext::unaryOpError(const TSourceLoc& loc, const char* op, TStri
 //
 // Same error message for all binary operations don't work.
 //
-void HlslParseContext::binaryOpError(const TSourceLoc& loc, const char* op, TString left, TString right)
+void HlslParseContext::binaryOpError(const TSourceLoc& loc, const char* op, const TString& left, const TString& right)
 {
     error(loc, " wrong operand types:", op,
         "no operation '%s' exists that takes a left-hand operand of type '%s' and "
@@ -9070,7 +9070,7 @@ void HlslParseContext::fixBlockUniformOffsets(const TQualifier& qualifier, TType
 }
 
 // For an identifier that is already declared, add more qualification to it.
-void HlslParseContext::addQualifierToExisting(const TSourceLoc& loc, TQualifier qualifier, const TString& identifier)
+void HlslParseContext::addQualifierToExisting(const TSourceLoc& loc, const TQualifier& qualifier, const TString& identifier)
 {
     TSymbol* symbol = symbolTable.find(identifier);
     if (symbol == nullptr) {
@@ -9113,7 +9113,7 @@ void HlslParseContext::addQualifierToExisting(const TSourceLoc& loc, TQualifier 
         warn(loc, "unknown requalification", "", "");
 }
 
-void HlslParseContext::addQualifierToExisting(const TSourceLoc& loc, TQualifier qualifier, TIdentifierList& identifiers)
+void HlslParseContext::addQualifierToExisting(const TSourceLoc& loc, const TQualifier& qualifier, TIdentifierList& identifiers)
 {
     for (unsigned int i = 0; i < identifiers.size(); ++i)
         addQualifierToExisting(loc, qualifier, *identifiers[i]);

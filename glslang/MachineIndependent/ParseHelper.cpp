@@ -2845,7 +2845,7 @@ void TParseContext::checkPrecisionQualifier(const TSourceLoc& loc, TPrecisionQua
 //
 // Same error message for all places assignments don't work.
 //
-void TParseContext::assignError(const TSourceLoc& loc, const char* op, TString left, TString right)
+void TParseContext::assignError(const TSourceLoc& loc, const char* op, const TString& left, const TString& right)
 {
     error(loc, "", op, "cannot convert from '%s' to '%s'",
           right.c_str(), left.c_str());
@@ -2854,7 +2854,7 @@ void TParseContext::assignError(const TSourceLoc& loc, const char* op, TString l
 //
 // Same error message for all places unary operations don't work.
 //
-void TParseContext::unaryOpError(const TSourceLoc& loc, const char* op, TString operand)
+void TParseContext::unaryOpError(const TSourceLoc& loc, const char* op, const TString& operand)
 {
    error(loc, " wrong operand type", op,
           "no operation '%s' exists that takes an operand of type %s (or there is no acceptable conversion)",
@@ -2864,7 +2864,7 @@ void TParseContext::unaryOpError(const TSourceLoc& loc, const char* op, TString 
 //
 // Same error message for all binary operations don't work.
 //
-void TParseContext::binaryOpError(const TSourceLoc& loc, const char* op, TString left, TString right)
+void TParseContext::binaryOpError(const TSourceLoc& loc, const char* op, const TString& left, const TString& right)
 {
     error(loc, " wrong operand types:", op,
             "no operation '%s' exists that takes a left-hand operand of type '%s' and "
@@ -8916,7 +8916,7 @@ void TParseContext::fixBlockUniformLayoutPacking(TQualifier& qualifier, TTypeLis
 }
 
 // For an identifier that is already declared, add more qualification to it.
-void TParseContext::addQualifierToExisting(const TSourceLoc& loc, TQualifier qualifier, const TString& identifier)
+void TParseContext::addQualifierToExisting(const TSourceLoc& loc, const TQualifier& qualifier, const TString& identifier)
 {
     TSymbol* symbol = symbolTable.find(identifier);
 
@@ -8976,7 +8976,7 @@ void TParseContext::addQualifierToExisting(const TSourceLoc& loc, TQualifier qua
         warn(loc, "unknown requalification", "", "");
 }
 
-void TParseContext::addQualifierToExisting(const TSourceLoc& loc, TQualifier qualifier, TIdentifierList& identifiers)
+void TParseContext::addQualifierToExisting(const TSourceLoc& loc, const TQualifier& qualifier, TIdentifierList& identifiers)
 {
     for (unsigned int i = 0; i < identifiers.size(); ++i)
         addQualifierToExisting(loc, qualifier, *identifiers[i]);

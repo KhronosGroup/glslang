@@ -367,9 +367,9 @@ public:
     // returns true if the variable was remapped to something else
     bool vkRelaxedRemapUniformVariable(const TSourceLoc&, TString&, const TPublicType&, TArraySizes*, TIntermTyped*, TType&);
 
-    void assignError(const TSourceLoc&, const char* op, TString left, TString right);
-    void unaryOpError(const TSourceLoc&, const char* op, TString operand);
-    void binaryOpError(const TSourceLoc&, const char* op, TString left, TString right);
+    void assignError(const TSourceLoc&, const char* op, const TString& left, const TString& right);
+    void unaryOpError(const TSourceLoc&, const char* op, const TString& operand);
+    void binaryOpError(const TSourceLoc&, const char* op, const TString& left, const TString& right);
     void variableCheck(TIntermTyped*& nodePtr);
     bool lValueErrorCheck(const TSourceLoc&, const char* op, TIntermTyped*) override;
     void rValueErrorCheck(const TSourceLoc&, const char* op, TIntermTyped*) override;
@@ -452,8 +452,8 @@ public:
     void fixBlockUniformOffsets(TQualifier&, TTypeList&);
     void fixBlockUniformLayoutMatrix(TQualifier&, TTypeList*, TTypeList*);
     void fixBlockUniformLayoutPacking(TQualifier&, TTypeList*, TTypeList*);
-    void addQualifierToExisting(const TSourceLoc&, TQualifier, const TString& identifier);
-    void addQualifierToExisting(const TSourceLoc&, TQualifier, TIdentifierList&);
+    void addQualifierToExisting(const TSourceLoc&, const TQualifier&, const TString& identifier);
+    void addQualifierToExisting(const TSourceLoc&, const TQualifier&, TIdentifierList&);
     void invariantCheck(const TSourceLoc&, const TQualifier&);
     void updateStandaloneQualifierDefaults(const TSourceLoc&, const TPublicType&);
     void wrapupSwitchSubsequence(TIntermAggregate* statements, TIntermNode* branchNode);

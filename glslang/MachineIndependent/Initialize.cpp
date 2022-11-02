@@ -6354,7 +6354,7 @@ void TBuiltIns::addQueryFunctions(TSampler sampler, const TString& typeName, int
 //
 // Add all the image access functions for the given type.
 //
-void TBuiltIns::addImageFunctions(TSampler sampler, const TString& typeName, int version, EProfile profile)
+void TBuiltIns::addImageFunctions(const TSampler& sampler, const TString& typeName, int version, EProfile profile)
 {
     int dims = dimMap[sampler.dim];
     // most things with an array add a dimension, except for cubemaps
@@ -6556,7 +6556,7 @@ void TBuiltIns::addImageFunctions(TSampler sampler, const TString& typeName, int
 //
 // Add all the subpass access functions for the given type.
 //
-void TBuiltIns::addSubpassSampling(TSampler sampler, const TString& typeName, int /*version*/, EProfile /*profile*/)
+void TBuiltIns::addSubpassSampling(const TSampler& sampler, const TString& typeName, int /*version*/, EProfile /*profile*/)
 {
     stageBuiltins[EShLangFragment].append(prefixes[sampler.type]);
     stageBuiltins[EShLangFragment].append("vec4 subpassLoad");
