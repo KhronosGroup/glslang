@@ -29,7 +29,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _STAND_ALONE_RESOURCE_LIMITS_C_INCLUDED_
 #define _STAND_ALONE_RESOURCE_LIMITS_C_INCLUDED_
 
-#include "../glslang/Include/glslang_c_interface.h"
+#include "../Include/glslang_c_interface.h"
 
 #ifdef __cplusplus
 extern "C" {
