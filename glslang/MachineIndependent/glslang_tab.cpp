@@ -6551,7 +6551,7 @@ yyreduce:
   case 136: /* fully_specified_type: type_qualifier type_specifier  */
 #line 1220 "MachineIndependent/glslang.y"
                                      {
-        parseContext.globalQualifierFixCheck((yyvsp[-1].interm.type).loc, (yyvsp[-1].interm.type).qualifier);
+        parseContext.globalQualifierFixCheck((yyvsp[-1].interm.type).loc, (yyvsp[-1].interm.type).qualifier, false, &(yyvsp[0].interm.type));
         parseContext.globalQualifierTypeCheck((yyvsp[-1].interm.type).loc, (yyvsp[-1].interm.type).qualifier, (yyvsp[0].interm.type));
 
         if ((yyvsp[0].interm.type).arraySizes) {

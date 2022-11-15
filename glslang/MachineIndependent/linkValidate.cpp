@@ -1517,7 +1517,10 @@ void TIntermediate::checkCallGraphBodies(TInfoSink& infoSink, bool keepUncalled)
     if (! keepUncalled) {
         for (int f = 0; f < (int)functionSequence.size(); ++f) {
             if (! reachable[f])
+            {
+                resetTopLevelUncalledStatus(functionSequence[f]->getAsAggregate()->getName());
                 functionSequence[f] = nullptr;
+            }
         }
         functionSequence.erase(std::remove(functionSequence.begin(), functionSequence.end(), nullptr), functionSequence.end());
     }
@@ -2012,6 +2015,15 @@ int TIntermediate::getBaseAlignmentScalar(const TType& type, int& size)
     case EbtInt16:
     case EbtUint16:  size = 2; return 2;
     case EbtReference: size = 8; return 8;
+    case EbtSampler:
+    {
+        if (type.isBindlessImage() || type.isBindlessTexture()) {
+            size = 8; return 8;
+        }
+        else {
+            size = 4; return 4;
+        }
+    }
     default:         size = 4; return 4;
     }
 }

@@ -226,6 +226,7 @@ public:
 protected:
     TMap<TString, TExtensionBehavior> extensionBehavior;    // for each extension string, what its current behavior is
     TMap<TString, unsigned int> extensionMinSpv;            // for each extension string, store minimum spirv required
+    TVector<TString> spvUnsupportedExt;                     // for extensions reserved for spv usage.
     EShMessages messages;        // errors/warnings/rule-sets
     int numErrors;               // number of compile-time errors encountered
     TInputScanner* currentScanner;

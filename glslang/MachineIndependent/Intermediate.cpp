@@ -751,6 +751,11 @@ bool TIntermediate::buildConvertOp(TBasicType dst, TBasicType src, TOperator& ne
         case EbtInt64:   newOp = EOpConvInt64ToUint;   break;
         case EbtUint64:  newOp = EOpConvUint64ToUint;  break;
 #endif
+        // For bindless texture type conversion, add a dummy convert op, just
+        // to generate a new TIntermTyped
+        // uvec2(any sampler type)
+        // uvec2(any image type)
+        case EbtSampler: newOp = EOpConvIntToUint;  break;
         default:
             return false;
         }
