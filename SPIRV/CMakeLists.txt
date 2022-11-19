@@ -125,7 +125,7 @@ if(ENABLE_GLSLANG_INSTALL)
             message(WARNING \"Using `SPVRemapperTargets.cmake` is deprecated: use `find_package(glslang)` to find glslang CMake targets.\")
 
             if (NOT TARGET glslang::SPVRemapper)
-                include(\"\${CMAKE_CURRENT_LIST_DIR}/../../${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}/glslang-targets.cmake\")
+                include(\"${CMAKE_INSTALL_FULL_LIBDIR}/cmake/${PROJECT_NAME}/glslang-targets.cmake\")
             endif()
 
             add_library(SPVRemapper ALIAS glslang::SPVRemapper)
@@ -137,7 +137,7 @@ if(ENABLE_GLSLANG_INSTALL)
         message(WARNING \"Using `SPIRVTargets.cmake` is deprecated: use `find_package(glslang)` to find glslang CMake targets.\")
 
         if (NOT TARGET glslang::SPIRV)
-            include(\"\${CMAKE_CURRENT_LIST_DIR}/../../${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}/glslang-targets.cmake\")
+            include(\"${CMAKE_INSTALL_FULL_LIBDIR}/cmake/${PROJECT_NAME}/glslang-targets.cmake\")
         endif()
 
         add_library(SPIRV ALIAS glslang::SPIRV)
