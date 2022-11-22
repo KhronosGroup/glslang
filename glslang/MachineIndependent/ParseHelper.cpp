@@ -1165,7 +1165,7 @@ TFunction* TParseContext::handleFunctionDeclarator(const TSourceLoc& loc, TFunct
     if (symbol && builtIn && function.getBuiltInOp() == EOpSpirvInst)
         symbol = nullptr;
 #endif
-    const TFunction* prevDec = symbol ? symbol->getAsFunction() : 0;
+    const TFunction* prevDec = symbol ? symbol->getAsFunction() : nullptr;
     if (prevDec) {
         if (prevDec->isPrototyped() && prototype)
             profileRequires(loc, EEsProfile, 300, nullptr, "multiple prototypes for same function");
@@ -3140,7 +3140,7 @@ void TParseContext::reservedPpErrorCheck(const TSourceLoc& loc, const char* iden
             ppWarn(loc, "\"defined\" is (un)defined:", op,  identifier);
         else
             ppError(loc, "\"defined\" can't be (un)defined:", op,  identifier);
-    else if (strstr(identifier, "__") != 0 && !extensionTurnedOn(E_GL_EXT_spirv_intrinsics)) {
+    else if (strstr(identifier, "__") != nullptr && !extensionTurnedOn(E_GL_EXT_spirv_intrinsics)) {
         // The extension GL_EXT_spirv_intrinsics allows us to declare macros prefixed with "__".
         if (isEsProfile() && version >= 300 &&
             (strcmp(identifier, "__LINE__") == 0 ||
@@ -5206,7 +5206,7 @@ void TParseContext::inductiveLoopCheck(const TSourceLoc& loc, TIntermNode* init,
     bool badInit = false;
     if (! init || ! init->getAsAggregate() || init->getAsAggregate()->getSequence().size() != 1)
         badInit = true;
-    TIntermBinary* binaryInit = 0;
+    TIntermBinary* binaryInit = nullptr;
     if (! badInit) {
         // get the declaration assignment
         binaryInit = init->getAsAggregate()->getSequence()[0]->getAsBinaryNode();
@@ -6015,7 +6015,7 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
             if (language == EShLangMesh || language == EShLangTask) {
                 requireExtensions(loc, Num_AEP_mesh_shader, AEP_mesh_shader, "gl_WorkGroupSize");
             } else {
-                profileRequires(loc, EEsProfile, 310, 0, "gl_WorkGroupSize");
+                profileRequires(loc, EEsProfile, 310, nullptr, "gl_WorkGroupSize");
                 profileRequires(loc, ~EEsProfile, 430, E_GL_ARB_compute_shader, "gl_WorkGroupSize");
             }
 #endif
@@ -7082,7 +7082,7 @@ TIntermTyped* TParseContext::vkRelaxedRemapFunctionCall(const TSourceLoc& loc, T
             realFunc.addParameter(TParameter().copyParam((*function)[i]));
         }
 
-        TParameter tmpP = { 0, &uintType };
+        TParameter tmpP = { nullptr, &uintType };
         realFunc.addParameter(TParameter().copyParam(tmpP));
         arguments = intermediate.growAggregate(arguments, intermediate.addConstantUnion(1, loc, true));
 
@@ -7099,7 +7099,7 @@ TIntermTyped* TParseContext::vkRelaxedRemapFunctionCall(const TSourceLoc& loc, T
             realFunc.addParameter(TParameter().copyParam((*function)[i]));
         }
 
-        TParameter tmpP = { 0, &uintType };
+        TParameter tmpP = { nullptr, &uintType };
         realFunc.addParameter(TParameter().copyParam(tmpP));
         arguments = intermediate.growAggregate(arguments, intermediate.addConstantUnion(-1, loc, true));
 

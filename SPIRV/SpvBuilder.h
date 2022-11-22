@@ -414,7 +414,7 @@ public:
     // The returned pointer is only valid for the lifetime of this builder.
     Function* makeFunctionEntry(Decoration precision, Id returnType, const char* name,
         const std::vector<Id>& paramTypes, const std::vector<char const*>& paramNames,
-        const std::vector<std::vector<Decoration>>& precisions, Block **entry = 0);
+        const std::vector<std::vector<Decoration>>& precisions, Block **entry = nullptr);
 
     // Create a return. An 'implicit' return is one not appearing in the source
     // code.  In the case of an implicit return, no post-return block is inserted.

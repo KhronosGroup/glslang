@@ -1607,7 +1607,7 @@ void Parameterize()
     DecorationOperands[DecorationInputAttachmentIndex].push(OperandLiteralNumber, "'Attachment Index'");
     DecorationOperands[DecorationAlignment].push(OperandLiteralNumber, "'Alignment'");
 
-    OperandClassParams[OperandSource].set(0, SourceString, 0);
+    OperandClassParams[OperandSource].set(0, SourceString, nullptr);
     OperandClassParams[OperandExecutionModel].set(0, ExecutionModelString, nullptr);
     OperandClassParams[OperandAddressing].set(0, AddressingString, nullptr);
     OperandClassParams[OperandMemory].set(0, MemoryString, nullptr);
@@ -1639,7 +1639,7 @@ void Parameterize()
     OperandClassParams[OperandKernelEnqueueFlags].set(0, KernelEnqueueFlagsString, nullptr);
     OperandClassParams[OperandKernelProfilingInfo].set(0, KernelProfilingInfoString, nullptr, true);
     OperandClassParams[OperandCapability].set(0, CapabilityString, nullptr);
-    OperandClassParams[OperandOpcode].set(OpCodeMask + 1, OpcodeString, 0);
+    OperandClassParams[OperandOpcode].set(OpCodeMask + 1, OpcodeString, nullptr);
 
     // set name of operator, an initial set of <id> style operands, and the description
 
