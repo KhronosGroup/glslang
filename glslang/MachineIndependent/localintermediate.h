@@ -284,7 +284,7 @@ public:
     explicit TIntermediate(EShLanguage l, int v = 0, EProfile p = ENoProfile) :
         language(l),
         profile(p), version(v),
-        treeRoot(0),
+        treeRoot(nullptr),
         resources(TBuiltInResource{}),
         numEntryPoints(0), numErrors(0), numPushConstants(0), recursive(false),
         invertY(false),

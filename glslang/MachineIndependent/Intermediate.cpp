@@ -352,7 +352,7 @@ TIntermTyped* TIntermediate::addIndex(TOperator op, TIntermTyped* base, TIntermT
 TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermTyped* child,
     const TSourceLoc& loc)
 {
-    if (child == 0)
+    if (child == nullptr)
         return nullptr;
 
     if (child->getType().getBasicType() == EbtBlock)

@@ -1383,7 +1383,7 @@ void TIntermediate::checkCallGraphCycles(TInfoSink& infoSink)
     TCall* newRoot;
     do {
         // See if we have unvisited parts of the graph.
-        newRoot = 0;
+        newRoot = nullptr;
         for (TGraph::iterator call = callGraph.begin(); call != callGraph.end(); ++call) {
             if (! call->visited) {
                 newRoot = &(*call);

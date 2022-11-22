@@ -65,7 +65,7 @@ public:
         infoSink(infoSink), version(version), 
         language(language),
         spvVersion(spvVersion), 
-        intermediate(interm), messages(messages), numErrors(0), currentScanner(0) { }
+        intermediate(interm), messages(messages), numErrors(0), currentScanner(nullptr) { }
     virtual ~TParseVersions() { }
     void requireStage(const TSourceLoc&, EShLanguageMask, const char* featureDesc);
     void requireStage(const TSourceLoc&, EShLanguage, const char* featureDesc);

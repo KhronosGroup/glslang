@@ -1066,8 +1066,8 @@ void TParseVersions::checkExtensionStage(const TSourceLoc& loc, const char * con
     if (strcmp(extension, "GL_NV_mesh_shader") == 0) {
         requireStage(loc, (EShLanguageMask)(EShLangTaskMask | EShLangMeshMask | EShLangFragmentMask),
                      "#extension GL_NV_mesh_shader");
-        profileRequires(loc, ECoreProfile, 450, 0, "#extension GL_NV_mesh_shader");
-        profileRequires(loc, EEsProfile, 320, 0, "#extension GL_NV_mesh_shader");
+        profileRequires(loc, ECoreProfile, 450, nullptr, "#extension GL_NV_mesh_shader");
+        profileRequires(loc, EEsProfile, 320, nullptr, "#extension GL_NV_mesh_shader");
         if (extensionTurnedOn(E_GL_EXT_mesh_shader)) {
             error(loc, "GL_EXT_mesh_shader is already turned on, and not allowed with", "#extension", extension);
         }
@@ -1075,8 +1075,8 @@ void TParseVersions::checkExtensionStage(const TSourceLoc& loc, const char * con
     else if (strcmp(extension, "GL_EXT_mesh_shader") == 0) {
         requireStage(loc, (EShLanguageMask)(EShLangTaskMask | EShLangMeshMask | EShLangFragmentMask),
                      "#extension GL_EXT_mesh_shader");
-        profileRequires(loc, ECoreProfile, 450, 0, "#extension GL_EXT_mesh_shader");
-        profileRequires(loc, EEsProfile, 320, 0, "#extension GL_EXT_mesh_shader");
+        profileRequires(loc, ECoreProfile, 450, nullptr, "#extension GL_EXT_mesh_shader");
+        profileRequires(loc, EEsProfile, 320, nullptr, "#extension GL_EXT_mesh_shader");
         if (extensionTurnedOn(E_GL_NV_mesh_shader)) {
             error(loc, "GL_NV_mesh_shader is already turned on, and not allowed with", "#extension", extension);
         }
