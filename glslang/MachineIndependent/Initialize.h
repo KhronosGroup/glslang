@@ -105,6 +105,7 @@ protected:
     const char* postfixes[5];
     const char* prefixes[EbtNumTypes];
     int dimMap[EsdNumDims];
+    bool compatibilityIncluded = false;
 };
 
 } // end namespace glslang

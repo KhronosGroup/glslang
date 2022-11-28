@@ -478,10 +478,9 @@ void TBuiltIns::relateTabledBuiltins(int /* version */, EProfile /* profile */, 
     RelateTabledBuiltins(CustomFunctions, symbolTable);
 }
 
-inline bool IncludeLegacy(int version, EProfile profile, const SpvVersion& spvVersion)
+inline bool IncludeLegacy(int version, EProfile profile, const SpvVersion& spvVersion, bool compatibilityIncluded)
 {
-    return profile != EEsProfile && (version <= 130 || (spvVersion.spv == 0 && version == 140 && ARBCompatibility) ||
-           profile == ECompatibilityProfile);
+    return profile != EEsProfile && (version <= 130 || (spvVersion.spv == 0 && compatibilityIncluded) || profile == ECompatibilityProfile);
 }
 
 // Construct TBuiltInParseables base class.  This can be used for language-common constructs.
@@ -546,6 +545,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
     version = 310;
     profile = EEsProfile;
 #endif
+    compatibilityIncluded = (profile == ECompatibilityProfile) && ARBCompatibility;
     addTabledBuiltins(version, profile, spvVersion);
 
     //============================================================================
@@ -1719,7 +1719,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
     // (Per-stage functions below.)
     //
     if ((profile == EEsProfile && version == 100) ||
-         profile == ECompatibilityProfile ||
+        IncludeLegacy(version, profile, spvVersion, compatibilityIncluded) ||
         (profile == ECoreProfile && version < 420) ||
          profile == ENoProfile) {
         if (spvVersion.spv == 0) {
@@ -4174,7 +4174,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
     //
     // Geometric Functions.
     //
-    if (spvVersion.vulkan == 0 && IncludeLegacy(version, profile, spvVersion))
+    if (spvVersion.vulkan == 0 && IncludeLegacy(version, profile, spvVersion, compatibilityIncluded))
         stageBuiltins[EShLangVertex].append("vec4 ftransform();");
 
     //
@@ -4678,7 +4678,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
     }
 
 #if !defined(GLSLANG_WEB)
-    if (spvVersion.spv == 0 && IncludeLegacy(version, profile, spvVersion)) {
+    if (spvVersion.spv == 0 && IncludeLegacy(version, profile, spvVersion, compatibilityIncluded)) {
         //
         // Matrix state. p. 31, 32, 37, 39, 40.
         //
@@ -4966,7 +4966,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "attribute vec4  gl_MultiTexCoord7;"
                 "attribute float gl_FogCoord;"
                 "\n");
-        } else if (IncludeLegacy(version, profile, spvVersion)) {
+        } else if (IncludeLegacy(version, profile, spvVersion, compatibilityIncluded)) {
             stageBuiltins[EShLangVertex].append(
                 "in vec4  gl_Color;"
                 "in vec4  gl_SecondaryColor;"
@@ -4995,7 +4995,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                     "varying vec4  gl_TexCoord[];"
                     "varying float gl_FogFragCoord;"
                     "\n");
-            } else if (IncludeLegacy(version, profile, spvVersion)) {
+            } else if (IncludeLegacy(version, profile, spvVersion, compatibilityIncluded)) {
                 stageBuiltins[EShLangVertex].append(
                     "    vec4  gl_ClipVertex;"       // needs qualifier fixed later
                     "out vec4  gl_FrontColor;"
@@ -5023,7 +5023,8 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                     "float gl_PointSize;"   // needs qualifier fixed later
                     "float gl_ClipDistance[];"
                     );
-            if (IncludeLegacy(version, profile, spvVersion))
+            if (IncludeLegacy(version, profile, spvVersion, compatibilityIncluded) ||
+                (profile != EEsProfile && version >= 110)) // GL_ARB_geometry_shader4
                 stageBuiltins[EShLangVertex].append(
                     "vec4 gl_ClipVertex;"   // needs qualifier fixed later
                     "vec4 gl_FrontColor;"
@@ -5364,7 +5365,8 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "float gl_PointSize;"
                 "float gl_ClipDistance[];"
                 );
-        if (profile == ECompatibilityProfile)
+        if (IncludeLegacy(version, profile, spvVersion, compatibilityIncluded)||
+            (profile != EEsProfile && version >= 140)) // ARB_geometry_shader4
             stageBuiltins[EShLangTessControl].append(
                 "vec4 gl_ClipVertex;"
                 "vec4 gl_FrontColor;"
@@ -5462,7 +5464,8 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "float gl_PointSize;"
                 "float gl_ClipDistance[];"
             );
-        if (version >= 400 && profile == ECompatibilityProfile)
+        if (IncludeLegacy(version, profile, spvVersion, compatibilityIncluded)||
+            (profile != EEsProfile && version >= 140)) // ARB_geometry_shader4
             stageBuiltins[EShLangTessEvaluation].append(
                 "vec4 gl_ClipVertex;"
                 "vec4 gl_FrontColor;"
@@ -5549,7 +5552,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             stageBuiltins[EShLangFragment].append(
                 "out int gl_FragStencilRefARB;"
                 );
-        if (IncludeLegacy(version, profile, spvVersion) || (! ForwardCompatibility && version < 420))
+        if (IncludeLegacy(version, profile, spvVersion, compatibilityIncluded) || (! ForwardCompatibility && version < 420))
             stageBuiltins[EShLangFragment].append(
                 "vec4 gl_FragColor;"   // needs qualifier fixed later
                 );
@@ -5566,7 +5569,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "in float gl_ClipDistance[];"
                 );
 
-            if (IncludeLegacy(version, profile, spvVersion)) {
+            if (IncludeLegacy(version, profile, spvVersion, compatibilityIncluded)) {
                 if (version < 150)
                     stageBuiltins[EShLangFragment].append(
                         "in float gl_FogFragCoord;"
@@ -7344,7 +7347,7 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
         snprintf(builtInConstant, maxSize, "const int  gl_MaxFragmentUniformComponents = %d;", resources.maxFragmentUniformComponents);
         s.append(builtInConstant);
 
-        if (spvVersion.spv == 0 && IncludeLegacy(version, profile, spvVersion)) {
+        if (spvVersion.spv == 0 && IncludeLegacy(version, profile, spvVersion, compatibilityIncluded)) {
             //
             // OpenGL'uniform' state.  Page numbers are in reference to version
             // 1.4 of the OpenGL specification.
@@ -7471,7 +7474,7 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
                         "float gl_PointSize;"
                         "float gl_ClipDistance[];"
                     );
-                if (profile == ECompatibilityProfile)
+                if (IncludeLegacy(version, profile, spvVersion, compatibilityIncluded))
                     s.append(
                         "vec4 gl_ClipVertex;"
                         "vec4 gl_FrontColor;"
@@ -9538,11 +9541,11 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         symbolTable.relateToOperator("textureFootprintGradNV",      EOpImageSampleFootprintGradNV);
         symbolTable.relateToOperator("textureFootprintGradClampNV", EOpImageSampleFootprintGradClampNV);
 
-        if (spvVersion.spv == 0 && IncludeLegacy(version, profile, spvVersion))
+        if (spvVersion.spv == 0 && IncludeLegacy(version, profile, spvVersion, compatibilityIncluded))
             symbolTable.relateToOperator("ftransform", EOpFtransform);
 
-        if (spvVersion.spv == 0 && (IncludeLegacy(version, profile, spvVersion) ||
-            (profile == EEsProfile && version == 100))) {
+        if (spvVersion.spv == 0 && (IncludeLegacy(version, profile, spvVersion, compatibilityIncluded) ||
+            (profile == EEsProfile && version == 100) || profile != EEsProfile)) {
 
             symbolTable.relateToOperator("texture1D",                EOpTexture);
             symbolTable.relateToOperator("texture1DGradARB",         EOpTextureGrad);
@@ -9934,7 +9937,7 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
     switch(language) {
     case EShLangFragment:
         // Set up gl_FragData based on current array size.
-        if (version == 100 || IncludeLegacy(version, profile, spvVersion) || (! ForwardCompatibility && profile != EEsProfile && version < 420)) {
+        if (version == 100 || IncludeLegacy(version, profile, spvVersion, compatibilityIncluded) || (! ForwardCompatibility && profile != EEsProfile && version < 420)) {
             TPrecisionQualifier pq = profile == EEsProfile ? EpqMedium : EpqNone;
             TType fragData(EbtFloat, EvqFragColor, pq, 4);
             TArraySizes* arraySizes = new TArraySizes;
