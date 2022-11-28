@@ -297,6 +297,7 @@ public:
         depthReplacing(false),
         stencilReplacing(false),
         uniqueId(0),
+        useGeometryShader4(false),
         globalUniformBlockName(""),
         atomicCounterBlockName(""),
         globalUniformBlockSet(TQualifier::layoutSetEnd),
@@ -308,6 +309,7 @@ public:
         source(EShSourceNone),
         useVulkanMemoryModel(false),
         invocations(TQualifier::layoutNotSet), vertices(TQualifier::layoutNotSet),
+        inputPrimitiveSetOutside(false), outputPrimitiveSetOutside(false), maxGSVerticesSetOutside(false),
         inputPrimitive(ElgNone), outputPrimitive(ElgNone),
         pixelCenterInteger(false), originUpperLeft(false),texCoordBuiltinRedeclared(false),
         vertexSpacing(EvsNone), vertexOrder(EvoNone), interlockOrdering(EioNone), pointMode(false), earlyFragmentTests(false),
@@ -771,7 +773,8 @@ public:
     int getInvocations() const { return invocations; }
     bool setVertices(int m)
     {
-        if (vertices != TQualifier::layoutNotSet)
+        if (vertices != TQualifier::layoutNotSet &&
+            getMaxGSVerticesSetOutside() == false)
             return vertices == m;
         vertices = m;
         return true;
@@ -779,12 +782,19 @@ public:
     int getVertices() const { return vertices; }
     bool setInputPrimitive(TLayoutGeometry p)
     {
-        if (inputPrimitive != ElgNone)
+        if (inputPrimitive != ElgNone &&
+            getInputPrimitiveSetOutside() == false)
             return inputPrimitive == p;
         inputPrimitive = p;
         return true;
     }
     TLayoutGeometry getInputPrimitive() const { return inputPrimitive; }
+    bool setInputPrimitiveSetOutside(bool p)
+    {
+        inputPrimitiveSetOutside = p;
+        return true;
+    }
+    bool getInputPrimitiveSetOutside() const { return inputPrimitiveSetOutside; }
     bool setVertexSpacing(TVertexSpacing s)
     {
         if (vertexSpacing != EvsNone)
@@ -819,12 +829,25 @@ public:
     bool isMultiStream() const { return multiStream; }
     bool setOutputPrimitive(TLayoutGeometry p)
     {
-        if (outputPrimitive != ElgNone)
+        if (outputPrimitive != ElgNone &&
+            getOutputPrimitiveSetOutside() == false)
             return outputPrimitive == p;
         outputPrimitive = p;
         return true;
     }
     TLayoutGeometry getOutputPrimitive() const { return outputPrimitive; }
+    bool setOutputPrimitiveSetOutside(bool p)
+    {
+        outputPrimitiveSetOutside = p;
+        return true;
+    }
+    bool getOutputPrimitiveSetOutside() const { return outputPrimitiveSetOutside; }
+    bool setMaxGSVerticesSetOutside(bool p)
+    {
+        maxGSVerticesSetOutside = p;
+        return true;
+    }
+    bool getMaxGSVerticesSetOutside() const { return maxGSVerticesSetOutside; }
     void setPostDepthCoverage() { postDepthCoverage = true; }
     bool getPostDepthCoverage() const { return postDepthCoverage; }
     void setEarlyFragmentTests() { earlyFragmentTests = true; }
@@ -1028,6 +1051,8 @@ public:
     const std::vector<std::string>& getProcesses() const { return processes.getProcesses(); }
     unsigned long long getUniqueId() const { return uniqueId; }
     void setUniqueId(unsigned long long id) { uniqueId = id; }
+    bool getGeometryShader4() const { return useGeometryShader4; }
+    void setGeometryShader4(bool enable) { useGeometryShader4 = enable; }
 
     // Certain explicit conversions are allowed conditionally
 #ifdef GLSLANG_WEB
@@ -1118,6 +1143,7 @@ protected:
     bool localSizeNotDefault[3];
     int localSizeSpecId[3];
     unsigned long long uniqueId;
+    bool useGeometryShader4;
 
     std::string globalUniformBlockName;
     std::string atomicCounterBlockName;
@@ -1134,6 +1160,9 @@ protected:
     bool useVulkanMemoryModel;
     int invocations;
     int vertices;
+    bool inputPrimitiveSetOutside;     // input primitive set from outside.
+    bool outputPrimitiveSetOutside;    // output primitive set from outside.
+    bool maxGSVerticesSetOutside;      // max_vertices set from outside.
     TLayoutGeometry inputPrimitive;
     TLayoutGeometry outputPrimitive;
     bool pixelCenterInteger;

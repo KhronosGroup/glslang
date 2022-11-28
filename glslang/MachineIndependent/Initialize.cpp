@@ -5157,39 +5157,92 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
     //
     //============================================================================
 
-    if (profile == ECoreProfile || profile == ECompatibilityProfile) {
-        stageBuiltins[EShLangGeometry].append(
-            "in gl_PerVertex {"
-                "vec4 gl_Position;"
-                "float gl_PointSize;"
-                "float gl_ClipDistance[];"
-                );
-        if (profile == ECompatibilityProfile)
+    if (profile == ECoreProfile ||
+        profile == ECompatibilityProfile ||
+        (profile != EEsProfile && version >= 110)) {
+        if (!(profile != EEsProfile && version < 140)) { // "in block" from 140
             stageBuiltins[EShLangGeometry].append(
-                "vec4 gl_ClipVertex;"
-                "vec4 gl_FrontColor;"
-                "vec4 gl_BackColor;"
-                "vec4 gl_FrontSecondaryColor;"
-                "vec4 gl_BackSecondaryColor;"
-                "vec4 gl_TexCoord[];"
-                "float gl_FogFragCoord;"
-                );
-        if (version >= 450)
+                "in gl_PerVertex {"
+                    "vec4 gl_Position;"
+                    "float gl_PointSize;"
+                    "float gl_ClipDistance[];"
+                    );
+            if (version >= 130)
+                stageBuiltins[EShLangGeometry].append(
+                    "float gl_CullDistance[];"       // GL_ARB_cull_distance
+                    );
+            if (IncludeLegacy(version, profile, spvVersion, compatibilityIncluded) ||
+                (profile != EEsProfile && version >= 110)) // GL_ARB_geometry_shader4
+                stageBuiltins[EShLangGeometry].append(
+                    "vec4 gl_ClipVertex;"
+                    "vec4 gl_FrontColor;"
+                    "vec4 gl_BackColor;"
+                    "vec4 gl_FrontSecondaryColor;"
+                    "vec4 gl_BackSecondaryColor;"
+                    "vec4 gl_TexCoord[];"
+                    "float gl_FogFragCoord;"
+                    );
+            if (version >= 450)
+                stageBuiltins[EShLangGeometry].append(
+                    "vec4 gl_SecondaryPositionNV;"   // GL_NV_stereo_view_rendering
+                    "vec4 gl_PositionPerViewNV[];"   // GL_NVX_multiview_per_view_attributes
+                    );
             stageBuiltins[EShLangGeometry].append(
-                "float gl_CullDistance[];"
-                "vec4 gl_SecondaryPositionNV;"   // GL_NV_stereo_view_rendering
-                "vec4 gl_PositionPerViewNV[];"   // GL_NVX_multiview_per_view_attributes
-                );
-        stageBuiltins[EShLangGeometry].append(
-            "} gl_in[];"
+                "} gl_in[];"
+            );
+        }
 
+        if (version >= 110)
+        {
+            stageBuiltins[EShLangGeometry].append(
+                "const int gl_VerticesIn = 1;"       // Value set later according to input primitive setting.
+            );
+
+            if (version < 130) {
+                stageBuiltins[EShLangGeometry].append(
+                    "varying in vec4 gl_PositionIn[];"
+                    "varying in vec4 gl_FrontColorIn[];"
+                    "varying in vec4 gl_BackColorIn[];"
+                    "varying in vec4 gl_FrontSecondaryColorIn[];"
+                    "varying in vec4 gl_BackSecondaryColorIn[];"
+                    "varying in vec4 gl_FogFragCoordIn[];"
+                    "varying in vec4 gl_ClipVertexIn[];"
+                    "varying in vec4 gl_PointSizeIn[];"
+                    "varying in vec4 gl_TexCoordIn[gl_VerticesIn][];"
+                );
+            }
+            else {
+                stageBuiltins[EShLangGeometry].append(
+                    "in vec4 gl_PositionIn[];"
+                    "in vec4 gl_FrontColorIn[];"
+                    "in vec4 gl_BackColorIn[];"
+                    "in vec4 gl_FrontSecondaryColorIn[];"
+                    "in vec4 gl_BackSecondaryColorIn[];"
+                    "in vec4 gl_FogFragCoordIn[];"
+                    "in vec4 gl_ClipVertexIn[];"
+                    "in vec4 gl_PointSizeIn[];"
+                    "in vec4 gl_TexCoordIn[gl_VerticesIn][];"
+                );
+            }
+        }
+
+        stageBuiltins[EShLangGeometry].append(
             "in int gl_PrimitiveIDIn;"
+        );
+
+        if (!(profile != EEsProfile && version < 140)) { // "out block" from 140
+            stageBuiltins[EShLangGeometry].append(
             "out gl_PerVertex {"
                 "vec4 gl_Position;"
                 "float gl_PointSize;"
                 "float gl_ClipDistance[];"
                 "\n");
-        if (profile == ECompatibilityProfile && version >= 400)
+        if (version >= 130)
+            stageBuiltins[EShLangGeometry].append(
+                "float gl_CullDistance[];"       // GL_ARB_cull_distance
+            );
+        if (IncludeLegacy(version, profile, spvVersion, compatibilityIncluded) ||
+            (profile != EEsProfile && version >= 140))
             stageBuiltins[EShLangGeometry].append(
                 "vec4 gl_ClipVertex;"
                 "vec4 gl_FrontColor;"
@@ -5199,13 +5252,36 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "vec4 gl_TexCoord[];"
                 "float gl_FogFragCoord;"
                 );
-        if (version >= 450)
-            stageBuiltins[EShLangGeometry].append(
-                "float gl_CullDistance[];"
-                );
         stageBuiltins[EShLangGeometry].append(
-            "};"
-
+            "};");
+        }
+        else {
+            if (version < 130) {
+                stageBuiltins[EShLangGeometry].append(
+                    "varying out vec4 gl_Position;"
+                    "varying out vec4 gl_PointSize;"
+                    "varying out vec4 gl_ClipVertex;"
+                    "varying out vec4 gl_FrontColor;"
+                    "varying out vec4 gl_BackColor;"
+                    "varying out vec4 gl_FrontSecondaryColor;"
+                    "varying out vec4 gl_BackSecondaryColor;"
+                    "varying out vec4 gl_TexCoord[];"
+                    "varying out float gl_FogFragCoord;");
+            }
+            else {
+                stageBuiltins[EShLangGeometry].append(
+                    "out vec4 gl_Position;"
+                    "out vec4 gl_PointSize;"
+                    "out vec4 gl_ClipVertex;"
+                    "out vec4 gl_FrontColor;"
+                    "out vec4 gl_BackColor;"
+                    "out vec4 gl_FrontSecondaryColor;"
+                    "out vec4 gl_BackSecondaryColor;"
+                    "out vec4 gl_TexCoord[];"
+                    "out float gl_FogFragCoord;");
+            }
+        }
+        stageBuiltins[EShLangGeometry].append(
             "out int gl_PrimitiveID;"
             "out int gl_Layer;");
 
@@ -5214,12 +5290,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "out int gl_ViewportIndex;"
             );
 
-        if (profile == ECompatibilityProfile && version < 400)
-            stageBuiltins[EShLangGeometry].append(
-            "out vec4 gl_ClipVertex;"
-            );
-
-        if (version >= 400)
+        if (version >= 150)
             stageBuiltins[EShLangGeometry].append(
             "in int gl_InvocationID;"
             );
@@ -7942,6 +8013,35 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
 
         if (version < 410)
             symbolTable.setVariableExtensions("gl_ViewportIndex", 1, &E_GL_ARB_viewport_array);
+        // GL_ARB_geometry_shader4
+        SpecialQualifier("gl_TexCoordIn",           EvqVaryingIn, EbvTexCoord,              symbolTable);
+        SpecialQualifier("gl_PositionIn",           EvqVaryingIn, EbvPosition,              symbolTable);
+        SpecialQualifier("gl_FrontColorIn",         EvqVaryingIn, EbvFrontColor,            symbolTable);
+        SpecialQualifier("gl_BackColorIn",          EvqVaryingIn, EbvBackColor,             symbolTable);
+        SpecialQualifier("gl_FrontSecondaryColorIn",EvqVaryingIn, EbvFrontSecondaryColor,   symbolTable);
+        SpecialQualifier("gl_BackSecondaryColorIn", EvqVaryingIn, EbvBackSecondaryColor,    symbolTable);
+        SpecialQualifier("gl_FogFragCoordIn",       EvqVaryingIn, EbvFogFragCoord,          symbolTable);
+        SpecialQualifier("gl_ClipVertexIn",         EvqVaryingIn, EbvClipVertex,            symbolTable);
+        SpecialQualifier("gl_PointSizeIn",          EvqVaryingIn, EbvPointSize,             symbolTable);
+        BuiltInVariable("gl_TexCoordIn",            EbvTexCoord,            symbolTable);
+        BuiltInVariable("gl_PositionIn",            EbvPosition,            symbolTable);
+        BuiltInVariable("gl_FrontColorIn",          EbvFrontColor,          symbolTable);
+        BuiltInVariable("gl_BackColorIn",           EbvBackColor,           symbolTable);
+        BuiltInVariable("gl_FrontSecondaryColorIn", EbvFrontSecondaryColor, symbolTable);
+        BuiltInVariable("gl_BackSecondaryColorIn",  EbvBackSecondaryColor,  symbolTable);
+        BuiltInVariable("gl_FogFragCoordIn",        EbvFogFragCoord,        symbolTable);
+        BuiltInVariable("gl_ClipVertexIn",          EbvClipVertex,          symbolTable);
+        BuiltInVariable("gl_PointSizeIn",           EbvPointSize,           symbolTable);
+        symbolTable.setVariableExtensions("gl_TexCoordIn",              Num_ARB_geometry_shader4, ARB_geometry_shader4);
+        symbolTable.setVariableExtensions("gl_PositionIn",              Num_ARB_geometry_shader4, ARB_geometry_shader4);
+        symbolTable.setVariableExtensions("gl_FrontColorIn",            Num_ARB_geometry_shader4, ARB_geometry_shader4);
+        symbolTable.setVariableExtensions("gl_BackColorIn",             Num_ARB_geometry_shader4, ARB_geometry_shader4);
+        symbolTable.setVariableExtensions("gl_FrontSecondaryColorIn",   Num_ARB_geometry_shader4, ARB_geometry_shader4);
+        symbolTable.setVariableExtensions("gl_BackSecondaryColorIn",    Num_ARB_geometry_shader4, ARB_geometry_shader4);
+        symbolTable.setVariableExtensions("gl_FogFragCoordIn",          Num_ARB_geometry_shader4, ARB_geometry_shader4);
+        symbolTable.setVariableExtensions("gl_ClipVertexIn",            Num_ARB_geometry_shader4, ARB_geometry_shader4);
+        symbolTable.setVariableExtensions("gl_PointSizeIn",             Num_ARB_geometry_shader4, ARB_geometry_shader4);
+        symbolTable.setVariableExtensions("gl_VerticesIn",              Num_ARB_geometry_shader4, ARB_geometry_shader4);
 
         // Compatibility variables
 

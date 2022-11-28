@@ -354,7 +354,7 @@ bool InitializeSymbolTables(TInfoSink& infoSink, TSymbolTable** commonTable,  TS
     }
 
     // check for geometry
-    if ((profile != EEsProfile && version >= 150) ||
+    if ((profile != EEsProfile && version >= 110) ||
         (profile == EEsProfile && version >= 310))
         InitializeStageSymbolTable(*builtInParseables, version, profile, spvVersion, EShLangGeometry, source,
                                    infoSink, commonTable, symbolTables);
@@ -605,8 +605,8 @@ bool DeduceVersionProfile(TInfoSink& infoSink, EShLanguage stage, bool versionNo
         if ((profile == EEsProfile && version < 310) ||
             (profile != EEsProfile && version < 150)) {
             correct = false;
-            infoSink.info.message(EPrefixError, "#version: geometry shaders require es profile with version 310 or non-es profile with version 150 or above");
-            version = (profile == EEsProfile) ? 310 : 150;
+            infoSink.info.message(EPrefixError, "#version: geometry shaders require es profile with version 310 or non-es profile with version 110 or above");
+            version = (profile == EEsProfile) ? 310 : 110; // OpenGL 1.1 is required for ARB_geometry_shader4 extension
             if (profile == EEsProfile || profile == ENoProfile)
                 profile = ECoreProfile;
         }
@@ -1013,6 +1013,10 @@ bool ProcessDeferred(
                                      versionWillBeError, *symbolTable,
                                      intermediate, optLevel, messages);
     intermediate.setUniqueId(symbolTable->getMaxSymbolId());
+
+    // A local change here. May not be upstreamed.
+    intermediate.setGeometryShader4(parseContext->extensionsTurnedOn(Num_ARB_geometry_shader4, ARB_geometry_shader4));
+
     return success;
 }
 

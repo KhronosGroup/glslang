@@ -227,6 +227,8 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_ARB_texture_query_lod]            = EBhDisable;
     extensionBehavior[E_GL_ARB_vertex_attrib_64bit]          = EBhDisable;
     extensionBehavior[E_GL_ARB_draw_instanced]               = EBhDisable;
+    extensionBehavior[E_GL_GL_ARB_arrays_of_arrays]          = EBhDisable;
+    extensionBehavior[E_GL_ARB_geometry_shader4]             = EBhDisable;
     extensionBehavior[E_GL_ARB_fragment_coord_conventions]   = EBhDisable;
 
 
@@ -255,6 +257,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_EXT_buffer_reference_uvec2]                  = EBhDisable;
     extensionBehavior[E_GL_EXT_demote_to_helper_invocation]             = EBhDisable;
     extensionBehavior[E_GL_EXT_debug_printf]                            = EBhDisable;
+    extensionBehavior[E_GL_EXT_geometry_shader4]                        = EBhDisable;
 
     extensionBehavior[E_GL_EXT_shader_16bit_storage]                    = EBhDisable;
     extensionBehavior[E_GL_EXT_shader_8bit_storage]                     = EBhDisable;
@@ -444,6 +447,7 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_ARB_gpu_shader5 1\n"
             "#define GL_ARB_separate_shader_objects 1\n"
             "#define GL_ARB_compute_shader 1\n"
+            "#define GL_ARB_geometry_shader4 1\n"
             "#define GL_ARB_tessellation_shader 1\n"
             "#define GL_ARB_enhanced_layouts 1\n"
             "#define GL_ARB_texture_cube_map_array 1\n"
@@ -476,6 +480,7 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_ARB_texture_query_lod 1\n"
             "#define GL_ARB_vertex_attrib_64bit 1\n"
             "#define GL_ARB_draw_instanced 1\n"
+            "#define GL_ARB_arrays_of_arrays 1 \n"
             "#define GL_ARB_fragment_coord_conventions 1\n"
             "#define GL_EXT_shader_non_constant_global_initializers 1\n"
             "#define GL_EXT_shader_image_load_formatted 1\n"
@@ -494,6 +499,7 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_EXT_debug_printf 1\n"
             "#define GL_EXT_fragment_shading_rate 1\n"
             "#define GL_EXT_shared_memory_block 1\n"
+            "#define GL_EXT_geometry_shader4 1\n"
             "#define GL_EXT_shader_integer_mix 1\n"
 
             // GL_KHR_shader_subgroup

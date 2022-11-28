@@ -456,6 +456,11 @@ TIntermTyped* TParseContext::handleVariable(const TSourceLoc& loc, TSymbol* symb
         requireExtensions(loc, symbol->getNumExtensions(), symbol->getExtensions(), symbol->getName().c_str());
 
 #ifndef GLSLANG_WEB
+    if (extensionsTurnedOn(Num_ARB_geometry_shader4, ARB_geometry_shader4) && (*string == TString("gl_VerticesIn"))
+        && (language == EShLangGeometry)) {
+        fixBuiltinConstantVerticesIn();
+    }
+
     if (symbol && symbol->isReadOnly()) {
         // All shared things containing an unsized array must be copied up
         // on first use, so that all future references will share its array structure,
@@ -597,6 +602,39 @@ TIntermTyped* TParseContext::handleBracketDereference(const TSourceLoc& loc, TIn
         }
         return result;
     }
+
+    // gl_TexCoordIn[...][...]
+    if (base->getQualifier().builtIn == EbvTexCoord &&
+        extensionsTurnedOn(Num_ARB_geometry_shader4, ARB_geometry_shader4)) {
+        int newSize = TQualifier::mapGeometryToSize(intermediate.getInputPrimitive());
+        TIntermSymbol* nodeOneDimension = base->getAsSymbolNode();
+        TIntermBinary* nodeTwoDimension = base->getAsBinaryNode();
+
+        if (nodeOneDimension && base->getQualifier().storage == EvqVaryingIn && nodeOneDimension->getName() == "gl_TexCoordIn" &&
+            (base->getArraySizes()->getDimSize(0) == UnsizedArraySize || base->getArraySizes()->isImplicitlySized())) {
+            TArraySizes* sizes = base->getWritableType().getArraySizes();
+            sizes->setDimSize(0, std::max(indexValue + 1, newSize));
+            sizes->setImplicitlySized(true);
+            base->getWritableType().setImplicitlySized(true);
+        }
+
+        if (nodeTwoDimension) {
+            TType& leftType = nodeTwoDimension->getLeft()->getWritableType();
+            if (nodeTwoDimension->getLeft()->getAsSymbolNode()->getName() == "gl_TexCoordIn" &&
+                leftType.getQualifier().storage == EvqVaryingIn &&
+                (leftType.getArraySizes()->getDimSize(1) == UnsizedArraySize ||
+                 leftType.getArraySizes()->isImplicitlySized())) {
+                TArraySizes& arraySizes = *leftType.getArraySizes();
+                assert(arraySizes.getNumDims() == 2);
+                arraySizes.setDimSize(1, std::max(arraySizes.getDimSize(1), indexValue + 1));
+                arraySizes.setImplicitlySized(true);
+                // second dimension.
+                base->getWritableType().changeOuterArraySize(arraySizes.getDimSize(1));
+                base->getWritableType().setImplicitlySized(true);
+            }
+        }
+    }
+
     if (base->getAsSymbolNode() && isIoResizeArray(base->getType()))
         handleIoResizeArrayAccess(loc, base);
 #endif
@@ -627,8 +665,11 @@ TIntermTyped* TParseContext::handleBracketDereference(const TSourceLoc& loc, TIn
         if (base->getType().isUnsizedArray()) {
             // we have a variable index into an unsized array, which is okay,
             // depending on the situation
-            if (base->getAsSymbolNode() && isIoResizeArray(base->getType()))
-                error(loc, "", "[", "array must be sized by a redeclaration or layout qualifier before being indexed with a variable");
+            if (base->getAsSymbolNode() && isIoResizeArray(base->getType())) {
+                bool isGsInput = base->getType().getQualifier().isArrayedIo(EShLangGeometry);
+                if (!isGsInput)
+                    error(loc, "", "[", "array must be sized by a redeclaration or layout qualifier before being indexed with a variable");
+            }
             else {
                 // it is okay for a run-time sized array
                 checkRuntimeSizable(loc, *base);
@@ -651,7 +692,7 @@ TIntermTyped* TParseContext::handleBracketDereference(const TSourceLoc& loc, TIn
             const char* explanation = "variable indexing sampler array";
             requireProfile(base->getLoc(), EEsProfile | ECoreProfile | ECompatibilityProfile, explanation);
             profileRequires(base->getLoc(), EEsProfile, 320, Num_AEP_gpu_shader5, AEP_gpu_shader5, explanation);
-            profileRequires(base->getLoc(), ECoreProfile | ECompatibilityProfile, 400, nullptr, explanation);
+            profileRequires(base->getLoc(), ECoreProfile | ECompatibilityProfile, 400, E_GL_GL_ARB_arrays_of_arrays, explanation);
         }
 
         result = intermediate.addIndex(EOpIndexIndirect, base, index, loc);
@@ -780,6 +821,24 @@ void TParseContext::handleIoResizeArrayAccess(const TSourceLoc& /*loc*/, TInterm
     }
 }
 
+//
+// Fix constant value of gl_VerticesIn during link-time. Depending on input primitive type from API or layout declaration.
+//
+void TParseContext::fixBuiltinConstantVerticesIn()
+{
+    // gl_VerticesIn
+    if (intermediate.getInputPrimitive() != ElpNone) {
+        bool builtIn;
+        TSymbol* symbol = symbolTable.find("gl_VerticesIn", &builtIn);
+        if (symbol != nullptr && builtIn) {
+            makeEditable(symbol);
+            symbolTable.amendSymbolIdLevel(*symbol);
+            TConstUnionArray& verticesInConstArr = symbol->getAsVariable()->getWritableConstArray();
+            verticesInConstArr[0].setIConst(TQualifier::mapGeometryToSize(intermediate.getInputPrimitive()));
+        }
+    }
+}
+
 // If there has been an input primitive declaration (geometry shader) or an output
 // number of vertices declaration(tessellation shader), make sure all input array types
 // match it in size.  Types come either from nodes in the AST or symbols in the
@@ -865,8 +924,14 @@ void TParseContext::checkIoArrayConsistency(const TSourceLoc& loc, int requiredS
     if (type.isUnsizedArray())
         type.changeOuterArraySize(requiredSize);
     else if (type.getOuterArraySize() != requiredSize) {
-        if (language == EShLangGeometry)
-            error(loc, "inconsistent input primitive for array size of", feature, name.c_str());
+        if (language == EShLangGeometry) {
+            if (intermediate.getInputPrimitiveSetOutside() == true && type.getQualifier().storage == EvqVaryingIn) {
+                // Resizing io arrays influenced by primitive layout set from API.
+                type.changeOuterArraySize(requiredSize);
+            }
+            else
+                error(loc, "inconsistent input primitive for array size of", feature, name.c_str());
+        }
         else if (language == EShLangTessControl)
             error(loc, "inconsistent output number of vertices for array size of", feature, name.c_str());
         else if (language == EShLangFragment) {
@@ -3993,6 +4058,14 @@ void TParseContext::mergeQualifiers(const TSourceLoc& loc, TQualifier& dst, cons
     else if ((dst.storage == EvqIn    && src.storage == EvqConst) ||
              (dst.storage == EvqConst && src.storage == EvqIn))
         dst.storage = EvqConstReadOnly;
+    else if (version >= 110 && language == EShLangGeometry &&
+             ((dst.storage == EvqVaryingIn && src.storage == EvqIn) ||
+              (src.storage == EvqVaryingIn && dst.storage == EvqIn)))
+        dst.storage = EvqIn;
+    else if (version >= 110 && language == EShLangGeometry &&
+             ((dst.storage == EvqVaryingIn && src.storage == EvqOut) ||
+              (src.storage == EvqVaryingIn && dst.storage == EvqOut)))
+        dst.storage = EvqOut;
     else if (src.storage != EvqTemporary &&
              src.storage != EvqGlobal)
         error(loc, "too many storage qualifiers", GetStorageQualifierString(src.storage), "");
@@ -4396,7 +4469,7 @@ void TParseContext::arrayOfArrayVersionCheck(const TSourceLoc& loc, const TArray
 
     requireProfile(loc, EEsProfile | ECoreProfile | ECompatibilityProfile, feature);
     profileRequires(loc, EEsProfile, 310, nullptr, feature);
-    profileRequires(loc, ECoreProfile | ECompatibilityProfile, 430, nullptr, feature);
+    profileRequires(loc, ECoreProfile | ECompatibilityProfile, 430, E_GL_GL_ARB_arrays_of_arrays, feature);
 }
 
 //
@@ -4613,12 +4686,13 @@ void TParseContext::nonInitConstCheck(const TSourceLoc& loc, TString& identifier
 // Returns a redeclared and type-modified variable if a redeclarated occurred.
 //
 TSymbol* TParseContext::redeclareBuiltinVariable(const TSourceLoc& loc, const TString& identifier,
-                                                 const TQualifier& qualifier, const TShaderQualifiers& publicType)
+                                                 const TType& type, const TShaderQualifiers& publicType)
 {
 #ifndef GLSLANG_WEB
     if (! builtInName(identifier) || symbolTable.atBuiltInLevel() || ! symbolTable.atGlobalLevel())
         return nullptr;
 
+    const TQualifier& qualifier = type.getQualifier();
     bool nonEsRedecls = (!isEsProfile() && (version >= 130 || identifier == "gl_TexCoord"));
     bool    esRedecls = (isEsProfile() &&
                          (version >= 320 || extensionsTurnedOn(Num_AEP_shader_io_blocks, AEP_shader_io_blocks)));
@@ -4635,9 +4709,19 @@ TSymbol* TParseContext::redeclareBuiltinVariable(const TSourceLoc& loc, const TS
             ssoPre150 = true;
     }
 
+    // Special case when using GL_ARB_geometry_shader4
+    bool gsPre150 = false;  // means the only reason this variable is redeclared is due to this combination
+    if (!isEsProfile() && version >= 110 && extensionsTurnedOn(Num_ARB_geometry_shader4, ARB_geometry_shader4)) {
+        if (identifier == "gl_PositionIn"  || identifier == "gl_FrontColorIn" || identifier == "gl_BackColorIn" ||
+            identifier == "gl_PointSizeIn" || identifier == "gl_ClipVertexIn" || identifier == "gl_TexCoordIn" ||
+            identifier == "gl_FrontSecondaryColorIn" || identifier == "gl_BackSecondaryColorIn" ||
+            identifier == "gl_FogFragCoordIn")
+            gsPre150 = true;
+    }
+
     // Potentially redeclaring a built-in variable...
 
-    if (ssoPre150 ||
+    if (ssoPre150 || gsPre150 ||
         (identifier == "gl_FragDepth"           && ((nonEsRedecls && version >= 420) || esRedecls)) ||
         (identifier == "gl_FragCoord"           && ((nonEsRedecls && version >= 140) || esRedecls)) ||
          identifier == "gl_ClipDistance"                                                            ||
@@ -4690,7 +4774,27 @@ TSymbol* TParseContext::redeclareBuiltinVariable(const TSourceLoc& loc, const TS
                 error(loc, "cannot change storage, memory, or auxiliary qualification of", "redeclaration", symbol->getName().c_str());
             if (! qualifier.smooth)
                 error(loc, "cannot change interpolation qualification of", "redeclaration", symbol->getName().c_str());
-        } else if (identifier == "gl_FrontColor"          ||
+        }
+        else if (gsPre150) {
+            if (intermediate.inIoAccessed(identifier))
+                error(loc, "cannot redeclare after use", identifier.c_str(), "");
+
+            if (identifier == "gl_TexCoordIn") {
+                if (type.getArraySizes()->getNumDims() != 2 && type.getArraySizes()->getDimSize(1) <= 0)
+                    error(loc, "cannot redeclared without 2-nd dimension's size or a size less than zero", identifier.c_str(), "");
+                if (type.getArraySizes()->getDimSize(1) > resources.maxTextureCoords)
+                    error(loc, "cannot redeclared with size larger than gl_MaxTexCoord on second dimension", identifier.c_str(), "");
+
+                symbol->getWritableType().getArraySizes()->setDimSize(0, type.getArraySizes()->getDimSize(0));
+                symbol->getWritableType().getArraySizes()->setDimSize(1, type.getArraySizes()->getDimSize(1));
+                //symbol->getWritableType().setImplicitlySized(false);
+            }
+            else {
+                symbol->getWritableType().changeOuterArraySize(type.getArraySizes()->getOuterSize());
+                //symbol->getWritableType().setImplicitlySized(false);
+            }
+        }
+        else if (identifier == "gl_FrontColor"          ||
                    identifier == "gl_BackColor"           ||
                    identifier == "gl_FrontSecondaryColor" ||
                    identifier == "gl_BackSecondaryColor"  ||
@@ -7248,7 +7352,9 @@ TIntermNode* TParseContext::declareVariable(const TSourceLoc& loc, TString& iden
     TType type(publicType);
     type.transferArraySizes(arraySizes);
     type.copyArrayInnerSizes(publicType.arraySizes);
-    arrayOfArrayVersionCheck(loc, type.getArraySizes());
+    // Initialization (declaring built-ins) happens before scanning or setting extension behaviors.
+    if (!builtInName(identifier))
+        arrayOfArrayVersionCheck(loc, type.getArraySizes());
 
     if (initializer) {
         if (type.getBasicType() == EbtRayQuery) {
@@ -7340,7 +7446,7 @@ TIntermNode* TParseContext::declareVariable(const TSourceLoc& loc, TString& iden
         error(loc, "can only apply depth layout to gl_FragStencilRefARB", "layout qualifier", "");
 
     // Check for redeclaration of built-ins and/or attempting to declare a reserved name
-    TSymbol* symbol = redeclareBuiltinVariable(loc, identifier, type.getQualifier(), publicType.shaderQualifiers);
+    TSymbol* symbol = redeclareBuiltinVariable(loc, identifier, type, publicType.shaderQualifiers);
     if (symbol == nullptr)
         reservedErrorCheck(loc, identifier);
 
@@ -9018,6 +9124,8 @@ void TParseContext::updateStandaloneQualifierDefaults(const TSourceLoc& loc, con
             error(loc, "can only apply to 'out'", id, "");
         if (! intermediate.setVertices(publicType.shaderQualifiers.vertices))
             error(loc, "cannot change previously set layout value", id, "");
+        else
+            intermediate.setMaxGSVerticesSetOutside(false);
 
         if (language == EShLangTessControl)
             checkIoArraysConsistency(loc);
@@ -9052,8 +9160,14 @@ void TParseContext::updateStandaloneQualifierDefaults(const TSourceLoc& loc, con
                     break;
                 }
                 if (intermediate.setInputPrimitive(publicType.shaderQualifiers.geometry)) {
-                    if (language == EShLangGeometry)
+                    if (language == EShLangGeometry) {
+                        // ARB_geometry_shader4 : gl_VerticesIn
+                        if (extensionsTurnedOn(Num_ARB_geometry_shader4, ARB_geometry_shader4))
+                            fixBuiltinConstantVerticesIn();
+
                         checkIoArraysConsistency(loc);
+                        intermediate.setInputPrimitiveSetOutside(false);
+                    }
                 } else
                     error(loc, "cannot change previously set input primitive", TQualifier::getGeometryString(publicType.shaderQualifiers.geometry), "");
                 break;
@@ -9072,8 +9186,12 @@ void TParseContext::updateStandaloneQualifierDefaults(const TSourceLoc& loc, con
             case ElgPoints:
             case ElgLineStrip:
             case ElgTriangleStrip:
-                if (! intermediate.setOutputPrimitive(publicType.shaderQualifiers.geometry))
+                if (!intermediate.setOutputPrimitive(publicType.shaderQualifiers.geometry)) {
                     error(loc, "cannot change previously set output primitive", TQualifier::getGeometryString(publicType.shaderQualifiers.geometry), "");
+                }
+                else {
+                    intermediate.setOutputPrimitiveSetOutside(false);
+                }
                 break;
             default:
                 error(loc, "cannot apply to 'out'", TQualifier::getGeometryString(publicType.shaderQualifiers.geometry), "");

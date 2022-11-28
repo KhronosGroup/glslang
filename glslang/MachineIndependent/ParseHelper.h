@@ -335,6 +335,7 @@ public:
     void fixIoArraySize(const TSourceLoc&, TType&);
     void handleIoResizeArrayAccess(const TSourceLoc&, TIntermTyped* base);
     void checkIoArraysConsistency(const TSourceLoc&, bool tailOnly = false);
+    void fixBuiltinConstantVerticesIn();
     int getIoArrayImplicitSize(const TQualifier&, TString* featureString = nullptr) const;
     void checkIoArrayConsistency(const TSourceLoc&, int requiredSize, const char* feature, TType&, const TString&);
 
@@ -403,7 +404,7 @@ public:
     void precisionQualifierCheck(const TSourceLoc&, TBasicType, TQualifier&);
     void parameterTypeCheck(const TSourceLoc&, TStorageQualifier qualifier, const TType& type);
     bool containsFieldWithBasicType(const TType& type ,TBasicType basicType);
-    TSymbol* redeclareBuiltinVariable(const TSourceLoc&, const TString&, const TQualifier&, const TShaderQualifiers&);
+    TSymbol* redeclareBuiltinVariable(const TSourceLoc&, const TString&, const TType& type, const TShaderQualifiers&);
     void redeclareBuiltinBlock(const TSourceLoc&, TTypeList& typeList, const TString& blockName, const TString* instanceName, TArraySizes* arraySizes);
     void paramCheckFixStorage(const TSourceLoc&, const TStorageQualifier&, TType& type);
     void paramCheckFix(const TSourceLoc&, const TQualifier&, TType& type);

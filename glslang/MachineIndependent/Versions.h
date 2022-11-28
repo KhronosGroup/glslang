@@ -162,7 +162,9 @@ const char* const E_GL_ARB_shading_language_packing     = "GL_ARB_shading_langua
 const char* const E_GL_ARB_texture_query_lod            = "GL_ARB_texture_query_lod";
 const char* const E_GL_ARB_vertex_attrib_64bit          = "GL_ARB_vertex_attrib_64bit";
 const char* const E_GL_ARB_draw_instanced               = "GL_ARB_draw_instanced";
+const char* const E_GL_GL_ARB_arrays_of_arrays          = "GL_ARB_arrays_of_arrays";
 const char* const E_GL_ARB_fragment_coord_conventions   = "GL_ARB_fragment_coord_conventions";
+const char* const E_GL_ARB_geometry_shader4             = "GL_ARB_geometry_shader4";
 
 const char* const E_GL_KHR_shader_subgroup_basic            = "GL_KHR_shader_subgroup_basic";
 const char* const E_GL_KHR_shader_subgroup_vote             = "GL_KHR_shader_subgroup_vote";
@@ -206,6 +208,8 @@ const char* const E_GL_EXT_blend_func_extended              = "GL_EXT_blend_func
 const char* const E_GL_EXT_shader_implicit_conversions      = "GL_EXT_shader_implicit_conversions";
 const char* const E_GL_EXT_fragment_shading_rate            = "GL_EXT_fragment_shading_rate";
 const char* const E_GL_EXT_shader_image_int64               = "GL_EXT_shader_image_int64";
+const char* const E_GL_EXT_geometry_shader4                 = "GL_EXT_geometry_shader4";
+
 const char* const E_GL_EXT_null_initializer                 = "GL_EXT_null_initializer";
 const char* const E_GL_EXT_shared_memory_block              = "GL_EXT_shared_memory_block";
 const char* const E_GL_EXT_subgroup_uniform_control_flow    = "GL_EXT_subgroup_uniform_control_flow";
@@ -351,6 +355,11 @@ const int Num_AEP_texture_buffer = sizeof(AEP_texture_buffer)/sizeof(AEP_texture
 const char* const AEP_texture_cube_map_array[] = { E_GL_EXT_texture_cube_map_array, E_GL_OES_texture_cube_map_array };
 const int Num_AEP_texture_cube_map_array = sizeof(AEP_texture_cube_map_array)/sizeof(AEP_texture_cube_map_array[0]);
 
+const char* const ARB_geometry_arrays_of_arrays[] = { E_GL_GL_ARB_arrays_of_arrays , E_GL_ARB_geometry_shader4 };
+const int Num_ARB_geometry_arrays_of_arrays = sizeof(ARB_geometry_arrays_of_arrays) / sizeof(ARB_geometry_arrays_of_arrays[0]);
+
+const char* const ARB_geometry_shader4[] = { E_GL_EXT_geometry_shader4 , E_GL_ARB_geometry_shader4 };
+const int Num_ARB_geometry_shader4 = sizeof(ARB_geometry_shader4) / sizeof(ARB_geometry_shader4[0]);
 const char* const AEP_mesh_shader[] = { E_GL_NV_mesh_shader, E_GL_EXT_mesh_shader };
 const int Num_AEP_mesh_shader = sizeof(AEP_mesh_shader)/sizeof(AEP_mesh_shader[0]);
 

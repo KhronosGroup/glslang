@@ -334,6 +334,20 @@ void TIntermediate::mergeModes(TInfoSink& infoSink, TIntermediate& unit)
     MERGE_TRUE(needToLegalize);
     MERGE_TRUE(binaryDoubleOutput);
     MERGE_TRUE(usePhysicalStorageBuffer);
+
+    // Merge primitive info of 'this' AST to the 'unit' AST.
+    // (In the other case, primitive info will be merged during merge trees)
+    // That includes input and output primitive layouts. Merged results will be copied into both AST.
+    // Also unmatched primitive layouts would be reported.
+    if (getStage() == EShLangGeometry && unit.getStage() == EShLangGeometry) {
+        if (unit.getInputPrimitive() == ElgNone) {
+            unit.setInputPrimitive(getInputPrimitive());
+        }
+
+        if (getInputPrimitive() != unit.getInputPrimitive() && getInputPrimitive() != ElgNone) {
+            infoSink.info.message(EPrefixError, "Can't merge two Geometry shaders with different input primitive layouts.");
+        }
+    }
 }
 
 //
@@ -1287,11 +1301,13 @@ void TIntermediate::finalCheck(TInfoSink& infoSink, bool keepUncalled)
         }
         break;
     case EShLangGeometry:
-        if (inputPrimitive == ElgNone)
+        // Those three related qualifiers' keywords are not supported in version <= 140.
+        // We need to allow setting those three qualifiers through api in low versions, but keep checks for gs shaders > 140.
+        if (inputPrimitive == ElgNone && (inputPrimitiveSetOutside == false && version > 140))
             error(infoSink, "At least one shader must specify an input layout primitive");
-        if (outputPrimitive == ElgNone)
+        if (outputPrimitive == ElgNone && (outputPrimitiveSetOutside == false && version > 140))
             error(infoSink, "At least one shader must specify an output layout primitive");
-        if (vertices == TQualifier::layoutNotSet)
+        if (vertices == TQualifier::layoutNotSet && (maxGSVerticesSetOutside == false && version > 140))
             error(infoSink, "At least one shader must specify a layout(max_vertices = value)");
         break;
     case EShLangFragment:
@@ -1325,9 +1341,9 @@ void TIntermediate::finalCheck(TInfoSink& infoSink, bool keepUncalled)
             error(infoSink, "Can only use one of gl_Layer or gl_LayerPerViewNV");
         if (inIoAccessed("gl_ViewportMask") && inIoAccessed("gl_ViewportMaskPerViewNV"))
             error(infoSink, "Can only use one of gl_ViewportMask or gl_ViewportMaskPerViewNV");
-        if (outputPrimitive == ElgNone)
+        if (outputPrimitive == ElgNone || (outputPrimitiveSetOutside == true && version > 140))
             error(infoSink, "At least one shader must specify an output layout primitive");
-        if (vertices == TQualifier::layoutNotSet)
+        if (vertices == TQualifier::layoutNotSet || (maxGSVerticesSetOutside == true && version > 140))
             error(infoSink, "At least one shader must specify a layout(max_vertices = value)");
         if (primitives == TQualifier::layoutNotSet)
             error(infoSink, "At least one shader must specify a layout(max_primitives = value)");
