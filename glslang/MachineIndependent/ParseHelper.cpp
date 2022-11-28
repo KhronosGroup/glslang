@@ -609,7 +609,7 @@ TIntermTyped* TParseContext::handleBracketDereference(const TSourceLoc& loc, TIn
         int newSize = TQualifier::mapGeometryToSize(intermediate.getInputPrimitive());
         TIntermSymbol* nodeOneDimension = base->getAsSymbolNode();
         TIntermBinary* nodeTwoDimension = base->getAsBinaryNode();
-
+        /*
         if (nodeOneDimension && base->getQualifier().storage == EvqVaryingIn && nodeOneDimension->getName() == "gl_TexCoordIn" &&
             (base->getArraySizes()->getDimSize(0) == UnsizedArraySize || base->getArraySizes()->isImplicitlySized())) {
             TArraySizes* sizes = base->getWritableType().getArraySizes();
@@ -632,7 +632,7 @@ TIntermTyped* TParseContext::handleBracketDereference(const TSourceLoc& loc, TIn
                 base->getWritableType().changeOuterArraySize(arraySizes.getDimSize(1));
                 base->getWritableType().setImplicitlySized(true);
             }
-        }
+        }*/
     }
 
     if (base->getAsSymbolNode() && isIoResizeArray(base->getType()))
