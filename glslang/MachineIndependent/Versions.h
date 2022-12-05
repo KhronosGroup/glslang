@@ -265,6 +265,9 @@ const char* const E_GL_NV_compute_shader_derivatives            = "GL_NV_compute
 const char* const E_GL_NV_shader_texture_footprint              = "GL_NV_shader_texture_footprint";
 const char* const E_GL_NV_mesh_shader                           = "GL_NV_mesh_shader";
 
+// ARM
+const char* const E_GL_ARM_shader_core_builtins                 = "GL_ARM_shader_core_builtins";
+
 // Arrays of extensions for the above viewportEXTs duplications
 
 const char* const viewportEXTs[] = { E_GL_ARB_shader_viewport_layer_array, E_GL_NV_viewport_array2 };
