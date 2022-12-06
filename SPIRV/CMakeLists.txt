@@ -62,6 +62,7 @@ set(HEADERS
     disassemble.h
     GLSL.ext.AMD.h
     GLSL.ext.NV.h
+    GLSL.ext.ARM.h
     NonSemanticDebugPrintf.h
     NonSemanticShaderDebugInfo100.h)
 

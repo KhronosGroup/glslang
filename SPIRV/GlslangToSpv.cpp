@@ -49,6 +49,7 @@ namespace spv {
     #include "GLSL.ext.EXT.h"
     #include "GLSL.ext.AMD.h"
     #include "GLSL.ext.NV.h"
+    #include "GLSL.ext.ARM.h"
     #include "NonSemanticDebugPrintf.h"
 }
 
@@ -1106,6 +1107,28 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
         builder.addExtension(spv::E_SPV_NV_shader_sm_builtins);
         builder.addCapability(spv::CapabilityShaderSMBuiltinsNV);
         return spv::BuiltInSMIDNV;
+
+   // ARM builtins
+    case glslang::EbvCoreCountARM:
+        builder.addExtension(spv::E_SPV_ARM_core_builtins);
+        builder.addCapability(spv::CapabilityCoreBuiltinsARM);
+        return spv::BuiltInCoreCountARM;
+    case glslang::EbvCoreIDARM:
+        builder.addExtension(spv::E_SPV_ARM_core_builtins);
+        builder.addCapability(spv::CapabilityCoreBuiltinsARM);
+        return spv::BuiltInCoreIDARM;
+    case glslang::EbvCoreMaxIDARM:
+        builder.addExtension(spv::E_SPV_ARM_core_builtins);
+        builder.addCapability(spv::CapabilityCoreBuiltinsARM);
+        return spv::BuiltInCoreMaxIDARM;
+    case glslang::EbvWarpIDARM:
+        builder.addExtension(spv::E_SPV_ARM_core_builtins);
+        builder.addCapability(spv::CapabilityCoreBuiltinsARM);
+        return spv::BuiltInWarpIDARM;
+    case glslang::EbvWarpMaxIDARM:
+        builder.addExtension(spv::E_SPV_ARM_core_builtins);
+        builder.addCapability(spv::CapabilityCoreBuiltinsARM);
+        return spv::BuiltInWarpMaxIDARM;
 #endif
 
     default:
