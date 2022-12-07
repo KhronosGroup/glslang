@@ -319,6 +319,7 @@ public:
 
     virtual TParameter& operator[](int i) { assert(writable); return parameters[i]; }
     virtual const TParameter& operator[](int i) const { return parameters[i]; }
+    const TQualifier& getQualifier() const { return returnType.getQualifier(); }
 
 #ifndef GLSLANG_WEB
     virtual void setSpirvInstruction(const TSpirvInstruction& inst)

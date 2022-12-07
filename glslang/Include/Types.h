@@ -429,6 +429,12 @@ enum TLayoutFormat {
     ElfR16ui,
     ElfR8ui,
     ElfR64ui,
+    ElfExtSizeGuard,   // to help with comparisons
+    ElfSize1x8,
+    ElfSize1x16,
+    ElfSize1x32,
+    ElfSize2x32,
+    ElfSize4x32,
 
     ElfCount
 };
@@ -898,6 +904,8 @@ public:
         // -2048 as the default value indicating layoutSecondaryViewportRelative is not set
         layoutSecondaryViewportRelativeOffset = -2048;
         layoutShaderRecord = false;
+        layoutBindlessSampler = false;
+        layoutBindlessImage = false;
         layoutBufferReferenceAlign = layoutBufferReferenceAlignEnd;
         layoutFormat = ElfNone;
 #endif
@@ -1001,6 +1009,9 @@ public:
     // GL_EXT_spirv_intrinsics
     int spirvStorageClass;
     TSpirvDecorate* spirvDecorate;
+
+    bool layoutBindlessSampler;
+    bool layoutBindlessImage;
 #endif
 
     bool hasUniformLayout() const
@@ -1132,6 +1143,14 @@ public:
     {
         return nonUniform;
     }
+    bool isBindlessSampler() const
+    {
+        return layoutBindlessSampler;
+    }
+    bool isBindlessImage() const
+    {
+        return layoutBindlessImage;
+    }
 
     // GL_EXT_spirv_intrinsics
     bool hasSprivDecorate() const { return spirvDecorate != nullptr; }
@@ -1241,6 +1260,11 @@ public:
         case ElfR8ui:         return "r8ui";
         case ElfR64ui:        return "r64ui";
         case ElfR64i:         return "r64i";
+        case ElfSize1x8:      return "size1x8";
+        case ElfSize1x16:     return "size1x16";
+        case ElfSize1x32:     return "size1x32";
+        case ElfSize2x32:     return "size2x32";
+        case ElfSize4x32:     return "size4x32";
         default:              return "none";
         }
     }
@@ -1898,6 +1922,8 @@ public:
     virtual bool isImage()   const { return basicType == EbtSampler && getSampler().isImage(); }
     virtual bool isSubpass() const { return basicType == EbtSampler && getSampler().isSubpass(); }
     virtual bool isTexture() const { return basicType == EbtSampler && getSampler().isTexture(); }
+    virtual bool isBindlessImage() const { return isImage() && qualifier.layoutBindlessImage; }
+    virtual bool isBindlessTexture() const { return isTexture() && qualifier.layoutBindlessSampler; }
     // Check the block-name convention of creating a block without populating it's members:
     virtual bool isUnusableName() const { return isStruct() && structure == nullptr; }
     virtual bool isParameterized()  const { return typeParameters != nullptr; }
@@ -1952,6 +1978,11 @@ public:
     virtual bool containsOpaque() const
     {
         return contains([](const TType* t) { return t->isOpaque(); } );
+    }
+
+    virtual bool containsSampler() const
+    {
+        return contains([](const TType* t) { return t->isTexture() || t->isImage(); });
     }
 
     // Recursively checks if the type contains a built-in variable
@@ -2285,7 +2316,10 @@ public:
               }
               if (qualifier.layoutShaderRecord)
                 appendStr(" shaderRecordNV");
-
+              if (qualifier.layoutBindlessSampler)
+                  appendStr(" layoutBindlessSampler");
+              if (qualifier.layoutBindlessImage)
+                  appendStr(" layoutBindlessImage");
               appendStr(")");
             }
           }
@@ -2544,6 +2578,7 @@ public:
     void setStruct(TTypeList* s) { assert(isStruct()); structure = s; }
     TTypeList* getWritableStruct() const { assert(isStruct()); return structure; }  // This should only be used when known to not be sharing with other threads
     void setBasicType(const TBasicType& t) { basicType = t; }
+    void setVectorSize(int s) { vectorSize = s; }
 
     int computeNumComponents() const
     {

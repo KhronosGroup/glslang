@@ -227,6 +227,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_ARB_texture_query_lod]            = EBhDisable;
     extensionBehavior[E_GL_ARB_vertex_attrib_64bit]          = EBhDisable;
     extensionBehavior[E_GL_ARB_draw_instanced]               = EBhDisable;
+    extensionBehavior[E_GL_ARB_bindless_texture]             = EBhDisable;
     extensionBehavior[E_GL_ARB_fragment_coord_conventions]   = EBhDisable;
 
 
@@ -374,6 +375,9 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_EXT_shader_subgroup_extended_types_float16] = EBhDisable;
     extensionBehavior[E_GL_EXT_shader_atomic_float]                    = EBhDisable;
     extensionBehavior[E_GL_EXT_shader_atomic_float2]                   = EBhDisable;
+
+    // Record extensions not for spv.
+    spvUnsupportedExt.push_back(E_GL_ARB_bindless_texture);
 }
 
 #endif // GLSLANG_WEB
@@ -441,7 +445,6 @@ void TParseVersions::getPreamble(std::string& preamble)
 
     } else { // !isEsProfile()
         preamble =
-            "#define GL_FRAGMENT_PRECISION_HIGH 1\n"
             "#define GL_ARB_texture_rectangle 1\n"
             "#define GL_ARB_shading_language_420pack 1\n"
             "#define GL_ARB_texture_gather 1\n"
@@ -481,6 +484,7 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_ARB_vertex_attrib_64bit 1\n"
             "#define GL_ARB_draw_instanced 1\n"
             "#define GL_ARB_fragment_coord_conventions 1\n"
+            "#define GL_ARB_bindless_texture 1\n"
             "#define GL_EXT_shader_non_constant_global_initializers 1\n"
             "#define GL_EXT_shader_image_load_formatted 1\n"
             "#define GL_EXT_post_depth_coverage 1\n"
@@ -580,6 +584,10 @@ void TParseVersions::getPreamble(std::string& preamble)
             preamble += "#define GL_EXT_null_initializer 1\n";
             preamble += "#define GL_EXT_subgroup_uniform_control_flow 1\n";
         }
+        if (version >= 130) {
+            preamble +="#define GL_FRAGMENT_PRECISION_HIGH 1\n";
+        }
+
 #endif // GLSLANG_WEB
     }
 
@@ -1102,6 +1110,13 @@ void TParseVersions::extensionRequires(const TSourceLoc &loc, const char * const
         if (iter != extensionMinSpv.end())
             minSpvVersion = iter->second;
         requireSpv(loc, extension, minSpvVersion);
+    }
+
+    if (spvVersion.spv != 0){
+        for (auto ext : spvUnsupportedExt){
+            if (strcmp(extension, ext.c_str()) == 0)
+                error(loc, "not allowed when using generating SPIR-V codes", extension, "");
+        }
     }
 }
 
