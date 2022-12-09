@@ -1389,7 +1389,8 @@ TIntermTyped* TParseContext::handleFunctionCall(const TSourceLoc& loc, TFunction
 #endif
                     const TType& argType = arg->getAsTyped()->getType();
                     const TQualifier& argQualifier = argType.getQualifier();
-                    if (argQualifier.isMemory() && (argType.containsOpaque() || argType.isReference())) {
+                    bool containsBindlessSampler = intermediate.getBindlessMode() && argType.containsSampler();
+                    if (argQualifier.isMemory() && !containsBindlessSampler && (argType.containsOpaque() || argType.isReference())) {
                         const char* message = "argument cannot drop memory qualifier when passed to formal parameter";
 #ifndef GLSLANG_WEB
                         if (argQualifier.volatil && ! formalQualifier.volatil)
@@ -1675,9 +1676,13 @@ TIntermNode* TParseContext::handleReturnValue(const TSourceLoc& loc, TIntermType
             error(loc, "type does not match, or is not convertible to, the function's return type", "return", "");
             branch = intermediate.addBranch(EOpReturn, value, loc);
         }
-    } else
+    } else {
+        if (value->getType().isTexture() || value->getType().isImage()) {
+            if (!extensionTurnedOn(E_GL_ARB_bindless_texture))
+                error(loc, "sampler or image can be used as return type only when the extension GL_ARB_bindless_texture enabled", "return", "");
+        }
         branch = intermediate.addBranch(EOpReturn, value, loc);
-
+    }
     branch->updatePrecision(currentFunctionType->getQualifier().precision);
     return branch;
 }
@@ -1927,6 +1932,9 @@ TIntermTyped* TParseContext::addAssign(const TSourceLoc& loc, TOperator op, TInt
 {
     if ((op == EOpAddAssign || op == EOpSubAssign) && left->isReference())
         requireExtensions(loc, 1, &E_GL_EXT_buffer_reference2, "+= and -= on a buffer reference");
+
+    if (op == EOpAssign && left->getBasicType() == EbtSampler && right->getBasicType() == EbtSampler)
+        requireExtensions(loc, 1, &E_GL_ARB_bindless_texture, "sampler assignment for bindless texture");
 
     return intermediate.addAssign(op, left, right, loc);
 }
@@ -2884,6 +2892,14 @@ TFunction* TParseContext::handleConstructorCall(const TSourceLoc& loc, const TPu
         profileRequires(loc, EEsProfile, 300, nullptr, "arrayed constructor");
     }
 
+    // Reuse EOpConstructTextureSampler for bindless image constructor
+    // uvec2 imgHandle;
+    // imageLoad(image1D(imgHandle), 0);
+    if (type.isImage() && extensionTurnedOn(E_GL_ARB_bindless_texture))
+    {
+        intermediate.setBindlessImageMode(currentCaller, AstRefTypeFunc);
+    }
+
     TOperator op = intermediate.mapTypeToConstructorOp(type);
 
     if (op == EOpNull) {
@@ -3617,8 +3633,13 @@ bool TParseContext::constructorError(const TSourceLoc& loc, TIntermNode* node, T
         return true;
     }
     if (op != EOpConstructStruct && op != EOpConstructNonuniform && typed->getBasicType() == EbtSampler) {
-        error(loc, "cannot convert a sampler", constructorString.c_str(), "");
-        return true;
+        if (op == EOpConstructUVec2 && extensionTurnedOn(E_GL_ARB_bindless_texture)) {
+            intermediate.setBindlessTextureMode(currentCaller, AstRefTypeFunc);
+        }
+        else {
+            error(loc, "cannot convert a sampler", constructorString.c_str(), "");
+            return true;
+        }
     }
     if (op != EOpConstructStruct && typed->isAtomic()) {
         error(loc, "cannot convert an atomic_uint", constructorString.c_str(), "");
@@ -3638,6 +3659,26 @@ bool TParseContext::constructorTextureSamplerError(const TSourceLoc& loc, const 
 {
     TString constructorName = function.getType().getBasicTypeString();  // TODO: performance: should not be making copy; interface needs to change
     const char* token = constructorName.c_str();
+    // verify the constructor for bindless texture, the input must be ivec2 or uvec2
+    if (function.getParamCount() == 1) {
+        TType* pType = function[0].type;
+        TBasicType basicType = pType->getBasicType();
+        bool isIntegerVec2 = ((basicType == EbtUint || basicType == EbtInt) && pType->getVectorSize() == 2);
+        bool bindlessMode = extensionTurnedOn(E_GL_ARB_bindless_texture);
+        if (isIntegerVec2 && bindlessMode) {
+            if (pType->getSampler().isImage())
+                intermediate.setBindlessImageMode(currentCaller, AstRefTypeFunc);
+            else
+                intermediate.setBindlessTextureMode(currentCaller, AstRefTypeFunc);
+            return false;
+        } else {
+            if (!bindlessMode)
+                error(loc, "sampler-constructor requires the extension GL_ARB_bindless_texture enabled", token, "");
+            else
+                error(loc, "sampler-constructor requires the input to be ivec2 or uvec2", token, "");
+            return true;
+        }
+    }
 
     // exactly two arguments needed
     if (function.getParamCount() != 2) {
@@ -3733,13 +3774,32 @@ void TParseContext::samplerCheck(const TSourceLoc& loc, const TType& type, const
     if (type.getQualifier().storage == EvqUniform)
         return;
 
-    if (type.getBasicType() == EbtStruct && containsFieldWithBasicType(type, EbtSampler))
-        error(loc, "non-uniform struct contains a sampler or image:", type.getBasicTypeString().c_str(), identifier.c_str());
+    if (type.getBasicType() == EbtStruct && containsFieldWithBasicType(type, EbtSampler)) {
+        // For bindless texture, sampler can be declared as an struct member
+        if (extensionTurnedOn(E_GL_ARB_bindless_texture)) {
+            if (type.getSampler().isImage())
+                intermediate.setBindlessImageMode(currentCaller, AstRefTypeVar);
+            else
+                intermediate.setBindlessTextureMode(currentCaller, AstRefTypeVar);
+        }
+        else {
+            error(loc, "non-uniform struct contains a sampler or image:", type.getBasicTypeString().c_str(), identifier.c_str());
+        }
+    }
     else if (type.getBasicType() == EbtSampler && type.getQualifier().storage != EvqUniform) {
-        // non-uniform sampler
-        // not yet:  okay if it has an initializer
-        // if (! initializer)
-        error(loc, "sampler/image types can only be used in uniform variables or function parameters:", type.getBasicTypeString().c_str(), identifier.c_str());
+        // For bindless texture, sampler can be declared as an input/output/block member
+        if (extensionTurnedOn(E_GL_ARB_bindless_texture)) {
+            if (type.getSampler().isImage())
+                intermediate.setBindlessImageMode(currentCaller, AstRefTypeVar);
+            else
+                intermediate.setBindlessTextureMode(currentCaller, AstRefTypeVar);
+        }
+        else {
+            // non-uniform sampler
+            // not yet:  okay if it has an initializer
+            // if (! initializer)
+            error(loc, "sampler/image types can only be used in uniform variables or function parameters:", type.getBasicTypeString().c_str(), identifier.c_str());
+        }
     }
 }
 
@@ -3805,7 +3865,7 @@ void TParseContext::memberQualifierCheck(glslang::TPublicType& publicType)
 //
 // Check/fix just a full qualifier (no variables or types yet, but qualifier is complete) at global level.
 //
-void TParseContext::globalQualifierFixCheck(const TSourceLoc& loc, TQualifier& qualifier, bool isMemberCheck)
+void TParseContext::globalQualifierFixCheck(const TSourceLoc& loc, TQualifier& qualifier, bool isMemberCheck, const TPublicType* publicType)
 {
     bool nonuniformOkay = false;
 
@@ -3841,6 +3901,11 @@ void TParseContext::globalQualifierFixCheck(const TSourceLoc& loc, TQualifier& q
         {
             requireExtensions(loc, 1, &E_GL_EXT_scalar_block_layout, "default std430 layout for uniform");
         }
+
+        if (publicType != nullptr && publicType->isImage() &&
+            (qualifier.layoutFormat > ElfExtSizeGuard && qualifier.layoutFormat < ElfCount))
+            qualifier.layoutFormat = mapLegacyLayoutFormat(qualifier.layoutFormat, publicType->sampler.getBasicType());
+
         break;
     default:
         break;
@@ -4245,7 +4310,7 @@ void TParseContext::precisionQualifierCheck(const TSourceLoc& loc, TBasicType ba
 
 void TParseContext::parameterTypeCheck(const TSourceLoc& loc, TStorageQualifier qualifier, const TType& type)
 {
-    if ((qualifier == EvqOut || qualifier == EvqInOut) && type.isOpaque())
+    if ((qualifier == EvqOut || qualifier == EvqInOut) && type.isOpaque() && !intermediate.getBindlessMode())
         error(loc, "samplers and atomic_uints cannot be output parameters", type.getBasicTypeString().c_str(), "");
     if (!parsingBuiltins && type.contains16BitFloat())
         requireFloat16Arithmetic(loc, type.getBasicTypeString().c_str(), "float16 types can only be in uniform block or buffer storage");
@@ -5178,7 +5243,7 @@ void TParseContext::arrayObjectCheck(const TSourceLoc& loc, const TType& type, c
 
 void TParseContext::opaqueCheck(const TSourceLoc& loc, const TType& type, const char* op)
 {
-    if (containsFieldWithBasicType(type, EbtSampler))
+    if (containsFieldWithBasicType(type, EbtSampler) && !extensionTurnedOn(E_GL_ARB_bindless_texture))
         error(loc, "can't use with samplers or structs containing samplers", op, "");
 }
 
@@ -5551,6 +5616,28 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
         publicType.qualifier.layoutBufferReference = true;
         intermediate.setUseStorageBuffer();
         intermediate.setUsePhysicalStorageBuffer();
+        return;
+    }
+    if (id == "bindless_sampler") {
+        requireExtensions(loc, 1, &E_GL_ARB_bindless_texture, "bindless_sampler");
+        publicType.qualifier.layoutBindlessSampler = true;
+        intermediate.setBindlessTextureMode(currentCaller, AstRefTypeLayout);
+        return;
+    }
+    if (id == "bindless_image") {
+        requireExtensions(loc, 1, &E_GL_ARB_bindless_texture, "bindless_image");
+        publicType.qualifier.layoutBindlessImage = true;
+        intermediate.setBindlessImageMode(currentCaller, AstRefTypeLayout);
+        return;
+    }
+    if (id == "bound_sampler") {
+        requireExtensions(loc, 1, &E_GL_ARB_bindless_texture, "bound_sampler");
+        publicType.qualifier.layoutBindlessSampler = false;
+        return;
+    }
+    if (id == "bound_image") {
+        requireExtensions(loc, 1, &E_GL_ARB_bindless_texture, "bound_image");
+        publicType.qualifier.layoutBindlessImage = false;
         return;
     }
     if (language == EShLangGeometry || language == EShLangTessEvaluation || language == EShLangMesh) {
@@ -6214,6 +6301,10 @@ void TParseContext::mergeObjectLayoutQualifiers(TQualifier& dst, const TQualifie
             dst.layoutSecondaryViewportRelativeOffset = src.layoutSecondaryViewportRelativeOffset;
         if (src.layoutShaderRecord)
             dst.layoutShaderRecord = true;
+        if (src.layoutBindlessSampler)
+            dst.layoutBindlessSampler = true;
+        if (src.layoutBindlessImage)
+            dst.layoutBindlessImage = true;
         if (src.pervertexNV)
             dst.pervertexNV = true;
         if (src.pervertexEXT)
@@ -6498,7 +6589,7 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
 
     // Image format
     if (qualifier.hasFormat()) {
-        if (! type.isImage())
+        if (! type.isImage() && !intermediate.getBindlessImageMode())
             error(loc, "only apply to images", TQualifier::getLayoutFormatString(qualifier.getFormat()), "");
         else {
             if (type.getSampler().type == EbtFloat && qualifier.getFormat() > ElfFloatGuard)
@@ -6517,7 +6608,7 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
                 }
             }
         }
-    } else if (type.isImage() && ! qualifier.isWriteOnly()) {
+    } else if (type.isImage() && ! qualifier.isWriteOnly() && !intermediate.getBindlessImageMode()) {
         const char *explanation = "image variables not declared 'writeonly' and without a format layout qualifier";
         requireProfile(loc, ECoreProfile | ECompatibilityProfile, explanation);
         profileRequires(loc, ECoreProfile | ECompatibilityProfile, 0, E_GL_EXT_shader_image_load_formatted, explanation);
@@ -7828,12 +7919,14 @@ TIntermTyped* TParseContext::addConstructor(const TSourceLoc& loc, TIntermNode* 
     // Combined texture-sampler constructors are completely semantic checked
     // in constructorTextureSamplerError()
     if (op == EOpConstructTextureSampler) {
-        if (aggrNode->getSequence()[1]->getAsTyped()->getType().getSampler().shadow) {
-            // Transfer depth into the texture (SPIR-V image) type, as a hint
-            // for tools to know this texture/image is a depth image.
-            aggrNode->getSequence()[0]->getAsTyped()->getWritableType().getSampler().shadow = true;
+        if (aggrNode != nullptr) {
+            if (aggrNode->getSequence()[1]->getAsTyped()->getType().getSampler().shadow) {
+                // Transfer depth into the texture (SPIR-V image) type, as a hint
+                // for tools to know this texture/image is a depth image.
+                aggrNode->getSequence()[0]->getAsTyped()->getWritableType().getSampler().shadow = true;
+            }
+            return intermediate.setAggregateOperator(aggrNode, op, type, loc);
         }
-        return intermediate.setAggregateOperator(aggrNode, op, type, loc);
     }
 
     TTypeList::const_iterator memberTypes;
@@ -7968,6 +8061,16 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
             TIntermTyped* newNode = intermediate.addBuiltInFunctionCall(node->getLoc(), EOpConvPtrToUvec2, true, node,
                 type);
             return newNode;
+        } else if (node->getType().getBasicType() == EbtSampler) {
+            requireExtensions(loc, 1, &E_GL_ARB_bindless_texture, "sampler conversion to uvec2");
+            // force the basic type of the constructor param to uvec2, otherwise spv builder will
+            // report some errors
+            TIntermTyped* newSrcNode = intermediate.createConversion(EbtUint, node);
+            newSrcNode->getAsTyped()->getWritableType().setVectorSize(2);
+
+            TIntermTyped* newNode =
+                intermediate.addBuiltInFunctionCall(node->getLoc(), EOpConstructUVec2, false, newSrcNode, type);
+            return newNode;
         }
     case EOpConstructUVec3:
     case EOpConstructUVec4:
@@ -7981,7 +8084,15 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
     case EOpConstructBool:
         basicOp = EOpConstructBool;
         break;
-
+    case EOpConstructTextureSampler:
+        if ((node->getType().getBasicType() == EbtUint || node->getType().getBasicType() == EbtInt) &&
+            node->getType().getVectorSize() == 2) {
+            requireExtensions(loc, 1, &E_GL_ARB_bindless_texture, "ivec2/uvec2 convert to texture handle");
+            // No matter ivec2 or uvec2, Set EOpPackUint2x32 just to generate an opBitcast op code
+            TIntermTyped* newNode =
+                intermediate.addBuiltInFunctionCall(node->getLoc(), EOpPackUint2x32, true, node, type);
+            return newNode;
+        }
 #ifndef GLSLANG_WEB
 
     case EOpConstructDVec2:
@@ -8329,6 +8440,30 @@ void TParseContext::inheritMemoryQualifiers(const TQualifier& from, TQualifier& 
 }
 
 //
+// Update qualifier layoutBindlessImage & layoutBindlessSampler on block member
+//
+void TParseContext::updateBindlessQualifier(TType& memberType)
+{
+    if (memberType.containsSampler()) {
+        if (memberType.isStruct()) {
+            TTypeList* typeList = memberType.getWritableStruct();
+            for (unsigned int member = 0; member < typeList->size(); ++member) {
+                TType* subMemberType = (*typeList)[member].type;
+                updateBindlessQualifier(*subMemberType);
+            }
+        }
+        else if (memberType.getSampler().isImage()) {
+            intermediate.setBindlessImageMode(currentCaller, AstRefTypeLayout);
+            memberType.getQualifier().layoutBindlessImage = true;
+        }
+        else {
+            intermediate.setBindlessTextureMode(currentCaller, AstRefTypeLayout);
+            memberType.getQualifier().layoutBindlessSampler = true;
+        }
+    }
+}
+
+//
 // Do everything needed to add an interface block.
 //
 void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, const TString* instanceName,
@@ -8380,8 +8515,13 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
             }
         }
 
-        if (memberType.containsOpaque())
-            error(memberLoc, "member of block cannot be or contain a sampler, image, or atomic_uint type", typeList[member].type->getFieldName().c_str(), "");
+        // For bindless texture, sampler can be declared as uniform/storage block member,
+        if (memberType.containsOpaque()) {
+            if (memberType.containsSampler() && extensionTurnedOn(E_GL_ARB_bindless_texture))
+                updateBindlessQualifier(memberType);
+            else
+                error(memberLoc, "member of block cannot be or contain a sampler, image, or atomic_uint type", typeList[member].type->getFieldName().c_str(), "");
+            }
 
         if (memberType.containsCoopMat())
             error(memberLoc, "member of block cannot be or contain a cooperative matrix type", typeList[member].type->getFieldName().c_str(), "");
@@ -9557,6 +9697,40 @@ const TTypeList* TParseContext::recordStructCopy(TStructRecord& record, const TT
         }
     }
     return originStruct;
+}
+
+TLayoutFormat TParseContext::mapLegacyLayoutFormat(TLayoutFormat legacyLayoutFormat, TBasicType imageType)
+{
+    TLayoutFormat layoutFormat = ElfNone;
+    if (imageType == EbtFloat) {
+        switch (legacyLayoutFormat) {
+        case ElfSize1x16: layoutFormat = ElfR16f; break;
+        case ElfSize1x32: layoutFormat = ElfR32f; break;
+        case ElfSize2x32: layoutFormat = ElfRg32f; break;
+        case ElfSize4x32: layoutFormat = ElfRgba32f; break;
+        default: break;
+        }
+    } else if (imageType == EbtUint) {
+        switch (legacyLayoutFormat) {
+        case ElfSize1x8: layoutFormat = ElfR8ui; break;
+        case ElfSize1x16: layoutFormat = ElfR16ui; break;
+        case ElfSize1x32: layoutFormat = ElfR32ui; break;
+        case ElfSize2x32: layoutFormat = ElfRg32ui; break;
+        case ElfSize4x32: layoutFormat = ElfRgba32ui; break;
+        default: break;
+        }
+    } else if (imageType == EbtInt) {
+        switch (legacyLayoutFormat) {
+        case ElfSize1x8: layoutFormat = ElfR8i; break;
+        case ElfSize1x16: layoutFormat = ElfR16i; break;
+        case ElfSize1x32: layoutFormat = ElfR32i; break;
+        case ElfSize2x32: layoutFormat = ElfRg32i; break;
+        case ElfSize4x32: layoutFormat = ElfRgba32i; break;
+        default: break;
+        }
+    }
+
+    return layoutFormat;
 }
 
 } // end namespace glslang

@@ -393,7 +393,7 @@ public:
     void accStructCheck(const TSourceLoc & loc, const TType & type, const TString & identifier);
     void transparentOpaqueCheck(const TSourceLoc&, const TType&, const TString& identifier);
     void memberQualifierCheck(glslang::TPublicType&);
-    void globalQualifierFixCheck(const TSourceLoc&, TQualifier&, bool isMemberCheck = false);
+    void globalQualifierFixCheck(const TSourceLoc&, TQualifier&, bool isMemberCheck = false, const TPublicType* publicType = nullptr);
     void globalQualifierTypeCheck(const TSourceLoc&, const TQualifier&, const TPublicType&);
     bool structQualifierErrorCheck(const TSourceLoc&, const TPublicType& pType);
     void mergeQualifiers(const TSourceLoc&, TQualifier& dst, const TQualifier& src, bool force);
@@ -456,9 +456,11 @@ public:
     void addQualifierToExisting(const TSourceLoc&, TQualifier, TIdentifierList&);
     void invariantCheck(const TSourceLoc&, const TQualifier&);
     void updateStandaloneQualifierDefaults(const TSourceLoc&, const TPublicType&);
+    void updateBindlessQualifier(TType& memberType);
     void wrapupSwitchSubsequence(TIntermAggregate* statements, TIntermNode* branchNode);
     TIntermNode* addSwitch(const TSourceLoc&, TIntermTyped* expression, TIntermAggregate* body);
     const TTypeList* recordStructCopy(TStructRecord&, const TType*, const TType*);
+    TLayoutFormat mapLegacyLayoutFormat(TLayoutFormat legacyLayoutFormat, TBasicType imageType);
 
 #ifndef GLSLANG_WEB
     TAttributeType attributeFromName(const TString& name) const;

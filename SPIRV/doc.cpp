@@ -53,6 +53,7 @@ namespace spv {
         #include "GLSL.ext.EXT.h"
         #include "GLSL.ext.AMD.h"
         #include "GLSL.ext.NV.h"
+        #include "GLSL.ext.ARM.h"
     }
 }
 
@@ -442,6 +443,11 @@ const char* BuiltInString(int builtIn)
     case BuiltInPrimitiveLineIndicesEXT:         return "PrimitiveLineIndicesEXT";
     case BuiltInPrimitiveTriangleIndicesEXT:     return "PrimitiveTriangleIndicesEXT";
     case BuiltInCullPrimitiveEXT:                return "CullPrimitiveEXT";
+    case BuiltInCoreCountARM:           return "CoreCountARM";
+    case BuiltInCoreIDARM:              return "CoreIDARM";
+    case BuiltInCoreMaxIDARM:           return "CoreMaxIDARM";
+    case BuiltInWarpIDARM:              return "WarpIDARM";
+    case BuiltInWarpMaxIDARM:           return "BuiltInWarpMaxIDARM";
 
     default: return "Bad";
     }
@@ -1001,6 +1007,7 @@ const char* CapabilityString(int info)
     case CapabilityWorkgroupMemoryExplicitLayoutKHR:            return "CapabilityWorkgroupMemoryExplicitLayoutKHR";
     case CapabilityWorkgroupMemoryExplicitLayout8BitAccessKHR:  return "CapabilityWorkgroupMemoryExplicitLayout8BitAccessKHR";
     case CapabilityWorkgroupMemoryExplicitLayout16BitAccessKHR: return "CapabilityWorkgroupMemoryExplicitLayout16BitAccessKHR";
+    case CapabilityCoreBuiltinsARM:                             return "CoreBuiltinsARM";
 
     case CapabilityShaderInvocationReorderNV:                return "ShaderInvocationReorderNV";
     default: return "Bad";

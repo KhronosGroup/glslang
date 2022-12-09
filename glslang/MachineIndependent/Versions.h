@@ -163,6 +163,7 @@ const char* const E_GL_ARB_texture_query_lod            = "GL_ARB_texture_query_
 const char* const E_GL_ARB_vertex_attrib_64bit          = "GL_ARB_vertex_attrib_64bit";
 const char* const E_GL_ARB_draw_instanced               = "GL_ARB_draw_instanced";
 const char* const E_GL_ARB_fragment_coord_conventions   = "GL_ARB_fragment_coord_conventions";
+const char* const E_GL_ARB_bindless_texture             = "GL_ARB_bindless_texture";
 
 const char* const E_GL_KHR_shader_subgroup_basic            = "GL_KHR_shader_subgroup_basic";
 const char* const E_GL_KHR_shader_subgroup_vote             = "GL_KHR_shader_subgroup_vote";
@@ -264,6 +265,9 @@ const char* const E_GL_NV_fragment_shader_barycentric           = "GL_NV_fragmen
 const char* const E_GL_NV_compute_shader_derivatives            = "GL_NV_compute_shader_derivatives";
 const char* const E_GL_NV_shader_texture_footprint              = "GL_NV_shader_texture_footprint";
 const char* const E_GL_NV_mesh_shader                           = "GL_NV_mesh_shader";
+
+// ARM
+const char* const E_GL_ARM_shader_core_builtins                 = "GL_ARM_shader_core_builtins";
 
 // Arrays of extensions for the above viewportEXTs duplications
 

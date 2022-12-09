@@ -291,6 +291,7 @@ INSTANTIATE_TEST_SUITE_P(
         "GL_EXT_shader_integer_mix.vert",
         "GL_ARB_draw_instanced.vert",
         "GL_ARB_fragment_coord_conventions.vert",
+        "GL_ARB_bindless_texture.frag",
         "BestMatchFunction.vert",
         "EndStreamPrimitive.geom",
         "floatBitsToInt.vert",

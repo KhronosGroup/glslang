@@ -493,6 +493,8 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.samplerlessTextureFunctions.frag",
         "spv.smBuiltins.vert",
         "spv.smBuiltins.frag",
+        "spv.ARMCoreBuiltIns.vert",
+        "spv.ARMCoreBuiltIns.frag",
         "spv.builtin.PrimitiveShadingRateEXT.vert",
         "spv.builtin.ShadingRateEXT.frag",
         "spv.atomicAdd.bufferReference.comp",

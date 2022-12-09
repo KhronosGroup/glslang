@@ -6,7 +6,7 @@ ERROR: 0:6: 'binding' : sampler/texture/image requires layout(binding=X)
 ERROR: 0:8: 'binding' : sampler/texture/image requires layout(binding=X) 
 ERROR: 0:9: 'binding' : sampler/texture/image requires layout(binding=X) 
 ERROR: 0:10: 'binding' : sampler/texture/image requires layout(binding=X) 
-ERROR: 0:14: 'sampler2D' : sampler-constructor requires two arguments 
+ERROR: 0:14: 'sampler2D' : sampler-constructor requires the extension GL_ARB_bindless_texture enabled 
 ERROR: 0:15: 'sampler2D' : sampler-constructor first argument must be a scalar *texture* type 
 ERROR: 0:16: 'sampler2D' : sampler-constructor first argument must be a scalar *texture* type 
 ERROR: 0:17: 'sampler2D' : sampler-constructor second argument must be a scalar sampler or samplerShadow 
