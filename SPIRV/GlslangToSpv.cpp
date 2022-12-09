@@ -9267,10 +9267,11 @@ spv::Id TGlslangToSpvTraverser::getSymbolId(const glslang::TIntermSymbol* symbol
               && (builder.getStorageClass(id) == spv::StorageClassRayPayloadKHR ||
                   builder.getStorageClass(id) == spv::StorageClassIncomingRayPayloadKHR ||
                   builder.getStorageClass(id) == spv::StorageClassCallableDataKHR ||
-                  builder.getStorageClass(id) == spv::StorageClassIncomingCallableDataKHR) ||
-                  builder.getStorageClass(id) == spv::StorageClassHitObjectAttributeNV)) {
-            // Location values are used to link TraceRayKHR and ExecuteCallableKHR to corresponding variables
-            // but are not valid in SPIRV since they are supported only for Input/Output Storage classes.
+                  builder.getStorageClass(id) == spv::StorageClassIncomingCallableDataKHR ||
+                  builder.getStorageClass(id) == spv::StorageClassHitObjectAttributeNV))) {
+            // Location values are used to link TraceRayKHR/ExecuteCallableKHR/HitObjectGetAttributesNV
+            // to corresponding variables but are not valid in SPIRV since they are supported only
+            // for Input/Output Storage classes.
             builder.addDecoration(id, spv::DecorationLocation, symbol->getQualifier().layoutLocation);
         }
     }
