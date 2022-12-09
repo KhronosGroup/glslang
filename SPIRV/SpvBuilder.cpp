@@ -1176,6 +1176,21 @@ Id Builder::makeRayQueryType()
 
     return type->getResultId();
 }
+
+Id Builder::makeHitObjectNVType()
+{
+    Instruction *type;
+    if (groupedTypes[OpTypeHitObjectNV].size() == 0) {
+        type = new Instruction(getUniqueId(), NoType, OpTypeHitObjectNV);
+        groupedTypes[OpTypeHitObjectNV].push_back(type);
+        constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
+        module.mapInstruction(type);
+    } else {
+        type = groupedTypes[OpTypeHitObjectNV].back();
+    }
+
+    return type->getResultId();
+}
 #endif
 
 Id Builder::getDerefTypeId(Id resultId) const

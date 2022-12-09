@@ -302,9 +302,10 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_NV_shader_sm_builtins]                    = EBhDisable;
     extensionBehavior[E_GL_NV_integer_cooperative_matrix]            = EBhDisable;
 
-    // ARM
-    extensionBehavior[E_GL_ARM_shader_core_builtins]    = EBhDisable;
+    extensionBehavior[E_GL_NV_shader_invocation_reorder]             = EBhDisable;
 
+    // ARM
+    extensionBehavior[E_GL_ARM_shader_core_builtins]                 = EBhDisable;
 
     // AEP
     extensionBehavior[E_GL_ANDROID_extension_pack_es31a]             = EBhDisable;
@@ -552,6 +553,7 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_NV_mesh_shader 1\n"
             "#define GL_NV_cooperative_matrix 1\n"
             "#define GL_NV_integer_cooperative_matrix 1\n"
+            "#define GL_NV_shader_execution_reorder 1\n"
 
             "#define GL_EXT_shader_explicit_arithmetic_types 1\n"
             "#define GL_EXT_shader_explicit_arithmetic_types_int8 1\n"

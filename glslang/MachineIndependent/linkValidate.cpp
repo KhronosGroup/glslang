@@ -1614,6 +1614,8 @@ int TIntermediate::addUsedLocation(const TQualifier& qualifier, const TType& typ
         setRT = 0;
     else if (qualifier.isAnyCallable())
         setRT = 1;
+    else if (qualifier.isHitObjectAttrNV())
+        setRT = 2;
     else
         return -1;
 
@@ -1653,7 +1655,7 @@ int TIntermediate::addUsedLocation(const TQualifier& qualifier, const TType& typ
     // slot irrespective of type.
     int collision = -1; // no collision
 #ifndef GLSLANG_WEB
-    if (qualifier.isAnyPayload() || qualifier.isAnyCallable()) {
+    if (qualifier.isAnyPayload() || qualifier.isAnyCallable() || qualifier.isHitObjectAttrNV()) {
         TRange range(qualifier.layoutLocation, qualifier.layoutLocation);
         collision = checkLocationRT(setRT, qualifier.layoutLocation);
         if (collision < 0)

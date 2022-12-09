@@ -240,6 +240,8 @@ public:
     Id makeAccelerationStructureType();
     // rayQueryEXT type
     Id makeRayQueryType();
+    // hitObjectNV type
+    Id makeHitObjectNVType();
 
     // For querying about types.
     Id getTypeId(Id resultId) const { return module.getTypeId(resultId); }

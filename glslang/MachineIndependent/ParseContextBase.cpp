@@ -175,6 +175,9 @@ bool TParseContextBase::lValueErrorCheck(const TSourceLoc& loc, const char* op, 
         case EbtRayQuery:
             message = "can't modify rayQueryEXT";
             break;
+        case EbtHitObjectNV:
+            message = "can't modify hitObjectNV";
+            break;
 #endif
         default:
             break;
