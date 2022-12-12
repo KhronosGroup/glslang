@@ -54,7 +54,7 @@ output primitive = none
 
 Linked geometry stage:
 
-ERROR: Linking geometry stage: Not all provided sizes match across all geometry shaders in the program
+ERROR: Linking geometry stage: Not all array sizes match across all geometry shaders in the program
 
 Shader version: 460
 invocations = 1
