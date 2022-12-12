@@ -226,7 +226,7 @@ void SpirvToolsTransform(const glslang::TIntermediate& intermediate, std::vector
 bool SpirvToolsAnalyzeDeadOutputStores(spv_target_env target_env, std::vector<unsigned int>& spirv,
                                        std::unordered_set<uint32_t>* live_locs,
                                        std::unordered_set<uint32_t>* live_builtins,
-                                       spv::SpvBuildLogger* logger)
+                                       spv::SpvBuildLogger*)
 {
   spvtools::Optimizer optimizer(target_env);
   optimizer.SetMessageConsumer(OptimizerMesssageConsumer);
@@ -242,7 +242,7 @@ bool SpirvToolsAnalyzeDeadOutputStores(spv_target_env target_env, std::vector<un
 void SpirvToolsEliminateDeadOutputStores(spv_target_env target_env, std::vector<unsigned int>& spirv,
                                          std::unordered_set<uint32_t>* live_locs,
                                          std::unordered_set<uint32_t>* live_builtins,
-                                         spv::SpvBuildLogger* logger)
+                                         spv::SpvBuildLogger*)
 {
   spvtools::Optimizer optimizer(target_env);
   optimizer.SetMessageConsumer(OptimizerMesssageConsumer);
@@ -259,7 +259,7 @@ void SpirvToolsEliminateDeadOutputStores(spv_target_env target_env, std::vector<
 }
 
 void SpirvToolsEliminateDeadInputComponents(spv_target_env target_env, std::vector<unsigned int>& spirv,
-                                            spv::SpvBuildLogger* logger)
+                                            spv::SpvBuildLogger*)
 {
   spvtools::Optimizer optimizer(target_env);
   optimizer.SetMessageConsumer(OptimizerMesssageConsumer);
