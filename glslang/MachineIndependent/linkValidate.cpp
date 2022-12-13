@@ -750,6 +750,21 @@ void TIntermediate::mergeLinkerObjects(TInfoSink& infoSink, TIntermSequence& lin
                 }
 
                 // Update implicit array sizes
+                if (symbol->getWritableType().isImplicitlySizedArray() && unitSymbol->getType().isImplicitlySizedArray()) {
+                    if (unitSymbol->getType().getImplicitArraySize() > symbol->getType().getImplicitArraySize()){
+                        symbol->getWritableType().updateImplicitArraySize(unitSymbol->getType().getImplicitArraySize());
+                    }
+                }
+                else if (symbol->getWritableType().isImplicitlySizedArray() && unitSymbol->getType().isSizedArray()) {
+                    if (symbol->getWritableType().getImplicitArraySize() > unitSymbol->getType().getOuterArraySize())
+                        error(infoSink, "Implicit size of unsized array doesn't match same symbol among multiple shaders.");
+                }
+                else if (unitSymbol->getType().isImplicitlySizedArray() && symbol->getWritableType().isSizedArray()) {
+                    if (unitSymbol->getType().getImplicitArraySize() > symbol->getWritableType().getOuterArraySize())
+                        error(infoSink, "Implicit size of unsized array doesn't match same symbol among multiple shaders.");
+                }
+
+                // Update implicit array sizes
                 mergeImplicitArraySizes(symbol->getWritableType(), unitSymbol->getType());
 
                 // Check for consistent types/qualification/initializers etc.
@@ -759,6 +774,19 @@ void TIntermediate::mergeLinkerObjects(TInfoSink& infoSink, TIntermSequence& lin
             else if (symbol->getQualifier().isPushConstant() && unitSymbol->getQualifier().isPushConstant() && getStage() == unitStage)
                 error(infoSink, "Only one push_constant block is allowed per stage");
         }
+
+        // Check conflicts between preset primitives and sizes of I/O variables among multiple geometry shaders
+        if (language == EShLangGeometry && unitStage == EShLangGeometry)
+        {
+            TIntermSymbol* unitSymbol = unitLinkerObjects[unitLinkObj]->getAsSymbolNode();
+            if (unitSymbol->isArray() && unitSymbol->getQualifier().storage == EvqVaryingIn && unitSymbol->getQualifier().builtIn == EbvNone)
+                if ((unitSymbol->getArraySizes()->isImplicitlySized() &&
+                        unitSymbol->getArraySizes()->getImplicitSize() != TQualifier::mapGeometryToSize(getInputPrimitive())) ||
+                    (! unitSymbol->getArraySizes()->isImplicitlySized() &&
+                        unitSymbol->getArraySizes()->getDimSize(0) != TQualifier::mapGeometryToSize(getInputPrimitive())))
+                    error(infoSink, "Not all array sizes match across all geometry shaders in the program");
+        }
+
         if (merge) {
             linkerObjects.push_back(unitLinkerObjects[unitLinkObj]);
 
@@ -863,7 +891,8 @@ void TIntermediate::mergeErrorCheck(TInfoSink& infoSink, const TIntermSymbol& sy
         else {
             arraysMatch = symbol.getType().sameArrayness(unitSymbol.getType()) ||
                 (symbol.getType().isArray() && unitSymbol.getType().isArray() &&
-                (symbol.getType().isUnsizedArray() || unitSymbol.getType().isUnsizedArray()));
+                 (symbol.getType().isImplicitlySizedArray() || unitSymbol.getType().isImplicitlySizedArray() ||
+                  symbol.getType().isUnsizedArray() || unitSymbol.getType().isUnsizedArray()));
         }
 
         int lpidx = -1;
