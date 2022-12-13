@@ -757,7 +757,7 @@ void TIntermediate::mergeLinkerObjects(TInfoSink& infoSink, TIntermSequence& lin
                 }
                 else if (symbol->getWritableType().isImplicitlySizedArray() && unitSymbol->getType().isSizedArray()) {
                     if (symbol->getWritableType().getImplicitArraySize() > unitSymbol->getType().getOuterArraySize())
-                        error(infoSink, "Implicit size of unsized array aren't match same symbol among multiple shaders.");
+                        error(infoSink, "Implicit size of unsized array doesn't match same symbol among multiple shaders.");
                 }
                 else if (unitSymbol->getType().isImplicitlySizedArray() && symbol->getWritableType().isSizedArray()) {
                     if (unitSymbol->getType().getImplicitArraySize() > symbol->getWritableType().getOuterArraySize())
