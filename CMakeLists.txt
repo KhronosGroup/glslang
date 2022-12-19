@@ -41,7 +41,7 @@ if(POLICY CMP0054)
   cmake_policy(SET CMP0054 NEW)
 endif()
 
-project(glslang LANGUAGES CXX)
+project(glslang)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
