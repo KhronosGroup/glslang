@@ -35,4 +35,4 @@
 spirv_tools_standalone = false
 
 # Paths to SPIRV-Tools dependencies
-spirv_tools_spirv_headers_dir = "//External/spirv-tools/external/spirv-headers"
+spirv_tools_spirv_headers_dir = "//external/spirv-tools/external/spirv-headers"

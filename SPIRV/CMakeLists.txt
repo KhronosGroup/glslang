@@ -99,8 +99,8 @@ if(ENABLE_OPT)
     )
     target_link_libraries(SPIRV PRIVATE MachineIndependent SPIRV-Tools-opt)
     target_include_directories(SPIRV PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../External>
-        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/External>)
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../external>
+        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/external>)
 else()
     target_link_libraries(SPIRV PRIVATE MachineIndependent)
 endif()

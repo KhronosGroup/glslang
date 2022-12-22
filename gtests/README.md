@@ -15,7 +15,7 @@ How to run the tests
 --------------------
 
 Please make sure you have a copy of [Google Test][gtest] checked out under
-the `External` directory before building. After building, just run the
+the `external` directory before building. After building, just run the
 `ctest` command or the `gtests/glslangtests` binary in your build directory.
 
 The `gtests/glslangtests` binary also provides an `--update-mode` command

@@ -110,7 +110,7 @@ branch.
   (For MSVS: use 2015 or later.)
 * [CMake][cmake]: for generating compilation targets.
 * make: _Linux_, ninja is an alternative, if configured.
-* [Python 3.x][python]: for executing SPIRV-Tools scripts. (Optional if not using SPIRV-Tools and the 'External' subdirectory does not exist.)
+* [Python 3.x][python]: for executing SPIRV-Tools scripts. (Optional if not using SPIRV-Tools and the 'external' subdirectory does not exist.)
 * [bison][bison]: _optional_, but needed when changing the grammar (glslang.y).
 * [googletest][googletest]: _optional_, but should use if making any changes to glslang.
 
@@ -129,15 +129,15 @@ git clone https://github.com/KhronosGroup/glslang.git
 #### 2) Check-Out External Projects
 
 ```bash
-cd <the directory glslang was cloned to, "External" will be a subdirectory>
-git clone https://github.com/google/googletest.git External/googletest
+cd <the directory glslang was cloned to, "external" will be a subdirectory>
+git clone https://github.com/google/googletest.git external/googletest
 ```
 
 TEMPORARY NOTICE: additionally perform the following to avoid a current
 breakage in googletest:
 
 ```bash
-cd External/googletest
+cd external/googletest
 git checkout 0c400f67fcf305869c5fb113dd296eca266c9725
 cd ../..
 ```

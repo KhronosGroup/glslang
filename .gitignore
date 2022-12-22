@@ -10,6 +10,8 @@ build/
 Test/localResults/
 External/googletest
 External/spirv-tools
+external/googletest
+external/spirv-tools
 out/
 
 # GN generated files

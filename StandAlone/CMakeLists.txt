@@ -82,8 +82,8 @@ endif()
 
 target_link_libraries(glslangValidator ${LIBRARIES})
 target_include_directories(glslangValidator PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../External>
-    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/External>)
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../external>
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/external>)
 
 if(ENABLE_OPT)
     target_include_directories(glslangValidator

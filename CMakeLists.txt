@@ -56,7 +56,7 @@ include(CMakePackageConfigHelpers)
 include(CMakeDependentOption)
 
 option(BUILD_SHARED_LIBS "Build Shared Libraries" OFF)
-option(BUILD_EXTERNAL "Build external dependencies in /External" ON)
+option(BUILD_EXTERNAL "Build external dependencies in /external" ON)
 
 set(LIB_TYPE STATIC)
 
@@ -312,11 +312,11 @@ else()
     endif()
 endif()
 
-if(BUILD_EXTERNAL AND IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/External)
+if(BUILD_EXTERNAL AND IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/external)
     find_host_package(PythonInterp 3 REQUIRED)
 
     # We depend on these for later projects, so they should come first.
-    add_subdirectory(External)
+    add_subdirectory(external)
 endif()
 
 if(NOT TARGET SPIRV-Tools-opt)
