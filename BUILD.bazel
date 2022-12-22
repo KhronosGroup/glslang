@@ -56,7 +56,10 @@ py_binary(
 
 genrule(
     name = "gen_build_info_h",
-    srcs = ["CHANGES.md", "build_info.h.tmpl"],
+    srcs = [
+        "CHANGES.md",
+        "build_info.h.tmpl",
+    ],
     outs = ["glslang/build_info.h"],
     cmd_bash = "$(location build_info) $$(dirname $(location CHANGES.md)) -i $(location build_info.h.tmpl) -o $(location glslang/build_info.h)",
     cmd_bat = "for %F in ($(location CHANGES.md)) do $(location build_info) %~dpF -i $(location build_info.h.tmpl) -o $(location glslang/build_info.h)",
@@ -65,9 +68,12 @@ genrule(
 
 genrule(
     name = "gen_extension_headers_h",
-    srcs = ["glslang/ExtensionHeaders", "gen_extension_headers.py"],
+    srcs = [
+        "glslang/ExtensionHeaders/GL_EXT_shader_realtime_clock.glsl",
+    ],
     outs = ["glslang/glsl_intrinsic_header.h"],
-    cmd_bash = "$(location gen_extension_headers) -i  $(location glslang/ExtensionHeaders) -o $(location glslang/glsl_intrinsic_header.h)",
+    cmd_bash = "$(location :gen_extension_headers) -i $$(dirname $<) -o $@",
+    cmd_bat = "for %F in ($<) do $(location :gen_extension_headers) -i %~dpF -o $@",
     tools = [":gen_extension_headers"],
 )
 
@@ -106,10 +112,8 @@ cc_library(
     ) + [
         "OGLCompilersDLL/InitializeDll.cpp",
     ] + select({
-        "@bazel_tools//src/conditions:windows":
-            ["glslang/OSDependent/Windows/ossource.cpp"],
-        "//conditions:default":
-            ["glslang/OSDependent/Unix/ossource.cpp"],
+        "@bazel_tools//src/conditions:windows": ["glslang/OSDependent/Windows/ossource.cpp"],
+        "//conditions:default": ["glslang/OSDependent/Unix/ossource.cpp"],
     }),
     hdrs = glob([
         "glslang/HLSL/*.h",
@@ -132,7 +136,10 @@ cc_library(
     ],
     linkopts = select({
         "@bazel_tools//src/conditions:windows": [""],
-        "//conditions:default": ["-lm", "-lpthread"],
+        "//conditions:default": [
+            "-lm",
+            "-lpthread",
+        ],
     }),
     linkstatic = 1,
 )
@@ -223,7 +230,7 @@ cc_binary(
     srcs = [
         "StandAlone/StandAlone.cpp",
         "StandAlone/Worklist.h",
-        ":glslang/glsl_intrinsic_header.h"
+        ":glslang/glsl_intrinsic_header.h",
     ],
     copts = COMMON_COPTS,
     deps = [
@@ -274,10 +281,8 @@ cc_library(
         # Unfortunately we can't use $(location) in cc_library at the moment.
         # See https://github.com/bazelbuild/bazel/issues/1023
         # So we'll specify the path manually.
-        "@bazel_tools//src/conditions:windows":
-            ["GLSLANG_TEST_DIRECTORY='\"../../../../../Test\"'"],
-        "//conditions:default":
-            ["GLSLANG_TEST_DIRECTORY='\"Test\"'"],
+        "@bazel_tools//src/conditions:windows": ["GLSLANG_TEST_DIRECTORY='\"../../../../../Test\"'"],
+        "//conditions:default": ["GLSLANG_TEST_DIRECTORY='\"Test\"'"],
     }),
     linkstatic = 1,
     deps = [
