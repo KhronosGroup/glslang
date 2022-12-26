@@ -32,38 +32,38 @@ Validation failed
                9:      6(int) Constant 32
               10:      6(int) Constant 6
               11:      6(int) Constant 0
-               7:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 2(RoundEven) 8 9 10 11
+               7:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 2(DebugTypeBasic) 8 9 10 11
               12:      6(int) Constant 3
-               5:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 8(Floor) 12 3
-              16:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 35(Modf) 0 17
+               5:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 8(DebugTypeFunction) 12 3
+              16:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 35(DebugSource) 0 17
               19:      6(int) Constant 1
               20:      6(int) Constant 4
               21:      6(int) Constant 2
-              18:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 1(Round) 19 20 16 21
-              15:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 20(Cosh) 14 5 16 11 11 18 14 12 11
+              18:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 1(DebugCompilationUnit) 19 20 16 21
+              15:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 20(DebugFunction) 14 5 16 11 11 18 14 12 11
               23:             TypeFloat 32
-              25:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 2(RoundEven) 24 9 12 11
+              25:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 2(DebugTypeBasic) 24 9 12 11
               26:             TypeVector 23(float) 2
-              27:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 6(FSign) 25 21
+              27:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 6(DebugTypeVector) 25 21
               28:             TypeVector 23(float) 3
-              29:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 6(FSign) 25 12
+              29:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 6(DebugTypeVector) 25 12
               30:             TypeVector 23(float) 4
-              31:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 6(FSign) 25 20
+              31:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 6(DebugTypeVector) 25 20
               32:             TypeFunction 3 23(float) 26(fvec2) 28(fvec3) 30(fvec4)
-              33:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 8(Floor) 12 3 25 27 29 31
-              40:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 20(Cosh) 39 33 16 11 11 18 39 12 11
-              44:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(Pow) 45 25 16 11 11 40 20 19
-              47:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 31(Sqrt)
-              48:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(Pow) 49 27 16 11 11 40 20 21
-              51:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(Pow) 52 29 16 11 11 40 20 12
-              54:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(Pow) 55 31 16 11 11 40 20 20
+              33:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 8(DebugTypeFunction) 12 3 25 27 29 31
+              40:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 20(DebugFunction) 39 33 16 11 11 18 39 12 11
+              44:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 45 25 16 11 11 40 20 19
+              47:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 31(DebugExpression)
+              48:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 49 27 16 11 11 40 20 21
+              51:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 52 29 16 11 11 40 20 12
+              54:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 55 31 16 11 11 40 20 20
               59:   23(float) Constant 0
               60:   26(fvec2) ConstantComposite 59 59
               61:   28(fvec3) ConstantComposite 59 59 59
               62:   30(fvec4) ConstantComposite 59 59 59 59
         13(main):           3 Function None 4
               22:             Label
-              58:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 101 15 13(main)
+              58:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 101(DebugFunctionDefinition) 15 13(main)
               63:           3 FunctionCall 38(function(f1;vf2;vf3;vf4;) 59 60 61 62
                               Return
                               FunctionEnd
@@ -73,12 +73,12 @@ Validation failed
           36(f3):   28(fvec3) FunctionParameter
           37(f4):   30(fvec4) FunctionParameter
               41:             Label
-              42:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(Acosh) 40
-              43:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103 16 11 11 11 11
-              46:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(Log) 44 34(f) 47
-              50:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(Log) 48 35(f2) 47
-              53:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(Log) 51 36(f3) 47
-              56:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(Log) 54 37(f4) 47
-              57:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 101 40 38(function(f1;vf2;vf3;vf4;)
+              42:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 40
+              43:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 16 11 11 11 11
+              46:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 44 34(f) 47
+              50:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 48 35(f2) 47
+              53:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 51 36(f3) 47
+              56:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 54 37(f4) 47
+              57:           3 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 101(DebugFunctionDefinition) 40 38(function(f1;vf2;vf3;vf4;)
                               Return
                               FunctionEnd
