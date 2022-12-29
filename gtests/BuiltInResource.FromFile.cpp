@@ -53,5 +53,15 @@ TEST_F(DefaultResourceTest, FromFile)
     ASSERT_EQ(expectedConfig, realConfig);
 }
 
+TEST_F(DefaultResourceTest, UnrecognizedLimit)
+{
+    const std::string defaultConfig = GetDefaultTBuiltInResourceString();
+    testing::internal::CaptureStdout();
+    TBuiltInResource resources;
+    DecodeResourceLimits(&resources, const_cast<char*>(defaultConfig.c_str()));
+    std::string output = testing::internal::GetCapturedStdout();
+    ASSERT_EQ(output.find("unrecognized limit"), std::string::npos);
+}
+
 }  // anonymous namespace
 }  // namespace glslangtest
