@@ -1,4 +1,4 @@
-# Copyright (C) 2020 The Khronos Group Inc.
+# Copyright (C) 2020-2023 The Khronos Group Inc.
 #
 # All rights reserved.
 #
@@ -53,7 +53,7 @@ $(eval $(call gen_glslang_build_info_h))
 
 GLSLANG_OS_FLAGS := -DGLSLANG_OSINCLUDE_UNIX
 # AMD and NV extensions are turned on by default in upstream Glslang.
-GLSLANG_DEFINES:= -DAMD_EXTENSIONS -DNV_EXTENSIONS -DENABLE_HLSL $(GLSLANG_OS_FLAGS)
+GLSLANG_DEFINES:= -DENABLE_HLSL $(GLSLANG_OS_FLAGS)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE:=OSDependent
