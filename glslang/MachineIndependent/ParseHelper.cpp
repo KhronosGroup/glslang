@@ -1035,14 +1035,22 @@ TIntermTyped* TParseContext::handleDotDereference(const TSourceLoc& loc, TInterm
             inheritMemoryQualifiers(base->getQualifier(), result->getWritableType().getQualifier());
         } else {
             auto baseSymbol = base;
-            while (baseSymbol->getAsSymbolNode() == nullptr)
-                baseSymbol = baseSymbol->getAsBinaryNode()->getLeft();
-            TString structName;
-            structName.append("\'").append(baseSymbol->getAsSymbolNode()->getName().c_str()).append( "\'");
-            error(loc, "no such field in structure", field.c_str(), structName.c_str());
+            while (baseSymbol->getAsSymbolNode() == nullptr) {
+                auto binaryNode = baseSymbol->getAsBinaryNode();
+                if (binaryNode == nullptr) break;
+                baseSymbol = binaryNode->getLeft();
+            }
+            if (baseSymbol->getAsSymbolNode() != nullptr) {
+                TString structName;
+                structName.append("\'").append(baseSymbol->getAsSymbolNode()->getName().c_str()).append("\'");
+                error(loc, "no such field in structure", field.c_str(), structName.c_str());
+            } else {
+                error(loc, "no such field in structure", field.c_str(), "");
+            }
         }
     } else
-        error(loc, "does not apply to this type:", field.c_str(), base->getType().getCompleteString(intermediate.getEnhancedMsgs()).c_str());
+        error(loc, "does not apply to this type:", field.c_str(),
+          base->getType().getCompleteString(intermediate.getEnhancedMsgs()).c_str());
 
     // Propagate noContraction up the dereference chain
     if (base->getQualifier().isNoContraction())
