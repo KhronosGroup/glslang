@@ -211,6 +211,7 @@ INSTANTIATE_TEST_SUITE_P(
         "runtimeArray.vert",
         "simpleFunctionCall.frag",
         "stringToDouble.vert",
+        "struct.error.frag",
         "structAssignment.frag",
         "structDeref.frag",
         "structure.frag",
