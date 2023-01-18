@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## 12.0.0 2023-01-18
+
+### Breaking changes
+* An ABI was accidentally broken in #3014. Consequently, we have incremented the major revision number.
+
+### Other changes
+* Add support for ARB_bindless_texture.
+* Add support for GL_NV_shader_invocation_reorder.
+* Fix const parameter debug types when using NonSemantic.Shader.DebugInfo.100.
+* Fix NonSemantic.Shader.DebugInfo.100 disassembly.
+* Fix MaxDualSourceDrawBuffersEXT usage.
+* Fix structure member reference crash.
+
 ## 11.13.0 2022-12-06
 
 ### Other changes
