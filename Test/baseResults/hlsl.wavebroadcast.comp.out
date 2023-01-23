@@ -2331,7 +2331,7 @@ local_size = (32, 16, 1)
                               MemberDecorate 20(Types) 3 Offset 64
                               Decorate 21 ArrayStride 96
                               MemberDecorate 22(data) 0 Offset 0
-                              Decorate 22(data) BufferBlock
+                              Decorate 22(data) Block
                               Decorate 24(data) DescriptorSet 0
                               Decorate 24(data) Binding 0
                               Decorate 388(dti) BuiltIn GlobalInvocationId
@@ -2351,31 +2351,31 @@ local_size = (32, 16, 1)
        20(Types):             TypeStruct 13(ivec4) 15(ivec4) 17(fvec4) 19(f64vec4)
               21:             TypeRuntimeArray 20(Types)
         22(data):             TypeStruct 21
-              23:             TypePointer Uniform 22(data)
-        24(data):     23(ptr) Variable Uniform
+              23:             TypePointer StorageBuffer 22(data)
+        24(data):     23(ptr) Variable StorageBuffer
               25:     14(int) Constant 0
               26:      6(int) Constant 0
               27:             TypePointer Function 6(int)
-              32:             TypePointer Uniform 13(ivec4)
+              32:             TypePointer StorageBuffer 13(ivec4)
               35:      6(int) Constant 13
               36:      6(int) Constant 3
-              43:             TypePointer Uniform 6(int)
+              43:             TypePointer StorageBuffer 6(int)
               52:             TypeVector 6(int) 2
               59:      6(int) Constant 1
               74:      6(int) Constant 2
               79:     14(int) Constant 1
-              82:             TypePointer Uniform 15(ivec4)
-              91:             TypePointer Uniform 14(int)
+              82:             TypePointer StorageBuffer 15(ivec4)
+              91:             TypePointer StorageBuffer 14(int)
              100:             TypeVector 14(int) 2
              113:             TypeVector 14(int) 3
              126:     14(int) Constant 2
-             129:             TypePointer Uniform 17(fvec4)
-             138:             TypePointer Uniform 16(float)
+             129:             TypePointer StorageBuffer 17(fvec4)
+             138:             TypePointer StorageBuffer 16(float)
              147:             TypeVector 16(float) 2
              160:             TypeVector 16(float) 3
              173:     14(int) Constant 3
-             176:             TypePointer Uniform 19(f64vec4)
-             185:             TypePointer Uniform 18(float64_t)
+             176:             TypePointer StorageBuffer 19(f64vec4)
+             185:             TypePointer StorageBuffer 18(float64_t)
              194:             TypeVector 18(float64_t) 2
              207:             TypeVector 18(float64_t) 3
              387:             TypePointer Input 7(ivec3)
