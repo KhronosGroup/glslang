@@ -228,7 +228,7 @@ local_size = (32, 16, 1)
                               Name 72  "param"
                               Decorate 14 ArrayStride 8
                               MemberDecorate 15(data) 0 Offset 0
-                              Decorate 15(data) BufferBlock
+                              Decorate 15(data) Block
                               Decorate 17(data) DescriptorSet 0
                               Decorate 17(data) Binding 0
                               Decorate 70(dti) BuiltIn GlobalInvocationId
@@ -241,8 +241,8 @@ local_size = (32, 16, 1)
               13:             TypeInt 64 0
               14:             TypeRuntimeArray 13(int64_t)
         15(data):             TypeStruct 14
-              16:             TypePointer Uniform 15(data)
-        17(data):     16(ptr) Variable Uniform
+              16:             TypePointer StorageBuffer 15(data)
+        17(data):     16(ptr) Variable StorageBuffer
               18:             TypeInt 32 1
               19:     18(int) Constant 0
               20:      6(int) Constant 0
@@ -251,7 +251,7 @@ local_size = (32, 16, 1)
               28:      6(int) Constant 3
               30:             TypeVector 6(int) 4
               32:             TypeVector 13(int64_t) 4
-              35:             TypePointer Uniform 13(int64_t)
+              35:             TypePointer StorageBuffer 13(int64_t)
               37:      6(int) Constant 1
               48:      6(int) Constant 2
               69:             TypePointer Input 7(ivec3)
