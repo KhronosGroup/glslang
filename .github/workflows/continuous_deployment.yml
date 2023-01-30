@@ -20,7 +20,7 @@ on:
     workflow_dispatch:
     push:
         branches:
-            - master
+            - main
 
 jobs:
     linux:
@@ -71,7 +71,7 @@ jobs:
             - name: Zip
               if: ${{ matrix.compiler.cc == 'clang' }}
               env:
-                  ARCHIVE: glslang-master-${{matrix.os.family}}-${{matrix.cmake_build_type}}.zip
+                  ARCHIVE: glslang-main-${{matrix.os.family}}-${{matrix.cmake_build_type}}.zip
               run: |
                   cd build/install
                   zip ${ARCHIVE} \
@@ -92,7 +92,7 @@ jobs:
             - name: Deploy
               if: ${{ matrix.compiler.cc == 'clang' }}
               env:
-                  ARCHIVE: glslang-master-${{matrix.os.family}}-${{matrix.cmake_build_type}}.zip
+                  ARCHIVE: glslang-main-${{matrix.os.family}}-${{matrix.cmake_build_type}}.zip
               uses: actions/github-script@v5
               with:
                   script: |
@@ -142,7 +142,7 @@ jobs:
                   cd ../Test && ./runtests
             - name: Zip
               env:
-                  ARCHIVE: glslang-master-${{matrix.os.family}}-${{matrix.cmake_build_type}}.zip
+                  ARCHIVE: glslang-main-${{matrix.os.family}}-${{matrix.cmake_build_type}}.zip
               run: |
                   cd build/install
                   zip ${ARCHIVE} \
@@ -162,7 +162,7 @@ jobs:
                       lib/libSPIRV-Tools-opt.a
             - name: Deploy
               env:
-                  ARCHIVE: glslang-master-${{matrix.os.family}}-${{matrix.cmake_build_type}}.zip
+                  ARCHIVE: glslang-main-${{matrix.os.family}}-${{matrix.cmake_build_type}}.zip
               uses: actions/github-script@v5
               with:
                   script: |

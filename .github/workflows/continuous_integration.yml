@@ -10,7 +10,7 @@ on:
     workflow_dispatch:
     pull_request:
         branches:
-            - master
+            - main
 
 jobs:
     linux:
