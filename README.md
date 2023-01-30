@@ -1,27 +1,17 @@
 # News
 
-1. Default branch will be renamed from 'master' to 'main' [as requested by Khronos](https://github.com/KhronosGroup/glslang/issues/3107) on 01/30/2023.
+1. [As discussed in #3107](https://github.com/KhronosGroup/glslang/issues/3107), the default branch of this repository is now 'main'. This change should be transparent to repository users, since github rewrites many references to the old 'master' branch to 'main'. However, if you have a checked-out local clone, you may wish to take the following steps as recommended by github:
 
-2. Visual Studio 2013 is no longer supported
+```sh
+git branch -m master main
+git fetch origin
+git branch -u origin/main main
+git remote set-head origin -a
+```
 
-   [As scheduled](https://github.com/KhronosGroup/glslang/blob/9eef54b2513ca6b40b47b07d24f453848b65c0df/README.md#planned-deprecationsremovals),
-Microsoft Visual Studio 2013 is no longer officially supported. \
-   Please upgrade to at least Visual Studio 2015.
+2. Visual Studio 2019 is now the minimum supported compiler for windows. This change was driven by the external dependency on SPIRV-Tools.
 
-3. The versioning scheme is being improved, and you might notice some differences.  This is currently WIP, but will be coming soon.  See, for example, PR #2277.
-
-4. If you get a new **compilation error due to a missing header**, it might be caused by this planned removal:
-
-**SPIRV Folder, 1-May, 2020.** Glslang, when installed through CMake,
-will install a `SPIRV` folder into `${CMAKE_INSTALL_INCLUDEDIR}`.
-This `SPIRV` folder is being moved to `glslang/SPIRV`.
-During the transition the `SPIRV` folder will be installed into both locations.
-The old install of `SPIRV/` will be removed as a CMake install target no sooner than May 1, 2020.
-See issue #1964.
-
-If people are only using this location to get spirv.hpp, I recommend they get that from [SPIRV-Headers](https://github.com/KhronosGroup/SPIRV-Headers) instead.
-
-[![appveyor status](https://ci.appveyor.com/api/projects/status/q6fi9cb0qnhkla68/branch/master?svg=true)](https://ci.appveyor.com/project/Khronoswebmaster/glslang/branch/master)
+[![appveyor status](https://ci.appveyor.com/api/projects/status/q6fi9cb0qnhkla68/branch/main?svg=true)](https://ci.appveyor.com/project/Khronoswebmaster/glslang/branch/main)
 ![Continuous Deployment](https://github.com/KhronosGroup/glslang/actions/workflows/continuous_deployment.yml/badge.svg)
 
 # Glslang Components and Status
@@ -101,9 +91,9 @@ There is also a non-shader extension:
 ## Building (CMake)
 
 Instead of building manually, you can also download the binaries for your
-platform directly from the [master-tot release][master-tot-release] on GitHub.
+platform directly from the [main-tot release][main-tot-release] on GitHub.
 Those binaries are automatically uploaded by the buildbots after successful
-testing and they always reflect the current top of the tree of the master
+testing and they always reflect the current top of the tree of the main
 branch.
 
 ### Dependencies
@@ -557,4 +547,4 @@ std::vector<uint32_t> compileShaderToSPIRV_Vulkan(glslang_stage_t stage, const c
 [bison]: https://www.gnu.org/software/bison/
 [googletest]: https://github.com/google/googletest
 [bison-gnu-win32]: http://gnuwin32.sourceforge.net/packages/bison.htm
-[master-tot-release]: https://github.com/KhronosGroup/glslang/releases/tag/master-tot
+[main-tot-release]: https://github.com/KhronosGroup/glslang/releases/tag/main-tot
