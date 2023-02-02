@@ -417,6 +417,7 @@ INSTANTIATE_TEST_SUITE_P(
         {"hlsl.matType.bool.frag", "main"},
         {"hlsl.matType.int.frag", "main"},
         {"hlsl.max.frag", "PixelShaderFunction"},
+        {"hlsl.nested-runtimeArray.frag", "main"},
         {"hlsl.preprocessor.frag", "main"},
         {"hlsl.precedence.frag", "PixelShaderFunction"},
         {"hlsl.precedence2.frag", "PixelShaderFunction"},
