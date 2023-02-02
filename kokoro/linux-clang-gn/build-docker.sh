@@ -36,6 +36,10 @@
 set -e # Fail on any error.
 set -x # Display commands being run.
 
+# Disable git's "detected dubious ownership" error - kokoro checks out the repo
+# with a different user, and we don't care about this warning.
+git config --global --add safe.directory '*'
+
 echo "Fetching external projects..."
 ./update_glslang_sources.py
 
