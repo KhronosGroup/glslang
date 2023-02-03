@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
 TESTLIST=web.testlist
 TARGETDIR=localResults
@@ -7,7 +7,7 @@ EXE=../build/install/bin/glslang.exe
 HASERROR=0
 mkdir -p $TARGETDIR
 
-if [ -a $TESTLIST ]
+if [ -e $TESTLIST ]
   then
     while read t; do
       echo Running $t...
