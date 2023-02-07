@@ -2145,42 +2145,11 @@ public:
         }
     }
 
-
-    void updateTypeParameters(const TType& type)
-    {
-        // For when we may already be sharing existing array descriptors,
-        // keeping the pointers the same, just updating the contents.
-        assert(typeParameters != nullptr);
-        assert(type.typeParameters != nullptr);
-        *typeParameters = *type.typeParameters;
-    }
     void copyTypeParameters(const TArraySizes& s)
     {
         // For setting a fresh new set of type parameters, not yet worrying about sharing.
         typeParameters = new TArraySizes;
         *typeParameters = s;
-    }
-    void transferTypeParameters(TArraySizes* s)
-    {
-        // For setting an already allocated set of sizes that this type can use
-        // (no copy made).
-        typeParameters = s;
-    }
-    void clearTypeParameters()
-    {
-        typeParameters = nullptr;
-    }
-
-    // Add inner array sizes, to any existing sizes, via copy; the
-    // sizes passed in can still be reused for other purposes.
-    void copyTypeParametersInnerSizes(const TArraySizes* s)
-    {
-        if (s != nullptr) {
-            if (typeParameters == nullptr)
-                copyTypeParameters(*s);
-            else
-                typeParameters->addInnerSizes(*s);
-        }
     }
 
     const char* getBasicString() const
