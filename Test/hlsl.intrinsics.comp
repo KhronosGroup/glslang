@@ -12,6 +12,8 @@ groupshared uint3 gs_uc3;
 groupshared uint4 gs_ua4;
 groupshared uint4 gs_ub4;
 groupshared uint4 gs_uc4;
+groupshared float gs_fa;
+groupshared float gs_fb;
 
 float ComputeShaderFunctionS(float inF0, float inF1, float inF2, uint inU0, uint inU1)
 {
@@ -36,6 +38,8 @@ float ComputeShaderFunctionS(float inF0, float inF1, float inF2, uint inU0, uint
     InterlockedXor(gs_ua, gs_ub);
     InterlockedXor(gs_ua, gs_ub, out_u1);
 
+    InterlockedAdd(gs_fa, gs_fb);
+	
     // CheckAccessFullyMapped(3);  // TODO: ...
 
     return 0.0;
