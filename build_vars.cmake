@@ -13,7 +13,7 @@ set(GLSLANG_GENERATED_INCLUDEDIR "${CMAKE_BINARY_DIR}/include")
 ################################################################################
 # Build version information generation
 ################################################################################
-include(parse_version.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/parse_version.cmake)
 set(GLSLANG_CHANGES_FILE      "${glslang_PREFIX}/CHANGES.md")
 set(GLSLANG_BUILD_INFO_H_TMPL "${glslang_PREFIX}/build_info.h.tmpl")
 set(GLSLANG_BUILD_INFO_H      "${GLSLANG_GENERATED_INCLUDEDIR}/glslang/build_info.h")
