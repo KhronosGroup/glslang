@@ -6,6 +6,33 @@
 #
 set(glslang_PREFIX ${CMAKE_CURRENT_LIST_DIR})
 
+
+# Root directory for build-time generated include files
+set(GLSLANG_GENERATED_INCLUDEDIR "${CMAKE_BINARY_DIR}/include")
+
+################################################################################
+# Build version information generation
+################################################################################
+include(parse_version.cmake)
+set(GLSLANG_CHANGES_FILE      "${glslang_PREFIX}/CHANGES.md")
+set(GLSLANG_BUILD_INFO_H_TMPL "${glslang_PREFIX}/build_info.h.tmpl")
+set(GLSLANG_BUILD_INFO_H      "${GLSLANG_GENERATED_INCLUDEDIR}/glslang/build_info.h")
+
+parse_version(${GLSLANG_CHANGES_FILE} GLSLANG)
+
+function(configurate_version)
+    set(major ${GLSLANG_VERSION_MAJOR})
+    set(minor ${GLSLANG_VERSION_MINOR})
+    set(patch ${GLSLANG_VERSION_PATCH})
+    set(flavor ${GLSLANG_VERSION_FLAVOR})
+    configure_file(${GLSLANG_BUILD_INFO_H_TMPL} ${GLSLANG_BUILD_INFO_H} @ONLY)
+endfunction()
+
+configurate_version()
+
+################################################################################
+# Set up SOURCES var
+################################################################################
 set(SPIRV_PREFIX "${glslang_PREFIX}/SPIRV")
 set(SPIRV_SOURCES
         ${SPIRV_PREFIX}/disassemble.cpp
