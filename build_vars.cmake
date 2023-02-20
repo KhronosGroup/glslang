@@ -143,6 +143,10 @@ set(GLSLANG_HEADERS
     ${glslang_PREFIX}/glslang/Include/SpirvIntrinsics.h
     ${glslang_PREFIX}/glslang/Include/Types.h)
 
+set(STANDALONE_SOURCES
+    ${glslang_PREFIX}/StandAlone/ResourceLimits.cpp
+)
+
 set(SOURCES ${SOURCES}
     ${GenericCodeGen_SOURCES}
     ${MACHINEINDEPENDENT_HEADERS}
@@ -151,6 +155,7 @@ set(SOURCES ${SOURCES}
     ${OGLCompilersDLL_SOURCE}
     ${GLSLANG_HEADERS}
     ${GLSLANG_SOURCES}
+    ${STANDALONE_SOURCES}
     ${SPIRV_SOURCES}
 )
 
