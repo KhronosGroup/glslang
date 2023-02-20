@@ -2,7 +2,7 @@
 #
 # cmake settings to enable glslang to built directly as part of a 3rd party application or library.
 #
-# SOURCES and EXTRA_DEFINES vars collect together all the required vars that need to be used.
+# SOURCES var collects together all the required headers and files that need to be compiled
 #
 set(glslang_PREFIX ${CMAKE_CURRENT_LIST_DIR})
 
@@ -158,8 +158,3 @@ set(SOURCES ${SOURCES}
     ${STANDALONE_SOURCES}
     ${SPIRV_SOURCES}
 )
-
-set(EXTRA_DEFINES ${EXTRA_DEFINES} "GLSLANG_ResourceLimits_maxDualSourceDrawBuffersEXT")
-set(EXTRA_DEFINES ${EXTRA_DEFINES} "GLSLANG_EShLangRayGen")
-set(EXTRA_DEFINES ${EXTRA_DEFINES} "GLSLANG_EShLangRayGenNV")
-set(EXTRA_DEFINES ${EXTRA_DEFINES} "GLSLANG_ResourceLimits_maxMeshViewCountEXT")
