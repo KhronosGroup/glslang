@@ -593,8 +593,8 @@ public:
         // An IncludeResult contains the resolved name and content of a source
         // inclusion.
         struct IncludeResult {
-            IncludeResult(const std::string& headerName, const char* const headerData, const size_t headerLength, void* userData) :
-                headerName(headerName), headerData(headerData), headerLength(headerLength), userData(userData) { }
+            IncludeResult(const std::string& in_headerName, const char* const in_headerData, const size_t in_headerLength, void* in_userData) :
+                headerName(in_headerName), headerData(in_headerData), headerLength(in_headerLength), userData(in_userData) { }
             // For a successful inclusion, the fully resolved name of the requested
             // include.  For example, in a file system-based includer, full resolution
             // should convert a relative path name into an absolute path name.

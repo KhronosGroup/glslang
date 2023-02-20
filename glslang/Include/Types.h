@@ -1682,10 +1682,10 @@ public:
                                 }
                             }
     // for construction of sampler types
-    TType(const TSampler& sampler, TStorageQualifier q = EvqUniform, TArraySizes* as = nullptr) :
+    TType(const TSampler& in_sampler, TStorageQualifier q = EvqUniform, TArraySizes* as = nullptr) :
         basicType(EbtSampler), vectorSize(1), matrixCols(0), matrixRows(0), vector1(false), coopmat(false),
         arraySizes(as), structure(nullptr), fieldName(nullptr), typeName(nullptr),
-        sampler(sampler), typeParameters(nullptr)
+        sampler(in_sampler), typeParameters(nullptr)
 #ifndef GLSLANG_WEB
         , spirvType(nullptr)
 #endif

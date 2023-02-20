@@ -112,7 +112,7 @@ namespace spv {
 class spirvbin_t : public spirvbin_base_t
 {
 public:
-   spirvbin_t(int verbose = 0) : entryPoint(spv::NoResult), largestNewId(0), verbose(verbose), errorLatch(false)
+   spirvbin_t(int in_verbose = 0) : entryPoint(spv::NoResult), largestNewId(0), verbose(in_verbose), errorLatch(false)
    { }
 
    virtual ~spirvbin_t() { }

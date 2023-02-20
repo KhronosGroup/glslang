@@ -627,8 +627,8 @@ public:
     void endSwitch(std::vector<Block*>& segmentBB);
 
     struct LoopBlocks {
-        LoopBlocks(Block& head, Block& body, Block& merge, Block& continue_target) :
-            head(head), body(body), merge(merge), continue_target(continue_target) { }
+        LoopBlocks(Block& in_head, Block& in_body, Block& in_merge, Block& in_continue_target) :
+            head(in_head), body(in_body), merge(in_merge), continue_target(in_continue_target) { }
         Block &head, &body, &merge, &continue_target;
     private:
         LoopBlocks();

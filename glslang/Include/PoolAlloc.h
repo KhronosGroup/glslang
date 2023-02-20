@@ -74,8 +74,8 @@ namespace glslang {
 
 class TAllocation {
 public:
-    TAllocation(size_t size, unsigned char* mem, TAllocation* prev = nullptr) :
-        size(size), mem(mem), prevAlloc(prev) {
+    TAllocation(size_t in_size, unsigned char* in_mem, TAllocation* prev = nullptr) :
+        size(in_size), mem(in_mem), prevAlloc(prev) {
         // Allocations are bracketed:
         //    [allocationHeader][initialGuardBlock][userData][finalGuardBlock]
         // This would be cleaner with if (guardBlockSize)..., but that
@@ -187,11 +187,11 @@ protected:
     friend struct tHeader;
 
     struct tHeader {
-        tHeader(tHeader* nextPage, size_t pageCount) :
+        tHeader(tHeader* in_nextPage, size_t in_pageCount) :
 #ifdef GUARD_BLOCKS
         lastAllocation(nullptr),
 #endif
-        nextPage(nextPage), pageCount(pageCount) { }
+        nextPage(in_nextPage), pageCount(in_pageCount) { }
 
         ~tHeader() {
 #ifdef GUARD_BLOCKS

@@ -1728,8 +1728,8 @@ public:
         TIntermTyped(EbtVoid), condition(cond), trueBlock(trueB), falseBlock(falseB),
         shortCircuit(true),
         flatten(false), dontFlatten(false) {}
-    TIntermSelection(TIntermTyped* cond, TIntermNode* trueB, TIntermNode* falseB, const TType& type) :
-        TIntermTyped(type), condition(cond), trueBlock(trueB), falseBlock(falseB),
+    TIntermSelection(TIntermTyped* cond, TIntermNode* trueB, TIntermNode* falseB, const TType& in_type) :
+        TIntermTyped(in_type), condition(cond), trueBlock(trueB), falseBlock(falseB),
         shortCircuit(true),
         flatten(false), dontFlatten(false) {}
     virtual void traverse(TIntermTraverser*);
@@ -1818,11 +1818,11 @@ enum TVisit
 class TIntermTraverser {
 public:
     POOL_ALLOCATOR_NEW_DELETE(glslang::GetThreadPoolAllocator())
-    TIntermTraverser(bool preVisit = true, bool inVisit = false, bool postVisit = false, bool rightToLeft = false) :
-            preVisit(preVisit),
-            inVisit(inVisit),
-            postVisit(postVisit),
-            rightToLeft(rightToLeft),
+    TIntermTraverser(bool in_preVisit = true, bool in_inVisit = false, bool in_postVisit = false, bool in_rightToLeft = false) :
+            preVisit(in_preVisit),
+            inVisit(in_inVisit),
+            postVisit(in_postVisit),
+            rightToLeft(in_rightToLeft),
             depth(0),
             maxDepth(0) { }
     virtual ~TIntermTraverser() { }

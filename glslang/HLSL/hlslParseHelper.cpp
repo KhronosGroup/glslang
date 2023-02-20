@@ -53,13 +53,13 @@
 
 namespace glslang {
 
-HlslParseContext::HlslParseContext(TSymbolTable& symbolTable, TIntermediate& interm, bool parsingBuiltins,
-                                   int version, EProfile profile, const SpvVersion& spvVersion, EShLanguage language,
-                                   TInfoSink& infoSink,
-                                   const TString sourceEntryPointName,
-                                   bool forwardCompatible, EShMessages messages) :
-    TParseContextBase(symbolTable, interm, parsingBuiltins, version, profile, spvVersion, language, infoSink,
-                      forwardCompatible, messages, &sourceEntryPointName),
+HlslParseContext::HlslParseContext(TSymbolTable& in_symbolTable, TIntermediate& interm, bool in_parsingBuiltins,
+                                   int in_version, EProfile in_profile, const SpvVersion& in_spvVersion, EShLanguage in_language,
+                                   TInfoSink& in_infoSink,
+                                   const TString in_sourceEntryPointName,
+                                   bool in_forwardCompatible, EShMessages in_messages) :
+    TParseContextBase(in_symbolTable, interm, in_parsingBuiltins, in_version, in_profile, in_spvVersion, in_language, in_infoSink,
+                      in_forwardCompatible, in_messages, &in_sourceEntryPointName),
     annotationNestingLevel(0),
     inputPatch(nullptr),
     nextInLocation(0), nextOutLocation(0),
@@ -124,13 +124,13 @@ void HlslParseContext::setLimits(const TBuiltInResource& r)
 //
 // Returns true for successful acceptance of the shader, false if any errors.
 //
-bool HlslParseContext::parseShaderStrings(TPpContext& ppContext, TInputScanner& input, bool versionWillBeError)
+bool HlslParseContext::parseShaderStrings(TPpContext& context, TInputScanner& input, bool versionWillBeError)
 {
     currentScanner = &input;
-    ppContext.setInput(input, versionWillBeError);
+    context.setInput(input, versionWillBeError);
 
-    HlslScanContext scanContext(*this, ppContext);
-    HlslGrammar grammar(scanContext, *this);
+    HlslScanContext scan(*this, context);
+    HlslGrammar grammar(scan, *this);
     if (!grammar.parse()) {
         // Print a message formated such that if you click on the message it will take you right to
         // the line through most UIs.
@@ -301,9 +301,9 @@ TIntermTyped* HlslParseContext::handleLvalue(const TSourceLoc& loc, const char* 
     };
 
     // Helper to create an assign.
-    const auto makeBinary = [&](TOperator op, TIntermTyped* lhs, TIntermTyped* rhs) {
+    const auto makeBinary = [&](TOperator binaryOp, TIntermTyped* binaryLhs, TIntermTyped* binaryRhs) {
         sequence = intermediate.growAggregate(sequence,
-                                              intermediate.addBinaryNode(op, lhs, rhs, loc, lhs->getType()),
+                                              intermediate.addBinaryNode(binaryOp, binaryLhs, binaryRhs, loc, binaryLhs->getType()),
                                               loc);
     };
 
@@ -319,9 +319,9 @@ TIntermTyped* HlslParseContext::handleLvalue(const TSourceLoc& loc, const char* 
     };
 
     // Helper to add unary op
-    const auto makeUnary = [&](TOperator op, TIntermSymbol* rhsTmp) {
+    const auto makeUnary = [&](TOperator unaryOp, TIntermSymbol* rhsTmp) {
         sequence = intermediate.growAggregate(sequence,
-                                              intermediate.addUnaryNode(op, intermediate.addSymbol(*rhsTmp), loc,
+                                              intermediate.addUnaryNode(unaryOp, intermediate.addSymbol(*rhsTmp), loc,
                                                                         rhsTmp->getType()),
                                               loc);
     };
@@ -1543,8 +1543,8 @@ void HlslParseContext::fixBuiltInIoType(TType& type)
 // Assumes it is called in the order in which locations should be assigned.
 void HlslParseContext::assignToInterface(TVariable& variable)
 {
-    const auto assignLocation = [&](TVariable& variable) {
-        TType& type = variable.getWritableType();
+    const auto assignLocation = [&](TVariable& var) {
+        TType& type = var.getWritableType();
         if (!type.isStruct() || type.getStruct()->size() > 0) {
             TQualifier& qualifier = type.getQualifier();
             if (qualifier.storage == EvqVaryingIn || qualifier.storage == EvqVaryingOut) {
@@ -1558,14 +1558,14 @@ void HlslParseContext::assignToInterface(TVariable& variable)
                         size = intermediate.computeTypeLocationSize(type, language);
 
                     if (qualifier.storage == EvqVaryingIn) {
-                        variable.getWritableType().getQualifier().layoutLocation = nextInLocation;
+                        var.getWritableType().getQualifier().layoutLocation = nextInLocation;
                         nextInLocation += size;
                     } else {
-                        variable.getWritableType().getQualifier().layoutLocation = nextOutLocation;
+                        var.getWritableType().getQualifier().layoutLocation = nextOutLocation;
                         nextOutLocation += size;
                     }
                 }
-                trackLinkage(variable);
+                trackLinkage(var);
             }
         }
     };
@@ -1970,9 +1970,9 @@ void HlslParseContext::transferTypeAttributes(const TSourceLoc& loc, const TAttr
                 break;
             }
             if (it->getInt(value)) {
-                TSourceLoc loc;
-                loc.init();
-                setSpecConstantId(loc, type.getQualifier(), value);
+                TSourceLoc sloc;
+                sloc.init();
+                setSpecConstantId(sloc, type.getQualifier(), value);
             }
             break;
 
@@ -2313,13 +2313,13 @@ void HlslParseContext::remapEntryPointIO(TFunction& function, TVariable*& return
     // Hence, a missing ioTypeMap for 'input' might need to be synthesized.
     const auto synthesizeEditedInput = [this](TType& type) {
         // True if a type needs to be 'flat'
-        const auto needsFlat = [](const TType& type) {
-            return type.containsBasicType(EbtInt) ||
-                    type.containsBasicType(EbtUint) ||
-                    type.containsBasicType(EbtInt64) ||
-                    type.containsBasicType(EbtUint64) ||
-                    type.containsBasicType(EbtBool) ||
-                    type.containsBasicType(EbtDouble);
+        const auto needsFlat = [](const TType& t) {
+            return t.containsBasicType(EbtInt) ||
+                    t.containsBasicType(EbtUint) ||
+                    t.containsBasicType(EbtInt64) ||
+                    t.containsBasicType(EbtUint64) ||
+                    t.containsBasicType(EbtBool) ||
+                    t.containsBasicType(EbtDouble);
         };
 
         if (language == EShLangFragment && needsFlat(type)) {
@@ -3029,10 +3029,10 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
             // arrayed io
             if (subTree->getType().isArray()) {
                 if (!arrayElement.empty()) {
-                    const TType derefType(subTree->getType(), arrayElement.front());
+                    const TType subTree_derefType(subTree->getType(), arrayElement.front());
                     subTree = intermediate.addIndex(EOpIndexDirect, subTree,
                                                     intermediate.addConstantUnion(arrayElement.front(), loc), loc);
-                    subTree->setType(derefType);
+                    subTree->setType(subTree_derefType);
                 } else {
                     // There's an index operation we should transfer to the output builtin.
                     assert(splitNode->getAsOperator() != nullptr &&
@@ -3069,21 +3069,20 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
 
     // Cannot use auto here, because this is recursive, and auto can't work out the type without seeing the
     // whole thing.  So, we'll resort to an explicit type via std::function.
-    const std::function<void(TIntermTyped* left, TIntermTyped* right, TIntermTyped* splitLeft, TIntermTyped* splitRight,
-                             bool topLevel)>
-    traverse = [&](TIntermTyped* left, TIntermTyped* right, TIntermTyped* splitLeft, TIntermTyped* splitRight,
+    const std::function<void(TIntermTyped* outterLeft, TIntermTyped* outterRight, TIntermTyped* splitLeft, TIntermTyped* splitRight, bool topLevel)>
+    traverse = [&](TIntermTyped* outterLeft, TIntermTyped* outterRight, TIntermTyped* splitLeft, TIntermTyped* splitRight,
                    bool topLevel) -> void {
         // If we get here, we are assigning to or from a whole array or struct that must be
         // flattened, so have to do member-by-member assignment:
 
-        bool shouldFlattenSubsetLeft = isFlattenLeft && shouldFlatten(left->getType(), leftStorage, topLevel);
-        bool shouldFlattenSubsetRight = isFlattenRight && shouldFlatten(right->getType(), rightStorage, topLevel);
+        bool shouldFlattenSubsetLeft = isFlattenLeft && shouldFlatten(outterLeft->getType(), leftStorage, topLevel);
+        bool shouldFlattenSubsetRight = isFlattenRight && shouldFlatten(outterRight->getType(), rightStorage, topLevel);
 
-        if ((left->getType().isArray() || right->getType().isArray()) &&
+        if ((outterLeft->getType().isArray() || outterRight->getType().isArray()) &&
               (shouldFlattenSubsetLeft  || isSplitLeft ||
                shouldFlattenSubsetRight || isSplitRight)) {
-            const int elementsL = left->getType().isArray()  ? left->getType().getOuterArraySize()  : 1;
-            const int elementsR = right->getType().isArray() ? right->getType().getOuterArraySize() : 1;
+            const int elementsL = outterLeft->getType().isArray()  ? outterLeft->getType().getOuterArraySize()  : 1;
+            const int elementsR = outterRight->getType().isArray() ? outterRight->getType().getOuterArraySize() : 1;
 
             // The arrays might not be the same size,
             // e.g., if the size has been forced for EbvTessLevelInner/Outer.
@@ -3094,15 +3093,15 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
                 arrayElement.push_back(element);
 
                 // Add a new AST symbol node if we have a temp variable holding a complex RHS.
-                TIntermTyped* subLeft  = getMember(true,  left->getType(),  element, left, element,
+                TIntermTyped* subLeft  = getMember(true,  outterLeft->getType(),  element, outterLeft, element,
                                                    shouldFlattenSubsetLeft);
-                TIntermTyped* subRight = getMember(false, right->getType(), element, right, element,
+                TIntermTyped* subRight = getMember(false, outterRight->getType(), element, outterRight, element,
                                                    shouldFlattenSubsetRight);
 
-                TIntermTyped* subSplitLeft =  isSplitLeft  ? getMember(true,  left->getType(),  element, splitLeft,
+                TIntermTyped* subSplitLeft =  isSplitLeft  ? getMember(true,  outterLeft->getType(),  element, splitLeft,
                                                                        element, shouldFlattenSubsetLeft)
                                                            : subLeft;
-                TIntermTyped* subSplitRight = isSplitRight ? getMember(false, right->getType(), element, splitRight,
+                TIntermTyped* subSplitRight = isSplitRight ? getMember(false, outterRight->getType(), element, splitRight,
                                                                        element, shouldFlattenSubsetRight)
                                                            : subRight;
 
@@ -3110,11 +3109,11 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
 
                 arrayElement.pop_back();
             }
-        } else if (left->getType().isStruct() && (shouldFlattenSubsetLeft  || isSplitLeft ||
+        } else if (outterLeft->getType().isStruct() && (shouldFlattenSubsetLeft  || isSplitLeft ||
                                                   shouldFlattenSubsetRight || isSplitRight)) {
             // struct case
-            const auto& membersL = *left->getType().getStruct();
-            const auto& membersR = *right->getType().getStruct();
+            const auto& membersL = *outterLeft->getType().getStruct();
+            const auto& membersR = *outterRight->getType().getStruct();
 
             // These track the members in the split structures corresponding to the same in the unsplit structures,
             // which we traverse in parallel.
@@ -3123,34 +3122,34 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
 
             // Handle empty structure assignment
             if (int(membersL.size()) == 0 && int(membersR.size()) == 0)
-                assignList = intermediate.growAggregate(assignList, intermediate.addAssign(op, left, right, loc), loc);
+                assignList = intermediate.growAggregate(assignList, intermediate.addAssign(op, outterLeft, outterRight, loc), loc);
 
             for (int member = 0; member < int(membersL.size()); ++member) {
                 const TType& typeL = *membersL[member].type;
                 const TType& typeR = *membersR[member].type;
 
-                TIntermTyped* subLeft  = getMember(true,  left->getType(), member, left, member,
+                TIntermTyped* subLeft  = getMember(true,  outterLeft->getType(), member, outterLeft, member,
                                                    shouldFlattenSubsetLeft);
-                TIntermTyped* subRight = getMember(false, right->getType(), member, right, member,
+                TIntermTyped* subRight = getMember(false, outterRight->getType(), member, outterRight, member,
                                                    shouldFlattenSubsetRight);
 
                 // If there is no splitting, use the same values to avoid inefficiency.
-                TIntermTyped* subSplitLeft =  isSplitLeft  ? getMember(true,  left->getType(),  member, splitLeft,
+                TIntermTyped* subSplitLeft =  isSplitLeft  ? getMember(true,  outterLeft->getType(),  member, splitLeft,
                                                                        memberL, shouldFlattenSubsetLeft)
                                                            : subLeft;
-                TIntermTyped* subSplitRight = isSplitRight ? getMember(false, right->getType(), member, splitRight,
+                TIntermTyped* subSplitRight = isSplitRight ? getMember(false, outterRight->getType(), member, splitRight,
                                                                        memberR, shouldFlattenSubsetRight)
                                                            : subRight;
 
                 if (isClipOrCullDistance(subSplitLeft->getType()) || isClipOrCullDistance(subSplitRight->getType())) {
-                    // Clip and cull distance built-in assignment is complex in its own right, and is handled in
+                    // Clip and cull distance built-in assignment is complex in its own outterRight, and is handled in
                     // a separate function dedicated to that task.  See comment above assignClipCullDistance;
 
                     const bool isOutput = isClipOrCullDistance(subSplitLeft->getType());
 
                     // Since all clip/cull semantics boil down to the same built-in type, we need to get the
                     // semantic ID from the dereferenced type's layout location, to avoid an N-1 mapping.
-                    const TType derefType((isOutput ? left : right)->getType(), member);
+                    const TType derefType((isOutput ? outterLeft : outterRight)->getType(), member);
                     const int semanticId = derefType.getQualifier().layoutLocation;
 
                     TIntermAggregate* clipCullAssign = assignClipCullDistance(loc, op, semanticId,
@@ -3187,7 +3186,7 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
             }
         } else {
             // Member copy
-            assignList = intermediate.growAggregate(assignList, intermediate.addAssign(op, left, right, loc), loc);
+            assignList = intermediate.growAggregate(assignList, intermediate.addAssign(op, outterLeft, outterRight, loc), loc);
         }
 
     };
@@ -6342,13 +6341,13 @@ void HlslParseContext::handlePackOffset(const TSourceLoc& loc, TQualifier& quali
 //
 // Handle seeing something like "REGISTER LEFT_PAREN [shader_profile,] Type# RIGHT_PAREN"
 //
-// 'profile' points to the shader_profile part, or nullptr if not present.
+// 'shader_profile' points to the shader_profile part, or nullptr if not present.
 // 'desc' is the type# part.
 //
-void HlslParseContext::handleRegister(const TSourceLoc& loc, TQualifier& qualifier, const glslang::TString* profile,
+void HlslParseContext::handleRegister(const TSourceLoc& loc, TQualifier& qualifier, const glslang::TString* shader_profile,
                                       const glslang::TString& desc, int subComponent, const glslang::TString* spaceDesc)
 {
-    if (profile != nullptr)
+    if (shader_profile != nullptr)
         warn(loc, "ignoring shader_profile", "register", "");
 
     if (desc.size() < 1) {
@@ -7727,9 +7726,9 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, TFunction
     // printf has var args and is in the symbol table as "printf()",
     // mangled to "printf("
     if (call.getName() == "printf") {
-        TSymbol* symbol = symbolTable.find("printf(", &builtIn);
-        if (symbol)
-            return symbol->getAsFunction();
+        TSymbol* print_symbol = symbolTable.find("printf(", &builtIn);
+        if (print_symbol)
+            return print_symbol->getAsFunction();
     }
 
     bestMatch = selectFunction(candidateList, call, convertible, better, tie);

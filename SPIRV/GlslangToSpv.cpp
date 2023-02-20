@@ -93,12 +93,12 @@ private:
 
 struct OpDecorations {
     public:
-        OpDecorations(spv::Decoration precision, spv::Decoration noContraction, spv::Decoration nonUniform) :
-            precision(precision)
+        OpDecorations(spv::Decoration in_precision, spv::Decoration in_noContraction, spv::Decoration in_nonUniform) :
+            precision(in_precision)
 #ifndef GLSLANG_WEB
             ,
-            noContraction(noContraction),
-            nonUniform(nonUniform)
+            noContraction(in_noContraction),
+            nonUniform(in_nonUniform)
 #endif
         { }
 
@@ -1551,16 +1551,16 @@ bool HasNonLayoutQualifiers(const glslang::TType& type, const glslang::TQualifie
 //
 
 TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion,
-    const glslang::TIntermediate* glslangIntermediate,
-    spv::SpvBuildLogger* buildLogger, glslang::SpvOptions& options) :
+    const glslang::TIntermediate* in_glslangIntermediate,
+    spv::SpvBuildLogger* buildLogger, glslang::SpvOptions& in_options) :
         TIntermTraverser(true, false, true),
-        options(options),
+        options(in_options),
         shaderEntry(nullptr), currentFunction(nullptr),
         sequenceDepth(0), logger(buildLogger),
         builder(spvVersion, (glslang::GetKhronosToolId() << 16) | glslang::GetSpirvGeneratorVersion(), logger),
         inEntryPoint(false), entryPointTerminated(false), linkageOnly(false),
-        glslangIntermediate(glslangIntermediate),
-        nanMinMaxClamp(glslangIntermediate->getNanMinMaxClamp()),
+        glslangIntermediate(in_glslangIntermediate),
+        nanMinMaxClamp(in_glslangIntermediate->getNanMinMaxClamp()),
         nonSemanticDebugPrintf(0),
         taskPayloadID(0)
 {
@@ -1936,13 +1936,13 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion,
         const glslang::TSpirvExecutionMode spirvExecutionMode = glslangIntermediate->getSpirvExecutionMode();
 
         // Add spirv_execution_mode
-        for (auto& mode : spirvExecutionMode.modes) {
-            if (!mode.second.empty()) {
+        for (auto& execution_mode : spirvExecutionMode.modes) {
+            if (!execution_mode.second.empty()) {
                 std::vector<unsigned> literals;
-                TranslateLiterals(mode.second, literals);
-                builder.addExecutionMode(shaderEntry, static_cast<spv::ExecutionMode>(mode.first), literals);
+                TranslateLiterals(execution_mode.second, literals);
+                builder.addExecutionMode(shaderEntry, static_cast<spv::ExecutionMode>(execution_mode.first), literals);
             } else
-                builder.addExecutionMode(shaderEntry, static_cast<spv::ExecutionMode>(mode.first));
+                builder.addExecutionMode(shaderEntry, static_cast<spv::ExecutionMode>(execution_mode.first));
         }
 
         // Add spirv_execution_mode_id
@@ -2728,7 +2728,7 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
             else
                 op = glslang::EOpSub;
 
-            spv::Id result = createBinaryOperation(op, decorations,
+            result = createBinaryOperation(op, decorations,
                                                    convertGlslangToSpvType(node->getType()), operand, one,
                                                    node->getType().getBasicType());
             assert(result != spv::NoResult);
@@ -3615,9 +3615,9 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         spv::Id typeId = builder.getContainedTypeId(builder.getTypeId(operands[0]));
         assert(builder.isCooperativeMatrixType(typeId));
         // do the op
-        spv::Id result = builder.createOp(spv::OpCooperativeMatrixLoadNV, typeId, idImmOps);
+        spv::Id createResult = builder.createOp(spv::OpCooperativeMatrixLoadNV, typeId, idImmOps);
         // store the result to the pointer (out param 'm')
-        builder.createStore(result, operands[0]);
+        builder.createStore(createResult, operands[0]);
         result = 0;
     } else if (node->getOp() == glslang::EOpCooperativeMatrixStore) {
         std::vector<spv::IdImmediate> idImmOps;
@@ -3766,11 +3766,11 @@ bool TGlslangToSpvTraverser::visitSelection(glslang::TVisit /* visit */, glslang
                node->getType() == node->getFalseBlock()->getAsTyped()->getType());
 
         // return true if a single operand to ? : is okay for OpSelect
-        const auto operandOkay = [](glslang::TIntermTyped* node) {
-            return node->getAsSymbolNode() || node->getType().getQualifier().isConstant();
+        const auto operandOkay = [](glslang::TIntermTyped* nodeOkay) {
+            return nodeOkay->getAsSymbolNode() || nodeOkay->getType().getQualifier().isConstant();
         };
 
-        return operandOkay(node->getTrueBlock() ->getAsTyped()) &&
+        return operandOkay(node->getTrueBlock()->getAsTyped()) &&
                operandOkay(node->getFalseBlock()->getAsTyped());
     };
 
@@ -4733,8 +4733,8 @@ void TGlslangToSpvTraverser::decorateStructType(const glslang::TType& type,
             // Add memory decorations only to top-level members of shader storage block
             std::vector<spv::Decoration> memory;
             TranslateMemoryDecoration(memberQualifier, memory, glslangIntermediate->usingVulkanMemoryModel());
-            for (unsigned int i = 0; i < memory.size(); ++i)
-                builder.addMemberDecoration(spvType, member, memory[i]);
+            for (unsigned int mi = 0; mi < memory.size(); ++mi)
+                builder.addMemberDecoration(spvType, member, memory[mi]);
         }
 
 #endif
@@ -5850,12 +5850,12 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
                 builder.addDecoration(pointer, spv::DecorationNonUniformEXT);
             }
 
-            std::vector<spv::Id> operands;
-            operands.push_back(pointer);
+            std::vector<spv::Id> ids;
+            ids.push_back(pointer);
             for (; opIt != arguments.end(); ++opIt)
-                operands.push_back(*opIt);
+                ids.push_back(*opIt);
 
-            return createAtomicOperation(node->getOp(), precision, resultType(), operands, typeProxy,
+            return createAtomicOperation(node->getOp(), precision, resultType(), ids, typeProxy,
                 lvalueCoherentFlags);
         }
     }
@@ -7878,8 +7878,8 @@ spv::Id TGlslangToSpvTraverser::createInvocationsOperation(glslang::TOperator op
     }
 
     for (auto opIt = operands.begin(); opIt != operands.end(); ++opIt) {
-        spv::IdImmediate op = { true, *opIt };
-        spvGroupOperands.push_back(op);
+        spv::IdImmediate operand = { true, *opIt };
+        spvGroupOperands.push_back(operand);
     }
 
     switch (op) {
@@ -9210,10 +9210,10 @@ spv::Id TGlslangToSpvTraverser::createNoArgOperation(glslang::TOperator op, spv:
 
 spv::Id TGlslangToSpvTraverser::getSymbolId(const glslang::TIntermSymbol* symbol)
 {
-    auto iter = symbolValues.find(symbol->getId());
+    auto symbol_iter = symbolValues.find(symbol->getId());
     spv::Id id;
-    if (symbolValues.end() != iter) {
-        id = iter->second;
+    if (symbolValues.end() != symbol_iter) {
+        id = symbol_iter->second;
         return id;
     }
 

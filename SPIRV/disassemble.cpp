@@ -85,7 +85,7 @@ enum ExtInstSet {
 // Container class for a single instance of a SPIR-V stream, with methods for disassembly.
 class SpirvStream {
 public:
-    SpirvStream(std::ostream& out, const std::vector<unsigned int>& stream) : out(out), stream(stream), word(0), nextNestedControl(0) { }
+    SpirvStream(std::ostream& in_out, const std::vector<unsigned int>& in_stream) : out(in_out), stream(in_stream), word(0), nextNestedControl(0) { }
     virtual ~SpirvStream() { }
 
     void validate();

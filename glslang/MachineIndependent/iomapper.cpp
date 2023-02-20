@@ -64,11 +64,11 @@ namespace glslang {
 
 class TVarGatherTraverser : public TLiveTraverser {
 public:
-    TVarGatherTraverser(const TIntermediate& i, bool traverseDeadCode, TVarLiveMap& inList, TVarLiveMap& outList, TVarLiveMap& uniformList)
+    TVarGatherTraverser(const TIntermediate& i, bool traverseDeadCode, TVarLiveMap& inList, TVarLiveMap& outList, TVarLiveMap& in_uniformList)
       : TLiveTraverser(i, traverseDeadCode, true, true, false)
       , inputList(inList)
       , outputList(outList)
-      , uniformList(uniformList)
+      , uniformList(in_uniformList)
     {
     }
 
@@ -107,11 +107,11 @@ private:
 class TVarSetTraverser : public TLiveTraverser
 {
 public:
-    TVarSetTraverser(const TIntermediate& i, const TVarLiveMap& inList, const TVarLiveMap& outList, const TVarLiveMap& uniformList)
+    TVarSetTraverser(const TIntermediate& i, const TVarLiveMap& inList, const TVarLiveMap& outList, const TVarLiveMap& in_uniformList)
       : TLiveTraverser(i, true, true, true, false)
       , inputList(inList)
       , outputList(outList)
-      , uniformList(uniformList)
+      , uniformList(in_uniformList)
     {
     }
 
@@ -313,13 +313,13 @@ private:
 
 struct TSymbolValidater
 {
-    TSymbolValidater(TIoMapResolver& r, TInfoSink& i, TVarLiveMap* in[EShLangCount], TVarLiveMap* out[EShLangCount],
-                     TVarLiveMap* uniform[EShLangCount], bool& hadError, EProfile profile, int version)
-        : resolver(r)
-        , infoSink(i)
-        , hadError(hadError)
-        , profile(profile)
-        , version(version)
+    TSymbolValidater(TIoMapResolver& in_resolver, TInfoSink& in_infoSink, TVarLiveMap* in[EShLangCount], TVarLiveMap* out[EShLangCount],
+                     TVarLiveMap* uniform[EShLangCount], bool& in_hadError, EProfile in_profile, int in_version)
+        : resolver(in_resolver)
+        , infoSink(in_infoSink)
+        , hadError(in_hadError)
+        , profile(in_profile)
+        , version(in_version)
     {
         memcpy(inVarMaps, in, EShLangCount * (sizeof(TVarLiveMap*)));
         memcpy(outVarMaps, out, EShLangCount * (sizeof(TVarLiveMap*)));
@@ -511,17 +511,17 @@ struct TSymbolValidater
                         if (type1.getBasicType() == EbtBlock &&
                             type1.isStruct() && !type2.isStruct()) {
                             // Iterate through block members tracking layout
-                            glslang::TString name;
-                            type1.getStruct()->begin()->type->appendMangledName(name);
-                            if (name == mangleName2
+                            glslang::TString mangledName;
+                            type1.getStruct()->begin()->type->appendMangledName(mangledName);
+                            if (mangledName == mangleName2
                                 && type1.getQualifier().layoutLocation == type2.getQualifier().layoutLocation) return;
                         }
                         if (type2.getBasicType() == EbtBlock &&
                             type2.isStruct() && !type1.isStruct()) {
                             // Iterate through block members tracking layout
-                            glslang::TString name;
-                            type2.getStruct()->begin()->type->appendMangledName(name);
-                            if (name == mangleName1
+                            glslang::TString mangledName;
+                            type2.getStruct()->begin()->type->appendMangledName(mangledName);
+                            if (mangledName == mangleName1
                                 && type1.getQualifier().layoutLocation == type2.getQualifier().layoutLocation) return;
                         }
                         TString err = "Invalid In/Out variable type : " + entKey.first;

@@ -73,8 +73,8 @@ struct HlslToken {
 //
 class HlslScanContext {
 public:
-    HlslScanContext(TParseContextBase& parseContext, TPpContext& ppContext)
-        : parseContext(parseContext), ppContext(ppContext) { }
+    HlslScanContext(TParseContextBase& in_parseContext, TPpContext& in_ppContext)
+        : parseContext(in_parseContext), ppContext(in_ppContext) { }
     virtual ~HlslScanContext() { }
 
     static void fillInKeywordMap();
