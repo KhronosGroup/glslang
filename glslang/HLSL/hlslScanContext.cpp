@@ -558,17 +558,17 @@ glslang::TBuiltInVariable HlslScanContext::mapSemantic(const char* upperCase)
 // Returns the enum value of the token class of the next token found.
 // Return 0 (EndOfTokens) on end of input.
 //
-EHlslTokenClass HlslScanContext::tokenizeClass(HlslToken& token)
+EHlslTokenClass HlslScanContext::tokenizeClass(HlslToken& in_token)
 {
     do {
-        parserToken = &token;
-        TPpToken ppToken;
-        int token = ppContext.tokenize(ppToken);
+        parserToken = &in_token;
+        TPpToken local_ppToken;
+        int token = ppContext.tokenize(local_ppToken);
         if (token == EndOfInput)
             return EHTokNone;
 
-        tokenText = ppToken.name;
-        loc = ppToken.loc;
+        tokenText = local_ppToken.name;
+        loc = local_ppToken.loc;
         parserToken->loc = loc;
         switch (token) {
         case ';':                       return EHTokSemicolon;
@@ -628,15 +628,14 @@ EHlslTokenClass HlslScanContext::tokenizeClass(HlslToken& token)
 
         case PpAtomColonColon:         return EHTokColonColon;
 
-        case PpAtomConstInt:           parserToken->i = ppToken.ival;       return EHTokIntConstant;
-        case PpAtomConstUint:          parserToken->i = ppToken.ival;       return EHTokUintConstant;
-        case PpAtomConstFloat16:       parserToken->d = ppToken.dval;       return EHTokFloat16Constant;
-        case PpAtomConstFloat:         parserToken->d = ppToken.dval;       return EHTokFloatConstant;
-        case PpAtomConstDouble:        parserToken->d = ppToken.dval;       return EHTokDoubleConstant;
+        case PpAtomConstInt:           parserToken->i = local_ppToken.ival;       return EHTokIntConstant;
+        case PpAtomConstUint:          parserToken->i = local_ppToken.ival;       return EHTokUintConstant;
+        case PpAtomConstFloat16:       parserToken->d = local_ppToken.dval;       return EHTokFloat16Constant;
+        case PpAtomConstFloat:         parserToken->d = local_ppToken.dval;       return EHTokFloatConstant;
+        case PpAtomConstDouble:        parserToken->d = local_ppToken.dval;       return EHTokDoubleConstant;
         case PpAtomIdentifier:
         {
-            EHlslTokenClass token = tokenizeIdentifier();
-            return token;
+            return tokenizeIdentifier();
         }
 
         case PpAtomConstString: {
