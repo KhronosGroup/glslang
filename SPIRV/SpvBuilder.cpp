@@ -54,8 +54,8 @@
 
 namespace spv {
 
-Builder::Builder(unsigned int spvVersion, unsigned int magicNumber, SpvBuildLogger* buildLogger) :
-    spvVersion(spvVersion),
+Builder::Builder(unsigned int in_spvVersion, unsigned int magicNumber, SpvBuildLogger* buildLogger) :
+    spvVersion(in_spvVersion),
     sourceLang(SourceLanguageUnknown),
     sourceVersion(0),
     addressModel(AddressingModelLogical),
@@ -1918,7 +1918,7 @@ void Builder::addDecoration(Id id, Decoration decoration, const std::vector<unsi
     decorations.push_back(std::unique_ptr<Instruction>(dec));
 }
 
-void Builder::addDecoration(Id id, Decoration decoration, const std::vector<const char*>& strings)
+void Builder::addDecoration(Id id, Decoration decoration, const std::vector<const char*>& decorationStrings)
 {
     if (decoration == spv::DecorationMax)
         return;
@@ -1926,7 +1926,7 @@ void Builder::addDecoration(Id id, Decoration decoration, const std::vector<cons
     Instruction* dec = new Instruction(OpDecorateString);
     dec->addIdOperand(id);
     dec->addImmediateOperand(decoration);
-    for (auto string : strings)
+    for (auto string : decorationStrings)
         dec->addStringOperand(string);
 
     decorations.push_back(std::unique_ptr<Instruction>(dec));
@@ -2014,7 +2014,7 @@ void Builder::addMemberDecoration(Id id, unsigned int member, Decoration decorat
     decorations.push_back(std::unique_ptr<Instruction>(dec));
 }
 
-void Builder::addMemberDecoration(Id id, unsigned int member, Decoration decoration, const std::vector<const char*>& strings)
+void Builder::addMemberDecoration(Id id, unsigned int member, Decoration decoration, const std::vector<const char*>& decorationStrings)
 {
     if (decoration == spv::DecorationMax)
         return;
@@ -2023,7 +2023,7 @@ void Builder::addMemberDecoration(Id id, unsigned int member, Decoration decorat
     dec->addIdOperand(id);
     dec->addImmediateOperand(member);
     dec->addImmediateOperand(decoration);
-    for (auto string : strings)
+    for (auto string : decorationStrings)
         dec->addStringOperand(string);
 
     decorations.push_back(std::unique_ptr<Instruction>(dec));
@@ -2095,7 +2095,7 @@ Function* Builder::makeEntryPoint(const char* entryPoint)
 // Comments in header
 Function* Builder::makeFunctionEntry(Decoration precision, Id returnType, const char* name, LinkageType linkType,
                                      const std::vector<Id>& paramTypes,
-                                     const std::vector<std::vector<Decoration>>& decorations, Block** entry)
+                                     const std::vector<std::vector<Decoration>>& paramDecorations, Block** entry)
 {
     // Make the function and initial instructions in it
     Id typeId = makeFunctionType(returnType, paramTypes);
@@ -2106,10 +2106,10 @@ Function* Builder::makeFunctionEntry(Decoration precision, Id returnType, const 
     // Set up the precisions
     setPrecision(function->getId(), precision);
     function->setReturnPrecision(precision);
-    for (unsigned p = 0; p < (unsigned)decorations.size(); ++p) {
-        for (int d = 0; d < (int)decorations[p].size(); ++d) {
-            addDecoration(firstParamId + p, decorations[p][d]);
-            function->addParamPrecision(p, decorations[p][d]);
+    for (unsigned p = 0; p < (unsigned)paramDecorations.size(); ++p) {
+        for (int d = 0; d < (int)paramDecorations[p].size(); ++d) {
+            addDecoration(firstParamId + p, paramDecorations[p][d]);
+            function->addParamPrecision(p, paramDecorations[p][d]);
         }
     }
 
