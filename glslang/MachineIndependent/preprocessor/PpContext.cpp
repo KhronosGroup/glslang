@@ -84,9 +84,9 @@ NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace glslang {
 
-TPpContext::TPpContext(TParseContextBase& pc, const std::string& rootFileName, TShader::Includer& inclr) :
+TPpContext::TPpContext(TParseContextBase& pc, const std::string& in_rootFileName, TShader::Includer& inclr) :
     preamble(nullptr), strings(nullptr), previous_token('\n'), parseContext(pc), includer(inclr), inComment(false),
-    rootFileName(rootFileName),
+    rootFileName(in_rootFileName),
     currentSourceFile(rootFileName),
     disableEscapeSequences(false)
 {

@@ -822,17 +822,17 @@ void TScanContext::deleteKeywordMap()
 
 // Called by yylex to get the next token.
 // Returning 0 implies end of input.
-int TScanContext::tokenize(TPpContext* pp, TParserToken& token)
+int TScanContext::tokenize(TPpContext* pp, TParserToken& in_token)
 {
     do {
-        parserToken = &token;
-        TPpToken ppToken;
-        int token = pp->tokenize(ppToken);
+        parserToken = &in_token;
+        TPpToken local_ppToken;
+        int token = pp->tokenize(local_ppToken);
         if (token == EndOfInput)
             return 0;
 
-        tokenText = ppToken.name;
-        loc = ppToken.loc;
+        tokenText = local_ppToken.name;
+        loc = local_ppToken.loc;
         parserToken->sType.lex.loc = loc;
         switch (token) {
         case ';':  afterType = false; afterBuffer = false; return SEMICOLON;
@@ -895,22 +895,22 @@ int TScanContext::tokenize(TPpContext* pp, TParserToken& token)
             break;
 
         case PpAtomConstString:        parserToken->sType.lex.string = NewPoolTString(tokenText);     return STRING_LITERAL;
-        case PpAtomConstInt:           parserToken->sType.lex.i    = ppToken.ival;       return INTCONSTANT;
-        case PpAtomConstUint:          parserToken->sType.lex.i    = ppToken.ival;       return UINTCONSTANT;
-        case PpAtomConstFloat:         parserToken->sType.lex.d    = ppToken.dval;       return FLOATCONSTANT;
+        case PpAtomConstInt:           parserToken->sType.lex.i    = local_ppToken.ival;       return INTCONSTANT;
+        case PpAtomConstUint:          parserToken->sType.lex.i    = local_ppToken.ival;       return UINTCONSTANT;
+        case PpAtomConstFloat:         parserToken->sType.lex.d    = local_ppToken.dval;       return FLOATCONSTANT;
 #ifndef GLSLANG_WEB
-        case PpAtomConstInt16:         parserToken->sType.lex.i    = ppToken.ival;       return INT16CONSTANT;
-        case PpAtomConstUint16:        parserToken->sType.lex.i    = ppToken.ival;       return UINT16CONSTANT;
-        case PpAtomConstInt64:         parserToken->sType.lex.i64  = ppToken.i64val;     return INT64CONSTANT;
-        case PpAtomConstUint64:        parserToken->sType.lex.i64  = ppToken.i64val;     return UINT64CONSTANT;
-        case PpAtomConstDouble:        parserToken->sType.lex.d    = ppToken.dval;       return DOUBLECONSTANT;
-        case PpAtomConstFloat16:       parserToken->sType.lex.d    = ppToken.dval;       return FLOAT16CONSTANT;
+        case PpAtomConstInt16:         parserToken->sType.lex.i    = local_ppToken.ival;       return INT16CONSTANT;
+        case PpAtomConstUint16:        parserToken->sType.lex.i    = local_ppToken.ival;       return UINT16CONSTANT;
+        case PpAtomConstInt64:         parserToken->sType.lex.i64  = local_ppToken.i64val;     return INT64CONSTANT;
+        case PpAtomConstUint64:        parserToken->sType.lex.i64  = local_ppToken.i64val;     return UINT64CONSTANT;
+        case PpAtomConstDouble:        parserToken->sType.lex.d    = local_ppToken.dval;       return DOUBLECONSTANT;
+        case PpAtomConstFloat16:       parserToken->sType.lex.d    = local_ppToken.dval;       return FLOAT16CONSTANT;
 #endif
         case PpAtomIdentifier:
         {
-            int token = tokenizeIdentifier();
+            int tokenIdent = tokenizeIdentifier();
             field = false;
-            return token;
+            return tokenIdent;
         }
 
         case EndOfInput:               return 0;

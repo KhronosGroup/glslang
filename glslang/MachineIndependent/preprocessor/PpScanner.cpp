@@ -111,9 +111,9 @@ namespace glslang {
 // See peekContinuedPasting().
 int TPpContext::lFloatConst(int len, int ch, TPpToken* ppToken)
 {
-    const auto saveName = [&](int ch) {
+    const auto saveName = [&](int c) {
         if (len <= MaxTokenLength)
-            ppToken->name[len++] = static_cast<char>(ch);
+            ppToken->name[len++] = static_cast<char>(c);
     };
 
     // find the range of non-zero digits before the decimal point
@@ -464,9 +464,9 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
     int ch = 0;
     int ii = 0;
     unsigned long long ival = 0;
-    const auto floatingPointChar = [&](int ch) { return ch == '.' || ch == 'e' || ch == 'E' ||
-                                                                     ch == 'f' || ch == 'F' ||
-                                                                     ch == 'h' || ch == 'H'; };
+    const auto floatingPointChar = [&](int c) { return c == '.' || c == 'e' || c == 'E' ||
+                                                                     c == 'f' || c == 'F' ||
+                                                                     c == 'h' || c == 'H'; };
 
     static const char* const Int64_Extensions[] = {
         E_GL_ARB_gpu_shader_int64,

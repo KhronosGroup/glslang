@@ -129,9 +129,9 @@ bool TInductiveTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* n
 //
 // External function to call for loop check.
 //
-void TParseContext::inductiveLoopBodyCheck(TIntermNode* body, long long loopId, TSymbolTable& symbolTable)
+void TParseContext::inductiveLoopBodyCheck(TIntermNode* body, long long loopId, TSymbolTable& in_symbolTable)
 {
-    TInductiveTraverser it(loopId, symbolTable);
+    TInductiveTraverser it(loopId, in_symbolTable);
 
     if (body == nullptr)
         return;

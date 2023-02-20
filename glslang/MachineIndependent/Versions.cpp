@@ -1379,10 +1379,10 @@ void TParseVersions::requireSpv(const TSourceLoc& loc, const char* op)
         error(loc, "only allowed when generating SPIR-V", op, "");
 #endif
 }
-void TParseVersions::requireSpv(const TSourceLoc& loc, const char *op, unsigned int version)
+void TParseVersions::requireSpv(const TSourceLoc& loc, const char *op, unsigned int in_version)
 {
 #ifndef GLSLANG_WEB
-    if (spvVersion.spv < version)
+    if (spvVersion.spv < in_version)
         error(loc, "not supported for current targeted SPIR-V version", op, "");
 #endif
 }
