@@ -5950,10 +5950,10 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
 // This is before we know any type information for error checking.
 void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publicType, TString& id, const TIntermTyped* node)
 {
-    const char* feature = "layout-id value";
+    const char* literalFeature = "layout-id value";
     const char* nonLiteralFeature = "non-literal layout-id value";
 
-    integerCheck(node, feature);
+    integerCheck(node, literalFeature);
     const TIntermConstantUnion* constUnion = node->getAsConstantUnion();
     int value;
     bool nonLiteral = false;
@@ -5970,7 +5970,7 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
     }
 
     if (value < 0) {
-        error(loc, "cannot be negative", feature, "");
+        error(loc, "cannot be negative", literalFeature, "");
         return;
     }
 
@@ -8404,8 +8404,7 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
     case EOpConstructUVec2:
         if (node->getType().getBasicType() == EbtReference) {
             requireExtensions(loc, 1, &E_GL_EXT_buffer_reference_uvec2, "reference conversion to uvec2");
-            TIntermTyped* newNode = intermediate.addBuiltInFunctionCall(node->getLoc(), EOpConvPtrToUvec2, true, node,
-                type);
+            newNode = intermediate.addBuiltInFunctionCall(node->getLoc(), EOpConvPtrToUvec2, true, node, type);
             return newNode;
         } else if (node->getType().getBasicType() == EbtSampler) {
             requireExtensions(loc, 1, &E_GL_ARB_bindless_texture, "sampler conversion to uvec2");
@@ -8414,8 +8413,7 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
             TIntermTyped* newSrcNode = intermediate.createConversion(EbtUint, node);
             newSrcNode->getAsTyped()->getWritableType().setVectorSize(2);
 
-            TIntermTyped* newNode =
-                intermediate.addBuiltInFunctionCall(node->getLoc(), EOpConstructUVec2, false, newSrcNode, type);
+            newNode = intermediate.addBuiltInFunctionCall(node->getLoc(), EOpConstructUVec2, false, newSrcNode, type);
             return newNode;
         }
     case EOpConstructUVec3:
@@ -8435,8 +8433,7 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
             node->getType().getVectorSize() == 2) {
             requireExtensions(loc, 1, &E_GL_ARB_bindless_texture, "ivec2/uvec2 convert to texture handle");
             // No matter ivec2 or uvec2, Set EOpPackUint2x32 just to generate an opBitcast op code
-            TIntermTyped* newNode =
-                intermediate.addBuiltInFunctionCall(node->getLoc(), EOpPackUint2x32, true, node, type);
+            newNode = intermediate.addBuiltInFunctionCall(node->getLoc(), EOpPackUint2x32, true, node, type);
             return newNode;
         }
     case EOpConstructDVec2:
@@ -8588,7 +8585,7 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
 
     case EOpConstructUint64:
         if (type.isScalar() && node->getType().isReference()) {
-            TIntermTyped* newNode = intermediate.addBuiltInFunctionCall(node->getLoc(), EOpConvPtrToUint64, true, node, type);
+            newNode = intermediate.addBuiltInFunctionCall(node->getLoc(), EOpConvPtrToUint64, true, node, type);
             return newNode;
         }
         // fall through
@@ -8610,14 +8607,14 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
             return newNode;
         // construct reference from uint64
         } else if (node->getType().isScalar() && node->getType().getBasicType() == EbtUint64) {
-            TIntermTyped* newNode = intermediate.addBuiltInFunctionCall(node->getLoc(), EOpConvUint64ToPtr, true, node,
+            newNode = intermediate.addBuiltInFunctionCall(node->getLoc(), EOpConvUint64ToPtr, true, node,
                 type);
             return newNode;
         // construct reference from uvec2
         } else if (node->getType().isVector() && node->getType().getBasicType() == EbtUint &&
                    node->getVectorSize() == 2) {
             requireExtensions(loc, 1, &E_GL_EXT_buffer_reference_uvec2, "uvec2 conversion to reference");
-            TIntermTyped* newNode = intermediate.addBuiltInFunctionCall(node->getLoc(), EOpConvUvec2ToPtr, true, node,
+            newNode = intermediate.addBuiltInFunctionCall(node->getLoc(), EOpConvUvec2ToPtr, true, node,
                 type);
             return newNode;
         } else {
@@ -8637,113 +8634,113 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
             }
             node = intermediate.setAggregateOperator(node, op, type, node->getLoc());
         } else {
-            TOperator op = EOpNull;
+            TOperator convOp = EOpNull;
             switch (type.getBasicType()) {
             default:
                 assert(0);
                 break;
             case EbtInt:
                 switch (node->getType().getBasicType()) {
-                    case EbtFloat:   op = EOpConvFloatToInt;    break;
-                    case EbtFloat16: op = EOpConvFloat16ToInt;  break;
-                    case EbtUint8:   op = EOpConvUint8ToInt;    break;
-                    case EbtInt8:    op = EOpConvInt8ToInt;     break;
-                    case EbtUint16:  op = EOpConvUint16ToInt;   break;
-                    case EbtInt16:   op = EOpConvInt16ToInt;    break;
-                    case EbtUint:    op = EOpConvUintToInt;     break;
+                    case EbtFloat:   convOp = EOpConvFloatToInt;    break;
+                    case EbtFloat16: convOp = EOpConvFloat16ToInt;  break;
+                    case EbtUint8:   convOp = EOpConvUint8ToInt;    break;
+                    case EbtInt8:    convOp = EOpConvInt8ToInt;     break;
+                    case EbtUint16:  convOp = EOpConvUint16ToInt;   break;
+                    case EbtInt16:   convOp = EOpConvInt16ToInt;    break;
+                    case EbtUint:    convOp = EOpConvUintToInt;     break;
                     default: assert(0);
                 }
                 break;
             case EbtUint:
                 switch (node->getType().getBasicType()) {
-                    case EbtFloat:   op = EOpConvFloatToUint;    break;
-                    case EbtFloat16: op = EOpConvFloat16ToUint;  break;
-                    case EbtUint8:   op = EOpConvUint8ToUint;    break;
-                    case EbtInt8:    op = EOpConvInt8ToUint;     break;
-                    case EbtUint16:  op = EOpConvUint16ToUint;   break;
-                    case EbtInt16:   op = EOpConvInt16ToUint;    break;
-                    case EbtInt:     op = EOpConvIntToUint;      break;
+                    case EbtFloat:   convOp = EOpConvFloatToUint;    break;
+                    case EbtFloat16: convOp = EOpConvFloat16ToUint;  break;
+                    case EbtUint8:   convOp = EOpConvUint8ToUint;    break;
+                    case EbtInt8:    convOp = EOpConvInt8ToUint;     break;
+                    case EbtUint16:  convOp = EOpConvUint16ToUint;   break;
+                    case EbtInt16:   convOp = EOpConvInt16ToUint;    break;
+                    case EbtInt:     convOp = EOpConvIntToUint;      break;
                     default: assert(0);
                 }
                 break;
             case EbtInt16:
                 switch (node->getType().getBasicType()) {
-                    case EbtFloat:   op = EOpConvFloatToInt16;    break;
-                    case EbtFloat16: op = EOpConvFloat16ToInt16;  break;
-                    case EbtUint8:   op = EOpConvUint8ToInt16;    break;
-                    case EbtInt8:    op = EOpConvInt8ToInt16;     break;
-                    case EbtUint16:  op = EOpConvUint16ToInt16;   break;
-                    case EbtInt:     op = EOpConvIntToInt16;      break;
-                    case EbtUint:    op = EOpConvUintToInt16;     break;
+                    case EbtFloat:   convOp = EOpConvFloatToInt16;    break;
+                    case EbtFloat16: convOp = EOpConvFloat16ToInt16;  break;
+                    case EbtUint8:   convOp = EOpConvUint8ToInt16;    break;
+                    case EbtInt8:    convOp = EOpConvInt8ToInt16;     break;
+                    case EbtUint16:  convOp = EOpConvUint16ToInt16;   break;
+                    case EbtInt:     convOp = EOpConvIntToInt16;      break;
+                    case EbtUint:    convOp = EOpConvUintToInt16;     break;
                     default: assert(0);
                 }
                 break;
             case EbtUint16:
                 switch (node->getType().getBasicType()) {
-                    case EbtFloat:   op = EOpConvFloatToUint16;   break;
-                    case EbtFloat16: op = EOpConvFloat16ToUint16; break;
-                    case EbtUint8:   op = EOpConvUint8ToUint16;   break;
-                    case EbtInt8:    op = EOpConvInt8ToUint16;    break;
-                    case EbtInt16:   op = EOpConvInt16ToUint16;   break;
-                    case EbtInt:     op = EOpConvIntToUint16;     break;
-                    case EbtUint:    op = EOpConvUintToUint16;    break;
+                    case EbtFloat:   convOp = EOpConvFloatToUint16;   break;
+                    case EbtFloat16: convOp = EOpConvFloat16ToUint16; break;
+                    case EbtUint8:   convOp = EOpConvUint8ToUint16;   break;
+                    case EbtInt8:    convOp = EOpConvInt8ToUint16;    break;
+                    case EbtInt16:   convOp = EOpConvInt16ToUint16;   break;
+                    case EbtInt:     convOp = EOpConvIntToUint16;     break;
+                    case EbtUint:    convOp = EOpConvUintToUint16;    break;
                     default: assert(0);
                 }
                 break;
             case EbtInt8:
                 switch (node->getType().getBasicType()) {
-                    case EbtFloat:   op = EOpConvFloatToInt8;    break;
-                    case EbtFloat16: op = EOpConvFloat16ToInt8;  break;
-                    case EbtUint8:   op = EOpConvUint8ToInt8;    break;
-                    case EbtInt16:   op = EOpConvInt16ToInt8;    break;
-                    case EbtUint16:  op = EOpConvUint16ToInt8;   break;
-                    case EbtInt:     op = EOpConvIntToInt8;      break;
-                    case EbtUint:    op = EOpConvUintToInt8;     break;
+                    case EbtFloat:   convOp = EOpConvFloatToInt8;    break;
+                    case EbtFloat16: convOp = EOpConvFloat16ToInt8;  break;
+                    case EbtUint8:   convOp = EOpConvUint8ToInt8;    break;
+                    case EbtInt16:   convOp = EOpConvInt16ToInt8;    break;
+                    case EbtUint16:  convOp = EOpConvUint16ToInt8;   break;
+                    case EbtInt:     convOp = EOpConvIntToInt8;      break;
+                    case EbtUint:    convOp = EOpConvUintToInt8;     break;
                     default: assert(0);
                 }
                 break;
             case EbtUint8:
                 switch (node->getType().getBasicType()) {
-                    case EbtFloat:   op = EOpConvFloatToUint8;   break;
-                    case EbtFloat16: op = EOpConvFloat16ToUint8; break;
-                    case EbtInt8:    op = EOpConvInt8ToUint8;    break;
-                    case EbtInt16:   op = EOpConvInt16ToUint8;   break;
-                    case EbtUint16:  op = EOpConvUint16ToUint8;  break;
-                    case EbtInt:     op = EOpConvIntToUint8;     break;
-                    case EbtUint:    op = EOpConvUintToUint8;    break;
+                    case EbtFloat:   convOp = EOpConvFloatToUint8;   break;
+                    case EbtFloat16: convOp = EOpConvFloat16ToUint8; break;
+                    case EbtInt8:    convOp = EOpConvInt8ToUint8;    break;
+                    case EbtInt16:   convOp = EOpConvInt16ToUint8;   break;
+                    case EbtUint16:  convOp = EOpConvUint16ToUint8;  break;
+                    case EbtInt:     convOp = EOpConvIntToUint8;     break;
+                    case EbtUint:    convOp = EOpConvUintToUint8;    break;
                     default: assert(0);
                 }
                 break;
             case EbtFloat:
                 switch (node->getType().getBasicType()) {
-                    case EbtFloat16: op = EOpConvFloat16ToFloat;  break;
-                    case EbtInt8:    op = EOpConvInt8ToFloat;     break;
-                    case EbtUint8:   op = EOpConvUint8ToFloat;    break;
-                    case EbtInt16:   op = EOpConvInt16ToFloat;    break;
-                    case EbtUint16:  op = EOpConvUint16ToFloat;   break;
-                    case EbtInt:     op = EOpConvIntToFloat;      break;
-                    case EbtUint:    op = EOpConvUintToFloat;     break;
+                    case EbtFloat16: convOp = EOpConvFloat16ToFloat;  break;
+                    case EbtInt8:    convOp = EOpConvInt8ToFloat;     break;
+                    case EbtUint8:   convOp = EOpConvUint8ToFloat;    break;
+                    case EbtInt16:   convOp = EOpConvInt16ToFloat;    break;
+                    case EbtUint16:  convOp = EOpConvUint16ToFloat;   break;
+                    case EbtInt:     convOp = EOpConvIntToFloat;      break;
+                    case EbtUint:    convOp = EOpConvUintToFloat;     break;
                     default: assert(0);
                 }
                 break;
             case EbtFloat16:
                 switch (node->getType().getBasicType()) {
-                    case EbtFloat:  op = EOpConvFloatToFloat16;  break;
-                    case EbtInt8:   op = EOpConvInt8ToFloat16;   break;
-                    case EbtUint8:  op = EOpConvUint8ToFloat16;  break;
-                    case EbtInt16:  op = EOpConvInt16ToFloat16;   break;
-                    case EbtUint16: op = EOpConvUint16ToFloat16;  break;
-                    case EbtInt:    op = EOpConvIntToFloat16;    break;
-                    case EbtUint:   op = EOpConvUintToFloat16;   break;
+                    case EbtFloat:  convOp = EOpConvFloatToFloat16;  break;
+                    case EbtInt8:   convOp = EOpConvInt8ToFloat16;   break;
+                    case EbtUint8:  convOp = EOpConvUint8ToFloat16;  break;
+                    case EbtInt16:  convOp = EOpConvInt16ToFloat16;   break;
+                    case EbtUint16: convOp = EOpConvUint16ToFloat16;  break;
+                    case EbtInt:    convOp = EOpConvIntToFloat16;    break;
+                    case EbtUint:   convOp = EOpConvUintToFloat16;   break;
                     default: assert(0);
                 }
                 break;
             }
 
-            node = intermediate.addUnaryNode(op, node, node->getLoc(), type);
+            node = intermediate.addUnaryNode(convOp, node, node->getLoc(), type);
             // If it's a (non-specialization) constant, it must be folded.
             if (node->getAsUnaryNode()->getOperand()->getAsConstantUnion())
-                return node->getAsUnaryNode()->getOperand()->getAsConstantUnion()->fold(op, node->getType());
+                return node->getAsUnaryNode()->getOperand()->getAsConstantUnion()->fold(convOp, node->getType());
         }
 
         return node;

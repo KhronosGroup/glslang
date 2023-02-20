@@ -996,8 +996,8 @@ bool ProcessDeferred(
 class SourceLineSynchronizer {
 public:
     SourceLineSynchronizer(const std::function<int()>& lastSourceIndex,
-                           std::string* output)
-      : getLastSourceIndex(lastSourceIndex), output(output), lastSource(-1), lastLine(0) {}
+                           std::string* in_output)
+      : getLastSourceIndex(lastSourceIndex), output(in_output), lastSource(-1), lastLine(0) {}
 //    SourceLineSynchronizer(const SourceLineSynchronizer&) = delete;
 //    SourceLineSynchronizer& operator=(const SourceLineSynchronizer&) = delete;
 

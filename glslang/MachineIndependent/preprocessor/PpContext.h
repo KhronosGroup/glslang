@@ -546,7 +546,7 @@ protected:
     //
     class tStringInput : public tInput {
     public:
-        tStringInput(TPpContext* pp, TInputScanner& i) : tInput(pp), input(&i) { }
+        tStringInput(TPpContext* in_pp, TInputScanner& i) : tInput(in_pp), input(&i) { }
         virtual int scan(TPpToken*) override;
         bool isStringInput() override { return true; }
         // Scanner used to get source stream characters.
@@ -631,8 +631,8 @@ protected:
                           const std::string& prologue,
                           TShader::Includer::IncludeResult* includedFile,
                           const std::string& epilogue,
-                          TPpContext* pp)
-            : tInput(pp),
+                          TPpContext* in_pp)
+            : tInput(in_pp),
               prologue_(prologue),
               epilogue_(epilogue),
               includedFile_(includedFile),
