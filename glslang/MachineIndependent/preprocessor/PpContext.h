@@ -251,8 +251,8 @@ public:
         // of a TPpToken, plus its atom.
         class Token {
         public:
-            Token(int atom, const TPpToken& ppToken) : 
-                atom(atom),
+            Token(int in_atom, const TPpToken& ppToken) :
+                atom(in_atom),
                 space(ppToken.space),
                 i64val(ppToken.i64val),
                 name(ppToken.name) { }
@@ -416,7 +416,7 @@ protected:
 
     class tMacroInput : public tInput {
     public:
-        tMacroInput(TPpContext* pp) : tInput(pp), prepaste(false), postpaste(false) { }
+        tMacroInput(TPpContext* in_pp) : tInput(in_pp), prepaste(false), postpaste(false) { }
         virtual ~tMacroInput()
         {
             for (size_t i = 0; i < args.size(); ++i)
@@ -444,7 +444,7 @@ protected:
 
     class tMarkerInput : public tInput {
     public:
-        tMarkerInput(TPpContext* pp) : tInput(pp) { }
+        tMarkerInput(TPpContext* in_pp) : tInput(in_pp) { }
         virtual int scan(TPpToken*) override
         {
             if (done)
@@ -460,7 +460,7 @@ protected:
 
     class tZeroInput : public tInput {
     public:
-        tZeroInput(TPpContext* pp) : tInput(pp) { }
+        tZeroInput(TPpContext* in_pp) : tInput(in_pp) { }
         virtual int scan(TPpToken*) override;
         virtual int getch() override { assert(0); return EndOfInput; }
         virtual void ungetch() override { assert(0); }
@@ -504,8 +504,8 @@ protected:
 
     class tTokenInput : public tInput {
     public:
-        tTokenInput(TPpContext* pp, TokenStream* t, bool prepasting, bool expanded) :
-            tInput(pp),
+        tTokenInput(TPpContext* in_pp, TokenStream* t, bool prepasting, bool expanded) :
+            tInput(in_pp),
             tokens(t),
             lastTokenPastes(prepasting),
             preExpanded(expanded) { }
@@ -532,7 +532,7 @@ protected:
 
     class tUngotTokenInput : public tInput {
     public:
-        tUngotTokenInput(TPpContext* pp, int t, TPpToken* p) : tInput(pp), token(t), lval(*p) { }
+        tUngotTokenInput(TPpContext* in_pp, int t, TPpToken* p) : tInput(in_pp), token(t), lval(*p) { }
         virtual int scan(TPpToken *) override;
         virtual int getch() override { assert(0); return EndOfInput; }
         virtual void ungetch() override { assert(0); }
