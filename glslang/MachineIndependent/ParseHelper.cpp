@@ -49,11 +49,11 @@ extern int yyparse(glslang::TParseContext*);
 
 namespace glslang {
 
-TParseContext::TParseContext(TSymbolTable& symbolTable, TIntermediate& interm, bool parsingBuiltins,
+TParseContext::TParseContext(TSymbolTable& in_symbolTable, TIntermediate& interm, bool parsingBuiltins,
                              int version, EProfile profile, const SpvVersion& spvVersion, EShLanguage language,
                              TInfoSink& infoSink, bool forwardCompatible, EShMessages messages,
                              const TString* entryPoint) :
-            TParseContextBase(symbolTable, interm, parsingBuiltins, version, profile, spvVersion, language,
+            TParseContextBase(in_symbolTable, interm, parsingBuiltins, version, profile, spvVersion, language,
                               infoSink, forwardCompatible, messages, entryPoint),
             inMain(false),
             blockName(nullptr),
@@ -198,10 +198,10 @@ void TParseContext::setLimits(const TBuiltInResource& r)
 //
 // Returns true for successful acceptance of the shader, false if any errors.
 //
-bool TParseContext::parseShaderStrings(TPpContext& ppContext, TInputScanner& input, bool versionWillBeError)
+bool TParseContext::parseShaderStrings(TPpContext& context, TInputScanner& input, bool versionWillBeError)
 {
     currentScanner = &input;
-    ppContext.setInput(input, versionWillBeError);
+    context.setInput(input, versionWillBeError);
     yyparse(this);
 
     finish();
@@ -4940,7 +4940,7 @@ TSymbol* TParseContext::redeclareBuiltinVariable(const TSourceLoc& loc, const TS
 // Either redeclare the requested block, or give an error message why it can't be done.
 //
 // TODO: functionality: explicitly sizing members of redeclared blocks is not giving them an explicit size
-void TParseContext::redeclareBuiltinBlock(const TSourceLoc& loc, TTypeList& newTypeList, const TString& blockName,
+void TParseContext::redeclareBuiltinBlock(const TSourceLoc& loc, TTypeList& newTypeList, const TString& blockNameToRedeclare,
     const TString* instanceName, TArraySizes* arraySizes)
 {
 #ifndef GLSLANG_WEB
@@ -4948,10 +4948,10 @@ void TParseContext::redeclareBuiltinBlock(const TSourceLoc& loc, TTypeList& newT
     profileRequires(loc, EEsProfile, 320, Num_AEP_shader_io_blocks, AEP_shader_io_blocks, feature);
     profileRequires(loc, ~EEsProfile, 410, E_GL_ARB_separate_shader_objects, feature);
 
-    if (blockName != "gl_PerVertex" && blockName != "gl_PerFragment" &&
-        blockName != "gl_MeshPerVertexNV" && blockName != "gl_MeshPerPrimitiveNV" &&
-        blockName != "gl_MeshPerVertexEXT" && blockName != "gl_MeshPerPrimitiveEXT") {
-        error(loc, "cannot redeclare block: ", "block declaration", blockName.c_str());
+    if (blockNameToRedeclare != "gl_PerVertex" && blockNameToRedeclare != "gl_PerFragment" &&
+        blockNameToRedeclare != "gl_MeshPerVertexNV" && blockNameToRedeclare != "gl_MeshPerPrimitiveNV" &&
+        blockNameToRedeclare != "gl_MeshPerVertexEXT" && blockNameToRedeclare != "gl_MeshPerPrimitiveEXT") {
+        error(loc, "cannot redeclare block: ", "block declaration", blockNameToRedeclare.c_str());
         return;
     }
 
@@ -4981,7 +4981,7 @@ void TParseContext::redeclareBuiltinBlock(const TSourceLoc& loc, TTypeList& newT
     // Built-in blocks cannot be redeclared more than once, which if happened,
     // we'd be finding the already redeclared one here, rather than the built in.
     if (! builtIn) {
-        error(loc, "can only redeclare a built-in block once, and before any use", blockName.c_str(), "");
+        error(loc, "can only redeclare a built-in block once, and before any use", blockNameToRedeclare.c_str(), "");
         return;
     }
 
@@ -5124,10 +5124,10 @@ void TParseContext::redeclareBuiltinBlock(const TSourceLoc& loc, TTypeList& newT
     }
 
     if (numOriginalMembersFound < newTypeList.size())
-        error(loc, "block redeclaration has extra members", blockName.c_str(), "");
+        error(loc, "block redeclaration has extra members", blockNameToRedeclare.c_str(), "");
     if (type.isArray() != (arraySizes != nullptr) ||
         (type.isArray() && arraySizes != nullptr && type.getArraySizes()->getNumDims() != arraySizes->getNumDims()))
-        error(loc, "cannot change arrayness of redeclared block", blockName.c_str(), "");
+        error(loc, "cannot change arrayness of redeclared block", blockNameToRedeclare.c_str(), "");
     else if (type.isArray()) {
         // At this point, we know both are arrays and both have the same number of dimensions.
 
@@ -5142,7 +5142,7 @@ void TParseContext::redeclareBuiltinBlock(const TSourceLoc& loc, TTypeList& newT
 
         // Now, they must match in all dimensions.
         if (type.isSizedArray() && *type.getArraySizes() != *arraySizes)
-            error(loc, "cannot change array size of redeclared block", blockName.c_str(), "");
+            error(loc, "cannot change array size of redeclared block", blockNameToRedeclare.c_str(), "");
     }
 
     symbolTable.insert(*block);

@@ -316,13 +316,13 @@ namespace spv {
         literal.reserve(16);
 
         do {
-            spirword_t word = *pos;
+            spirword_t value = *pos;
             for (int i = 0; i < 4; i++) {
-                char c = word & 0xff;
+                char c = value & 0xff;
                 if (c == '\0')
                     return literal;
                 literal += c;
-                word >>= 8;
+                value >>= 8;
             }
             pos++;
         } while (true);
@@ -1113,10 +1113,10 @@ namespace spv {
                     process(
                         [&](spv::Op opCode, unsigned start) {
                             if (opCode == spv::Op::OpFunctionCall) {
-                                const auto call_it = fnCalls.find(asId(start + 3));
-                                if (call_it != fnCalls.end()) {
-                                    if (--call_it->second <= 0)
-                                        fnCalls.erase(call_it);
+                                const auto itr = fnCalls.find(asId(start + 3));
+                                if (itr != fnCalls.end()) {
+                                    if (--itr->second <= 0)
+                                        fnCalls.erase(itr);
                                 }
                             }
 

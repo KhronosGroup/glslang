@@ -42,8 +42,8 @@ namespace glslang {
 
     class HlslTokenStream {
     public:
-        explicit HlslTokenStream(HlslScanContext& scanner)
-            : scanner(scanner), preTokenStackSize(0), tokenBufferPos(0) { }
+        explicit HlslTokenStream(HlslScanContext& in_scanner)
+            : scanner(in_scanner), preTokenStackSize(0), tokenBufferPos(0) { }
         virtual ~HlslTokenStream() { }
 
     public:

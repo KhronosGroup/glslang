@@ -50,8 +50,8 @@ namespace glslang {
 
     class HlslGrammar : public HlslTokenStream {
     public:
-        HlslGrammar(HlslScanContext& scanner, HlslParseContext& in_parseContext)
-            : HlslTokenStream(scanner), parseContext(in_parseContext), intermediate(parseContext.intermediate),
+        HlslGrammar(HlslScanContext& in_scanner, HlslParseContext& in_parseContext)
+            : HlslTokenStream(in_scanner), parseContext(in_parseContext), intermediate(parseContext.intermediate),
               typeIdentifiers(false), unitNode(nullptr) { }
         virtual ~HlslGrammar() { }
 
