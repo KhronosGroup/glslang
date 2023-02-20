@@ -84,10 +84,10 @@ public:
     /* Wrapper of IncludeResult which stores a glsl_include_result object internally */
     class CallbackIncludeResult : public glslang::TShader::Includer::IncludeResult {
     public:
-        CallbackIncludeResult(const std::string& headerName, const char* const headerData, const size_t headerLength,
-                              void* userData, glsl_include_result_t* includeResult)
-            : glslang::TShader::Includer::IncludeResult(headerName, headerData, headerLength, userData),
-              includeResult(includeResult)
+        CallbackIncludeResult(const std::string& in_headerName, const char* const in_headerData, const size_t in_headerLength,
+                              void* in_userData, glsl_include_result_t* in_includeResult)
+            : glslang::TShader::Includer::IncludeResult(in_headerName, in_headerData, in_headerLength, in_userData),
+              includeResult(in_includeResult)
         {
         }
 
