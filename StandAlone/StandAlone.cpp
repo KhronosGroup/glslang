@@ -357,7 +357,7 @@ void ProcessBindingBase(int& argc, char**& argv, glslang::TResourceType res)
     if (argc < 2)
         usage();
 
-    EShLanguage lang = EShLangCount;
+    EShLanguage langSelected = EShLangCount;
     int singleBase = 0;
     TPerSetBaseBinding perSetBase;
     int arg = 1;
@@ -367,7 +367,7 @@ void ProcessBindingBase(int& argc, char**& argv, glslang::TResourceType res)
         if (argc < 3) // this form needs one more argument
             usage();
 
-        lang = FindLanguage(argv[arg++], false);
+        langSelected = FindLanguage(argv[arg++], false);
     }
 
     if ((argc - arg) >= 2 && isdigit(argv[arg+0][0]) && isdigit(argv[arg+1][0])) {
@@ -386,8 +386,8 @@ void ProcessBindingBase(int& argc, char**& argv, glslang::TResourceType res)
     argv += (arg-1);
 
     // Set one or all languages
-    const int langMin = (lang < EShLangCount) ? lang+0 : 0;
-    const int langMax = (lang < EShLangCount) ? lang+1 : EShLangCount;
+    const int langMin = (langSelected < EShLangCount) ? langSelected+0 : 0;
+    const int langMax = (langSelected < EShLangCount) ? langSelected+1 : EShLangCount;
 
     for (int lang = langMin; lang < langMax; ++lang) {
         if (!perSetBase.empty())
@@ -1227,7 +1227,7 @@ struct ShaderCompUnit {
     std::string fileName[maxCount];     // hold's the memory, but...
     const char* fileNameList[maxCount]; // downstream interface wants pointers
 
-    ShaderCompUnit(EShLanguage stage) : stage(stage), count(0) { }
+    ShaderCompUnit(EShLanguage in_stage) : stage(in_stage), count(0) { }
 
     ShaderCompUnit(const ShaderCompUnit& rhs)
     {

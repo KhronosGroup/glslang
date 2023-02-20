@@ -153,8 +153,8 @@ protected:
 //
 class TVariable : public TSymbol {
 public:
-    TVariable(const TString *name, const TType& t, bool uT = false )
-        : TSymbol(name),
+    TVariable(const TString *in_name, const TType& t, bool uT = false )
+        : TSymbol(in_name),
           userType(uT),
           constSubtree(nullptr),
           memberExtensions(nullptr),
@@ -242,9 +242,9 @@ public:
         TSymbol(nullptr),
         op(o),
         defined(false), prototyped(false), implicitThis(false), illegalImplicitThis(false), defaultParamCount(0) { }
-    TFunction(const TString *name, const TType& retType, TOperator tOp = EOpNull) :
-        TSymbol(name),
-        mangledName(*name + '('),
+    TFunction(const TString *in_name, const TType& retType, TOperator tOp = EOpNull) :
+        TSymbol(in_name),
+        mangledName(*in_name + '('),
         op(tOp),
         defined(false), prototyped(false), implicitThis(false), illegalImplicitThis(false), defaultParamCount(0),
         linkType(ELinkNone)
@@ -273,9 +273,9 @@ public:
 
     // Install 'this' as the first parameter.
     // 'this' is reflected in the list of parameters, but not the mangled name.
-    virtual void addThisParameter(TType& type, const char* name)
+    virtual void addThisParameter(TType& type, const char* in_name)
     {
-        TParameter p = { NewPoolTString(name), new TType, nullptr };
+        TParameter p = { NewPoolTString(in_name), new TType, nullptr };
         p.type->shallowCopy(type);
         parameters.insert(parameters.begin(), p);
     }

@@ -94,8 +94,8 @@ struct IdImmediate {
 
 class Instruction {
 public:
-    Instruction(Id resultId, Id typeId, Op opCode) : resultId(resultId), typeId(typeId), opCode(opCode), block(nullptr) { }
-    explicit Instruction(Op opCode) : resultId(NoResult), typeId(NoType), opCode(opCode), block(nullptr) { }
+    Instruction(Id in_resultId, Id in_typeId, Op in_opCode) : resultId(in_resultId), typeId(in_typeId), opCode(in_opCode), block(nullptr) { }
+    explicit Instruction(Op in_opCode) : resultId(NoResult), typeId(NoType), opCode(in_opCode), block(nullptr) { }
     virtual ~Instruction() {}
     void addIdOperand(Id id) {
         // ids can't be 0
@@ -514,8 +514,8 @@ protected:
 // Add both
 // - the OpFunction instruction
 // - all the OpFunctionParameter instructions
-__inline Function::Function(Id id, Id resultType, Id functionType, Id firstParamId, LinkageType linkage, const std::string& name, Module& parent)
-    : parent(parent), lineInstruction(nullptr),
+__inline Function::Function(Id id, Id resultType, Id functionType, Id firstParamId, LinkageType linkage, const std::string& name, Module& in_parent)
+    : parent(in_parent), lineInstruction(nullptr),
       functionInstruction(id, resultType, OpFunction), implicitThis(false),
       reducedPrecisionReturn(false),
       linkType(linkage)
@@ -548,7 +548,7 @@ __inline void Function::addLocalVariable(std::unique_ptr<Instruction> inst)
     parent.mapInstruction(raw_instruction);
 }
 
-__inline Block::Block(Id id, Function& parent) : parent(parent), unreachable(false)
+__inline Block::Block(Id id, Function& in_parent) : parent(in_parent), unreachable(false)
 {
     instructions.push_back(std::unique_ptr<Instruction>(new Instruction(id, NoType, OpLabel)));
     instructions.back()->setBlock(this);

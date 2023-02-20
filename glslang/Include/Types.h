@@ -1628,10 +1628,10 @@ public:
                                 }
                             }
     // for construction of sampler types
-    TType(const TSampler& sampler, TStorageQualifier q = EvqUniform, TArraySizes* as = nullptr) :
+    TType(const TSampler& in_sampler, TStorageQualifier q = EvqUniform, TArraySizes* as = nullptr) :
         basicType(EbtSampler), vectorSize(1u), matrixCols(0u), matrixRows(0u), vector1(false), coopmatNV(false), coopmatKHR(false), coopmatKHRuse(0), coopmatKHRUseValid(false),
         arraySizes(as), structure(nullptr), fieldName(nullptr), typeName(nullptr),
-        sampler(sampler), typeParameters(nullptr), spirvType(nullptr)
+        sampler(in_sampler), typeParameters(nullptr), spirvType(nullptr)
     {
         qualifier.clear();
         qualifier.storage = q;

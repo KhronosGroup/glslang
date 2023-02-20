@@ -110,7 +110,7 @@ struct TCall {
 
 // A generic 1-D range.
 struct TRange {
-    TRange(int start, int last) : start(start), last(last) { }
+    TRange(int in_start, int in_last) : start(in_start), last(in_last) { }
     bool overlap(const TRange& rhs) const
     {
         return last >= rhs.start && start <= rhs.last;
@@ -123,8 +123,8 @@ struct TRange {
 // within the same location range, component range, and index value.  Locations don't alias unless
 // all other dimensions of their range overlap.
 struct TIoRange {
-    TIoRange(TRange location, TRange component, TBasicType basicType, int index)
-        : location(location), component(component), basicType(basicType), index(index) { }
+    TIoRange(TRange in_location, TRange in_component, TBasicType in_basicType, int in_index)
+        : location(in_location), component(in_component), basicType(in_basicType), index(in_index) { }
     bool overlap(const TIoRange& rhs) const
     {
         return location.overlap(rhs.location) && component.overlap(rhs.component) && index == rhs.index;
@@ -138,8 +138,8 @@ struct TIoRange {
 // An offset range is a 2-D rectangle; the set of (binding, offset) pairs all lying
 // within the same binding and offset range.
 struct TOffsetRange {
-    TOffsetRange(TRange binding, TRange offset)
-        : binding(binding), offset(offset) { }
+    TOffsetRange(TRange in_binding, TRange in_offset)
+        : binding(in_binding), offset(in_offset) { }
     bool overlap(const TOffsetRange& rhs) const
     {
         return binding.overlap(rhs.binding) && offset.overlap(rhs.offset);

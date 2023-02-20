@@ -245,9 +245,9 @@ void Builder::postProcess(Instruction& inst)
             // (set via Builder::AccessChain::alignment) only accounts for the base of
             // the reference type and any scalar component selection in the accesschain,
             // and this function computes the rest from the SPIR-V Offset decorations.
-            Instruction *accessChain = module.getInstruction(inst.getIdOperand(0));
-            if (accessChain->getOpCode() == OpAccessChain) {
-                Instruction *base = module.getInstruction(accessChain->getIdOperand(0));
+            Instruction *moduleAccessChain = module.getInstruction(inst.getIdOperand(0));
+            if (moduleAccessChain->getOpCode() == OpAccessChain) {
+                Instruction *base = module.getInstruction(moduleAccessChain->getIdOperand(0));
                 // Get the type of the base of the access chain. It must be a pointer type.
                 Id typeId = base->getTypeId();
                 Instruction *type = module.getInstruction(typeId);
@@ -263,8 +263,8 @@ void Builder::postProcess(Instruction& inst)
                 // Offset/ArrayStride/MatrixStride decorations, and bitwise OR them all
                 // together.
                 int alignment = 0;
-                for (int i = 1; i < accessChain->getNumOperands(); ++i) {
-                    Instruction *idx = module.getInstruction(accessChain->getIdOperand(i));
+                for (int i = 1; i < moduleAccessChain->getNumOperands(); ++i) {
+                    Instruction *idx = module.getInstruction(moduleAccessChain->getIdOperand(i));
                     if (type->getOpCode() == OpTypeStruct) {
                         assert(idx->getOpCode() == OpConstant);
                         unsigned int c = idx->getImmediateOperand(0);
