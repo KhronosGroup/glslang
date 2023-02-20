@@ -50,12 +50,12 @@ extern int yyparse(glslang::TParseContext*);
 
 namespace glslang {
 
-TParseContext::TParseContext(TSymbolTable& in_symbolTable, TIntermediate& interm, bool parsingBuiltins,
-                             int version, EProfile profile, const SpvVersion& spvVersion, EShLanguage language,
-                             TInfoSink& infoSink, bool forwardCompatible, EShMessages messages,
+TParseContext::TParseContext(TSymbolTable& in_symbolTable, TIntermediate& interm, bool in_parsingBuiltins,
+                             int in_version, EProfile in_profile, const SpvVersion& in_spvVersion, EShLanguage in_language,
+                             TInfoSink& in_infoSink, bool in_forwardCompatible, EShMessages in_messages,
                              const TString* entryPoint) :
-            TParseContextBase(in_symbolTable, interm, parsingBuiltins, version, profile, spvVersion, language,
-                              infoSink, forwardCompatible, messages, entryPoint),
+            TParseContextBase(in_symbolTable, interm, in_parsingBuiltins, in_version, in_profile, in_spvVersion, in_language,
+                              in_infoSink, in_forwardCompatible, in_messages, entryPoint),
             inMain(false),
             blockName(nullptr),
             limits(resources.limits),

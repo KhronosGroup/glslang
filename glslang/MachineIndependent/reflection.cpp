@@ -1176,8 +1176,8 @@ bool TReflection::addStage(EShLanguage stage, const TIntermediate& intermediate)
             if (sequnence->getAsAggregate()->getOp() == glslang::EOpLinkerObjects) {
                 it.updateStageMasks = false;
                 TIntermAggregate* linkerObjects = sequnence->getAsAggregate();
-                for (auto& sequnence : linkerObjects->getSequence()) {
-                    auto pNode = sequnence->getAsSymbolNode();
+                for (auto& inner_sequnence : linkerObjects->getSequence()) {
+                    auto pNode = inner_sequnence->getAsSymbolNode();
                     if (pNode != nullptr) {
                         if ((pNode->getQualifier().storage == EvqUniform &&
                             (options & EShReflectionSharedStd140UBO)) ||

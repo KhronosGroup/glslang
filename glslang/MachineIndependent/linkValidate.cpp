@@ -391,7 +391,7 @@ static const TString& getNameForIdMap(TIntermSymbol* symbol)
 // on having no bodies for the copy-constructor/operator=.)
 class TBuiltInIdTraverser : public TIntermTraverser {
 public:
-    TBuiltInIdTraverser(TIdMaps& idMaps) : idMaps(idMaps), idShift(0) { }
+    TBuiltInIdTraverser(TIdMaps& in_idMaps) : idMaps(in_idMaps), idShift(0) { }
     // If it's a built in, add it to the map.
     virtual void visitSymbol(TIntermSymbol* symbol)
     {
@@ -417,7 +417,7 @@ protected:
 // on having no bodies for the copy-constructor/operator=.)
 class TUserIdTraverser : public TIntermTraverser {
 public:
-    TUserIdTraverser(TIdMaps& idMaps) : idMaps(idMaps) { }
+    TUserIdTraverser(TIdMaps& in_idMaps) : idMaps(in_idMaps) { }
     // If its a non-built-in global, add it to the map.
     virtual void visitSymbol(TIntermSymbol* symbol)
     {
@@ -452,7 +452,7 @@ void TIntermediate::seedIdMap(TIdMaps& idMaps, long long& idShift)
 // on having no bodies for the copy-constructor/operator=.)
 class TRemapIdTraverser : public TIntermTraverser {
 public:
-    TRemapIdTraverser(const TIdMaps& idMaps, long long idShift) : idMaps(idMaps), idShift(idShift) { }
+    TRemapIdTraverser(const TIdMaps& in_idMaps, long long in_idShift) : idMaps(in_idMaps), idShift(in_idShift) { }
     // Do the mapping:
     //  - if the same symbol, adopt the 'this' ID
     //  - otherwise, ensure a unique ID by shifting to a new space
@@ -634,9 +634,9 @@ void TIntermediate::mergeBlockDefinitions(TInfoSink& infoSink, TIntermSymbol* bl
             : newSymbol(newSym), newType(nullptr), unit(nullptr), memberIndexUpdates(nullptr)
         {
         }
-        TMergeBlockTraverser(const TIntermSymbol* newSym, const glslang::TType* unitType, glslang::TIntermediate* unit,
+        TMergeBlockTraverser(const TIntermSymbol* newSym, const glslang::TType* unitType, glslang::TIntermediate* in_unit,
                              const std::map<unsigned int, unsigned int>* memberIdxUpdates)
-            : TIntermTraverser(false, true), newSymbol(newSym), newType(unitType), unit(unit), memberIndexUpdates(memberIdxUpdates)
+            : TIntermTraverser(false, true), newSymbol(newSym), newType(unitType), unit(in_unit), memberIndexUpdates(memberIdxUpdates)
         {
         }
         virtual ~TMergeBlockTraverser() {}

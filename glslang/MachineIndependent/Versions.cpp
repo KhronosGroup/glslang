@@ -1391,9 +1391,9 @@ void TParseVersions::requireSpv(const TSourceLoc& loc, const char* op)
     if (spvVersion.spv == 0)
         error(loc, "only allowed when generating SPIR-V", op, "");
 }
-void TParseVersions::requireSpv(const TSourceLoc& loc, const char *op, unsigned int version)
+void TParseVersions::requireSpv(const TSourceLoc& loc, const char *op, unsigned int in_version)
 {
-    if (spvVersion.spv < version)
+    if (spvVersion.spv < in_version)
         error(loc, "not supported for current targeted SPIR-V version", op, "");
 }
 

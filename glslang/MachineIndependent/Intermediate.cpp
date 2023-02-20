@@ -2831,7 +2831,7 @@ bool TIntermediate::postProcess(TIntermNode* root, EShLanguage /*language*/)
     return true;
 }
 
-void TIntermediate::addSymbolLinkageNodes(TIntermAggregate*& linkage, EShLanguage language, TSymbolTable& symbolTable)
+void TIntermediate::addSymbolLinkageNodes(TIntermAggregate*& linkage, EShLanguage in_language, TSymbolTable& symbolTable)
 {
     // Add top-level nodes for declarations that must be checked cross
     // compilation unit by a linker, yet might not have been referenced
@@ -2854,7 +2854,7 @@ void TIntermediate::addSymbolLinkageNodes(TIntermAggregate*& linkage, EShLanguag
     //    addSymbolLinkageNode(root, symbolTable, "gl_ModelViewProjectionMatrix");
     //}
 
-    if (language == EShLangVertex) {
+    if (in_language == EShLangVertex) {
         addSymbolLinkageNode(linkage, symbolTable, "gl_VertexID");
         if ((version < 140 && requestedExtensions.find(E_GL_EXT_draw_instanced) != requestedExtensions.end()) || version >= 140)
             addSymbolLinkageNode(linkage, symbolTable, "gl_InstanceID");
@@ -3802,7 +3802,7 @@ bool TIntermediate::promoteAggregate(TIntermAggregate& node)
 
         // If we successfully converted all the args, use the result.
         if (std::all_of(convertedArgs.begin(), convertedArgs.end(),
-                        [](const TIntermNode* node) { return node != nullptr; })) {
+                        [](const TIntermNode* in_node) { return in_node != nullptr; })) {
 
             std::swap(args, convertedArgs);
             return true;
