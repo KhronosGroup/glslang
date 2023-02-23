@@ -13,8 +13,11 @@
   )\
 4 + 3 + Y
 
+#define F F.a
+
 int main() {
   gl_Position = vec4(X(3), Y(3, 4), Z(3));
   gl_Position = vec4(REALLY_LONG_MACRO_NAME_WITH_MANY_PARAMETERS(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12));
   gl_Position = vec4(A(3));
+  gl_Position = A(F);
 }
