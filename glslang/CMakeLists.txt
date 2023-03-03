@@ -250,7 +250,8 @@ if(ENABLE_GLSLANG_INSTALL)
 
     set(ALL_HEADERS
         ${GLSLANG_HEADERS}
-        ${MACHINEINDEPENDENT_HEADERS})
+        ${MACHINEINDEPENDENT_HEADERS}
+        ${RESOURCELIMITS_HEADERS})
 
     foreach(file ${ALL_HEADERS})
         get_filename_component(dir ${file} DIRECTORY)
