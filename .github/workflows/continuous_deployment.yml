@@ -22,6 +22,9 @@ on:
         branches:
             - main
 
+permissions:
+    contents: read
+
 jobs:
     linux:
         runs-on: ${{matrix.os.genus}}
