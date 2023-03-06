@@ -22,7 +22,7 @@ on:
         branches:
             - main
 
-permissions: read-all
+permissions: write-all
 
 jobs:
     linux:
