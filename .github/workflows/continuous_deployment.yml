@@ -27,6 +27,8 @@ permissions: read-all
 jobs:
     linux:
         runs-on: ${{matrix.os.genus}}
+        permissions:
+            contents: write
         strategy:
             fail-fast: false
             matrix:
@@ -103,6 +105,8 @@ jobs:
 
     macos:
         runs-on: ${{matrix.os.genus}}
+        permissions:
+            contents: write
         strategy:
             fail-fast: false
             matrix:
