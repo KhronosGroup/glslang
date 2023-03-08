@@ -12,6 +12,8 @@ on:
         branches:
             - main
 
+permissions: read-all
+
 jobs:
     linux:
         runs-on: ${{matrix.os}}
