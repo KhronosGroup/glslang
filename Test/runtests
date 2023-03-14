@@ -18,7 +18,7 @@ if [ -d "${LIBPATH}" ]; then
 fi
 
 function run {
-    $EXE $@
+    $EXE "$@"
     result=$?
     case "$result" in
     [0-6]) # Valid success and error codes
@@ -201,13 +201,15 @@ run -D -Od -e main -H --depfile $TARGETDIR/hlsl.dashI.vert.d.out -Od -Iinc1/path
 diff -b $BASEDIR/hlsl.dashI.vert.d.out $TARGETDIR/hlsl.dashI.vert.d.out || HASERROR=1
 
 #
-# Testing -D and -U
+# Testing -D, -U and -P
 #
-echo "Testing -D and -U"
+echo "Testing -D, -U and -P"
 run -DUNDEFED -UIN_SHADER -DFOO=200 -i -l --U UNDEFED --define-macro MUL=FOO*2 glsl.-D-U.frag > $TARGETDIR/glsl.-D-U.frag.out
 diff -b $BASEDIR/glsl.-D-U.frag.out $TARGETDIR/glsl.-D-U.frag.out || HASERROR=1
 run -D -Od -e main -V -i -DUNDEFED -UIN_SHADER --D FOO=200 --undef-macro UNDEFED -Od hlsl.-D-U.frag > $TARGETDIR/hlsl.-D-U.frag.out
 diff -b $BASEDIR/hlsl.-D-U.frag.out $TARGETDIR/hlsl.-D-U.frag.out || HASERROR=1
+run -P"#define TEST1" -i -l --preamble-text "#define TEST2" --p "#define TEST3" glsl.-P.frag > $TARGETDIR/glsl.-P.frag.out
+diff -b $BASEDIR/glsl.-P.frag.out $TARGETDIR/glsl.-P.frag.out || HASERROR=1
 
 #
 # Test --client and --target-env
