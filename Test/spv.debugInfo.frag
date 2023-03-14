@@ -25,9 +25,40 @@ vec4 foo(S s)
     return r;
 }
 
+float testBranch(float x, float y)
+{
+    float result = 0;
+    bool b = x > 0;
+
+    // branch with load
+    if (b) {
+        result += 1;
+    }
+    else {
+        result -= 1;
+    }
+
+    // branch with expression
+    if (x > y) {
+        result += x - y;
+    }
+
+    // selection with load
+    result += b ?
+        1 : -1;
+
+    // selection with expression
+    result += x < y ? 
+        y : 
+        float(b);
+
+    return result;
+}
+
 void main()
 {
     outv = foo(s);
+    outv += testBranch(inv.x, inv.y);
     outv += texture(s2d, vec2(0.5));
 
     switch (s.a) {
