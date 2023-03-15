@@ -9,7 +9,7 @@ git branch -u origin/main main
 git remote set-head origin -a
 ```
 
-2. Visual Studio 2019 is now the minimum supported compiler for windows. This change was driven by the external dependency on SPIRV-Tools.
+2. C++17 (all platforms) and Visual Studio 2019 (Windows) are now required. This change was driven by the external dependency on SPIRV-Tools.
 
 [![appveyor status](https://ci.appveyor.com/api/projects/status/q6fi9cb0qnhkla68/branch/main?svg=true)](https://ci.appveyor.com/project/Khronoswebmaster/glslang/branch/main)
 ![Continuous Deployment](https://github.com/KhronosGroup/glslang/actions/workflows/continuous_deployment.yml/badge.svg)
@@ -98,8 +98,8 @@ branch.
 
 ### Dependencies
 
-* A C++11 compiler.
-  (For MSVS: use 2015 or later.)
+* A C++17 compiler.
+  (For MSVS: use 2019 or later.)
 * [CMake][cmake]: for generating compilation targets.
 * make: _Linux_, ninja is an alternative, if configured.
 * [Python 3.x][python]: for executing SPIRV-Tools scripts. (Optional if not using SPIRV-Tools and the 'External' subdirectory does not exist.)
