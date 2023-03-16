@@ -114,4 +114,10 @@ void main()
     coopMatLoadNV(ms, shmatrix, 1, 2, false);
     coopMatStoreNV(ms, shmatrix, 1, 2, false);
 
+    icoopmatNV<16, gl_ScopeSubgroup, 16, 8> i16 = icoopmatNV<16, gl_ScopeSubgroup, 16, 8>(0);
+    ucoopmatNV<16, gl_ScopeSubgroup, 16, 8> u16 = ucoopmatNV<16, gl_ScopeSubgroup, 16, 8>(0);
+    coopMatLoadNV(i16, shmatrix, 1, 2, false);
+    coopMatStoreNV(i16, shmatrix, 1, 2, false);
+    coopMatLoadNV(u16, shmatrix, 1, 2, false);
+    coopMatStoreNV(u16, shmatrix, 1, 2, false);
 }
