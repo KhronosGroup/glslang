@@ -203,7 +203,9 @@ public:
     Id makeImageType(Id sampledType, Dim, bool depth, bool arrayed, bool ms, unsigned sampled, ImageFormat format);
     Id makeSamplerType();
     Id makeSampledImageType(Id imageType);
-    Id makeCooperativeMatrixType(Id component, Id scope, Id rows, Id cols);
+    Id makeCooperativeMatrixTypeKHR(Id component, Id scope, Id rows, Id cols, Id use);
+    Id makeCooperativeMatrixTypeNV(Id component, Id scope, Id rows, Id cols);
+    Id makeCooperativeMatrixTypeWithSameShape(Id component, Id otherType);
     Id makeGenericType(spv::Op opcode, std::vector<spv::IdImmediate>& operands);
 
     // SPIR-V NonSemantic Shader DebugInfo Instructions
@@ -286,7 +288,10 @@ public:
 #ifdef GLSLANG_WEB
     bool isCooperativeMatrixType(Id typeId)const { return false; }
 #else
-    bool isCooperativeMatrixType(Id typeId)const { return getTypeClass(typeId) == OpTypeCooperativeMatrixNV; }
+    bool isCooperativeMatrixType(Id typeId)const
+    {
+        return getTypeClass(typeId) == OpTypeCooperativeMatrixKHR || getTypeClass(typeId) == OpTypeCooperativeMatrixNV;
+    }
 #endif
     bool isAggregateType(Id typeId)    const
         { return isArrayType(typeId) || isStructType(typeId) || isCooperativeMatrixType(typeId); }
@@ -464,8 +469,10 @@ public:
     // Create an OpArrayLength instruction
     Id createArrayLength(Id base, unsigned int member);
 
+    // Create an OpCooperativeMatrixLengthKHR instruction
+    Id createCooperativeMatrixLengthKHR(Id type);
     // Create an OpCooperativeMatrixLengthNV instruction
-    Id createCooperativeMatrixLength(Id type);
+    Id createCooperativeMatrixLengthNV(Id type);
 
     // Create an OpCompositeExtract instruction
     Id createCompositeExtract(Id composite, Id typeId, unsigned index);

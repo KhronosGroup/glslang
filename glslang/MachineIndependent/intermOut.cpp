@@ -809,7 +809,8 @@ bool TOutputTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node
     case EOpConstructStruct:  out.debug << "Construct structure";  break;
     case EOpConstructTextureSampler: out.debug << "Construct combined texture-sampler"; break;
     case EOpConstructReference:  out.debug << "Construct reference";  break;
-    case EOpConstructCooperativeMatrix:  out.debug << "Construct cooperative matrix";  break;
+    case EOpConstructCooperativeMatrixNV:  out.debug << "Construct cooperative matrix NV";  break;
+    case EOpConstructCooperativeMatrixKHR:  out.debug << "Construct cooperative matrix KHR";  break;
     case EOpConstructAccStruct: out.debug << "Construct acceleration structure"; break;
 
     case EOpLessThan:         out.debug << "Compare Less Than";             break;
@@ -1103,9 +1104,12 @@ bool TOutputTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node
     case EOpRayQueryGetIntersectionWorldToObject:                          out.debug << "rayQueryGetIntersectionWorldToObjectEXT"; break;
     case EOpRayQueryGetIntersectionTriangleVertexPositionsEXT:             out.debug << "rayQueryGetIntersectionTriangleVertexPositionsEXT"; break;
 
-    case EOpCooperativeMatrixLoad:  out.debug << "Load cooperative matrix";  break;
-    case EOpCooperativeMatrixStore:  out.debug << "Store cooperative matrix";  break;
-    case EOpCooperativeMatrixMulAdd: out.debug << "MulAdd cooperative matrices"; break;
+    case EOpCooperativeMatrixLoad:  out.debug << "Load cooperative matrix KHR"; break;
+    case EOpCooperativeMatrixStore:  out.debug << "Store cooperative matrix KHR"; break;
+    case EOpCooperativeMatrixMulAdd: out.debug << "MulAdd cooperative matrices KHR"; break;
+    case EOpCooperativeMatrixLoadNV:  out.debug << "Load cooperative matrix NV"; break;
+    case EOpCooperativeMatrixStoreNV:  out.debug << "Store cooperative matrix NV"; break;
+    case EOpCooperativeMatrixMulAddNV: out.debug << "MulAdd cooperative matrices NV"; break;
 
     case EOpIsHelperInvocation: out.debug << "IsHelperInvocation"; break;
     case EOpDebugPrintf:  out.debug << "Debug printf";  break;

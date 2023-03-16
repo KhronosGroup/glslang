@@ -770,6 +770,8 @@ void TScanContext::fillInKeywordMap()
     (*KeywordMap)["icoopmatNV"] =              ICOOPMATNV;
     (*KeywordMap)["ucoopmatNV"] =              UCOOPMATNV;
 
+    (*KeywordMap)["coopmat"] =                 COOPMAT;
+
     (*KeywordMap)["hitObjectNV"] =             HITOBJECTNV;
     (*KeywordMap)["hitObjectAttributeNV"] =    HITOBJECTATTRNV;
 
@@ -1778,6 +1780,13 @@ int TScanContext::tokenizeIdentifier()
         afterType = true;
         if (parseContext.symbolTable.atBuiltInLevel() ||
             parseContext.extensionTurnedOn(E_GL_NV_integer_cooperative_matrix))
+            return keyword;
+        return identifierOrType();
+
+    case COOPMAT:
+        afterType = true;
+        if (parseContext.symbolTable.atBuiltInLevel() ||
+            parseContext.extensionTurnedOn(E_GL_KHR_cooperative_matrix))
             return keyword;
         return identifierOrType();
 

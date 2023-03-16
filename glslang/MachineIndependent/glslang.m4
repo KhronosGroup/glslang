@@ -129,7 +129,7 @@ using namespace glslang;
             glslang::TArraySizes* arraySizes;
             glslang::TIdentifierList* identifierList;
         };
-        glslang::TArraySizes* typeParameters;
+        glslang::TTypeParameters* typeParameters;
     } interm;
 }
 
@@ -211,6 +211,7 @@ GLSLANG_WEB_EXCLUDE_ON
 %token <lex> ACCSTRUCTEXT
 %token <lex> RAYQUERYEXT
 %token <lex> FCOOPMATNV ICOOPMATNV UCOOPMATNV
+%token <lex> COOPMAT
 %token <lex> HITOBJECTNV HITOBJECTATTRNV
 
 // combined image/sampler
@@ -1108,7 +1109,7 @@ parameter_declaration
         $$ = $2;
         if ($1.qualifier.precision != EpqNone)
             $$.param.type->getQualifier().precision = $1.qualifier.precision;
-        parseContext.precisionQualifierCheck($$.loc, $$.param.type->getBasicType(), $$.param.type->getQualifier());
+        parseContext.precisionQualifierCheck($$.loc, $$.param.type->getBasicType(), $$.param.type->getQualifier(), $$.param.type->isCoopMat());
 
         parseContext.checkNoShaderLayouts($1.loc, $1.shaderQualifiers);
         parseContext.parameterTypeCheck($2.loc, $1.qualifier.storage, *$$.param.type);
@@ -1120,7 +1121,7 @@ parameter_declaration
 
         parseContext.parameterTypeCheck($1.loc, EvqIn, *$1.param.type);
         parseContext.paramCheckFixStorage($1.loc, EvqTemporary, *$$.param.type);
-        parseContext.precisionQualifierCheck($$.loc, $$.param.type->getBasicType(), $$.param.type->getQualifier());
+        parseContext.precisionQualifierCheck($$.loc, $$.param.type->getBasicType(), $$.param.type->getQualifier(), $$.param.type->isCoopMat());
     }
     //
     // Without name
@@ -1129,7 +1130,7 @@ parameter_declaration
         $$ = $2;
         if ($1.qualifier.precision != EpqNone)
             $$.param.type->getQualifier().precision = $1.qualifier.precision;
-        parseContext.precisionQualifierCheck($1.loc, $$.param.type->getBasicType(), $$.param.type->getQualifier());
+        parseContext.precisionQualifierCheck($1.loc, $$.param.type->getBasicType(), $$.param.type->getQualifier(), $$.param.type->isCoopMat());
 
         parseContext.checkNoShaderLayouts($1.loc, $1.shaderQualifiers);
         parseContext.parameterTypeCheck($2.loc, $1.qualifier.storage, *$$.param.type);
@@ -1140,7 +1141,7 @@ parameter_declaration
 
         parseContext.parameterTypeCheck($1.loc, EvqIn, *$1.param.type);
         parseContext.paramCheckFixStorage($1.loc, EvqTemporary, *$$.param.type);
-        parseContext.precisionQualifierCheck($$.loc, $$.param.type->getBasicType(), $$.param.type->getQualifier());
+        parseContext.precisionQualifierCheck($$.loc, $$.param.type->getBasicType(), $$.param.type->getQualifier(), $$.param.type->isCoopMat());
     }
     ;
 
@@ -1217,7 +1218,7 @@ fully_specified_type
             parseContext.profileRequires($1.loc, ENoProfile, 120, E_GL_3DL_array_objects, "arrayed type");
             parseContext.profileRequires($1.loc, EEsProfile, 300, 0, "arrayed type");
         }
-        parseContext.precisionQualifierCheck($$.loc, $$.basicType, $$.qualifier);
+        parseContext.precisionQualifierCheck($$.loc, $$.basicType, $$.qualifier, $$.isCoopmat());
     }
     | type_qualifier type_specifier  {
         parseContext.globalQualifierFixCheck($1.loc, $1.qualifier, false, &$2);
@@ -1234,7 +1235,7 @@ fully_specified_type
         parseContext.checkNoShaderLayouts($2.loc, $1.shaderQualifiers);
         $2.shaderQualifiers.merge($1.shaderQualifiers);
         parseContext.mergeQualifiers($2.loc, $2.qualifier, $1.qualifier, true);
-        parseContext.precisionQualifierCheck($2.loc, $2.basicType, $2.qualifier);
+        parseContext.precisionQualifierCheck($2.loc, $2.basicType, $2.qualifier, $2.isCoopmat());
 
         $$ = $2;
 
@@ -1716,6 +1717,8 @@ type_specifier
         $$ = $1;
         $$.qualifier.precision = parseContext.getDefaultPrecision($$);
         $$.typeParameters = $2;
+        parseContext.coopMatTypeParametersCheck($1.loc, $$);
+
     }
     | type_specifier_nonarray type_parameter_specifier_opt array_specifier {
         parseContext.arrayOfArrayVersionCheck($3.loc, $3.arraySizes);
@@ -1723,6 +1726,7 @@ type_specifier
         $$.qualifier.precision = parseContext.getDefaultPrecision($$);
         $$.typeParameters = $2;
         $$.arraySizes = $3.arraySizes;
+        parseContext.coopMatTypeParametersCheck($1.loc, $$);
     }
     ;
 
@@ -1769,19 +1773,25 @@ type_parameter_specifier
     ;
 
 type_parameter_specifier_list
-    : unary_expression {
-        $$ = new TArraySizes;
+    : type_specifier {
+        $$ = new TTypeParameters;
+        $$->arraySizes = new TArraySizes;
+        $$->basicType = $1.basicType;
+    }
+    | unary_expression {
+        $$ = new TTypeParameters;
+        $$->arraySizes = new TArraySizes;
 
         TArraySize size;
-        parseContext.arraySizeCheck($1->getLoc(), $1, size, "type parameter");
-        $$->addInnerSize(size);
+        parseContext.arraySizeCheck($1->getLoc(), $1, size, "type parameter", true);
+        $$->arraySizes->addInnerSize(size);
     }
     | type_parameter_specifier_list COMMA unary_expression {
         $$ = $1;
 
         TArraySize size;
-        parseContext.arraySizeCheck($3->getLoc(), $3, size, "type parameter");
-        $$->addInnerSize(size);
+        parseContext.arraySizeCheck($3->getLoc(), $3, size, "type parameter", true);
+        $$->arraySizes->addInnerSize(size);
     }
     ;
 
@@ -3521,22 +3531,32 @@ GLSLANG_WEB_EXCLUDE_ON
         $$.sampler.setSubpass(EbtUint, true);
     }
     | FCOOPMATNV {
-        parseContext.fcoopmatCheck($1.loc, "fcoopmatNV", parseContext.symbolTable.atBuiltInLevel());
+        parseContext.fcoopmatCheckNV($1.loc, "fcoopmatNV", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtFloat;
-        $$.coopmat = true;
+        $$.coopmatNV = true;
+        $$.coopmatKHR = false;
     }
     | ICOOPMATNV {
-        parseContext.intcoopmatCheck($1.loc, "icoopmatNV", parseContext.symbolTable.atBuiltInLevel());
+        parseContext.intcoopmatCheckNV($1.loc, "icoopmatNV", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtInt;
-        $$.coopmat = true;
+        $$.coopmatNV = true;
+        $$.coopmatKHR = false;
     }
     | UCOOPMATNV {
-        parseContext.intcoopmatCheck($1.loc, "ucoopmatNV", parseContext.symbolTable.atBuiltInLevel());
+        parseContext.intcoopmatCheckNV($1.loc, "ucoopmatNV", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtUint;
-        $$.coopmat = true;
+        $$.coopmatNV = true;
+        $$.coopmatKHR = false;
+    }
+    | COOPMAT {
+        parseContext.coopmatCheck($1.loc, "coopmat", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtCoopmat;
+        $$.coopmatNV = false;
+        $$.coopmatKHR = true;
     }
     | spirv_type_specifier {
         parseContext.requireExtensions($1.loc, 1, &E_GL_EXT_spirv_intrinsics, "SPIR-V type specifier");
@@ -3634,7 +3654,7 @@ struct_declaration
         $$ = $2;
 
         parseContext.voidErrorCheck($1.loc, (*$2)[0].type->getFieldName(), $1.basicType);
-        parseContext.precisionQualifierCheck($1.loc, $1.basicType, $1.qualifier);
+        parseContext.precisionQualifierCheck($1.loc, $1.basicType, $1.qualifier, $1.isCoopmat());
 
         for (unsigned int i = 0; i < $$->size(); ++i) {
             TType type($1);
@@ -3658,7 +3678,7 @@ struct_declaration
         parseContext.memberQualifierCheck($1);
         parseContext.voidErrorCheck($2.loc, (*$3)[0].type->getFieldName(), $2.basicType);
         parseContext.mergeQualifiers($2.loc, $2.qualifier, $1.qualifier, true);
-        parseContext.precisionQualifierCheck($2.loc, $2.basicType, $2.qualifier);
+        parseContext.precisionQualifierCheck($2.loc, $2.basicType, $2.qualifier, $2.isCoopmat());
 
         for (unsigned int i = 0; i < $$->size(); ++i) {
             TType type($2);
