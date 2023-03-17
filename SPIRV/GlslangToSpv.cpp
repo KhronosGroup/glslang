@@ -9418,10 +9418,10 @@ spv::Id TGlslangToSpvTraverser::getSymbolId(const glslang::TIntermSymbol* symbol
             std::vector<spv::Id> operandIds;
             assert(!decorateId.second.empty());
             for (auto extraOperand : decorateId.second) {
-                if (extraOperand->getQualifier().isSpecConstant())
-                    operandIds.push_back(getSymbolId(extraOperand->getAsSymbolNode()));
-                else
+                if (extraOperand->getQualifier().isFrontEndConstant())
                     operandIds.push_back(createSpvConstant(*extraOperand));
+                else
+                    operandIds.push_back(getSymbolId(extraOperand->getAsSymbolNode()));
             }
             builder.addDecorationId(id, static_cast<spv::Decoration>(decorateId.first), operandIds);
         }
