@@ -384,6 +384,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.intOps.vert",
         "spv.intrinsicsSpirvByReference.vert",
         "spv.intrinsicsSpirvDecorate.frag",
+        "spv.intrinsicsSpirvDecorateId.comp",
         "spv.intrinsicsSpirvExecutionMode.frag",
         "spv.intrinsicsSpirvInstruction.vert",
         "spv.intrinsicsSpirvLiteral.vert",
