@@ -210,6 +210,10 @@ run -D -Od -e main -V -i -DUNDEFED -UIN_SHADER --D FOO=200 --undef-macro UNDEFED
 diff -b $BASEDIR/hlsl.-D-U.frag.out $TARGETDIR/hlsl.-D-U.frag.out || HASERROR=1
 run -P"#define TEST1" -i -l --preamble-text "#define TEST2" --p "#define TEST3" glsl.-P.frag > $TARGETDIR/glsl.-P.frag.out
 diff -b $BASEDIR/glsl.-P.frag.out $TARGETDIR/glsl.-P.frag.out || HASERROR=1
+run -i -l --preamble-text "vec4 getColor() { return vec4(1.0); }" glsl.-P.function.frag > $TARGETDIR/glsl.-P.function.frag.out
+diff -b $BASEDIR/glsl.-P.function.frag.out $TARGETDIR/glsl.-P.function.frag.out || HASERROR=1
+run -i -l --preamble-text "#extension GL_GOOGLE_include_directive : require" -I. glsl.-P.include.frag > $TARGETDIR/glsl.-P.include.frag.out
+diff -b $BASEDIR/glsl.-P.include.frag.out $TARGETDIR/glsl.-P.include.frag.out || HASERROR=1
 
 #
 # Test --client and --target-env
