@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## 12.1.0 2023-03-21
+
+### Other changes
+* Reject non-float inputs/outputs for version less than 120
+* Fix invalid BufferBlock decoration for SPIR-V 1.3 and above
+* Add HLSL relaxed-precision float/int matrix expansions
+* Block decorate Vulkan structs with RuntimeArrays
+* Support InterlockedAdd on float types
+
 ## 12.0.0 2023-01-18
 
 ### Breaking changes
