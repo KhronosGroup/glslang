@@ -176,6 +176,8 @@ const char* entryPointName = nullptr;
 const char* sourceEntryPointName = nullptr;
 const char* shaderStageName = nullptr;
 const char* variableName = nullptr;
+const char* dbgBrkFileName = nullptr;
+int dbgBrkLineNo = 0;
 bool HlslEnable16BitTypes = false;
 bool HlslDX9compatible = false;
 bool HlslDxPositionW = false;
@@ -873,6 +875,16 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                         bumpArg();
                     } else if (lowerword == "version") {
                         Options |= EOptionDumpVersions;
+                    } else if (lowerword == "breakpoint") {
+                        if (argc < 2)
+                            Error("need a line number to set debug break point before it", lowerword.c_str());
+                        dbgBrkLineNo = ::strtol(argv[1], nullptr, 10);
+                        bumpArg();
+                    } else if (lowerword == "breakfile") {
+                        if (argc < 2)
+                            Error("need a full path to set debug break target source file", lowerword.c_str());
+                        dbgBrkFileName = argv[1];
+                        bumpArg();
                     } else if (lowerword == "help") {
                         usage();
                         break;
@@ -1498,6 +1510,9 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
                     spvOptions.optimizeSize = (Options & EOptionOptimizeSize) != 0;
                     spvOptions.disassemble = SpvToolsDisassembler;
                     spvOptions.validate = SpvToolsValidate;
+                    spvOptions.emitNonSemanticShaderDebugBreak = dbgBrkLineNo == -1 ? false : true;
+                    spvOptions.NonSemanticShaderDebugBreakFile = dbgBrkFileName;
+                    spvOptions.NonSemanticShaderDebugBreakLine = dbgBrkLineNo;
                     glslang::GlslangToSpv(*program.getIntermediate((EShLanguage)stage), spirv, &logger, &spvOptions);
 
                     // Dump the spv to a file or stdout, etc., but only if not doing
@@ -2064,6 +2079,10 @@ void usage()
            "  --vn <name>                       creates a C header file that contains a\n"
            "                                    uint32_t array named <name>\n"
            "                                    initialized with the shader binary code\n"
+           "  --breakFile    <FileName>         insert a debug break instruction into\n"
+           "                                    specified <FileName> when generating Spv codes.\n"
+           "  --breakPoint   <LineNo>           insert a debug break instruction before\n"
+           "                                    specified <LineNo> when generating Spv codes.\n"
            );
 
     exit(EFailUsage);

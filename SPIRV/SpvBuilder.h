@@ -53,6 +53,7 @@
 namespace spv {
     #include "GLSL.ext.KHR.h"
     #include "NonSemanticShaderDebugInfo100.h"
+    #include "NonSemanticDebugBreak.h"
 }
 
 #include <algorithm>
@@ -129,6 +130,20 @@ public:
     {
         emitNonSemanticShaderDebugSource = src;
     }
+    void setEmitNonSemanticShaderDebugBreak(bool const emit)
+    {
+        emitNonSemanticShaderDebugBreak = emit;
+
+        if (emit)
+        {
+            importNonSemanticShaderDebugBreakInstructions();
+        }
+    }
+    void setEmitNonSemanticShaderDebugBreakSource(int lineNo, const char* fileName)
+    {
+        dbgBreakLine = lineNo;
+        dbgBreakFile = fileName;
+    }
     void addExtension(const char* ext) { extensions.insert(ext); }
     void removeExtension(const char* ext)
     {
@@ -179,6 +194,7 @@ public:
     // than the last one, issue a new OpLine using the new line and file
     // name.
     void setLine(int line, const char* filename);
+    void addDebugBreak();
     // Low-level OpLine. See setLine() for a layered helper.
     void addLine(Id fileName, int line, int column);
     void addDebugScopeAndLine(Id fileName, int line, int column);
@@ -376,6 +392,7 @@ public:
     Id makeFpConstant(Id type, double d, bool specConstant = false);
 
     Id importNonSemanticShaderDebugInfoInstructions();
+    Id importNonSemanticShaderDebugBreakInstructions();
 
     // Turn the array of constants into a proper spv constant of the requested type.
     Id makeCompositeConstant(Id type, const std::vector<Id>& comps, bool specConst = false);
@@ -884,11 +901,14 @@ public:
     spv::Id sourceFileStringId;
     spv::Id nonSemanticShaderCompilationUnitId {0};
     spv::Id nonSemanticShaderDebugInfo {0};
+    spv::Id nonSemanticShaderDebugBreak {0};
     spv::Id debugInfoNone {0};
     spv::Id debugExpression {0}; // Debug expression with zero operations.
     std::string sourceText;
     int currentLine;
+    int dbgBreakLine;
     const char* currentFile;
+    const char* dbgBreakFile;
     spv::Id currentFileId;
     std::stack<spv::Id> currentDebugScopeId;
     spv::Id lastDebugScopeId;
@@ -896,6 +916,7 @@ public:
     bool emitNonSemanticShaderDebugInfo;
     bool restoreNonSemanticShaderDebugInfo;
     bool emitNonSemanticShaderDebugSource;
+    bool emitNonSemanticShaderDebugBreak;
     std::set<std::string> extensions;
     std::vector<const char*> sourceExtensions;
     std::vector<const char*> moduleProcesses;

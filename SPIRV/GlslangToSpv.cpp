@@ -1601,6 +1601,8 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion,
 
     builder.setEmitNonSemanticShaderDebugInfo(options.emitNonSemanticShaderDebugInfo);
     builder.setEmitNonSemanticShaderDebugSource(options.emitNonSemanticShaderDebugSource);
+    builder.setEmitNonSemanticShaderDebugBreak(options.emitNonSemanticShaderDebugBreak);
+    builder.setEmitNonSemanticShaderDebugBreakSource(options.NonSemanticShaderDebugBreakLine, options.NonSemanticShaderDebugBreakFile);
 
     stdBuiltins = builder.import("GLSL.std.450");
 

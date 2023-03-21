@@ -61,6 +61,9 @@ struct SpvOptions {
     bool validate {false};
     bool emitNonSemanticShaderDebugInfo {false};
     bool emitNonSemanticShaderDebugSource{ false };
+    bool emitNonSemanticShaderDebugBreak { false };
+    int NonSemanticShaderDebugBreakLine { -1 };
+    const char* NonSemanticShaderDebugBreakFile { nullptr };
 };
 
 #if ENABLE_OPT

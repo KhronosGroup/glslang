@@ -64,6 +64,7 @@ set(HEADERS
     GLSL.ext.NV.h
     GLSL.ext.ARM.h
     NonSemanticDebugPrintf.h
+    NonSemanticDebugBreak.h
     NonSemanticShaderDebugInfo100.h)
 
 set(SPVREMAP_HEADERS

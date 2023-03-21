@@ -110,6 +110,14 @@ void Builder::setLine(int lineNum)
     }
 }
 
+void Builder::addDebugBreak()
+{
+    Instruction* inst = new Instruction(getUniqueId(), makeVoidType(), OpExtInst);
+    inst->addIdOperand(nonSemanticShaderDebugBreak);
+    inst->addImmediateOperand(spv::NonSemanticDebugBreak);
+    buildPoint->addInstruction(std::unique_ptr<Instruction>(inst));
+}
+
 // If no filename, do non-filename-based #line emit. Else do filename-based emit.
 // Emit OpLine if we've been asked to emit OpLines and the line number or filename
 // has changed since the last time, and line number is valid.
@@ -119,6 +127,10 @@ void Builder::setLine(int lineNum, const char* filename)
         setLine(lineNum);
         return;
     }
+
+    if (lineNum == dbgBreakLine && strcmp(filename, dbgBreakFile) == 0)
+        addDebugBreak();
+
     if ((lineNum != 0 && lineNum != currentLine) || currentFile == nullptr ||
             strncmp(filename, currentFile, strlen(currentFile) + 1) != 0) {
         currentLine = lineNum;
@@ -1677,6 +1689,18 @@ Id Builder::makeFpConstant(Id type, double d, bool specConstant)
 
     assert(false);
     return NoResult;
+}
+Id Builder::importNonSemanticShaderDebugBreakInstructions()
+{
+    assert(emitNonSemanticShaderDebugBreak == true);
+
+    if (nonSemanticShaderDebugBreak == 0)
+    {
+        this->addExtension(spv::E_SPV_KHR_non_semantic_info);
+        nonSemanticShaderDebugBreak = this->import("NonSemantic.DebugBreak");
+    }
+
+    return nonSemanticShaderDebugBreak;
 }
 
 Id Builder::importNonSemanticShaderDebugInfoInstructions()
