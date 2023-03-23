@@ -4228,7 +4228,7 @@ void TParseContext::mergeQualifiers(const TSourceLoc& loc, TQualifier& dst, cons
                 if (dstSpirvDecorate.decorates.find(decorateString.first) != dstSpirvDecorate.decorates.end())
                     error(loc, "too many SPIR-V decorate qualifiers", "spirv_decorate_string", "(decoration=%u)", decorateString.first);
                 else
-                    dstSpirvDecorate.decorates.insert(decorateString);
+                    dstSpirvDecorate.decorateStrings.insert(decorateString);
             }
         } else {
             dst.spirvDecorate = src.spirvDecorate;
