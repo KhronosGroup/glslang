@@ -356,10 +356,18 @@ endif()
 if(ENABLE_GLSLANG_INSTALL)
     file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/glslang-config.cmake.in" [=[
         @PACKAGE_INIT@
+        @INSTALL_CONFIG_UNIX@
         include("@PACKAGE_PATH_EXPORT_TARGETS@")
     ]=])
-    
+
     set(PATH_EXPORT_TARGETS "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}/glslang-targets.cmake")
+    if(UNIX OR "${CMAKE_SYSTEM_NAME}" STREQUAL "Fuchsia")
+        set(INSTALL_CONFIG_UNIX [=[
+            include(CMakeFindDependencyMacro)
+            set(THREADS_PREFER_PTHREAD_FLAG ON)
+            find_dependency(Threads REQUIRED)
+        ]=])
+    endif()
     configure_package_config_file(
         "${CMAKE_CURRENT_BINARY_DIR}/glslang-config.cmake.in"
         "${CMAKE_CURRENT_BINARY_DIR}/glslang-config.cmake"
