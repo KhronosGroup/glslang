@@ -7565,7 +7565,6 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, TFunction
          candidateList[0]->getBuiltInOp() == EOpMethodRestartStrip ||
          candidateList[0]->getBuiltInOp() == EOpMethodIncrementCounter ||
          candidateList[0]->getBuiltInOp() == EOpMethodDecrementCounter ||
-         candidateList[0]->getBuiltInOp() == EOpMethodAppend ||
          candidateList[0]->getBuiltInOp() == EOpMethodConsume)) {
         return candidateList[0];
     }
