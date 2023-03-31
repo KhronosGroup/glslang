@@ -402,6 +402,7 @@ INSTANTIATE_TEST_SUITE_P(
         {"hlsl.structbuffer.rw.frag", "main"},
         {"hlsl.structbuffer.rwbyte.frag", "main"},
         {"hlsl.structbuffer.rwbyte2.comp", "main"},
+        {"hlsl.structcopy.comp", "main"},
         {"hlsl.structin.vert", "main"},
         {"hlsl.structIoFourWay.frag", "main"},
         {"hlsl.structStructName.frag", "main"},
@@ -472,7 +473,8 @@ INSTANTIATE_TEST_SUITE_P(
 INSTANTIATE_TEST_SUITE_P(
     ToSpirv, HlslSpv1_6CompileTest,
     ::testing::ValuesIn(std::vector<FileNameEntryPointPair>{
-       {"hlsl.spv.1.6.discard.frag", "PixelShaderFunction"}
+       {"hlsl.spv.1.6.discard.frag", "PixelShaderFunction"},
+       {"hlsl.structcopylogical.comp","main"},
     }),
     FileNameAsCustomTestSuffix
 );
