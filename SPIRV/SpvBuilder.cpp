@@ -2758,52 +2758,49 @@ Id Builder::createBuiltinCall(Id resultType, Id builtins, int entryPoint, const 
 Id Builder::createTextureCall(Decoration precision, Id resultType, bool sparse, bool fetch, bool proj, bool gather,
     bool noImplicitLod, const TextureParameters& parameters, ImageOperandsMask signExtensionMask)
 {
-    static const int maxTextureArgs = 10;
-    Id texArgs[maxTextureArgs] = {};
+    std::vector<Id> texArgs;
 
     //
     // Set up the fixed arguments
     //
-    int numArgs = 0;
     bool explicitLod = false;
-    texArgs[numArgs++] = parameters.sampler;
-    texArgs[numArgs++] = parameters.coords;
+    texArgs.push_back(parameters.sampler);
+    texArgs.push_back(parameters.coords);
     if (parameters.Dref != NoResult)
-        texArgs[numArgs++] = parameters.Dref;
+        texArgs.push_back(parameters.Dref);
     if (parameters.component != NoResult)
-        texArgs[numArgs++] = parameters.component;
+        texArgs.push_back(parameters.component);
 
 #ifndef GLSLANG_WEB
     if (parameters.granularity != NoResult)
-        texArgs[numArgs++] = parameters.granularity;
+        texArgs.push_back(parameters.granularity);
     if (parameters.coarse != NoResult)
-        texArgs[numArgs++] = parameters.coarse;
+        texArgs.push_back(parameters.coarse);
 #endif
 
     //
     // Set up the optional arguments
     //
-    int optArgNum = numArgs;    // track which operand, if it exists, is the mask of optional arguments
-    ++numArgs;                  // speculatively make room for the mask operand
+    size_t optArgNum = texArgs.size(); // the position of the mask for the optional arguments, if any.
     ImageOperandsMask mask = ImageOperandsMaskNone; // the mask operand
     if (parameters.bias) {
         mask = (ImageOperandsMask)(mask | ImageOperandsBiasMask);
-        texArgs[numArgs++] = parameters.bias;
+        texArgs.push_back(parameters.bias);
     }
     if (parameters.lod) {
         mask = (ImageOperandsMask)(mask | ImageOperandsLodMask);
-        texArgs[numArgs++] = parameters.lod;
+        texArgs.push_back(parameters.lod);
         explicitLod = true;
     } else if (parameters.gradX) {
         mask = (ImageOperandsMask)(mask | ImageOperandsGradMask);
-        texArgs[numArgs++] = parameters.gradX;
-        texArgs[numArgs++] = parameters.gradY;
+        texArgs.push_back(parameters.gradX);
+        texArgs.push_back(parameters.gradY);
         explicitLod = true;
     } else if (noImplicitLod && ! fetch && ! gather) {
         // have to explicitly use lod of 0 if not allowed to have them be implicit, and
         // we would otherwise be about to issue an implicit instruction
         mask = (ImageOperandsMask)(mask | ImageOperandsLodMask);
-        texArgs[numArgs++] = makeFloatConstant(0.0);
+        texArgs.push_back(makeFloatConstant(0.0));
         explicitLod = true;
     }
     if (parameters.offset) {
@@ -2813,24 +2810,24 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool sparse, 
             addCapability(CapabilityImageGatherExtended);
             mask = (ImageOperandsMask)(mask | ImageOperandsOffsetMask);
         }
-        texArgs[numArgs++] = parameters.offset;
+        texArgs.push_back(parameters.offset);
     }
     if (parameters.offsets) {
         addCapability(CapabilityImageGatherExtended);
         mask = (ImageOperandsMask)(mask | ImageOperandsConstOffsetsMask);
-        texArgs[numArgs++] = parameters.offsets;
+        texArgs.push_back(parameters.offsets);
     }
 #ifndef GLSLANG_WEB
     if (parameters.sample) {
         mask = (ImageOperandsMask)(mask | ImageOperandsSampleMask);
-        texArgs[numArgs++] = parameters.sample;
+        texArgs.push_back(parameters.sample);
     }
     if (parameters.lodClamp) {
         // capability if this bit is used
         addCapability(CapabilityMinLod);
 
         mask = (ImageOperandsMask)(mask | ImageOperandsMinLodMask);
-        texArgs[numArgs++] = parameters.lodClamp;
+        texArgs.push_back(parameters.lodClamp);
     }
     if (parameters.nonprivate) {
         mask = mask | ImageOperandsNonPrivateTexelKHRMask;
@@ -2840,10 +2837,9 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool sparse, 
     }
 #endif
     mask = mask | signExtensionMask;
-    if (mask == ImageOperandsMaskNone)
-        --numArgs;  // undo speculative reservation for the mask argument
-    else
-        texArgs[optArgNum] = mask;
+    // insert the operand for the mask, if any bits were set.
+    if (mask != ImageOperandsMaskNone)
+        texArgs.insert(texArgs.begin() + optArgNum, mask);
 
     //
     // Set up the instruction
@@ -2947,11 +2943,11 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool sparse, 
 
     // Build the SPIR-V instruction
     Instruction* textureInst = new Instruction(getUniqueId(), resultType, opCode);
-    for (int op = 0; op < optArgNum; ++op)
+    for (size_t op = 0; op < optArgNum; ++op)
         textureInst->addIdOperand(texArgs[op]);
-    if (optArgNum < numArgs)
+    if (optArgNum < texArgs.size())
         textureInst->addImmediateOperand(texArgs[optArgNum]);
-    for (int op = optArgNum + 1; op < numArgs; ++op)
+    for (size_t op = optArgNum + 1; op < texArgs.size(); ++op)
         textureInst->addIdOperand(texArgs[op]);
     setPrecision(textureInst->getResultId(), precision);
     buildPoint->addInstruction(std::unique_ptr<Instruction>(textureInst));
