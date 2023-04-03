@@ -38,6 +38,8 @@ layout (location = 0) out vec4 outFragColor;
 #define AMBIENT_LIGHT 0.1
 #define USE_PCF
 
+int global_var = 0;
+
 struct Light 
 {
 	vec4 position;

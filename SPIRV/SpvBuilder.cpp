@@ -144,6 +144,7 @@ void Builder::addLine(Id fileName, int lineNum, int column)
 
 void Builder::addDebugScopeAndLine(Id fileName, int lineNum, int column)
 {
+    assert(!currentDebugScopeId.empty());
     if (currentDebugScopeId.top() != lastDebugScopeId) {
         spv::Id resultId = getUniqueId();
         Instruction* scopeInst = new Instruction(resultId, makeVoidType(), OpExtInst);
@@ -1071,6 +1072,12 @@ Id Builder::makeDebugCompilationUnit() {
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(sourceInst));
     module.mapInstruction(sourceInst);
     nonSemanticShaderCompilationUnitId = resultId;
+
+    // We can reasonably assume that makeDebugCompilationUnit will be called before any of
+    // debug-scope stack. Function scopes and lexical scopes will occur afterward.
+    assert(currentDebugScopeId.empty());
+    currentDebugScopeId.push(nonSemanticShaderCompilationUnitId);
+
     return resultId;
 }
 
@@ -1100,6 +1107,8 @@ Id Builder::createDebugGlobalVariable(Id const type, char const*const name, Id c
 Id Builder::createDebugLocalVariable(Id type, char const*const name, size_t const argNumber)
 {
     assert(name != nullptr);
+    assert(!currentDebugScopeId.empty());
+
     Instruction* inst = new Instruction(getUniqueId(), makeVoidType(), OpExtInst);
     inst->addIdOperand(nonSemanticShaderDebugInfo);
     inst->addImmediateOperand(NonSemanticShaderDebugInfo100DebugLocalVariable);
@@ -2119,6 +2128,8 @@ Id Builder::makeDebugFunction(Function* function, Id nameId, Id funcTypeId) {
 }
 
 Id Builder::makeDebugLexicalBlock(uint32_t line) {
+    assert(!currentDebugScopeId.empty());
+
     Id lexId = getUniqueId();
     auto lex = new Instruction(lexId, makeVoidType(), OpExtInst);
     lex->addIdOperand(nonSemanticShaderDebugInfo);
