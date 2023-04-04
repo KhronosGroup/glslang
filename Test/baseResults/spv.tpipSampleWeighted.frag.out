@@ -4,7 +4,7 @@ spv.tpipSampleWeighted.frag
 // Id's are bound by 43
 
                               Capability Shader
-                              Capability Bad
+                              Capability TextureSampleWeightedQCOM
                               Extension  "SPV_QCOM_image_processing"
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450

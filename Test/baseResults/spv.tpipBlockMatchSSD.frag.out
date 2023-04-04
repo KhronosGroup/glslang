@@ -4,7 +4,7 @@ spv.tpipBlockMatchSSD.frag
 // Id's are bound by 72
 
                               Capability Shader
-                              Capability Bad
+                              Capability TextureBlockMatchQCOM
                               Extension  "SPV_QCOM_image_processing"
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
