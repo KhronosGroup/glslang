@@ -1043,6 +1043,11 @@ const char* CapabilityString(int info)
     case CapabilityCoreBuiltinsARM:                             return "CoreBuiltinsARM";
 
     case CapabilityShaderInvocationReorderNV:                return "ShaderInvocationReorderNV";
+
+    case CapabilityTextureSampleWeightedQCOM:           return "TextureSampleWeightedQCOM";
+    case CapabilityTextureBoxFilterQCOM:                return "TextureBoxFilterQCOM";
+    case CapabilityTextureBlockMatchQCOM:               return "TextureBlockMatchQCOM";
+
     default: return "Bad";
     }
 }
