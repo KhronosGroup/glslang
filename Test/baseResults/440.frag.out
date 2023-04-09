@@ -43,11 +43,11 @@ ERROR: 0:62: 'layout' : offset/align can only be used on a uniform or buffer
 ERROR: 0:63: 'layout' : offset/align can only be used on a uniform or buffer 
 ERROR: 0:84: 'align' : must be a power of 2 
 ERROR: 0:83: 'offset' : cannot lie in previous members 
-ERROR: 0:85: 'offset' : must be a multiple of the member's alignment 
+ERROR: 0:85: 'offset' : must be a multiple of the member's alignment (layout offset = 68 | member alignment = 8)
 ERROR: 0:103: 'align' : must be a power of 2 
 ERROR: 0:105: 'align' : must be a power of 2 
 ERROR: 0:102: 'offset' : cannot lie in previous members 
-ERROR: 0:104: 'offset' : must be a multiple of the member's alignment 
+ERROR: 0:104: 'offset' : must be a multiple of the member's alignment (layout offset = 68 | member alignment = 8)
 ERROR: 49 compilation errors.  No code generated.
 
 
