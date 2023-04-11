@@ -105,4 +105,4 @@ deploy:
     force_update: true
     on:
       branch: main
-      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
