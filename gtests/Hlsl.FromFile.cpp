@@ -205,6 +205,7 @@ INSTANTIATE_TEST_SUITE_P(
         {"hlsl.earlydepthstencil.frag", "main"},
         {"hlsl.emptystructreturn.frag", "main"},
         {"hlsl.emptystructreturn.vert", "main"},
+        {"hlsl.emptystructreturn.tesc", "main"},
         {"hlsl.emptystruct.init.vert", "main"},
         {"hlsl.entry-in.frag", "PixelShaderFunction"},
         {"hlsl.entry-out.frag", "PixelShaderFunction"},
