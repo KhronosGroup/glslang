@@ -1,4 +1,4 @@
-# Copyright (C) 2020 The Khronos Group Inc.
+# Copyright (C) 2020-2023 The Khronos Group Inc.
 #
 # All rights reserved.
 #
@@ -65,7 +65,7 @@ endif()
 if(WIN32)
     set(LIBRARIES ${LIBRARIES} psapi)
 elseif(UNIX)
-    if(NOT ANDROID)
+    if(NOT ANDROID AND NOT QNX)
         set(LIBRARIES ${LIBRARIES} pthread)
     endif()
 endif()
