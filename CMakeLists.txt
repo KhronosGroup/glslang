@@ -31,7 +31,7 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 cmake_minimum_required(VERSION 3.14.0)
-project(glslang)
+project(GLSLANG VERSION 12.1.0)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
@@ -228,22 +228,13 @@ set(GLSLANG_GENERATED_INCLUDEDIR "${CMAKE_BINARY_DIR}/include")
 ################################################################################
 # Build version information generation
 ################################################################################
-include(parse_version.cmake)
-set(GLSLANG_CHANGES_FILE      "${CMAKE_CURRENT_SOURCE_DIR}/CHANGES.md")
 set(GLSLANG_BUILD_INFO_H_TMPL "${CMAKE_CURRENT_SOURCE_DIR}/build_info.h.tmpl")
 set(GLSLANG_BUILD_INFO_H      "${GLSLANG_GENERATED_INCLUDEDIR}/glslang/build_info.h")
 
-parse_version(${GLSLANG_CHANGES_FILE} GLSLANG)
+# Don't know what flavor means...
+set(GLSLANG_VERSION_FLAVOR "foobar")
 
-function(configurate_version)
-    set(major ${GLSLANG_VERSION_MAJOR})
-    set(minor ${GLSLANG_VERSION_MINOR})
-    set(patch ${GLSLANG_VERSION_PATCH})
-    set(flavor ${GLSLANG_VERSION_FLAVOR})
-    configure_file(${GLSLANG_BUILD_INFO_H_TMPL} ${GLSLANG_BUILD_INFO_H} @ONLY)
-endfunction()
-
-configurate_version()
+configure_file(${GLSLANG_BUILD_INFO_H_TMPL} ${GLSLANG_BUILD_INFO_H} @ONLY)
 
 # glslang_add_build_info_dependency() adds the glslang-build-info dependency and
 # generated include directories to target.

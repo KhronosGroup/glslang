@@ -31,6 +31,19 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
+set(CHANGES_MD "${GLSLANG_SOURCE_DIR}/CHANGES.md")
+set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${CHANGES_MD})
+file(READ ${CHANGES_MD} CHANGES)
+if(${CHANGES} MATCHES "#+ *([0-9]+)\\.([0-9]+)\\.([0-9]+)(-[a-zA-Z0-9]+)?")
+    set(PARSED_VERSION "${CMAKE_MATCH_1}.${CMAKE_MATCH_2}.${CMAKE_MATCH_3}")
+
+    if (NOT ${PARSED_VERSION} STREQUAL ${GLSLANG_VERSION})
+        message(FATAL_ERROR "Update CMake project version to ${PARSED_VERSION}! See CHANGES.md for correct version.")
+    endif()
+else()
+    message(FATAL_ERROR "Unable to parse version from '${FILE}'")
+endif()
+
 if(BUILD_TESTING)
     if(TARGET gmock)
         message(STATUS "Google Mock found - building tests")
