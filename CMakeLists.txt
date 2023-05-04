@@ -1,4 +1,4 @@
-# Copyright (C) 2020 The Khronos Group Inc.
+# Copyright (C) 2020-2023 The Khronos Group Inc.
 #
 # All rights reserved.
 #
