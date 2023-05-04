@@ -111,14 +111,6 @@ if(ENABLE_GLSLANG_INSTALL AND CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT AND WI
     set(CMAKE_INSTALL_PREFIX "install" CACHE STRING "..." FORCE)
 endif()
 
-option(USE_CCACHE "Use ccache" OFF)
-if(USE_CCACHE)
-    find_program(CCACHE_FOUND ccache)
-    if(CCACHE_FOUND)
-        set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
-    endif()
-endif()
-
 if(ENABLE_CTEST)
     include(CTest)
 endif()
