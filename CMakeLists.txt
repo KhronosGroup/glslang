@@ -104,10 +104,6 @@ else()
 endif()
 option(ENABLE_CTEST "Enables testing" ON)
 
-if(ENABLE_GLSLANG_INSTALL AND CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT AND WIN32)
-    set(CMAKE_INSTALL_PREFIX "install" CACHE STRING "..." FORCE)
-endif()
-
 if(ENABLE_CTEST)
     include(CTest)
 endif()
