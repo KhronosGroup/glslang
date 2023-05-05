@@ -66,14 +66,15 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                os: [macos-11]
-                compiler: [{cc: clang, cxx: clang++}]
+                os: [macos-11, macos-12]
+                compiler: [{cc: clang, cxx: clang++}, {cc: gcc, cxx: g++}]
                 cmake_build_type: [Debug, Release]
         steps:
-            - uses: actions/checkout@v2
-            - uses: actions/setup-python@v2
+            - uses: actions/checkout@v3
+            - uses: actions/setup-python@v3
               with:
                   python-version: '3.7'
+            - uses: lukka/get-cmake@latest
             - name: Install GoogleTest
               run: |
                   # check out pre-breakage version of googletest; can be deleted when
@@ -87,16 +88,16 @@ jobs:
                   git reset --hard FETCH_HEAD
                   cd ../..
             - name: Update Glslang Sources
-              run: |
-                  ./update_glslang_sources.py
-            - name: Build
+              run: ./update_glslang_sources.py
+            - name: Configure
+              run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{matrix.cmake_build_type}} -G "Ninja"
               env:
                   CC: ${{matrix.compiler.cc}}
                   CXX: ${{matrix.compiler.cxx}}
-              run: |
-                  mkdir build && cd build
-                  cmake -DCMAKE_BUILD_TYPE=${{matrix.cmake_build_type}} -DCMAKE_INSTALL_PREFIX=`pwd`/install ..
-                  make -j4 install
+            - name: Build
+              run: cmake --build build
+            - name: Install
+              run: cmake --install build --prefix build/install
             - name: Test
               run: |
                   cd build
