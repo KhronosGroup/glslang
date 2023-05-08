@@ -37,7 +37,6 @@
 #include <fstream>
 #include <cstring>
 #include <stdexcept>
-#include <filesystem>
 
 //
 // Enhanced output support depends on C++17 `std:filesystem::is_directory()`
