@@ -39,6 +39,17 @@
 #include <stdexcept>
 #include <filesystem>
 
+//
+// Enhanced output support depends on C++17 `std:filesystem::is_directory()`
+//
+#if (__cplusplus >= 201703L) && __has_include(<filesystem>)
+#include <filesystem>
+#define SPIRV_REMAP_CPP_LIB_FILESYSTEM
+#endif
+
+//
+// Include remapper
+//
 #include "../SPIRV/SPVRemapper.h"
 
 namespace {
@@ -209,6 +220,7 @@ namespace {
                     }
                 else
                     {
+                        // write each input to its associated output
                         write(spv, outputDirOrFiles[ii], verbosity);
                     }
             }
@@ -389,6 +401,17 @@ int main(int argc, char** argv)
 
     const bool isMultiInput      = inputFiles.size() > 1;
     const bool isMultiOutput     = outputDirOrFiles.size() > 1;
+
+    // Only support multiple outputs if C++17 and std::filesystem are
+    // available.
+#ifndef SPIRV_REMAP_CPP_LIB_FILESYSTEM
+    if (isMultiOutput)
+        {
+            usage(argv[0], "Multiple outputs are not supported.");
+        }
+
+    const bool isSingleOutputDir = true;
+#else
     const bool isSingleOutputDir = !isMultiOutput && std::filesystem::is_directory(outputDirOrFiles[0]);
 
     if (isMultiInput && !isMultiOutput && !isSingleOutputDir)
@@ -400,6 +423,7 @@ int main(int argc, char** argv)
         {
             usage(argv[0], "Output must be either a single directory or one output file per input.");
         }
+#endif
 
     // Main operations: read, remap, and write.
     execute(inputFiles, outputDirOrFiles, isSingleOutputDir, whiteListFile, opts, verbosity);
