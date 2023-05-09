@@ -1,7 +1,7 @@
 440.frag
 ERROR: 0:11: 'location' : overlapping use of location 4
 ERROR: 0:13: 'component' : type overflows the available 4 components 
-ERROR: 0:22: 'location' : fragment outputs sharing the same location must be the same basic type 30
+ERROR: 0:22: 'location' : fragment outputs or tileImageEXTs sharing the same location 30 must be the same basic type
 ERROR: 0:24: 'qualifier' : cannot use auxiliary, memory, interpolation, or precision qualifier in a default qualifier declaration (declaration with no type) 
 ERROR: 0:25: 'qualifier' : cannot use auxiliary, memory, interpolation, or precision qualifier in a default qualifier declaration (declaration with no type) 
 ERROR: 0:26: 'qualifier' : cannot use auxiliary, memory, interpolation, or precision qualifier in a default qualifier declaration (declaration with no type) 

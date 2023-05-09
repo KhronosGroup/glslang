@@ -134,6 +134,8 @@ enum TStorageQualifier {
     EvqFragDepth,
     EvqFragStencil,
 
+    EvqTileImageEXT,
+
     // end of list
     EvqLast
 };

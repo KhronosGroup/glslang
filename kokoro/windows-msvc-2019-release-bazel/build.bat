@@ -1,4 +1,4 @@
-:: Copyright (C) 2019 Google, Inc.
+:: Copyright (C) 2023 Google, Inc.
 ::
 :: All rights reserved.
 ::
@@ -30,7 +30,7 @@
 :: LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
 :: ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 :: POSSIBILITY OF SUCH DAMAGE.
-:: Copyright (c) 2019 Google LLC.
+:: Copyright (c) 2023 Google LLC.
 ::
 :: Windows Build Script.
 
@@ -45,13 +45,13 @@ cd %SRC%
 mv External third_party
 
 :: REM Install Bazel.
-wget -q https://github.com/bazelbuild/bazel/releases/download/0.29.1/bazel-0.29.1-windows-x86_64.zip
-unzip -q bazel-0.29.1-windows-x86_64.zip
+wget -q https://github.com/bazelbuild/bazel/releases/download/5.0.0/bazel-5.0.0-windows-x86_64.zip
+unzip -q bazel-5.0.0-windows-x86_64.zip
 
 :: Set up MSVC
-call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x64
-set BAZEL_VS=C:\Program Files (x86)\Microsoft Visual Studio 14.0
-set BAZEL_VC=C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC
+call "C:\Program Files (x86)\Microsoft Visual Studio 16.0\VC\vcvarsall.bat" x64
+set BAZEL_VS=C:\Program Files (x86)\Microsoft Visual Studio 16.0
+set BAZEL_VC=C:\Program Files (x86)\Microsoft Visual Studio 16.0\VC
 set BAZEL_SH=c:\tools\msys64\usr\bin\bash.exe
 set BAZEL_PYTHON=c:\tools\python2\python.exe
 

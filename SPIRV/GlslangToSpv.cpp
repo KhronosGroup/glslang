@@ -351,6 +351,7 @@ spv::Dim TranslateDimensionality(const glslang::TSampler& sampler)
     case glslang::EsdRect:    return spv::DimRect;
     case glslang::EsdBuffer:  return spv::DimBuffer;
     case glslang::EsdSubpass: return spv::DimSubpassData;
+    case glslang::EsdAttachmentEXT: return spv::DimTileImageDataEXT;
     default:
         assert(0);
         return spv::Dim2D;
@@ -1311,6 +1312,11 @@ spv::StorageClass TGlslangToSpvTraverser::TranslateStorageClass(const glslang::T
         return spv::StorageClassInput;
     if (type.getQualifier().isPipeOutput())
         return spv::StorageClassOutput;
+    if (type.getQualifier().storage == glslang::EvqTileImageEXT || type.isAttachmentEXT()) {
+        builder.addExtension(spv::E_SPV_EXT_shader_tile_image);
+        builder.addCapability(spv::CapabilityTileImageColorReadAccessEXT);
+        return spv::StorageClassTileImageEXT;
+    }
 
     if (glslangIntermediate->getSource() != glslang::EShSourceHlsl ||
             type.getQualifier().storage == glslang::EvqUniform) {
@@ -1680,6 +1686,24 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion,
             builder.addCapability(spv::CapabilitySampleMaskPostDepthCoverage);
             builder.addExecutionMode(shaderEntry, spv::ExecutionModePostDepthCoverage);
             builder.addExtension(spv::E_SPV_KHR_post_depth_coverage);
+        }
+
+        if (glslangIntermediate->getNonCoherentColorAttachmentReadEXT()) {
+            builder.addCapability(spv::CapabilityTileImageColorReadAccessEXT);
+            builder.addExecutionMode(shaderEntry, spv::ExecutionModeNonCoherentColorAttachmentReadEXT);
+            builder.addExtension(spv::E_SPV_EXT_shader_tile_image);
+        }
+
+        if (glslangIntermediate->getNonCoherentDepthAttachmentReadEXT()) {
+            builder.addCapability(spv::CapabilityTileImageDepthReadAccessEXT);
+            builder.addExecutionMode(shaderEntry, spv::ExecutionModeNonCoherentDepthAttachmentReadEXT);
+            builder.addExtension(spv::E_SPV_EXT_shader_tile_image);
+        }
+
+        if (glslangIntermediate->getNonCoherentStencilAttachmentReadEXT()) {
+            builder.addCapability(spv::CapabilityTileImageStencilReadAccessEXT);
+            builder.addExecutionMode(shaderEntry, spv::ExecutionModeNonCoherentStencilAttachmentReadEXT);
+            builder.addExtension(spv::E_SPV_EXT_shader_tile_image);
         }
 
         if (glslangIntermediate->isDepthReplacing())
@@ -5752,6 +5776,17 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
             return result;
         }
 
+        if (cracked.attachmentEXT) {
+            if (opIt != arguments.end()) {
+                spv::IdImmediate sample = { true, *opIt };
+                operands.push_back(sample);
+            }
+            spv::Id result = builder.createOp(spv::OpColorAttachmentReadEXT, resultType(), operands);
+            builder.addExtension(spv::E_SPV_EXT_shader_tile_image);
+            builder.setPrecision(result, precision);
+            return result;
+        }
+
         spv::IdImmediate coord = { true, *(opIt++) };
         operands.push_back(coord);
         if (node->getOp() == glslang::EOpImageLoad || node->getOp() == glslang::EOpImageLoadLod) {
@@ -7170,6 +7205,19 @@ spv::Id TGlslangToSpvTraverser::createUnaryOperation(glslang::TOperator op, OpDe
 
     case glslang::EOpCopyObject:
         unaryOp = spv::OpCopyObject;
+        break;
+
+    case glslang::EOpDepthAttachmentReadEXT:
+        builder.addExtension(spv::E_SPV_EXT_shader_tile_image);
+        builder.addCapability(spv::CapabilityTileImageDepthReadAccessEXT);
+        unaryOp = spv::OpDepthAttachmentReadEXT;
+        decorations.precision = spv::NoPrecision;
+        break;
+    case glslang::EOpStencilAttachmentReadEXT:
+        builder.addExtension(spv::E_SPV_EXT_shader_tile_image);
+        builder.addCapability(spv::CapabilityTileImageStencilReadAccessEXT);
+        unaryOp = spv::OpStencilAttachmentReadEXT;
+        decorations.precision = spv::DecorationRelaxedPrecision;
         break;
 
     default:
@@ -9262,6 +9310,30 @@ spv::Id TGlslangToSpvTraverser::createNoArgOperation(glslang::TOperator op, spv:
         return builder.createOp(spv::OpReadClockKHR, typeId, args);
     }
 #endif
+    case glslang::EOpStencilAttachmentReadEXT:
+    case glslang::EOpDepthAttachmentReadEXT:
+    {
+        builder.addExtension(spv::E_SPV_EXT_shader_tile_image);
+
+        spv::Decoration precision;
+        spv::Op spv_op;
+        if (op == glslang::EOpStencilAttachmentReadEXT)
+        {
+            precision = spv::DecorationRelaxedPrecision;
+            spv_op = spv::OpStencilAttachmentReadEXT;
+            builder.addCapability(spv::CapabilityTileImageStencilReadAccessEXT);
+        }
+        else
+        {
+            precision = spv::NoPrecision;
+            spv_op = spv::OpDepthAttachmentReadEXT;
+            builder.addCapability(spv::CapabilityTileImageDepthReadAccessEXT);
+        }
+
+        std::vector<spv::Id> args; // Dummy args
+        spv::Id result = builder.createOp(spv_op, typeId, args);
+        return builder.setPrecision(result, precision);
+    }
     default:
         break;
     }
