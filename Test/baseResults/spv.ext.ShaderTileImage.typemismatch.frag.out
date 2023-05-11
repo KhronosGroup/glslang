@@ -1,0 +1,6 @@
+spv.ext.ShaderTileImage.typemismatch.frag
+ERROR: 0:7: 'location' : fragment outputs or tileImageEXTs sharing the same location 0 must be the same basic type
+ERROR: 1 compilation errors.  No code generated.
+
+
+SPIR-V is not generated for failed compile or link

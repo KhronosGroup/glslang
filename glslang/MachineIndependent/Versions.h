@@ -328,6 +328,8 @@ const char* const E_GL_EXT_terminate_invocation = "GL_EXT_terminate_invocation";
 const char* const E_GL_EXT_shader_atomic_float = "GL_EXT_shader_atomic_float";
 const char* const E_GL_EXT_shader_atomic_float2 = "GL_EXT_shader_atomic_float2";
 
+const char* const E_GL_EXT_shader_tile_image = "GL_EXT_shader_tile_image";
+
 // Arrays of extensions for the above AEP duplications
 
 const char* const AEP_geometry_shader[] = { E_GL_EXT_geometry_shader, E_GL_OES_geometry_shader };

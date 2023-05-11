@@ -215,6 +215,10 @@ const char* ExecutionModeString(int mode)
     case ExecutionModeNoGlobalOffsetINTEL:      return "NoGlobalOffsetINTEL";
     case ExecutionModeNumSIMDWorkitemsINTEL:    return "NumSIMDWorkitemsINTEL";
 
+    case ExecutionModeNonCoherentColorAttachmentReadEXT:        return "NonCoherentColorAttachmentReadEXT";
+    case ExecutionModeNonCoherentDepthAttachmentReadEXT:        return "NonCoherentDepthAttachmentReadEXT";
+    case ExecutionModeNonCoherentStencilAttachmentReadEXT:      return "NonCoherentStencilAttachmentReadEXT";
+
     case ExecutionModeCeiling:
     default: return "Bad";
     }
@@ -247,6 +251,7 @@ const char* StorageClassString(int StorageClass)
     case StorageClassPhysicalStorageBufferEXT: return "PhysicalStorageBufferEXT";
     case StorageClassTaskPayloadWorkgroupEXT:  return "TaskPayloadWorkgroupEXT";
     case StorageClassHitObjectAttributeNV:     return "HitObjectAttributeNV";
+    case StorageClassTileImageEXT:             return "TileImageEXT";
     default: return "Bad";
     }
 }
@@ -464,6 +469,7 @@ const char* DimensionString(int dim)
     case 4:  return "Rect";
     case 5:  return "Buffer";
     case 6:  return "SubpassData";
+    case DimTileImageDataEXT:  return "TileImageDataEXT";
 
     default: return "Bad";
     }
@@ -992,6 +998,10 @@ const char* CapabilityString(int info)
     case CapabilityFragmentShaderPixelInterlockEXT:         return "CapabilityFragmentShaderPixelInterlockEXT";
     case CapabilityFragmentShaderShadingRateInterlockEXT:   return "CapabilityFragmentShaderShadingRateInterlockEXT";
 
+    case CapabilityTileImageColorReadAccessEXT:           return "TileImageColorReadAccessEXT";
+    case CapabilityTileImageDepthReadAccessEXT:           return "TileImageDepthReadAccessEXT";
+    case CapabilityTileImageStencilReadAccessEXT:         return "TileImageStencilReadAccessEXT";
+
     case CapabilityFragmentShadingRateKHR:                  return "FragmentShadingRateKHR";
 
     case CapabilityDemoteToHelperInvocationEXT:             return "DemoteToHelperInvocationEXT";
@@ -1501,6 +1511,10 @@ const char* OpcodeString(int op)
     case OpHitObjectIsMissNV:                   return "OpHitObjectIsMissNV";
     case OpHitObjectGetShaderBindingTableRecordIndexNV: return "OpHitObjectGetShaderBindingTableRecordIndexNV";
     case OpHitObjectGetShaderRecordBufferHandleNV:   return "OpHitObjectGetShaderRecordBufferHandleNV";
+
+    case OpColorAttachmentReadEXT:          return "OpColorAttachmentReadEXT";
+    case OpDepthAttachmentReadEXT:          return "OpDepthAttachmentReadEXT";
+    case OpStencilAttachmentReadEXT:        return "OpStencilAttachmentReadEXT";
 
     default:
         return "Bad";
@@ -3268,6 +3282,11 @@ void Parameterize()
     InstructionDesc[OpHitObjectTraceRayMotionNV].operands.push(OperandId, "'Time'");
     InstructionDesc[OpHitObjectTraceRayMotionNV].operands.push(OperandId, "'Payload'");
     InstructionDesc[OpHitObjectTraceRayMotionNV].setResultAndType(false, false);
+
+    InstructionDesc[OpColorAttachmentReadEXT].operands.push(OperandId, "'Attachment'");
+    InstructionDesc[OpColorAttachmentReadEXT].operands.push(OperandId, "'Sample'", true);
+    InstructionDesc[OpStencilAttachmentReadEXT].operands.push(OperandId, "'Sample'", true);
+    InstructionDesc[OpDepthAttachmentReadEXT].operands.push(OperandId, "'Sample'", true);
 }
 
 }; // end spv namespace
