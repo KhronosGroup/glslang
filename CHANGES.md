@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## 12.2.0 2023-05-17
+
+### Other changes
+* Support GLSL_EXT_shader_tile_image
+* Support GL_EXT_ray_tracing_position_fetch
+* Support custom include callbacks via the C API
+* Add preamble-text command-line option
+* Accept variables as parameters of spirv_decorate_id
+* Fix generation of conditionals with a struct result
+* Fix double expansion of macros
+* Fix DebugCompilationUnit scope
+* Improve line information
+
 ## 12.1.0 2023-03-21
 
 ### Other changes
