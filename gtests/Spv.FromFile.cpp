@@ -800,6 +800,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.tpipBoxFilter.frag",
         "spv.tpipBlockMatchSSD.frag",
         "spv.tpipBlockMatchSAD.frag",
+        "spv.tpipTextureArrays.frag",
     })),
     FileNameAsCustomTestSuffix
 );

@@ -3276,6 +3276,8 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         builder.addExtension(spv::E_SPV_KHR_ray_tracing_position_fetch);
         builder.addCapability(spv::CapabilityRayQueryPositionFetchKHR);
         noReturnValue = true;
+        break;
+
     case glslang::EOpImageSampleWeightedQCOM:
         builder.addCapability(spv::CapabilityTextureSampleWeightedQCOM);
         builder.addExtension(spv::E_SPV_QCOM_image_processing);
@@ -9037,6 +9039,7 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
         return 0;
 
     }
+
     case glslang::EOpImageSampleWeightedQCOM:
         typeId = builder.makeVectorType(builder.makeFloatType(32), 4);
         opCode = spv::OpImageSampleWeightedQCOM;
@@ -9612,9 +9615,6 @@ void TGlslangToSpvTraverser::addImageProcessingQCOMDecoration(spv::Id id, spv::D
 
   if (opc == spv::OpLoad) {
     spv::Id texid = builder.getIdOperand(id, 0);
-    if (glslangIntermediate->getSpv().spv >= glslang::EShTargetSpv_1_4) {
-      assert(iOSet.count(texid) > 0);
-    }
     builder.addDecoration(texid, decor);
   }
 }
