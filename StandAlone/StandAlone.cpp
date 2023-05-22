@@ -725,7 +725,7 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                         HlslDxPositionW = true;
                     } else if (lowerword == "enhanced-msgs") {
                         EnhancedMsgs = true;
-                    } else if (lowerword == "auto-sampled-textures") { 
+                    } else if (lowerword == "auto-sampled-textures") {
                         autoSampledTextures = true;
                     } else if (lowerword == "invert-y" ||  // synonyms
                                lowerword == "iy") {
@@ -1973,7 +1973,7 @@ void usage()
            "                                    without explicit bindings\n"
            "  --auto-map-locations | --aml      automatically locate input/output lacking\n"
            "                                    'location' (fragile, not cross stage)\n"
-           "  --auto-sampled-textures           Removes sampler variables and converts\n" 
+           "  --auto-sampled-textures           Removes sampler variables and converts\n"
            "                                    existing textures to sampled textures\n"
            "  --client {vulkan<ver>|opengl<ver>} see -V and -G\n"
            "  --depfile <file>                  writes depfile for build systems\n"

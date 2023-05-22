@@ -3369,7 +3369,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
             break;
 
 
-    
+
         case glslang::EOpHitObjectRecordHitNV:
         case glslang::EOpHitObjectRecordHitMotionNV:
         case glslang::EOpHitObjectRecordHitWithIndexNV:
@@ -3549,7 +3549,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
             } else if (arg == 2) {
                 continue;
             }
-        } 
+        }
 #endif
 
         // for l-values, pass the address, for r-values, pass the value
@@ -3593,8 +3593,8 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
              } else if ((arg == 10 && glslangOp == glslang::EOpTraceKHR) ||
                         (arg == 11 && glslangOp == glslang::EOpTraceRayMotionNV) ||
                         (arg == 1  && glslangOp == glslang::EOpExecuteCallableKHR) ||
-                        (arg == 1  && glslangOp == glslang::EOpHitObjectExecuteShaderNV) || 
-                        (arg == 11 && glslangOp == glslang::EOpHitObjectTraceRayNV) || 
+                        (arg == 1  && glslangOp == glslang::EOpHitObjectExecuteShaderNV) ||
+                        (arg == 11 && glslangOp == glslang::EOpHitObjectTraceRayNV) ||
                         (arg == 12 && glslangOp == glslang::EOpHitObjectTraceRayMotionNV)) {
                  const int set = glslangOp == glslang::EOpExecuteCallableKHR ? 1 : 0;
                  const int location = glslangOperands[arg]->getAsConstantUnion()->getConstArray()[0].getUConst();
@@ -4477,7 +4477,7 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
         builder.addCapability(spv::CapabilityShaderInvocationReorderNV);
         spvType = builder.makeHitObjectNVType();
     }
-    break;    
+    break;
 #ifndef GLSLANG_WEB
     case glslang::EbtSpirvType: {
         // GL_EXT_spirv_intrinsics
@@ -7165,7 +7165,7 @@ spv::Id TGlslangToSpvTraverser::createUnaryOperation(glslang::TOperator op, OpDe
     case glslang::EOpHitObjectGetShaderRecordBufferHandleNV:
         unaryOp = spv::OpHitObjectGetShaderRecordBufferHandleNV;
         break;
-    
+
 #endif
 
     case glslang::EOpCopyObject:
@@ -9020,7 +9020,7 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
             builder.createNoResultOp(spv::OpReorderThreadWithHitObjectNV, operands);
         }
         return 0;
-    
+
     }
         break;
 #endif // GLSLANG_WEB
