@@ -82,7 +82,7 @@ COMMON_COPTS = select({
         "-Wunused-value",
         "-Wunused-variable",
         "-Wno-reorder",
-        "-std=c++11",
+        "-std=c++17",
         "-fvisibility=hidden",
         "-fvisibility-inlines-hidden",
         "-fno-exceptions",
