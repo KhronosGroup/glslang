@@ -1526,9 +1526,11 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
                     if (! (Options & EOptionMemoryLeakMode)) {
                         printf("%s", logger.getAllMessages().c_str());
                         if (Options & EOptionOutputHexadecimal) {
-                            glslang::OutputSpvHex(spirv, GetBinaryName((EShLanguage)stage), variableName);
+                            if (!glslang::OutputSpvHex(spirv, GetBinaryName((EShLanguage)stage), variableName))
+                              exit(EFailUsage);
                         } else {
-                            glslang::OutputSpvBin(spirv, GetBinaryName((EShLanguage)stage));
+                            if (!glslang::OutputSpvBin(spirv, GetBinaryName((EShLanguage)stage)))
+                              exit(EFailUsage);
                         }
 
                         outputFiles.push_back(GetBinaryName((EShLanguage)stage));
