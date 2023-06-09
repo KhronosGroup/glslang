@@ -2,4 +2,5 @@
 
 To report a security issue, please disclose it at [security advisory](https://github.com/KhronosGroup/glslang/security/advisories/new).
 
-We will respond within 7 working days of your submission. If the issue is confirmed as a vulnerability, we will open a Security Advisory and acknowledge your contributions as part of it. This project follows a 90 day disclosure timeline.
+This project is maintained by a team of volunteers on a reasonable-effort basis. As
+such, please give us at least 90 days to work on a fix before public exposure.
