@@ -163,7 +163,7 @@ elseif(${CMAKE_CXX_COMPILER_ID} MATCHES "Clang" AND NOT MSVC)
         # Error if there's symbols that are not found at link time.
         if (CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
             add_link_options("-Wl,-undefined,error")
-        else()
+        elseif(NOT APPLE)
             add_link_options("-Wl,--no-undefined")
         endif()
     endif()
