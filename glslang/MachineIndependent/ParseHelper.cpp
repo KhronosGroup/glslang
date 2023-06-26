@@ -5900,6 +5900,10 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
             publicType.qualifier.layoutFullQuads = true;
             return;
         }
+        if (id == "non_coherent_attachmentqcom" || id == "tile_sharedqcom") {
+            requireExtensions(loc, 1, &E_GL_QCOM_tile_shading, "tile shading");
+            return;
+        }
     }
     if (language == EShLangVertex ||
         language == EShLangTessControl ||

@@ -63,6 +63,7 @@ set(HEADERS
     GLSL.ext.AMD.h
     GLSL.ext.NV.h
     GLSL.ext.ARM.h
+    GLSL.ext.QCOM.h
     NonSemanticDebugPrintf.h
     NonSemanticShaderDebugInfo100.h)
 
