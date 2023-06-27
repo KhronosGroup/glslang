@@ -38,9 +38,11 @@
 # projects that referenced this target.
 
 add_library(HLSL ${LIB_TYPE} "stub.cpp")
-set_property(TARGET HLSL PROPERTY FOLDER hlsl)
-set_property(TARGET HLSL PROPERTY POSITION_INDEPENDENT_CODE ON)
-set_target_properties(HLSL PROPERTIES VERSION "${GLSLANG_VERSION}" SOVERSION "${GLSLANG_VERSION_MAJOR}")
+set_target_properties(HLSL PROPERTIES
+    FOLDER hlsl
+    POSITION_INDEPENDENT_CODE ON
+    VERSION   "${GLSLANG_VERSION}"
+    SOVERSION "${GLSLANG_VERSION_MAJOR}")
 
 if(WIN32 AND BUILD_SHARED_LIBS)
     set_target_properties(HLSL PROPERTIES PREFIX "")

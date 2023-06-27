@@ -163,7 +163,7 @@ elseif(${CMAKE_CXX_COMPILER_ID} MATCHES "Clang" AND NOT MSVC)
         # Error if there's symbols that are not found at link time.
         if (CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
             add_link_options("-Wl,-undefined,error")
-        else()
+        elseif(NOT APPLE)
             add_link_options("-Wl,--no-undefined")
         endif()
     endif()
@@ -276,7 +276,7 @@ else()
 endif()
 
 if(BUILD_EXTERNAL AND IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/External)
-    find_host_package(PythonInterp 3 REQUIRED)
+    find_host_package(Python3 REQUIRED)
 
     # We depend on these for later projects, so they should come first.
     add_subdirectory(External)

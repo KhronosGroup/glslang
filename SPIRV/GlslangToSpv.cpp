@@ -10036,27 +10036,32 @@ int GetSpirvGeneratorVersion()
 }
 
 // Write SPIR-V out to a binary file
-void OutputSpvBin(const std::vector<unsigned int>& spirv, const char* baseName)
+bool OutputSpvBin(const std::vector<unsigned int>& spirv, const char* baseName)
 {
     std::ofstream out;
     out.open(baseName, std::ios::binary | std::ios::out);
-    if (out.fail())
+    if (out.fail()) {
         printf("ERROR: Failed to open file: %s\n", baseName);
+        return false;
+    }
     for (int i = 0; i < (int)spirv.size(); ++i) {
         unsigned int word = spirv[i];
         out.write((const char*)&word, 4);
     }
     out.close();
+    return true;
 }
 
 // Write SPIR-V out to a text file with 32-bit hexadecimal words
-void OutputSpvHex(const std::vector<unsigned int>& spirv, const char* baseName, const char* varName)
+bool OutputSpvHex(const std::vector<unsigned int>& spirv, const char* baseName, const char* varName)
 {
 #if !defined(GLSLANG_WEB)
     std::ofstream out;
     out.open(baseName, std::ios::binary | std::ios::out);
-    if (out.fail())
+    if (out.fail()) {
         printf("ERROR: Failed to open file: %s\n", baseName);
+        return false;
+    }
     out << "\t// " <<
         GetSpirvGeneratorVersion() <<
         GLSLANG_VERSION_MAJOR << "." << GLSLANG_VERSION_MINOR << "." << GLSLANG_VERSION_PATCH <<
@@ -10083,6 +10088,7 @@ void OutputSpvHex(const std::vector<unsigned int>& spirv, const char* baseName, 
     }
     out.close();
 #endif
+    return true;
 }
 
 //
