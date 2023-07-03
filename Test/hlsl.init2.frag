@@ -21,7 +21,8 @@ void Test1()
     const mystruct2 constTest5 = { {8,}, {9,}, {10}, };
     constTest5.c;
 
-    const float step = 1.f;
+    float const origStep = 1.0f;
+    const float step = origStep;
     float n = 0;
     const float3 a[8] = {
             normalize(float3(1, 1, 1)) * (n += step),
