@@ -22,18 +22,17 @@ ERROR: node is still EOpNull!
 0:?     Sequence
 0:8      Branch: Return with expression
 0:8        Construct vec4 ( temp 4-component vector of float)
-0:8          Convert int to float ( temp float)
-0:8            Comma ( temp int)
-0:8              Comma ( temp int)
-0:8                Comma ( temp int)
-0:8                  Constant:
-0:8                    1 (const int)
-0:8                  Constant:
-0:8                    2 (const int)
+0:8          Comma ( temp float)
+0:8            Comma ( temp float)
+0:8              Comma ( temp float)
 0:8                Constant:
-0:8                  3 (const int)
+0:8                  1.000000
+0:8                Constant:
+0:8                  2.000000
 0:8              Constant:
-0:8                4 (const int)
+0:8                3.000000
+0:8            Constant:
+0:8              4.000000
 0:12  Function Definition: fun3(vf4; ( temp uint)
 0:12    Function Parameters: 
 0:12      'col' ( const (read only) 4-component vector of float)
@@ -99,18 +98,17 @@ ERROR: node is still EOpNull!
 0:?     Sequence
 0:8      Branch: Return with expression
 0:8        Construct vec4 ( temp 4-component vector of float)
-0:8          Convert int to float ( temp float)
-0:8            Comma ( temp int)
-0:8              Comma ( temp int)
-0:8                Comma ( temp int)
-0:8                  Constant:
-0:8                    1 (const int)
-0:8                  Constant:
-0:8                    2 (const int)
+0:8          Comma ( temp float)
+0:8            Comma ( temp float)
+0:8              Comma ( temp float)
 0:8                Constant:
-0:8                  3 (const int)
+0:8                  1.000000
+0:8                Constant:
+0:8                  2.000000
 0:8              Constant:
-0:8                4 (const int)
+0:8                3.000000
+0:8            Constant:
+0:8              4.000000
 0:12  Function Definition: fun3(vf4; ( temp uint)
 0:12    Function Parameters: 
 0:12      'col' ( const (read only) 4-component vector of float)

@@ -5,7 +5,7 @@ float4 fun0()
 
 float4 fun2(float4 const col)
 {
-    return (1, 2, 3, 4);
+    return (1.0f, 2.0f, 3.0f, 4.0f);
 }
 
 uint fun3(const float4 col)
