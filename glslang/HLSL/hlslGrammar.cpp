@@ -1,7 +1,7 @@
 //
 // Copyright (C) 2016-2018 Google, Inc.
 // Copyright (C) 2016 LunarG, Inc.
-// Copyright (C) 2023 Mobica Limited
+// Copyright (C) 2023 Mobica Limited.
 //
 // All rights reserved.
 //
