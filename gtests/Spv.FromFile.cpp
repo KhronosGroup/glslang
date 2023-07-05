@@ -757,6 +757,7 @@ INSTANTIATE_TEST_SUITE_P(
         "vulkan.vert",
         "vulkan.comp",
         "samplerlessTextureFunctions.frag",
+        "spv.intrinsicsFakeEnable.vert",
         "spv.specConstArrayCheck.vert",
     })),
     FileNameAsCustomTestSuffix
