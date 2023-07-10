@@ -1,6 +1,6 @@
 /*
 
-glslangValidator.exe --glsl-version 430 -V -S geom -o glsl.versionOverride.geom.out glsl.versionOverride.geom
+glslang.exe --glsl-version 430 -V -S geom -o glsl.versionOverride.geom.out glsl.versionOverride.geom
 
 */
 
