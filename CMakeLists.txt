@@ -65,7 +65,7 @@ if(NOT ${SKIP_GLSLANG_INSTALL})
 endif()
 option(ENABLE_SPVREMAPPER "Enables building of SPVRemapper" ON)
 
-option(ENABLE_GLSLANG_BINARIES "Builds glslangValidator and spirv-remap" ON)
+option(ENABLE_GLSLANG_BINARIES "Builds glslang and spirv-remap" ON)
 
 option(ENABLE_GLSLANG_JS
     "If using Emscripten, build glslang.js. Otherwise, builds a sample executable for binary-size testing." OFF)
@@ -319,11 +319,11 @@ if(ENABLE_CTEST AND BUILD_TESTING)
 
     if (CMAKE_CONFIGURATION_TYPES)
         set(RESULTS_PATH ${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/localResults)
-        set(VALIDATOR_PATH ${CMAKE_CURRENT_BINARY_DIR}/StandAlone/$<CONFIG>/glslangValidator)
+        set(VALIDATOR_PATH ${CMAKE_CURRENT_BINARY_DIR}/StandAlone/$<CONFIG>/glslang)
         set(REMAP_PATH ${CMAKE_CURRENT_BINARY_DIR}/StandAlone/$<CONFIG>/spirv-remap)
     else()
         set(RESULTS_PATH ${CMAKE_CURRENT_BINARY_DIR}/localResults)
-        set(VALIDATOR_PATH ${CMAKE_CURRENT_BINARY_DIR}/StandAlone/glslangValidator)
+        set(VALIDATOR_PATH ${CMAKE_CURRENT_BINARY_DIR}/StandAlone/glslang)
         set(REMAP_PATH ${CMAKE_CURRENT_BINARY_DIR}/StandAlone/spirv-remap)
     endif()
 

@@ -47,7 +47,7 @@ An API for getting reflection information from the AST, reflection types/variabl
 
 ### Standalone Wrapper
 
-`glslangValidator` is command-line tool for accessing the functionality above.
+`glslang` is command-line tool for accessing the functionality above.
 
 Status: Complete.
 
@@ -65,7 +65,7 @@ The above page, while not kept up to date, includes additional information regar
 
 ## Execution of Standalone Wrapper
 
-To use the standalone binary form, execute `glslangValidator`, and it will print
+To use the standalone binary form, execute `glslang`, and it will print
 a usage statement.  Basic operation is to give it a file containing a shader,
 and it will print out warnings/errors and optionally an AST.
 

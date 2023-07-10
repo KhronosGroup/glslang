@@ -471,7 +471,7 @@ public:
             targetLanguageVersion, false, EShTexSampTransKeep, enableOptimizer, enableDebug,
             enableNonSemanticShaderDebugInfo, automap);
 
-        // Generate the hybrid output in the way of glslangValidator.
+        // Generate the hybrid output in the way of glslang.
         std::ostringstream stream;
         outputResultToStream(&stream, result, controls);
 
@@ -501,7 +501,7 @@ public:
         GlslangResult result = compileAndLink(testName, input, entryPointName, controls, clientTargetVersion,
             targetLanguageVersion, false, EShTexSampTransKeep, false, automap);
 
-        // Generate the hybrid output in the way of glslangValidator.
+        // Generate the hybrid output in the way of glslang.
         std::ostringstream stream;
         outputResultToStream(&stream, result, controls);
 
@@ -527,7 +527,7 @@ public:
         GlslangResult result = compileAndLink(testName, input, entryPointName, controls,
                                               glslang::EShTargetVulkan_1_0, glslang::EShTargetSpv_1_0, true);
 
-        // Generate the hybrid output in the way of glslangValidator.
+        // Generate the hybrid output in the way of glslang.
         std::ostringstream stream;
         outputResultToStream(&stream, result, controls);
 
@@ -564,7 +564,7 @@ public:
                                                 autoMapBindings,
                                                 flattenUniformArrays);
 
-        // Generate the hybrid output in the way of glslangValidator.
+        // Generate the hybrid output in the way of glslang.
         std::ostringstream stream;
         outputResultToStream(&stream, result, controls);
 
@@ -591,7 +591,7 @@ public:
         const EShMessages controls = DeriveOptions(source, semantics, target);
         GlslangResult result = compileLinkRemap(testName, input, entryPointName, controls, remapOptions);
 
-        // Generate the hybrid output in the way of glslangValidator.
+        // Generate the hybrid output in the way of glslang.
         std::ostringstream stream;
         outputResultToStream(&stream, result, controls);
 
@@ -618,7 +618,7 @@ public:
         const EShMessages controls = DeriveOptions(source, semantics, target);
         GlslangResult result = remap(testName, input, controls, remapOptions);
 
-        // Generate the hybrid output in the way of glslangValidator.
+        // Generate the hybrid output in the way of glslang.
         std::ostringstream stream;
         outputResultToStream(&stream, result, controls);
 
@@ -698,7 +698,7 @@ public:
                                               glslang::EShTargetVulkan_1_0, glslang::EShTargetSpv_1_0, false,
                                               EShTexSampTransUpgradeTextureRemoveSampler);
 
-        // Generate the hybrid output in the way of glslangValidator.
+        // Generate the hybrid output in the way of glslang.
         std::ostringstream stream;
         outputResultToStream(&stream, result, controls);
 
