@@ -37,6 +37,10 @@ float4 PixelShaderFunction(float4 input) : COLOR0
     e = a = b ? c = d : 10, b = a ? d = c : 11;
     float4 f;
     f = ret.x < input.y ? c * input : d * input;
+    uint g = d > 0.0 ? 0b010101u : 0u;
+    uint h = g > 0.0 ? 0B111111u : 0u;
+    uint i = h > 0.0 ? 0b0101u : 0B01;
+    uint j = i > 0.0 ? 0xabcd : 0xbcda;
     return e * ret + f + vectorCond() + scalarCond() +
            float4(fbSelect(bool2(true, false), float2(1.0, 2.0), float2(3.0, 4.0)), 10.0, 10.0);
 }

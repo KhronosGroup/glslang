@@ -216,33 +216,98 @@ gl_FragCoord origin is upper left
 0:39            Convert int to float ( temp float)
 0:39              'd' ( temp int)
 0:39            'input' ( in 4-component vector of float)
-0:41      Branch: Return with expression
-0:40        add ( temp 4-component vector of float)
-0:40          add ( temp 4-component vector of float)
-0:40            add ( temp 4-component vector of float)
-0:40              add ( temp 4-component vector of float)
-0:40                vector-scale ( temp 4-component vector of float)
-0:40                  Convert int to float ( temp float)
-0:40                    'e' ( temp int)
-0:40                  'ret' ( temp 4-component vector of float)
-0:40                'f' ( temp 4-component vector of float)
-0:40              Function Call: vectorCond( ( temp 4-component vector of float)
-0:40            Function Call: scalarCond( ( temp 4-component vector of float)
-0:41          Construct vec4 ( temp 4-component vector of float)
-0:41            Function Call: fbSelect(vb2;vf2;vf2; ( temp 2-component vector of float)
+0:40      Sequence
+0:40        move second child to first child ( temp uint)
+0:40          'g' ( temp uint)
+0:40          Test condition and select ( temp uint): no shortcircuit
+0:40            Condition
+0:40            Compare Greater Than ( temp bool)
+0:40              Convert int to float ( temp float)
+0:40                'd' ( temp int)
+0:40              Constant:
+0:40                0.000000
+0:40            true case
+0:40            Constant:
+0:40              21 (const uint)
+0:40            false case
+0:40            Constant:
+0:40              0 (const uint)
+0:41      Sequence
+0:41        move second child to first child ( temp uint)
+0:41          'h' ( temp uint)
+0:41          Test condition and select ( temp uint): no shortcircuit
+0:41            Condition
+0:41            Compare Greater Than ( temp bool)
+0:41              Convert uint to float ( temp float)
+0:41                'g' ( temp uint)
 0:41              Constant:
-0:41                true (const bool)
-0:41                false (const bool)
-0:41              Constant:
-0:41                1.000000
-0:41                2.000000
-0:41              Constant:
-0:41                3.000000
-0:41                4.000000
+0:41                0.000000
+0:41            true case
 0:41            Constant:
-0:41              10.000000
+0:41              63 (const uint)
+0:41            false case
 0:41            Constant:
-0:41              10.000000
+0:41              0 (const uint)
+0:42      Sequence
+0:42        move second child to first child ( temp uint)
+0:42          'i' ( temp uint)
+0:42          Test condition and select ( temp uint): no shortcircuit
+0:42            Condition
+0:42            Compare Greater Than ( temp bool)
+0:42              Convert uint to float ( temp float)
+0:42                'h' ( temp uint)
+0:42              Constant:
+0:42                0.000000
+0:42            true case
+0:42            Constant:
+0:42              5 (const uint)
+0:42            false case
+0:42            Constant:
+0:42              1 (const uint)
+0:43      Sequence
+0:43        move second child to first child ( temp uint)
+0:43          'j' ( temp uint)
+0:43          Convert int to uint ( temp uint)
+0:43            Test condition and select ( temp int): no shortcircuit
+0:43              Condition
+0:43              Compare Greater Than ( temp bool)
+0:43                Convert uint to float ( temp float)
+0:43                  'i' ( temp uint)
+0:43                Constant:
+0:43                  0.000000
+0:43              true case
+0:43              Constant:
+0:43                43981 (const int)
+0:43              false case
+0:43              Constant:
+0:43                48346 (const int)
+0:45      Branch: Return with expression
+0:44        add ( temp 4-component vector of float)
+0:44          add ( temp 4-component vector of float)
+0:44            add ( temp 4-component vector of float)
+0:44              add ( temp 4-component vector of float)
+0:44                vector-scale ( temp 4-component vector of float)
+0:44                  Convert int to float ( temp float)
+0:44                    'e' ( temp int)
+0:44                  'ret' ( temp 4-component vector of float)
+0:44                'f' ( temp 4-component vector of float)
+0:44              Function Call: vectorCond( ( temp 4-component vector of float)
+0:44            Function Call: scalarCond( ( temp 4-component vector of float)
+0:45          Construct vec4 ( temp 4-component vector of float)
+0:45            Function Call: fbSelect(vb2;vf2;vf2; ( temp 2-component vector of float)
+0:45              Constant:
+0:45                true (const bool)
+0:45                false (const bool)
+0:45              Constant:
+0:45                1.000000
+0:45                2.000000
+0:45              Constant:
+0:45                3.000000
+0:45                4.000000
+0:45            Constant:
+0:45              10.000000
+0:45            Constant:
+0:45              10.000000
 0:27  Function Definition: PixelShaderFunction( ( temp void)
 0:27    Function Parameters: 
 0:?     Sequence
@@ -479,33 +544,98 @@ gl_FragCoord origin is upper left
 0:39            Convert int to float ( temp float)
 0:39              'd' ( temp int)
 0:39            'input' ( in 4-component vector of float)
-0:41      Branch: Return with expression
-0:40        add ( temp 4-component vector of float)
-0:40          add ( temp 4-component vector of float)
-0:40            add ( temp 4-component vector of float)
-0:40              add ( temp 4-component vector of float)
-0:40                vector-scale ( temp 4-component vector of float)
-0:40                  Convert int to float ( temp float)
-0:40                    'e' ( temp int)
-0:40                  'ret' ( temp 4-component vector of float)
-0:40                'f' ( temp 4-component vector of float)
-0:40              Function Call: vectorCond( ( temp 4-component vector of float)
-0:40            Function Call: scalarCond( ( temp 4-component vector of float)
-0:41          Construct vec4 ( temp 4-component vector of float)
-0:41            Function Call: fbSelect(vb2;vf2;vf2; ( temp 2-component vector of float)
+0:40      Sequence
+0:40        move second child to first child ( temp uint)
+0:40          'g' ( temp uint)
+0:40          Test condition and select ( temp uint): no shortcircuit
+0:40            Condition
+0:40            Compare Greater Than ( temp bool)
+0:40              Convert int to float ( temp float)
+0:40                'd' ( temp int)
+0:40              Constant:
+0:40                0.000000
+0:40            true case
+0:40            Constant:
+0:40              21 (const uint)
+0:40            false case
+0:40            Constant:
+0:40              0 (const uint)
+0:41      Sequence
+0:41        move second child to first child ( temp uint)
+0:41          'h' ( temp uint)
+0:41          Test condition and select ( temp uint): no shortcircuit
+0:41            Condition
+0:41            Compare Greater Than ( temp bool)
+0:41              Convert uint to float ( temp float)
+0:41                'g' ( temp uint)
 0:41              Constant:
-0:41                true (const bool)
-0:41                false (const bool)
-0:41              Constant:
-0:41                1.000000
-0:41                2.000000
-0:41              Constant:
-0:41                3.000000
-0:41                4.000000
+0:41                0.000000
+0:41            true case
 0:41            Constant:
-0:41              10.000000
+0:41              63 (const uint)
+0:41            false case
 0:41            Constant:
-0:41              10.000000
+0:41              0 (const uint)
+0:42      Sequence
+0:42        move second child to first child ( temp uint)
+0:42          'i' ( temp uint)
+0:42          Test condition and select ( temp uint): no shortcircuit
+0:42            Condition
+0:42            Compare Greater Than ( temp bool)
+0:42              Convert uint to float ( temp float)
+0:42                'h' ( temp uint)
+0:42              Constant:
+0:42                0.000000
+0:42            true case
+0:42            Constant:
+0:42              5 (const uint)
+0:42            false case
+0:42            Constant:
+0:42              1 (const uint)
+0:43      Sequence
+0:43        move second child to first child ( temp uint)
+0:43          'j' ( temp uint)
+0:43          Convert int to uint ( temp uint)
+0:43            Test condition and select ( temp int): no shortcircuit
+0:43              Condition
+0:43              Compare Greater Than ( temp bool)
+0:43                Convert uint to float ( temp float)
+0:43                  'i' ( temp uint)
+0:43                Constant:
+0:43                  0.000000
+0:43              true case
+0:43              Constant:
+0:43                43981 (const int)
+0:43              false case
+0:43              Constant:
+0:43                48346 (const int)
+0:45      Branch: Return with expression
+0:44        add ( temp 4-component vector of float)
+0:44          add ( temp 4-component vector of float)
+0:44            add ( temp 4-component vector of float)
+0:44              add ( temp 4-component vector of float)
+0:44                vector-scale ( temp 4-component vector of float)
+0:44                  Convert int to float ( temp float)
+0:44                    'e' ( temp int)
+0:44                  'ret' ( temp 4-component vector of float)
+0:44                'f' ( temp 4-component vector of float)
+0:44              Function Call: vectorCond( ( temp 4-component vector of float)
+0:44            Function Call: scalarCond( ( temp 4-component vector of float)
+0:45          Construct vec4 ( temp 4-component vector of float)
+0:45            Function Call: fbSelect(vb2;vf2;vf2; ( temp 2-component vector of float)
+0:45              Constant:
+0:45                true (const bool)
+0:45                false (const bool)
+0:45              Constant:
+0:45                1.000000
+0:45                2.000000
+0:45              Constant:
+0:45                3.000000
+0:45                4.000000
+0:45            Constant:
+0:45              10.000000
+0:45            Constant:
+0:45              10.000000
 0:27  Function Definition: PixelShaderFunction( ( temp void)
 0:27    Function Parameters: 
 0:?     Sequence
@@ -523,12 +653,12 @@ gl_FragCoord origin is upper left
 
 // Module Version 10000
 // Generated by (magic number): 8000b
-// Id's are bound by 206
+// Id's are bound by 233
 
                               Capability Shader
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint Fragment 4  "PixelShaderFunction" 199 202
+                              EntryPoint Fragment 4  "PixelShaderFunction" 226 229
                               ExecutionMode 4 OriginUpperLeft
                               Source HLSL 500
                               Name 4  "PixelShaderFunction"
@@ -555,13 +685,17 @@ gl_FragCoord origin is upper left
                               Name 117  "ret"
                               Name 137  "e"
                               Name 150  "f"
-                              Name 186  "param"
-                              Name 187  "param"
-                              Name 188  "param"
-                              Name 197  "input"
-                              Name 199  "input"
-                              Name 202  "@entryPointOutput"
-                              Name 203  "param"
+                              Name 169  "g"
+                              Name 175  "h"
+                              Name 181  "i"
+                              Name 187  "j"
+                              Name 213  "param"
+                              Name 214  "param"
+                              Name 215  "param"
+                              Name 224  "input"
+                              Name 226  "input"
+                              Name 229  "@entryPointOutput"
+                              Name 230  "param"
                               MemberDecorate 29($Global) 0 Offset 0
                               MemberDecorate 29($Global) 1 Offset 16
                               MemberDecorate 29($Global) 2 Offset 32
@@ -570,8 +704,8 @@ gl_FragCoord origin is upper left
                               Decorate 29($Global) Block
                               Decorate 31 DescriptorSet 0
                               Decorate 31 Binding 0
-                              Decorate 199(input) Location 0
-                              Decorate 202(@entryPointOutput) Location 0
+                              Decorate 226(input) Location 0
+                              Decorate 229(@entryPointOutput) Location 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32
@@ -611,29 +745,35 @@ gl_FragCoord origin is upper left
              148:     32(int) Constant 11
              151:             TypePointer Function 6(float)
              154:    139(int) Constant 1
-             178:    13(bool) ConstantTrue
-             179:    13(bool) ConstantFalse
-             180:   14(bvec2) ConstantComposite 178 179
-             181:    6(float) Constant 1073741824
-             182:   16(fvec2) ConstantComposite 96 181
-             183:    6(float) Constant 1077936128
-             184:    6(float) Constant 1082130432
-             185:   16(fvec2) ConstantComposite 183 184
-             190:    6(float) Constant 1092616192
-             198:             TypePointer Input 7(fvec4)
-      199(input):    198(ptr) Variable Input
-             201:             TypePointer Output 7(fvec4)
-202(@entryPointOutput):    201(ptr) Variable Output
+             168:             TypePointer Function 139(int)
+             173:    139(int) Constant 21
+             179:    139(int) Constant 63
+             185:    139(int) Constant 5
+             191:     32(int) Constant 43981
+             192:     32(int) Constant 48346
+             205:    13(bool) ConstantTrue
+             206:    13(bool) ConstantFalse
+             207:   14(bvec2) ConstantComposite 205 206
+             208:    6(float) Constant 1073741824
+             209:   16(fvec2) ConstantComposite 96 208
+             210:    6(float) Constant 1077936128
+             211:    6(float) Constant 1082130432
+             212:   16(fvec2) ConstantComposite 210 211
+             217:    6(float) Constant 1092616192
+             225:             TypePointer Input 7(fvec4)
+      226(input):    225(ptr) Variable Input
+             228:             TypePointer Output 7(fvec4)
+229(@entryPointOutput):    228(ptr) Variable Output
 4(PixelShaderFunction):           2 Function None 3
                5:             Label
-      197(input):     24(ptr) Variable Function
-      203(param):     24(ptr) Variable Function
-             200:    7(fvec4) Load 199(input)
-                              Store 197(input) 200
-             204:    7(fvec4) Load 197(input)
-                              Store 203(param) 204
-             205:    7(fvec4) FunctionCall 27(@PixelShaderFunction(vf4;) 203(param)
-                              Store 202(@entryPointOutput) 205
+      224(input):     24(ptr) Variable Function
+      230(param):     24(ptr) Variable Function
+             227:    7(fvec4) Load 226(input)
+                              Store 224(input) 227
+             231:    7(fvec4) Load 224(input)
+                              Store 230(param) 231
+             232:    7(fvec4) FunctionCall 27(@PixelShaderFunction(vf4;) 230(param)
+                              Store 229(@entryPointOutput) 232
                               Return
                               FunctionEnd
   9(vectorCond():    7(fvec4) Function None 8
@@ -720,9 +860,13 @@ gl_FragCoord origin is upper left
         117(ret):     24(ptr) Variable Function
           137(e):    109(ptr) Variable Function
           150(f):     24(ptr) Variable Function
-      186(param):     15(ptr) Variable Function
-      187(param):     17(ptr) Variable Function
-      188(param):     17(ptr) Variable Function
+          169(g):    168(ptr) Variable Function
+          175(h):    168(ptr) Variable Function
+          181(i):    168(ptr) Variable Function
+          187(j):    168(ptr) Variable Function
+      213(param):     15(ptr) Variable Function
+      214(param):     17(ptr) Variable Function
+      215(param):     17(ptr) Variable Function
                               Store 110(a) 111
                               Store 112(b) 113
                               Store 114(c) 115
@@ -776,23 +920,44 @@ gl_FragCoord origin is upper left
              166:   43(bvec4) CompositeConstruct 157 157 157 157
              167:    7(fvec4) Select 166 161 165
                               Store 150(f) 167
-             168:     32(int) Load 137(e)
-             169:    6(float) ConvertSToF 168
-             170:    7(fvec4) Load 117(ret)
-             171:    7(fvec4) VectorTimesScalar 170 169
-             172:    7(fvec4) Load 150(f)
-             173:    7(fvec4) FAdd 171 172
-             174:    7(fvec4) FunctionCall 9(vectorCond()
-             175:    7(fvec4) FAdd 173 174
-             176:    7(fvec4) FunctionCall 11(scalarCond()
-             177:    7(fvec4) FAdd 175 176
-                              Store 186(param) 180
-                              Store 187(param) 182
-                              Store 188(param) 185
-             189:   16(fvec2) FunctionCall 22(fbSelect(vb2;vf2;vf2;) 186(param) 187(param) 188(param)
-             191:    6(float) CompositeExtract 189 0
-             192:    6(float) CompositeExtract 189 1
-             193:    7(fvec4) CompositeConstruct 191 192 190 190
-             194:    7(fvec4) FAdd 177 193
-                              ReturnValue 194
+             170:     32(int) Load 116(d)
+             171:    6(float) ConvertSToF 170
+             172:    13(bool) FOrdGreaterThan 171 44
+             174:    139(int) Select 172 173 140
+                              Store 169(g) 174
+             176:    139(int) Load 169(g)
+             177:    6(float) ConvertUToF 176
+             178:    13(bool) FOrdGreaterThan 177 44
+             180:    139(int) Select 178 179 140
+                              Store 175(h) 180
+             182:    139(int) Load 175(h)
+             183:    6(float) ConvertUToF 182
+             184:    13(bool) FOrdGreaterThan 183 44
+             186:    139(int) Select 184 185 154
+                              Store 181(i) 186
+             188:    139(int) Load 181(i)
+             189:    6(float) ConvertUToF 188
+             190:    13(bool) FOrdGreaterThan 189 44
+             193:     32(int) Select 190 191 192
+             194:    139(int) Bitcast 193
+                              Store 187(j) 194
+             195:     32(int) Load 137(e)
+             196:    6(float) ConvertSToF 195
+             197:    7(fvec4) Load 117(ret)
+             198:    7(fvec4) VectorTimesScalar 197 196
+             199:    7(fvec4) Load 150(f)
+             200:    7(fvec4) FAdd 198 199
+             201:    7(fvec4) FunctionCall 9(vectorCond()
+             202:    7(fvec4) FAdd 200 201
+             203:    7(fvec4) FunctionCall 11(scalarCond()
+             204:    7(fvec4) FAdd 202 203
+                              Store 213(param) 207
+                              Store 214(param) 209
+                              Store 215(param) 212
+             216:   16(fvec2) FunctionCall 22(fbSelect(vb2;vf2;vf2;) 213(param) 214(param) 215(param)
+             218:    6(float) CompositeExtract 216 0
+             219:    6(float) CompositeExtract 216 1
+             220:    7(fvec4) CompositeConstruct 218 219 217 217
+             221:    7(fvec4) FAdd 204 220
+                              ReturnValue 221
                               FunctionEnd
