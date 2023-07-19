@@ -204,7 +204,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 function(glslang_set_link_args TARGET)
     # For MinGW compiles, statically link against the GCC and C++ runtimes.
     # This avoids the need to ship those runtimes as DLLs.
-    if(WIN32 AND ${CMAKE_CXX_COMPILER_ID} MATCHES "GNU")
+    # This is supported by GCC and Clang.
+    if(WIN32 AND NOT MSVC)
         set_target_properties(${TARGET} PROPERTIES
                               LINK_FLAGS "-static -static-libgcc -static-libstdc++")
     endif()
