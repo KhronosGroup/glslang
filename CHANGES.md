@@ -3,6 +3,11 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## 12.3.1 2023-07-20
+
+### Other changes
+* Improve backward compatibility for glslangValidator rename on Windows
+
 ## 12.3.0 2023-07-19
 
 ### Other changes
