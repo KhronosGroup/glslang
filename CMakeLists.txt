@@ -159,8 +159,8 @@ elseif(${CMAKE_CXX_COMPILER_ID} MATCHES "Clang" AND NOT MSVC)
         add_compile_options(-fno-exceptions)
     endif()
 
-    if(NOT CMAKE_SYSTEM_NAME STREQUAL "OpenBSD")
-        # Error if there's symbols that are not found at link time.
+    if(NOT (CMAKE_SYSTEM_NAME STREQUAL "OpenBSD" OR CMAKE_SYSTEM_NAME STREQUAL "Emscripten"))
+        # Error if there's symbols that are not found at link time. Some linkers do not support this flag.
         if (CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
             add_link_options("-Wl,-undefined,error")
         elseif(NOT APPLE)
