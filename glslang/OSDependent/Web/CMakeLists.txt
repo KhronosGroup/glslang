@@ -73,6 +73,13 @@ if(ENABLE_GLSLANG_JS)
                 # Windows path separators are used.
                 file(TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/glslang.js" glslang_js_path)
                 file(TO_NATIVE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/glslang.after.js" glslang_after_js_path)
+
+                if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+                else()
+                    STRING(REGEX REPLACE "/" "\\\\" glslang_js_path ${glslang_js_path})
+                    STRING(REGEX REPLACE "/" "\\\\" glslang_after_js_path ${glslang_after_js_path})
+                endif()
+
                 add_custom_command(TARGET glslang.js POST_BUILD
                     COMMAND type "${glslang_after_js_path}" >> "${glslang_js_path}")
             else()
