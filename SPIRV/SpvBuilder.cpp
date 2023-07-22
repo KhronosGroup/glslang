@@ -934,7 +934,7 @@ Id Builder::makeArrayDebugType(Id const baseType, Id const componentCount)
 
 Id Builder::makeVectorDebugType(Id const baseType, int const componentCount)
 {
-    return makeSequentialDebugType(baseType, makeUintConstant(componentCount), NonSemanticShaderDebugInfo100DebugTypeVector);;
+    return makeSequentialDebugType(baseType, makeUintConstant(componentCount), NonSemanticShaderDebugInfo100DebugTypeVector);
 }
 
 Id Builder::makeMatrixDebugType(Id const vectorType, int const vectorCount, bool columnMajor)
@@ -4071,4 +4071,4 @@ void Builder::dumpModuleProcesses(std::vector<unsigned int>& out) const
     }
 }
 
-}; // end spv namespace
+} // end spv namespace
