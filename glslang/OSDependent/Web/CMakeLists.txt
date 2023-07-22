@@ -71,15 +71,9 @@ if(ENABLE_GLSLANG_JS)
                 # There are several ways we could append one file to another on Windows, but unfortunately 'cat' is not one of them
                 # (there is no 'cat' command in cmd). Also, since this will ultimately run in cmd and not pwsh, we need to ensure
                 # Windows path separators are used.
-                file(TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/glslang.js" glslang_js_path)
-                file(TO_NATIVE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/glslang.after.js" glslang_after_js_path)
-
-                if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-                else()
-                    # If use mingw we need forward slashes file url
-                    STRING(REGEX REPLACE "/" "\\\\" glslang_js_path ${glslang_js_path})
-                    STRING(REGEX REPLACE "/" "\\\\" glslang_after_js_path ${glslang_after_js_path})
-                endif()
+                
+                cmake_path(CONVERT "${CMAKE_CURRENT_BINARY_DIR}/glslang.js" TO_NATIVE_PATH_LIST glslang_js_path)
+                cmake_path(CONVERT "${CMAKE_CURRENT_SOURCE_DIR}/glslang.after.js" TO_NATIVE_PATH_LIST glslang_after_js_path)
 
                 add_custom_command(TARGET glslang.js POST_BUILD
                     COMMAND type "${glslang_after_js_path}" >> "${glslang_js_path}")
