@@ -298,7 +298,8 @@ TSpirvTypeParameters* TParseContext::makeSpirvTypeParameters(const TSourceLoc& l
     return spirvTypeParams;
 }
 
-TSpirvTypeParameters* TParseContext::makeSpirvTypeParameters(const TSourceLoc& loc, const TPublicType& type)
+TSpirvTypeParameters* TParseContext::makeSpirvTypeParameters(const TSourceLoc& /* loc */,
+                                                             const TPublicType& type)
 {
     TSpirvTypeParameters* spirvTypeParams = new TSpirvTypeParameters;
     spirvTypeParams->push_back(TSpirvTypeParameter(new TType(type)));
