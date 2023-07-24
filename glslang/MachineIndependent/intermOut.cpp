@@ -36,8 +36,6 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 
-#if !defined(GLSLANG_WEB)
-
 #include "localintermediate.h"
 #include "../Include/InfoSink.h"
 
@@ -669,9 +667,7 @@ bool TOutputTraverser::visitUnary(TVisit /* visit */, TIntermUnary* node)
 
     case EOpDeclare: out.debug << "Declare"; break;
 
-#ifndef GLSLANG_WEB
     case EOpSpirvInst: out.debug << "spirv_instruction"; break;
-#endif
 
     default: out.debug.message(EPrefixError, "Bad unary op");
     }
@@ -1142,9 +1138,7 @@ bool TOutputTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node
     case EOpHitObjectGetShaderRecordBufferHandleNV: out.debug << "HitObjectReadShaderRecordBufferHandleNV"; break;
     case EOpReorderThreadNV: out.debug << "ReorderThreadNV"; break;
 
-#ifndef GLSLANG_WEB
     case EOpSpirvInst: out.debug << "spirv_instruction"; break;
-#endif
     case EOpStencilAttachmentReadEXT: out.debug << "stencilAttachmentReadEXT"; break;
     case EOpDepthAttachmentReadEXT: out.debug << "depthAttachmentReadEXT"; break;
 
@@ -1607,5 +1601,3 @@ void TIntermediate::output(TInfoSink& infoSink, bool tree)
 }
 
 } // end namespace glslang
-
-#endif // !GLSLANG_WEB

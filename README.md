@@ -256,10 +256,6 @@ Use the steps in [Build Steps](#build-steps), with the following notes/exception
 * Set `-DBUILD_TESTING=OFF -DENABLE_OPT=OFF -DINSTALL_GTEST=OFF`.
 * Set `-DENABLE_HLSL=OFF` if HLSL is not needed.
 * For a standalone JS/WASM library, turn on `-DENABLE_GLSLANG_JS=ON`.
-* For building a minimum-size web subset of core glslang:
-  + turn on `-DENABLE_GLSLANG_WEBMIN=ON` (disables HLSL)
-  + execute `updateGrammar web` from the glslang subdirectory
-    (or if using your own scripts, `m4` needs a `-DGLSLANG_WEB` argument)
 * To get a fully minimized build, make sure to use `brotli` to compress the .js
   and .wasm files
 

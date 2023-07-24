@@ -69,10 +69,6 @@ option(ENABLE_GLSLANG_BINARIES "Builds glslang and spirv-remap" ON)
 
 option(ENABLE_GLSLANG_JS
     "If using Emscripten, build glslang.js. Otherwise, builds a sample executable for binary-size testing." OFF)
-CMAKE_DEPENDENT_OPTION(ENABLE_GLSLANG_WEBMIN
-    "Reduces glslang to minimum needed for web use"
-    OFF "ENABLE_GLSLANG_JS"
-    OFF)
 CMAKE_DEPENDENT_OPTION(ENABLE_EMSCRIPTEN_SINGLE_FILE
     "If using Emscripten, enables SINGLE_FILE build"
     OFF "ENABLE_GLSLANG_JS AND EMSCRIPTEN"
@@ -82,11 +78,7 @@ CMAKE_DEPENDENT_OPTION(ENABLE_EMSCRIPTEN_ENVIRONMENT_NODE
     OFF "ENABLE_GLSLANG_JS AND EMSCRIPTEN"
     OFF)
 
-CMAKE_DEPENDENT_OPTION(ENABLE_HLSL
-    "Enables HLSL input support"
-    ON "NOT ENABLE_GLSLANG_WEBMIN"
-    OFF)
-
+option(ENABLE_HLSL "Enables HLSL input support" ON)
 option(ENABLE_RTTI "Enables RTTI" OFF)
 option(ENABLE_EXCEPTIONS "Enables Exceptions" OFF)
 option(ENABLE_OPT "Enables spirv-opt capability if present" ON)
@@ -106,10 +98,6 @@ endif()
 
 if(ENABLE_HLSL)
     add_definitions(-DENABLE_HLSL)
-endif()
-
-if(ENABLE_GLSLANG_WEBMIN)
-    add_definitions(-DGLSLANG_WEB)
 endif()
 
 if(WIN32)

@@ -33,8 +33,6 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 
-#if !defined(GLSLANG_WEB)
-
 #ifndef _IOMAPPER_INCLUDED
 #define _IOMAPPER_INCLUDED
 
@@ -359,5 +357,3 @@ private:
 } // end namespace glslang
 
 #endif // _IOMAPPER_INCLUDED
-
-#endif // !GLSLANG_WEB
