@@ -67,7 +67,7 @@ void TParseContextBase::outputMessage(const TSourceLoc& loc, const char* szReaso
     }
 }
 
-#if !defined(GLSLANG_WEB) || defined(GLSLANG_WEB_DEVEL)
+#if !defined(GLSLANG_WEB)
 
 void C_DECL TParseContextBase::error(const TSourceLoc& loc, const char* szReason, const char* szToken,
                                      const char* szExtraInfoFormat, ...)

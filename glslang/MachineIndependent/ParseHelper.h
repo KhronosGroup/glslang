@@ -104,7 +104,7 @@ public:
     }
     virtual ~TParseContextBase() { }
 
-#if !defined(GLSLANG_WEB) || defined(GLSLANG_WEB_DEVEL)
+#if !defined(GLSLANG_WEB)
     virtual void C_DECL   error(const TSourceLoc&, const char* szReason, const char* szToken,
                                 const char* szExtraInfoFormat, ...);
     virtual void C_DECL    warn(const TSourceLoc&, const char* szReason, const char* szToken,

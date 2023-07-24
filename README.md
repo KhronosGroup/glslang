@@ -260,8 +260,6 @@ Use the steps in [Build Steps](#build-steps), with the following notes/exception
   + turn on `-DENABLE_GLSLANG_WEBMIN=ON` (disables HLSL)
   + execute `updateGrammar web` from the glslang subdirectory
     (or if using your own scripts, `m4` needs a `-DGLSLANG_WEB` argument)
-  + optionally, for GLSL compilation error messages, turn on
-    `-DENABLE_GLSLANG_WEBMIN_DEVEL=ON`
 * To get a fully minimized build, make sure to use `brotli` to compress the .js
   and .wasm files
 

@@ -175,7 +175,7 @@ public:
     virtual void requireSpv(const TSourceLoc&, const char *op, unsigned int version);
 
 
-#if defined(GLSLANG_WEB) && !defined(GLSLANG_WEB_DEVEL)
+#if defined(GLSLANG_WEB)
     void C_DECL   error(const TSourceLoc&, const char* szReason, const char* szToken,
                         const char* szExtraInfoFormat, ...) { addError(); }
     void C_DECL    warn(const TSourceLoc&, const char* szReason, const char* szToken,
