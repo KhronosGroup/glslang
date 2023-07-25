@@ -76,7 +76,7 @@ TSpirvRequirement* TParseContext::makeSpirvRequirement(const TSourceLoc& loc, co
             spirvReq->capabilities.insert(capability->getAsConstantUnion()->getConstArray()[0].getIConst());
         }
     } else
-        error(loc, "unknow SPIR-V requirement", name.c_str(), "");
+        error(loc, "unknown SPIR-V requirement", name.c_str(), "");
 
     return spirvReq;
 }
