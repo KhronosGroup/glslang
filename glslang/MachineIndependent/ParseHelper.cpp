@@ -9011,7 +9011,7 @@ void TParseContext::addQualifierToExisting(const TSourceLoc& loc, TQualifier qua
     // TParseContext::declareBlock.
     if (!symbol && qualifier.hasBufferReference()) {
         TTypeList typeList;
-        TType blockType(&typeList, identifier, qualifier);;
+        TType blockType(&typeList, identifier, qualifier);
         TType blockNameType(EbtReference, blockType, identifier);
         TVariable* blockNameVar = new TVariable(&identifier, blockNameType, true);
         if (! symbolTable.insert(*blockNameVar)) {

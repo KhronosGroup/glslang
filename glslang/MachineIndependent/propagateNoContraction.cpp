@@ -863,4 +863,4 @@ void PropagateNoContraction(const glslang::TIntermediate& intermediate)
         precise_object_accesschains.erase(precise_object_accesschain);
     }
 }
-};
+}
