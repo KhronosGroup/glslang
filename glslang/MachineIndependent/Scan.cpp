@@ -328,7 +328,7 @@ std::unordered_map<const char*, int, str_hash, str_eq>* KeywordMap = nullptr;
 std::unordered_set<const char*, str_hash, str_eq>* ReservedSet = nullptr;
 #endif
 
-};
+}
 
 namespace glslang {
 

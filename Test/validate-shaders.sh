@@ -4,7 +4,7 @@
 # It is not meant to preclude the possible addition of the validator to
 # glslang.
 
-declare -r EXE='../build/install/bin/glslangValidator'
+declare -r EXE='../build/install/bin/glslang'
 
 # search common locations for spirv-tools: keep first one
 for toolsdir in '../External/spirv-tools/build/tools' '../../SPIRV-Tools/build/tools/bin' '/usr/local/bin'; do

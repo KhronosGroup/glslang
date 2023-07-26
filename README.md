@@ -47,7 +47,7 @@ An API for getting reflection information from the AST, reflection types/variabl
 
 ### Standalone Wrapper
 
-`glslangValidator` is command-line tool for accessing the functionality above.
+`glslang` is command-line tool for accessing the functionality above.
 
 Status: Complete.
 
@@ -65,7 +65,7 @@ The above page, while not kept up to date, includes additional information regar
 
 ## Execution of Standalone Wrapper
 
-To use the standalone binary form, execute `glslangValidator`, and it will print
+To use the standalone binary form, execute `glslang`, and it will print
 a usage statement.  Basic operation is to give it a file containing a shader,
 and it will print out warnings/errors and optionally an AST.
 
@@ -425,9 +425,18 @@ warning/error and other options for controlling compilation.
 
 This interface is located `glslang_c_interface.h` and exposes functionality similar to the C++ interface. The following snippet is a complete example showing how to compile GLSL into SPIR-V 1.5 for Vulkan 1.2.
 
-```cxx
-std::vector<uint32_t> compileShaderToSPIRV_Vulkan(glslang_stage_t stage, const char* shaderSource, const char* fileName)
-{
+```c
+#include <glslang/Include/glslang_c_interface.h>
+
+// Required for use of glslang_default_resource
+#include <glslang/Public/resource_limits_c.h>
+
+typedef struct SpirVBinary {
+    uint32_t *words; // SPIR-V words
+    int size; // number of words in SPIR-V binary
+} SpirVBinary;
+
+SpirVBinary compileShaderToSPIRV_Vulkan(glslang_stage_t stage, const char* shaderSource, const char* fileName) {
     const glslang_input_t input = {
         .language = GLSLANG_SOURCE_GLSL,
         .stage = stage,
@@ -441,18 +450,22 @@ std::vector<uint32_t> compileShaderToSPIRV_Vulkan(glslang_stage_t stage, const c
         .force_default_version_and_profile = false,
         .forward_compatible = false,
         .messages = GLSLANG_MSG_DEFAULT_BIT,
-        .resource = reinterpret_cast<const glslang_resource_t*>(&glslang::DefaultTBuiltInResource),
+        .resource = glslang_default_resource(),
     };
 
     glslang_shader_t* shader = glslang_shader_create(&input);
 
+    SpirVBinary bin = {
+        .words = NULL,
+        .size = 0,
+    };
     if (!glslang_shader_preprocess(shader, &input))	{
         printf("GLSL preprocessing failed %s\n", fileName);
         printf("%s\n", glslang_shader_get_info_log(shader));
         printf("%s\n", glslang_shader_get_info_debug_log(shader));
         printf("%s\n", input.code);
         glslang_shader_delete(shader);
-        return std::vector<uint32_t>();
+        return bin;
     }
 
     if (!glslang_shader_parse(shader, &input)) {
@@ -461,7 +474,7 @@ std::vector<uint32_t> compileShaderToSPIRV_Vulkan(glslang_stage_t stage, const c
         printf("%s\n", glslang_shader_get_info_debug_log(shader));
         printf("%s\n", glslang_shader_get_preprocessed_code(shader));
         glslang_shader_delete(shader);
-        return std::vector<uint32_t>();
+        return bin;
     }
 
     glslang_program_t* program = glslang_program_create();
@@ -473,13 +486,14 @@ std::vector<uint32_t> compileShaderToSPIRV_Vulkan(glslang_stage_t stage, const c
         printf("%s\n", glslang_program_get_info_debug_log(program));
         glslang_program_delete(program);
         glslang_shader_delete(shader);
-        return std::vector<uint32_t>();
+        return bin;
     }
 
     glslang_program_SPIRV_generate(program, stage);
 
-    std::vector<uint32_t> outShaderModule(glslang_program_SPIRV_get_size(program));
-    glslang_program_SPIRV_get(program, outShaderModule.data());
+    bin.size = glslang_program_SPIRV_get_size(program);
+    bin.words = malloc(bin.size * sizeof(uint32_t));
+    glslang_program_SPIRV_get(program, bin.words);
 
     const char* spirv_messages = glslang_program_SPIRV_get_messages(program);
     if (spirv_messages)
@@ -488,7 +502,7 @@ std::vector<uint32_t> compileShaderToSPIRV_Vulkan(glslang_stage_t stage, const c
     glslang_program_delete(program);
     glslang_shader_delete(shader);
 
-    return outShaderModule;
+    return bin;
 }
 ```
 

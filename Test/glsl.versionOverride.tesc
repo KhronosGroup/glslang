@@ -1,6 +1,6 @@
 /*
 
-glslangValidator.exe --glsl-version 440 -V -S tesc -o glsl.versionOverride.tesc.out glsl.versionOverride.tesc
+glslang.exe --glsl-version 440 -V -S tesc -o glsl.versionOverride.tesc.out glsl.versionOverride.tesc
 
 */
 

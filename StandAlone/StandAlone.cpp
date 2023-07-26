@@ -1884,7 +1884,7 @@ void CompileFile(const char* fileName, ShHandle compiler)
 //
 void usage()
 {
-    printf("Usage: glslangValidator [option]... [file]...\n"
+    printf("Usage: glslang [option]... [file]...\n"
            "\n"
            "'file' can end in .<stage> for auto-stage classification, where <stage> is:\n"
            "    .conf   to provide a config file that replaces the default configuration\n"
@@ -2089,8 +2089,7 @@ void usage()
            "  --variable-name <name>\n"
            "  --vn <name>                       creates a C header file that contains a\n"
            "                                    uint32_t array named <name>\n"
-           "                                    initialized with the shader binary code\n"
-           );
+           "                                    initialized with the shader binary code\n");
 
     exit(EFailUsage);
 }

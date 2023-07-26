@@ -55,6 +55,7 @@ struct TVarEntryInfo {
     long long id;
     TIntermSymbol* symbol;
     bool live;
+    bool upgradedToPushConstant;
     int newBinding;
     int newSet;
     int newLocation;
@@ -63,6 +64,7 @@ struct TVarEntryInfo {
     EShLanguage stage;
 
     void clearNewAssignments() {
+        upgradedToPushConstant = false;
         newBinding = -1;
         newSet = -1;
         newLocation = -1;

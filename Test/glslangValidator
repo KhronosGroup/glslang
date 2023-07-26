@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-../build/install/bin/glslangValidator $*
+../build/install/bin/glslang $*

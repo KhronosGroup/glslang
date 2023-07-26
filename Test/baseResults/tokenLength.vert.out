@@ -27,7 +27,8 @@ ERROR: 0:62: 'preprocessor evaluation' : undefined macro in expression not allow
 ERROR: 0:67: '' : numeric literal too long 
 ERROR: 0:70: '' : name too long 
 ERROR: 0:70: 'preprocessor evaluation' : undefined macro in expression not allowed in es profile A000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-ERROR: 26 compilation errors.  No code generated.
+ERROR: 0:74: '' :  syntax error, unexpected IDENTIFIER, expecting COMMA or SEMICOLON
+ERROR: 27 compilation errors.  No code generated.
 
 
 Shader version: 300
@@ -56,7 +57,7 @@ ERROR: node is still EOpNull!
 0:14    move second child to first child ( temp highp int)
 0:14      'HE' ( global highp int)
 0:14      Constant:
-0:14        -1 (const int)
+0:14        180150000 (const int)
 0:17  Sequence
 0:17    move second child to first child ( temp highp float)
 0:17      'F' ( global highp float)
@@ -119,6 +120,7 @@ ERROR: node is still EOpNull!
 0:?     'superO' ( global highp int)
 0:?     'superI' ( global highp int)
 0:?     'superF' ( global highp float)
+0:?     'BE' ( global highp int)
 0:?     'gl_VertexID' ( gl_VertexId highp int VertexId)
 0:?     'gl_InstanceID' ( gl_InstanceId highp int InstanceId)
 
@@ -152,7 +154,7 @@ ERROR: node is still EOpNull!
 0:14    move second child to first child ( temp highp int)
 0:14      'HE' ( global highp int)
 0:14      Constant:
-0:14        -1 (const int)
+0:14        180150000 (const int)
 0:17  Sequence
 0:17    move second child to first child ( temp highp float)
 0:17      'F' ( global highp float)
@@ -215,6 +217,7 @@ ERROR: node is still EOpNull!
 0:?     'superO' ( global highp int)
 0:?     'superI' ( global highp int)
 0:?     'superF' ( global highp float)
+0:?     'BE' ( global highp int)
 0:?     'gl_VertexID' ( gl_VertexId highp int VertexId)
 0:?     'gl_InstanceID' ( gl_InstanceId highp int InstanceId)
 

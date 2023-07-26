@@ -3,7 +3,7 @@
 TESTLIST=web.testlist
 TARGETDIR=localResults
 BASEDIR=baseResults
-EXE=../build/install/bin/glslangValidator.exe
+EXE=../build/install/bin/glslang.exe
 HASERROR=0
 mkdir -p $TARGETDIR
 
