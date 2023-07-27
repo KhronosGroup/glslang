@@ -176,7 +176,7 @@ namespace {
             << " [--strip-all | --strip all | -s]"
             << " [--strip-white-list]"
             << " [--do-everything]"
-            << " --input | -i file1 [file2...] --output | -o destdir | destfile1 [destfile2...]"
+            << " --input | -i file1 [file2...] --output|-o DESTDIR | destfile1 [destfile2...]"
             << std::endl;
 
         std::cout << "  " << basename(name) << " [--version | -V]" << std::endl;
@@ -194,28 +194,24 @@ namespace {
                  int                             verbosity)
     {
         std::vector<std::string> whiteListStrings;
-        if(!whiteListFile.empty())
+        if (!whiteListFile.empty())
             read(whiteListStrings, whiteListFile, verbosity);
 
-        for (std::size_t ii=0; ii<inputFiles.size(); ii++)
-            {
-                std::vector<SpvWord> spv;
-                read(spv, inputFiles[ii], verbosity);
+        for (std::size_t ii=0; ii<inputFiles.size(); ii++) {
+            std::vector<SpvWord> spv;
+            read(spv, inputFiles[ii], verbosity);
 
-                spv::spirvbin_t(verbosity).remap(spv, whiteListStrings, opts);
+            spv::spirvbin_t(verbosity).remap(spv, whiteListStrings, opts);
 
-                if (isSingleOutputDir)
-                    {
-                        // write all outputs to same directory
-                        const std::string outFile = outputDirOrFiles[0] + path_sep_char() + basename(inputFiles[ii]);
-                        write(spv, outFile, verbosity);
-                    }
-                else
-                    {
-                        // write each input to its associated output
-                        write(spv, outputDirOrFiles[ii], verbosity);
-                    }
+            if (isSingleOutputDir) {
+                // write all outputs to same directory
+                const std::string outFile = outputDirOrFiles[0] + path_sep_char() + basename(inputFiles[ii]);
+                write(spv, outFile, verbosity);
+            } else {
+                // write each input to its associated output
+                write(spv, outputDirOrFiles[ii], verbosity);
             }
+        }
 
         if (verbosity > 0)
             std::cout << "Done: " << inputFiles.size() << " file(s) processed" << std::endl;
@@ -248,15 +244,14 @@ namespace {
                     outputDirOrFiles.push_back(argv[a]);
 
                 if (outputDirOrFiles.size() == 0)
-                  usage(argv[0], "--output requires an argument");
+                    usage(argv[0], "--output requires an argument");
 
                 // Remove trailing directory separator characters from all paths
-                for (std::size_t ii=0; ii<outputDirOrFiles.size(); ii++)
-                  {
+                for (std::size_t ii=0; ii<outputDirOrFiles.size(); ii++) {
                     auto path = outputDirOrFiles[ii];
                     while (!path.empty() && path.back() == path_sep_char())
-                      path.pop_back();
-                  }
+                        path.pop_back();
+                }
             }
             else if (arg == "-vv")     { verbosity = 2; ++a; } // verbosity shortcuts
             else if (arg == "-vvv")    { verbosity = 3; ++a; } // ...
@@ -394,14 +389,11 @@ int main(int argc, char** argv)
     const bool isSingleOutputDir = !isMultiOutput && std::filesystem::is_directory(outputDirOrFiles[0]);
 
     if (isMultiInput && !isMultiOutput && !isSingleOutputDir)
-        {
-            usage(argv[0], "Output is not a directory.");
-        }
+        usage(argv[0], "Output is not a directory.");
+
 
     if (isMultiInput && isMultiOutput && (outputDirOrFiles.size() != inputFiles.size()))
-        {
-            usage(argv[0], "Output must be either a single directory or one output file per input.");
-        }
+        usage(argv[0], "Output must be either a single directory or one output file per input.");
 
     // Main operations: read, remap, and write.
     execute(inputFiles, outputDirOrFiles, isSingleOutputDir, whiteListFile, opts, verbosity);
