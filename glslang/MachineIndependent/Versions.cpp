@@ -263,6 +263,8 @@ void TParseVersions::initializeExtensionBehavior()
 
     extensionBehavior[E_GL_EXT_fragment_shader_barycentric]             = EBhDisable;
 
+    extensionBehavior[E_GL_KHR_cooperative_matrix]                      = EBhDisable;
+
     // #line and #include
     extensionBehavior[E_GL_GOOGLE_cpp_style_line_directive]          = EBhDisable;
     extensionBehavior[E_GL_GOOGLE_include_directive]                 = EBhDisable;
@@ -516,6 +518,8 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_KHR_shader_subgroup_shuffle_relative 1\n"
             "#define GL_KHR_shader_subgroup_clustered 1\n"
             "#define GL_KHR_shader_subgroup_quad 1\n"
+
+            "#define GL_KHR_cooperative_matrix 1\n"
 
             "#define GL_EXT_shader_image_int64 1\n"
             "#define GL_EXT_shader_atomic_int64 1\n"
@@ -1335,7 +1339,7 @@ void TParseVersions::int64Check(const TSourceLoc& loc, const char* op, bool buil
     }
 }
 
-void TParseVersions::fcoopmatCheck(const TSourceLoc& loc, const char* op, bool builtIn)
+void TParseVersions::fcoopmatCheckNV(const TSourceLoc& loc, const char* op, bool builtIn)
 {
     if (!builtIn) {
         const char* const extensions[] = {E_GL_NV_cooperative_matrix};
@@ -1343,10 +1347,18 @@ void TParseVersions::fcoopmatCheck(const TSourceLoc& loc, const char* op, bool b
     }
 }
 
-void TParseVersions::intcoopmatCheck(const TSourceLoc& loc, const char* op, bool builtIn)
+void TParseVersions::intcoopmatCheckNV(const TSourceLoc& loc, const char* op, bool builtIn)
 {
     if (!builtIn) {
         const char* const extensions[] = {E_GL_NV_integer_cooperative_matrix};
+        requireExtensions(loc, sizeof(extensions)/sizeof(extensions[0]), extensions, op);
+    }
+}
+
+void TParseVersions::coopmatCheck(const TSourceLoc& loc, const char* op, bool builtIn)
+{
+    if (!builtIn) {
+        const char* const extensions[] = {E_GL_KHR_cooperative_matrix};
         requireExtensions(loc, sizeof(extensions)/sizeof(extensions[0]), extensions, op);
     }
 }

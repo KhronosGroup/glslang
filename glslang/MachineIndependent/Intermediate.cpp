@@ -1049,6 +1049,12 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
     if (type.isArray() || node->getType().isArray())
         return nullptr;
 
+    // Reject implicit conversions to cooperative matrix types
+    if (node->getType().isCoopMat() &&
+        op != EOpConstructCooperativeMatrixNV &&
+        op != EOpConstructCooperativeMatrixKHR)
+        return nullptr;
+
     // Note: callers are responsible for other aspects of shape,
     // like vector and matrix sizes.
 
@@ -1117,7 +1123,8 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
 
     case EOpSequence:
     case EOpConstructStruct:
-    case EOpConstructCooperativeMatrix:
+    case EOpConstructCooperativeMatrixNV:
+    case EOpConstructCooperativeMatrixKHR:
 
         if (type.isReference() || node->getType().isReference()) {
             // types must match to assign a reference
@@ -2008,8 +2015,11 @@ TOperator TIntermediate::mapTypeToConstructorOp(const TType& type) const
     if (type.getQualifier().isNonUniform())
         return EOpConstructNonuniform;
 
-    if (type.isCoopMat())
-        return EOpConstructCooperativeMatrix;
+    if (type.isCoopMatNV())
+        return EOpConstructCooperativeMatrixNV;
+
+    if (type.isCoopMatKHR())
+        return EOpConstructCooperativeMatrixKHR;
 
     switch (type.getBasicType()) {
     case EbtStruct:
@@ -3526,20 +3536,28 @@ bool TIntermediate::promoteBinary(TIntermBinary& node)
     }
 
     if (left->getType().isCoopMat() || right->getType().isCoopMat()) {
+        // Operations on two cooperative matrices must have identical types
         if (left->getType().isCoopMat() && right->getType().isCoopMat() &&
-            *left->getType().getTypeParameters() != *right->getType().getTypeParameters()) {
+            left->getType() != right->getType()) {
             return false;
         }
         switch (op) {
         case EOpMul:
         case EOpMulAssign:
-            if (left->getType().isCoopMat() && right->getType().isCoopMat()) {
+            // Mul not supported in NV_cooperative_matrix
+            if (left->getType().isCoopMatNV() && right->getType().isCoopMatNV()) {
                 return false;
             }
-            if (op == EOpMulAssign && right->getType().isCoopMat()) {
+            // NV_cooperative_matrix supports MulAssign is for mat*=scalar only.
+            // KHR_cooperative_matrix supports it for mat*=mat as well.
+            if (op == EOpMulAssign && right->getType().isCoopMatNV()) {
                 return false;
             }
-            node.setOp(op == EOpMulAssign ? EOpMatrixTimesScalarAssign : EOpMatrixTimesScalar);
+            // Use MatrixTimesScalar if either operand is not a matrix. Otherwise use Mul.
+            if (!left->getType().isCoopMat() || !right->getType().isCoopMat()) {
+                node.setOp(op == EOpMulAssign ? EOpMatrixTimesScalarAssign : EOpMatrixTimesScalar);
+            }
+            // In case of scalar*matrix, take the result type from the matrix.
             if (right->getType().isCoopMat()) {
                 node.setType(right->getType());
             }

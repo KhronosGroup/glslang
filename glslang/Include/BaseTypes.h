@@ -66,6 +66,7 @@ enum TBasicType {
     EbtReference,
     EbtRayQuery,
     EbtHitObjectNV,
+    EbtCoopmat,
 #ifndef GLSLANG_WEB
     // SPIR-V type defined by spirv_type
     EbtSpirvType,

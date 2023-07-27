@@ -629,6 +629,9 @@ enum TOperator {
     EOpCooperativeMatrixLoad,
     EOpCooperativeMatrixStore,
     EOpCooperativeMatrixMulAdd,
+    EOpCooperativeMatrixLoadNV,
+    EOpCooperativeMatrixStoreNV,
+    EOpCooperativeMatrixMulAddNV,
 
     EOpBeginInvocationInterlock, // Fragment only
     EOpEndInvocationInterlock, // Fragment only
@@ -766,7 +769,8 @@ enum TOperator {
     EOpConstructTextureSampler,
     EOpConstructNonuniform,     // expected to be transformed away, not present in final AST
     EOpConstructReference,
-    EOpConstructCooperativeMatrix,
+    EOpConstructCooperativeMatrixNV,
+    EOpConstructCooperativeMatrixKHR,
     EOpConstructAccStruct,
     EOpConstructGuardEnd,
 
