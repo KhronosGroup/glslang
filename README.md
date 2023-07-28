@@ -234,16 +234,13 @@ changes are quite infrequent. For windows you can get binaries from
 The command to rebuild is:
 
 ```bash
-m4 -P MachineIndependent/glslang.m4 > MachineIndependent/glslang.y
 bison --defines=MachineIndependent/glslang_tab.cpp.h
       -t MachineIndependent/glslang.y
       -o MachineIndependent/glslang_tab.cpp
 ```
 
-The above commands are also available in the bash script in `updateGrammar`,
+The above command is also available in the bash script in `updateGrammar`,
 when executed from the glslang subdirectory of the glslang repository.
-With no arguments it builds the full grammar, and with a "web" argument,
-the web grammar subset (see more about the web subset in the next section).
 
 ### Building to WASM for the Web and Node
 ### Building a standalone JS/WASM library for the Web and Node

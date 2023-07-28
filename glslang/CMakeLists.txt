@@ -57,7 +57,6 @@ set_property(TARGET GenericCodeGen PROPERTY FOLDER glslang)
 # MachineIndependent
 ################################################################################
 set(MACHINEINDEPENDENT_SOURCES
-    MachineIndependent/glslang.m4
     MachineIndependent/glslang.y
     MachineIndependent/glslang_tab.cpp
     MachineIndependent/attribute.cpp
