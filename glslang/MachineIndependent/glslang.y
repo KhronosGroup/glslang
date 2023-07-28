@@ -37,14 +37,6 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 
-//
-// Do not edit the .y file, only edit the .m4 file.
-// The .y bison file is not a source file, it is a derivative of the .m4 file.
-// The m4 file needs to be processed by m4 to generate the .y bison file.
-//
-//    m4 -P
-//
-
 /**
  * This is bison grammar and productions for parsing all versions of the
  * GLSL shading languages.
