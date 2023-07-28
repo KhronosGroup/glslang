@@ -66,6 +66,7 @@ enum TBasicType {
     EbtReference,
     EbtRayQuery,
     EbtHitObjectNV,
+    EbtCoopmat,
     // SPIR-V type defined by spirv_type
     EbtSpirvType,
 
