@@ -7225,7 +7225,6 @@ void TParseContext::declareTypeDefaults(const TSourceLoc& loc, const TPublicType
 
 void TParseContext::coopMatTypeParametersCheck(const TSourceLoc& loc, const TPublicType& publicType)
 {
-#ifndef GLSLANG_WEB
     if (parsingBuiltins)
         return;
     if (publicType.isCoopmatKHR()) {
@@ -7257,7 +7256,6 @@ void TParseContext::coopMatTypeParametersCheck(const TSourceLoc& loc, const TPub
             return;
         }
     }
-#endif
 }
 
 bool TParseContext::vkRelaxedRemapUniformVariable(const TSourceLoc& loc, TString& identifier, const TPublicType&,
