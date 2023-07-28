@@ -33,8 +33,6 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 
-#ifndef GLSLANG_WEB
-
 //
 // GL_EXT_spirv_intrinsics
 //
@@ -360,5 +358,3 @@ TSpirvInstruction* TParseContext::mergeSpirvInstruction(const TSourceLoc& loc, T
 }
 
 } // end namespace glslang
-
-#endif // GLSLANG_WEB

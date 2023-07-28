@@ -260,7 +260,6 @@ int TPpContext::lFloatConst(int len, int ch, TPpToken* ppToken)
     // Suffix:
     bool isDouble = false;
     bool isFloat16 = false;
-#ifndef GLSLANG_WEB
     if (ch == 'l' || ch == 'L') {
         if (ifdepth == 0 && parseContext.intermediate.getSource() == EShSourceGlsl)
             parseContext.doubleCheck(ppToken->loc, "double floating-point suffix");
@@ -300,14 +299,11 @@ int TPpContext::lFloatConst(int len, int ch, TPpToken* ppToken)
             isFloat16 = true;
         }
     } else
-#endif
     if (ch == 'f' || ch == 'F') {
-#ifndef GLSLANG_WEB
         if (ifdepth == 0)
             parseContext.profileRequires(ppToken->loc,  EEsProfile, 300, nullptr, "floating-point suffix");
         if (ifdepth == 0 && !parseContext.relaxedErrors())
             parseContext.profileRequires(ppToken->loc, ~EEsProfile, 120, nullptr, "floating-point suffix");
-#endif
         if (ifdepth == 0 && !hasDecimalOrExponent)
             parseContext.ppError(ppToken->loc, "float literal needs a decimal point or exponent", "", "");
         saveName(ch);
@@ -583,7 +579,6 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                         ppToken->name[len++] = (char)ch;
                     isUnsigned = true;
 
-#ifndef GLSLANG_WEB
                     int nextCh = getch();
                     if (nextCh == 'l' || nextCh == 'L') {
                         if (len < MaxTokenLength)
@@ -609,7 +604,6 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                     if (len < MaxTokenLength)
                         ppToken->name[len++] = (char)ch;
                     isInt16 = true;
-#endif
                 } else
                     ungetch();
                 ppToken->name[len] = '\0';
@@ -687,7 +681,6 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                         ppToken->name[len++] = (char)ch;
                     isUnsigned = true;
 
-#ifndef GLSLANG_WEB
                     int nextCh = getch();
                     if (nextCh == 'l' || nextCh == 'L') {
                         if (len < MaxTokenLength)
@@ -713,7 +706,6 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                     if (len < MaxTokenLength)
                         ppToken->name[len++] = (char)ch;
                     isInt16 = true;
-#endif
                 } else {
                     ungetch();
                 }
@@ -795,7 +787,6 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                         ppToken->name[len++] = (char)ch;
                     isUnsigned = true;
 
-#ifndef GLSLANG_WEB
                     int nextCh = getch();
                     if (nextCh == 'l' || nextCh == 'L') {
                         if (len < MaxTokenLength)
@@ -821,7 +812,6 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                     if (len < MaxTokenLength)
                         ppToken->name[len++] = (char)ch;
                     isInt16 = true;
-#endif
                 } else
                     ungetch();
                 ppToken->name[len] = '\0';
@@ -884,7 +874,6 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                         ppToken->name[len++] = (char)ch;
                     isUnsigned = true;
 
-#ifndef GLSLANG_WEB
                     int nextCh = getch();
                     if (nextCh == 'l' || nextCh == 'L') {
                         if (len < MaxTokenLength)
@@ -910,7 +899,6 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                     if (len < MaxTokenLength)
                         ppToken->name[len++] = (char)ch;
                     isInt16 = true;
-#endif
                 } else
                     ungetch();
 

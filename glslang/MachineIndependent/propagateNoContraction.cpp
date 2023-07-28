@@ -37,8 +37,6 @@
 // propagate the 'noContraction' qualifier.
 //
 
-#ifndef GLSLANG_WEB
-
 #include "propagateNoContraction.h"
 
 #include <cstdlib>
@@ -866,5 +864,3 @@ void PropagateNoContraction(const glslang::TIntermediate& intermediate)
     }
 }
 }
-
-#endif // GLSLANG_WEB
