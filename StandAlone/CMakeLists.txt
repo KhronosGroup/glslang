@@ -54,6 +54,7 @@ glslang_set_link_args(glslang-standalone)
 
 set(LIBRARIES
     glslang
+    OSDependent
     SPIRV
     glslang-default-resource-limits)
 
