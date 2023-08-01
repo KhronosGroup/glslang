@@ -250,7 +250,7 @@ Use the steps in [Build Steps](#build-steps), with the following notes/exception
   Bash-like environments:
   + [Instructions located here](https://emscripten.org/docs/getting_started/downloads.html#sdk-download-and-install)
 * Wrap cmake call: `emcmake cmake`
-* Set `-DBUILD_TESTING=OFF -DENABLE_OPT=OFF -DINSTALL_GTEST=OFF`.
+* Set `-DBUILD_TESTING=OFF -DENABLE_OPT=OFF`.
 * Set `-DENABLE_HLSL=OFF` if HLSL is not needed.
 * For a standalone JS/WASM library, turn on `-DENABLE_GLSLANG_JS=ON`.
 * To get a fully minimized build, make sure to use `brotli` to compress the .js
@@ -260,7 +260,7 @@ Example:
 
 ```sh
 emcmake cmake -DCMAKE_BUILD_TYPE=Release -DENABLE_GLSLANG_JS=ON \
-    -DENABLE_HLSL=OFF -DBUILD_TESTING=OFF -DENABLE_OPT=OFF -DINSTALL_GTEST=OFF ..
+    -DENABLE_HLSL=OFF -DBUILD_TESTING=OFF -DENABLE_OPT=OFF ..
 ```
 
 ## Building glslang - Using vcpkg

@@ -227,3 +227,27 @@ jobs:
                 CMAKE_CXX_COMPILER_LAUNCHER: ccache
             - name: Build
               run: cmake --build build/
+
+    emscripten:
+        runs-on: ubuntu-22.04
+        steps:
+            - uses: actions/checkout@v3
+            - uses: actions/setup-python@v4
+              with:
+                  python-version: '3.7'
+            - uses: lukka/get-cmake@latest
+            - name: Setup ccache
+              uses: hendrikmuhs/ccache-action@v1.2
+              with:
+                  key: ubuntu-emscripten
+            - uses: mymindstorm/setup-emsdk@v11
+            - name: Update Glslang Sources
+              run: ./update_glslang_sources.py
+            - name: Configure
+              run: emcmake cmake -GNinja -Bbuild/web -DCMAKE_BUILD_TYPE=Release -DENABLE_GLSLANG_JS=ON -DBUILD_TESTING=OFF -DENABLE_OPT=OFF
+              env:
+                CMAKE_GENERATOR: Ninja
+                CMAKE_C_COMPILER_LAUNCHER: ccache
+                CMAKE_CXX_COMPILER_LAUNCHER: ccache
+            - name: Build
+              run: cmake --build build/web
