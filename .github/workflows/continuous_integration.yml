@@ -163,6 +163,7 @@ jobs:
                 cmake_build_type: [Debug, Release]
         steps:
             - uses: actions/checkout@v3
+            - uses: lukka/get-cmake@latest
             - uses: actions/setup-python@v4
               with:
                   python-version: '3.7'
