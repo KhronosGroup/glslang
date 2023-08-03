@@ -48,6 +48,7 @@ jobs:
                 cmake_build_type: [Debug, Release]
         steps:
             - uses: actions/checkout@v3
+            - uses: lukka/get-cmake@latest
             - uses: actions/setup-python@v4
               with:
                   python-version: '3.7'
@@ -90,6 +91,7 @@ jobs:
               run: |
                   cd build/install
                   zip ${ARCHIVE} \
+                      bin/glslang \
                       bin/glslangValidator \
                       include/glslang/* \
                       include/glslang/**/* \
@@ -126,6 +128,7 @@ jobs:
                 cmake_build_type: [Debug, Release]
         steps:
             - uses: actions/checkout@v3
+            - uses: lukka/get-cmake@latest
             - uses: actions/setup-python@v4
               with:
                   python-version: '3.7'
@@ -163,6 +166,7 @@ jobs:
               run: |
                   cd build/install
                   zip ${ARCHIVE} \
+                      bin/glslang \
                       bin/glslangValidator \
                       include/glslang/* \
                       include/glslang/**/* \
@@ -197,6 +201,7 @@ jobs:
                 cmake_build_type: [Debug, Release]
         steps:
             - uses: actions/checkout@v3
+            - uses: lukka/get-cmake@latest
             - uses: actions/setup-python@v4
               with:
                   python-version: '3.7'
@@ -231,6 +236,7 @@ jobs:
               run: |
                   cd build/install
                   7z a ${{env.ARCHIVE}} `
+                      bin/glslang.exe `
                       bin/glslangValidator.exe `
                       bin/spirv-remap.exe `
                       include/glslang/* `
@@ -252,6 +258,7 @@ jobs:
               run: |
                   cd build/install
                   7z a ${{env.ARCHIVE}} `
+                      bin/glslang.exe `
                       bin/glslangValidator.exe `
                       bin/spirv-remap.exe `
                       include/glslang/* `
