@@ -4648,6 +4648,12 @@ bool TGlslangToSpvTraverser::filterMember(const glslang::TType& member)
         extensions.find("GL_NV_stereo_view_rendering") == extensions.end())
         return true;
 
+    if (glslangIntermediate->getStage() == EShLangMesh) {
+        if (member.getFieldName() == "gl_PrimitiveShadingRateEXT" &&
+            extensions.find("GL_EXT_fragment_shading_rate") == extensions.end())
+            return true;
+    }
+
     if (glslangIntermediate->getStage() != EShLangMesh) {
         if (member.getFieldName() == "gl_ViewportMask" &&
             extensions.find("GL_NV_viewport_array2") == extensions.end())
