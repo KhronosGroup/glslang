@@ -5,10 +5,8 @@ spv.ext.meshShaderRedeclBuiltins.mesh
 
                               Capability ClipDistance
                               Capability CullDistance
-                              Capability FragmentShadingRateKHR
                               Capability MeshShadingEXT
                               Extension  "SPV_EXT_mesh_shader"
-                              Extension  "SPV_KHR_fragment_shading_rate"
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
                               EntryPoint MeshEXT 4  "main" 11 17 29 81 122
@@ -34,7 +32,6 @@ spv.ext.meshShaderRedeclBuiltins.mesh
                               MemberName 78(gl_MeshPerPrimitiveEXT) 1  "gl_Layer"
                               MemberName 78(gl_MeshPerPrimitiveEXT) 2  "gl_ViewportIndex"
                               MemberName 78(gl_MeshPerPrimitiveEXT) 3  "gl_CullPrimitiveEXT"
-                              MemberName 78(gl_MeshPerPrimitiveEXT) 4  "gl_PrimitiveShadingRateEXT"
                               Name 81  "gl_MeshPrimitivesEXT"
                               Name 122  "gl_PrimitivePointIndicesEXT"
                               Decorate 11(gl_LocalInvocationID) BuiltIn LocalInvocationId
@@ -52,8 +49,6 @@ spv.ext.meshShaderRedeclBuiltins.mesh
                               MemberDecorate 78(gl_MeshPerPrimitiveEXT) 2 BuiltIn ViewportIndex
                               MemberDecorate 78(gl_MeshPerPrimitiveEXT) 3 PerPrimitiveNV
                               MemberDecorate 78(gl_MeshPerPrimitiveEXT) 3 BuiltIn CullPrimitiveEXT
-                              MemberDecorate 78(gl_MeshPerPrimitiveEXT) 4 PerPrimitiveNV
-                              MemberDecorate 78(gl_MeshPerPrimitiveEXT) 4 BuiltIn PrimitiveShadingRateKHR
                               Decorate 78(gl_MeshPerPrimitiveEXT) Block
                               Decorate 122(gl_PrimitivePointIndicesEXT) BuiltIn PrimitivePointIndicesEXT
                               Decorate 127 BuiltIn WorkgroupSize
@@ -93,7 +88,7 @@ spv.ext.meshShaderRedeclBuiltins.mesh
               51:      6(int) Constant 264
               52:      6(int) Constant 2
               77:             TypeBool
-78(gl_MeshPerPrimitiveEXT):             TypeStruct 31(int) 31(int) 31(int) 77(bool) 31(int)
+78(gl_MeshPerPrimitiveEXT):             TypeStruct 31(int) 31(int) 31(int) 77(bool)
               79:             TypeArray 78(gl_MeshPerPrimitiveEXT) 21
               80:             TypePointer Output 79
 81(gl_MeshPrimitivesEXT):     80(ptr) Variable Output
