@@ -267,10 +267,19 @@ option(ALLOW_EXTERNAL_SPIRV_TOOLS "Allows to build against installed SPIRV-Tools
 if(NOT TARGET SPIRV-Tools-opt)
     if(ALLOW_EXTERNAL_SPIRV_TOOLS)
         # Look for external SPIR-V Tools build, if not building in-tree
+        message(STATUS "Trying to find local SPIR-V tools")
         find_package(SPIRV-Tools-opt)
-    endif()
-    if(NOT TARGET SPIRV-Tools-opt)
-        set(ENABLE_OPT OFF)
+        if(NOT TARGET SPIRV-Tools-opt)
+            if(ENABLE_OPT)
+                message(WARNING "ENABLE_OPT set but SPIR-V tools not found! Disabling SPIR-V optimization.")
+            endif()
+            set(ENABLE_OPT OFF)
+        endif()
+    else()
+        if(ENABLE_OPT)
+            message(SEND_ERROR "ENABLE_OPT set but SPIR-V tools not found. Please run update_glslang_sources.py, "
+                "set the ALLOW_EXTERNAL_SPIRV_TOOLS option to use a local install of SPIRV-Tools, or set ENABLE_OPT=0.")
+        endif()
     endif()
 endif()
 
