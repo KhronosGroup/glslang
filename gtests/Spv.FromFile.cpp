@@ -526,6 +526,8 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.atomicAdd.bufferReference.comp",
         "spv.fragmentShaderBarycentric3.frag",
         "spv.fragmentShaderBarycentric4.frag",
+        "spv.ext.texture_shadow_lod.frag",
+        "spv.ext.texture_shadow_lod.error.frag",
     })),
     FileNameAsCustomTestSuffix
 );
