@@ -58,10 +58,6 @@ set(LIBRARIES
     SPIRV
     glslang-default-resource-limits)
 
-if(ENABLE_SPVREMAPPER)
-    set(LIBRARIES ${LIBRARIES} SPVRemapper)
-endif()
-
 if(WIN32)
     set(LIBRARIES ${LIBRARIES} psapi)
 elseif(UNIX)
@@ -86,7 +82,7 @@ if(ENABLE_SPVREMAPPER)
     add_executable(spirv-remap ${REMAPPER_SOURCES})
     set_property(TARGET spirv-remap PROPERTY FOLDER tools)
     glslang_set_link_args(spirv-remap)
-    target_link_libraries(spirv-remap ${LIBRARIES})
+    target_link_libraries(spirv-remap SPVRemapper ${LIBRARIES})
 endif()
 
 if(WIN32)
