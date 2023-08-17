@@ -1243,6 +1243,8 @@ TIntermAggregate* TParseContext::handleFunctionDefinition(const TSourceLoc& loc,
             error(loc, "function cannot take any parameter(s)", function.getName().c_str(), "");
         if (function.getType().getBasicType() != EbtVoid)
             error(loc, "", function.getType().getBasicTypeString().c_str(), "entry point cannot return a value");
+        if (function.getLinkType() != ELinkNone)
+            error(loc, "main function cannot be exported", "", "");
     }
 
     //
@@ -1279,6 +1281,7 @@ TIntermAggregate* TParseContext::handleFunctionDefinition(const TSourceLoc& loc,
         } else
             paramNodes = intermediate.growAggregate(paramNodes, intermediate.addSymbol(*param.type, loc), loc);
     }
+    paramNodes->setLinkType(function.getLinkType());
     intermediate.setAggregateOperator(paramNodes, EOpParameters, TType(EbtVoid), loc);
     loopNestingLevel = 0;
     statementNestingLevel = 0;

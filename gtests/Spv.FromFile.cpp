@@ -65,6 +65,7 @@ std::string FileNameAsCustomTestSuffixIoMap(
 }
 
 using CompileVulkanToSpirvTest = GlslangTest<::testing::TestWithParam<std::string>>;
+using CompileVulkanToSpirvTestNoLink = GlslangTest<::testing::TestWithParam<std::string>>;
 using CompileVulkanToSpirvDeadCodeElimTest = GlslangTest<::testing::TestWithParam<std::string>>;
 using CompileVulkanToDebugSpirvTest = GlslangTest<::testing::TestWithParam<std::string>>;
 using CompileVulkan1_1ToSpirvTest = GlslangTest<::testing::TestWithParam<std::string>>;
@@ -90,6 +91,16 @@ TEST_P(CompileVulkanToSpirvTest, FromFile)
     loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam(),
                             Source::GLSL, Semantics::Vulkan, glslang::EShTargetVulkan_1_0, glslang::EShTargetSpv_1_0,
                             Target::Spv);
+}
+
+// Compiling GLSL to SPIR-V under Vulkan semantics without linking. Expected to successfully generate SPIR-V.
+TEST_P(CompileVulkanToSpirvTestNoLink, FromFile)
+{
+    options().compileOnly = true;
+    // NOTE: Vulkan 1.3 is currently required to use the linkage capability
+    // TODO(ncesario) make sure this is actually necessary
+    loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam(), Source::GLSL, Semantics::Vulkan,
+                            glslang::EShTargetVulkan_1_3, glslang::EShTargetSpv_1_0, Target::Spv);
 }
 
 TEST_P(CompileVulkanToSpirvDeadCodeElimTest, FromFile)
@@ -530,6 +541,14 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.ext.texture_shadow_lod.error.frag",
         "spv.floatFetch.frag",
         "spv.atomicRvalue.error.vert",
+    })),
+    FileNameAsCustomTestSuffix
+);
+
+INSTANTIATE_TEST_SUITE_P(
+    Glsl, CompileVulkanToSpirvTestNoLink,
+    ::testing::ValuesIn(std::vector<std::string>({
+        "spv.exportFunctions.comp",
     })),
     FileNameAsCustomTestSuffix
 );
