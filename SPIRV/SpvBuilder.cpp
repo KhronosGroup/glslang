@@ -1835,6 +1835,10 @@ Instruction* Builder::addEntryPoint(ExecutionModel model, Function* function, co
 // Currently relying on the fact that all 'value' of interest are small non-negative values.
 void Builder::addExecutionMode(Function* entryPoint, ExecutionMode mode, int value1, int value2, int value3)
 {
+    // entryPoint can be null if we are in compile-only mode
+    if (!entryPoint)
+        return;
+
     Instruction* instr = new Instruction(OpExecutionMode);
     instr->addIdOperand(entryPoint->getId());
     instr->addImmediateOperand(mode);
@@ -1850,6 +1854,10 @@ void Builder::addExecutionMode(Function* entryPoint, ExecutionMode mode, int val
 
 void Builder::addExecutionMode(Function* entryPoint, ExecutionMode mode, const std::vector<unsigned>& literals)
 {
+    // entryPoint can be null if we are in compile-only mode
+    if (!entryPoint)
+        return;
+
     Instruction* instr = new Instruction(OpExecutionMode);
     instr->addIdOperand(entryPoint->getId());
     instr->addImmediateOperand(mode);
@@ -1861,6 +1869,10 @@ void Builder::addExecutionMode(Function* entryPoint, ExecutionMode mode, const s
 
 void Builder::addExecutionModeId(Function* entryPoint, ExecutionMode mode, const std::vector<Id>& operandIds)
 {
+    // entryPoint can be null if we are in compile-only mode
+    if (!entryPoint)
+        return;
+
     Instruction* instr = new Instruction(OpExecutionModeId);
     instr->addIdOperand(entryPoint->getId());
     instr->addImmediateOperand(mode);
@@ -1940,6 +1952,16 @@ void Builder::addDecoration(Id id, Decoration decoration, const std::vector<cons
     dec->addImmediateOperand(decoration);
     for (auto string : strings)
         dec->addStringOperand(string);
+
+    decorations.push_back(std::unique_ptr<Instruction>(dec));
+}
+
+void Builder::addLinkageDecoration(Id id, const char* name, spv::LinkageType linkType) {
+    Instruction* dec = new Instruction(OpDecorate);
+    dec->addIdOperand(id);
+    dec->addImmediateOperand(spv::DecorationLinkageAttributes);
+    dec->addStringOperand(name);
+    dec->addImmediateOperand(linkType);
 
     decorations.push_back(std::unique_ptr<Instruction>(dec));
 }
@@ -2048,7 +2070,7 @@ Function* Builder::makeEntryPoint(const char* entryPoint)
         emitNonSemanticShaderDebugInfo = false;
     }
 
-    entryPointFunction = makeFunctionEntry(NoPrecision, returnType, entryPoint, paramsTypes, paramNames, decorations, &entry);
+    entryPointFunction = makeFunctionEntry(NoPrecision, returnType, entryPoint, LinkageTypeMax, paramsTypes, paramNames, decorations, &entry);
 
     emitNonSemanticShaderDebugInfo = restoreNonSemanticShaderDebugInfo;
 
@@ -2056,7 +2078,7 @@ Function* Builder::makeEntryPoint(const char* entryPoint)
 }
 
 // Comments in header
-Function* Builder::makeFunctionEntry(Decoration precision, Id returnType, const char* name,
+Function* Builder::makeFunctionEntry(Decoration precision, Id returnType, const char* name, LinkageType linkType,
                                      const std::vector<Id>& paramTypes, const std::vector<char const*>& paramNames,
                                      const std::vector<std::vector<Decoration>>& decorations, Block **entry)
 {
@@ -2064,7 +2086,7 @@ Function* Builder::makeFunctionEntry(Decoration precision, Id returnType, const 
     Id typeId = makeFunctionType(returnType, paramTypes);
     Id firstParamId = paramTypes.size() == 0 ? 0 : getUniqueIds((int)paramTypes.size());
     Id funcId = getUniqueId();
-    Function* function = new Function(funcId, returnType, typeId, firstParamId, module);
+    Function* function = new Function(funcId, returnType, typeId, firstParamId, linkType, name, module);
 
     // Set up the precisions
     setPrecision(function->getId(), precision);
@@ -2233,6 +2255,12 @@ void Builder::enterFunction(Function const* function)
         defInst->addIdOperand(debugId[funcId]);
         defInst->addIdOperand(funcId);
         buildPoint->addInstruction(std::unique_ptr<Instruction>(defInst));
+    }
+
+    if (auto linkType = function->getLinkType(); linkType != LinkageTypeMax) {
+        Id funcId = function->getFuncId();
+        addCapability(CapabilityLinkage);
+        addLinkageDecoration(funcId, function->getExportName(), linkType);
     }
 }
 

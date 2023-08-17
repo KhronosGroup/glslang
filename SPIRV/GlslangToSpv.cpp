@@ -133,7 +133,7 @@ public:
     bool visitLoop(glslang::TVisit, glslang::TIntermLoop*);
     bool visitBranch(glslang::TVisit visit, glslang::TIntermBranch*);
 
-    void finishSpv();
+    void finishSpv(bool compileOnly);
     void dumpSpv(std::vector<unsigned int>& out);
 
 protected:
@@ -167,6 +167,7 @@ protected:
     bool filterMember(const glslang::TType& member);
     spv::Id convertGlslangStructToSpvType(const glslang::TType&, const glslang::TTypeList* glslangStruct,
                                           glslang::TLayoutPacking, const glslang::TQualifier&);
+    spv::LinkageType convertGlslangLinkageToSpv(glslang::TLinkType glslangLinkType);
     void decorateStructType(const glslang::TType&, const glslang::TTypeList* glslangStruct, glslang::TLayoutPacking,
                             const glslang::TQualifier&, spv::Id, const std::vector<spv::Id>& spvMembers);
     spv::Id makeArraySizeId(const glslang::TArraySizes&, int dim, bool allowZero = false);
@@ -1588,8 +1589,12 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion,
         builder.addCapability(spv::CapabilityVariablePointers);
     }
 
-    shaderEntry = builder.makeEntryPoint(glslangIntermediate->getEntryPointName().c_str());
-    entryPoint = builder.addEntryPoint(executionModel, shaderEntry, glslangIntermediate->getEntryPointName().c_str());
+    // If not linking, there is no entry point
+    if (!options.compileOnly) {
+        shaderEntry = builder.makeEntryPoint(glslangIntermediate->getEntryPointName().c_str());
+        entryPoint =
+            builder.addEntryPoint(executionModel, shaderEntry, glslangIntermediate->getEntryPointName().c_str());
+    }
 
     // Add the source extensions
     const auto& sourceExtensions = glslangIntermediate->getRequestedExtensions();
@@ -1939,23 +1944,26 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion,
 }
 
 // Finish creating SPV, after the traversal is complete.
-void TGlslangToSpvTraverser::finishSpv()
+void TGlslangToSpvTraverser::finishSpv(bool compileOnly)
 {
-    // Finish the entry point function
-    if (! entryPointTerminated) {
-        builder.setBuildPoint(shaderEntry->getLastBlock());
-        builder.leaveFunction();
-    }
+    // If not linking, an entry point is not expected
+    if (!compileOnly) {
+        // Finish the entry point function
+        if (!entryPointTerminated) {
+            builder.setBuildPoint(shaderEntry->getLastBlock());
+            builder.leaveFunction();
+        }
 
-    // finish off the entry-point SPV instruction by adding the Input/Output <id>
-    for (auto it = iOSet.cbegin(); it != iOSet.cend(); ++it)
-        entryPoint->addIdOperand(*it);
+        // finish off the entry-point SPV instruction by adding the Input/Output <id>
+        for (auto it = iOSet.cbegin(); it != iOSet.cend(); ++it)
+            entryPoint->addIdOperand(*it);
+    }
 
     // Add capabilities, extensions, remove unneeded decorations, etc.,
     // based on the resulting SPIR-V.
     // Note: WebGPU code generation must have the opportunity to aggressively
     // prune unreachable merge blocks and continue targets.
-    builder.postProcess();
+    builder.postProcess(compileOnly);
 }
 
 // Write the SPV into 'out'.
@@ -2840,9 +2848,12 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
                 // In all cases, still let the traverser visit the children for us.
                 makeFunctions(node->getAsAggregate()->getSequence());
 
-                // Also, we want all globals initializers to go into the beginning of the entry point, before
-                // anything else gets there, so visit out of order, doing them all now.
-                makeGlobalInitializers(node->getAsAggregate()->getSequence());
+                // Global initializers is specific to the shader entry point, which does not exist in compile-only mode
+                if (!options.compileOnly) {
+                    // Also, we want all globals initializers to go into the beginning of the entry point, before
+                    // anything else gets there, so visit out of order, doing them all now.
+                    makeGlobalInitializers(node->getAsAggregate()->getSequence());
+                }
 
                 //Pre process linker objects for ray tracing stages
                 if (glslangIntermediate->isRayTracingStage())
@@ -4329,6 +4340,16 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
     return convertGlslangToSpvType(type, getExplicitLayout(type), type.getQualifier(), false, forwardReferenceOnly);
 }
 
+spv::LinkageType TGlslangToSpvTraverser::convertGlslangLinkageToSpv(glslang::TLinkType linkType)
+{
+    switch (linkType) {
+    case glslang::ELinkExport:
+        return spv::LinkageTypeExport;
+    default:
+        return spv::LinkageTypeMax;
+    }
+}
+
 // Do full recursive conversion of an arbitrary glslang type to a SPIR-V Id.
 // explicitLayout can be kept the same throughout the hierarchical recursive walk.
 // Mutually recursive with convertGlslangStructToSpvType().
@@ -5396,10 +5417,10 @@ void TGlslangToSpvTraverser::makeFunctions(const glslang::TIntermSequence& glslF
         }
 
         spv::Block* functionBlock;
-        spv::Function *function = builder.makeFunctionEntry(TranslatePrecisionDecoration(glslFunction->getType()),
-                                                            convertGlslangToSpvType(glslFunction->getType()),
-                                                            glslFunction->getName().c_str(), paramTypes, paramNames,
-                                                            paramDecorations, &functionBlock);
+        spv::Function* function = builder.makeFunctionEntry(
+            TranslatePrecisionDecoration(glslFunction->getType()), convertGlslangToSpvType(glslFunction->getType()),
+            glslFunction->getName().c_str(), convertGlslangLinkageToSpv(glslFunction->getLinkType()), paramTypes,
+            paramNames, paramDecorations, &functionBlock);
         if (implicitThis)
             function->setImplicitThis();
 
@@ -10102,7 +10123,7 @@ void GlslangToSpv(const TIntermediate& intermediate, std::vector<unsigned int>& 
 
     TGlslangToSpvTraverser it(intermediate.getSpv().spv, &intermediate, logger, *options);
     root->traverse(&it);
-    it.finishSpv();
+    it.finishSpv(options->compileOnly);
     it.dumpSpv(spirv);
 
 #if ENABLE_OPT
