@@ -13,6 +13,7 @@ git remote set-head origin -a
 
 [![appveyor status](https://ci.appveyor.com/api/projects/status/q6fi9cb0qnhkla68/branch/main?svg=true)](https://ci.appveyor.com/project/Khronoswebmaster/glslang/branch/main)
 ![Continuous Deployment](https://github.com/KhronosGroup/glslang/actions/workflows/continuous_deployment.yml/badge.svg)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/KhronosGroup/glslang/badge)](https://securityscorecards.dev/viewer/?uri=github.com/KhronosGroup/glslang)
 
 # Glslang Components and Status
 
