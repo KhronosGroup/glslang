@@ -13,6 +13,7 @@ git remote set-head origin -a
 
 ![Continuous Integration](https://github.com/KhronosGroup/glslang/actions/workflows/continuous_integration.yml/badge.svg)
 ![Continuous Deployment](https://github.com/KhronosGroup/glslang/actions/workflows/continuous_deployment.yml/badge.svg)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/KhronosGroup/glslang/badge)](https://securityscorecards.dev/viewer/?uri=github.com/KhronosGroup/glslang)
 
 # Glslang Components and Status
 
