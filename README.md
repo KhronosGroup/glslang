@@ -11,7 +11,7 @@ git remote set-head origin -a
 
 2. C++17 (all platforms) and Visual Studio 2019 (Windows) are now required. This change was driven by the external dependency on SPIRV-Tools.
 
-[![appveyor status](https://ci.appveyor.com/api/projects/status/q6fi9cb0qnhkla68/branch/main?svg=true)](https://ci.appveyor.com/project/Khronoswebmaster/glslang/branch/main)
+![Continuous Integration](https://github.com/KhronosGroup/glslang/actions/workflows/continuous_integration.yml/badge.svg)
 ![Continuous Deployment](https://github.com/KhronosGroup/glslang/actions/workflows/continuous_deployment.yml/badge.svg)
 
 # Glslang Components and Status
