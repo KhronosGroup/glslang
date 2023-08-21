@@ -9607,7 +9607,7 @@ void TGlslangToSpvTraverser::addMeshNVDecoration(spv::Id id, int member, const g
 
 void TGlslangToSpvTraverser::addImageProcessingQCOMDecoration(spv::Id id, spv::Decoration decor)
 {
-  spv::Id opc = builder.getOpCode(id);
+  spv::Op opc = builder.getOpCode(id);
   if (opc == spv::OpSampledImage) {
     id  = builder.getIdOperand(id, 0);
     opc = builder.getOpCode(id);
