@@ -38,6 +38,7 @@
 //
 
 #include "ParseHelper.h"
+#include "Initialize.h"
 #include "Scan.h"
 
 #include "../OSDependent/osinclude.h"
@@ -2685,7 +2686,6 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
     }
 }
 
-extern bool PureOperatorBuiltins;
 
 // Deprecated!  Use PureOperatorBuiltins == true instead, in which case this
 // functionality is handled in builtInOpCheck() instead of here.
