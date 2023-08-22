@@ -2014,7 +2014,7 @@ void TGlslangToSpvTraverser::visitSymbol(glslang::TIntermSymbol* symbol)
                 spv::StorageClass sc = builder.getStorageClass(id);
                 // Before SPIR-V 1.4, we only want to include Input and Output.
                 // Starting with SPIR-V 1.4, we want all globals.
-                if ((glslangIntermediate->getSpv().spv >= glslang::EShTargetSpv_1_4 && builder.isGlobalStorage(id)) ||
+                if ((glslangIntermediate->getSpv().spv >= glslang::EShTargetSpv_1_4 && builder.isGlobalVariable(id)) ||
                     (sc == spv::StorageClassInput || sc == spv::StorageClassOutput)) {
                     iOSet.insert(id);
                 }
