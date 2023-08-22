@@ -124,6 +124,7 @@ template("glslang_sources_common") {
       "SPIRV/GLSL.ext.KHR.h",
       "SPIRV/GLSL.ext.NV.h",
       "SPIRV/GLSL.ext.ARM.h",
+      "SPIRV/GLSL.ext.QCOM.h",
       "SPIRV/GLSL.std.450.h",
       "SPIRV/GlslangToSpv.cpp",
       "SPIRV/GlslangToSpv.h",
