@@ -195,7 +195,7 @@ set(RESOURCELIMITS_HEADERS
   Public/resource_limits_c.h
 )
 
-add_library(glslang-default-resource-limits STATIC ${RESOURCELIMITS_SOURCES} ${RESOURCELIMITS_HEADERS})
+add_library(glslang-default-resource-limits ${RESOURCELIMITS_SOURCES} ${RESOURCELIMITS_HEADERS})
 set_target_properties(glslang-default-resource-limits PROPERTIES
     VERSION "${GLSLANG_VERSION}"
     SOVERSION "${GLSLANG_VERSION_MAJOR}"
