@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## 13.0.0 2023-08-23
+
+### Breaking changes
+* Simplify PoolAlloc via thread_local
+  * Remove InitializeDLL functions
+  * Remove OSDependent TLS functions
+* Remove GLSLANG_WEB and GLSLANG_WEB_DEVEL code paths
+
+### Other changes
+* Raise CMAKE minimum to 3.17.2
+* Support GL_KHR_cooperative_matrix 
+* Support GL_QCOM_image_processing_support
+* Support outputting each module to a filename with spirv-remap
+* Generate an error when gl_PrimitiveShaderRateEXT is used without enabling the extension
+* Improve layout checking when GL_EXT_spirv_intrinsics is enabled
+
 ## 12.3.1 2023-07-20
 
 ### Other changes
