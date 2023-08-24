@@ -168,7 +168,7 @@ set_target_properties(glslang PROPERTIES
     FOLDER glslang
     POSITION_INDEPENDENT_CODE ON
     VERSION   "${GLSLANG_VERSION}"
-    SOVERSION "${GLSLANG_VERSION_MAJOR}")
+    SOVERSION "${GLSLANG_VERSION}")
 target_link_libraries(glslang PRIVATE OGLCompiler OSDependent MachineIndependent)
 target_include_directories(glslang PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>
@@ -198,7 +198,7 @@ set(RESOURCELIMITS_HEADERS
 add_library(glslang-default-resource-limits STATIC ${RESOURCELIMITS_SOURCES} ${RESOURCELIMITS_HEADERS})
 set_target_properties(glslang-default-resource-limits PROPERTIES
     VERSION "${GLSLANG_VERSION}"
-    SOVERSION "${GLSLANG_VERSION_MAJOR}"
+    SOVERSION "${GLSLANG_VERSION}"
     FOLDER glslang
     POSITION_INDEPENDENT_CODE ON)
 
