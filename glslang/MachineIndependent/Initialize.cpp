@@ -51,8 +51,10 @@
 //                                                including identifying what extensions are needed if a version does not allow a symbol
 //
 
-#include "../Include/intermediate.h"
 #include "Initialize.h"
+#include "../Include/intermediate.h"
+#include "ScanContext.h"
+#include "preprocessor/PpContext.h"
 
 namespace glslang {
 
@@ -320,6 +322,32 @@ const CustomFunction CustomFunctions[] = {
     { EOpTextureProjGradOffset, "textureProjGradOffset", nullptr },
 
     { EOpNull }
+};
+
+// Creates a parser that is separate from the main parsing context and meant for temporary use
+struct TempParser {
+    TempParser(const TString& str, EShLanguage language, int version, EProfile profile, SpvVersion spvVersion)
+        : interm(language), parseContext(table, interm, false, version, profile, spvVersion, language, sink, true,
+                                         EShMsgDefault, &dummyEntryPoint),
+          inputStr(str.data()), stringSize(str.size())
+    {
+        table.push();
+        parseContext.setScanContext(&scanContext);
+        parseContext.setPpContext(&context);
+        parseContext.parseShaderStrings(context, input, false);
+    }
+
+    TSymbolTable table;
+    TIntermediate interm;
+    TInfoSink sink;
+    TString dummyEntryPoint;
+    TParseContext parseContext;
+    TShader::ForbidIncluder includer;
+    TPpContext context{parseContext, "", includer};
+    TScanContext scanContext{parseContext};
+    const char* inputStr;
+    size_t stringSize;
+    TInputScanner input{1, &inputStr, &stringSize};
 };
 
 // For the given table of functions, add all the indicated prototypes for each
@@ -4823,29 +4851,30 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
     // GL_EXT_texture_shadow_lod overloads
     if (profile == EEsProfile) { // ES
         if (version >= 300) {
-            commonBuiltins.append("float texture(sampler2DArrayShadow, vec4, float);"
-                                  "float textureOffset(sampler2DArrayShadow, vec4, ivec2, float);"
-                                  "float textureLod(sampler2DArrayShadow, vec4, float);"
-                                  "float textureLodOffset(sampler2DArrayShadow, vec4, float, ivec2);"
-                                  "\n");
+            textureShadowLodFunctions += "float texture(sampler2DArrayShadow, vec4, float);"
+                                         "float textureOffset(sampler2DArrayShadow, vec4, ivec2, float);"
+                                         "float textureLod(sampler2DArrayShadow, vec4, float);"
+                                         "float textureLodOffset(sampler2DArrayShadow, vec4, float, ivec2);"
+                                         "\n";
         }
         if (version >= 320) {
-            commonBuiltins.append("float texture(samplerCubeArrayShadow, vec4, float, float);"
-                                  "float textureLod(samplerCubeShadow, vec4, float);"
-                                  "float textureLod(samplerCubeArrayShadow, vec4, float, float);"
-                                  "\n");
+            textureShadowLodFunctions += "float texture(samplerCubeArrayShadow, vec4, float, float);"
+                                         "float textureLod(samplerCubeShadow, vec4, float);"
+                                         "float textureLod(samplerCubeArrayShadow, vec4, float, float);"
+                                         "\n";
         }
     } else if (version >= 130) { // Desktop
-        commonBuiltins.append("float texture(sampler2DArrayShadow, vec4, float);"
-                              "float texture(samplerCubeArrayShadow, vec4, float, float);"
-                              "float textureOffset(sampler2DArrayShadow, vec4, ivec2);"
-                              "float textureOffset(sampler2DArrayShadow, vec4, ivec2, float);"
-                              "float textureLod(sampler2DArrayShadow, vec4, float);"
-                              "float textureLod(samplerCubeShadow, vec4, float);"
-                              "float textureLod(samplerCubeArrayShadow, vec4, float, float);"
-                              "float textureLodOffset(sampler2DArrayShadow, vec4, float, ivec2);"
-                              "\n");
+        textureShadowLodFunctions += "float texture(sampler2DArrayShadow, vec4, float);"
+                                     "float texture(samplerCubeArrayShadow, vec4, float, float);"
+                                     "float textureOffset(sampler2DArrayShadow, vec4, ivec2);"
+                                     "float textureOffset(sampler2DArrayShadow, vec4, ivec2, float);"
+                                     "float textureLod(sampler2DArrayShadow, vec4, float);"
+                                     "float textureLod(samplerCubeShadow, vec4, float);"
+                                     "float textureLod(samplerCubeArrayShadow, vec4, float, float);"
+                                     "float textureLodOffset(sampler2DArrayShadow, vec4, float, ivec2);"
+                                     "\n";
     }
+    commonBuiltins.append(textureShadowLodFunctions);
 
     //============================================================================
     //
@@ -8769,34 +8798,11 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setFunctionExtensions("textureBlockMatchSSDQCOM", 1, &E_GL_QCOM_image_processing);
         }
 
-        // GL_EXT_texture_shadow_lod
-        // NOTE: These are the mangled names of individual overloads, since this extension adds overloads for
-        //       existing built-in functions.
-        if (profile == EEsProfile) {
-            if (version >= 300) {
-                symbolTable.setSingleFunctionExtensions("texture(sAS21;vf4;f1;", 1, &E_GL_EXT_texture_shadow_lod);
-                symbolTable.setSingleFunctionExtensions("textureOffset(sAS21;vf4;vi2;f1;", 1,
-                                                        &E_GL_EXT_texture_shadow_lod);
-                symbolTable.setSingleFunctionExtensions("textureLod(sAS21;vf4;f1;", 1, &E_GL_EXT_texture_shadow_lod);
-                symbolTable.setSingleFunctionExtensions("textureLodOffset(sAS21;vf4;f1;vi2;", 1,
-                                                        &E_GL_EXT_texture_shadow_lod);
-            }
-            if (version >= 320) {
-                symbolTable.setSingleFunctionExtensions("texture(sASC1;vf4;f1;", 1, &E_GL_EXT_texture_shadow_lod);
-                symbolTable.setSingleFunctionExtensions("texture(sASC1;vf4;f1;f1;", 1, &E_GL_EXT_texture_shadow_lod);
-                symbolTable.setSingleFunctionExtensions("textureLod(sASC1;vf4;f1;f1;", 1, &E_GL_EXT_texture_shadow_lod);
-                symbolTable.setSingleFunctionExtensions("textureLod(sSC1;vf4;f1;", 1, &E_GL_EXT_texture_shadow_lod);
-            }
-        } else if (version >= 130) {
-            symbolTable.setSingleFunctionExtensions("texture(sAS21;vf4;f1;", 1, &E_GL_EXT_texture_shadow_lod);
-            symbolTable.setSingleFunctionExtensions("texture(sASC1;vf4;f1;f1;", 1, &E_GL_EXT_texture_shadow_lod);
-            symbolTable.setSingleFunctionExtensions("textureOffset(sAS21;vf4;vi2;", 1, &E_GL_EXT_texture_shadow_lod);
-            symbolTable.setSingleFunctionExtensions("textureOffset(sAS21;vf4;vi2;f1;", 1, &E_GL_EXT_texture_shadow_lod);
-            symbolTable.setSingleFunctionExtensions("textureLod(sAS21;vf4;f1;", 1, &E_GL_EXT_texture_shadow_lod);
-            symbolTable.setSingleFunctionExtensions("textureLod(sASC1;vf4;f1;f1;", 1, &E_GL_EXT_texture_shadow_lod);
-            symbolTable.setSingleFunctionExtensions("textureLod(sSC1;vf4;f1;", 1, &E_GL_EXT_texture_shadow_lod);
-            symbolTable.setSingleFunctionExtensions("textureLodOffset(sAS21;vf4;f1;vi2;", 1,
-                                                    &E_GL_EXT_texture_shadow_lod);
+        {
+            TempParser parser(textureShadowLodFunctions, language, version, profile, spvVersion);
+            parser.table.processAllSymbols([&symbolTable](TSymbol* sym) {
+                symbolTable.setSingleFunctionExtensions(sym->getMangledName().data(), 1, &E_GL_EXT_texture_shadow_lod);
+            });
         }
         break;
 
