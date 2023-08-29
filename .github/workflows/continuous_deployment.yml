@@ -47,9 +47,9 @@ jobs:
                 compiler: [{cc: clang, cxx: clang++}, {cc: gcc, cxx: g++}]
                 cmake_build_type: [Debug, Release]
         steps:
-            - uses: actions/checkout@v3
-            - uses: lukka/get-cmake@latest
-            - uses: actions/setup-python@v4
+            - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
+            - uses: lukka/get-cmake@4dcd3eb73017c61159eb130746fbca35d78a3d5f # v3.27.4
+            - uses: actions/setup-python@61a6322f88396a6271a6ee3565807d608ecaddd1 # v4.7.0
               with:
                   python-version: '3.7'
             - name: Install Ubuntu Package Dependencies
@@ -110,7 +110,7 @@ jobs:
               if: ${{ matrix.compiler.cc == 'clang' }}
               env:
                   ARCHIVE: glslang-main-${{matrix.os.family}}-${{matrix.cmake_build_type}}.zip
-              uses: actions/github-script@v6
+              uses: actions/github-script@d7906e4ad0b1822421a7e6a35d5ca353c962f410 # v6.4.1
               with:
                   script: |
                       const script = require('.github/workflows/deploy.js')
@@ -127,9 +127,9 @@ jobs:
                 compiler: [{cc: clang, cxx: clang++}]
                 cmake_build_type: [Debug, Release]
         steps:
-            - uses: actions/checkout@v3
-            - uses: lukka/get-cmake@latest
-            - uses: actions/setup-python@v4
+            - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
+            - uses: lukka/get-cmake@4dcd3eb73017c61159eb130746fbca35d78a3d5f # v3.27.4
+            - uses: actions/setup-python@61a6322f88396a6271a6ee3565807d608ecaddd1 # v4.7.0
               with:
                   python-version: '3.7'
             - name: Install GoogleTest
@@ -184,7 +184,7 @@ jobs:
             - name: Deploy
               env:
                   ARCHIVE: glslang-main-${{matrix.os.family}}-${{matrix.cmake_build_type}}.zip
-              uses: actions/github-script@v6
+              uses: actions/github-script@d7906e4ad0b1822421a7e6a35d5ca353c962f410 # v6.4.1
               with:
                   script: |
                       const script = require('.github/workflows/deploy.js')
@@ -200,9 +200,9 @@ jobs:
                 os: [{genus: windows-2019, family: windows}]
                 cmake_build_type: [Debug, Release]
         steps:
-            - uses: actions/checkout@v3
-            - uses: lukka/get-cmake@latest
-            - uses: actions/setup-python@v4
+            - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
+            - uses: lukka/get-cmake@4dcd3eb73017c61159eb130746fbca35d78a3d5f # v3.27.4
+            - uses: actions/setup-python@61a6322f88396a6271a6ee3565807d608ecaddd1 # v4.7.0
               with:
                   python-version: '3.7'
             - name: Install GoogleTest
@@ -276,7 +276,7 @@ jobs:
             - name: Deploy
               env:
                   ARCHIVE: glslang-master-${{matrix.os.family}}-${{matrix.cmake_build_type}}.zip
-              uses: actions/github-script@v6
+              uses: actions/github-script@d7906e4ad0b1822421a7e6a35d5ca353c962f410 # v6.4.1
               with:
                   script: |
                       const script = require('.github/workflows/deploy.js')

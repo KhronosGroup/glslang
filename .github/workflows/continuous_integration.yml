@@ -23,13 +23,13 @@ jobs:
                 compiler: [{cc: clang, cxx: clang++}, {cc: gcc, cxx: g++}]
                 cmake_build_type: [Debug, Release]
         steps:
-            - uses: actions/checkout@v3
-            - uses: lukka/get-cmake@latest  
-            - uses: actions/setup-python@v4
+            - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
+            - uses: lukka/get-cmake@4dcd3eb73017c61159eb130746fbca35d78a3d5f # v3.27.4  
+            - uses: actions/setup-python@61a6322f88396a6271a6ee3565807d608ecaddd1 # v4.7.0
               with:
                   python-version: '3.7'
             - name: Setup ccache
-              uses: hendrikmuhs/ccache-action@v1.2
+              uses: hendrikmuhs/ccache-action@6d1841ec156c39a52b1b23a810da917ab98da1f4 # v1.2.10
               with:
                   key: ubuntu-22-${{ matrix.cmake_build_type }}-${{ matrix.compiler.cc }}-${{matrix.compiler.cxx}}
             - name: Install GoogleTest
@@ -69,15 +69,15 @@ jobs:
       name: Linux Backcompat
       runs-on: ubuntu-20.04
       steps:
-          - uses: actions/checkout@v3
-          - uses: actions/setup-python@v4
+          - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
+          - uses: actions/setup-python@61a6322f88396a6271a6ee3565807d608ecaddd1 # v4.7.0
             with:
                 python-version: '3.7'
-          - uses: lukka/get-cmake@latest
+          - uses: lukka/get-cmake@4dcd3eb73017c61159eb130746fbca35d78a3d5f # v3.27.4
             with:
               cmakeVersion: 3.17.2
           - name: Setup ccache
-            uses: hendrikmuhs/ccache-action@v1.2
+            uses: hendrikmuhs/ccache-action@6d1841ec156c39a52b1b23a810da917ab98da1f4 # v1.2.10
             with:
               key: linux_backcompat
           - name: Install GoogleTest
@@ -118,11 +118,11 @@ jobs:
                 compiler: [{cc: clang, cxx: clang++}, {cc: gcc, cxx: g++}]
                 cmake_build_type: [Debug, Release]
         steps:
-            - uses: actions/checkout@v3
-            - uses: actions/setup-python@v3
+            - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
+            - uses: actions/setup-python@61a6322f88396a6271a6ee3565807d608ecaddd1 # v4.7.0
               with:
                   python-version: '3.7'
-            - uses: lukka/get-cmake@latest
+            - uses: lukka/get-cmake@4dcd3eb73017c61159eb130746fbca35d78a3d5f # v3.27.4
             - name: Install GoogleTest
               run: |
                   # check out pre-breakage version of googletest; can be deleted when
@@ -162,9 +162,9 @@ jobs:
                 os: [{genus: windows-2019, family: windows}]
                 cmake_build_type: [Debug, Release]
         steps:
-            - uses: actions/checkout@v3
-            - uses: lukka/get-cmake@latest
-            - uses: actions/setup-python@v4
+            - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
+            - uses: lukka/get-cmake@4dcd3eb73017c61159eb130746fbca35d78a3d5f # v3.27.4
+            - uses: actions/setup-python@61a6322f88396a6271a6ee3565807d608ecaddd1 # v4.7.0
               with:
                   python-version: '3.7'
             - name: Install GoogleTest
@@ -203,13 +203,13 @@ jobs:
             # https://github.com/actions/runner-images/blob/main/images/linux/Ubuntu2204-Readme.md#android
             NDK: [23.2.8568313, 25.2.9519653]
         steps:
-            - uses: actions/checkout@v3
-            - uses: actions/setup-python@v4
+            - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
+            - uses: actions/setup-python@61a6322f88396a6271a6ee3565807d608ecaddd1 # v4.7.0
               with:
                   python-version: '3.7'
-            - uses: lukka/get-cmake@latest
+            - uses: lukka/get-cmake@4dcd3eb73017c61159eb130746fbca35d78a3d5f # v3.27.4
             - name: Setup ccache
-              uses: hendrikmuhs/ccache-action@v1.2
+              uses: hendrikmuhs/ccache-action@6d1841ec156c39a52b1b23a810da917ab98da1f4 # v1.2.10
               with:
                   key: android-${{ matrix.LEGACY }}-${{ matrix.NDK }}
             - name: Update Glslang Sources
@@ -232,16 +232,16 @@ jobs:
     emscripten:
         runs-on: ubuntu-22.04
         steps:
-            - uses: actions/checkout@v3
-            - uses: actions/setup-python@v4
+            - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
+            - uses: actions/setup-python@61a6322f88396a6271a6ee3565807d608ecaddd1 # v4.7.0
               with:
                   python-version: '3.7'
-            - uses: lukka/get-cmake@latest
+            - uses: lukka/get-cmake@4dcd3eb73017c61159eb130746fbca35d78a3d5f # v3.27.4
             - name: Setup ccache
-              uses: hendrikmuhs/ccache-action@v1.2
+              uses: hendrikmuhs/ccache-action@6d1841ec156c39a52b1b23a810da917ab98da1f4 # v1.2.10
               with:
                   key: ubuntu-emscripten
-            - uses: mymindstorm/setup-emsdk@v11
+            - uses: mymindstorm/setup-emsdk@ab889da2abbcbb280f91ec4c215d3bb4f3a8f775 # v12
             - name: Update Glslang Sources
               run: ./update_glslang_sources.py
             - name: Configure
