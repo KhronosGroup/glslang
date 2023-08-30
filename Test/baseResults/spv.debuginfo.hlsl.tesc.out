@@ -16,8 +16,8 @@ WARNING: 0:158: '' : attribute does not apply to entry point
                               ExecutionMode 6 SpacingEqual
                               ExecutionMode 6 VertexOrderCw
                1:             String  ""
-              10:             String  "float"
-              13:             String  "uint"
+               9:             String  "float"
+              12:             String  "uint"
               27:             String  "screenSpaceTessFactor"
               30:             String  "// OpModuleProcessed auto-map-locations
 // OpModuleProcessed auto-map-bindings
@@ -180,15 +180,15 @@ WARNING: 0:158: '' : attribute does not apply to entry point
               14:     11(int) Constant 32
               15:     11(int) Constant 6
               16:     11(int) Constant 0
-              12:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 2(DebugTypeBasic) 13 14 15 16
+              13:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 2(DebugTypeBasic) 12 14 15 16
               17:     11(int) Constant 3
-               9:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 2(DebugTypeBasic) 10 14 17 16
+              10:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 2(DebugTypeBasic) 9 14 17 16
               18:             TypeVector 8(float) 4
               19:     11(int) Constant 4
-              20:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 6(DebugTypeVector) 9 19
+              20:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 6(DebugTypeVector) 10 19
               21:             TypePointer Function 18(fvec4)
               22:             TypeFunction 8(float) 21(ptr) 21(ptr)
-              23:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 8(DebugTypeFunction) 17 9 20 20
+              23:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 8(DebugTypeFunction) 17 10 20 20
               29:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 35(DebugSource) 1 30
               32:     11(int) Constant 1
               33:     11(int) Constant 5
@@ -199,7 +199,7 @@ WARNING: 0:158: '' : attribute does not apply to entry point
               43:     11(int) Constant 2
               41:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 42 20 29 16 16 28 19 43
               45:             TypeVector 8(float) 2
-              46:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 6(DebugTypeVector) 9 43
+              46:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 6(DebugTypeVector) 10 43
               47:             TypePointer Function 45(fvec2)
               48:             TypeBool
               50:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 2(DebugTypeBasic) 49 14 43 16
@@ -209,7 +209,7 @@ WARNING: 0:158: '' : attribute does not apply to entry point
               61:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 62 20 29 16 16 57 19 32
               64:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 65 46 29 16 16 57 19 43
               67:             TypeVector 8(float) 3
-              68:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 6(DebugTypeVector) 9 17
+              68:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 6(DebugTypeVector) 10 17
     69(VSOutput):             TypeStruct 18(fvec4) 67(fvec3) 45(fvec2)
               71:     11(int) Constant 44
               72:     11(int) Constant 13
@@ -225,9 +225,9 @@ WARNING: 0:158: '' : attribute does not apply to entry point
               84:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 5(DebugTypeArray) 81 19
               85:             TypePointer Function 83
               86:             TypeArray 8(float) 19
-              87:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 5(DebugTypeArray) 9 19
+              87:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 5(DebugTypeArray) 10 19
               88:             TypeArray 8(float) 43
-              89:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 5(DebugTypeArray) 9 43
+              89:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 5(DebugTypeArray) 10 43
 90(ConstantsHSOutput):             TypeStruct 86 88
               93:     11(int) Constant 58
               94:     11(int) Constant 25
@@ -249,16 +249,16 @@ WARNING: 0:158: '' : attribute does not apply to entry point
              118:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 78 46 29 119 80 16 16 17
              120:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 10(DebugTypeComposite) 121 32 29 16 16 31 121 16 17 114 116 118
              122:             TypeFunction 113(HSOutput) 85(ptr) 112(ptr)
-             123:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 8(DebugTypeFunction) 17 120 84 12
+             123:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 8(DebugTypeFunction) 17 120 84 13
              128:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 20(DebugFunction) 127 123 29 16 16 31 127 17 16
              132:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 110 84 29 16 16 128 19 32
-             134:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 135 12 29 16 16 128 19 43
+             134:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 135 13 29 16 16 128 19 43
              140:     11(int) Constant 67
              142:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 143 20 29 140 16 28 19
              145:    8(float) Constant 1056964608
              151:     11(int) Constant 69
              152:             TypePointer Function 8(float)
-             154:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 155 9 29 151 16 28 19
+             154:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 155 10 29 151 16 28 19
              160:    8(float) Constant 1073741824
              163:     11(int) Constant 72
              165:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 166 20 29 163 16 28 19
@@ -278,11 +278,11 @@ WARNING: 0:158: '' : attribute does not apply to entry point
              186:     11(int) Constant 22
              184:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 185 173 29 80 186 16 16 17
              189:     11(int) Constant 27
-             187:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 188 9 29 76 189 16 16 17
-             190:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 188 9 29 76 189 16 16 17
+             187:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 188 10 29 76 189 16 16 17
+             190:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 188 10 29 76 189 16 16 17
              193:     11(int) Constant 34
              191:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 192 46 29 193 178 16 16 17
-             194:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 188 9 29 76 189 16 16 17
+             194:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 188 10 29 76 189 16 16 17
              195:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 10(DebugTypeComposite) 196 32 29 163 16 31 196 16 17 175 179 180 184 187 190 191 194
         197(ubo):             TypeStruct 174(UBO)
              200:     11(int) Constant 37

@@ -10,8 +10,8 @@ spv.debuginfo.hlsl.vert
                               MemoryModel Logical GLSL450
                               EntryPoint Vertex 6  "main" 444 447 451 454 457 460 464 468 476 480 483 486 489 492
                1:             String  ""
-              10:             String  "float"
-              13:             String  "uint"
+               9:             String  "float"
+              12:             String  "uint"
               24:             String  "int"
               29:             String  "instanceRot"
               31:             String  "// OpModuleProcessed auto-map-locations
@@ -138,14 +138,14 @@ spv.debuginfo.hlsl.vert
               14:     11(int) Constant 32
               15:     11(int) Constant 6
               16:     11(int) Constant 0
-              12:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 2(DebugTypeBasic) 13 14 15 16
+              13:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 2(DebugTypeBasic) 12 14 15 16
               17:     11(int) Constant 3
-               9:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 2(DebugTypeBasic) 10 14 17 16
+              10:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 2(DebugTypeBasic) 9 14 17 16
               18:             TypeVector 8(float) 3
-              19:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 6(DebugTypeVector) 9 17
+              19:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 6(DebugTypeVector) 10 17
               20:             TypeVector 8(float) 2
               21:     11(int) Constant 2
-              22:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 6(DebugTypeVector) 9 21
+              22:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 6(DebugTypeVector) 10 21
               23:             TypeInt 32 1
               26:     11(int) Constant 4
               25:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 2(DebugTypeBasic) 24 14 26 16
@@ -163,7 +163,7 @@ spv.debuginfo.hlsl.vert
               41:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 29 19 30 32 33 16 16 17
               44:     11(int) Constant 36
               45:     11(int) Constant 41
-              42:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 43 9 30 44 45 16 16 17
+              42:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 43 10 30 44 45 16 16 17
               48:     11(int) Constant 37
               49:     11(int) Constant 42
               46:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 47 25 30 48 49 16 16 17
@@ -173,7 +173,7 @@ spv.debuginfo.hlsl.vert
               50:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 10(DebugTypeComposite) 51 52 30 16 16 53 51 16 17 28 34 35 39 40 41 42 46
               55:             TypePointer Function 27(VSInput)
               56:             TypeVector 8(float) 4
-              57:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 6(DebugTypeVector) 9 26
+              57:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 6(DebugTypeVector) 10 26
     58(VSOutput):             TypeStruct 56(fvec4) 18(fvec3) 18(fvec3) 18(fvec3) 18(fvec3) 18(fvec3)
               61:     11(int) Constant 53
               62:     11(int) Constant 13
@@ -207,7 +207,7 @@ spv.debuginfo.hlsl.vert
              112:             TypePointer Function 23(int)
              121:     11(int) Constant 68
              122:             TypePointer Function 8(float)
-             124:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 125 9 30 121 16 77 26
+             124:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 125 10 30 121 16 77 26
              127:     23(int) Constant 5
              130:             TypeMatrix 56(fvec4) 4
              132:             TypeBool
@@ -222,8 +222,8 @@ spv.debuginfo.hlsl.vert
              143:     11(int) Constant 17
              140:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 141 57 30 142 143 16 16 17
              146:     11(int) Constant 46
-             144:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 145 9 30 146 143 16 16 17
-             147:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 145 9 30 146 143 16 16 17
+             144:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 145 10 30 146 143 16 16 17
+             147:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 145 10 30 146 143 16 16 17
              148:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 10(DebugTypeComposite) 149 52 30 121 16 53 149 16 17 135 139 140 144 147
         150(ubo):             TypeStruct 134(UBO)
              153:     11(int) Constant 49
@@ -236,7 +236,7 @@ spv.debuginfo.hlsl.vert
              159:     23(int) Constant 0
              160:             TypePointer Uniform 8(float)
              166:     11(int) Constant 69
-             168:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 169 9 30 166 16 77 26
+             168:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 169 10 30 166 16 77 26
              178:     11(int) Constant 71
              179:             TypeMatrix 18(fvec3) 3
              180:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 108(DebugTypeMatrix) 19 17 133

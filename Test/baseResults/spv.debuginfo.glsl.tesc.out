@@ -11,7 +11,7 @@ spv.debuginfo.glsl.tesc
                               EntryPoint TessellationControl 14  "main" 249 253 279 370 383 498 512 519 533
                               ExecutionMode 14 OutputVertices 4
                1:             String  ""
-               9:             String  "uint"
+               8:             String  "uint"
               15:             String  "main"
               18:             String  "// OpModuleProcessed auto-map-locations
 // OpModuleProcessed auto-map-bindings
@@ -153,7 +153,7 @@ spv.debuginfo.glsl.tesc
               10:      7(int) Constant 32
               11:      7(int) Constant 6
               12:      7(int) Constant 0
-               8:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 2(DebugTypeBasic) 9 10 11 12
+               9:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 2(DebugTypeBasic) 8 10 11 12
               13:      7(int) Constant 3
                6:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 8(DebugTypeFunction) 13 4
               17:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 35(DebugSource) 1 18

@@ -11,7 +11,7 @@ spv.debuginfo.glsl.comp
                               EntryPoint GLCompute 14  "main" 124
                               ExecutionMode 14 LocalSize 10 10 1
                1:             String  ""
-               9:             String  "uint"
+               8:             String  "uint"
               15:             String  "main"
               18:             String  "// OpModuleProcessed auto-map-locations
 // OpModuleProcessed auto-map-bindings
@@ -164,7 +164,7 @@ spv.debuginfo.glsl.comp
               10:      7(int) Constant 32
               11:      7(int) Constant 6
               12:      7(int) Constant 0
-               8:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 2(DebugTypeBasic) 9 10 11 12
+               9:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 2(DebugTypeBasic) 8 10 11 12
               13:      7(int) Constant 3
                6:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 8(DebugTypeFunction) 13 4
               17:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 35(DebugSource) 1 18
@@ -220,7 +220,7 @@ spv.debuginfo.glsl.comp
              101:             TypePointer Uniform 24(float)
              115:      7(int) Constant 74
              116:             TypeVector 7(int) 3
-             117:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 6(DebugTypeVector) 8 13
+             117:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 6(DebugTypeVector) 9 13
              118:             TypePointer Function 116(ivec3)
              120:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 121 117 17 115 12 16 21
              123:             TypePointer Input 116(ivec3)
@@ -228,7 +228,7 @@ spv.debuginfo.glsl.comp
              125:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 18(DebugGlobalVariable) 126 117 17 115 12 19 126 124(gl_GlobalInvocationID) 78
              129:      7(int) Constant 76
              130:             TypePointer Function 7(int)
-             132:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 133 8 17 129 12 16 21
+             132:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 133 9 17 129 12 16 21
              137:     69(int) Constant 10
              138:             TypePointer Uniform 69(int)
              147:      7(int) Constant 77
@@ -330,7 +330,7 @@ spv.debuginfo.glsl.comp
              670:      7(int) Constant 144
  671(PushConsts):             TypeStruct 7(int)
              674:      7(int) Constant 63
-             672:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 673 8 17 674 89 12 12 13
+             672:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 673 9 17 674 89 12 12 13
              675:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 10(DebugTypeComposite) 676 20 17 670 12 19 676 12 13 672
              677:             TypePointer PushConstant 671(PushConsts)
  678(pushConsts):    677(ptr) Variable PushConstant
