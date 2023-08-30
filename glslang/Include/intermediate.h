@@ -1006,6 +1006,8 @@ enum TOperator {
     EOpHitObjectGetAttributesNV,
     EOpHitObjectGetCurrentTimeNV,
     EOpReorderThreadNV,
+    EOpFetchMicroTriangleVertexPositionNV,
+    EOpFetchMicroTriangleVertexBarycentricNV,
 
     // HLSL operations
     //
