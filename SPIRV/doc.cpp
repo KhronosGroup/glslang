@@ -1437,6 +1437,9 @@ const char* OpcodeString(int op)
     case OpAtomicFMinEXT: return "OpAtomicFMinEXT";
     case OpAtomicFMaxEXT: return "OpAtomicFMaxEXT";
 
+    case OpAssumeTrueKHR: return "OpAssumeTrueKHR";
+    case OpExpectKHR: return "OpExpectKHR";
+
     case 5000: return "OpGroupIAddNonUniformAMD";
     case 5001: return "OpGroupFAddNonUniformAMD";
     case 5002: return "OpGroupFMinNonUniformAMD";
@@ -1679,7 +1682,7 @@ void Parameterize()
         InstructionDesc[OpCooperativeMatrixStoreKHR].setResultAndType(false, false);
         InstructionDesc[OpBeginInvocationInterlockEXT].setResultAndType(false, false);
         InstructionDesc[OpEndInvocationInterlockEXT].setResultAndType(false, false);
-
+        InstructionDesc[OpAssumeTrueKHR].setResultAndType(false, false);
         // Specific additional context-dependent operands
 
         ExecutionModeOperands[ExecutionModeInvocations].push(OperandLiteralNumber, "'Number of <<Invocation,invocations>>'");
@@ -2457,6 +2460,11 @@ void Parameterize()
         InstructionDesc[OpAtomicFAddEXT].operands.push(OperandScope, "'Scope'");
         InstructionDesc[OpAtomicFAddEXT].operands.push(OperandMemorySemantics, "'Semantics'");
         InstructionDesc[OpAtomicFAddEXT].operands.push(OperandId, "'Value'");
+
+        InstructionDesc[OpAssumeTrueKHR].operands.push(OperandId, "'Condition'");
+
+        InstructionDesc[OpExpectKHR].operands.push(OperandId, "'Value'");
+        InstructionDesc[OpExpectKHR].operands.push(OperandId, "'ExpectedValue'");
 
         InstructionDesc[OpAtomicISub].operands.push(OperandId, "'Pointer'");
         InstructionDesc[OpAtomicISub].operands.push(OperandScope, "'Scope'");
