@@ -4866,7 +4866,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
     } else if (version >= 130) { // Desktop
         textureShadowLodFunctions += "float texture(sampler2DArrayShadow, vec4, float);"
                                      "float texture(samplerCubeArrayShadow, vec4, float, float);"
-                                     "float textureOffset(sampler2DArrayShadow, vec4, ivec2);"
                                      "float textureOffset(sampler2DArrayShadow, vec4, ivec2, float);"
                                      "float textureLod(sampler2DArrayShadow, vec4, float);"
                                      "float textureLod(samplerCubeShadow, vec4, float);"

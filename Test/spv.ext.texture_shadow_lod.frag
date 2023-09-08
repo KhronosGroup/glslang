@@ -12,7 +12,6 @@ layout(location = 0) in vec4 tc;
 void main() {
     c = texture(s2da, tc, 0.0);
     c = texture(sca, tc, 0.0, 0.0);
-    c = textureOffset(s2da, tc, ivec2(0.0));
     c = textureOffset(s2da, tc, ivec2(0.0), 0.0);
     c = textureLod(s2da, tc, 0.0);
     c = textureLod(sc, tc, 0.0);
