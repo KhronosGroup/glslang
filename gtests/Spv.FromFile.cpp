@@ -528,6 +528,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.fragmentShaderBarycentric4.frag",
         "spv.ext.texture_shadow_lod.frag",
         "spv.ext.texture_shadow_lod.error.frag",
+        "spv.floatFetch.frag",
     })),
     FileNameAsCustomTestSuffix
 );
