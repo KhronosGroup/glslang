@@ -902,7 +902,8 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.debuginfo.glsl.geom",
         "spv.debuginfo.glsl.tesc",
         "spv.debuginfo.glsl.tese",
-        "spv.debuginfo.const_params.glsl.comp"
+        "spv.debuginfo.const_params.glsl.comp",
+        "spv.debuginfo.scalar_types.glsl.frag",
     })),
     FileNameAsCustomTestSuffix
 );

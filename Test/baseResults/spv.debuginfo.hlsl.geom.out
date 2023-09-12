@@ -15,8 +15,8 @@ spv.debuginfo.hlsl.geom
                               ExecutionMode 6 OutputTriangleStrip
                               ExecutionMode 6 OutputVertices 3
                1:             String  ""
-              10:             String  "float"
-              13:             String  "uint"
+               9:             String  "float"
+              12:             String  "uint"
               25:             String  "Pos"
               27:             String  "// OpModuleProcessed auto-map-locations
 // OpModuleProcessed auto-map-bindings
@@ -137,14 +137,14 @@ spv.debuginfo.hlsl.geom
               14:     11(int) Constant 32
               15:     11(int) Constant 6
               16:     11(int) Constant 0
-              12:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 2(DebugTypeBasic) 13 14 15 16
+              13:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 2(DebugTypeBasic) 12 14 15 16
               17:     11(int) Constant 3
-               9:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 2(DebugTypeBasic) 10 14 17 16
+              10:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 2(DebugTypeBasic) 9 14 17 16
               18:             TypeVector 8(float) 4
               19:     11(int) Constant 4
-              20:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 6(DebugTypeVector) 9 19
+              20:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 6(DebugTypeVector) 10 19
               21:             TypeVector 8(float) 3
-              22:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 6(DebugTypeVector) 9 17
+              22:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 6(DebugTypeVector) 10 17
     23(VSOutput):             TypeStruct 18(fvec4) 21(fvec3) 21(fvec3)
               26:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 35(DebugSource) 1 27
               28:     11(int) Constant 37
@@ -166,8 +166,8 @@ spv.debuginfo.hlsl.geom
               44:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 25 20 26 45 29 16 16 17
               48:     11(int) Constant 46
               49:     11(int) Constant 19
-              46:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 47 12 26 48 49 16 16 17
-              50:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 47 12 26 48 49 16 16 17
+              46:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 47 13 26 48 49 16 16 17
+              50:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 47 13 26 48 49 16 16 17
               53:     11(int) Constant 50
               51:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 52 22 26 53 28 16 16 17
               54:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 52 22 26 53 28 16 16 17
@@ -177,14 +177,14 @@ spv.debuginfo.hlsl.geom
               59:             TypePointer Function 43(GSOutput)
               60:             TypePointer Function 11(int)
               61:             TypeFunction 4 42(ptr) 59(ptr) 60(ptr) 60(ptr)
-              62:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 8(DebugTypeFunction) 17 4 41 57 12 12
+              62:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 8(DebugTypeFunction) 17 4 41 57 13 13
               69:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 20(DebugFunction) 68 62 26 16 16 38 68 17 16
               73:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 74 41 26 16 16 69 19 37
               76:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 31(DebugExpression)
               79:     11(int) Constant 2
               77:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 78 57 26 16 16 69 19 79
-              81:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 82 12 26 16 16 69 19 17
-              84:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 47 12 26 16 16 69 19 19
+              81:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 82 13 26 16 16 69 19 17
+              84:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 47 13 26 16 16 69 19 19
               89:     11(int) Constant 57
               90:             TypeInt 32 1
               92:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 2(DebugTypeBasic) 91 14 19 16
@@ -256,9 +256,9 @@ spv.debuginfo.hlsl.geom
              256:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 18(DebugGlobalVariable) 257 20 26 253 16 38 257 255(outStream.Pos) 162
              260:             TypePointer Output 11(int)
 261(outStream.ViewportIndex):    260(ptr) Variable Output
-             262:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 18(DebugGlobalVariable) 263 12 26 253 16 38 263 261(outStream.ViewportIndex) 162
+             262:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 18(DebugGlobalVariable) 263 13 26 253 16 38 263 261(outStream.ViewportIndex) 162
 266(outStream.PrimitiveID):    260(ptr) Variable Output
-             267:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 18(DebugGlobalVariable) 268 12 26 253 16 38 268 266(outStream.PrimitiveID) 162
+             267:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 18(DebugGlobalVariable) 268 13 26 253 16 38 268 266(outStream.PrimitiveID) 162
              271:             TypePointer Output 21(fvec3)
 272(outStream.Normal):    271(ptr) Variable Output
              273:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 18(DebugGlobalVariable) 274 22 26 253 16 38 274 272(outStream.Normal) 162

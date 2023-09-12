@@ -859,11 +859,19 @@ Id Builder::makeBoolDebugType(int const size)
 
 Id Builder::makeIntegerDebugType(int const width, bool const hasSign)
 {
+    const char* typeName = nullptr;
+    switch (width) {
+        case 8:  typeName = hasSign ? "int8_t" : "uint8_t"; break;
+        case 16: typeName = hasSign ? "int16_t" : "uint16_t"; break;
+        case 64: typeName = hasSign ? "int64_t" : "uint64_t"; break;
+        default: typeName = hasSign ? "int" : "uint";
+    }
+    auto nameId = getStringId(typeName);
     // try to find it
     Instruction* type;
     for (int t = 0; t < (int)groupedDebugTypes[NonSemanticShaderDebugInfo100DebugTypeBasic].size(); ++t) {
         type = groupedDebugTypes[NonSemanticShaderDebugInfo100DebugTypeBasic][t];
-        if (type->getIdOperand(0) == (hasSign ? getStringId("int") : getStringId("uint")) &&
+        if (type->getIdOperand(0) == nameId &&
             type->getIdOperand(1) == static_cast<unsigned int>(width) &&
             type->getIdOperand(2) == (hasSign ? NonSemanticShaderDebugInfo100Signed : NonSemanticShaderDebugInfo100Unsigned))
             return type->getResultId();
@@ -873,11 +881,7 @@ Id Builder::makeIntegerDebugType(int const width, bool const hasSign)
     type = new Instruction(getUniqueId(), makeVoidType(), OpExtInst);
     type->addIdOperand(nonSemanticShaderDebugInfo);
     type->addImmediateOperand(NonSemanticShaderDebugInfo100DebugTypeBasic);
-    if(hasSign == true) {
-        type->addIdOperand(getStringId("int")); // name id
-    } else {
-        type->addIdOperand(getStringId("uint")); // name id
-    }
+    type->addIdOperand(nameId); // name id
     type->addIdOperand(makeUintConstant(width)); // size id
     if(hasSign == true) {
         type->addIdOperand(makeUintConstant(NonSemanticShaderDebugInfo100Signed)); // encoding id
@@ -895,11 +899,18 @@ Id Builder::makeIntegerDebugType(int const width, bool const hasSign)
 
 Id Builder::makeFloatDebugType(int const width)
 {
+    const char* typeName = nullptr;
+    switch (width) {
+        case 16: typeName = "float16_t"; break;
+        case 64: typeName = "double"; break;
+        default: typeName = "float"; break;
+    }
+    auto nameId = getStringId(typeName);
     // try to find it
     Instruction* type;
     for (int t = 0; t < (int)groupedDebugTypes[NonSemanticShaderDebugInfo100DebugTypeBasic].size(); ++t) {
         type = groupedDebugTypes[NonSemanticShaderDebugInfo100DebugTypeBasic][t];
-        if (type->getIdOperand(0) == getStringId("float") &&
+        if (type->getIdOperand(0) == nameId &&
             type->getIdOperand(1) == static_cast<unsigned int>(width) &&
             type->getIdOperand(2) == NonSemanticShaderDebugInfo100Float)
             return type->getResultId();
@@ -909,7 +920,7 @@ Id Builder::makeFloatDebugType(int const width)
     type = new Instruction(getUniqueId(), makeVoidType(), OpExtInst);
     type->addIdOperand(nonSemanticShaderDebugInfo);
     type->addImmediateOperand(NonSemanticShaderDebugInfo100DebugTypeBasic);
-    type->addIdOperand(getStringId("float")); // name id
+    type->addIdOperand(nameId); // name id
     type->addIdOperand(makeUintConstant(width)); // size id
     type->addIdOperand(makeUintConstant(NonSemanticShaderDebugInfo100Float)); // encoding id
     type->addIdOperand(makeUintConstant(NonSemanticShaderDebugInfo100None)); // flags id
