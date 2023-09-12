@@ -2647,28 +2647,42 @@ TIntermTyped* TIntermediate::addSwizzle(TSwizzleSelectors<selectorType>& selecto
 // 'swizzleOkay' says whether or not it is okay to consider a swizzle
 // a valid part of the dereference chain.
 //
-// 'BufferReferenceOk' says if type is buffer_reference, the routine stop to find the most left node.
+// 'bufferReferenceOk' says if type is buffer_reference, the routine will stop to find the most left node.
 //
+// 'proc' is an optional function to run on each node that is processed during the traversal. 'proc' must
+// return true to continue the traversal, or false to end the traversal early.
 //
 
-const TIntermTyped* TIntermediate::findLValueBase(const TIntermTyped* node, bool swizzleOkay , bool bufferReferenceOk)
+const TIntermTyped* TIntermediate::traverseLValueBase(const TIntermTyped* node, bool swizzleOkay,
+                                                      bool bufferReferenceOk,
+                                                      std::function<bool(const TIntermNode&)> proc)
 {
     do {
         const TIntermBinary* binary = node->getAsBinaryNode();
-        if (binary == nullptr)
+        if (binary == nullptr) {
+            if (proc) {
+                proc(*node);
+            }
             return node;
+        }
         TOperator op = binary->getOp();
-        if (op != EOpIndexDirect && op != EOpIndexIndirect && op != EOpIndexDirectStruct && op != EOpVectorSwizzle && op != EOpMatrixSwizzle)
+        if (op != EOpIndexDirect && op != EOpIndexIndirect && op != EOpIndexDirectStruct && op != EOpVectorSwizzle &&
+            op != EOpMatrixSwizzle)
             return nullptr;
-        if (! swizzleOkay) {
+        if (!swizzleOkay) {
             if (op == EOpVectorSwizzle || op == EOpMatrixSwizzle)
                 return nullptr;
             if ((op == EOpIndexDirect || op == EOpIndexIndirect) &&
                 (binary->getLeft()->getType().isVector() || binary->getLeft()->getType().isScalar()) &&
-                ! binary->getLeft()->getType().isArray())
+                !binary->getLeft()->getType().isArray())
                 return nullptr;
         }
-        node = node->getAsBinaryNode()->getLeft();
+        if (proc) {
+            if (!proc(*node)) {
+                return node;
+            }
+        }
+        node = binary->getLeft();
         if (bufferReferenceOk && node->isReference())
             return node;
     } while (true);
