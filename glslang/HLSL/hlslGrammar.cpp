@@ -2623,6 +2623,7 @@ bool HlslGrammar::acceptStructBufferType(TType& type)
     if (hasTemplateType) {
         if (! acceptTokenClass(EHTokLeftAngle)) {
             expected("left angle bracket");
+            delete templateType;
             return false;
         }
     
@@ -3898,11 +3899,13 @@ void HlslGrammar::acceptAttributes(TAttributes& attributes)
         // RIGHT_BRACKET
         if (!acceptTokenClass(EHTokRightBracket)) {
             expected("]");
+            delete expressions;
             return;
         }
         // another RIGHT_BRACKET?
         if (doubleBrackets && !acceptTokenClass(EHTokRightBracket)) {
             expected("]]");
+            delete expressions;
             return;
         }
 

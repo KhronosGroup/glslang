@@ -709,6 +709,8 @@ TIntermTyped* HlslParseContext::handleVariable(const TSourceLoc& loc, const TStr
     if (variable->getType().getQualifier().isIo())
         intermediate.addIoAccessed(*string);
 
+    delete variable;
+
     return node;
 }
 
@@ -3342,6 +3344,7 @@ TIntermAggregate* HlslParseContext::handleSamplerTextureCombine(const TSourceLoc
 
         if (texSymbol == nullptr) {
             error(loc, "unable to find texture symbol", "", "");
+            delete txcombine;
             return nullptr;
         }
 

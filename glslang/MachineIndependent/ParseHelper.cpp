@@ -519,6 +519,8 @@ TIntermTyped* TParseContext::handleVariable(const TSourceLoc& loc, TSymbol* symb
         intermediate.setUseVulkanMemoryModel();
     }
 
+    delete variable;
+
     return node;
 }
 

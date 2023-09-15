@@ -1692,7 +1692,12 @@ public:
                                 qualifier.storage = p.qualifier.storage;
                                 referentType = p.clone();
                             }
-    virtual ~TType() {}
+    virtual ~TType()
+    {
+        delete spirvType;
+        delete arraySizes;
+        delete typeParameters;
+    }
 
     // Not for use across pool pops; it will cause multiple instances of TType to point to the same information.
     // This only works if that information (like a structure's list of types) does not change and

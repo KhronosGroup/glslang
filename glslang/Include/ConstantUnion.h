@@ -876,7 +876,10 @@ public:
     POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
 
     TConstUnionArray() : unionArray(nullptr) { }
-    virtual ~TConstUnionArray() { }
+    virtual ~TConstUnionArray()
+    {
+        delete unionArray;
+    }
 
     explicit TConstUnionArray(int size)
     {
