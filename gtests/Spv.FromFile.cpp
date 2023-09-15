@@ -529,6 +529,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.ext.texture_shadow_lod.frag",
         "spv.ext.texture_shadow_lod.error.frag",
         "spv.floatFetch.frag",
+        "spv.atomicRvalue.error.vert",
     })),
     FileNameAsCustomTestSuffix
 );
