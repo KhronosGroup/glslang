@@ -1068,8 +1068,8 @@ struct DoPreprocessing {
                     EShOptimizationLevel, EShMessages)
     {
         // This is a list of tokens that do not require a space before or after.
-        static const std::string unNeededSpaceTokens = ";()[]";
-        static const std::string noSpaceBeforeTokens = ",";
+        static const std::string noNeededSpaceBeforeTokens = ";)[].,";
+        static const std::string noNeededSpaceAfterTokens = ".([";
         glslang::TPpToken ppToken;
 
         parseContext.setScanner(&input);
@@ -1142,6 +1142,7 @@ struct DoPreprocessing {
         });
 
         int lastToken = EndOfInput; // lastToken records the last token processed.
+        std::string lastTokenName;
         do {
             int token = ppContext.tokenize(ppToken);
             if (token == EndOfInput)
@@ -1160,12 +1161,23 @@ struct DoPreprocessing {
             // Output a space in between tokens, but not at the start of a line,
             // and also not around special tokens. This helps with readability
             // and consistency.
-            if (!isNewString && !isNewLine && lastToken != EndOfInput &&
-                (unNeededSpaceTokens.find((char)token) == std::string::npos) &&
-                (unNeededSpaceTokens.find((char)lastToken) == std::string::npos) &&
-                (noSpaceBeforeTokens.find((char)token) == std::string::npos)) {
-                outputBuffer += ' ';
+            if (!isNewString && !isNewLine && lastToken != EndOfInput) {
+                // left parenthesis need a leading space, except it is in a function-call-like context.
+                // examples: `for (xxx)`, `a * (b + c)`, `vec(2.0)`, `foo(x, y, z)`
+                if (token == '(') {
+                    if (lastToken != PpAtomIdentifier ||
+                        lastTokenName == "if" ||
+                        lastTokenName == "for" ||
+                        lastTokenName == "while" ||
+                        lastTokenName == "switch")
+                        outputBuffer += ' ';
+                } else if ((noNeededSpaceBeforeTokens.find((char)token) == std::string::npos) &&
+                    (noNeededSpaceAfterTokens.find((char)lastToken) == std::string::npos)) {
+                    outputBuffer += ' ';
+                }
             }
+            if (token == PpAtomIdentifier)
+                lastTokenName = ppToken.name;
             lastToken = token;
             if (token == PpAtomConstString)
                 outputBuffer += "\"";

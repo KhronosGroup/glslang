@@ -23,7 +23,7 @@
 
 #line 8
 
-void main(){
+void main() {
   gl_Position = vec4(10);
 }
 
