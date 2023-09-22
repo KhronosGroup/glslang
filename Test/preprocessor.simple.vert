@@ -46,6 +46,8 @@ struct S {
 	vec3 b = a.yzy;   \
 	vec3 b = a.z;
 
+void bar(int x) {}
+
 void foo()
 {
     S s;
@@ -55,6 +57,9 @@ void foo()
     s.member2.yzy();
     s.member2.xyz();
     s.member2.yzy;
+    for(int i = 0;i < 100; i = i + 1) {
+      bar (i)
+    }
     FUN_MAC()
     yzy
 

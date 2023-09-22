@@ -7,6 +7,6 @@
 
 #extension unknown_extension : require
 
-int main(){
+int main() {
 }
 

@@ -9,6 +9,6 @@
 
 #pragma once
 
-int main(){
+int main() {
 }
 
