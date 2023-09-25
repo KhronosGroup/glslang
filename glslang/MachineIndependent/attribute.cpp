@@ -132,8 +132,7 @@ TAttributeType TParseContext::attributeFromName(const TString& name) const
 // Make an initial leaf for the grammar from a no-argument attribute
 TAttributes* TParseContext::makeAttributes(const TString& identifier) const
 {
-    TAttributes *attributes = nullptr;
-    attributes = NewPoolObject(attributes);
+    auto* attributes = NewPoolObject<TAttributes>();
     TAttributeArgs args = { attributeFromName(identifier), nullptr };
     attributes->push_back(args);
     return attributes;
@@ -142,8 +141,7 @@ TAttributes* TParseContext::makeAttributes(const TString& identifier) const
 // Make an initial leaf for the grammar from a one-argument attribute
 TAttributes* TParseContext::makeAttributes(const TString& identifier, TIntermNode* node) const
 {
-    TAttributes *attributes = nullptr;
-    attributes = NewPoolObject(attributes);
+    auto* attributes = NewPoolObject<TAttributes>();
 
     // for now, node is always a simple single expression, but other code expects
     // a list, so make it so

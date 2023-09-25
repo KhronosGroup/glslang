@@ -46,7 +46,6 @@ namespace glslang {
 //
 class TBuiltInParseablesHlsl : public TBuiltInParseables {
 public:
-    POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
     TBuiltInParseablesHlsl();
     void initialize(int version, EProfile, const SpvVersion& spvVersion);
     void initialize(const TBuiltInResource& resources, int version, EProfile, const SpvVersion& spvVersion, EShLanguage);

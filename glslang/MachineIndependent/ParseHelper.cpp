@@ -503,7 +503,7 @@ TIntermTyped* TParseContext::handleVariable(const TSourceLoc& loc, TSymbol* symb
 
         // Recovery, if it wasn't found or was not a variable.
         if (! variable)
-            variable = new TVariable(string, TType(EbtVoid));
+            variable = NewPoolObject<TVariable>(string, TType(EbtVoid));
 
         if (variable->getType().getQualifier().isFrontEndConstant())
             node = intermediate.addConstantUnion(variable->getConstArray(), variable->getType(), loc);
@@ -1232,7 +1232,7 @@ TIntermAggregate* TParseContext::handleFunctionDefinition(const TSourceLoc& loc,
         // Remember the return type for later checking for RETURN statements.
         currentFunctionType = &(prevDec->getType());
     } else
-        currentFunctionType = new TType(EbtVoid);
+        currentFunctionType = NewPoolObject<TType>(EbtVoid);
     functionReturnsValue = false;
 
     // Check for entry point
@@ -1268,11 +1268,11 @@ TIntermAggregate* TParseContext::handleFunctionDefinition(const TSourceLoc& loc,
     // Also, accumulate the list of parameters into the HIL, so lower level code
     // knows where to find parameters.
     //
-    TIntermAggregate* paramNodes = new TIntermAggregate;
+    TIntermAggregate* paramNodes = NewPoolObject<TIntermAggregate>();
     for (int i = 0; i < function.getParamCount(); i++) {
         TParameter& param = function[i];
         if (param.name != nullptr) {
-            TVariable *variable = new TVariable(param.name, *param.type);
+            TVariable *variable = NewPoolObject<TVariable>(param.name, *param.type);
 
             // Insert the parameters with name in the symbol table.
             if (! symbolTable.insert(*variable))
@@ -2976,7 +2976,7 @@ TFunction* TParseContext::handleConstructorCall(const TSourceLoc& loc, const TPu
 
     TString empty("");
 
-    return new TFunction(&empty, type, op);
+    return NewPoolObject<TFunction>(&empty, type, op);
 }
 
 // Handle seeing a precision qualifier in the grammar.
@@ -3049,7 +3049,7 @@ void TParseContext::variableCheck(TIntermTyped*& nodePtr)
 
         // Add to symbol table to prevent future error messages on the same name
         if (symbol->getName().size() > 0) {
-            TVariable* fakeVariable = new TVariable(&symbol->getName(), TType(EbtFloat));
+            TVariable* fakeVariable = NewPoolObject<TVariable>(&symbol->getName(), TType(EbtFloat));
             symbolTable.insert(*fakeVariable);
 
             // substitute a symbol node for this new variable
@@ -4605,7 +4605,7 @@ void TParseContext::declareArray(const TSourceLoc& loc, const TString& identifie
             // Successfully process a new definition.
             // (Redeclarations have to take place at the same scope; otherwise they are hiding declarations)
             //
-            symbol = new TVariable(&identifier, type);
+            symbol = NewPoolObject<TVariable>(&identifier, type);
             symbolTable.insert(*symbol);
             if (symbolTable.atGlobalLevel())
                 trackLinkage(*symbol);
@@ -7532,7 +7532,7 @@ void TParseContext::vkRelaxedRemapUniformMembers(const TSourceLoc& loc, const TP
                       memberType.qualifier.storage = publicType.qualifier.storage;
                       memberType.shaderQualifiers = publicType.shaderQualifiers;
 
-                      TString& structMemberName = *NewPoolTString(path.c_str()); // A copy is required due to declareVariable() signature.
+                      TString& structMemberName = *NewPoolObject<TString>(path.c_str()); // A copy is required due to declareVariable() signature.
                       declareVariable(loc, structMemberName, memberType, nullptr, nullptr);
                   });
 }
@@ -7546,9 +7546,9 @@ void TParseContext::vkRelaxedRemapFunctionParameter(TFunction* function, TParame
 
     ForEachOpaque(*param.type, (param.name ? *param.name : param.type->getFieldName()),
                   [function, param, newParams](const TType& type, const TString& path) {
-                      TString* memberName = NewPoolTString(path.c_str());
+                      TString* memberName = NewPoolObject<TString>(path.c_str());
 
-                      TType* memberType = new TType();
+                      TType* memberType = NewPoolObject<TType>();
                       memberType->shallowCopy(type);
                       memberType->getQualifier().storage = param.type->getQualifier().storage;
                       memberType->clearArraySizes();
@@ -7611,7 +7611,7 @@ TIntermNode* TParseContext::vkRelaxedRemapFunctionArgument(const TSourceLoc& loc
     AccessChainTraverser accessChainTraverser{};
     intermTyped->traverse(&accessChainTraverser);
 
-    TParameter param = { NewPoolTString(accessChainTraverser.path.c_str()), new TType };
+    TParameter param = { NewPoolObject<TString>(accessChainTraverser.path.c_str()), NewPoolObject<TType>() };
     param.type->shallowCopy(intermTyped->getType());
 
     std::vector<int> newParams = {};
@@ -7893,8 +7893,8 @@ void TParseContext::inheritGlobalDefaults(TQualifier& dst) const
 //
 TVariable* TParseContext::makeInternalVariable(const char* name, const TType& type) const
 {
-    TString* nameString = NewPoolTString(name);
-    TVariable* variable = new TVariable(nameString, type);
+    TString* nameString = NewPoolObject<TString>(name);
+    TVariable* variable = NewPoolObject<TVariable>(nameString, type);
     symbolTable.makeInternalVariable(*variable);
 
     return variable;
@@ -7909,7 +7909,7 @@ TVariable* TParseContext::makeInternalVariable(const char* name, const TType& ty
 TVariable* TParseContext::declareNonArray(const TSourceLoc& loc, const TString& identifier, const TType& type)
 {
     // make a new variable
-    TVariable* variable = new TVariable(&identifier, type);
+    TVariable* variable = NewPoolObject<TVariable>(&identifier, type);
 
     ioArrayCheck(loc, type, identifier);
 
@@ -9013,7 +9013,7 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
         // as a referent struct type with no members. Replace the referent type with
         // blockType.
         TType blockNameType(EbtReference, blockType, *blockName);
-        TVariable* blockNameVar = new TVariable(blockName, blockNameType, true);
+        TVariable* blockNameVar = NewPoolObject<TVariable>(blockName, blockNameType, true);
         if (! symbolTable.insert(*blockNameVar)) {
             TSymbol* existingName = symbolTable.find(*blockName);
             if (existingName->getType().isReference() &&
@@ -9043,7 +9043,7 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
         // the instances point to.
         //
         TType blockNameType(EbtBlock, blockType.getQualifier().storage);
-        TVariable* blockNameVar = new TVariable(blockName, blockNameType);
+        TVariable* blockNameVar = NewPoolObject<TVariable>(blockName, blockNameType);
         if (! symbolTable.insert(*blockNameVar)) {
             TSymbol* existingName = symbolTable.find(*blockName);
             if (existingName->getType().getBasicType() == EbtBlock) {
@@ -9061,9 +9061,9 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
     // Add the variable, as anonymous or named instanceName.
     // Make an anonymous variable if no name was provided.
     if (! instanceName)
-        instanceName = NewPoolTString("");
+        instanceName = NewPoolObject<TString>("");
 
-    TVariable& variable = *new TVariable(instanceName, blockType);
+    TVariable& variable = *NewPoolObject<TVariable>(instanceName, blockType);
     if (! symbolTable.insert(variable)) {
         if (*instanceName == "")
             error(loc, "nameless block contains a member that already has a name at global scope", blockName->c_str(), "");
@@ -9472,7 +9472,7 @@ void TParseContext::addQualifierToExisting(const TSourceLoc& loc, TQualifier qua
         TTypeList typeList;
         TType blockType(&typeList, identifier, qualifier);
         TType blockNameType(EbtReference, blockType, identifier);
-        TVariable* blockNameVar = new TVariable(&identifier, blockNameType, true);
+        TVariable* blockNameVar = NewPoolObject<TVariable>(&identifier, blockNameType, true);
         if (! symbolTable.insert(*blockNameVar)) {
             error(loc, "block name cannot redefine a non-block name", blockName->c_str(), "");
         }
@@ -9974,11 +9974,11 @@ TIntermNode* TParseContext::addSwitch(const TSourceLoc& loc, TIntermTyped* expre
         switchSequence->push_back(lastStatements);
     }
 
-    TIntermAggregate* body = new TIntermAggregate(EOpSequence);
+    TIntermAggregate* body = NewPoolObject<TIntermAggregate>(EOpSequence);
     body->getSequence() = *switchSequenceStack.back();
     body->setLoc(loc);
 
-    TIntermSwitch* switchNode = new TIntermSwitch(expression, body);
+    TIntermSwitch* switchNode = NewPoolObject<TIntermSwitch>(expression, body);
     switchNode->setLoc(loc);
 
     return switchNode;

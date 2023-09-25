@@ -41,6 +41,7 @@
 #include "../MachineIndependent/Versions.h"
 
 #include <cstring>
+#include <memory>
 #include <vector>
 
 #ifdef _WIN32
@@ -689,14 +690,14 @@ public:
     GLSLANG_EXPORT const char* getInfoLog();
     GLSLANG_EXPORT const char* getInfoDebugLog();
     EShLanguage getStage() const { return stage; }
-    TIntermediate* getIntermediate() const { return intermediate; }
+    TIntermediate* getIntermediate() const { return intermediate.get(); }
 
 protected:
-    TPoolAllocator* pool;
+    std::unique_ptr<TPoolAllocator> pool;
     EShLanguage stage;
-    TCompiler* compiler;
-    TIntermediate* intermediate;
-    TInfoSink* infoSink;
+    std::unique_ptr<TCompiler> compiler;
+    std::shared_ptr<TIntermediate> intermediate;
+    std::unique_ptr<TInfoSink> infoSink;
     // strings and lengths follow the standard for glShaderSource:
     //     strings is an array of numStrings pointers to string data.
     //     lengths can be null, but if not it is an array of numStrings
@@ -862,7 +863,7 @@ public:
     GLSLANG_EXPORT const char* getInfoLog();
     GLSLANG_EXPORT const char* getInfoDebugLog();
 
-    TIntermediate* getIntermediate(EShLanguage stage) const { return intermediate[stage]; }
+    TIntermediate* getIntermediate(EShLanguage stage) const { return intermediate[stage].get(); }
 
     // Reflection Interface
 
@@ -961,12 +962,12 @@ protected:
     GLSLANG_EXPORT bool linkStage(EShLanguage, EShMessages);
     GLSLANG_EXPORT bool crossStageCheck(EShMessages);
 
-    TPoolAllocator* pool;
+    std::unique_ptr<TPoolAllocator> pool;
     std::list<TShader*> stages[EShLangCount];
-    TIntermediate* intermediate[EShLangCount];
+    std::shared_ptr<TIntermediate> intermediate[EShLangCount];
     bool newedIntermediate[EShLangCount];      // track which intermediate were "new" versus reusing a singleton unit in a stage
-    TInfoSink* infoSink;
-    TReflection* reflection;
+    std::unique_ptr<TInfoSink> infoSink;
+    std::unique_ptr<TReflection> reflection;
     bool linked;
 
 private:

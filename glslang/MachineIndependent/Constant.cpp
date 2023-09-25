@@ -353,7 +353,7 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TIntermTyped* right
         return nullptr;
     }
 
-    TIntermConstantUnion *newNode = new TIntermConstantUnion(newConstArray, returnType);
+    TIntermConstantUnion *newNode = NewPoolObject<TIntermConstantUnion>(newConstArray, returnType);
     newNode->setLoc(getLoc());
 
     return newNode;
@@ -939,7 +939,7 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType) 
         }
     }
 
-    TIntermConstantUnion *newNode = new TIntermConstantUnion(newConstArray, returnType);
+    TIntermConstantUnion *newNode = NewPoolObject<TIntermConstantUnion>(newConstArray, returnType);
     newNode->getWritableType().getQualifier().storage = EvqConst;
     newNode->setLoc(getLoc());
 
@@ -1281,7 +1281,7 @@ TIntermTyped* TIntermediate::fold(TIntermAggregate* aggrNode)
         }
     }
 
-    TIntermConstantUnion *newNode = new TIntermConstantUnion(newConstArray, aggrNode->getType());
+    TIntermConstantUnion *newNode = NewPoolObject<TIntermConstantUnion>(newConstArray, aggrNode->getType());
     newNode->getWritableType().getQualifier().storage = EvqConst;
     newNode->setLoc(aggrNode->getLoc());
 

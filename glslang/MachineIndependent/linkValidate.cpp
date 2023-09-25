@@ -673,7 +673,6 @@ void TIntermediate::mergeBlockDefinitions(TInfoSink& infoSink, TIntermSymbol* bl
                 TIntermTyped* newConstNode = unit->addConstantUnion(newIdx, node->getRight()->getLoc());
 
                 node->setRight(newConstNode);
-                delete constNode;
 
                 return true;
             }

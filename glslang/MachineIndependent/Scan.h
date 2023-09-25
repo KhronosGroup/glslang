@@ -65,7 +65,7 @@ public:
         }
         if (names != nullptr) {
             for (int i = 0; i < numSources; ++i)
-                loc[i].name = names[i] != nullptr ? NewPoolTString(names[i]) : nullptr;
+                loc[i].name = names[i] != nullptr ? NewPoolObject<TString>(names[i]) : nullptr;
         }
         loc[currentSource].line = 1;
         logicalSourceLoc.init(1);
@@ -170,14 +170,14 @@ public:
     // for #line override in filename based parsing
     void setFile(const char* filename)
     {
-        TString* fn_tstr = NewPoolTString(filename);
+        TString* fn_tstr = NewPoolObject<TString>(filename);
         logicalSourceLoc.name = fn_tstr;
         loc[getLastValidSourceIndex()].name = fn_tstr;
     }
 
     void setFile(const char* filename, int i)
     {
-        TString* fn_tstr = NewPoolTString(filename);
+        TString* fn_tstr = NewPoolObject<TString>(filename);
         if (i == getLastValidSourceIndex()) {
             logicalSourceLoc.name = fn_tstr;
         }

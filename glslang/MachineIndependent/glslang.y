@@ -453,7 +453,6 @@ integer_expression
 function_call
     : function_call_or_method {
         $$ = parseContext.handleFunctionCall($1.loc, $1.function, $1.intermNode);
-        delete $1.function;
     }
     ;
 
@@ -494,7 +493,7 @@ function_call_header_with_parameters
         }
         else
         {
-            TParameter param = { 0, new TType };
+            TParameter param = { 0, NewPoolObject<TType>() };
             param.type->shallowCopy($2->getType());
 
             $1.function->addParameter(param);
@@ -513,7 +512,7 @@ function_call_header_with_parameters
         }
         else
         {
-            TParameter param = { 0, new TType };
+            TParameter param = { 0, NewPoolObject<TType>() };
             param.type->shallowCopy($3->getType());
 
             $1.function->addParameter(param);
@@ -546,13 +545,13 @@ function_identifier
 
         TIntermMethod* method = $1->getAsMethodNode();
         if (method) {
-            $$.function = new TFunction(&method->getMethodName(), TType(EbtInt), EOpArrayLength);
+            $$.function = NewPoolObject<TFunction>(&method->getMethodName(), TType(EbtInt), EOpArrayLength);
             $$.intermNode = method->getObject();
         } else {
             TIntermSymbol* symbol = $1->getAsSymbolNode();
             if (symbol) {
                 parseContext.reservedErrorCheck(symbol->getLoc(), symbol->getName());
-                TFunction *function = new TFunction(&symbol->getName(), TType(EbtVoid));
+                TFunction *function = NewPoolObject<TFunction>(&symbol->getName(), TType(EbtVoid));
                 $$.function = function;
             } else
                 parseContext.error($1->getLoc(), "function call, method, or subroutine call expected", "", "");
@@ -560,8 +559,8 @@ function_identifier
 
         if ($$.function == 0) {
             // error recover
-            TString* empty = NewPoolTString("");
-            $$.function = new TFunction(empty, TType(EbtVoid), EOpNull);
+            TString* empty = NewPoolObject<TString>("");
+            $$.function = NewPoolObject<TFunction>(empty, TType(EbtVoid), EOpNull);
         }
     }
     | non_uniform_qualifier {
@@ -945,7 +944,7 @@ block_structure
 
 identifier_list
     : COMMA IDENTIFIER {
-        $$ = new TIdentifierList;
+        $$ = NewPoolObject<TIdentifierList>();
         $$->push_back($2.string);
     }
     | identifier_list COMMA IDENTIFIER {
@@ -1002,8 +1001,6 @@ function_header_with_parameters
             else
                 parseContext.vkRelaxedRemapFunctionParameter($1, $2.param);
         }
-        else
-            delete $2.param.type;
     }
     | function_header_with_parameters COMMA parameter_declaration {
         //
@@ -1015,7 +1012,6 @@ function_header_with_parameters
             // This parameter > first is void
             //
             parseContext.error($2.loc, "cannot be an argument type except for '(void)'", "void", "");
-            delete $3.param.type;
         } else {
             // Add the parameter
             $$ = $1;
@@ -1044,7 +1040,7 @@ function_header
         parseContext.renameShaderFunction($2.string);
 
         // Make the function
-        function = new TFunction($2.string, type);
+        function = NewPoolObject<TFunction>($2.string, type);
         $$ = function;
     }
     ;
@@ -1062,7 +1058,7 @@ parameter_declarator
         }
         parseContext.reservedErrorCheck($2.loc, *$2.string);
 
-        TParameter param = {$2.string, new TType($1)};
+        TParameter param = {$2.string, NewPoolObject<TType>($1)};
         $$.loc = $2.loc;
         $$.param = param;
     }
@@ -1072,7 +1068,7 @@ parameter_declarator
             parseContext.profileRequires($1.loc, EEsProfile, 300, 0, "arrayed type");
             parseContext.arraySizeRequiredCheck($1.loc, *$1.arraySizes);
         }
-        TType* type = new TType($1);
+        TType* type = NewPoolObject<TType>($1);
         type->transferArraySizes($3.arraySizes);
         type->copyArrayInnerSizes($1.arraySizes);
 
@@ -1133,7 +1129,7 @@ parameter_declaration
 
 parameter_type_specifier
     : type_specifier {
-        TParameter param = { 0, new TType($1) };
+        TParameter param = { 0, NewPoolObject<TType>($1) };
         $$.param = param;
         if ($1.arraySizes)
             parseContext.arraySizeRequiredCheck($1.loc, *$1.arraySizes);
@@ -1707,12 +1703,12 @@ type_specifier
 array_specifier
     : LEFT_BRACKET RIGHT_BRACKET {
         $$.loc = $1.loc;
-        $$.arraySizes = new TArraySizes;
+        $$.arraySizes = NewPoolObject<TArraySizes>();
         $$.arraySizes->addInnerSize();
     }
     | LEFT_BRACKET conditional_expression RIGHT_BRACKET {
         $$.loc = $1.loc;
-        $$.arraySizes = new TArraySizes;
+        $$.arraySizes = NewPoolObject<TArraySizes>();
 
         TArraySize size;
         parseContext.arraySizeCheck($2->getLoc(), $2, size, "array size");
@@ -1748,13 +1744,13 @@ type_parameter_specifier
 
 type_parameter_specifier_list
     : type_specifier {
-        $$ = new TTypeParameters;
-        $$->arraySizes = new TArraySizes;
+        $$ = NewPoolObject<TTypeParameters>();
+        $$->arraySizes = NewPoolObject<TArraySizes>();
         $$->basicType = $1.basicType;
     }
     | unary_expression {
-        $$ = new TTypeParameters;
-        $$->arraySizes = new TArraySizes;
+        $$ = NewPoolObject<TTypeParameters>();
+        $$->arraySizes = NewPoolObject<TArraySizes>();
 
         TArraySize size;
         parseContext.arraySizeCheck($1->getLoc(), $1, size, "type parameter", true);
@@ -3574,10 +3570,10 @@ precision_qualifier
 struct_specifier
     : STRUCT IDENTIFIER LEFT_BRACE { parseContext.nestedStructCheck($1.loc); } struct_declaration_list RIGHT_BRACE {
 
-        TType* structure = new TType($5, *$2.string);
+        TType* structure = NewPoolObject<TType>($5, *$2.string);
         parseContext.structArrayCheck($2.loc, *structure);
 
-        TVariable* userTypeDef = new TVariable($2.string, *structure, true);
+        TVariable* userTypeDef = NewPoolObject<TVariable>($2.string, *structure, true);
         if (! parseContext.symbolTable.insert(*userTypeDef))
             parseContext.error($2.loc, "redefinition", $2.string->c_str(), "struct");
         else if (parseContext.spvVersion.vulkanRelaxed
@@ -3590,7 +3586,7 @@ struct_specifier
         --parseContext.structNestingLevel;
     }
     | STRUCT LEFT_BRACE { parseContext.nestedStructCheck($1.loc); } struct_declaration_list RIGHT_BRACE {
-        TType* structure = new TType($4, TString(""));
+        TType* structure = NewPoolObject<TType>($4, TString(""));
         $$.init($1.loc);
         $$.basicType = EbtStruct;
         $$.userDef = structure;
@@ -3665,7 +3661,7 @@ struct_declaration
 
 struct_declarator_list
     : struct_declarator {
-        $$ = new TTypeList;
+        $$ = NewPoolObject<TTypeList>();
         $$->push_back($1);
     }
     | struct_declarator_list COMMA struct_declarator {
@@ -3675,14 +3671,14 @@ struct_declarator_list
 
 struct_declarator
     : IDENTIFIER {
-        $$.type = new TType(EbtVoid);
+        $$.type = NewPoolObject<TType>(EbtVoid);
         $$.loc = $1.loc;
         $$.type->setFieldName(*$1.string);
     }
     | IDENTIFIER array_specifier {
         parseContext.arrayOfArrayVersionCheck($1.loc, $2.arraySizes);
 
-        $$.type = new TType(EbtVoid);
+        $$.type = NewPoolObject<TType>(EbtVoid);
         $$.loc = $1.loc;
         $$.type->setFieldName(*$1.string);
         $$.type->transferArraySizes($2.arraySizes);
@@ -3891,13 +3887,12 @@ switch_statement_nonattributed
         // start new switch sequence on the switch stack
         ++parseContext.controlFlowNestingLevel;
         ++parseContext.statementNestingLevel;
-        parseContext.switchSequenceStack.push_back(new TIntermSequence);
+        parseContext.switchSequenceStack.push_back(NewPoolObject<TIntermSequence>());
         parseContext.switchLevel.push_back(parseContext.statementNestingLevel);
         parseContext.symbolTable.push();
     }
     LEFT_BRACE switch_statement_list RIGHT_BRACE {
         $$ = parseContext.addSwitch($1.loc, $3, $7 ? $7->getAsAggregate() : 0);
-        delete parseContext.switchSequenceStack.back();
         parseContext.switchSequenceStack.pop_back();
         parseContext.switchLevel.pop_back();
         parseContext.symbolTable.pop(&parseContext.defaultPrecision[0]);

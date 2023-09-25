@@ -68,7 +68,7 @@ namespace glslang {
 TIntermSymbol* TIntermediate::addSymbol(long long id, const TString& name, const TType& type, const TConstUnionArray& constArray,
                                         TIntermTyped* constSubtree, const TSourceLoc& loc)
 {
-    TIntermSymbol* node = new TIntermSymbol(id, name, type);
+    TIntermSymbol* node = NewPoolObject<TIntermSymbol>(id, name, type);
     node->setLoc(loc);
     node->setConstArray(constArray);
     node->setConstSubtree(constSubtree);
@@ -231,7 +231,7 @@ TIntermBinary* TIntermediate::addBinaryNode(TOperator op, TIntermTyped* left, TI
     const TSourceLoc& loc) const
 {
     // build the node
-    TIntermBinary* node = new TIntermBinary(op);
+    TIntermBinary* node = NewPoolObject<TIntermBinary>(op);
     node->setLoc(loc.line != 0 ? loc : left->getLoc());
     node->setLeft(left);
     node->setRight(right);
@@ -255,7 +255,7 @@ TIntermBinary* TIntermediate::addBinaryNode(TOperator op, TIntermTyped* left, TI
 //
 TIntermUnary* TIntermediate::addUnaryNode(TOperator op, TIntermTyped* child, const TSourceLoc& loc) const
 {
-    TIntermUnary* node = new TIntermUnary(op);
+    TIntermUnary* node = NewPoolObject<TIntermUnary>(op);
     node->setLoc(loc.line != 0 ? loc : child->getLoc());
     node->setOperand(child);
 
@@ -512,11 +512,11 @@ TIntermTyped* TIntermediate::setAggregateOperator(TIntermNode* node, TOperator o
             //
             // Make an aggregate containing this node.
             //
-            aggNode = new TIntermAggregate();
+            aggNode = NewPoolObject<TIntermAggregate>();
             aggNode->getSequence().push_back(node);
         }
     } else
-        aggNode = new TIntermAggregate();
+        aggNode = NewPoolObject<TIntermAggregate>();
 
     //
     // Set the operator.
@@ -736,7 +736,7 @@ bool TIntermediate::buildConvertOp(TBasicType dst, TBasicType src, TOperator& ne
         case EbtInt64:   newOp = EOpConvInt64ToUint;   break;
         case EbtUint64:  newOp = EOpConvUint64ToUint;  break;
         // For bindless texture type conversion, add a dummy convert op, just
-        // to generate a new TIntermTyped
+        // to generate a NewPoolObject<TIntermTyped>
         // uvec2(any sampler type)
         // uvec2(any image type)
         case EbtSampler: newOp = EOpConvIntToUint;  break;
@@ -1372,7 +1372,7 @@ TIntermTyped* TIntermediate::addShapeConversion(const TType& type, TIntermTyped*
             // Note that if the node is complex (e.g, a function call), we don't want to duplicate it here
             // repeatedly, so we copy it to a temp, then use the temp.
             const int matSize = type.computeNumComponents();
-            TIntermAggregate* rhsAggregate = new TIntermAggregate();
+            TIntermAggregate* rhsAggregate = NewPoolObject<TIntermAggregate>();
 
             const bool isSimple = (node->getAsSymbolNode() != nullptr) || (node->getAsConstantUnion() != nullptr);
 
@@ -2297,7 +2297,7 @@ TIntermAggregate* TIntermediate::growAggregate(TIntermNode* left, TIntermNode* r
     if (left != nullptr)
         aggNode = left->getAsAggregate();
     if (aggNode == nullptr || aggNode->getOp() != EOpNull) {
-        aggNode = new TIntermAggregate;
+        aggNode = NewPoolObject<TIntermAggregate>();
         if (left != nullptr)
             aggNode->getSequence().push_back(left);
     }
@@ -2361,7 +2361,7 @@ TIntermAggregate* TIntermediate::makeAggregate(TIntermNode* node)
     if (node == nullptr)
         return nullptr;
 
-    TIntermAggregate* aggNode = new TIntermAggregate;
+    TIntermAggregate* aggNode = NewPoolObject<TIntermAggregate>();
     aggNode->getSequence().push_back(node);
     aggNode->setLoc(node->getLoc());
 
@@ -2373,7 +2373,7 @@ TIntermAggregate* TIntermediate::makeAggregate(TIntermNode* node, const TSourceL
     if (node == nullptr)
         return nullptr;
 
-    TIntermAggregate* aggNode = new TIntermAggregate;
+    TIntermAggregate* aggNode = NewPoolObject<TIntermAggregate>();
     aggNode->getSequence().push_back(node);
     aggNode->setLoc(loc);
 
@@ -2385,7 +2385,7 @@ TIntermAggregate* TIntermediate::makeAggregate(TIntermNode* node, const TSourceL
 //
 TIntermAggregate* TIntermediate::makeAggregate(const TSourceLoc& loc)
 {
-    TIntermAggregate* aggNode = new TIntermAggregate;
+    TIntermAggregate* aggNode = NewPoolObject<TIntermAggregate>();
     aggNode->setLoc(loc);
 
     return aggNode;
@@ -2405,7 +2405,7 @@ TIntermSelection* TIntermediate::addSelection(TIntermTyped* cond, TIntermNodePai
     // for static access analysis.
     //
 
-    TIntermSelection* node = new TIntermSelection(cond, nodePair.node1, nodePair.node2);
+    TIntermSelection* node = NewPoolObject<TIntermSelection>(cond, nodePair.node1, nodePair.node2);
     node->setLoc(loc);
 
     return node;
@@ -2432,7 +2432,7 @@ TIntermTyped* TIntermediate::addComma(TIntermTyped* left, TIntermTyped* right, c
 
 TIntermTyped* TIntermediate::addMethod(TIntermTyped* object, const TType& type, const TString* name, const TSourceLoc& loc)
 {
-    TIntermMethod* method = new TIntermMethod(object, type, *name);
+    TIntermMethod* method = NewPoolObject<TIntermMethod>(object, type, *name);
     method->setLoc(loc);
 
     return method;
@@ -2515,7 +2515,7 @@ TIntermTyped* TIntermediate::addSelection(TIntermTyped* cond, TIntermTyped* true
     //
     // Make a selection node.
     //
-    TIntermSelection* node = new TIntermSelection(cond, trueBlock, falseBlock, trueBlock->getType());
+    TIntermSelection* node = NewPoolObject<TIntermSelection>(cond, trueBlock, falseBlock, trueBlock->getType());
     node->setLoc(loc);
     node->getQualifier().precision = std::max(trueBlock->getQualifier().precision, falseBlock->getQualifier().precision);
 
@@ -2540,7 +2540,7 @@ TIntermTyped* TIntermediate::addSelection(TIntermTyped* cond, TIntermTyped* true
 
 TIntermConstantUnion* TIntermediate::addConstantUnion(const TConstUnionArray& unionArray, const TType& t, const TSourceLoc& loc, bool literal) const
 {
-    TIntermConstantUnion* node = new TIntermConstantUnion(unionArray, t);
+    TIntermConstantUnion* node = NewPoolObject<TIntermConstantUnion>(unionArray, t);
     node->getQualifier().storage = EvqConst;
     node->setLoc(loc);
     if (literal)
@@ -2672,7 +2672,7 @@ template TIntermTyped* TIntermediate::addSwizzle<TMatrixSelector>(TSwizzleSelect
 template<typename selectorType>
 TIntermTyped* TIntermediate::addSwizzle(TSwizzleSelectors<selectorType>& selector, const TSourceLoc& loc)
 {
-    TIntermAggregate* node = new TIntermAggregate(EOpSequence);
+    TIntermAggregate* node = NewPoolObject<TIntermAggregate>(EOpSequence);
 
     node->setLoc(loc);
     TIntermSequence &sequenceVector = node->getSequence();
@@ -2740,7 +2740,7 @@ const TIntermTyped* TIntermediate::traverseLValueBase(const TIntermTyped* node, 
 TIntermLoop* TIntermediate::addLoop(TIntermNode* body, TIntermTyped* test, TIntermTyped* terminal, bool testFirst,
     const TSourceLoc& loc)
 {
-    TIntermLoop* node = new TIntermLoop(body, test, terminal, testFirst);
+    TIntermLoop* node = NewPoolObject<TIntermLoop>(body, test, terminal, testFirst);
     node->setLoc(loc);
 
     return node;
@@ -2752,7 +2752,7 @@ TIntermLoop* TIntermediate::addLoop(TIntermNode* body, TIntermTyped* test, TInte
 TIntermAggregate* TIntermediate::addForLoop(TIntermNode* body, TIntermNode* initializer, TIntermTyped* test,
     TIntermTyped* terminal, bool testFirst, const TSourceLoc& loc, TIntermLoop*& node)
 {
-    node = new TIntermLoop(body, test, terminal, testFirst);
+    node = NewPoolObject<TIntermLoop>(body, test, terminal, testFirst);
     node->setLoc(loc);
 
     // make a sequence of the initializer and statement, but try to reuse the
@@ -2778,7 +2778,7 @@ TIntermBranch* TIntermediate::addBranch(TOperator branchOp, const TSourceLoc& lo
 
 TIntermBranch* TIntermediate::addBranch(TOperator branchOp, TIntermTyped* expression, const TSourceLoc& loc)
 {
-    TIntermBranch* node = new TIntermBranch(branchOp, expression);
+    TIntermBranch* node = NewPoolObject<TIntermBranch>(branchOp, expression);
     node->setLoc(loc);
 
     return node;
@@ -3963,7 +3963,7 @@ TIntermTyped* TIntermediate::promoteConstantUnion(TBasicType promoteTo, TIntermC
 void TIntermAggregate::setPragmaTable(const TPragmaTable& pTable)
 {
     assert(pragmaTable == nullptr);
-    pragmaTable = new TPragmaTable;
+    pragmaTable = NewPoolObject<TPragmaTable>();
     *pragmaTable = pTable;
 }
 

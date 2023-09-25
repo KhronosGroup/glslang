@@ -74,14 +74,6 @@ struct TArraySize {
 // That is, TSmallArrayVector should be more focused on mechanism and TArraySizes on policy.
 //
 struct TSmallArrayVector {
-    //
-    // TODO: memory: TSmallArrayVector is intended to be smaller.
-    // Almost all arrays could be handled by two sizes each fitting
-    // in 16 bits, needing a real vector only in the cases where there
-    // are more than 3 sizes or a size needing more than 16 bits.
-    //
-    POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
-
     TSmallArrayVector() : sizes(nullptr) { }
     virtual ~TSmallArrayVector() { dealloc(); }
 
@@ -204,11 +196,10 @@ protected:
     void alloc()
     {
         if (sizes == nullptr)
-            sizes = new TVector<TArraySize>;
+            sizes = NewPoolObject<TVector<TArraySize>>();
     }
     void dealloc()
     {
-        delete sizes;
         sizes = nullptr;
     }
 
@@ -229,8 +220,6 @@ protected:
 //  - outer-most to inner-most
 //
 struct TArraySizes {
-    POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
-
     TArraySizes() : implicitArraySize(0), implicitlySized(true), variablyIndexed(false){ }
 
     // For breaking into two non-shared copies, independently modifiable.

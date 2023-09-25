@@ -1426,8 +1426,6 @@ struct TShaderQualifiers {
 
 class TTypeParameters {
 public:
-    POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
-
     TTypeParameters() : basicType(EbtVoid), arraySizes(nullptr) {}
 
     TBasicType basicType;
@@ -1533,8 +1531,6 @@ public:
 //
 class TType {
 public:
-    POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
-
     // for "empty" type (no args) or simple scalar/vector/matrix
     explicit TType(TBasicType t = EbtVoid, TStorageQualifier q = EvqTemporary, int vs = 1, int mc = 0, int mr = 0,
                    bool isVector = false) :
@@ -1588,7 +1584,7 @@ public:
                                     } else {
                                         structure = p.userDef->getWritableStruct();  // public type is short-lived; there are no sharing issues
                                     }
-                                    typeName = NewPoolTString(p.userDef->getTypeName().c_str());
+                                    typeName = NewPoolObject<TString>(p.userDef->getTypeName().c_str());
                                 }
                                 if (p.isCoopmatNV() && p.typeParameters && p.typeParameters->arraySizes->getNumDims() > 0) {
                                     int numBits = p.typeParameters->arraySizes->getDimSize(0);
@@ -1641,7 +1637,7 @@ public:
                                         arraySizes = nullptr;
                                     } else {
                                         // want our own copy of the array, so we can edit it
-                                        arraySizes = new TArraySizes;
+                                        arraySizes = NewPoolObject<TArraySizes>();
                                         arraySizes->copyDereferenced(*type.arraySizes);
                                     }
                                 } else if (type.basicType == EbtStruct || type.basicType == EbtBlock) {
@@ -1683,7 +1679,7 @@ public:
                             {
                                 sampler.clear();
                                 qualifier.clear();
-                                typeName = NewPoolTString(n.c_str());
+                                typeName = NewPoolObject<TString>(n.c_str());
                             }
     // For interface blocks
     TType(TTypeList* userDef, const TString& n, const TQualifier& q) :
@@ -1692,7 +1688,7 @@ public:
                             spirvType(nullptr)
                             {
                                 sampler.clear();
-                                typeName = NewPoolTString(n.c_str());
+                                typeName = NewPoolObject<TString>(n.c_str());
                             }
     // for block reference (first parameter must be EbtReference)
     explicit TType(TBasicType t, const TType &p, const TString& n) :
@@ -1701,7 +1697,7 @@ public:
                             spirvType(nullptr)
                             {
                                 assert(t == EbtReference);
-                                typeName = NewPoolTString(n.c_str());
+                                typeName = NewPoolObject<TString>(n.c_str());
                                 sampler.clear();
                                 qualifier.clear();
                                 qualifier.storage = p.qualifier.storage;
@@ -1756,7 +1752,7 @@ public:
 
     TType* clone() const
     {
-        TType *newType = new TType();
+        auto* newType = NewPoolObject<TType>();
         newType->deepCopy(*this);
 
         return newType;
@@ -1767,7 +1763,7 @@ public:
     virtual void hideMember() { basicType = EbtVoid; vectorSize = 1u; }
     virtual bool hiddenMember() const { return basicType == EbtVoid; }
 
-    virtual void setFieldName(const TString& n) { fieldName = NewPoolTString(n.c_str()); }
+    virtual void setFieldName(const TString& n) { fieldName = NewPoolObject<TString>(n.c_str()); }
     virtual const TString& getTypeName() const
     {
         assert(typeName);
@@ -2008,7 +2004,7 @@ public:
     void copyArraySizes(const TArraySizes& s)
     {
         // For setting a fresh new set of array sizes, not yet worrying about sharing.
-        arraySizes = new TArraySizes;
+        arraySizes = NewPoolObject<TArraySizes>();
         *arraySizes = s;
     }
     void transferArraySizes(TArraySizes* s)
@@ -2063,7 +2059,7 @@ public:
     void copyTypeParameters(const TTypeParameters& s)
     {
         // For setting a fresh new set of type parameters, not yet worrying about sharing.
-        typeParameters = new TTypeParameters;
+        typeParameters = NewPoolObject<TTypeParameters>();
         *typeParameters = s;
     }
 
@@ -2796,23 +2792,23 @@ protected:
 
         // GL_EXT_spirv_intrinsics
         if (copyOf.qualifier.spirvDecorate) {
-            qualifier.spirvDecorate = new TSpirvDecorate;
+            qualifier.spirvDecorate = NewPoolObject<TSpirvDecorate>();
             *qualifier.spirvDecorate = *copyOf.qualifier.spirvDecorate;
         }
 
         if (copyOf.spirvType) {
-            spirvType = new TSpirvType;
+            spirvType = NewPoolObject<TSpirvType>();
             *spirvType = *copyOf.spirvType;
         }
 
         if (copyOf.arraySizes) {
-            arraySizes = new TArraySizes;
+            arraySizes = NewPoolObject<TArraySizes>();
             *arraySizes = *copyOf.arraySizes;
         }
 
         if (copyOf.typeParameters) {
-            typeParameters = new TTypeParameters;
-            typeParameters->arraySizes = new TArraySizes;
+            typeParameters = NewPoolObject<TTypeParameters>();
+            typeParameters->arraySizes = NewPoolObject<TArraySizes>();
             *typeParameters->arraySizes = *copyOf.typeParameters->arraySizes;
             typeParameters->basicType = copyOf.basicType;
         }
@@ -2822,12 +2818,12 @@ protected:
             if (prevCopy != copiedMap.end())
                 structure = prevCopy->second;
             else {
-                structure = new TTypeList;
+                structure = NewPoolObject<TTypeList>();
                 copiedMap[copyOf.structure] = structure;
                 for (unsigned int i = 0; i < copyOf.structure->size(); ++i) {
                     TTypeLoc typeLoc;
                     typeLoc.loc = (*copyOf.structure)[i].loc;
-                    typeLoc.type = new TType();
+                    typeLoc.type = NewPoolObject<TType>();
                     typeLoc.type->deepCopy(*(*copyOf.structure)[i].type, copiedMap);
                     structure->push_back(typeLoc);
                 }
@@ -2835,9 +2831,9 @@ protected:
         }
 
         if (copyOf.fieldName)
-            fieldName = NewPoolTString(copyOf.fieldName->c_str());
+            fieldName = NewPoolObject<TString>(copyOf.fieldName->c_str());
         if (copyOf.typeName)
-            typeName = NewPoolTString(copyOf.typeName->c_str());
+            typeName = NewPoolObject<TString>(copyOf.typeName->c_str());
     }
 
 

@@ -51,6 +51,7 @@
 #include <map>
 #include <set>
 #include <string>
+#include <type_traits>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
@@ -96,21 +97,7 @@ std::string to_string(const T& val) {
 
 #include "PoolAlloc.h"
 
-//
-// Put POOL_ALLOCATOR_NEW_DELETE in base classes to make them use this scheme.
-//
-#define POOL_ALLOCATOR_NEW_DELETE(A)                                  \
-    void* operator new(size_t s) { return (A).allocate(s); }          \
-    void* operator new(size_t, void *_Where) { return (_Where); }     \
-    void operator delete(void*) { }                                   \
-    void operator delete(void *, void *) { }                          \
-    void* operator new[](size_t s) { return (A).allocate(s); }        \
-    void* operator new[](size_t, void *_Where) { return (_Where); }   \
-    void operator delete[](void*) { }                                 \
-    void operator delete[](void *, void *) { }
-
 namespace glslang {
-
     //
     // Pool version of string.
     //
@@ -143,50 +130,38 @@ namespace std {
 
 namespace glslang {
 
-inline TString* NewPoolTString(const char* s)
-{
-    void* memory = GetThreadPoolAllocator().allocate(sizeof(TString));
-    return new(memory) TString(s);
+template<typename T, typename... Args>
+inline std::enable_if_t<!std::is_array<T>::value, T*>
+NewPoolObject(Args&&... args) {
+    void* p = GetThreadPoolAllocator().allocate(sizeof(T));
+    new (p) T(std::forward<Args>(args)...);
+    return reinterpret_cast<T*>(p);
 }
 
-template<class T> inline T* NewPoolObject(T*)
-{
-    return new(GetThreadPoolAllocator().allocate(sizeof(T))) T;
-}
-
-template<class T> inline T* NewPoolObject(T, int instances)
-{
-    return new(GetThreadPoolAllocator().allocate(instances * sizeof(T))) T[instances];
+template<typename T>
+inline std::enable_if_t<std::is_array<T>::value, typename std::remove_all_extents<T>::type*>
+NewPoolObject(std::size_t n) {
+    using BaseType = typename std::remove_all_extents<T>::type;
+    return new(GetThreadPoolAllocator().allocate(n * sizeof(BaseType))) BaseType[n];
 }
 
 //
 // Pool allocator versions of vectors, lists, and maps
 //
-template <class T> class TVector : public std::vector<T, pool_allocator<T> > {
-public:
-    POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
+template<typename T>
+using TVector = std::vector<T, pool_allocator<T>>;
 
-    typedef typename std::vector<T, pool_allocator<T> >::size_type size_type;
-    TVector() : std::vector<T, pool_allocator<T> >() {}
-    TVector(const pool_allocator<T>& a) : std::vector<T, pool_allocator<T> >(a) {}
-    TVector(size_type i) : std::vector<T, pool_allocator<T> >(i) {}
-    TVector(size_type i, const T& val) : std::vector<T, pool_allocator<T> >(i, val) {}
-};
+template<typename T>
+using TList = std::list<T, pool_allocator<T>>;
 
-template <class T> class TList  : public std::list<T, pool_allocator<T> > {
-};
+template<typename K, typename D, typename CMP = std::less<K>>
+using TMap = std::map<K, D, CMP, pool_allocator<std::pair<K const, D>>>;
 
-template <class K, class D, class CMP = std::less<K> >
-class TMap : public std::map<K, D, CMP, pool_allocator<std::pair<K const, D> > > {
-};
+template<typename K, typename D, typename HASH = std::hash<K>, typename PRED = std::equal_to<K>>
+using TUnorderedMap = std::unordered_map<K, D, HASH, PRED, pool_allocator<std::pair<K const, D>>>;
 
-template <class K, class D, class HASH = std::hash<K>, class PRED = std::equal_to<K> >
-class TUnorderedMap : public std::unordered_map<K, D, HASH, PRED, pool_allocator<std::pair<K const, D> > > {
-};
-
-template <class K, class CMP = std::less<K> >
-class TSet : public std::set<K, CMP, pool_allocator<K> > {
-};
+template<typename K, typename CMP = std::less<K>>
+using TSet = std::set<K, CMP, pool_allocator<K>>;
 
 //
 // Persistent string memory.  Should only be used for strings that survive
@@ -251,10 +226,7 @@ struct TSourceLoc {
     int column;
 };
 
-class TPragmaTable : public TMap<TString, TString> {
-public:
-    POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
-};
+class TPragmaTable : public TMap<TString, TString> { };
 
 const int MaxTokenLength = 1024;
 

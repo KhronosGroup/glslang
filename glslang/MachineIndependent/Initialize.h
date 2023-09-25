@@ -58,7 +58,6 @@ namespace glslang {
 //
 class TBuiltInParseables {
 public:
-    POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
     TBuiltInParseables();
     virtual ~TBuiltInParseables();
     virtual void initialize(int version, EProfile, const SpvVersion& spvVersion) = 0;
@@ -81,7 +80,6 @@ protected:
 //
 class TBuiltIns : public TBuiltInParseables {
 public:
-    POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
     TBuiltIns();
     virtual ~TBuiltIns();
     void initialize(int version, EProfile, const SpvVersion& spvVersion);

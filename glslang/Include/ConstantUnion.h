@@ -45,8 +45,6 @@ namespace glslang {
 
 class TConstUnion {
 public:
-    POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
-
     TConstUnion() : iConst(0), type(EbtInt) { }
 
     void setI8Const(signed char i)
@@ -873,8 +871,6 @@ private:
 //
 class TConstUnionArray {
 public:
-    POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
-
     TConstUnionArray() : unionArray(nullptr) { }
     virtual ~TConstUnionArray() { }
 
@@ -883,12 +879,12 @@ public:
         if (size == 0)
             unionArray = nullptr;
         else
-            unionArray =  new TConstUnionVector(size);
+            unionArray =  NewPoolObject<TConstUnionVector>(size);
     }
     TConstUnionArray(const TConstUnionArray& a) = default;
     TConstUnionArray(const TConstUnionArray& a, int start, int size)
     {
-        unionArray = new TConstUnionVector(size);
+        unionArray = NewPoolObject<TConstUnionVector>(size);
         for (int i = 0; i < size; ++i)
             (*unionArray)[i] = a[start + i];
     }
@@ -896,7 +892,7 @@ public:
     // Use this constructor for a smear operation
     TConstUnionArray(int size, const TConstUnion& val)
     {
-        unionArray = new TConstUnionVector(size, val);
+        unionArray = NewPoolObject<TConstUnionVector>(size, val);
     }
 
     int size() const { return unionArray ? (int)unionArray->size() : 0; }

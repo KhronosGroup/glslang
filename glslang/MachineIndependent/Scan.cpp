@@ -893,7 +893,7 @@ int TScanContext::tokenize(TPpContext* pp, TParserToken& token)
             parseContext.error(loc, "not supported", "::", "");
             break;
 
-        case PpAtomConstString:        parserToken->sType.lex.string = NewPoolTString(tokenText);     return STRING_LITERAL;
+        case PpAtomConstString:        parserToken->sType.lex.string = NewPoolObject<TString>(tokenText);     return STRING_LITERAL;
         case PpAtomConstInt:           parserToken->sType.lex.i    = ppToken.ival;       return INTCONSTANT;
         case PpAtomConstUint:          parserToken->sType.lex.i    = ppToken.ival;       return UINTCONSTANT;
         case PpAtomConstFloat:         parserToken->sType.lex.d    = ppToken.dval;       return FLOATCONSTANT;
@@ -1823,7 +1823,7 @@ int TScanContext::tokenizeIdentifier()
 
 int TScanContext::identifierOrType()
 {
-    parserToken->sType.lex.string = NewPoolTString(tokenText);
+    parserToken->sType.lex.string = NewPoolObject<TString>(tokenText);
     if (field)
         return IDENTIFIER;
 

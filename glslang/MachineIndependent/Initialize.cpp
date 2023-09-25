@@ -10192,10 +10192,10 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         if (version == 100 || IncludeLegacy(version, profile, spvVersion) || (! ForwardCompatibility && profile != EEsProfile && version < 420)) {
             TPrecisionQualifier pq = profile == EEsProfile ? EpqMedium : EpqNone;
             TType fragData(EbtFloat, EvqFragColor, pq, 4);
-            TArraySizes* arraySizes = new TArraySizes;
+            TArraySizes* arraySizes = NewPoolObject<TArraySizes>();
             arraySizes->addInnerSize(resources.maxDrawBuffers);
             fragData.transferArraySizes(arraySizes);
-            symbolTable.insert(*new TVariable(NewPoolTString("gl_FragData"), fragData));
+            symbolTable.insert(*NewPoolObject<TVariable>(NewPoolObject<TString>("gl_FragData"), fragData));
             SpecialQualifier("gl_FragData", EvqFragColor, EbvFragData, symbolTable);
         }
 

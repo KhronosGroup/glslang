@@ -59,7 +59,7 @@ TSpirvRequirement* TParseContext::makeSpirvRequirement(const TSourceLoc& loc, co
                                                        const TIntermAggregate* extensions,
                                                        const TIntermAggregate* capabilities)
 {
-    TSpirvRequirement* spirvReq = new TSpirvRequirement;
+    TSpirvRequirement* spirvReq = NewPoolObject<TSpirvRequirement>();
 
     if (name == "extensions") {
         assert(extensions);
@@ -103,7 +103,7 @@ TSpirvRequirement* TParseContext::mergeSpirvRequirements(const TSourceLoc& loc, 
 void TIntermediate::insertSpirvRequirement(const TSpirvRequirement* spirvReq)
 {
     if (!spirvRequirement)
-        spirvRequirement = new TSpirvRequirement;
+        spirvRequirement = NewPoolObject<TSpirvRequirement>();
 
     for (auto extension : spirvReq->extensions)
         spirvRequirement->extensions.insert(extension);
@@ -118,7 +118,7 @@ void TIntermediate::insertSpirvRequirement(const TSpirvRequirement* spirvReq)
 void TIntermediate::insertSpirvExecutionMode(int executionMode, const TIntermAggregate* args)
 {
     if (!spirvExecutionMode)
-        spirvExecutionMode = new TSpirvExecutionMode;
+        spirvExecutionMode = NewPoolObject<TSpirvExecutionMode>();
 
     TVector<const TIntermConstantUnion*> extraOperands;
     if (args) {
@@ -134,7 +134,7 @@ void TIntermediate::insertSpirvExecutionMode(int executionMode, const TIntermAgg
 void TIntermediate::insertSpirvExecutionModeId(int executionMode, const TIntermAggregate* args)
 {
     if (!spirvExecutionMode)
-        spirvExecutionMode = new TSpirvExecutionMode;
+        spirvExecutionMode = NewPoolObject<TSpirvExecutionMode>();
 
     assert(args);
     TVector<const TIntermTyped*> extraOperands;
@@ -153,7 +153,7 @@ void TIntermediate::insertSpirvExecutionModeId(int executionMode, const TIntermA
 void TQualifier::setSpirvDecorate(int decoration, const TIntermAggregate* args)
 {
     if (!spirvDecorate)
-        spirvDecorate = new TSpirvDecorate;
+        spirvDecorate = NewPoolObject<TSpirvDecorate>();
 
     TVector<const TIntermConstantUnion*> extraOperands;
     if (args) {
@@ -169,7 +169,7 @@ void TQualifier::setSpirvDecorate(int decoration, const TIntermAggregate* args)
 void TQualifier::setSpirvDecorateId(int decoration, const TIntermAggregate* args)
 {
     if (!spirvDecorate)
-        spirvDecorate = new TSpirvDecorate;
+        spirvDecorate = NewPoolObject<TSpirvDecorate>();
 
     assert(args);
     TVector<const TIntermTyped*> extraOperands;
@@ -184,7 +184,7 @@ void TQualifier::setSpirvDecorateId(int decoration, const TIntermAggregate* args
 void TQualifier::setSpirvDecorateString(int decoration, const TIntermAggregate* args)
 {
     if (!spirvDecorate)
-        spirvDecorate = new TSpirvDecorate;
+        spirvDecorate = NewPoolObject<TSpirvDecorate>();
 
     assert(args);
     TVector<const TIntermConstantUnion*> extraOperands;
@@ -273,7 +273,7 @@ TString TQualifier::getSpirvDecorateQualifierString() const
 void TPublicType::setSpirvType(const TSpirvInstruction& spirvInst, const TSpirvTypeParameters* typeParams)
 {
     if (!spirvType)
-        spirvType = new TSpirvType;
+        spirvType = NewPoolObject<TSpirvType>();
 
     basicType = EbtSpirvType;
     spirvType->spirvInst = spirvInst;
@@ -283,7 +283,7 @@ void TPublicType::setSpirvType(const TSpirvInstruction& spirvInst, const TSpirvT
 
 TSpirvTypeParameters* TParseContext::makeSpirvTypeParameters(const TSourceLoc& loc, const TIntermConstantUnion* constant)
 {
-    TSpirvTypeParameters* spirvTypeParams = new TSpirvTypeParameters;
+    TSpirvTypeParameters* spirvTypeParams = NewPoolObject<TSpirvTypeParameters>();
     if (constant->getBasicType() != EbtFloat &&
         constant->getBasicType() != EbtInt &&
         constant->getBasicType() != EbtUint &&
@@ -299,8 +299,8 @@ TSpirvTypeParameters* TParseContext::makeSpirvTypeParameters(const TSourceLoc& l
 TSpirvTypeParameters* TParseContext::makeSpirvTypeParameters(const TSourceLoc& /* loc */,
                                                              const TPublicType& type)
 {
-    TSpirvTypeParameters* spirvTypeParams = new TSpirvTypeParameters;
-    spirvTypeParams->push_back(TSpirvTypeParameter(new TType(type)));
+    TSpirvTypeParameters* spirvTypeParams = NewPoolObject<TSpirvTypeParameters>();
+    spirvTypeParams->push_back(TSpirvTypeParameter(NewPoolObject<TType>(type)));
     return spirvTypeParams;
 }
 
@@ -317,7 +317,7 @@ TSpirvTypeParameters* TParseContext::mergeSpirvTypeParameters(TSpirvTypeParamete
 //
 TSpirvInstruction* TParseContext::makeSpirvInstruction(const TSourceLoc& loc, const TString& name, const TString& value)
 {
-    TSpirvInstruction* spirvInst = new TSpirvInstruction;
+    TSpirvInstruction* spirvInst = NewPoolObject<TSpirvInstruction>();
     if (name == "set")
         spirvInst->set = value;
     else
@@ -328,7 +328,7 @@ TSpirvInstruction* TParseContext::makeSpirvInstruction(const TSourceLoc& loc, co
 
 TSpirvInstruction* TParseContext::makeSpirvInstruction(const TSourceLoc& loc, const TString& name, int value)
 {
-    TSpirvInstruction* spirvInstuction = new TSpirvInstruction;
+    TSpirvInstruction* spirvInstuction = NewPoolObject<TSpirvInstruction>();
     if (name == "id")
         spirvInstuction->id = value;
     else

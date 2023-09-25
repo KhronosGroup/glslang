@@ -611,9 +611,9 @@ void TParseContextBase::growGlobalUniformBlock(const TSourceLoc& loc, TType& mem
         TQualifier blockQualifier;
         blockQualifier.clear();
         blockQualifier.storage = EvqUniform;
-        TType blockType(new TTypeList, *NewPoolTString(getGlobalUniformBlockName()), blockQualifier);
+        TType blockType(NewPoolObject<TTypeList>(), *NewPoolObject<TString>(getGlobalUniformBlockName()), blockQualifier);
         setUniformBlockDefaults(blockType);
-        globalUniformBlock = new TVariable(NewPoolTString(""), blockType, true);
+        globalUniformBlock = NewPoolObject<TVariable>(NewPoolObject<TString>(""), blockType, true);
         firstNewMember = 0;
     }
 
@@ -633,7 +633,7 @@ void TParseContextBase::growGlobalUniformBlock(const TSourceLoc& loc, TType& mem
     }
 
     // Add the requested member as a member to the global block.
-    TType* type = new TType;
+    TType* type = NewPoolObject<TType>();
     type->shallowCopy(memberType);
     type->setFieldName(memberName);
     if (typeList)
@@ -679,10 +679,10 @@ void TParseContextBase::growAtomicCounterBlock(int binding, const TSourceLoc& lo
             snprintf(charBuffer, 512, "%s_0", getAtomicCounterBlockName());
         }
         
-        TType blockType(new TTypeList, *NewPoolTString(charBuffer), blockQualifier);
+        TType blockType(NewPoolObject<TTypeList>(), *NewPoolObject<TString>(charBuffer), blockQualifier);
         setUniformBlockDefaults(blockType);
         blockType.getQualifier().layoutPacking = ElpStd430;
-        atomicCounterBuffer = new TVariable(NewPoolTString(""), blockType, true);
+        atomicCounterBuffer = NewPoolObject<TVariable>(NewPoolObject<TString>(""), blockType, true);
         // If we arn't auto mapping bindings then set the block to use the same
         // binding as what the atomic was set to use
         if (!intermediate.getAutoMapBindings()) {
@@ -694,7 +694,7 @@ void TParseContextBase::growAtomicCounterBlock(int binding, const TSourceLoc& lo
     }
 
     // Add the requested member as a member to the global block.
-    TType* type = new TType;
+    TType* type = NewPoolObject<TType>();
     type->shallowCopy(memberType);
     type->setFieldName(memberName);
     if (typeList)
@@ -741,7 +741,7 @@ void TParseContextBase::finish()
     }
 
     // Transfer the linkage symbols to AST nodes, preserving order.
-    TIntermAggregate* linkage = new TIntermAggregate;
+    TIntermAggregate* linkage = NewPoolObject<TIntermAggregate>();
     for (auto i = linkageSymbols.begin(); i != linkageSymbols.end(); ++i)
         intermediate.addSymbolLinkageNode(linkage, **i);
     intermediate.addSymbolLinkageNodes(linkage, getLanguage(), symbolTable);

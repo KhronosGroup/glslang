@@ -49,8 +49,6 @@ class TType;
 
 // SPIR-V requirements
 struct TSpirvRequirement {
-    POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
-
     // capability = [..]
     TSet<TString> extensions;
     // extension = [..]
@@ -59,8 +57,6 @@ struct TSpirvRequirement {
 
 // SPIR-V execution modes
 struct TSpirvExecutionMode {
-    POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
-
     // spirv_execution_mode
     TMap<int, TVector<const TIntermConstantUnion*>> modes;
     // spirv_execution_mode_id
@@ -69,8 +65,6 @@ struct TSpirvExecutionMode {
 
 // SPIR-V decorations
 struct TSpirvDecorate {
-    POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
-
     // spirv_decorate
     TMap<int, TVector<const TIntermConstantUnion*> > decorates;
     // spirv_decorate_id
@@ -81,8 +75,6 @@ struct TSpirvDecorate {
 
 // SPIR-V instruction
 struct TSpirvInstruction {
-    POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
-
     TSpirvInstruction() { set = ""; id = -1; }
 
     bool operator==(const TSpirvInstruction& rhs) const { return set == rhs.set && id == rhs.id; }
@@ -95,8 +87,6 @@ struct TSpirvInstruction {
 
 // SPIR-V type parameter
 struct TSpirvTypeParameter {
-    POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
-
     TSpirvTypeParameter(const TIntermConstantUnion* arg) { value = arg; }
     TSpirvTypeParameter(const TType* arg) { value = arg; }
 
@@ -124,8 +114,6 @@ typedef TVector<TSpirvTypeParameter> TSpirvTypeParameters;
 
 // SPIR-V type
 struct TSpirvType {
-    POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
-
     bool operator==(const TSpirvType& rhs) const
     {
         return spirvInst == rhs.spirvInst && typeParams == rhs.typeParams;
