@@ -281,6 +281,8 @@ INSTANTIATE_TEST_SUITE_P(
         "glsl.es320.subgroupShuffleRelative.comp",
         "glsl.es320.subgroupQuad.comp",
         "glsl.es320.subgroupVote.comp",
+        "glsl.es320.extTextureShadowLod.frag",
+        "glsl.ext.textureShadowLod.frag",
         "terminate.frag",
         "terminate.vert",
         "negativeWorkGroupSize.comp",
