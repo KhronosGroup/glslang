@@ -3672,8 +3672,6 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
     } else if (node->getOp() == glslang::EOpRayQueryGetIntersectionTriangleVertexPositionsEXT) {
         std::vector<spv::IdImmediate> idImmOps;
 
-        glslang::TOperator rqOp = node->getOp();
-
         idImmOps.push_back(spv::IdImmediate(true, operands[0])); // q
         idImmOps.push_back(spv::IdImmediate(true, operands[1])); // committed
 
