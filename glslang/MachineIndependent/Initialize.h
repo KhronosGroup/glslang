@@ -105,11 +105,6 @@ protected:
     const char* postfixes[5];
     const char* prefixes[EbtNumTypes];
     int dimMap[EsdNumDims];
-
-private:
-    // Holds the function declarations for GL_EXT_texture_shadow_lod
-    // This extension is somewhat unique in the sense it defines overloads for built-in functions, rather than new functions.
-    TString textureShadowLodFunctions;
 };
 
 // change this back to false if depending on textual spellings of texturing calls when consuming the AST
