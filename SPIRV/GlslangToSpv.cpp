@@ -1009,6 +1009,22 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
         builder.addExtension(spv::E_SPV_NV_ray_tracing_motion_blur);
         builder.addCapability(spv::CapabilityRayTracingMotionBlurNV);
         return spv::BuiltInCurrentRayTimeNV;
+    case glslang::EbvMicroTrianglePositionNV:
+        builder.addCapability(spv::CapabilityRayTracingDisplacementMicromapNV);
+        builder.addExtension("SPV_NV_displacement_micromap");
+        return spv::BuiltInHitMicroTriangleVertexPositionsNV;
+    case glslang::EbvMicroTriangleBaryNV:
+        builder.addCapability(spv::CapabilityRayTracingDisplacementMicromapNV);
+        builder.addExtension("SPV_NV_displacement_micromap");
+        return spv::BuiltInHitMicroTriangleVertexBarycentricsNV;
+    case glslang::EbvHitKindFrontFacingMicroTriangleNV:
+        builder.addCapability(spv::CapabilityRayTracingDisplacementMicromapNV);
+        builder.addExtension("SPV_NV_displacement_micromap");
+        return spv::BuiltInHitKindFrontFacingMicroTriangleNV;
+    case glslang::EbvHitKindBackFacingMicroTriangleNV:
+        builder.addCapability(spv::CapabilityRayTracingDisplacementMicromapNV);
+        builder.addExtension("SPV_NV_displacement_micromap");
+        return spv::BuiltInHitKindBackFacingMicroTriangleNV;
 
     // barycentrics
     case glslang::EbvBaryCoordNV:
@@ -3303,6 +3319,12 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         builder.addExtension(spv::E_SPV_QCOM_image_processing);
         break;
 
+    case glslang::EOpFetchMicroTriangleVertexPositionNV:
+    case glslang::EOpFetchMicroTriangleVertexBarycentricNV:
+        builder.addExtension(spv::E_SPV_NV_displacement_micromap);
+        builder.addCapability(spv::CapabilityDisplacementMicromapNV);
+        break;
+
     case glslang::EOpDebugPrintf:
         noReturnValue = true;
         break;
@@ -3667,7 +3689,10 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         spv::Id typeId = builder.makeArrayType(builder.makeVectorType(builder.makeFloatType(32), 3),
                                                builder.makeUintConstant(3), 0);
         // do the op
-        spv::Id result = builder.createOp(spv::OpRayQueryGetIntersectionTriangleVertexPositionsKHR, typeId, idImmOps);
+
+        spv::Op spvOp = spv::OpRayQueryGetIntersectionTriangleVertexPositionsKHR;
+
+        spv::Id result = builder.createOp(spvOp, typeId, idImmOps);
         // store the result to the pointer (out param 'm')
         builder.createStore(result, operands[2]);
         result = 0;
@@ -7199,6 +7224,14 @@ spv::Id TGlslangToSpvTraverser::createUnaryOperation(glslang::TOperator op, OpDe
         unaryOp = spv::OpHitObjectGetShaderRecordBufferHandleNV;
         break;
 
+    case glslang::EOpFetchMicroTriangleVertexPositionNV:
+        unaryOp = spv::OpFetchMicroTriangleVertexPositionNV;
+        break;
+
+    case glslang::EOpFetchMicroTriangleVertexBarycentricNV:
+        unaryOp = spv::OpFetchMicroTriangleVertexBarycentricNV;
+        break;
+
     case glslang::EOpCopyObject:
         unaryOp = spv::OpCopyObject;
         break;
@@ -9083,6 +9116,17 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
         addImageProcessingQCOMDecoration(operands[0], spv::DecorationBlockMatchTextureQCOM);
         addImageProcessingQCOMDecoration(operands[2], spv::DecorationBlockMatchTextureQCOM);
         break;
+
+    case glslang::EOpFetchMicroTriangleVertexBarycentricNV:
+        typeId = builder.makeVectorType(builder.makeFloatType(32), 2);
+        opCode = spv::OpFetchMicroTriangleVertexBarycentricNV;
+        break;
+
+    case glslang::EOpFetchMicroTriangleVertexPositionNV:
+        typeId = builder.makeVectorType(builder.makeFloatType(32), 3);
+        opCode = spv::OpFetchMicroTriangleVertexPositionNV;
+        break;
+
     default:
         return 0;
     }

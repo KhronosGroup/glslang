@@ -297,12 +297,11 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_NV_compute_shader_derivatives]            = EBhDisable;
     extensionBehavior[E_GL_NV_shader_texture_footprint]              = EBhDisable;
     extensionBehavior[E_GL_NV_mesh_shader]                           = EBhDisable;
-
     extensionBehavior[E_GL_NV_cooperative_matrix]                    = EBhDisable;
     extensionBehavior[E_GL_NV_shader_sm_builtins]                    = EBhDisable;
     extensionBehavior[E_GL_NV_integer_cooperative_matrix]            = EBhDisable;
-
     extensionBehavior[E_GL_NV_shader_invocation_reorder]             = EBhDisable;
+    extensionBehavior[E_GL_NV_displacement_micromap]                 = EBhDisable;
 
     // ARM
     extensionBehavior[E_GL_ARM_shader_core_builtins]                 = EBhDisable;
