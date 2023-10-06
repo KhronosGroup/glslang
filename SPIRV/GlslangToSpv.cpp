@@ -1725,23 +1725,31 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion,
         }
     break;
 
-    case EShLangCompute:
+    case EShLangCompute: {
         builder.addCapability(spv::CapabilityShader);
-        if (glslangIntermediate->getSpv().spv >= glslang::EShTargetSpv_1_6) {
-          std::vector<spv::Id> dimConstId;
-          for (int dim = 0; dim < 3; ++dim) {
-            bool specConst = (glslangIntermediate->getLocalSizeSpecId(dim) != glslang::TQualifier::layoutNotSet);
-            dimConstId.push_back(builder.makeUintConstant(glslangIntermediate->getLocalSize(dim), specConst));
-            if (specConst) {
-                builder.addDecoration(dimConstId.back(), spv::DecorationSpecId,
-                                      glslangIntermediate->getLocalSizeSpecId(dim));
+        bool needSizeId = false;
+        for (int dim = 0; dim < 3; ++dim) {
+            if ((glslangIntermediate->getLocalSizeSpecId(dim) != glslang::TQualifier::layoutNotSet)) {
+                needSizeId = true;
+                break;
             }
-          }
-          builder.addExecutionModeId(shaderEntry, spv::ExecutionModeLocalSizeId, dimConstId);
+        }
+        if (glslangIntermediate->getSpv().spv >= glslang::EShTargetSpv_1_6 && needSizeId) {
+            std::vector<spv::Id> dimConstId;
+            for (int dim = 0; dim < 3; ++dim) {
+                bool specConst = (glslangIntermediate->getLocalSizeSpecId(dim) != glslang::TQualifier::layoutNotSet);
+                dimConstId.push_back(builder.makeUintConstant(glslangIntermediate->getLocalSize(dim), specConst));
+                if (specConst) {
+                    builder.addDecoration(dimConstId.back(), spv::DecorationSpecId,
+                                          glslangIntermediate->getLocalSizeSpecId(dim));
+                    needSizeId = true;
+                }
+            }
+            builder.addExecutionModeId(shaderEntry, spv::ExecutionModeLocalSizeId, dimConstId);
         } else {
-          builder.addExecutionMode(shaderEntry, spv::ExecutionModeLocalSize, glslangIntermediate->getLocalSize(0),
-                                                                             glslangIntermediate->getLocalSize(1),
-                                                                             glslangIntermediate->getLocalSize(2));
+            builder.addExecutionMode(shaderEntry, spv::ExecutionModeLocalSize, glslangIntermediate->getLocalSize(0),
+                                                                               glslangIntermediate->getLocalSize(1),
+                                                                               glslangIntermediate->getLocalSize(2));
         }
         if (glslangIntermediate->getLayoutDerivativeModeNone() == glslang::LayoutDerivativeGroupQuads) {
             builder.addCapability(spv::CapabilityComputeDerivativeGroupQuadsNV);
@@ -1753,6 +1761,7 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion,
             builder.addExtension(spv::E_SPV_NV_compute_shader_derivatives);
         }
         break;
+    }
     case EShLangTessEvaluation:
     case EShLangTessControl:
         builder.addCapability(spv::CapabilityTessellation);
