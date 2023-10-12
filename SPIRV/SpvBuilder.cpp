@@ -1029,7 +1029,10 @@ Id Builder::makeCompositeDebugType(std::vector<Id> const& memberTypes, char cons
     for(auto const memberType : memberTypes) {
         assert(debugTypeLocs.find(memberType) != debugTypeLocs.end());
 
-        memberDebugTypes.emplace_back(makeMemberDebugType(memberType, debugTypeLocs[memberType]));
+        // There _should_ be debug types for all the member types but currently buffer references
+        // do not have member debug info generated.
+        if (debugId[memberType])
+            memberDebugTypes.emplace_back(makeMemberDebugType(memberType, debugTypeLocs[memberType]));
 
         // TODO: Need to rethink this method of passing location information.
         // debugTypeLocs.erase(memberType);
