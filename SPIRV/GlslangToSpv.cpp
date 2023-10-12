@@ -5403,9 +5403,17 @@ void TGlslangToSpvTraverser::makeFunctions(const glslang::TIntermSequence& glslF
 
     for (int f = 0; f < (int)glslFunctions.size(); ++f) {
         glslang::TIntermAggregate* glslFunction = glslFunctions[f]->getAsAggregate();
-        if (! glslFunction || glslFunction->getOp() != glslang::EOpFunction || isShaderEntryPoint(glslFunction))
+        if (! glslFunction || glslFunction->getOp() != glslang::EOpFunction)
             continue;
-
+        if (isShaderEntryPoint(glslFunction)) {
+            if (glslangIntermediate->getSource() != glslang::EShSourceHlsl) {
+                builder.setupDebugFunctionEntry(shaderEntry, glslangIntermediate->getEntryPointMangledName().c_str(),
+                                                glslFunction->getLoc().line,
+                                                std::vector<spv::Id>(), // main function has no param
+                                                std::vector<char const*>());
+            }
+            continue;
+        }
         // We're on a user function.  Set up the basic interface for the function now,
         // so that it's available to call.  Translating the body will happen later.
         //
@@ -5455,6 +5463,8 @@ void TGlslangToSpvTraverser::makeFunctions(const glslang::TIntermSequence& glslF
             TranslatePrecisionDecoration(glslFunction->getType()), convertGlslangToSpvType(glslFunction->getType()),
             glslFunction->getName().c_str(), convertGlslangLinkageToSpv(glslFunction->getLinkType()), paramTypes,
             paramNames, paramDecorations, &functionBlock);
+        builder.setupDebugFunctionEntry(function, glslFunction->getName().c_str(), glslFunction->getLoc().line,
+                                        paramTypes, paramNames);
         if (implicitThis)
             function->setImplicitThis();
 

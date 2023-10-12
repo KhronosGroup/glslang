@@ -237,6 +237,9 @@ public:
     Id makeDebugFunction(Function* function, Id nameId, Id funcTypeId);
     Id makeDebugLexicalBlock(uint32_t line);
     std::string unmangleFunctionName(std::string const& name) const;
+    void setupDebugFunctionEntry(Function* function, const char* name, int line, 
+                                 const std::vector<Id>& paramTypes,
+                                 const std::vector<char const*>& paramNames);
 
     // accelerationStructureNV type
     Id makeAccelerationStructureType();
