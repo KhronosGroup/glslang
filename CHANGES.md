@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## 13.1.0 2023-10-13
+* Support GL_EXT_texture_shadow_lod
+* Support GL_NV_displacement_micromap
+* Fix ByteAddressBuffer when used a function parameter
+* Add more verbose messages if SPIRV-Tools is not found
+* Fix names for explicitly sized types when emitting nonsemantic debug info
+* Emit error for r-value arguments in atomic memory operations
+* Add --no-link option
+* Beautify preprocessor output format
+* Fix race condition in glslangValidator
+* Only set LocalSizeId mode when necessary
+* Don't emit invalid debug info for buffer references
+
 ## 13.0.0 2023-08-23
 
 ### Breaking changes
