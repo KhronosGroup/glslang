@@ -3,6 +3,9 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## 13.1.1 2023-10-16
+* Initialize compile_only field in C interface
+
 ## 13.1.0 2023-10-13
 * Support GL_EXT_texture_shadow_lod
 * Support GL_NV_displacement_micromap
