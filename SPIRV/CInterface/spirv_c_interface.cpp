@@ -92,6 +92,7 @@ GLSLANG_EXPORT void glslang_program_SPIRV_generate(glslang_program_t* program, g
     spv_options.optimize_size = false;
     spv_options.disassemble = false;
     spv_options.validate = true;
+    spv_options.compile_only = false;
 
     glslang_program_SPIRV_generate_with_options(program, stage, &spv_options);
 }
