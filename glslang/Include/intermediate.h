@@ -472,6 +472,13 @@ enum TOperator {
     EOpTensorViewSetStrideNV,
     EOpTensorViewSetClipNV,
 
+    EOpCooperativeVectorMatMulNV,
+    EOpCooperativeVectorMatMulAddNV,
+    EOpCooperativeVectorLoadNV,
+    EOpCooperativeVectorStoreNV,
+    EOpCooperativeVectorOuterProductAccumulateNV,
+    EOpCooperativeVectorReduceSumAccumulateNV,
+
     EOpBeginInvocationInterlock, // Fragment only
     EOpEndInvocationInterlock, // Fragment only
 
@@ -610,6 +617,7 @@ enum TOperator {
     EOpConstructReference,
     EOpConstructCooperativeMatrixNV,
     EOpConstructCooperativeMatrixKHR,
+    EOpConstructCooperativeVectorNV,
     EOpConstructAccStruct,
     EOpConstructGuardEnd,
 

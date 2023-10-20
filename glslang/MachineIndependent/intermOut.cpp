@@ -643,6 +643,7 @@ bool TOutputTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node
     case EOpConstructReference:  out.debug << "Construct reference";  break;
     case EOpConstructCooperativeMatrixNV:  out.debug << "Construct cooperative matrix NV";  break;
     case EOpConstructCooperativeMatrixKHR:  out.debug << "Construct cooperative matrix KHR";  break;
+    case EOpConstructCooperativeVectorNV:  out.debug << "Construct cooperative vector NV";  break;
     case EOpConstructAccStruct: out.debug << "Construct acceleration structure"; break;
 
     case EOpLessThan:         out.debug << "Compare Less Than";             break;
@@ -954,6 +955,13 @@ bool TOutputTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node
     case EOpCooperativeMatrixReduceNV: out.debug << "Reduce cooperative matrices"; break;
     case EOpCooperativeMatrixPerElementOpNV: out.debug << "cooperative matrix per element op"; break;
     case EOpCooperativeMatrixTransposeNV: out.debug << "Transpose cooperative matrix"; break;
+
+    case EOpCooperativeVectorMatMulNV: out.debug << "Cooperative vector matrix multiply NV"; break;
+    case EOpCooperativeVectorMatMulAddNV: out.debug << "Cooperative vector matrix multiply add NV"; break;
+    case EOpCooperativeVectorLoadNV:  out.debug << "Load cooperative vector NV"; break;
+    case EOpCooperativeVectorStoreNV:  out.debug << "Store cooperative vector NV"; break;
+    case EOpCooperativeVectorOuterProductAccumulateNV: out.debug << "Cooperative vector outer product accumulate NV"; break;
+    case EOpCooperativeVectorReduceSumAccumulateNV: out.debug << "Cooperative vector reduce sum accumulate NV"; break;
 
     case EOpIsHelperInvocation: out.debug << "IsHelperInvocation"; break;
     case EOpDebugPrintf:  out.debug << "Debug printf";  break;

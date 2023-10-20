@@ -216,6 +216,7 @@ public:
     Id makeCooperativeMatrixTypeKHR(Id component, Id scope, Id rows, Id cols, Id use);
     Id makeCooperativeMatrixTypeNV(Id component, Id scope, Id rows, Id cols);
     Id makeCooperativeMatrixTypeWithSameShape(Id component, Id otherType);
+    Id makeCooperativeVectorTypeNV(Id componentType, Id components);
     Id makeGenericType(spv::Op opcode, std::vector<spv::IdImmediate>& operands);
 
     // SPIR-V NonSemantic Shader DebugInfo Instructions
@@ -280,12 +281,14 @@ public:
         { return (ImageFormat)module.getInstruction(typeId)->getImmediateOperand(6); }
     Id getResultingAccessChainType() const;
     Id getIdOperand(Id resultId, int idx) { return module.getInstruction(resultId)->getIdOperand(idx); }
+    Id getCooperativeVectorNumComponents(Id typeId) const { return module.getInstruction(typeId)->getIdOperand(1); }
 
     bool isPointer(Id resultId)      const { return isPointerType(getTypeId(resultId)); }
     bool isScalar(Id resultId)       const { return isScalarType(getTypeId(resultId)); }
     bool isVector(Id resultId)       const { return isVectorType(getTypeId(resultId)); }
     bool isMatrix(Id resultId)       const { return isMatrixType(getTypeId(resultId)); }
     bool isCooperativeMatrix(Id resultId)const { return isCooperativeMatrixType(getTypeId(resultId)); }
+    bool isCooperativeVector(Id resultId)const { return isCooperativeVectorType(getTypeId(resultId)); }
     bool isAggregate(Id resultId)    const { return isAggregateType(getTypeId(resultId)); }
     bool isSampledImage(Id resultId) const { return isSampledImageType(getTypeId(resultId)); }
     bool isTensorView(Id resultId)const { return isTensorViewType(getTypeId(resultId)); }
@@ -310,6 +313,7 @@ public:
         return getTypeClass(typeId) == OpTypeCooperativeMatrixKHR || getTypeClass(typeId) == OpTypeCooperativeMatrixNV;
     }
     bool isTensorViewType(Id typeId)   const { return getTypeClass(typeId) == OpTypeTensorViewNV; }
+    bool isCooperativeVectorType(Id typeId)const { return getTypeClass(typeId) == OpTypeCooperativeVectorNV; }
     bool isAggregateType(Id typeId)    const
         { return isArrayType(typeId) || isStructType(typeId) || isCooperativeMatrixType(typeId); }
     bool isImageType(Id typeId)        const { return getTypeClass(typeId) == OpTypeImage; }
@@ -898,7 +902,7 @@ public:
  protected:
     Id findScalarConstant(Op typeClass, Op opcode, Id typeId, unsigned value);
     Id findScalarConstant(Op typeClass, Op opcode, Id typeId, unsigned v1, unsigned v2);
-    Id findCompositeConstant(Op typeClass, Id typeId, const std::vector<Id>& comps);
+    Id findCompositeConstant(Op typeClass, Op opcode, Id typeId, const std::vector<Id>& comps, size_t numMembers);
     Id findStructConstant(Id typeId, const std::vector<Id>& comps);
     Id collapseAccessChain();
     void remapDynamicSwizzle();

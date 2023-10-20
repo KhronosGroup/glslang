@@ -26,9 +26,9 @@ spv.coopmatKHR.comp
                               SourceExtension  "GL_KHR_cooperative_matrix"
                               SourceExtension  "GL_KHR_memory_scope_semantics"
                               Name 4  "main"
-                              Name 15  "f16(f161;"
+                              Name 15  "f16(f161<3><8><8><2>;"
                               Name 14  "m"
-                              Name 22  "f32(f1;"
+                              Name 22  "f32(f1<3><8><8><2>;"
                               Name 21  "m"
                               Name 35  "m"
                               Name 53  "m2"
@@ -343,11 +343,11 @@ spv.coopmatKHR.comp
                               CooperativeMatrixStoreKHR 168 167 62 75 MakePointerAvailableKHR NonPrivatePointerKHR 72
              171:          11 Load 169(p1)
                               Store 170(param) 171
-             172:          11 FunctionCall 15(f16(f161;) 170(param)
+             172:          11 FunctionCall 15(f16(f161<3><8><8><2>;) 170(param)
                               Store 169(p1) 172
              175:          18 Load 173(p2)
                               Store 174(param) 175
-             176:          18 FunctionCall 22(f32(f1;) 174(param)
+             176:          18 FunctionCall 22(f32(f1<3><8><8><2>;) 174(param)
                               Store 173(p2) 176
                               Store 169(p1) 177
                               Store 173(p2) 178
@@ -386,14 +386,14 @@ spv.coopmatKHR.comp
                               CooperativeMatrixStoreKHR 229 228 62 10 MakePointerAvailableKHR NonPrivatePointerKHR 10
                               Return
                               FunctionEnd
-   15(f16(f161;):          11 Function None 13
+15(f16(f161<3><8><8><2>;):          11 Function None 13
            14(m):     12(ptr) FunctionParameter
               16:             Label
               24:          11 Load 14(m)
               25:          11 FNegate 24
                               ReturnValue 25
                               FunctionEnd
-     22(f32(f1;):          18 Function None 20
+22(f32(f1<3><8><8><2>;):          18 Function None 20
            21(m):     19(ptr) FunctionParameter
               23:             Label
               28:          18 Load 21(m)

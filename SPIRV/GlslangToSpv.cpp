@@ -2572,6 +2572,9 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
                 spec_constant_op_mode_setter.turnOnSpecConstantOpMode();
                 length = builder.createCooperativeMatrixLengthNV(typeId);
             }
+        } else if (node->getOperand()->getType().isCoopVecNV()) {
+            spv::Id typeId = convertGlslangToSpvType(node->getOperand()->getType());
+            length = builder.getCooperativeVectorNumComponents(typeId);
         } else {
             glslang::TIntermTyped* block = node->getOperand()->getAsBinaryNode()->getLeft();
             block->traverse(this);
@@ -3142,6 +3145,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
     case glslang::EOpConstructReference:
     case glslang::EOpConstructCooperativeMatrixNV:
     case glslang::EOpConstructCooperativeMatrixKHR:
+    case glslang::EOpConstructCooperativeVectorNV:
     {
         builder.setDebugSourceLocation(node->getLoc().line, node->getLoc().getFilename());
         std::vector<spv::Id> arguments;
@@ -3162,10 +3166,17 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
             builder.addCapability(spv::CapabilityCooperativeMatrixConversionsNV);
             builder.addExtension(spv::E_SPV_NV_cooperative_matrix2);
             constructed = builder.createCooperativeMatrixConversion(resultType(), arguments[0]);
+        } else if (node->getOp() == glslang::EOpConstructCooperativeVectorNV &&
+                   arguments.size() == 1 &&
+                   builder.getTypeId(arguments[0]) == resultType()) {
+            constructed = arguments[0];
         } else if (node->getOp() == glslang::EOpConstructStruct ||
                  node->getOp() == glslang::EOpConstructCooperativeMatrixNV ||
                  node->getOp() == glslang::EOpConstructCooperativeMatrixKHR ||
-                 node->getType().isArray()) {
+                 node->getType().isArray() ||
+                 // Handle constructing coopvec from one component here, to avoid the component
+                 // getting smeared
+                 (node->getOp() == glslang::EOpConstructCooperativeVectorNV && arguments.size() == 1 && builder.isScalar(arguments[0]))) {
             std::vector<spv::Id> constituents;
             for (int c = 0; c < (int)arguments.size(); ++c)
                 constituents.push_back(arguments[c]);
@@ -3351,6 +3362,12 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
     case glslang::EOpCooperativeMatrixReduceNV:
     case glslang::EOpCooperativeMatrixPerElementOpNV:
     case glslang::EOpCooperativeMatrixTransposeNV:
+    case glslang::EOpCooperativeVectorMatMulNV:
+    case glslang::EOpCooperativeVectorMatMulAddNV:
+    case glslang::EOpCooperativeVectorLoadNV:
+    case glslang::EOpCooperativeVectorStoreNV:
+    case glslang::EOpCooperativeVectorOuterProductAccumulateNV:
+    case glslang::EOpCooperativeVectorReduceSumAccumulateNV:
         noReturnValue = true;
         break;
     case glslang::EOpBeginInvocationInterlock:
@@ -3598,12 +3615,30 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         case glslang::EOpCooperativeMatrixLoad:
         case glslang::EOpCooperativeMatrixLoadNV:
         case glslang::EOpCooperativeMatrixLoadTensorNV:
+        case glslang::EOpCooperativeVectorLoadNV:
             if (arg == 0 || arg == 1)
                 lvalue = true;
             break;
         case glslang::EOpCooperativeMatrixStore:
         case glslang::EOpCooperativeMatrixStoreNV:
         case glslang::EOpCooperativeMatrixStoreTensorNV:
+        case glslang::EOpCooperativeVectorStoreNV:
+            if (arg == 1)
+                lvalue = true;
+            break;
+        case glslang::EOpCooperativeVectorMatMulNV:
+            if (arg == 0 || arg == 3)
+                lvalue = true;
+            break;
+        case glslang::EOpCooperativeVectorMatMulAddNV:
+            if (arg == 0 || arg == 3 || arg == 6)
+                lvalue = true;
+            break;
+        case glslang::EOpCooperativeVectorOuterProductAccumulateNV:
+            if (arg == 2)
+                lvalue = true;
+            break;
+        case glslang::EOpCooperativeVectorReduceSumAccumulateNV:
             if (arg == 1)
                 lvalue = true;
             break;
@@ -3635,39 +3670,51 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         else
             glslangOperands[arg]->traverse(this);
 
-        if (node->getOp() == glslang::EOpCooperativeMatrixLoad ||
-            node->getOp() == glslang::EOpCooperativeMatrixStore ||
-            node->getOp() == glslang::EOpCooperativeMatrixLoadNV ||
-            node->getOp() == glslang::EOpCooperativeMatrixStoreNV ||
-            node->getOp() == glslang::EOpCooperativeMatrixLoadTensorNV ||
-            node->getOp() == glslang::EOpCooperativeMatrixStoreTensorNV) {
+        bool isCoopMat = node->getOp() == glslang::EOpCooperativeMatrixLoad ||
+                         node->getOp() == glslang::EOpCooperativeMatrixStore ||
+                         node->getOp() == glslang::EOpCooperativeMatrixLoadNV ||
+                         node->getOp() == glslang::EOpCooperativeMatrixStoreNV ||
+                         node->getOp() == glslang::EOpCooperativeMatrixLoadTensorNV ||
+                         node->getOp() == glslang::EOpCooperativeMatrixStoreTensorNV;
+        bool isCoopVec = node->getOp() == glslang::EOpCooperativeVectorLoadNV ||
+                         node->getOp() == glslang::EOpCooperativeVectorStoreNV;
+        if (isCoopMat || isCoopVec) {
 
             if (arg == 1) {
-                // fold "element" parameter into the access chain
-                spv::Builder::AccessChain save = builder.getAccessChain();
-                builder.clearAccessChain();
-                glslangOperands[2]->traverse(this);
+                spv::Builder::AccessChain::CoherentFlags coherentFlags {};
+                unsigned int alignment {};
+                if (isCoopMat) {
+                    // fold "element" parameter into the access chain
+                    spv::Builder::AccessChain save = builder.getAccessChain();
+                    builder.clearAccessChain();
+                    glslangOperands[2]->traverse(this);
 
-                spv::Id elementId = accessChainLoad(glslangOperands[2]->getAsTyped()->getType());
+                    spv::Id elementId = accessChainLoad(glslangOperands[2]->getAsTyped()->getType());
 
-                builder.setAccessChain(save);
+                    builder.setAccessChain(save);
 
-                // Point to the first element of the array.
-                builder.accessChainPush(elementId,
-                    TranslateCoherent(glslangOperands[arg]->getAsTyped()->getType()),
-                                      glslangOperands[arg]->getAsTyped()->getType().getBufferReferenceAlignment());
-
-                spv::Builder::AccessChain::CoherentFlags coherentFlags = builder.getAccessChain().coherentFlags;
-                unsigned int alignment = builder.getAccessChain().alignment;
+                    // Point to the first element of the array.
+                    builder.accessChainPush(elementId,
+                        TranslateCoherent(glslangOperands[arg]->getAsTyped()->getType()),
+                                          glslangOperands[arg]->getAsTyped()->getType().getBufferReferenceAlignment());
+                    coherentFlags = builder.getAccessChain().coherentFlags;
+                    alignment = builder.getAccessChain().alignment;
+                } else {
+                    coherentFlags = builder.getAccessChain().coherentFlags;
+                    coherentFlags |= TranslateCoherent(glslangOperands[arg]->getAsTyped()->getType());
+                    alignment = 16;
+                }
 
                 int memoryAccess = TranslateMemoryAccess(coherentFlags);
                 if (node->getOp() == glslang::EOpCooperativeMatrixLoad ||
                     node->getOp() == glslang::EOpCooperativeMatrixLoadNV ||
-                    node->getOp() == glslang::EOpCooperativeMatrixLoadTensorNV)
+                    node->getOp() == glslang::EOpCooperativeMatrixLoadTensorNV ||
+                    node->getOp() == glslang::EOpCooperativeVectorLoadNV)
                     memoryAccess &= ~spv::MemoryAccessMakePointerAvailableKHRMask;
                 if (node->getOp() == glslang::EOpCooperativeMatrixStore ||
                     node->getOp() == glslang::EOpCooperativeMatrixStoreNV ||
-                    node->getOp() == glslang::EOpCooperativeMatrixStoreTensorNV)
+                    node->getOp() == glslang::EOpCooperativeMatrixStoreTensorNV ||
+                    node->getOp() == glslang::EOpCooperativeVectorStoreNV)
                     memoryAccess &= ~spv::MemoryAccessMakePointerVisibleKHRMask;
                 if (builder.getStorageClass(builder.getAccessChain().base) ==
                     spv::StorageClassPhysicalStorageBufferEXT) {
@@ -3685,7 +3732,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
                     memoryAccessOperands.push_back(spv::IdImmediate(true,
                         builder.makeUintConstant(TranslateMemoryScope(coherentFlags))));
                 }
-            } else if (arg == 2) {
+            } else if (isCoopMat && arg == 2) {
                 continue;
             }
         }
@@ -3957,6 +4004,96 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         result = builder.createUnaryOp(spv::OpCooperativeMatrixTransposeNV, typeId, operands[1]);
         // store the result to the pointer
         builder.createStore(result, operands[0]);
+        result = 0;
+    } else if (node->getOp() == glslang::EOpCooperativeVectorMatMulNV ||
+               node->getOp() == glslang::EOpCooperativeVectorMatMulAddNV) {
+        uint32_t matrixOperands = 0;
+
+        bool isMulAdd = node->getOp() == glslang::EOpCooperativeVectorMatMulAddNV;
+
+        // Determine Cooperative Matrix Operands bits from the signedness of the types.
+
+        if (isTypeSignedInt(glslangOperands[1]->getAsTyped()->getBasicType()))
+            matrixOperands |= spv::CooperativeMatrixOperandsMatrixBSignedComponentsKHRMask;
+        if (isTypeSignedInt(glslangOperands[0]->getAsTyped()->getBasicType()))
+            matrixOperands |= spv::CooperativeMatrixOperandsMatrixResultSignedComponentsKHRMask;
+
+        uint32_t opIdx = 1;
+        std::vector<spv::IdImmediate> idImmOps;
+        idImmOps.push_back(spv::IdImmediate(true, operands[opIdx++])); // Input
+        idImmOps.push_back(spv::IdImmediate(true, operands[opIdx++])); // InputInterpretation
+        idImmOps.push_back(spv::IdImmediate(true, operands[opIdx++])); // Matrix
+        idImmOps.push_back(spv::IdImmediate(true, operands[opIdx++])); // MatrixOffset
+        idImmOps.push_back(spv::IdImmediate(true, operands[opIdx++])); // MatrixInterpretation
+        if (isMulAdd) {
+            idImmOps.push_back(spv::IdImmediate(true, operands[opIdx++])); // Bias
+            idImmOps.push_back(spv::IdImmediate(true, operands[opIdx++])); // BiasOffset
+            idImmOps.push_back(spv::IdImmediate(true, operands[opIdx++])); // BiasInterpretation
+        }
+        idImmOps.push_back(spv::IdImmediate(true, operands[opIdx++])); // M
+        idImmOps.push_back(spv::IdImmediate(true, operands[opIdx++])); // K
+        idImmOps.push_back(spv::IdImmediate(true, operands[opIdx++])); // MemoryLayout
+        idImmOps.push_back(spv::IdImmediate(true, operands[opIdx++])); // Transpose
+        idImmOps.push_back(spv::IdImmediate(true, operands[opIdx++])); // MatrixStride
+        if (matrixOperands != 0)
+            idImmOps.push_back(spv::IdImmediate(false, matrixOperands));  // Cooperative Matrix Operands
+
+        // get the pointee type
+        spv::Id typeId = builder.getContainedTypeId(builder.getTypeId(operands[0]));
+        assert(builder.isCooperativeVectorType(typeId));
+        // do the op
+        spv::Id result = builder.createOp(isMulAdd ? spv::OpCooperativeVectorMatrixMulAddNV : spv::OpCooperativeVectorMatrixMulNV, typeId, idImmOps);
+        // store the result to the pointer (out param 'res')
+        builder.createStore(result, operands[0]);
+        result = 0;
+    } else if (node->getOp() == glslang::EOpCooperativeVectorLoadNV) {
+        std::vector<spv::IdImmediate> idImmOps;
+
+        idImmOps.push_back(spv::IdImmediate(true, operands[1])); // buf
+        idImmOps.push_back(spv::IdImmediate(true, operands[2])); // offset
+        idImmOps.insert(idImmOps.end(), memoryAccessOperands.begin(), memoryAccessOperands.end());
+        // get the pointee type
+        spv::Id typeId = builder.getContainedTypeId(builder.getTypeId(operands[0]));
+        assert(builder.isCooperativeVectorType(typeId));
+        // do the op
+        spv::Id result = builder.createOp(spv::OpCooperativeVectorLoadNV, typeId, idImmOps);
+        // store the result to the pointer (out param 'v')
+        builder.createStore(result, operands[0]);
+        result = 0;
+    } else if (node->getOp() == glslang::EOpCooperativeVectorStoreNV) {
+        std::vector<spv::IdImmediate> idImmOps;
+
+        idImmOps.push_back(spv::IdImmediate(true, operands[1])); // buf
+        idImmOps.push_back(spv::IdImmediate(true, operands[2])); // offset
+        idImmOps.push_back(spv::IdImmediate(true, operands[0])); // object
+        idImmOps.insert(idImmOps.end(), memoryAccessOperands.begin(), memoryAccessOperands.end());
+        builder.createNoResultOp(spv::OpCooperativeVectorStoreNV, idImmOps);
+        result = 0;
+    } else if (node->getOp() == glslang::EOpCooperativeVectorOuterProductAccumulateNV) {
+        builder.addCapability(spv::CapabilityCooperativeVectorTrainingNV);
+        builder.addExtension(spv::E_SPV_NV_cooperative_vector);
+
+        std::vector<spv::IdImmediate> idImmOps;
+
+        idImmOps.push_back(spv::IdImmediate(true, operands[2])); // Matrix
+        idImmOps.push_back(spv::IdImmediate(true, operands[3])); // Offset
+        idImmOps.push_back(spv::IdImmediate(true, operands[0])); // A
+        idImmOps.push_back(spv::IdImmediate(true, operands[1])); // B
+        idImmOps.push_back(spv::IdImmediate(true, operands[5])); // MemoryLayout
+        idImmOps.push_back(spv::IdImmediate(true, operands[6])); // MatrixInterpretation
+        idImmOps.push_back(spv::IdImmediate(true, operands[4])); // Stride
+        builder.createNoResultOp(spv::OpCooperativeVectorOuterProductAccumulateNV, idImmOps);
+        result = 0;
+    } else if (node->getOp() == glslang::EOpCooperativeVectorReduceSumAccumulateNV) {
+        builder.addCapability(spv::CapabilityCooperativeVectorTrainingNV);
+        builder.addExtension(spv::E_SPV_NV_cooperative_vector);
+
+        std::vector<spv::IdImmediate> idImmOps;
+
+        idImmOps.push_back(spv::IdImmediate(true, operands[1])); // Buf
+        idImmOps.push_back(spv::IdImmediate(true, operands[2])); // Offset
+        idImmOps.push_back(spv::IdImmediate(true, operands[0])); // A
+        builder.createNoResultOp(spv::OpCooperativeVectorReduceSumAccumulateNV, idImmOps);
         result = 0;
     } else if (atomic) {
         // Handle all atomics
@@ -4912,6 +5049,21 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
         spv::Id use = builder.makeUintConstant(type.getCoopMatKHRuse());
 
         spvType = builder.makeCooperativeMatrixTypeKHR(spvType, scope, rows, cols, use);
+    }
+
+    if (type.isCoopVecNV()) {
+        builder.addCapability(spv::CapabilityCooperativeVectorNV);
+        builder.addExtension(spv::E_SPV_NV_cooperative_vector);
+
+        if (type.getBasicType() == glslang::EbtFloat16)
+            builder.addCapability(spv::CapabilityFloat16);
+        if (type.getBasicType() == glslang::EbtUint8 || type.getBasicType() == glslang::EbtInt8) {
+            builder.addCapability(spv::CapabilityInt8);
+        }
+
+        spv::Id components = makeArraySizeId(*type.getTypeParameters()->arraySizes, 0);
+
+        spvType = builder.makeCooperativeVectorTypeNV(spvType, components);
     }
 
     if (type.isArray()) {
@@ -6754,16 +6906,24 @@ spv::Id TGlslangToSpvTraverser::createBinaryOperation(glslang::TOperator op, OpD
         break;
     case glslang::EOpVectorTimesScalar:
     case glslang::EOpVectorTimesScalarAssign:
-        if (isFloat && (builder.isVector(left) || builder.isVector(right))) {
-            if (builder.isVector(right))
+        if (isFloat && (builder.isVector(left) || builder.isVector(right) || builder.isCooperativeVector(left) || builder.isCooperativeVector(right))) {
+            if (builder.isVector(right) || builder.isCooperativeVector(right))
                 std::swap(left, right);
             assert(builder.isScalar(right));
             needMatchingVectors = false;
             binOp = spv::OpVectorTimesScalar;
-        } else if (isFloat)
+        } else if (isFloat) {
             binOp = spv::OpFMul;
-          else
+        } else if (builder.isCooperativeVector(left) || builder.isCooperativeVector(right)) {
+            if (builder.isCooperativeVector(right))
+                std::swap(left, right);
+            assert(builder.isScalar(right));
+            // Construct a cooperative vector from the scalar
+            right = builder.createCompositeConstruct(builder.getTypeId(left), { right });
             binOp = spv::OpIMul;
+        } else {
+            binOp = spv::OpIMul;
+        }
         break;
     case glslang::EOpVectorTimesMatrix:
     case glslang::EOpVectorTimesMatrixAssign:
@@ -7681,7 +7841,9 @@ spv::Id TGlslangToSpvTraverser::createIntWidthConversion(spv::Id operand, int ve
         type = builder.makeUintType(width);
     }
 
-    if (vectorSize > 0)
+    if (builder.getOpCode(destType) == spv::OpTypeCooperativeVectorNV) {
+        type = builder.makeCooperativeVectorTypeNV(type, builder.getCooperativeVectorNumComponents(destType));
+    } else if (vectorSize > 0)
         type = builder.makeVectorType(type, vectorSize);
     else if (builder.getOpCode(destType) == spv::OpTypeCooperativeMatrixKHR ||
              builder.getOpCode(destType) == spv::OpTypeCooperativeMatrixNV) {
@@ -10070,8 +10232,9 @@ spv::Id TGlslangToSpvTraverser::createSpvConstantFromConstUnionArray(const glsla
         glslang::TVector<glslang::TTypeLoc>::const_iterator iter;
         for (iter = glslangType.getStruct()->begin(); iter != glslangType.getStruct()->end(); ++iter)
             spvConsts.push_back(createSpvConstantFromConstUnionArray(*iter->type, consts, nextConst, false));
-    } else if (glslangType.getVectorSize() > 1) {
-        for (unsigned int i = 0; i < (unsigned int)glslangType.getVectorSize(); ++i) {
+    } else if (glslangType.getVectorSize() > 1 || glslangType.isCoopVecNV()) {
+        unsigned int numComponents = glslangType.isCoopVecNV() ? glslangType.getTypeParameters()->arraySizes->getDimSize(0) : glslangType.getVectorSize();
+        for (unsigned int i = 0; i < numComponents; ++i) {
             bool zero = nextConst >= consts.size();
             switch (glslangType.getBasicType()) {
             case glslang::EbtInt:
