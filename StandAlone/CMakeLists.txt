@@ -48,6 +48,11 @@ add_custom_command(
 set(SOURCES StandAlone.cpp DirStackFileIncluder.h  ${GLSLANG_INTRINSIC_H})
 
 add_executable(glslang-standalone ${SOURCES})
+if(${CMAKE_CXX_COMPILER_ID} MATCHES "GNU")
+    target_compile_options(glslang-standalone PRIVATE -Wconversion)
+elseif(${CMAKE_CXX_COMPILER_ID} MATCHES "Clang" AND NOT MSVC)
+    target_compile_options(glslang-standalone PRIVATE -Wshorten-64-to-32)
+endif()
 set_property(TARGET glslang-standalone PROPERTY FOLDER tools)
 set_property(TARGET glslang-standalone PROPERTY OUTPUT_NAME glslang)
 glslang_set_link_args(glslang-standalone)

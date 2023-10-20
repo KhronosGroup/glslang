@@ -1333,22 +1333,22 @@ int ShInitialize()
 // objects.
 //
 
-ShHandle ShConstructCompiler(const EShLanguage language, int debugOptions)
+ShHandle ShConstructCompiler(const EShLanguage language, int /*debugOptions unused*/)
 {
     if (!InitThread())
         return nullptr;
 
-    TShHandleBase* base = static_cast<TShHandleBase*>(ConstructCompiler(language, debugOptions));
+    TShHandleBase* base = static_cast<TShHandleBase*>(ConstructCompiler(language, 0));
 
     return reinterpret_cast<void*>(base);
 }
 
-ShHandle ShConstructLinker(const EShExecutable executable, int debugOptions)
+ShHandle ShConstructLinker(const EShExecutable executable, int /*debugOptions unused*/)
 {
     if (!InitThread())
         return nullptr;
 
-    TShHandleBase* base = static_cast<TShHandleBase*>(ConstructLinker(executable, debugOptions));
+    TShHandleBase* base = static_cast<TShHandleBase*>(ConstructLinker(executable, 0));
 
     return reinterpret_cast<void*>(base);
 }
