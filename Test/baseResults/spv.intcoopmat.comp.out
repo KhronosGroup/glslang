@@ -27,9 +27,9 @@ spv.intcoopmat.comp
                               SourceExtension  "GL_NV_cooperative_matrix"
                               SourceExtension  "GL_NV_integer_cooperative_matrix"
                               Name 4  "main"
-                              Name 14  "ineg(i81;"
+                              Name 14  "ineg(i81<8><3><8><8>;"
                               Name 13  "m"
-                              Name 21  "umul(u81;"
+                              Name 21  "umul(u81<8><3><8><8>;"
                               Name 20  "m"
                               Name 35  "mu"
                               Name 39  "mi"
@@ -391,11 +391,11 @@ spv.intcoopmat.comp
                               CooperativeMatrixStoreNV 187 186 91 93 MakePointerAvailableKHR NonPrivatePointerKHR 88
              190:          10 Load 188(p1)
                               Store 189(param) 190
-             191:          10 FunctionCall 14(ineg(i81;) 189(param)
+             191:          10 FunctionCall 14(ineg(i81<8><3><8><8>;) 189(param)
                               Store 188(p1) 191
              194:          17 Load 192(p2)
                               Store 193(param) 194
-             195:          17 FunctionCall 21(umul(u81;) 193(param)
+             195:          17 FunctionCall 21(umul(u81<8><3><8><8>;) 193(param)
                               Store 192(p2) 195
              196:          10 Load 188(p1)
              197:          10 Load 188(p1)
@@ -439,14 +439,14 @@ spv.intcoopmat.comp
                               CooperativeMatrixStoreNV 244 243 213 93 MakePointerAvailableKHR NonPrivatePointerKHR 213
                               Return
                               FunctionEnd
-   14(ineg(i81;):          10 Function None 12
+14(ineg(i81<8><3><8><8>;):          10 Function None 12
            13(m):     11(ptr) FunctionParameter
               15:             Label
               23:          10 Load 13(m)
               24:          10 SNegate 23
                               ReturnValue 24
                               FunctionEnd
-   21(umul(u81;):          17 Function None 19
+21(umul(u81<8><3><8><8>;):          17 Function None 19
            20(m):     18(ptr) FunctionParameter
               22:             Label
               27:          17 Load 20(m)
