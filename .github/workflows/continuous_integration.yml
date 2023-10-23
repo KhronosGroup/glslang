@@ -23,7 +23,7 @@ jobs:
                 compiler: [{cc: clang, cxx: clang++}, {cc: gcc, cxx: g++}]
                 cmake_build_type: [Debug, Release]
         steps:
-            - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
+            - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
             - uses: lukka/get-cmake@8be6cca406b575906541e8e3b885d46f416bba39 # v3.27.7
             - uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d2cb2b236 # v4.7.1
               with:
@@ -73,7 +73,7 @@ jobs:
                 cmake_build_type: [Debug]
                 flags: ['-fsanitize=address', '-fsanitize=thread']
         steps:
-            - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
+            - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
             - uses: lukka/get-cmake@8be6cca406b575906541e8e3b885d46f416bba39 # v3.27.7
             - uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d2cb2b236 # v4.7.1
               with:
@@ -122,7 +122,7 @@ jobs:
       name: Linux Backcompat
       runs-on: ubuntu-20.04
       steps:
-          - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
+          - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
           - uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d2cb2b236 # v4.7.1
             with:
                 python-version: '3.7'
@@ -171,7 +171,7 @@ jobs:
                 compiler: [{cc: clang, cxx: clang++}, {cc: gcc, cxx: g++}]
                 cmake_build_type: [Debug, Release]
         steps:
-            - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
+            - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
             - uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d2cb2b236 # v4.7.1
               with:
                   python-version: '3.7'
@@ -215,7 +215,7 @@ jobs:
                 os: [{genus: windows-2019, family: windows}]
                 cmake_build_type: [Debug, Release]
         steps:
-            - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
+            - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
             - uses: lukka/get-cmake@8be6cca406b575906541e8e3b885d46f416bba39 # v3.27.7
             - uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d2cb2b236 # v4.7.1
               with:
@@ -256,7 +256,7 @@ jobs:
             # https://github.com/actions/runner-images/blob/main/images/linux/Ubuntu2204-Readme.md#android
             NDK: [23.2.8568313, 25.2.9519653]
         steps:
-            - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
+            - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
             - uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d2cb2b236 # v4.7.1
               with:
                   python-version: '3.7'
@@ -285,7 +285,7 @@ jobs:
     emscripten:
         runs-on: ubuntu-22.04
         steps:
-            - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
+            - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
             - uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d2cb2b236 # v4.7.1
               with:
                   python-version: '3.7'
