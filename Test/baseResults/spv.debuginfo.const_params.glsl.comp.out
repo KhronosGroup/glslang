@@ -81,18 +81,18 @@ spv.debuginfo.const_params.glsl.comp
                               Return
                               FunctionEnd
                               Line 1 7 18
-33(function(f1;vf2;vf3;vf4;):           4 Function None 27
-           29(f):   16(float) FunctionParameter
-          30(f2):   19(fvec2) FunctionParameter
-          31(f3):   22(fvec3) FunctionParameter
-          32(f4):   24(fvec4) FunctionParameter
-              34:             Label
-              42:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 36
-              43:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 37 39 39 12 12
-              46:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 44 29(f) 47
-              50:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 48 30(f2) 47
-              53:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 51 31(f3) 47
-              56:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 54 32(f4) 47
-              60:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 101(DebugFunctionDefinition) 36 33(function(f1;vf2;vf3;vf4;)
+39(function(f1;vf2;vf3;vf4;):           4 Function None 33
+           35(f):   24(float) FunctionParameter
+          36(f2):   27(fvec2) FunctionParameter
+          37(f3):   29(fvec3) FunctionParameter
+          38(f4):   31(fvec4) FunctionParameter
+              42:             Label
+              43:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 41
+              44:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 17 12 12 12 12
+              47:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 29(DebugValue) 45 35(f) 48
+              51:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 29(DebugValue) 49 36(f2) 48
+              54:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 29(DebugValue) 52 37(f3) 48
+              57:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 29(DebugValue) 55 38(f4) 48
+              58:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 101(DebugFunctionDefinition) 41 39(function(f1;vf2;vf3;vf4;)
                               Return
                               FunctionEnd

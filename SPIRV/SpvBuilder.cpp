@@ -1182,13 +1182,26 @@ Id Builder::makeDebugExpression()
     return debugExpression;
 }
 
-Id Builder::makeDebugDeclare(Id const debugLocalVariable, Id const localVariable)
+Id Builder::makeDebugDeclare(Id const debugLocalVariable, Id const pointer)
 {
     Instruction* inst = new Instruction(getUniqueId(), makeVoidType(), OpExtInst);
     inst->addIdOperand(nonSemanticShaderDebugInfo);
     inst->addImmediateOperand(NonSemanticShaderDebugInfo100DebugDeclare);
     inst->addIdOperand(debugLocalVariable); // debug local variable id
-    inst->addIdOperand(localVariable); // local variable id
+    inst->addIdOperand(pointer); // pointer to local variable id
+    inst->addIdOperand(makeDebugExpression()); // expression id
+    buildPoint->addInstruction(std::unique_ptr<Instruction>(inst));
+
+    return inst->getResultId();
+}
+
+Id Builder::makeDebugValue(Id const debugLocalVariable, Id const value)
+{
+    Instruction* inst = new Instruction(getUniqueId(), makeVoidType(), OpExtInst);
+    inst->addIdOperand(nonSemanticShaderDebugInfo);
+    inst->addImmediateOperand(NonSemanticShaderDebugInfo100DebugValue);
+    inst->addIdOperand(debugLocalVariable); // debug local variable id
+    inst->addIdOperand(value); // value of local variable id
     inst->addIdOperand(makeDebugExpression()); // expression id
     buildPoint->addInstruction(std::unique_ptr<Instruction>(inst));
 
@@ -2148,20 +2161,25 @@ void Builder::setupDebugFunctionEntry(Function* function, const char* name, int 
         Id firstParamId = function->getParamId(0);
 
         for (size_t p = 0; p < paramTypes.size(); ++p) {
-            auto getParamTypeId = [this](Id const& typeId) {
-                if (isPointerType(typeId) || isArrayType(typeId)) {
-                    return getContainedTypeId(typeId);
-                } else {
-                    return typeId;
-                }
-            };
+            bool passByRef = false;
+            Id paramTypeId = paramTypes[p];
+
+            // For pointer-typed parameters, they are actually passed by reference and we need unwrap the pointer to get the actual parameter type.
+            if (isPointerType(paramTypeId) || isArrayType(paramTypeId)) {
+                passByRef = true;
+                paramTypeId = getContainedTypeId(paramTypeId);
+            }
+
             auto const& paramName = paramNames[p];
-            auto const debugLocalVariableId =
-                createDebugLocalVariable(debugId[getParamTypeId(paramTypes[p])], paramName, p + 1);
+            auto const debugLocalVariableId = createDebugLocalVariable(debugId[paramTypeId], paramName, p + 1);
+            auto const paramId = static_cast<Id>(firstParamId + p);
+            debugId[paramId] = debugLocalVariableId;
 
-            debugId[firstParamId + p] = debugLocalVariableId;
-
-            makeDebugDeclare(debugLocalVariableId, firstParamId + p);
+            if (passByRef) {
+                makeDebugDeclare(debugLocalVariableId, paramId);
+            } else {
+                makeDebugValue(debugLocalVariableId, paramId);
+            }
         }
     }
 
