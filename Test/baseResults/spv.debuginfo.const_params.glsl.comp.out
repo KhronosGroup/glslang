@@ -10,7 +10,7 @@ spv.debuginfo.const_params.glsl.comp
                               MemoryModel Logical GLSL450
                               EntryPoint GLCompute 14  "main"
                               ExecutionMode 14 LocalSize 1 1 1
-               2:             String  ""
+               2:             String  "spv.debuginfo.const_params.glsl.comp"
                8:             String  "uint"
               17:             String  "float"
               35:             String  "function"
@@ -21,6 +21,20 @@ spv.debuginfo.const_params.glsl.comp
 // OpModuleProcessed keep-uncalled
 // OpModuleProcessed entry-point main
 #line 1
+#version 450
+
+void function(
+    const float f,
+    const vec2 f2,
+    const vec3 f3,
+    const vec4 f4)
+{
+}
+
+void main()
+{
+    function(0, vec2(0), vec3(0), vec4(0));
+}
 "
               43:             String  "f"
               49:             String  "f2"
