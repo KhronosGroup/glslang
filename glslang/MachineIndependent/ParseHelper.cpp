@@ -932,8 +932,6 @@ TIntermTyped* TParseContext::handleUnaryMath(const TSourceLoc& loc, const char* 
     return childNode;
 }
 
-
-
 //
 // Handle seeing a base.field dereference in the grammar.
 //
@@ -7475,7 +7473,7 @@ void TParseContext::vkRelaxedRemapUniformMembers(const TSourceLoc& loc, const TP
 
     ForEachOpaque(type, identifier,
                   [&publicType, &loc, this](const TType& type, const TString& path) {
-                      TString& structMemberName = *(new TString(path));
+                      TString& structMemberName = *(NewPoolTString(path.c_str()));
 
                       TArraySizes arraySizes = {};
                       if (type.getArraySizes()) arraySizes = *type.getArraySizes();
@@ -7504,30 +7502,29 @@ void TParseContext::vkRelaxedRemapUniformMembers(const TSourceLoc& loc, const TP
                   });
 }
 
-void TParseContext::vkRelaxedRemapFunctionParameter(const TSourceLoc& loc, TFunction* function, TParameter& param, std::vector<TParameter*>* newParams)
+void TParseContext::vkRelaxedRemapFunctionParameter(const TSourceLoc& loc, TFunction* function, TParameter& param, std::vector<int>* newParams)
 {
     function->addParameter(param);
 
     if (!param.type->isStruct() || !param.type->containsOpaque())
         return;
 
-
     ForEachOpaque(*param.type, (param.name ? *param.name : param.type->getFieldName()),
                   [function, param, newParams](const TType& type, const TString& path) {
-                      TString* memberName = new TString(path);
+                      TString* memberName = NewPoolTString(path.c_str());
 
                       TType* memberType = new TType();
                       memberType->shallowCopy(type);
                       memberType->getQualifier().storage = param.type->getQualifier().storage;
                       memberType->clearArraySizes();
 
-                      TParameter* memberParam = new TParameter();
-                      memberParam->name = memberName;
-                      memberParam->type = memberType;
-                      memberParam->defaultValue = nullptr;
-                      function->addParameter(*memberParam);
+                      TParameter memberParam = {};
+                      memberParam.name = memberName;
+                      memberParam.type = memberType;
+                      memberParam.defaultValue = nullptr;
+                      function->addParameter(memberParam);
                       if (newParams)
-                          newParams->push_back(memberParam);
+                          newParams->push_back(function->getParamCount()-1);
                   });
 }
 
@@ -7583,7 +7580,7 @@ TIntermNode* TParseContext::vkRelaxedRemapFunctionArgument(const TSourceLoc& loc
     TParameter param = { NewPoolTString(accessChainTraverser.path.c_str()), new TType };
     param.type->shallowCopy(intermTyped->getType());
 
-    std::vector<TParameter*> newParams = {};
+    std::vector<int> newParams = {};
     vkRelaxedRemapFunctionParameter(loc, function, param, &newParams);
 
     if (intermTyped->getType().isOpaque())
@@ -7619,15 +7616,16 @@ TIntermNode* TParseContext::vkRelaxedRemapFunctionArgument(const TSourceLoc& loc
         if (!newParams.empty())
             remappedArgument = intermediate.makeAggregate(remappedArgument, loc);
 
-        for (TParameter* newParam : newParams)
+        for (int paramIndex : newParams)
         {
+            TParameter& newParam = function->operator[](paramIndex);
             TIntermSymbol* intermSymbol = nullptr;
-            TSymbol* symbol = symbolTable.find(*newParam->name);
+            TSymbol* symbol = symbolTable.find(*newParam.name);
             if (symbol && symbol->getAsVariable())
                 intermSymbol = intermediate.addSymbol(*symbol->getAsVariable(), loc);
             else
             {
-                TVariable* variable = new TVariable(newParam->name, *newParam->type);
+                TVariable* variable = new TVariable(newParam.name, *newParam.type);
                 intermSymbol = intermediate.addSymbol(*variable, loc);
             }
 
