@@ -2101,12 +2101,8 @@ Function* Builder::makeFunctionEntry(Decoration precision, Id returnType, const 
         }
     }
 
-    // Make the debug function instruction
+    // reset last debug scope
     if (emitNonSemanticShaderDebugInfo) {
-        Id nameId = getStringId(unmangleFunctionName(name));
-        Id debugFuncId = makeDebugFunction(function, nameId, typeId);
-        debugId[funcId] = debugFuncId;
-        currentDebugScopeId.push(debugFuncId);
         lastDebugScopeId = NoResult;
     }
 
@@ -2116,41 +2112,62 @@ Function* Builder::makeFunctionEntry(Decoration precision, Id returnType, const 
     function->addBlock(*entry);
     setBuildPoint(*entry);
 
-    // DebugScope and DebugLine for parameter DebugDeclares
-    if (emitNonSemanticShaderDebugInfo && (int)paramTypes.size() > 0) {
-        addDebugScopeAndLine(currentFileId, currentLine, 0);
-    }
+    if (name)
+        addName(function->getId(), name);
 
-    if (emitNonSemanticShaderDebugInfo) {
-        assert(paramTypes.size() == paramNames.size());
-        for(size_t p = 0; p < paramTypes.size(); ++p)
-        {
+    functions.push_back(std::unique_ptr<Function>(function));
+
+    return function;
+}
+
+void Builder::setupDebugFunctionEntry(Function* function, const char* name, int line, const std::vector<Id>& paramTypes,
+                                      const std::vector<char const*>& paramNames)
+{
+
+    if (!emitNonSemanticShaderDebugInfo)
+        return;
+
+    currentLine = line;
+    Id nameId = getStringId(unmangleFunctionName(name));
+    Id funcTypeId = function->getFuncTypeId();
+    assert(debugId[funcTypeId] != 0);
+    Id funcId = function->getId();
+
+    assert(funcId != 0);
+
+    // Make the debug function instruction
+    Id debugFuncId = makeDebugFunction(function, nameId, funcTypeId);
+    debugId[funcId] = debugFuncId;
+    currentDebugScopeId.push(debugFuncId);
+
+    // DebugScope and DebugLine for parameter DebugDeclares
+    assert(paramTypes.size() == paramNames.size());
+    if ((int)paramTypes.size() > 0) {
+        addDebugScopeAndLine(currentFileId, currentLine, 0);
+
+        Id firstParamId = function->getParamId(0);
+
+        for (size_t p = 0; p < paramTypes.size(); ++p) {
             auto getParamTypeId = [this](Id const& typeId) {
                 if (isPointerType(typeId) || isArrayType(typeId)) {
                     return getContainedTypeId(typeId);
-                }
-                else {
+                } else {
                     return typeId;
                 }
             };
             auto const& paramName = paramNames[p];
-            auto const debugLocalVariableId = createDebugLocalVariable(debugId[getParamTypeId(paramTypes[p])], paramName, p+1);
+            auto const debugLocalVariableId =
+                createDebugLocalVariable(debugId[getParamTypeId(paramTypes[p])], paramName, p + 1);
+
             debugId[firstParamId + p] = debugLocalVariableId;
 
             makeDebugDeclare(debugLocalVariableId, firstParamId + p);
         }
     }
 
-    if (name)
-        addName(function->getId(), name);
-
-    functions.push_back(std::unique_ptr<Function>(function));
-
     // Clear debug scope stack
     if (emitNonSemanticShaderDebugInfo)
         currentDebugScopeId.pop();
-
-    return function;
 }
 
 Id Builder::makeDebugFunction([[maybe_unused]] Function* function, Id nameId, Id funcTypeId)
@@ -2166,13 +2183,13 @@ Id Builder::makeDebugFunction([[maybe_unused]] Function* function, Id nameId, Id
     type->addImmediateOperand(NonSemanticShaderDebugInfo100DebugFunction);
     type->addIdOperand(nameId);
     type->addIdOperand(debugId[funcTypeId]);
-    type->addIdOperand(makeDebugSource(currentFileId)); // Will be fixed later when true filename available
-    type->addIdOperand(makeUintConstant(currentLine)); // Will be fixed later when true line available
+    type->addIdOperand(makeDebugSource(currentFileId)); // TODO: This points to file of definition instead of declaration
+    type->addIdOperand(makeUintConstant(currentLine)); // TODO: This points to line of definition instead of declaration
     type->addIdOperand(makeUintConstant(0)); // column
     type->addIdOperand(makeDebugCompilationUnit()); // scope
     type->addIdOperand(nameId); // linkage name
     type->addIdOperand(makeUintConstant(NonSemanticShaderDebugInfo100FlagIsPublic));
-    type->addIdOperand(makeUintConstant(currentLine)); // TODO(greg-lunarg): correct scope line
+    type->addIdOperand(makeUintConstant(currentLine)); 
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
     return funcId;
