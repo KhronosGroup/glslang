@@ -1077,20 +1077,48 @@ Id Builder::makeDebugSource(const Id fileName) {
     sourceInst->addIdOperand(nonSemanticShaderDebugInfo);
     sourceInst->addImmediateOperand(NonSemanticShaderDebugInfo100DebugSource);
     sourceInst->addIdOperand(fileName);
+
+
     if (emitNonSemanticShaderDebugSource) {
+        std::string text;
         spv::Id sourceId = 0;
         if (fileName == sourceFileStringId) {
-            sourceId = getStringId(sourceText);
+            text =sourceText;
         } else {
             auto incItr = includeFiles.find(fileName);
             assert(incItr != includeFiles.end());
-            sourceId = getStringId(*incItr->second);
+            text =*incItr->second;
         }
-        sourceInst->addIdOperand(sourceId);
+        // Source operand
+        if (text.size() > 0) {
+            int nextByte = 0;
+            std::string subString;
+            while ((int)text.size() - nextByte > 0) {
+                subString = text.substr(nextByte, nonNullBytesPerInstruction);
+                if (nextByte == 0) {
+                    sourceId = getStringId(subString);
+                    sourceInst->addIdOperand(sourceId);
+                    constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(sourceInst));
+                    module.mapInstruction(sourceInst);
+                    debugSourceId[fileName] = resultId;
+                } else {
+                    // DebugSourcContinued 
+                    Instruction* sourceContinuedInst = new Instruction(getUniqueId(), makeVoidType(), OpExtInst);
+                    sourceContinuedInst->addIdOperand(nonSemanticShaderDebugInfo);
+                    sourceContinuedInst->addImmediateOperand(NonSemanticShaderDebugInfo100DebugSourceContinued);
+                    sourceContinuedInst->addIdOperand(getStringId(subString));
+                    constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(sourceContinuedInst));
+                    module.mapInstruction(sourceContinuedInst);
+                }
+                nextByte += nonNullBytesPerInstruction;
+            }
+        } else {
+            module.mapInstruction(sourceInst);
+            debugSourceId[fileName] = resultId;
+        }
+        
     }
-    constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(sourceInst));
-    module.mapInstruction(sourceInst);
-    debugSourceId[fileName] = resultId;
+
     return resultId;
 }
 
@@ -4081,9 +4109,6 @@ void Builder::createConditionalBranch(Id condition, Block* thenBlock, Block* els
 void Builder::dumpSourceInstructions(const spv::Id fileId, const std::string& text,
                                      std::vector<unsigned int>& out) const
 {
-    const int maxWordCount = 0xFFFF;
-    const int opSourceWordCount = 4;
-    const int nonNullBytesPerInstruction = 4 * (maxWordCount - opSourceWordCount) - 1;
 
     if (sourceLang != SourceLanguageUnknown) {
         // OpSource Language Version File Source

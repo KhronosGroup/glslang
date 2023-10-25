@@ -955,6 +955,11 @@ public:
 
     // The stream for outputting warnings and errors.
     SpvBuildLogger* logger;
+    
+    // constants for OpSourceContinued and OpDebugSourceContinued
+    const int maxWordCount = 0xFFFF;
+    const int opSourceWordCount = 4;
+    const int nonNullBytesPerInstruction = 4 * (maxWordCount - opSourceWordCount) - 1;
 };  // end Builder class
 
 };  // end spv namespace
