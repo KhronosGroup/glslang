@@ -182,7 +182,7 @@ Id Builder::makeVoidType()
     return type->getResultId();
 }
 
-Id Builder::makeBoolType(bool const compilerGenerated)
+Id Builder::makeBoolType()
 {
     Instruction* type;
     if (groupedTypes[OpTypeBool].size() == 0) {
@@ -193,7 +193,7 @@ Id Builder::makeBoolType(bool const compilerGenerated)
     } else
         type = groupedTypes[OpTypeBool].back();
 
-    if (emitNonSemanticShaderDebugInfo && !compilerGenerated)
+    if (emitNonSemanticShaderDebugInfo)
     {
         auto const debugResultId = makeBoolDebugType(32);
         debugId[type->getResultId()] = debugResultId;
