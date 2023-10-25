@@ -372,15 +372,15 @@ spv.coopmatKHR.comp
              205:         202 Load 204(ms8A)
              209:         206 Load 208(ms8B)
              213:         210 Load 212(ms8C)
-             214:         210 CooperativeMatrixMulAddKHR 205 209 213 ASignedComponents BSignedComponents CSignedComponents ResultSignedComponents 
+             214:         210 CooperativeMatrixMulAddKHR 205 209 213 ASignedComponentsKHR BSignedComponentsKHR CSignedComponentsKHR ResultSignedComponentsKHR 
              215:         202 Load 204(ms8A)
              216:         206 Load 208(ms8B)
              217:         210 Load 212(ms8C)
-             218:         210 CooperativeMatrixMulAddKHR 215 216 217 ASignedComponents BSignedComponents CSignedComponents ResultSignedComponents 
+             218:         210 CooperativeMatrixMulAddKHR 215 216 217 ASignedComponentsKHR BSignedComponentsKHR CSignedComponentsKHR ResultSignedComponentsKHR 
              219:         202 Load 204(ms8A)
              220:         206 Load 208(ms8B)
              221:         210 Load 212(ms8C)
-             223:         210 CooperativeMatrixMulAddKHR 219 220 221 ASignedComponents BSignedComponents CSignedComponents ResultSignedComponents SaturatingAccumulation 
+             223:         210 CooperativeMatrixMulAddKHR 219 220 221 ASignedComponentsKHR BSignedComponentsKHR CSignedComponentsKHR ResultSignedComponentsKHR SaturatingAccumulationKHR 
              228:         225 Load 227(m16)
              229:    194(ptr) AccessChain 193(shmatrix) 82
                               CooperativeMatrixStoreKHR 229 228 62 10 MakePointerAvailableKHR NonPrivatePointerKHR 10
