@@ -56,21 +56,7 @@ jobs:
               run: |
                   sudo apt-get -qq update
                   sudo apt-get install -y clang-6.0
-            - name: Install GoogleTest
-              run: |
-                  # check out pre-breakage version of googletest; can be deleted when
-                  # issue 3128 is fixed
-                  # git clone --depth=1 https://github.com/google/googletest.git External/googletest
-                  mkdir -p External/googletest
-                  cd External/googletest
-                  git init
-                  git remote add origin https://github.com/google/googletest.git
-                  git fetch --depth 1 origin 0c400f67fcf305869c5fb113dd296eca266c9725
-                  git reset --hard FETCH_HEAD
-                  cd ../..
-            - name: Update Glslang Sources
-              run: |
-                  ./update_glslang_sources.py
+            - run: ./update_glslang_sources.py
             - name: Build
               env:
                   CC: ${{matrix.compiler.cc}}
@@ -132,21 +118,7 @@ jobs:
             - uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d2cb2b236 # v4.7.1
               with:
                   python-version: '3.7'
-            - name: Install GoogleTest
-              run: |
-                  # check out pre-breakage version of googletest; can be deleted when
-                  # issue 3128 is fixed
-                  # git clone --depth=1 https://github.com/google/googletest.git External/googletest
-                  mkdir -p External/googletest
-                  cd External/googletest
-                  git init
-                  git remote add origin https://github.com/google/googletest.git
-                  git fetch --depth 1 origin 0c400f67fcf305869c5fb113dd296eca266c9725
-                  git reset --hard FETCH_HEAD
-                  cd ../..
-            - name: Update Glslang Sources
-              run: |
-                  ./update_glslang_sources.py
+            - run: ./update_glslang_sources.py
             - name: Build
               env:
                   CC: ${{matrix.compiler.cc}}
@@ -205,21 +177,7 @@ jobs:
             - uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d2cb2b236 # v4.7.1
               with:
                   python-version: '3.7'
-            - name: Install GoogleTest
-              run: |
-                  # check out pre-breakage version of googletest; can be deleted when
-                  # issue 3128 is fixed
-                  # git clone --depth=1 https://github.com/google/googletest.git External/googletest
-                  mkdir -p External/googletest
-                  cd External/googletest
-                  git init
-                  git remote add origin https://github.com/google/googletest.git
-                  git fetch --depth 1 origin 0c400f67fcf305869c5fb113dd296eca266c9725
-                  git reset --hard FETCH_HEAD
-                  cd ../..
-            - name: Update Glslang Sources
-              run: |
-                  python update_glslang_sources.py
+            - run: python update_glslang_sources.py
             - name: Build
               run: |
                   cmake -S. -Bbuild -G "Visual Studio 16 2019" -A x64 -DCMAKE_INSTALL_PREFIX="$PWD/build/install"
