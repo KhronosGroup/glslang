@@ -4946,7 +4946,7 @@ void TGlslangToSpvTraverser::decorateStructType(const glslang::TType& type,
         //
         // Add SPIR-V decorations for members (GL_EXT_spirv_intrinsics)
         //
-        if (glslangMember.getQualifier().hasSprivDecorate()) {
+        if (glslangMember.getQualifier().hasSpirvDecorate()) {
             const glslang::TSpirvDecorate& spirvDecorate = glslangMember.getQualifier().getSpirvDecorate();
 
             // Add spirv_decorate
@@ -9599,9 +9599,9 @@ spv::Id TGlslangToSpvTraverser::getSymbolId(const glslang::TIntermSymbol* symbol
     }
 
     //
-    // Add SPIR-V decorations for structure (GL_EXT_spirv_intrinsics)
+    // Add SPIR-V decorations (GL_EXT_spirv_intrinsics)
     //
-    if (symbol->getType().getQualifier().hasSprivDecorate()) {
+    if (symbol->getType().getQualifier().hasSpirvDecorate()) {
         const glslang::TSpirvDecorate& spirvDecorate = symbol->getType().getQualifier().getSpirvDecorate();
 
         // Add spirv_decorate
