@@ -37,6 +37,7 @@
 //
 
 #include "localintermediate.h"
+#include "../../SPIRV/hex_float.h"
 #include <cmath>
 #include <cfloat>
 #include <cstdlib>
@@ -45,6 +46,167 @@
 namespace {
 
 using namespace glslang;
+using namespace spvutils;
+
+typedef union {
+    double d;
+    int i[2];
+} DoubleIntUnion;
+
+// Some helper functions
+
+bool isNan(double x)
+{
+    DoubleIntUnion u;
+    // tough to find a platform independent library function, do it directly
+    u.d = x;
+    int bitPatternL = u.i[0];
+    int bitPatternH = u.i[1];
+    return (bitPatternH & 0x7ff80000) == 0x7ff80000 &&
+           ((bitPatternH & 0xFFFFF) != 0 || bitPatternL != 0);
+}
+
+bool isInf(double x)
+{
+    DoubleIntUnion u;
+    // tough to find a platform independent library function, do it directly
+    u.d = x;
+    int bitPatternL = u.i[0];
+    int bitPatternH = u.i[1];
+    return (bitPatternH & 0x7ff00000) == 0x7ff00000 &&
+           (bitPatternH & 0xFFFFF) == 0 && bitPatternL == 0;
+}
+
+// Convert from float32 to float16 bits (Round direct to zero)
+uint16_t float32ToFloat16Bits(float input)
+{
+    HexFloat<FloatProxy<float>>     in(input);
+    HexFloat<FloatProxy<Float16>>   out(0);
+
+    in.castTo(out, kRoundToZero);
+
+    return (out.getBits());
+}
+
+// Convert from float16 to float32 (Round direct will be ignored)
+float float16ToFloat32(HexFloat<FloatProxy<Float16>> input)
+{
+     HexFloat<FloatProxy<Float16>> in(input);
+     HexFloat<FloatProxy<float>>   out(float(0));
+
+     in.castTo(out, kRoundToZero);
+
+     return out.value().getAsFloat();
+}
+
+double clamp(const double& x, const double& minval, const double& maxval)
+{
+    return Min(Max(x, minval), maxval);
+}
+
+double determinant3(const double* col1, const double* col2, const double* col3)
+{
+    return  col1[0] * col2[1] * col3[2]
+          + col1[1] * col2[2] * col3[0]
+          + col1[2] * col2[0] * col3[1]
+          - col1[2] * col2[1] * col3[0]
+          - col1[1] * col2[0] * col3[2]
+          - col1[0] * col2[2] * col3[1];
+}
+
+void invserseMat2(const double* mat, double* inversedMat)
+{
+    double determinant = mat[0] * mat[3] - mat[1] * mat[2];
+    inversedMat[0] = mat[3];
+    inversedMat[1] = -mat[1];
+    inversedMat[2] = -mat[2];
+    inversedMat[3] = mat[0];
+
+    if (fabs(determinant) < 1e-8)
+    {
+        for (int i = 0; i < 4; ++i)
+            inversedMat[i] = 0.0;
+    }
+    else
+    {
+        for (int i = 0; i < 4; ++i)
+            inversedMat[i] /= determinant;
+    }
+}
+
+void invserseMat3(const double* mat, double* inversedMat)
+{
+    double fC00 = mat[3 + 1] * mat[6 + 2] - mat[3 + 2] * mat[6 + 1];
+    double fC10 = mat[3 + 2] * mat[6 + 0] - mat[3 + 0] * mat[6 + 2];
+    double fC20 = mat[3 + 0] * mat[6 + 1] - mat[3 + 1] * mat[6 + 0];
+    double determinant = mat[0 + 0] * fC00 + mat[0 + 1] * fC10 + mat[0 + 2] * fC20;
+
+    inversedMat[0 + 0] = fC00;
+    inversedMat[0 + 1] = mat[0 + 2] * mat[6 + 1] - mat[0 + 1] * mat[6 + 2];
+    inversedMat[0 + 2] = mat[0 + 1] * mat[3 + 2] - mat[0 + 2] * mat[3 + 1];
+    inversedMat[3 + 0] = fC10;
+    inversedMat[3 + 1] = mat[0 + 0] * mat[6 + 2] - mat[0 + 2] * mat[6 + 0];
+    inversedMat[3 + 2] = mat[0 + 2] * mat[3 + 0] - mat[0 + 0] * mat[3 + 2];
+    inversedMat[6 + 0] = fC20;
+    inversedMat[6 + 1] = mat[0 + 1] * mat[6 + 0] - mat[0 + 0] * mat[6 + 1];
+    inversedMat[6 + 2] = mat[0 + 0] * mat[3 + 1] - mat[0 + 1] * mat[3 + 0];
+
+    if (fabs(determinant) < 1e-8)
+    {
+        for (int i = 0; i < 9; ++i)
+            inversedMat[i] = 0.0;
+    }
+    else
+    {
+        for (int i = 0; i < 9; ++i)
+            inversedMat[i] /= determinant;
+    }
+}
+
+void invserseMat4(const double* mat, double* inversedMat)
+{
+    double fA0 = mat[0 + 0] * mat[4 + 1] - mat[0 + 1] * mat[4 + 0];
+    double fA1 = mat[0 + 0] * mat[4 + 2] - mat[0 + 2] * mat[4 + 0];
+    double fA2 = mat[0 + 0] * mat[4 + 3] - mat[0 + 3] * mat[4 + 0];
+    double fA3 = mat[0 + 1] * mat[4 + 2] - mat[0 + 2] * mat[4 + 1];
+    double fA4 = mat[0 + 1] * mat[4 + 3] - mat[0 + 3] * mat[4 + 1];
+    double fA5 = mat[0 + 2] * mat[4 + 3] - mat[0 + 3] * mat[4 + 2];
+    double fB0 = mat[8 + 0] * mat[12 + 1] - mat[8 + 1] * mat[12 + 0];
+    double fB1 = mat[8 + 0] * mat[12 + 2] - mat[8 + 2] * mat[12 + 0];
+    double fB2 = mat[8 + 0] * mat[12 + 3] - mat[8 + 3] * mat[12 + 0];
+    double fB3 = mat[8 + 1] * mat[12 + 2] - mat[8 + 2] * mat[12 + 1];
+    double fB4 = mat[8 + 1] * mat[12 + 3] - mat[8 + 3] * mat[12 + 1];
+    double fB5 = mat[8 + 2] * mat[12 + 3] - mat[8 + 3] * mat[12 + 2];
+    double determinant = fA0 * fB5 - fA1 * fB4 + fA2 * fB3 + fA3 * fB2 - fA4 * fB1 + fA5 * fB0;
+
+    inversedMat[0 + 0] = +mat[4 + 1] * fB5 - mat[4 + 2] * fB4 + mat[4 + 3] * fB3;
+    inversedMat[4 + 0] = -mat[4 + 0] * fB5 + mat[4 + 2] * fB2 - mat[4 + 3] * fB1;
+    inversedMat[8 + 0] = +mat[4 + 0] * fB4 - mat[4 + 1] * fB2 + mat[4 + 3] * fB0;
+    inversedMat[12 + 0] = -mat[4 + 0] * fB3 + mat[4 + 1] * fB1 - mat[4 + 2] * fB0;
+    inversedMat[0 + 1] = -mat[0 + 1] * fB5 + mat[0 + 2] * fB4 - mat[0 + 3] * fB3;
+    inversedMat[4 + 1] = +mat[0 + 0] * fB5 - mat[0 + 2] * fB2 + mat[0 + 3] * fB1;
+    inversedMat[8 + 1] = -mat[0 + 0] * fB4 + mat[0 + 1] * fB2 - mat[0 + 3] * fB0;
+    inversedMat[12 + 1] = +mat[0 + 0] * fB3 - mat[0 + 1] * fB1 + mat[0 + 2] * fB0;
+    inversedMat[0 + 2] = +mat[12 + 1] * fA5 - mat[12 + 2] * fA4 + mat[12 + 3] * fA3;
+    inversedMat[4 + 2] = -mat[12 + 0] * fA5 + mat[12 + 2] * fA2 - mat[12 + 3] * fA1;
+    inversedMat[8 + 2] = +mat[12 + 0] * fA4 - mat[12 + 1] * fA2 + mat[12 + 3] * fA0;
+    inversedMat[12 + 2] = -mat[12 + 0] * fA3 + mat[12 + 1] * fA1 - mat[12 + 2] * fA0;
+    inversedMat[0 + 3] = -mat[8 + 1] * fA5 + mat[8 + 2] * fA4 - mat[8 + 3] * fA3;
+    inversedMat[4 + 3] = +mat[8 + 0] * fA5 - mat[8 + 2] * fA2 + mat[8 + 3] * fA1;
+    inversedMat[8 + 3] = -mat[8 + 0] * fA4 + mat[8 + 1] * fA2 - mat[8 + 3] * fA0;
+    inversedMat[12 + 3] = +mat[8 + 0] * fA3 - mat[8 + 1] * fA1 + mat[8 + 2] * fA0;
+
+    if (fabs(determinant) < 1e-8)
+    {
+        for (int i = 0; i < 16; ++i)
+            inversedMat[i] = 0.0;
+    }
+    else
+    {
+        for (int i = 0; i < 16; ++i)
+            inversedMat[i] /= determinant;
+    }
+}
 
 const double pi = 3.1415926535897932384626433832795;
 
@@ -115,7 +277,19 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TIntermTyped* right
         break;
     }
 
-    TConstUnionArray newConstArray(newComps);
+    // constant array resize
+    int resultComps = newComps;
+    switch (op) {
+    case EOpNotEqual:
+    case EOpEqual:
+        resultComps = 1;
+        break;
+    default:
+        resultComps = newComps;
+        break;
+    }
+
+    TConstUnionArray newConstArray(resultComps);
     TType constBool(EbtBool, EvqConst);
 
     switch(op) {
@@ -411,7 +585,11 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType) 
         componentWise = false;
         resultSize = objectSize;
         break;
-
+    case EOpMatrixInverse:
+    case EOpTranspose:
+        componentWise = false;
+        resultSize = objectSize;
+        break;
     default:
         resultSize = objectSize;
         break;
@@ -461,24 +639,152 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType) 
     }
 
     case EOpPackSnorm2x16:
+    {
+        // packSnorm2x16: round(clamp(c, -1, +1) * 32767.0)
+        assert(2 == objectSize);
+        unsigned int v = 0;
+        unsigned short vc;
+        vc = (unsigned int)(round(clamp(unionArray[0].getDConst(), -1.0, 1.0) * 32767));
+        v = (unsigned int)(*(unsigned short*)&vc);
+        vc = (unsigned int)(round(clamp(unionArray[1].getDConst(), -1.0, 1.0) * 32767));
+        v |= (unsigned int)(*(unsigned short*)&vc) << 16;
+        newConstArray[0].setUConst(v);
+        break;
+    }
     case EOpPackUnorm2x16:
+    {
+        // packUnorm2x16: round(clamp(c,  0, +1) * 65535.0)
+        assert(2 == objectSize);
+        unsigned int v = 0;
+        unsigned short vc;
+        vc = (unsigned int)(round(clamp(unionArray[0].getDConst(), 0.0, 1.0) * 65535));
+        v = (unsigned int)(*(unsigned short*)&vc);
+        vc = (unsigned int)(round(clamp(unionArray[1].getDConst(), 0.0, 1.0) * 65535));
+        v |= (unsigned int)(*(unsigned short*)&vc) << 16;
+        newConstArray[0].setUConst(v);
+        break;
+    }
     case EOpPackHalf2x16:
+    {
+        assert(2 == objectSize);
+        unsigned int v = 0;
+        v = float32ToFloat16Bits(static_cast<float>(unionArray[0].getDConst()));
+        v |= float32ToFloat16Bits(static_cast<float>(unionArray[1].getDConst())) << 16;
+        newConstArray[0].setUConst(v);
+        break;
+    }
     case EOpPack16:
     case EOpPack32:
     case EOpPack64:
     case EOpUnpack32:
     case EOpUnpack16:
     case EOpUnpack8:
-
-    case EOpUnpackSnorm2x16:
-    case EOpUnpackUnorm2x16:
-    case EOpUnpackHalf2x16:
-
-    case EOpDeterminant:
-    case EOpMatrixInverse:
-    case EOpTranspose:
         return nullptr;
 
+    case EOpUnpackSnorm2x16:
+    {
+        // unpackSnorm2x16:  clamp(f / 32767.0, -1, +1)
+        assert(1 == objectSize);
+        unsigned int v = unionArray[0].getUConst();
+        unsigned short vc = (unsigned short)(v & 0xFFFF);
+        newConstArray[0].setDConst(*(short*)&vc / 32767.0f);
+        vc = (unsigned short)((v >> 16) & 0xFFFF);
+        newConstArray[1].setDConst(*(short*)&vc / 32767.0f);
+        break;
+    }
+    case EOpUnpackUnorm2x16:
+    {
+        // unpackUnorm2x16: f / 65535.0
+        assert(1 == objectSize);
+        unsigned int v = unionArray[0].getUConst();
+        newConstArray[0].setDConst((v & 0xFFFF) / 65535.0f);
+        newConstArray[1].setDConst((v >> 16) / 65535.0f);
+        break;
+    }
+    case EOpUnpackHalf2x16:
+    {
+        assert(1 == objectSize);
+        unsigned int v = unionArray[0].getUConst();
+        uint16_t b0 = (unsigned short)(v & 0xFFFF);
+        uint16_t b1 = (unsigned short)(v >> 16);
+        HexFloat<FloatProxy<Float16>> v0(b0), v1(b1);
+        newConstArray[0].setDConst(float16ToFloat32(v0));
+        newConstArray[1].setDConst(float16ToFloat32(v1));
+        break;
+    }
+    case EOpDeterminant:
+    {
+        double det = 0.0;
+        double mat[16];
+        for (int i = 0; i < objectSize; ++i)
+            mat[i] = unionArray[i].getDConst();
+
+        switch (objectSize)
+        {
+        case 1: // scalar
+            det = mat[0];
+            break;
+        case 4: // mat2
+            det = mat[0] * mat[3] - mat[1] * mat[2];
+            break;
+        case 9: // mat3
+            det = determinant3(mat + 0, mat + 3, mat + 6);
+            break;
+        case 16:// mat4
+            det = - mat[3]  * determinant3(mat + 4, mat + 8, mat + 12)
+                + mat[7]  * determinant3(mat + 0, mat + 8, mat + 12)
+                - mat[11] * determinant3(mat + 0, mat + 4, mat + 12)
+                + mat[15] * determinant3(mat + 0, mat + 4, mat + 8);
+            break;
+        default:
+            assert("Unsupported matrix size!");
+        }
+
+        newConstArray[0].setDConst(det);
+        break;
+    }
+    case EOpMatrixInverse:
+    {
+        double mat[16];
+        double inversedMat[16];
+
+        for (int i = 0; i < objectSize; ++i)
+            mat[i] = unionArray[i].getDConst();
+
+        //double determinant = 0.0;
+        switch (objectSize)
+        {
+        case 1: // scalar
+            inversedMat[0] = 1.0;
+            break;
+        case 4: // mat2
+            invserseMat2(mat, inversedMat);
+            break;
+        case 9: // mat3
+            invserseMat3(mat, inversedMat);
+            break;
+        case 16:// mat4
+            invserseMat4(mat, inversedMat);
+            break;
+        default:
+            assert("Unsupported matrix size!");
+        }
+
+        for (int i = 0; i < objectSize; ++i)
+            newConstArray[i].setDConst(inversedMat[i]);
+
+        break;
+    }
+    case EOpTranspose:
+    {
+        int numRows = getType().getMatrixRows();
+        int numCols = getType().getMatrixCols();
+        for (int row = 0; row < numRows; row++)
+            for (int col = 0; col < numCols; col++)
+                newConstArray[row * numCols + col].setDConst(unionArray[col * numRows + row].getDConst());
+
+        break;
+    }
     default:
         assert(componentWise);
         break;
@@ -916,20 +1222,66 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType) 
         // TODO: 3.0 Functionality: unary constant folding: the rest of the ops have to be fleshed out
 
         case EOpSinh:
+            newConstArray[i].setDConst(sinh(unionArray[i].getDConst())); break;
         case EOpCosh:
+            newConstArray[i].setDConst(cosh(unionArray[i].getDConst())); break;
         case EOpTanh:
+            newConstArray[i].setDConst(tanh(unionArray[i].getDConst())); break;
         case EOpAsinh:
+            newConstArray[i].setDConst(asinh(unionArray[i].getDConst())); break;
         case EOpAcosh:
+            newConstArray[i].setDConst(acosh(unionArray[i].getDConst())); break;
         case EOpAtanh:
+            newConstArray[i].setDConst(atanh(unionArray[i].getDConst())); break;
 
         case EOpFloatBitsToInt:
+        {
+            float constData = static_cast<float>(unionArray[i].getDConst());
+            newConstArray[i].setIConst(*(int*)&constData);
+            break;
+        }
         case EOpFloatBitsToUint:
+        {
+            float constData = static_cast<float>(unionArray[i].getDConst());
+            newConstArray[i].setUConst(*(unsigned int*)&constData);
+            break;
+        }
         case EOpIntBitsToFloat:
+        {
+            int constData = unionArray[i].getIConst();
+            newConstArray[i].setDConst(*(float*)&constData);
+            break;
+        }
         case EOpUintBitsToFloat:
+        {
+            unsigned int constData = unionArray[i].getUConst();
+            newConstArray[i].setDConst(*(float*)&constData);
+            break;
+        }
         case EOpDoubleBitsToInt64:
+        {
+            double constData = unionArray[i].getDConst();
+            newConstArray[i].setI64Const(*(long long*)&constData);
+            break;
+        }
         case EOpDoubleBitsToUint64:
+        {
+            double constData = unionArray[i].getDConst();
+            newConstArray[i].setU64Const(*(unsigned long long*)&constData);
+            break;
+        }
         case EOpInt64BitsToDouble:
+        {
+            long long constData = unionArray[i].getI64Const();
+            newConstArray[i].setDConst(*(double*)&constData);
+            break;
+        }
         case EOpUint64BitsToDouble:
+        {
+            unsigned long long  constData = unionArray[i].getU64Const();
+            newConstArray[i].setDConst(*(double*)&constData);
+            break;
+        }
         case EOpFloat16BitsToInt16:
         case EOpFloat16BitsToUint16:
         case EOpInt16BitsToFloat16:
@@ -1009,6 +1361,12 @@ TIntermTyped* TIntermediate::fold(TIntermAggregate* aggrNode)
         objectSize = std::max(children[0]->getAsTyped()->getType().getVectorSize(),
                               children[2]->getAsTyped()->getType().getVectorSize());
         break;
+    case EOpMul:
+        objectSize = children[0]->getAsTyped()->getType().getMatrixRows() *
+                     children[0]->getAsTyped()->getType().getMatrixCols();
+        break;
+    case EOpComma:
+        return children.back()->getAsTyped();
     default:
         return aggrNode;
     }
@@ -1041,6 +1399,7 @@ TIntermTyped* TIntermediate::fold(TIntermAggregate* aggrNode)
             {
                 double arg0 = childConstUnions[0][arg0comp].getDConst();
                 double arg1 = childConstUnions[1][arg1comp].getDConst();
+                assert(arg1 != 0.0);
                 double result = arg0 - arg1 * floor(arg0 / arg1);
                 newConstArray[comp].setDConst(result);
                 break;
@@ -1274,6 +1633,15 @@ TIntermTyped* TIntermediate::fold(TIntermAggregate* aggrNode)
             for (int row = 0; row < numRows; ++row)
                 for (int col = 0; col < numCols; ++col)
                     newConstArray[col * numRows + row] = childConstUnions[0][row] * childConstUnions[1][col];
+            break;
+        }
+        case EOpMul: // matrixCompMult
+        {
+            double mat[16];
+            for (int i = 0; i < objectSize; ++i)
+                mat[i] = childConstUnions[0][i].getDConst() * childConstUnions[1][i].getDConst();
+            for (int i = 0; i< objectSize; ++i)
+                    newConstArray[i].setDConst(mat[i]);
             break;
         }
         default:

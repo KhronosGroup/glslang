@@ -1,0 +1,375 @@
+constantOp.vert
+Shader version: 460
+Requested GL_EXT_shader_explicit_arithmetic_types
+0:? Sequence
+0:4  Function Definition: main( ( global void)
+0:4    Function Parameters: 
+0:5    Sequence
+0:5      Sequence
+0:5        move second child to first child ( temp 2-component vector of float)
+0:5          'v2Base' ( temp 2-component vector of float)
+0:5          Constant:
+0:5            1.000000
+0:5            0.000000
+0:6      Sequence
+0:6        move second child to first child ( temp uint)
+0:6          'uiBase' ( temp uint)
+0:6          Constant:
+0:6            1 (const uint)
+0:7      Sequence
+0:7        move second child to first child ( temp double)
+0:7          'f64Base' ( temp double)
+0:7          Constant:
+0:7            0.500000
+0:8      Sequence
+0:8        move second child to first child ( temp float)
+0:8          'hpFpBase' ( temp float)
+0:8          Constant:
+0:8            0.500000
+0:9      Sequence
+0:9        move second child to first child ( temp int)
+0:9          'hpIntBase' ( temp int)
+0:9          Constant:
+0:9            1 (const int)
+0:10      Sequence
+0:10        move second child to first child ( temp int)
+0:10          'hpUintBase' ( temp int)
+0:10          Constant:
+0:10            1 (const int)
+0:11      Sequence
+0:11        move second child to first child ( temp double)
+0:11          'doubleBase' ( temp double)
+0:11          Constant:
+0:11            0.500000
+0:12      Sequence
+0:12        move second child to first child ( temp int64_t)
+0:12          'i64Base' ( temp int64_t)
+0:12          Constant:
+0:12            1 (const int64_t)
+0:13      Sequence
+0:13        move second child to first child ( temp uint64_t)
+0:13          'ui64Base' ( temp uint64_t)
+0:13          Constant:
+0:13            1 (const uint64_t)
+0:14      Sequence
+0:14        move second child to first child ( temp 3X3 matrix of float)
+0:14          'matBase' ( temp 3X3 matrix of float)
+0:16          Constant:
+0:16            1.000000
+0:16            0.000000
+0:16            0.000000
+0:16            0.000000
+0:16            1.000000
+0:16            0.000000
+0:16            0.000000
+0:16            1.000000
+0:16            1.000000
+0:17      Sequence
+0:17        move second child to first child ( temp 3X3 matrix of float)
+0:17          'inverseMat' ( temp 3X3 matrix of float)
+0:17          inverse ( global 3X3 matrix of float)
+0:17            'matBase' ( temp 3X3 matrix of float)
+0:18      Sequence
+0:18        move second child to first child ( temp 3X3 matrix of float)
+0:18          'transpMat' ( temp 3X3 matrix of float)
+0:18          transpose ( global 3X3 matrix of float)
+0:18            'matBase' ( temp 3X3 matrix of float)
+0:19      Sequence
+0:19        move second child to first child ( temp uint)
+0:19          'pkSnorm216' ( temp uint)
+0:19          packSnorm2x16 ( global uint)
+0:19            'v2Base' ( temp 2-component vector of float)
+0:20      Sequence
+0:20        move second child to first child ( temp uint)
+0:20          'pkUnorm216' ( temp uint)
+0:20          packUnorm2x16 ( global uint)
+0:20            'v2Base' ( temp 2-component vector of float)
+0:21      Sequence
+0:21        move second child to first child ( temp uint)
+0:21          'pkHalf216' ( temp uint)
+0:21          packHalf2x16 ( global uint)
+0:21            'v2Base' ( temp 2-component vector of float)
+0:22      Sequence
+0:22        move second child to first child ( temp 2-component vector of float)
+0:22          'upkSnorm216' ( temp 2-component vector of float)
+0:22          unpackSnorm2x16 ( global 2-component vector of float)
+0:22            'uiBase' ( temp uint)
+0:23      Sequence
+0:23        move second child to first child ( temp 2-component vector of float)
+0:23          'upkUnorm216' ( temp 2-component vector of float)
+0:23          unpackUnorm2x16 ( global 2-component vector of float)
+0:23            'uiBase' ( temp uint)
+0:24      Sequence
+0:24        move second child to first child ( temp 2-component vector of float)
+0:24          'upkHalf216' ( temp 2-component vector of float)
+0:24          unpackHalf2x16 ( global 2-component vector of float)
+0:24            'uiBase' ( temp uint)
+0:25      Sequence
+0:25        move second child to first child ( temp float)
+0:25          'dtmnant' ( temp float)
+0:25          determinant ( global float)
+0:25            'matBase' ( temp 3X3 matrix of float)
+0:26      Sequence
+0:26        move second child to first child ( temp double)
+0:26          'sh' ( temp double)
+0:26          hyp. sine ( global double)
+0:26            'f64Base' ( temp double)
+0:27      Sequence
+0:27        move second child to first child ( temp double)
+0:27          'ch' ( temp double)
+0:27          hyp. cosine ( global double)
+0:27            'f64Base' ( temp double)
+0:28      Sequence
+0:28        move second child to first child ( temp double)
+0:28          'th' ( temp double)
+0:28          hyp. tangent ( global double)
+0:28            'f64Base' ( temp double)
+0:29      Sequence
+0:29        move second child to first child ( temp double)
+0:29          'ash' ( temp double)
+0:29          arc hyp. sine ( global double)
+0:29            'f64Base' ( temp double)
+0:30      Sequence
+0:30        move second child to first child ( temp double)
+0:30          'ach' ( temp double)
+0:30          arc hyp. cosine ( global double)
+0:30            'f64Base' ( temp double)
+0:31      Sequence
+0:31        move second child to first child ( temp double)
+0:31          'ath' ( temp double)
+0:31          arc hyp. tangent ( global double)
+0:31            'f64Base' ( temp double)
+0:32      Sequence
+0:32        move second child to first child ( temp int)
+0:32          'f2i' ( temp int)
+0:32          floatBitsToInt ( global int)
+0:32            'hpFpBase' ( temp float)
+0:33      Sequence
+0:33        move second child to first child ( temp uint)
+0:33          'f2ui' ( temp uint)
+0:33          floatBitsToUint ( global uint)
+0:33            'hpFpBase' ( temp float)
+0:34      Sequence
+0:34        move second child to first child ( temp float)
+0:34          'i2f' ( temp float)
+0:34          intBitsToFloat ( global float)
+0:34            'hpIntBase' ( temp int)
+0:35      Sequence
+0:35        move second child to first child ( temp float)
+0:35          'ui2f' ( temp float)
+0:35          uintBitsToFloat ( global float)
+0:35            Convert int to uint ( temp uint)
+0:35              'hpUintBase' ( temp int)
+0:36      Sequence
+0:36        move second child to first child ( temp int64_t)
+0:36          'd2i64' ( temp int64_t)
+0:36          doubleBitsToInt64 ( global int64_t)
+0:36            'doubleBase' ( temp double)
+0:37      Sequence
+0:37        move second child to first child ( temp uint64_t)
+0:37          'd2ui64' ( temp uint64_t)
+0:37          doubleBitsToUint64 ( global uint64_t)
+0:37            'doubleBase' ( temp double)
+0:38      Sequence
+0:38        move second child to first child ( temp double)
+0:38          'i642d' ( temp double)
+0:38          int64BitsToDouble ( global double)
+0:38            'i64Base' ( temp int64_t)
+0:39      Sequence
+0:39        move second child to first child ( temp double)
+0:39          'ui642d' ( temp double)
+0:39          uint64BitsToDouble ( global double)
+0:39            'ui64Base' ( temp uint64_t)
+0:?   Linker Objects
+0:?     'gl_VertexID' ( gl_VertexId int VertexId)
+0:?     'gl_InstanceID' ( gl_InstanceId int InstanceId)
+
+
+Linked vertex stage:
+
+
+Shader version: 460
+Requested GL_EXT_shader_explicit_arithmetic_types
+0:? Sequence
+0:4  Function Definition: main( ( global void)
+0:4    Function Parameters: 
+0:5    Sequence
+0:5      Sequence
+0:5        move second child to first child ( temp 2-component vector of float)
+0:5          'v2Base' ( temp 2-component vector of float)
+0:5          Constant:
+0:5            1.000000
+0:5            0.000000
+0:6      Sequence
+0:6        move second child to first child ( temp uint)
+0:6          'uiBase' ( temp uint)
+0:6          Constant:
+0:6            1 (const uint)
+0:7      Sequence
+0:7        move second child to first child ( temp double)
+0:7          'f64Base' ( temp double)
+0:7          Constant:
+0:7            0.500000
+0:8      Sequence
+0:8        move second child to first child ( temp float)
+0:8          'hpFpBase' ( temp float)
+0:8          Constant:
+0:8            0.500000
+0:9      Sequence
+0:9        move second child to first child ( temp int)
+0:9          'hpIntBase' ( temp int)
+0:9          Constant:
+0:9            1 (const int)
+0:10      Sequence
+0:10        move second child to first child ( temp int)
+0:10          'hpUintBase' ( temp int)
+0:10          Constant:
+0:10            1 (const int)
+0:11      Sequence
+0:11        move second child to first child ( temp double)
+0:11          'doubleBase' ( temp double)
+0:11          Constant:
+0:11            0.500000
+0:12      Sequence
+0:12        move second child to first child ( temp int64_t)
+0:12          'i64Base' ( temp int64_t)
+0:12          Constant:
+0:12            1 (const int64_t)
+0:13      Sequence
+0:13        move second child to first child ( temp uint64_t)
+0:13          'ui64Base' ( temp uint64_t)
+0:13          Constant:
+0:13            1 (const uint64_t)
+0:14      Sequence
+0:14        move second child to first child ( temp 3X3 matrix of float)
+0:14          'matBase' ( temp 3X3 matrix of float)
+0:16          Constant:
+0:16            1.000000
+0:16            0.000000
+0:16            0.000000
+0:16            0.000000
+0:16            1.000000
+0:16            0.000000
+0:16            0.000000
+0:16            1.000000
+0:16            1.000000
+0:17      Sequence
+0:17        move second child to first child ( temp 3X3 matrix of float)
+0:17          'inverseMat' ( temp 3X3 matrix of float)
+0:17          inverse ( global 3X3 matrix of float)
+0:17            'matBase' ( temp 3X3 matrix of float)
+0:18      Sequence
+0:18        move second child to first child ( temp 3X3 matrix of float)
+0:18          'transpMat' ( temp 3X3 matrix of float)
+0:18          transpose ( global 3X3 matrix of float)
+0:18            'matBase' ( temp 3X3 matrix of float)
+0:19      Sequence
+0:19        move second child to first child ( temp uint)
+0:19          'pkSnorm216' ( temp uint)
+0:19          packSnorm2x16 ( global uint)
+0:19            'v2Base' ( temp 2-component vector of float)
+0:20      Sequence
+0:20        move second child to first child ( temp uint)
+0:20          'pkUnorm216' ( temp uint)
+0:20          packUnorm2x16 ( global uint)
+0:20            'v2Base' ( temp 2-component vector of float)
+0:21      Sequence
+0:21        move second child to first child ( temp uint)
+0:21          'pkHalf216' ( temp uint)
+0:21          packHalf2x16 ( global uint)
+0:21            'v2Base' ( temp 2-component vector of float)
+0:22      Sequence
+0:22        move second child to first child ( temp 2-component vector of float)
+0:22          'upkSnorm216' ( temp 2-component vector of float)
+0:22          unpackSnorm2x16 ( global 2-component vector of float)
+0:22            'uiBase' ( temp uint)
+0:23      Sequence
+0:23        move second child to first child ( temp 2-component vector of float)
+0:23          'upkUnorm216' ( temp 2-component vector of float)
+0:23          unpackUnorm2x16 ( global 2-component vector of float)
+0:23            'uiBase' ( temp uint)
+0:24      Sequence
+0:24        move second child to first child ( temp 2-component vector of float)
+0:24          'upkHalf216' ( temp 2-component vector of float)
+0:24          unpackHalf2x16 ( global 2-component vector of float)
+0:24            'uiBase' ( temp uint)
+0:25      Sequence
+0:25        move second child to first child ( temp float)
+0:25          'dtmnant' ( temp float)
+0:25          determinant ( global float)
+0:25            'matBase' ( temp 3X3 matrix of float)
+0:26      Sequence
+0:26        move second child to first child ( temp double)
+0:26          'sh' ( temp double)
+0:26          hyp. sine ( global double)
+0:26            'f64Base' ( temp double)
+0:27      Sequence
+0:27        move second child to first child ( temp double)
+0:27          'ch' ( temp double)
+0:27          hyp. cosine ( global double)
+0:27            'f64Base' ( temp double)
+0:28      Sequence
+0:28        move second child to first child ( temp double)
+0:28          'th' ( temp double)
+0:28          hyp. tangent ( global double)
+0:28            'f64Base' ( temp double)
+0:29      Sequence
+0:29        move second child to first child ( temp double)
+0:29          'ash' ( temp double)
+0:29          arc hyp. sine ( global double)
+0:29            'f64Base' ( temp double)
+0:30      Sequence
+0:30        move second child to first child ( temp double)
+0:30          'ach' ( temp double)
+0:30          arc hyp. cosine ( global double)
+0:30            'f64Base' ( temp double)
+0:31      Sequence
+0:31        move second child to first child ( temp double)
+0:31          'ath' ( temp double)
+0:31          arc hyp. tangent ( global double)
+0:31            'f64Base' ( temp double)
+0:32      Sequence
+0:32        move second child to first child ( temp int)
+0:32          'f2i' ( temp int)
+0:32          floatBitsToInt ( global int)
+0:32            'hpFpBase' ( temp float)
+0:33      Sequence
+0:33        move second child to first child ( temp uint)
+0:33          'f2ui' ( temp uint)
+0:33          floatBitsToUint ( global uint)
+0:33            'hpFpBase' ( temp float)
+0:34      Sequence
+0:34        move second child to first child ( temp float)
+0:34          'i2f' ( temp float)
+0:34          intBitsToFloat ( global float)
+0:34            'hpIntBase' ( temp int)
+0:35      Sequence
+0:35        move second child to first child ( temp float)
+0:35          'ui2f' ( temp float)
+0:35          uintBitsToFloat ( global float)
+0:35            Convert int to uint ( temp uint)
+0:35              'hpUintBase' ( temp int)
+0:36      Sequence
+0:36        move second child to first child ( temp int64_t)
+0:36          'd2i64' ( temp int64_t)
+0:36          doubleBitsToInt64 ( global int64_t)
+0:36            'doubleBase' ( temp double)
+0:37      Sequence
+0:37        move second child to first child ( temp uint64_t)
+0:37          'd2ui64' ( temp uint64_t)
+0:37          doubleBitsToUint64 ( global uint64_t)
+0:37            'doubleBase' ( temp double)
+0:38      Sequence
+0:38        move second child to first child ( temp double)
+0:38          'i642d' ( temp double)
+0:38          int64BitsToDouble ( global double)
+0:38            'i64Base' ( temp int64_t)
+0:39      Sequence
+0:39        move second child to first child ( temp double)
+0:39          'ui642d' ( temp double)
+0:39          uint64BitsToDouble ( global double)
+0:39            'ui64Base' ( temp uint64_t)
+0:?   Linker Objects
+0:?     'gl_VertexID' ( gl_VertexId int VertexId)
+0:?     'gl_InstanceID' ( gl_InstanceId int InstanceId)
+
