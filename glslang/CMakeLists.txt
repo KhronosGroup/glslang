@@ -163,7 +163,7 @@ set(GLSLANG_HEADERS
     Include/SpirvIntrinsics.h
     Include/Types.h)
 
-add_library(glslang ${LIB_TYPE} ${BISON_GLSLParser_OUTPUT_SOURCE} ${GLSLANG_SOURCES} ${GLSLANG_HEADERS})
+add_library(glslang ${LIB_TYPE} ${GLSLANG_SOURCES} ${GLSLANG_HEADERS})
 set_target_properties(glslang PROPERTIES
     FOLDER glslang
     POSITION_INDEPENDENT_CODE ON
@@ -247,12 +247,16 @@ if(ENABLE_GLSLANG_INSTALL)
         install(FILES "${CMAKE_CURRENT_BINARY_DIR}/glslangTargets.cmake" DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake)
     endif()
 
-    set(ALL_HEADERS
-        ${GLSLANG_HEADERS}
-        ${MACHINEINDEPENDENT_HEADERS}
-        ${RESOURCELIMITS_HEADERS})
+    set(PUBLIC_HEADERS
+        Public/ResourceLimits.h
+        Public/ShaderLang.h
+        Public/resource_limits_c.h
+        Include/glslang_c_interface.h
+        Include/glslang_c_shader_types.h
+        Include/ResourceLimits.h
+        MachineIndependent/Versions.h)
 
-    foreach(file ${ALL_HEADERS})
+    foreach(file ${PUBLIC_HEADERS})
         get_filename_component(dir ${file} DIRECTORY)
         install(FILES ${file} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/glslang/${dir})
     endforeach()
