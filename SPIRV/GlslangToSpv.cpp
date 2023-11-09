@@ -43,6 +43,7 @@
 #include "spirv.hpp"
 #include "GlslangToSpv.h"
 #include "SpvBuilder.h"
+#include "SpvTools.h"
 namespace spv {
     #include "GLSL.std.450.h"
     #include "GLSL.ext.KHR.h"
