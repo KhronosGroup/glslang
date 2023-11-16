@@ -10195,7 +10195,7 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             TArraySizes* arraySizes = new TArraySizes;
             arraySizes->addInnerSize(resources.maxDrawBuffers);
             fragData.transferArraySizes(arraySizes);
-            symbolTable.insert(*new TVariable(NewPoolTString("gl_FragData"), fragData));
+            symbolTable.insert(*new TVariable(NewPoolTString("gl_FragData"), fragData, {}));
             SpecialQualifier("gl_FragData", EvqFragColor, EbvFragData, symbolTable);
         }
 

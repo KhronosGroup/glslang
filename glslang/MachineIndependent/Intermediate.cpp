@@ -66,12 +66,13 @@ namespace glslang {
 //
 
 TIntermSymbol* TIntermediate::addSymbol(long long id, const TString& name, const TType& type, const TConstUnionArray& constArray,
-                                        TIntermTyped* constSubtree, const TSourceLoc& loc)
+                                        TIntermTyped* constSubtree, const TSourceLoc& loc, const TSourceLoc& definitionLoc)
 {
     TIntermSymbol* node = new TIntermSymbol(id, name, type);
     node->setLoc(loc);
     node->setConstArray(constArray);
     node->setConstSubtree(constSubtree);
+    node->setDefinitionLoc(definitionLoc);
 
     return node;
 }
@@ -83,7 +84,8 @@ TIntermSymbol* TIntermediate::addSymbol(const TIntermSymbol& intermSymbol)
                      intermSymbol.getType(),
                      intermSymbol.getConstArray(),
                      intermSymbol.getConstSubtree(),
-                     intermSymbol.getLoc());
+                     intermSymbol.getLoc(),
+                     intermSymbol.getDefinitionLoc());
 }
 
 TIntermSymbol* TIntermediate::addSymbol(const TVariable& variable)
@@ -96,14 +98,16 @@ TIntermSymbol* TIntermediate::addSymbol(const TVariable& variable)
 
 TIntermSymbol* TIntermediate::addSymbol(const TVariable& variable, const TSourceLoc& loc)
 {
-    return addSymbol(variable.getUniqueId(), variable.getName(), variable.getType(), variable.getConstArray(), variable.getConstSubtree(), loc);
+    return addSymbol(variable.getUniqueId(), variable.getName(), variable.getType(), variable.getConstArray(),
+                     variable.getConstSubtree(), loc, variable.getLoc());
 }
 
 TIntermSymbol* TIntermediate::addSymbol(const TType& type, const TSourceLoc& loc)
 {
     TConstUnionArray unionArray;  // just a null constant
 
-    return addSymbol(0, "", type, unionArray, nullptr, loc);
+    // TODO: could we track the location of the (struct) type definition?
+    return addSymbol(0, "", type, unionArray, nullptr, loc, {});
 }
 
 //

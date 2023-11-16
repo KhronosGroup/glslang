@@ -503,7 +503,7 @@ TIntermTyped* TParseContext::handleVariable(const TSourceLoc& loc, TSymbol* symb
 
         // Recovery, if it wasn't found or was not a variable.
         if (! variable)
-            variable = new TVariable(string, TType(EbtVoid));
+            variable = new TVariable(string, TType(EbtVoid), {});
 
         if (variable->getType().getQualifier().isFrontEndConstant())
             node = intermediate.addConstantUnion(variable->getConstArray(), variable->getType(), loc);
@@ -1264,7 +1264,7 @@ TIntermAggregate* TParseContext::handleFunctionDefinition(const TSourceLoc& loc,
     for (int i = 0; i < function.getParamCount(); i++) {
         TParameter& param = function[i];
         if (param.name != nullptr) {
-            TVariable *variable = new TVariable(param.name, *param.type);
+            TVariable *variable = new TVariable(param.name, *param.type, loc);
 
             // Insert the parameters with name in the symbol table.
             if (! symbolTable.insert(*variable))
@@ -3041,7 +3041,7 @@ void TParseContext::variableCheck(TIntermTyped*& nodePtr)
 
         // Add to symbol table to prevent future error messages on the same name
         if (symbol->getName().size() > 0) {
-            TVariable* fakeVariable = new TVariable(&symbol->getName(), TType(EbtFloat));
+            TVariable* fakeVariable = new TVariable(&symbol->getName(), TType(EbtFloat), {});
             symbolTable.insert(*fakeVariable);
 
             // substitute a symbol node for this new variable
@@ -4597,7 +4597,7 @@ void TParseContext::declareArray(const TSourceLoc& loc, const TString& identifie
             // Successfully process a new definition.
             // (Redeclarations have to take place at the same scope; otherwise they are hiding declarations)
             //
-            symbol = new TVariable(&identifier, type);
+            symbol = new TVariable(&identifier, type, loc);
             symbolTable.insert(*symbol);
             if (symbolTable.atGlobalLevel())
                 trackLinkage(*symbol);
@@ -7639,7 +7639,7 @@ void TParseContext::inheritGlobalDefaults(TQualifier& dst) const
 TVariable* TParseContext::makeInternalVariable(const char* name, const TType& type) const
 {
     TString* nameString = NewPoolTString(name);
-    TVariable* variable = new TVariable(nameString, type);
+    TVariable* variable = new TVariable(nameString, type, {});
     symbolTable.makeInternalVariable(*variable);
 
     return variable;
@@ -7654,7 +7654,7 @@ TVariable* TParseContext::makeInternalVariable(const char* name, const TType& ty
 TVariable* TParseContext::declareNonArray(const TSourceLoc& loc, const TString& identifier, const TType& type)
 {
     // make a new variable
-    TVariable* variable = new TVariable(&identifier, type);
+    TVariable* variable = new TVariable(&identifier, type, loc);
 
     ioArrayCheck(loc, type, identifier);
 
@@ -8758,7 +8758,7 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
         // as a referent struct type with no members. Replace the referent type with
         // blockType.
         TType blockNameType(EbtReference, blockType, *blockName);
-        TVariable* blockNameVar = new TVariable(blockName, blockNameType, true);
+        TVariable* blockNameVar = new TVariable(blockName, blockNameType, loc, true);
         if (! symbolTable.insert(*blockNameVar)) {
             TSymbol* existingName = symbolTable.find(*blockName);
             if (existingName->getType().isReference() &&
@@ -8788,7 +8788,7 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
         // the instances point to.
         //
         TType blockNameType(EbtBlock, blockType.getQualifier().storage);
-        TVariable* blockNameVar = new TVariable(blockName, blockNameType);
+        TVariable* blockNameVar = new TVariable(blockName, blockNameType, loc);
         if (! symbolTable.insert(*blockNameVar)) {
             TSymbol* existingName = symbolTable.find(*blockName);
             if (existingName->getType().getBasicType() == EbtBlock) {
@@ -8808,7 +8808,8 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
     if (! instanceName)
         instanceName = NewPoolTString("");
 
-    TVariable& variable = *new TVariable(instanceName, blockType);
+    // TODO: could we have more accurate location?
+    TVariable& variable = *new TVariable(instanceName, blockType, loc);
     if (! symbolTable.insert(variable)) {
         if (*instanceName == "")
             error(loc, "nameless block contains a member that already has a name at global scope", blockName->c_str(), "");
@@ -9217,7 +9218,7 @@ void TParseContext::addQualifierToExisting(const TSourceLoc& loc, TQualifier qua
         TTypeList typeList;
         TType blockType(&typeList, identifier, qualifier);
         TType blockNameType(EbtReference, blockType, identifier);
-        TVariable* blockNameVar = new TVariable(&identifier, blockNameType, true);
+        TVariable* blockNameVar = new TVariable(&identifier, blockNameType, loc, true);
         if (! symbolTable.insert(*blockNameVar)) {
             error(loc, "block name cannot redefine a non-block name", blockName->c_str(), "");
         }

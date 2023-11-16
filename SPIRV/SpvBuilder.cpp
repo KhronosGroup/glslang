@@ -1117,7 +1117,8 @@ Id Builder::makeDebugCompilationUnit() {
     return resultId;
 }
 
-Id Builder::createDebugGlobalVariable(Id const type, char const*const name, Id const variable)
+Id Builder::createDebugGlobalVariable(Id const type, char const* const name, Id const variable, Id const sourceFileName,
+                                      int const line)
 {
     assert(type != 0);
 
@@ -1126,8 +1127,8 @@ Id Builder::createDebugGlobalVariable(Id const type, char const*const name, Id c
     inst->addImmediateOperand(NonSemanticShaderDebugInfo100DebugGlobalVariable);
     inst->addIdOperand(getStringId(name)); // name id
     inst->addIdOperand(type); // type id
-    inst->addIdOperand(makeDebugSource(sourceFileStringId)); // source id
-    inst->addIdOperand(makeUintConstant(currentLine)); // line id TODO: currentLine always zero?
+    inst->addIdOperand(makeDebugSource(sourceFileName)); // source id
+    inst->addIdOperand(makeUintConstant(line)); // line id TODO: currentLine always zero?
     inst->addIdOperand(makeUintConstant(0)); // TODO: column id
     inst->addIdOperand(makeDebugCompilationUnit()); // scope id
     inst->addIdOperand(getStringId(name)); // linkage name id
@@ -1140,10 +1141,20 @@ Id Builder::createDebugGlobalVariable(Id const type, char const*const name, Id c
     return inst->getResultId();
 }
 
-Id Builder::createDebugLocalVariable(Id type, char const*const name, size_t const argNumber)
+Id Builder::createDebugLocalVariable(Id type, char const*const name, std::optional<DebugParamInfo> paramInfo)
 {
     assert(name != nullptr);
     assert(!currentDebugScopeId.empty());
+
+    unsigned flag = NonSemanticShaderDebugInfo100FlagIsLocal;
+    if (paramInfo) {
+        if (paramInfo->passByRef) {
+            flag |= NonSemanticShaderDebugInfo100FlagTypePassByReference;
+        }
+        else {
+            flag |= NonSemanticShaderDebugInfo100FlagTypePassByValue;
+        }
+    }
 
     Instruction* inst = new Instruction(getUniqueId(), makeVoidType(), OpExtInst);
     inst->addIdOperand(nonSemanticShaderDebugInfo);
@@ -1154,9 +1165,9 @@ Id Builder::createDebugLocalVariable(Id type, char const*const name, size_t cons
     inst->addIdOperand(makeUintConstant(currentLine)); // line id
     inst->addIdOperand(makeUintConstant(0)); // TODO: column id
     inst->addIdOperand(currentDebugScopeId.top()); // scope id
-    inst->addIdOperand(makeUintConstant(NonSemanticShaderDebugInfo100FlagIsLocal)); // flags id
-    if(argNumber != 0) {
-        inst->addIdOperand(makeUintConstant(argNumber));
+    inst->addIdOperand(makeUintConstant(flag)); // flags id
+    if (paramInfo) {
+        inst->addIdOperand(makeUintConstant(paramInfo->argNumber + 1));
     }
 
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(inst));
@@ -2171,7 +2182,8 @@ void Builder::setupDebugFunctionEntry(Function* function, const char* name, int 
             }
 
             auto const& paramName = paramNames[p];
-            auto const debugLocalVariableId = createDebugLocalVariable(debugId[paramTypeId], paramName, p + 1);
+            auto const debugLocalVariableId =
+                createDebugLocalVariable(debugId[paramTypeId], paramName, DebugParamInfo{p, passByRef});
             auto const paramId = static_cast<Id>(firstParamId + p);
             debugId[paramId] = debugLocalVariableId;
 
@@ -2344,7 +2356,7 @@ void Builder::makeStatementTerminator(spv::Op opcode, const std::vector<Id>& ope
 
 // Comments in header
 Id Builder::createVariable(Decoration precision, StorageClass storageClass, Id type, const char* name, Id initializer,
-    bool const compilerGenerated)
+    bool const compilerGenerated, const char* sourceFileName, int line)
 {
     Id pointerType = makePointer(storageClass, type);
     Instruction* inst = new Instruction(getUniqueId(), pointerType, OpVariable);
@@ -2373,7 +2385,9 @@ Id Builder::createVariable(Decoration precision, StorageClass storageClass, Id t
 
         if (emitNonSemanticShaderDebugInfo && !isRayTracingOpCode(getOpCode(type)))
         {
-            auto const debugResultId = createDebugGlobalVariable(debugId[type], name, inst->getResultId());
+            auto const sourceFileId = sourceFileName ? getStringId(sourceFileName) : getSourceFile();
+            auto const debugResultId =
+                createDebugGlobalVariable(debugId[type], name, inst->getResultId(), sourceFileId, line);
             debugId[inst->getResultId()] = debugResultId;
         }
         break;

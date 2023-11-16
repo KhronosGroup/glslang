@@ -1368,12 +1368,18 @@ public:
     // later on, it becomes necessary to switch to a different symbol.
     virtual void switchId(long long newId) { id = newId; }
 
+    void setDefinitionLoc(const TSourceLoc& loc) { definitionLoc = loc; }
+    const TSourceLoc& getDefinitionLoc() const { return definitionLoc; }
+
 protected:
     long long id;                // the unique id of the symbol this node represents
     int flattenSubset;           // how deeply the flattened object rooted at id has been dereferenced
     TString name;                // the name of the symbol this node represents
     TConstUnionArray constArray; // if the symbol is a front-end compile-time constant, this is its value
     TIntermTyped* constSubtree;
+
+    // A hint to the source location where the symbol is defined.
+    TSourceLoc definitionLoc;
 };
 
 class TIntermConstantUnion : public TIntermTyped {

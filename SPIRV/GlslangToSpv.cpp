@@ -4311,7 +4311,8 @@ spv::Id TGlslangToSpvTraverser::createSpvVariable(const glslang::TIntermSymbol* 
         initializer = builder.makeNullConstant(spvType);
     }
 
-    return builder.createVariable(spv::NoPrecision, storageClass, spvType, name, initializer, false);
+    return builder.createVariable(spv::NoPrecision, storageClass, spvType, name, initializer, false,
+                                  node->getDefinitionLoc().getFilename(), node->getDefinitionLoc().line);
 }
 
 // Return type Id of the sampled type.

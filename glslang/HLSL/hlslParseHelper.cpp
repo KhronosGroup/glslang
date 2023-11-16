@@ -697,7 +697,7 @@ TIntermTyped* HlslParseContext::handleVariable(const TSourceLoc& loc, const TStr
         // Recovery, if it wasn't found or was not a variable.
         if (variable == nullptr) {
             error(loc, "unknown variable", string->c_str(), "");
-            variable = new TVariable(string, TType(EbtVoid));
+            variable = new TVariable(string, TType(EbtVoid), {});
         }
 
         if (variable->getType().getQualifier().isFrontEndConstant())
@@ -1696,7 +1696,7 @@ TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& l
     for (int i = 0; i < function.getParamCount(); i++) {
         TParameter& param = function[i];
         if (param.name != nullptr) {
-            TVariable *variable = new TVariable(param.name, *param.type);
+            TVariable *variable = new TVariable(param.name, *param.type, loc);
 
             if (i == 0 && function.hasImplicitThis()) {
                 // Anonymous 'this' members are already in a symbol-table level,
@@ -4842,7 +4842,7 @@ void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& 
         if (nullptr == symbol) {
             type.getQualifier().builtIn = builtin;
 
-            TVariable* variable = new TVariable(NewPoolTString(name), type);
+            TVariable* variable = new TVariable(NewPoolTString(name), type, loc);
 
             symbolTable.insert(*variable);
 
@@ -6494,7 +6494,7 @@ void HlslParseContext::variableCheck(TIntermTyped*& nodePtr)
 
         // Add to symbol table to prevent future error messages on the same name
         if (symbol->getName().size() > 0) {
-            TVariable* fakeVariable = new TVariable(&symbol->getName(), TType(EbtFloat));
+            TVariable* fakeVariable = new TVariable(&symbol->getName(), TType(EbtFloat), {});
             symbolTable.insert(*fakeVariable);
 
             // substitute a symbol node for this new variable
@@ -6904,7 +6904,7 @@ void HlslParseContext::declareArray(const TSourceLoc& loc, const TString& identi
             // Successfully process a new definition.
             // (Redeclarations have to take place at the same scope; otherwise they are hiding declarations)
             //
-            symbol = new TVariable(&identifier, type);
+            symbol = new TVariable(&identifier, type, loc);
             symbolTable.insert(*symbol);
             if (track && symbolTable.atGlobalLevel())
                 trackLinkage(*symbol);
@@ -7839,7 +7839,7 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, TFunction
 //
 void HlslParseContext::declareTypedef(const TSourceLoc& loc, const TString& identifier, const TType& parseType)
 {
-    TVariable* typeSymbol = new TVariable(&identifier, parseType, true);
+    TVariable* typeSymbol = new TVariable(&identifier, parseType, loc, true);
     if (! symbolTable.insert(*typeSymbol))
         error(loc, "name already defined", "typedef", identifier.c_str());
 }
@@ -7855,7 +7855,7 @@ void HlslParseContext::declareStruct(const TSourceLoc& loc, TString& structName,
     if (type.getBasicType() == EbtBlock || structName.size() == 0)
         return;
 
-    TVariable* userTypeDef = new TVariable(&structName, type, true);
+    TVariable* userTypeDef = new TVariable(&structName, type, loc, true);
     if (! symbolTable.insert(*userTypeDef)) {
         error(loc, "redefinition", structName.c_str(), "struct");
         return;
@@ -8079,7 +8079,7 @@ void HlslParseContext::inheritGlobalDefaults(TQualifier& dst) const
 TVariable* HlslParseContext::makeInternalVariable(const char* name, const TType& type) const
 {
     TString* nameString = NewPoolTString(name);
-    TVariable* variable = new TVariable(nameString, type);
+    TVariable* variable = new TVariable(nameString, type, {});
     symbolTable.makeInternalVariable(*variable);
 
     return variable;
@@ -8105,7 +8105,7 @@ TVariable* HlslParseContext::declareNonArray(const TSourceLoc& loc, const TStrin
                                              bool track)
 {
     // make a new variable
-    TVariable* variable = new TVariable(&identifier, type);
+    TVariable* variable = new TVariable(&identifier, type, loc);
 
     // add variable to symbol table
     if (symbolTable.insert(*variable)) {
@@ -8917,7 +8917,7 @@ void HlslParseContext::declareBlock(const TSourceLoc& loc, TType& type, const TS
     if (instanceName == nullptr)
         instanceName = NewPoolTString("");
 
-    TVariable& variable = *new TVariable(instanceName, blockType);
+    TVariable& variable = *new TVariable(instanceName, blockType, loc);
     if (! symbolTable.insert(variable)) {
         if (*instanceName == "")
             error(loc, "nameless block contains a member that already has a name at global scope",
@@ -9434,7 +9434,7 @@ TIntermNode* HlslParseContext::addSwitch(const TSourceLoc& loc, TIntermTyped* ex
 void HlslParseContext::pushThisScope(const TType& thisStruct, const TVector<TFunctionDeclarator>& functionDeclarators)
 {
     // member variables
-    TVariable& thisVariable = *new TVariable(NewPoolTString(""), thisStruct);
+    TVariable& thisVariable = *new TVariable(NewPoolTString(""), thisStruct, {});
     symbolTable.pushThis(thisVariable);
 
     // member functions
@@ -9878,7 +9878,7 @@ void HlslParseContext::addPatchConstantInvocation()
             error(loc, "unable to locate patch function parameter name", "", "");
             return;
         } else {
-            TVariable& variable = *new TVariable(name, type);
+            TVariable& variable = *new TVariable(name, type, {});
             if (! symbolTable.insert(variable)) {
                 error(loc, "unable to declare patch constant function interface variable", name->c_str(), "");
                 return;

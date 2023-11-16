@@ -1094,7 +1094,8 @@ public:
         { on ? numericFeatures.insert(f) : numericFeatures.erase(f); }
 
 protected:
-    TIntermSymbol* addSymbol(long long Id, const TString&, const TType&, const TConstUnionArray&, TIntermTyped* subtree, const TSourceLoc&);
+    TIntermSymbol* addSymbol(long long Id, const TString&, const TType&, const TConstUnionArray&, TIntermTyped* subtree,
+                             const TSourceLoc& loc, const TSourceLoc& definitionLoc);
     void error(TInfoSink& infoSink, const char*, EShLanguage unitStage = EShLangCount);
     void warn(TInfoSink& infoSink, const char*, EShLanguage unitStage = EShLangCount);
     void mergeCallGraphs(TInfoSink&, TIntermediate&);

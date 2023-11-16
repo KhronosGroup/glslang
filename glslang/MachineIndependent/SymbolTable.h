@@ -123,9 +123,18 @@ public:
     virtual bool isReadOnly() const { return ! writable; }
     virtual void makeReadOnly() { writable = false; }
 
+    void setLoc(const TSourceLoc& newLoc) { loc = newLoc; }
+    const TSourceLoc& getLoc() const { return loc; }
+
 protected:
     explicit TSymbol(const TSymbol&);
     TSymbol& operator=(const TSymbol&);
+
+    // A hint to the source location where the symbol is defined.
+    // This is a best-of-effort hint and may not point to the exact location of definition.
+    // We may not have AST node for some constructs to obtain the accurate location.
+    // For internal symbols, this should be empty.
+    TSourceLoc loc;
 
     const TString *name;
     unsigned long long uniqueId;      // For cross-scope comparing during code generation
@@ -153,13 +162,16 @@ protected:
 //
 class TVariable : public TSymbol {
 public:
-    TVariable(const TString *name, const TType& t, bool uT = false )
+    TVariable(const TString *name, const TType& t, const TSourceLoc& loc, bool uT = false)
         : TSymbol(name),
           userType(uT),
           constSubtree(nullptr),
           memberExtensions(nullptr),
           anonId(-1)
-        { type.shallowCopy(t); }
+    {
+        setLoc(loc);
+        type.shallowCopy(t); 
+    }
     virtual TVariable* clone() const;
     virtual ~TVariable() { }
 

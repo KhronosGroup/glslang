@@ -63,6 +63,7 @@ namespace spv {
 #include <stack>
 #include <unordered_map>
 #include <map>
+#include <optional>
 
 namespace spv {
 
@@ -214,6 +215,12 @@ public:
         int line {0};
         int column {0};
     };
+    struct DebugParamInfo {
+        // 0-based index of parameter
+        size_t argNumber = 0;
+        // Indicate the OpFunctionParameter is actually wrapped with a pointer type.
+        bool passByRef = false;
+    };
     std::unordered_map<Id, DebugTypeLoc> debugTypeLocs;
     Id makeDebugInfoNone();
     Id makeBoolDebugType(int const size);
@@ -228,8 +235,10 @@ public:
         NonSemanticShaderDebugInfo100DebugCompositeType const tag, bool const isOpaqueType = false);
     Id makeDebugSource(const Id fileName);
     Id makeDebugCompilationUnit();
-    Id createDebugGlobalVariable(Id const type, char const*const name, Id const variable);
-    Id createDebugLocalVariable(Id type, char const*const name, size_t const argNumber = 0);
+    Id createDebugGlobalVariable(Id const type, char const* const name, Id const variable,
+                                 Id const sourceFileName, int const line);
+    Id createDebugLocalVariable(Id type, char const* const name,
+                                std::optional<DebugParamInfo> paramInfo = std::nullopt);
     Id makeDebugExpression();
     Id makeDebugDeclare(Id const debugLocalVariable, Id const pointer);
     Id makeDebugValue(Id const debugLocalVariable, Id const value);
@@ -450,8 +459,9 @@ public:
     void makeStatementTerminator(spv::Op opcode, const std::vector<Id>& operands, const char* name);
 
     // Create a global or function local or IO variable.
+    // Note sourceFileName and line are not applicable for function locals.
     Id createVariable(Decoration precision, StorageClass storageClass, Id type, const char* name = nullptr,
-        Id initializer = NoResult, bool const compilerGenerated = true);
+        Id initializer = NoResult, bool const compilerGenerated = true, const char* sourceFileName = nullptr, int line = 0);
 
     // Create an intermediate with an undefined value.
     Id createUndefined(Id type);

@@ -10929,7 +10929,7 @@ yyreduce:
                                                                                                                    {
         TType* structure = new TType((yyvsp[-1].interm.typeList), *(yyvsp[-4].lex).string);
         parseContext.structArrayCheck((yyvsp[-4].lex).loc, *structure);
-        TVariable* userTypeDef = new TVariable((yyvsp[-4].lex).string, *structure, true);
+        TVariable* userTypeDef = new TVariable((yyvsp[-4].lex).string, *structure, (yyvsp[-4].lex).loc, true);
         if (! parseContext.symbolTable.insert(*userTypeDef))
             parseContext.error((yyvsp[-4].lex).loc, "redefinition", (yyvsp[-4].lex).string->c_str(), "struct");
         (yyval.interm.type).init((yyvsp[-5].lex).loc);
