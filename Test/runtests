@@ -343,6 +343,8 @@ run --enhanced-msgs -V --target-env vulkan1.2 --amb --aml enhanced.7.vert enhanc
 diff -b $BASEDIR/enhanced.7.link.out $TARGETDIR/enhanced.7.link.out || HASERROR=1
 run --enhanced-msgs -V --target-env vulkan1.2 --amb --aml spv.textureError.frag > $TARGETDIR/spv.textureError.frag.out
 diff -b $BASEDIR/spv.textureError.frag.out $TARGETDIR/spv.textureError.frag.out || HASERROR=1
+run -i overflow_underflow_toinf_0.frag > $TARGETDIR/overflow_underflow_toinf_0.out
+diff -b $BASEDIR/overflow_underflow_toinf_0.out $TARGETDIR/overflow_underflow_toinf_0.out || HASERROR=1
 
 #
 # Final checking
