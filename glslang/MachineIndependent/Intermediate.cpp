@@ -2590,6 +2590,18 @@ TIntermConstantUnion* TIntermediate::addConstantUnion(double d, TBasicType baseT
 {
     assert(baseType == EbtFloat || baseType == EbtDouble || baseType == EbtFloat16);
 
+    if (isEsProfile() && (baseType == EbtFloat || baseType == EbtFloat16)) {
+        int exponent = 0;
+        frexp(d, &exponent);
+        int minExp = baseType == EbtFloat ? -126 : -14;
+        int maxExp = baseType == EbtFloat ? 127 : 15;
+        if (exponent > maxExp) { //overflow, d = inf
+            d = std::numeric_limits<double>::infinity();
+        } else if (exponent < minExp) { //underflow, d = 0.0;
+            d = 0.0;
+        }
+    }
+
     TConstUnionArray unionArray(1);
     unionArray[0].setDConst(d);
 
