@@ -181,9 +181,6 @@ jobs:
         # Android NDK currently offers 2 different toolchains.
         # Test both to ensure we are compatible with either approach.
         LEGACY: [ON, OFF]
-        # Oldest/newest NDK currently provided by GitHub runners
-        # https://github.com/actions/runner-images/blob/main/images/linux/Ubuntu2204-Readme.md#android
-        NDK: [23.2.8568313, 25.2.9519653]
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d2cb2b236 # v4.7.1
@@ -193,13 +190,12 @@ jobs:
       - name: Setup ccache
         uses: hendrikmuhs/ccache-action@6d1841ec156c39a52b1b23a810da917ab98da1f4 # v1.2.10
         with:
-          key: android-${{ matrix.LEGACY }}-${{ matrix.NDK }}
+          key: android-${{ matrix.LEGACY }}
       - name: Update Glslang Sources
         run: ./update_glslang_sources.py
       - name: Configure
         run: |
-          cmake -S . -B build/ \
-          --toolchain $ANDROID_HOME/ndk/${{ matrix.NDK }}/build/cmake/android.toolchain.cmake \
+          cmake -S . -B build/ --toolchain $ANDROID_NDK_HOME/build/cmake/android.toolchain.cmake \
           -D CMAKE_BUILD_TYPE=Release \
           -D ANDROID_ABI=armeabi-v7a \
           -D ANDROID_USE_LEGACY_TOOLCHAIN_FILE=${{ matrix.LEGACY }} \
