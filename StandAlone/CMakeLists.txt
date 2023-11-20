@@ -76,12 +76,6 @@ target_include_directories(glslang-standalone PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../External>
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/External>)
 
-if(ENABLE_OPT)
-    target_include_directories(glslang-standalone
-        PRIVATE ${spirv-tools_SOURCE_DIR}/include
-    )
-endif()
-
 if(ENABLE_SPVREMAPPER)
     set(REMAPPER_SOURCES spirv-remap.cpp)
     add_executable(spirv-remap ${REMAPPER_SOURCES})
