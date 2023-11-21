@@ -59,6 +59,22 @@ if ("${CMAKE_BUILD_TYPE}" STREQUAL "")
     set(CMAKE_BUILD_TYPE "Debug")
 endif()
 
+# Currently iOS and Android are very similar.
+# They both have their own packaging (APP/APK).
+# Which makes regular executables/testing problematic.
+#
+# Currently the only deliverables for these platforms are
+# libraries (either STATIC or SHARED).
+#
+# Furthermore testing is equally problematic.
+if (IOS OR ANDROID)
+    set(ENABLE_GLSLANG_BINARIES OFF)
+    set(SPIRV_SKIP_EXECUTABLES ON)
+
+    set(ENABLE_CTEST OFF)
+    set(BUILD_TESTING OFF)
+endif()
+
 option(SKIP_GLSLANG_INSTALL "Skip installation" ${SKIP_GLSLANG_INSTALL})
 if(NOT ${SKIP_GLSLANG_INSTALL})
   set(ENABLE_GLSLANG_INSTALL ON)
