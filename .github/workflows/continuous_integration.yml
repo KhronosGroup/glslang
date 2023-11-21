@@ -83,7 +83,7 @@ jobs:
       - name: Test (standalone)
         run: cd Test && ./runtests
 
-      # Ensure we can compile/run on an older distro
+  # Ensure we can compile/run on an older distro
   linux_min:
     name: Linux Backcompat
     runs-on: ubuntu-20.04
