@@ -119,29 +119,23 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-11, macos-12]
+        os: [macos-12, macos-13]
         compiler: [{cc: clang, cxx: clang++}, {cc: gcc, cxx: g++}]
         cmake_build_type: [Debug, Release]
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-      - uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d2cb2b236 # v4.7.1
-        with:
-          python-version: '3.7'
       - uses: lukka/get-cmake@8be6cca406b575906541e8e3b885d46f416bba39 # v3.27.7
       - run: ./update_glslang_sources.py
-      - name: Configure
-        run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{matrix.cmake_build_type}} -G "Ninja"
+      - run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{matrix.cmake_build_type}} -G Ninja
         env:
           CC: ${{matrix.compiler.cc}}
           CXX: ${{matrix.compiler.cxx}}
-      - name: Build
-        run: cmake --build build
-      - name: Install
-        run: cmake --install build --prefix build/install
-      - name: Test
-        run: ctest --output-on-failure --test-dir build
-      - name: Test (standalone)
-        run: cd Test && ./runtests
+      - run: cmake --build build
+      - run: cmake --install build --prefix build/install
+      - run: ctest --output-on-failure --test-dir build
+      - name: Test Script (standalone)
+        run: ./runtests
+        working-directory: Test
 
   windows:
     runs-on: ${{matrix.os.genus}}
