@@ -99,7 +99,7 @@ option(ENABLE_RTTI "Enables RTTI")
 option(ENABLE_EXCEPTIONS "Enables Exceptions")
 option(ENABLE_OPT "Enables spirv-opt capability if present" ON)
 
-if(MINGW OR (CMAKE_SYSTEM_NAME STREQUAL "Darwin" AND ${CMAKE_CXX_COMPILER_ID} MATCHES "GNU"))
+if(MINGW OR (APPLE AND ${CMAKE_CXX_COMPILER_ID} MATCHES "GNU"))
     # Workaround for CMake behavior on Mac OS with gcc, cmake generates -Xarch_* arguments
     # which gcc rejects
     option(ENABLE_PCH "Enables Precompiled header")
