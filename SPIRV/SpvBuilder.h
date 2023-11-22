@@ -420,10 +420,9 @@ public:
     // Make a shader-style function, and create its entry block if entry is non-zero.
     // Return the function, pass back the entry.
     // The returned pointer is only valid for the lifetime of this builder.
-    Function* makeFunctionEntry(Decoration precision, Id returnType, const char* name,
-        LinkageType linkType, const std::vector<Id>& paramTypes,
-        const std::vector<char const*>& paramNames,
-        const std::vector<std::vector<Decoration>>& precisions, Block **entry = nullptr);
+    Function* makeFunctionEntry(Decoration precision, Id returnType, const char* name, LinkageType linkType,
+                                const std::vector<Id>& paramTypes,
+                                const std::vector<std::vector<Decoration>>& precisions, Block** entry = nullptr);
 
     // Create a return. An 'implicit' return is one not appearing in the source
     // code.  In the case of an implicit return, no post-return block is inserted.

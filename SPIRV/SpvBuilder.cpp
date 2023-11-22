@@ -2074,11 +2074,6 @@ Function* Builder::makeEntryPoint(const char* entryPoint)
 {
     assert(! entryPointFunction);
 
-    Block* entry;
-    std::vector<Id> paramsTypes;
-    std::vector<char const*> paramNames;
-    std::vector<std::vector<Decoration>> decorations;
-
     auto const returnType = makeVoidType();
 
     restoreNonSemanticShaderDebugInfo = emitNonSemanticShaderDebugInfo;
@@ -2086,7 +2081,8 @@ Function* Builder::makeEntryPoint(const char* entryPoint)
         emitNonSemanticShaderDebugInfo = false;
     }
 
-    entryPointFunction = makeFunctionEntry(NoPrecision, returnType, entryPoint, LinkageTypeMax, paramsTypes, paramNames, decorations, &entry);
+    Block* entry = nullptr;
+    entryPointFunction = makeFunctionEntry(NoPrecision, returnType, entryPoint, LinkageTypeMax, {}, {}, &entry);
 
     emitNonSemanticShaderDebugInfo = restoreNonSemanticShaderDebugInfo;
 
@@ -2095,8 +2091,8 @@ Function* Builder::makeEntryPoint(const char* entryPoint)
 
 // Comments in header
 Function* Builder::makeFunctionEntry(Decoration precision, Id returnType, const char* name, LinkageType linkType,
-                                     const std::vector<Id>& paramTypes, const std::vector<char const*>& paramNames,
-                                     const std::vector<std::vector<Decoration>>& decorations, Block **entry)
+                                     const std::vector<Id>& paramTypes,
+                                     const std::vector<std::vector<Decoration>>& decorations, Block** entry)
 {
     // Make the function and initial instructions in it
     Id typeId = makeFunctionType(returnType, paramTypes);
