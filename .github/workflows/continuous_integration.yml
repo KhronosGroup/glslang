@@ -154,12 +154,11 @@ jobs:
         with:
           python-version: '3.7'
       - run: python update_glslang_sources.py
-      - name: Build
-        run: |
-          cmake -S. -Bbuild -G "Visual Studio 16 2019" -A x64 -DCMAKE_INSTALL_PREFIX="$PWD/build/install"
-          cmake --build build --config ${{matrix.cmake_build_type}} --target install
-      - name: Test
-        run: ctest -C ${{matrix.cmake_build_type}} --output-on-failure --test-dir build
+      - run: cmake -S . -B build -G "Visual Studio 16 2019" -A x64 -DCMAKE_INSTALL_PREFIX="$PWD/build/install"
+        env:
+          LDFLAGS: /WX
+      - run: cmake --build build --config ${{matrix.cmake_build_type}} --target install
+      - run: ctest -C ${{matrix.cmake_build_type}} --output-on-failure --test-dir build
       - name: Test (standalone)
         run: bash -c 'cd ./Test && ./runtests'
 
