@@ -102,10 +102,11 @@ option(ENABLE_OPT "Enables spirv-opt capability if present" ON)
 if(MINGW OR (APPLE AND ${CMAKE_CXX_COMPILER_ID} MATCHES "GNU"))
     # Workaround for CMake behavior on Mac OS with gcc, cmake generates -Xarch_* arguments
     # which gcc rejects
-    option(ENABLE_PCH "Enables Precompiled header")
-else()
-    option(ENABLE_PCH "Enables Precompiled header" ON)
+    set(ENABLE_PCH OFF)
+    message(NOTICE "Disabling PCH")
 endif()
+
+option(ENABLE_PCH "Enables Precompiled header" ON)
 option(ENABLE_CTEST "Enables testing" ON)
 
 if(ENABLE_CTEST)
@@ -250,17 +251,11 @@ endfunction()
 # glslang_pch() adds precompiled header rules to <target> for the pre-compiled
 # header file <pch>. As target_precompile_headers() was added in CMake 3.16,
 # this is a no-op if called on earlier versions of CMake.
-if(NOT CMAKE_VERSION VERSION_LESS "3.16" AND ENABLE_PCH)
-    function(glslang_pch target pch)
-        target_precompile_headers(${target} PRIVATE ${pch})
-    endfunction()
-else()
-    function(glslang_pch target pch)
-    endfunction()
+function(glslang_pch target pch)
     if(ENABLE_PCH)
-        message("Your CMake version is ${CMAKE_VERSION}. Update to at least 3.16 to enable precompiled headers to speed up incremental builds")
+        target_precompile_headers(${target} PRIVATE ${pch})
     endif()
-endif()
+endfunction()
 
 if(BUILD_EXTERNAL AND IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/External)
     # We depend on these for later projects, so they should come first.
