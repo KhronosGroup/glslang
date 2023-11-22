@@ -208,12 +208,6 @@ function(glslang_set_link_args TARGET)
     endif()
 endfunction(glslang_set_link_args)
 
-if(NOT COMMAND find_host_package)
-    macro(find_host_package)
-        find_package(${ARGN})
-    endmacro()
-endif()
-
 # Root directory for build-time generated include files
 set(GLSLANG_GENERATED_INCLUDEDIR "${CMAKE_BINARY_DIR}/include")
 
@@ -273,8 +267,6 @@ else()
 endif()
 
 if(BUILD_EXTERNAL AND IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/External)
-    find_host_package(Python3 REQUIRED)
-
     # We depend on these for later projects, so they should come first.
     add_subdirectory(External)
 endif()
