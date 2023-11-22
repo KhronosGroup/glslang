@@ -318,6 +318,7 @@ INSTANTIATE_TEST_SUITE_P(
         {"hlsl.mul-truncate.frag", "main"},
         {"hlsl.multiEntry.vert", "RealEntrypoint"},
         {"hlsl.multiReturn.frag", "main"},
+        {"hlsl.multiView.frag", "main"},
         {"hlsl.matrixindex.frag", "main"},
         {"hlsl.nonstaticMemberFunction.frag", "main"},
         {"hlsl.numericsuffixes.frag", "main"},
