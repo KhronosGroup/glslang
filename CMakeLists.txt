@@ -141,13 +141,6 @@ if(${CMAKE_CXX_COMPILER_ID} MATCHES "GNU")
     if(NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS "9.0.0")
         add_compile_options(-Werror=deprecated-copy)
     endif()
-
-    if(NOT (CMAKE_SYSTEM_NAME STREQUAL "OpenBSD"))
-        if (NOT APPLE)
-            # Error if there's symbols that are not found at link time.
-            add_link_options("-Wl,--no-undefined")
-        endif()
-    endif()
 elseif(${CMAKE_CXX_COMPILER_ID} MATCHES "Clang" AND NOT MSVC)
     add_compile_options(-Wall -Wuninitialized -Wunused -Wunused-local-typedefs
                         -Wunused-parameter -Wunused-value  -Wunused-variable)
@@ -156,13 +149,6 @@ elseif(${CMAKE_CXX_COMPILER_ID} MATCHES "Clang" AND NOT MSVC)
     endif()
     if(NOT ENABLE_EXCEPTIONS)
         add_compile_options(-fno-exceptions)
-    endif()
-
-    if(NOT (CMAKE_SYSTEM_NAME MATCHES "OpenBSD|Emscripten"))
-        # Error if there's symbols that are not found at link time. Some linkers do not support this flag.
-        if(NOT APPLE)
-            add_link_options("-Wl,--no-undefined")
-        endif()
     endif()
 elseif(MSVC)
     if(NOT ENABLE_RTTI)

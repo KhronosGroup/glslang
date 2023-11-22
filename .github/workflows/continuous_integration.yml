@@ -35,6 +35,7 @@ jobs:
           CMAKE_GENERATOR: Ninja
           CMAKE_C_COMPILER_LAUNCHER: ccache
           CMAKE_CXX_COMPILER_LAUNCHER: ccache
+          LDFLAGS: -Wl,--no-undefined
       - name: Build
         run: cmake --build build
       - name: Install
