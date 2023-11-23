@@ -632,7 +632,7 @@ TIntermTyped* TParseContext::handleBracketDereference(const TSourceLoc& loc, TIn
             else {
                 // input/output blocks either don't exist or can't be variably indexed
             }
-        } else if (language == EShLangFragment && base->getQualifier().isPipeOutput())
+        } else if (language == EShLangFragment && base->getQualifier().isPipeOutput() && base->getQualifier().builtIn != EbvSampleMask)
             requireProfile(base->getLoc(), ~EEsProfile, "variable indexing fragment shader output array");
         else if (base->getBasicType() == EbtSampler && version >= 130) {
             const char* explanation = "variable indexing sampler array";
@@ -1745,6 +1745,11 @@ TIntermTyped* TParseContext::handleLengthMethod(const TSourceLoc& loc, TFunction
                     if (name == "gl_in" || name == "gl_out" || name == "gl_MeshVerticesNV" ||
                         name == "gl_MeshPrimitivesNV") {
                         length = getIoArrayImplicitSize(type.getQualifier());
+                    }
+                } else if (const auto typed = intermNode->getAsTyped()) {
+                    if (typed->getQualifier().builtIn == EbvSampleMask) {
+                        requireProfile(loc, EEsProfile, "the array size of gl_SampleMask and gl_SampleMaskIn is ceil(gl_MaxSamples/32)");
+                        length = (resources.maxSamples + 31) / 32;
                     }
                 }
                 if (length == 0) {
