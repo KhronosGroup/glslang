@@ -7473,8 +7473,6 @@ void TParseContext::vkRelaxedRemapUniformMembers(const TSourceLoc& loc, const TP
 
     ForEachOpaque(type, identifier,
                   [&publicType, &loc, this](const TType& type, const TString& path) {
-                      TString& structMemberName = *(NewPoolTString(path.c_str()));
-
                       TArraySizes arraySizes = {};
                       if (type.getArraySizes()) arraySizes = *type.getArraySizes();
                       TTypeParameters typeParameters = {};
@@ -7498,6 +7496,7 @@ void TParseContext::vkRelaxedRemapUniformMembers(const TSourceLoc& loc, const TP
                       memberType.qualifier.storage = publicType.qualifier.storage;
                       memberType.shaderQualifiers = publicType.shaderQualifiers;
 
+                      TString& structMemberName = *NewPoolTString(path.c_str()); // A copy is required due to declareVariable() signature.
                       declareVariable(loc, structMemberName, memberType, nullptr, nullptr);
                   });
 }
@@ -7570,7 +7569,6 @@ struct AccessChainTraverser : public TIntermTraverser {
             path.append(symbol->getName());
     }
 };
-
 
 TIntermNode* TParseContext::vkRelaxedRemapFunctionArgument(const TSourceLoc& loc, TFunction* function, TIntermTyped* intermTyped)
 {

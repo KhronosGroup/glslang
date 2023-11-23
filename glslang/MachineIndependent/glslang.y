@@ -492,9 +492,14 @@ function_call_header_no_parameters
 
 function_call_header_with_parameters
     : function_call_header assignment_expression {
-        if (!(parseContext.spvVersion.vulkan > 0
-              && parseContext.spvVersion.vulkanRelaxed)
-            || !$2->getType().containsOpaque())
+        if (parseContext.spvVersion.vulkan > 0
+            && parseContext.spvVersion.vulkanRelaxed
+            && $2->getType().containsOpaque())
+        {
+            $$.intermNode = parseContext.vkRelaxedRemapFunctionArgument($$.loc, $1.function, $2);
+            $$.function = $1.function;
+        }
+        else
         {
             TParameter param = { 0, new TType };
             param.type->shallowCopy($2->getType());
@@ -503,16 +508,17 @@ function_call_header_with_parameters
             $$.function = $1.function;
             $$.intermNode = $2;
         }
-        else
-        {
-            $$.intermNode = parseContext.vkRelaxedRemapFunctionArgument($$.loc, $1.function, $2);
-            $$.function = $1.function;
-        }
     }
     | function_call_header_with_parameters COMMA assignment_expression {
-        if (!(parseContext.spvVersion.vulkan > 0
-              && parseContext.spvVersion.vulkanRelaxed)
-            || !$3->getType().containsOpaque())
+        if (parseContext.spvVersion.vulkan > 0
+            && parseContext.spvVersion.vulkanRelaxed
+            && $3->getType().containsOpaque())
+        {
+            TIntermNode* remappedNode = parseContext.vkRelaxedRemapFunctionArgument($2.loc, $1.function, $3);
+            $$.intermNode = parseContext.intermediate.mergeAggregate($1.intermNode, remappedNode, $2.loc);
+            $$.function = $1.function;
+        }
+        else
         {
             TParameter param = { 0, new TType };
             param.type->shallowCopy($3->getType());
@@ -520,12 +526,6 @@ function_call_header_with_parameters
             $1.function->addParameter(param);
             $$.function = $1.function;
             $$.intermNode = parseContext.intermediate.growAggregate($1.intermNode, $3, $2.loc);
-        }
-        else
-        {
-            TIntermNode* remappedNode = parseContext.vkRelaxedRemapFunctionArgument($2.loc, $1.function, $3);
-            $$.intermNode = parseContext.intermediate.mergeAggregate($1.intermNode, remappedNode, $2.loc);
-            $$.function = $1.function;
         }
     }
     ;

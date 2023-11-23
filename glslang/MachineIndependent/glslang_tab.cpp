@@ -5465,9 +5465,14 @@ yyreduce:
   case 31: /* function_call_header_with_parameters: function_call_header assignment_expression  */
 #line 494 "MachineIndependent/glslang.y"
                                                  {
-        if (!(parseContext.spvVersion.vulkan > 0
-              && parseContext.spvVersion.vulkanRelaxed)
-            || !(yyvsp[0].interm.intermTypedNode)->getType().containsOpaque())
+        if (parseContext.spvVersion.vulkan > 0
+            && parseContext.spvVersion.vulkanRelaxed
+            && (yyvsp[0].interm.intermTypedNode)->getType().containsOpaque())
+        {
+            (yyval.interm).intermNode = parseContext.vkRelaxedRemapFunctionArgument((yyval.interm).loc, (yyvsp[-1].interm).function, (yyvsp[0].interm.intermTypedNode));
+            (yyval.interm).function = (yyvsp[-1].interm).function;
+        }
+        else
         {
             TParameter param = { 0, new TType };
             param.type->shallowCopy((yyvsp[0].interm.intermTypedNode)->getType());
@@ -5476,11 +5481,6 @@ yyreduce:
             (yyval.interm).function = (yyvsp[-1].interm).function;
             (yyval.interm).intermNode = (yyvsp[0].interm.intermTypedNode);
         }
-        else
-        {
-            (yyval.interm).intermNode = parseContext.vkRelaxedRemapFunctionArgument((yyval.interm).loc, (yyvsp[-1].interm).function, (yyvsp[0].interm.intermTypedNode));
-            (yyval.interm).function = (yyvsp[-1].interm).function;
-        }
     }
 #line 5486 "MachineIndependent/glslang_tab.cpp"
     break;
@@ -5488,9 +5488,15 @@ yyreduce:
   case 32: /* function_call_header_with_parameters: function_call_header_with_parameters COMMA assignment_expression  */
 #line 512 "MachineIndependent/glslang.y"
                                                                        {
-        if (!(parseContext.spvVersion.vulkan > 0
-              && parseContext.spvVersion.vulkanRelaxed)
-            || !(yyvsp[0].interm.intermTypedNode)->getType().containsOpaque())
+        if (parseContext.spvVersion.vulkan > 0
+            && parseContext.spvVersion.vulkanRelaxed
+            && (yyvsp[0].interm.intermTypedNode)->getType().containsOpaque())
+        {
+            TIntermNode* remappedNode = parseContext.vkRelaxedRemapFunctionArgument((yyvsp[-1].lex).loc, (yyvsp[-2].interm).function, (yyvsp[0].interm.intermTypedNode));
+            (yyval.interm).intermNode = parseContext.intermediate.mergeAggregate((yyvsp[-2].interm).intermNode, remappedNode, (yyvsp[-1].lex).loc);
+            (yyval.interm).function = (yyvsp[-2].interm).function;
+        }
+        else
         {
             TParameter param = { 0, new TType };
             param.type->shallowCopy((yyvsp[0].interm.intermTypedNode)->getType());
@@ -5498,12 +5504,6 @@ yyreduce:
             (yyvsp[-2].interm).function->addParameter(param);
             (yyval.interm).function = (yyvsp[-2].interm).function;
             (yyval.interm).intermNode = parseContext.intermediate.growAggregate((yyvsp[-2].interm).intermNode, (yyvsp[0].interm.intermTypedNode), (yyvsp[-1].lex).loc);
-        }
-        else
-        {
-            TIntermNode* remappedNode = parseContext.vkRelaxedRemapFunctionArgument((yyvsp[-1].lex).loc, (yyvsp[-2].interm).function, (yyvsp[0].interm.intermTypedNode));
-            (yyval.interm).intermNode = parseContext.intermediate.mergeAggregate((yyvsp[-2].interm).intermNode, remappedNode, (yyvsp[-1].lex).loc);
-            (yyval.interm).function = (yyvsp[-2].interm).function;
         }
     }
 #line 5510 "MachineIndependent/glslang_tab.cpp"
