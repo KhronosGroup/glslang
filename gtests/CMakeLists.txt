@@ -103,16 +103,13 @@ if(BUILD_TESTING)
         endif()
 
         set(LIBRARIES
-            glslang OSDependent OGLCompiler glslang
+            glslang OSDependent glslang
             SPIRV glslang-default-resource-limits)
 
         if(ENABLE_SPVREMAPPER)
             set(LIBRARIES ${LIBRARIES} SPVRemapper)
         endif()
 
-        if(ENABLE_HLSL)
-            set(LIBRARIES ${LIBRARIES} HLSL)
-        endif()
         target_link_libraries(glslangtests PRIVATE ${LIBRARIES} gmock)
 
         add_test(NAME glslang-gtests

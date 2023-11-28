@@ -138,7 +138,7 @@ glslang_add_build_info_dependency(MachineIndependent)
 
 glslang_pch(MachineIndependent MachineIndependent/pch.h)
 
-target_link_libraries(MachineIndependent PRIVATE OGLCompiler OSDependent GenericCodeGen)
+target_link_libraries(MachineIndependent PRIVATE OSDependent GenericCodeGen)
 
 ################################################################################
 # glslang
@@ -169,7 +169,7 @@ set_target_properties(glslang PROPERTIES
     POSITION_INDEPENDENT_CODE ON
     VERSION   "${GLSLANG_VERSION}"
     SOVERSION "${GLSLANG_VERSION_MAJOR}")
-target_link_libraries(glslang PRIVATE OGLCompiler OSDependent MachineIndependent)
+target_link_libraries(glslang PRIVATE OSDependent MachineIndependent)
 target_include_directories(glslang PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)

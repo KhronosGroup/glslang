@@ -65,27 +65,6 @@ LOCAL_EXPORT_C_INCLUDES:=$(LOCAL_PATH)/glslang/OSDependent/Unix/
 include $(BUILD_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
-LOCAL_MODULE:=OGLCompiler
-LOCAL_CXXFLAGS:=-std=c++17 -fno-exceptions -fno-rtti $(GLSLANG_DEFINES)
-LOCAL_EXPORT_C_INCLUDES:=$(LOCAL_PATH)
-LOCAL_SRC_FILES:=OGLCompilersDLL/InitializeDll.cpp
-LOCAL_C_INCLUDES:=$(LOCAL_PATH)/OGLCompiler
-LOCAL_STATIC_LIBRARIES:=OSDependent
-include $(BUILD_STATIC_LIBRARY)
-
-# Build the stubbed HLSL library.
-# The HLSL source is now directly referenced by the glslang static library
-# instead.
-include $(CLEAR_VARS)
-LOCAL_MODULE:=HLSL
-LOCAL_CXXFLAGS:=-std=c++17 -fno-exceptions -fno-rtti $(GLSLANG_DEFINES)
-LOCAL_SRC_FILES:= \
-	hlsl/stub.cpp
-LOCAL_C_INCLUDES:=$(LOCAL_PATH) \
-	$(LOCAL_PATH)/glslang/HLSL
-include $(BUILD_STATIC_LIBRARY)
-
-include $(CLEAR_VARS)
 GLSLANG_OUT_PATH=$(if $(call host-path-is-absolute,$(TARGET_OUT)),$(TARGET_OUT),$(abspath $(TARGET_OUT)))
 
 # ShaderLang.cpp depends on the generated build_info.h
@@ -138,7 +117,7 @@ LOCAL_C_INCLUDES:=$(LOCAL_PATH) \
 	$(LOCAL_PATH)/glslang/MachineIndependent \
 	$(GLSLANG_GENERATED_INCLUDEDIR) \
 	$(GLSLANG_OUT_PATH)
-LOCAL_STATIC_LIBRARIES:=OSDependent OGLCompiler HLSL
+LOCAL_STATIC_LIBRARIES:=OSDependent
 include $(BUILD_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)

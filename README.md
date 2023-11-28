@@ -1,10 +1,10 @@
-# News
-
-1. C++17 (all platforms) and Visual Studio 2019 (Windows) are now required. This change was driven by the external dependency on SPIRV-Tools.
-
 ![Continuous Integration](https://github.com/KhronosGroup/glslang/actions/workflows/continuous_integration.yml/badge.svg)
 ![Continuous Deployment](https://github.com/KhronosGroup/glslang/actions/workflows/continuous_deployment.yml/badge.svg)
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/KhronosGroup/glslang/badge)](https://securityscorecards.dev/viewer/?uri=github.com/KhronosGroup/glslang)
+
+# News
+
+1. `OGLCompiler` and `HLSL` stub libraries have been fully removed from the build.
 
 2. `OVERRIDE_MSVCCRT` has been removed in favor of `CMAKE_MSVC_RUNTIME_LIBRARY`
 
