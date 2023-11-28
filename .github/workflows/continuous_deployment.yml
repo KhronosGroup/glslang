@@ -84,9 +84,7 @@ jobs:
                       lib/libGenericCodeGen.a \
                       lib/libglslang.a \
                       lib/libglslang-default-resource-limits.a \
-                      lib/libHLSL.a \
                       lib/libMachineIndependent.a \
-                      lib/libOGLCompiler.a \
                       lib/libOSDependent.a \
                       lib/libSPIRV.a \
                       lib/libSPVRemapper.a \
@@ -145,9 +143,7 @@ jobs:
                       lib/libGenericCodeGen.a \
                       lib/libglslang.a \
                       lib/libglslang-default-resource-limits.a \
-                      lib/libHLSL.a \
                       lib/libMachineIndependent.a \
-                      lib/libOGLCompiler.a \
                       lib/libOSDependent.a \
                       lib/libSPIRV.a \
                       lib/libSPVRemapper.a \
@@ -201,9 +197,7 @@ jobs:
                       lib/GenericCodeGend.lib `
                       lib/glslangd.lib `
                       lib/glslang-default-resource-limitsd.lib `
-                      lib/HLSLd.lib `
                       lib/MachineIndependentd.lib `
-                      lib/OGLCompilerd.lib `
                       lib/OSDependentd.lib `
                       lib/SPIRVd.lib `
                       lib/SPVRemapperd.lib `
@@ -223,9 +217,7 @@ jobs:
                       lib/GenericCodeGen.lib `
                       lib/glslang.lib `
                       lib/glslang-default-resource-limits.lib `
-                      lib/HLSL.lib `
                       lib/MachineIndependent.lib `
-                      lib/OGLCompiler.lib `
                       lib/OSDependent.lib `
                       lib/SPIRV.lib `
                       lib/SPVRemapper.lib `
