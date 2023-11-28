@@ -69,7 +69,6 @@ endif()
 # Furthermore testing is equally problematic.
 if (IOS OR ANDROID)
     set(ENABLE_GLSLANG_BINARIES OFF)
-    set(SPIRV_SKIP_EXECUTABLES ON)
 
     set(ENABLE_CTEST OFF)
     set(BUILD_TESTING OFF)
