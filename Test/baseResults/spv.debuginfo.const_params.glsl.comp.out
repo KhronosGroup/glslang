@@ -89,10 +89,10 @@ spv.debuginfo.const_params.glsl.comp
               34:             Label
               42:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 36
               43:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 37 39 39 12 12
-              46:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 44 29(f) 47
-              50:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 48 30(f2) 47
-              53:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 51 31(f3) 47
-              56:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 54 32(f4) 47
+              46:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 29(DebugValue) 44 29(f) 47
+              50:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 29(DebugValue) 48 30(f2) 47
+              53:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 29(DebugValue) 51 31(f3) 47
+              56:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 29(DebugValue) 54 32(f4) 47
               60:           4 ExtInst 2(NonSemantic.Shader.DebugInfo.100) 101(DebugFunctionDefinition) 36 33(function(f1;vf2;vf3;vf4;)
                               Return
                               FunctionEnd

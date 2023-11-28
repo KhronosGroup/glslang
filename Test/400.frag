@@ -7,6 +7,39 @@ uniform sampler2D arrayedSampler[5];
 uniform usampler2DRect samp2dr;
 uniform isampler2DArray isamp2DA;
 
+#extension GL_ARB_shader_storage_buffer_object : enable
+
+buffer Buffer
+{
+    int atomi;
+    uint atomu;
+};
+
+void atomicOpPass()
+{
+    int origi = atomicAdd(atomi, 3);
+    uint origu = atomicAnd(atomu, 7u);
+    origi = atomicExchange(atomi, 4);
+    origu = atomicCompSwap(atomu, 10u, 8u);
+}
+
+buffer ssboElem01
+{
+    int member01;
+    int memberArr01[2];
+    int memberUnsizedArr01[];
+} ssboStd430Arr[2];
+
+// if turns on EShReflectionSharedStd140SSBO, SPIR-V would be different
+buffer ssboElem02
+{
+    int member02;
+    int memberArr02[2];
+    int memberUnsizedArr02[];
+} ssboSharedArr[2];
+
+#extension GL_ARB_shader_storage_buffer_object : disable
+
 void main()
 {
     vec4 v;

@@ -70,6 +70,13 @@ set(SPVREMAP_HEADERS
     SPVRemapper.h
     doc.h)
 
+set(PUBLIC_HEADERS
+    GlslangToSpv.h
+    disassemble.h
+    Logger.h
+    spirv.hpp
+    SPVRemapper.h)
+
 add_library(SPIRV ${LIB_TYPE} ${SOURCES} ${HEADERS})
 set_target_properties(SPIRV PROPERTIES
     FOLDER glslang
@@ -99,14 +106,9 @@ if(WIN32 AND BUILD_SHARED_LIBS)
 endif()
 
 if(ENABLE_OPT)
-    target_include_directories(SPIRV
-        PRIVATE ${spirv-tools_SOURCE_DIR}/include
-        PRIVATE ${spirv-tools_SOURCE_DIR}/source
-    )
-    target_link_libraries(SPIRV PRIVATE MachineIndependent SPIRV-Tools-opt)
+    target_link_libraries(SPIRV PRIVATE MachineIndependent PUBLIC SPIRV-Tools-opt)
     target_include_directories(SPIRV PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../External>
-        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/External>)
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../External>)
 else()
     target_link_libraries(SPIRV PRIVATE MachineIndependent)
 endif()
@@ -148,5 +150,5 @@ if(ENABLE_GLSLANG_INSTALL)
     ")
     install(FILES "${CMAKE_CURRENT_BINARY_DIR}/SPIRVTargets.cmake" DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake)
 
-    install(FILES ${HEADERS} ${SPVREMAP_HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/glslang/SPIRV/)
+    install(FILES ${PUBLIC_HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/glslang/SPIRV/)
 endif()

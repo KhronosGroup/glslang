@@ -42,7 +42,7 @@ include(CMakePackageConfigHelpers)
 # Needed for CMAKE_DEPENDENT_OPTION macro
 include(CMakeDependentOption)
 
-option(BUILD_SHARED_LIBS "Build Shared Libraries" OFF)
+option(BUILD_SHARED_LIBS "Build Shared Libraries")
 option(BUILD_EXTERNAL "Build external dependencies in /External" ON)
 
 set(LIB_TYPE STATIC)
@@ -59,7 +59,24 @@ if ("${CMAKE_BUILD_TYPE}" STREQUAL "")
     set(CMAKE_BUILD_TYPE "Debug")
 endif()
 
-option(SKIP_GLSLANG_INSTALL "Skip installation" ${SKIP_GLSLANG_INSTALL})
+# Currently iOS and Android are very similar.
+# They both have their own packaging (APP/APK).
+# Which makes regular executables/testing problematic.
+#
+# Currently the only deliverables for these platforms are
+# libraries (either STATIC or SHARED).
+#
+# Furthermore testing is equally problematic.
+if (IOS OR ANDROID)
+    set(ENABLE_GLSLANG_BINARIES OFF)
+    set(SPIRV_SKIP_EXECUTABLES ON)
+
+    set(ENABLE_CTEST OFF)
+    set(BUILD_TESTING OFF)
+endif()
+
+option(SKIP_GLSLANG_INSTALL "Skip installation")
+
 if(NOT ${SKIP_GLSLANG_INSTALL})
   set(ENABLE_GLSLANG_INSTALL ON)
 endif()
@@ -67,8 +84,7 @@ option(ENABLE_SPVREMAPPER "Enables building of SPVRemapper" ON)
 
 option(ENABLE_GLSLANG_BINARIES "Builds glslang and spirv-remap" ON)
 
-option(ENABLE_GLSLANG_JS
-    "If using Emscripten, build glslang.js. Otherwise, builds a sample executable for binary-size testing." OFF)
+option(ENABLE_GLSLANG_JS "If using Emscripten, build glslang.js. Otherwise, builds a sample executable for binary-size testing.")
 CMAKE_DEPENDENT_OPTION(ENABLE_EMSCRIPTEN_SINGLE_FILE
     "If using Emscripten, enables SINGLE_FILE build"
     OFF "ENABLE_GLSLANG_JS AND EMSCRIPTEN"
@@ -79,17 +95,18 @@ CMAKE_DEPENDENT_OPTION(ENABLE_EMSCRIPTEN_ENVIRONMENT_NODE
     OFF)
 
 option(ENABLE_HLSL "Enables HLSL input support" ON)
-option(ENABLE_RTTI "Enables RTTI" OFF)
-option(ENABLE_EXCEPTIONS "Enables Exceptions" OFF)
+option(ENABLE_RTTI "Enables RTTI")
+option(ENABLE_EXCEPTIONS "Enables Exceptions")
 option(ENABLE_OPT "Enables spirv-opt capability if present" ON)
 
-if(MINGW OR (CMAKE_SYSTEM_NAME STREQUAL "Darwin" AND ${CMAKE_CXX_COMPILER_ID} MATCHES "GNU"))
+if(MINGW OR (APPLE AND ${CMAKE_CXX_COMPILER_ID} MATCHES "GNU"))
     # Workaround for CMake behavior on Mac OS with gcc, cmake generates -Xarch_* arguments
     # which gcc rejects
-    option(ENABLE_PCH "Enables Precompiled header" OFF)
-else()
-    option(ENABLE_PCH "Enables Precompiled header" ON)
+    set(ENABLE_PCH OFF)
+    message(NOTICE "Disabling PCH")
 endif()
+
+option(ENABLE_PCH "Enables Precompiled header" ON)
 option(ENABLE_CTEST "Enables testing" ON)
 
 if(ENABLE_CTEST)
@@ -102,10 +119,6 @@ endif()
 
 if(WIN32)
     set(CMAKE_DEBUG_POSTFIX "d")
-    option(OVERRIDE_MSVCCRT "Overrides runtime of MSVC " ON)
-    if(MSVC AND OVERRIDE_MSVCCRT)
-        include(ChooseMSVCCRT.cmake)
-    endif()
     add_definitions(-DGLSLANG_OSINCLUDE_WIN32)
 elseif(UNIX OR ANDROID)
     add_definitions(-DGLSLANG_OSINCLUDE_UNIX)
@@ -126,9 +139,11 @@ if(${CMAKE_CXX_COMPILER_ID} MATCHES "GNU")
         add_compile_options(-Werror=deprecated-copy)
     endif()
 
-    if(NOT CMAKE_SYSTEM_NAME STREQUAL "OpenBSD" AND NOT CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-        # Error if there's symbols that are not found at link time.
-        add_link_options("-Wl,--no-undefined")
+    if(NOT (CMAKE_SYSTEM_NAME STREQUAL "OpenBSD"))
+        if (NOT APPLE)
+            # Error if there's symbols that are not found at link time.
+            add_link_options("-Wl,--no-undefined")
+        endif()
     endif()
 elseif(${CMAKE_CXX_COMPILER_ID} MATCHES "Clang" AND NOT MSVC)
     add_compile_options(-Wall -Wuninitialized -Wunused -Wunused-local-typedefs
@@ -140,11 +155,9 @@ elseif(${CMAKE_CXX_COMPILER_ID} MATCHES "Clang" AND NOT MSVC)
         add_compile_options(-fno-exceptions)
     endif()
 
-    if(NOT (CMAKE_SYSTEM_NAME STREQUAL "OpenBSD" OR CMAKE_SYSTEM_NAME STREQUAL "Emscripten"))
+    if(NOT (CMAKE_SYSTEM_NAME MATCHES "OpenBSD|Emscripten"))
         # Error if there's symbols that are not found at link time. Some linkers do not support this flag.
-        if (CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
-            add_link_options("-Wl,-undefined,error")
-        elseif(NOT APPLE)
+        if(NOT APPLE)
             add_link_options("-Wl,--no-undefined")
         endif()
     endif()
@@ -192,12 +205,6 @@ function(glslang_set_link_args TARGET)
     endif()
 endfunction(glslang_set_link_args)
 
-if(NOT COMMAND find_host_package)
-    macro(find_host_package)
-        find_package(${ARGN})
-    endmacro()
-endif()
-
 # Root directory for build-time generated include files
 set(GLSLANG_GENERATED_INCLUDEDIR "${CMAKE_BINARY_DIR}/include")
 
@@ -244,26 +251,18 @@ endfunction()
 # glslang_pch() adds precompiled header rules to <target> for the pre-compiled
 # header file <pch>. As target_precompile_headers() was added in CMake 3.16,
 # this is a no-op if called on earlier versions of CMake.
-if(NOT CMAKE_VERSION VERSION_LESS "3.16" AND ENABLE_PCH)
-    function(glslang_pch target pch)
-        target_precompile_headers(${target} PRIVATE ${pch})
-    endfunction()
-else()
-    function(glslang_pch target pch)
-    endfunction()
+function(glslang_pch target pch)
     if(ENABLE_PCH)
-        message("Your CMake version is ${CMAKE_VERSION}. Update to at least 3.16 to enable precompiled headers to speed up incremental builds")
+        target_precompile_headers(${target} PRIVATE ${pch})
     endif()
-endif()
+endfunction()
 
 if(BUILD_EXTERNAL AND IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/External)
-    find_host_package(Python3 REQUIRED)
-
     # We depend on these for later projects, so they should come first.
     add_subdirectory(External)
 endif()
 
-option(ALLOW_EXTERNAL_SPIRV_TOOLS "Allows to build against installed SPIRV-Tools-opt" OFF)
+option(ALLOW_EXTERNAL_SPIRV_TOOLS "Allows to build against installed SPIRV-Tools-opt")
 if(NOT TARGET SPIRV-Tools-opt)
     if(ALLOW_EXTERNAL_SPIRV_TOOLS)
         # Look for external SPIR-V Tools build, if not building in-tree

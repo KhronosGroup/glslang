@@ -96,7 +96,7 @@ jobs:
               if: ${{ matrix.compiler.cc == 'clang' }}
               env:
                   ARCHIVE: glslang-main-${{matrix.os.family}}-${{matrix.cmake_build_type}}.zip
-              uses: actions/github-script@d7906e4ad0b1822421a7e6a35d5ca353c962f410 # v6.4.1
+              uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
               with:
                   script: |
                       const script = require('.github/workflows/deploy.js')
@@ -156,7 +156,7 @@ jobs:
             - name: Deploy
               env:
                   ARCHIVE: glslang-main-${{matrix.os.family}}-${{matrix.cmake_build_type}}.zip
-              uses: actions/github-script@d7906e4ad0b1822421a7e6a35d5ca353c962f410 # v6.4.1
+              uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
               with:
                   script: |
                       const script = require('.github/workflows/deploy.js')
@@ -234,7 +234,7 @@ jobs:
             - name: Deploy
               env:
                   ARCHIVE: glslang-master-${{matrix.os.family}}-${{matrix.cmake_build_type}}.zip
-              uses: actions/github-script@d7906e4ad0b1822421a7e6a35d5ca353c962f410 # v6.4.1
+              uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
               with:
                   script: |
                       const script = require('.github/workflows/deploy.js')

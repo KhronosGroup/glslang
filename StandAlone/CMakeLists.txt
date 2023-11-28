@@ -31,7 +31,7 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-find_host_package(Python3 REQUIRED)
+find_package(Python3 REQUIRED)
 
 set(GLSLANG_INTRINSIC_H          "${GLSLANG_GENERATED_INCLUDEDIR}/glslang/glsl_intrinsic_header.h")
 set(GLSLANG_INTRINSIC_PY         "${CMAKE_CURRENT_SOURCE_DIR}/../gen_extension_headers.py")
@@ -73,14 +73,7 @@ endif()
 
 target_link_libraries(glslang-standalone ${LIBRARIES})
 target_include_directories(glslang-standalone PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../External>
-    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/External>)
-
-if(ENABLE_OPT)
-    target_include_directories(glslang-standalone
-        PRIVATE ${spirv-tools_SOURCE_DIR}/include
-    )
-endif()
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../External>)
 
 if(ENABLE_SPVREMAPPER)
     set(REMAPPER_SOURCES spirv-remap.cpp)
