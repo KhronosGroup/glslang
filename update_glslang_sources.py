@@ -25,15 +25,11 @@ import sys
 
 KNOWN_GOOD_FILE = 'known_good.json'
 
-SITE_TO_KNOWN_GOOD_FILE = { 'github' : 'known_good.json',
-                            'gitlab' : 'known_good_khr.json' }
+SITE_TO_KNOWN_GOOD_FILE = { 'github' : 'known_good.json' }
 
-# Maps a site name to its hostname.
-SITE_TO_HOST = { 'github' : 'https://github.com/',
-                 'gitlab' : 'git@gitlab.khronos.org:' }
+SITE_TO_HOST = { 'github' : 'https://github.com/' }
 
 VERBOSE = True
-
 
 def command_output(cmd, directory, fail_ok=False):
     """Runs a command in a directory and returns its standard output stream.
