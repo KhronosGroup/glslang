@@ -1,9 +1,3 @@
-# NOTE: This workflow was ported from Travis.
-# Travis was using Ubuntu 14.04. Ubuntu 14.04 is not supportted by GitHub workflows. Ubuntu 20.04 is recommended.
-# Travis was using Clang 3.6. The earliest version support by Ubuntu 20.04 is Clang 6.0.
-# Travis was caching the clang package. APT package caching is not natively supported by GitHub actions/cache.
-# Travis was using Mac OS X 10.13.6 / Xcode 9.4.1 / LLVM 9.1.0
-
 # NOTE: The following documentation may be useful to maintainers of this workflow.
 # Github actions: https://docs.github.com/en/actions
 # Github github-script action: https://github.com/actions/github-script
