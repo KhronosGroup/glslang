@@ -25,13 +25,6 @@ import sys
 
 KNOWN_GOOD_FILE = 'known_good.json'
 
-SITE_TO_KNOWN_GOOD_FILE = { 'github' : 'known_good.json',
-                            'gitlab' : 'known_good_khr.json' }
-
-# Maps a site name to its hostname.
-SITE_TO_HOST = { 'github' : 'https://github.com/',
-                 'gitlab' : 'git@gitlab.khronos.org:' }
-
 VERBOSE = True
 
 
@@ -79,16 +72,12 @@ class GoodCommit(object):
         self._json = json
         self.name = json['name']
         self.site = json['site']
-        self.subrepo = json['subrepo']
         self.subdir = json['subdir'] if ('subdir' in json) else '.'
         self.commit = json['commit']
 
     def GetUrl(self):
         """Returns the URL for the repository."""
-        host = SITE_TO_HOST[self.site]
-        return '{host}{subrepo}'.format(
-                    host=host,
-                    subrepo=self.subrepo)
+        return self.site
 
     def AddRemote(self):
         """Add the remote 'known-good' if it does not exist."""
@@ -118,10 +107,9 @@ class GoodCommit(object):
         command_output(['git', 'checkout', self.commit], self.subdir)
 
 
-def GetGoodCommits(site):
+def GetGoodCommits():
     """Returns the latest list of GoodCommit objects."""
-    known_good_file = SITE_TO_KNOWN_GOOD_FILE[site]
-    with open(known_good_file) as known_good:
+    with open(KNOWN_GOOD_FILE) as known_good:
         return [GoodCommit(c) for c in json.loads(known_good.read())['commits']]
 
 
@@ -129,12 +117,10 @@ def main():
     parser = argparse.ArgumentParser(description='Get Glslang source dependencies at a known-good commit')
     parser.add_argument('--dir', dest='dir', default='.',
                         help="Set target directory for Glslang source root. Default is \'.\'.")
-    parser.add_argument('--site', dest='site', default='github',
-                        help="Set git server site. Default is github.")
 
     args = parser.parse_args()
 
-    commits = GetGoodCommits(args.site)
+    commits = GetGoodCommits()
 
     os.makedirs(args.dir, exist_ok=True)
     print('Change directory to {d}'.format(d=args.dir))
