@@ -5246,7 +5246,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             stageBuiltins[EShLangVertex].append(
                 "int gl_VertexID;"            // needs qualifier fixed later
                 );
-        if (version >= 140 && spvVersion.vulkan == 0)
+        if (spvVersion.vulkan == 0)
             stageBuiltins[EShLangVertex].append(
                 "int gl_InstanceID;"          // needs qualifier fixed later
                 );
@@ -5301,6 +5301,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             stageBuiltins[EShLangVertex].append(
                 "highp   vec4  gl_Position;"  // needs qualifier fixed later
                 "mediump float gl_PointSize;" // needs qualifier fixed later
+                "highp int gl_InstanceID;" // needs qualifier fixed later
                 );
         } else {
             if (spvVersion.vulkan == 0 || spvVersion.vulkanRelaxed)
@@ -7851,6 +7852,8 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         if (spvVersion.vulkan == 0) {
             SpecialQualifier("gl_VertexID",   EvqVertexId,   EbvVertexId,   symbolTable);
             SpecialQualifier("gl_InstanceID", EvqInstanceId, EbvInstanceId, symbolTable);
+            if (version < 140)
+                symbolTable.setVariableExtensions("gl_InstanceID", 1, &E_GL_EXT_draw_instanced);
         }
 
         if (spvVersion.vulkan > 0 && spvVersion.vulkanRelaxed) {

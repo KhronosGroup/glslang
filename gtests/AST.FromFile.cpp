@@ -301,6 +301,7 @@ INSTANTIATE_TEST_SUITE_P(
         "coord_conventions.frag",
         "gl_FragCoord.frag",
         "glsl.interpOp.error.frag",
+        "GL_EXT_draw_instanced.vert",
     })),
     FileNameAsCustomTestSuffix
 );

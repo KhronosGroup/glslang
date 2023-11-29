@@ -2855,10 +2855,9 @@ void TIntermediate::addSymbolLinkageNodes(TIntermAggregate*& linkage, EShLanguag
     //}
 
     if (language == EShLangVertex) {
-        // the names won't be found in the symbol table unless the versions are right,
-        // so version logic does not need to be repeated here
         addSymbolLinkageNode(linkage, symbolTable, "gl_VertexID");
-        addSymbolLinkageNode(linkage, symbolTable, "gl_InstanceID");
+        if ((version < 140 && requestedExtensions.find(E_GL_EXT_draw_instanced) != requestedExtensions.end()) || version >= 140)
+            addSymbolLinkageNode(linkage, symbolTable, "gl_InstanceID");
     }
 
     // Add a child to the root node for the linker objects
