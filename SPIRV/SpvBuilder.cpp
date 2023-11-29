@@ -1078,6 +1078,9 @@ Id Builder::makeCompositeDebugType(std::vector<Id> const& memberTypes, char cons
 Id Builder::makePointerDebugType(StorageClass storageClass, Id const baseType)
 {
     const Id debugBaseType = debugId[baseType];
+    if (!debugBaseType) {
+        return makeDebugInfoNone();
+    }
     const Id scID = makeUintConstant(storageClass);
     for (Instruction* otherType : groupedDebugTypes[NonSemanticShaderDebugInfo100DebugTypePointer]) {
         if (otherType->getIdOperand(2) == debugBaseType &&
