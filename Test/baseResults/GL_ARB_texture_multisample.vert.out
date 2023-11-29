@@ -1,0 +1,14 @@
+GL_ARB_texture_multisample.vert
+Shader version: 100
+0:? Sequence
+0:?   Linker Objects
+
+
+Linked vertex stage:
+
+ERROR: Linking vertex stage: Missing entry point: Each stage requires one entry point
+
+Shader version: 100
+0:? Sequence
+0:?   Linker Objects
+
