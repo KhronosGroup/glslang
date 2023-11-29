@@ -2317,6 +2317,40 @@ TIntermAggregate* TIntermediate::growAggregate(TIntermNode* left, TIntermNode* r
     return aggNode;
 }
 
+TIntermAggregate* TIntermediate::mergeAggregate(TIntermNode* left, TIntermNode* right)
+{
+    if (left == nullptr && right == nullptr)
+        return nullptr;
+
+    TIntermAggregate* aggNode = nullptr;
+    if (left != nullptr)
+        aggNode = left->getAsAggregate();
+    if (aggNode == nullptr || aggNode->getOp() != EOpNull) {
+        aggNode = new TIntermAggregate;
+        if (left != nullptr)
+            aggNode->getSequence().push_back(left);
+    }
+
+    TIntermAggregate* rhsagg = right->getAsAggregate();
+    if (rhsagg == nullptr || rhsagg->getOp() != EOpNull)
+        aggNode->getSequence().push_back(right);
+    else
+        aggNode->getSequence().insert(aggNode->getSequence().end(),
+                                      rhsagg->getSequence().begin(),
+                                      rhsagg->getSequence().end());
+
+    return aggNode;
+}
+
+TIntermAggregate* TIntermediate::mergeAggregate(TIntermNode* left, TIntermNode* right, const TSourceLoc& loc)
+{
+    TIntermAggregate* aggNode = mergeAggregate(left, right);
+    if (aggNode)
+        aggNode->setLoc(loc);
+
+    return aggNode;
+}
+
 //
 // Turn an existing node into an aggregate.
 //
