@@ -7458,7 +7458,7 @@ static void ForEachOpaque(const TType& type, const TString& path, Function callb
                  ++flatIndex)
             {
                 TString subscriptPath = path;
-                for (int dimIndex = 0; dimIndex < indices.size(); ++dimIndex)
+                for (size_t dimIndex = 0; dimIndex < indices.size(); ++dimIndex)
                 {
                     int index = indices[dimIndex];
                     subscriptPath.append("[");
@@ -7468,7 +7468,7 @@ static void ForEachOpaque(const TType& type, const TString& path, Function callb
 
                 recursion(type, subscriptPath, true, recursion);
 
-                for (int dimIndex = 0; dimIndex < indices.size(); ++dimIndex)
+                for (size_t dimIndex = 0; dimIndex < indices.size(); ++dimIndex)
                 {
                     ++indices[dimIndex];
                     if (indices[dimIndex] < type.getArraySizes()->getDimSize(dimIndex))
@@ -7537,7 +7537,7 @@ void TParseContext::vkRelaxedRemapUniformMembers(const TSourceLoc& loc, const TP
                   });
 }
 
-void TParseContext::vkRelaxedRemapFunctionParameter(const TSourceLoc& loc, TFunction* function, TParameter& param, std::vector<int>* newParams)
+void TParseContext::vkRelaxedRemapFunctionParameter(TFunction* function, TParameter& param, std::vector<int>* newParams)
 {
     function->addParameter(param);
 
@@ -7615,7 +7615,7 @@ TIntermNode* TParseContext::vkRelaxedRemapFunctionArgument(const TSourceLoc& loc
     param.type->shallowCopy(intermTyped->getType());
 
     std::vector<int> newParams = {};
-    vkRelaxedRemapFunctionParameter(loc, function, param, &newParams);
+    vkRelaxedRemapFunctionParameter(function, param, &newParams);
 
     if (intermTyped->getType().isOpaque())
     {

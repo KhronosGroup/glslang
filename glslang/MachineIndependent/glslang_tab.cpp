@@ -6319,7 +6319,7 @@ yyreduce:
             if (!(parseContext.spvVersion.vulkan > 0 && parseContext.spvVersion.vulkanRelaxed))
                 (yyvsp[-1].interm.function)->addParameter((yyvsp[0].interm).param);
             else
-                parseContext.vkRelaxedRemapFunctionParameter((yyvsp[0].interm).loc, (yyvsp[-1].interm.function), (yyvsp[0].interm).param);
+                parseContext.vkRelaxedRemapFunctionParameter((yyvsp[-1].interm.function), (yyvsp[0].interm).param);
         }
         else
             delete (yyvsp[0].interm).param.type;
@@ -6346,7 +6346,7 @@ yyreduce:
             if (!(parseContext.spvVersion.vulkan > 0 && parseContext.spvVersion.vulkanRelaxed))
                 (yyvsp[-2].interm.function)->addParameter((yyvsp[0].interm).param);
             else
-                parseContext.vkRelaxedRemapFunctionParameter((yyvsp[0].interm).loc, (yyvsp[-2].interm.function), (yyvsp[0].interm).param);
+                parseContext.vkRelaxedRemapFunctionParameter((yyvsp[-2].interm.function), (yyvsp[0].interm).param);
         }
     }
 #line 6353 "MachineIndependent/glslang_tab.cpp"

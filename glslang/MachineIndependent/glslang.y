@@ -1007,7 +1007,7 @@ function_header_with_parameters
             if (!(parseContext.spvVersion.vulkan > 0 && parseContext.spvVersion.vulkanRelaxed))
                 $1->addParameter($2.param);
             else
-                parseContext.vkRelaxedRemapFunctionParameter($2.loc, $1, $2.param);
+                parseContext.vkRelaxedRemapFunctionParameter($1, $2.param);
         }
         else
             delete $2.param.type;
@@ -1029,7 +1029,7 @@ function_header_with_parameters
             if (!(parseContext.spvVersion.vulkan > 0 && parseContext.spvVersion.vulkanRelaxed))
                 $1->addParameter($3.param);
             else
-                parseContext.vkRelaxedRemapFunctionParameter($3.loc, $1, $3.param);
+                parseContext.vkRelaxedRemapFunctionParameter($1, $3.param);
         }
     }
     ;
