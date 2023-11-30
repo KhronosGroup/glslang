@@ -1,0 +1,101 @@
+GL_ARB_texture_multisample.vert
+Shader version: 140
+Requested GL_ARB_texture_multisample
+0:? Sequence
+0:8  Function Definition: main( ( global void)
+0:8    Function Parameters: 
+0:10    Sequence
+0:10      move second child to first child ( temp float)
+0:10        'result' ( smooth out float)
+0:10        direct index ( temp float)
+0:10          textureFetch ( global 4-component vector of float)
+0:10            'data' ( uniform sampler2DMS)
+0:10            Constant:
+0:10              0 (const int)
+0:10              0 (const int)
+0:10            Constant:
+0:10              3 (const int)
+0:10          Constant:
+0:10            0 (const int)
+0:11      Sequence
+0:11        move second child to first child ( temp 2-component vector of int)
+0:11          'temp' ( temp 2-component vector of int)
+0:11          textureSize ( global 2-component vector of int)
+0:11            'data' ( uniform sampler2DMS)
+0:12      move second child to first child ( temp float)
+0:12        'result' ( smooth out float)
+0:12        direct index ( temp float)
+0:12          textureFetch ( global 4-component vector of float)
+0:12            'data1' ( uniform sampler2DMSArray)
+0:12            Constant:
+0:12              0 (const int)
+0:12              0 (const int)
+0:12              0 (const int)
+0:12            Constant:
+0:12              3 (const int)
+0:12          Constant:
+0:12            0 (const int)
+0:13      Sequence
+0:13        move second child to first child ( temp 3-component vector of int)
+0:13          'temp1' ( temp 3-component vector of int)
+0:13          textureSize ( global 3-component vector of int)
+0:13            'data1' ( uniform sampler2DMSArray)
+0:?   Linker Objects
+0:?     'result' ( smooth out float)
+0:?     'data' ( uniform sampler2DMS)
+0:?     'data1' ( uniform sampler2DMSArray)
+0:?     'gl_VertexID' ( gl_VertexId int VertexId)
+0:?     'gl_InstanceID' ( gl_InstanceId int InstanceId)
+
+
+Linked vertex stage:
+
+
+Shader version: 140
+Requested GL_ARB_texture_multisample
+0:? Sequence
+0:8  Function Definition: main( ( global void)
+0:8    Function Parameters: 
+0:10    Sequence
+0:10      move second child to first child ( temp float)
+0:10        'result' ( smooth out float)
+0:10        direct index ( temp float)
+0:10          textureFetch ( global 4-component vector of float)
+0:10            'data' ( uniform sampler2DMS)
+0:10            Constant:
+0:10              0 (const int)
+0:10              0 (const int)
+0:10            Constant:
+0:10              3 (const int)
+0:10          Constant:
+0:10            0 (const int)
+0:11      Sequence
+0:11        move second child to first child ( temp 2-component vector of int)
+0:11          'temp' ( temp 2-component vector of int)
+0:11          textureSize ( global 2-component vector of int)
+0:11            'data' ( uniform sampler2DMS)
+0:12      move second child to first child ( temp float)
+0:12        'result' ( smooth out float)
+0:12        direct index ( temp float)
+0:12          textureFetch ( global 4-component vector of float)
+0:12            'data1' ( uniform sampler2DMSArray)
+0:12            Constant:
+0:12              0 (const int)
+0:12              0 (const int)
+0:12              0 (const int)
+0:12            Constant:
+0:12              3 (const int)
+0:12          Constant:
+0:12            0 (const int)
+0:13      Sequence
+0:13        move second child to first child ( temp 3-component vector of int)
+0:13          'temp1' ( temp 3-component vector of int)
+0:13          textureSize ( global 3-component vector of int)
+0:13            'data1' ( uniform sampler2DMSArray)
+0:?   Linker Objects
+0:?     'result' ( smooth out float)
+0:?     'data' ( uniform sampler2DMS)
+0:?     'data1' ( uniform sampler2DMSArray)
+0:?     'gl_VertexID' ( gl_VertexId int VertexId)
+0:?     'gl_InstanceID' ( gl_InstanceId int InstanceId)
+

@@ -6278,7 +6278,7 @@ void TBuiltIns::add2ndGenerationSamplingImaging(int version, EProfile profile, c
             {
                 if ((ms || image) && shadow)
                     continue;
-                if (ms && profile != EEsProfile && version < 150)
+                if (ms && profile != EEsProfile && version < 140)
                     continue;
                 if (ms && image && profile == EEsProfile)
                     continue;
