@@ -86,11 +86,6 @@ NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "../ParseHelper.h"
 #include "PpTokens.h"
 
-/* windows only pragma */
-#ifdef _MSC_VER
-    #pragma warning(disable : 4127)
-#endif
-
 namespace glslang {
 
 class TPpToken {
