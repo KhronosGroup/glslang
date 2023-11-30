@@ -34,7 +34,7 @@
 # Suppress all warnings from external projects.
 set_property(DIRECTORY APPEND PROPERTY COMPILE_OPTIONS -w)
 
-if(BUILD_TESTING)
+if(GLSLANG_TESTS)
     if(TARGET gmock)
         message(STATUS "Google Mock already configured - use it")
     elseif(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/googletest)

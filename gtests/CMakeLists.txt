@@ -1,4 +1,4 @@
-# Copyright (C) 2020 The Khronos Group Inc.
+# Copyright (C) 2020-2023 The Khronos Group Inc.
 #
 # All rights reserved.
 #
@@ -31,7 +31,7 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-if(BUILD_TESTING)
+if(GLSLANG_TESTS)
     if(TARGET gmock)
         message(STATUS "Google Mock found - building tests")
 
