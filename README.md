@@ -171,6 +171,10 @@ cmake --build . --config Release --target install
 If using MSVC, after running CMake to configure, use the
 Configuration Manager to check the `INSTALL` project.
 
+If you want to enable testing via CMake set `GLSLANG_TESTS=ON` when configuring the build.
+
+`GLSLANG_TESTS` is off by default to streamline the packaging / Vulkan SDK process.
+
 ### Building (GN)
 
 glslang can also be built with the [GN build system](https://gn.googlesource.com/gn/).
@@ -228,7 +232,7 @@ Use the steps in [Build Steps](#build-steps), with the following notes/exception
   Bash-like environments:
   + [Instructions located here](https://emscripten.org/docs/getting_started/downloads.html#sdk-download-and-install)
 * Wrap cmake call: `emcmake cmake`
-* Set `-DBUILD_TESTING=OFF -DENABLE_OPT=OFF`.
+* Set `-DENABLE_OPT=OFF`.
 * Set `-DENABLE_HLSL=OFF` if HLSL is not needed.
 * For a standalone JS/WASM library, turn on `-DENABLE_GLSLANG_JS=ON`.
 * To get a fully minimized build, make sure to use `brotli` to compress the .js
@@ -238,7 +242,7 @@ Example:
 
 ```sh
 emcmake cmake -DCMAKE_BUILD_TYPE=Release -DENABLE_GLSLANG_JS=ON \
-    -DENABLE_HLSL=OFF -DBUILD_TESTING=OFF -DENABLE_OPT=OFF ..
+    -DENABLE_HLSL=OFF -DENABLE_OPT=OFF ..
 ```
 
 ## Building glslang - Using vcpkg

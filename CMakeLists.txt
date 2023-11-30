@@ -70,10 +70,10 @@ endif()
 # Furthermore testing is equally problematic.
 if (IOS OR ANDROID)
     set(ENABLE_GLSLANG_BINARIES OFF)
-
-    set(ENABLE_CTEST OFF)
-    set(BUILD_TESTING OFF)
+    set(GLSLANG_TESTS OFF)
 endif()
+
+option(GLSLANG_TESTS "Enable glslang testing")
 
 option(SKIP_GLSLANG_INSTALL "Skip installation")
 
@@ -107,11 +107,6 @@ if(MINGW OR (APPLE AND ${CMAKE_CXX_COMPILER_ID} MATCHES "GNU"))
 endif()
 
 option(ENABLE_PCH "Enables Precompiled header" ON)
-option(ENABLE_CTEST "Enables testing" ON)
-
-if(ENABLE_CTEST)
-    include(CTest)
-endif()
 
 if(ENABLE_HLSL)
     add_compile_definitions(ENABLE_HLSL)
@@ -306,11 +301,11 @@ if(ENABLE_GLSLANG_BINARIES)
     add_subdirectory(StandAlone)
 endif()
 add_subdirectory(SPIRV)
-if(ENABLE_CTEST)
-    add_subdirectory(gtests)
-endif()
 
-if(ENABLE_CTEST AND BUILD_TESTING)
+if(GLSLANG_TESTS)
+    enable_testing()
+    add_subdirectory(gtests)
+
     # glslang-testsuite runs a bash script on Windows.
     # Make sure to use '-o igncr' flag to ignore carriage returns (\r).
     set(IGNORE_CR_FLAG "")
