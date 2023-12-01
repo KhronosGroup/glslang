@@ -87,7 +87,7 @@ if(WIN32)
     source_group("Source" FILES ${SOURCES})
 endif()
 
-if(ENABLE_GLSLANG_INSTALL)
+if(PROJECT_IS_TOP_LEVEL)
     install(TARGETS glslang-standalone EXPORT glslang-targets)
 
     # Backward compatibility
