@@ -369,7 +369,7 @@ public:
     // returns true if the variable was remapped to something else
     bool vkRelaxedRemapUniformVariable(const TSourceLoc&, TString&, const TPublicType&, TArraySizes*, TIntermTyped*, TType&);
     void vkRelaxedRemapUniformMembers(const TSourceLoc&, const TPublicType&, const TType&, const TString&);
-    void vkRelaxedRemapFunctionParameter(const TSourceLoc&, TFunction*, TParameter&, std::vector<int>* newParams = nullptr);
+    void vkRelaxedRemapFunctionParameter(TFunction*, TParameter&, std::vector<int>* newParams = nullptr);
     TIntermNode* vkRelaxedRemapFunctionArgument(const TSourceLoc&, TFunction*, TIntermTyped*);
     TIntermTyped* vkRelaxedRemapDotDereference(const TSourceLoc&, TIntermTyped&, const TType&, const TString&);
 

@@ -117,8 +117,6 @@ template("glslang_sources_common") {
     }
 
     sources = [
-      "OGLCompilersDLL/InitializeDll.cpp",
-      "OGLCompilersDLL/InitializeDll.h",
       "SPIRV/GLSL.ext.AMD.h",
       "SPIRV/GLSL.ext.EXT.h",
       "SPIRV/GLSL.ext.KHR.h",
