@@ -71,8 +71,7 @@ endif()
 if(ENABLE_OPT AND NOT TARGET SPIRV-Tools-opt)
     if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/spirv-tools)
         set(SPIRV_SKIP_TESTS ON CACHE BOOL "Skip building SPIRV-Tools tests")
-        # EXCLUDE_FROM_ALL will prevent unneccessary build/installation from spirv-tools
-        add_subdirectory(spirv-tools EXCLUDE_FROM_ALL)
+        add_subdirectory(spirv-tools)
     endif()
 endif()
 
