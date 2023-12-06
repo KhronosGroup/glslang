@@ -1663,7 +1663,9 @@ TIntermNode* TParseContext::handleReturnValue(const TSourceLoc& loc, TIntermType
         }
     } else {
         if (value->getType().isTexture() || value->getType().isImage()) {
-            if (!extensionTurnedOn(E_GL_ARB_bindless_texture))
+            if (spvVersion.spv != 0)
+                error(loc, "sampler or image cannot be used as return type when generating SPIR-V", "return", "");
+            else if (!extensionTurnedOn(E_GL_ARB_bindless_texture))
                 error(loc, "sampler or image can be used as return type only when the extension GL_ARB_bindless_texture enabled", "return", "");
         }
         branch = intermediate.addBranch(EOpReturn, value, loc);
