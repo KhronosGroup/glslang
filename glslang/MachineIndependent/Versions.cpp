@@ -487,7 +487,7 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_ARB_vertex_attrib_64bit 1\n"
             "#define GL_ARB_draw_instanced 1\n"
             "#define GL_ARB_fragment_coord_conventions 1\n"
-            "#define GL_ARB_bindless_texture 1\n"
+
             "#define GL_EXT_shader_non_constant_global_initializers 1\n"
             "#define GL_EXT_shader_image_load_formatted 1\n"
             "#define GL_EXT_post_depth_coverage 1\n"
@@ -581,6 +581,10 @@ void TParseVersions::getPreamble(std::string& preamble)
 
             "#define GL_EXT_fragment_shader_barycentric 1\n"
             ;
+
+        if (spvVersion.spv == 0) {
+            preamble += "#define GL_ARB_bindless_texture 1\n";
+        }
 
         if (version >= 150) {
             // define GL_core_profile and GL_compatibility_profile
