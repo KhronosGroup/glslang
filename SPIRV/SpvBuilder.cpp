@@ -1096,8 +1096,6 @@ Id Builder::makePointerDebugType(StorageClass storageClass, Id const baseType)
     type->addIdOperand(scID);
     type->addIdOperand(makeUintConstant(0));
 
-    volatile auto x = type->getNumOperands();
-
     groupedDebugTypes[NonSemanticShaderDebugInfo100DebugTypePointer].push_back(type);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
