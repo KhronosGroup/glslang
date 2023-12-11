@@ -19,7 +19,7 @@ jobs:
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - uses: lukka/get-cmake@4865386b66955d11be0abf8c112d0230023e742a # v3.27.9
-      - uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d2cb2b236 # v4.7.1
+      - uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5.0.0
         with:
           python-version: '3.7'
       - name: Setup ccache
@@ -55,7 +55,7 @@ jobs:
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - uses: lukka/get-cmake@4865386b66955d11be0abf8c112d0230023e742a # v3.27.9
-      - uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d2cb2b236 # v4.7.1
+      - uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5.0.0
         with:
           python-version: '3.7'
       - name: Setup ccache
@@ -89,7 +89,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-      - uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d2cb2b236 # v4.7.1
+      - uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5.0.0
         with:
           python-version: '3.7'
       - uses: lukka/get-cmake@4865386b66955d11be0abf8c112d0230023e742a # v3.27.9
@@ -149,7 +149,7 @@ jobs:
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - uses: lukka/get-cmake@4865386b66955d11be0abf8c112d0230023e742a # v3.27.9
-      - uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d2cb2b236 # v4.7.1
+      - uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5.0.0
         with:
           python-version: '3.7'
       - run: python update_glslang_sources.py
@@ -218,7 +218,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-      - uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d2cb2b236 # v4.7.1
+      - uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5.0.0
         with:
           python-version: '3.7'
       - uses: lukka/get-cmake@4865386b66955d11be0abf8c112d0230023e742a # v3.27.9
