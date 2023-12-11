@@ -6502,7 +6502,7 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
         // When location aliasing, the aliases sharing the location must have the same underlying numerical type and bit width(
         // floating - point or integer, 32 - bit versus 64 - bit,etc.)
         if (typeCollision && (qualifier.isPipeInput() || qualifier.isPipeOutput() || qualifier.storage == EvqTileImageEXT))
-            error(loc, "the aliases sharing the location", "location", "%d must be the same basic type", repeated);
+            error(loc, "the aliases sharing the location", "location", "%d must be the same basic type and interpolation qualification", repeated);
     }
 
     if (qualifier.hasXfbOffset() && qualifier.hasXfbBuffer()) {

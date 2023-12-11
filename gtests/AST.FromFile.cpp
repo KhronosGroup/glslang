@@ -302,6 +302,7 @@ INSTANTIATE_TEST_SUITE_P(
         "gl_FragCoord.frag",
         "glsl.interpOp.error.frag",
         "location_aliasing.tesc",
+        "location_aliasing1.frag"
     })),
     FileNameAsCustomTestSuffix
 );
