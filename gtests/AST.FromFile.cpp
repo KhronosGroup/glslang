@@ -302,6 +302,7 @@ INSTANTIATE_TEST_SUITE_P(
         "gl_FragCoord.frag",
         "glsl.interpOp.error.frag",
         "overflow_underflow_toinf_0.frag",
+        "GL_EXT_texture_array.frag",
     })),
     FileNameAsCustomTestSuffix
 );
