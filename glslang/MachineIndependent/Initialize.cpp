@@ -1726,6 +1726,16 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "vec4 shadow2DRect(sampler2DRectShadow, vec3);"     // GL_ARB_texture_rectangle, caught by keyword check
                 "vec4 shadow2DRectProj(sampler2DRectShadow, vec4);" // GL_ARB_texture_rectangle, caught by keyword check
 
+                "vec4 texture1DArray(sampler1DArray, vec2);"      // GL_EXT_texture_array
+                "vec4 texture2DArray(sampler2DArray, vec3);"      // GL_EXT_texture_array
+                "vec4 shadow1DArray(sampler1DArrayShadow, vec3);" // GL_EXT_texture_array
+                "vec4 shadow2DArray(sampler2DArrayShadow, vec4);" // GL_EXT_texture_array
+                "vec4 texture1DArray(sampler1DArray, vec2, float);"                // GL_EXT_texture_array
+                "vec4 texture2DArray(sampler2DArray, vec3, float);"                // GL_EXT_texture_array
+                "vec4 shadow1DArray(sampler1DArrayShadow, vec3, float);"           // GL_EXT_texture_array
+                "vec4 texture1DArrayLod(sampler1DArray, vec2, float);"      // GL_EXT_texture_array
+                "vec4 texture2DArrayLod(sampler2DArray, vec3, float);"      // GL_EXT_texture_array
+                "vec4 shadow1DArrayLod(sampler1DArrayShadow, vec3, float);" // GL_EXT_texture_array
                 "\n");
         }
     }
@@ -8002,6 +8012,18 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setFunctionExtensions("shadow2DEXT",        1, &E_GL_EXT_shadow_samplers);
             symbolTable.setFunctionExtensions("shadow2DProjEXT",    1, &E_GL_EXT_shadow_samplers);
         }
+
+        // E_GL_EXT_texture_array
+        if (profile != EEsProfile && spvVersion.spv == 0) {
+            symbolTable.setFunctionExtensions("texture1DArray", 1, &E_GL_EXT_texture_array);
+            symbolTable.setFunctionExtensions("texture2DArray", 1, &E_GL_EXT_texture_array);
+            symbolTable.setFunctionExtensions("shadow1DArray", 1, &E_GL_EXT_texture_array);
+            symbolTable.setFunctionExtensions("shadow2DArray", 1, &E_GL_EXT_texture_array);
+
+            symbolTable.setFunctionExtensions("texture1DArrayLod", 1, &E_GL_EXT_texture_array);
+            symbolTable.setFunctionExtensions("texture2DArrayLod", 1, &E_GL_EXT_texture_array);
+            symbolTable.setFunctionExtensions("shadow1DArrayLod", 1, &E_GL_EXT_texture_array);
+        }
         // Fall through
 
     case EShLangTessControl:
@@ -9966,6 +9988,17 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.relateToOperator("textureBoxFilterQCOM",     EOpImageBoxFilterQCOM);
             symbolTable.relateToOperator("textureBlockMatchSADQCOM", EOpImageBlockMatchSADQCOM);
             symbolTable.relateToOperator("textureBlockMatchSSDQCOM", EOpImageBlockMatchSSDQCOM);
+        }
+
+        if (profile != EEsProfile && spvVersion.spv == 0) {
+            symbolTable.relateToOperator("texture1DArray", EOpTexture);
+            symbolTable.relateToOperator("texture2DArray", EOpTexture);
+            symbolTable.relateToOperator("shadow1DArray", EOpTexture);
+            symbolTable.relateToOperator("shadow2DArray", EOpTexture);
+
+            symbolTable.relateToOperator("texture1DArrayLod", EOpTextureLod);
+            symbolTable.relateToOperator("texture2DArrayLod", EOpTextureLod);
+            symbolTable.relateToOperator("shadow1DArrayLod", EOpTextureLod);
         }
     }
 

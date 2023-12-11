@@ -359,6 +359,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_EXT_ray_tracing_position_fetch]  = EBhDisable;
     extensionBehavior[E_GL_EXT_shader_tile_image]           = EBhDisable;
     extensionBehavior[E_GL_EXT_texture_shadow_lod]          = EBhDisable;
+    extensionBehavior[E_GL_EXT_texture_array]               = EBhDisable;
 
     // OVR extensions
     extensionBehavior[E_GL_OVR_multiview]                = EBhDisable;
@@ -580,6 +581,7 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_EXT_shader_atomic_float2 1\n"
 
             "#define GL_EXT_fragment_shader_barycentric 1\n"
+            "#define GL_EXT_texture_array 1\n"
             ;
 
         if (version >= 150) {
