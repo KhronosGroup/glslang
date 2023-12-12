@@ -34,7 +34,7 @@ Requested GL_EXT_shader_explicit_arithmetic_types_float16
 0:10        move second child to first child ( temp double)
 0:10          'w6' ( temp double)
 0:10          Constant:
-0:10            1.2345678901235e+15
+0:10            1.2345678901234e+15
 0:11      Sequence
 0:11        move second child to first child ( temp double)
 0:11          'w7' ( temp double)
@@ -558,7 +558,7 @@ Requested GL_EXT_shader_explicit_arithmetic_types_float16
 0:10        move second child to first child ( temp double)
 0:10          'w6' ( temp double)
 0:10          Constant:
-0:10            1.2345678901235e+15
+0:10            1.2345678901234e+15
 0:11      Sequence
 0:11        move second child to first child ( temp double)
 0:11          'w7' ( temp double)
