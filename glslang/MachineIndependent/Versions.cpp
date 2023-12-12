@@ -359,6 +359,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_EXT_ray_tracing_position_fetch]  = EBhDisable;
     extensionBehavior[E_GL_EXT_shader_tile_image]           = EBhDisable;
     extensionBehavior[E_GL_EXT_texture_shadow_lod]          = EBhDisable;
+    extensionBehavior[E_GL_EXT_draw_instanced]              = EBhDisable;
     extensionBehavior[E_GL_EXT_texture_array]               = EBhDisable;
 
     // OVR extensions
