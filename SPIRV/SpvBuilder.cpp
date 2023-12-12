@@ -182,7 +182,7 @@ Id Builder::makeVoidType()
     return type->getResultId();
 }
 
-Id Builder::makeBoolType(bool const compilerGenerated)
+Id Builder::makeBoolType()
 {
     Instruction* type;
     if (groupedTypes[OpTypeBool].size() == 0) {
@@ -190,14 +190,15 @@ Id Builder::makeBoolType(bool const compilerGenerated)
         groupedTypes[OpTypeBool].push_back(type);
         constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
         module.mapInstruction(type);
+
+        if (emitNonSemanticShaderDebugInfo) {
+            auto const debugResultId = makeBoolDebugType(32);
+            debugId[type->getResultId()] = debugResultId;
+        }
+
     } else
         type = groupedTypes[OpTypeBool].back();
 
-    if (emitNonSemanticShaderDebugInfo && !compilerGenerated)
-    {
-        auto const debugResultId = makeBoolDebugType(32);
-        debugId[type->getResultId()] = debugResultId;
-    }
 
     return type->getResultId();
 }

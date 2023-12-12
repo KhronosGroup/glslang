@@ -42,8 +42,8 @@ jobs:
                 cmake_build_type: [Debug, Release]
         steps:
             - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-            - uses: lukka/get-cmake@8be6cca406b575906541e8e3b885d46f416bba39 # v3.27.7
-            - uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d2cb2b236 # v4.7.1
+            - uses: lukka/get-cmake@98fde40bf98bdc391abe7227e6b1052d9b36a22f # v3.28.0
+            - uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5.0.0
               with:
                   python-version: '3.7'
             - name: Install Ubuntu Package Dependencies
@@ -106,8 +106,8 @@ jobs:
                 cmake_build_type: [Debug, Release]
         steps:
             - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-            - uses: lukka/get-cmake@8be6cca406b575906541e8e3b885d46f416bba39 # v3.27.7
-            - uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d2cb2b236 # v4.7.1
+            - uses: lukka/get-cmake@98fde40bf98bdc391abe7227e6b1052d9b36a22f # v3.28.0
+            - uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5.0.0
               with:
                   python-version: '3.7'
             - run: ./update_glslang_sources.py
@@ -163,8 +163,8 @@ jobs:
                 cmake_build_type: [Debug, Release]
         steps:
             - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-            - uses: lukka/get-cmake@8be6cca406b575906541e8e3b885d46f416bba39 # v3.27.7
-            - uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d2cb2b236 # v4.7.1
+            - uses: lukka/get-cmake@98fde40bf98bdc391abe7227e6b1052d9b36a22f # v3.28.0
+            - uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5.0.0
               with:
                   python-version: '3.7'
             - run: python update_glslang_sources.py

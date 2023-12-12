@@ -1,4 +1,4 @@
-# Copyright (C) 2020 The Khronos Group Inc.
+# Copyright (C) 2020-2023 The Khronos Group Inc.
 #
 # All rights reserved.
 #
@@ -31,7 +31,7 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-if(BUILD_TESTING)
+if(GLSLANG_TESTS)
     if(TARGET gmock)
         message(STATUS "Google Mock found - building tests")
 
@@ -68,21 +68,6 @@ if(BUILD_TESTING)
         glslang_pch(glslangtests ${CMAKE_CURRENT_SOURCE_DIR}/pch.h)
         set_property(TARGET glslangtests PROPERTY FOLDER tests)
         glslang_set_link_args(glslangtests)
-        if(ENABLE_GLSLANG_INSTALL)
-            install(TARGETS glslangtests EXPORT glslang-targets)
-
-            # Backward compatibility
-            file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/glslangtestsTargets.cmake" "
-                message(WARNING \"Using `glslangtestsTargets.cmake` is deprecated: use `find_package(glslang)` to find glslang CMake targets.\")
-
-                if (NOT TARGET glslang::glslangtests)
-                    include(\"${CMAKE_INSTALL_FULL_LIBDIR}/cmake/${PROJECT_NAME}/glslang-targets.cmake\")
-                endif()
-
-                add_library(glslangtests ALIAS glslang::glslangtests)
-            ")
-            install(FILES "${CMAKE_CURRENT_BINARY_DIR}/glslangtestsTargets.cmake" DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake)
-        endif()
 
         set(GLSLANG_TEST_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../Test")
         # Supply a default test root directory, so that manual testing
