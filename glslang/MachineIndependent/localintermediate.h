@@ -134,10 +134,10 @@ struct TIoRange {
     TRange location;
     TRange component;
     TBasicType basicType;
+    int index;
     bool centroid;
     bool smooth;
     bool flat;
-    int index;
 };
 
 // An offset range is a 2-D rectangle; the set of (binding, offset) pairs all lying
