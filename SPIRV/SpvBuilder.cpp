@@ -2741,6 +2741,14 @@ Id Builder::createSpecConstantOp(Op opCode, Id typeId, const std::vector<Id>& op
     module.mapInstruction(op);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(op));
 
+    // OpSpecConstantOp's using 8 or 16 bit types require the associated capability
+    if (containsType(typeId, OpTypeInt, 8))
+        addCapability(CapabilityInt8);
+    if (containsType(typeId, OpTypeInt, 16))
+        addCapability(CapabilityInt16);
+    if (containsType(typeId, OpTypeFloat, 16))
+        addCapability(CapabilityFloat16);
+
     return op->getResultId();
 }
 
