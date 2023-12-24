@@ -51,6 +51,7 @@
 //                                                including identifying what extensions are needed if a version does not allow a symbol
 //
 
+#include <array>
 #include "Initialize.h"
 #include "span.h"
 
