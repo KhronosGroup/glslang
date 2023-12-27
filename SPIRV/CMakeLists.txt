@@ -118,7 +118,7 @@ if(WIN32)
     source_group("Source" FILES ${SPVREMAP_SOURCES} ${SPVREMAP_HEADERS})
 endif()
 
-if(ENABLE_GLSLANG_INSTALL)
+if(PROJECT_IS_TOP_LEVEL)
     if (ENABLE_SPVREMAPPER)
         install(TARGETS SPVRemapper EXPORT glslang-targets)
     endif()

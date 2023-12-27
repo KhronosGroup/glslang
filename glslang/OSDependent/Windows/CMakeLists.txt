@@ -31,15 +31,19 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-set(SOURCES ossource.cpp ../osinclude.h)
+add_library(OSDependent STATIC)
 
-add_library(OSDependent STATIC ${SOURCES})
+target_sources(OSDependent PRIVATE
+    ../osinclude.h
+    ossource.cpp
+)
+
 set_property(TARGET OSDependent PROPERTY FOLDER glslang)
 set_property(TARGET OSDependent PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 # MinGW GCC complains about function pointer casts to void*.
 # Turn that off with -fpermissive.
-if(${CMAKE_CXX_COMPILER_ID} MATCHES "GNU")
+if(MINGW AND ${CMAKE_CXX_COMPILER_ID} MATCHES "GNU")
     target_compile_options(OSDependent PRIVATE -fpermissive)
 endif()
 
@@ -47,7 +51,7 @@ if(WIN32)
     source_group("Source" FILES ${SOURCES})
 endif()
 
-if(ENABLE_GLSLANG_INSTALL)
+if(PROJECT_IS_TOP_LEVEL)
     install(TARGETS OSDependent EXPORT glslang-targets)
 
     # Backward compatibility

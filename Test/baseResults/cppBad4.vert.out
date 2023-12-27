@@ -1,7 +1,8 @@
 cppBad4.vert
+ERROR: 0:2: '#' : (#) can be preceded in its line only by spaces or horizontal tabs 
 ERROR: 0:4: 'macro expansion' : unexpected '#' g
 ERROR: 0:5: '' :  syntax error, unexpected SEMICOLON, expecting LEFT_PAREN
-ERROR: 2 compilation errors.  No code generated.
+ERROR: 3 compilation errors.  No code generated.
 
 
 Shader version: 100

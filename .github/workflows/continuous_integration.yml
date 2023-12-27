@@ -18,8 +18,8 @@ jobs:
         cmake_build_type: [Debug, Release]
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-      - uses: lukka/get-cmake@8be6cca406b575906541e8e3b885d46f416bba39 # v3.27.7
-      - uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d2cb2b236 # v4.7.1
+      - uses: lukka/get-cmake@2654d8ee382b9b6cbbfe6487653b8629b4e062c8 # v3.28.1
+      - uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5.0.0
         with:
           python-version: '3.7'
       - name: Setup ccache
@@ -28,7 +28,7 @@ jobs:
           key: ubuntu-22-${{ matrix.cmake_build_type }}-${{ matrix.compiler.cc }}-${{matrix.compiler.cxx}}
       - run: ./update_glslang_sources.py
       - name: Configure
-        run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{ matrix.cmake_build_type }}
+        run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{ matrix.cmake_build_type }} -DBUILD_WERROR=ON -D GLSLANG_TESTS=ON
         env:
           CC: ${{matrix.compiler.cc}}
           CXX: ${{matrix.compiler.cxx}}
@@ -54,8 +54,8 @@ jobs:
         flags: ['-fsanitize=address', '-fsanitize=thread']
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-      - uses: lukka/get-cmake@8be6cca406b575906541e8e3b885d46f416bba39 # v3.27.7
-      - uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d2cb2b236 # v4.7.1
+      - uses: lukka/get-cmake@2654d8ee382b9b6cbbfe6487653b8629b4e062c8 # v3.28.1
+      - uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5.0.0
         with:
           python-version: '3.7'
       - name: Setup ccache
@@ -64,7 +64,7 @@ jobs:
           key: ubuntu-22-${{ matrix.cmake_build_type }}-${{ matrix.compiler.cc }}-${{matrix.compiler.cxx}}-${{matrix.flags}}
       - run: ./update_glslang_sources.py
       - name: Configure
-        run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{ matrix.cmake_build_type }}
+        run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{ matrix.cmake_build_type }} -D GLSLANG_TESTS=ON
         env:
           CC: ${{matrix.compiler.cc}}
           CXX: ${{matrix.compiler.cxx}}
@@ -89,10 +89,10 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-      - uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d2cb2b236 # v4.7.1
+      - uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5.0.0
         with:
           python-version: '3.7'
-      - uses: lukka/get-cmake@8be6cca406b575906541e8e3b885d46f416bba39 # v3.27.7
+      - uses: lukka/get-cmake@2654d8ee382b9b6cbbfe6487653b8629b4e062c8 # v3.28.1
         with:
           cmakeVersion: 3.17.2
       - name: Setup ccache
@@ -101,7 +101,7 @@ jobs:
           key: linux_backcompat
       - run: ./update_glslang_sources.py
       - name: Configure
-        run: cmake -S . -B build -D CMAKE_BUILD_TYPE=Release
+        run: cmake -S . -B build -D CMAKE_BUILD_TYPE=Release -D GLSLANG_TESTS=ON
         env:
           CMAKE_C_COMPILER_LAUNCHER: ccache
           CMAKE_CXX_COMPILER_LAUNCHER: ccache
@@ -124,9 +124,9 @@ jobs:
         cmake_build_type: [Debug, Release]
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-      - uses: lukka/get-cmake@8be6cca406b575906541e8e3b885d46f416bba39 # v3.27.7
+      - uses: lukka/get-cmake@2654d8ee382b9b6cbbfe6487653b8629b4e062c8 # v3.28.1
       - run: ./update_glslang_sources.py
-      - run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{matrix.cmake_build_type}} -G Ninja
+      - run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{matrix.cmake_build_type}} -G Ninja -DBUILD_WERROR=ON -D GLSLANG_TESTS=ON
         env:
           CC: ${{matrix.compiler.cc}}
           CXX: ${{matrix.compiler.cxx}}
@@ -148,14 +148,14 @@ jobs:
           cmake_build_type: [Debug, Release]
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-      - uses: lukka/get-cmake@8be6cca406b575906541e8e3b885d46f416bba39 # v3.27.7
-      - uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d2cb2b236 # v4.7.1
+      - uses: lukka/get-cmake@2654d8ee382b9b6cbbfe6487653b8629b4e062c8 # v3.28.1
+      - uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5.0.0
         with:
           python-version: '3.7'
       - run: python update_glslang_sources.py
       - name: Build
         run: |
-          cmake -S. -Bbuild -G "Visual Studio 16 2019" -A x64 -DCMAKE_INSTALL_PREFIX="$PWD/build/install"
+          cmake -S. -Bbuild -G "Visual Studio 16 2019" -A x64 -DCMAKE_INSTALL_PREFIX="$PWD/build/install" -DBUILD_WERROR=ON -D GLSLANG_TESTS=ON
           cmake --build build --config ${{matrix.cmake_build_type}} --target install
       - name: Test
         run: ctest -C ${{matrix.cmake_build_type}} --output-on-failure --test-dir build
@@ -166,7 +166,7 @@ jobs:
     runs-on: macos-13
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-      - uses: lukka/get-cmake@8be6cca406b575906541e8e3b885d46f416bba39 # v3.27.7
+      - uses: lukka/get-cmake@2654d8ee382b9b6cbbfe6487653b8629b4e062c8 # v3.28.1
       - name: Setup ccache
         uses: hendrikmuhs/ccache-action@6d1841ec156c39a52b1b23a810da917ab98da1f4 # v1.2.10
         with:
@@ -195,7 +195,7 @@ jobs:
         LEGACY: [ON, OFF]
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-      - uses: lukka/get-cmake@8be6cca406b575906541e8e3b885d46f416bba39 # v3.27.7
+      - uses: lukka/get-cmake@2654d8ee382b9b6cbbfe6487653b8629b4e062c8 # v3.28.1
       - name: Setup ccache
         uses: hendrikmuhs/ccache-action@6d1841ec156c39a52b1b23a810da917ab98da1f4 # v1.2.10
         with:
@@ -218,10 +218,10 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-      - uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d2cb2b236 # v4.7.1
+      - uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5.0.0
         with:
           python-version: '3.7'
-      - uses: lukka/get-cmake@8be6cca406b575906541e8e3b885d46f416bba39 # v3.27.7
+      - uses: lukka/get-cmake@2654d8ee382b9b6cbbfe6487653b8629b4e062c8 # v3.28.1
       - name: Setup ccache
         uses: hendrikmuhs/ccache-action@6d1841ec156c39a52b1b23a810da917ab98da1f4 # v1.2.10
         with:
@@ -230,7 +230,7 @@ jobs:
       - name: Update Glslang Sources
         run: ./update_glslang_sources.py
       - name: Configure
-        run: emcmake cmake -GNinja -Bbuild/web -DCMAKE_BUILD_TYPE=Release -DENABLE_GLSLANG_JS=ON -DBUILD_TESTING=OFF -DENABLE_OPT=OFF
+        run: emcmake cmake -GNinja -Bbuild/web -DCMAKE_BUILD_TYPE=Release -DENABLE_GLSLANG_JS=ON -DENABLE_OPT=OFF
         env:
           CMAKE_GENERATOR: Ninja
           CMAKE_C_COMPILER_LAUNCHER: ccache

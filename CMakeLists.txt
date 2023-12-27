@@ -33,6 +33,11 @@
 cmake_minimum_required(VERSION 3.17.2)
 project(glslang)
 
+if (CMAKE_VERSION VERSION_LESS "3.21")
+    # https://cmake.org/cmake/help/latest/variable/PROJECT_IS_TOP_LEVEL.html
+    string(COMPARE EQUAL ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_SOURCE_DIR} PROJECT_IS_TOP_LEVEL)
+endif()
+
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 # Adhere to GNU filesystem layout conventions
@@ -44,6 +49,7 @@ include(CMakeDependentOption)
 
 option(BUILD_SHARED_LIBS "Build Shared Libraries")
 option(BUILD_EXTERNAL "Build external dependencies in /External" ON)
+option(BUILD_WERROR "Enable warnings as errors (default is OFF)" OFF)
 
 set(LIB_TYPE STATIC)
 
@@ -69,16 +75,9 @@ endif()
 # Furthermore testing is equally problematic.
 if (IOS OR ANDROID)
     set(ENABLE_GLSLANG_BINARIES OFF)
-
-    set(ENABLE_CTEST OFF)
-    set(BUILD_TESTING OFF)
+    set(GLSLANG_TESTS OFF)
 endif()
 
-option(SKIP_GLSLANG_INSTALL "Skip installation")
-
-if(NOT ${SKIP_GLSLANG_INSTALL})
-  set(ENABLE_GLSLANG_INSTALL ON)
-endif()
 option(ENABLE_SPVREMAPPER "Enables building of SPVRemapper" ON)
 
 option(ENABLE_GLSLANG_BINARIES "Builds glslang and spirv-remap" ON)
@@ -106,14 +105,9 @@ if(MINGW OR (APPLE AND ${CMAKE_CXX_COMPILER_ID} MATCHES "GNU"))
 endif()
 
 option(ENABLE_PCH "Enables Precompiled header" ON)
-option(ENABLE_CTEST "Enables testing" ON)
-
-if(ENABLE_CTEST)
-    include(CTest)
-endif()
 
 if(ENABLE_HLSL)
-    add_definitions(-DENABLE_HLSL)
+    add_compile_definitions(ENABLE_HLSL)
 endif()
 
 if(WIN32)
@@ -174,6 +168,15 @@ elseif(MSVC)
 	else()
         string(REGEX REPLACE "/EHsc" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}") # Try to remove default /EHsc cxx_flag
         add_compile_options(/D_HAS_EXCEPTIONS=0)
+    endif()
+endif()
+
+# NOTE we could potentially replace this logic with COMPILE_WARNING_AS_ERROR if cmake minimum is bumped to >= 3.24
+if (BUILD_WERROR)
+    if (NOT MSVC)
+        add_compile_options(-Werror)
+    else()
+        add_compile_options(/WX)
     endif()
 endif()
 
@@ -292,42 +295,43 @@ else()
 endif()
 
 add_subdirectory(glslang)
-add_subdirectory(OGLCompilersDLL)
 if(ENABLE_GLSLANG_BINARIES)
     add_subdirectory(StandAlone)
 endif()
 add_subdirectory(SPIRV)
-if(ENABLE_HLSL)
-    add_subdirectory(hlsl)
-endif()
-if(ENABLE_CTEST)
-    add_subdirectory(gtests)
-endif()
 
-if(ENABLE_CTEST AND BUILD_TESTING)
-    # glslang-testsuite runs a bash script on Windows.
-    # Make sure to use '-o igncr' flag to ignore carriage returns (\r).
-    set(IGNORE_CR_FLAG "")
-    if(WIN32)
-        set(IGNORE_CR_FLAG -o igncr)
+# Testing / installation only makes sense when the project is top level.
+#
+# Otherwise add_subdirectory users have a harder time consuming the library.
+# Since glslang will pollute the installation and add undesirable testing.
+if(PROJECT_IS_TOP_LEVEL)
+    option(GLSLANG_TESTS "Enable glslang testing")
+    if(GLSLANG_TESTS)
+        enable_testing()
+        add_subdirectory(gtests)
+
+        # glslang-testsuite runs a bash script on Windows.
+        # Make sure to use '-o igncr' flag to ignore carriage returns (\r).
+        set(IGNORE_CR_FLAG "")
+        if(WIN32)
+            set(IGNORE_CR_FLAG -o igncr)
+        endif()
+
+        if (CMAKE_CONFIGURATION_TYPES)
+            set(RESULTS_PATH ${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/localResults)
+            set(VALIDATOR_PATH ${CMAKE_CURRENT_BINARY_DIR}/StandAlone/$<CONFIG>/glslang)
+            set(REMAP_PATH ${CMAKE_CURRENT_BINARY_DIR}/StandAlone/$<CONFIG>/spirv-remap)
+        else()
+            set(RESULTS_PATH ${CMAKE_CURRENT_BINARY_DIR}/localResults)
+            set(VALIDATOR_PATH ${CMAKE_CURRENT_BINARY_DIR}/StandAlone/glslang)
+            set(REMAP_PATH ${CMAKE_CURRENT_BINARY_DIR}/StandAlone/spirv-remap)
+        endif()
+
+        add_test(NAME glslang-testsuite
+            COMMAND bash ${IGNORE_CR_FLAG} runtests ${RESULTS_PATH} ${VALIDATOR_PATH} ${REMAP_PATH}
+            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Test/)
     endif()
 
-    if (CMAKE_CONFIGURATION_TYPES)
-        set(RESULTS_PATH ${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/localResults)
-        set(VALIDATOR_PATH ${CMAKE_CURRENT_BINARY_DIR}/StandAlone/$<CONFIG>/glslang)
-        set(REMAP_PATH ${CMAKE_CURRENT_BINARY_DIR}/StandAlone/$<CONFIG>/spirv-remap)
-    else()
-        set(RESULTS_PATH ${CMAKE_CURRENT_BINARY_DIR}/localResults)
-        set(VALIDATOR_PATH ${CMAKE_CURRENT_BINARY_DIR}/StandAlone/glslang)
-        set(REMAP_PATH ${CMAKE_CURRENT_BINARY_DIR}/StandAlone/spirv-remap)
-    endif()
-
-    add_test(NAME glslang-testsuite
-        COMMAND bash ${IGNORE_CR_FLAG} runtests ${RESULTS_PATH} ${VALIDATOR_PATH} ${REMAP_PATH}
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Test/)
-endif()
-
-if(ENABLE_GLSLANG_INSTALL)
     file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/glslang-config.cmake.in" [=[
         @PACKAGE_INIT@
         @INSTALL_CONFIG_UNIX@
