@@ -3,6 +3,34 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## 14.0.0 2023-12-21
+
+### Breaking changes
+* The legacy libraries named HLSL and OGLCompiler have been removed. To avoid future disruptions, please use cmake's find_package mechanism rather than hardcoding library dependencies.
+* Only the headers that are part of glslang's public interface are included in the install target.
+* Remove OVERRIDE_MSVCCRT cmake option.
+
+### Other changes
+* Fix spv_options initialization
+* Fix line number for OpDebugFunction and OpDebugScope for function
+* Fix SPV_KHR_cooperative_matrix enumerants
+* Fix nullptr crash
+* Fix GL_ARB_shader_storage_buffer_object version
+* Fix interpolant ES error
+* Generate DebugValue for constant arguments
+* Overflow/underflow out-of-range floats to infinity/0.0 respectively
+* Support SV_ViewID keywords for HLSL
+* Implement relaxed rule for opaque struct members
+* Add BUILD_WERROR cmake option
+* Add GLSLANG_TESTS cmake option
+* Always generate OpDebugBasicType for bool type
+* Fix GLSL parsing of '#' when not preceded by space or tab
+* Fix GL_ARB_bindless_texture availability
+* Support GL_EXT_draw_instanced extension
+* Support GL_EXT_texture_array extension
+* Fix conversion of 64-bit unsigned integer constants to bool
+* Output 8-bit and 16-bit capabilities when appropriate for OpSpecConstant
+
 ## 13.1.1 2023-10-16
 * Initialize compile_only field in C interface
 

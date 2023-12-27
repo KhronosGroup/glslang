@@ -1,9 +1,8 @@
 130.vert
-ERROR: 0:59: 'gl_InstanceID' : undeclared identifier 
-ERROR: 0:59: '=' :  cannot convert from ' temp float' to ' temp int'
+ERROR: 0:59: 'gl_InstanceID' : required extension not requested: GL_EXT_draw_instanced
 ERROR: 0:61: 'texelFetch' : no matching overloaded function found 
 ERROR: 0:61: 'assign' :  cannot convert from ' const float' to ' temp int'
-ERROR: 4 compilation errors.  No code generated.
+ERROR: 3 compilation errors.  No code generated.
 
 
 Shader version: 130
@@ -120,7 +119,11 @@ ERROR: node is still EOpNull!
 0:46          0.300000
 0:57  Function Definition: foo88( ( global void)
 0:57    Function Parameters: 
-0:?     Sequence
+0:59    Sequence
+0:59      Sequence
+0:59        move second child to first child ( temp int)
+0:59          'id' ( temp int)
+0:59          'gl_InstanceID' ( gl_InstanceId int InstanceId)
 0:61      'id' ( temp int)
 0:63      'gl_ClipVertex' ( gl_ClipVertex 4-component vector of float ClipVertex)
 0:64      'gl_Color' ( in 4-component vector of float Color)
