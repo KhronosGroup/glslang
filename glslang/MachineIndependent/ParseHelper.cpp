@@ -1360,7 +1360,10 @@ TIntermTyped* TParseContext::handleFunctionCall(const TSourceLoc& loc, TFunction
                 requireInt16Arithmetic(loc, "built-in function", "(u)int16 types can only be in uniform block or buffer storage");
             if (builtIn && fnCandidate->getType().contains8BitInt())
                 requireInt8Arithmetic(loc, "built-in function", "(u)int8 types can only be in uniform block or buffer storage");
-
+            if (builtIn && (fnCandidate->getBuiltInOp() == EOpTextureFetch || fnCandidate->getBuiltInOp() == EOpTextureQuerySize)) {
+                if ((*fnCandidate)[0].type->getSampler().isMultiSample() && version <= 140)
+                    requireExtensions(loc, 1, &E_GL_ARB_texture_multisample, fnCandidate->getName().c_str());
+            }
             if (arguments != nullptr) {
                 // Make sure qualifications work for these arguments.
                 TIntermAggregate* aggregate = arguments->getAsAggregate();
