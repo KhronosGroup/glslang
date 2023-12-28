@@ -36,6 +36,7 @@
 #define _INFOSINK_INCLUDED_
 
 #include "../Include/Common.h"
+#include <filesystem>
 #include <cmath>
 
 namespace glslang {
@@ -94,11 +95,18 @@ public:
         default:                   append("UNKNOWN ERROR: ");   break;
         }
     }
-    void location(const TSourceLoc& loc) {
+    void location(const TSourceLoc& loc, bool absolute = false) {
         const int maxSize = 24;
         char locText[maxSize];
         snprintf(locText, maxSize, ":%d", loc.line);
-        append(loc.getStringNameOrNum(false).c_str());
+
+        const std::string location = loc.getStringNameOrNum(false);
+        if (absolute) {
+            append(std::filesystem::absolute(location).string());
+        } else {
+            append(location);
+        }
+
         append(locText);
         append(": ");
     }
