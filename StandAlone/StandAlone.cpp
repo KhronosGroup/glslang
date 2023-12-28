@@ -182,6 +182,7 @@ bool HlslEnable16BitTypes = false;
 bool HlslDX9compatible = false;
 bool HlslDxPositionW = false;
 bool EnhancedMsgs = false;
+bool AbsolutePath = false;
 bool DumpBuiltinSymbols = false;
 std::vector<std::string> IncludeDirectoryList;
 
@@ -727,6 +728,8 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                         HlslDxPositionW = true;
                     } else if (lowerword == "enhanced-msgs") {
                         EnhancedMsgs = true;
+                    } else if (lowerword == "absolute-path") {
+                        AbsolutePath = true;
                     } else if (lowerword == "auto-sampled-textures") {
                         autoSampledTextures = true;
                     } else if (lowerword == "invert-y" ||  // synonyms
@@ -1159,6 +1162,8 @@ void SetMessageOptions(EShMessages& messages)
         messages = (EShMessages)(messages | EShMsgBuiltinSymbolTable);
     if (EnhancedMsgs)
         messages = (EShMessages)(messages | EShMsgEnhanced);
+    if (AbsolutePath)
+        messages = (EShMessages)(messages | EShMsgAbsolutePath);
 }
 
 //
