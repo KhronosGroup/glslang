@@ -49,6 +49,10 @@ rm -f comp.spv frag.spv geom.spv tesc.spv tese.spv vert.spv
 run badMacroArgs.frag > $TARGETDIR/badMacroArgs.frag.out
 diff -b $BASEDIR/badMacroArgs.frag.out $TARGETDIR/badMacroArgs.frag.out || HASERROR=1
 
+run gl_samplemask_array_size.frag gl_MaxSamples_32.conf -i > $TARGETDIR/gl_samplemask_array_size_32.frag.out
+diff -b $BASEDIR/gl_samplemask_array_size_32.frag.out $TARGETDIR/gl_samplemask_array_size_32.frag.out || HASERROR=1
+run gl_samplemask_array_size.frag gl_MaxSamples_64.conf -i > $TARGETDIR/gl_samplemask_array_size_64.frag.out
+diff -b $BASEDIR/gl_samplemask_array_size_64.frag.out $TARGETDIR/gl_samplemask_array_size_64.frag.out || HASERROR=1
 #
 # reflection tests
 #
