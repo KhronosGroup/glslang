@@ -23,7 +23,7 @@ jobs:
         with:
           python-version: '3.7'
       - name: Setup ccache
-        uses: hendrikmuhs/ccache-action@6d1841ec156c39a52b1b23a810da917ab98da1f4 # v1.2.10
+        uses: hendrikmuhs/ccache-action@2a51777f6f64b7b7bea213601acba8f5f4fdbe03 # v1.2.11
         with:
           key: ubuntu-22-${{ matrix.cmake_build_type }}-${{ matrix.compiler.cc }}-${{matrix.compiler.cxx}}
       - run: ./update_glslang_sources.py
@@ -59,7 +59,7 @@ jobs:
         with:
           python-version: '3.7'
       - name: Setup ccache
-        uses: hendrikmuhs/ccache-action@6d1841ec156c39a52b1b23a810da917ab98da1f4 # v1.2.10
+        uses: hendrikmuhs/ccache-action@2a51777f6f64b7b7bea213601acba8f5f4fdbe03 # v1.2.11
         with:
           key: ubuntu-22-${{ matrix.cmake_build_type }}-${{ matrix.compiler.cc }}-${{matrix.compiler.cxx}}-${{matrix.flags}}
       - run: ./update_glslang_sources.py
@@ -96,7 +96,7 @@ jobs:
         with:
           cmakeVersion: 3.17.2
       - name: Setup ccache
-        uses: hendrikmuhs/ccache-action@6d1841ec156c39a52b1b23a810da917ab98da1f4 # v1.2.10
+        uses: hendrikmuhs/ccache-action@2a51777f6f64b7b7bea213601acba8f5f4fdbe03 # v1.2.11
         with:
           key: linux_backcompat
       - run: ./update_glslang_sources.py
@@ -168,7 +168,7 @@ jobs:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - uses: lukka/get-cmake@2654d8ee382b9b6cbbfe6487653b8629b4e062c8 # v3.28.1
       - name: Setup ccache
-        uses: hendrikmuhs/ccache-action@6d1841ec156c39a52b1b23a810da917ab98da1f4 # v1.2.10
+        uses: hendrikmuhs/ccache-action@2a51777f6f64b7b7bea213601acba8f5f4fdbe03 # v1.2.11
         with:
           key: IOS
       - run: ./update_glslang_sources.py
@@ -197,7 +197,7 @@ jobs:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - uses: lukka/get-cmake@2654d8ee382b9b6cbbfe6487653b8629b4e062c8 # v3.28.1
       - name: Setup ccache
-        uses: hendrikmuhs/ccache-action@6d1841ec156c39a52b1b23a810da917ab98da1f4 # v1.2.10
+        uses: hendrikmuhs/ccache-action@2a51777f6f64b7b7bea213601acba8f5f4fdbe03 # v1.2.11
         with:
           key: android-${{ matrix.LEGACY }}
       - run: ./update_glslang_sources.py
@@ -223,7 +223,7 @@ jobs:
           python-version: '3.7'
       - uses: lukka/get-cmake@2654d8ee382b9b6cbbfe6487653b8629b4e062c8 # v3.28.1
       - name: Setup ccache
-        uses: hendrikmuhs/ccache-action@6d1841ec156c39a52b1b23a810da917ab98da1f4 # v1.2.10
+        uses: hendrikmuhs/ccache-action@2a51777f6f64b7b7bea213601acba8f5f4fdbe03 # v1.2.11
         with:
           key: ubuntu-emscripten
       - uses: mymindstorm/setup-emsdk@d233ac12b0102f74ca199f5dad7a4e2c13a8a745 # v13
