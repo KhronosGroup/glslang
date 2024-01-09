@@ -90,18 +90,6 @@ endif()
 if(PROJECT_IS_TOP_LEVEL)
     install(TARGETS glslang-standalone EXPORT glslang-targets)
 
-    # Backward compatibility
-    file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/glslang-standaloneTargets.cmake" "
-        message(WARNING \"Using `glslang-standaloneTargets.cmake` is deprecated: use `find_package(glslang)` to find glslang CMake targets.\")
-
-        if (NOT TARGET glslang::glslang-standalone)
-            include(\"${CMAKE_INSTALL_FULL_LIBDIR}/cmake/${PROJECT_NAME}/glslang-targets.cmake\")
-        endif()
-
-        add_library(glslang-standalone ALIAS glslang::glslang-standalone)
-    ")
-    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/glslang-standaloneTargets.cmake" DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake)
-
     # Create a symbolic link to glslang named glslangValidator for backwards compatibility
     set(legacy_glslang_name "glslangValidator${CMAKE_EXECUTABLE_SUFFIX}")
     set(link_method create_symlink)
@@ -120,18 +108,6 @@ if(PROJECT_IS_TOP_LEVEL)
 
     if(ENABLE_SPVREMAPPER)
         install(TARGETS spirv-remap EXPORT glslang-targets)
-
-        # Backward compatibility
-        file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/spirv-remapTargets.cmake" "
-            message(WARNING \"Using `spirv-remapTargets.cmake` is deprecated: use `find_package(glslang)` to find glslang CMake targets.\")
-
-            if (NOT TARGET glslang::spirv-remap)
-                include(\"${CMAKE_INSTALL_FULL_LIBDIR}/cmake/${PROJECT_NAME}/glslang-targets.cmake\")
-            endif()
-
-            add_library(spirv-remap ALIAS glslang::spirv-remap)
-        ")
-        install(FILES "${CMAKE_CURRENT_BINARY_DIR}/spirv-remapTargets.cmake" DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake)
     endif()
 
 endif()
