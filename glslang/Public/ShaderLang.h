@@ -336,7 +336,8 @@ GLSLANG_EXPORT int ShCompile(const ShHandle, const char* const shaderStrings[], 
                              int,                      // debugOptions unused
                              int defaultVersion = 110, // use 100 for ES environment, overridden by #version in shader
                              bool forwardCompatible = false,      // give errors for use of deprecated features
-                             EShMessages messages = EShMsgDefault // warnings and errors
+                             EShMessages messages = EShMsgDefault, // warnings and errors
+                             const char* fileName = nullptr
 );
 
 GLSLANG_EXPORT int ShLinkExt(
