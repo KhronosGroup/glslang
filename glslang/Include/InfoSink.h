@@ -103,7 +103,7 @@ public:
         if(loc.getFilename() == nullptr && shaderFileName != nullptr && absolute) {
             append(std::filesystem::absolute(shaderFileName).string());
         } else {
-            std::string location = loc.getStringNameOrNum();
+            std::string location = loc.getStringNameOrNum(false);
             if (absolute) {
                 append(std::filesystem::absolute(location).string());
             } else {
