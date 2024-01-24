@@ -334,6 +334,10 @@ if(PROJECT_IS_TOP_LEVEL)
 
     file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/glslang-config.cmake.in" [=[
         @PACKAGE_INIT@
+        include(CMakeFindDependencyMacro)
+        if(@ENABLE_OPT@)
+            find_dependency(SPIRV-Tools-opt)
+        endif()
         @INSTALL_CONFIG_UNIX@
         include("@PACKAGE_PATH_EXPORT_TARGETS@")
     ]=])
@@ -341,9 +345,8 @@ if(PROJECT_IS_TOP_LEVEL)
     set(PATH_EXPORT_TARGETS "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}/glslang-targets.cmake")
     if(UNIX OR "${CMAKE_SYSTEM_NAME}" STREQUAL "Fuchsia")
         set(INSTALL_CONFIG_UNIX [=[
-            include(CMakeFindDependencyMacro)
             set(THREADS_PREFER_PTHREAD_FLAG ON)
-            find_dependency(Threads REQUIRED)
+            find_dependency(Threads)
         ]=])
     endif()
     configure_package_config_file(
