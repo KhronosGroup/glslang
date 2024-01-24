@@ -97,7 +97,7 @@ bool HlslGrammar::acceptIdentifier(HlslToken& idToken)
         idToken = token;
         advanceToken();
         idToken.tokenClass = EHTokIdentifier;
-        idToken.string = NewPoolTString(intermediate.implicitThisName);
+        idToken.string = NewPoolObject<TString>(intermediate.implicitThisName);
         return true;
     }
 
@@ -112,7 +112,7 @@ bool HlslGrammar::acceptIdentifier(HlslToken& idToken)
     if (idString == nullptr)
         return false;
 
-    token.string     = NewPoolTString(idString);
+    token.string     = NewPoolObject<TString>(idString);
     token.tokenClass = EHTokIdentifier;
     idToken = token;
     typeIdentifiers = true;
@@ -414,7 +414,7 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& nodeList)
             parseContext.renameShaderFunction(fullName);
 
             // function_parameters
-            declarator.function = new TFunction(fullName, declaredType);
+            declarator.function = NewPoolObject<TFunction>(fullName, declaredType);
             if (!acceptFunctionParameters(*declarator.function)) {
                 expected("function parameter list");
                 return false;
@@ -1087,7 +1087,7 @@ bool HlslGrammar::acceptTessellationPatchTemplateType(TType& type)
     if (! acceptLiteral(size))
         return false;
 
-    TArraySizes* arraySizes = new TArraySizes;
+    TArraySizes* arraySizes = NewPoolObject<TArraySizes>();
     arraySizes->addInnerSize(size->getAsConstantUnion()->getConstArray()[0].getIConst());
     type.transferArraySizes(arraySizes);
     type.getQualifier().builtIn = patchType;
@@ -2618,7 +2618,7 @@ bool HlslGrammar::acceptStructBufferType(TType& type)
     advanceToken();  // consume the structure keyword
 
     // type on which this StructedBuffer is templatized.  E.g, StructedBuffer<MyStruct> ==> MyStruct
-    TType* templateType = new TType;
+    TType* templateType = NewPoolObject<TType>();
 
     if (hasTemplateType) {
         if (! acceptTokenClass(EHTokLeftAngle)) {
@@ -2642,7 +2642,7 @@ bool HlslGrammar::acceptStructBufferType(TType& type)
 
     // Create an unsized array out of that type.
     // TODO: does this work if it's already an array type?
-    TArraySizes* unsizedArray = new TArraySizes;
+    TArraySizes* unsizedArray = NewPoolObject<TArraySizes>();
     unsizedArray->addInnerSize(UnsizedArraySize);
     templateType->transferArraySizes(unsizedArray);
     templateType->getQualifier().storage = storage;
@@ -2650,7 +2650,7 @@ bool HlslGrammar::acceptStructBufferType(TType& type)
     // field name is canonical for all structbuffers
     templateType->setFieldName("@data");
 
-    TTypeList* blockStruct = new TTypeList;
+    TTypeList* blockStruct = NewPoolObject<TTypeList>();
     TTypeLoc  member = { templateType, token.loc };
     blockStruct->push_back(member);
 
@@ -2685,7 +2685,7 @@ bool HlslGrammar::acceptStructBufferType(TType& type)
 bool HlslGrammar::acceptStructDeclarationList(TTypeList*& typeList, TIntermNode*& nodeList,
                                               TVector<TFunctionDeclarator>& declarators)
 {
-    typeList = new TTypeList();
+    typeList = NewPoolObject<TTypeList>();
     HlslToken idToken;
 
     do {
@@ -2733,7 +2733,7 @@ bool HlslGrammar::acceptStructDeclarationList(TTypeList*& typeList, TIntermNode*
                 return false;
             } else {
                 // add it to the list of members
-                TTypeLoc member = { new TType(EbtVoid), token.loc };
+                TTypeLoc member = { NewPoolObject<TType>(EbtVoid), token.loc };
                 member.type->shallowCopy(memberType);
                 member.type->setFieldName(*idToken.string);
                 typeList->push_back(member);
@@ -2793,7 +2793,7 @@ bool HlslGrammar::acceptMemberFunctionDefinition(TIntermNode*& nodeList, const T
 
     TString* functionName = &memberName;
     parseContext.getFullNamespaceName(functionName);
-    declarator.function = new TFunction(functionName, type);
+    declarator.function = NewPoolObject<TFunction>(functionName, type);
     if (type.getQualifier().storage == EvqTemporary)
         declarator.function->setImplicitThis();
     else
@@ -2807,7 +2807,7 @@ bool HlslGrammar::acceptMemberFunctionDefinition(TIntermNode*& nodeList, const T
         // compound_statement (function body definition)
         if (peekTokenClass(EHTokLeftBrace)) {
             declarator.loc = token.loc;
-            declarator.body = new TVector<HlslToken>;
+            declarator.body = NewPoolObject<TVector<HlslToken>>();
             accepted = acceptFunctionDefinition(declarator, nodeList, declarator.body);
         }
     } else
@@ -2912,7 +2912,7 @@ bool HlslGrammar::acceptParameterDeclaration(TFunction& function)
     acceptAttributes(attributes);
 
     // fully_specified_type
-    TType* type = new TType;
+    TType* type = NewPoolObject<TType>();
     if (! acceptFullySpecifiedType(*type, attributes))
         return false;
 
@@ -3409,7 +3409,7 @@ bool HlslGrammar::acceptPostfixExpression(TIntermTyped*& node)
         TString* fullName = idToken.string;
         while (acceptTokenClass(EHTokColonColon)) {
             // user-type or namespace name
-            fullName = NewPoolTString(fullName->c_str());
+            fullName = NewPoolObject<TString>(fullName->c_str());
             fullName->append(parseContext.scopeMangler);
             if (acceptIdentifier(idToken))
                 fullName->append(*idToken.string);
@@ -3557,21 +3557,21 @@ bool HlslGrammar::acceptFunctionCall(const TSourceLoc& loc, TString& name, TInte
     } else if (parseContext.isBuiltInMethod(loc, baseObject, name)) {
         // Built-in methods are not in the symbol table as methods, but as global functions
         // taking an explicit 'this' as the first argument.
-        functionName = NewPoolTString(BUILTIN_PREFIX);
+        functionName = NewPoolObject<TString>(BUILTIN_PREFIX);
         functionName->append(name);
     } else {
         if (! baseObject->getType().isStruct()) {
             expected("structure");
             return false;
         }
-        functionName = NewPoolTString("");
+        functionName = NewPoolObject<TString>("");
         functionName->append(baseObject->getType().getTypeName());
         parseContext.addScopeMangler(*functionName);
         functionName->append(name);
     }
 
     // function
-    TFunction* function = new TFunction(functionName, TType(EbtVoid));
+    TFunction* function = NewPoolObject<TFunction>(functionName, TType(EbtVoid));
 
     // arguments
     TIntermTyped* arguments = nullptr;
@@ -3874,7 +3874,7 @@ void HlslGrammar::acceptAttributes(TAttributes& attributes)
 
         // (x, ...)
         if (acceptTokenClass(EHTokLeftParen)) {
-            expressions = new TIntermAggregate;
+            expressions = NewPoolObject<TIntermAggregate>();
 
             TIntermTyped* node;
             bool expectingExpression = false;
@@ -3993,7 +3993,7 @@ bool HlslGrammar::acceptSwitchStatement(TIntermNode*& statement, const TAttribut
     }
 
     // compound_statement
-    parseContext.pushSwitchSequence(new TIntermSequence);
+    parseContext.pushSwitchSequence(NewPoolObject<TIntermSequence>());
 
     ++parseContext.controlFlowNestingLevel;
     bool statementOkay = acceptCompoundStatement(statement);
@@ -4268,7 +4268,7 @@ void HlslGrammar::acceptArraySpecifier(TArraySizes*& arraySizes)
         return;
 
     // If we get here, we have at least one array dimension.  This will track the sizes we find.
-    arraySizes = new TArraySizes;
+    arraySizes = NewPoolObject<TArraySizes>();
 
     // Collect each array dimension.
     while (acceptTokenClass(EHTokLeftBracket)) {

@@ -257,32 +257,6 @@ void TSymbolTable::dump(TInfoSink& infoSink, bool complete) const
 }
 
 //
-// Functions have buried pointers to delete.
-//
-TFunction::~TFunction()
-{
-    for (TParamList::iterator i = parameters.begin(); i != parameters.end(); ++i)
-        delete (*i).type;
-}
-
-//
-// Symbol table levels are a map of pointers to symbols that have to be deleted.
-//
-TSymbolTableLevel::~TSymbolTableLevel()
-{
-    for (tLevel::iterator it = level.begin(); it != level.end(); ++it) {
-        const TString& name = it->first;
-        auto retargetIter = std::find_if(retargetedSymbols.begin(), retargetedSymbols.end(),
-                                      [&name](const std::pair<TString, TString>& i) { return i.first == name; });
-        if (retargetIter == retargetedSymbols.end())
-            delete (*it).second;
-    }
-
-
-    delete [] defaultPrecision;
-}
-
-//
 // Change all function entries in the table with the non-mangled name
 // to be related to the provided built-in operation.
 //
@@ -342,7 +316,7 @@ void TSymbolTableLevel::readOnly()
 //
 TSymbol::TSymbol(const TSymbol& copyOf)
 {
-    name = NewPoolTString(copyOf.name->c_str());
+    name = NewPoolObject<TString>(copyOf.name->c_str());
     uniqueId = copyOf.uniqueId;
     writable = true;
 }
@@ -374,7 +348,7 @@ TVariable::TVariable(const TVariable& copyOf) : TSymbol(copyOf)
 
 TVariable* TVariable::clone() const
 {
-    TVariable *variable = new TVariable(*this);
+    TVariable *variable = NewPoolObject<TVariable>(*this);
 
     return variable;
 }
@@ -403,7 +377,7 @@ TFunction::TFunction(const TFunction& copyOf) : TSymbol(copyOf)
 
 TFunction* TFunction::clone() const
 {
-    TFunction *function = new TFunction(*this);
+    TFunction *function = NewPoolObject<TFunction>(*this);
 
     return function;
 }
@@ -420,7 +394,7 @@ TAnonMember* TAnonMember::clone() const
 
 TSymbolTableLevel* TSymbolTableLevel::clone() const
 {
-    TSymbolTableLevel *symTableLevel = new TSymbolTableLevel();
+    TSymbolTableLevel *symTableLevel = NewPoolObject<TSymbolTableLevel>();
     symTableLevel->anonId = anonId;
     symTableLevel->thisLevel = thisLevel;
     symTableLevel->retargetedSymbols.clear();
@@ -437,7 +411,7 @@ TSymbolTableLevel* TSymbolTableLevel::clone() const
             // allowing them to all be part of the same new container.
             if (! containerCopied[anon->getAnonId()]) {
                 TVariable* container = anon->getAnonContainer().clone();
-                container->changeName(NewPoolTString(""));
+                container->changeName(NewPoolObject<TString>(""));
                 // insert the container and all its members
                 symTableLevel->insert(*container, false);
                 containerCopied[anon->getAnonId()] = true;

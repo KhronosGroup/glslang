@@ -1133,8 +1133,6 @@ class TIntermLoop;
 //
 class TIntermNode {
 public:
-    POOL_ALLOCATOR_NEW_DELETE(glslang::GetThreadPoolAllocator())
-
     TIntermNode() { loc.init(); }
     virtual const glslang::TSourceLoc& getLoc() const { return loc; }
     virtual void setLoc(const glslang::TSourceLoc& l) { loc = l; }
@@ -1682,7 +1680,7 @@ class TIntermAggregate : public TIntermOperator {
 public:
     TIntermAggregate() : TIntermOperator(EOpNull), userDefined(false), pragmaTable(nullptr) { }
     TIntermAggregate(TOperator o) : TIntermOperator(o), pragmaTable(nullptr) { }
-    ~TIntermAggregate() { delete pragmaTable; }
+    ~TIntermAggregate() = default;
     virtual       TIntermAggregate* getAsAggregate()       { return this; }
     virtual const TIntermAggregate* getAsAggregate() const { return this; }
     virtual void updatePrecision();
@@ -1819,7 +1817,6 @@ enum TVisit
 //
 class TIntermTraverser {
 public:
-    POOL_ALLOCATOR_NEW_DELETE(glslang::GetThreadPoolAllocator())
     TIntermTraverser(bool preVisit = true, bool inVisit = false, bool postVisit = false, bool rightToLeft = false) :
             preVisit(preVisit),
             inVisit(inVisit),

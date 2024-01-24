@@ -45,62 +45,46 @@ namespace glslang {
 struct TRemoveTraverser : TIntermTraverser {
     TRemoveTraverser() : TIntermTraverser(false, false, true, false) {}
 
-    virtual void visitSymbol(TIntermSymbol* node)
+    virtual void visitSymbol(TIntermSymbol* /*node*/)
     {
-        delete node;
     }
 
-    virtual bool visitBinary(TVisit /* visit*/ , TIntermBinary* node)
+    virtual bool visitBinary(TVisit /* visit*/ , TIntermBinary* /*node*/)
     {
-        delete node;
-
         return true;
     }
 
-    virtual bool visitUnary(TVisit /* visit */, TIntermUnary* node)
+    virtual bool visitUnary(TVisit /* visit */, TIntermUnary* /*node*/)
     {
-        delete node;
-
         return true;
     }
 
-    virtual bool visitAggregate(TVisit /* visit*/ , TIntermAggregate* node)
+    virtual bool visitAggregate(TVisit /* visit*/ , TIntermAggregate* /*node*/)
     {
-        delete node;
-
         return true;
     }
 
-    virtual bool visitSelection(TVisit /* visit*/ , TIntermSelection* node)
+    virtual bool visitSelection(TVisit /* visit*/ , TIntermSelection* /*node*/)
     {
-        delete node;
-
         return true;
     }
 
-    virtual bool visitSwitch(TVisit /* visit*/ , TIntermSwitch* node)
+    virtual bool visitSwitch(TVisit /* visit*/ , TIntermSwitch* /*node*/)
     {
-        delete node;
-
         return true;
     }
 
-    virtual void visitConstantUnion(TIntermConstantUnion* node)
+    virtual void visitConstantUnion(TIntermConstantUnion* /*node*/)
     {
-        delete node;
     }
 
-    virtual bool visitLoop(TVisit /* visit*/ , TIntermLoop* node)
+    virtual bool visitLoop(TVisit /* visit*/ , TIntermLoop* /*node*/)
     {
-        delete node;
-
         return true;
     }
 
-    virtual bool visitBranch(TVisit /* visit*/ , TIntermBranch* node)
+    virtual bool visitBranch(TVisit /* visit*/ , TIntermBranch* /*node*/)
     {
-        delete node;
-
         return true;
     }
 };

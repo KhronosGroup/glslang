@@ -56,14 +56,14 @@ class TUniformMap;
 //
 class TShHandleBase {
 public:
-    TShHandleBase() { pool = new glslang::TPoolAllocator; }
-    virtual ~TShHandleBase() { delete pool; }
+    TShHandleBase() = default;
+    virtual ~TShHandleBase() = default;
     virtual TCompiler* getAsCompiler() { return nullptr; }
     virtual TLinker* getAsLinker() { return nullptr; }
     virtual TUniformMap* getAsUniformMap() { return nullptr; }
-    virtual glslang::TPoolAllocator* getPool() const { return pool; }
+    virtual glslang::TPoolAllocator* getPool() { return &pool; }
 private:
-    glslang::TPoolAllocator* pool;
+    glslang::TPoolAllocator pool;
 };
 
 //

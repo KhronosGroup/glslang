@@ -169,7 +169,7 @@ public:
         // Replace the entry point name given in the shader with the real entry point name,
         // if there is a substitution.
         if (name != nullptr && *name == sourceEntryPointName && intermediate.getEntryPointName().size() > 0)
-            name = NewPoolTString(intermediate.getEntryPointName().c_str());
+            name = NewPoolObject<TString>(intermediate.getEntryPointName().c_str());
     }
 
     virtual bool lValueErrorCheck(const TSourceLoc&, const char* op, TIntermTyped*);

@@ -277,7 +277,7 @@ TIntermTyped* HlslParseContext::handleLvalue(const TSourceLoc& loc, const char* 
 
     // Helper to create a load.
     const auto makeLoad = [&](TIntermSymbol* rhsTmp, TIntermTyped* object, TIntermTyped* coord, const TType& derefType) {
-        TIntermAggregate* loadOp = new TIntermAggregate(EOpImageLoad);
+        TIntermAggregate* loadOp = NewPoolObject<TIntermAggregate>(EOpImageLoad);
         loadOp->setLoc(loc);
         loadOp->getSequence().push_back(object);
         loadOp->getSequence().push_back(intermediate.addSymbol(*coord->getAsSymbolNode()));
@@ -290,7 +290,7 @@ TIntermTyped* HlslParseContext::handleLvalue(const TSourceLoc& loc, const char* 
 
     // Helper to create a store.
     const auto makeStore = [&](TIntermTyped* object, TIntermTyped* coord, TIntermSymbol* rhsTmp) {
-        TIntermAggregate* storeOp = new TIntermAggregate(EOpImageStore);
+        TIntermAggregate* storeOp = NewPoolObject<TIntermAggregate>(EOpImageStore);
         storeOp->getSequence().push_back(object);
         storeOp->getSequence().push_back(coord);
         storeOp->getSequence().push_back(intermediate.addSymbol(*rhsTmp));
@@ -697,7 +697,7 @@ TIntermTyped* HlslParseContext::handleVariable(const TSourceLoc& loc, const TStr
         // Recovery, if it wasn't found or was not a variable.
         if (variable == nullptr) {
             error(loc, "unknown variable", string->c_str(), "");
-            variable = new TVariable(string, TType(EbtVoid));
+            variable = NewPoolObject<TVariable>(string, TType(EbtVoid));
         }
 
         if (variable->getType().getQualifier().isFrontEndConstant())
@@ -728,7 +728,7 @@ TIntermTyped* HlslParseContext::handleBracketOperator(const TSourceLoc& loc, TIn
                 mipsOperatorMipArg.back().mipLevel = index;
                 return base;  // next [] index is to the same base.
             } else {
-                TIntermAggregate* load = new TIntermAggregate(sampler.isImage() ? EOpImageLoad : EOpTextureFetch);
+                TIntermAggregate* load = NewPoolObject<TIntermAggregate>(sampler.isImage() ? EOpImageLoad : EOpTextureFetch);
 
                 TType sampReturnType;
                 getTextureReturnType(sampler, sampReturnType);
@@ -1401,7 +1401,7 @@ TIntermTyped* HlslParseContext::flattenAccess(long long uniqueId, int member, TS
 
         // If this is not the final flattening, accumulate the position and return
         // an object of the partially dereferenced type.
-        subsetSymbol = new TIntermSymbol(uniqueId, "flattenShadow", dereferencedType);
+        subsetSymbol = NewPoolObject<TIntermSymbol>(uniqueId, "flattenShadow", dereferencedType);
         subsetSymbol->setFlattenSubset(newSubset);
     }
 
@@ -1532,7 +1532,7 @@ void HlslParseContext::fixBuiltInIoType(TType& type)
     // Alter or set array size as needed.
     if (requiredArraySize > 0) {
         if (!type.isArray() || type.getOuterArraySize() != requiredArraySize) {
-            TArraySizes* arraySizes = new TArraySizes;
+            TArraySizes* arraySizes = NewPoolObject<TArraySizes>();
             arraySizes->addInnerSize(requiredArraySize);
             type.transferArraySizes(arraySizes);
         }
@@ -1672,7 +1672,7 @@ TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& l
         // Remember the return type for later checking for RETURN statements.
         currentFunctionType = &(prevDec->getType());
     } else
-        currentFunctionType = new TType(EbtVoid);
+        currentFunctionType = NewPoolObject<TType>(EbtVoid);
     functionReturnsValue = false;
 
     // Entry points need different I/O and other handling, transform it so the
@@ -1692,11 +1692,11 @@ TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& l
     // Also, accumulate the list of parameters into the AST, so lower level code
     // knows where to find parameters.
     //
-    TIntermAggregate* paramNodes = new TIntermAggregate;
+    TIntermAggregate* paramNodes = NewPoolObject<TIntermAggregate>();
     for (int i = 0; i < function.getParamCount(); i++) {
         TParameter& param = function[i];
         if (param.name != nullptr) {
-            TVariable *variable = new TVariable(param.name, *param.type);
+            TVariable *variable = NewPoolObject<TVariable>(param.name, *param.type);
 
             if (i == 0 && function.hasImplicitThis()) {
                 // Anonymous 'this' members are already in a symbol-table level,
@@ -2154,7 +2154,7 @@ TIntermNode* HlslParseContext::transformEntryPoint(const TSourceLoc& loc, TFunct
     // new signature
     TType voidType(EbtVoid);
     TFunction synthEntryPoint(&userFunction.getName(), voidType);
-    TIntermAggregate* synthParams = new TIntermAggregate();
+    TIntermAggregate* synthParams = NewPoolObject<TIntermAggregate>();
     intermediate.setAggregateOperator(synthParams, EOpParameters, voidType, loc);
     intermediate.setEntryPointMangledName(synthEntryPoint.getMangledName().c_str());
     intermediate.incrementEntryPointCount();
@@ -2165,7 +2165,7 @@ TIntermNode* HlslParseContext::transformEntryPoint(const TSourceLoc& loc, TFunct
 
     // Copy inputs (shader-in -> calling arg), while building up the call node
     TVector<TVariable*> argVars;
-    TIntermAggregate* synthBody = new TIntermAggregate();
+    TIntermAggregate* synthBody = NewPoolObject<TIntermAggregate>();
     auto inputIt = inputs.begin();
     auto opaqueUniformIt = opaque_uniforms.begin();
     TIntermTyped* callingArgs = nullptr;
@@ -2189,7 +2189,7 @@ TIntermNode* HlslParseContext::transformEntryPoint(const TSourceLoc& loc, TFunct
                 auto pos_w   = handleDotDereference(loc, input, "w");
                 auto one     = intermediate.addConstantUnion(1.0, EbtFloat, loc);
                 auto recip_w = intermediate.addBinaryMath(EOpDiv, one, pos_w, loc);
-                TIntermAggregate* dst = new TIntermAggregate(EOpConstructVec4);
+                TIntermAggregate* dst = NewPoolObject<TIntermAggregate>(EOpConstructVec4);
                 dst->getSequence().push_back(pos_xyz);
                 dst->getSequence().push_back(recip_w);
                 dst->setType(TType(EbtFloat, EvqTemporary, 4));
@@ -2230,7 +2230,7 @@ TIntermNode* HlslParseContext::transformEntryPoint(const TSourceLoc& loc, TFunct
             // If there is no user declared invocation ID, we must make one.
             if (invocationIdSym == nullptr) {
                 TType invocationIdType(EbtUint, EvqIn, 1);
-                TString* invocationIdName = NewPoolTString("InvocationId");
+                TString* invocationIdName = NewPoolObject<TString>("InvocationId");
                 invocationIdType.getQualifier().builtIn = EbvInvocationId;
 
                 TVariable* variable = makeInternalVariable(*invocationIdName, invocationIdType);
@@ -2331,9 +2331,9 @@ void HlslParseContext::remapEntryPointIO(TFunction& function, TVariable*& return
                 auto it = ioTypeMap.find(type.getStruct());
                 if (it == ioTypeMap.end() || it->second.input == nullptr) {
                     // Getting here means we have no input struct, but we need one.
-                    auto list = new TTypeList;
+                    auto list = NewPoolObject<TTypeList>();
                     for (auto member = type.getStruct()->begin(); member != type.getStruct()->end(); ++member) {
-                        TType* newType = new TType;
+                        TType* newType = NewPoolObject<TType>();
                         newType->shallowCopy(*member->type);
                         TTypeLoc typeLoc = { newType, member->loc };
                         list->push_back(typeLoc);
@@ -2404,7 +2404,7 @@ void HlslParseContext::remapEntryPointIO(TFunction& function, TVariable*& return
             outputType.shallowCopy(function.getType());
 
             // vertices has necessarily already been set when handling entry point attributes.
-            TArraySizes* arraySizes = new TArraySizes;
+            TArraySizes* arraySizes = NewPoolObject<TArraySizes>();
             arraySizes->addInnerSize(intermediate.getVertices());
             outputType.transferArraySizes(arraySizes);
 
@@ -2475,7 +2475,7 @@ TIntermNode* HlslParseContext::handleReturnValue(const TSourceLoc& loc, TIntermT
 void HlslParseContext::handleFunctionArgument(TFunction* function,
                                               TIntermTyped*& arguments, TIntermTyped* newArg)
 {
-    TParameter param = { nullptr, new TType, nullptr };
+    TParameter param = { nullptr, NewPoolObject<TType>(), nullptr };
     param.type->shallowCopy(newArg->getType());
 
     function->addParameter(param);
@@ -2704,7 +2704,7 @@ TIntermAggregate* HlslParseContext::assignClipCullDistance(const TSourceLoc& loc
         clipCullType.getQualifier() = clipCullNode->getType().getQualifier();
 
         // Create required array dimension
-        TArraySizes* arraySizes = new TArraySizes;
+        TArraySizes* arraySizes = NewPoolObject<TArraySizes>();
         if (isImplicitlyArrayed)
             arraySizes->addInnerSize(requiredOuterArraySize);
         arraySizes->addInnerSize(requiredInnerArraySize);
@@ -2944,7 +2944,7 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
     } else {
         // The RHS is not flattened.  There are several cases:
         // 1. 1 item to copy:  Use the RHS directly.
-        // 2. >1 item, simple symbol RHS: we'll create a new TIntermSymbol node for each, but no assign to temp.
+        // 2. >1 item, simple symbol RHS: we'll create a NewPoolObject<TIntermSymbol>() node for each, but no assign to temp.
         // 3. >1 item, complex RHS: assign it to a new temp variable, and create a TIntermSymbol for each member.
 
         if (memberCount <= 1) {
@@ -3321,7 +3321,7 @@ TOperator HlslParseContext::mapAtomicOp(const TSourceLoc& loc, TOperator op, boo
 TIntermAggregate* HlslParseContext::handleSamplerTextureCombine(const TSourceLoc& loc, TIntermTyped* argTex,
                                                                 TIntermTyped* argSampler)
 {
-    TIntermAggregate* txcombine = new TIntermAggregate(EOpConstructTextureSampler);
+    TIntermAggregate* txcombine = NewPoolObject<TIntermAggregate>(EOpConstructTextureSampler);
 
     txcombine->getSequence().push_back(argTex);
     txcombine->getSequence().push_back(argSampler);
@@ -3358,7 +3358,7 @@ TIntermAggregate* HlslParseContext::handleSamplerTextureCombine(const TSourceLoc
         if (textureShadowEntry != textureShadowVariant.end())
             newId = textureShadowEntry->second->get(shadowMode);
         else
-            textureShadowVariant[texSymbol->getId()] = NewPoolObject(tShadowTextureSymbols(), 1);
+            textureShadowVariant[texSymbol->getId()] = NewPoolObject<tShadowTextureSymbols>();
 
         // Sometimes we have to create another symbol (if this texture has been seen before,
         // and we haven't created the form for this shadow mode).
@@ -3410,10 +3410,10 @@ bool HlslParseContext::hasStructBuffCounter(const TType& type) const
 void HlslParseContext::counterBufferType(const TSourceLoc& loc, TType& type)
 {
     // Counter type
-    TType* counterType = new TType(EbtUint, EvqBuffer);
+    TType* counterType = NewPoolObject<TType>(EbtUint, EvqBuffer);
     counterType->setFieldName(intermediate.implicitCounterName);
 
-    TTypeList* blockStruct = new TTypeList;
+    TTypeList* blockStruct = NewPoolObject<TTypeList>();
     TTypeLoc  member = { counterType, loc };
     blockStruct->push_back(member);
 
@@ -3437,7 +3437,7 @@ void HlslParseContext::declareStructBufferCounter(const TSourceLoc& loc, const T
     TType blockType;
     counterBufferType(loc, blockType);
 
-    TString* blockName = NewPoolTString(intermediate.addCounterBufferName(name).c_str());
+    TString* blockName = NewPoolObject<TString>(intermediate.addCounterBufferName(name).c_str());
 
     // Counter buffer is not yet in use
     structBufferCounter[*blockName] = false;
@@ -3502,7 +3502,7 @@ void HlslParseContext::decomposeStructBufferMethods(const TSourceLoc& loc, TInte
         if (counter == nullptr)
             return nullptr;
 
-        TIntermAggregate* counterIncrement = new TIntermAggregate(EOpAtomicAdd);
+        TIntermAggregate* counterIncrement = NewPoolObject<TIntermAggregate>(EOpAtomicAdd);
         counterIncrement->setType(TType(EbtUint, EvqTemporary));
         counterIncrement->setLoc(loc);
         counterIncrement->getSequence().push_back(counter);
@@ -3847,7 +3847,7 @@ TIntermConstantUnion* HlslParseContext::getSamplePosArray(int count)
         numSamples = 1;
     }
 
-    TConstUnionArray* values = new TConstUnionArray(numSamples*2);
+    TConstUnionArray* values = NewPoolObject<TConstUnionArray>(numSamples*2);
 
     for (int pos=0; pos<count; ++pos) {
         TConstUnion x, y;
@@ -3861,12 +3861,12 @@ TIntermConstantUnion* HlslParseContext::getSamplePosArray(int count)
     TType retType(EbtFloat, EvqConst, 2);
 
     if (numSamples != 1) {
-        TArraySizes* arraySizes = new TArraySizes;
+        TArraySizes* arraySizes = NewPoolObject<TArraySizes>();
         arraySizes->addInnerSize(numSamples);
         retType.transferArraySizes(arraySizes);
     }
 
-    return new TIntermConstantUnion(*values, retType);
+    return NewPoolObject<TIntermConstantUnion>(*values, retType);
 }
 
 //
@@ -3888,7 +3888,7 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
 
         if (retType.isStruct()) {
             // For type convenience, conversionAggregate points to the convertedResult (we know it's an aggregate here)
-            TIntermAggregate* conversionAggregate = new TIntermAggregate;
+            TIntermAggregate* conversionAggregate = NewPoolObject<TIntermAggregate>();
             convertedResult = conversionAggregate;
 
             // Convert vector output to return structure.  We will need a temp symbol to copy the results to.
@@ -4025,12 +4025,12 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
                 break;
             }
 
-            TIntermAggregate *constructCoord = new TIntermAggregate(constructOp);
+            TIntermAggregate *constructCoord = NewPoolObject<TIntermAggregate>(constructOp);
             constructCoord->getSequence().push_back(argCoord);
             constructCoord->setLoc(loc);
             constructCoord->setType(TType(argCoord->getBasicType(), EvqTemporary, coordSize));
 
-            TIntermAggregate *tex = new TIntermAggregate(EOpTextureLod);
+            TIntermAggregate *tex = NewPoolObject<TIntermAggregate>(EOpTextureLod);
             tex->getSequence().push_back(argSamp);        // sampler
             tex->getSequence().push_back(constructCoord); // coordinate
             tex->getSequence().push_back(argLod);         // lod
@@ -4063,7 +4063,7 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
                 break;
             }
 
-            TIntermAggregate* constructCoord = new TIntermAggregate(constructOp);
+            TIntermAggregate* constructCoord = NewPoolObject<TIntermAggregate>(constructOp);
             constructCoord->getSequence().push_back(arg1);
             constructCoord->setLoc(loc);
 
@@ -4071,7 +4071,7 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
             // The max is for safety, and should be a no-op.
             constructCoord->setType(TType(arg1->getBasicType(), EvqTemporary, std::max(arg1->getVectorSize() - 1, 0)));
 
-            TIntermAggregate* tex = new TIntermAggregate(EOpTexture);
+            TIntermAggregate* tex = NewPoolObject<TIntermAggregate>(EOpTexture);
             tex->getSequence().push_back(arg0);           // sampler
             tex->getSequence().push_back(constructCoord); // coordinate
             tex->getSequence().push_back(bias);           // bias
@@ -4106,7 +4106,7 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
 
             TIntermAggregate* txcombine = handleSamplerTextureCombine(loc, argTex, argSamp);
 
-            TIntermAggregate* txsample = new TIntermAggregate(textureOp);
+            TIntermAggregate* txsample = NewPoolObject<TIntermAggregate>(textureOp);
             txsample->getSequence().push_back(txcombine);
             txsample->getSequence().push_back(argCoord);
 
@@ -4140,7 +4140,7 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
 
             TIntermAggregate* txcombine = handleSamplerTextureCombine(loc, argTex, argSamp);
 
-            TIntermAggregate* txsample = new TIntermAggregate(textureOp);
+            TIntermAggregate* txsample = NewPoolObject<TIntermAggregate>(textureOp);
             txsample->getSequence().push_back(txcombine);
             txsample->getSequence().push_back(argCoord);
             txsample->getSequence().push_back(argDDX);
@@ -4206,7 +4206,7 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
                 mipQuery; // 2...
 
             // AST assumes integer return.  Will be converted to float if required.
-            TIntermAggregate* sizeQuery = new TIntermAggregate(isImage ? EOpImageQuerySize : EOpTextureQuerySize);
+            TIntermAggregate* sizeQuery = NewPoolObject<TIntermAggregate>(isImage ? EOpImageQuerySize : EOpTextureQuerySize);
             sizeQuery->getSequence().push_back(argTex);
 
             // If we're building an LOD query, add the LOD.
@@ -4255,7 +4255,7 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
             if (mipQuery) {
                 TIntermTyped* outParam = argAggregate->getSequence()[outParamBase + numDims]->getAsTyped();
 
-                TIntermAggregate* levelsQuery = new TIntermAggregate(EOpTextureQueryLevels);
+                TIntermAggregate* levelsQuery = NewPoolObject<TIntermAggregate>(EOpTextureQueryLevels);
                 levelsQuery->getSequence().push_back(argTex);
                 levelsQuery->setType(TType(EbtUint, EvqTemporary, 1));
                 levelsQuery->setLoc(loc);
@@ -4268,7 +4268,7 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
             if (sampler.isMultiSample()) {
                 TIntermTyped* outParam = argAggregate->getSequence()[outParamBase + numDims]->getAsTyped();
 
-                TIntermAggregate* samplesQuery = new TIntermAggregate(EOpImageQuerySamples);
+                TIntermAggregate* samplesQuery = NewPoolObject<TIntermAggregate>(EOpImageQuerySamples);
                 samplesQuery->getSequence().push_back(argTex);
                 samplesQuery->setType(TType(EbtUint, EvqTemporary, 1));
                 samplesQuery->setLoc(loc);
@@ -4326,7 +4326,7 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
                 break;
             }
 
-            TIntermAggregate* coordWithCmp = new TIntermAggregate(constructOp);
+            TIntermAggregate* coordWithCmp = NewPoolObject<TIntermAggregate>(constructOp);
             coordWithCmp->getSequence().push_back(argCoord);
             if (coordDimWithCmpVal != 5) // cube array shadow is special.
                 coordWithCmp->getSequence().push_back(argCmpVal);
@@ -4339,7 +4339,7 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
 
             // Create combined sampler & texture op
             TIntermAggregate* txcombine = handleSamplerTextureCombine(loc, argTex, argSamp);
-            TIntermAggregate* txsample = new TIntermAggregate(textureOp);
+            TIntermAggregate* txsample = NewPoolObject<TIntermAggregate>(textureOp);
             txsample->getSequence().push_back(txcombine);
             txsample->getSequence().push_back(coordWithCmp);
 
@@ -4402,7 +4402,7 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
             const TOperator fetchOp = (isImage   ? EOpImageLoad :
                                        hasOffset ? EOpTextureFetchOffset :
                                        EOpTextureFetch);
-            TIntermAggregate* txfetch = new TIntermAggregate(fetchOp);
+            TIntermAggregate* txfetch = NewPoolObject<TIntermAggregate>(fetchOp);
 
             // Build up the fetch
             txfetch->getSequence().push_back(argTex);
@@ -4448,7 +4448,7 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
                 argOffset = argAggregate->getSequence()[4]->getAsTyped();
 
             const TOperator textureOp = (argOffset == nullptr ? EOpTextureLod : EOpTextureLodOffset);
-            TIntermAggregate* txsample = new TIntermAggregate(textureOp);
+            TIntermAggregate* txsample = NewPoolObject<TIntermAggregate>(textureOp);
 
             TIntermAggregate* txcombine = handleSamplerTextureCombine(loc, argTex, argSamp);
 
@@ -4476,7 +4476,7 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
                 argOffset = argAggregate->getSequence()[3]->getAsTyped();
 
             const TOperator textureOp = (argOffset == nullptr ? EOpTextureGather : EOpTextureGatherOffset);
-            TIntermAggregate* txgather = new TIntermAggregate(textureOp);
+            TIntermAggregate* txgather = NewPoolObject<TIntermAggregate>(textureOp);
 
             TIntermAggregate* txcombine = handleSamplerTextureCombine(loc, argTex, argSamp);
 
@@ -4592,7 +4592,7 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
                 return;
             }
 
-            TIntermAggregate* txgather = new TIntermAggregate(textureOp);
+            TIntermAggregate* txgather = NewPoolObject<TIntermAggregate>(textureOp);
             TIntermAggregate* txcombine = handleSamplerTextureCombine(loc, argTex, argSamp);
 
             TIntermTyped* argChannel = intermediate.addConstantUnion(channel, loc, true);
@@ -4604,11 +4604,11 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
             // we construct an array from the separate args.
             if (hasOffset4) {
                 TType arrayType(EbtInt, EvqTemporary, 2);
-                TArraySizes* arraySizes = new TArraySizes;
+                TArraySizes* arraySizes = NewPoolObject<TArraySizes>();
                 arraySizes->addInnerSize(4);
                 arrayType.transferArraySizes(arraySizes);
 
-                TIntermAggregate* initList = new TIntermAggregate(EOpNull);
+                TIntermAggregate* initList = NewPoolObject<TIntermAggregate>(EOpNull);
 
                 for (int offsetNum = 0; offsetNum < 4; ++offsetNum)
                     initList->getSequence().push_back(argOffsets[offsetNum]);
@@ -4642,7 +4642,7 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
             TIntermTyped* argSamp   = argAggregate->getSequence()[1]->getAsTyped();
             TIntermTyped* argCoord  = argAggregate->getSequence()[2]->getAsTyped();
 
-            TIntermAggregate* txquerylod = new TIntermAggregate(EOpTextureQueryLod);
+            TIntermAggregate* txquerylod = NewPoolObject<TIntermAggregate>(EOpTextureQueryLod);
 
             TIntermAggregate* txcombine = handleSamplerTextureCombine(loc, argTex, argSamp);
             txquerylod->getSequence().push_back(txcombine);
@@ -4668,7 +4668,7 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
             TIntermTyped* argTex     = argAggregate->getSequence()[0]->getAsTyped();
             TIntermTyped* argSampIdx = argAggregate->getSequence()[1]->getAsTyped();
 
-            TIntermAggregate* samplesQuery = new TIntermAggregate(EOpImageQuerySamples);
+            TIntermAggregate* samplesQuery = NewPoolObject<TIntermAggregate>(EOpImageQuerySamples);
             samplesQuery->getSequence().push_back(argTex);
             samplesQuery->setType(TType(EbtUint, EvqTemporary, 1));
             samplesQuery->setLoc(loc);
@@ -4770,7 +4770,7 @@ void HlslParseContext::decomposeGeometryMethods(const TSourceLoc& loc, TIntermTy
             }
 
             TIntermAggregate* sequence = nullptr;
-            TIntermAggregate* emit = new TIntermAggregate(EOpEmitVertex);
+            TIntermAggregate* emit = NewPoolObject<TIntermAggregate>(EOpEmitVertex);
 
             emit->setLoc(loc);
             emit->setType(TType(EbtVoid));
@@ -4799,7 +4799,7 @@ void HlslParseContext::decomposeGeometryMethods(const TSourceLoc& loc, TIntermTy
                 return;
             }
 
-            TIntermAggregate* cut = new TIntermAggregate(EOpEndPrimitive);
+            TIntermAggregate* cut = NewPoolObject<TIntermAggregate>(EOpEndPrimitive);
             cut->setLoc(loc);
             cut->setType(TType(EbtVoid));
             node = cut;
@@ -4842,7 +4842,7 @@ void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& 
         if (nullptr == symbol) {
             type.getQualifier().builtIn = builtin;
 
-            TVariable* variable = new TVariable(NewPoolTString(name), type);
+            TVariable* variable = NewPoolObject<TVariable>(NewPoolObject<TString>(name), type);
 
             symbolTable.insert(*variable);
 
@@ -4920,7 +4920,7 @@ void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& 
             // saturate(a) -> clamp(a,0,1)
             TIntermTyped* arg0 = fnUnary->getOperand();
             TBasicType   type0 = arg0->getBasicType();
-            TIntermAggregate* clamp = new TIntermAggregate(EOpClamp);
+            TIntermAggregate* clamp = NewPoolObject<TIntermAggregate>(EOpClamp);
 
             clamp->getSequence().push_back(arg0);
             clamp->getSequence().push_back(intermediate.addConstantUnion(0, type0, loc, true));
@@ -4966,7 +4966,7 @@ void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& 
             // For non-scalars: per experiment with FXC compiler, discard if any component < 0.
             if (!arg0->isScalar()) {
                 // component-wise compare: a < 0
-                TIntermAggregate* less = new TIntermAggregate(EOpLessThan);
+                TIntermAggregate* less = NewPoolObject<TIntermAggregate>(EOpLessThan);
                 less->getSequence().push_back(arg0);
                 less->setLoc(loc);
 
@@ -5004,7 +5004,7 @@ void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& 
 
             TIntermBranch* killNode = intermediate.addBranch(EOpKill, loc);
 
-            node = new TIntermSelection(compareNode, killNode, nullptr);
+            node = NewPoolObject<TIntermSelection>(compareNode, killNode, nullptr);
             node->setLoc(loc);
 
             break;
@@ -5041,7 +5041,7 @@ void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& 
             TIntermTyped* src0z = intermediate.addIndex(EOpIndexDirect, arg0, z, loc);
             TIntermTyped* src1w = intermediate.addIndex(EOpIndexDirect, arg1, w, loc);
 
-            TIntermAggregate* dst = new TIntermAggregate(EOpConstructVec4);
+            TIntermAggregate* dst = NewPoolObject<TIntermAggregate>(EOpConstructVec4);
 
             dst->getSequence().push_back(intermediate.addConstantUnion(1.0, EbtFloat, loc, true));
             dst->getSequence().push_back(handleBinaryMath(loc, "mul", EOpMul, src0y, src1y));
@@ -5071,7 +5071,7 @@ void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& 
 
             const bool isImage = isImageParam(arg0);
             const TOperator atomicOp = mapAtomicOp(loc, op, isImage);
-            TIntermAggregate* atomic = new TIntermAggregate(atomicOp);
+            TIntermAggregate* atomic = NewPoolObject<TIntermAggregate>(atomicOp);
             atomic->setType(arg0->getType());
             atomic->getWritableType().getQualifier().makeTemporary();
             atomic->setLoc(loc);
@@ -5113,7 +5113,7 @@ void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& 
             TIntermTyped* arg3 = argAggregate->getSequence()[3]->getAsTyped();  // orig
 
             const bool isImage = isImageParam(arg0);
-            TIntermAggregate* atomic = new TIntermAggregate(mapAtomicOp(loc, op, isImage));
+            TIntermAggregate* atomic = NewPoolObject<TIntermAggregate>(mapAtomicOp(loc, op, isImage));
             atomic->setLoc(loc);
             atomic->setType(arg2->getType());
             atomic->getWritableType().getQualifier().makeTemporary();
@@ -5154,7 +5154,7 @@ void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& 
                                                                                     TType(EbtFloat, EvqTemporary, 2), iU),
                                                          recip16);
 
-            TIntermAggregate* interp = new TIntermAggregate(EOpInterpolateAtOffset);
+            TIntermAggregate* interp = NewPoolObject<TIntermAggregate>(EOpInterpolateAtOffset);
             interp->getSequence().push_back(arg0);
             interp->getSequence().push_back(floatOffset);
             interp->setLoc(loc);
@@ -5172,14 +5172,14 @@ void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& 
             TIntermTyped* n_dot_h = argAggregate->getSequence()[1]->getAsTyped();
             TIntermTyped* m = argAggregate->getSequence()[2]->getAsTyped();
 
-            TIntermAggregate* dst = new TIntermAggregate(EOpConstructVec4);
+            TIntermAggregate* dst = NewPoolObject<TIntermAggregate>(EOpConstructVec4);
 
             // Ambient
             dst->getSequence().push_back(intermediate.addConstantUnion(1.0, EbtFloat, loc, true));
 
             // Diffuse:
             TIntermTyped* zero = intermediate.addConstantUnion(0.0, EbtFloat, loc, true);
-            TIntermAggregate* diffuse = new TIntermAggregate(EOpMax);
+            TIntermAggregate* diffuse = NewPoolObject<TIntermAggregate>(EOpMax);
             diffuse->getSequence().push_back(n_dot_l);
             diffuse->getSequence().push_back(zero);
             diffuse->setLoc(loc);
@@ -5187,7 +5187,7 @@ void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& 
             dst->getSequence().push_back(diffuse);
 
             // Specular:
-            TIntermAggregate* min_ndot = new TIntermAggregate(EOpMin);
+            TIntermAggregate* min_ndot = NewPoolObject<TIntermAggregate>(EOpMin);
             min_ndot->getSequence().push_back(n_dot_l);
             min_ndot->getSequence().push_back(n_dot_h);
             min_ndot->setLoc(loc);
@@ -5219,7 +5219,7 @@ void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& 
                 break;
             }
 
-            TIntermAggregate* uint64 = new TIntermAggregate(EOpConstructUVec2);
+            TIntermAggregate* uint64 = NewPoolObject<TIntermAggregate>(EOpConstructUVec2);
 
             uint64->getSequence().push_back(arg0);
             uint64->getSequence().push_back(arg1);
@@ -5227,7 +5227,7 @@ void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& 
             uint64->setLoc(loc);
 
             // bitcast uint2 to a double
-            TIntermTyped* convert = new TIntermUnary(EOpUint64BitsToDouble);
+            TIntermTyped* convert = NewPoolObject<TIntermUnary>(EOpUint64BitsToDouble);
             convert->getAsUnaryNode()->setOperand(uint64);
             convert->setLoc(loc);
             convert->setType(TType(EbtDouble, EvqTemporary));
@@ -5253,7 +5253,7 @@ void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& 
             }
 
             // For scalar case, we don't need to construct another type.
-            TIntermAggregate* result = (vecSize > 1) ? new TIntermAggregate(constructOp) : nullptr;
+            TIntermAggregate* result = (vecSize > 1) ? NewPoolObject<TIntermAggregate>(constructOp) : nullptr;
 
             if (result) {
                 result->setType(TType(EbtFloat, EvqTemporary, vecSize));
@@ -5268,7 +5268,7 @@ void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& 
                 if (component != argValue)
                     component->setType(TType(argValue->getBasicType(), EvqTemporary));
 
-                TIntermTyped* unpackOp  = new TIntermUnary(EOpUnpackHalf2x16);
+                TIntermTyped* unpackOp  = NewPoolObject<TIntermUnary>(EOpUnpackHalf2x16);
                 unpackOp->setType(TType(EbtFloat, EvqTemporary, 2));
                 unpackOp->getAsUnaryNode()->setOperand(component);
                 unpackOp->setLoc(loc);
@@ -5304,7 +5304,7 @@ void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& 
             }
 
             // For scalar case, we don't need to construct another type.
-            TIntermAggregate* result = (vecSize > 1) ? new TIntermAggregate(constructOp) : nullptr;
+            TIntermAggregate* result = (vecSize > 1) ? NewPoolObject<TIntermAggregate>(constructOp) : nullptr;
 
             if (result) {
                 result->setType(TType(EbtUint, EvqTemporary, vecSize));
@@ -5319,13 +5319,13 @@ void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& 
                 if (component != argValue)
                     component->setType(TType(argValue->getBasicType(), EvqTemporary));
 
-                TIntermAggregate* vec2ComponentAndZero = new TIntermAggregate(EOpConstructVec2);
+                TIntermAggregate* vec2ComponentAndZero = NewPoolObject<TIntermAggregate>(EOpConstructVec2);
                 vec2ComponentAndZero->getSequence().push_back(component);
                 vec2ComponentAndZero->getSequence().push_back(zero);
                 vec2ComponentAndZero->setType(TType(EbtFloat, EvqTemporary, 2));
                 vec2ComponentAndZero->setLoc(loc);
 
-                TIntermTyped* packOp = new TIntermUnary(EOpPackHalf2x16);
+                TIntermTyped* packOp = NewPoolObject<TIntermUnary>(EOpPackHalf2x16);
                 packOp->getAsUnaryNode()->setOperand(vec2ComponentAndZero);
                 packOp->setLoc(loc);
                 packOp->setType(TType(EbtUint, EvqTemporary));
@@ -5809,7 +5809,7 @@ void HlslParseContext::addInputArgumentConversions(const TFunction& function, TI
                     // object itself.
                     TVariable* internalAggregate = makeInternalVariable("aggShadow", *function[param].type);
                     internalAggregate->getWritableType().getQualifier().makeTemporary();
-                    TIntermSymbol* internalSymbolNode = new TIntermSymbol(internalAggregate->getUniqueId(),
+                    TIntermSymbol* internalSymbolNode = NewPoolObject<TIntermSymbol>(internalAggregate->getUniqueId(),
                                                                           internalAggregate->getName(),
                                                                           internalAggregate->getType());
                     internalSymbolNode->setLoc(arg->getLoc());
@@ -6211,7 +6211,7 @@ TFunction* HlslParseContext::makeConstructorCall(const TSourceLoc& loc, const TT
 
     TString empty("");
 
-    return new TFunction(&empty, type, op);
+    return NewPoolObject<TFunction>(&empty, type, op);
 }
 
 //
@@ -6494,7 +6494,7 @@ void HlslParseContext::variableCheck(TIntermTyped*& nodePtr)
 
         // Add to symbol table to prevent future error messages on the same name
         if (symbol->getName().size() > 0) {
-            TVariable* fakeVariable = new TVariable(&symbol->getName(), TType(EbtFloat));
+            TVariable* fakeVariable = NewPoolObject<TVariable>(&symbol->getName(), TType(EbtFloat));
             symbolTable.insert(*fakeVariable);
 
             // substitute a symbol node for this new variable
@@ -6904,7 +6904,7 @@ void HlslParseContext::declareArray(const TSourceLoc& loc, const TString& identi
             // Successfully process a new definition.
             // (Redeclarations have to take place at the same scope; otherwise they are hiding declarations)
             //
-            symbol = new TVariable(&identifier, type);
+            symbol = NewPoolObject<TVariable>(&identifier, type);
             symbolTable.insert(*symbol);
             if (track && symbolTable.atGlobalLevel())
                 trackLinkage(*symbol);
@@ -7064,7 +7064,7 @@ void HlslParseContext::shareStructBufferType(TType& type)
     }
 
     // Otherwise, remember it:
-    TType* typeCopy = new TType;
+    TType* typeCopy = NewPoolObject<TType>();
     typeCopy->shallowCopy(type);
     structBufferTypes.push_back(typeCopy);
 }
@@ -7767,10 +7767,10 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, TFunction
             TIntermOperator* promote = nullptr;
 
             if (call.getParamCount() == 1) {
-                promote = new TIntermUnary(bestMatch->getBuiltInOp());
+                promote = NewPoolObject<TIntermUnary>(bestMatch->getBuiltInOp());
                 promote->getAsUnaryNode()->setOperand(args->getAsTyped());
             } else {
-                promote = new TIntermAggregate(bestMatch->getBuiltInOp());
+                promote = NewPoolObject<TIntermAggregate>(bestMatch->getBuiltInOp());
                 promote->getAsAggregate()->getSequence().swap(args->getAsAggregate()->getSequence());
             }
 
@@ -7792,18 +7792,18 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, TFunction
             // Handle aggregates: put all args into the new function call
             for (int arg = 0; arg < int(args->getAsAggregate()->getSequence().size()); ++arg) {
                 // TODO: But for constness, we could avoid the new & shallowCopy, and use the pointer directly.
-                TParameter param = { nullptr, new TType, nullptr };
+                TParameter param = { nullptr, NewPoolObject<TType>(), nullptr };
                 param.type->shallowCopy(args->getAsAggregate()->getSequence()[arg]->getAsTyped()->getType());
                 convertedCall.addParameter(param);
             }
         } else if (args->getAsUnaryNode()) {
             // Handle unaries: put all args into the new function call
-            TParameter param = { nullptr, new TType, nullptr };
+            TParameter param = { nullptr, NewPoolObject<TType>(), nullptr };
             param.type->shallowCopy(args->getAsUnaryNode()->getOperand()->getAsTyped()->getType());
             convertedCall.addParameter(param);
         } else if (args->getAsTyped()) {
             // Handle bare e.g, floats, not in an aggregate.
-            TParameter param = { nullptr, new TType, nullptr };
+            TParameter param = { nullptr, NewPoolObject<TType>(), nullptr };
             param.type->shallowCopy(args->getAsTyped()->getType());
             convertedCall.addParameter(param);
         } else {
@@ -7839,7 +7839,7 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, TFunction
 //
 void HlslParseContext::declareTypedef(const TSourceLoc& loc, const TString& identifier, const TType& parseType)
 {
-    TVariable* typeSymbol = new TVariable(&identifier, parseType, true);
+    TVariable* typeSymbol = NewPoolObject<TVariable>(&identifier, parseType, true);
     if (! symbolTable.insert(*typeSymbol))
         error(loc, "name already defined", "typedef", identifier.c_str());
 }
@@ -7855,7 +7855,7 @@ void HlslParseContext::declareStruct(const TSourceLoc& loc, TString& structName,
     if (type.getBasicType() == EbtBlock || structName.size() == 0)
         return;
 
-    TVariable* userTypeDef = new TVariable(&structName, type, true);
+    TVariable* userTypeDef = NewPoolObject<TVariable>(&structName, type, true);
     if (! symbolTable.insert(*userTypeDef)) {
         error(loc, "redefinition", structName.c_str(), "struct");
         return;
@@ -7865,7 +7865,7 @@ void HlslParseContext::declareStruct(const TSourceLoc& loc, TString& structName,
 
     const auto condAlloc = [](bool pred, TTypeList*& list) {
         if (pred && list == nullptr)
-            list = new TTypeList;
+            list = NewPoolObject<TTypeList>();
     };
 
     tIoKinds newLists = { nullptr, nullptr, nullptr }; // allocate for each kind found
@@ -7898,14 +7898,14 @@ void HlslParseContext::declareStruct(const TSourceLoc& loc, TString& structName,
     for (auto member = type.getStruct()->begin(); member != type.getStruct()->end(); ++member) {
         const auto inheritStruct = [&](TTypeList* s, TTypeLoc& ioMember) {
             if (s != nullptr) {
-                ioMember.type = new TType;
+                ioMember.type = NewPoolObject<TType>();
                 ioMember.type->shallowCopy(*member->type);
                 ioMember.type->setStruct(s);
             }
         };
         const auto newMember = [&](TTypeLoc& m) {
             if (m.type == nullptr) {
-                m.type = new TType;
+                m.type = NewPoolObject<TType>();
                 m.type->shallowCopy(*member->type);
             }
         };
@@ -8078,8 +8078,8 @@ void HlslParseContext::inheritGlobalDefaults(TQualifier& dst) const
 //
 TVariable* HlslParseContext::makeInternalVariable(const char* name, const TType& type) const
 {
-    TString* nameString = NewPoolTString(name);
-    TVariable* variable = new TVariable(nameString, type);
+    TString* nameString = NewPoolObject<TString>(name);
+    TVariable* variable = NewPoolObject<TVariable>(nameString, type);
     symbolTable.makeInternalVariable(*variable);
 
     return variable;
@@ -8105,7 +8105,7 @@ TVariable* HlslParseContext::declareNonArray(const TSourceLoc& loc, const TStrin
                                              bool track)
 {
     // make a new variable
-    TVariable* variable = new TVariable(&identifier, type);
+    TVariable* variable = NewPoolObject<TVariable>(&identifier, type);
 
     // add variable to symbol table
     if (symbolTable.insert(*variable)) {
@@ -8915,9 +8915,9 @@ void HlslParseContext::declareBlock(const TSourceLoc& loc, TType& type, const TS
     // Add the variable, as anonymous or named instanceName.
     // Make an anonymous variable if no name was provided.
     if (instanceName == nullptr)
-        instanceName = NewPoolTString("");
+        instanceName = NewPoolObject<TString>("");
 
-    TVariable& variable = *new TVariable(instanceName, blockType);
+    TVariable& variable = *NewPoolObject<TVariable>(instanceName, blockType);
     if (! symbolTable.insert(variable)) {
         if (*instanceName == "")
             error(loc, "nameless block contains a member that already has a name at global scope",
@@ -9417,11 +9417,11 @@ TIntermNode* HlslParseContext::addSwitch(const TSourceLoc& loc, TIntermTyped* ex
         switchSequence->push_back(lastStatements);
     }
 
-    TIntermAggregate* body = new TIntermAggregate(EOpSequence);
+    TIntermAggregate* body = NewPoolObject<TIntermAggregate>(EOpSequence);
     body->getSequence() = *switchSequenceStack.back();
     body->setLoc(loc);
 
-    TIntermSwitch* switchNode = new TIntermSwitch(expression, body);
+    TIntermSwitch* switchNode = NewPoolObject<TIntermSwitch>(expression, body);
     switchNode->setLoc(loc);
     handleSwitchAttributes(loc, switchNode, attributes);
 
@@ -9434,7 +9434,7 @@ TIntermNode* HlslParseContext::addSwitch(const TSourceLoc& loc, TIntermTyped* ex
 void HlslParseContext::pushThisScope(const TType& thisStruct, const TVector<TFunctionDeclarator>& functionDeclarators)
 {
     // member variables
-    TVariable& thisVariable = *new TVariable(NewPoolTString(""), thisStruct);
+    TVariable& thisVariable = *NewPoolObject<TVariable>(NewPoolObject<TString>(""), thisStruct);
     symbolTable.pushThis(thisVariable);
 
     // member functions
@@ -9481,7 +9481,7 @@ void HlslParseContext::getFullNamespaceName(TString*& name) const
     if (currentTypePrefix.size() == 0)
         return;
 
-    TString* fullName = NewPoolTString(currentTypePrefix.back().c_str());
+    TString* fullName = NewPoolObject<TString>(currentTypePrefix.back().c_str());
     fullName->append(*name);
     name = fullName;
 }
@@ -9880,7 +9880,7 @@ void HlslParseContext::addPatchConstantInvocation()
             error(loc, "unable to locate patch function parameter name", "", "");
             return;
         } else {
-            TVariable& variable = *new TVariable(name, type);
+            TVariable& variable = *NewPoolObject<TVariable>(name, type);
             if (! symbolTable.insert(variable)) {
                 error(loc, "unable to declare patch constant function interface variable", name->c_str(), "");
                 return;
@@ -9999,7 +9999,7 @@ void HlslParseContext::addPatchConstantInvocation()
         // If we didn't find it because the shader made one, add our own.
         if (invocationIdSym == nullptr) {
             TType invocationIdType(EbtUint, EvqIn, 1);
-            TString* invocationIdName = NewPoolTString("InvocationId");
+            TString* invocationIdName = NewPoolObject<TString>("InvocationId");
             invocationIdType.getQualifier().builtIn = EbvInvocationId;
             addToLinkage(invocationIdType, invocationIdName, &invocationIdSym);
         }
@@ -10184,7 +10184,7 @@ void HlslParseContext::addPatchConstantInvocation()
     }
 
     // ================ Step 4: Barrier ================
-    TIntermTyped* barrier = new TIntermAggregate(EOpBarrier);
+    TIntermTyped* barrier = NewPoolObject<TIntermAggregate>(EOpBarrier);
     barrier->setLoc(loc);
     barrier->setType(TType(EbtVoid));
     epBodySeq.insert(epBodySeq.end(), barrier);
@@ -10196,7 +10196,7 @@ void HlslParseContext::addPatchConstantInvocation()
 
     // ================ Step 5B: Create if statement on Invocation ID == 0 ================
     intermediate.setAggregateOperator(pcfCallSequence, EOpSequence, TType(EbtVoid), loc);
-    TIntermTyped* invocationIdTest = new TIntermSelection(cmp, pcfCallSequence, nullptr);
+    TIntermTyped* invocationIdTest = NewPoolObject<TIntermSelection>(cmp, pcfCallSequence, nullptr);
     invocationIdTest->setLoc(loc);
 
     // add our test sequence before the return.

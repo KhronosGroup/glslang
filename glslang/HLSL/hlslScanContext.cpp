@@ -641,7 +641,7 @@ EHlslTokenClass HlslScanContext::tokenizeClass(HlslToken& token)
         }
 
         case PpAtomConstString: {
-            parserToken->string = NewPoolTString(tokenText);
+            parserToken->string = NewPoolObject<TString>(tokenText);
             return EHTokStringConstant;
         }
 
@@ -1045,7 +1045,7 @@ EHlslTokenClass HlslScanContext::tokenizeIdentifier()
 
 EHlslTokenClass HlslScanContext::identifierOrType()
 {
-    parserToken->string = NewPoolTString(tokenText);
+    parserToken->string = NewPoolObject<TString>(tokenText);
 
     return EHTokIdentifier;
 }

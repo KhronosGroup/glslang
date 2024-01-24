@@ -87,12 +87,12 @@ std::mutex init_lock;
 using namespace glslang;
 
 // Create a language specific version of parseables.
-TBuiltInParseables* CreateBuiltInParseables(TInfoSink& infoSink, EShSource source)
+std::unique_ptr<TBuiltInParseables> CreateBuiltInParseables(TInfoSink& infoSink, EShSource source)
 {
     switch (source) {
-    case EShSourceGlsl: return new TBuiltIns();              // GLSL builtIns
+        case EShSourceGlsl: return std::make_unique<TBuiltIns>();              // GLSL builtIns
 #ifdef ENABLE_HLSL
-    case EShSourceHlsl: return new TBuiltInParseablesHlsl(); // HLSL intrinsics
+        case EShSourceHlsl: return std::make_unique<TBuiltInParseablesHlsl>(); // HLSL intrinsics
 #endif
 
     default:
@@ -102,7 +102,7 @@ TBuiltInParseables* CreateBuiltInParseables(TInfoSink& infoSink, EShSource sourc
 }
 
 // Create a language specific version of a parse context.
-TParseContextBase* CreateParseContext(TSymbolTable& symbolTable, TIntermediate& intermediate,
+std::unique_ptr<TParseContextBase> CreateParseContext(TSymbolTable& symbolTable, TIntermediate& intermediate,
                                       int version, EProfile profile, EShSource source,
                                       EShLanguage language, TInfoSink& infoSink,
                                       SpvVersion spvVersion, bool forwardCompatible, EShMessages messages,
@@ -113,12 +113,12 @@ TParseContextBase* CreateParseContext(TSymbolTable& symbolTable, TIntermediate& 
         if (sourceEntryPointName.size() == 0)
             intermediate.setEntryPointName("main");
         TString entryPoint = sourceEntryPointName.c_str();
-        return new TParseContext(symbolTable, intermediate, parsingBuiltIns, version, profile, spvVersion,
+        return std::make_unique<TParseContext>(symbolTable, intermediate, parsingBuiltIns, version, profile, spvVersion,
                                  language, infoSink, forwardCompatible, messages, &entryPoint);
     }
 #ifdef ENABLE_HLSL
     case EShSourceHlsl:
-        return new HlslParseContext(symbolTable, intermediate, parsingBuiltIns, version, profile, spvVersion,
+        return std::make_unique<HlslParseContext>(symbolTable, intermediate, parsingBuiltIns, version, profile, spvVersion,
                                     language, infoSink, sourceEntryPointName.c_str(), forwardCompatible, messages);
 #endif
     default:
@@ -236,7 +236,7 @@ enum EPrecisionClass {
 TSymbolTable* CommonSymbolTable[VersionCount][SpvVersionCount][ProfileCount][SourceCount][EPcCount] = {};
 TSymbolTable* SharedSymbolTables[VersionCount][SpvVersionCount][ProfileCount][SourceCount][EShLangCount] = {};
 
-TPoolAllocator* PerProcessGPA = nullptr;
+std::unique_ptr<TPoolAllocator> PerProcessGPA = nullptr;
 
 //
 // Parse and add to the given symbol table the content of the given shader string.
@@ -248,9 +248,9 @@ bool InitializeSymbolTable(const TString& builtIns, int version, EProfile profil
 
     intermediate.setSource(source);
 
-    std::unique_ptr<TParseContextBase> parseContext(CreateParseContext(symbolTable, intermediate, version, profile, source,
+    auto parseContext = CreateParseContext(symbolTable, intermediate, version, profile, source,
                                                                        language, infoSink, spvVersion, true, EShMsgDefault,
-                                                                       true));
+                                                                       true);
 
     TShader::ForbidIncluder includer;
     TPpContext ppContext(*parseContext, "", includer);
@@ -314,7 +314,7 @@ void InitializeStageSymbolTable(TBuiltInParseables& builtInParseables, int versi
 //
 bool InitializeSymbolTables(TInfoSink& infoSink, TSymbolTable** commonTable,  TSymbolTable** symbolTables, int version, EProfile profile, const SpvVersion& spvVersion, EShSource source)
 {
-    std::unique_ptr<TBuiltInParseables> builtInParseables(CreateBuiltInParseables(infoSink, source));
+    auto builtInParseables = CreateBuiltInParseables(infoSink, source);
 
     if (builtInParseables == nullptr)
         return false;
@@ -391,7 +391,7 @@ bool InitializeSymbolTables(TInfoSink& infoSink, TSymbolTable** commonTable,  TS
 bool AddContextSpecificSymbols(const TBuiltInResource* resources, TInfoSink& infoSink, TSymbolTable& symbolTable, int version,
                                EProfile profile, const SpvVersion& spvVersion, EShLanguage language, EShSource source)
 {
-    std::unique_ptr<TBuiltInParseables> builtInParseables(CreateBuiltInParseables(infoSink, source));
+    auto builtInParseables = CreateBuiltInParseables(infoSink, source);
 
     if (builtInParseables == nullptr)
         return false;
@@ -432,34 +432,34 @@ void SetupBuiltinSymbolTable(int version, EProfile profile, const SpvVersion& sp
 
     // Switch to a new pool
     TPoolAllocator& previousAllocator = GetThreadPoolAllocator();
-    TPoolAllocator* builtInPoolAllocator = new TPoolAllocator;
-    SetThreadPoolAllocator(builtInPoolAllocator);
+    TPoolAllocator builtInPoolAllocator;
+    SetThreadPoolAllocator(&builtInPoolAllocator);
 
     // Dynamically allocate the local symbol tables so we can control when they are deallocated WRT when the pool is popped.
     TSymbolTable* commonTable[EPcCount];
     TSymbolTable* stageTables[EShLangCount];
     for (int precClass = 0; precClass < EPcCount; ++precClass)
-        commonTable[precClass] = new TSymbolTable;
+        commonTable[precClass] = NewPoolObject<TSymbolTable>();
     for (int stage = 0; stage < EShLangCount; ++stage)
-        stageTables[stage] = new TSymbolTable;
+        stageTables[stage] = NewPoolObject<TSymbolTable>();
 
     // Generate the local symbol tables using the new pool
     InitializeSymbolTables(infoSink, commonTable, stageTables, version, profile, spvVersion, source);
 
     // Switch to the process-global pool
-    SetThreadPoolAllocator(PerProcessGPA);
+    SetThreadPoolAllocator(PerProcessGPA.get());
 
     // Copy the local symbol tables from the new pool to the global tables using the process-global pool
     for (int precClass = 0; precClass < EPcCount; ++precClass) {
         if (! commonTable[precClass]->isEmpty()) {
-            CommonSymbolTable[versionIndex][spvVersionIndex][profileIndex][sourceIndex][precClass] = new TSymbolTable;
+            CommonSymbolTable[versionIndex][spvVersionIndex][profileIndex][sourceIndex][precClass] = NewPoolObject<TSymbolTable>();
             CommonSymbolTable[versionIndex][spvVersionIndex][profileIndex][sourceIndex][precClass]->copyTable(*commonTable[precClass]);
             CommonSymbolTable[versionIndex][spvVersionIndex][profileIndex][sourceIndex][precClass]->readOnly();
         }
     }
     for (int stage = 0; stage < EShLangCount; ++stage) {
         if (! stageTables[stage]->isEmpty()) {
-            SharedSymbolTables[versionIndex][spvVersionIndex][profileIndex][sourceIndex][stage] = new TSymbolTable;
+            SharedSymbolTables[versionIndex][spvVersionIndex][profileIndex][sourceIndex][stage] = NewPoolObject<TSymbolTable>();
             SharedSymbolTables[versionIndex][spvVersionIndex][profileIndex][sourceIndex][stage]->adoptLevels(*CommonSymbolTable
                               [versionIndex][spvVersionIndex][profileIndex][sourceIndex][CommonIndex(profile, (EShLanguage)stage)]);
             SharedSymbolTables[versionIndex][spvVersionIndex][profileIndex][sourceIndex][stage]->copyTable(*stageTables[stage]);
@@ -467,13 +467,6 @@ void SetupBuiltinSymbolTable(int version, EProfile profile, const SpvVersion& sp
         }
     }
 
-    // Clean up the local tables before deleting the pool they used.
-    for (int precClass = 0; precClass < EPcCount; ++precClass)
-        delete commonTable[precClass];
-    for (int stage = 0; stage < EShLangCount; ++stage)
-        delete stageTables[stage];
-
-    delete builtInPoolAllocator;
     SetThreadPoolAllocator(&previousAllocator);
 }
 
@@ -918,7 +911,7 @@ bool ProcessDeferred(
                                                   [stage];
 
     // Dynamically allocate the symbol table so we can control when it is deallocated WRT the pool.
-    std::unique_ptr<TSymbolTable> symbolTable(new TSymbolTable);
+    auto symbolTable = std::make_unique<TSymbolTable>();
     if (cachedTable)
         symbolTable->adoptLevels(*cachedTable);
 
@@ -939,9 +932,9 @@ bool ProcessDeferred(
     // Now we can process the full shader under proper symbols and rules.
     //
 
-    std::unique_ptr<TParseContextBase> parseContext(CreateParseContext(*symbolTable, intermediate, version, profile, source,
+    auto parseContext = CreateParseContext(*symbolTable, intermediate, version, profile, source,
                                                     stage, compiler->infoSink,
-                                                    spvVersion, forwardCompatible, messages, false, sourceEntryPointName));
+                                                    spvVersion, forwardCompatible, messages, false, sourceEntryPointName);
     parseContext->compileOnly = compileOnly;
     TPpContext ppContext(*parseContext, names[numPre] ? names[numPre] : "", includer);
 
@@ -1313,8 +1306,8 @@ int ShInitialize()
     const std::lock_guard<std::mutex> lock(init_lock);
     ++NumberOfClients;
 
-    if (PerProcessGPA == nullptr)
-        PerProcessGPA = new TPoolAllocator();
+    if (!PerProcessGPA)
+        PerProcessGPA = std::make_unique<TPoolAllocator>();
 
     glslang::TScanContext::fillInKeywordMap();
 #ifdef ENABLE_HLSL
@@ -1381,7 +1374,6 @@ int ShFinalize()
             for (int p = 0; p < ProfileCount; ++p) {
                 for (int source = 0; source < SourceCount; ++source) {
                     for (int stage = 0; stage < EShLangCount; ++stage) {
-                        delete SharedSymbolTables[version][spvVersion][p][source][stage];
                         SharedSymbolTables[version][spvVersion][p][source][stage] = nullptr;
                     }
                 }
@@ -1394,7 +1386,6 @@ int ShFinalize()
             for (int p = 0; p < ProfileCount; ++p) {
                 for (int source = 0; source < SourceCount; ++source) {
                     for (int pc = 0; pc < EPcCount; ++pc) {
-                        delete CommonSymbolTable[version][spvVersion][p][source][pc];
                         CommonSymbolTable[version][spvVersion][p][source][pc] = nullptr;
                     }
                 }
@@ -1402,9 +1393,8 @@ int ShFinalize()
         }
     }
 
-    if (PerProcessGPA != nullptr) {
-        delete PerProcessGPA;
-        PerProcessGPA = nullptr;
+    if (!PerProcessGPA) {
+        PerProcessGPA.reset();
     }
 
     glslang::TScanContext::deleteKeywordMap();
@@ -1715,10 +1705,10 @@ public:
 TShader::TShader(EShLanguage s)
     : stage(s), lengths(nullptr), stringNames(nullptr), preamble(""), overrideVersion(0)
 {
-    pool = new TPoolAllocator;
-    infoSink = new TInfoSink;
-    compiler = new TDeferredCompiler(stage, *infoSink);
-    intermediate = new TIntermediate(s);
+    pool = std::make_unique<TPoolAllocator>();
+    infoSink = std::make_unique<TInfoSink>();
+    compiler = std::make_unique<TDeferredCompiler>(stage, *infoSink);
+    intermediate = std::make_shared<TIntermediate>(s);
 
     // clear environment (avoid constructors in them for use in a C interface)
     environment.input.languageFamily = EShSourceNone;
@@ -1729,13 +1719,7 @@ TShader::TShader(EShLanguage s)
     environment.target.hlslFunctionality1 = false;
 }
 
-TShader::~TShader()
-{
-    delete infoSink;
-    delete compiler;
-    delete intermediate;
-    delete pool;
-}
+TShader::~TShader() {}
 
 void TShader::setStrings(const char* const* s, int n)
 {
@@ -1858,12 +1842,12 @@ void TShader::setFlattenUniformArrays(bool flatten)     { intermediate->setFlatt
 bool TShader::parse(const TBuiltInResource* builtInResources, int defaultVersion, EProfile defaultProfile, bool forceDefaultVersionAndProfile,
                     bool forwardCompatible, EShMessages messages, Includer& includer)
 {
-    SetThreadPoolAllocator(pool);
+    SetThreadPoolAllocator(pool.get());
 
     if (! preamble)
         preamble = "";
 
-    return CompileDeferred(compiler, strings, numStrings, lengths, stringNames,
+    return CompileDeferred(compiler.get(), strings, numStrings, lengths, stringNames,
                            preamble, EShOptNone, builtInResources, defaultVersion,
                            defaultProfile, forceDefaultVersionAndProfile, overrideVersion,
                            forwardCompatible, messages, *intermediate, includer, sourceEntryPointName,
@@ -1882,12 +1866,12 @@ bool TShader::preprocess(const TBuiltInResource* builtInResources,
                          std::string* output_string,
                          Includer& includer)
 {
-    SetThreadPoolAllocator(pool);
+    SetThreadPoolAllocator(pool.get());
 
     if (! preamble)
         preamble = "";
 
-    return PreprocessDeferred(compiler, strings, numStrings, lengths, stringNames, preamble,
+    return PreprocessDeferred(compiler.get(), strings, numStrings, lengths, stringNames, preamble,
                               EShOptNone, builtInResources, defaultVersion,
                               defaultProfile, forceDefaultVersionAndProfile, overrideVersion,
                               forwardCompatible, message, includer, *intermediate, output_string,
@@ -1906,25 +1890,15 @@ const char* TShader::getInfoDebugLog()
 
 TProgram::TProgram() : reflection(nullptr), linked(false)
 {
-    pool = new TPoolAllocator;
-    infoSink = new TInfoSink;
+    pool = std::make_unique<TPoolAllocator>();
+    infoSink = std::make_unique<TInfoSink>();
     for (int s = 0; s < EShLangCount; ++s) {
         intermediate[s] = nullptr;
         newedIntermediate[s] = false;
     }
 }
 
-TProgram::~TProgram()
-{
-    delete infoSink;
-    delete reflection;
-
-    for (int s = 0; s < EShLangCount; ++s)
-        if (newedIntermediate[s])
-            delete intermediate[s];
-
-    delete pool;
-}
+TProgram::~TProgram() { }
 
 //
 // Merge the compilation units within each stage into a single TIntermediate.
@@ -1940,7 +1914,7 @@ bool TProgram::link(EShMessages messages)
 
     bool error = false;
 
-    SetThreadPoolAllocator(pool);
+    SetThreadPoolAllocator(pool.get());
 
     for (int s = 0; s < EShLangCount; ++s) {
         if (! linkStage((EShLanguage)s, messages))
@@ -1986,18 +1960,18 @@ bool TProgram::linkStage(EShLanguage stage, EShMessages messages)
     // Be efficient for the common single compilation unit per stage case,
     // reusing it's TIntermediate instead of merging into a new one.
     //
-    TIntermediate *firstIntermediate = stages[stage].front()->intermediate;
+    auto firstIntermediate = stages[stage].front()->intermediate;
     if (stages[stage].size() == 1)
         intermediate[stage] = firstIntermediate;
     else {
-        intermediate[stage] = new TIntermediate(stage,
+        intermediate[stage] = std::make_shared<TIntermediate>(stage,
                                                 firstIntermediate->getVersion(),
                                                 firstIntermediate->getProfile());
         intermediate[stage]->setLimits(firstIntermediate->getLimits());
         if (firstIntermediate->getEnhancedMsgs())
             intermediate[stage]->setEnhancedMsgs();
 
-        // The new TIntermediate must use the same origin as the original TIntermediates.
+        // The NewPoolObject<TIntermediate>() must use the same origin as the original TIntermediates.
         // Otherwise linking will fail due to different coordinate systems.
         if (firstIntermediate->getOriginUpperLeft()) {
             intermediate[stage]->setOriginUpperLeft();
@@ -2040,7 +2014,7 @@ bool TProgram::crossStageCheck(EShMessages) {
     TVector<TIntermediate*> activeStages;
     for (int s = 0; s < EShLangCount; ++s) {
         if (intermediate[s])
-            activeStages.push_back(intermediate[s]);
+            activeStages.push_back(intermediate[s].get());
     }
 
     // no extra linking if there is only one stage
@@ -2120,7 +2094,7 @@ bool TProgram::buildReflection(int opts)
         }
     }
 
-    reflection = new TReflection((EShReflectionOptions)opts, (EShLanguage)firstStage, (EShLanguage)lastStage);
+    reflection = std::make_unique<TReflection>((EShReflectionOptions)opts, (EShLanguage)firstStage, (EShLanguage)lastStage);
 
     for (int s = 0; s < EShLangCount; ++s) {
         if (intermediate[s]) {

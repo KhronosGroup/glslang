@@ -83,7 +83,6 @@ typedef TVector<const char*> TExtensionList;
 
 class TSymbol {
 public:
-    POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
     explicit TSymbol(const TString *n) :  name(n), uniqueId(0), extensions(nullptr), writable(true) { }
     virtual TSymbol* clone() const = 0;
     virtual ~TSymbol() { }  // rely on all symbol owned memory coming from the pool
@@ -94,7 +93,7 @@ public:
     {
         TString newName(prefix);
         newName.append(*name);
-        changeName(NewPoolTString(newName.c_str()));
+        changeName(NewPoolObject<TString>(newName.c_str()));
     }
     virtual const TString& getMangledName() const { return getName(); }
     virtual TFunction* getAsFunction() { return nullptr; }
@@ -110,7 +109,7 @@ public:
     {
         assert(extensions == nullptr);
         assert(numExts > 0);
-        extensions = NewPoolObject(extensions);
+        extensions = NewPoolObject<TExtensionList>();
         for (int e = 0; e < numExts; ++e)
             extensions->push_back(exts[e]);
     }
@@ -181,7 +180,7 @@ public:
         assert(type.isStruct());
         assert(numExts > 0);
         if (memberExtensions == nullptr) {
-            memberExtensions = NewPoolObject(memberExtensions);
+            memberExtensions = NewPoolObject<TVector<TExtensionList>>();
             memberExtensions->resize(type.getStruct()->size());
         }
         for (int e = 0; e < numExts; ++e)
@@ -196,9 +195,10 @@ public:
 
     virtual void dump(TInfoSink& infoSink, bool complete = false) const;
 
-protected:
     explicit TVariable(const TVariable&);
     TVariable& operator=(const TVariable&);
+
+protected:
 
     TType type;
     bool userType;
@@ -223,7 +223,7 @@ struct TParameter {
     TParameter& copyParam(const TParameter& param)
     {
         if (param.name)
-            name = NewPoolTString(param.name->c_str());
+            name = NewPoolObject<TString>(param.name->c_str());
         else
             name = nullptr;
         type = param.type->clone();
@@ -253,7 +253,7 @@ public:
         declaredBuiltIn = retType.getQualifier().builtIn;
     }
     virtual TFunction* clone() const override;
-    virtual ~TFunction();
+    virtual ~TFunction() = default;
 
     virtual TFunction* getAsFunction() override { return this; }
     virtual const TFunction* getAsFunction() const override { return this; }
@@ -275,7 +275,7 @@ public:
     // 'this' is reflected in the list of parameters, but not the mangled name.
     virtual void addThisParameter(TType& type, const char* name)
     {
-        TParameter p = { NewPoolTString(name), new TType, nullptr };
+        TParameter p = { NewPoolObject<TString>(name), NewPoolObject<TType>(), nullptr };
         p.type->shallowCopy(type);
         parameters.insert(parameters.begin(), p);
     }
@@ -330,9 +330,10 @@ public:
     void setExport() { linkType = ELinkExport; }
     TLinkType getLinkType() const { return linkType; }
 
-protected:
     explicit TFunction(const TFunction&);
     TFunction& operator=(const TFunction&);
+
+protected:
 
     typedef TVector<TParameter> TParamList;
     TParamList parameters;
@@ -404,9 +405,8 @@ protected:
 
 class TSymbolTableLevel {
 public:
-    POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
     TSymbolTableLevel() : defaultPrecision(nullptr), anonId(0), thisLevel(false) { }
-    ~TSymbolTableLevel();
+    ~TSymbolTableLevel() = default;
 
     bool insert(const TString& name, TSymbol* symbol) {
         return level.insert(tLevelPair(name, symbol)).second;
@@ -427,7 +427,7 @@ public:
             // Give it a name and insert its members in the symbol table, pointing to the container.
             char buf[20];
             snprintf(buf, 20, "%s%d", AnonymousPrefix, symbol.getAsVariable()->getAnonId());
-            symbol.changeName(NewPoolTString(buf));
+            symbol.changeName(NewPoolObject<TString>(buf));
 
             return insertAnonymousMembers(symbol, 0);
         } else {
@@ -465,7 +465,7 @@ public:
     {
         const TTypeList& types = *symbol.getAsVariable()->getType().getStruct();
         for (unsigned int m = firstMember; m < types.size(); ++m) {
-            TAnonMember* member = new TAnonMember(&types[m].type->getFieldName(), m, *symbol.getAsVariable(), symbol.getAsVariable()->getAnonId());
+            TAnonMember* member = NewPoolObject<TAnonMember>(&types[m].type->getFieldName(), m, *symbol.getAsVariable(), symbol.getAsVariable()->getAnonId());
             if (! level.insert(tLevelPair(member->getMangledName(), member)).second)
                 return false;
         }
@@ -478,7 +478,6 @@ public:
         tLevel::const_iterator toIt = level.find(to);
         if (fromIt == level.end() || toIt == level.end())
             return;
-        delete fromIt->second;
         level[from] = toIt->second;
         retargetedSymbols.push_back({from, to});
     }
@@ -558,7 +557,7 @@ public:
         if (defaultPrecision != nullptr)
             return;
 
-        defaultPrecision = new TPrecisionQualifier[EbtNumTypes];
+        defaultPrecision = NewPoolObject<TPrecisionQualifier[]>(EbtNumTypes);
         for (int t = 0; t < EbtNumTypes; ++t)
             defaultPrecision[t] = p[t];
     }
@@ -658,7 +657,7 @@ public:
 
     void push()
     {
-        table.push_back(new TSymbolTableLevel);
+        table.push_back(NewPoolObject<TSymbolTableLevel>());
         updateUniqueIdLevelFlag();
     }
 
@@ -671,7 +670,7 @@ public:
     void pushThis(TSymbol& thisSymbol)
     {
         assert(thisSymbol.getName().size() == 0);
-        table.push_back(new TSymbolTableLevel);
+        table.push_back(NewPoolObject<TSymbolTableLevel>());
         updateUniqueIdLevelFlag();
         table.back()->setThisLevel();
         insert(thisSymbol);
@@ -680,7 +679,6 @@ public:
     void pop(TPrecisionQualifier *p)
     {
         table[currentLevel()]->getPreviousDefaultPrecisions(p);
-        delete table.back();
         table.pop_back();
         updateUniqueIdLevelFlag();
     }
@@ -756,7 +754,7 @@ public:
             const TAnonMember* anon = shared->getAsAnonMember();
             assert(anon);
             TVariable* container = anon->getAnonContainer().clone();
-            container->changeName(NewPoolTString(""));
+            container->changeName(NewPoolObject<TString>(""));
             container->setUniqueId(anon->getAnonContainer().getUniqueId());
             return container;
         }
@@ -941,7 +939,7 @@ protected:
     TSymbolTable& operator=(TSymbolTableLevel&);
 
     int currentLevel() const { return static_cast<int>(table.size()) - 1; }
-    std::vector<TSymbolTableLevel*> table;
+    TVector<TSymbolTableLevel*> table;
     long long uniqueId;     // for unique identification in code generation
     bool noBuiltInRedeclarations;
     bool separateNameSpaces;
