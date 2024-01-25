@@ -345,7 +345,7 @@ public:
         needToLegalize(false),
         binaryDoubleOutput(false),
         subgroupUniformControlFlow(false),
-        maximalReconvergence(false),
+        maximallyReconverges(false),
         usePhysicalStorageBuffer(false),
         spirvRequirement(nullptr),
         spirvExecutionMode(nullptr),
@@ -964,8 +964,8 @@ public:
     void setSubgroupUniformControlFlow() { subgroupUniformControlFlow = true; }
     bool getSubgroupUniformControlFlow() const { return subgroupUniformControlFlow; }
 
-    void setMaximalReconvergence() { maximalReconvergence = true; }
-    bool getMaximalReconvergence() const { return maximalReconvergence; }
+    void setMaximallyReconverges() { maximallyReconverges = true; }
+    bool getMaximallyReconverges() const { return maximallyReconverges; }
 
     // GL_EXT_spirv_intrinsics
     void insertSpirvRequirement(const TSpirvRequirement* spirvReq);
@@ -1230,7 +1230,7 @@ protected:
     bool needToLegalize;
     bool binaryDoubleOutput;
     bool subgroupUniformControlFlow;
-    bool maximalReconvergence;
+    bool maximallyReconverges;
     bool usePhysicalStorageBuffer;
 
     TSpirvRequirement* spirvRequirement;
