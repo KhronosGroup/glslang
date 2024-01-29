@@ -349,8 +349,8 @@ public:
         usePhysicalStorageBuffer(false),
         spirvRequirement(nullptr),
         spirvExecutionMode(nullptr),
-        uniformLocationBase(0),
-        quadDerivMode(false), reqFullQuadsMode(false)
+        quadDerivMode(false), reqFullQuadsMode(false),
+        uniformLocationBase(0)
     {
         localSize[0] = 1;
         localSize[1] = 1;
