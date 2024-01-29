@@ -538,6 +538,8 @@ enum TOperator {
     EOpSubgroupQuadSwapHorizontal,
     EOpSubgroupQuadSwapVertical,
     EOpSubgroupQuadSwapDiagonal,
+    EOpSubgroupQuadAll,
+    EOpSubgroupQuadAny,
 
     EOpSubgroupPartition,
     EOpSubgroupPartitionedAdd,

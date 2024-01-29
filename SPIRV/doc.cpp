@@ -218,6 +218,9 @@ const char* ExecutionModeString(int mode)
     case ExecutionModeNoGlobalOffsetINTEL:      return "NoGlobalOffsetINTEL";
     case ExecutionModeNumSIMDWorkitemsINTEL:    return "NumSIMDWorkitemsINTEL";
 
+    case ExecutionModeRequireFullQuadsKHR:      return "RequireFullQuadsKHR";
+    case ExecutionModeQuadDerivativesKHR:       return "QuadDerivativesKHR";
+
     case ExecutionModeNonCoherentColorAttachmentReadEXT:        return "NonCoherentColorAttachmentReadEXT";
     case ExecutionModeNonCoherentDepthAttachmentReadEXT:        return "NonCoherentDepthAttachmentReadEXT";
     case ExecutionModeNonCoherentStencilAttachmentReadEXT:      return "NonCoherentStencilAttachmentReadEXT";
@@ -1033,6 +1036,7 @@ const char* CapabilityString(int info)
 
     case CapabilityDemoteToHelperInvocationEXT:             return "DemoteToHelperInvocationEXT";
     case CapabilityShaderClockKHR:                          return "ShaderClockKHR";
+    case CapabilityQuadControlKHR:                          return "QuadControlKHR";
     case CapabilityInt64ImageEXT:                           return "Int64ImageEXT";
 
     case CapabilityIntegerFunctions2INTEL:              return "CapabilityIntegerFunctions2INTEL";
@@ -1432,6 +1436,9 @@ const char* OpcodeString(int op)
     case 4429: return "OpSubgroupAnyKHR";
     case 4430: return "OpSubgroupAllEqualKHR";
     case 4432: return "OpSubgroupReadInvocationKHR";
+
+    case OpGroupNonUniformQuadAllKHR: return "OpGroupNonUniformQuadAllKHR";
+    case OpGroupNonUniformQuadAnyKHR: return "OpGroupNonUniformQuadAnyKHR";
 
     case OpAtomicFAddEXT: return "OpAtomicFAddEXT";
     case OpAtomicFMinEXT: return "OpAtomicFMinEXT";
@@ -2940,6 +2947,8 @@ void Parameterize()
 
         InstructionDesc[OpGroupNonUniformPartitionNV].operands.push(OperandId, "X");
 
+        InstructionDesc[OpGroupNonUniformQuadAllKHR].operands.push(OperandId, "'Predicate'");
+        InstructionDesc[OpGroupNonUniformQuadAnyKHR].operands.push(OperandId, "'Predicate'");
         InstructionDesc[OpTypeAccelerationStructureKHR].setResultAndType(true, false);
 
         InstructionDesc[OpTraceNV].operands.push(OperandId, "'Acceleration Structure'");

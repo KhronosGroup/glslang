@@ -1640,6 +1640,20 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion,
         builder.addExecutionMode(shaderEntry, spv::ExecutionModeMaximallyReconvergesKHR);
     }
 
+    if (glslangIntermediate->getQuadDerivMode())
+    {
+        builder.addCapability(spv::CapabilityQuadControlKHR);
+        builder.addExtension(spv::E_SPV_KHR_quad_control);
+        builder.addExecutionMode(shaderEntry, spv::ExecutionModeQuadDerivativesKHR);
+    }
+
+    if (glslangIntermediate->getReqFullQuadsMode())
+    {
+        builder.addCapability(spv::CapabilityQuadControlKHR);
+        builder.addExtension(spv::E_SPV_KHR_quad_control);
+        builder.addExecutionMode(shaderEntry, spv::ExecutionModeRequireFullQuadsKHR);
+    }
+
     unsigned int mode;
     switch (glslangIntermediate->getStage()) {
     case EShLangVertex:
@@ -7173,7 +7187,9 @@ spv::Id TGlslangToSpvTraverser::createUnaryOperation(glslang::TOperator op, OpDe
     case glslang::EOpSubgroupExclusiveXor:
     case glslang::EOpSubgroupQuadSwapHorizontal:
     case glslang::EOpSubgroupQuadSwapVertical:
-    case glslang::EOpSubgroupQuadSwapDiagonal: {
+    case glslang::EOpSubgroupQuadSwapDiagonal:
+    case glslang::EOpSubgroupQuadAll:
+    case glslang::EOpSubgroupQuadAny: {
         std::vector<spv::Id> operands;
         operands.push_back(operand);
         return createSubgroupOperation(op, typeId, operands, typeProxy);
@@ -8278,6 +8294,11 @@ spv::Id TGlslangToSpvTraverser::createSubgroupOperation(glslang::TOperator op, s
     case glslang::EOpSubgroupElect:
         builder.addCapability(spv::CapabilityGroupNonUniform);
         break;
+    case glslang::EOpSubgroupQuadAll:
+    case glslang::EOpSubgroupQuadAny:
+        builder.addExtension(spv::E_SPV_KHR_quad_control);
+        builder.addCapability(spv::CapabilityQuadControlKHR);
+        // pass through
     case glslang::EOpSubgroupAll:
     case glslang::EOpSubgroupAny:
     case glslang::EOpSubgroupAllEqual:
@@ -8385,7 +8406,9 @@ spv::Id TGlslangToSpvTraverser::createSubgroupOperation(glslang::TOperator op, s
     // Figure out which opcode to use.
     switch (op) {
     case glslang::EOpSubgroupElect:                   opCode = spv::OpGroupNonUniformElect; break;
+    case glslang::EOpSubgroupQuadAll:                 opCode = spv::OpGroupNonUniformQuadAllKHR; break;
     case glslang::EOpSubgroupAll:                     opCode = spv::OpGroupNonUniformAll; break;
+    case glslang::EOpSubgroupQuadAny:                 opCode = spv::OpGroupNonUniformQuadAnyKHR; break;
     case glslang::EOpSubgroupAny:                     opCode = spv::OpGroupNonUniformAny; break;
     case glslang::EOpSubgroupAllEqual:                opCode = spv::OpGroupNonUniformAllEqual; break;
     case glslang::EOpSubgroupBroadcast:               opCode = spv::OpGroupNonUniformBroadcast; break;
@@ -8582,7 +8605,10 @@ spv::Id TGlslangToSpvTraverser::createSubgroupOperation(glslang::TOperator op, s
 
     // Every operation begins with the Execution Scope operand.
     spv::IdImmediate executionScope = { true, builder.makeUintConstant(spv::ScopeSubgroup) };
-    spvGroupOperands.push_back(executionScope);
+    // All other ops need the execution scope. Quad Control Ops don't need scope, it's always Quad.
+    if (opCode != spv::OpGroupNonUniformQuadAllKHR && opCode != spv::OpGroupNonUniformQuadAnyKHR) {
+        spvGroupOperands.push_back(executionScope);
+    }
 
     // Next, for all operations that use a Group Operation, push that as an operand.
     if (groupOperation != spv::GroupOperationMax) {

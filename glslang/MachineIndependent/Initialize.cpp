@@ -2227,6 +2227,15 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             );
     }
 
+    // GL_EXT_shader_quad_control
+    if ((profile == EEsProfile && version >= 310) ||
+        (profile != EEsProfile && version >= 140)) {
+        commonBuiltins.append(
+            "bool subgroupQuadAll(bool);\n"
+            "bool subgroupQuadAny(bool);\n"
+            );
+    }
+
     if (profile != EEsProfile && version >= 460) {
         commonBuiltins.append(
             "bool anyInvocation(bool);"
@@ -8779,6 +8788,13 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setVariableExtensions("gl_ShadingRateFlag4HorizontalPixelsEXT", 1, &E_GL_EXT_fragment_shading_rate);
         }
 
+        // GL_EXT_shader_quad_control
+        if ((profile != EEsProfile && version >= 140) ||
+            (profile == EEsProfile && version >= 310)) {
+            symbolTable.setFunctionExtensions("subgroupQuadAll",                     1,  &E_GL_KHR_shader_subgroup_vote);
+            symbolTable.setFunctionExtensions("subgroupQuadAny",                     1,  &E_GL_KHR_shader_subgroup_vote);
+        }
+
         // GL_EXT_shader_tile_image
         symbolTable.setFunctionExtensions("stencilAttachmentReadEXT", 1, &E_GL_EXT_shader_tile_image);
         symbolTable.setFunctionExtensions("depthAttachmentReadEXT", 1, &E_GL_EXT_shader_tile_image);
@@ -9975,6 +9991,13 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         if (profile == EEsProfile) {
             symbolTable.relateToOperator("shadow2DEXT",              EOpTexture);
             symbolTable.relateToOperator("shadow2DProjEXT",          EOpTextureProj);
+        }
+
+        // GL_EXT_shader_quad_control
+        if ((profile == EEsProfile && version >= 310) ||
+            (profile != EEsProfile && version >= 140)) {
+            symbolTable.relateToOperator("subgroupQuadAll",                     EOpSubgroupQuadAll);
+            symbolTable.relateToOperator("subgroupQuadAny",                     EOpSubgroupQuadAny);
         }
 
         if ((profile == EEsProfile && version >= 310) ||
