@@ -357,6 +357,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_EXT_spirv_intrinsics]            = EBhDisable;
     extensionBehavior[E_GL_EXT_mesh_shader]                 = EBhDisable;
     extensionBehavior[E_GL_EXT_opacity_micromap]            = EBhDisable;
+    extensionBehavior[E_GL_EXT_shader_quad_control]         = EBhDisable;
     extensionBehavior[E_GL_EXT_ray_tracing_position_fetch]  = EBhDisable;
     extensionBehavior[E_GL_EXT_shader_tile_image]           = EBhDisable;
     extensionBehavior[E_GL_EXT_texture_shadow_lod]          = EBhDisable;
@@ -584,6 +585,7 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_EXT_shader_atomic_float2 1\n"
 
             "#define GL_EXT_fragment_shader_barycentric 1\n"
+            "#define GL_EXT_shader_quad_control 1\n"
             "#define GL_EXT_texture_array 1\n"
             ;
 

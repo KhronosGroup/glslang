@@ -735,6 +735,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.1.6.specConstant.comp",
         "spv.1.6.samplerBuffer.frag",
         "spv.1.6.separate.frag",
+        "spv.1.6.quad.frag",
     })),
     FileNameAsCustomTestSuffix
 );

@@ -349,7 +349,8 @@ public:
         usePhysicalStorageBuffer(false),
         spirvRequirement(nullptr),
         spirvExecutionMode(nullptr),
-        uniformLocationBase(0)
+        uniformLocationBase(0),
+        quadDerivMode(false), reqFullQuadsMode(false)
     {
         localSize[0] = 1;
         localSize[1] = 1;
@@ -858,6 +859,10 @@ public:
 
     void setXfbMode() { xfbMode = true; }
     bool getXfbMode() const { return xfbMode; }
+    void setQuadDerivMode(bool mode = true) { quadDerivMode = mode; }
+    bool getQuadDerivMode() const { return quadDerivMode; }
+    void setReqFullQuadsMode(bool mode = true) { reqFullQuadsMode = mode; }
+    bool getReqFullQuadsMode() const { return reqFullQuadsMode; }
     void setMultiStream() { multiStream = true; }
     bool isMultiStream() const { return multiStream; }
     bool setOutputPrimitive(TLayoutGeometry p)
@@ -1197,6 +1202,8 @@ protected:
     bool hlslFunctionality1;
     int blendEquations;        // an 'or'ing of masks of shifts of TBlendEquationShift
     bool xfbMode;
+    bool quadDerivMode;
+    bool reqFullQuadsMode;
     std::vector<TXfbBuffer> xfbBuffers;     // all the data we need to track per xfb buffer
     bool multiStream;
     bool layoutOverrideCoverage;

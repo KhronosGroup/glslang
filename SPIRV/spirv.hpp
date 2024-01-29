@@ -174,6 +174,8 @@ enum ExecutionMode {
     ExecutionModeStencilRefUnchangedBackAMD = 5082,
     ExecutionModeStencilRefGreaterBackAMD = 5083,
     ExecutionModeStencilRefLessBackAMD = 5084,
+    ExecutionModeQuadDerivativesKHR  = 5088,
+    ExecutionModeRequireFullQuadsKHR = 5089,
     ExecutionModeOutputLinesEXT = 5269,
     ExecutionModeOutputLinesNV = 5269,
     ExecutionModeOutputPrimitivesEXT = 5270,
@@ -1040,6 +1042,7 @@ enum Capability {
     CapabilityImageReadWriteLodAMD = 5015,
     CapabilityInt64ImageEXT = 5016,
     CapabilityShaderClockKHR = 5055,
+    CapabilityQuadControlKHR = 5087,
     CapabilitySampleMaskOverrideCoverageNV = 5249,
     CapabilityGeometryShaderPassthroughNV = 5251,
     CapabilityShaderViewportIndexLayerEXT = 5254,
@@ -1705,6 +1708,8 @@ enum Op {
     OpFragmentMaskFetchAMD = 5011,
     OpFragmentFetchAMD = 5012,
     OpReadClockKHR = 5056,
+    OpGroupNonUniformQuadAllKHR = 5110,
+    OpGroupNonUniformQuadAnyKHR = 5111,
     OpHitObjectRecordHitMotionNV = 5249,
     OpHitObjectRecordHitWithIndexMotionNV = 5250,
     OpHitObjectRecordMissMotionNV = 5251,
@@ -2375,6 +2380,8 @@ inline void HasResultAndType(Op opcode, bool *hasResult, bool *hasResultType) {
     case OpGroupNonUniformLogicalXor: *hasResult = true; *hasResultType = true; break;
     case OpGroupNonUniformQuadBroadcast: *hasResult = true; *hasResultType = true; break;
     case OpGroupNonUniformQuadSwap: *hasResult = true; *hasResultType = true; break;
+    case OpGroupNonUniformQuadAllKHR: *hasResult = true; *hasResultType = true; break;
+    case OpGroupNonUniformQuadAnyKHR: *hasResult = true; *hasResultType = true; break;
     case OpCopyLogical: *hasResult = true; *hasResultType = true; break;
     case OpPtrEqual: *hasResult = true; *hasResultType = true; break;
     case OpPtrNotEqual: *hasResult = true; *hasResultType = true; break;
