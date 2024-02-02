@@ -204,7 +204,8 @@ protected:
     spv::Id createBinaryMatrixOperation(spv::Op, OpDecorations&, spv::Id typeId, spv::Id left, spv::Id right);
     spv::Id createUnaryOperation(glslang::TOperator op, OpDecorations&, spv::Id typeId, spv::Id operand,
                                  glslang::TBasicType typeProxy,
-                                 const spv::Builder::AccessChain::CoherentFlags &lvalueCoherentFlags);
+                                 const spv::Builder::AccessChain::CoherentFlags &lvalueCoherentFlags,
+                                 const glslang::TType &opType);
     spv::Id createUnaryMatrixOperation(spv::Op op, OpDecorations&, spv::Id typeId, spv::Id operand,
                                        glslang::TBasicType typeProxy);
     spv::Id createConversion(glslang::TOperator op, OpDecorations&, spv::Id destTypeId, spv::Id operand,
@@ -213,7 +214,8 @@ protected:
     spv::Id makeSmearedConstant(spv::Id constant, int vectorSize);
     spv::Id createAtomicOperation(glslang::TOperator op, spv::Decoration precision, spv::Id typeId,
         std::vector<spv::Id>& operands, glslang::TBasicType typeProxy,
-        const spv::Builder::AccessChain::CoherentFlags &lvalueCoherentFlags);
+        const spv::Builder::AccessChain::CoherentFlags &lvalueCoherentFlags,
+        const glslang::TType &opType);
     spv::Id createInvocationsOperation(glslang::TOperator op, spv::Id typeId, std::vector<spv::Id>& operands,
         glslang::TBasicType typeProxy);
     spv::Id CreateInvocationsVectorOperation(spv::Op op, spv::GroupOperation groupOperation,
@@ -2692,7 +2694,7 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
     // if not, then possibly an operation
     if (! result)
         result = createUnaryOperation(node->getOp(), decorations, resultType(), operand,
-            node->getOperand()->getBasicType(), lvalueCoherentFlags);
+            node->getOperand()->getBasicType(), lvalueCoherentFlags, node->getType());
 
     // it could be attached to a SPIR-V intruction
     if (!result) {
@@ -3775,7 +3777,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         glslang::TBasicType typeProxy = (node->getOp() == glslang::EOpAtomicStore)
             ? node->getSequence()[0]->getAsTyped()->getBasicType() : node->getBasicType();
         result = createAtomicOperation(node->getOp(), precision, resultType(), operands, typeProxy,
-            lvalueCoherentFlags);
+            lvalueCoherentFlags, node->getType());
     } else if (node->getOp() == glslang::EOpSpirvInst) {
         const auto& spirvInst = node->getSpirvInstruction();
         if (spirvInst.set == "") {
@@ -3822,7 +3824,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
                 result = createUnaryOperation(
                     node->getOp(), decorations,
                     resultType(), operands.front(),
-                    glslangOperands[0]->getAsTyped()->getBasicType(), lvalueCoherentFlags);
+                    glslangOperands[0]->getAsTyped()->getBasicType(), lvalueCoherentFlags, node->getType());
             }
             break;
         default:
@@ -6077,7 +6079,7 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
                 operands.push_back(*opIt);
 
             return createAtomicOperation(node->getOp(), precision, resultType(), operands, typeProxy,
-                lvalueCoherentFlags);
+                lvalueCoherentFlags, node->getType());
         }
     }
 
@@ -6828,7 +6830,8 @@ spv::Id TGlslangToSpvTraverser::createBinaryMatrixOperation(spv::Op op, OpDecora
 }
 
 spv::Id TGlslangToSpvTraverser::createUnaryOperation(glslang::TOperator op, OpDecorations& decorations, spv::Id typeId,
-    spv::Id operand, glslang::TBasicType typeProxy, const spv::Builder::AccessChain::CoherentFlags &lvalueCoherentFlags)
+    spv::Id operand, glslang::TBasicType typeProxy, const spv::Builder::AccessChain::CoherentFlags &lvalueCoherentFlags,
+    const glslang::TType &opType)
 {
     spv::Op unaryOp = spv::OpNop;
     int extBuiltins = -1;
@@ -7116,7 +7119,7 @@ spv::Id TGlslangToSpvTraverser::createUnaryOperation(glslang::TOperator op, OpDe
         // Handle all of the atomics in one place, in createAtomicOperation()
         std::vector<spv::Id> operands;
         operands.push_back(operand);
-        return createAtomicOperation(op, decorations.precision, typeId, operands, typeProxy, lvalueCoherentFlags);
+        return createAtomicOperation(op, decorations.precision, typeId, operands, typeProxy, lvalueCoherentFlags, opType);
     }
 
     case glslang::EOpBitFieldReverse:
@@ -7834,7 +7837,7 @@ spv::Id TGlslangToSpvTraverser::makeSmearedConstant(spv::Id constant, int vector
 // For glslang ops that map to SPV atomic opCodes
 spv::Id TGlslangToSpvTraverser::createAtomicOperation(glslang::TOperator op, spv::Decoration /*precision*/,
     spv::Id typeId, std::vector<spv::Id>& operands, glslang::TBasicType typeProxy,
-    const spv::Builder::AccessChain::CoherentFlags &lvalueCoherentFlags)
+    const spv::Builder::AccessChain::CoherentFlags &lvalueCoherentFlags, const glslang::TType &opType)
 {
     spv::Op opCode = spv::OpNop;
 
@@ -7847,8 +7850,13 @@ spv::Id TGlslangToSpvTraverser::createAtomicOperation(glslang::TOperator op, spv
             opCode = spv::OpAtomicFAddEXT;
             builder.addExtension(spv::E_SPV_EXT_shader_atomic_float_add);
             if (typeProxy == glslang::EbtFloat16) {
-                builder.addExtension(spv::E_SPV_EXT_shader_atomic_float16_add);
-                builder.addCapability(spv::CapabilityAtomicFloat16AddEXT);
+                if (opType.getVectorSize() == 2 || opType.getVectorSize() == 4) {
+                    builder.addExtension(spv::E_SPV_NV_shader_atomic_fp16_vector);
+                    builder.addCapability(spv::CapabilityAtomicFloat16VectorNV);
+                } else {
+                    builder.addExtension(spv::E_SPV_EXT_shader_atomic_float16_add);
+                    builder.addCapability(spv::CapabilityAtomicFloat16AddEXT);
+                }
             } else if (typeProxy == glslang::EbtFloat) {
                 builder.addCapability(spv::CapabilityAtomicFloat32AddEXT);
             } else {
@@ -7866,8 +7874,14 @@ spv::Id TGlslangToSpvTraverser::createAtomicOperation(glslang::TOperator op, spv
         if (typeProxy == glslang::EbtFloat16 || typeProxy == glslang::EbtFloat || typeProxy == glslang::EbtDouble) {
             opCode = spv::OpAtomicFMinEXT;
             builder.addExtension(spv::E_SPV_EXT_shader_atomic_float_min_max);
-            if (typeProxy == glslang::EbtFloat16)
-                builder.addCapability(spv::CapabilityAtomicFloat16MinMaxEXT);
+            if (typeProxy == glslang::EbtFloat16) {
+                if (opType.getVectorSize() == 2 || opType.getVectorSize() == 4) {
+                    builder.addExtension(spv::E_SPV_NV_shader_atomic_fp16_vector);
+                    builder.addCapability(spv::CapabilityAtomicFloat16VectorNV);
+                } else {
+                    builder.addCapability(spv::CapabilityAtomicFloat16MinMaxEXT);
+                }
+            }
             else if (typeProxy == glslang::EbtFloat)
                 builder.addCapability(spv::CapabilityAtomicFloat32MinMaxEXT);
             else
@@ -7884,8 +7898,14 @@ spv::Id TGlslangToSpvTraverser::createAtomicOperation(glslang::TOperator op, spv
         if (typeProxy == glslang::EbtFloat16 || typeProxy == glslang::EbtFloat || typeProxy == glslang::EbtDouble) {
             opCode = spv::OpAtomicFMaxEXT;
             builder.addExtension(spv::E_SPV_EXT_shader_atomic_float_min_max);
-            if (typeProxy == glslang::EbtFloat16)
-                builder.addCapability(spv::CapabilityAtomicFloat16MinMaxEXT);
+            if (typeProxy == glslang::EbtFloat16) {
+                if (opType.getVectorSize() == 2 || opType.getVectorSize() == 4) {
+                    builder.addExtension(spv::E_SPV_NV_shader_atomic_fp16_vector);
+                    builder.addCapability(spv::CapabilityAtomicFloat16VectorNV);
+                } else {
+                    builder.addCapability(spv::CapabilityAtomicFloat16MinMaxEXT);
+                }
+            }
             else if (typeProxy == glslang::EbtFloat)
                 builder.addCapability(spv::CapabilityAtomicFloat32MinMaxEXT);
             else
@@ -7914,6 +7934,12 @@ spv::Id TGlslangToSpvTraverser::createAtomicOperation(glslang::TOperator op, spv
     case glslang::EOpAtomicExchange:
     case glslang::EOpImageAtomicExchange:
     case glslang::EOpAtomicCounterExchange:
+        if ((typeProxy == glslang::EbtFloat16) && 
+            (opType.getVectorSize() == 2 || opType.getVectorSize() == 4)) {
+                builder.addExtension(spv::E_SPV_NV_shader_atomic_fp16_vector);
+                builder.addCapability(spv::CapabilityAtomicFloat16VectorNV);
+        }
+
         opCode = spv::OpAtomicExchange;
         break;
     case glslang::EOpAtomicCompSwap:

@@ -1037,6 +1037,7 @@ const char* CapabilityString(int info)
     case CapabilityFragmentShadingRateKHR:                  return "FragmentShadingRateKHR";
 
     case CapabilityDemoteToHelperInvocationEXT:             return "DemoteToHelperInvocationEXT";
+    case CapabilityAtomicFloat16VectorNV:                   return "AtomicFloat16VectorNV";
     case CapabilityShaderClockKHR:                          return "ShaderClockKHR";
     case CapabilityQuadControlKHR:                          return "QuadControlKHR";
     case CapabilityInt64ImageEXT:                           return "Int64ImageEXT";
