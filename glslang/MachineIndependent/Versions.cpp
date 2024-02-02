@@ -305,6 +305,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_NV_integer_cooperative_matrix]            = EBhDisable;
     extensionBehavior[E_GL_NV_shader_invocation_reorder]             = EBhDisable;
     extensionBehavior[E_GL_NV_displacement_micromap]                 = EBhDisable;
+    extensionBehavior[E_GL_NV_shader_atomic_fp16_vector]             = EBhDisable;
 
     // ARM
     extensionBehavior[E_GL_ARM_shader_core_builtins]                 = EBhDisable;
