@@ -1,6 +1,6 @@
  //
 // Copyright (C) 2016 Google, Inc.
-// Copyright (C) 2019 ARM Limited.
+// Copyright (C) 2019, 2022-2024 Arm Limited.
 // Modifications Copyright (C) 2020 Advanced Micro Devices, Inc. All rights reserved.
 //
 // All rights reserved.
@@ -616,6 +616,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.subgroupClustered.comp",
         "spv.subgroupClusteredNeg.comp",
         "spv.subgroupPartitioned.comp",
+        "spv.subgroupRotate.comp",
         "spv.subgroupShuffle.comp",
         "spv.subgroupShuffleRelative.comp",
         "spv.subgroupQuad.comp",
@@ -628,6 +629,8 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.subgroupExtendedTypesClusteredNeg.comp",
         "spv.subgroupExtendedTypesPartitioned.comp",
         "spv.subgroupExtendedTypesPartitionedNeg.comp",
+        "spv.subgroupExtendedTypesRotate.comp",
+        "spv.subgroupExtendedTypesRotateNeg.comp",
         "spv.subgroupExtendedTypesShuffle.comp",
         "spv.subgroupExtendedTypesShuffleNeg.comp",
         "spv.subgroupExtendedTypesShuffleRelative.comp",
