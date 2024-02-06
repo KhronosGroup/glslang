@@ -1,7 +1,7 @@
 //
 // Copyright (C) 2002-2005  3Dlabs Inc. Ltd.
 // Copyright (C) 2012-2016 LunarG, Inc.
-// Copyright (C) 2017 ARM Limited.
+// Copyright (C) 2017, 2022-2024 Arm Limited.
 // Modifications Copyright (C) 2020 Advanced Micro Devices, Inc. All rights reserved.
 //
 // All rights reserved.
@@ -565,6 +565,8 @@ bool TOutputTraverser::visitUnary(TVisit /* visit */, TIntermUnary* node)
     case EOpSubgroupShuffleXor:              out.debug << "subgroupShuffleXor";              break;
     case EOpSubgroupShuffleUp:               out.debug << "subgroupShuffleUp";               break;
     case EOpSubgroupShuffleDown:             out.debug << "subgroupShuffleDown";             break;
+    case EOpSubgroupRotate:                  out.debug << "subgroupRotate";                  break;
+    case EOpSubgroupClusteredRotate:         out.debug << "subgroupClusteredRotate";         break;
     case EOpSubgroupAdd:                     out.debug << "subgroupAdd";                     break;
     case EOpSubgroupMul:                     out.debug << "subgroupMul";                     break;
     case EOpSubgroupMin:                     out.debug << "subgroupMin";                     break;
@@ -1002,6 +1004,8 @@ bool TOutputTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node
     case EOpSubgroupShuffleXor:              out.debug << "subgroupShuffleXor"; break;
     case EOpSubgroupShuffleUp:               out.debug << "subgroupShuffleUp"; break;
     case EOpSubgroupShuffleDown:             out.debug << "subgroupShuffleDown"; break;
+    case EOpSubgroupRotate:                  out.debug << "subgroupRotate"; break;
+    case EOpSubgroupClusteredRotate:         out.debug << "subgroupClusteredRotate"; break;
     case EOpSubgroupAdd:                     out.debug << "subgroupAdd"; break;
     case EOpSubgroupMul:                     out.debug << "subgroupMul"; break;
     case EOpSubgroupMin:                     out.debug << "subgroupMin"; break;

@@ -1,5 +1,6 @@
 //
 // Copyright (C) 2016 Google, Inc.
+// Copyright (C) 2022-2024 Arm Limited.
 //
 // All rights reserved.
 //
@@ -252,6 +253,7 @@ INSTANTIATE_TEST_SUITE_P(
         "glsl.450.subgroupClustered.comp",
         "glsl.450.subgroupClusteredNeg.comp",
         "glsl.450.subgroupPartitioned.comp",
+        "glsl.450.subgroupRotate.comp",
         "glsl.450.subgroupShuffle.comp",
         "glsl.450.subgroupShuffleRelative.comp",
         "glsl.450.subgroupQuad.comp",
@@ -277,6 +279,7 @@ INSTANTIATE_TEST_SUITE_P(
         "glsl.es320.subgroupClustered.comp",
         "glsl.es320.subgroupClusteredNeg.comp",
         "glsl.es320.subgroupPartitioned.comp",
+        "glsl.es320.subgroupRotate.comp",
         "glsl.es320.subgroupShuffle.comp",
         "glsl.es320.subgroupShuffleRelative.comp",
         "glsl.es320.subgroupQuad.comp",

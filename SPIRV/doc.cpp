@@ -1,5 +1,6 @@
 //
 // Copyright (C) 2014-2015 LunarG, Inc.
+// Copyright (C) 2022-2024 Arm Limited.
 // Modifications Copyright (C) 2020 Advanced Micro Devices, Inc. All rights reserved.
 //
 // All rights reserved.
@@ -942,6 +943,7 @@ const char* CapabilityString(int info)
     case CapabilitySubgroupBallotKHR: return "SubgroupBallotKHR";
     case CapabilityDrawParameters:    return "DrawParameters";
     case CapabilitySubgroupVoteKHR:   return "SubgroupVoteKHR";
+    case CapabilityGroupNonUniformRotateKHR: return "CapabilityGroupNonUniformRotateKHR";
 
     case CapabilityStorageUniformBufferBlock16: return "StorageUniformBufferBlock16";
     case CapabilityStorageUniform16:            return "StorageUniform16";
@@ -1482,6 +1484,8 @@ const char* OpcodeString(int op)
     case OpWritePackedPrimitiveIndices4x8NV: return "OpWritePackedPrimitiveIndices4x8NV";
     case OpEmitMeshTasksEXT:                 return "OpEmitMeshTasksEXT";
     case OpSetMeshOutputsEXT:                return "OpSetMeshOutputsEXT";
+
+    case OpGroupNonUniformRotateKHR:         return "OpGroupNonUniformRotateKHR";
 
     case OpTypeRayQueryKHR:                                                   return "OpTypeRayQueryKHR";
     case OpRayQueryInitializeKHR:                                             return "OpRayQueryInitializeKHR";
@@ -2900,6 +2904,11 @@ void Parameterize()
 
         InstructionDesc[OpSubgroupAllEqualKHR].operands.push(OperandScope, "'Execution'");
         InstructionDesc[OpSubgroupAllEqualKHR].operands.push(OperandId, "'Predicate'");
+
+        InstructionDesc[OpGroupNonUniformRotateKHR].operands.push(OperandScope, "'Execution'");
+        InstructionDesc[OpGroupNonUniformRotateKHR].operands.push(OperandId, "'X'");
+        InstructionDesc[OpGroupNonUniformRotateKHR].operands.push(OperandId, "'Delta'");
+        InstructionDesc[OpGroupNonUniformRotateKHR].operands.push(OperandId, "'ClusterSize'", true);
 
         InstructionDesc[OpSubgroupReadInvocationKHR].operands.push(OperandId, "'Value'");
         InstructionDesc[OpSubgroupReadInvocationKHR].operands.push(OperandId, "'Index'");

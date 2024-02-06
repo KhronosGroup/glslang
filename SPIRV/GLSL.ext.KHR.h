@@ -1,5 +1,6 @@
 /*
 ** Copyright (c) 2014-2020 The Khronos Group Inc.
+** Copyright (C) 2022-2024 Arm Limited.
 ** Modifications Copyright (C) 2020 Advanced Micro Devices, Inc. All rights reserved.
 **
 ** Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -58,5 +59,6 @@ static const char* const E_SPV_AMD_shader_early_and_late_fragment_tests = "SPV_A
 static const char* const E_SPV_KHR_ray_tracing_position_fetch   = "SPV_KHR_ray_tracing_position_fetch";
 static const char* const E_SPV_KHR_cooperative_matrix           = "SPV_KHR_cooperative_matrix";
 static const char* const E_SPV_KHR_maximal_reconvergence        = "SPV_KHR_maximal_reconvergence";
+static const char* const E_SPV_KHR_subgroup_rotate              = "SPV_KHR_subgroup_rotate";
 
 #endif  // #ifndef GLSLextKHR_H
