@@ -2167,6 +2167,20 @@ char* ReadFileData(const char* fileName)
 
     fseek(in, 0, SEEK_SET);
 
+    if (count > 3) {
+        unsigned char head[3];
+        if (fread(head, 1, 3, in) == 3) {
+            if (head[0] == 0xef && head[1] == 0xbb && head[2] == 0xbf) {
+                // skip BOM
+                count -= 3;
+            } else {
+                fseek(in, 0, SEEK_SET);
+            }
+        } else {
+            Error("can't read input file");
+        }
+    }
+
     char* return_data = (char*)malloc(count + 1);  // freed in FreeFileData()
     if ((int)fread(return_data, 1, count, in) != count) {
         free(return_data);

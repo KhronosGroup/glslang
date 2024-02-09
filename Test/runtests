@@ -349,6 +349,13 @@ run --enhanced-msgs -V --target-env vulkan1.2 --amb --aml spv.textureError.frag 
 diff -b $BASEDIR/spv.textureError.frag.out "$TARGETDIR/spv.textureError.frag.out" || HASERROR=1
 
 #
+# Test UTF8BOM
+#
+echo "Testing UTF8BOM"
+run --glsl-version 410 -V -S vert UTF8BOM.vert > $TARGETDIR/UTF8BOM.vert.out
+diff -b $BASEDIR/UTF8BOM.vert.out $TARGETDIR/UTF8BOM.vert.out || HASERROR=1
+
+#
 # Final checking
 #
 if [ $HASERROR -eq 0 ]
