@@ -419,7 +419,6 @@ public:
         buildPoint = bp;
         // TODO: Technically, change of build point should set line tracker dirty. But we'll have bad line info for
         //       branch instructions. Commenting this for now because at least this matches the old behavior.
-        // dirtyLineTracker = true;
         dirtyScopeTracker = true;
     }
     Block* getBuildPoint() const { return buildPoint; }

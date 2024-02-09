@@ -221,6 +221,7 @@ public:
     // Returns true if the scope is actually updated.
     // Note we still need the builder to insert the debug scope instruction. This is just a tracker.
     bool updateDebugScope(spv::Id scopeId) {
+        assert(scopeId);
         if (currentDebugScope && *currentDebugScope == scopeId) {
             return false;
         }
