@@ -51,6 +51,6 @@ if(WIN32)
     source_group("Source" FILES ${SOURCES})
 endif()
 
-if(PROJECT_IS_TOP_LEVEL)
+if(GLSLANG_ENABLE_INSTALL)
     install(TARGETS OSDependent EXPORT glslang-targets)
 endif()
