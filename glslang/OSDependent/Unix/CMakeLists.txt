@@ -40,6 +40,6 @@ set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 target_link_libraries(OSDependent Threads::Threads)
 
-if(PROJECT_IS_TOP_LEVEL AND NOT BUILD_SHARED_LIBS)
+if(GLSLANG_ENABLE_INSTALL AND NOT BUILD_SHARED_LIBS)
     install(TARGETS OSDependent EXPORT glslang-targets)
 endif()

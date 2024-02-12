@@ -227,7 +227,7 @@ endif()
 ################################################################################
 # install
 ################################################################################
-if(PROJECT_IS_TOP_LEVEL)
+if(GLSLANG_ENABLE_INSTALL)
     install(TARGETS glslang EXPORT glslang-targets)
     if(NOT BUILD_SHARED_LIBS)
         install(TARGETS MachineIndependent EXPORT glslang-targets)
