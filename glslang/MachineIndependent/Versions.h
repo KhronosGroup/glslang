@@ -220,6 +220,7 @@ const char* const E_GL_EXT_shader_quad_control              = "GL_EXT_shader_qua
 const char* const E_GL_EXT_draw_instanced                   = "GL_EXT_draw_instanced";
 const char* const E_GL_EXT_texture_array                    = "GL_EXT_texture_array";
 const char* const E_GL_EXT_maximal_reconvergence            = "GL_EXT_maximal_reconvergence";
+const char* const E_GL_EXT_expect_assume                    = "GL_EXT_expect_assume";
 
 // Arrays of extensions for the above viewportEXTs duplications
 
