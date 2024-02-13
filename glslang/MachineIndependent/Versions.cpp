@@ -262,6 +262,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_EXT_maximal_reconvergence]                   = EBhDisable;
 
     extensionBehavior[E_GL_EXT_fragment_shader_barycentric]             = EBhDisable;
+    extensionBehavior[E_GL_EXT_expect_assume]                           = EBhDisable;
 
     extensionBehavior[E_GL_KHR_cooperative_matrix]                      = EBhDisable;
 

@@ -4118,6 +4118,37 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "u16vec4  unpack16(uint64_t);"
             "i32vec2  unpack32(int64_t);"
             "u32vec2  unpack32(uint64_t);"
+
+            // GL_EXT_expect_assume
+            "int8_t expectEXT(int8_t, int8_t);"
+            "i8vec2 expectEXT(i8vec2, i8vec2);"
+            "i8vec3 expectEXT(i8vec3, i8vec3);"
+            "i8vec4 expectEXT(i8vec4, i8vec4);"
+
+            "uint8_t expectEXT(uint8_t, uint8_t);"
+            "u8vec2 expectEXT(u8vec2, u8vec2);"
+            "u8vec3 expectEXT(u8vec3, u8vec3);"
+            "u8vec4 expectEXT(u8vec4, u8vec4);"
+
+            "int16_t expectEXT(int16_t, int16_t);"
+            "i16vec2 expectEXT(i16vec2, i16vec2);"
+            "i16vec3 expectEXT(i16vec3, i16vec3);"
+            "i16vec4 expectEXT(i16vec4, i16vec4);"
+
+            "uint16_t expectEXT(uint16_t, uint16_t);"
+            "u16vec2 expectEXT(u16vec2, u16vec2);"
+            "u16vec3 expectEXT(u16vec3, u16vec3);"
+            "u16vec4 expectEXT(u16vec4, u16vec4);"
+
+            "int64_t expectEXT(int64_t, int64_t);"
+            "i64vec2 expectEXT(i64vec2, i64vec2);"
+            "i64vec3 expectEXT(i64vec3, i64vec3);"
+            "i64vec4 expectEXT(i64vec4, i64vec4);"
+
+            "uint64_t expectEXT(uint64_t, uint64_t);"
+            "u64vec2 expectEXT(u64vec2, u64vec2);"
+            "u64vec3 expectEXT(u64vec3, u64vec3);"
+            "u64vec4 expectEXT(u64vec4, u64vec4);"
             "\n");
     }
 
@@ -4154,6 +4185,29 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
 
             "\n");
 
+    }
+
+    // GL_EXT_expect_assume
+    if ((profile == EEsProfile && version >= 310) ||
+         ((profile != EEsProfile && version >= 140))) {
+        commonBuiltins.append(
+            "void assumeEXT(bool);"
+
+            "bool expectEXT(bool, bool);"
+            "bvec2 expectEXT(bvec2, bvec2);"
+            "bvec3 expectEXT(bvec3, bvec3);"
+            "bvec4 expectEXT(bvec4, bvec4);"
+
+            "int expectEXT(int, int);"
+            "ivec2 expectEXT(ivec2, ivec2);"
+            "ivec3 expectEXT(ivec3, ivec3);"
+            "ivec4 expectEXT(ivec4, ivec4);"
+
+            "uint expectEXT(uint, uint);"
+            "uvec2 expectEXT(uvec2, uvec2);"
+            "uvec3 expectEXT(uvec3, uvec3);"
+            "uvec4 expectEXT(uvec4, uvec4);"
+            "\n");
     }
 
     // QCOM_image_processing
@@ -8631,6 +8685,13 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
                 BuiltInVariable("gl_SubGroupSizeARB", EbvSubGroupSize, symbolTable);
         }
 
+        // GL_EXT_expect_assume
+        if ((profile == EEsProfile && version >= 310) ||
+            (profile != EEsProfile && version >= 140)) {
+            symbolTable.setFunctionExtensions("assumeEXT", 1, &E_GL_EXT_expect_assume);
+            symbolTable.setFunctionExtensions("expectEXT", 1, &E_GL_EXT_expect_assume);
+        }
+
         // GL_KHR_shader_subgroup
         if ((profile == EEsProfile && version >= 310) ||
             (profile != EEsProfile && version >= 140)) {
@@ -9732,6 +9793,8 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
     symbolTable.relateToOperator("averageRounded",     EOpAverageRounded);
     symbolTable.relateToOperator("multiply32x16",      EOpMul32x16);
     symbolTable.relateToOperator("debugPrintfEXT",     EOpDebugPrintf);
+    symbolTable.relateToOperator("assumeEXT",          EOpAssumeEXT);
+    symbolTable.relateToOperator("expectEXT",          EOpExpectEXT);
 
 
     if (PureOperatorBuiltins) {
