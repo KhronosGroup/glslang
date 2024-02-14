@@ -707,6 +707,7 @@ public:
                     switch ((int)sampler.shadow) {
                     case false: return sampler.arrayed ? GL_SAMPLER_1D_ARRAY : GL_SAMPLER_1D;
                     case true:  return sampler.arrayed ? GL_SAMPLER_1D_ARRAY_SHADOW : GL_SAMPLER_1D_SHADOW;
+                    default: assert(0);
                     }
                 case Esd2D:
                     switch ((int)sampler.ms) {
@@ -714,8 +715,10 @@ public:
                         switch ((int)sampler.shadow) {
                         case false: return sampler.arrayed ? GL_SAMPLER_2D_ARRAY : GL_SAMPLER_2D;
                         case true:  return sampler.arrayed ? GL_SAMPLER_2D_ARRAY_SHADOW : GL_SAMPLER_2D_SHADOW;
+                        default: assert(0);
                         }
                     case true:      return sampler.arrayed ? GL_SAMPLER_2D_MULTISAMPLE_ARRAY : GL_SAMPLER_2D_MULTISAMPLE;
+                    default: assert(0);
                     }
                 case Esd3D:
                     return GL_SAMPLER_3D;
@@ -723,11 +726,13 @@ public:
                     switch ((int)sampler.shadow) {
                     case false: return sampler.arrayed ? GL_SAMPLER_CUBE_MAP_ARRAY : GL_SAMPLER_CUBE;
                     case true:  return sampler.arrayed ? GL_SAMPLER_CUBE_MAP_ARRAY_SHADOW : GL_SAMPLER_CUBE_SHADOW;
+                    default: assert(0);
                     }
                 case EsdRect:
                     return sampler.shadow ? GL_SAMPLER_2D_RECT_SHADOW : GL_SAMPLER_2D_RECT;
                 case EsdBuffer:
                     return GL_SAMPLER_BUFFER;
+                default: assert(0);
                 }
             case EbtFloat16:
                 switch ((int)sampler.dim) {
@@ -735,6 +740,7 @@ public:
                     switch ((int)sampler.shadow) {
                     case false: return sampler.arrayed ? GL_FLOAT16_SAMPLER_1D_ARRAY_AMD : GL_FLOAT16_SAMPLER_1D_AMD;
                     case true:  return sampler.arrayed ? GL_FLOAT16_SAMPLER_1D_ARRAY_SHADOW_AMD : GL_FLOAT16_SAMPLER_1D_SHADOW_AMD;
+                    default: assert(0);
                     }
                 case Esd2D:
                     switch ((int)sampler.ms) {
@@ -742,8 +748,10 @@ public:
                         switch ((int)sampler.shadow) {
                         case false: return sampler.arrayed ? GL_FLOAT16_SAMPLER_2D_ARRAY_AMD : GL_FLOAT16_SAMPLER_2D_AMD;
                         case true:  return sampler.arrayed ? GL_FLOAT16_SAMPLER_2D_ARRAY_SHADOW_AMD : GL_FLOAT16_SAMPLER_2D_SHADOW_AMD;
+                        default: assert(0);
                         }
                     case true:      return sampler.arrayed ? GL_FLOAT16_SAMPLER_2D_MULTISAMPLE_ARRAY_AMD : GL_FLOAT16_SAMPLER_2D_MULTISAMPLE_AMD;
+                    default: assert(0);
                     }
                 case Esd3D:
                     return GL_FLOAT16_SAMPLER_3D_AMD;
@@ -751,11 +759,13 @@ public:
                     switch ((int)sampler.shadow) {
                     case false: return sampler.arrayed ? GL_FLOAT16_SAMPLER_CUBE_MAP_ARRAY_AMD : GL_FLOAT16_SAMPLER_CUBE_AMD;
                     case true:  return sampler.arrayed ? GL_FLOAT16_SAMPLER_CUBE_MAP_ARRAY_SHADOW_AMD : GL_FLOAT16_SAMPLER_CUBE_SHADOW_AMD;
+                    default: assert(0);
                     }
                 case EsdRect:
                     return sampler.shadow ? GL_FLOAT16_SAMPLER_2D_RECT_SHADOW_AMD : GL_FLOAT16_SAMPLER_2D_RECT_AMD;
                 case EsdBuffer:
                     return GL_FLOAT16_SAMPLER_BUFFER_AMD;
+                default: assert(0);
                 }
             case EbtInt:
                 switch ((int)sampler.dim) {
@@ -766,6 +776,7 @@ public:
                     case false:  return sampler.arrayed ? GL_INT_SAMPLER_2D_ARRAY : GL_INT_SAMPLER_2D;
                     case true:   return sampler.arrayed ? GL_INT_SAMPLER_2D_MULTISAMPLE_ARRAY
                                                         : GL_INT_SAMPLER_2D_MULTISAMPLE;
+                    default: assert(0);
                     }
                 case Esd3D:
                     return GL_INT_SAMPLER_3D;
@@ -775,6 +786,7 @@ public:
                     return GL_INT_SAMPLER_2D_RECT;
                 case EsdBuffer:
                     return GL_INT_SAMPLER_BUFFER;
+                default: assert(0);
                 }
             case EbtUint:
                 switch ((int)sampler.dim) {
@@ -785,6 +797,7 @@ public:
                     case false:  return sampler.arrayed ? GL_UNSIGNED_INT_SAMPLER_2D_ARRAY : GL_UNSIGNED_INT_SAMPLER_2D;
                     case true:   return sampler.arrayed ? GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY
                                                         : GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE;
+                    default: assert(0);
                     }
                 case Esd3D:
                     return GL_UNSIGNED_INT_SAMPLER_3D;
@@ -794,6 +807,7 @@ public:
                     return GL_UNSIGNED_INT_SAMPLER_2D_RECT;
                 case EsdBuffer:
                     return GL_UNSIGNED_INT_SAMPLER_BUFFER;
+                default: assert(0);
                 }
             default:
                 return 0;
@@ -809,6 +823,7 @@ public:
                     switch ((int)sampler.ms) {
                     case false:     return sampler.arrayed ? GL_IMAGE_2D_ARRAY : GL_IMAGE_2D;
                     case true:      return sampler.arrayed ? GL_IMAGE_2D_MULTISAMPLE_ARRAY : GL_IMAGE_2D_MULTISAMPLE;
+                    default: assert(0);
                     }
                 case Esd3D:
                     return GL_IMAGE_3D;
@@ -818,6 +833,7 @@ public:
                     return GL_IMAGE_2D_RECT;
                 case EsdBuffer:
                     return GL_IMAGE_BUFFER;
+                default: assert(0);
                 }
             case EbtFloat16:
                 switch ((int)sampler.dim) {
@@ -827,6 +843,7 @@ public:
                     switch ((int)sampler.ms) {
                     case false:     return sampler.arrayed ? GL_FLOAT16_IMAGE_2D_ARRAY_AMD : GL_FLOAT16_IMAGE_2D_AMD;
                     case true:      return sampler.arrayed ? GL_FLOAT16_IMAGE_2D_MULTISAMPLE_ARRAY_AMD : GL_FLOAT16_IMAGE_2D_MULTISAMPLE_AMD;
+                    default: assert(0);
                     }
                 case Esd3D:
                     return GL_FLOAT16_IMAGE_3D_AMD;
@@ -836,6 +853,7 @@ public:
                     return GL_FLOAT16_IMAGE_2D_RECT_AMD;
                 case EsdBuffer:
                     return GL_FLOAT16_IMAGE_BUFFER_AMD;
+                default: assert(0);
                 }
             case EbtInt:
                 switch ((int)sampler.dim) {
@@ -845,6 +863,7 @@ public:
                     switch ((int)sampler.ms) {
                     case false:  return sampler.arrayed ? GL_INT_IMAGE_2D_ARRAY : GL_INT_IMAGE_2D;
                     case true:   return sampler.arrayed ? GL_INT_IMAGE_2D_MULTISAMPLE_ARRAY : GL_INT_IMAGE_2D_MULTISAMPLE;
+                    default: assert(0);
                     }
                 case Esd3D:
                     return GL_INT_IMAGE_3D;
@@ -854,6 +873,7 @@ public:
                     return GL_INT_IMAGE_2D_RECT;
                 case EsdBuffer:
                     return GL_INT_IMAGE_BUFFER;
+                default: assert(0);
                 }
             case EbtUint:
                 switch ((int)sampler.dim) {
@@ -864,6 +884,7 @@ public:
                     case false:  return sampler.arrayed ? GL_UNSIGNED_INT_IMAGE_2D_ARRAY : GL_UNSIGNED_INT_IMAGE_2D;
                     case true:   return sampler.arrayed ? GL_UNSIGNED_INT_IMAGE_2D_MULTISAMPLE_ARRAY
                                                         : GL_UNSIGNED_INT_IMAGE_2D_MULTISAMPLE;
+                    default: assert(0);
                     }
                 case Esd3D:
                     return GL_UNSIGNED_INT_IMAGE_3D;
@@ -873,6 +894,7 @@ public:
                     return GL_UNSIGNED_INT_IMAGE_2D_RECT;
                 case EsdBuffer:
                     return GL_UNSIGNED_INT_IMAGE_BUFFER;
+                default: assert(0);
                 }
             default:
                 return 0;
@@ -937,6 +959,7 @@ public:
                     case 4:    return GL_FLOAT_MAT4;
                     default:   return 0;
                     }
+                default: assert(0);
                 }
             case EbtDouble:
                 switch (type.getMatrixCols()) {
@@ -961,6 +984,7 @@ public:
                     case 4:    return GL_DOUBLE_MAT4;
                     default:   return 0;
                     }
+                default: assert(0);
                 }
             case EbtFloat16:
                 switch (type.getMatrixCols()) {
@@ -985,6 +1009,7 @@ public:
                     case 4:    return GL_FLOAT16_MAT4_AMD;
                     default:   return 0;
                     }
+                default: assert(0);
                 }
             default:
                 return 0;
