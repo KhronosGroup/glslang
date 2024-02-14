@@ -9249,6 +9249,7 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
         // Use an extended instruction from the standard library.
         // Construct the call arguments, without modifying the original operands vector.
         // We might need the remaining arguments, e.g. in the EOpFrexp case.
+        // https://github.com/KhronosGroup/glslang/pull/3514
         std::vector<spv::Id> callArguments(consumedOperands);
         for (size_t i = 0; i < consumedOperands; ++i) {
           callArguments[i] = operands[i];
