@@ -3740,9 +3740,9 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
 
         spv::Op spvOp = spv::OpRayQueryGetIntersectionTriangleVertexPositionsKHR;
 
-        spv::Id result = builder.createOp(spvOp, typeId, idImmOps);
+        spv::Id createResult = builder.createOp(spvOp, typeId, idImmOps);
         // store the result to the pointer (out param 'm')
-        builder.createStore(result, operands[2]);
+        builder.createStore(createResult, operands[2]);
         result = 0;
     } else if (node->getOp() == glslang::EOpCooperativeMatrixMulAdd) {
         uint32_t matrixOperands = 0;
