@@ -104,7 +104,7 @@ if(GLSLANG_ENABLE_INSTALL)
     # Create the same symlink at install time
     install(CODE "execute_process( \
                       COMMAND ${CMAKE_COMMAND} -E ${link_method} $<TARGET_FILE_NAME:glslang-standalone> ${legacy_glslang_name} \
-                      WORKING_DIRECTORY \$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})")
+                      WORKING_DIRECTORY \"\${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR}\")")
 
     if(ENABLE_SPVREMAPPER)
         install(TARGETS spirv-remap EXPORT glslang-targets)
