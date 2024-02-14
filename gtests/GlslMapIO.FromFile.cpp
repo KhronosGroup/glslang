@@ -302,12 +302,12 @@ TEST_P(GlslMapIOTest, FromFile)
     result.validationResult = success;
 
     if (success && (controls & EShMsgSpvRules)) {
-        for (int stage = 0; stage < EShLangCount; ++stage) {
-            if (program.getIntermediate((EShLanguage)stage)) {
+        for (int inner_stage = 0; inner_stage < EShLangCount; ++inner_stage) {
+            if (program.getIntermediate((EShLanguage)inner_stage)) {
                 spv::SpvBuildLogger logger;
                 std::vector<uint32_t> spirv_binary;
                 options().disableOptimizer = false;
-                glslang::GlslangToSpv(*program.getIntermediate((EShLanguage)stage),
+                glslang::GlslangToSpv(*program.getIntermediate((EShLanguage)inner_stage),
                     spirv_binary, &logger, &options());
 
                 std::ostringstream disassembly_stream;

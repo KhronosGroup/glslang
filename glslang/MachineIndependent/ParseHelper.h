@@ -76,19 +76,19 @@ typedef std::map<const TTypeList*, std::map<size_t, const TTypeList*>> TStructRe
 //
 class TParseContextBase : public TParseVersions {
 public:
-    TParseContextBase(TSymbolTable& symbolTable, TIntermediate& interm, bool parsingBuiltins, int version,
-                      EProfile profile, const SpvVersion& spvVersion, EShLanguage language,
-                      TInfoSink& infoSink, bool forwardCompatible, EShMessages messages,
+    TParseContextBase(TSymbolTable& in_symbolTable, TIntermediate& interm, bool in_parsingBuiltins, int in_version,
+                      EProfile in_profile, const SpvVersion& in_spvVersion, EShLanguage in_language,
+                      TInfoSink& in_infoSink, bool in_forwardCompatible, EShMessages in_messages,
                       const TString* entryPoint = nullptr)
-          : TParseVersions(interm, version, profile, spvVersion, language, infoSink, forwardCompatible, messages),
+          : TParseVersions(interm, in_version, in_profile, in_spvVersion, in_language, in_infoSink, in_forwardCompatible, in_messages),
             scopeMangler("::"),
-            symbolTable(symbolTable),
+            symbolTable(in_symbolTable),
             statementNestingLevel(0), loopNestingLevel(0), structNestingLevel(0), blockNestingLevel(0), controlFlowNestingLevel(0),
             currentFunctionType(nullptr),
             postEntryPointReturn(false),
             contextPragma(true, false),
             beginInvocationInterlockCount(0), endInvocationInterlockCount(0),
-            parsingBuiltins(parsingBuiltins), scanContext(nullptr), ppContext(nullptr),
+            parsingBuiltins(in_parsingBuiltins), scanContext(nullptr), ppContext(nullptr),
             limits(resources.limits),
             globalUniformBlock(nullptr),
             globalUniformBinding(TQualifier::layoutBindingEnd),
@@ -136,10 +136,10 @@ public:
 
     virtual bool parseShaderStrings(TPpContext&, TInputScanner& input, bool versionWillBeError = false) = 0;
 
-    virtual void notifyVersion(int line, int version, const char* type_string)
+    virtual void notifyVersion(int line, int in_version, const char* type_string)
     {
         if (versionCallback)
-            versionCallback(line, version, type_string);
+            versionCallback(line, in_version, type_string);
     }
     virtual void notifyErrorDirective(int line, const char* error_message)
     {

@@ -9479,24 +9479,24 @@ spv::Id TGlslangToSpvTraverser::createNoArgOperation(glslang::TOperator op, spv:
     {
         builder.addExtension(spv::E_SPV_EXT_shader_tile_image);
 
-        spv::Decoration precision;
+        spv::Decoration inner_precision;
         spv::Op spv_op;
         if (op == glslang::EOpStencilAttachmentReadEXT)
         {
-            precision = spv::DecorationRelaxedPrecision;
+            inner_precision = spv::DecorationRelaxedPrecision;
             spv_op = spv::OpStencilAttachmentReadEXT;
             builder.addCapability(spv::CapabilityTileImageStencilReadAccessEXT);
         }
         else
         {
-            precision = spv::NoPrecision;
+            inner_precision = spv::NoPrecision;
             spv_op = spv::OpDepthAttachmentReadEXT;
             builder.addCapability(spv::CapabilityTileImageDepthReadAccessEXT);
         }
 
         std::vector<spv::Id> args; // Dummy args
         spv::Id result = builder.createOp(spv_op, typeId, args);
-        return builder.setPrecision(result, precision);
+        return builder.setPrecision(result, inner_precision);
     }
     default:
         break;

@@ -7498,15 +7498,15 @@ bool TParseContext::vkRelaxedRemapUniformVariable(const TSourceLoc& loc, TString
 template <typename Function>
 static void ForEachOpaque(const TType& type, const TString& path, Function callback)
 {
-    auto recursion = [&callback](const TType& type, const TString& path, bool skipArray, auto& recursion) -> void {
-        if (!skipArray && type.isArray())
+    auto recursion = [&callback](const TType& inner_type, const TString& inner_path, bool skipArray, auto& inner_recursion) -> void {
+        if (!skipArray && inner_type.isArray())
         {
-            std::vector<int> indices(type.getArraySizes()->getNumDims());
+            std::vector<int> indices(inner_type.getArraySizes()->getNumDims());
             for (int flatIndex = 0;
-                 flatIndex < type.getArraySizes()->getCumulativeSize();
+                 flatIndex < inner_type.getArraySizes()->getCumulativeSize();
                  ++flatIndex)
             {
-                TString subscriptPath = path;
+                TString subscriptPath = inner_path;
                 for (size_t dimIndex = 0; dimIndex < indices.size(); ++dimIndex)
                 {
                     int index = indices[dimIndex];
@@ -7515,12 +7515,12 @@ static void ForEachOpaque(const TType& type, const TString& path, Function callb
                     subscriptPath.append("]");
                 }
 
-                recursion(type, subscriptPath, true, recursion);
+                inner_recursion(inner_type, subscriptPath, true, inner_recursion);
 
                 for (size_t dimIndex = 0; dimIndex < indices.size(); ++dimIndex)
                 {
                     ++indices[dimIndex];
-                    if (indices[dimIndex] < type.getArraySizes()->getDimSize(dimIndex))
+                    if (indices[dimIndex] < inner_type.getArraySizes()->getDimSize(dimIndex))
                         break;
                     else
                         indices[dimIndex] = 0;
@@ -7528,22 +7528,22 @@ static void ForEachOpaque(const TType& type, const TString& path, Function callb
             }
         }
 
-        else if (type.isStruct() && type.containsOpaque())
+        else if (inner_type.isStruct() && inner_type.containsOpaque())
         {
-            const TTypeList& types = *type.getStruct();
+            const TTypeList& types = *inner_type.getStruct();
             for (const TTypeLoc& typeLoc : types)
             {
-                TString nextPath = path;
+                TString nextPath = inner_path;
                 nextPath.append(".");
                 nextPath.append(typeLoc.type->getFieldName());
 
-                recursion(*(typeLoc.type), nextPath, false, recursion);
+                inner_recursion(*(typeLoc.type), nextPath, false, inner_recursion);
             }
         }
 
-        else if (type.isOpaque())
+        else if (inner_type.isOpaque())
         {
-            callback(type, path);
+            callback(inner_type, inner_path);
         }
     };
 
@@ -7557,25 +7557,25 @@ void TParseContext::vkRelaxedRemapUniformMembers(const TSourceLoc& loc, const TP
         return;
 
     ForEachOpaque(type, identifier,
-                  [&publicType, &loc, this](const TType& type, const TString& path) {
+                  [&publicType, &loc, this](const TType& inner_type, const TString& path) {
                       TArraySizes arraySizes = {};
-                      if (type.getArraySizes()) arraySizes = *type.getArraySizes();
+                      if (inner_type.getArraySizes()) arraySizes = *inner_type.getArraySizes();
                       TTypeParameters typeParameters = {};
-                      if (type.getTypeParameters()) typeParameters = *type.getTypeParameters();
+                      if (inner_type.getTypeParameters()) typeParameters = *inner_type.getTypeParameters();
 
                       TPublicType memberType{};
-                      memberType.basicType = type.getBasicType();
-                      memberType.sampler = type.getSampler();
-                      memberType.qualifier = type.getQualifier();
-                      memberType.vectorSize = type.getVectorSize();
-                      memberType.matrixCols = type.getMatrixCols();
-                      memberType.matrixRows = type.getMatrixRows();
-                      memberType.coopmatNV = type.isCoopMatNV();
-                      memberType.coopmatKHR = type.isCoopMatKHR();
+                      memberType.basicType = inner_type.getBasicType();
+                      memberType.sampler = inner_type.getSampler();
+                      memberType.qualifier = inner_type.getQualifier();
+                      memberType.vectorSize = inner_type.getVectorSize();
+                      memberType.matrixCols = inner_type.getMatrixCols();
+                      memberType.matrixRows = inner_type.getMatrixRows();
+                      memberType.coopmatNV = inner_type.isCoopMatNV();
+                      memberType.coopmatKHR = inner_type.isCoopMatKHR();
                       memberType.arraySizes = nullptr;
                       memberType.userDef = nullptr;
                       memberType.loc = loc;
-                      memberType.typeParameters = (type.getTypeParameters() ? &typeParameters : nullptr);
+                      memberType.typeParameters = (inner_type.getTypeParameters() ? &typeParameters : nullptr);
                       memberType.spirvType = nullptr;
 
                       memberType.qualifier.storage = publicType.qualifier.storage;
