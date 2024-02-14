@@ -9249,7 +9249,10 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
         // Use an extended instruction from the standard library.
         // Construct the call arguments, without modifying the original operands vector.
         // We might need the remaining arguments, e.g. in the EOpFrexp case.
-        std::vector<spv::Id> callArguments(operands.begin(), operands.begin() + consumedOperands);
+        std::vector<spv::Id> callArguments(consumedOperands);
+        for (size_t i = 0; i < consumedOperands; ++i) {
+          callArguments[i] = operands[i];
+        }
         id = builder.createBuiltinCall(typeId, extBuiltins >= 0 ? extBuiltins : stdBuiltins, libCall, callArguments);
     } else if (opCode == spv::OpDot && !isFloat) {
         // int dot(int, int)
