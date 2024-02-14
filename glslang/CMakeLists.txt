@@ -169,6 +169,7 @@ set(GLSLANG_HEADERS
     Include/Types.h)
 
 add_library(glslang ${LIB_TYPE} ${GLSLANG_SOURCES} ${GLSLANG_HEADERS})
+add_library(glslang::glslang ALIAS glslang)
 set_target_properties(glslang PROPERTIES
     FOLDER glslang
     POSITION_INDEPENDENT_CODE ON
@@ -201,6 +202,7 @@ set(RESOURCELIMITS_HEADERS
 )
 
 add_library(glslang-default-resource-limits ${RESOURCELIMITS_SOURCES} ${RESOURCELIMITS_HEADERS})
+add_library(glslang::glslang-default-resource-limits ALIAS glslang-default-resource-limits)
 set_target_properties(glslang-default-resource-limits PROPERTIES
     VERSION "${GLSLANG_VERSION}"
     SOVERSION "${GLSLANG_VERSION_MAJOR}"
