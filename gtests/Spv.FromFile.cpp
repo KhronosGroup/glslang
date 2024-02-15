@@ -763,7 +763,7 @@ INSTANTIATE_TEST_SUITE_P(
         { "spv.register.autoassign.rangetest.frag", "main",
                 glslang::TQualifier::layoutBindingEnd-2,
                 glslang::TQualifier::layoutBindingEnd+5,
-                20, 30, true, false },
+                0, 20, 30, true, false },
     }),
     FileNameAsCustomTestSuffixIoMap
 );
