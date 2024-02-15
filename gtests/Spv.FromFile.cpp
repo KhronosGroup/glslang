@@ -946,6 +946,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.debuginfo.bufferref.glsl.frag",
         "spv.debuginfo.const_params.glsl.comp",
         "spv.debuginfo.scalar_types.glsl.frag",
+        "spv.debuginfo.rt_types.glsl.rgen",
     })),
     FileNameAsCustomTestSuffix
 );
