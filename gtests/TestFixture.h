@@ -35,6 +35,7 @@
 #ifndef GLSLANG_GTESTS_TEST_FIXTURE_H
 #define GLSLANG_GTESTS_TEST_FIXTURE_H
 
+#include <algorithm>
 #include <cstdint>
 #include <fstream>
 #include <sstream>
@@ -192,16 +193,51 @@ public:
         const int shaderLengths = static_cast<int>(code.size());
         const char* shaderNames = nullptr;
 
-        if ((controls & EShMsgDebugInfo) && shaderName != nullptr) {
+        if (shaderName != nullptr) {
             shaderNames = shaderName->data();
             shader->setStringsWithLengthsAndNames(
                     &shaderStrings, &shaderLengths, &shaderNames, 1);
         } else
             shader->setStringsWithLengths(&shaderStrings, &shaderLengths, 1);
         if (!entryPointName.empty()) shader->setEntryPoint(entryPointName.c_str());
+
+        // A includer that always assumes header name is a relative path to the test folder.
+        class GlslangTestIncluder : public glslang::TShader::Includer {
+        public:
+            virtual IncludeResult* includeLocal(const char* headerName,
+                                                const char* /*includerName*/,
+                                                size_t /*inclusionDepth*/) override
+            {
+                std::string path = GLSLANG_TEST_DIRECTORY;
+                path += '/';
+                path += headerName;
+                std::replace(path.begin(), path.end(), '\\', '/');
+
+                auto [success, fileContent] = ReadFile(path);
+                if (success) {
+                    auto buffer = new char[fileContent.size() + 1];
+                    std::copy(fileContent.begin(), fileContent.end(), buffer);
+                    buffer[fileContent.size()] = '\0';
+
+                    return new IncludeResult(headerName, buffer, fileContent.size(), buffer);
+                }
+
+                return nullptr;
+            }
+
+            virtual void releaseInclude(IncludeResult* result) override
+            {
+                if (result != nullptr) {
+                    delete[] static_cast<char*>(result->userData);
+                    delete result;
+                }
+            }
+        };
+
+        GlslangTestIncluder includer;
         return shader->parse(
                 (resources ? resources : GetDefaultResources()),
-                defaultVersion, isForwardCompatible, controls);
+                defaultVersion, isForwardCompatible, controls, includer);
     }
 
     // Compiles and links the given source |code| of the given shader
@@ -252,8 +288,12 @@ public:
         if (options().compileOnly)
             shader.setCompileOnly();
 
+        const std::string* ptrShaderName = nullptr;
+        if ((controls & EShMsgDebugInfo) || enableNonSemanticShaderDebugInfo) {
+            ptrShaderName = &shaderName;
+        }
         bool success = compile(
-                &shader, code, entryPointName, controls, nullptr, &shaderName);
+                &shader, code, entryPointName, controls, nullptr, ptrShaderName);
 
         glslang::TProgram program;
         spv::SpvBuildLogger logger;
