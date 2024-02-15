@@ -7336,7 +7336,7 @@ TIntermTyped* TParseContext::vkRelaxedRemapFunctionCall(const TSourceLoc& loc, T
             realFunc.addParameter(TParameter().copyParam((*function)[i]));
         }
 
-        TParameter tmpP = { nullptr, &uintType };
+        TParameter tmpP = { nullptr, &uintType, {} };
         realFunc.addParameter(TParameter().copyParam(tmpP));
         arguments = intermediate.growAggregate(arguments, intermediate.addConstantUnion(1, loc, true));
 
@@ -7353,7 +7353,7 @@ TIntermTyped* TParseContext::vkRelaxedRemapFunctionCall(const TSourceLoc& loc, T
             realFunc.addParameter(TParameter().copyParam((*function)[i]));
         }
 
-        TParameter tmpP = { nullptr, &uintType };
+        TParameter tmpP = { nullptr, &uintType, {} };
         realFunc.addParameter(TParameter().copyParam(tmpP));
         arguments = intermediate.growAggregate(arguments, intermediate.addConstantUnion(-1, loc, true));
 
@@ -7676,7 +7676,7 @@ TIntermNode* TParseContext::vkRelaxedRemapFunctionArgument(const TSourceLoc& loc
     AccessChainTraverser accessChainTraverser{};
     intermTyped->traverse(&accessChainTraverser);
 
-    TParameter param = { NewPoolTString(accessChainTraverser.path.c_str()), new TType };
+    TParameter param = { NewPoolTString(accessChainTraverser.path.c_str()), new TType, {} };
     param.type->shallowCopy(intermTyped->getType());
 
     std::vector<int> newParams = {};
