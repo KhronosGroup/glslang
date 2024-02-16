@@ -256,7 +256,7 @@ TEST_P(VulkanRelaxedTest, FromFile)
 
     if (success && (controls & EShMsgSpvRules)) {
         for (int inner_stage = 0; inner_stage < EShLangCount; ++inner_stage) {
-            if (program.getIntermediate((EShLanguage)stage)) {
+            if (program.getIntermediate((EShLanguage)inner_stage)) {
                 spv::SpvBuildLogger logger;
                 std::vector<uint32_t> spirv_binary;
                 options().disableOptimizer = false;
