@@ -1165,6 +1165,7 @@ spv::ImageFormat TGlslangToSpvTraverser::TranslateImageFormat(const glslang::TTy
     case glslang::ElfR64i:
         builder.addExtension(spv::E_SPV_EXT_shader_image_int64);
         builder.addCapability(spv::CapabilityInt64ImageEXT);
+        break;
     default:
         break;
     }

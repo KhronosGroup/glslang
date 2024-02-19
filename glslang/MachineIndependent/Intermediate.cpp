@@ -376,6 +376,7 @@ TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermTyped* child,
     case EOpNegative:
         if (child->getType().getBasicType() == EbtStruct || child->getType().isArray())
             return nullptr;
+        break;
     default: break; // some compilers want this
     }
 
@@ -3490,6 +3491,7 @@ bool TIntermediate::promoteBinary(TIntermBinary& node)
         // check for non-Boolean operands
         if (left->getBasicType() == EbtBool || right->getBasicType() == EbtBool)
             return false;
+        break;
 
     default:
         break;
@@ -3540,6 +3542,7 @@ bool TIntermediate::promoteBinary(TIntermBinary& node)
         // At least the basic type has to match
         if (left->getBasicType() != right->getBasicType())
             return false;
+        break;
 
     default:
         break;
