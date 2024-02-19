@@ -139,7 +139,7 @@ else()
 endif()
 
 if(${CMAKE_CXX_COMPILER_ID} MATCHES "GNU")
-    add_compile_options(-Wall -Wmaybe-uninitialized -Wuninitialized -Wunused -Wunused-local-typedefs
+    add_compile_options(-Wall -Wmaybe-uninitialized -Wuninitialized -Wunused -Wunused-local-typedefs -Wimplicit-fallthrough
                         -Wunused-parameter -Wunused-value  -Wunused-variable -Wunused-but-set-parameter -Wunused-but-set-variable -fno-exceptions)
     if(NOT ENABLE_RTTI)
         add_compile_options(-fno-rtti)
@@ -158,7 +158,7 @@ if(${CMAKE_CXX_COMPILER_ID} MATCHES "GNU")
         endif()
     endif()
 elseif(${CMAKE_CXX_COMPILER_ID} MATCHES "Clang" AND NOT MSVC)
-    add_compile_options(-Wall -Wuninitialized -Wunused -Wunused-local-typedefs
+    add_compile_options(-Wall -Wuninitialized -Wunused -Wunused-local-typedefs -Wimplicit-fallthrough
                         -Wunused-parameter -Wunused-value  -Wunused-variable)
     if(NOT ENABLE_RTTI)
         add_compile_options(-fno-rtti)
