@@ -3533,7 +3533,7 @@ bool TIntermediate::promoteBinary(TIntermBinary& node)
         if (left->getType() == right->getType())
             return true;
 
-        // Fall through
+        [[fallthrough]];
 
     case EOpMul:
     case EOpMulAssign:
@@ -3682,7 +3682,7 @@ bool TIntermediate::promoteBinary(TIntermBinary& node)
     case EOpAssign:
         if (left->getVectorSize() != right->getVectorSize() || left->getMatrixCols() != right->getMatrixCols() || left->getMatrixRows() != right->getMatrixRows())
             return false;
-        // fall through
+        [[fallthrough]];
 
     case EOpAdd:
     case EOpSub:
