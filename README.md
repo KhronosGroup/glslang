@@ -264,6 +264,9 @@ Test](gtests/), one is the [`runtests` script](Test/runtests). The former
 runs unit tests and single-shader single-threaded integration tests, while
 the latter runs multiple-shader linking tests and multi-threaded tests.
 
+Tests may erroneously fail or pass if using `ALLOW_EXTERNAL_SPIRV_TOOLS` with
+any commit other than the one specified in `known_good.json`.
+
 ### Running tests
 
 The [`runtests` script](Test/runtests) requires compiled binaries to be
