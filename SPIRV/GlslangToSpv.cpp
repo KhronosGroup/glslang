@@ -8346,7 +8346,7 @@ spv::Id TGlslangToSpvTraverser::createSubgroupOperation(glslang::TOperator op, s
     case glslang::EOpSubgroupQuadAny:
         builder.addExtension(spv::E_SPV_KHR_quad_control);
         builder.addCapability(spv::CapabilityQuadControlKHR);
-        // pass through
+        [[fallthrough]];
     case glslang::EOpSubgroupAll:
     case glslang::EOpSubgroupAny:
     case glslang::EOpSubgroupAllEqual:

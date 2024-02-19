@@ -8434,6 +8434,7 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
                 intermediate.addBuiltInFunctionCall(node->getLoc(), EOpConstructUVec2, false, newSrcNode, type);
             return newNode;
         }
+        [[fallthrough]];
     case EOpConstructUVec3:
     case EOpConstructUVec4:
     case EOpConstructUint:
@@ -8455,6 +8456,7 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
                 intermediate.addBuiltInFunctionCall(node->getLoc(), EOpPackUint2x32, true, node, type);
             return newNode;
         }
+        [[fallthrough]];
     case EOpConstructDVec2:
     case EOpConstructDVec3:
     case EOpConstructDVec4:
