@@ -3052,7 +3052,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
     case glslang::EOpConstructF16Mat4x3:
     case glslang::EOpConstructF16Mat4x4:
         isMatrix = true;
-        // fall through
+        [[fallthrough]];
     case glslang::EOpConstructFloat:
     case glslang::EOpConstructVec2:
     case glslang::EOpConstructVec3:
@@ -3223,7 +3223,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
 
     case glslang::EOpAtomicStore:
         noReturnValue = true;
-        // fallthrough
+        [[fallthrough]];
     case glslang::EOpAtomicLoad:
         atomic = true;
         break;
@@ -3326,7 +3326,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
     case glslang::EOpHitObjectRecordHitWithIndexMotionNV:
     case glslang::EOpReorderThreadNV:
         noReturnValue = true;
-        //Fallthrough
+        [[fallthrough]];
     case glslang::EOpHitObjectIsEmptyNV:
     case glslang::EOpHitObjectIsMissNV:
     case glslang::EOpHitObjectIsHitNV:
