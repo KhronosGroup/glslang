@@ -10,8 +10,6 @@ spv.nvAtomicFp16Vec.frag
                               Capability StorageImageExtendedFormats
                               Capability StorageUniformBufferBlock16
                               Capability AtomicFloat16VectorNV
-                              Extension  "SPV_EXT_shader_atomic_float_add"
-                              Extension  "SPV_EXT_shader_atomic_float_min_max"
                               Extension  "SPV_KHR_16bit_storage"
                               Extension  "SPV_NV_shader_atomic_fp16_vector"
                1:             ExtInstImport  "GLSL.std.450"

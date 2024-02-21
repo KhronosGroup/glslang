@@ -7849,19 +7849,20 @@ spv::Id TGlslangToSpvTraverser::createAtomicOperation(glslang::TOperator op, spv
         opCode = spv::OpAtomicIAdd;
         if (typeProxy == glslang::EbtFloat16 || typeProxy == glslang::EbtFloat || typeProxy == glslang::EbtDouble) {
             opCode = spv::OpAtomicFAddEXT;
-            builder.addExtension(spv::E_SPV_EXT_shader_atomic_float_add);
-            if (typeProxy == glslang::EbtFloat16) {
-                if (opType.getVectorSize() == 2 || opType.getVectorSize() == 4) {
-                    builder.addExtension(spv::E_SPV_NV_shader_atomic_fp16_vector);
-                    builder.addCapability(spv::CapabilityAtomicFloat16VectorNV);
-                } else {
+            if (typeProxy == glslang::EbtFloat16 &&
+                (opType.getVectorSize() == 2 || opType.getVectorSize() == 4)) {
+                builder.addExtension(spv::E_SPV_NV_shader_atomic_fp16_vector);
+                builder.addCapability(spv::CapabilityAtomicFloat16VectorNV);
+            } else {
+                builder.addExtension(spv::E_SPV_EXT_shader_atomic_float_add);
+                if (typeProxy == glslang::EbtFloat16) {
                     builder.addExtension(spv::E_SPV_EXT_shader_atomic_float16_add);
                     builder.addCapability(spv::CapabilityAtomicFloat16AddEXT);
+                } else if (typeProxy == glslang::EbtFloat) {
+                    builder.addCapability(spv::CapabilityAtomicFloat32AddEXT);
+                } else {
+                    builder.addCapability(spv::CapabilityAtomicFloat64AddEXT);
                 }
-            } else if (typeProxy == glslang::EbtFloat) {
-                builder.addCapability(spv::CapabilityAtomicFloat32AddEXT);
-            } else {
-                builder.addCapability(spv::CapabilityAtomicFloat64AddEXT);
             }
         }
         break;
@@ -7874,19 +7875,19 @@ spv::Id TGlslangToSpvTraverser::createAtomicOperation(glslang::TOperator op, spv
     case glslang::EOpAtomicCounterMin:
         if (typeProxy == glslang::EbtFloat16 || typeProxy == glslang::EbtFloat || typeProxy == glslang::EbtDouble) {
             opCode = spv::OpAtomicFMinEXT;
-            builder.addExtension(spv::E_SPV_EXT_shader_atomic_float_min_max);
-            if (typeProxy == glslang::EbtFloat16) {
-                if (opType.getVectorSize() == 2 || opType.getVectorSize() == 4) {
-                    builder.addExtension(spv::E_SPV_NV_shader_atomic_fp16_vector);
-                    builder.addCapability(spv::CapabilityAtomicFloat16VectorNV);
-                } else {
+            if (typeProxy == glslang::EbtFloat16 &&
+                (opType.getVectorSize() == 2 || opType.getVectorSize() == 4)) {
+                builder.addExtension(spv::E_SPV_NV_shader_atomic_fp16_vector);
+                builder.addCapability(spv::CapabilityAtomicFloat16VectorNV);
+            } else {
+                builder.addExtension(spv::E_SPV_EXT_shader_atomic_float_min_max);
+                if (typeProxy == glslang::EbtFloat16)
                     builder.addCapability(spv::CapabilityAtomicFloat16MinMaxEXT);
-                }
+                else if (typeProxy == glslang::EbtFloat)
+                    builder.addCapability(spv::CapabilityAtomicFloat32MinMaxEXT);
+                else
+                    builder.addCapability(spv::CapabilityAtomicFloat64MinMaxEXT);
             }
-            else if (typeProxy == glslang::EbtFloat)
-                builder.addCapability(spv::CapabilityAtomicFloat32MinMaxEXT);
-            else
-                builder.addCapability(spv::CapabilityAtomicFloat64MinMaxEXT);
         } else if (typeProxy == glslang::EbtUint || typeProxy == glslang::EbtUint64) {
             opCode = spv::OpAtomicUMin;
         } else {
@@ -7898,19 +7899,19 @@ spv::Id TGlslangToSpvTraverser::createAtomicOperation(glslang::TOperator op, spv
     case glslang::EOpAtomicCounterMax:
         if (typeProxy == glslang::EbtFloat16 || typeProxy == glslang::EbtFloat || typeProxy == glslang::EbtDouble) {
             opCode = spv::OpAtomicFMaxEXT;
-            builder.addExtension(spv::E_SPV_EXT_shader_atomic_float_min_max);
-            if (typeProxy == glslang::EbtFloat16) {
-                if (opType.getVectorSize() == 2 || opType.getVectorSize() == 4) {
-                    builder.addExtension(spv::E_SPV_NV_shader_atomic_fp16_vector);
-                    builder.addCapability(spv::CapabilityAtomicFloat16VectorNV);
-                } else {
+            if (typeProxy == glslang::EbtFloat16 &&
+                (opType.getVectorSize() == 2 || opType.getVectorSize() == 4)) {
+                builder.addExtension(spv::E_SPV_NV_shader_atomic_fp16_vector);
+                builder.addCapability(spv::CapabilityAtomicFloat16VectorNV);
+            } else {
+                builder.addExtension(spv::E_SPV_EXT_shader_atomic_float_min_max);
+                if (typeProxy == glslang::EbtFloat16)
                     builder.addCapability(spv::CapabilityAtomicFloat16MinMaxEXT);
-                }
+                else if (typeProxy == glslang::EbtFloat)
+                    builder.addCapability(spv::CapabilityAtomicFloat32MinMaxEXT);
+                else
+                    builder.addCapability(spv::CapabilityAtomicFloat64MinMaxEXT);
             }
-            else if (typeProxy == glslang::EbtFloat)
-                builder.addCapability(spv::CapabilityAtomicFloat32MinMaxEXT);
-            else
-                builder.addCapability(spv::CapabilityAtomicFloat64MinMaxEXT);
         } else if (typeProxy == glslang::EbtUint || typeProxy == glslang::EbtUint64) {
             opCode = spv::OpAtomicUMax;
         } else {
