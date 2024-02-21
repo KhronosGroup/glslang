@@ -216,6 +216,7 @@ INSTANTIATE_TEST_SUITE_P(
         {"hlsl.emptystructreturn.tesc", "main"},
         {"hlsl.emptystruct.init.vert", "main"},
         {"hlsl.entry-in.frag", "PixelShaderFunction"},
+        {"hlsl.entry-inout.vert", "main"},
         {"hlsl.entry-out.frag", "PixelShaderFunction"},
         {"hlsl.fraggeom.frag", "main"},
         {"hlsl.float1.frag", "PixelShaderFunction"},
