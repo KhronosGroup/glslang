@@ -592,6 +592,8 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_EXT_fragment_shader_barycentric 1\n"
             "#define GL_EXT_shader_quad_control 1\n"
             "#define GL_EXT_texture_array 1\n"
+
+            "#define GL_EXT_control_flow_attributes2 1\n"
             ;
 
         if (spvVersion.spv == 0) {
