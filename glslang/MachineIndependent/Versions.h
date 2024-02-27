@@ -221,6 +221,7 @@ const char* const E_GL_EXT_draw_instanced                   = "GL_EXT_draw_insta
 const char* const E_GL_EXT_texture_array                    = "GL_EXT_texture_array";
 const char* const E_GL_EXT_maximal_reconvergence            = "GL_EXT_maximal_reconvergence";
 const char* const E_GL_EXT_expect_assume                    = "GL_EXT_expect_assume";
+const char* const E_GL_EXT_control_flow_attributes2         = "GL_EXT_control_flow_attributes2";
 
 // Arrays of extensions for the above viewportEXTs duplications
 

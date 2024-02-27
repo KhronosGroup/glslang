@@ -264,6 +264,8 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_EXT_fragment_shader_barycentric]             = EBhDisable;
     extensionBehavior[E_GL_EXT_expect_assume]                           = EBhDisable;
 
+    extensionBehavior[E_GL_EXT_control_flow_attributes2]                = EBhDisable;
+
     extensionBehavior[E_GL_KHR_cooperative_matrix]                      = EBhDisable;
 
     // #line and #include
