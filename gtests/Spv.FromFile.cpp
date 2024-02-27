@@ -255,7 +255,7 @@ TEST_P(CompileVulkanToNonSemanticShaderDebugInfoTest, FromFile)
 {
     loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam(),
                             Source::GLSL, Semantics::Vulkan, glslang::EShTargetVulkan_1_0, glslang::EShTargetSpv_1_0,
-                            Target::Spv, true, "", "/baseResults/", false, false, true);
+                            Target::Spv, true, "", "/baseResults/", false, true, true);
 }
 
 // clang-format off

@@ -193,7 +193,7 @@ public:
         const int shaderLengths = static_cast<int>(code.size());
         const char* shaderNames = nullptr;
 
-        if (shaderName != nullptr) {
+        if (controls & EShMsgDebugInfo) {
             shaderNames = shaderName->data();
             shader->setStringsWithLengthsAndNames(
                     &shaderStrings, &shaderLengths, &shaderNames, 1);
@@ -288,12 +288,8 @@ public:
         if (options().compileOnly)
             shader.setCompileOnly();
 
-        const std::string* ptrShaderName = nullptr;
-        if ((controls & EShMsgDebugInfo) || enableNonSemanticShaderDebugInfo) {
-            ptrShaderName = &shaderName;
-        }
         bool success = compile(
-                &shader, code, entryPointName, controls, nullptr, ptrShaderName);
+                &shader, code, entryPointName, controls, nullptr, &shaderName);
 
         glslang::TProgram program;
         spv::SpvBuildLogger logger;
@@ -309,7 +305,7 @@ public:
                 options().disableOptimizer = !enableOptimizer;
                 options().generateDebugInfo = enableDebug;
                 options().emitNonSemanticShaderDebugInfo = enableNonSemanticShaderDebugInfo;
-                options().emitNonSemanticShaderDebugSource = enableNonSemanticShaderDebugInfo;
+                options().emitNonSemanticShaderDebugSource = false;
                 glslang::GlslangToSpv(*program.getIntermediate(stage), spirv_binary, &logger, &options());
             } else {
                 return {{
@@ -325,7 +321,7 @@ public:
             options().disableOptimizer = !enableOptimizer;
             options().generateDebugInfo = enableDebug;
             options().emitNonSemanticShaderDebugInfo = enableNonSemanticShaderDebugInfo;
-            options().emitNonSemanticShaderDebugSource = enableNonSemanticShaderDebugInfo;
+            options().emitNonSemanticShaderDebugSource = false;
             glslang::GlslangToSpv(*shader.getIntermediate(), spirv_binary, &logger, &options());
         }
 
