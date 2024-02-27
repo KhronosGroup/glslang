@@ -496,18 +496,34 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType) 
             case EbtDouble:
             case EbtFloat16:
             case EbtFloat: newConstArray[i].setDConst(-unionArray[i].getDConst()); break;
-            // Note: avoid UBSAN error regarding negating 0x80000000
-            case EbtInt:   newConstArray[i].setIConst(
-                                static_cast<unsigned int>(unionArray[i].getIConst()) == 0x80000000
-                                    ? -0x7FFFFFFF - 1
-                                    : -unionArray[i].getIConst());
-                           break;
+            // Note: avoid UBSAN error regarding negating INT_MIN, signed overflow is UB
+            case EbtInt:
+                {
+                    int t = unionArray[i].getIConst();
+                    newConstArray[i].setIConst(static_cast<unsigned int>(t) == static_cast<unsigned int>(std::numeric_limits<int>::min()) ? -std::numeric_limits<int>::max()-1 : -t);
+                    break;
+                }
             case EbtUint:  newConstArray[i].setUConst(static_cast<unsigned int>(-static_cast<int>(unionArray[i].getUConst())));  break;
-            case EbtInt8:  newConstArray[i].setI8Const(-unionArray[i].getI8Const()); break;
+            case EbtInt8:
+                {
+                    signed char t = unionArray[i].getI8Const();
+                    newConstArray[i].setI8Const(static_cast<unsigned char>(t) == static_cast<unsigned char>(std::numeric_limits<signed char>::min()) ? -std::numeric_limits<signed char>::max()-1 : -t);
+                    break;
+                }
             case EbtUint8: newConstArray[i].setU8Const(static_cast<unsigned int>(-static_cast<signed int>(unionArray[i].getU8Const())));  break;
-            case EbtInt16: newConstArray[i].setI16Const(-unionArray[i].getI16Const()); break;
+            case EbtInt16:
+                {
+                    signed short t = unionArray[i].getI16Const();
+                    newConstArray[i].setI16Const(static_cast<unsigned short>(t) == static_cast<unsigned short>(std::numeric_limits<signed short>::min()) ? -std::numeric_limits<signed short>::max()-1 : -t);
+                    break;
+                }
             case EbtUint16:newConstArray[i].setU16Const(static_cast<unsigned int>(-static_cast<signed int>(unionArray[i].getU16Const())));  break;
-            case EbtInt64: newConstArray[i].setI64Const(-unionArray[i].getI64Const()); break;
+            case EbtInt64:
+                {
+                    long long t = unionArray[i].getI64Const();
+                    newConstArray[i].setI64Const(static_cast<unsigned long long>(t) == static_cast<unsigned long long>(std::numeric_limits<long long>::min()) ? -std::numeric_limits<long long>::max()-1 : -t);
+                    break;
+                }
             case EbtUint64: newConstArray[i].setU64Const(static_cast<unsigned long long>(-static_cast<long long>(unionArray[i].getU64Const())));  break;
             default:
                 return nullptr;
