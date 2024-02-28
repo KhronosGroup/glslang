@@ -3950,7 +3950,8 @@ iteration_statement
         $$ = $1;
     }
     | attribute iteration_statement_nonattributed {
-        parseContext.requireExtensions($2->getLoc(), 1, &E_GL_EXT_control_flow_attributes, "attribute");
+        const char * extensions[2] = { E_GL_EXT_control_flow_attributes, E_GL_EXT_control_flow_attributes2 };
+        parseContext.requireExtensions($2->getLoc(), 2, extensions, "attribute");
         parseContext.handleLoopAttributes(*$1, $2);
         $$ = $2;
     }
