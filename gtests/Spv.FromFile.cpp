@@ -255,7 +255,7 @@ TEST_P(CompileVulkanToNonSemanticShaderDebugInfoTest, FromFile)
 {
     loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam(),
                             Source::GLSL, Semantics::Vulkan, glslang::EShTargetVulkan_1_0, glslang::EShTargetSpv_1_0,
-                            Target::Spv, true, "", "/baseResults/", false, false, true);
+                            Target::Spv, true, "", "/baseResults/", false, true, true);
 }
 
 // clang-format off
@@ -946,6 +946,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.debuginfo.bufferref.glsl.frag",
         "spv.debuginfo.const_params.glsl.comp",
         "spv.debuginfo.scalar_types.glsl.frag",
+        "spv.debuginfo.include_test.glsl.frag",
         "spv.debuginfo.rt_types.glsl.rgen",
     })),
     FileNameAsCustomTestSuffix

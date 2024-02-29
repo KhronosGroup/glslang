@@ -12,48 +12,41 @@ spv.debuginfo.rt_types.glsl.rgen
                3:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
                               EntryPoint RayGenerationKHR 14  "main"
-               2:             String  ""
+               2:             String  "spv.debuginfo.rt_types.glsl.rgen"
                8:             String  "uint"
               16:             String  "main"
-              19:             String  "// OpModuleProcessed auto-map-locations
-// OpModuleProcessed auto-map-bindings
-// OpModuleProcessed client vulkan100
-// OpModuleProcessed target-env vulkan1.0
-// OpModuleProcessed keep-uncalled
-// OpModuleProcessed entry-point main
-#line 1
-"
-              33:             String  "rayFlags"
-              40:             String  "float"
-              46:             String  "tMin"
-              53:             String  "tMax"
-              60:             String  "rayQuery"
-              62:             String  "@rayQuery"
-              68:             String  "localRayQuery"
-              72:             String  "accelerationStructure"
-              73:             String  "@accelerationStructure"
-              78:             String  "acc0"
-              87:             String  "origin"
-              90:             String  "block"
+              32:             String  "rayFlags"
+              39:             String  "float"
+              45:             String  "tMin"
+              52:             String  "tMax"
+              59:             String  "rayQuery"
+              61:             String  "@rayQuery"
+              67:             String  "localRayQuery"
+              71:             String  "accelerationStructure"
+              72:             String  "@accelerationStructure"
+              77:             String  "acc0"
+              86:             String  "origin"
+              89:             String  "block"
+              95:             String  ""
               97:             String  "int"
              110:             String  "bool"
                               SourceExtension  "GL_EXT_ray_query"
                               SourceExtension  "GL_NV_ray_tracing"
                               Name 14  "main"
-                              Name 31  "rayFlags"
-                              Name 44  "tMin"
-                              Name 51  "tMax"
-                              Name 66  "localRayQuery"
-                              Name 76  "acc0"
-                              Name 85  "block"
-                              MemberName 85(block) 0  "dir"
-                              MemberName 85(block) 1  "origin"
-                              Name 94  ""
-                              Decorate 76(acc0) DescriptorSet 0
-                              Decorate 76(acc0) Binding 0
-                              MemberDecorate 85(block) 0 Offset 0
-                              MemberDecorate 85(block) 1 Offset 16
-                              Decorate 85(block) BufferBlock
+                              Name 30  "rayFlags"
+                              Name 43  "tMin"
+                              Name 50  "tMax"
+                              Name 65  "localRayQuery"
+                              Name 75  "acc0"
+                              Name 84  "block"
+                              MemberName 84(block) 0  "dir"
+                              MemberName 84(block) 1  "origin"
+                              Name 93  ""
+                              Decorate 75(acc0) DescriptorSet 0
+                              Decorate 75(acc0) Binding 0
+                              MemberDecorate 84(block) 0 Offset 0
+                              MemberDecorate 84(block) 1 Offset 16
+                              Decorate 84(block) BufferBlock
                4:             TypeVoid
                5:             TypeFunction 4
                7:             TypeInt 32 0
@@ -63,103 +56,103 @@ spv.debuginfo.rt_types.glsl.rgen
                9:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 2(DebugTypeBasic) 8 10 11 12
               13:      7(int) Constant 3
                6:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 8(DebugTypeFunction) 13 4
-              18:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 35(DebugSource) 2 19
-              20:      7(int) Constant 12
-              22:      7(int) Constant 1
-              23:      7(int) Constant 4
-              24:      7(int) Constant 2
-              21:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 1(DebugCompilationUnit) 22 23 18 24
-              17:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 20(DebugFunction) 16 6 18 20 12 21 16 13 20
-              28:             TypePointer Function 7(int)
-              29:      7(int) Constant 7
-              30:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 3(DebugTypePointer) 9 29 12
-              34:      7(int) Constant 15
-              32:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 33 9 18 34 12 17 23
-              36:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 31(DebugExpression)
-              38:      7(int) Constant 9
-              39:             TypeFloat 32
-              41:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 2(DebugTypeBasic) 40 10 13 12
-              42:             TypePointer Function 39(float)
-              43:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 3(DebugTypePointer) 41 29 12
-              47:      7(int) Constant 16
-              45:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 46 41 18 47 12 17 23
-              50:   39(float) Constant 0
-              54:      7(int) Constant 17
-              52:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 53 41 18 54 12 17 23
-              57:   39(float) Constant 1148846080
-              58:             TypeRayQueryKHR
-              61:      7(int) Constant 18
-              63:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 0(DebugInfoNone)
-              59:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 10(DebugTypeComposite) 60 22 18 61 12 21 62 63 13
-              64:             TypePointer Private 58
-              65:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 3(DebugTypePointer) 59 11 12
-66(localRayQuery):     64(ptr) Variable Private
-              69:      7(int) Constant 8
-              67:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 18(DebugGlobalVariable) 68 59 18 61 12 21 68 66(localRayQuery) 69
-              70:             TypeAccelerationStructureKHR
-              71:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 10(DebugTypeComposite) 72 22 18 61 12 21 73 63 13
-              74:             TypePointer UniformConstant 70
-              75:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 3(DebugTypePointer) 71 12 12
-        76(acc0):     74(ptr) Variable UniformConstant
-              77:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 18(DebugGlobalVariable) 78 71 18 61 12 21 78 76(acc0) 69
-              82:      7(int) Constant 255
-              83:             TypeVector 39(float) 3
-              84:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 6(DebugTypeVector) 41 13
-       85(block):             TypeStruct 83(fvec3) 83(fvec3)
-              86:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 87 84 18 38 29 12 12 13
-              88:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 87 84 18 38 29 12 12 13
-              89:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 10(DebugTypeComposite) 90 22 18 61 12 21 90 12 13 86 88
-              91:             TypePointer ShaderRecordBufferKHR 85(block)
-              92:      7(int) Constant 5343
-              93:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 3(DebugTypePointer) 89 92 12
-              94:     91(ptr) Variable ShaderRecordBufferKHR
-              95:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 18(DebugGlobalVariable) 2 89 18 61 12 21 2 94 69
+              18:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 35(DebugSource) 2
+              19:      7(int) Constant 12
+              21:      7(int) Constant 1
+              22:      7(int) Constant 4
+              23:      7(int) Constant 2
+              20:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 1(DebugCompilationUnit) 21 22 18 23
+              17:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 20(DebugFunction) 16 6 18 19 12 20 16 13 19
+              27:             TypePointer Function 7(int)
+              28:      7(int) Constant 7
+              29:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 3(DebugTypePointer) 9 28 12
+              33:      7(int) Constant 15
+              31:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 32 9 18 33 12 17 22
+              35:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 31(DebugExpression)
+              37:      7(int) Constant 9
+              38:             TypeFloat 32
+              40:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 2(DebugTypeBasic) 39 10 13 12
+              41:             TypePointer Function 38(float)
+              42:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 3(DebugTypePointer) 40 28 12
+              46:      7(int) Constant 16
+              44:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 45 40 18 46 12 17 22
+              49:   38(float) Constant 0
+              53:      7(int) Constant 17
+              51:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 52 40 18 53 12 17 22
+              56:   38(float) Constant 1148846080
+              57:             TypeRayQueryKHR
+              60:      7(int) Constant 18
+              62:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 0(DebugInfoNone)
+              58:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 10(DebugTypeComposite) 59 21 18 60 12 20 61 62 13
+              63:             TypePointer Private 57
+              64:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 3(DebugTypePointer) 58 11 12
+65(localRayQuery):     63(ptr) Variable Private
+              68:      7(int) Constant 8
+              66:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 18(DebugGlobalVariable) 67 58 18 60 12 20 67 65(localRayQuery) 68
+              69:             TypeAccelerationStructureKHR
+              70:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 10(DebugTypeComposite) 71 21 18 60 12 20 72 62 13
+              73:             TypePointer UniformConstant 69
+              74:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 3(DebugTypePointer) 70 12 12
+        75(acc0):     73(ptr) Variable UniformConstant
+              76:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 18(DebugGlobalVariable) 77 70 18 60 12 20 77 75(acc0) 68
+              81:      7(int) Constant 255
+              82:             TypeVector 38(float) 3
+              83:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 6(DebugTypeVector) 40 13
+       84(block):             TypeStruct 82(fvec3) 82(fvec3)
+              85:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 86 83 18 37 28 12 12 13
+              87:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 86 83 18 37 28 12 12 13
+              88:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 10(DebugTypeComposite) 89 21 18 60 12 20 89 12 13 85 87
+              90:             TypePointer ShaderRecordBufferKHR 84(block)
+              91:      7(int) Constant 5343
+              92:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 3(DebugTypePointer) 88 91 12
+              93:     90(ptr) Variable ShaderRecordBufferKHR
+              94:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 18(DebugGlobalVariable) 95 88 18 60 12 20 95 93 68
               96:             TypeInt 32 1
-              98:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 2(DebugTypeBasic) 97 10 23 12
+              98:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 2(DebugTypeBasic) 97 10 22 12
               99:     96(int) Constant 1
-             100:             TypePointer ShaderRecordBufferKHR 83(fvec3)
-             101:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 3(DebugTypePointer) 84 92 12
+             100:             TypePointer ShaderRecordBufferKHR 82(fvec3)
+             101:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 3(DebugTypePointer) 83 91 12
              105:     96(int) Constant 0
              109:             TypeBool
-             111:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 2(DebugTypeBasic) 110 10 24 12
+             111:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 2(DebugTypeBasic) 110 10 23 12
              114:      7(int) Constant 19
              120:      7(int) Constant 21
         14(main):           4 Function None 5
               15:             Label
-    31(rayFlags):     28(ptr) Variable Function
-        44(tMin):     42(ptr) Variable Function
-        51(tMax):     42(ptr) Variable Function
-              26:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 17
-              27:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 18 20 20 12 12
-              25:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 101(DebugFunctionDefinition) 17 14(main)
-              37:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 18 34 34 12 12
-              35:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 32 31(rayFlags) 36
-                              Store 31(rayFlags) 38
-              49:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 18 47 47 12 12
-              48:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 45 44(tMin) 36
-                              Store 44(tMin) 50
-              56:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 18 54 54 12 12
-              55:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 52 51(tMax) 36
-                              Store 51(tMax) 57
-              80:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 18 61 61 12 12
-              79:          70 Load 76(acc0)
-              81:      7(int) Load 31(rayFlags)
-             102:    100(ptr) AccessChain 94 99
-             103:   83(fvec3) Load 102
-             104:   39(float) Load 44(tMin)
-             106:    100(ptr) AccessChain 94 105
-             107:   83(fvec3) Load 106
-             108:   39(float) Load 51(tMax)
-                              RayQueryInitializeKHR 66(localRayQuery) 79 81 82 103 104 107 108
+    30(rayFlags):     27(ptr) Variable Function
+        43(tMin):     41(ptr) Variable Function
+        50(tMax):     41(ptr) Variable Function
+              25:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 17
+              26:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 18 19 19 12 12
+              24:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 101(DebugFunctionDefinition) 17 14(main)
+              36:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 18 33 33 12 12
+              34:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 31 30(rayFlags) 35
+                              Store 30(rayFlags) 37
+              48:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 18 46 46 12 12
+              47:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 44 43(tMin) 35
+                              Store 43(tMin) 49
+              55:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 18 53 53 12 12
+              54:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 51 50(tMax) 35
+                              Store 50(tMax) 56
+              79:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 18 60 60 12 12
+              78:          69 Load 75(acc0)
+              80:      7(int) Load 30(rayFlags)
+             102:    100(ptr) AccessChain 93 99
+             103:   82(fvec3) Load 102
+             104:   38(float) Load 43(tMin)
+             106:    100(ptr) AccessChain 93 105
+             107:   82(fvec3) Load 106
+             108:   38(float) Load 50(tMax)
+                              RayQueryInitializeKHR 65(localRayQuery) 78 80 81 103 104 107 108
              113:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 18 114 114 12 12
-             112:   109(bool) RayQueryProceedKHR 66(localRayQuery)
+             112:   109(bool) RayQueryProceedKHR 65(localRayQuery)
              115:   109(bool) LogicalNot 112
                               SelectionMerge 117 None
                               BranchConditional 115 116 117
              116:               Label
              118:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 17
              119:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 18 120 120 12 12
-                                RayQueryTerminateKHR 66(localRayQuery)
+                                RayQueryTerminateKHR 65(localRayQuery)
                                 Branch 117
              117:             Label
              121:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 17
