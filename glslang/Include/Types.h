@@ -573,7 +573,8 @@ public:
     }
 
     const char*         semanticName;
-    TStorageQualifier   storage   : 6;
+    TStorageQualifier   storage   : 7;
+    static_assert(EvqLast < 64, "need to increase size of TStorageQualifier bitfields!");
     TBuiltInVariable    builtIn   : 9;
     TBuiltInVariable    declaredBuiltIn : 9;
     static_assert(EbvLast < 256, "need to increase size of TBuiltInVariable bitfields!");
