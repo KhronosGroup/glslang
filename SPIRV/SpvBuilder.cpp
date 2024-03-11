@@ -182,6 +182,10 @@ Id Builder::makeForwardPointer(StorageClass storageClass)
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
 
+    if (emitNonSemanticShaderDebugInfo) {
+        const Id debugResultId = makeForwardPointerDebugType(storageClass);
+        debugId[type->getResultId()] = debugResultId;
+    }
     return type->getResultId();
 }
 
@@ -203,6 +207,15 @@ Id Builder::makePointerFromForwardPointer(StorageClass storageClass, Id forwardP
     groupedTypes[OpTypePointer].push_back(type);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
+
+    // If we are emitting nonsemantic debuginfo, we need to patch the debug pointer type
+    // that was emitted alongside the forward pointer, now that we have a pointee debug
+    // type for it to point to.
+    if (emitNonSemanticShaderDebugInfo) {
+        Instruction *debugForwardPointer = module.getInstruction(debugId[forwardPointerType]);
+        assert(debugId[pointee]);
+        debugForwardPointer->setIdOperand(2, debugId[pointee]);
+    }
 
     return type->getResultId();
 }
@@ -1035,6 +1048,29 @@ Id Builder::makePointerDebugType(StorageClass storageClass, Id const baseType)
     type->addIdOperand(nonSemanticShaderDebugInfo);
     type->addImmediateOperand(NonSemanticShaderDebugInfo100DebugTypePointer);
     type->addIdOperand(debugBaseType);
+    type->addIdOperand(scID);
+    type->addIdOperand(makeUintConstant(0));
+
+    groupedDebugTypes[NonSemanticShaderDebugInfo100DebugTypePointer].push_back(type);
+    constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
+    module.mapInstruction(type);
+
+    return type->getResultId();
+}
+
+// Emit a OpExtInstWithForwardRefs nonsemantic instruction for a pointer debug type
+// where we don't have the pointee yet. Since we don't have the pointee yet, it just
+// points to itself and we rely on patching it later.
+Id Builder::makeForwardPointerDebugType(StorageClass storageClass)
+{
+    const Id scID = makeUintConstant(storageClass);
+
+    this->addExtension(spv::E_SPV_KHR_relaxed_extended_instruction);
+
+    Instruction *type = new Instruction(getUniqueId(), makeVoidType(), OpExtInstWithForwardRefs);
+    type->addIdOperand(nonSemanticShaderDebugInfo);
+    type->addImmediateOperand(NonSemanticShaderDebugInfo100DebugTypePointer);
+    type->addIdOperand(type->getResultId());
     type->addIdOperand(scID);
     type->addIdOperand(makeUintConstant(0));
 
