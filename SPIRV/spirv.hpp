@@ -202,7 +202,6 @@ enum ExecutionMode {
     ExecutionModeSchedulerTargetFmaxMhzINTEL = 5903,
     ExecutionModeMaximallyReconvergesKHR = 6023,
     ExecutionModeStreamingInterfaceINTEL = 6154,
-    ExecutionModeRegisterMapInterfaceINTEL = 6160,
     ExecutionModeNamedBarrierCountINTEL = 6417,
     ExecutionModeMax = 0x7fffffff,
 };
@@ -588,8 +587,6 @@ enum Decoration {
     DecorationSingleElementVectorINTEL = 6085,
     DecorationVectorComputeCallableFunctionINTEL = 6087,
     DecorationMediaBlockIOINTEL = 6140,
-    DecorationLatencyControlLabelINTEL = 6172,
-    DecorationLatencyControlConstraintINTEL = 6173,
     DecorationConduitKernelArgumentINTEL = 6175,
     DecorationRegisterMapKernelArgumentINTEL = 6176,
     DecorationMMHostInterfaceAddressWidthINTEL = 6177,
@@ -1174,10 +1171,7 @@ enum Capability {
     CapabilityOptNoneINTEL = 6094,
     CapabilityAtomicFloat16AddEXT = 6095,
     CapabilityDebugInfoModuleINTEL = 6114,
-    CapabilityBFloat16ConversionINTEL = 6115,
     CapabilitySplitBarrierINTEL = 6141,
-    CapabilityFPGAKernelAttributesv2INTEL = 6161,
-    CapabilityFPGALatencyControlINTEL = 6171,
     CapabilityFPGAArgumentInterfacesINTEL = 6174,
     CapabilityGroupUniformArithmeticKHR = 6400,
     CapabilityMax = 0x7fffffff,
@@ -2032,8 +2026,6 @@ enum Op {
     OpTypeStructContinuedINTEL = 6090,
     OpConstantCompositeContinuedINTEL = 6091,
     OpSpecConstantCompositeContinuedINTEL = 6092,
-    OpConvertFToBF16INTEL = 6116,
-    OpConvertBF16ToFINTEL = 6117,
     OpControlBarrierArriveINTEL = 6142,
     OpControlBarrierWaitINTEL = 6143,
     OpGroupIMulKHR = 6401,
@@ -2756,8 +2748,6 @@ inline void HasResultAndType(Op opcode, bool *hasResult, bool *hasResultType) {
     case OpTypeStructContinuedINTEL: *hasResult = false; *hasResultType = false; break;
     case OpConstantCompositeContinuedINTEL: *hasResult = false; *hasResultType = false; break;
     case OpSpecConstantCompositeContinuedINTEL: *hasResult = false; *hasResultType = false; break;
-    case OpConvertFToBF16INTEL: *hasResult = true; *hasResultType = true; break;
-    case OpConvertBF16ToFINTEL: *hasResult = true; *hasResultType = true; break;
     case OpControlBarrierArriveINTEL: *hasResult = false; *hasResultType = false; break;
     case OpControlBarrierWaitINTEL: *hasResult = false; *hasResultType = false; break;
     case OpGroupIMulKHR: *hasResult = true; *hasResultType = true; break;
