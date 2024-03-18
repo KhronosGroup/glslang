@@ -17,7 +17,7 @@ jobs:
         compiler: [{cc: clang, cxx: clang++}, {cc: gcc, cxx: g++}]
         cmake_build_type: [Debug, Release]
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
       - uses: lukka/get-cmake@139aae96315b496d9af1b5e9abe53b15ca7eece8 # v3.28.3
       - uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5.0.0
         with:
@@ -53,7 +53,7 @@ jobs:
         cmake_build_type: [Debug]
         flags: ['-fsanitize=address', '-fsanitize=thread']
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
       - uses: lukka/get-cmake@139aae96315b496d9af1b5e9abe53b15ca7eece8 # v3.28.3
       - uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5.0.0
         with:
@@ -88,7 +88,7 @@ jobs:
     name: Linux Backcompat
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
       - uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5.0.0
         with:
           python-version: '3.7'
@@ -123,7 +123,7 @@ jobs:
         compiler: [{cc: clang, cxx: clang++}, {cc: gcc, cxx: g++}]
         cmake_build_type: [Debug, Release]
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
       - uses: lukka/get-cmake@139aae96315b496d9af1b5e9abe53b15ca7eece8 # v3.28.3
       - run: ./update_glslang_sources.py
       - run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{matrix.cmake_build_type}} -G Ninja -DBUILD_WERROR=ON -D GLSLANG_TESTS=ON
@@ -147,7 +147,7 @@ jobs:
           os: [{genus: windows-2019, family: windows}]
           cmake_build_type: [Debug, Release]
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
       - uses: lukka/get-cmake@139aae96315b496d9af1b5e9abe53b15ca7eece8 # v3.28.3
       - uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5.0.0
         with:
@@ -165,7 +165,7 @@ jobs:
   iOS:
     runs-on: macos-13
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
       - uses: lukka/get-cmake@139aae96315b496d9af1b5e9abe53b15ca7eece8 # v3.28.3
       - name: Setup ccache
         uses: hendrikmuhs/ccache-action@faf867a11c028c0b483fb2ae72b6fc8f7d842714 # v1.2.12
@@ -194,7 +194,7 @@ jobs:
         # Test both to ensure we are compatible with either approach.
         LEGACY: [ON, OFF]
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
       - uses: lukka/get-cmake@139aae96315b496d9af1b5e9abe53b15ca7eece8 # v3.28.3
       - name: Setup ccache
         uses: hendrikmuhs/ccache-action@faf867a11c028c0b483fb2ae72b6fc8f7d842714 # v1.2.12
@@ -217,7 +217,7 @@ jobs:
   emscripten:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
       - uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5.0.0
         with:
           python-version: '3.7'
