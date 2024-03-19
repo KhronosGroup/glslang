@@ -845,6 +845,10 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.tpipBlockMatchSSD.frag",
         "spv.tpipBlockMatchSAD.frag",
         "spv.tpipTextureArrays.frag",
+        "spv.tpipBlockMatchGatherSAD.frag",
+        "spv.tpipBlockMatchGatherSSD.frag",
+        "spv.tpipBlockMatchWindowSAD.frag",
+        "spv.tpipBlockMatchWindowSSD.frag",
     })),
     FileNameAsCustomTestSuffix
 );
