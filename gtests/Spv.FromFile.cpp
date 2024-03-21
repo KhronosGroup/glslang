@@ -418,6 +418,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.int64.frag",
         "spv.intcoopmat.comp",
         "spv.intOps.vert",
+        "spv.intrinsicsDebugBreak.frag",
         "spv.intrinsicsSpirvByReference.vert",
         "spv.intrinsicsSpirvDecorate.frag",
         "spv.intrinsicsSpirvDecorateId.comp",
