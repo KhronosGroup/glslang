@@ -1756,6 +1756,7 @@ type_parameter_specifier_list
     : type_specifier {
         $$ = new TTypeParameters;
         $$->arraySizes = new TArraySizes;
+        $$->spirvType = $1.spirvType;
         $$->basicType = $1.basicType;
     }
     | unary_expression {

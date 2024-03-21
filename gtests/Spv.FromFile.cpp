@@ -423,6 +423,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.intrinsicsSpirvDecorateId.comp",
         "spv.intrinsicsSpirvDecorateString.comp",
         "spv.intrinsicsSpirvExecutionMode.frag",
+        "spv.intrinsicsInteractWithCoopMat.comp",
         "spv.intrinsicsSpirvInstruction.vert",
         "spv.intrinsicsSpirvLiteral.vert",
         "spv.intrinsicsSpirvStorageClass.rchit",
