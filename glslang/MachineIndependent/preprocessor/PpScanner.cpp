@@ -207,7 +207,7 @@ int TPpContext::lFloatConst(int len, int ch, TPpToken* ppToken)
     // Exponent:
     bool negativeExponent = false;
     double exponentValue = 0.0;
-    int exponent = 0;
+    long long int exponent = 0;
     {
         if (ch == 'e' || ch == 'E') {
             hasDecimalOrExponent = true;
