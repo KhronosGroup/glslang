@@ -110,6 +110,7 @@ enum TOptions : uint64_t {
     EOptionInvertY = (1ull << 30),
     EOptionDumpBareVersion = (1ull << 31),
     EOptionCompileOnly = (1ull << 32),
+    EOptionReportStatements = (1ull << 33),
 };
 bool targetHlslFunctionality1 = false;
 bool SpvToolsDisassembler = false;
@@ -898,6 +899,8 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                         Options |= EOptionDumpVersions;
                     } else if (lowerword == "no-link") {
                         Options |= EOptionCompileOnly;
+                    } else if (lowerword == "report-statements") {
+                        Options |= EOptionReportStatements;
                     } else if (lowerword == "help") {
                         usage();
                         break;
@@ -1132,6 +1135,8 @@ void SetMessageOptions(EShMessages& messages)
 {
     if (Options & EOptionRelaxedErrors)
         messages = (EShMessages)(messages | EShMsgRelaxedErrors);
+    if (Options & EOptionReportStatements)
+        messages = (EShMessages)(messages | EShMsgReportStatements);
     if (Options & EOptionIntermediate)
         messages = (EShMessages)(messages | EShMsgAST);
     if (Options & EOptionSuppressWarnings)
@@ -2117,7 +2122,8 @@ void usage()
            "                                    initialized with the shader binary code\n"
            "  --no-link                         Only compile shader; do not link (GLSL-only)\n"
            "                                    NOTE: this option will set the export linkage\n"
-           "                                          attribute on all functions\n");
+           "                                          attribute on all functions\n"
+           "  --report-statements               Report errors on statement\n");
 
     exit(EFailUsage);
 }

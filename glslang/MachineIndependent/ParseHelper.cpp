@@ -205,12 +205,18 @@ bool TParseContext::parseShaderStrings(TPpContext& ppContext, TInputScanner& inp
 // Note though that to stop cascading errors, we set EOF, which
 // will usually cause a syntax error, so be more accurate that
 // compilation is terminating.
-void TParseContext::parserError(const char* s)
+void TParseContext::parserError(const TSourceLoc& location, const char* s)
 {
     if (! getScanner()->atEndOfInput() || numErrors == 0)
-        error(getCurrentLoc(), "", "", s, "");
+        error(location, "", "", s, "");
     else
+    {
+        // if the end of file is received, output the origional error
+        if ((messages & EShMsgReportStatements) == EShMsgReportStatements) {
+            error(location, "", "", s, "");
+        }
         error(getCurrentLoc(), "compilation terminated", "", "");
+    }
 }
 
 void TParseContext::growGlobalUniformBlock(const TSourceLoc& loc, TType& memberType, const TString& memberName, TTypeList* typeList)

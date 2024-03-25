@@ -199,6 +199,30 @@ public:
     int endInvocationInterlockCount;
     bool compileOnly = false;
 
+    std::vector<glslang::TSourceLoc> _statement;
+    std::vector<int> _terminator;
+    std::vector<std::string> _source;
+
+
+    void push_back(const glslang::TSourceLoc& location, int symbol, const std::string&& debug) {
+
+        if ( (messages & EShMsgReportStatements) == EShMsgReportStatements)
+        {
+            _statement.push_back(location);
+            _terminator.push_back(symbol);
+            _source.emplace_back(debug);
+        }
+    }
+
+    void pop_back() {
+        if ((messages & EShMsgReportStatements) == EShMsgReportStatements)
+        {
+            _statement.pop_back();
+            _terminator.pop_back();
+            _source.pop_back();
+        }
+    }
+
 protected:
     TParseContextBase(TParseContextBase&);
     TParseContextBase& operator=(TParseContextBase&);
@@ -315,7 +339,7 @@ public:
 
     void setLimits(const TBuiltInResource&) override;
     bool parseShaderStrings(TPpContext&, TInputScanner& input, bool versionWillBeError = false) override;
-    void parserError(const char* s);     // for bison's yyerror
+    void parserError(const TSourceLoc& location, const char* s);     // for bison's yyerror
 
     virtual void growGlobalUniformBlock(const TSourceLoc&, TType&, const TString& memberName, TTypeList* typeList = nullptr) override;
     virtual void growAtomicCounterBlock(int binding, const TSourceLoc&, TType&, const TString& memberName, TTypeList* typeList = nullptr) override;

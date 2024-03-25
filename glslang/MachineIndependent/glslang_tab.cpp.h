@@ -524,7 +524,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 72 "MachineIndependent/glslang.y"
+#line 73 "MachineIndependent/glslang.y"
 
     struct {
         glslang::TSourceLoc loc;
@@ -570,6 +570,9 @@ typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif
+
+/* Location type.  */
+typedef glslang::TSourceLoc YYLTYPE;
 
 
 

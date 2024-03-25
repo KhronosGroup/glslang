@@ -67,7 +67,8 @@ using namespace glslang;
 
 %}
 
-%define parse.error verbose
+%define parse.error custom
+
 
 %union {
     struct {
@@ -111,9 +112,30 @@ using namespace glslang;
 %{
 
 #define parseContext (*pParseContext)
-#define yyerror(context, msg) context->parserError(msg)
+#define yyerror(yylloc, context, msg) context->parserError(*yylloc, msg);
+//#define YYREPORT_SYNTAX_ERROR_DEBUG
 
-extern int yylex(YYSTYPE*, TParseContext&);
+extern int yylex(YYSTYPE*, YYLTYPE*, TParseContext&);
+
+# define YYLLOC_DEFAULT(Current, Rhs, N)                                \
+    do                                                                  \
+      if (N)                                                            \
+        {                                                               \
+          (Current).line   = YYRHSLOC (Rhs, N).line;                    \
+          (Current).column = YYRHSLOC (Rhs, N).column;                  \
+          (Current).name = YYRHSLOC (Rhs, N).name;                      \
+          (Current).string = YYRHSLOC (Rhs, N).string;                  \
+        }                                                               \
+      else                                                              \
+        {                                                               \
+          (Current).line   = YYRHSLOC (Rhs, 0).line;                    \
+          (Current).column = YYRHSLOC (Rhs, 0).column;                  \
+          (Current).name = YYRHSLOC (Rhs, 0).name;                      \
+          (Current).string = YYRHSLOC (Rhs, 0).string;                  \
+          }                                                               \
+    while (0)
+
+
 
 %}
 
@@ -348,8 +370,25 @@ extern int yylex(YYSTYPE*, TParseContext&);
 %type <interm.spirvInst> spirv_instruction_qualifier
 %type <interm.spirvInst> spirv_instruction_qualifier_list spirv_instruction_qualifier_id
 
+%locations
+%define api.location.type {glslang::TSourceLoc}
+
+
 %start translation_unit
 %%
+
+mark_start_terminated_by_semicolon: %empty
+    { parseContext.push_back(yylval.lex.loc, YYSYMBOL_SEMICOLON, "mark_start_terminated_by_semicolon"); }
+;
+
+mark_start_terminated_by_brace: %empty
+    { parseContext.push_back(yylval.lex.loc, YYSYMBOL_RIGHT_BRACE, "mark_start_terminated_by_semicolon"); }
+;
+
+mark_end: %empty
+    { parseContext.pop_back(); }
+;
+
 
 variable_identifier
     : IDENTIFIER {
@@ -873,61 +912,61 @@ constant_expression
     ;
 
 declaration
-    : function_prototype SEMICOLON {
-        parseContext.handleFunctionDeclarator($1.loc, *$1.function, true /* prototype */);
-        $$ = 0;
-        // TODO: 4.0 functionality: subroutines: make the identifier a user type for this signature
-    }
-    | spirv_instruction_qualifier function_prototype SEMICOLON {
-        parseContext.requireExtensions($2.loc, 1, &E_GL_EXT_spirv_intrinsics, "SPIR-V instruction qualifier");
-        $2.function->setSpirvInstruction(*$1); // Attach SPIR-V intruction qualifier
+    : mark_start_terminated_by_semicolon function_prototype SEMICOLON mark_end {
         parseContext.handleFunctionDeclarator($2.loc, *$2.function, true /* prototype */);
         $$ = 0;
         // TODO: 4.0 functionality: subroutines: make the identifier a user type for this signature
     }
-    | spirv_execution_mode_qualifier SEMICOLON {
-        parseContext.globalCheck($2.loc, "SPIR-V execution mode qualifier");
-        parseContext.requireExtensions($2.loc, 1, &E_GL_EXT_spirv_intrinsics, "SPIR-V execution mode qualifier");
+    | mark_start_terminated_by_semicolon spirv_instruction_qualifier function_prototype SEMICOLON mark_end {
+        parseContext.requireExtensions($3.loc, 1, &E_GL_EXT_spirv_intrinsics, "SPIR-V instruction qualifier");
+        $3.function->setSpirvInstruction(*$2); // Attach SPIR-V intruction qualifier
+        parseContext.handleFunctionDeclarator($3.loc, *$3.function, true /* prototype */);
+        $$ = 0;
+        // TODO: 4.0 functionality: subroutines: make the identifier a user type for this signature
+    }
+    | mark_start_terminated_by_semicolon spirv_execution_mode_qualifier SEMICOLON mark_end {
+        parseContext.globalCheck($3.loc, "SPIR-V execution mode qualifier");
+        parseContext.requireExtensions($3.loc, 1, &E_GL_EXT_spirv_intrinsics, "SPIR-V execution mode qualifier");
         $$ = 0;
     }
-    | init_declarator_list SEMICOLON {
-        if ($1.intermNode && $1.intermNode->getAsAggregate())
-            $1.intermNode->getAsAggregate()->setOperator(EOpSequence);
-        $$ = $1.intermNode;
+    | mark_start_terminated_by_semicolon init_declarator_list SEMICOLON mark_end {
+        if ($2.intermNode && $2.intermNode->getAsAggregate())
+            $2.intermNode->getAsAggregate()->setOperator(EOpSequence);
+        $$ = $2.intermNode;
     }
-    | PRECISION precision_qualifier type_specifier SEMICOLON {
-        parseContext.profileRequires($1.loc, ENoProfile, 130, 0, "precision statement");
+    | mark_start_terminated_by_semicolon PRECISION precision_qualifier type_specifier SEMICOLON mark_end {
+        parseContext.profileRequires($2.loc, ENoProfile, 130, 0, "precision statement");
         // lazy setting of the previous scope's defaults, has effect only the first time it is called in a particular scope
         parseContext.symbolTable.setPreviousDefaultPrecisions(&parseContext.defaultPrecision[0]);
-        parseContext.setDefaultPrecision($1.loc, $3, $2.qualifier.precision);
+        parseContext.setDefaultPrecision($2.loc, $4, $3.qualifier.precision);
         $$ = 0;
     }
-    | block_structure SEMICOLON {
-        parseContext.declareBlock($1.loc, *$1.typeList);
+    | mark_start_terminated_by_semicolon block_structure SEMICOLON mark_end {
+        parseContext.declareBlock($2.loc, *$2.typeList);
         $$ = 0;
     }
-    | block_structure IDENTIFIER SEMICOLON {
-        parseContext.declareBlock($1.loc, *$1.typeList, $2.string);
+    | mark_start_terminated_by_semicolon block_structure IDENTIFIER SEMICOLON mark_end {
+        parseContext.declareBlock($2.loc, *$2.typeList, $3.string);
         $$ = 0;
     }
-    | block_structure IDENTIFIER array_specifier SEMICOLON {
-        parseContext.declareBlock($1.loc, *$1.typeList, $2.string, $3.arraySizes);
+    | mark_start_terminated_by_semicolon block_structure IDENTIFIER array_specifier SEMICOLON mark_end {
+        parseContext.declareBlock($2.loc, *$2.typeList, $3.string, $4.arraySizes);
         $$ = 0;
     }
-    | type_qualifier SEMICOLON {
-        parseContext.globalQualifierFixCheck($1.loc, $1.qualifier);
-        parseContext.updateStandaloneQualifierDefaults($1.loc, $1);
+    | mark_start_terminated_by_semicolon type_qualifier SEMICOLON mark_end {
+        parseContext.globalQualifierFixCheck($2.loc, $2.qualifier);
+        parseContext.updateStandaloneQualifierDefaults($2.loc, $2);
         $$ = 0;
     }
-    | type_qualifier IDENTIFIER SEMICOLON {
-        parseContext.checkNoShaderLayouts($1.loc, $1.shaderQualifiers);
-        parseContext.addQualifierToExisting($1.loc, $1.qualifier, *$2.string);
+    | mark_start_terminated_by_semicolon type_qualifier IDENTIFIER SEMICOLON mark_end  {
+        parseContext.checkNoShaderLayouts($2.loc, $2.shaderQualifiers);
+        parseContext.addQualifierToExisting($2.loc, $2.qualifier, *$3.string);
         $$ = 0;
     }
-    | type_qualifier IDENTIFIER identifier_list SEMICOLON {
-        parseContext.checkNoShaderLayouts($1.loc, $1.shaderQualifiers);
-        $3->push_back($2.string);
-        parseContext.addQualifierToExisting($1.loc, $1.qualifier, *$3);
+    | mark_start_terminated_by_semicolon type_qualifier IDENTIFIER identifier_list SEMICOLON mark_end  {
+        parseContext.checkNoShaderLayouts($2.loc, $2.shaderQualifiers);
+        $4->push_back($3.string);
+        parseContext.addQualifierToExisting($2.loc, $2.qualifier, *$4);
         $$ = 0;
     }
     ;
@@ -3751,10 +3790,10 @@ simple_statement
     ;
 
 demote_statement
-    : DEMOTE SEMICOLON {
-        parseContext.requireStage($1.loc, EShLangFragment, "demote");
-        parseContext.requireExtensions($1.loc, 1, &E_GL_EXT_demote_to_helper_invocation, "demote");
-        $$ = parseContext.intermediate.addBranch(EOpDemote, $1.loc);
+    : mark_start_terminated_by_semicolon DEMOTE SEMICOLON mark_end {
+        parseContext.requireStage($2.loc, EShLangFragment, "demote");
+        parseContext.requireExtensions($2.loc, 1, &E_GL_EXT_demote_to_helper_invocation, "demote");
+        $$ = parseContext.intermediate.addBranch(EOpDemote, $2.loc);
     }
     ;
 
@@ -3763,10 +3802,12 @@ compound_statement
     | LEFT_BRACE {
         parseContext.symbolTable.push();
         ++parseContext.statementNestingLevel;
+        parseContext.push_back($1.loc, YYSYMBOL_RIGHT_BRACE, "Compound statement");
     }
       statement_list {
         parseContext.symbolTable.pop(&parseContext.defaultPrecision[0]);
         --parseContext.statementNestingLevel;
+        parseContext.pop_back();
     }
       RIGHT_BRACE {
         if ($3 && $3->getAsAggregate())
@@ -3783,20 +3824,24 @@ statement_no_new_scope
 statement_scoped
     : {
         ++parseContext.controlFlowNestingLevel;
+        parseContext.push_back(yylval.lex.loc, YYSYMBOL_RIGHT_BRACE, "Scoped statement");
     }
       compound_statement  {
         --parseContext.controlFlowNestingLevel;
+        parseContext.pop_back();
         $$ = $2;
     }
     | {
         parseContext.symbolTable.push();
         ++parseContext.statementNestingLevel;
         ++parseContext.controlFlowNestingLevel;
+        parseContext.push_back(yylval.lex.loc, YYSYMBOL_SEMICOLON, "Scoped statement");
     }
       simple_statement {
         parseContext.symbolTable.pop(&parseContext.defaultPrecision[0]);
         --parseContext.statementNestingLevel;
         --parseContext.controlFlowNestingLevel;
+        parseContext.pop_back();
         $$ = $2;
     }
 
@@ -3805,10 +3850,14 @@ compound_statement_no_new_scope
     : LEFT_BRACE RIGHT_BRACE {
         $$ = 0;
     }
-    | LEFT_BRACE statement_list RIGHT_BRACE {
-        if ($2 && $2->getAsAggregate())
-            $2->getAsAggregate()->setOperator(EOpSequence);
-        $$ = $2;
+    | LEFT_BRACE {         
+        parseContext.push_back($1.loc, YYSYMBOL_RIGHT_BRACE, "Compound statement no scope");
+     } statement_list {
+        parseContext.pop_back();
+     } RIGHT_BRACE {
+        if ($3 && $3->getAsAggregate())
+            $3->getAsAggregate()->setOperator(EOpSequence);
+        $$ = $3;
     }
     ;
 
@@ -3832,18 +3881,18 @@ statement_list
     ;
 
 expression_statement
-    : SEMICOLON  { $$ = 0; }
-    | expression SEMICOLON  { $$ = static_cast<TIntermNode*>($1); }
+    : mark_start_terminated_by_semicolon SEMICOLON mark_end { $$ = 0; }
+    | mark_start_terminated_by_semicolon expression SEMICOLON mark_end { $$ = static_cast<TIntermNode*>($2); }
     ;
 
 selection_statement
-    : selection_statement_nonattributed {
-        $$ = $1;
-    }
-    | attribute selection_statement_nonattributed {
-        parseContext.requireExtensions($2->getLoc(), 1, &E_GL_EXT_control_flow_attributes, "attribute");
-        parseContext.handleSelectionAttributes(*$1, $2);
+    : mark_start_terminated_by_semicolon selection_statement_nonattributed mark_end {
         $$ = $2;
+    }
+    | mark_start_terminated_by_semicolon attribute selection_statement_nonattributed mark_end {
+        parseContext.requireExtensions($3->getLoc(), 1, &E_GL_EXT_control_flow_attributes, "attribute");
+        parseContext.handleSelectionAttributes(*$2, $3);
+        $$ = $3;
     }
 
 selection_statement_nonattributed
@@ -3883,13 +3932,13 @@ condition
     ;
 
 switch_statement
-    : switch_statement_nonattributed {
-        $$ = $1;
-    }
-    | attribute switch_statement_nonattributed {
-        parseContext.requireExtensions($2->getLoc(), 1, &E_GL_EXT_control_flow_attributes, "attribute");
-        parseContext.handleSwitchAttributes(*$1, $2);
+    : mark_start_terminated_by_semicolon switch_statement_nonattributed mark_end {
         $$ = $2;
+    }
+    | mark_start_terminated_by_semicolon attribute switch_statement_nonattributed mark_end {
+        parseContext.requireExtensions($3->getLoc(), 1, &E_GL_EXT_control_flow_attributes, "attribute");
+        parseContext.handleSwitchAttributes(*$2, $3);
+        $$ = $3;
     }
 
 switch_statement_nonattributed
@@ -3901,8 +3950,8 @@ switch_statement_nonattributed
         parseContext.switchLevel.push_back(parseContext.statementNestingLevel);
         parseContext.symbolTable.push();
     }
-    LEFT_BRACE switch_statement_list RIGHT_BRACE {
-        $$ = parseContext.addSwitch($1.loc, $3, $7 ? $7->getAsAggregate() : 0);
+    mark_start_terminated_by_brace LEFT_BRACE switch_statement_list RIGHT_BRACE mark_end {
+        $$ = parseContext.addSwitch($1.loc, $3, $8 ? $8->getAsAggregate() : 0);
         delete parseContext.switchSequenceStack.back();
         parseContext.switchSequenceStack.pop_back();
         parseContext.switchLevel.pop_back();
@@ -3946,14 +3995,14 @@ case_label
     ;
 
 iteration_statement
-    : iteration_statement_nonattributed {
-        $$ = $1;
-    }
-    | attribute iteration_statement_nonattributed {
-        const char * extensions[2] = { E_GL_EXT_control_flow_attributes, E_GL_EXT_control_flow_attributes2 };
-        parseContext.requireExtensions($2->getLoc(), 2, extensions, "attribute");
-        parseContext.handleLoopAttributes(*$1, $2);
+    : mark_start_terminated_by_semicolon iteration_statement_nonattributed mark_end {
         $$ = $2;
+    }
+    | mark_start_terminated_by_semicolon attribute iteration_statement_nonattributed mark_end {
+        const char * extensions[2] = { E_GL_EXT_control_flow_attributes, E_GL_EXT_control_flow_attributes2 };
+        parseContext.requireExtensions($3->getLoc(), 2, extensions, "attribute");
+        parseContext.handleLoopAttributes(*$2, $3);
+        $$ = $3;
     }
 
 iteration_statement_nonattributed
@@ -4040,41 +4089,41 @@ for_rest_statement
     ;
 
 jump_statement
-    : CONTINUE SEMICOLON {
+    : mark_start_terminated_by_semicolon CONTINUE SEMICOLON mark_end {
         if (parseContext.loopNestingLevel <= 0)
-            parseContext.error($1.loc, "continue statement only allowed in loops", "", "");
-        $$ = parseContext.intermediate.addBranch(EOpContinue, $1.loc);
+            parseContext.error($2.loc, "continue statement only allowed in loops", "", "");
+        $$ = parseContext.intermediate.addBranch(EOpContinue, $2.loc);
     }
-    | BREAK SEMICOLON {
+    | mark_start_terminated_by_semicolon BREAK SEMICOLON mark_end {
         if (parseContext.loopNestingLevel + parseContext.switchSequenceStack.size() <= 0)
-            parseContext.error($1.loc, "break statement only allowed in switch and loops", "", "");
-        $$ = parseContext.intermediate.addBranch(EOpBreak, $1.loc);
+            parseContext.error($2.loc, "break statement only allowed in switch and loops", "", "");
+        $$ = parseContext.intermediate.addBranch(EOpBreak, $2.loc);
     }
-    | RETURN SEMICOLON {
-        $$ = parseContext.intermediate.addBranch(EOpReturn, $1.loc);
+    | mark_start_terminated_by_semicolon RETURN SEMICOLON mark_end {
+        $$ = parseContext.intermediate.addBranch(EOpReturn, $2.loc);
         if (parseContext.currentFunctionType->getBasicType() != EbtVoid)
-            parseContext.error($1.loc, "non-void function must return a value", "return", "");
+            parseContext.error($2.loc, "non-void function must return a value", "return", "");
         if (parseContext.inMain)
             parseContext.postEntryPointReturn = true;
     }
-    | RETURN expression SEMICOLON {
-        $$ = parseContext.handleReturnValue($1.loc, $2);
+    | mark_start_terminated_by_semicolon RETURN expression SEMICOLON mark_end {
+        $$ = parseContext.handleReturnValue($2.loc, $3);
     }
-    | DISCARD SEMICOLON {
-        parseContext.requireStage($1.loc, EShLangFragment, "discard");
-        $$ = parseContext.intermediate.addBranch(EOpKill, $1.loc);
+    | mark_start_terminated_by_semicolon DISCARD SEMICOLON mark_end {
+        parseContext.requireStage($2.loc, EShLangFragment, "discard");
+        $$ = parseContext.intermediate.addBranch(EOpKill, $2.loc);
     }
-    | TERMINATE_INVOCATION SEMICOLON {
-        parseContext.requireStage($1.loc, EShLangFragment, "terminateInvocation");
-        $$ = parseContext.intermediate.addBranch(EOpTerminateInvocation, $1.loc);
+    | mark_start_terminated_by_semicolon TERMINATE_INVOCATION SEMICOLON mark_end {
+        parseContext.requireStage($2.loc, EShLangFragment, "terminateInvocation");
+        $$ = parseContext.intermediate.addBranch(EOpTerminateInvocation, $2.loc);
     }
-    | TERMINATE_RAY SEMICOLON {
-        parseContext.requireStage($1.loc, EShLangAnyHit, "terminateRayEXT");
-        $$ = parseContext.intermediate.addBranch(EOpTerminateRayKHR, $1.loc);
+    | mark_start_terminated_by_semicolon TERMINATE_RAY SEMICOLON mark_end {
+        parseContext.requireStage($2.loc, EShLangAnyHit, "terminateRayEXT");
+        $$ = parseContext.intermediate.addBranch(EOpTerminateRayKHR, $2.loc);
     }
-    | IGNORE_INTERSECTION SEMICOLON {
-        parseContext.requireStage($1.loc, EShLangAnyHit, "ignoreIntersectionEXT");
-        $$ = parseContext.intermediate.addBranch(EOpIgnoreIntersectionKHR, $1.loc);
+    | mark_start_terminated_by_semicolon IGNORE_INTERSECTION SEMICOLON mark_end {
+        parseContext.requireStage($2.loc, EShLangAnyHit, "ignoreIntersectionEXT");
+        $$ = parseContext.intermediate.addBranch(EOpIgnoreIntersectionKHR, $2.loc);
     }
     ;
 
@@ -4094,8 +4143,10 @@ translation_unit
     ;
 
 external_declaration
-    : function_definition {
-        $$ = $1;
+    : mark_start_terminated_by_semicolon function_definition mark_end {
+        //printf("begin function declaration\n");
+        //statement = @2;
+        $$ = $2;
     }
     | declaration {
         $$ = $1;
@@ -4150,8 +4201,9 @@ function_definition
     ;
 
 attribute
-    : LEFT_BRACKET LEFT_BRACKET attribute_list RIGHT_BRACKET RIGHT_BRACKET {
-        $$ = $3;
+    : LEFT_BRACKET LEFT_BRACKET { parseContext.push_back($1.loc, RIGHT_BRACKET, "attribute"); } attribute_list RIGHT_BRACKET RIGHT_BRACKET {
+        parseContext.pop_back();
+        $$ = $4;
     }
 
 attribute_list
@@ -4448,3 +4500,143 @@ spirv_instruction_qualifier_id
     }
 
 %%
+
+
+static int
+yyreport_syntax_error (const yypcontext_t *ctx, glslang::TParseContext* pParseContext)
+{
+  int res = 0;
+  bool statementError = false;
+  bool scopeError = false;
+  int yycount = yypcontext_expected_tokens(ctx, 0, 0);
+  std::vector<yysymbol_kind_t> expected;
+  expected.resize(yycount);
+  yypcontext_expected_tokens(ctx, expected.data(), static_cast<int>(expected.size()));
+
+  const std::vector<glslang::TSourceLoc>& statement = pParseContext->_statement; 
+  const std::vector<int>& terminator = pParseContext->_terminator;
+  const std::vector<std::string>& debug = pParseContext->_source;
+  assert( statement.size() == terminator.size() && statement.size() == debug.size());
+
+  #if defined(YYREPORT_SYNTAX_ERROR_DEBUG)
+  for( int i = 0; i < statement.size(); ++i) {
+    fprintf(stderr, "statement [%d:%d]  %d %s\n", statement[i].column, statement[i].line, terminator[i], debug[i].c_str());
+  }
+  #endif
+
+  // Typically, syntax error is an deviation from expected grammar, the syntax errors aren't
+  // aware of semantical nesting and/or boundaries, so it relies on meta data encoded during rules. 
+  // this attempts to use the meta data to differentiate regulair syntax errors from statement 
+  // and scope.
+  if( statement.size() > 0 ) {
+      for( int i = 0; i < yycount; i++ ) {
+         if( expected[i] == terminator[terminator.size() - 1] ) {
+            statementError = terminator[terminator.size() - 1] == YYSYMBOL_SEMICOLON;
+            scopeError = terminator[terminator.size() - 1] == YYSYMBOL_RIGHT_BRACE;
+            break;
+         }
+      }
+  }
+
+
+  if( statementError || scopeError ) {
+      int yycount = 0;
+      yysymbol_kind_t expected[5] = { YYSYMBOL_YYEMPTY };
+      const char* names[5] = { "" };
+      expected[0] = yypcontext_token(ctx);
+      if (expected[0] != terminator[terminator.size() - 1] ) {
+         yycount = 1 + yypcontext_expected_tokens (ctx, &expected[1], 4);
+      } else {
+         yycount = 0; 
+      }
+
+      for( int i = 0; i <  yycount; ++i ) {
+         names[i] = yysymbol_name (expected[i]);
+      }
+
+      const char *yyformat = YY_NULLPTR;
+
+      if( scopeError )
+    switch (yycount)
+    {
+#define YYCASE_(N, S)                       \
+      case N:                               \
+        yyformat = S;                       \
+        break
+    default: /* Avoid compiler warnings. */
+      YYCASE_(0, YY_("unterminated scope"));
+      YYCASE_(1, YY_("unterminated scope, unexpected %s on [%d:%d]"));
+      YYCASE_(2, YY_("unterminated scope, unexpected %s on [%d:%d], expecting %s"));
+      YYCASE_(3, YY_("unterminated scope, unexpected %s on [%d:%d], expecting %s or %s"));
+      YYCASE_(4, YY_("unterminated scope, unexpected %s on [%d:%d], expecting %s or %s or %s"));
+      YYCASE_(5, YY_("unterminated scope, unexpected %s on [%d:%d], expecting %s or %s or %s or %s"));
+#undef YYCASE_
+}
+
+if( statementError )
+    switch (yycount)
+    {
+#define YYCASE_(N, S)                       \
+      case N:                               \
+        yyformat = S;                       \
+        break
+    default: /* Avoid compiler warnings. */
+      YYCASE_(0, YY_("unterminated statement"));
+      YYCASE_(1, YY_("unterminated statement, unexpected %s on [%d:%d]"));
+      YYCASE_(2, YY_("unterminated statement, unexpected %s on [%d:%d], expecting %s"));
+      YYCASE_(3, YY_("unterminated statement, unexpected %s on [%d:%d], expecting %s or %s"));
+      YYCASE_(4, YY_("unterminated statement, unexpected %s on [%d:%d], expecting %s or %s or %s"));
+      YYCASE_(5, YY_("unterminated statement, unexpected %s on [%d:%d], expecting %s or %s or %s or %s"));
+#undef YYCASE_
+}
+
+      std::string format;
+      int n = snprintf(0, 0, yyformat, names[0], pParseContext->getCurrentLoc().line, pParseContext->getCurrentLoc().column, names[1], names[2], names[3], names[4]);
+      format.resize(n + 1);
+      snprintf(format.data(), format.size(), yyformat, names[0], pParseContext->getCurrentLoc().column, pParseContext->getCurrentLoc().line,  names[1], names[2], names[3], names[4]);
+      format.data()[n] = 0;
+      pParseContext->parserError(statement[statement.size() - 1], format.c_str());
+      return res;
+  }
+  else {
+
+      int yycount = 0;
+      yysymbol_kind_t expected[5] = { YYSYMBOL_YYEMPTY };
+      const char* names[5] = { "" };
+      expected[0] = yypcontext_token(ctx);
+      if (expected[0] != YYSYMBOL_YYEMPTY) {
+         yycount = 1 + yypcontext_expected_tokens (ctx, &expected[1], 4);
+      } else {
+         yycount = 0; 
+      }
+
+      for( int i = 0; i <  yycount; ++i ) {
+         names[i] = yysymbol_name (expected[i]);
+      }
+
+      const char *yyformat = YY_NULLPTR;
+    switch (yycount)
+    {
+#define YYCASE_(N, S)                       \
+      case N:                               \
+        yyformat = S;                       \
+        break
+    default: /* Avoid compiler warnings. */
+      YYCASE_(0, YY_("syntax error"));
+      YYCASE_(1, YY_("syntax error, unexpected %s"));
+      YYCASE_(2, YY_("syntax error, unexpected %s, expecting %s"));
+      YYCASE_(3, YY_("syntax error, unexpected %s, expecting %s or %s"));
+      YYCASE_(4, YY_("syntax error, unexpected %s, expecting %s or %s or %s"));
+      YYCASE_(5, YY_("syntax error, unexpected %s, expecting %s or %s or %s or %s"));
+#undef YYCASE_
+}
+
+      std::string format;
+      int n = snprintf(0, 0, yyformat, names[0], names[1], names[2], names[3], names[4]);
+      format.resize(n + 1);
+      snprintf(format.data(), format.size(), yyformat, names[0], names[1], names[2], names[3], names[4]);
+      format.data()[n] = 0;
+      pParseContext->parserError(pParseContext->getCurrentLoc(), format.c_str());
+      return res; 
+  }
+}   

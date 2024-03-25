@@ -973,6 +973,7 @@ bool ProcessDeferred(
     lengths[1] = strlen(strings[1]);
     names[1] = nullptr;
     assert(2 == numPre);
+
     if (requireNonempty) {
         const int postIndex = numStrings + numPre;
         strings[postIndex] = "\n int;";

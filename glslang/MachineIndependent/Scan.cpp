@@ -58,7 +58,7 @@
 #include "preprocessor/PpTokens.h"
 
 // Required to avoid missing prototype warnings for some compilers
-int yylex(YYSTYPE*, glslang::TParseContext&);
+int yylex(YYSTYPE*, YYLTYPE, glslang::TParseContext&);
 
 namespace glslang {
 
@@ -289,9 +289,13 @@ protected:
 } // end namespace glslang
 
 // This is the function the glslang parser (i.e., bison) calls to get its next token
-int yylex(YYSTYPE* glslangTokenDesc, glslang::TParseContext& parseContext)
+int yylex(YYSTYPE* glslangTokenDesc, YYLTYPE* l, glslang::TParseContext& parseContext)
 {
     glslang::TParserToken token(*glslangTokenDesc);
+    l->column = token.sType.lex.loc.column;
+    l->line = token.sType.lex.loc.line;
+    l->name = token.sType.lex.loc.name;
+    l->string = token.sType.lex.loc.string;
 
     return parseContext.getScanContext()->tokenize(parseContext.getPpContext(), token);
 }
