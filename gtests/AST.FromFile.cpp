@@ -309,6 +309,7 @@ INSTANTIATE_TEST_SUITE_P(
         "GL_EXT_draw_instanced.vert",
         "overflow_underflow_toinf_0.frag",
         "GL_EXT_texture_array.frag",
+        "positive_infinity.frag",
     })),
     FileNameAsCustomTestSuffix
 );
