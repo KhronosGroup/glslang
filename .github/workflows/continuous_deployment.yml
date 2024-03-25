@@ -42,7 +42,7 @@ jobs:
                 cmake_build_type: [Debug, Release]
         steps:
             - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
-            - uses: lukka/get-cmake@139aae96315b496d9af1b5e9abe53b15ca7eece8 # v3.28.3
+            - uses: lukka/get-cmake@9438b96ac95a2a8b02548f63800926db324f7c03 # v3.29.0
             - uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5.0.0
               with:
                   python-version: '3.7'
@@ -106,7 +106,7 @@ jobs:
                 cmake_build_type: [Debug, Release]
         steps:
             - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
-            - uses: lukka/get-cmake@139aae96315b496d9af1b5e9abe53b15ca7eece8 # v3.28.3
+            - uses: lukka/get-cmake@9438b96ac95a2a8b02548f63800926db324f7c03 # v3.29.0
             - uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5.0.0
               with:
                   python-version: '3.7'
@@ -163,7 +163,7 @@ jobs:
                 cmake_build_type: [Debug, Release]
         steps:
             - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
-            - uses: lukka/get-cmake@139aae96315b496d9af1b5e9abe53b15ca7eece8 # v3.28.3
+            - uses: lukka/get-cmake@9438b96ac95a2a8b02548f63800926db324f7c03 # v3.29.0
             - uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5.0.0
               with:
                   python-version: '3.7'
