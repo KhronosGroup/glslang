@@ -8856,6 +8856,10 @@ void HlslParseContext::declareBlock(const TSourceLoc& loc, TType& type, const TS
 
     mergeObjectLayoutQualifiers(defaultQualification, type.getQualifier(), true);
 
+    // reverse merge, so that currentBlockQualifier now has all layout information
+    // (can't use defaultQualification directly, it's missing other non-layout-default-class qualifiers)
+    mergeObjectLayoutQualifiers(type.getQualifier(), defaultQualification, true);
+
     bool memberWithLocation = false;
     bool memberWithoutLocation = false;
     for (unsigned int member = 0; member < typeList.size(); ++member) {
@@ -8896,10 +8900,6 @@ void HlslParseContext::declareBlock(const TSourceLoc& loc, TType& type, const TS
     fixBlockLocations(loc, type.getQualifier(), typeList, memberWithLocation, memberWithoutLocation);
     fixXfbOffsets(type.getQualifier(), typeList);
     fixBlockUniformOffsets(type.getQualifier(), typeList);
-
-    // reverse merge, so that currentBlockQualifier now has all layout information
-    // (can't use defaultQualification directly, it's missing other non-layout-default-class qualifiers)
-    mergeObjectLayoutQualifiers(type.getQualifier(), defaultQualification, true);
 
     //
     // Build and add the interface block as a new type named 'blockName'
