@@ -482,6 +482,13 @@ TIntermTyped* TIntermediate::addBuiltInFunctionCall(const TSourceLoc& loc, TOper
 
         return addUnaryNode(op, child, child->getLoc(), returnType);
     } else {
+        if (op == EOpMul) {
+            TIntermConstantUnion* left = childNode->getAsAggregate()->getSequence()[0]->getAsConstantUnion();
+            TIntermConstantUnion* right = childNode->getAsAggregate()->getSequence()[1]->getAsConstantUnion();
+            if (left && right) {
+                return left->fold(EOpMul, right);
+            }
+        }
         // setAggregateOperater() calls fold() for constant folding
         TIntermTyped* node = setAggregateOperator(childNode, op, returnType, loc);
 
