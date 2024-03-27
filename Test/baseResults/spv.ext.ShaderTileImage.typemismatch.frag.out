@@ -1,5 +1,5 @@
 spv.ext.ShaderTileImage.typemismatch.frag
-ERROR: 0:7: 'location' : fragment outputs or tileImageEXTs sharing the same location 0 must be the same basic type
+ERROR: 0:7: 'location' : the aliases sharing the location 0 must be the same basic type and interpolation qualification
 ERROR: 1 compilation errors.  No code generated.
 
 
