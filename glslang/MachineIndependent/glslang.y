@@ -487,6 +487,7 @@ function_call_header_with_parameters
     : function_call_header assignment_expression {
         if (parseContext.spvVersion.vulkan > 0
             && parseContext.spvVersion.vulkanRelaxed
+            && $2->getType().isStruct()
             && $2->getType().containsOpaque())
         {
             $$.intermNode = parseContext.vkRelaxedRemapFunctionArgument($$.loc, $1.function, $2);
@@ -505,6 +506,7 @@ function_call_header_with_parameters
     | function_call_header_with_parameters COMMA assignment_expression {
         if (parseContext.spvVersion.vulkan > 0
             && parseContext.spvVersion.vulkanRelaxed
+            && $3->getType().isStruct()
             && $3->getType().containsOpaque())
         {
             TIntermNode* remappedNode = parseContext.vkRelaxedRemapFunctionArgument($2.loc, $1.function, $3);
