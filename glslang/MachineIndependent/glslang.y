@@ -508,7 +508,10 @@ function_call_header_with_parameters
             && $3->getType().containsOpaque())
         {
             TIntermNode* remappedNode = parseContext.vkRelaxedRemapFunctionArgument($2.loc, $1.function, $3);
-            $$.intermNode = parseContext.intermediate.mergeAggregate($1.intermNode, remappedNode, $2.loc);
+            if (remappedNode == $3)
+                $$.intermNode = parseContext.intermediate.growAggregate($1.intermNode, $3, $2.loc);
+            else
+                $$.intermNode = parseContext.intermediate.mergeAggregate($1.intermNode, remappedNode, $2.loc);
             $$.function = $1.function;
         }
         else
