@@ -243,7 +243,7 @@ gl_FragCoord origin is upper left
 0:74                  0.000000
 0:74                  0.000000
 0:74            texture ( global highp 4-component vector of float)
-0:74              'structUniform.t0' ( uniform highp sampler2D)
+0:?               'structUniform.t0' ( uniform highp sampler2D)
 0:74              Constant:
 0:74                0.000000
 0:74                0.000000
@@ -576,7 +576,7 @@ gl_FragCoord origin is upper left
 0:74                  0.000000
 0:74                  0.000000
 0:74            texture ( global highp 4-component vector of float)
-0:74              'structUniform.t0' ( uniform highp sampler2D)
+0:?               'structUniform.t0' ( uniform highp sampler2D)
 0:74              Constant:
 0:74                0.000000
 0:74                0.000000
