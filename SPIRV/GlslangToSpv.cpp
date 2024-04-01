@@ -8075,6 +8075,7 @@ spv::Id TGlslangToSpvTraverser::createAtomicOperation(glslang::TOperator op, spv
     }
 
     std::vector<spv::Id> spvAtomicOperands;  // hold the spv operands
+    spvAtomicOperands.reserve(6);
     spvAtomicOperands.push_back(pointerId);
     spvAtomicOperands.push_back(scopeId);
     spvAtomicOperands.push_back(semanticsId);
@@ -10203,6 +10204,7 @@ spv::Id TGlslangToSpvTraverser::createShortCircuit(glslang::TOperator op, glslan
 
     // Operands to accumulate OpPhi operands
     std::vector<spv::Id> phiOperands;
+    phiOperands.reserve(4);
     // accumulate left operand's phi information
     phiOperands.push_back(leftId);
     phiOperands.push_back(builder.getBuildPoint()->getId());
