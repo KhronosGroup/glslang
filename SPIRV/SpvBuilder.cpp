@@ -2864,13 +2864,13 @@ Id Builder::smearScalar(Decoration precision, Id scalar, Id vectorType)
 // Comments in header
 Id Builder::createBuiltinCall(Id resultType, Id builtins, int entryPoint, const std::vector<Id>& args)
 {
-    Instruction* inst = new Instruction(getUniqueId(), resultType, OpExtInst);
+    auto inst = std::make_unique<Instruction>(getUniqueId(), resultType, OpExtInst);
     inst->addIdOperand(builtins);
     inst->addImmediateOperand(entryPoint);
     for (int arg = 0; arg < (int)args.size(); ++arg)
         inst->addIdOperand(args[arg]);
 
-    addInstruction(std::unique_ptr<Instruction>(inst));
+    addInstruction(std::move(inst));
 
     return inst->getResultId();
 }
@@ -3058,7 +3058,7 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool sparse, 
     }
 
     // Build the SPIR-V instruction
-    Instruction* textureInst = new Instruction(getUniqueId(), resultType, opCode);
+    auto textureInst = std::make_unique<Instruction>(getUniqueId(), resultType, opCode);
     for (size_t op = 0; op < optArgNum; ++op)
         textureInst->addIdOperand(texArgs[op]);
     if (optArgNum < texArgs.size())
@@ -3066,7 +3066,7 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool sparse, 
     for (size_t op = optArgNum + 1; op < texArgs.size(); ++op)
         textureInst->addIdOperand(texArgs[op]);
     setPrecision(textureInst->getResultId(), precision);
-    addInstruction(std::unique_ptr<Instruction>(textureInst));
+    addInstruction(std::move(textureInst));
 
     Id resultId = textureInst->getResultId();
 
@@ -3140,13 +3140,13 @@ Id Builder::createTextureQueryCall(Op opCode, const TextureParameters& parameter
         break;
     }
 
-    Instruction* query = new Instruction(getUniqueId(), resultType, opCode);
+    auto query = std::make_unique<Instruction>(getUniqueId(), resultType, opCode);
     query->addIdOperand(parameters.sampler);
     if (parameters.coords)
         query->addIdOperand(parameters.coords);
     if (parameters.lod)
         query->addIdOperand(parameters.lod);
-    addInstruction(std::unique_ptr<Instruction>(query));
+    addInstruction(std::move(query));
     addCapability(CapabilityImageQuery);
 
     return query->getResultId();
@@ -3242,10 +3242,10 @@ Id Builder::createCompositeConstruct(Id typeId, const std::vector<Id>& constitue
                                                  [&](spv::Id id) { return isSpecConstant(id); }));
     }
 
-    Instruction* op = new Instruction(getUniqueId(), typeId, OpCompositeConstruct);
+    auto op = std::make_unique<Instruction>(getUniqueId(), typeId, OpCompositeConstruct);
     for (int c = 0; c < (int)constituents.size(); ++c)
         op->addIdOperand(constituents[c]);
-    addInstruction(std::unique_ptr<Instruction>(op));
+    addInstruction(std::move(op));
 
     return op->getResultId();
 }
@@ -3531,7 +3531,7 @@ void Builder::makeSwitch(Id selector, unsigned int control, int numSegments, con
     createSelectionMerge(mergeBlock, control);
 
     // make the switch instruction
-    Instruction* switchInst = new Instruction(NoResult, NoType, OpSwitch);
+    auto switchInst = std::make_unique<Instruction>(NoResult, NoType, OpSwitch);
     switchInst->addIdOperand(selector);
     auto defaultOrMerge = (defaultSegment >= 0) ? segmentBlocks[defaultSegment] : mergeBlock;
     switchInst->addIdOperand(defaultOrMerge->getId());
@@ -3541,7 +3541,7 @@ void Builder::makeSwitch(Id selector, unsigned int control, int numSegments, con
         switchInst->addIdOperand(segmentBlocks[valueIndexToSegment[i]]->getId());
         segmentBlocks[valueIndexToSegment[i]]->addPredecessor(buildPoint);
     }
-    addInstruction(std::unique_ptr<Instruction>(switchInst));
+    addInstruction(std::move(switchInst));
 
     // push the merge block
     switchMerges.push(mergeBlock);
@@ -4058,39 +4058,39 @@ void Builder::createAndSetNoPredecessorBlock(const char* /*name*/)
 // Comments in header
 void Builder::createBranch(Block* block)
 {
-    Instruction* branch = new Instruction(OpBranch);
+    auto branch = std::make_unique<Instruction>(OpBranch);
     branch->addIdOperand(block->getId());
-    addInstruction(std::unique_ptr<Instruction>(branch));
+    addInstruction(std::move(branch));
     block->addPredecessor(buildPoint);
 }
 
 void Builder::createSelectionMerge(Block* mergeBlock, unsigned int control)
 {
-    Instruction* merge = new Instruction(OpSelectionMerge);
+    auto merge = std::make_unique<Instruction>(OpSelectionMerge);
     merge->addIdOperand(mergeBlock->getId());
     merge->addImmediateOperand(control);
-    addInstruction(std::unique_ptr<Instruction>(merge));
+    addInstruction(std::move(merge));
 }
 
 void Builder::createLoopMerge(Block* mergeBlock, Block* continueBlock, unsigned int control,
                               const std::vector<unsigned int>& operands)
 {
-    Instruction* merge = new Instruction(OpLoopMerge);
+    auto merge = std::make_unique<Instruction>(OpLoopMerge);
     merge->addIdOperand(mergeBlock->getId());
     merge->addIdOperand(continueBlock->getId());
     merge->addImmediateOperand(control);
     for (int op = 0; op < (int)operands.size(); ++op)
         merge->addImmediateOperand(operands[op]);
-    addInstruction(std::unique_ptr<Instruction>(merge));
+    addInstruction(std::move(merge));
 }
 
 void Builder::createConditionalBranch(Id condition, Block* thenBlock, Block* elseBlock)
 {
-    Instruction* branch = new Instruction(OpBranchConditional);
+    auto branch = std::make_unique<Instruction>(OpBranchConditional);
     branch->addIdOperand(condition);
     branch->addIdOperand(thenBlock->getId());
     branch->addIdOperand(elseBlock->getId());
-    addInstruction(std::unique_ptr<Instruction>(branch));
+    addInstruction(std::move(branch));
     thenBlock->addPredecessor(buildPoint);
     elseBlock->addPredecessor(buildPoint);
 }
