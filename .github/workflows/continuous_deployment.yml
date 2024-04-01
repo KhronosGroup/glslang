@@ -43,7 +43,7 @@ jobs:
         steps:
             - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
             - uses: lukka/get-cmake@9438b96ac95a2a8b02548f63800926db324f7c03 # v3.29.0
-            - uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5.0.0
+            - uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d # v5.1.0
               with:
                   python-version: '3.7'
             - name: Install Ubuntu Package Dependencies
@@ -107,7 +107,7 @@ jobs:
         steps:
             - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
             - uses: lukka/get-cmake@9438b96ac95a2a8b02548f63800926db324f7c03 # v3.29.0
-            - uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5.0.0
+            - uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d # v5.1.0
               with:
                   python-version: '3.7'
             - run: ./update_glslang_sources.py
@@ -164,7 +164,7 @@ jobs:
         steps:
             - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
             - uses: lukka/get-cmake@9438b96ac95a2a8b02548f63800926db324f7c03 # v3.29.0
-            - uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5.0.0
+            - uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d # v5.1.0
               with:
                   python-version: '3.7'
             - run: python update_glslang_sources.py
