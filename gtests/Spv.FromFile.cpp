@@ -551,6 +551,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.ext.textureShadowLod.error.frag",
         "spv.floatFetch.frag",
         "spv.atomicRvalue.error.vert",
+        "spv.sampledImageBlock.frag",
     })),
     FileNameAsCustomTestSuffix
 );
