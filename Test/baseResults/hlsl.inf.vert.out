@@ -136,7 +136,7 @@ Shader version: 500
               11:             TypePointer Function 6(float)
               13:    6(float) Constant 4286578688
               15:    6(float) Constant 2139095040
-              29:    6(float) Constant 4290772992
+              29:    6(float) Constant 2143289344
               34:             TypePointer Output 7(fvec4)
 35(@entryPointOutput):     34(ptr) Variable Output
          4(main):           2 Function None 3

@@ -398,10 +398,10 @@ void TranslateMemoryDecoration(const glslang::TQualifier& qualifier, std::vector
     bool useVulkanMemoryModel)
 {
     if (!useVulkanMemoryModel) {
-        if (qualifier.isCoherent())
-            memory.push_back(spv::DecorationCoherent);
         if (qualifier.isVolatile()) {
             memory.push_back(spv::DecorationVolatile);
+            memory.push_back(spv::DecorationCoherent);
+        } else if (qualifier.isCoherent()) {
             memory.push_back(spv::DecorationCoherent);
         }
     }
@@ -5480,8 +5480,10 @@ void TGlslangToSpvTraverser::makeFunctions(const glslang::TIntermSequence& glslF
             // memory and use RestrictPointer/AliasedPointer.
             if (originalParam(type.getQualifier().storage, type, false) ||
                 !writableParam(type.getQualifier().storage)) {
-                decorations.push_back(type.getQualifier().isRestrict() ? spv::DecorationRestrict :
-                                                                         spv::DecorationAliased);
+                // TranslateMemoryDecoration added Restrict decoration already.
+                if (!type.getQualifier().isRestrict()) {
+                    decorations.push_back(spv::DecorationAliased);
+                }
             } else {
                 decorations.push_back(type.getQualifier().isRestrict() ? spv::DecorationRestrictPointerEXT :
                                                                          spv::DecorationAliasedPointerEXT);
