@@ -29,21 +29,21 @@ Shader version: 500
 0:6                +1.#INF
 0:6            Constant:
 0:6              +1.#INF
-0:10      Branch: Return with expression
-0:10        Construct vec4 ( temp 4-component vector of float)
-0:10          add ( temp float)
-0:10            add ( temp float)
-0:10              add ( temp float)
-0:10                add ( temp float)
-0:10                  add ( temp float)
-0:10                    'f1' ( temp float)
-0:10                    'f2' ( temp float)
-0:10                  'f3' ( temp float)
-0:10                'f4' ( temp float)
-0:10              Constant:
-0:10                -1.#INF
-0:10            Constant:
-0:10              1.#IND
+0:15      Branch: Return with expression
+0:15        Construct vec4 ( temp 4-component vector of float)
+0:15          add ( temp float)
+0:15            add ( temp float)
+0:15              add ( temp float)
+0:15                add ( temp float)
+0:15                  add ( temp float)
+0:15                    'f1' ( temp float)
+0:15                    'f2' ( temp float)
+0:15                  'f3' ( temp float)
+0:15                'f4' ( temp float)
+0:15              Constant:
+0:15                -1.#INF
+0:15            Constant:
+0:15              1.#IND
 0:2  Function Definition: main( ( temp void)
 0:2    Function Parameters: 
 0:?     Sequence
@@ -87,21 +87,21 @@ Shader version: 500
 0:6                +1.#INF
 0:6            Constant:
 0:6              +1.#INF
-0:10      Branch: Return with expression
-0:10        Construct vec4 ( temp 4-component vector of float)
-0:10          add ( temp float)
-0:10            add ( temp float)
-0:10              add ( temp float)
-0:10                add ( temp float)
-0:10                  add ( temp float)
-0:10                    'f1' ( temp float)
-0:10                    'f2' ( temp float)
-0:10                  'f3' ( temp float)
-0:10                'f4' ( temp float)
-0:10              Constant:
-0:10                -1.#INF
-0:10            Constant:
-0:10              1.#IND
+0:15      Branch: Return with expression
+0:15        Construct vec4 ( temp 4-component vector of float)
+0:15          add ( temp float)
+0:15            add ( temp float)
+0:15              add ( temp float)
+0:15                add ( temp float)
+0:15                  add ( temp float)
+0:15                    'f1' ( temp float)
+0:15                    'f2' ( temp float)
+0:15                  'f3' ( temp float)
+0:15                'f4' ( temp float)
+0:15              Constant:
+0:15                -1.#INF
+0:15            Constant:
+0:15              1.#IND
 0:2  Function Definition: main( ( temp void)
 0:2    Function Parameters: 
 0:?     Sequence
@@ -136,7 +136,7 @@ Shader version: 500
               11:             TypePointer Function 6(float)
               13:    6(float) Constant 4286578688
               15:    6(float) Constant 2139095040
-              29:    6(float) Constant 4290772992
+              29:    6(float) Constant 2143289344
               34:             TypePointer Output 7(fvec4)
 35(@entryPointOutput):     34(ptr) Variable Output
          4(main):           2 Function None 3
