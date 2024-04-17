@@ -38,7 +38,6 @@ spv.bufferhandle13.frag
                               Decorate 10(y) Aliased
                               Decorate 15(y) DecorationAliasedPointerEXT
                               Decorate 18(y) Restrict
-                              Decorate 18(y) Restrict
                               Decorate 21(y) Restrict
                               Decorate 21(y) DecorationRestrictPointerEXT
                               Decorate 34(a) DecorationAliasedPointerEXT
