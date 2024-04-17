@@ -174,6 +174,7 @@ INSTANTIATE_TEST_SUITE_P(
         {"hlsl.calculatelodunclamped.dx10.frag", "main"},
         {"hlsl.cast.frag", "PixelShaderFunction"},
         {"hlsl.cbuffer-identifier.vert", "main"},
+        {"hlsl.cbuffer-offsets.comp", "main"},
         {"hlsl.charLit.vert", "main"},
         {"hlsl.clip.frag", "main"},
         {"hlsl.clipdistance-1.frag", "main"},

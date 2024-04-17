@@ -1057,7 +1057,7 @@ public:
     static int getBaseAlignment(const TType&, int& size, int& stride, TLayoutPacking layoutPacking, bool rowMajor);
     static int getScalarAlignment(const TType&, int& size, int& stride, bool rowMajor);
     static int getMemberAlignment(const TType&, int& size, int& stride, TLayoutPacking layoutPacking, bool rowMajor);
-    static bool improperStraddle(const TType& type, int size, int offset);
+    static bool improperStraddle(const TType& type, int size, int offset, bool vectorLike);
     static void updateOffset(const TType& parentType, const TType& memberType, int& offset, int& memberSize);
     static int getOffset(const TType& type, int index);
     static int getBlockSize(const TType& blockType);
