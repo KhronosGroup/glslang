@@ -2217,9 +2217,9 @@ int TIntermediate::getBaseAlignment(const TType& type, int& size, int& stride, T
 }
 
 // To aid the basic HLSL rule about crossing vec4 boundaries.
-bool TIntermediate::improperStraddle(const TType& type, int size, int offset)
+bool TIntermediate::improperStraddle(const TType& type, int size, int offset, bool vectorLike)
 {
-    if (! type.isVector() || type.isArray())
+    if (! vectorLike || type.isArray())
         return false;
 
     return size <= 16 ? offset / 16 != (offset + size - 1) / 16
