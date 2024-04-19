@@ -1,4 +1,5 @@
 #version 450
+#extension GL_QCOM_image_processing  : require
 #extension GL_QCOM_image_processing2 : require
 
 precision highp float;

@@ -227,6 +227,7 @@ protected:
     spv::Id createNoArgOperation(glslang::TOperator op, spv::Decoration precision, spv::Id typeId);
     spv::Id getSymbolId(const glslang::TIntermSymbol* node);
     void addMeshNVDecoration(spv::Id id, int member, const glslang::TQualifier & qualifier);
+    bool hasQCOMImageProceessingDecoration(spv::Id id, spv::Decoration decor);
     void addImageProcessingQCOMDecoration(spv::Id id, spv::Decoration decor);
     void addImageProcessing2QCOMDecoration(spv::Id id, bool isForGather);
     spv::Id createSpvConstant(const glslang::TIntermTyped&);
@@ -283,6 +284,7 @@ protected:
     spv::Id taskPayloadID;
     // Used later for generating OpTraceKHR/OpExecuteCallableKHR/OpHitObjectRecordHit*/OpHitObjectGetShaderBindingTableData
     std::unordered_map<unsigned int, glslang::TIntermSymbol *> locationToSymbol[4];
+    std::unordered_map<spv::Id, std::vector<spv::Decoration> > idToQCOMDecorations;
 };
 
 //
@@ -3382,6 +3384,8 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
 
     case glslang::EOpImageBlockMatchGatherSSDQCOM:
     case glslang::EOpImageBlockMatchGatherSADQCOM:
+        builder.addCapability(spv::CapabilityTextureBlockMatchQCOM);
+        builder.addExtension(spv::E_SPV_QCOM_image_processing);
         builder.addCapability(spv::CapabilityTextureBlockMatch2QCOM);
         builder.addExtension(spv::E_SPV_QCOM_image_processing2);
         break;
@@ -9833,6 +9837,16 @@ void TGlslangToSpvTraverser::addMeshNVDecoration(spv::Id id, int member, const g
     }
 }
 
+bool TGlslangToSpvTraverser::hasQCOMImageProceessingDecoration(spv::Id id, spv::Decoration decor)
+{
+  std::vector<spv::Decoration> &decoVec = idToQCOMDecorations[id];
+  for ( auto d : decoVec ) {
+    if ( d == decor )
+      return true;
+  }
+  return false;
+}
+
 void TGlslangToSpvTraverser::addImageProcessingQCOMDecoration(spv::Id id, spv::Decoration decor)
 {
   spv::Op opc = builder.getOpCode(id);
@@ -9843,7 +9857,10 @@ void TGlslangToSpvTraverser::addImageProcessingQCOMDecoration(spv::Id id, spv::D
 
   if (opc == spv::OpLoad) {
     spv::Id texid = builder.getIdOperand(id, 0);
-    builder.addDecoration(texid, decor);
+    if (!hasQCOMImageProceessingDecoration(texid, decor)) {//
+      builder.addDecoration(texid, decor);
+      idToQCOMDecorations[texid].push_back(decor);
+    }
   }
 }
 
@@ -9861,7 +9878,10 @@ void TGlslangToSpvTraverser::addImageProcessing2QCOMDecoration(spv::Id id, bool 
         if (this->glslangIntermediate->getSpv().spv >= glslang::EShTargetSpv_1_4) {
           assert(iOSet.count(tsid) > 0);
         }
-        this->builder.addDecoration(tsid, decor);
+        if (!hasQCOMImageProceessingDecoration(tsid, decor)) {
+          this->builder.addDecoration(tsid, decor);
+          idToQCOMDecorations[tsid].push_back(decor);
+        }
       }
     };
 
