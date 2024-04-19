@@ -420,6 +420,7 @@ INSTANTIATE_TEST_SUITE_P(
         {"hlsl.structIoFourWay.frag", "main"},
         {"hlsl.structStructName.frag", "main"},
         {"hlsl.subpass.frag", "main"},
+        {"hlsl.swizzle.vec1.comp", "main"},
         {"hlsl.synthesizeInput.frag", "main"},
         {"hlsl.texturebuffer.frag", "main"},
         {"hlsl.texture.struct.frag", "main"},
