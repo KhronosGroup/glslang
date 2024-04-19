@@ -39,7 +39,6 @@ Validation failed
                               Decorate 44(tex2D_src1) DecorationBlockMatchTextureQCOM
                               Decorate 48(samp) DecorationBlockMatchSamplerQCOM
                               Decorate 53(tex2D_src2) DecorationBlockMatchTextureQCOM
-                              Decorate 48(samp) DecorationBlockMatchSamplerQCOM
                               Decorate 61(target_samp) DescriptorSet 0
                               Decorate 61(target_samp) Binding 4
                               Decorate 64(ref_samp) DescriptorSet 0
