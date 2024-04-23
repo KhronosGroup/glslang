@@ -237,6 +237,10 @@ Use the steps in [Build Steps](#build-steps), with the following notes/exception
 * For a standalone JS/WASM library, turn on `-DENABLE_GLSLANG_JS=ON`.
 * To get a fully minimized build, make sure to use `brotli` to compress the .js
   and .wasm files
+* Note that by default, Emscripten allocates a very small stack size, which may
+  cause stack overflows when compiling large shaders. Use the
+  [STACK_SIZE](https://emscripten.org/docs/tools_reference/settings_reference.html?highlight=environment#stack-size)
+  compiler setting to increase the stack size.
 
 Example:
 
