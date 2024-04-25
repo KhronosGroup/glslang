@@ -1251,7 +1251,7 @@ protected:
 
     std::unordered_set<int> usedConstantId; // specialization constant ids used
     std::vector<TOffsetRange> usedAtomics;  // sets of bindings used by atomic counters
-    std::vector<TIoRange> usedIo[4];        // sets of used locations, one for each of in, out, uniform, and buffers
+    std::vector<TIoRange> usedIo[5];        // sets of used locations, one for each of in, out, uniform, and buffers
     std::vector<TRange> usedIoRT[4];        // sets of used location, one for rayPayload/rayPayloadIN,
                                             // one for callableData/callableDataIn, one for hitObjectAttributeNV and
                                             // one for shaderrecordhitobjectNV
