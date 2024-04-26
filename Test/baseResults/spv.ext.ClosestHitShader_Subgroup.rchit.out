@@ -43,10 +43,8 @@ spv.ext.ClosestHitShader_Subgroup.rchit
                               Decorate 42 RelaxedPrecision
                               Decorate 43(gl_SubgroupGtMask) BuiltIn SubgroupGtMaskKHR
                               Decorate 46 RelaxedPrecision
-                              Decorate 46 RelaxedPrecision
                               Decorate 47 RelaxedPrecision
                               Decorate 48(gl_SubgroupLeMask) BuiltIn SubgroupLeMaskKHR
-                              Decorate 51 RelaxedPrecision
                               Decorate 51 RelaxedPrecision
                               Decorate 52 RelaxedPrecision
                               Decorate 53(gl_SubGroupLtMaskARB) BuiltIn SubgroupLtMaskKHR

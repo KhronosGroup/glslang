@@ -402,7 +402,7 @@ TIntermTyped* HlslParseContext::handleLvalue(const TSourceLoc& loc, const char* 
         case EOpLeftShiftAssign:
         case EOpRightShiftAssign:
             isModifyOp = true;
-            // fall through...
+            [[fallthrough]];
         case EOpAssign:
             {
                 // Since this is an lvalue, we'll convert an image load to a sequence like this
@@ -962,14 +962,11 @@ TIntermTyped* HlslParseContext::handleDotDereference(const TSourceLoc& loc, TInt
                 return addConstructor(loc, base, type);
             }
         }
-        if (base->getVectorSize() == 1) {
+        // Use EOpIndexDirect (below) with vec1.x so that it remains l-value (Test/hlsl.swizzle.vec1.comp)
+        if (base->getVectorSize() == 1 && selectors.size() > 1) {
             TType scalarType(base->getBasicType(), EvqTemporary, 1);
-            if (selectors.size() == 1)
-                return addConstructor(loc, base, scalarType);
-            else {
-                TType vectorType(base->getBasicType(), EvqTemporary, selectors.size());
-                return addConstructor(loc, addConstructor(loc, base, scalarType), vectorType);
-            }
+            TType vectorType(base->getBasicType(), EvqTemporary, selectors.size());
+            return addConstructor(loc, addConstructor(loc, base, scalarType), vectorType);
         }
 
         if (base->getType().getQualifier().isFrontEndConstant())
@@ -4507,13 +4504,13 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
             int cmpValues = 0;  // 1 if there is a compare value (handier than a bool below)
 
             switch (op) {
-            case EOpMethodGatherCmpRed:   cmpValues = 1;  // fall through
+            case EOpMethodGatherCmpRed:   cmpValues = 1;  [[fallthrough]];
             case EOpMethodGatherRed:      channel = 0; break;
-            case EOpMethodGatherCmpGreen: cmpValues = 1;  // fall through
+            case EOpMethodGatherCmpGreen: cmpValues = 1;  [[fallthrough]];
             case EOpMethodGatherGreen:    channel = 1; break;
-            case EOpMethodGatherCmpBlue:  cmpValues = 1;  // fall through
+            case EOpMethodGatherCmpBlue:  cmpValues = 1;  [[fallthrough]];
             case EOpMethodGatherBlue:     channel = 2; break;
-            case EOpMethodGatherCmpAlpha: cmpValues = 1;  // fall through
+            case EOpMethodGatherCmpAlpha: cmpValues = 1;  [[fallthrough]];
             case EOpMethodGatherAlpha:    channel = 3; break;
             default:                      assert(0);   break;
             }
@@ -9657,6 +9654,10 @@ void HlslParseContext::correctOutput(TQualifier& qualifier)
         qualifier.clearXfbLayout();
     if (language != EShLangTessControl)
         qualifier.patch = false;
+
+    // Fixes Test/hlsl.entry-inout.vert (SV_Position will not become a varying).
+    if (qualifier.builtIn == EbvNone)
+        qualifier.builtIn = qualifier.declaredBuiltIn;
 
     switch (qualifier.builtIn) {
     case EbvFragDepth:

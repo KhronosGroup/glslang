@@ -243,7 +243,7 @@ gl_FragCoord origin is upper left
 0:74                  0.000000
 0:74                  0.000000
 0:74            texture ( global highp 4-component vector of float)
-0:74              'structUniform.t0' ( uniform highp sampler2D)
+0:?               'structUniform.t0' ( uniform highp sampler2D)
 0:74              Constant:
 0:74                0.000000
 0:74                0.000000
@@ -576,7 +576,7 @@ gl_FragCoord origin is upper left
 0:74                  0.000000
 0:74                  0.000000
 0:74            texture ( global highp 4-component vector of float)
-0:74              'structUniform.t0' ( uniform highp sampler2D)
+0:?               'structUniform.t0' ( uniform highp sampler2D)
 0:74              Constant:
 0:74                0.000000
 0:74                0.000000
@@ -728,18 +728,15 @@ gl_FragCoord origin is upper left
                               Name 196  "structUniform.samplers.tn[2]"
                               Name 197  "structUniform.samplers.tn[3]"
                               Name 198  "param"
-                              MemberDecorate 34(gl_AtomicCounterBlock_0) 0 Coherent
                               MemberDecorate 34(gl_AtomicCounterBlock_0) 0 Volatile
                               MemberDecorate 34(gl_AtomicCounterBlock_0) 0 Coherent
                               MemberDecorate 34(gl_AtomicCounterBlock_0) 0 Offset 0
-                              MemberDecorate 34(gl_AtomicCounterBlock_0) 1 Coherent
                               MemberDecorate 34(gl_AtomicCounterBlock_0) 1 Volatile
                               MemberDecorate 34(gl_AtomicCounterBlock_0) 1 Coherent
                               MemberDecorate 34(gl_AtomicCounterBlock_0) 1 Offset 4
                               Decorate 34(gl_AtomicCounterBlock_0) BufferBlock
                               Decorate 36 DescriptorSet 0
                               Decorate 36 Binding 9
-                              MemberDecorate 78(gl_AtomicCounterBlock_1) 0 Coherent
                               MemberDecorate 78(gl_AtomicCounterBlock_1) 0 Volatile
                               MemberDecorate 78(gl_AtomicCounterBlock_1) 0 Coherent
                               MemberDecorate 78(gl_AtomicCounterBlock_1) 0 Offset 0

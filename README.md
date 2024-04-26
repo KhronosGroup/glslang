@@ -237,6 +237,10 @@ Use the steps in [Build Steps](#build-steps), with the following notes/exception
 * For a standalone JS/WASM library, turn on `-DENABLE_GLSLANG_JS=ON`.
 * To get a fully minimized build, make sure to use `brotli` to compress the .js
   and .wasm files
+* Note that by default, Emscripten allocates a very small stack size, which may
+  cause stack overflows when compiling large shaders. Use the
+  [STACK_SIZE](https://emscripten.org/docs/tools_reference/settings_reference.html?highlight=environment#stack-size)
+  compiler setting to increase the stack size.
 
 Example:
 
@@ -263,6 +267,9 @@ Right now, there are two test harnesses existing in glslang: one is [Google
 Test](gtests/), one is the [`runtests` script](Test/runtests). The former
 runs unit tests and single-shader single-threaded integration tests, while
 the latter runs multiple-shader linking tests and multi-threaded tests.
+
+Tests may erroneously fail or pass if using `ALLOW_EXTERNAL_SPIRV_TOOLS` with
+any commit other than the one specified in `known_good.json`.
 
 ### Running tests
 

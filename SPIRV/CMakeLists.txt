@@ -63,6 +63,7 @@ set(HEADERS
     GLSL.ext.AMD.h
     GLSL.ext.NV.h
     GLSL.ext.ARM.h
+    GLSL.ext.QCOM.h
     NonSemanticDebugPrintf.h
     NonSemanticShaderDebugInfo100.h)
 
@@ -118,37 +119,12 @@ if(WIN32)
     source_group("Source" FILES ${SPVREMAP_SOURCES} ${SPVREMAP_HEADERS})
 endif()
 
-if(PROJECT_IS_TOP_LEVEL)
+if(GLSLANG_ENABLE_INSTALL)
     if (ENABLE_SPVREMAPPER)
         install(TARGETS SPVRemapper EXPORT glslang-targets)
     endif()
 
     install(TARGETS SPIRV EXPORT glslang-targets)
-
-    # Backward compatibility
-    if (ENABLE_SPVREMAPPER)
-        file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/SPVRemapperTargets.cmake" "
-            message(WARNING \"Using `SPVRemapperTargets.cmake` is deprecated: use `find_package(glslang)` to find glslang CMake targets.\")
-
-            if (NOT TARGET glslang::SPVRemapper)
-                include(\"${CMAKE_INSTALL_FULL_LIBDIR}/cmake/${PROJECT_NAME}/glslang-targets.cmake\")
-            endif()
-
-            add_library(SPVRemapper ALIAS glslang::SPVRemapper)
-        ")
-        install(FILES "${CMAKE_CURRENT_BINARY_DIR}/SPVRemapperTargets.cmake" DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake)
-    endif()
-
-    file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/SPIRVTargets.cmake" "
-        message(WARNING \"Using `SPIRVTargets.cmake` is deprecated: use `find_package(glslang)` to find glslang CMake targets.\")
-
-        if (NOT TARGET glslang::SPIRV)
-            include(\"${CMAKE_INSTALL_FULL_LIBDIR}/cmake/${PROJECT_NAME}/glslang-targets.cmake\")
-        endif()
-
-        add_library(SPIRV ALIAS glslang::SPIRV)
-    ")
-    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/SPIRVTargets.cmake" DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake)
 
     install(FILES ${PUBLIC_HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/glslang/SPIRV/)
 endif()

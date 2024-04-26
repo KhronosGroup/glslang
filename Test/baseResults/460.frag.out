@@ -1,5 +1,7 @@
 460.frag
-ERROR: 0:22: 'attribute' : required extension not requested: GL_EXT_control_flow_attributes
+ERROR: 0:22: 'attribute' : required extension not requested: Possible extensions include:
+GL_EXT_control_flow_attributes
+GL_EXT_control_flow_attributes2
 ERROR: 0:23: 'attribute' : required extension not requested: GL_EXT_control_flow_attributes
 ERROR: 0:30: 'dependency_length' : must be positive 
 ERROR: 0:31: 'dependency_length' : must be positive 

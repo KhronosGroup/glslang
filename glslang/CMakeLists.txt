@@ -227,29 +227,11 @@ endif()
 ################################################################################
 # install
 ################################################################################
-if(PROJECT_IS_TOP_LEVEL)
+if(GLSLANG_ENABLE_INSTALL)
     install(TARGETS glslang EXPORT glslang-targets)
     if(NOT BUILD_SHARED_LIBS)
         install(TARGETS MachineIndependent EXPORT glslang-targets)
         install(TARGETS GenericCodeGen EXPORT glslang-targets)
-
-        # Backward compatibility
-        file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/glslangTargets.cmake" "
-            message(WARNING \"Using `glslangTargets.cmake` is deprecated: use `find_package(glslang)` to find glslang CMake targets.\")
-
-            if (NOT TARGET glslang::glslang)
-                include(\"${CMAKE_INSTALL_FULL_LIBDIR}/cmake/${PROJECT_NAME}/glslang-targets.cmake\")
-            endif()
-
-            if(${BUILD_SHARED_LIBS})
-                add_library(glslang ALIAS glslang::glslang)
-            else()
-                add_library(glslang ALIAS glslang::glslang)
-                add_library(MachineIndependent ALIAS glslang::MachineIndependent)
-                add_library(GenericCodeGen ALIAS glslang::GenericCodeGen)
-            endif()
-        ")
-        install(FILES "${CMAKE_CURRENT_BINARY_DIR}/glslangTargets.cmake" DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake)
     endif()
 
     set(PUBLIC_HEADERS
@@ -269,17 +251,4 @@ if(PROJECT_IS_TOP_LEVEL)
     install(FILES ${GLSLANG_BUILD_INFO_H} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/glslang)
 
     install(TARGETS glslang-default-resource-limits EXPORT glslang-targets)
-
-    # Backward compatibility
-    file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/glslang-default-resource-limitsTargets.cmake" "
-        message(WARNING \"Using `glslang-default-resource-limitsTargets.cmake` is deprecated: use `find_package(glslang)` to find glslang CMake targets.\")
-
-        if (NOT TARGET glslang::glslang-default-resource-limits)
-            include(\"\${CMAKE_INSTALL_FULL_LIBDIR}/cmake/${PROJECT_NAME}/glslang-targets.cmake\")
-        endif()
-
-        add_library(glslang-default-resource-limits ALIAS glslang::glslang-default-resource-limits)
-    ")
-    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/glslang-default-resource-limitsTargets.cmake" DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake)
-
 endif()

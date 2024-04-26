@@ -1,6 +1,6 @@
  //
 // Copyright (C) 2016 Google, Inc.
-// Copyright (C) 2019 ARM Limited.
+// Copyright (C) 2019, 2022-2024 Arm Limited.
 // Modifications Copyright (C) 2020 Advanced Micro Devices, Inc. All rights reserved.
 //
 // All rights reserved.
@@ -255,7 +255,7 @@ TEST_P(CompileVulkanToNonSemanticShaderDebugInfoTest, FromFile)
 {
     loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam(),
                             Source::GLSL, Semantics::Vulkan, glslang::EShTargetVulkan_1_0, glslang::EShTargetSpv_1_0,
-                            Target::Spv, true, "", "/baseResults/", false, false, true);
+                            Target::Spv, true, "", "/baseResults/", false, true, true);
 }
 
 // clang-format off
@@ -384,6 +384,9 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.discard-dce.frag",
         "spv.doWhileLoop.frag",
         "spv.earlyReturnDiscard.frag",
+        "spv.expect_assume.assumeEXT.comp",
+        "spv.expect_assume.expectEXT.comp",
+        "spv.expect_assume.expectEXT.exttypes.comp",
         "spv.ext.ShaderTileImage.color.frag",
         "spv.ext.ShaderTileImage.depth_stencil.frag",
         "spv.ext.ShaderTileImage.subpassinput.frag",
@@ -415,11 +418,13 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.int64.frag",
         "spv.intcoopmat.comp",
         "spv.intOps.vert",
+        "spv.intrinsicsDebugBreak.frag",
         "spv.intrinsicsSpirvByReference.vert",
         "spv.intrinsicsSpirvDecorate.frag",
         "spv.intrinsicsSpirvDecorateId.comp",
         "spv.intrinsicsSpirvDecorateString.comp",
         "spv.intrinsicsSpirvExecutionMode.frag",
+        "spv.intrinsicsInteractWithCoopMat.comp",
         "spv.intrinsicsSpirvInstruction.vert",
         "spv.intrinsicsSpirvLiteral.vert",
         "spv.intrinsicsSpirvStorageClass.rchit",
@@ -436,6 +441,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.matFun.vert",
         "spv.matrix.frag",
         "spv.matrix2.frag",
+        "spv.maximalReconvergence.vert",
         "spv.memoryQualifier.frag",
         "spv.merge-unreachable.frag",
         "spv.multiStruct.comp",
@@ -449,6 +455,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.nonuniform4.frag",
         "spv.nonuniform5.frag",
         "spv.noWorkgroup.comp",
+        "spv.nvAtomicFp16Vec.frag",
         "spv.nullInit.comp",
         "spv.offsets.frag",
         "spv.Operations.frag",
@@ -615,6 +622,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.subgroupClustered.comp",
         "spv.subgroupClusteredNeg.comp",
         "spv.subgroupPartitioned.comp",
+        "spv.subgroupRotate.comp",
         "spv.subgroupShuffle.comp",
         "spv.subgroupShuffleRelative.comp",
         "spv.subgroupQuad.comp",
@@ -627,6 +635,8 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.subgroupExtendedTypesClusteredNeg.comp",
         "spv.subgroupExtendedTypesPartitioned.comp",
         "spv.subgroupExtendedTypesPartitionedNeg.comp",
+        "spv.subgroupExtendedTypesRotate.comp",
+        "spv.subgroupExtendedTypesRotateNeg.comp",
         "spv.subgroupExtendedTypesShuffle.comp",
         "spv.subgroupExtendedTypesShuffleNeg.comp",
         "spv.subgroupExtendedTypesShuffleRelative.comp",
@@ -734,6 +744,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.1.6.specConstant.comp",
         "spv.1.6.samplerBuffer.frag",
         "spv.1.6.separate.frag",
+        "spv.1.6.quad.frag",
     })),
     FileNameAsCustomTestSuffix
 );
@@ -754,7 +765,7 @@ INSTANTIATE_TEST_SUITE_P(
         { "spv.register.autoassign.rangetest.frag", "main",
                 glslang::TQualifier::layoutBindingEnd-2,
                 glslang::TQualifier::layoutBindingEnd+5,
-                20, 30, true, false },
+                0, 20, 30, true, false },
     }),
     FileNameAsCustomTestSuffixIoMap
 );
@@ -836,6 +847,10 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.tpipBlockMatchSSD.frag",
         "spv.tpipBlockMatchSAD.frag",
         "spv.tpipTextureArrays.frag",
+        "spv.tpipBlockMatchGatherSAD.frag",
+        "spv.tpipBlockMatchGatherSSD.frag",
+        "spv.tpipBlockMatchWindowSAD.frag",
+        "spv.tpipBlockMatchWindowSSD.frag",
     })),
     FileNameAsCustomTestSuffix
 );
@@ -937,6 +952,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.debuginfo.bufferref.glsl.frag",
         "spv.debuginfo.const_params.glsl.comp",
         "spv.debuginfo.scalar_types.glsl.frag",
+        "spv.debuginfo.rt_types.glsl.rgen",
     })),
     FileNameAsCustomTestSuffix
 );

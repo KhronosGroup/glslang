@@ -378,15 +378,12 @@ gl_FragCoord origin is upper left
                               Name 68  "o"
                               Name 72  "j"
                               Name 79  "v"
-                              MemberDecorate 16(gl_AtomicCounterBlock_0) 0 Coherent
                               MemberDecorate 16(gl_AtomicCounterBlock_0) 0 Volatile
                               MemberDecorate 16(gl_AtomicCounterBlock_0) 0 Coherent
                               MemberDecorate 16(gl_AtomicCounterBlock_0) 0 Offset 0
-                              MemberDecorate 16(gl_AtomicCounterBlock_0) 1 Coherent
                               MemberDecorate 16(gl_AtomicCounterBlock_0) 1 Volatile
                               MemberDecorate 16(gl_AtomicCounterBlock_0) 1 Coherent
                               MemberDecorate 16(gl_AtomicCounterBlock_0) 1 Offset 4
-                              MemberDecorate 16(gl_AtomicCounterBlock_0) 2 Coherent
                               MemberDecorate 16(gl_AtomicCounterBlock_0) 2 Volatile
                               MemberDecorate 16(gl_AtomicCounterBlock_0) 2 Coherent
                               MemberDecorate 16(gl_AtomicCounterBlock_0) 2 Offset 8
