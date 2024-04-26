@@ -123,8 +123,10 @@ struct TRange {
 // within the same location range, component range, and index value.  Locations don't alias unless
 // all other dimensions of their range overlap.
 struct TIoRange {
-    TIoRange(TRange location, TRange component, TBasicType basicType, int index)
-        : location(location), component(component), basicType(basicType), index(index) { }
+    TIoRange(TRange location, TRange component, TBasicType basicType, int index, bool centroid, bool smooth, bool flat)
+        : location(location), component(component), basicType(basicType), index(index), centroid(centroid), smooth(smooth), flat(flat)
+    {
+    }
     bool overlap(const TIoRange& rhs) const
     {
         return location.overlap(rhs.location) && component.overlap(rhs.component) && index == rhs.index;
@@ -133,6 +135,9 @@ struct TIoRange {
     TRange component;
     TBasicType basicType;
     int index;
+    bool centroid;
+    bool smooth;
+    bool flat;
 };
 
 // An offset range is a 2-D rectangle; the set of (binding, offset) pairs all lying
