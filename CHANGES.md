@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## 14.2.0 2024-05-02
+* Improve checking for location aliasing errors
+* Fix undefined behavior in parser
+* Add bounds check to gl_SampleMask
+* Fix alignment and padding of matrices consuming one vector
+* Remove duplicate SPIR-V decorations
+* Check for exponent overflow in float parser
+* Fix bug in relaxed verification rules
+* Fix disassembly of debugBreak
+* Fix bug when importing SPIR-V extended intruction set
+* Fix issues with the interaction of cooperative_matrix and spirv_intrinsics
+* Support SPV_QCOM_image_processing2
+* Support files with UTF8BOM character
+
 ## 14.1.0 2024-03-08
 * Add a new --abosute-path command-line option to output absolute paths in error messages
 * Support GL_EXT_control_flow_attributes2
