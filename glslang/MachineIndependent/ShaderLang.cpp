@@ -2105,6 +2105,8 @@ const char* TProgram::getInfoDebugLog()
 // Reflection implementation.
 //
 
+unsigned int TObjectReflection::layoutLocation() const { return type->getQualifier().layoutLocation; }
+
 bool TProgram::buildReflection(int opts)
 {
     if (! linked || reflection != nullptr)
