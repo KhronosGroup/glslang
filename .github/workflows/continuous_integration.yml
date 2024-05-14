@@ -122,7 +122,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-12, macos-13]
+        os: [macos-14, macos-13]
         compiler: [{cc: clang, cxx: clang++}, {cc: gcc, cxx: g++}]
         cmake_build_type: [Debug, Release]
     steps:
