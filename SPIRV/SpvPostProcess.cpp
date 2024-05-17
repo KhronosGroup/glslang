@@ -506,7 +506,7 @@ void Builder::postProcessSamplers()
 	for (auto b: f->getBlocks()) {
             auto &instrs = b->getInstructions();
             for (size_t idx = 0; idx < instrs.size(); idx++) {
-                auto &i = instrs[idx];
+                Instruction *i = instrs[idx].get();
                 for (int opnum = 0; opnum < i->getNumOperands(); opnum++) {
                     // Is this operand of the current instruction the result of an OpSampledImage?
                     if (i->isIdOperand(opnum) &&
