@@ -82,7 +82,10 @@ namespace { // anonymous namespace for file-local functions and symbols
 int NumberOfClients = 0;
 
 // global initialization lock
+#ifndef DISABLE_THREAD_SUPPORT
 std::mutex init_lock;
+#endif
+
 
 using namespace glslang;
 
@@ -420,7 +423,9 @@ void SetupBuiltinSymbolTable(int version, EProfile profile, const SpvVersion& sp
     TInfoSink infoSink;
 
     // Make sure only one thread tries to do this at a time
+#ifndef DISABLE_THREAD_SUPPORT
     const std::lock_guard<std::mutex> lock(init_lock);
+#endif
 
     // See if it's already been done for this version/profile combination
     int versionIndex = MapVersionToIndex(version);
@@ -1311,7 +1316,9 @@ bool CompileDeferred(
 //
 int ShInitialize()
 {
+#ifndef DISABLE_THREAD_SUPPORT
     const std::lock_guard<std::mutex> lock(init_lock);
+#endif
     ++NumberOfClients;
 
     if (PerProcessGPA == nullptr)
@@ -1371,7 +1378,9 @@ void ShDestruct(ShHandle handle)
 //
 int ShFinalize()
 {
+#ifndef DISABLE_THREAD_SUPPORT
     const std::lock_guard<std::mutex> lock(init_lock);
+#endif
     --NumberOfClients;
     assert(NumberOfClients >= 0);
     if (NumberOfClients > 0)
