@@ -872,6 +872,8 @@ public:
     // Check if the builder is generating code for spec constants.
     bool isInSpecConstCodeGenMode() { return generatingOpCodeForSpecConst; }
 
+    void setUseReplicatedComposites(bool use) { useReplicatedComposites = use; }
+
  protected:
     Id makeIntConstant(Id typeId, unsigned value, bool specConstant);
     Id makeInt64Constant(Id typeId, unsigned long long value, bool specConstant);
@@ -938,6 +940,7 @@ public:
     Id uniqueId;
     Function* entryPointFunction;
     bool generatingOpCodeForSpecConst;
+    bool useReplicatedComposites { false };
     AccessChain accessChain;
 
     // special blocks of instructions for output

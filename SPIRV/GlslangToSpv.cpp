@@ -1583,6 +1583,8 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion,
             builder.addInclude(iItr->first, iItr->second);
     }
 
+    builder.setUseReplicatedComposites(glslangIntermediate->usingReplicatedComposites());
+
     stdBuiltins = builder.import("GLSL.std.450");
 
     spv::AddressingModel addressingModel = spv::AddressingModelLogical;

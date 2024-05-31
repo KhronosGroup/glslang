@@ -468,6 +468,8 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.prepost.frag",
         "spv.privateVariableTypes.frag",
         "spv.qualifiers.vert",
+        "spv.replicate.comp",
+        "spv.replicatespec.comp",
         "spv.sample.frag",
         "spv.sampleId.frag",
         "spv.samplePosition.frag",
