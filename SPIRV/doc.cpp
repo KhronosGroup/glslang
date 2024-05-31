@@ -1066,6 +1066,8 @@ const char* CapabilityString(int info)
     case CapabilityTextureBlockMatchQCOM:               return "TextureBlockMatchQCOM";
     case CapabilityTextureBlockMatch2QCOM:              return "TextureBlockMatch2QCOM";
 
+    case CapabilityReplicatedCompositesEXT:             return "CapabilityReplicatedCompositesEXT";
+
     default: return "Bad";
     }
 }
@@ -1583,6 +1585,10 @@ const char* OpcodeString(int op)
     case OpImageBlockMatchWindowSADQCOM:    return "OpImageBlockMatchWindowSADQCOM";
     case OpImageBlockMatchGatherSSDQCOM:    return "OpImageBlockMatchGatherSSDQCOM";
     case OpImageBlockMatchGatherSADQCOM:    return "OpImageBlockMatchGatherSADQCOM";
+
+    case OpConstantCompositeReplicateEXT: return "OpConstantCompositeReplicateEXT";
+    case OpSpecConstantCompositeReplicateEXT: return "OpSpecConstantCompositeReplicateEXT";
+    case OpCompositeConstructReplicateEXT: return "OpCompositeConstructReplicateEXT";
 
     default:
         return "Bad";
@@ -3471,6 +3477,10 @@ void Parameterize()
         InstructionDesc[OpImageBlockMatchGatherSADQCOM].operands.push(OperandId, "'block size'");
         InstructionDesc[OpImageBlockMatchGatherSADQCOM].operands.push(OperandImageOperands, "", true);
         InstructionDesc[OpImageBlockMatchGatherSADQCOM].setResultAndType(true, true);
+
+        InstructionDesc[OpConstantCompositeReplicateEXT].operands.push(OperandId, "'Value'");
+        InstructionDesc[OpSpecConstantCompositeReplicateEXT].operands.push(OperandId, "'Value'");
+        InstructionDesc[OpCompositeConstructReplicateEXT].operands.push(OperandId, "'Value'");
     });
 }
 
