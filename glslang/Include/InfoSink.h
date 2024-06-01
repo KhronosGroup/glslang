@@ -98,7 +98,7 @@ public:
     void location(const TSourceLoc& loc, bool absolute = false) {
         const int maxSize = 24;
         char locText[maxSize];
-        snprintf(locText, maxSize, ":%d", loc.line);
+        snprintf(locText, maxSize, ":%d:%d", loc.line, loc.column);
 
         if(loc.getFilename() == nullptr && shaderFileName != nullptr && absolute) {
             append(std::filesystem::absolute(shaderFileName).string());
