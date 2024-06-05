@@ -1,21 +1,21 @@
 430.comp
-ERROR: 0:4: 'local_size' : cannot change previously set size 
-ERROR: 0:5: 'local_size' : too large; see gl_MaxComputeWorkGroupSize 
-ERROR: 0:43: 'in' : global storage input qualifier cannot be used in a compute shader 
-ERROR: 0:43: 'location qualifier on input' : not supported in this stage: compute
-ERROR: 0:44: 'in' : global storage input qualifier cannot be used in a compute shader 
-ERROR: 0:45: 'out' : global storage output qualifier cannot be used in a compute shader 
-ERROR: 0:48: 'shared block' : not supported for this version or the enabled extensions 
-ERROR: 0:48: 'location' : can only apply to uniform, buffer, in, or out storage qualifiers 
-ERROR: 0:49: 'shared' : initializer can only be a null initializer ('{}') 
-ERROR: 0:52: 'local_size' : cannot change previously set size 
-ERROR: 0:54: 'local_size' : can only apply to 'in' 
-ERROR: 0:54: 'local_size' : can only apply to 'in' 
-ERROR: 0:54: 'local_size' : can only apply to 'in' 
-ERROR: 0:68: 'assign' :  l-value required "ro" (can't modify a readonly buffer)
-ERROR: 0:80: '=' :  cannot convert from ' temp double' to ' temp int'
-ERROR: 0:84: 'input block' : not supported in this stage: compute
-ERROR: 0:88: 'output block' : not supported in this stage: compute
+ERROR: 0:4:8: 'local_size' : cannot change previously set size 
+ERROR: 0:5:8: 'local_size' : too large; see gl_MaxComputeWorkGroupSize 
+ERROR: 0:43:8: 'in' : global storage input qualifier cannot be used in a compute shader 
+ERROR: 0:43:30: 'location qualifier on input' : not supported in this stage: compute
+ERROR: 0:44:1: 'in' : global storage input qualifier cannot be used in a compute shader 
+ERROR: 0:45:1: 'out' : global storage output qualifier cannot be used in a compute shader 
+ERROR: 0:48:34: 'shared block' : not supported for this version or the enabled extensions 
+ERROR: 0:48:34: 'location' : can only apply to uniform, buffer, in, or out storage qualifiers 
+ERROR: 0:49:14: 'shared' : initializer can only be a null initializer ('{}') 
+ERROR: 0:52:8: 'local_size' : cannot change previously set size 
+ERROR: 0:54:8: 'local_size' : can only apply to 'in' 
+ERROR: 0:54:8: 'local_size' : can only apply to 'in' 
+ERROR: 0:54:8: 'local_size' : can only apply to 'in' 
+ERROR: 0:68:18: 'assign' :  l-value required "ro" (can't modify a readonly buffer)
+ERROR: 0:80:10: '=' :  cannot convert from ' temp double' to ' temp int'
+ERROR: 0:84:1: 'input block' : not supported in this stage: compute
+ERROR: 0:88:1: 'output block' : not supported in this stage: compute
 ERROR: 17 compilation errors.  No code generated.
 
 

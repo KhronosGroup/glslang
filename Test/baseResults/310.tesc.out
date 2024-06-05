@@ -1,51 +1,51 @@
 310.tesc
-ERROR: 0:8: 'quads' : unrecognized layout identifier, or qualifier requires assignment (e.g., binding = 4) 
-ERROR: 0:9: 'ccw' : unrecognized layout identifier, or qualifier requires assignment (e.g., binding = 4) 
-ERROR: 0:10: 'fractional_even_spacing' : unrecognized layout identifier, or qualifier requires assignment (e.g., binding = 4) 
-ERROR: 0:12: 'patch' : can only use on output in tessellation-control shader 
-ERROR: 0:26: 'gl_PointSize' : required extension not requested: Possible extensions include:
+ERROR: 0:8:8: 'quads' : unrecognized layout identifier, or qualifier requires assignment (e.g., binding = 4) 
+ERROR: 0:9:8: 'ccw' : unrecognized layout identifier, or qualifier requires assignment (e.g., binding = 4) 
+ERROR: 0:10:8: 'fractional_even_spacing' : unrecognized layout identifier, or qualifier requires assignment (e.g., binding = 4) 
+ERROR: 0:12:1: 'patch' : can only use on output in tessellation-control shader 
+ERROR: 0:26:25: 'gl_PointSize' : required extension not requested: Possible extensions include:
 GL_EXT_tessellation_point_size
 GL_OES_tessellation_point_size
-ERROR: 0:27: 'gl_ClipDistance' : no such field in structure 'gl_in'
-ERROR: 0:27: 'expression' :  left of '[' is not of type array, matrix, or vector  
-ERROR: 0:34: 'gl_PointSize' : required extension not requested: Possible extensions include:
+ERROR: 0:27:25: 'gl_ClipDistance' : no such field in structure 'gl_in'
+ERROR: 0:27:40: 'expression' :  left of '[' is not of type array, matrix, or vector  
+ERROR: 0:34:29: 'gl_PointSize' : required extension not requested: Possible extensions include:
 GL_EXT_tessellation_point_size
 GL_OES_tessellation_point_size
-ERROR: 0:35: 'gl_ClipDistance' : no such field in structure 'gl_out'
-ERROR: 0:35: 'expression' :  left of '[' is not of type array, matrix, or vector  
-ERROR: 0:35: 'assign' :  l-value required (can't modify a const)
-ERROR: 0:41: '' : tessellation control barrier() cannot be placed within flow control 
-ERROR: 0:43: '' : tessellation control barrier() cannot be placed within flow control 
-ERROR: 0:48: '' : tessellation control barrier() cannot be placed within flow control 
-ERROR: 0:53: '' : tessellation control barrier() cannot be placed within flow control 
-ERROR: 0:56: '' : tessellation control barrier() cannot be placed within flow control 
-ERROR: 0:63: '' : tessellation control barrier() cannot be placed after a return from main() 
-ERROR: 0:66: 'vertices' : can only apply to 'out' 
-ERROR: 0:67: 'vertices' : cannot change previously set layout value 
-ERROR: 0:71: '[' :  array index out of range '4'
-ERROR: 0:73: '' : tessellation control barrier() must be in main() 
-ERROR: 0:76: 'in' : type must be an array: ina
-ERROR: 0:78: '[]' : tessellation input array size must be gl_MaxPatchVertices or implicitly sized 
-ERROR: 0:80: '' : array size required 
-ERROR: 0:86: 'location' : overlapping use of location 4
-ERROR: 0:90: 'location' : overlapping use of location 4
-ERROR: 0:94: 'precise' : Reserved word. 
-ERROR: 0:94: 'precise' : not supported for this version or the enabled extensions 
-ERROR: 0:95: 'fma' : required extension not requested: Possible extensions include:
+ERROR: 0:35:29: 'gl_ClipDistance' : no such field in structure 'gl_out'
+ERROR: 0:35:44: 'expression' :  left of '[' is not of type array, matrix, or vector  
+ERROR: 0:35:48: 'assign' :  l-value required (can't modify a const)
+ERROR: 0:41:17: '' : tessellation control barrier() cannot be placed within flow control 
+ERROR: 0:43:17: '' : tessellation control barrier() cannot be placed within flow control 
+ERROR: 0:48:17: '' : tessellation control barrier() cannot be placed within flow control 
+ERROR: 0:53:17: '' : tessellation control barrier() cannot be placed within flow control 
+ERROR: 0:56:27: '' : tessellation control barrier() cannot be placed within flow control 
+ERROR: 0:63:13: '' : tessellation control barrier() cannot be placed after a return from main() 
+ERROR: 0:66:8: 'vertices' : can only apply to 'out' 
+ERROR: 0:67:8: 'vertices' : cannot change previously set layout value 
+ERROR: 0:71:11: '[' :  array index out of range '4'
+ERROR: 0:73:13: '' : tessellation control barrier() must be in main() 
+ERROR: 0:76:9: 'in' : type must be an array: ina
+ERROR: 0:78:9: '[]' : tessellation input array size must be gl_MaxPatchVertices or implicitly sized 
+ERROR: 0:80:17: '' : array size required 
+ERROR: 0:86:30: 'location' : overlapping use of location 4
+ERROR: 0:90:31: 'location' : overlapping use of location 4
+ERROR: 0:94:5: 'precise' : Reserved word. 
+ERROR: 0:94:5: 'precise' : not supported for this version or the enabled extensions 
+ERROR: 0:95:20: 'fma' : required extension not requested: Possible extensions include:
 GL_EXT_gpu_shader5
 GL_OES_gpu_shader5
-ERROR: 0:104: 'sample' : Reserved word. 
-ERROR: 0:106: 'vertices' : can only apply to a standalone qualifier 
-ERROR: 0:107: 'vertices' : inconsistent output number of vertices for array size of misSized
-ERROR: 0:133: 'gl_BoundingBoxEXT' : required extension not requested: GL_EXT_primitive_bounding_box
-ERROR: 0:134: 'gl_BoundingBox' : undeclared identifier 
-ERROR: 0:143: '[' :  array index out of range '2'
-ERROR: 0:148: 'gl_BoundingBoxOES' : required extension not requested: GL_OES_primitive_bounding_box
-ERROR: 0:157: '[' :  array index out of range '2'
-ERROR: 0:160: '' : array size required 
-ERROR: 0:176: '[]' : tessellation-control per-vertex output l-value must be indexed with gl_InvocationID 
-ERROR: 0:177: '[]' : tessellation-control per-vertex output l-value must be indexed with gl_InvocationID 
-ERROR: 0:180: '[]' : tessellation-control per-vertex output l-value must be indexed with gl_InvocationID 
+ERROR: 0:104:1: 'sample' : Reserved word. 
+ERROR: 0:106:26: 'vertices' : can only apply to a standalone qualifier 
+ERROR: 0:107:11: 'vertices' : inconsistent output number of vertices for array size of misSized
+ERROR: 0:133:5: 'gl_BoundingBoxEXT' : required extension not requested: GL_EXT_primitive_bounding_box
+ERROR: 0:134:5: 'gl_BoundingBox' : undeclared identifier 
+ERROR: 0:143:22: '[' :  array index out of range '2'
+ERROR: 0:148:5: 'gl_BoundingBoxOES' : required extension not requested: GL_OES_primitive_bounding_box
+ERROR: 0:157:22: '[' :  array index out of range '2'
+ERROR: 0:160:1: '' : array size required 
+ERROR: 0:176:13: '[]' : tessellation-control per-vertex output l-value must be indexed with gl_InvocationID 
+ERROR: 0:177:27: '[]' : tessellation-control per-vertex output l-value must be indexed with gl_InvocationID 
+ERROR: 0:180:28: '[]' : tessellation-control per-vertex output l-value must be indexed with gl_InvocationID 
 ERROR: 41 compilation errors.  No code generated.
 
 

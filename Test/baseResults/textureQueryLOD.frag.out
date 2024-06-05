@@ -1,5 +1,5 @@
 textureQueryLOD.frag
-WARNING: 0:7: '#extension' : extension is only partially supported: GL_ARB_gpu_shader5
+WARNING: 0:7:39: '#extension' : extension is only partially supported: GL_ARB_gpu_shader5
 
 Shader version: 150
 Requested GL_ARB_gpu_shader5

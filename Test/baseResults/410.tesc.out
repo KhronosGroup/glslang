@@ -1,5 +1,5 @@
 410.tesc
-ERROR: 0:4: 'length' :  array must first be sized by a redeclaration or layout qualifier
+ERROR: 0:4:24: 'length' :  array must first be sized by a redeclaration or layout qualifier
 ERROR: 1 compilation errors.  No code generated.
 
 

@@ -1,43 +1,43 @@
 310.geom
-ERROR: 0:29: 'fromVertex' : block instance name redefinition 
-ERROR: 0:33: 'fromVertex' : redefinition 
-ERROR: 0:35: 'fooC' : block instance name redefinition 
-ERROR: 0:43: 'EmitStreamVertex' : no matching overloaded function found 
-ERROR: 0:44: 'EndStreamPrimitive' : no matching overloaded function found 
-ERROR: 0:47: 'gl_ClipDistance' : undeclared identifier 
-ERROR: 0:47: 'gl_ClipDistance' :  left of '[' is not of type array, matrix, or vector  
-ERROR: 0:48: 'gl_ClipDistance' : no such field in structure 'gl_in'
-ERROR: 0:48: 'expression' :  left of '[' is not of type array, matrix, or vector  
-ERROR: 0:47: 'assign' :  l-value required (can't modify a const)
-ERROR: 0:55: 'selecting output stream' : not supported with this profile: es
-ERROR: 0:62: 'max_vertices' : too large, must be less than gl_MaxGeometryOutputVertices 
-ERROR: 0:62: 'max_vertices' : cannot change previously set layout value 
-ERROR: 0:63: 'max_vertices' : can only apply to a standalone qualifier 
-ERROR: 0:68: 'points' : cannot change previously set output primitive 
-ERROR: 0:69: 'points' : cannot change previously set output primitive 
-ERROR: 0:70: 'triangle_strip' : cannot apply to input 
-ERROR: 0:71: 'triangle_strip' : cannot apply to: uniform
-ERROR: 0:72: 'triangle_strip' : can only apply to a standalone qualifier 
-ERROR: 0:73: 'triangle_strip' : can only apply to a standalone qualifier 
-ERROR: 0:74: 'invocations' : can only apply to a standalone qualifier 
-ERROR: 0:76: 'invocations' : can only apply to a standalone qualifier 
-ERROR: 0:77: 'max_vertices' : can only apply to a standalone qualifier 
-ERROR: 0:78: 'triangle_strip' : can only apply to a standalone qualifier 
-ERROR: 0:81: 'lines' : cannot apply to 'out' 
-ERROR: 0:83: 'triangles' : cannot change previously set input primitive 
-ERROR: 0:84: 'triangles_adjacency' : cannot change previously set input primitive 
-ERROR: 0:116: 'gl_ViewportIndex' : undeclared identifier 
-ERROR: 0:117: 'gl_MaxViewports' : undeclared identifier 
-ERROR: 0:123: 'lines_adjacency' : inconsistent input primitive for array size of explArrayBad
-ERROR: 0:124: 'in' : type must be an array: nonArrayed
-ERROR: 0:128: 'sample' : Reserved word. 
-ERROR: 0:132: 'component' : not supported with this profile: es
-ERROR: 0:136: 'gl_MaxGeometryVaryingComponents' : undeclared identifier 
-ERROR: 0:137: 'gl_VerticesIn' : undeclared identifier 
-ERROR: 0:142: 'gl_PointSize' : required extension not requested: Possible extensions include:
+ERROR: 0:29:1: 'fromVertex' : block instance name redefinition 
+ERROR: 0:33:5: 'fromVertex' : redefinition 
+ERROR: 0:35:1: 'fooC' : block instance name redefinition 
+ERROR: 0:43:23: 'EmitStreamVertex' : no matching overloaded function found 
+ERROR: 0:44:25: 'EndStreamPrimitive' : no matching overloaded function found 
+ERROR: 0:47:5: 'gl_ClipDistance' : undeclared identifier 
+ERROR: 0:47:20: 'gl_ClipDistance' :  left of '[' is not of type array, matrix, or vector  
+ERROR: 0:48:18: 'gl_ClipDistance' : no such field in structure 'gl_in'
+ERROR: 0:48:33: 'expression' :  left of '[' is not of type array, matrix, or vector  
+ERROR: 0:47:24: 'assign' :  l-value required (can't modify a const)
+ERROR: 0:55:8: 'selecting output stream' : not supported with this profile: es
+ERROR: 0:62:8: 'max_vertices' : too large, must be less than gl_MaxGeometryOutputVertices 
+ERROR: 0:62:8: 'max_vertices' : cannot change previously set layout value 
+ERROR: 0:63:17: 'max_vertices' : can only apply to a standalone qualifier 
+ERROR: 0:68:8: 'points' : cannot change previously set output primitive 
+ERROR: 0:69:8: 'points' : cannot change previously set output primitive 
+ERROR: 0:70:8: 'triangle_strip' : cannot apply to input 
+ERROR: 0:71:8: 'triangle_strip' : cannot apply to: uniform
+ERROR: 0:72:28: 'triangle_strip' : can only apply to a standalone qualifier 
+ERROR: 0:73:27: 'triangle_strip' : can only apply to a standalone qualifier 
+ERROR: 0:74:8: 'invocations' : can only apply to a standalone qualifier 
+ERROR: 0:76:12: 'invocations' : can only apply to a standalone qualifier 
+ERROR: 0:77:12: 'max_vertices' : can only apply to a standalone qualifier 
+ERROR: 0:78:12: 'triangle_strip' : can only apply to a standalone qualifier 
+ERROR: 0:81:8: 'lines' : cannot apply to 'out' 
+ERROR: 0:83:8: 'triangles' : cannot change previously set input primitive 
+ERROR: 0:84:8: 'triangles_adjacency' : cannot change previously set input primitive 
+ERROR: 0:116:5: 'gl_ViewportIndex' : undeclared identifier 
+ERROR: 0:117:5: 'gl_MaxViewports' : undeclared identifier 
+ERROR: 0:123:9: 'lines_adjacency' : inconsistent input primitive for array size of explArrayBad
+ERROR: 0:124:9: 'in' : type must be an array: nonArrayed
+ERROR: 0:128:1: 'sample' : Reserved word. 
+ERROR: 0:132:22: 'component' : not supported with this profile: es
+ERROR: 0:136:5: 'gl_MaxGeometryVaryingComponents' : undeclared identifier 
+ERROR: 0:137:5: 'gl_VerticesIn' : undeclared identifier 
+ERROR: 0:142:31: 'gl_PointSize' : required extension not requested: Possible extensions include:
 GL_EXT_geometry_point_size
 GL_OES_geometry_point_size
-ERROR: 0:143: 'gl_PointSize' : required extension not requested: Possible extensions include:
+ERROR: 0:143:5: 'gl_PointSize' : required extension not requested: Possible extensions include:
 GL_EXT_geometry_point_size
 GL_OES_geometry_point_size
 ERROR: 37 compilation errors.  No code generated.

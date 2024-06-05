@@ -1,10 +1,10 @@
 cppNest.vert
-ERROR: 0:144: '#elif' : #elif after #else 
-ERROR: 0:152: '#else' : #else after #else 
-ERROR: 0:161: '#elif' : #elif after #else 
-ERROR: 0:169: '#else' : #else after #else 
-ERROR: 0:177: 'macro expansion' : End of input in macro FUNC
-ERROR: 0:178: '' : compilation terminated 
+ERROR: 0:144:2: '#elif' : #elif after #else 
+ERROR: 0:152:2: '#else' : #else after #else 
+ERROR: 0:161:6: '#elif' : #elif after #else 
+ERROR: 0:169:6: '#else' : #else after #else 
+ERROR: 0:177:16: 'macro expansion' : End of input in macro FUNC
+ERROR: 0:178:0: '' : compilation terminated 
 ERROR: 6 compilation errors.  No code generated.
 
 

@@ -1,5 +1,5 @@
 hlsl.mip.negative.frag
-ERROR: 0:5: '' : unterminated mips operator: 
+ERROR: 0:5:16: '' : unterminated mips operator: 
 ERROR: 1 compilation errors.  No code generated.
 
 

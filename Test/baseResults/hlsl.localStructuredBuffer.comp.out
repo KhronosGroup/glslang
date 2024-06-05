@@ -1,5 +1,5 @@
 hlsl.localStructuredBuffer.comp
-ERROR: 0:3: 'block initializer' : buffer aliasing not yet supported 
+ERROR: 0:3:30: 'block initializer' : buffer aliasing not yet supported 
 ERROR: 1 compilation errors.  No code generated.
 
 

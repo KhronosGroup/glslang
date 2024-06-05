@@ -1,8 +1,8 @@
 spv.ext.RayPrimCull_Errors.rgen
-ERROR: 0:3: 'primitive culling' : required extension not requested: GL_EXT_ray_flags_primitive_culling
-ERROR: 0:5: 'primitive_culling' : layout qualifier can not have storage qualifiers 
-ERROR: 0:6: 'primitive_culling' : can only be applied as standalone 
-ERROR: 0:7: 'primitive_culling' : can only be applied as standalone 
+ERROR: 0:3:8: 'primitive culling' : required extension not requested: GL_EXT_ray_flags_primitive_culling
+ERROR: 0:5:8: 'primitive_culling' : layout qualifier can not have storage qualifiers 
+ERROR: 0:6:48: 'primitive_culling' : can only be applied as standalone 
+ERROR: 0:7:8: 'primitive_culling' : can only be applied as standalone 
 ERROR: 4 compilation errors.  No code generated.
 
 

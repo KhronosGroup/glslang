@@ -1,55 +1,55 @@
 300.vert
-ERROR: 0:8: 'varying' : Reserved word. 
-ERROR: 0:8: 'varying' : no longer supported in es profile; removed in version 300
-ERROR: 0:9: 'vertex input arrays' : not supported with this profile: es
-ERROR: 0:10: '' : precision qualifier must appear as last qualifier 
-ERROR: 0:11: '' : invariant qualifier must appear before interpolation, storage, and precision qualifiers  
-ERROR: 0:12: '' : Auxiliary qualifiers (centroid, patch, and sample) must appear before storage and precision qualifiers 
-ERROR: 0:12: '' : vertex input cannot be further qualified 
-ERROR: 0:13: '' : interpolation qualifiers must appear before storage and precision qualifiers 
-ERROR: 0:14: '' : in/out must appear before const 
-ERROR: 0:15: '' : precision qualifier must appear as last qualifier 
-ERROR: 0:16: '' : can only have one interpolation qualifier (flat, smooth, noperspective, __explicitInterpAMD) 
-ERROR: 0:17: 'sample' : Reserved word. 
-ERROR: 0:17: '' : can only have one auxiliary qualifier (centroid, patch, and sample) 
-ERROR: 0:18: 'uniform' : too many storage qualifiers 
-ERROR: 0:56: '#error' : GL_ES is set  
-ERROR: 0:62: '' : array size required 
-ERROR: 0:63: '' : array size required 
-ERROR: 0:64: '' : array size required 
-ERROR: 0:65: '' : array size required 
-ERROR: 0:67: '' : array size required 
-ERROR: 0:76: 'invariant' : cannot change qualification after use 
-ERROR: 0:78: 'invariant' : can only apply to an output 
-ERROR: 0:88: 'ub2' : Cannot reuse block name within the same interface: uniform
-ERROR: 0:92: 'ub2' : Cannot reuse block name within the same interface: uniform
-ERROR: 0:96: 'ub2' : Cannot reuse block name within the same interface: uniform
-ERROR: 0:104: 'ub3' : Cannot reuse block name within the same interface: uniform
-ERROR: 0:121: 'textureSize' : no matching overloaded function found 
-ERROR: 0:123: 'textureSize' : no matching overloaded function found 
-ERROR: 0:125: 'texture' : no matching overloaded function found 
-ERROR: 0:127: 'textureProjOffset' : no matching overloaded function found 
-ERROR: 0:132: 'highp' : overloaded functions must have the same parameter precision qualifiers for argument 2
-ERROR: 0:135: 'in' : overloaded functions must have the same parameter storage qualifiers for argument 2
-ERROR: 0:146: '' : array size required 
-ERROR: 0:147: '' : array size required 
-ERROR: 0:148: '' : array size required 
-ERROR: 0:149: 'float' : cannot apply precision statement to this type; use 'float', 'int' or a sampler type 
-ERROR: 0:168: 'Binst' : cannot add storage, auxiliary, memory, interpolation, layout, or precision qualifier to an existing variable 
-ERROR: 0:169: 'Bblock' : cannot add storage, auxiliary, memory, interpolation, layout, or precision qualifier to an existing variable 
-ERROR: 0:170: 'Bfoo' : cannot add storage, auxiliary, memory, interpolation, layout, or precision qualifier to an existing variable 
-ERROR: 0:172: 'std430' : not supported for this version or the enabled extensions 
-ERROR: 0:172: 'std430 requires the buffer storage qualifier' : required extension not requested: GL_EXT_scalar_block_layout
-ERROR: 0:175: '' : array size required 
-ERROR: 0:185: 'assign' :  cannot convert from ' temp 4-element array of highp float' to ' temp 3-element array of highp float'
-ERROR: 0:186: 'assign' :  cannot convert from ' temp 3-element array of highp float' to ' temp 4-element array of highp float'
-ERROR: 0:189: 'num_views' : required extension not requested: Possible extensions include:
+ERROR: 0:8:1: 'varying' : Reserved word. 
+ERROR: 0:8:1: 'varying' : no longer supported in es profile; removed in version 300
+ERROR: 0:9:9: 'vertex input arrays' : not supported with this profile: es
+ERROR: 0:10:1: '' : precision qualifier must appear as last qualifier 
+ERROR: 0:11:1: '' : invariant qualifier must appear before interpolation, storage, and precision qualifiers  
+ERROR: 0:12:1: '' : Auxiliary qualifiers (centroid, patch, and sample) must appear before storage and precision qualifiers 
+ERROR: 0:12:1: '' : vertex input cannot be further qualified 
+ERROR: 0:13:1: '' : interpolation qualifiers must appear before storage and precision qualifiers 
+ERROR: 0:14:10: '' : in/out must appear before const 
+ERROR: 0:15:11: '' : precision qualifier must appear as last qualifier 
+ERROR: 0:16:1: '' : can only have one interpolation qualifier (flat, smooth, noperspective, __explicitInterpAMD) 
+ERROR: 0:17:10: 'sample' : Reserved word. 
+ERROR: 0:17:1: '' : can only have one auxiliary qualifier (centroid, patch, and sample) 
+ERROR: 0:18:1: 'uniform' : too many storage qualifiers 
+ERROR: 0:56:8: '#error' : GL_ES is set  
+ERROR: 0:62:7: '' : array size required 
+ERROR: 0:63:9: '' : array size required 
+ERROR: 0:64:1: '' : array size required 
+ERROR: 0:65:9: '' : array size required 
+ERROR: 0:67:15: '' : array size required 
+ERROR: 0:76:1: 'invariant' : cannot change qualification after use 
+ERROR: 0:78:1: 'invariant' : can only apply to an output 
+ERROR: 0:88:1: 'ub2' : Cannot reuse block name within the same interface: uniform
+ERROR: 0:92:1: 'ub2' : Cannot reuse block name within the same interface: uniform
+ERROR: 0:96:1: 'ub2' : Cannot reuse block name within the same interface: uniform
+ERROR: 0:104:1: 'ub3' : Cannot reuse block name within the same interface: uniform
+ERROR: 0:121:20: 'textureSize' : no matching overloaded function found 
+ERROR: 0:123:22: 'textureSize' : no matching overloaded function found 
+ERROR: 0:125:26: 'texture' : no matching overloaded function found 
+ERROR: 0:127:52: 'textureProjOffset' : no matching overloaded function found 
+ERROR: 0:132:30: 'highp' : overloaded functions must have the same parameter precision qualifiers for argument 2
+ERROR: 0:135:36: 'in' : overloaded functions must have the same parameter storage qualifiers for argument 2
+ERROR: 0:146:1: '' : array size required 
+ERROR: 0:147:15: '' : array size required 
+ERROR: 0:148:15: '' : array size required 
+ERROR: 0:149:1: 'float' : cannot apply precision statement to this type; use 'float', 'int' or a sampler type 
+ERROR: 0:168:8: 'Binst' : cannot add storage, auxiliary, memory, interpolation, layout, or precision qualifier to an existing variable 
+ERROR: 0:169:8: 'Bblock' : cannot add storage, auxiliary, memory, interpolation, layout, or precision qualifier to an existing variable 
+ERROR: 0:170:8: 'Bfoo' : cannot add storage, auxiliary, memory, interpolation, layout, or precision qualifier to an existing variable 
+ERROR: 0:172:8: 'std430' : not supported for this version or the enabled extensions 
+ERROR: 0:172:8: 'std430 requires the buffer storage qualifier' : required extension not requested: GL_EXT_scalar_block_layout
+ERROR: 0:175:9: '' : array size required 
+ERROR: 0:185:8: 'assign' :  cannot convert from ' temp 4-element array of highp float' to ' temp 3-element array of highp float'
+ERROR: 0:186:8: 'assign' :  cannot convert from ' temp 3-element array of highp float' to ' temp 4-element array of highp float'
+ERROR: 0:189:8: 'num_views' : required extension not requested: Possible extensions include:
 GL_OVR_multiview
 GL_OVR_multiview2
-ERROR: 0:193: 'gl_ViewID_OVR' : required extension not requested: Possible extensions include:
+ERROR: 0:193:5: 'gl_ViewID_OVR' : required extension not requested: Possible extensions include:
 GL_OVR_multiview
 GL_OVR_multiview2
-ERROR: 0:198: 'num_views' : can only apply to a standalone qualifier 
+ERROR: 0:198:31: 'num_views' : can only apply to a standalone qualifier 
 ERROR: 47 compilation errors.  No code generated.
 
 

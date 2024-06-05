@@ -1,5 +1,5 @@
 spv.bufferhandle11.frag
-WARNING: 0:6: '' : all default precisions are highp; use precision statements to quiet warning, e.g.:
+WARNING: 0:6:46: '' : all default precisions are highp; use precision statements to quiet warning, e.g.:
          "precision mediump int; precision highp float;" 
 
 // Module Version 10000

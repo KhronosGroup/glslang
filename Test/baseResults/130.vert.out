@@ -1,7 +1,7 @@
 130.vert
-ERROR: 0:59: 'gl_InstanceID' : required extension not requested: GL_EXT_draw_instanced
-ERROR: 0:61: 'texelFetch' : no matching overloaded function found 
-ERROR: 0:61: 'assign' :  cannot convert from ' const float' to ' temp int'
+ERROR: 0:59:14: 'gl_InstanceID' : required extension not requested: GL_EXT_draw_instanced
+ERROR: 0:61:27: 'texelFetch' : no matching overloaded function found 
+ERROR: 0:61:8: 'assign' :  cannot convert from ' const float' to ' temp int'
 ERROR: 3 compilation errors.  No code generated.
 
 

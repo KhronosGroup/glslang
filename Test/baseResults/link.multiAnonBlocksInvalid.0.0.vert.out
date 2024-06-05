@@ -1,7 +1,7 @@
 link.multiAnonBlocksInvalid.0.0.vert
-ERROR: 0:22: 'ColorBlock' : nameless block contains a member that already has a name at global scope 
-ERROR: 0:42: 'v1' : redefinition 
-ERROR: 0:43: 'uProj' : redefinition 
+ERROR: 0:22:9: 'ColorBlock' : nameless block contains a member that already has a name at global scope 
+ERROR: 0:42:10: 'v1' : redefinition 
+ERROR: 0:43:14: 'uProj' : redefinition 
 ERROR: 3 compilation errors.  No code generated.
 
 

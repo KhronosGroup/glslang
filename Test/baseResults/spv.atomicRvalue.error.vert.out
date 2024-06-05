@@ -1,8 +1,8 @@
 spv.atomicRvalue.error.vert
-ERROR: 0:5: 'assign' :  l-value required 
-ERROR: 0:5: 'out' : Non-L-value cannot be passed for 'out' or 'inout' parameters. 
-ERROR: 0:5: 'atomicAdd' : Only l-values corresponding to shader block storage or shared variables can be used with atomic memory functions. 
-ERROR: 0:6: 'atomicAdd' : Only l-values corresponding to shader block storage or shared variables can be used with atomic memory functions. 
+ERROR: 0:5:20: 'assign' :  l-value required 
+ERROR: 0:5:20: 'out' : Non-L-value cannot be passed for 'out' or 'inout' parameters. 
+ERROR: 0:5:23: 'atomicAdd' : Only l-values corresponding to shader block storage or shared variables can be used with atomic memory functions. 
+ERROR: 0:6:19: 'atomicAdd' : Only l-values corresponding to shader block storage or shared variables can be used with atomic memory functions. 
 ERROR: 4 compilation errors.  No code generated.
 
 

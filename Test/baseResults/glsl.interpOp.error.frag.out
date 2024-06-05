@@ -1,13 +1,13 @@
 glsl.interpOp.error.frag
-ERROR: 0:39: 'interpolateAtCentroid' : first argument must be an interpolant, or interpolant-array element. Using the field of a named struct as an interpolant argument is not allowed (ES-only). 
-ERROR: 0:40: 'interpolateAtCentroid' : first argument must be an interpolant, or interpolant-array element 
-ERROR: 0:41: 'interpolateAtCentroid' : first argument must be an interpolant, or interpolant-array element. Using the field of a named struct as an interpolant argument is not allowed (ES-only). 
-ERROR: 0:54: 'interpolateAtSample' : first argument must be an interpolant, or interpolant-array element. Using the field of a named struct as an interpolant argument is not allowed (ES-only). 
-ERROR: 0:55: 'interpolateAtSample' : first argument must be an interpolant, or interpolant-array element 
-ERROR: 0:56: 'interpolateAtSample' : first argument must be an interpolant, or interpolant-array element. Using the field of a named struct as an interpolant argument is not allowed (ES-only). 
-ERROR: 0:69: 'interpolateAtOffset' : first argument must be an interpolant, or interpolant-array element. Using the field of a named struct as an interpolant argument is not allowed (ES-only). 
-ERROR: 0:70: 'interpolateAtOffset' : first argument must be an interpolant, or interpolant-array element 
-ERROR: 0:71: 'interpolateAtOffset' : first argument must be an interpolant, or interpolant-array element. Using the field of a named struct as an interpolant argument is not allowed (ES-only). 
+ERROR: 0:39:55: 'interpolateAtCentroid' : first argument must be an interpolant, or interpolant-array element. Using the field of a named struct as an interpolant argument is not allowed (ES-only). 
+ERROR: 0:40:51: 'interpolateAtCentroid' : first argument must be an interpolant, or interpolant-array element 
+ERROR: 0:41:54: 'interpolateAtCentroid' : first argument must be an interpolant, or interpolant-array element. Using the field of a named struct as an interpolant argument is not allowed (ES-only). 
+ERROR: 0:54:56: 'interpolateAtSample' : first argument must be an interpolant, or interpolant-array element. Using the field of a named struct as an interpolant argument is not allowed (ES-only). 
+ERROR: 0:55:52: 'interpolateAtSample' : first argument must be an interpolant, or interpolant-array element 
+ERROR: 0:56:55: 'interpolateAtSample' : first argument must be an interpolant, or interpolant-array element. Using the field of a named struct as an interpolant argument is not allowed (ES-only). 
+ERROR: 0:69:62: 'interpolateAtOffset' : first argument must be an interpolant, or interpolant-array element. Using the field of a named struct as an interpolant argument is not allowed (ES-only). 
+ERROR: 0:70:62: 'interpolateAtOffset' : first argument must be an interpolant, or interpolant-array element 
+ERROR: 0:71:61: 'interpolateAtOffset' : first argument must be an interpolant, or interpolant-array element. Using the field of a named struct as an interpolant argument is not allowed (ES-only). 
 ERROR: 9 compilation errors.  No code generated.
 
 

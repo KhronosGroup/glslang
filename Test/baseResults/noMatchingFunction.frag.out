@@ -1,5 +1,5 @@
 noMatchingFunction.frag
-ERROR: 0:17: 'func' : no matching overloaded function found 
+ERROR: 0:17:21: 'func' : no matching overloaded function found 
 ERROR: 1 compilation errors.  No code generated.
 
 

@@ -1,8 +1,8 @@
 hlsl.inoutquals.negative.frag
-ERROR: 0:1: 'invalid1' : in/out qualifiers are only valid on parameters 
-ERROR: 0:2: 'invalid2' : in/out qualifiers are only valid on parameters 
-ERROR: 0:3: 'invalid3' : in/out qualifiers are only valid on parameters 
-ERROR: 0:4: 'invalid4' : in/out qualifiers are only valid on parameters 
+ERROR: 0:1:10: 'invalid1' : in/out qualifiers are only valid on parameters 
+ERROR: 0:2:14: 'invalid2' : in/out qualifiers are only valid on parameters 
+ERROR: 0:3:13: 'invalid3' : in/out qualifiers are only valid on parameters 
+ERROR: 0:4:11: 'invalid4' : in/out qualifiers are only valid on parameters 
 ERROR: 4 compilation errors.  No code generated.
 
 

@@ -1,43 +1,43 @@
 330.frag
-ERROR: 0:27: 'block declaration' : cannot redeclare block:  gl_block
-ERROR: 0:31: 'gl_name' : identifiers starting with "gl_" are reserved 
-ERROR: 0:32: 'gl_i' : identifiers starting with "gl_" are reserved 
-ERROR: 0:35: 'gl_in' : no declaration found for redeclaration 
-ERROR: 0:39: 'gl_FragCoord' : cannot redeclare a non block as a block 
-ERROR: 0:44: 'non-literal layout-id value' : not supported for this version or the enabled extensions 
-ERROR: 0:44: 'layout-id value' : cannot be negative 
-ERROR: 0:45: 'non-literal layout-id value' : not supported for this version or the enabled extensions 
-ERROR: 0:46: 'layout-id value' : scalar integer expression required 
-ERROR: 0:46: 'location' : location is too large 
-ERROR: 0:47: 'non-literal layout-id value' : not supported for this version or the enabled extensions 
-ERROR: 0:48: 'non-literal layout-id value' : not supported for this version or the enabled extensions 
-ERROR: 0:52: 'f2' : cannot use layout qualifiers on structure members 
-ERROR: 0:57: 'location on block member' : not supported for this version or the enabled extensions 
-ERROR: 0:62: 'location on block member' : can only use in an in/out block 
-ERROR: 0:62: 'location qualifier on uniform or buffer' : not supported for this version or the enabled extensions 
-ERROR: 0:60: 'location qualifier on uniform or buffer' : not supported for this version or the enabled extensions 
-ERROR: 0:60: 'location' : cannot apply to uniform or buffer block 
-ERROR: 0:68: 'layout-id value' : cannot be negative 
-ERROR: 0:69: 'layout-id value' : cannot be negative 
-ERROR: 0:76: 'f2' : cannot use layout qualifiers on structure members 
-ERROR: 0:91: 'location on block member' : can only use in an in/out block 
-ERROR: 0:91: 'location qualifier on uniform or buffer' : not supported for this version or the enabled extensions 
-ERROR: 0:91: 'location' : overlapping use of location 3
-ERROR: 0:89: 'location qualifier on uniform or buffer' : not supported for this version or the enabled extensions 
-ERROR: 0:89: 'location' : cannot apply to uniform or buffer block 
-ERROR: 0:94: 'location' : either the block needs a location, or all members need a location, or no members have a location 
-ERROR: 0:108: 'A' : cannot use layout qualifiers on structure members 
-ERROR: 0:119: 'location' : overlapping use of location 44
-ERROR: 0:122: 'index' : can only be used with an explicit location 
-ERROR: 0:124: 'location' : overlapping use of location 0
-ERROR: 0:125: 'index' : can only be used on an output 
-ERROR: 0:126: 'index' : can only be used on an output 
-ERROR: 0:126: 'location/component/index' : cannot declare a default, use a full declaration 
-ERROR: 0:127: 'location/component/index' : cannot declare a default, use a full declaration 
-ERROR: 0:128: 'output block' : not supported in this stage: fragment
-ERROR: 0:138: 'index' : value must be 0 or 1 
-ERROR: 0:140: 'location qualifier on uniform or buffer' : not supported for this version or the enabled extensions 
-ERROR: 0:146: 'location' : cannot apply to uniform or buffer block 
+ERROR: 0:27:1: 'block declaration' : cannot redeclare block:  gl_block
+ERROR: 0:31:1: 'gl_name' : identifiers starting with "gl_" are reserved 
+ERROR: 0:32:9: 'gl_i' : identifiers starting with "gl_" are reserved 
+ERROR: 0:35:1: 'gl_in' : no declaration found for redeclaration 
+ERROR: 0:39:1: 'gl_FragCoord' : cannot redeclare a non block as a block 
+ERROR: 0:44:8: 'non-literal layout-id value' : not supported for this version or the enabled extensions 
+ERROR: 0:44:8: 'layout-id value' : cannot be negative 
+ERROR: 0:45:8: 'non-literal layout-id value' : not supported for this version or the enabled extensions 
+ERROR: 0:46:19: 'layout-id value' : scalar integer expression required 
+ERROR: 0:46:8: 'location' : location is too large 
+ERROR: 0:47:8: 'non-literal layout-id value' : not supported for this version or the enabled extensions 
+ERROR: 0:48:8: 'non-literal layout-id value' : not supported for this version or the enabled extensions 
+ERROR: 0:52:32: 'f2' : cannot use layout qualifiers on structure members 
+ERROR: 0:57:32: 'location on block member' : not supported for this version or the enabled extensions 
+ERROR: 0:62:32: 'location on block member' : can only use in an in/out block 
+ERROR: 0:62:32: 'location qualifier on uniform or buffer' : not supported for this version or the enabled extensions 
+ERROR: 0:60:8: 'location qualifier on uniform or buffer' : not supported for this version or the enabled extensions 
+ERROR: 0:60:8: 'location' : cannot apply to uniform or buffer block 
+ERROR: 0:68:8: 'layout-id value' : cannot be negative 
+ERROR: 0:69:8: 'layout-id value' : cannot be negative 
+ERROR: 0:76:32: 'f2' : cannot use layout qualifiers on structure members 
+ERROR: 0:91:32: 'location on block member' : can only use in an in/out block 
+ERROR: 0:91:32: 'location qualifier on uniform or buffer' : not supported for this version or the enabled extensions 
+ERROR: 0:91:32: 'location' : overlapping use of location 3
+ERROR: 0:89:8: 'location qualifier on uniform or buffer' : not supported for this version or the enabled extensions 
+ERROR: 0:89:8: 'location' : cannot apply to uniform or buffer block 
+ERROR: 0:94:1: 'location' : either the block needs a location, or all members need a location, or no members have a location 
+ERROR: 0:108:33: 'A' : cannot use layout qualifiers on structure members 
+ERROR: 0:119:10: 'location' : overlapping use of location 44
+ERROR: 0:122:26: 'index' : can only be used with an explicit location 
+ERROR: 0:124:38: 'location' : overlapping use of location 0
+ERROR: 0:125:38: 'index' : can only be used on an output 
+ERROR: 0:126:8: 'index' : can only be used on an output 
+ERROR: 0:126:8: 'location/component/index' : cannot declare a default, use a full declaration 
+ERROR: 0:127:8: 'location/component/index' : cannot declare a default, use a full declaration 
+ERROR: 0:128:8: 'output block' : not supported in this stage: fragment
+ERROR: 0:138:21: 'index' : value must be 0 or 1 
+ERROR: 0:140:33: 'location qualifier on uniform or buffer' : not supported for this version or the enabled extensions 
+ERROR: 0:146:8: 'location' : cannot apply to uniform or buffer block 
 ERROR: 39 compilation errors.  No code generated.
 
 

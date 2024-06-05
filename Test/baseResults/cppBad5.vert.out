@@ -1,6 +1,6 @@
 cppBad5.vert
-ERROR: 0:4: 'macro expansion' : End of input in macro g
-ERROR: 0:5: '' : compilation terminated 
+ERROR: 0:4:4: 'macro expansion' : End of input in macro g
+ERROR: 0:5:0: '' : compilation terminated 
 ERROR: 2 compilation errors.  No code generated.
 
 

@@ -1,8 +1,8 @@
 300BuiltIns.frag
-ERROR: 0:6: 'float' : type requires declaration of default precision qualifier 
-ERROR: 0:70: 'noise2' : no matching overloaded function found 
-WARNING: 0:72: 't__' : identifiers containing consecutive underscores ("__") are reserved 
-WARNING: 0:75: '#define' : names containing consecutive underscores are reserved: __D
+ERROR: 0:6:1: 'float' : type requires declaration of default precision qualifier 
+ERROR: 0:70:15: 'noise2' : no matching overloaded function found 
+WARNING: 0:72:11: 't__' : identifiers containing consecutive underscores ("__") are reserved 
+WARNING: 0:75:13: '#define' : names containing consecutive underscores are reserved: __D
 ERROR: 2 compilation errors.  No code generated.
 
 

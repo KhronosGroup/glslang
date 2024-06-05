@@ -1,91 +1,91 @@
 310.comp
-ERROR: 0:4: 'local_size' : cannot change previously set size 
-ERROR: 0:5: 'local_size' : too large; see gl_MaxComputeWorkGroupSize 
-ERROR: 0:7: 'local_size_y' : must be at least 1 
-ERROR: 0:23: '' : array size required 
-ERROR: 0:39: 'in' : global storage input qualifier cannot be used in a compute shader 
-ERROR: 0:39: 'location qualifier on input' : not supported in this stage: compute
-ERROR: 0:40: 'in' : global storage input qualifier cannot be used in a compute shader 
-ERROR: 0:41: 'out' : global storage output qualifier cannot be used in a compute shader 
-ERROR: 0:44: 'shared block' : not supported for this version or the enabled extensions 
-ERROR: 0:44: 'location' : can only apply to uniform, buffer, in, or out storage qualifiers 
-ERROR: 0:45: 'shared' : initializer can only be a null initializer ('{}') 
-ERROR: 0:47: 'local_size' : can only apply to 'in' 
-ERROR: 0:47: 'local_size' : can only apply to 'in' 
-ERROR: 0:47: 'local_size' : can only apply to 'in' 
-ERROR: 0:61: 'assign' :  l-value required "ro" (can't modify a readonly buffer)
-ERROR: 0:66: 'buffer' : buffers can be declared only as blocks 
-ERROR: 0:68: 'sampler/image' : type requires declaration of default precision qualifier 
-ERROR: 0:76: 'image variables not declared 'writeonly' and without a format layout qualifier' : not supported with this profile: es
-ERROR: 0:81: 'sampler/image' : type requires declaration of default precision qualifier 
-ERROR: 0:82: 'sampler/image' : type requires declaration of default precision qualifier 
-ERROR: 0:87: 'imageAtomicCompSwap' : required extension not requested: GL_OES_shader_image_atomic
-ERROR: 0:88: 'imageAtomicAdd' : required extension not requested: GL_OES_shader_image_atomic
-ERROR: 0:89: 'imageAtomicMin' : required extension not requested: GL_OES_shader_image_atomic
-ERROR: 0:89: 'readonly' : argument cannot drop memory qualifier when passed to formal parameter 
-ERROR: 0:89: 'imageAtomicMin' : only supported on image with format r32i or r32ui 
-ERROR: 0:90: 'imageAtomicMax' : no matching overloaded function found 
-ERROR: 0:94: 'writeonly' : argument cannot drop memory qualifier when passed to formal parameter 
-ERROR: 0:97: '' : memory qualifiers cannot be used on this type 
-ERROR: 0:98: '' : memory qualifiers cannot be used on this type 
-ERROR: 0:109: 'format' : image formats must match 
-ERROR: 0:110: 'format' : image formats must match 
-ERROR: 0:111: 'format' : image formats must match 
-ERROR: 0:114: 'image load-store format' : not supported with this profile: es
-ERROR: 0:114: 'rg8i' : does not apply to unsigned integer images 
-ERROR: 0:115: 'rgba32i' : does not apply to floating point images 
-ERROR: 0:116: 'rgba32f' : does not apply to unsigned integer images 
-ERROR: 0:117: 'image load-store format' : not supported with this profile: es
-ERROR: 0:117: 'r8_snorm' : does not apply to signed integer images 
-ERROR: 0:118: 'rgba32ui' : does not apply to signed integer images 
-ERROR: 0:119: 'image load-store format' : not supported with this profile: es
-ERROR: 0:119: 'r8ui' : does not apply to signed integer images 
-ERROR: 0:128: 'atomic_uint' : samplers and atomic_uints cannot be output parameters 
-ERROR: 0:130: 'return' : type does not match, or is not convertible to, the function's return type 
-ERROR: 0:136: 'atomic_uint' : atomic_uints can only be used in uniform variables or function parameters: non_uniform_counter
-ERROR: 0:141: 'atomic_uint' : atomic counters can only be highp 
-ERROR: 0:141: 'binding' : atomic_uint binding is too large; see gl_MaxAtomicCounterBindings 
-ERROR: 0:143: 'binding' : atomic_uint binding is too large; see gl_MaxAtomicCounterBindings 
-ERROR: 0:149: '[]' : scalar integer expression required 
-ERROR: 0:166: 'precision' : can only apply highp to atomic_uint 
-ERROR: 0:168: 'precise' : Reserved word. 
-ERROR: 0:168: 'precise' : not supported for this version or the enabled extensions 
-ERROR: 0:170: 'dmat2x4' : Reserved word. 
-ERROR: 0:170: 'double matrix' : not supported with this profile: es
-ERROR: 0:171: 'samplerCubeArray' : Reserved word. 
-ERROR: 0:171: 'sampler/image' : type requires declaration of default precision qualifier 
-ERROR: 0:172: 'iimage2DRect' : Reserved word. 
-ERROR: 0:172: 'sampler/image' : type requires declaration of default precision qualifier 
-ERROR: 0:172: 'image variables not declared 'writeonly' and without a format layout qualifier' : not supported with this profile: es
-ERROR: 0:173: 'image2DMS' : Reserved word. 
-ERROR: 0:173: 'image variables not declared 'writeonly' and without a format layout qualifier' : not supported with this profile: es
-ERROR: 0:174: 'uimage2DMSArray' : Reserved word. 
-ERROR: 0:174: 'sampler/image' : type requires declaration of default precision qualifier 
-ERROR: 0:174: 'image variables not declared 'writeonly' and without a format layout qualifier' : not supported with this profile: es
-ERROR: 0:181: 'rgba32f' : format requires readonly or writeonly memory qualifier 
-ERROR: 0:182: 'rgba8i' : format requires readonly or writeonly memory qualifier 
-ERROR: 0:183: 'rgba16ui' : format requires readonly or writeonly memory qualifier 
-ERROR: 0:194: 'assign' : can't read from writeonly object:  wo
-ERROR: 0:195: 'initializer' : can't read from writeonly object:  wo
-ERROR: 0:196: '++' : can't read from writeonly object:  wo
-ERROR: 0:197: '--' : can't read from writeonly object:  wo
-ERROR: 0:198: '+' : can't read from writeonly object:  wo
-ERROR: 0:199: '-' : can't read from writeonly object:  wo
-ERROR: 0:201: ':' : can't read from writeonly object:  wo
-ERROR: 0:202: ':' : can't read from writeonly object:  wo
-ERROR: 0:203: '==' : can't read from writeonly object:  wo
-ERROR: 0:205: '>=' : can't read from writeonly object:  wo
-ERROR: 0:207: 'constructor' : can't read from writeonly object:  wo
-ERROR: 0:208: '~' : can't read from writeonly object:  wo
-ERROR: 0:221: 'assign' : can't read from writeonly object:  wo
-ERROR: 0:222: '~' : can't read from writeonly object:  wo
-ERROR: 0:227: 'input block' : not supported in this stage: compute
-ERROR: 0:231: 'output block' : not supported in this stage: compute
-WARNING: 0:235: 't__' : identifiers containing consecutive underscores ("__") are reserved 
-WARNING: 0:238: '#define' : names containing consecutive underscores are reserved: __D
-ERROR: 0:244: 'gl_DeviceIndex' : required extension not requested: GL_EXT_device_group
-ERROR: 0:245: 'gl_ViewIndex' : undeclared identifier 
-ERROR: 0:255: 'gl_ViewIndex' : undeclared identifier 
+ERROR: 0:4:8: 'local_size' : cannot change previously set size 
+ERROR: 0:5:8: 'local_size' : too large; see gl_MaxComputeWorkGroupSize 
+ERROR: 0:7:8: 'local_size_y' : must be at least 1 
+ERROR: 0:23:11: '' : array size required 
+ERROR: 0:39:8: 'in' : global storage input qualifier cannot be used in a compute shader 
+ERROR: 0:39:30: 'location qualifier on input' : not supported in this stage: compute
+ERROR: 0:40:1: 'in' : global storage input qualifier cannot be used in a compute shader 
+ERROR: 0:41:1: 'out' : global storage output qualifier cannot be used in a compute shader 
+ERROR: 0:44:34: 'shared block' : not supported for this version or the enabled extensions 
+ERROR: 0:44:34: 'location' : can only apply to uniform, buffer, in, or out storage qualifiers 
+ERROR: 0:45:14: 'shared' : initializer can only be a null initializer ('{}') 
+ERROR: 0:47:8: 'local_size' : can only apply to 'in' 
+ERROR: 0:47:8: 'local_size' : can only apply to 'in' 
+ERROR: 0:47:8: 'local_size' : can only apply to 'in' 
+ERROR: 0:61:18: 'assign' :  l-value required "ro" (can't modify a readonly buffer)
+ERROR: 0:66:1: 'buffer' : buffers can be declared only as blocks 
+ERROR: 0:68:9: 'sampler/image' : type requires declaration of default precision qualifier 
+ERROR: 0:76:23: 'image variables not declared 'writeonly' and without a format layout qualifier' : not supported with this profile: es
+ERROR: 0:81:34: 'sampler/image' : type requires declaration of default precision qualifier 
+ERROR: 0:82:23: 'sampler/image' : type requires declaration of default precision qualifier 
+ERROR: 0:87:49: 'imageAtomicCompSwap' : required extension not requested: GL_OES_shader_image_atomic
+ERROR: 0:88:47: 'imageAtomicAdd' : required extension not requested: GL_OES_shader_image_atomic
+ERROR: 0:89:45: 'imageAtomicMin' : required extension not requested: GL_OES_shader_image_atomic
+ERROR: 0:89:42: 'readonly' : argument cannot drop memory qualifier when passed to formal parameter 
+ERROR: 0:89:45: 'imageAtomicMin' : only supported on image with format r32i or r32ui 
+ERROR: 0:90:44: 'imageAtomicMax' : no matching overloaded function found 
+ERROR: 0:94:20: 'writeonly' : argument cannot drop memory qualifier when passed to formal parameter 
+ERROR: 0:97:1: '' : memory qualifiers cannot be used on this type 
+ERROR: 0:98:1: '' : memory qualifiers cannot be used on this type 
+ERROR: 0:109:11: 'format' : image formats must match 
+ERROR: 0:110:11: 'format' : image formats must match 
+ERROR: 0:111:11: 'format' : image formats must match 
+ERROR: 0:114:14: 'image load-store format' : not supported with this profile: es
+ERROR: 0:114:50: 'rg8i' : does not apply to unsigned integer images 
+ERROR: 0:115:49: 'rgba32i' : does not apply to floating point images 
+ERROR: 0:116:50: 'rgba32f' : does not apply to unsigned integer images 
+ERROR: 0:117:8: 'image load-store format' : not supported with this profile: es
+ERROR: 0:117:44: 'r8_snorm' : does not apply to signed integer images 
+ERROR: 0:118:44: 'rgba32ui' : does not apply to signed integer images 
+ERROR: 0:119:8: 'image load-store format' : not supported with this profile: es
+ERROR: 0:119:44: 'r8ui' : does not apply to signed integer images 
+ERROR: 0:128:28: 'atomic_uint' : samplers and atomic_uints cannot be output parameters 
+ERROR: 0:130:5: 'return' : type does not match, or is not convertible to, the function's return type 
+ERROR: 0:136:18: 'atomic_uint' : atomic_uints can only be used in uniform variables or function parameters: non_uniform_counter
+ERROR: 0:141:37: 'atomic_uint' : atomic counters can only be highp 
+ERROR: 0:141:49: 'binding' : atomic_uint binding is too large; see gl_MaxAtomicCounterBindings 
+ERROR: 0:143:53: 'binding' : atomic_uint binding is too large; see gl_MaxAtomicCounterBindings 
+ERROR: 0:149:7: '[]' : scalar integer expression required 
+ERROR: 0:166:1: 'precision' : can only apply highp to atomic_uint 
+ERROR: 0:168:1: 'precise' : Reserved word. 
+ERROR: 0:168:1: 'precise' : not supported for this version or the enabled extensions 
+ERROR: 0:170:1: 'dmat2x4' : Reserved word. 
+ERROR: 0:170:1: 'double matrix' : not supported with this profile: es
+ERROR: 0:171:9: 'samplerCubeArray' : Reserved word. 
+ERROR: 0:171:9: 'sampler/image' : type requires declaration of default precision qualifier 
+ERROR: 0:172:9: 'iimage2DRect' : Reserved word. 
+ERROR: 0:172:9: 'sampler/image' : type requires declaration of default precision qualifier 
+ERROR: 0:172:22: 'image variables not declared 'writeonly' and without a format layout qualifier' : not supported with this profile: es
+ERROR: 0:173:15: 'image2DMS' : Reserved word. 
+ERROR: 0:173:25: 'image variables not declared 'writeonly' and without a format layout qualifier' : not supported with this profile: es
+ERROR: 0:174:9: 'uimage2DMSArray' : Reserved word. 
+ERROR: 0:174:9: 'sampler/image' : type requires declaration of default precision qualifier 
+ERROR: 0:174:25: 'image variables not declared 'writeonly' and without a format layout qualifier' : not supported with this profile: es
+ERROR: 0:181:84: 'rgba32f' : format requires readonly or writeonly memory qualifier 
+ERROR: 0:182:84: 'rgba8i' : format requires readonly or writeonly memory qualifier 
+ERROR: 0:183:84: 'rgba16ui' : format requires readonly or writeonly memory qualifier 
+ERROR: 0:194:7: 'assign' : can't read from writeonly object:  wo
+ERROR: 0:195:11: 'initializer' : can't read from writeonly object:  wo
+ERROR: 0:196:5: '++' : can't read from writeonly object:  wo
+ERROR: 0:197:17: '--' : can't read from writeonly object:  wo
+ERROR: 0:198:7: '+' : can't read from writeonly object:  wo
+ERROR: 0:199:18: '-' : can't read from writeonly object:  wo
+ERROR: 0:201:11: ':' : can't read from writeonly object:  wo
+ERROR: 0:202:22: ':' : can't read from writeonly object:  wo
+ERROR: 0:203:11: '==' : can't read from writeonly object:  wo
+ERROR: 0:205:11: '>=' : can't read from writeonly object:  wo
+ERROR: 0:207:26: 'constructor' : can't read from writeonly object:  wo
+ERROR: 0:208:5: '~' : can't read from writeonly object:  wo
+ERROR: 0:221:7: 'assign' : can't read from writeonly object:  wo
+ERROR: 0:222:5: '~' : can't read from writeonly object:  wo
+ERROR: 0:227:1: 'input block' : not supported in this stage: compute
+ERROR: 0:231:1: 'output block' : not supported in this stage: compute
+WARNING: 0:235:7: 't__' : identifiers containing consecutive underscores ("__") are reserved 
+WARNING: 0:238:9: '#define' : names containing consecutive underscores are reserved: __D
+ERROR: 0:244:5: 'gl_DeviceIndex' : required extension not requested: GL_EXT_device_group
+ERROR: 0:245:5: 'gl_ViewIndex' : undeclared identifier 
+ERROR: 0:255:5: 'gl_ViewIndex' : undeclared identifier 
 ERROR: 85 compilation errors.  No code generated.
 
 

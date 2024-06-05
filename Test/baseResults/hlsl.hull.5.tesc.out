@@ -1,5 +1,5 @@
 hlsl.hull.5.tesc
-ERROR: 0:0: '' : unimplemented: PCF input patch without entry point input patch parameter 
+ERROR: 0:0:0: '' : unimplemented: PCF input patch without entry point input patch parameter 
 ERROR: 1 compilation errors.  No code generated.
 
 

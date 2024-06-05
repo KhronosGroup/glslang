@@ -1,5 +1,5 @@
 spv.130.frag
-WARNING: 0:31: '#extension' : extension is only partially supported: GL_ARB_gpu_shader5
+WARNING: 0:31:39: '#extension' : extension is only partially supported: GL_ARB_gpu_shader5
 
 Validation failed
 // Module Version 10000
