@@ -112,7 +112,7 @@ void main() {
               17:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 20(DebugFunction) 16 6 18 20 12 21 16 13 20
                               TypeForwardPointer 28 PhysicalStorageBufferEXT
               29:      7(int) Constant 5349
-              30:           4 ExtInstWithForwardRefs 1(NonSemantic.Shader.DebugInfo.100) 3 48 29 12
+              30:           4 ExtInstWithForwardRefsKHR 1(NonSemantic.Shader.DebugInfo.100) 3 48 29 12
         31(Mesh):             TypeStruct 28
               34:      7(int) Constant 9
               35:      7(int) Constant 23

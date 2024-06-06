@@ -1058,7 +1058,7 @@ Id Builder::makePointerDebugType(StorageClass storageClass, Id const baseType)
     return type->getResultId();
 }
 
-// Emit a OpExtInstWithForwardRefs nonsemantic instruction for a pointer debug type
+// Emit a OpExtInstWithForwardRefsKHR nonsemantic instruction for a pointer debug type
 // where we don't have the pointee yet. Since we don't have the pointee yet, it just
 // points to itself and we rely on patching it later.
 Id Builder::makeForwardPointerDebugType(StorageClass storageClass)
@@ -1067,7 +1067,7 @@ Id Builder::makeForwardPointerDebugType(StorageClass storageClass)
 
     this->addExtension(spv::E_SPV_KHR_relaxed_extended_instruction);
 
-    Instruction *type = new Instruction(getUniqueId(), makeVoidType(), OpExtInstWithForwardRefs);
+    Instruction *type = new Instruction(getUniqueId(), makeVoidType(), OpExtInstWithForwardRefsKHR);
     type->addIdOperand(nonSemanticShaderDebugInfo);
     type->addImmediateOperand(NonSemanticShaderDebugInfo100DebugTypePointer);
     type->addIdOperand(type->getResultId());
