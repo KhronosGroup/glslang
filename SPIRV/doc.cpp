@@ -1035,6 +1035,8 @@ const char* CapabilityString(int info)
     case CapabilityTileImageDepthReadAccessEXT:           return "TileImageDepthReadAccessEXT";
     case CapabilityTileImageStencilReadAccessEXT:         return "TileImageStencilReadAccessEXT";
 
+    case CapabilityCooperativeMatrixLayoutsARM:             return "CooperativeMatrixLayoutsARM";
+
     case CapabilityFragmentShadingRateKHR:                  return "FragmentShadingRateKHR";
 
     case CapabilityDemoteToHelperInvocationEXT:             return "DemoteToHelperInvocationEXT";
