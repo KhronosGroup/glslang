@@ -367,6 +367,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.coopmat.comp",
         "spv.coopmat_Error.comp",
         "spv.coopmatKHR.comp",
+        "spv.coopmat_armlayout.comp",
         "spv.coopmatKHR_arithmetic.comp",
         "spv.coopmatKHR_arithmeticError.comp",
         "spv.coopmatKHR_Error.comp",
