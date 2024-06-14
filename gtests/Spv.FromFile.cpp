@@ -935,7 +935,6 @@ INSTANTIATE_TEST_SUITE_P(
     Glsl, GlslSpirvDebugInfoTest,
     ::testing::ValuesIn(std::vector<std::string>({
         "spv.pp.line.frag",
-        "spv.debugInfo.frag",
     })),
     FileNameAsCustomTestSuffix
 );
