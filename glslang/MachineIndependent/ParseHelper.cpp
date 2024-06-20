@@ -4,6 +4,7 @@
 // Copyright (C) 2015-2018 Google, Inc.
 // Copyright (C) 2017, 2019 ARM Limited.
 // Modifications Copyright (C) 2020 Advanced Micro Devices, Inc. All rights reserved.
+// Modifications Copyright (C) 2024 Ravi Prakash Singh.
 //
 // All rights reserved.
 //
@@ -8540,7 +8541,8 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
         basicOp = EOpConstructFloat16;
         // 8/16-bit storage extensions don't support constructing composites of 8/16-bit types,
         // so construct a 32-bit type and convert
-        if (!intermediate.getArithemeticFloat16Enabled()) {
+        // and do not generate any conversion if it is an identity conversion, i.e. float16_t(<float16_t> var)
+        if (!intermediate.getArithemeticFloat16Enabled() && (node->getBasicType() != EbtFloat16)) {
             TType tempType(EbtFloat, EvqTemporary, type.getVectorSize());
             newNode = node;
             if (tempType != newNode->getType()) {
@@ -8563,7 +8565,8 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
         basicOp = EOpConstructInt8;
         // 8/16-bit storage extensions don't support constructing composites of 8/16-bit types,
         // so construct a 32-bit type and convert
-        if (!intermediate.getArithemeticInt8Enabled()) {
+        // and do not generate any conversion if it is an identity conversion, i.e. int8_t(<int8_t> var)
+        if (!intermediate.getArithemeticInt8Enabled() && (node->getBasicType() != EbtInt8)) {
             TType tempType(EbtInt, EvqTemporary, type.getVectorSize());
             newNode = node;
             if (tempType != newNode->getType()) {
@@ -8586,7 +8589,8 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
         basicOp = EOpConstructUint8;
         // 8/16-bit storage extensions don't support constructing composites of 8/16-bit types,
         // so construct a 32-bit type and convert
-        if (!intermediate.getArithemeticInt8Enabled()) {
+        // and do not generate any conversion if it is an identity conversion, i.e. uint8_t(<uint8_t> var)
+        if (!intermediate.getArithemeticInt8Enabled() && (node->getBasicType() != EbtUint8)) {
             TType tempType(EbtUint, EvqTemporary, type.getVectorSize());
             newNode = node;
             if (tempType != newNode->getType()) {
@@ -8609,7 +8613,8 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
         basicOp = EOpConstructInt16;
         // 8/16-bit storage extensions don't support constructing composites of 8/16-bit types,
         // so construct a 32-bit type and convert
-        if (!intermediate.getArithemeticInt16Enabled()) {
+        // and do not generate any conversion if it is an identity conversion, i.e. int16_t(<int16_t> var)
+        if (!intermediate.getArithemeticInt16Enabled() && (node->getBasicType() != EbtInt16)) {
             TType tempType(EbtInt, EvqTemporary, type.getVectorSize());
             newNode = node;
             if (tempType != newNode->getType()) {
@@ -8632,7 +8637,8 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
         basicOp = EOpConstructUint16;
         // 8/16-bit storage extensions don't support constructing composites of 8/16-bit types,
         // so construct a 32-bit type and convert
-        if (!intermediate.getArithemeticInt16Enabled()) {
+        // and do not generate any conversion if it is an identity conversion, i.e. uint16_t(<uint16_t> var)
+        if (!intermediate.getArithemeticInt16Enabled() && (node->getBasicType() != EbtUint16)) {
             TType tempType(EbtUint, EvqTemporary, type.getVectorSize());
             newNode = node;
             if (tempType != newNode->getType()) {
