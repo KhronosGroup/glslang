@@ -86,5 +86,8 @@ void main()
     b2.o = b2.p.x;
     b2.p = u16vec2(uvec2(1, 2));
     b2.o = uint16_t(3u);
+    b2.o = uint16_t(b1.a);
+    b2.p = u16vec2(b1.b);
+    b2.q = u16vec3(b1.c);
 }
 

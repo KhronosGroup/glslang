@@ -86,5 +86,8 @@ void main()
     b2.o = b2.p.x;
     b2.p = i8vec2(ivec2(1, 2));
     b2.o = int8_t(3);
+    b2.o = int8_t(b1.a);
+    b2.p = i8vec2(b1.b);
+    b2.q = i8vec3(b1.c);
 }
 
