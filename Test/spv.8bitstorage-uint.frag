@@ -86,5 +86,8 @@ void main()
     b2.o = b2.p.x;
     b2.p = u8vec2(uvec2(1, 2));
     b2.o = uint8_t(3u);
+    b2.o = uint8_t(b1.a);
+    b2.p = u8vec2(b1.b);
+    b2.q = u8vec3(b1.c);
 }
 

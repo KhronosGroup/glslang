@@ -86,5 +86,8 @@ void main()
     b2.o = b2.p.x;
     b2.p = f16vec2(vec2(1.0, 2.0));
     b2.o = float16_t(3.0);
+    b2.o = float16_t(b1.a);
+    b2.p = f16vec2(b1.b);
+    b2.q = f16vec3(b1.c);
 }
 
