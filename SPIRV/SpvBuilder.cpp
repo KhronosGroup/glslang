@@ -3424,6 +3424,12 @@ Id Builder::createConstructor(Decoration precision, const std::vector<Id>& sourc
     if (sources.size() == 1 && isScalar(sources[0]) && numTargetComponents > 1)
         return smearScalar(precision, sources[0], resultTypeId);
 
+    // Special case: 2 vectors of equal size
+    if (sources.size() == 1 && isVector(sources[0]) && numTargetComponents == getNumComponents(sources[0])) {
+        assert(resultTypeId == getTypeId(sources[0]));
+        return sources[0];
+    }
+
     // accumulate the arguments for OpCompositeConstruct
     std::vector<Id> constituents;
     Id scalarTypeId = getScalarTypeId(resultTypeId);
