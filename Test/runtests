@@ -33,10 +33,10 @@ run () {
 if [ -e localtestlist ]
   then
     while read t; do
-        echo Running $t...
-        b=`basename $t`
-        run -i -l $t > "$TARGETDIR/$b.out"
-        diff -b $BASEDIR/$b.out "$TARGETDIR/$b.out" || HASERROR=1
+        echo "Running $t..."
+        b=$(basename "$t")
+        run -i -l "$t" > "$TARGETDIR/$b.out"
+        diff -b "$BASEDIR/$b.out" "$TARGETDIR/$b.out" || HASERROR=1
     done < localtestlist
 fi
 
@@ -82,8 +82,8 @@ diff -b $BASEDIR/hlsl.automap.frag.out "$TARGETDIR/hlsl.automap.frag.out" || HAS
 # multi-threaded test
 #
 echo Comparing single thread to multithread for all tests in current directory...
-run -i -C *.vert *.geom *.frag *.tesc *.tese *.comp > "$TARGETDIR/singleThread.out"
-run -i -C *.vert *.geom *.frag *.tesc *.tese *.comp -t > "$TARGETDIR/multiThread.out"
+run -i -C ./*.vert ./*.geom ./*.frag ./*.tesc ./*.tese ./*.comp > "$TARGETDIR/singleThread.out"
+run -i -C ./*.vert ./*.geom ./*.frag ./*.tesc ./*.tese ./*.comp -t > "$TARGETDIR/multiThread.out"
 diff "$TARGETDIR/singleThread.out" "$TARGETDIR/multiThread.out" || HASERROR=1
 if [ $HASERROR -eq 0 ]
 then
@@ -352,8 +352,8 @@ diff -b $BASEDIR/spv.textureError.frag.out "$TARGETDIR/spv.textureError.frag.out
 # Test UTF8BOM
 #
 echo "Testing UTF8BOM"
-run --glsl-version 410 -V -S vert UTF8BOM.vert > $TARGETDIR/UTF8BOM.vert.out
-diff -b $BASEDIR/UTF8BOM.vert.out $TARGETDIR/UTF8BOM.vert.out || HASERROR=1
+run --glsl-version 410 -V -S vert UTF8BOM.vert > "$TARGETDIR/UTF8BOM.vert.out"
+diff -b $BASEDIR/UTF8BOM.vert.out "$TARGETDIR/UTF8BOM.vert.out" || HASERROR=1
 
 #
 # Final checking

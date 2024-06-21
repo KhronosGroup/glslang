@@ -10,20 +10,20 @@ mkdir -p $TARGETDIR
 if [ -e $TESTLIST ]
   then
     while read t; do
-      echo Running $t...
-      b=`basename $t`
-      $EXE -V -o webtest.spv $t
-      spirv-dis webtest.spv > $TARGETDIR/$b.out
+      echo "Running $t..."
+      b=$(basename "$t")
+      $EXE -V -o webtest.spv "$t"
+      spirv-dis webtest.spv > "$TARGETDIR/$b.out"
       rm -f webtest.spv
-      diff -b $BASEDIR/$b.out $TARGETDIR/$b.out || HASERROR=1
+      diff -b "$BASEDIR/$b.out" "$TARGETDIR/$b.out" || HASERROR=1
     done < $TESTLIST
 else
   echo $TESTLIST is missing
 fi
 
 wc --bytes $EXE > $TARGETDIR/size
-echo "base size was" `cat $BASEDIR/size`
-echo "new  size  is" `cat $TARGETDIR/size`
+echo "base size was" $(cat "$BASEDIR/size")
+echo "new  size  is" $(cat "$TARGETDIR/size")
 
 #
 # Final checking
