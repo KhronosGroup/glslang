@@ -1312,7 +1312,7 @@ Op Builder::getMostBasicTypeClass(Id typeId) const
     }
 }
 
-int Builder::getNumTypeConstituents(Id typeId) const
+unsigned int Builder::getNumTypeConstituents(Id typeId) const
 {
     Instruction* instr = module.getInstruction(typeId);
 
@@ -2924,7 +2924,7 @@ Id Builder::createLvalueSwizzle(Id typeId, Id target, Id source, const std::vect
     swizzle->reserveOperands(2);
     swizzle->addIdOperand(target);
 
-    assert(getNumComponents(source) == (int)channels.size());
+    assert(getNumComponents(source) == channels.size());
     assert(isVector(source));
     swizzle->addIdOperand(source);
 
@@ -3371,7 +3371,7 @@ Id Builder::createCompositeCompare(Decoration precision, Id value1, Id value2, b
 Id Builder::createCompositeConstruct(Id typeId, const std::vector<Id>& constituents)
 {
     assert(isAggregateType(typeId) || (getNumTypeConstituents(typeId) > 1 &&
-           getNumTypeConstituents(typeId) == (int)constituents.size()));
+           getNumTypeConstituents(typeId) == constituents.size()));
 
     if (generatingOpCodeForSpecConst) {
         // Sometime, even in spec-constant-op mode, the constant composite to be
@@ -3464,8 +3464,8 @@ Id Builder::createConstructor(Decoration precision, const std::vector<Id>& sourc
         if (sourcesToUse + targetComponent > numTargetComponents)
             sourcesToUse = numTargetComponents - targetComponent;
 
-        int col = 0;
-        int row = 0;
+        unsigned int col = 0;
+        unsigned int row = 0;
         for (unsigned int s = 0; s < sourcesToUse; ++s) {
             if (row >= getNumRows(sourceArg)) {
                 row = 0;
@@ -3510,8 +3510,8 @@ Id Builder::createConstructor(Decoration precision, const std::vector<Id>& sourc
 Id Builder::createMatrixConstructor(Decoration precision, const std::vector<Id>& sources, Id resultTypeId)
 {
     Id componentTypeId = getScalarTypeId(resultTypeId);
-    int numCols = getTypeNumColumns(resultTypeId);
-    int numRows = getTypeNumRows(resultTypeId);
+    unsigned int numCols = getTypeNumColumns(resultTypeId);
+    unsigned int numRows = getTypeNumRows(resultTypeId);
 
     Instruction* instr = module.getInstruction(componentTypeId);
     const unsigned bitCount = instr->getImmediateOperand(0);
@@ -3526,11 +3526,11 @@ Id Builder::createMatrixConstructor(Decoration precision, const std::vector<Id>&
         Id sourceColumnTypeId = getContainedTypeId(getTypeId(matrix));
 
         std::vector<unsigned> channels;
-        for (int row = 0; row < numRows; ++row)
+        for (unsigned int row = 0; row < numRows; ++row)
             channels.push_back(row);
 
         std::vector<Id> matrixColumns;
-        for (int col = 0; col < numCols; ++col) {
+        for (unsigned int col = 0; col < numCols; ++col) {
             std::vector<unsigned> indexes;
             indexes.push_back(col);
             Id colv = createCompositeExtract(matrix, sourceColumnTypeId, indexes);
@@ -3548,7 +3548,7 @@ Id Builder::createMatrixConstructor(Decoration precision, const std::vector<Id>&
 
     // Detect a matrix being constructed from a repeated vector of the correct size.
     // Create the composite directly from it.
-    if ((int)sources.size() == numCols && isVector(sources[0]) && getNumComponents(sources[0]) == numRows &&
+    if (sources.size() == numCols && isVector(sources[0]) && getNumComponents(sources[0]) == numRows &&
         std::equal(sources.begin() + 1, sources.end(), sources.begin())) {
         return setPrecision(createCompositeConstruct(resultTypeId, sources), precision);
     }
@@ -3580,12 +3580,12 @@ Id Builder::createMatrixConstructor(Decoration precision, const std::vector<Id>&
     } else if (isMatrix(sources[0])) {
         // constructing from another matrix; copy over the parts that exist in both the argument and constructee
         Id matrix = sources[0];
-        int minCols = std::min(numCols, getNumColumns(matrix));
-        int minRows = std::min(numRows, getNumRows(matrix));
-        for (int col = 0; col < minCols; ++col) {
+        unsigned int minCols = std::min(numCols, getNumColumns(matrix));
+        unsigned int minRows = std::min(numRows, getNumRows(matrix));
+        for (unsigned int col = 0; col < minCols; ++col) {
             std::vector<unsigned> indexes;
             indexes.push_back(col);
-            for (int row = 0; row < minRows; ++row) {
+            for (unsigned int row = 0; row < minRows; ++row) {
                 indexes.push_back(row);
                 ids[col][row] = createCompositeExtract(matrix, componentTypeId, indexes);
                 indexes.pop_back();
@@ -3594,12 +3594,12 @@ Id Builder::createMatrixConstructor(Decoration precision, const std::vector<Id>&
         }
     } else {
         // fill in the matrix in column-major order with whatever argument components are available
-        int row = 0;
-        int col = 0;
+        unsigned int row = 0;
+        unsigned int col = 0;
 
-        for (int arg = 0; arg < (int)sources.size() && col < numCols; ++arg) {
+        for (unsigned int arg = 0; arg < sources.size() && col < numCols; ++arg) {
             Id argComp = sources[arg];
-            for (int comp = 0; comp < getNumComponents(sources[arg]); ++comp) {
+            for (unsigned int comp = 0; comp < getNumComponents(sources[arg]); ++comp) {
                 if (getNumComponents(sources[arg]) > 1) {
                     argComp = createCompositeExtract(sources[arg], componentTypeId, comp);
                     setPrecision(argComp, precision);
@@ -3623,9 +3623,9 @@ Id Builder::createMatrixConstructor(Decoration precision, const std::vector<Id>&
     // make the column vectors
     Id columnTypeId = getContainedTypeId(resultTypeId);
     std::vector<Id> matrixColumns;
-    for (int col = 0; col < numCols; ++col) {
+    for (unsigned int col = 0; col < numCols; ++col) {
         std::vector<Id> vectorComponents;
-        for (int row = 0; row < numRows; ++row)
+        for (unsigned int row = 0; row < numRows; ++row)
             vectorComponents.push_back(ids[col][row]);
         Id column = createCompositeConstruct(columnTypeId, vectorComponents);
         setPrecision(column, precision);
@@ -3852,7 +3852,7 @@ void Builder::accessChainStore(Id rvalue, Decoration nonUniform, spv::MemoryAcce
 
     // If a swizzle exists and is not full and is not dynamic, then the swizzle will be broken into individual stores.
     if (accessChain.swizzle.size() > 0 &&
-        getNumTypeComponents(getResultingAccessChainType()) != (int)accessChain.swizzle.size() &&
+        getNumTypeComponents(getResultingAccessChainType()) != accessChain.swizzle.size() &&
         accessChain.component == NoResult) {
         for (unsigned int i = 0; i < accessChain.swizzle.size(); ++i) {
             accessChain.indexChain.push_back(makeUintConstant(accessChain.swizzle[i]));
@@ -4172,7 +4172,7 @@ void Builder::simplifyAccessChainSwizzle()
 {
     // If the swizzle has fewer components than the vector, it is subsetting, and must stay
     // to preserve that fact.
-    if (getNumTypeComponents(accessChain.preSwizzleBaseType) > (int)accessChain.swizzle.size())
+    if (getNumTypeComponents(accessChain.preSwizzleBaseType) > accessChain.swizzle.size())
         return;
 
     // if components are out of order, it is a swizzle

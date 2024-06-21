@@ -264,9 +264,9 @@ public:
     Op getOpCode(Id id) const { return module.getInstruction(id)->getOpCode(); }
     Op getTypeClass(Id typeId) const { return getOpCode(typeId); }
     Op getMostBasicTypeClass(Id typeId) const;
-    int getNumComponents(Id resultId) const { return getNumTypeComponents(getTypeId(resultId)); }
-    int getNumTypeConstituents(Id typeId) const;
-    int getNumTypeComponents(Id typeId) const { return getNumTypeConstituents(typeId); }
+    unsigned int getNumComponents(Id resultId) const { return getNumTypeComponents(getTypeId(resultId)); }
+    unsigned int getNumTypeConstituents(Id typeId) const;
+    unsigned int getNumTypeComponents(Id typeId) const { return getNumTypeConstituents(typeId); }
     Id getScalarTypeId(Id typeId) const;
     Id getContainedTypeId(Id typeId) const;
     Id getContainedTypeId(Id typeId, int) const;
@@ -334,18 +334,18 @@ public:
         return module.getInstruction(scalarTypeId)->getImmediateOperand(0);
     }
 
-    int getTypeNumColumns(Id typeId) const
+    unsigned int getTypeNumColumns(Id typeId) const
     {
         assert(isMatrixType(typeId));
         return getNumTypeConstituents(typeId);
     }
-    int getNumColumns(Id resultId) const { return getTypeNumColumns(getTypeId(resultId)); }
-    int getTypeNumRows(Id typeId) const
+    unsigned int getNumColumns(Id resultId) const { return getTypeNumColumns(getTypeId(resultId)); }
+    unsigned int getTypeNumRows(Id typeId) const
     {
         assert(isMatrixType(typeId));
         return getNumTypeComponents(getContainedTypeId(typeId));
     }
-    int getNumRows(Id resultId) const { return getTypeNumRows(getTypeId(resultId)); }
+    unsigned int getNumRows(Id resultId) const { return getTypeNumRows(getTypeId(resultId)); }
 
     Dim getTypeDimensionality(Id typeId) const
     {
