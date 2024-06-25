@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## 14.3.0 2024-06-25
+* Generate vector constructions more efficiently when sizes match
+* Skip identity conversions for 8-bit and 16-bit types
+* Add cmake aliases for public libraries
+* Support ARM extended matrix layout
+* Emit debug info for buffer references
+* Add support for OpExtInstWithForwardRefsKHR
+* Generate SPV_EXT_replicated_compisites when requested by pragma
+* Reuse loads generated for repeated function arguments
+* Fix gl_HitT alias of gl_RayTmax
+* Fix some cases where invalid SPIR-V was being generated when using separate samplers
+* Add back layoutLocation to public API
+
 ## 14.2.0 2024-05-02
 * Improve checking for location aliasing errors
 * Fix undefined behavior in parser
