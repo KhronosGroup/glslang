@@ -1967,8 +1967,9 @@ void Builder::addMemberName(Id id, int memberNumber, const char* string)
     names.push_back(std::unique_ptr<Instruction>(name));
 }
 
-bool Builder::decorationAlreadyAdded(Id id, Decoration decoration, int num) {
-    for(auto& dec : decorations) {
+bool Builder::decorationAlreadyAdded(Id id, Decoration decoration, int num)
+{
+    for (auto& dec : decorations) {
         if (dec->getOpCode() != OpDecorate)
             continue;
 
@@ -1978,7 +1979,7 @@ bool Builder::decorationAlreadyAdded(Id id, Decoration decoration, int num) {
         if (dec->getImmediateOperand(1) != decoration)
             continue;
 
-        if (num >= 0 && dec->getImmediateOperand(2) != num)
+        if (num >= 0 && dec->getImmediateOperand(2) != static_cast<unsigned int>(num))
             continue;
 
         return true;
