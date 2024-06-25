@@ -1967,22 +1967,36 @@ void Builder::addMemberName(Id id, int memberNumber, const char* string)
     names.push_back(std::unique_ptr<Instruction>(name));
 }
 
-bool Builder::decorationAlreadyAdded(Id id, Decoration decoration, int num)
+bool Builder::decorationAlreadyAdded(Instruction* inst)
 {
     for (auto& dec : decorations) {
-        if (dec->getOpCode() != OpDecorate)
+        if (dec->getOpCode() != inst->getOpCode())
             continue;
 
-        if (dec->getIdOperand(0) != id)
+        if (dec->getNumOperands() != inst->getNumOperands())
             continue;
 
-        if (dec->getImmediateOperand(1) != decoration)
-            continue;
+        bool allOperandsMatch = true;
+        for (int i = 0; i < dec->getNumOperands(); ++i) {
+            if (dec->isIdOperand(i) != inst->isIdOperand(i)) {
+                allOperandsMatch = false;
+                break;
+            }
 
-        if (num >= 0 && dec->getImmediateOperand(2) != static_cast<unsigned int>(num))
-            continue;
-
-        return true;
+            if (dec->isIdOperand(i)) {
+                if (dec->getIdOperand(i) != inst->getIdOperand(i)) {
+                    allOperandsMatch = false;
+                    break;
+                }
+            } else {
+                if (dec->getImmediateOperand(i) != inst->getImmediateOperand(i)) {
+                    allOperandsMatch = false;
+                    break;
+                }
+            }
+        }
+        if (allOperandsMatch)
+            return true;
     }
 
     return false;
@@ -1993,17 +2007,17 @@ void Builder::addDecoration(Id id, Decoration decoration, int num)
     if (decoration == spv::DecorationMax)
         return;
 
-    if (decorationAlreadyAdded(id, decoration, num))
-        return;
-
-    Instruction* dec = new Instruction(OpDecorate);
+    std::unique_ptr<Instruction> dec = std::make_unique<Instruction>(OpDecorate);
     dec->reserveOperands(2);
     dec->addIdOperand(id);
     dec->addImmediateOperand(decoration);
     if (num >= 0)
         dec->addImmediateOperand(num);
 
-    decorations.push_back(std::unique_ptr<Instruction>(dec));
+    if (decorationAlreadyAdded(dec.get()))
+        return;
+
+    decorations.push_back(std::move(dec));
 }
 
 void Builder::addDecoration(Id id, Decoration decoration, const char* s)
