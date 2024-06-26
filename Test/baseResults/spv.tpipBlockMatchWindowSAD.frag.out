@@ -29,25 +29,25 @@ spv.tpipBlockMatchWindowSAD.frag
                               Name 71  "tex2DArray_weights"
                               Decorate 13(v_texcoord) Location 0
                               Decorate 41(fragColor) Location 0
-                              Decorate 44(tex2D_src1) DescriptorSet 0
                               Decorate 44(tex2D_src1) Binding 1
-                              Decorate 48(samp) DescriptorSet 0
-                              Decorate 48(samp) Binding 3
-                              Decorate 53(tex2D_src2) DescriptorSet 0
-                              Decorate 53(tex2D_src2) Binding 2
+                              Decorate 44(tex2D_src1) DescriptorSet 0
                               Decorate 44(tex2D_src1) DecorationBlockMatchTextureQCOM
+                              Decorate 48(samp) Binding 3
+                              Decorate 48(samp) DescriptorSet 0
                               Decorate 48(samp) DecorationBlockMatchSamplerQCOM
+                              Decorate 53(tex2D_src2) Binding 2
+                              Decorate 53(tex2D_src2) DescriptorSet 0
                               Decorate 53(tex2D_src2) DecorationBlockMatchTextureQCOM
-                              Decorate 61(target_samp) DescriptorSet 0
                               Decorate 61(target_samp) Binding 4
-                              Decorate 64(ref_samp) DescriptorSet 0
-                              Decorate 64(ref_samp) Binding 5
+                              Decorate 61(target_samp) DescriptorSet 0
                               Decorate 61(target_samp) DecorationBlockMatchTextureQCOM
                               Decorate 61(target_samp) DecorationBlockMatchSamplerQCOM
+                              Decorate 64(ref_samp) Binding 5
+                              Decorate 64(ref_samp) DescriptorSet 0
                               Decorate 64(ref_samp) DecorationBlockMatchTextureQCOM
                               Decorate 64(ref_samp) DecorationBlockMatchSamplerQCOM
-                              Decorate 71(tex2DArray_weights) DescriptorSet 0
                               Decorate 71(tex2DArray_weights) Binding 0
+                              Decorate 71(tex2DArray_weights) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 0

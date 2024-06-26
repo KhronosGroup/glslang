@@ -14,8 +14,8 @@ glsl.autosampledtextures.frag
                               Name 13  "u_Tex"
                               Name 17  "in_UV"
                               Name 21  "out_Color"
-                              Decorate 13(u_Tex) DescriptorSet 0
                               Decorate 13(u_Tex) Binding 0
+                              Decorate 13(u_Tex) DescriptorSet 0
                               Decorate 17(in_UV) Location 0
                               Decorate 21(out_Color) Location 0
                2:             TypeVoid

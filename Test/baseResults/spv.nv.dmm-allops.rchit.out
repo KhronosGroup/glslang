@@ -26,19 +26,19 @@ spv.nv.dmm-allops.rchit
                               Name 64  "gl_HitKindFrontFacingMicroTriangleNV"
                               Name 67  "gl_HitKindBackFacingMicroTriangleNV"
                               Name 76  "as"
+                              Decorate 10(block) Block
                               MemberDecorate 10(block) 0 Offset 0
                               MemberDecorate 10(block) 1 Offset 16
                               MemberDecorate 10(block) 2 Offset 24
-                              Decorate 10(block) Block
-                              Decorate 12 DescriptorSet 0
                               Decorate 12 Binding 0
+                              Decorate 12 DescriptorSet 0
                               Decorate 18(gl_HitMicroTriangleVertexPositionsNV) BuiltIn HitMicroTriangleVertexPositionsNV
                               Decorate 40(gl_HitMicroTriangleVertexBarycentricsNV) BuiltIn HitMicroTriangleVertexBarycentricsNV
                               Decorate 59(gl_HitKindEXT) BuiltIn HitKindKHR
                               Decorate 64(gl_HitKindFrontFacingMicroTriangleNV) BuiltIn HitKindFrontFacingMicroTriangleNV
                               Decorate 67(gl_HitKindBackFacingMicroTriangleNV) BuiltIn HitKindBackFacingMicroTriangleNV
-                              Decorate 76(as) DescriptorSet 0
                               Decorate 76(as) Binding 1
+                              Decorate 76(as) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

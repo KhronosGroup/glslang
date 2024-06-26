@@ -29,13 +29,13 @@ spv.ext.meshTaskShader.task
                               Name 80  "mytask"
                               Decorate 11(gl_LocalInvocationID) BuiltIn LocalInvocationId
                               Decorate 17(gl_WorkGroupID) BuiltIn WorkgroupId
-                              MemberDecorate 37(block0) 0 Offset 0
                               Decorate 37(block0) Block
-                              Decorate 39 DescriptorSet 0
+                              MemberDecorate 37(block0) 0 Offset 0
                               Decorate 39 Binding 1
-                              Decorate 55(uni_image) DescriptorSet 0
-                              Decorate 55(uni_image) Binding 0
+                              Decorate 39 DescriptorSet 0
                               Decorate 55(uni_image) NonReadable
+                              Decorate 55(uni_image) Binding 0
+                              Decorate 55(uni_image) DescriptorSet 0
                               Decorate 102 BuiltIn WorkgroupSize
                2:             TypeVoid
                3:             TypeFunction 2

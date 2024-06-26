@@ -147,10 +147,10 @@ Shader version: 440
                               Name 28  "gl_InstanceID"
                               Decorate 9(a1) Location 0
                               Decorate 14(a2) Location 1
+                              Decorate 20(gl_PerVertex) Block
                               MemberDecorate 20(gl_PerVertex) 0 BuiltIn Position
                               MemberDecorate 20(gl_PerVertex) 1 BuiltIn PointSize
                               MemberDecorate 20(gl_PerVertex) 2 BuiltIn ClipDistance
-                              Decorate 20(gl_PerVertex) Block
                               Decorate 27(gl_VertexID) BuiltIn VertexId
                               Decorate 28(gl_InstanceID) BuiltIn InstanceId
                2:             TypeVoid

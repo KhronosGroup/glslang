@@ -23,8 +23,8 @@ spv.GeometryShaderPassthrough.geom
                               MemberName 12(Inputs) 0  "texcoord"
                               MemberName 12(Inputs) 1  "baseColor"
                               Name 14  ""
-                              MemberDecorate 8(gl_PerVertex) 0 BuiltIn Position
                               Decorate 8(gl_PerVertex) Block
+                              MemberDecorate 8(gl_PerVertex) 0 BuiltIn Position
                               Decorate 10 PassthroughNV
                               Decorate 12(Inputs) Block
                               Decorate 14 Location 0

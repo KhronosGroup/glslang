@@ -94,15 +94,15 @@ spv.int16.amd.frag
                               Name 573  "u64_to_u16"
                               Name 574  "i16_to_u16"
                               Name 575  "u16_to_i16"
-                              MemberDecorate 25(Uniforms) 0 Offset 0
                               Decorate 25(Uniforms) Block
-                              Decorate 27 DescriptorSet 0
+                              MemberDecorate 25(Uniforms) 0 Offset 0
                               Decorate 27 Binding 0
+                              Decorate 27 DescriptorSet 0
+                              Decorate 531(Block) Block
                               MemberDecorate 531(Block) 0 Offset 0
                               MemberDecorate 531(Block) 1 Offset 6
-                              Decorate 531(Block) Block
-                              Decorate 533(block) DescriptorSet 0
                               Decorate 533(block) Binding 1
+                              Decorate 533(block) DescriptorSet 0
                               Decorate 535(iu16v) Flat
                               Decorate 535(iu16v) Location 0
                               Decorate 537(ii16) Flat

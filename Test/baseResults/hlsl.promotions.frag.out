@@ -1683,6 +1683,7 @@ gl_FragCoord origin is upper left
                               Name 578  "outval"
                               Name 586  "psout"
                               Name 593  "@entryPointOutput.Color"
+                              Decorate 111($Global) Block
                               MemberDecorate 111($Global) 0 Offset 0
                               MemberDecorate 111($Global) 1 Offset 16
                               MemberDecorate 111($Global) 2 Offset 32
@@ -1693,9 +1694,8 @@ gl_FragCoord origin is upper left
                               MemberDecorate 111($Global) 7 Offset 96
                               MemberDecorate 111($Global) 8 Offset 100
                               MemberDecorate 111($Global) 9 Offset 104
-                              Decorate 111($Global) Block
-                              Decorate 113 DescriptorSet 0
                               Decorate 113 Binding 0
+                              Decorate 113 DescriptorSet 0
                               Decorate 593(@entryPointOutput.Color) Location 0
                2:             TypeVoid
                3:             TypeFunction 2

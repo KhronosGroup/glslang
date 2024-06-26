@@ -21,15 +21,15 @@ spv.bool.vert
                               MemberName 27(ubname) 0  "b"
                               Name 29  "ubinst"
                               Name 30  "param"
+                              Decorate 22(gl_PerVertex) Block
                               MemberDecorate 22(gl_PerVertex) 0 BuiltIn Position
                               MemberDecorate 22(gl_PerVertex) 1 BuiltIn PointSize
                               MemberDecorate 22(gl_PerVertex) 2 BuiltIn ClipDistance
                               MemberDecorate 22(gl_PerVertex) 3 BuiltIn CullDistance
-                              Decorate 22(gl_PerVertex) Block
-                              MemberDecorate 27(ubname) 0 Offset 0
                               Decorate 27(ubname) Block
-                              Decorate 29(ubinst) DescriptorSet 0
+                              MemberDecorate 27(ubname) 0 Offset 0
                               Decorate 29(ubinst) Binding 0
+                              Decorate 29(ubinst) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeBool

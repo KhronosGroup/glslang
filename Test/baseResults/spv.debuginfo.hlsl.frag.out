@@ -176,37 +176,37 @@ spv.debuginfo.hlsl.frag
                               Name 896  "inUV"
                               Name 899  "@entryPointOutput"
                               Name 900  "param"
-                              Decorate 164(textureShadowMap) DescriptorSet 0
                               Decorate 164(textureShadowMap) Binding 5
-                              Decorate 175(samplerShadowMap) DescriptorSet 0
+                              Decorate 164(textureShadowMap) DescriptorSet 0
                               Decorate 175(samplerShadowMap) Binding 5
+                              Decorate 175(samplerShadowMap) DescriptorSet 0
                               MemberDecorate 440(Light) 0 Offset 0
                               MemberDecorate 440(Light) 1 Offset 16
                               MemberDecorate 440(Light) 2 Offset 32
                               MemberDecorate 440(Light) 3 RowMajor
-                              MemberDecorate 440(Light) 3 Offset 48
                               MemberDecorate 440(Light) 3 MatrixStride 16
+                              MemberDecorate 440(Light) 3 Offset 48
                               Decorate 453 ArrayStride 112
                               MemberDecorate 455(UBO) 0 Offset 0
                               MemberDecorate 455(UBO) 1 Offset 16
                               MemberDecorate 455(UBO) 2 Offset 352
                               MemberDecorate 455(UBO) 3 Offset 356
-                              MemberDecorate 467(ubo) 0 Offset 0
                               Decorate 467(ubo) Block
-                              Decorate 475 DescriptorSet 0
+                              MemberDecorate 467(ubo) 0 Offset 0
                               Decorate 475 Binding 4
-                              Decorate 521(textureposition) DescriptorSet 0
+                              Decorate 475 DescriptorSet 0
                               Decorate 521(textureposition) Binding 1
-                              Decorate 526(samplerposition) DescriptorSet 0
+                              Decorate 521(textureposition) DescriptorSet 0
                               Decorate 526(samplerposition) Binding 1
-                              Decorate 542(textureNormal) DescriptorSet 0
+                              Decorate 526(samplerposition) DescriptorSet 0
                               Decorate 542(textureNormal) Binding 2
-                              Decorate 547(samplerNormal) DescriptorSet 0
+                              Decorate 542(textureNormal) DescriptorSet 0
                               Decorate 547(samplerNormal) Binding 2
-                              Decorate 561(textureAlbedo) DescriptorSet 0
+                              Decorate 547(samplerNormal) DescriptorSet 0
                               Decorate 561(textureAlbedo) Binding 3
-                              Decorate 566(samplerAlbedo) DescriptorSet 0
+                              Decorate 561(textureAlbedo) DescriptorSet 0
                               Decorate 566(samplerAlbedo) Binding 3
+                              Decorate 566(samplerAlbedo) DescriptorSet 0
                               Decorate 896(inUV) Location 0
                               Decorate 899(@entryPointOutput) Location 0
                4:             TypeVoid

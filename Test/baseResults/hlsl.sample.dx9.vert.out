@@ -180,10 +180,10 @@ Shader version: 500
                               Name 36  "g_sam2D"
                               Name 49  "vsout"
                               Name 61  "@entryPointOutput.Pos"
-                              Decorate 20(g_sam) DescriptorSet 0
                               Decorate 20(g_sam) Binding 0
-                              Decorate 36(g_sam2D) DescriptorSet 0
+                              Decorate 20(g_sam) DescriptorSet 0
                               Decorate 36(g_sam2D) Binding 1
+                              Decorate 36(g_sam2D) DescriptorSet 0
                               Decorate 61(@entryPointOutput.Pos) BuiltIn Position
                3:             TypeVoid
                4:             TypeFunction 3

@@ -36,21 +36,21 @@ spv.meshTaskShader.task
                               Decorate 17(gl_WorkGroupID) BuiltIn WorkgroupId
                               Decorate 24(gl_MeshViewIndicesNV) BuiltIn MeshViewIndicesNV
                               Decorate 25(gl_MeshViewCountNV) BuiltIn MeshViewCountNV
-                              MemberDecorate 47(block0) 0 Offset 0
                               Decorate 47(block0) Block
-                              Decorate 49 DescriptorSet 0
+                              MemberDecorate 47(block0) 0 Offset 0
                               Decorate 49 Binding 1
-                              Decorate 65(uni_image) DescriptorSet 0
-                              Decorate 65(uni_image) Binding 0
+                              Decorate 49 DescriptorSet 0
                               Decorate 65(uni_image) NonReadable
+                              Decorate 65(uni_image) Binding 0
+                              Decorate 65(uni_image) DescriptorSet 0
                               Decorate 87 ArrayStride 8
-                              MemberDecorate 88(Task) 0 PerTaskNV
-                              MemberDecorate 88(Task) 0 Offset 0
-                              MemberDecorate 88(Task) 1 PerTaskNV
-                              MemberDecorate 88(Task) 1 Offset 8
-                              MemberDecorate 88(Task) 2 PerTaskNV
-                              MemberDecorate 88(Task) 2 Offset 32
                               Decorate 88(Task) Block
+                              MemberDecorate 88(Task) 0 Offset 0
+                              MemberDecorate 88(Task) 0 PerTaskNV
+                              MemberDecorate 88(Task) 1 Offset 8
+                              MemberDecorate 88(Task) 1 PerTaskNV
+                              MemberDecorate 88(Task) 2 Offset 32
+                              MemberDecorate 88(Task) 2 PerTaskNV
                               Decorate 90(mytask) Location 0
                               Decorate 113(gl_TaskCountNV) BuiltIn TaskCountNV
                               Decorate 115 BuiltIn WorkgroupSize

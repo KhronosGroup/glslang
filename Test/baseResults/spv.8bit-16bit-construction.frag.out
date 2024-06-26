@@ -24,14 +24,14 @@ Validation failed
                               MemberName 11(B) 3  "u16_from_u8"
                               MemberName 11(B) 4  "f16_from_i8"
                               Name 13  ""
+                              Decorate 11(B) BufferBlock
                               MemberDecorate 11(B) 0 Offset 0
                               MemberDecorate 11(B) 1 Offset 2
                               MemberDecorate 11(B) 2 Offset 4
                               MemberDecorate 11(B) 3 Offset 6
                               MemberDecorate 11(B) 4 Offset 8
-                              Decorate 11(B) BufferBlock
-                              Decorate 13 DescriptorSet 0
                               Decorate 13 Binding 0
+                              Decorate 13 DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 8 1

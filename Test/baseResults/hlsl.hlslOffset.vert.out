@@ -50,6 +50,7 @@ Shader version: 500
                               MemberName 15(b) 10  "m96"
                               Name 17  ""
                               Decorate 14 ArrayStride 16
+                              Decorate 15(b) Block
                               MemberDecorate 15(b) 0 Offset 0
                               MemberDecorate 15(b) 1 Offset 4
                               MemberDecorate 15(b) 2 Offset 16
@@ -61,9 +62,8 @@ Shader version: 500
                               MemberDecorate 15(b) 8 Offset 76
                               MemberDecorate 15(b) 9 Offset 80
                               MemberDecorate 15(b) 10 Offset 96
-                              Decorate 15(b) Block
-                              Decorate 17 DescriptorSet 0
                               Decorate 17 Binding 0
+                              Decorate 17 DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                9:             TypeFloat 32

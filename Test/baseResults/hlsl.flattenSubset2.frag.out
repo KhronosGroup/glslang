@@ -179,8 +179,8 @@ gl_FragCoord origin is upper left
                               Name 49  "vpos"
                               Name 52  "@entryPointOutput"
                               Name 53  "param"
-                              Decorate 36(someTex) DescriptorSet 0
                               Decorate 36(someTex) Binding 0
+                              Decorate 36(someTex) DescriptorSet 0
                               Decorate 49(vpos) Location 0
                               Decorate 52(@entryPointOutput) Location 0
                2:             TypeVoid

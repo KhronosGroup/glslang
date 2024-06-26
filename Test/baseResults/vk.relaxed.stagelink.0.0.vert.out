@@ -7325,71 +7325,72 @@ gl_FragCoord origin is upper left
                               Name 934  "mTD3DImageOutputs"
                               Name 938  "mTDCubeImageOutputs"
                               Decorate 207(uv) Location 3
+                              Decorate 214(Vertex) Block
                               MemberDecorate 214(Vertex) 3 Flat
                               MemberDecorate 214(Vertex) 4 Flat
-                              Decorate 214(Vertex) Block
                               Decorate 216(oVert) Location 0
                               Decorate 226(P) Location 0
+                              Decorate 236(gl_PerVertex) Block
                               MemberDecorate 236(gl_PerVertex) 0 BuiltIn Position
                               MemberDecorate 236(gl_PerVertex) 1 BuiltIn PointSize
                               MemberDecorate 236(gl_PerVertex) 2 BuiltIn ClipDistance
                               MemberDecorate 236(gl_PerVertex) 3 BuiltIn CullDistance
-                              Decorate 236(gl_PerVertex) Block
                               Decorate 256(Cd) Location 2
                               MemberDecorate 269(TDMatrix) 0 ColMajor
-                              MemberDecorate 269(TDMatrix) 0 Offset 0
                               MemberDecorate 269(TDMatrix) 0 MatrixStride 16
+                              MemberDecorate 269(TDMatrix) 0 Offset 0
                               MemberDecorate 269(TDMatrix) 1 ColMajor
-                              MemberDecorate 269(TDMatrix) 1 Offset 64
                               MemberDecorate 269(TDMatrix) 1 MatrixStride 16
+                              MemberDecorate 269(TDMatrix) 1 Offset 64
                               MemberDecorate 269(TDMatrix) 2 ColMajor
-                              MemberDecorate 269(TDMatrix) 2 Offset 128
                               MemberDecorate 269(TDMatrix) 2 MatrixStride 16
+                              MemberDecorate 269(TDMatrix) 2 Offset 128
                               MemberDecorate 269(TDMatrix) 3 ColMajor
-                              MemberDecorate 269(TDMatrix) 3 Offset 192
                               MemberDecorate 269(TDMatrix) 3 MatrixStride 16
+                              MemberDecorate 269(TDMatrix) 3 Offset 192
                               MemberDecorate 269(TDMatrix) 4 ColMajor
-                              MemberDecorate 269(TDMatrix) 4 Offset 256
                               MemberDecorate 269(TDMatrix) 4 MatrixStride 16
+                              MemberDecorate 269(TDMatrix) 4 Offset 256
                               MemberDecorate 269(TDMatrix) 5 ColMajor
-                              MemberDecorate 269(TDMatrix) 5 Offset 320
                               MemberDecorate 269(TDMatrix) 5 MatrixStride 16
+                              MemberDecorate 269(TDMatrix) 5 Offset 320
                               MemberDecorate 269(TDMatrix) 6 ColMajor
-                              MemberDecorate 269(TDMatrix) 6 Offset 384
                               MemberDecorate 269(TDMatrix) 6 MatrixStride 16
+                              MemberDecorate 269(TDMatrix) 6 Offset 384
                               MemberDecorate 269(TDMatrix) 7 ColMajor
-                              MemberDecorate 269(TDMatrix) 7 Offset 448
                               MemberDecorate 269(TDMatrix) 7 MatrixStride 16
+                              MemberDecorate 269(TDMatrix) 7 Offset 448
                               MemberDecorate 269(TDMatrix) 8 ColMajor
-                              MemberDecorate 269(TDMatrix) 8 Offset 512
                               MemberDecorate 269(TDMatrix) 8 MatrixStride 16
+                              MemberDecorate 269(TDMatrix) 8 Offset 512
                               MemberDecorate 269(TDMatrix) 9 ColMajor
-                              MemberDecorate 269(TDMatrix) 9 Offset 576
                               MemberDecorate 269(TDMatrix) 9 MatrixStride 16
+                              MemberDecorate 269(TDMatrix) 9 Offset 576
                               MemberDecorate 269(TDMatrix) 10 ColMajor
-                              MemberDecorate 269(TDMatrix) 10 Offset 640
                               MemberDecorate 269(TDMatrix) 10 MatrixStride 16
+                              MemberDecorate 269(TDMatrix) 10 Offset 640
                               MemberDecorate 269(TDMatrix) 11 ColMajor
-                              MemberDecorate 269(TDMatrix) 11 Offset 704
                               MemberDecorate 269(TDMatrix) 11 MatrixStride 16
+                              MemberDecorate 269(TDMatrix) 11 Offset 704
                               MemberDecorate 269(TDMatrix) 12 ColMajor
-                              MemberDecorate 269(TDMatrix) 12 Offset 768
                               MemberDecorate 269(TDMatrix) 12 MatrixStride 16
+                              MemberDecorate 269(TDMatrix) 12 Offset 768
                               MemberDecorate 269(TDMatrix) 13 ColMajor
-                              MemberDecorate 269(TDMatrix) 13 Offset 832
                               MemberDecorate 269(TDMatrix) 13 MatrixStride 16
+                              MemberDecorate 269(TDMatrix) 13 Offset 832
                               MemberDecorate 269(TDMatrix) 14 ColMajor
-                              MemberDecorate 269(TDMatrix) 14 Offset 880
                               MemberDecorate 269(TDMatrix) 14 MatrixStride 16
+                              MemberDecorate 269(TDMatrix) 14 Offset 880
                               MemberDecorate 269(TDMatrix) 15 ColMajor
-                              MemberDecorate 269(TDMatrix) 15 Offset 928
                               MemberDecorate 269(TDMatrix) 15 MatrixStride 16
+                              MemberDecorate 269(TDMatrix) 15 Offset 928
                               Decorate 270 ArrayStride 976
-                              MemberDecorate 271(TDMatricesBlock) 0 Offset 0
                               Decorate 271(TDMatricesBlock) Block
-                              Decorate 273 DescriptorSet 0
+                              MemberDecorate 271(TDMatricesBlock) 0 Offset 0
                               Decorate 273 Binding 1
+                              Decorate 273 DescriptorSet 0
                               Decorate 297(gl_InstanceIndex) BuiltIn InstanceIndex
+                              Decorate 299(gl_DefaultUniformBlock) Block
                               MemberDecorate 299(gl_DefaultUniformBlock) 0 Offset 0
                               MemberDecorate 299(gl_DefaultUniformBlock) 1 Offset 4
                               MemberDecorate 299(gl_DefaultUniformBlock) 2 Offset 8
@@ -7398,34 +7399,33 @@ gl_FragCoord origin is upper left
                               MemberDecorate 299(gl_DefaultUniformBlock) 5 Offset 32
                               MemberDecorate 299(gl_DefaultUniformBlock) 6 Offset 48
                               MemberDecorate 299(gl_DefaultUniformBlock) 7 Offset 64
-                              Decorate 299(gl_DefaultUniformBlock) Block
-                              Decorate 301 DescriptorSet 0
                               Decorate 301 Binding 0
-                              Decorate 371(sTDInstanceTexCoord) DescriptorSet 0
+                              Decorate 301 DescriptorSet 0
                               Decorate 371(sTDInstanceTexCoord) Binding 16
-                              Decorate 400(sTDInstanceT) DescriptorSet 0
+                              Decorate 371(sTDInstanceTexCoord) DescriptorSet 0
                               Decorate 400(sTDInstanceT) Binding 15
-                              Decorate 665(sTDInstanceColor) DescriptorSet 0
+                              Decorate 400(sTDInstanceT) DescriptorSet 0
                               Decorate 665(sTDInstanceColor) Binding 17
+                              Decorate 665(sTDInstanceColor) DescriptorSet 0
                               MemberDecorate 896(TDCameraInfo) 0 Offset 0
                               MemberDecorate 896(TDCameraInfo) 1 Offset 16
                               MemberDecorate 896(TDCameraInfo) 2 Offset 32
                               MemberDecorate 896(TDCameraInfo) 3 Offset 48
                               Decorate 897 ArrayStride 64
-                              MemberDecorate 898(TDCameraInfoBlock) 0 Offset 0
                               Decorate 898(TDCameraInfoBlock) Block
-                              Decorate 900 DescriptorSet 0
+                              MemberDecorate 898(TDCameraInfoBlock) 0 Offset 0
                               Decorate 900 Binding 0
+                              Decorate 900 DescriptorSet 0
                               MemberDecorate 901(TDGeneral) 0 Offset 0
                               MemberDecorate 901(TDGeneral) 1 Offset 16
                               MemberDecorate 901(TDGeneral) 2 Offset 32
                               MemberDecorate 901(TDGeneral) 3 Offset 48
                               MemberDecorate 901(TDGeneral) 4 Offset 64
                               MemberDecorate 901(TDGeneral) 5 Offset 80
-                              MemberDecorate 902(TDGeneralBlock) 0 Offset 0
                               Decorate 902(TDGeneralBlock) Block
-                              Decorate 904 DescriptorSet 0
+                              MemberDecorate 902(TDGeneralBlock) 0 Offset 0
                               Decorate 904 Binding 0
+                              Decorate 904 DescriptorSet 0
                               Decorate 905(N) Location 1
                               Decorate 906(gl_VertexIndex) BuiltIn VertexIndex
                               MemberDecorate 907(TDLight) 0 Offset 0
@@ -7437,44 +7437,44 @@ gl_FragCoord origin is upper left
                               MemberDecorate 907(TDLight) 6 Offset 96
                               MemberDecorate 907(TDLight) 7 Offset 112
                               MemberDecorate 907(TDLight) 8 ColMajor
-                              MemberDecorate 907(TDLight) 8 Offset 128
                               MemberDecorate 907(TDLight) 8 MatrixStride 16
+                              MemberDecorate 907(TDLight) 8 Offset 128
                               MemberDecorate 907(TDLight) 9 ColMajor
-                              MemberDecorate 907(TDLight) 9 Offset 192
                               MemberDecorate 907(TDLight) 9 MatrixStride 16
+                              MemberDecorate 907(TDLight) 9 Offset 192
                               MemberDecorate 907(TDLight) 10 Offset 256
                               MemberDecorate 907(TDLight) 11 ColMajor
-                              MemberDecorate 907(TDLight) 11 Offset 272
                               MemberDecorate 907(TDLight) 11 MatrixStride 16
+                              MemberDecorate 907(TDLight) 11 Offset 272
                               Decorate 908 ArrayStride 336
-                              MemberDecorate 909(TDLightBlock) 0 Offset 0
                               Decorate 909(TDLightBlock) Block
-                              Decorate 911 DescriptorSet 0
+                              MemberDecorate 909(TDLightBlock) 0 Offset 0
                               Decorate 911 Binding 0
+                              Decorate 911 DescriptorSet 0
                               MemberDecorate 912(TDEnvLight) 0 Offset 0
                               MemberDecorate 912(TDEnvLight) 1 ColMajor
-                              MemberDecorate 912(TDEnvLight) 1 Offset 16
                               MemberDecorate 912(TDEnvLight) 1 MatrixStride 16
+                              MemberDecorate 912(TDEnvLight) 1 Offset 16
                               Decorate 913 ArrayStride 64
-                              MemberDecorate 914(TDEnvLightBlock) 0 Offset 0
                               Decorate 914(TDEnvLightBlock) Block
-                              Decorate 916 DescriptorSet 0
+                              MemberDecorate 914(TDEnvLightBlock) 0 Offset 0
                               Decorate 916 Binding 0
+                              Decorate 916 DescriptorSet 0
                               Decorate 918 ArrayStride 16
+                              Decorate 919(TDEnvLightBuffer) BufferBlock
                               MemberDecorate 919(TDEnvLightBuffer) 0 Restrict
                               MemberDecorate 919(TDEnvLightBuffer) 0 NonWritable
                               MemberDecorate 919(TDEnvLightBuffer) 0 Offset 0
-                              Decorate 919(TDEnvLightBuffer) BufferBlock
-                              Decorate 922(uTDEnvLightBuffers) DescriptorSet 0
                               Decorate 922(uTDEnvLightBuffers) Binding 0
-                              Decorate 926(mTD2DImageOutputs) DescriptorSet 0
+                              Decorate 922(uTDEnvLightBuffers) DescriptorSet 0
                               Decorate 926(mTD2DImageOutputs) Binding 0
-                              Decorate 930(mTD2DArrayImageOutputs) DescriptorSet 0
+                              Decorate 926(mTD2DImageOutputs) DescriptorSet 0
                               Decorate 930(mTD2DArrayImageOutputs) Binding 0
-                              Decorate 934(mTD3DImageOutputs) DescriptorSet 0
+                              Decorate 930(mTD2DArrayImageOutputs) DescriptorSet 0
                               Decorate 934(mTD3DImageOutputs) Binding 0
-                              Decorate 938(mTDCubeImageOutputs) DescriptorSet 0
+                              Decorate 934(mTD3DImageOutputs) DescriptorSet 0
                               Decorate 938(mTDCubeImageOutputs) Binding 0
+                              Decorate 938(mTDCubeImageOutputs) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32
@@ -8999,12 +8999,13 @@ gl_FragCoord origin is upper left
                               Name 1293  "TDEnvLightBuffer"
                               MemberName 1293(TDEnvLightBuffer) 0  "shCoeffs"
                               Name 1296  "uTDEnvLightBuffers"
+                              Decorate 334(Vertex) Block
                               MemberDecorate 334(Vertex) 3 Flat
                               MemberDecorate 334(Vertex) 4 Flat
-                              Decorate 334(Vertex) Block
                               Decorate 336(iVert) Location 0
-                              Decorate 363(sColorMap) DescriptorSet 0
                               Decorate 363(sColorMap) Binding 2
+                              Decorate 363(sColorMap) DescriptorSet 0
+                              Decorate 374(gl_DefaultUniformBlock) Block
                               MemberDecorate 374(gl_DefaultUniformBlock) 0 Offset 0
                               MemberDecorate 374(gl_DefaultUniformBlock) 1 Offset 4
                               MemberDecorate 374(gl_DefaultUniformBlock) 2 Offset 8
@@ -9013,102 +9014,101 @@ gl_FragCoord origin is upper left
                               MemberDecorate 374(gl_DefaultUniformBlock) 5 Offset 32
                               MemberDecorate 374(gl_DefaultUniformBlock) 6 Offset 48
                               MemberDecorate 374(gl_DefaultUniformBlock) 7 Offset 64
-                              Decorate 374(gl_DefaultUniformBlock) Block
-                              Decorate 376 DescriptorSet 0
                               Decorate 376 Binding 0
+                              Decorate 376 DescriptorSet 0
                               Decorate 429(oFragColor) Location 0
-                              Decorate 456(sTDNoiseMap) DescriptorSet 0
                               Decorate 456(sTDNoiseMap) Binding 3
+                              Decorate 456(sTDNoiseMap) DescriptorSet 0
                               Decorate 458(gl_FragCoord) BuiltIn FragCoord
                               Decorate 485(gl_FrontFacing) BuiltIn FrontFacing
-                              Decorate 931(sTDInstanceTexCoord) DescriptorSet 0
                               Decorate 931(sTDInstanceTexCoord) Binding 16
-                              Decorate 958(sTDInstanceT) DescriptorSet 0
+                              Decorate 931(sTDInstanceTexCoord) DescriptorSet 0
                               Decorate 958(sTDInstanceT) Binding 15
-                              Decorate 1219(sTDInstanceColor) DescriptorSet 0
+                              Decorate 958(sTDInstanceT) DescriptorSet 0
                               Decorate 1219(sTDInstanceColor) Binding 17
+                              Decorate 1219(sTDInstanceColor) DescriptorSet 0
                               MemberDecorate 1253(TDMatrix) 0 ColMajor
-                              MemberDecorate 1253(TDMatrix) 0 Offset 0
                               MemberDecorate 1253(TDMatrix) 0 MatrixStride 16
+                              MemberDecorate 1253(TDMatrix) 0 Offset 0
                               MemberDecorate 1253(TDMatrix) 1 ColMajor
-                              MemberDecorate 1253(TDMatrix) 1 Offset 64
                               MemberDecorate 1253(TDMatrix) 1 MatrixStride 16
+                              MemberDecorate 1253(TDMatrix) 1 Offset 64
                               MemberDecorate 1253(TDMatrix) 2 ColMajor
-                              MemberDecorate 1253(TDMatrix) 2 Offset 128
                               MemberDecorate 1253(TDMatrix) 2 MatrixStride 16
+                              MemberDecorate 1253(TDMatrix) 2 Offset 128
                               MemberDecorate 1253(TDMatrix) 3 ColMajor
-                              MemberDecorate 1253(TDMatrix) 3 Offset 192
                               MemberDecorate 1253(TDMatrix) 3 MatrixStride 16
+                              MemberDecorate 1253(TDMatrix) 3 Offset 192
                               MemberDecorate 1253(TDMatrix) 4 ColMajor
-                              MemberDecorate 1253(TDMatrix) 4 Offset 256
                               MemberDecorate 1253(TDMatrix) 4 MatrixStride 16
+                              MemberDecorate 1253(TDMatrix) 4 Offset 256
                               MemberDecorate 1253(TDMatrix) 5 ColMajor
-                              MemberDecorate 1253(TDMatrix) 5 Offset 320
                               MemberDecorate 1253(TDMatrix) 5 MatrixStride 16
+                              MemberDecorate 1253(TDMatrix) 5 Offset 320
                               MemberDecorate 1253(TDMatrix) 6 ColMajor
-                              MemberDecorate 1253(TDMatrix) 6 Offset 384
                               MemberDecorate 1253(TDMatrix) 6 MatrixStride 16
+                              MemberDecorate 1253(TDMatrix) 6 Offset 384
                               MemberDecorate 1253(TDMatrix) 7 ColMajor
-                              MemberDecorate 1253(TDMatrix) 7 Offset 448
                               MemberDecorate 1253(TDMatrix) 7 MatrixStride 16
+                              MemberDecorate 1253(TDMatrix) 7 Offset 448
                               MemberDecorate 1253(TDMatrix) 8 ColMajor
-                              MemberDecorate 1253(TDMatrix) 8 Offset 512
                               MemberDecorate 1253(TDMatrix) 8 MatrixStride 16
+                              MemberDecorate 1253(TDMatrix) 8 Offset 512
                               MemberDecorate 1253(TDMatrix) 9 ColMajor
-                              MemberDecorate 1253(TDMatrix) 9 Offset 576
                               MemberDecorate 1253(TDMatrix) 9 MatrixStride 16
+                              MemberDecorate 1253(TDMatrix) 9 Offset 576
                               MemberDecorate 1253(TDMatrix) 10 ColMajor
-                              MemberDecorate 1253(TDMatrix) 10 Offset 640
                               MemberDecorate 1253(TDMatrix) 10 MatrixStride 16
+                              MemberDecorate 1253(TDMatrix) 10 Offset 640
                               MemberDecorate 1253(TDMatrix) 11 ColMajor
-                              MemberDecorate 1253(TDMatrix) 11 Offset 704
                               MemberDecorate 1253(TDMatrix) 11 MatrixStride 16
+                              MemberDecorate 1253(TDMatrix) 11 Offset 704
                               MemberDecorate 1253(TDMatrix) 12 ColMajor
-                              MemberDecorate 1253(TDMatrix) 12 Offset 768
                               MemberDecorate 1253(TDMatrix) 12 MatrixStride 16
+                              MemberDecorate 1253(TDMatrix) 12 Offset 768
                               MemberDecorate 1253(TDMatrix) 13 ColMajor
-                              MemberDecorate 1253(TDMatrix) 13 Offset 832
                               MemberDecorate 1253(TDMatrix) 13 MatrixStride 16
+                              MemberDecorate 1253(TDMatrix) 13 Offset 832
                               MemberDecorate 1253(TDMatrix) 14 ColMajor
-                              MemberDecorate 1253(TDMatrix) 14 Offset 880
                               MemberDecorate 1253(TDMatrix) 14 MatrixStride 16
+                              MemberDecorate 1253(TDMatrix) 14 Offset 880
                               MemberDecorate 1253(TDMatrix) 15 ColMajor
-                              MemberDecorate 1253(TDMatrix) 15 Offset 928
                               MemberDecorate 1253(TDMatrix) 15 MatrixStride 16
+                              MemberDecorate 1253(TDMatrix) 15 Offset 928
                               Decorate 1254 ArrayStride 976
-                              MemberDecorate 1255(TDMatricesBlock) 0 Offset 0
                               Decorate 1255(TDMatricesBlock) Block
-                              Decorate 1257 DescriptorSet 0
+                              MemberDecorate 1255(TDMatricesBlock) 0 Offset 0
                               Decorate 1257 Binding 1
+                              Decorate 1257 DescriptorSet 0
                               MemberDecorate 1258(TDCameraInfo) 0 Offset 0
                               MemberDecorate 1258(TDCameraInfo) 1 Offset 16
                               MemberDecorate 1258(TDCameraInfo) 2 Offset 32
                               MemberDecorate 1258(TDCameraInfo) 3 Offset 48
                               Decorate 1259 ArrayStride 64
-                              MemberDecorate 1260(TDCameraInfoBlock) 0 Offset 0
                               Decorate 1260(TDCameraInfoBlock) Block
-                              Decorate 1262 DescriptorSet 0
+                              MemberDecorate 1260(TDCameraInfoBlock) 0 Offset 0
                               Decorate 1262 Binding 0
+                              Decorate 1262 DescriptorSet 0
                               MemberDecorate 1263(TDGeneral) 0 Offset 0
                               MemberDecorate 1263(TDGeneral) 1 Offset 16
                               MemberDecorate 1263(TDGeneral) 2 Offset 32
                               MemberDecorate 1263(TDGeneral) 3 Offset 48
                               MemberDecorate 1263(TDGeneral) 4 Offset 64
                               MemberDecorate 1263(TDGeneral) 5 Offset 80
-                              MemberDecorate 1264(TDGeneralBlock) 0 Offset 0
                               Decorate 1264(TDGeneralBlock) Block
-                              Decorate 1266 DescriptorSet 0
+                              MemberDecorate 1264(TDGeneralBlock) 0 Offset 0
                               Decorate 1266 Binding 0
-                              Decorate 1270(sTDSineLookup) DescriptorSet 0
+                              Decorate 1266 DescriptorSet 0
                               Decorate 1270(sTDSineLookup) Binding 0
-                              Decorate 1271(sTDWhite2D) DescriptorSet 0
+                              Decorate 1270(sTDSineLookup) DescriptorSet 0
                               Decorate 1271(sTDWhite2D) Binding 0
-                              Decorate 1275(sTDWhite3D) DescriptorSet 0
+                              Decorate 1271(sTDWhite2D) DescriptorSet 0
                               Decorate 1275(sTDWhite3D) Binding 0
-                              Decorate 1276(sTDWhite2DArray) DescriptorSet 0
+                              Decorate 1275(sTDWhite3D) DescriptorSet 0
                               Decorate 1276(sTDWhite2DArray) Binding 0
-                              Decorate 1280(sTDWhiteCube) DescriptorSet 0
+                              Decorate 1276(sTDWhite2DArray) DescriptorSet 0
                               Decorate 1280(sTDWhiteCube) Binding 0
+                              Decorate 1280(sTDWhiteCube) DescriptorSet 0
                               MemberDecorate 1281(TDLight) 0 Offset 0
                               MemberDecorate 1281(TDLight) 1 Offset 16
                               MemberDecorate 1281(TDLight) 2 Offset 32
@@ -9118,36 +9118,36 @@ gl_FragCoord origin is upper left
                               MemberDecorate 1281(TDLight) 6 Offset 96
                               MemberDecorate 1281(TDLight) 7 Offset 112
                               MemberDecorate 1281(TDLight) 8 ColMajor
-                              MemberDecorate 1281(TDLight) 8 Offset 128
                               MemberDecorate 1281(TDLight) 8 MatrixStride 16
+                              MemberDecorate 1281(TDLight) 8 Offset 128
                               MemberDecorate 1281(TDLight) 9 ColMajor
-                              MemberDecorate 1281(TDLight) 9 Offset 192
                               MemberDecorate 1281(TDLight) 9 MatrixStride 16
+                              MemberDecorate 1281(TDLight) 9 Offset 192
                               MemberDecorate 1281(TDLight) 10 Offset 256
                               MemberDecorate 1281(TDLight) 11 ColMajor
-                              MemberDecorate 1281(TDLight) 11 Offset 272
                               MemberDecorate 1281(TDLight) 11 MatrixStride 16
+                              MemberDecorate 1281(TDLight) 11 Offset 272
                               Decorate 1282 ArrayStride 336
-                              MemberDecorate 1283(TDLightBlock) 0 Offset 0
                               Decorate 1283(TDLightBlock) Block
-                              Decorate 1285 DescriptorSet 0
+                              MemberDecorate 1283(TDLightBlock) 0 Offset 0
                               Decorate 1285 Binding 0
+                              Decorate 1285 DescriptorSet 0
                               MemberDecorate 1286(TDEnvLight) 0 Offset 0
                               MemberDecorate 1286(TDEnvLight) 1 ColMajor
-                              MemberDecorate 1286(TDEnvLight) 1 Offset 16
                               MemberDecorate 1286(TDEnvLight) 1 MatrixStride 16
+                              MemberDecorate 1286(TDEnvLight) 1 Offset 16
                               Decorate 1287 ArrayStride 64
-                              MemberDecorate 1288(TDEnvLightBlock) 0 Offset 0
                               Decorate 1288(TDEnvLightBlock) Block
-                              Decorate 1290 DescriptorSet 0
+                              MemberDecorate 1288(TDEnvLightBlock) 0 Offset 0
                               Decorate 1290 Binding 0
+                              Decorate 1290 DescriptorSet 0
                               Decorate 1292 ArrayStride 16
+                              Decorate 1293(TDEnvLightBuffer) BufferBlock
                               MemberDecorate 1293(TDEnvLightBuffer) 0 Restrict
                               MemberDecorate 1293(TDEnvLightBuffer) 0 NonWritable
                               MemberDecorate 1293(TDEnvLightBuffer) 0 Offset 0
-                              Decorate 1293(TDEnvLightBuffer) BufferBlock
-                              Decorate 1296(uTDEnvLightBuffers) DescriptorSet 0
                               Decorate 1296(uTDEnvLightBuffers) Binding 0
+                              Decorate 1296(uTDEnvLightBuffers) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

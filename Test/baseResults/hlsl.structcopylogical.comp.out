@@ -281,21 +281,21 @@ local_size = (128, 1, 1)
                               MemberDecorate 26(MyStruct) 1 Offset 4
                               MemberDecorate 26(MyStruct) 2 Offset 8
                               Decorate 27 ArrayStride 12
+                              Decorate 28(MyStructs) Block
                               MemberDecorate 28(MyStructs) 0 Offset 0
                               MemberDecorate 28(MyStructs) 1 Offset 4
-                              Decorate 28(MyStructs) Block
                               Decorate 29 ArrayStride 16
+                              Decorate 30(sb) Block
                               MemberDecorate 30(sb) 0 NonWritable
                               MemberDecorate 30(sb) 0 Offset 0
-                              Decorate 30(sb) Block
-                              Decorate 32(sb) DescriptorSet 0
                               Decorate 32(sb) Binding 0
+                              Decorate 32(sb) DescriptorSet 0
                               Decorate 54 ArrayStride 12
+                              Decorate 55(o) Block
                               MemberDecorate 55(o) 0 NonWritable
                               MemberDecorate 55(o) 0 Offset 0
-                              Decorate 55(o) Block
-                              Decorate 57(o) DescriptorSet 0
                               Decorate 57(o) Binding 1
+                              Decorate 57(o) DescriptorSet 0
                               Decorate 74(id) BuiltIn LocalInvocationIndex
                2:             TypeVoid
                3:             TypeFunction 2

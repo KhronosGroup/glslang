@@ -502,10 +502,10 @@ triangle order = cw
                               Decorate 61(I.m_Normal) Location 0
                               Decorate 80(cpid) BuiltIn InvocationId
                               Decorate 83(@entryPointOutput.m_Position) BuiltIn Position
-                              Decorate 107(@patchConstantOutput.fTessFactor) Patch
                               Decorate 107(@patchConstantOutput.fTessFactor) BuiltIn TessLevelOuter
-                              Decorate 120(@patchConstantOutput.fInsideTessFactor) Patch
+                              Decorate 107(@patchConstantOutput.fTessFactor) Patch
                               Decorate 120(@patchConstantOutput.fInsideTessFactor) BuiltIn TessLevelInner
+                              Decorate 120(@patchConstantOutput.fInsideTessFactor) Patch
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

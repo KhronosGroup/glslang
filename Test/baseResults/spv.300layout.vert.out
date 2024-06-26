@@ -38,40 +38,40 @@ spv.300layout.vert
                               Name 128  "s"
                               Decorate 9(pos) Location 0
                               Decorate 11(p) Location 3
-                              MemberDecorate 17(Transform) 0 RowMajor
-                              MemberDecorate 17(Transform) 0 Offset 0
-                              MemberDecorate 17(Transform) 0 MatrixStride 16
-                              MemberDecorate 17(Transform) 1 ColMajor
-                              MemberDecorate 17(Transform) 1 Offset 64
-                              MemberDecorate 17(Transform) 1 MatrixStride 16
-                              MemberDecorate 17(Transform) 2 RowMajor
-                              MemberDecorate 17(Transform) 2 Offset 128
-                              MemberDecorate 17(Transform) 2 MatrixStride 16
-                              MemberDecorate 17(Transform) 3 Offset 176
                               Decorate 17(Transform) Block
-                              Decorate 19(tblock) DescriptorSet 0
+                              MemberDecorate 17(Transform) 0 RowMajor
+                              MemberDecorate 17(Transform) 0 MatrixStride 16
+                              MemberDecorate 17(Transform) 0 Offset 0
+                              MemberDecorate 17(Transform) 1 ColMajor
+                              MemberDecorate 17(Transform) 1 MatrixStride 16
+                              MemberDecorate 17(Transform) 1 Offset 64
+                              MemberDecorate 17(Transform) 2 RowMajor
+                              MemberDecorate 17(Transform) 2 MatrixStride 16
+                              MemberDecorate 17(Transform) 2 Offset 128
+                              MemberDecorate 17(Transform) 3 Offset 176
                               Decorate 19(tblock) Binding 0
+                              Decorate 19(tblock) DescriptorSet 0
                               Decorate 44 ArrayStride 16
-                              MemberDecorate 45(T3) 0 ColMajor
-                              MemberDecorate 45(T3) 0 Offset 0
-                              MemberDecorate 45(T3) 0 MatrixStride 16
-                              MemberDecorate 45(T3) 1 RowMajor
-                              MemberDecorate 45(T3) 1 Offset 64
-                              MemberDecorate 45(T3) 1 MatrixStride 16
-                              MemberDecorate 45(T3) 2 ColMajor
-                              MemberDecorate 45(T3) 2 Offset 128
-                              MemberDecorate 45(T3) 2 MatrixStride 16
-                              MemberDecorate 45(T3) 3 Offset 2048
                               Decorate 45(T3) Block
-                              Decorate 47 DescriptorSet 0
+                              MemberDecorate 45(T3) 0 ColMajor
+                              MemberDecorate 45(T3) 0 MatrixStride 16
+                              MemberDecorate 45(T3) 0 Offset 0
+                              MemberDecorate 45(T3) 1 RowMajor
+                              MemberDecorate 45(T3) 1 MatrixStride 16
+                              MemberDecorate 45(T3) 1 Offset 64
+                              MemberDecorate 45(T3) 2 ColMajor
+                              MemberDecorate 45(T3) 2 MatrixStride 16
+                              MemberDecorate 45(T3) 2 Offset 128
+                              MemberDecorate 45(T3) 3 Offset 2048
                               Decorate 47 Binding 2
+                              Decorate 47 DescriptorSet 0
+                              Decorate 78(T2) Block
                               MemberDecorate 78(T2) 0 Offset 0
                               MemberDecorate 78(T2) 1 RowMajor
-                              MemberDecorate 78(T2) 1 Offset 16
                               MemberDecorate 78(T2) 1 MatrixStride 16
-                              Decorate 78(T2) Block
-                              Decorate 80 DescriptorSet 0
+                              MemberDecorate 78(T2) 1 Offset 16
                               Decorate 80 Binding 1
+                              Decorate 80 DescriptorSet 0
                               Decorate 98(color) Location 1
                               Decorate 100(c) Location 7
                               Decorate 108(iout) Flat

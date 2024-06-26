@@ -22,10 +22,10 @@ spv.funcall.array.frag
                               Name 64  "param"
                               Decorate 27(color) Location 0
                               Decorate 28 ArrayStride 16
-                              MemberDecorate 29(ub) 0 Offset 0
                               Decorate 29(ub) Block
-                              Decorate 31 DescriptorSet 0
+                              MemberDecorate 29(ub) 0 Offset 0
                               Decorate 31 Binding 0
+                              Decorate 31 DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

@@ -31,16 +31,16 @@ spv.stereoViewRendering.tesc
                               MemberName 27(gl_PerVertex) 4  "gl_SecondaryPositionNV"
                               Name 31  "gl_in"
                               Name 41  "gl_Layer"
+                              Decorate 12(gl_PerVertex) Block
                               MemberDecorate 12(gl_PerVertex) 0 BuiltIn SecondaryPositionNV
                               MemberDecorate 12(gl_PerVertex) 1 BuiltIn SecondaryViewportMaskNV
-                              Decorate 12(gl_PerVertex) Block
                               Decorate 18(gl_InvocationID) BuiltIn InvocationId
+                              Decorate 27(gl_PerVertex) Block
                               MemberDecorate 27(gl_PerVertex) 0 BuiltIn Position
                               MemberDecorate 27(gl_PerVertex) 1 BuiltIn PointSize
                               MemberDecorate 27(gl_PerVertex) 2 BuiltIn ClipDistance
                               MemberDecorate 27(gl_PerVertex) 3 BuiltIn CullDistance
                               MemberDecorate 27(gl_PerVertex) 4 BuiltIn SecondaryPositionNV
-                              Decorate 27(gl_PerVertex) Block
                               Decorate 41(gl_Layer) BuiltIn Layer
                               Decorate 41(gl_Layer) ViewportRelativeNV
                               Decorate 41(gl_Layer) SecondaryViewportRelativeNV 1

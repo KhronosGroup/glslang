@@ -18,11 +18,11 @@ spv.fragmentDensity-es.frag
                               Name 14  "FragInvocationCount"
                               Name 16  "gl_FragInvocationCountEXT"
                               Decorate 9(FragSize) Location 0
-                              Decorate 11(gl_FragSizeEXT) Flat
                               Decorate 11(gl_FragSizeEXT) BuiltIn FragSizeEXT
+                              Decorate 11(gl_FragSizeEXT) Flat
                               Decorate 14(FragInvocationCount) Location 2
-                              Decorate 16(gl_FragInvocationCountEXT) Flat
                               Decorate 16(gl_FragInvocationCountEXT) BuiltIn FragInvocationCountEXT
+                              Decorate 16(gl_FragInvocationCountEXT) Flat
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 1

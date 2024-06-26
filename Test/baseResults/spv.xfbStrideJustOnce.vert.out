@@ -27,11 +27,11 @@ spv.xfbStrideJustOnce.vert
                               Decorate 10 Location 5
                               Decorate 10 XfbBuffer 2
                               Decorate 10 XfbStride 20
+                              Decorate 25(gl_PerVertex) Block
                               MemberDecorate 25(gl_PerVertex) 0 BuiltIn Position
                               MemberDecorate 25(gl_PerVertex) 1 BuiltIn PointSize
                               MemberDecorate 25(gl_PerVertex) 2 BuiltIn ClipDistance
                               MemberDecorate 25(gl_PerVertex) 3 BuiltIn CullDistance
-                              Decorate 25(gl_PerVertex) Block
                               Decorate 27 XfbBuffer 0
                               Decorate 27 XfbStride 0
                               Decorate 31(gl_VertexID) BuiltIn VertexId

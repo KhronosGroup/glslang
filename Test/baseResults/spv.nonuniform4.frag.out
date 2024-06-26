@@ -18,8 +18,8 @@ spv.nonuniform4.frag
                               Name 4  "main"
                               Name 10  "data"
                               Name 13  "rIndex"
-                              Decorate 10(data) DescriptorSet 0
                               Decorate 10(data) Binding 4
+                              Decorate 10(data) DescriptorSet 0
                               Decorate 13(rIndex) Flat
                               Decorate 13(rIndex) Location 3
                               Decorate 15 DecorationNonUniformEXT

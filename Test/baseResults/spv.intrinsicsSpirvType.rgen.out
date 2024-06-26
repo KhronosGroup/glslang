@@ -16,8 +16,8 @@ spv.intrinsicsSpirvType.rgen
                               Name 4  "main"
                               Name 8  "rq"
                               Name 11  "as"
-                              Decorate 11(as) DescriptorSet 0
                               Decorate 11(as) Binding 0
+                              Decorate 11(as) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeRayQueryKHR

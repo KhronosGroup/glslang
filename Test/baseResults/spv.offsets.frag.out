@@ -22,20 +22,20 @@ spv.offsets.frag
                               MemberName 12(n2) 2  "g"
                               MemberName 12(n2) 3  "h"
                               Name 14  "i2"
+                              Decorate 7(n1) Block
                               MemberDecorate 7(n1) 0 Offset 8
                               MemberDecorate 7(n1) 1 Offset 4
                               MemberDecorate 7(n1) 2 Offset 0
                               MemberDecorate 7(n1) 3 Offset 12
-                              Decorate 7(n1) Block
-                              Decorate 9(i1) DescriptorSet 0
                               Decorate 9(i1) Binding 0
+                              Decorate 9(i1) DescriptorSet 0
+                              Decorate 12(n2) BufferBlock
                               MemberDecorate 12(n2) 0 Offset 32
                               MemberDecorate 12(n2) 1 Offset 48
                               MemberDecorate 12(n2) 2 Offset 16
                               MemberDecorate 12(n2) 3 Offset 0
-                              Decorate 12(n2) BufferBlock
-                              Decorate 14(i2) DescriptorSet 0
                               Decorate 14(i2) Binding 1
+                              Decorate 14(i2) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 1

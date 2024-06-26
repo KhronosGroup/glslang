@@ -416,30 +416,30 @@ gl_FragCoord origin is upper left
                               Name 133  "r32"
                               Name 146  "r33"
                               Name 188  "@entryPointOutput"
+                              Decorate 21(Matrix) Block
                               MemberDecorate 21(Matrix) 0 RowMajor
-                              MemberDecorate 21(Matrix) 0 Offset 0
                               MemberDecorate 21(Matrix) 0 MatrixStride 16
+                              MemberDecorate 21(Matrix) 0 Offset 0
                               MemberDecorate 21(Matrix) 1 RowMajor
-                              MemberDecorate 21(Matrix) 1 Offset 64
                               MemberDecorate 21(Matrix) 1 MatrixStride 16
+                              MemberDecorate 21(Matrix) 1 Offset 64
                               MemberDecorate 21(Matrix) 2 RowMajor
-                              MemberDecorate 21(Matrix) 2 Offset 112
                               MemberDecorate 21(Matrix) 2 MatrixStride 16
+                              MemberDecorate 21(Matrix) 2 Offset 112
                               MemberDecorate 21(Matrix) 3 RowMajor
-                              MemberDecorate 21(Matrix) 3 Offset 176
                               MemberDecorate 21(Matrix) 3 MatrixStride 16
+                              MemberDecorate 21(Matrix) 3 Offset 176
                               MemberDecorate 21(Matrix) 4 RowMajor
-                              MemberDecorate 21(Matrix) 4 Offset 224
                               MemberDecorate 21(Matrix) 4 MatrixStride 16
+                              MemberDecorate 21(Matrix) 4 Offset 224
                               MemberDecorate 21(Matrix) 5 RowMajor
-                              MemberDecorate 21(Matrix) 5 Offset 288
                               MemberDecorate 21(Matrix) 5 MatrixStride 16
+                              MemberDecorate 21(Matrix) 5 Offset 288
                               MemberDecorate 21(Matrix) 6 Offset 320
                               MemberDecorate 21(Matrix) 7 Offset 336
                               MemberDecorate 21(Matrix) 8 Offset 352
-                              Decorate 21(Matrix) Block
-                              Decorate 23 DescriptorSet 0
                               Decorate 23 Binding 0
+                              Decorate 23 DescriptorSet 0
                               Decorate 188(@entryPointOutput) Location 0
                2:             TypeVoid
                3:             TypeFunction 2

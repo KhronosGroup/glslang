@@ -583,21 +583,21 @@ triangle order = cw
                               Name 137  "param"
                               Name 142  "@patchConstantOutput.edges"
                               Name 155  "@patchConstantOutput.inside"
+                              Decorate 33(TessellationBuffer) Block
                               MemberDecorate 33(TessellationBuffer) 0 Offset 0
                               MemberDecorate 33(TessellationBuffer) 1 Offset 4
-                              Decorate 33(TessellationBuffer) Block
-                              Decorate 35 DescriptorSet 0
                               Decorate 35 Binding 0
+                              Decorate 35 DescriptorSet 0
                               Decorate 73(patch.position) Location 0
                               Decorate 80(patch.color) Location 1
                               Decorate 99(pointId) BuiltIn InvocationId
                               Decorate 102(patchId) BuiltIn PrimitiveId
                               Decorate 113(@entryPointOutput.position) Location 0
                               Decorate 120(@entryPointOutput.color) Location 1
-                              Decorate 142(@patchConstantOutput.edges) Patch
                               Decorate 142(@patchConstantOutput.edges) BuiltIn TessLevelOuter
-                              Decorate 155(@patchConstantOutput.inside) Patch
+                              Decorate 142(@patchConstantOutput.edges) Patch
                               Decorate 155(@patchConstantOutput.inside) BuiltIn TessLevelInner
+                              Decorate 155(@patchConstantOutput.inside) Patch
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

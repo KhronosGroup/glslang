@@ -33,6 +33,7 @@ spv.shaderBallotAMD.comp
                               MemberName 21(Buffers) 7  "i16v"
                               MemberName 21(Buffers) 8  "u16"
                               Name 23  ""
+                              Decorate 21(Buffers) BufferBlock
                               MemberDecorate 21(Buffers) 0 Offset 0
                               MemberDecorate 21(Buffers) 1 Offset 8
                               MemberDecorate 21(Buffers) 2 Offset 16
@@ -42,9 +43,8 @@ spv.shaderBallotAMD.comp
                               MemberDecorate 21(Buffers) 6 Offset 96
                               MemberDecorate 21(Buffers) 7 Offset 104
                               MemberDecorate 21(Buffers) 8 Offset 112
-                              Decorate 21(Buffers) BufferBlock
-                              Decorate 23 DescriptorSet 0
                               Decorate 23 Binding 0
+                              Decorate 23 DescriptorSet 0
                               Decorate 1342 BuiltIn WorkgroupSize
                2:             TypeVoid
                3:             TypeFunction 2

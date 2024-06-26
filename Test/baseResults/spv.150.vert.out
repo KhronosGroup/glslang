@@ -28,16 +28,16 @@ spv.150.vert
                               Name 40  "i"
                               Name 47  "s2D"
                               Name 62  "ui"
-                              MemberDecorate 11(gl_PerVertex) 0 Invariant
+                              Decorate 11(gl_PerVertex) Block
                               MemberDecorate 11(gl_PerVertex) 0 BuiltIn Position
+                              MemberDecorate 11(gl_PerVertex) 0 Invariant
                               MemberDecorate 11(gl_PerVertex) 1 BuiltIn PointSize
                               MemberDecorate 11(gl_PerVertex) 2 BuiltIn ClipDistance
-                              Decorate 11(gl_PerVertex) Block
                               Decorate 17(iv4) Location 0
                               Decorate 23(ps) Location 1
                               Decorate 38(s2out) Location 0
-                              Decorate 47(s2D) DescriptorSet 0
                               Decorate 47(s2D) Binding 0
+                              Decorate 47(s2D) DescriptorSet 0
                               Decorate 62(ui) Location 2
                2:             TypeVoid
                3:             TypeFunction 2

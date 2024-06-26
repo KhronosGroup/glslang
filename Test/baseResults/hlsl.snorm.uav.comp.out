@@ -136,18 +136,18 @@ local_size = (16, 16, 1)
                               Name 47  "tid"
                               Name 49  "tid"
                               Name 51  "param"
-                              Decorate 19(ResultInS) DescriptorSet 0
                               Decorate 19(ResultInS) Binding 1
-                              MemberDecorate 25($Global) 0 Offset 0
+                              Decorate 19(ResultInS) DescriptorSet 0
                               Decorate 25($Global) Block
-                              Decorate 27 DescriptorSet 0
+                              MemberDecorate 25($Global) 0 Offset 0
                               Decorate 27 Binding 2
-                              Decorate 34(ResultOutS) DescriptorSet 0
+                              Decorate 27 DescriptorSet 0
                               Decorate 34(ResultOutS) Binding 1
-                              Decorate 39(ResultInU) DescriptorSet 0
+                              Decorate 34(ResultOutS) DescriptorSet 0
                               Decorate 39(ResultInU) Binding 0
-                              Decorate 43(ResultOutU) DescriptorSet 0
+                              Decorate 39(ResultInU) DescriptorSet 0
                               Decorate 43(ResultOutU) Binding 0
+                              Decorate 43(ResultOutU) DescriptorSet 0
                               Decorate 49(tid) BuiltIn GlobalInvocationId
                2:             TypeVoid
                3:             TypeFunction 2

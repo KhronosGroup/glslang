@@ -32,12 +32,12 @@ spv.bufferhandle9.frag
                               MemberName 53(t2) 0  "f"
                               MemberName 53(t2) 1  "g"
                               Name 55  "t"
+                              Decorate 8(blockType) Block
                               MemberDecorate 8(blockType) 0 Offset 0
                               MemberDecorate 8(blockType) 1 Offset 4
                               MemberDecorate 8(blockType) 2 Offset 8
                               MemberDecorate 8(blockType) 3 Offset 12
                               MemberDecorate 8(blockType) 4 Offset 16
-                              Decorate 8(blockType) Block
                               Decorate 13(b1) DecorationAliasedPointerEXT
                               Decorate 16(h) Flat
                               Decorate 16(h) Location 0
@@ -45,11 +45,11 @@ spv.bufferhandle9.frag
                               Decorate 19(i) Location 1
                               Decorate 34(b2) DecorationAliasedPointerEXT
                               Decorate 37(b3) DecorationAliasedPointerEXT
+                              Decorate 53(t2) Block
                               MemberDecorate 53(t2) 0 Offset 0
                               MemberDecorate 53(t2) 1 Offset 8
-                              Decorate 53(t2) Block
-                              Decorate 55(t) DescriptorSet 0
                               Decorate 55(t) Binding 0
+                              Decorate 55(t) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                               TypeForwardPointer 6 PhysicalStorageBufferEXT

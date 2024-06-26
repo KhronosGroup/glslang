@@ -196,31 +196,31 @@ gl_FragCoord origin is upper left
                               Name 16  ""
                               Name 42  "@entryPointOutput"
                               MemberDecorate 12(MyBuffer1) 0 RowMajor
-                              MemberDecorate 12(MyBuffer1) 0 Offset 0
                               MemberDecorate 12(MyBuffer1) 0 MatrixStride 16
+                              MemberDecorate 12(MyBuffer1) 0 Offset 0
                               MemberDecorate 12(MyBuffer1) 1 ColMajor
-                              MemberDecorate 12(MyBuffer1) 1 Offset 64
                               MemberDecorate 12(MyBuffer1) 1 MatrixStride 16
+                              MemberDecorate 12(MyBuffer1) 1 Offset 64
                               MemberDecorate 12(MyBuffer1) 2 ColMajor
-                              MemberDecorate 12(MyBuffer1) 2 Offset 128
                               MemberDecorate 12(MyBuffer1) 2 MatrixStride 16
+                              MemberDecorate 12(MyBuffer1) 2 Offset 128
                               MemberDecorate 13(MyBuffer2) 0 RowMajor
-                              MemberDecorate 13(MyBuffer2) 0 Offset 0
                               MemberDecorate 13(MyBuffer2) 0 MatrixStride 16
+                              MemberDecorate 13(MyBuffer2) 0 Offset 0
                               MemberDecorate 13(MyBuffer2) 1 ColMajor
-                              MemberDecorate 13(MyBuffer2) 1 Offset 64
                               MemberDecorate 13(MyBuffer2) 1 MatrixStride 16
+                              MemberDecorate 13(MyBuffer2) 1 Offset 64
                               MemberDecorate 13(MyBuffer2) 2 RowMajor
-                              MemberDecorate 13(MyBuffer2) 2 Offset 128
                               MemberDecorate 13(MyBuffer2) 2 MatrixStride 16
+                              MemberDecorate 13(MyBuffer2) 2 Offset 128
+                              Decorate 14(Example) Block
                               MemberDecorate 14(Example) 0 Offset 0
                               MemberDecorate 14(Example) 1 Offset 192
                               MemberDecorate 14(Example) 2 RowMajor
-                              MemberDecorate 14(Example) 2 Offset 384
                               MemberDecorate 14(Example) 2 MatrixStride 16
-                              Decorate 14(Example) Block
-                              Decorate 16 DescriptorSet 0
+                              MemberDecorate 14(Example) 2 Offset 384
                               Decorate 16 Binding 0
+                              Decorate 16 DescriptorSet 0
                               Decorate 42(@entryPointOutput) Location 0
                2:             TypeVoid
                3:             TypeFunction 2

@@ -34,13 +34,13 @@ spv.meshShaderUserDefined.mesh
                               Name 104  "blk2"
                               Decorate 11(gl_LocalInvocationID) BuiltIn LocalInvocationId
                               Decorate 17(gl_WorkGroupID) BuiltIn WorkgroupId
+                              Decorate 30(myblock) Block
                               MemberDecorate 30(myblock) 0 PerPrimitiveNV
                               MemberDecorate 30(myblock) 1 PerPrimitiveNV
                               MemberDecorate 30(myblock) 2 PerPrimitiveNV
                               MemberDecorate 30(myblock) 3 PerPrimitiveNV
                               MemberDecorate 30(myblock) 4 PerPrimitiveNV
                               MemberDecorate 30(myblock) 5 PerPrimitiveNV
-                              Decorate 30(myblock) Block
                               Decorate 34(blk) Location 0
                               Decorate 100(myblock2) Block
                               Decorate 104(blk2) Location 20

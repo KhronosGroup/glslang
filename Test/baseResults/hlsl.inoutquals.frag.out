@@ -253,8 +253,8 @@ using depth_any
                               Name 78  "@entryPointOutput.Color"
                               Name 82  "@entryPointOutput.Depth"
                               Name 88  "sampleMask"
-                              Decorate 68(inpos) NoPerspective
                               Decorate 68(inpos) BuiltIn FragCoord
+                              Decorate 68(inpos) NoPerspective
                               Decorate 78(@entryPointOutput.Color) Location 0
                               Decorate 82(@entryPointOutput.Depth) BuiltIn FragDepth
                               Decorate 88(sampleMask) BuiltIn SampleMask

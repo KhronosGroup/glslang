@@ -244,6 +244,7 @@ gl_FragCoord origin is upper left
                               Name 66  "ps_output"
                               Name 74  "@entryPointOutput.color"
                               Name 79  "g_tTexbfs"
+                              Decorate 17($Global) Block
                               MemberDecorate 17($Global) 0 Offset 0
                               MemberDecorate 17($Global) 1 Offset 4
                               MemberDecorate 17($Global) 2 Offset 8
@@ -254,14 +255,13 @@ gl_FragCoord origin is upper left
                               MemberDecorate 17($Global) 7 Offset 40
                               MemberDecorate 17($Global) 8 Offset 48
                               MemberDecorate 17($Global) 9 Offset 52
-                              Decorate 17($Global) Block
-                              Decorate 19 DescriptorSet 0
                               Decorate 19 Binding 0
-                              Decorate 31(g_tTex1df4) DescriptorSet 0
+                              Decorate 19 DescriptorSet 0
                               Decorate 31(g_tTex1df4) Binding 1
+                              Decorate 31(g_tTex1df4) DescriptorSet 0
                               Decorate 74(@entryPointOutput.color) Location 0
-                              Decorate 79(g_tTexbfs) DescriptorSet 0
                               Decorate 79(g_tTexbfs) Binding 0
+                              Decorate 79(g_tTexbfs) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

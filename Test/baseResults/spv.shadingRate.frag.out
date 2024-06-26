@@ -18,11 +18,11 @@ spv.shadingRate.frag
                               Name 17  "InvocationsPerPixel"
                               Name 19  "gl_InvocationsPerPixelNV"
                               Decorate 9(FragmentSize) Location 0
-                              Decorate 13(gl_FragmentSizeNV) Flat
                               Decorate 13(gl_FragmentSizeNV) BuiltIn FragSizeEXT
+                              Decorate 13(gl_FragmentSizeNV) Flat
                               Decorate 17(InvocationsPerPixel) Location 2
-                              Decorate 19(gl_InvocationsPerPixelNV) Flat
                               Decorate 19(gl_InvocationsPerPixelNV) BuiltIn FragInvocationCountEXT
+                              Decorate 19(gl_InvocationsPerPixelNV) Flat
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

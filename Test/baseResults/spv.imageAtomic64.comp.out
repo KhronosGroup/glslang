@@ -21,12 +21,12 @@ spv.imageAtomic64.comp
                               Name 14  "ssbo"
                               MemberName 14(ssbo) 0  "y"
                               Name 16  ""
-                              Decorate 9(z) DescriptorSet 0
                               Decorate 9(z) Binding 1
-                              MemberDecorate 14(ssbo) 0 Offset 0
+                              Decorate 9(z) DescriptorSet 0
                               Decorate 14(ssbo) BufferBlock
-                              Decorate 16 DescriptorSet 0
+                              MemberDecorate 14(ssbo) 0 Offset 0
                               Decorate 16 Binding 0
+                              Decorate 16 DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 64 0

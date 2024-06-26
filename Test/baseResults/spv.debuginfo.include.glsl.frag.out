@@ -67,10 +67,10 @@ vec4 headerFunction(vec4 a) {
                               Name 100  "param"
                               Name 107  "param"
                               Decorate 81(headerOut) Location 0
-                              MemberDecorate 85(UBO) 0 Offset 0
                               Decorate 85(UBO) Block
-                              Decorate 93 DescriptorSet 0
+                              MemberDecorate 85(UBO) 0 Offset 0
                               Decorate 93 Binding 0
+                              Decorate 93 DescriptorSet 0
                5:             TypeVoid
                6:             TypeFunction 5
                8:             TypeInt 32 0

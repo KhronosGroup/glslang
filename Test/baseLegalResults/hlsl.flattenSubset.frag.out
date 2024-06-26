@@ -13,10 +13,10 @@ hlsl.flattenSubset.frag
                               Name 21  "samp"
                               Name 33  "tex"
                               Name 50  "@entryPointOutput"
-                              Decorate 21(samp) DescriptorSet 0
                               Decorate 21(samp) Binding 0
-                              Decorate 33(tex) DescriptorSet 0
+                              Decorate 21(samp) DescriptorSet 0
                               Decorate 33(tex) Binding 1
+                              Decorate 33(tex) DescriptorSet 0
                               Decorate 50(@entryPointOutput) Location 0
                2:             TypeVoid
                3:             TypeFunction 2

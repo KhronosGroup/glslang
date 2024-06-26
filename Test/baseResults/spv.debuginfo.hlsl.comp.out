@@ -144,31 +144,31 @@ spv.debuginfo.hlsl.comp
                               MemberDecorate 91(UBO) 8 Offset 32
                               MemberDecorate 91(UBO) 9 Offset 48
                               MemberDecorate 91(UBO) 10 Offset 64
-                              MemberDecorate 113(ubo) 0 Offset 0
                               Decorate 113(ubo) Block
-                              Decorate 122 DescriptorSet 0
+                              MemberDecorate 113(ubo) 0 Offset 0
                               Decorate 122 Binding 2
+                              Decorate 122 DescriptorSet 0
                               MemberDecorate 182(Particle) 0 Offset 0
                               MemberDecorate 182(Particle) 1 Offset 16
                               MemberDecorate 182(Particle) 2 Offset 32
                               MemberDecorate 182(Particle) 3 Offset 48
                               MemberDecorate 182(Particle) 4 Offset 64
                               Decorate 197 ArrayStride 80
+                              Decorate 199(particleIn) BufferBlock
                               MemberDecorate 199(particleIn) 0 NonWritable
                               MemberDecorate 199(particleIn) 0 Offset 0
-                              Decorate 199(particleIn) BufferBlock
-                              Decorate 208(particleIn) DescriptorSet 0
                               Decorate 208(particleIn) Binding 0
+                              Decorate 208(particleIn) DescriptorSet 0
                               Decorate 220 ArrayStride 80
-                              MemberDecorate 222(particleOut) 0 Offset 0
                               Decorate 222(particleOut) BufferBlock
-                              Decorate 230(particleOut) DescriptorSet 0
+                              MemberDecorate 222(particleOut) 0 Offset 0
                               Decorate 230(particleOut) Binding 1
+                              Decorate 230(particleOut) DescriptorSet 0
                               MemberDecorate 660(PushConstants) 0 Offset 0
-                              MemberDecorate 668($Global) 0 Offset 0
                               Decorate 668($Global) Block
-                              Decorate 676 DescriptorSet 0
+                              MemberDecorate 668($Global) 0 Offset 0
                               Decorate 676 Binding 3
+                              Decorate 676 DescriptorSet 0
                               Decorate 965(id) BuiltIn GlobalInvocationId
                4:             TypeVoid
                5:             TypeFunction 4

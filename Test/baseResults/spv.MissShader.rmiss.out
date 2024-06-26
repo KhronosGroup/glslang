@@ -35,8 +35,8 @@ spv.MissShader.rmiss
                               Decorate 29(gl_IncomingRayFlagsNV) BuiltIn IncomingRayFlagsKHR
                               Decorate 34(gl_RayTminNV) BuiltIn RayTminKHR
                               Decorate 37(gl_RayTmaxNV) BuiltIn RayTmaxKHR
-                              Decorate 41(accNV) DescriptorSet 0
                               Decorate 41(accNV) Binding 0
+                              Decorate 41(accNV) DescriptorSet 0
                               Decorate 56(localPayload) Location 0
                               Decorate 58(incomingPayload) Location 1
                2:             TypeVoid

@@ -21,9 +21,9 @@ spv.WorkgroupMemoryExplicitLayout.16BitAccess.comp
                               MemberName 8(first) 0  "a"
                               MemberName 8(first) 1  "f"
                               Name 10  ""
+                              Decorate 8(first) Block
                               MemberDecorate 8(first) 0 Offset 0
                               MemberDecorate 8(first) 1 Offset 2
-                              Decorate 8(first) Block
                               Decorate 24 BuiltIn WorkgroupSize
                2:             TypeVoid
                3:             TypeFunction 2

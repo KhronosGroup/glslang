@@ -216,39 +216,39 @@ Shader version: 430
                               MemberName 70(BufferBlock) 0  "p"
                               Name 72  "uBuf"
                               Decorate 14(oColor) Location 2
+                              Decorate 16(ColorBlock) Block
                               MemberDecorate 16(ColorBlock) 0 Offset 0
                               MemberDecorate 16(ColorBlock) 1 Offset 16
                               MemberDecorate 16(ColorBlock) 2 Offset 32
                               MemberDecorate 16(ColorBlock) 3 Offset 48
-                              Decorate 16(ColorBlock) Block
-                              Decorate 18(uC) DescriptorSet 0
                               Decorate 18(uC) Binding 1
-                              MemberDecorate 26(SecondaryColorBlock) 0 Offset 0
+                              Decorate 18(uC) DescriptorSet 0
                               Decorate 26(SecondaryColorBlock) BufferBlock
-                              Decorate 28(uColorBuf) DescriptorSet 0
+                              MemberDecorate 26(SecondaryColorBlock) 0 Offset 0
                               Decorate 28(uColorBuf) Binding 0
+                              Decorate 28(uColorBuf) DescriptorSet 0
                               Decorate 32(Vertex) Block
                               Decorate 34(oV) Location 0
+                              Decorate 40(gl_PerVertex) Block
                               MemberDecorate 40(gl_PerVertex) 0 BuiltIn Position
                               MemberDecorate 40(gl_PerVertex) 1 BuiltIn PointSize
                               MemberDecorate 40(gl_PerVertex) 2 BuiltIn ClipDistance
-                              Decorate 40(gl_PerVertex) Block
-                              MemberDecorate 44(MatrixBlock) 0 ColMajor
-                              MemberDecorate 44(MatrixBlock) 0 Offset 0
-                              MemberDecorate 44(MatrixBlock) 0 MatrixStride 16
-                              MemberDecorate 44(MatrixBlock) 1 ColMajor
-                              MemberDecorate 44(MatrixBlock) 1 Offset 64
-                              MemberDecorate 44(MatrixBlock) 1 MatrixStride 16
                               Decorate 44(MatrixBlock) Block
-                              Decorate 46(uM) DescriptorSet 0
+                              MemberDecorate 44(MatrixBlock) 0 ColMajor
+                              MemberDecorate 44(MatrixBlock) 0 MatrixStride 16
+                              MemberDecorate 44(MatrixBlock) 0 Offset 0
+                              MemberDecorate 44(MatrixBlock) 1 ColMajor
+                              MemberDecorate 44(MatrixBlock) 1 MatrixStride 16
+                              MemberDecorate 44(MatrixBlock) 1 Offset 64
                               Decorate 46(uM) Binding 0
+                              Decorate 46(uM) DescriptorSet 0
                               Decorate 65(P) Location 0
-                              MemberDecorate 70(BufferBlock) 0 ColMajor
-                              MemberDecorate 70(BufferBlock) 0 Offset 0
-                              MemberDecorate 70(BufferBlock) 0 MatrixStride 16
                               Decorate 70(BufferBlock) BufferBlock
-                              Decorate 72(uBuf) DescriptorSet 0
+                              MemberDecorate 70(BufferBlock) 0 ColMajor
+                              MemberDecorate 70(BufferBlock) 0 MatrixStride 16
+                              MemberDecorate 70(BufferBlock) 0 Offset 0
                               Decorate 72(uBuf) Binding 1
+                              Decorate 72(uBuf) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

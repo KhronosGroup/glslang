@@ -30,15 +30,15 @@ spv.ext.RayGenShader.rgen
                               Name 57  "imageu"
                               Decorate 11(gl_LaunchIDEXT) BuiltIn LaunchIdKHR
                               Decorate 21(gl_LaunchSizeEXT) BuiltIn LaunchSizeKHR
-                              Decorate 29(accEXT0) DescriptorSet 0
                               Decorate 29(accEXT0) Binding 0
+                              Decorate 29(accEXT0) DescriptorSet 0
+                              Decorate 38(block) Block
                               MemberDecorate 38(block) 0 Offset 0
                               MemberDecorate 38(block) 1 Offset 16
-                              Decorate 38(block) Block
-                              Decorate 54(accEXT1) DescriptorSet 0
                               Decorate 54(accEXT1) Binding 1
-                              Decorate 57(imageu) DescriptorSet 0
+                              Decorate 54(accEXT1) DescriptorSet 0
                               Decorate 57(imageu) Binding 2
+                              Decorate 57(imageu) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 0

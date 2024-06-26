@@ -24,14 +24,14 @@ spv.tpipTextureArrays.frag
                               Name 67  "samp"
                               Decorate 13(v_texcoord) Location 0
                               Decorate 46(fragColor) Location 0
-                              Decorate 51(samplers) DescriptorSet 0
                               Decorate 51(samplers) Binding 5
-                              Decorate 60(tex2D_srcs) DescriptorSet 0
-                              Decorate 60(tex2D_srcs) Binding 4
-                              Decorate 67(samp) DescriptorSet 0
-                              Decorate 67(samp) Binding 3
+                              Decorate 51(samplers) DescriptorSet 0
                               Decorate 55 DecorationBlockMatchTextureQCOM
+                              Decorate 60(tex2D_srcs) Binding 4
+                              Decorate 60(tex2D_srcs) DescriptorSet 0
                               Decorate 63 DecorationBlockMatchTextureQCOM
+                              Decorate 67(samp) Binding 3
+                              Decorate 67(samp) DescriptorSet 0
                               Decorate 74 DecorationBlockMatchTextureQCOM
                               Decorate 79 DecorationBlockMatchTextureQCOM
                2:             TypeVoid

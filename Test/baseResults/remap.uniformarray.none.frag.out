@@ -20,8 +20,8 @@ remap.uniformarray.none.frag
                               Decorate 25(inColor) Location 0
                               Decorate 43(alpha) Location 7
                               Decorate 54(gl_FragColor) Location 0
-                              Decorate 59(texSampler2D) DescriptorSet 0
                               Decorate 59(texSampler2D) Binding 0
+                              Decorate 59(texSampler2D) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

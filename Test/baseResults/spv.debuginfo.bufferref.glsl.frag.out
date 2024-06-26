@@ -81,19 +81,19 @@ void main() {
                               Name 98  "vertex_pos0"
                               Name 135  "out_fragColor"
                               Decorate 42 ArrayStride 4
-                              MemberDecorate 44(MeshVertexPositions) 0 Offset 0
                               Decorate 44(MeshVertexPositions) Block
+                              MemberDecorate 44(MeshVertexPositions) 0 Offset 0
+                              Decorate 53(meshData) DecorationAliasedPointerEXT
                               MemberDecorate 59(Mesh) 0 Offset 0
                               Decorate 62 ArrayStride 8
+                              Decorate 64(PerPass_meshes) Block
                               MemberDecorate 64(PerPass_meshes) 0 NonWritable
                               MemberDecorate 64(PerPass_meshes) 0 Offset 0
-                              Decorate 64(PerPass_meshes) Block
-                              Decorate 73(perPass_meshes) DescriptorSet 0
                               Decorate 73(perPass_meshes) Binding 0
+                              Decorate 73(perPass_meshes) DescriptorSet 0
                               Decorate 82(tri_idx0) Flat
                               Decorate 82(tri_idx0) Location 0
                               Decorate 135(out_fragColor) Location 0
-                              Decorate 53(meshData) DecorationAliasedPointerEXT
                4:             TypeVoid
                5:             TypeFunction 4
                7:             TypeInt 32 0

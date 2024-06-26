@@ -465,6 +465,7 @@ gl_FragCoord origin is upper left
                               Name 72  "gl_VertexIndex"
                               Name 82  "gl_InstanceIndex"
                               Name 90  "io"
+                              Decorate 14(gl_AtomicCounterBlock_0) BufferBlock
                               MemberDecorate 14(gl_AtomicCounterBlock_0) 0 Volatile
                               MemberDecorate 14(gl_AtomicCounterBlock_0) 0 Coherent
                               MemberDecorate 14(gl_AtomicCounterBlock_0) 0 Offset 0
@@ -474,10 +475,10 @@ gl_FragCoord origin is upper left
                               MemberDecorate 14(gl_AtomicCounterBlock_0) 2 Volatile
                               MemberDecorate 14(gl_AtomicCounterBlock_0) 2 Coherent
                               MemberDecorate 14(gl_AtomicCounterBlock_0) 2 Offset 8
-                              Decorate 14(gl_AtomicCounterBlock_0) BufferBlock
-                              Decorate 16 DescriptorSet 0
                               Decorate 16 Binding 1
+                              Decorate 16 DescriptorSet 0
                               Decorate 34 ArrayStride 16
+                              Decorate 35(gl_DefaultUniformBlock) Block
                               MemberDecorate 35(gl_DefaultUniformBlock) 0 Offset 0
                               MemberDecorate 35(gl_DefaultUniformBlock) 1 Offset 16
                               MemberDecorate 35(gl_DefaultUniformBlock) 2 Offset 24
@@ -485,9 +486,8 @@ gl_FragCoord origin is upper left
                               MemberDecorate 35(gl_DefaultUniformBlock) 4 Offset 48
                               MemberDecorate 35(gl_DefaultUniformBlock) 5 Offset 64
                               MemberDecorate 35(gl_DefaultUniformBlock) 6 Offset 128
-                              Decorate 35(gl_DefaultUniformBlock) Block
-                              Decorate 37 DescriptorSet 0
                               Decorate 37 Binding 0
+                              Decorate 37 DescriptorSet 0
                               Decorate 72(gl_VertexIndex) BuiltIn VertexIndex
                               Decorate 82(gl_InstanceIndex) BuiltIn InstanceIndex
                               Decorate 90(io) Location 0
@@ -619,6 +619,7 @@ gl_FragCoord origin is upper left
                               Name 37  ""
                               Name 68  "o"
                               Name 70  "io"
+                              Decorate 14(gl_AtomicCounterBlock_0) BufferBlock
                               MemberDecorate 14(gl_AtomicCounterBlock_0) 0 Volatile
                               MemberDecorate 14(gl_AtomicCounterBlock_0) 0 Coherent
                               MemberDecorate 14(gl_AtomicCounterBlock_0) 0 Offset 0
@@ -628,10 +629,10 @@ gl_FragCoord origin is upper left
                               MemberDecorate 14(gl_AtomicCounterBlock_0) 2 Volatile
                               MemberDecorate 14(gl_AtomicCounterBlock_0) 2 Coherent
                               MemberDecorate 14(gl_AtomicCounterBlock_0) 2 Offset 8
-                              Decorate 14(gl_AtomicCounterBlock_0) BufferBlock
-                              Decorate 16 DescriptorSet 0
                               Decorate 16 Binding 1
+                              Decorate 16 DescriptorSet 0
                               Decorate 34 ArrayStride 16
+                              Decorate 35(gl_DefaultUniformBlock) Block
                               MemberDecorate 35(gl_DefaultUniformBlock) 0 Offset 0
                               MemberDecorate 35(gl_DefaultUniformBlock) 1 Offset 16
                               MemberDecorate 35(gl_DefaultUniformBlock) 2 Offset 24
@@ -639,9 +640,8 @@ gl_FragCoord origin is upper left
                               MemberDecorate 35(gl_DefaultUniformBlock) 4 Offset 48
                               MemberDecorate 35(gl_DefaultUniformBlock) 5 Offset 64
                               MemberDecorate 35(gl_DefaultUniformBlock) 6 Offset 128
-                              Decorate 35(gl_DefaultUniformBlock) Block
-                              Decorate 37 DescriptorSet 0
                               Decorate 37 Binding 0
+                              Decorate 37 DescriptorSet 0
                               Decorate 68(o) Location 0
                               Decorate 70(io) Location 0
                2:             TypeVoid

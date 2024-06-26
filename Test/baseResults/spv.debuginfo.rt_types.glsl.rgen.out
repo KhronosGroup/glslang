@@ -73,11 +73,11 @@ void main()
                               MemberName 85(block) 0  "dir"
                               MemberName 85(block) 1  "origin"
                               Name 94  ""
-                              Decorate 76(acc0) DescriptorSet 0
                               Decorate 76(acc0) Binding 0
+                              Decorate 76(acc0) DescriptorSet 0
+                              Decorate 85(block) BufferBlock
                               MemberDecorate 85(block) 0 Offset 0
                               MemberDecorate 85(block) 1 Offset 16
-                              Decorate 85(block) BufferBlock
                4:             TypeVoid
                5:             TypeFunction 4
                7:             TypeInt 32 0

@@ -22,21 +22,21 @@ spv.tpipSampleWeighted.frag
                               Name 39  "tex_samp_array"
                               Name 42  "tex2D_src2"
                               Decorate 9(fragColor) Location 0
-                              Decorate 12(tex2D_src1) DescriptorSet 0
                               Decorate 12(tex2D_src1) Binding 1
-                              Decorate 16(samp) DescriptorSet 0
+                              Decorate 12(tex2D_src1) DescriptorSet 0
                               Decorate 16(samp) Binding 3
+                              Decorate 16(samp) DescriptorSet 0
                               Decorate 21(v_texcoord) Location 0
-                              Decorate 27(tex2DArray_weights) DescriptorSet 0
                               Decorate 27(tex2DArray_weights) Binding 0
+                              Decorate 27(tex2DArray_weights) DescriptorSet 0
                               Decorate 27(tex2DArray_weights) DecorationWeightTextureQCOM
-                              Decorate 34(tex_samp) DescriptorSet 0
                               Decorate 34(tex_samp) Binding 4
-                              Decorate 39(tex_samp_array) DescriptorSet 0
+                              Decorate 34(tex_samp) DescriptorSet 0
                               Decorate 39(tex_samp_array) Binding 5
+                              Decorate 39(tex_samp_array) DescriptorSet 0
                               Decorate 39(tex_samp_array) DecorationWeightTextureQCOM
-                              Decorate 42(tex2D_src2) DescriptorSet 0
                               Decorate 42(tex2D_src2) Binding 2
+                              Decorate 42(tex2D_src2) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

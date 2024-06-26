@@ -83,6 +83,7 @@ spv.16bitstorage-uint.frag
                               Decorate 13 ArrayStride 16
                               Decorate 15 ArrayStride 4
                               Decorate 16 ArrayStride 2
+                              Decorate 17(B2) BufferBlock
                               MemberDecorate 17(B2) 0 Offset 0
                               MemberDecorate 17(B2) 1 Offset 4
                               MemberDecorate 17(B2) 2 Offset 8
@@ -91,14 +92,14 @@ spv.16bitstorage-uint.frag
                               MemberDecorate 17(B2) 5 Offset 40
                               MemberDecorate 17(B2) 6 Offset 72
                               MemberDecorate 17(B2) 7 Offset 472
-                              Decorate 17(B2) BufferBlock
-                              Decorate 19(b2) DescriptorSet 0
                               Decorate 19(b2) Binding 1
+                              Decorate 19(b2) DescriptorSet 0
                               Decorate 22 ArrayStride 16
                               MemberDecorate 23(S) 0 Offset 0
                               MemberDecorate 23(S) 1 Offset 4
                               MemberDecorate 23(S) 2 Offset 8
                               Decorate 24 ArrayStride 16
+                              Decorate 25(B1) Block
                               MemberDecorate 25(B1) 0 Offset 0
                               MemberDecorate 25(B1) 1 Offset 4
                               MemberDecorate 25(B1) 2 Offset 8
@@ -106,9 +107,8 @@ spv.16bitstorage-uint.frag
                               MemberDecorate 25(B1) 4 Offset 48
                               MemberDecorate 25(B1) 5 Offset 64
                               MemberDecorate 25(B1) 6 Offset 96
-                              Decorate 25(B1) Block
-                              Decorate 27(b1) DescriptorSet 0
                               Decorate 27(b1) Binding 0
+                              Decorate 27(b1) DescriptorSet 0
                               Decorate 44 ArrayStride 16
                               MemberDecorate 45(S) 0 Offset 0
                               MemberDecorate 45(S) 1 Offset 4
@@ -116,6 +116,7 @@ spv.16bitstorage-uint.frag
                               Decorate 46 ArrayStride 16
                               Decorate 47 ArrayStride 16
                               Decorate 48 ArrayStride 16
+                              Decorate 49(B5) Block
                               MemberDecorate 49(B5) 0 Offset 0
                               MemberDecorate 49(B5) 1 Offset 4
                               MemberDecorate 49(B5) 2 Offset 8
@@ -124,29 +125,28 @@ spv.16bitstorage-uint.frag
                               MemberDecorate 49(B5) 5 Offset 64
                               MemberDecorate 49(B5) 6 Offset 96
                               MemberDecorate 49(B5) 7 Offset 1696
-                              Decorate 49(B5) Block
-                              Decorate 51(b5) DescriptorSet 0
                               Decorate 51(b5) Binding 2
+                              Decorate 51(b5) DescriptorSet 0
                               MemberDecorate 89(S2) 0 ColMajor
-                              MemberDecorate 89(S2) 0 Offset 0
                               MemberDecorate 89(S2) 0 MatrixStride 16
+                              MemberDecorate 89(S2) 0 Offset 0
                               MemberDecorate 89(S2) 1 Offset 64
                               MemberDecorate 89(S2) 2 Offset 68
                               MemberDecorate 90(S3) 0 Offset 0
+                              Decorate 91(B4) BufferBlock
                               MemberDecorate 91(B4) 0 Offset 0
                               MemberDecorate 91(B4) 1 Offset 80
-                              Decorate 91(B4) BufferBlock
-                              Decorate 93(b4) DescriptorSet 0
                               Decorate 93(b4) Binding 4
+                              Decorate 93(b4) DescriptorSet 0
                               MemberDecorate 94(S2) 0 RowMajor
-                              MemberDecorate 94(S2) 0 Offset 0
                               MemberDecorate 94(S2) 0 MatrixStride 16
+                              MemberDecorate 94(S2) 0 Offset 0
                               MemberDecorate 94(S2) 1 Offset 64
                               MemberDecorate 94(S2) 2 Offset 68
-                              MemberDecorate 95(B3) 0 Offset 0
                               Decorate 95(B3) BufferBlock
-                              Decorate 97(b3) DescriptorSet 0
+                              MemberDecorate 95(B3) 0 Offset 0
                               Decorate 97(b3) Binding 3
+                              Decorate 97(b3) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 16 0

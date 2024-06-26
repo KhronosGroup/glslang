@@ -483,6 +483,7 @@ gl_FragCoord origin is upper left
                               Name 181  "g_tTex2df4a"
                               Name 184  "g_tTex2di4a"
                               Name 187  "g_tTex2du4a"
+                              Decorate 45($Global) Block
                               MemberDecorate 45($Global) 0 Offset 0
                               MemberDecorate 45($Global) 1 Offset 8
                               MemberDecorate 45($Global) 2 Offset 16
@@ -491,42 +492,41 @@ gl_FragCoord origin is upper left
                               MemberDecorate 45($Global) 5 Offset 56
                               MemberDecorate 45($Global) 6 Offset 64
                               MemberDecorate 45($Global) 7 Offset 80
-                              Decorate 45($Global) Block
-                              Decorate 47 DescriptorSet 0
                               Decorate 47 Binding 9
-                              Decorate 57(g_tTex1df4) DescriptorSet 0
+                              Decorate 47 DescriptorSet 0
                               Decorate 57(g_tTex1df4) Binding 0
-                              Decorate 72(g_tTex1di4) DescriptorSet 0
+                              Decorate 57(g_tTex1df4) DescriptorSet 0
                               Decorate 72(g_tTex1di4) Binding 1
-                              Decorate 80(g_tTex1du4) DescriptorSet 0
+                              Decorate 72(g_tTex1di4) DescriptorSet 0
                               Decorate 80(g_tTex1du4) Binding 2
-                              Decorate 88(g_tTex2df4) DescriptorSet 0
+                              Decorate 80(g_tTex1du4) DescriptorSet 0
                               Decorate 88(g_tTex2df4) Binding 3
-                              Decorate 98(g_tTex2di4) DescriptorSet 0
+                              Decorate 88(g_tTex2df4) DescriptorSet 0
                               Decorate 98(g_tTex2di4) Binding 4
-                              Decorate 106(g_tTex2du4) DescriptorSet 0
+                              Decorate 98(g_tTex2di4) DescriptorSet 0
                               Decorate 106(g_tTex2du4) Binding 5
-                              Decorate 114(g_tTex3df4) DescriptorSet 0
+                              Decorate 106(g_tTex2du4) DescriptorSet 0
                               Decorate 114(g_tTex3df4) Binding 6
-                              Decorate 124(g_tTex3di4) DescriptorSet 0
+                              Decorate 114(g_tTex3df4) DescriptorSet 0
                               Decorate 124(g_tTex3di4) Binding 7
-                              Decorate 132(g_tTex3du4) DescriptorSet 0
+                              Decorate 124(g_tTex3di4) DescriptorSet 0
                               Decorate 132(g_tTex3du4) Binding 8
+                              Decorate 132(g_tTex3du4) DescriptorSet 0
                               Decorate 164(@entryPointOutput.Color) Location 0
-                              Decorate 169(g_sSamp) DescriptorSet 0
                               Decorate 169(g_sSamp) Binding 0
-                              Decorate 172(g_tTex1df4a) DescriptorSet 0
+                              Decorate 169(g_sSamp) DescriptorSet 0
                               Decorate 172(g_tTex1df4a) Binding 0
-                              Decorate 175(g_tTex1di4a) DescriptorSet 0
+                              Decorate 172(g_tTex1df4a) DescriptorSet 0
                               Decorate 175(g_tTex1di4a) Binding 0
-                              Decorate 178(g_tTex1du4a) DescriptorSet 0
+                              Decorate 175(g_tTex1di4a) DescriptorSet 0
                               Decorate 178(g_tTex1du4a) Binding 0
-                              Decorate 181(g_tTex2df4a) DescriptorSet 0
+                              Decorate 178(g_tTex1du4a) DescriptorSet 0
                               Decorate 181(g_tTex2df4a) Binding 0
-                              Decorate 184(g_tTex2di4a) DescriptorSet 0
+                              Decorate 181(g_tTex2df4a) DescriptorSet 0
                               Decorate 184(g_tTex2di4a) Binding 0
-                              Decorate 187(g_tTex2du4a) DescriptorSet 0
+                              Decorate 184(g_tTex2di4a) DescriptorSet 0
                               Decorate 187(g_tTex2du4a) Binding 0
+                              Decorate 187(g_tTex2du4a) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 1

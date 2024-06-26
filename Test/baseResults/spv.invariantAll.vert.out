@@ -16,17 +16,17 @@ spv.invariantAll.vert
                               MemberName 11(gl_PerVertex) 3  "gl_CullDistance"
                               Name 13  ""
                               Name 17  "v"
-                              MemberDecorate 11(gl_PerVertex) 0 Invariant
-                              MemberDecorate 11(gl_PerVertex) 0 BuiltIn Position
-                              MemberDecorate 11(gl_PerVertex) 1 Invariant
-                              MemberDecorate 11(gl_PerVertex) 1 BuiltIn PointSize
-                              MemberDecorate 11(gl_PerVertex) 2 Invariant
-                              MemberDecorate 11(gl_PerVertex) 2 BuiltIn ClipDistance
-                              MemberDecorate 11(gl_PerVertex) 3 Invariant
-                              MemberDecorate 11(gl_PerVertex) 3 BuiltIn CullDistance
                               Decorate 11(gl_PerVertex) Block
-                              Decorate 17(v) Location 0
+                              MemberDecorate 11(gl_PerVertex) 0 BuiltIn Position
+                              MemberDecorate 11(gl_PerVertex) 0 Invariant
+                              MemberDecorate 11(gl_PerVertex) 1 BuiltIn PointSize
+                              MemberDecorate 11(gl_PerVertex) 1 Invariant
+                              MemberDecorate 11(gl_PerVertex) 2 BuiltIn ClipDistance
+                              MemberDecorate 11(gl_PerVertex) 2 Invariant
+                              MemberDecorate 11(gl_PerVertex) 3 BuiltIn CullDistance
+                              MemberDecorate 11(gl_PerVertex) 3 Invariant
                               Decorate 17(v) Invariant
+                              Decorate 17(v) Location 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

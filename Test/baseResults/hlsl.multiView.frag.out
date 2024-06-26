@@ -84,8 +84,8 @@ gl_FragCoord origin is upper left
                               Name 22  "ViewIndex"
                               Name 25  "@entryPointOutput"
                               Name 26  "param"
-                              Decorate 22(ViewIndex) Flat
                               Decorate 22(ViewIndex) BuiltIn ViewIndex
+                              Decorate 22(ViewIndex) Flat
                               Decorate 25(@entryPointOutput) Location 0
                2:             TypeVoid
                3:             TypeFunction 2

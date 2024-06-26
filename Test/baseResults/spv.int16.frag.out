@@ -80,10 +80,11 @@ spv.int16.frag
                               Name 546  "block"
                               Name 547  "si16"
                               Name 548  "su16"
-                              MemberDecorate 24(Uniforms) 0 Offset 0
                               Decorate 24(Uniforms) Block
-                              Decorate 26 DescriptorSet 0
+                              MemberDecorate 24(Uniforms) 0 Offset 0
                               Decorate 26 Binding 0
+                              Decorate 26 DescriptorSet 0
+                              Decorate 544(Block) Block
                               MemberDecorate 544(Block) 0 Offset 0
                               MemberDecorate 544(Block) 1 Offset 4
                               MemberDecorate 544(Block) 2 Offset 8
@@ -92,9 +93,8 @@ spv.int16.frag
                               MemberDecorate 544(Block) 5 Offset 28
                               MemberDecorate 544(Block) 6 Offset 32
                               MemberDecorate 544(Block) 7 Offset 40
-                              Decorate 544(Block) Block
-                              Decorate 546(block) DescriptorSet 0
                               Decorate 546(block) Binding 1
+                              Decorate 546(block) DescriptorSet 0
                               Decorate 547(si16) SpecId 100
                               Decorate 548(su16) SpecId 101
                2:             TypeVoid

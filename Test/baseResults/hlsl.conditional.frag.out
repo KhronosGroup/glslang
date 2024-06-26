@@ -696,14 +696,14 @@ gl_FragCoord origin is upper left
                               Name 226  "input"
                               Name 229  "@entryPointOutput"
                               Name 230  "param"
+                              Decorate 29($Global) Block
                               MemberDecorate 29($Global) 0 Offset 0
                               MemberDecorate 29($Global) 1 Offset 16
                               MemberDecorate 29($Global) 2 Offset 32
                               MemberDecorate 29($Global) 3 Offset 48
                               MemberDecorate 29($Global) 4 Offset 52
-                              Decorate 29($Global) Block
-                              Decorate 31 DescriptorSet 0
                               Decorate 31 Binding 0
+                              Decorate 31 DescriptorSet 0
                               Decorate 226(input) Location 0
                               Decorate 229(@entryPointOutput) Location 0
                2:             TypeVoid

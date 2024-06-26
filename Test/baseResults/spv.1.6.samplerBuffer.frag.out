@@ -15,8 +15,8 @@ spv.1.6.samplerBuffer.frag
                               Name 9  "o"
                               Name 13  "sampB"
                               Decorate 9(o) Location 0
-                              Decorate 13(sampB) DescriptorSet 0
                               Decorate 13(sampB) Binding 0
+                              Decorate 13(sampB) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

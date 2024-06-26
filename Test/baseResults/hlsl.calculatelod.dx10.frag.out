@@ -400,30 +400,30 @@ using depth_any
                               Name 140  "@entryPointOutput.Color"
                               Name 144  "@entryPointOutput.Depth"
                               Name 147  "g_tTex1df4"
-                              Decorate 16(g_tTex1df4a) DescriptorSet 0
                               Decorate 16(g_tTex1df4a) Binding 1
-                              Decorate 20(g_sSamp) DescriptorSet 0
+                              Decorate 16(g_tTex1df4a) DescriptorSet 0
                               Decorate 20(g_sSamp) Binding 0
-                              Decorate 33(g_tTex1di4a) DescriptorSet 0
+                              Decorate 20(g_sSamp) DescriptorSet 0
                               Decorate 33(g_tTex1di4a) Binding 2
-                              Decorate 45(g_tTex1du4a) DescriptorSet 0
+                              Decorate 33(g_tTex1di4a) DescriptorSet 0
                               Decorate 45(g_tTex1du4a) Binding 3
-                              Decorate 56(g_tTex2df4a) DescriptorSet 0
+                              Decorate 45(g_tTex1du4a) DescriptorSet 0
                               Decorate 56(g_tTex2df4a) Binding 4
-                              Decorate 67(g_tTex2di4a) DescriptorSet 0
+                              Decorate 56(g_tTex2df4a) DescriptorSet 0
                               Decorate 67(g_tTex2di4a) Binding 5
-                              Decorate 79(g_tTex2du4a) DescriptorSet 0
+                              Decorate 67(g_tTex2di4a) DescriptorSet 0
                               Decorate 79(g_tTex2du4a) Binding 6
-                              Decorate 92(g_tTexcdf4a) DescriptorSet 0
+                              Decorate 79(g_tTex2du4a) DescriptorSet 0
                               Decorate 92(g_tTexcdf4a) Binding 7
-                              Decorate 104(g_tTexcdi4a) DescriptorSet 0
+                              Decorate 92(g_tTexcdf4a) DescriptorSet 0
                               Decorate 104(g_tTexcdi4a) Binding 8
-                              Decorate 115(g_tTexcdu4a) DescriptorSet 0
+                              Decorate 104(g_tTexcdi4a) DescriptorSet 0
                               Decorate 115(g_tTexcdu4a) Binding 9
+                              Decorate 115(g_tTexcdu4a) DescriptorSet 0
                               Decorate 140(@entryPointOutput.Color) Location 0
                               Decorate 144(@entryPointOutput.Depth) BuiltIn FragDepth
-                              Decorate 147(g_tTex1df4) DescriptorSet 0
                               Decorate 147(g_tTex1df4) Binding 0
+                              Decorate 147(g_tTex1df4) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

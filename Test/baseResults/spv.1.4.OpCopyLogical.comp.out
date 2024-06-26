@@ -48,35 +48,35 @@ spv.1.4.OpCopyLogical.comp
                               Decorate 15 ArrayStride 8
                               MemberDecorate 16(MyStruct) 0 Offset 0
                               MemberDecorate 16(MyStruct) 1 Offset 16
-                              MemberDecorate 17(SSBO0) 0 Offset 0
                               Decorate 17(SSBO0) Block
-                              Decorate 19(inBuf) DescriptorSet 0
+                              MemberDecorate 17(SSBO0) 0 Offset 0
                               Decorate 19(inBuf) Binding 0
-                              MemberDecorate 25(SSBO1) 0 Offset 0
+                              Decorate 19(inBuf) DescriptorSet 0
                               Decorate 25(SSBO1) Block
-                              Decorate 27(outBuf) DescriptorSet 0
+                              MemberDecorate 25(SSBO1) 0 Offset 0
                               Decorate 27(outBuf) Binding 1
+                              Decorate 27(outBuf) DescriptorSet 0
                               Decorate 31 ArrayStride 16
                               MemberDecorate 32(MyStruct) 0 Offset 0
                               MemberDecorate 32(MyStruct) 1 Offset 32
-                              MemberDecorate 33(UBO) 0 Offset 0
                               Decorate 33(UBO) Block
-                              Decorate 35(uBuf) DescriptorSet 0
+                              MemberDecorate 33(UBO) 0 Offset 0
                               Decorate 35(uBuf) Binding 2
+                              Decorate 35(uBuf) DescriptorSet 0
                               Decorate 47 ArrayStride 48
                               MemberDecorate 48(Nested) 0 Offset 0
                               MemberDecorate 48(Nested) 1 Offset 16
-                              MemberDecorate 49(UBON) 0 Offset 0
                               Decorate 49(UBON) Block
-                              Decorate 51(uBufN) DescriptorSet 0
+                              MemberDecorate 49(UBON) 0 Offset 0
                               Decorate 51(uBufN) Binding 2
+                              Decorate 51(uBufN) DescriptorSet 0
                               Decorate 56 ArrayStride 24
                               MemberDecorate 57(Nested) 0 Offset 0
                               MemberDecorate 57(Nested) 1 Offset 8
-                              MemberDecorate 58(SSBO1N) 0 Offset 0
                               Decorate 58(SSBO1N) Block
-                              Decorate 60(outBufN) DescriptorSet 0
+                              MemberDecorate 58(SSBO1N) 0 Offset 0
                               Decorate 60(outBufN) Binding 1
+                              Decorate 60(outBufN) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

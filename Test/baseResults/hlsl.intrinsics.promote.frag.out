@@ -952,6 +952,7 @@ gl_FragCoord origin is upper left
                               Name 301  "sizeQueryTemp"
                               Name 310  "ps_output"
                               Name 319  "@entryPointOutput.color"
+                              Decorate 19($Global) Block
                               MemberDecorate 19($Global) 0 Offset 0
                               MemberDecorate 19($Global) 1 Offset 4
                               MemberDecorate 19($Global) 2 Offset 8
@@ -962,13 +963,12 @@ gl_FragCoord origin is upper left
                               MemberDecorate 19($Global) 7 Offset 40
                               MemberDecorate 19($Global) 8 Offset 48
                               MemberDecorate 19($Global) 9 Offset 52
-                              Decorate 19($Global) Block
-                              Decorate 21 DescriptorSet 0
                               Decorate 21 Binding 0
-                              Decorate 258(g_tTexbfs) DescriptorSet 0
+                              Decorate 21 DescriptorSet 0
                               Decorate 258(g_tTexbfs) Binding 1
-                              Decorate 277(g_tTex1df4) DescriptorSet 0
+                              Decorate 258(g_tTexbfs) DescriptorSet 0
                               Decorate 277(g_tTex1df4) Binding 2
+                              Decorate 277(g_tTex1df4) DescriptorSet 0
                               Decorate 319(@entryPointOutput.color) Location 0
                2:             TypeVoid
                3:             TypeFunction 2

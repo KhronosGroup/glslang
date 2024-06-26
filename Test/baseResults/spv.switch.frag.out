@@ -37,14 +37,14 @@ WARNING: 0:139: 'switch' : last case/default label not followed by statements
                               Name 246  "param"
                               Name 248  "param"
                               Name 250  "param"
-                              Decorate 15(foo1(vf4;vf4;i1;) RelaxedPrecision
                               Decorate 12(v1) RelaxedPrecision
                               Decorate 13(v2) RelaxedPrecision
                               Decorate 14(i1) RelaxedPrecision
-                              Decorate 20(foo2(vf4;vf4;i1;) RelaxedPrecision
+                              Decorate 15(foo1(vf4;vf4;i1;) RelaxedPrecision
                               Decorate 17(v1) RelaxedPrecision
                               Decorate 18(v2) RelaxedPrecision
                               Decorate 19(i1) RelaxedPrecision
+                              Decorate 20(foo2(vf4;vf4;i1;) RelaxedPrecision
                               Decorate 22 RelaxedPrecision
                               Decorate 27 RelaxedPrecision
                               Decorate 29 RelaxedPrecision

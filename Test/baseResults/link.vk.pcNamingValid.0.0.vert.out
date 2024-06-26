@@ -135,20 +135,20 @@ Shader version: 450
                               Name 31  ""
                               Name 48  "P"
                               Decorate 14(oColor) Location 0
+                              Decorate 16(PCBlock) Block
                               MemberDecorate 16(PCBlock) 0 ColMajor
-                              MemberDecorate 16(PCBlock) 0 Offset 0
                               MemberDecorate 16(PCBlock) 0 MatrixStride 16
+                              MemberDecorate 16(PCBlock) 0 Offset 0
                               MemberDecorate 16(PCBlock) 1 ColMajor
-                              MemberDecorate 16(PCBlock) 1 Offset 64
                               MemberDecorate 16(PCBlock) 1 MatrixStride 16
+                              MemberDecorate 16(PCBlock) 1 Offset 64
                               MemberDecorate 16(PCBlock) 2 Offset 128
                               MemberDecorate 16(PCBlock) 3 Offset 144
-                              Decorate 16(PCBlock) Block
+                              Decorate 29(gl_PerVertex) Block
                               MemberDecorate 29(gl_PerVertex) 0 BuiltIn Position
                               MemberDecorate 29(gl_PerVertex) 1 BuiltIn PointSize
                               MemberDecorate 29(gl_PerVertex) 2 BuiltIn ClipDistance
                               MemberDecorate 29(gl_PerVertex) 3 BuiltIn CullDistance
-                              Decorate 29(gl_PerVertex) Block
                               Decorate 48(P) Location 0
                2:             TypeVoid
                3:             TypeFunction 2

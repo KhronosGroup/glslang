@@ -1967,57 +1967,19 @@ void Builder::addMemberName(Id id, int memberNumber, const char* string)
     names.push_back(std::unique_ptr<Instruction>(name));
 }
 
-bool Builder::decorationAlreadyAdded(Instruction* inst)
-{
-    for (auto& dec : decorations) {
-        if (dec->getOpCode() != inst->getOpCode())
-            continue;
-
-        if (dec->getNumOperands() != inst->getNumOperands())
-            continue;
-
-        bool allOperandsMatch = true;
-        for (int i = 0; i < dec->getNumOperands(); ++i) {
-            if (dec->isIdOperand(i) != inst->isIdOperand(i)) {
-                allOperandsMatch = false;
-                break;
-            }
-
-            if (dec->isIdOperand(i)) {
-                if (dec->getIdOperand(i) != inst->getIdOperand(i)) {
-                    allOperandsMatch = false;
-                    break;
-                }
-            } else {
-                if (dec->getImmediateOperand(i) != inst->getImmediateOperand(i)) {
-                    allOperandsMatch = false;
-                    break;
-                }
-            }
-        }
-        if (allOperandsMatch)
-            return true;
-    }
-
-    return false;
-}
-
 void Builder::addDecoration(Id id, Decoration decoration, int num)
 {
     if (decoration == spv::DecorationMax)
         return;
 
-    std::unique_ptr<Instruction> dec = std::make_unique<Instruction>(OpDecorate);
+    Instruction* dec = new Instruction(OpDecorate);
     dec->reserveOperands(2);
     dec->addIdOperand(id);
     dec->addImmediateOperand(decoration);
     if (num >= 0)
         dec->addImmediateOperand(num);
 
-    if (decorationAlreadyAdded(dec.get()))
-        return;
-
-    decorations.push_back(std::move(dec));
+    decorations.insert(std::unique_ptr<Instruction>(dec));
 }
 
 void Builder::addDecoration(Id id, Decoration decoration, const char* s)
@@ -2031,7 +1993,7 @@ void Builder::addDecoration(Id id, Decoration decoration, const char* s)
     dec->addImmediateOperand(decoration);
     dec->addStringOperand(s);
 
-    decorations.push_back(std::unique_ptr<Instruction>(dec));
+    decorations.insert(std::unique_ptr<Instruction>(dec));
 }
 
 void Builder::addDecoration(Id id, Decoration decoration, const std::vector<unsigned>& literals)
@@ -2046,7 +2008,7 @@ void Builder::addDecoration(Id id, Decoration decoration, const std::vector<unsi
     for (auto literal : literals)
         dec->addImmediateOperand(literal);
 
-    decorations.push_back(std::unique_ptr<Instruction>(dec));
+    decorations.insert(std::unique_ptr<Instruction>(dec));
 }
 
 void Builder::addDecoration(Id id, Decoration decoration, const std::vector<const char*>& strings)
@@ -2061,7 +2023,7 @@ void Builder::addDecoration(Id id, Decoration decoration, const std::vector<cons
     for (auto string : strings)
         dec->addStringOperand(string);
 
-    decorations.push_back(std::unique_ptr<Instruction>(dec));
+    decorations.insert(std::unique_ptr<Instruction>(dec));
 }
 
 void Builder::addLinkageDecoration(Id id, const char* name, spv::LinkageType linkType) {
@@ -2072,7 +2034,7 @@ void Builder::addLinkageDecoration(Id id, const char* name, spv::LinkageType lin
     dec->addStringOperand(name);
     dec->addImmediateOperand(linkType);
 
-    decorations.push_back(std::unique_ptr<Instruction>(dec));
+    decorations.insert(std::unique_ptr<Instruction>(dec));
 }
 
 void Builder::addDecorationId(Id id, Decoration decoration, Id idDecoration)
@@ -2086,7 +2048,7 @@ void Builder::addDecorationId(Id id, Decoration decoration, Id idDecoration)
     dec->addImmediateOperand(decoration);
     dec->addIdOperand(idDecoration);
 
-    decorations.push_back(std::unique_ptr<Instruction>(dec));
+    decorations.insert(std::unique_ptr<Instruction>(dec));
 }
 
 void Builder::addDecorationId(Id id, Decoration decoration, const std::vector<Id>& operandIds)
@@ -2102,7 +2064,7 @@ void Builder::addDecorationId(Id id, Decoration decoration, const std::vector<Id
     for (auto operandId : operandIds)
         dec->addIdOperand(operandId);
 
-    decorations.push_back(std::unique_ptr<Instruction>(dec));
+    decorations.insert(std::unique_ptr<Instruction>(dec));
 }
 
 void Builder::addMemberDecoration(Id id, unsigned int member, Decoration decoration, int num)
@@ -2118,7 +2080,7 @@ void Builder::addMemberDecoration(Id id, unsigned int member, Decoration decorat
     if (num >= 0)
         dec->addImmediateOperand(num);
 
-    decorations.push_back(std::unique_ptr<Instruction>(dec));
+    decorations.insert(std::unique_ptr<Instruction>(dec));
 }
 
 void Builder::addMemberDecoration(Id id, unsigned int member, Decoration decoration, const char *s)
@@ -2133,7 +2095,7 @@ void Builder::addMemberDecoration(Id id, unsigned int member, Decoration decorat
     dec->addImmediateOperand(decoration);
     dec->addStringOperand(s);
 
-    decorations.push_back(std::unique_ptr<Instruction>(dec));
+    decorations.insert(std::unique_ptr<Instruction>(dec));
 }
 
 void Builder::addMemberDecoration(Id id, unsigned int member, Decoration decoration, const std::vector<unsigned>& literals)
@@ -2149,7 +2111,7 @@ void Builder::addMemberDecoration(Id id, unsigned int member, Decoration decorat
     for (auto literal : literals)
         dec->addImmediateOperand(literal);
 
-    decorations.push_back(std::unique_ptr<Instruction>(dec));
+    decorations.insert(std::unique_ptr<Instruction>(dec));
 }
 
 void Builder::addMemberDecoration(Id id, unsigned int member, Decoration decoration, const std::vector<const char*>& strings)
@@ -2165,7 +2127,7 @@ void Builder::addMemberDecoration(Id id, unsigned int member, Decoration decorat
     for (auto string : strings)
         dec->addStringOperand(string);
 
-    decorations.push_back(std::unique_ptr<Instruction>(dec));
+    decorations.insert(std::unique_ptr<Instruction>(dec));
 }
 
 void Builder::addInstruction(std::unique_ptr<Instruction> inst) {
@@ -4368,11 +4330,11 @@ void Builder::dumpSourceInstructions(std::vector<unsigned int>& out) const
         dumpSourceInstructions(iItr->first, *iItr->second, out);
 }
 
-void Builder::dumpInstructions(std::vector<unsigned int>& out,
-    const std::vector<std::unique_ptr<Instruction> >& instructions) const
+template<class Range>
+void Builder::dumpInstructions(std::vector<unsigned int>& out, const Range& instructions) const
 {
-    for (int i = 0; i < (int)instructions.size(); ++i) {
-        instructions[i]->dump(out);
+    for( const auto& inst : instructions) {
+        inst->dump(out);
     }
 }
 
@@ -4385,4 +4347,40 @@ void Builder::dumpModuleProcesses(std::vector<unsigned int>& out) const
     }
 }
 
+bool Builder::DecorationInstructionLessThan::operator()(const std::unique_ptr<Instruction>& lhs,
+                                             const std::unique_ptr<Instruction>& rhs) const
+{
+    // Order by the id to which the decoration applies first. This is more intuitive.
+    assert (lhs->isIdOperand(0) && rhs->isIdOperand(0));
+    if (lhs->getIdOperand(0) != rhs->getIdOperand(0)) {
+        return lhs->getIdOperand(0) < rhs->getIdOperand(0);
+    }
+
+    if (lhs->getOpCode() != rhs->getOpCode())
+        return lhs->getOpCode() < rhs->getOpCode();
+
+    // Now compare the operands.
+    int minSize = std::min(lhs->getNumOperands(), rhs->getNumOperands());
+    for (int i = 1; i < minSize; ++i) {
+        if (lhs->isIdOperand(i) != rhs->isIdOperand(i)) {
+            return lhs->isIdOperand(i) < rhs->isIdOperand(i);
+        }
+
+        if (lhs->isIdOperand(i)) {
+            if (lhs->getIdOperand(i) != rhs->getIdOperand(i)) {
+                return lhs->getIdOperand(i) < rhs->getIdOperand(i);
+            }
+        } else {
+            if (lhs->getImmediateOperand(i) != rhs->getImmediateOperand(i)) {
+                return lhs->getImmediateOperand(i) < rhs->getImmediateOperand(i);
+            }
+        }
+    }
+
+    if (lhs->getNumOperands() != rhs->getNumOperands())
+        return lhs->getNumOperands() < rhs->getNumOperands();
+
+    // In this case they are equal.
+    return false;
+}
 } // end spv namespace

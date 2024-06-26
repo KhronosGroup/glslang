@@ -21,10 +21,10 @@ spv.subgroup.tese
                               Name 18  "gl_SubgroupSize"
                               Name 20  "gl_SubgroupInvocationID"
                               Decorate 8 ArrayStride 16
-                              MemberDecorate 9(Output) 0 Offset 0
                               Decorate 9(Output) Block
-                              Decorate 11 DescriptorSet 0
+                              MemberDecorate 9(Output) 0 Offset 0
                               Decorate 11 Binding 0
+                              Decorate 11 DescriptorSet 0
                               Decorate 15(gl_PrimitiveID) BuiltIn PrimitiveId
                               Decorate 18(gl_SubgroupSize) RelaxedPrecision
                               Decorate 18(gl_SubgroupSize) BuiltIn SubgroupSize

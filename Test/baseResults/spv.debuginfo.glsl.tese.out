@@ -183,34 +183,34 @@ void main()
                               Decorate 93(outUV) Location 1
                               Decorate 116(inNormal) Location 0
                               Decorate 143(outNormal) Location 0
+                              Decorate 166(gl_PerVertex) Block
                               MemberDecorate 166(gl_PerVertex) 0 BuiltIn Position
                               MemberDecorate 166(gl_PerVertex) 1 BuiltIn PointSize
                               MemberDecorate 166(gl_PerVertex) 2 BuiltIn ClipDistance
                               MemberDecorate 166(gl_PerVertex) 3 BuiltIn CullDistance
-                              Decorate 166(gl_PerVertex) Block
-                              Decorate 234(displacementMap) DescriptorSet 0
                               Decorate 234(displacementMap) Binding 1
+                              Decorate 234(displacementMap) DescriptorSet 0
                               Decorate 249 ArrayStride 16
+                              Decorate 251(UBO) Block
                               MemberDecorate 251(UBO) 0 ColMajor
-                              MemberDecorate 251(UBO) 0 Offset 0
                               MemberDecorate 251(UBO) 0 MatrixStride 16
+                              MemberDecorate 251(UBO) 0 Offset 0
                               MemberDecorate 251(UBO) 1 ColMajor
-                              MemberDecorate 251(UBO) 1 Offset 64
                               MemberDecorate 251(UBO) 1 MatrixStride 16
+                              MemberDecorate 251(UBO) 1 Offset 64
                               MemberDecorate 251(UBO) 2 Offset 128
                               MemberDecorate 251(UBO) 3 Offset 144
                               MemberDecorate 251(UBO) 4 Offset 240
                               MemberDecorate 251(UBO) 5 Offset 244
                               MemberDecorate 251(UBO) 6 Offset 248
                               MemberDecorate 251(UBO) 7 Offset 256
-                              Decorate 251(UBO) Block
-                              Decorate 273(ubo) DescriptorSet 0
                               Decorate 273(ubo) Binding 0
+                              Decorate 273(ubo) DescriptorSet 0
+                              Decorate 288(gl_PerVertex) Block
                               MemberDecorate 288(gl_PerVertex) 0 BuiltIn Position
                               MemberDecorate 288(gl_PerVertex) 1 BuiltIn PointSize
                               MemberDecorate 288(gl_PerVertex) 2 BuiltIn ClipDistance
                               MemberDecorate 288(gl_PerVertex) 3 BuiltIn CullDistance
-                              Decorate 288(gl_PerVertex) Block
                               Decorate 316(outViewVec) Location 2
                               Decorate 324(outLightVec) Location 3
                               Decorate 337(outWorldPos) Location 5

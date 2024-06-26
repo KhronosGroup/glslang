@@ -122,23 +122,23 @@ Validation failed
                               Name 48  "pcBuf"
                               MemberName 48(pcBuf) 0  "a"
                               Name 50  ""
-                              Decorate 16(attach) DescriptorSet 0
                               Decorate 16(attach) Binding 0
+                              Decorate 16(attach) DescriptorSet 0
                               Decorate 16(attach) InputAttachmentIndex 4
                               Decorate 33(input) Location 8
                               Decorate 36(@entryPointOutput) Location 7
                               MemberDecorate 41(S) 0 Offset 0
                               Decorate 42 ArrayStride 8
+                              Decorate 43(buffer1) BufferBlock
                               MemberDecorate 43(buffer1) 0 NonWritable
                               MemberDecorate 43(buffer1) 0 Offset 0
-                              Decorate 43(buffer1) BufferBlock
-                              Decorate 45(buffer1) DescriptorSet 0
                               Decorate 45(buffer1) Binding 1
-                              Decorate 46(buffer3) DescriptorSet 2
+                              Decorate 45(buffer1) DescriptorSet 0
                               Decorate 46(buffer3) Binding 3
+                              Decorate 46(buffer3) DescriptorSet 2
                               Decorate 47(ci) SpecId 13
-                              MemberDecorate 48(pcBuf) 0 Offset 0
                               Decorate 48(pcBuf) Block
+                              MemberDecorate 48(pcBuf) 0 Offset 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

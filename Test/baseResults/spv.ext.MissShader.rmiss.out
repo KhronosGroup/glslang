@@ -57,8 +57,8 @@ spv.ext.MissShader.rmiss
                               Decorate 29(gl_RayTminEXT) BuiltIn RayTminKHR
                               Decorate 32(gl_RayTmaxEXT) BuiltIn RayTmaxKHR
                               Decorate 37(gl_CullMaskEXT) BuiltIn CullMaskKHR
-                              Decorate 41(accEXT) DescriptorSet 0
                               Decorate 41(accEXT) Binding 0
+                              Decorate 41(accEXT) DescriptorSet 0
                               Decorate 57(gl_SubGroupSizeARB) BuiltIn SubgroupSize
                               Decorate 57(gl_SubGroupSizeARB) Volatile
                               Decorate 57(gl_SubGroupSizeARB) Coherent
@@ -68,8 +68,8 @@ spv.ext.MissShader.rmiss
                               Decorate 67(gl_WarpIDNV) BuiltIn WarpIDNV
                               Decorate 67(gl_WarpIDNV) Volatile
                               Decorate 67(gl_WarpIDNV) Coherent
-                              Decorate 78(s2D) DescriptorSet 0
                               Decorate 78(s2D) Binding 1
+                              Decorate 78(s2D) DescriptorSet 0
                               Decorate 82(c2) Location 2
                               Decorate 87(lodClamp) Location 3
                2:             TypeVoid

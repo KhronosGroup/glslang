@@ -49,22 +49,22 @@ rayQuery-allOps.comp
                               Name 272  "Rays"
                               MemberName 272(Rays) 0  "rays"
                               Name 274  ""
+                              Decorate 15(Log) BufferBlock
                               MemberDecorate 15(Log) 0 Offset 0
                               MemberDecorate 15(Log) 1 Offset 4
-                              Decorate 15(Log) BufferBlock
-                              Decorate 17 DescriptorSet 0
                               Decorate 17 Binding 0
-                              Decorate 50(rtas) DescriptorSet 0
+                              Decorate 17 DescriptorSet 0
                               Decorate 50(rtas) Binding 1
+                              Decorate 50(rtas) DescriptorSet 0
                               MemberDecorate 270(Ray) 0 Offset 0
                               MemberDecorate 270(Ray) 1 Offset 12
                               MemberDecorate 270(Ray) 2 Offset 16
                               MemberDecorate 270(Ray) 3 Offset 28
                               Decorate 271 ArrayStride 32
-                              MemberDecorate 272(Rays) 0 Offset 0
                               Decorate 272(Rays) BufferBlock
-                              Decorate 274 DescriptorSet 0
+                              MemberDecorate 272(Rays) 0 Offset 0
                               Decorate 274 Binding 2
+                              Decorate 274 DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                8:             TypeFloat 32

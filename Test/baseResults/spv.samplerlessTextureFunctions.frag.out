@@ -25,12 +25,12 @@ spv.samplerlessTextureFunctions.frag
                               Name 42  "bufSize"
                               Name 45  "tex2DLevels"
                               Name 48  "texMSSamples"
-                              Decorate 12(tex2D) DescriptorSet 0
                               Decorate 12(tex2D) Binding 1
-                              Decorate 22(texMS) DescriptorSet 0
+                              Decorate 12(tex2D) DescriptorSet 0
                               Decorate 22(texMS) Binding 1
-                              Decorate 28(buf) DescriptorSet 0
+                              Decorate 22(texMS) DescriptorSet 0
                               Decorate 28(buf) Binding 0
+                              Decorate 28(buf) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

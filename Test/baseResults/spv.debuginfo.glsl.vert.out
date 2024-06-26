@@ -204,26 +204,26 @@ void main()
                               Decorate 55(inUV) Location 2
                               Decorate 65(instanceTexIndex) Location 7
                               Decorate 83(instanceRot) Location 5
+                              Decorate 98(UBO) Block
                               MemberDecorate 98(UBO) 0 ColMajor
-                              MemberDecorate 98(UBO) 0 Offset 0
                               MemberDecorate 98(UBO) 0 MatrixStride 16
+                              MemberDecorate 98(UBO) 0 Offset 0
                               MemberDecorate 98(UBO) 1 ColMajor
-                              MemberDecorate 98(UBO) 1 Offset 64
                               MemberDecorate 98(UBO) 1 MatrixStride 16
+                              MemberDecorate 98(UBO) 1 Offset 64
                               MemberDecorate 98(UBO) 2 Offset 128
                               MemberDecorate 98(UBO) 3 Offset 144
                               MemberDecorate 98(UBO) 4 Offset 148
-                              Decorate 98(UBO) Block
-                              Decorate 114(ubo) DescriptorSet 0
                               Decorate 114(ubo) Binding 0
+                              Decorate 114(ubo) DescriptorSet 0
                               Decorate 305(inPos) Location 0
                               Decorate 323(instanceScale) Location 6
                               Decorate 328(instancePos) Location 4
+                              Decorate 339(gl_PerVertex) Block
                               MemberDecorate 339(gl_PerVertex) 0 BuiltIn Position
                               MemberDecorate 339(gl_PerVertex) 1 BuiltIn PointSize
                               MemberDecorate 339(gl_PerVertex) 2 BuiltIn ClipDistance
                               MemberDecorate 339(gl_PerVertex) 3 BuiltIn CullDistance
-                              Decorate 339(gl_PerVertex) Block
                               Decorate 371(outNormal) Location 0
                               Decorate 390(inNormal) Location 1
                               Decorate 428(outLightVec) Location 4

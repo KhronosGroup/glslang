@@ -25,13 +25,13 @@ spv.bufferhandle10.frag
                               Name 19  "i"
                               Name 28  "b"
                               Name 34  "b2"
-                              MemberDecorate 7(t2) 0 Offset 0
                               Decorate 7(t2) Block
+                              MemberDecorate 7(t2) 0 Offset 0
                               Decorate 9 ArrayStride 4
-                              MemberDecorate 10(blockType) 0 Offset 0
                               Decorate 10(blockType) Block
-                              Decorate 12(t) DescriptorSet 0
+                              MemberDecorate 10(blockType) 0 Offset 0
                               Decorate 12(t) Binding 0
+                              Decorate 12(t) DescriptorSet 0
                               Decorate 19(i) Flat
                               Decorate 19(i) Location 0
                               Decorate 28(b) DecorationAliasedPointerEXT

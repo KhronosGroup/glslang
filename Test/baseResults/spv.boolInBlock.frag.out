@@ -23,14 +23,14 @@ spv.boolInBlock.frag
                               Name 60  "param"
                               Name 66  "param"
                               Name 74  "fragColor"
-                              MemberDecorate 25(Buffer) 0 Offset 0
                               Decorate 25(Buffer) BufferBlock
-                              Decorate 27 DescriptorSet 0
+                              MemberDecorate 25(Buffer) 0 Offset 0
                               Decorate 27 Binding 1
-                              MemberDecorate 40(Uniform) 0 Offset 0
+                              Decorate 27 DescriptorSet 0
                               Decorate 40(Uniform) Block
-                              Decorate 42 DescriptorSet 0
+                              MemberDecorate 40(Uniform) 0 Offset 0
                               Decorate 42 Binding 0
+                              Decorate 42 DescriptorSet 0
                               Decorate 74(fragColor) Location 0
                2:             TypeVoid
                3:             TypeFunction 2

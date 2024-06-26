@@ -22,19 +22,19 @@ spv.storageBuffer.vert
                               Name 22  "bb"
                               MemberName 22(bb) 0  "b"
                               Name 24  "bbi"
+                              Decorate 11(gl_PerVertex) Block
                               MemberDecorate 11(gl_PerVertex) 0 BuiltIn Position
                               MemberDecorate 11(gl_PerVertex) 1 BuiltIn PointSize
                               MemberDecorate 11(gl_PerVertex) 2 BuiltIn ClipDistance
                               MemberDecorate 11(gl_PerVertex) 3 BuiltIn CullDistance
-                              Decorate 11(gl_PerVertex) Block
-                              MemberDecorate 16(ub) 0 Offset 0
                               Decorate 16(ub) Block
-                              Decorate 18(ubi) DescriptorSet 0
+                              MemberDecorate 16(ub) 0 Offset 0
                               Decorate 18(ubi) Binding 0
-                              MemberDecorate 22(bb) 0 Offset 0
+                              Decorate 18(ubi) DescriptorSet 0
                               Decorate 22(bb) Block
-                              Decorate 24(bbi) DescriptorSet 0
+                              MemberDecorate 22(bb) 0 Offset 0
                               Decorate 24(bbi) Binding 1
+                              Decorate 24(bbi) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

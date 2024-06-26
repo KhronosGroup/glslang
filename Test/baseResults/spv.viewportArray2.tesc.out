@@ -20,8 +20,8 @@ spv.viewportArray2.tesc
                               Name 14  "gl_out"
                               Name 16  "gl_InvocationID"
                               Name 22  "gl_Layer"
-                              MemberDecorate 10(gl_PerVertex) 0 BuiltIn ViewportMaskNV
                               Decorate 10(gl_PerVertex) Block
+                              MemberDecorate 10(gl_PerVertex) 0 BuiltIn ViewportMaskNV
                               Decorate 16(gl_InvocationID) BuiltIn InvocationId
                               Decorate 22(gl_Layer) BuiltIn Layer
                               Decorate 22(gl_Layer) ViewportRelativeNV

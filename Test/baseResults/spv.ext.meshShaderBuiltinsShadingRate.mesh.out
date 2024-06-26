@@ -54,22 +54,22 @@ spv.ext.meshShaderBuiltinsShadingRate.mesh
                               Decorate 13(gl_LocalInvocationID) BuiltIn LocalInvocationId
                               Decorate 19(gl_WorkGroupID) BuiltIn WorkgroupId
                               Decorate 24(gl_NumWorkGroups) BuiltIn NumWorkgroups
+                              Decorate 38(gl_MeshPerVertexEXT) Block
                               MemberDecorate 38(gl_MeshPerVertexEXT) 0 BuiltIn Position
                               MemberDecorate 38(gl_MeshPerVertexEXT) 1 BuiltIn PointSize
                               MemberDecorate 38(gl_MeshPerVertexEXT) 2 BuiltIn ClipDistance
                               MemberDecorate 38(gl_MeshPerVertexEXT) 3 BuiltIn CullDistance
-                              Decorate 38(gl_MeshPerVertexEXT) Block
-                              MemberDecorate 90(gl_MeshPerPrimitiveEXT) 0 PerPrimitiveNV
-                              MemberDecorate 90(gl_MeshPerPrimitiveEXT) 0 BuiltIn PrimitiveId
-                              MemberDecorate 90(gl_MeshPerPrimitiveEXT) 1 PerPrimitiveNV
-                              MemberDecorate 90(gl_MeshPerPrimitiveEXT) 1 BuiltIn Layer
-                              MemberDecorate 90(gl_MeshPerPrimitiveEXT) 2 PerPrimitiveNV
-                              MemberDecorate 90(gl_MeshPerPrimitiveEXT) 2 BuiltIn ViewportIndex
-                              MemberDecorate 90(gl_MeshPerPrimitiveEXT) 3 PerPrimitiveNV
-                              MemberDecorate 90(gl_MeshPerPrimitiveEXT) 3 BuiltIn CullPrimitiveEXT
-                              MemberDecorate 90(gl_MeshPerPrimitiveEXT) 4 PerPrimitiveNV
-                              MemberDecorate 90(gl_MeshPerPrimitiveEXT) 4 BuiltIn PrimitiveShadingRateKHR
                               Decorate 90(gl_MeshPerPrimitiveEXT) Block
+                              MemberDecorate 90(gl_MeshPerPrimitiveEXT) 0 BuiltIn PrimitiveId
+                              MemberDecorate 90(gl_MeshPerPrimitiveEXT) 0 PerPrimitiveNV
+                              MemberDecorate 90(gl_MeshPerPrimitiveEXT) 1 BuiltIn Layer
+                              MemberDecorate 90(gl_MeshPerPrimitiveEXT) 1 PerPrimitiveNV
+                              MemberDecorate 90(gl_MeshPerPrimitiveEXT) 2 BuiltIn ViewportIndex
+                              MemberDecorate 90(gl_MeshPerPrimitiveEXT) 2 PerPrimitiveNV
+                              MemberDecorate 90(gl_MeshPerPrimitiveEXT) 3 BuiltIn CullPrimitiveEXT
+                              MemberDecorate 90(gl_MeshPerPrimitiveEXT) 3 PerPrimitiveNV
+                              MemberDecorate 90(gl_MeshPerPrimitiveEXT) 4 BuiltIn PrimitiveShadingRateKHR
+                              MemberDecorate 90(gl_MeshPerPrimitiveEXT) 4 PerPrimitiveNV
                               Decorate 140(gl_PrimitiveTriangleIndicesEXT) BuiltIn PrimitiveTriangleIndicesEXT
                               Decorate 158(gl_DrawIDARB) BuiltIn DrawIndex
                               Decorate 161(gl_ViewIndex) BuiltIn ViewIndex

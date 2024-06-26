@@ -61,6 +61,7 @@ spv.computeShaderDerivatives.comp
                               MemberName 10(block) 42  "v4X"
                               MemberName 10(block) 43  "v4Y"
                               Name 12  ""
+                              Decorate 10(block) BufferBlock
                               MemberDecorate 10(block) 0 Offset 0
                               MemberDecorate 10(block) 1 Offset 4
                               MemberDecorate 10(block) 2 Offset 8
@@ -105,9 +106,8 @@ spv.computeShaderDerivatives.comp
                               MemberDecorate 10(block) 41 Offset 448
                               MemberDecorate 10(block) 42 Offset 464
                               MemberDecorate 10(block) 43 Offset 480
-                              Decorate 10(block) BufferBlock
-                              Decorate 12 DescriptorSet 0
                               Decorate 12 Binding 0
+                              Decorate 12 DescriptorSet 0
                               Decorate 211 BuiltIn WorkgroupSize
                2:             TypeVoid
                3:             TypeFunction 2

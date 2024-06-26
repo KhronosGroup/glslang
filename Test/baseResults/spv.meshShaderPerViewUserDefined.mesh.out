@@ -43,41 +43,41 @@ spv.meshShaderPerViewUserDefined.mesh
                               Decorate 11(gl_LocalInvocationID) BuiltIn LocalInvocationId
                               Decorate 20(gl_MeshViewIndicesNV) BuiltIn MeshViewIndicesNV
                               Decorate 21(gl_MeshViewCountNV) BuiltIn MeshViewCountNV
+                              Decorate 31(block) Block
                               MemberDecorate 31(block) 0 PerPrimitiveNV
                               MemberDecorate 31(block) 0 PerViewNV
                               MemberDecorate 31(block) 1 PerPrimitiveNV
                               MemberDecorate 31(block) 2 PerViewNV
-                              Decorate 31(block) Block
                               Decorate 35(b) Location 0
+                              Decorate 64(perviewBlock) Block
                               MemberDecorate 64(perviewBlock) 0 PerPrimitiveNV
                               MemberDecorate 64(perviewBlock) 0 PerViewNV
                               MemberDecorate 64(perviewBlock) 1 PerPrimitiveNV
                               MemberDecorate 64(perviewBlock) 1 PerViewNV
                               MemberDecorate 64(perviewBlock) 2 PerViewNV
                               MemberDecorate 64(perviewBlock) 3 PerViewNV
-                              Decorate 64(perviewBlock) Block
                               Decorate 67(b2) Location 10
                               Decorate 89 BuiltIn WorkgroupSize
-                              Decorate 92(nonBlk1) PerViewNV
                               Decorate 92(nonBlk1) Location 18
+                              Decorate 92(nonBlk1) PerViewNV
+                              Decorate 95(nonBlk2) Location 19
                               Decorate 95(nonBlk2) PerPrimitiveNV
                               Decorate 95(nonBlk2) PerViewNV
-                              Decorate 95(nonBlk2) Location 19
-                              Decorate 96(nonBlk3) PerViewNV
                               Decorate 96(nonBlk3) Location 20
+                              Decorate 96(nonBlk3) PerViewNV
+                              Decorate 97(nonBlk4) Location 21
                               Decorate 97(nonBlk4) PerPrimitiveNV
                               Decorate 97(nonBlk4) PerViewNV
-                              Decorate 97(nonBlk4) Location 21
-                              Decorate 102(nonBlkArr1) PerViewNV
                               Decorate 102(nonBlkArr1) Location 22
+                              Decorate 102(nonBlkArr1) PerViewNV
+                              Decorate 105(nonBlkArr2) Location 24
                               Decorate 105(nonBlkArr2) PerPrimitiveNV
                               Decorate 105(nonBlkArr2) PerViewNV
-                              Decorate 105(nonBlkArr2) Location 24
-                              Decorate 106(nonBlkArr3) PerViewNV
                               Decorate 106(nonBlkArr3) Location 26
+                              Decorate 106(nonBlkArr3) PerViewNV
+                              Decorate 107(nonBlkArr4) Location 28
                               Decorate 107(nonBlkArr4) PerPrimitiveNV
                               Decorate 107(nonBlkArr4) PerViewNV
-                              Decorate 107(nonBlkArr4) Location 28
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 0

@@ -36,12 +36,12 @@ spv.shaderBallot.comp
                               Decorate 36(gl_SubGroupGtMaskARB) BuiltIn SubgroupGtMaskKHR
                               Decorate 43(gl_SubGroupLeMaskARB) BuiltIn SubgroupLeMaskKHR
                               Decorate 50(gl_SubGroupLtMaskARB) BuiltIn SubgroupLtMaskKHR
+                              Decorate 72(Buffers) BufferBlock
                               MemberDecorate 72(Buffers) 0 Offset 0
                               MemberDecorate 72(Buffers) 1 Offset 16
                               MemberDecorate 72(Buffers) 2 Offset 32
-                              Decorate 72(Buffers) BufferBlock
-                              Decorate 75(data) DescriptorSet 0
                               Decorate 75(data) Binding 0
+                              Decorate 75(data) DescriptorSet 0
                               Decorate 396 BuiltIn WorkgroupSize
                2:             TypeVoid
                3:             TypeFunction 2

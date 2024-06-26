@@ -126,25 +126,25 @@ gl_FragCoord origin is upper left
                               Name 16  ""
                               Name 37  "@entryPointOutput"
                               MemberDecorate 12(MyBuffer1) 0 RowMajor
-                              MemberDecorate 12(MyBuffer1) 0 Offset 0
                               MemberDecorate 12(MyBuffer1) 0 MatrixStride 16
+                              MemberDecorate 12(MyBuffer1) 0 Offset 0
                               MemberDecorate 12(MyBuffer1) 1 ColMajor
-                              MemberDecorate 12(MyBuffer1) 1 Offset 64
                               MemberDecorate 12(MyBuffer1) 1 MatrixStride 16
+                              MemberDecorate 12(MyBuffer1) 1 Offset 64
                               MemberDecorate 12(MyBuffer1) 2 Offset 128
                               MemberDecorate 12(MyBuffer1) 3 Offset 144
                               MemberDecorate 13(MyBuffer2) 0 ColMajor
-                              MemberDecorate 13(MyBuffer2) 0 Offset 0
                               MemberDecorate 13(MyBuffer2) 0 MatrixStride 16
+                              MemberDecorate 13(MyBuffer2) 0 Offset 0
                               MemberDecorate 13(MyBuffer2) 1 Offset 64
+                              Decorate 14(Example) Block
                               MemberDecorate 14(Example) 0 Offset 0
                               MemberDecorate 14(Example) 1 Offset 160
                               MemberDecorate 14(Example) 2 RowMajor
-                              MemberDecorate 14(Example) 2 Offset 240
                               MemberDecorate 14(Example) 2 MatrixStride 16
-                              Decorate 14(Example) Block
-                              Decorate 16 DescriptorSet 0
+                              MemberDecorate 14(Example) 2 Offset 240
                               Decorate 16 Binding 0
+                              Decorate 16 DescriptorSet 0
                               Decorate 37(@entryPointOutput) Location 0
                2:             TypeVoid
                3:             TypeFunction 2

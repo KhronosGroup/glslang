@@ -309,22 +309,22 @@ Shader version: 460
                               Decorate 36(um2) Location 4
                               Decorate 36(um2) DescriptorSet 0
                               Decorate 40(glass) Location 0
-                              Decorate 40(glass) DescriptorSet 0
                               Decorate 40(glass) Binding 0
+                              Decorate 40(glass) DescriptorSet 0
+                              Decorate 41(crossStageBlock1) Block
                               MemberDecorate 41(crossStageBlock1) 0 Offset 0
                               MemberDecorate 41(crossStageBlock1) 1 Offset 16
-                              Decorate 41(crossStageBlock1) Block
-                              Decorate 43 DescriptorSet 0
                               Decorate 43 Binding 0
-                              MemberDecorate 44(vertOnlyBlock) 0 Offset 0
+                              Decorate 43 DescriptorSet 0
                               Decorate 44(vertOnlyBlock) BufferBlock
-                              Decorate 46 DescriptorSet 0
+                              MemberDecorate 44(vertOnlyBlock) 0 Offset 0
                               Decorate 46 Binding 0
+                              Decorate 46 DescriptorSet 0
+                              Decorate 47(crossStageBlock2) Block
                               MemberDecorate 47(crossStageBlock2) 0 Offset 0
                               MemberDecorate 47(crossStageBlock2) 1 Offset 16
-                              Decorate 47(crossStageBlock2) Block
-                              Decorate 52(blockName1) DescriptorSet 0
                               Decorate 52(blockName1) Binding 0
+                              Decorate 52(blockName1) DescriptorSet 0
                               Decorate 54(gl_VertexID) BuiltIn VertexId
                               Decorate 55(gl_InstanceID) BuiltIn InstanceId
                2:             TypeVoid
@@ -434,22 +434,22 @@ Shader version: 460
                               Decorate 45(um2) Location 4
                               Decorate 45(um2) DescriptorSet 0
                               Decorate 49(glass) Location 0
-                              Decorate 49(glass) DescriptorSet 0
                               Decorate 49(glass) Binding 0
+                              Decorate 49(glass) DescriptorSet 0
+                              Decorate 50(crossStageBlock1) Block
                               MemberDecorate 50(crossStageBlock1) 0 Offset 0
                               MemberDecorate 50(crossStageBlock1) 1 Offset 16
-                              Decorate 50(crossStageBlock1) Block
-                              Decorate 52 DescriptorSet 0
                               Decorate 52 Binding 0
-                              MemberDecorate 53(fragOnlyBlock) 0 Offset 0
+                              Decorate 52 DescriptorSet 0
                               Decorate 53(fragOnlyBlock) BufferBlock
-                              Decorate 55 DescriptorSet 0
+                              MemberDecorate 53(fragOnlyBlock) 0 Offset 0
                               Decorate 55 Binding 0
+                              Decorate 55 DescriptorSet 0
+                              Decorate 56(crossStageBlock2) Block
                               MemberDecorate 56(crossStageBlock2) 0 Offset 0
                               MemberDecorate 56(crossStageBlock2) 1 Offset 16
-                              Decorate 56(crossStageBlock2) Block
-                              Decorate 61(blockName2) DescriptorSet 0
                               Decorate 61(blockName2) Binding 0
+                              Decorate 61(blockName2) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

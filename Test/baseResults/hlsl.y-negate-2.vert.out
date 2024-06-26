@@ -98,10 +98,10 @@ Shader version: 500
                               Name 22  "param"
                               Name 25  "@position"
                               Name 35  "position"
-                              MemberDecorate 13($Global) 0 Offset 0
                               Decorate 13($Global) Block
-                              Decorate 15 DescriptorSet 0
+                              MemberDecorate 13($Global) 0 Offset 0
                               Decorate 15 Binding 0
+                              Decorate 15 DescriptorSet 0
                               Decorate 35(position) BuiltIn Position
                2:             TypeVoid
                3:             TypeFunction 2

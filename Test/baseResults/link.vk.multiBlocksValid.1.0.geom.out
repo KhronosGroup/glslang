@@ -310,36 +310,36 @@ output primitive = triangle_strip
                               Name 97  "uBuf"
                               Name 100  "P"
                               Decorate 18(oColor) Location 1
+                              Decorate 20(ColorBlock) Block
                               MemberDecorate 20(ColorBlock) 0 Offset 0
                               MemberDecorate 20(ColorBlock) 1 Offset 16
                               MemberDecorate 20(ColorBlock) 2 Offset 32
                               MemberDecorate 20(ColorBlock) 3 Offset 48
-                              Decorate 20(ColorBlock) Block
-                              Decorate 22(uC) DescriptorSet 0
                               Decorate 22(uC) Binding 1
+                              Decorate 22(uC) DescriptorSet 0
+                              Decorate 44(gl_PerVertex) Block
                               MemberDecorate 44(gl_PerVertex) 0 BuiltIn Position
                               MemberDecorate 44(gl_PerVertex) 1 BuiltIn PointSize
                               MemberDecorate 44(gl_PerVertex) 2 BuiltIn ClipDistance
-                              Decorate 44(gl_PerVertex) Block
-                              MemberDecorate 48(MatrixBlock) 0 ColMajor
-                              MemberDecorate 48(MatrixBlock) 0 Offset 0
-                              MemberDecorate 48(MatrixBlock) 0 MatrixStride 16
-                              MemberDecorate 48(MatrixBlock) 1 ColMajor
-                              MemberDecorate 48(MatrixBlock) 1 Offset 64
-                              MemberDecorate 48(MatrixBlock) 1 MatrixStride 16
                               Decorate 48(MatrixBlock) Block
-                              Decorate 50(uM) DescriptorSet 0
+                              MemberDecorate 48(MatrixBlock) 0 ColMajor
+                              MemberDecorate 48(MatrixBlock) 0 MatrixStride 16
+                              MemberDecorate 48(MatrixBlock) 0 Offset 0
+                              MemberDecorate 48(MatrixBlock) 1 ColMajor
+                              MemberDecorate 48(MatrixBlock) 1 MatrixStride 16
+                              MemberDecorate 48(MatrixBlock) 1 Offset 64
                               Decorate 50(uM) Binding 0
+                              Decorate 50(uM) DescriptorSet 0
                               Decorate 59(Vertex) Block
                               Decorate 61(oV) Location 0
                               Decorate 64(Vertex) Block
                               Decorate 68(iV) Location 0
-                              MemberDecorate 95(BufferBlock) 0 ColMajor
-                              MemberDecorate 95(BufferBlock) 0 Offset 0
-                              MemberDecorate 95(BufferBlock) 0 MatrixStride 16
                               Decorate 95(BufferBlock) BufferBlock
-                              Decorate 97(uBuf) DescriptorSet 0
+                              MemberDecorate 95(BufferBlock) 0 ColMajor
+                              MemberDecorate 95(BufferBlock) 0 MatrixStride 16
+                              MemberDecorate 95(BufferBlock) 0 Offset 0
                               Decorate 97(uBuf) Binding 1
+                              Decorate 97(uBuf) DescriptorSet 0
                               Decorate 100(P) Location 2
                2:             TypeVoid
                3:             TypeFunction 2

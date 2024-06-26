@@ -30,25 +30,25 @@ spv.bufferhandle3.frag
                               MemberName 38(t4) 1  "k"
                               Name 40  "x"
                               Name 42  "k"
+                              Decorate 9(t4) Block
                               MemberDecorate 9(t4) 0 Offset 0
                               MemberDecorate 9(t4) 1 Offset 8
-                              Decorate 9(t4) Block
-                              MemberDecorate 10(t3) 0 Offset 0
                               Decorate 10(t3) Block
+                              MemberDecorate 10(t3) 0 Offset 0
                               Decorate 13(y) DecorationAliasedPointerEXT
-                              MemberDecorate 19(t5) 0 Offset 0
                               Decorate 19(t5) Block
-                              Decorate 21(s5) DescriptorSet 0
+                              MemberDecorate 19(t5) 0 Offset 0
                               Decorate 21(s5) Binding 0
+                              Decorate 21(s5) DescriptorSet 0
+                              Decorate 23(param) DecorationAliasedPointerEXT
+                              Decorate 38(t4) Block
                               MemberDecorate 38(t4) 0 Offset 0
                               MemberDecorate 38(t4) 1 Offset 8
-                              Decorate 38(t4) Block
-                              Decorate 40(x) DescriptorSet 1
                               Decorate 40(x) Binding 2
+                              Decorate 40(x) DescriptorSet 1
                               Decorate 42(k) Flat
                               Decorate 42(k) Location 0
                               Decorate 42(k) DecorationAliasedPointerEXT
-                              Decorate 23(param) DecorationAliasedPointerEXT
                2:             TypeVoid
                3:             TypeFunction 2
                               TypeForwardPointer 6 PhysicalStorageBufferEXT

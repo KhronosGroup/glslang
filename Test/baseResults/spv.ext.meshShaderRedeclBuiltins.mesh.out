@@ -36,20 +36,20 @@ spv.ext.meshShaderRedeclBuiltins.mesh
                               Name 122  "gl_PrimitivePointIndicesEXT"
                               Decorate 11(gl_LocalInvocationID) BuiltIn LocalInvocationId
                               Decorate 17(gl_WorkGroupID) BuiltIn WorkgroupId
+                              Decorate 26(gl_MeshPerVertexEXT) Block
                               MemberDecorate 26(gl_MeshPerVertexEXT) 0 BuiltIn Position
                               MemberDecorate 26(gl_MeshPerVertexEXT) 1 BuiltIn PointSize
                               MemberDecorate 26(gl_MeshPerVertexEXT) 2 BuiltIn ClipDistance
                               MemberDecorate 26(gl_MeshPerVertexEXT) 3 BuiltIn CullDistance
-                              Decorate 26(gl_MeshPerVertexEXT) Block
-                              MemberDecorate 78(gl_MeshPerPrimitiveEXT) 0 PerPrimitiveNV
-                              MemberDecorate 78(gl_MeshPerPrimitiveEXT) 0 BuiltIn PrimitiveId
-                              MemberDecorate 78(gl_MeshPerPrimitiveEXT) 1 PerPrimitiveNV
-                              MemberDecorate 78(gl_MeshPerPrimitiveEXT) 1 BuiltIn Layer
-                              MemberDecorate 78(gl_MeshPerPrimitiveEXT) 2 PerPrimitiveNV
-                              MemberDecorate 78(gl_MeshPerPrimitiveEXT) 2 BuiltIn ViewportIndex
-                              MemberDecorate 78(gl_MeshPerPrimitiveEXT) 3 PerPrimitiveNV
-                              MemberDecorate 78(gl_MeshPerPrimitiveEXT) 3 BuiltIn CullPrimitiveEXT
                               Decorate 78(gl_MeshPerPrimitiveEXT) Block
+                              MemberDecorate 78(gl_MeshPerPrimitiveEXT) 0 BuiltIn PrimitiveId
+                              MemberDecorate 78(gl_MeshPerPrimitiveEXT) 0 PerPrimitiveNV
+                              MemberDecorate 78(gl_MeshPerPrimitiveEXT) 1 BuiltIn Layer
+                              MemberDecorate 78(gl_MeshPerPrimitiveEXT) 1 PerPrimitiveNV
+                              MemberDecorate 78(gl_MeshPerPrimitiveEXT) 2 BuiltIn ViewportIndex
+                              MemberDecorate 78(gl_MeshPerPrimitiveEXT) 2 PerPrimitiveNV
+                              MemberDecorate 78(gl_MeshPerPrimitiveEXT) 3 BuiltIn CullPrimitiveEXT
+                              MemberDecorate 78(gl_MeshPerPrimitiveEXT) 3 PerPrimitiveNV
                               Decorate 122(gl_PrimitivePointIndicesEXT) BuiltIn PrimitivePointIndicesEXT
                               Decorate 127 BuiltIn WorkgroupSize
                2:             TypeVoid

@@ -106,18 +106,18 @@ spv.debuginfo.hlsl.vert
                               Name 506  "@entryPointOutput.ViewVec"
                               Name 509  "@entryPointOutput.LightVec"
                               MemberDecorate 143(UBO) 0 RowMajor
-                              MemberDecorate 143(UBO) 0 Offset 0
                               MemberDecorate 143(UBO) 0 MatrixStride 16
+                              MemberDecorate 143(UBO) 0 Offset 0
                               MemberDecorate 143(UBO) 1 RowMajor
-                              MemberDecorate 143(UBO) 1 Offset 64
                               MemberDecorate 143(UBO) 1 MatrixStride 16
+                              MemberDecorate 143(UBO) 1 Offset 64
                               MemberDecorate 143(UBO) 2 Offset 128
                               MemberDecorate 143(UBO) 3 Offset 144
                               MemberDecorate 143(UBO) 4 Offset 148
-                              MemberDecorate 159(ubo) 0 Offset 0
                               Decorate 159(ubo) Block
-                              Decorate 166 DescriptorSet 0
+                              MemberDecorate 159(ubo) 0 Offset 0
                               Decorate 166 Binding 0
+                              Decorate 166 DescriptorSet 0
                               Decorate 461(input.Pos) Location 0
                               Decorate 464(input.Normal) Location 1
                               Decorate 468(input.UV) Location 2

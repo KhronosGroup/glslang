@@ -14,8 +14,8 @@ spv.sampleId.frag
                               Name 8  "gl_SampleID"
                               Name 18  "color"
                               Name 20  "samp"
-                              Decorate 8(gl_SampleID) Flat
                               Decorate 8(gl_SampleID) BuiltIn SampleId
+                              Decorate 8(gl_SampleID) Flat
                               Decorate 18(color) Location 0
                               Decorate 20(samp) Location 0
                2:             TypeVoid

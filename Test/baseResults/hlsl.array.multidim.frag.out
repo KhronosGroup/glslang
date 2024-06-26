@@ -157,10 +157,10 @@ gl_FragCoord origin is upper left
                               Decorate 22 ArrayStride 16
                               Decorate 24 ArrayStride 48
                               Decorate 26 ArrayStride 192
-                              MemberDecorate 27($Global) 0 Offset 0
                               Decorate 27($Global) Block
-                              Decorate 29 DescriptorSet 0
+                              MemberDecorate 27($Global) 0 Offset 0
                               Decorate 29 Binding 0
+                              Decorate 29 DescriptorSet 0
                               Decorate 54(@entryPointOutput.Color) Location 0
                2:             TypeVoid
                3:             TypeFunction 2

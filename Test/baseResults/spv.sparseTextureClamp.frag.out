@@ -40,32 +40,32 @@ Validation failed
                               Name 276  "s2DRectShadow"
                               Name 294  "is2DArray"
                               Name 329  "outColor"
-                              Decorate 29(s2D) DescriptorSet 0
                               Decorate 29(s2D) Binding 0
+                              Decorate 29(s2D) DescriptorSet 0
                               Decorate 33(c2) Location 0
                               Decorate 36(lodClamp) Location 3
-                              Decorate 47(s3D) DescriptorSet 0
                               Decorate 47(s3D) Binding 1
+                              Decorate 47(s3D) DescriptorSet 0
                               Decorate 51(c3) Location 1
-                              Decorate 63(isCube) DescriptorSet 0
                               Decorate 63(isCube) Binding 7
-                              Decorate 76(s2DShadow) DescriptorSet 0
+                              Decorate 63(isCube) DescriptorSet 0
                               Decorate 76(s2DShadow) Binding 2
-                              Decorate 92(sCubeArrayShadow) DescriptorSet 0
+                              Decorate 76(s2DShadow) DescriptorSet 0
                               Decorate 92(sCubeArrayShadow) Binding 6
+                              Decorate 92(sCubeArrayShadow) DescriptorSet 0
                               Decorate 95(c4) Location 2
-                              Decorate 154(us2DRect) DescriptorSet 0
                               Decorate 154(us2DRect) Binding 10
-                              Decorate 170(s2DArrayShadow) DescriptorSet 0
+                              Decorate 154(us2DRect) DescriptorSet 0
                               Decorate 170(s2DArrayShadow) Binding 4
-                              Decorate 216(sCubeShadow) DescriptorSet 0
+                              Decorate 170(s2DArrayShadow) DescriptorSet 0
                               Decorate 216(sCubeShadow) Binding 3
-                              Decorate 232(usCubeArray) DescriptorSet 0
+                              Decorate 216(sCubeShadow) DescriptorSet 0
                               Decorate 232(usCubeArray) Binding 9
-                              Decorate 276(s2DRectShadow) DescriptorSet 0
+                              Decorate 232(usCubeArray) DescriptorSet 0
                               Decorate 276(s2DRectShadow) Binding 5
-                              Decorate 294(is2DArray) DescriptorSet 0
+                              Decorate 276(s2DRectShadow) DescriptorSet 0
                               Decorate 294(is2DArray) Binding 8
+                              Decorate 294(is2DArray) DescriptorSet 0
                               Decorate 329(outColor) Location 0
                2:             TypeVoid
                3:             TypeFunction 2

@@ -74,10 +74,10 @@ void main()
                               Name 72  "gl_FragColor"
                               Name 75  "u"
                               Name 78  "blend"
-                              Decorate 41(texSampler1D) DescriptorSet 0
                               Decorate 41(texSampler1D) Binding 0
-                              Decorate 56(texSampler2D) DescriptorSet 0
+                              Decorate 41(texSampler1D) DescriptorSet 0
                               Decorate 56(texSampler2D) Binding 1
+                              Decorate 56(texSampler2D) DescriptorSet 0
                               Decorate 60(coords2D) Location 2
                               Decorate 72(gl_FragColor) Location 0
                               Decorate 75(u) Location 1

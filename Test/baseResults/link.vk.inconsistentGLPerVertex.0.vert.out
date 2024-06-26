@@ -274,11 +274,11 @@ output primitive = triangle_strip
                               Name 27  "P"
                               Decorate 8(vs_output) Block
                               Decorate 10(vs_out) Location 0
+                              Decorate 20(gl_PerVertex) Block
                               MemberDecorate 20(gl_PerVertex) 0 BuiltIn Position
                               MemberDecorate 20(gl_PerVertex) 1 BuiltIn PointSize
                               MemberDecorate 20(gl_PerVertex) 2 BuiltIn ClipDistance
                               MemberDecorate 20(gl_PerVertex) 3 BuiltIn CullDistance
-                              Decorate 20(gl_PerVertex) Block
                               Decorate 27(P) Location 0
                2:             TypeVoid
                3:             TypeFunction 2

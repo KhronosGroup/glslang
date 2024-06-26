@@ -129,8 +129,8 @@ using early_fragment_tests
                               Name 41  "input.Position"
                               Name 46  "@entryPointOutput"
                               Name 47  "param"
-                              Decorate 19(Values) DescriptorSet 0
                               Decorate 19(Values) Binding 0
+                              Decorate 19(Values) DescriptorSet 0
                               Decorate 41(input.Position) BuiltIn FragCoord
                               Decorate 46(@entryPointOutput) Location 0
                2:             TypeVoid

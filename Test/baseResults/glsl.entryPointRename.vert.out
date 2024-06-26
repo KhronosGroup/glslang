@@ -15,11 +15,11 @@ glsl.entryPointRename.vert
                               MemberName 11(gl_PerVertex) 2  "gl_ClipDistance"
                               MemberName 11(gl_PerVertex) 3  "gl_CullDistance"
                               Name 13  ""
+                              Decorate 11(gl_PerVertex) Block
                               MemberDecorate 11(gl_PerVertex) 0 BuiltIn Position
                               MemberDecorate 11(gl_PerVertex) 1 BuiltIn PointSize
                               MemberDecorate 11(gl_PerVertex) 2 BuiltIn ClipDistance
                               MemberDecorate 11(gl_PerVertex) 3 BuiltIn CullDistance
-                              Decorate 11(gl_PerVertex) Block
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

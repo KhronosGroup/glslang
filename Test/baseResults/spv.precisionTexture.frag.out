@@ -20,28 +20,28 @@ spv.precisionTexture.frag
                               Name 65  "fragColor"
                               Decorate 9(v) RelaxedPrecision
                               Decorate 13(texM) RelaxedPrecision
-                              Decorate 13(texM) DescriptorSet 0
                               Decorate 13(texM) Binding 0
+                              Decorate 13(texM) DescriptorSet 0
                               Decorate 14 RelaxedPrecision
                               Decorate 16(vertex) Location 0
                               Decorate 20 RelaxedPrecision
-                              Decorate 21(texH) DescriptorSet 0
                               Decorate 21(texH) Binding 1
+                              Decorate 21(texH) DescriptorSet 0
                               Decorate 26 RelaxedPrecision
                               Decorate 34 RelaxedPrecision
                               Decorate 41 RelaxedPrecision
                               Decorate 45 RelaxedPrecision
                               Decorate 52(imageM) RelaxedPrecision
-                              Decorate 52(imageM) DescriptorSet 0
-                              Decorate 52(imageM) Binding 0
                               Decorate 52(imageM) NonWritable
+                              Decorate 52(imageM) Binding 0
+                              Decorate 52(imageM) DescriptorSet 0
                               Decorate 53 RelaxedPrecision
                               Decorate 57(coord) Flat
                               Decorate 57(coord) Location 1
                               Decorate 59 RelaxedPrecision
-                              Decorate 60(imageH) DescriptorSet 0
-                              Decorate 60(imageH) Binding 1
                               Decorate 60(imageH) NonWritable
+                              Decorate 60(imageH) Binding 1
+                              Decorate 60(imageH) DescriptorSet 0
                               Decorate 65(fragColor) RelaxedPrecision
                               Decorate 65(fragColor) Location 0
                2:             TypeVoid

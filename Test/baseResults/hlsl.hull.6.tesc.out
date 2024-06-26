@@ -503,10 +503,10 @@ triangle order = ccw
                               Decorate 97(@entryPointOutput.Position) Location 0
                               Decorate 104(@entryPointOutput.Color) Location 1
                               Decorate 117(BlockID) BuiltIn PrimitiveId
-                              Decorate 119(Inside) Patch
                               Decorate 119(Inside) BuiltIn TessLevelInner
-                              Decorate 128(@patchConstantOutput.Edges) Patch
+                              Decorate 119(Inside) Patch
                               Decorate 128(@patchConstantOutput.Edges) BuiltIn TessLevelOuter
+                              Decorate 128(@patchConstantOutput.Edges) Patch
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

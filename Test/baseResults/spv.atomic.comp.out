@@ -29,19 +29,19 @@ spv.atomic.comp
                               Name 71  "arrX"
                               Name 72  "arrY"
                               Name 73  "arrZ"
-                              Decorate 20(counter) Offset 0
-                              Decorate 20(counter) DescriptorSet 0
                               Decorate 20(counter) Binding 0
-                              Decorate 27(countArr) Offset 4
-                              Decorate 27(countArr) DescriptorSet 0
+                              Decorate 20(counter) DescriptorSet 0
+                              Decorate 20(counter) Offset 0
                               Decorate 27(countArr) Binding 0
+                              Decorate 27(countArr) DescriptorSet 0
+                              Decorate 27(countArr) Offset 4
+                              Decorate 62(dataSSB) BufferBlock
                               MemberDecorate 62(dataSSB) 0 Restrict
                               MemberDecorate 62(dataSSB) 0 Offset 0
                               MemberDecorate 62(dataSSB) 1 Restrict
                               MemberDecorate 62(dataSSB) 1 Offset 16
-                              Decorate 62(dataSSB) BufferBlock
-                              Decorate 64(result) DescriptorSet 0
                               Decorate 64(result) Binding 0
+                              Decorate 64(result) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 0

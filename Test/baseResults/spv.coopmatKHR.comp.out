@@ -82,24 +82,24 @@ spv.coopmatKHR.comp
                               Name 249  "scm"
                               Decorate 67 ArrayStride 4
                               Decorate 68 ArrayStride 4
+                              Decorate 69(Block) Block
                               MemberDecorate 69(Block) 0 Offset 0
                               MemberDecorate 69(Block) 1 Offset 4194304
-                              Decorate 69(Block) Block
-                              Decorate 71(block) DescriptorSet 0
                               Decorate 71(block) Binding 0
+                              Decorate 71(block) DescriptorSet 0
                               Decorate 81 ArrayStride 2
                               Decorate 83 ArrayStride 2
+                              Decorate 85(Block16) Block
                               MemberDecorate 85(Block16) 0 Offset 0
                               MemberDecorate 85(Block16) 1 Offset 2097152
                               MemberDecorate 85(Block16) 2 Offset 2097160
-                              Decorate 85(Block16) Block
                               Decorate 86 ArrayStride 4
                               Decorate 87 ArrayStride 4
+                              Decorate 88(Block) Block
                               MemberDecorate 88(Block) 0 Offset 0
                               MemberDecorate 88(Block) 1 Offset 4194304
-                              Decorate 88(Block) Block
-                              Decorate 90(block16) DescriptorSet 0
                               Decorate 90(block16) Binding 0
+                              Decorate 90(block16) DescriptorSet 0
                               Decorate 128(Y) SpecId 0
                               Decorate 232 BuiltIn WorkgroupSize
                               Decorate 234(F) SpecId 1

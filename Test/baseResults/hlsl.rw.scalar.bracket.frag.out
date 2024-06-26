@@ -1826,6 +1826,7 @@ gl_FragCoord origin is upper left
                               Name 600  "g_tTex2df1a"
                               Name 603  "g_tTex2di1a"
                               Name 606  "g_tTex2du1a"
+                              Decorate 59($Global) Block
                               MemberDecorate 59($Global) 0 Offset 0
                               MemberDecorate 59($Global) 1 Offset 8
                               MemberDecorate 59($Global) 2 Offset 16
@@ -1837,42 +1838,41 @@ gl_FragCoord origin is upper left
                               MemberDecorate 59($Global) 8 Offset 96
                               MemberDecorate 59($Global) 9 Offset 100
                               MemberDecorate 59($Global) 10 Offset 104
-                              Decorate 59($Global) Block
-                              Decorate 61 DescriptorSet 0
                               Decorate 61 Binding 10
-                              Decorate 70(g_tTex1df1) DescriptorSet 0
+                              Decorate 61 DescriptorSet 0
                               Decorate 70(g_tTex1df1) Binding 1
-                              Decorate 85(g_tTex1di1) DescriptorSet 0
+                              Decorate 70(g_tTex1df1) DescriptorSet 0
                               Decorate 85(g_tTex1di1) Binding 2
-                              Decorate 94(g_tTex1du1) DescriptorSet 0
+                              Decorate 85(g_tTex1di1) DescriptorSet 0
                               Decorate 94(g_tTex1du1) Binding 3
-                              Decorate 104(g_tTex2df1) DescriptorSet 0
+                              Decorate 94(g_tTex1du1) DescriptorSet 0
                               Decorate 104(g_tTex2df1) Binding 4
-                              Decorate 115(g_tTex2di1) DescriptorSet 0
+                              Decorate 104(g_tTex2df1) DescriptorSet 0
                               Decorate 115(g_tTex2di1) Binding 5
-                              Decorate 124(g_tTex2du1) DescriptorSet 0
+                              Decorate 115(g_tTex2di1) DescriptorSet 0
                               Decorate 124(g_tTex2du1) Binding 6
-                              Decorate 133(g_tTex3df1) DescriptorSet 0
+                              Decorate 124(g_tTex2du1) DescriptorSet 0
                               Decorate 133(g_tTex3df1) Binding 7
-                              Decorate 144(g_tTex3di1) DescriptorSet 0
+                              Decorate 133(g_tTex3df1) DescriptorSet 0
                               Decorate 144(g_tTex3di1) Binding 8
-                              Decorate 153(g_tTex3du1) DescriptorSet 0
+                              Decorate 144(g_tTex3di1) DescriptorSet 0
                               Decorate 153(g_tTex3du1) Binding 9
+                              Decorate 153(g_tTex3du1) DescriptorSet 0
                               Decorate 583(@entryPointOutput.Color) Location 0
-                              Decorate 588(g_sSamp) DescriptorSet 0
                               Decorate 588(g_sSamp) Binding 0
-                              Decorate 591(g_tTex1df1a) DescriptorSet 0
+                              Decorate 588(g_sSamp) DescriptorSet 0
                               Decorate 591(g_tTex1df1a) Binding 0
-                              Decorate 594(g_tTex1di1a) DescriptorSet 0
+                              Decorate 591(g_tTex1df1a) DescriptorSet 0
                               Decorate 594(g_tTex1di1a) Binding 0
-                              Decorate 597(g_tTex1du1a) DescriptorSet 0
+                              Decorate 594(g_tTex1di1a) DescriptorSet 0
                               Decorate 597(g_tTex1du1a) Binding 0
-                              Decorate 600(g_tTex2df1a) DescriptorSet 0
+                              Decorate 597(g_tTex1du1a) DescriptorSet 0
                               Decorate 600(g_tTex2df1a) Binding 0
-                              Decorate 603(g_tTex2di1a) DescriptorSet 0
+                              Decorate 600(g_tTex2df1a) DescriptorSet 0
                               Decorate 603(g_tTex2di1a) Binding 0
-                              Decorate 606(g_tTex2du1a) DescriptorSet 0
+                              Decorate 603(g_tTex2di1a) DescriptorSet 0
                               Decorate 606(g_tTex2du1a) Binding 0
+                              Decorate 606(g_tTex2du1a) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 1

@@ -111,19 +111,19 @@ Validation failed
                               MemberName 33(tbufName2) 0  "v1PostLayout"
                               Name 35  ""
                               Name 43  "specConst"
+                              Decorate 17(tbufName) BufferBlock
                               MemberDecorate 17(tbufName) 0 NonWritable
                               MemberDecorate 17(tbufName) 0 Offset 16
-                              Decorate 17(tbufName) BufferBlock
-                              Decorate 19 DescriptorSet 3
                               Decorate 19 Binding 5
+                              Decorate 19 DescriptorSet 3
+                              Decorate 26(tbufName2) BufferBlock
                               MemberDecorate 26(tbufName2) 0 NonWritable
                               MemberDecorate 26(tbufName2) 0 Offset 0
-                              Decorate 26(tbufName2) BufferBlock
+                              Decorate 33(tbufName2) BufferBlock
                               MemberDecorate 33(tbufName2) 0 NonWritable
                               MemberDecorate 33(tbufName2) 0 Offset 16
-                              Decorate 33(tbufName2) BufferBlock
-                              Decorate 35 DescriptorSet 4
                               Decorate 35 Binding 7
+                              Decorate 35 DescriptorSet 4
                               Decorate 43(specConst) SpecId 17
                2:             TypeVoid
                3:             TypeFunction 2

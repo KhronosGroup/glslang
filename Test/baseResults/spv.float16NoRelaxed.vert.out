@@ -27,10 +27,10 @@ spv.float16NoRelaxed.vert
                               Decorate 11(gl_SubgroupInvocationID) BuiltIn SubgroupLocalInvocationId
                               Decorate 12 RelaxedPrecision
                               Decorate 25 ArrayStride 4
-                              MemberDecorate 26(Buffer1) 0 Offset 0
                               Decorate 26(Buffer1) Block
-                              Decorate 28 DescriptorSet 0
+                              MemberDecorate 26(Buffer1) 0 Offset 0
                               Decorate 28 Binding 0
+                              Decorate 28 DescriptorSet 0
                               Decorate 30(gl_VertexIndex) BuiltIn VertexIndex
                2:             TypeVoid
                3:             TypeFunction 2

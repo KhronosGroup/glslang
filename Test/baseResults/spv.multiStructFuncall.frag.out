@@ -30,12 +30,12 @@ spv.multiStructFuncall.frag
                               Name 50  "param"
                               Name 61  "param"
                               MemberDecorate 22(S) 0 ColMajor
-                              MemberDecorate 22(S) 0 Offset 0
                               MemberDecorate 22(S) 0 MatrixStride 16
-                              MemberDecorate 23(blockName) 0 Offset 0
+                              MemberDecorate 22(S) 0 Offset 0
                               Decorate 23(blockName) BufferBlock
-                              Decorate 25 DescriptorSet 0
+                              MemberDecorate 23(blockName) 0 Offset 0
                               Decorate 25 Binding 0
+                              Decorate 25 DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

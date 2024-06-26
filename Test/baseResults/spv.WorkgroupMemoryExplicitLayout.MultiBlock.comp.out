@@ -19,13 +19,13 @@ spv.WorkgroupMemoryExplicitLayout.MultiBlock.comp
                               Name 14  "second"
                               MemberName 14(second) 0  "b"
                               Name 16  ""
-                              MemberDecorate 7(first) 0 Offset 0
                               Decorate 7(first) Block
-                              MemberDecorate 14(second) 0 Offset 0
-                              Decorate 14(second) Block
-                              Decorate 23 BuiltIn WorkgroupSize
+                              MemberDecorate 7(first) 0 Offset 0
                               Decorate 9 Aliased
+                              Decorate 14(second) Block
+                              MemberDecorate 14(second) 0 Offset 0
                               Decorate 16 Aliased
+                              Decorate 23 BuiltIn WorkgroupSize
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 1

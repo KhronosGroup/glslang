@@ -34,26 +34,26 @@ spv.bufferhandle6.frag
                               Name 154  "gl_FragCoord"
                               Decorate 12 ArrayStride 4
                               Decorate 14 ArrayStride 8
+                              Decorate 15(T1) Block
                               MemberDecorate 15(T1) 0 Offset 0
                               MemberDecorate 15(T1) 1 Offset 32
                               MemberDecorate 15(T1) 2 Offset 48
                               MemberDecorate 15(T1) 3 Offset 80
-                              Decorate 15(T1) Block
                               Decorate 16 ArrayStride 4
                               Decorate 17 ArrayStride 8
+                              Decorate 18(T1) Block
                               MemberDecorate 18(T1) 0 Offset 0
                               MemberDecorate 18(T1) 1 Offset 32
                               MemberDecorate 18(T1) 2 Offset 48
                               MemberDecorate 18(T1) 3 Offset 80
-                              Decorate 18(T1) Block
                               Decorate 19 ArrayStride 8
-                              Decorate 21(x) DescriptorSet 3
                               Decorate 21(x) Binding 1
+                              Decorate 21(x) DescriptorSet 3
                               Decorate 29 ArrayStride 4
-                              MemberDecorate 30(Block) 0 Offset 0
                               Decorate 30(Block) Block
-                              Decorate 149(image0_0) DescriptorSet 3
+                              MemberDecorate 30(Block) 0 Offset 0
                               Decorate 149(image0_0) Binding 0
+                              Decorate 149(image0_0) DescriptorSet 3
                               Decorate 154(gl_FragCoord) BuiltIn FragCoord
                2:             TypeVoid
                3:             TypeFunction 2

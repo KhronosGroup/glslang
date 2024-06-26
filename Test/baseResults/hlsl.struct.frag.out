@@ -279,8 +279,8 @@ Validation failed
                               Decorate 65(s.c) Location 3
                               Decorate 71(s.d) Centroid
                               Decorate 71(s.d) Location 4
-                              Decorate 76(s.ff1) Flat
                               Decorate 76(s.ff1) BuiltIn FrontFacing
+                              Decorate 76(s.ff1) Flat
                               Decorate 80(s.ff2) Flat
                               Decorate 80(s.ff2) Location 5
                               Decorate 84(s.ff3) Flat
@@ -291,12 +291,12 @@ Validation failed
                               MemberDecorate 98(myS) 1 Offset 4
                               MemberDecorate 98(myS) 2 Offset 16
                               MemberDecorate 98(myS) 3 Offset 32
+                              Decorate 99($Global) Block
                               MemberDecorate 99($Global) 0 Offset 0
                               MemberDecorate 99($Global) 1 Offset 1620
                               MemberDecorate 99($Global) 2 Offset 1636
-                              Decorate 99($Global) Block
-                              Decorate 101 DescriptorSet 0
                               Decorate 101 Binding 0
+                              Decorate 101 DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

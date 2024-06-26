@@ -397,12 +397,12 @@ triangle order = none
                               Name 113  "@entryPointOutput.norm"
                               Decorate 55(i.pos) Location 0
                               Decorate 62(i.norm) Location 1
-                              Decorate 74(tesscoord) Patch
                               Decorate 74(tesscoord) BuiltIn TessCoord
-                              Decorate 83(pcf_data.flTessFactor) Patch
+                              Decorate 74(tesscoord) Patch
                               Decorate 83(pcf_data.flTessFactor) BuiltIn TessLevelOuter
-                              Decorate 97(pcf_data.flInsideTessFactor) Patch
+                              Decorate 83(pcf_data.flTessFactor) Patch
                               Decorate 97(pcf_data.flInsideTessFactor) BuiltIn TessLevelInner
+                              Decorate 97(pcf_data.flInsideTessFactor) Patch
                               Decorate 109(@entryPointOutput.pos) Location 0
                               Decorate 113(@entryPointOutput.norm) Location 1
                2:             TypeVoid

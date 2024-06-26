@@ -21,12 +21,12 @@ spv.test.frag
                               Name 43  "gl_FragColor"
                               Name 46  "u"
                               Name 49  "blend"
-                              Decorate 16(texSampler2D) DescriptorSet 0
                               Decorate 16(texSampler2D) Binding 0
+                              Decorate 16(texSampler2D) DescriptorSet 0
                               Decorate 20(t) Location 3
                               Decorate 22(scale) Location 1
-                              Decorate 33(texSampler3D) DescriptorSet 0
                               Decorate 33(texSampler3D) Binding 1
+                              Decorate 33(texSampler3D) DescriptorSet 0
                               Decorate 37(coords) Location 4
                               Decorate 43(gl_FragColor) Location 0
                               Decorate 46(u) Location 2

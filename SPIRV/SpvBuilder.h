@@ -400,7 +400,6 @@ public:
     void addExecutionModeId(Function*, ExecutionMode mode, const std::vector<Id>& operandIds);
     void addName(Id, const char* name);
     void addMemberName(Id, int member, const char* name);
-    bool decorationAlreadyAdded(Instruction*);
     void addDecoration(Id, Decoration, int num = -1);
     void addDecoration(Id, Decoration, const char*);
     void addDecoration(Id, Decoration, const std::vector<unsigned>& literals);
@@ -891,10 +890,14 @@ public:
     void createSelectionMerge(Block* mergeBlock, unsigned int control);
     void dumpSourceInstructions(std::vector<unsigned int>&) const;
     void dumpSourceInstructions(const spv::Id fileId, const std::string& text, std::vector<unsigned int>&) const;
-    void dumpInstructions(std::vector<unsigned int>&, const std::vector<std::unique_ptr<Instruction> >&) const;
+    template<class Range>
+    void dumpInstructions(std::vector<unsigned int>& out, const Range& instructions) const;
     void dumpModuleProcesses(std::vector<unsigned int>&) const;
     spv::MemoryAccessMask sanitizeMemoryAccessForStorageClass(spv::MemoryAccessMask memoryAccess, StorageClass sc)
         const;
+    struct DecorationInstructionLessThan {
+        bool operator()(const std::unique_ptr<Instruction>& lhs, const std::unique_ptr<Instruction>& rhs) const;
+    };
 
     unsigned int spvVersion;     // the version of SPIR-V to emit in the header
     SourceLanguage sourceLang;
@@ -951,7 +954,7 @@ public:
     std::vector<std::unique_ptr<Instruction> > entryPoints;
     std::vector<std::unique_ptr<Instruction> > executionModes;
     std::vector<std::unique_ptr<Instruction> > names;
-    std::vector<std::unique_ptr<Instruction> > decorations;
+    std::set<std::unique_ptr<Instruction>, DecorationInstructionLessThan> decorations;
     std::vector<std::unique_ptr<Instruction> > constantsTypesGlobals;
     std::vector<std::unique_ptr<Instruction> > externals;
     std::vector<std::unique_ptr<Function> > functions;

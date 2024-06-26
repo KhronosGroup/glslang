@@ -297,10 +297,10 @@ gl_FragCoord origin is upper left
                               MemberName 93($Global) 0  "uf4"
                               Name 95  ""
                               Decorate 90(@entryPointOutput.Color) Location 0
-                              MemberDecorate 93($Global) 0 Offset 0
                               Decorate 93($Global) Block
-                              Decorate 95 DescriptorSet 0
+                              MemberDecorate 93($Global) 0 Offset 0
                               Decorate 95 Binding 0
+                              Decorate 95 DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

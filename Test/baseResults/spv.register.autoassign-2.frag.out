@@ -20,12 +20,12 @@ spv.register.autoassign-2.frag
                               Name 39  "psout"
                               Name 40  "param"
                               Name 44  "psout.Color"
-                              Decorate 18(g_tScene[0]) DescriptorSet 0
                               Decorate 18(g_tScene[0]) Binding 10
-                              Decorate 22(g_tSamp) DescriptorSet 0
+                              Decorate 18(g_tScene[0]) DescriptorSet 0
                               Decorate 22(g_tSamp) Binding 5
-                              Decorate 31(g_tScene[1]) DescriptorSet 0
+                              Decorate 22(g_tSamp) DescriptorSet 0
                               Decorate 31(g_tScene[1]) Binding 11
+                              Decorate 31(g_tScene[1]) DescriptorSet 0
                               Decorate 44(psout.Color) Location 0
                2:             TypeVoid
                3:             TypeFunction 2

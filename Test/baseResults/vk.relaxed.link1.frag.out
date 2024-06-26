@@ -378,6 +378,7 @@ gl_FragCoord origin is upper left
                               Name 68  "o"
                               Name 72  "j"
                               Name 79  "v"
+                              Decorate 16(gl_AtomicCounterBlock_0) BufferBlock
                               MemberDecorate 16(gl_AtomicCounterBlock_0) 0 Volatile
                               MemberDecorate 16(gl_AtomicCounterBlock_0) 0 Coherent
                               MemberDecorate 16(gl_AtomicCounterBlock_0) 0 Offset 0
@@ -387,18 +388,17 @@ gl_FragCoord origin is upper left
                               MemberDecorate 16(gl_AtomicCounterBlock_0) 2 Volatile
                               MemberDecorate 16(gl_AtomicCounterBlock_0) 2 Coherent
                               MemberDecorate 16(gl_AtomicCounterBlock_0) 2 Offset 8
-                              Decorate 16(gl_AtomicCounterBlock_0) BufferBlock
-                              Decorate 18 DescriptorSet 0
                               Decorate 18 Binding 1
+                              Decorate 18 DescriptorSet 0
+                              Decorate 35(gl_DefaultUniformBlock) Block
                               MemberDecorate 35(gl_DefaultUniformBlock) 0 Offset 0
                               MemberDecorate 35(gl_DefaultUniformBlock) 1 Offset 16
                               MemberDecorate 35(gl_DefaultUniformBlock) 2 Offset 24
                               MemberDecorate 35(gl_DefaultUniformBlock) 3 Offset 32
                               MemberDecorate 35(gl_DefaultUniformBlock) 4 Offset 48
                               MemberDecorate 35(gl_DefaultUniformBlock) 5 Offset 64
-                              Decorate 35(gl_DefaultUniformBlock) Block
-                              Decorate 37 DescriptorSet 0
                               Decorate 37 Binding 0
+                              Decorate 37 DescriptorSet 0
                               Decorate 68(o) Location 0
                2:             TypeVoid
                3:             TypeFunction 2

@@ -18,10 +18,10 @@ spv.1.6.specConstant.comp
                               Name 37  "param"
                               Decorate 7 SpecId 18
                               Decorate 9 SpecId 19
-                              MemberDecorate 16(bn) 0 Offset 0
                               Decorate 16(bn) Block
-                              Decorate 18(bi) DescriptorSet 0
+                              MemberDecorate 16(bn) 0 Offset 0
                               Decorate 18(bi) Binding 0
+                              Decorate 18(bi) DescriptorSet 0
                               Decorate 25 SpecId 18
                               Decorate 26 SpecId 19
                2:             TypeVoid

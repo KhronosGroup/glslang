@@ -28,6 +28,7 @@ spv.expect_assume.expectEXT.comp
                               MemberName 18(roblock) 10  "uv3"
                               MemberName 18(roblock) 11  "uv4"
                               Name 20  "ro"
+                              Decorate 18(roblock) BufferBlock
                               MemberDecorate 18(roblock) 0 NonWritable
                               MemberDecorate 18(roblock) 0 Offset 0
                               MemberDecorate 18(roblock) 1 NonWritable
@@ -52,9 +53,8 @@ spv.expect_assume.expectEXT.comp
                               MemberDecorate 18(roblock) 10 Offset 112
                               MemberDecorate 18(roblock) 11 NonWritable
                               MemberDecorate 18(roblock) 11 Offset 128
-                              Decorate 18(roblock) BufferBlock
-                              Decorate 20(ro) DescriptorSet 0
                               Decorate 20(ro) Binding 0
+                              Decorate 20(ro) DescriptorSet 0
                               Decorate 177 BuiltIn WorkgroupSize
                2:             TypeVoid
                3:             TypeFunction 2

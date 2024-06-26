@@ -473,12 +473,12 @@ triangle order = none
                               Decorate 62(i.norm) Location 1
                               Decorate 82(f) Patch
                               Decorate 82(f) Location 2
-                              Decorate 85(tesscoord) Patch
                               Decorate 85(tesscoord) BuiltIn TessCoord
-                              Decorate 91(pcf_data.flTessFactor) Patch
+                              Decorate 85(tesscoord) Patch
                               Decorate 91(pcf_data.flTessFactor) BuiltIn TessLevelOuter
-                              Decorate 104(pcf_data.flInsideTessFactor) Patch
+                              Decorate 91(pcf_data.flTessFactor) Patch
                               Decorate 104(pcf_data.flInsideTessFactor) BuiltIn TessLevelInner
+                              Decorate 104(pcf_data.flInsideTessFactor) Patch
                               Decorate 118(@entryPointOutput.pos) Location 0
                               Decorate 122(@entryPointOutput.norm) Location 1
                2:             TypeVoid

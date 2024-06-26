@@ -21,12 +21,12 @@ spv.shaderFragMaskAMD.frag
                               Name 42  "is2DMSArray"
                               Name 62  "usubpassMS"
                               Name 78  "fragColor"
-                              Decorate 18(s2DMS) DescriptorSet 0
                               Decorate 18(s2DMS) Binding 0
-                              Decorate 42(is2DMSArray) DescriptorSet 0
+                              Decorate 18(s2DMS) DescriptorSet 0
                               Decorate 42(is2DMSArray) Binding 1
-                              Decorate 62(usubpassMS) DescriptorSet 0
+                              Decorate 42(is2DMSArray) DescriptorSet 0
                               Decorate 62(usubpassMS) Binding 2
+                              Decorate 62(usubpassMS) DescriptorSet 0
                               Decorate 62(usubpassMS) InputAttachmentIndex 0
                               Decorate 78(fragColor) Location 0
                2:             TypeVoid

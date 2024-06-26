@@ -19,12 +19,12 @@ spv.specConstantOp.float16.comp
                               Name 10  ""
                               Name 14  "c"
                               Decorate 7 ArrayStride 2
+                              Decorate 8(S) BufferBlock
                               MemberDecorate 8(S) 0 Restrict
                               MemberDecorate 8(S) 0 NonReadable
                               MemberDecorate 8(S) 0 Offset 0
-                              Decorate 8(S) BufferBlock
-                              Decorate 10 DescriptorSet 0
                               Decorate 10 Binding 0
+                              Decorate 10 DescriptorSet 0
                               Decorate 14(c) SpecId 0
                2:             TypeVoid
                3:             TypeFunction 2

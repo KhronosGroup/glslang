@@ -281,18 +281,18 @@ Shader version: 500
                               Name 82  "param"
                               Name 86  "@entryPointOutput.Pos"
                               Name 90  "@entryPointOutput.Norm"
-                              MemberDecorate 28(C) 0 RowMajor
-                              MemberDecorate 28(C) 0 Offset 0
-                              MemberDecorate 28(C) 0 MatrixStride 16
-                              MemberDecorate 28(C) 1 RowMajor
-                              MemberDecorate 28(C) 1 Offset 64
-                              MemberDecorate 28(C) 1 MatrixStride 16
-                              MemberDecorate 28(C) 2 RowMajor
-                              MemberDecorate 28(C) 2 Offset 128
-                              MemberDecorate 28(C) 2 MatrixStride 16
                               Decorate 28(C) Block
-                              Decorate 30 DescriptorSet 0
+                              MemberDecorate 28(C) 0 RowMajor
+                              MemberDecorate 28(C) 0 MatrixStride 16
+                              MemberDecorate 28(C) 0 Offset 0
+                              MemberDecorate 28(C) 1 RowMajor
+                              MemberDecorate 28(C) 1 MatrixStride 16
+                              MemberDecorate 28(C) 1 Offset 64
+                              MemberDecorate 28(C) 2 RowMajor
+                              MemberDecorate 28(C) 2 MatrixStride 16
+                              MemberDecorate 28(C) 2 Offset 128
                               Decorate 30 Binding 0
+                              Decorate 30 DescriptorSet 0
                               Decorate 74(input.Pos) Location 0
                               Decorate 78(input.Norm) Location 1
                               Decorate 86(@entryPointOutput.Pos) BuiltIn Position

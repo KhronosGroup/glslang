@@ -619,16 +619,16 @@ using depth_any
                               Name 188  "@entryPointOutput.Color"
                               Name 192  "@entryPointOutput.Depth"
                               Name 197  "g_sSamp"
-                              Decorate 23(g_tTex2dmsf4) DescriptorSet 0
                               Decorate 23(g_tTex2dmsf4) Binding 1
-                              Decorate 131(g_tTex2dmsf4a) DescriptorSet 0
+                              Decorate 23(g_tTex2dmsf4) DescriptorSet 0
                               Decorate 131(g_tTex2dmsf4a) Binding 2
+                              Decorate 131(g_tTex2dmsf4a) DescriptorSet 0
                               Decorate 181(sample) Flat
                               Decorate 181(sample) Location 0
                               Decorate 188(@entryPointOutput.Color) Location 0
                               Decorate 192(@entryPointOutput.Depth) BuiltIn FragDepth
-                              Decorate 197(g_sSamp) DescriptorSet 0
                               Decorate 197(g_sSamp) Binding 0
+                              Decorate 197(g_sSamp) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 1

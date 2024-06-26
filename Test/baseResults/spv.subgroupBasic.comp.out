@@ -20,10 +20,10 @@ spv.subgroupBasic.comp
                               Name 22  "gl_NumSubgroups"
                               Name 25  "gl_SubgroupID"
                               Decorate 7 ArrayStride 4
-                              MemberDecorate 8(Buffer) 0 Offset 0
                               Decorate 8(Buffer) Block
-                              Decorate 10(data) DescriptorSet 0
+                              MemberDecorate 8(Buffer) 0 Offset 0
                               Decorate 10(data) Binding 0
+                              Decorate 10(data) DescriptorSet 0
                               Decorate 14(gl_SubgroupSize) RelaxedPrecision
                               Decorate 14(gl_SubgroupSize) BuiltIn SubgroupSize
                               Decorate 15 RelaxedPrecision

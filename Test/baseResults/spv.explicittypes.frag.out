@@ -114,10 +114,11 @@ spv.explicittypes.frag
                               MemberName 564(Block) 14  "u32v3"
                               MemberName 564(Block) 15  "u32v4"
                               Name 566  "block"
-                              MemberDecorate 26(Uniforms) 0 Offset 0
                               Decorate 26(Uniforms) Block
-                              Decorate 28 DescriptorSet 0
+                              MemberDecorate 26(Uniforms) 0 Offset 0
                               Decorate 28 Binding 0
+                              Decorate 28 DescriptorSet 0
+                              Decorate 564(Block) Block
                               MemberDecorate 564(Block) 0 Offset 0
                               MemberDecorate 564(Block) 1 Offset 4
                               MemberDecorate 564(Block) 2 Offset 8
@@ -134,9 +135,8 @@ spv.explicittypes.frag
                               MemberDecorate 564(Block) 13 Offset 104
                               MemberDecorate 564(Block) 14 Offset 112
                               MemberDecorate 564(Block) 15 Offset 128
-                              Decorate 564(Block) Block
-                              Decorate 566(block) DescriptorSet 0
                               Decorate 566(block) Binding 1
+                              Decorate 566(block) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
               16:             TypeInt 64 1

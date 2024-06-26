@@ -364,8 +364,8 @@ vertex spacing = equal_spacing
                               Decorate 60(m_cpid) BuiltIn InvocationId
                               Decorate 63(@entryPointOutput.cpoint) Location 0
                               Decorate 81(pid) BuiltIn PrimitiveId
-                              Decorate 87(@patchConstantOutput.edges) Patch
                               Decorate 87(@patchConstantOutput.edges) BuiltIn TessLevelOuter
+                              Decorate 87(@patchConstantOutput.edges) Patch
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

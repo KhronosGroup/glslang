@@ -19,14 +19,14 @@ spv.smBuiltins.frag
                               Name 15  "gl_WarpIDNV"
                               Name 17  "gl_SMIDNV"
                               Decorate 9(data) Location 0
-                              Decorate 11(gl_WarpsPerSMNV) Flat
                               Decorate 11(gl_WarpsPerSMNV) BuiltIn WarpsPerSMNV
-                              Decorate 13(gl_SMCountNV) Flat
+                              Decorate 11(gl_WarpsPerSMNV) Flat
                               Decorate 13(gl_SMCountNV) BuiltIn SMCountNV
-                              Decorate 15(gl_WarpIDNV) Flat
+                              Decorate 13(gl_SMCountNV) Flat
                               Decorate 15(gl_WarpIDNV) BuiltIn WarpIDNV
-                              Decorate 17(gl_SMIDNV) Flat
+                              Decorate 15(gl_WarpIDNV) Flat
                               Decorate 17(gl_SMIDNV) BuiltIn SMIDNV
+                              Decorate 17(gl_SMIDNV) Flat
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 0

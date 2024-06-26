@@ -439,10 +439,10 @@ Validation failed
                               Decorate 65(patch.position) BuiltIn Position
                               Decorate 79(pointId) BuiltIn InvocationId
                               Decorate 82(patchId) BuiltIn PrimitiveId
-                              Decorate 115(@patchConstantOutput.edges) Patch
                               Decorate 115(@patchConstantOutput.edges) BuiltIn TessLevelOuter
-                              Decorate 128(@patchConstantOutput.inside) Patch
+                              Decorate 115(@patchConstantOutput.edges) Patch
                               Decorate 128(@patchConstantOutput.inside) BuiltIn TessLevelInner
+                              Decorate 128(@patchConstantOutput.inside) Patch
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

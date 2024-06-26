@@ -15,14 +15,14 @@ spv.1.6.separate.frag
                               Name 13  "s"
                               Name 18  "itexBuffer"
                               Name 24  "utexBuffer"
-                              Decorate 9(texBuffer) DescriptorSet 0
                               Decorate 9(texBuffer) Binding 1
-                              Decorate 13(s) DescriptorSet 0
+                              Decorate 9(texBuffer) DescriptorSet 0
                               Decorate 13(s) Binding 0
-                              Decorate 18(itexBuffer) DescriptorSet 0
+                              Decorate 13(s) DescriptorSet 0
                               Decorate 18(itexBuffer) Binding 2
-                              Decorate 24(utexBuffer) DescriptorSet 0
+                              Decorate 18(itexBuffer) DescriptorSet 0
                               Decorate 24(utexBuffer) Binding 3
+                              Decorate 24(utexBuffer) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

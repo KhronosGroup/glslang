@@ -444,36 +444,36 @@ local_size = (8, 8, 8)
                               Name 179  "tid"
                               Name 181  "tid"
                               Name 183  "param"
-                              Decorate 19(i1D) DescriptorSet 0
                               Decorate 19(i1D) Binding 0
-                              Decorate 34(i2D) DescriptorSet 0
+                              Decorate 19(i1D) DescriptorSet 0
                               Decorate 34(i2D) Binding 1
-                              Decorate 45(i3D) DescriptorSet 0
+                              Decorate 34(i2D) DescriptorSet 0
                               Decorate 45(i3D) Binding 2
-                              Decorate 54(i1DArray) DescriptorSet 0
+                              Decorate 45(i3D) DescriptorSet 0
                               Decorate 54(i1DArray) Binding 3
-                              Decorate 64(i2DArray) DescriptorSet 0
+                              Decorate 54(i1DArray) DescriptorSet 0
                               Decorate 64(i2DArray) Binding 4
-                              Decorate 73(i2DMS) DescriptorSet 0
+                              Decorate 64(i2DArray) DescriptorSet 0
                               Decorate 73(i2DMS) Binding 5
-                              Decorate 86(i2DMSArray) DescriptorSet 0
+                              Decorate 73(i2DMS) DescriptorSet 0
                               Decorate 86(i2DMSArray) Binding 6
-                              Decorate 100(ii1D) DescriptorSet 0
+                              Decorate 86(i2DMSArray) DescriptorSet 0
                               Decorate 100(ii1D) Binding 7
-                              Decorate 111(ii2D) DescriptorSet 0
+                              Decorate 100(ii1D) DescriptorSet 0
                               Decorate 111(ii2D) Binding 8
-                              Decorate 121(ii3D) DescriptorSet 0
+                              Decorate 111(ii2D) DescriptorSet 0
                               Decorate 121(ii3D) Binding 9
-                              Decorate 130(ii1DArray) DescriptorSet 0
+                              Decorate 121(ii3D) DescriptorSet 0
                               Decorate 130(ii1DArray) Binding 10
-                              Decorate 140(ii2DArray) DescriptorSet 0
+                              Decorate 130(ii1DArray) DescriptorSet 0
                               Decorate 140(ii2DArray) Binding 11
-                              Decorate 149(ii2DMS) DescriptorSet 0
+                              Decorate 140(ii2DArray) DescriptorSet 0
                               Decorate 149(ii2DMS) Binding 12
-                              Decorate 160(ii2DMSArray) DescriptorSet 0
+                              Decorate 149(ii2DMS) DescriptorSet 0
                               Decorate 160(ii2DMSArray) Binding 13
-                              Decorate 175(OUT) DescriptorSet 0
+                              Decorate 160(ii2DMSArray) DescriptorSet 0
                               Decorate 175(OUT) Binding 0
+                              Decorate 175(OUT) DescriptorSet 0
                               Decorate 181(tid) BuiltIn GlobalInvocationId
                2:             TypeVoid
                3:             TypeFunction 2

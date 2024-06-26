@@ -80,10 +80,11 @@ spv.int8.frag
                               Name 541  "block"
                               Name 542  "si8"
                               Name 543  "su8"
-                              MemberDecorate 24(Uniforms) 0 Offset 0
                               Decorate 24(Uniforms) Block
-                              Decorate 26 DescriptorSet 0
+                              MemberDecorate 24(Uniforms) 0 Offset 0
                               Decorate 26 Binding 0
+                              Decorate 26 DescriptorSet 0
+                              Decorate 539(Block) Block
                               MemberDecorate 539(Block) 0 Offset 0
                               MemberDecorate 539(Block) 1 Offset 2
                               MemberDecorate 539(Block) 2 Offset 4
@@ -92,9 +93,8 @@ spv.int8.frag
                               MemberDecorate 539(Block) 5 Offset 14
                               MemberDecorate 539(Block) 6 Offset 16
                               MemberDecorate 539(Block) 7 Offset 20
-                              Decorate 539(Block) Block
-                              Decorate 541(block) DescriptorSet 0
                               Decorate 541(block) Binding 1
+                              Decorate 541(block) DescriptorSet 0
                               Decorate 542(si8) SpecId 100
                               Decorate 543(su8) SpecId 101
                2:             TypeVoid

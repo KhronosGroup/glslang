@@ -30,12 +30,12 @@ spv.1.4.OpCopyLogical.funcall.frag
                               Name 47  "param"
                               Name 55  "param"
                               MemberDecorate 22(S) 0 ColMajor
-                              MemberDecorate 22(S) 0 Offset 0
                               MemberDecorate 22(S) 0 MatrixStride 16
-                              MemberDecorate 23(blockName) 0 Offset 0
+                              MemberDecorate 22(S) 0 Offset 0
                               Decorate 23(blockName) Block
-                              Decorate 25 DescriptorSet 0
+                              MemberDecorate 23(blockName) 0 Offset 0
                               Decorate 25 Binding 0
+                              Decorate 25 DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

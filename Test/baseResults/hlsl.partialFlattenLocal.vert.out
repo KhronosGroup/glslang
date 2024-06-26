@@ -262,8 +262,8 @@ Shader version: 500
                               Name 86  "pos"
                               Name 89  "@entryPointOutput"
                               Name 90  "param"
-                              Decorate 27(tex) DescriptorSet 0
                               Decorate 27(tex) Binding 0
+                              Decorate 27(tex) DescriptorSet 0
                               Decorate 86(pos) Location 0
                               Decorate 89(@entryPointOutput) BuiltIn Position
                2:             TypeVoid

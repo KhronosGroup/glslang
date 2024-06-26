@@ -182,33 +182,33 @@ Validation failed
                               MemberName 75(sbuf3) 0  "@data"
                               Name 77  "sbuf3"
                               Decorate 8 ArrayStride 16
+                              Decorate 9 BufferBlock
                               MemberDecorate 9 0 NonWritable
                               MemberDecorate 9 0 Offset 0
-                              Decorate 9 BufferBlock
                               Decorate 13(sb) NonWritable
                               Decorate 17 ArrayStride 16
-                              MemberDecorate 18 0 Offset 0
                               Decorate 18 BufferBlock
+                              MemberDecorate 18 0 Offset 0
                               Decorate 20 BufferBlock
-                              Decorate 47(sbuf2) DescriptorSet 0
                               Decorate 47(sbuf2) Binding 0
-                              Decorate 48(sbuf2@count) DescriptorSet 0
+                              Decorate 47(sbuf2) DescriptorSet 0
                               Decorate 48(sbuf2@count) Binding 0
-                              Decorate 50(sbuf) DescriptorSet 0
+                              Decorate 48(sbuf2@count) DescriptorSet 0
                               Decorate 50(sbuf) Binding 10
+                              Decorate 50(sbuf) DescriptorSet 0
                               Decorate 63(pos) Flat
                               Decorate 63(pos) Location 0
                               Decorate 66(@entryPointOutput) Location 0
-                              MemberDecorate 70(sbuf2@count) 0 Offset 0
                               Decorate 70(sbuf2@count) BufferBlock
-                              Decorate 72(sbuf2@count) DescriptorSet 0
+                              MemberDecorate 70(sbuf2@count) 0 Offset 0
                               Decorate 72(sbuf2@count) Binding 0
+                              Decorate 72(sbuf2@count) DescriptorSet 0
                               Decorate 74 ArrayStride 16
+                              Decorate 75(sbuf3) BufferBlock
                               MemberDecorate 75(sbuf3) 0 NonWritable
                               MemberDecorate 75(sbuf3) 0 Offset 0
-                              Decorate 75(sbuf3) BufferBlock
-                              Decorate 77(sbuf3) DescriptorSet 0
                               Decorate 77(sbuf3) Binding 12
+                              Decorate 77(sbuf3) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 0
