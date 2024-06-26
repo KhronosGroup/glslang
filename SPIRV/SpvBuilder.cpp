@@ -4330,10 +4330,9 @@ void Builder::dumpSourceInstructions(std::vector<unsigned int>& out) const
         dumpSourceInstructions(iItr->first, *iItr->second, out);
 }
 
-template<class Range>
-void Builder::dumpInstructions(std::vector<unsigned int>& out, const Range& instructions) const
+template <class Range> void Builder::dumpInstructions(std::vector<unsigned int>& out, const Range& instructions) const
 {
-    for( const auto& inst : instructions) {
+    for (const auto& inst : instructions) {
         inst->dump(out);
     }
 }
@@ -4348,10 +4347,10 @@ void Builder::dumpModuleProcesses(std::vector<unsigned int>& out) const
 }
 
 bool Builder::DecorationInstructionLessThan::operator()(const std::unique_ptr<Instruction>& lhs,
-                                             const std::unique_ptr<Instruction>& rhs) const
+                                                        const std::unique_ptr<Instruction>& rhs) const
 {
     // Order by the id to which the decoration applies first. This is more intuitive.
-    assert (lhs->isIdOperand(0) && rhs->isIdOperand(0));
+    assert(lhs->isIdOperand(0) && rhs->isIdOperand(0));
     if (lhs->getIdOperand(0) != rhs->getIdOperand(0)) {
         return lhs->getIdOperand(0) < rhs->getIdOperand(0);
     }

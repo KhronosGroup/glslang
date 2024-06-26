@@ -387,7 +387,7 @@ void Builder::postProcessCFG()
     }
 
     // Remove unneeded decorations, for unreachable instructions
-    for(auto decorationIter = decorations.begin(); decorationIter != decorations.end();) {
+    for (auto decorationIter = decorations.begin(); decorationIter != decorations.end();) {
         Id decorationId = (*decorationIter)->getIdOperand(0);
         if (unreachableDefinitions.count(decorationId) != 0) {
             decorationIter = decorations.erase(decorationIter);

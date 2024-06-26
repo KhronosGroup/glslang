@@ -890,8 +890,7 @@ public:
     void createSelectionMerge(Block* mergeBlock, unsigned int control);
     void dumpSourceInstructions(std::vector<unsigned int>&) const;
     void dumpSourceInstructions(const spv::Id fileId, const std::string& text, std::vector<unsigned int>&) const;
-    template<class Range>
-    void dumpInstructions(std::vector<unsigned int>& out, const Range& instructions) const;
+    template <class Range> void dumpInstructions(std::vector<unsigned int>& out, const Range& instructions) const;
     void dumpModuleProcesses(std::vector<unsigned int>&) const;
     spv::MemoryAccessMask sanitizeMemoryAccessForStorageClass(spv::MemoryAccessMask memoryAccess, StorageClass sc)
         const;
