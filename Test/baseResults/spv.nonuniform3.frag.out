@@ -19,12 +19,12 @@ spv.nonuniform3.frag
                               Name 16  "Index"
                               Name 23  "uSamp"
                               Decorate 9(FragColor) Location 0
-                              Decorate 13(uTex) DescriptorSet 0
                               Decorate 13(uTex) Binding 0
+                              Decorate 13(uTex) DescriptorSet 0
                               Decorate 16(Index) Flat
                               Decorate 16(Index) Location 0
-                              Decorate 23(uSamp) DescriptorSet 1
                               Decorate 23(uSamp) Binding 0
+                              Decorate 23(uSamp) DescriptorSet 1
                               Decorate 27 DecorationNonUniformEXT
                2:             TypeVoid
                3:             TypeFunction 2

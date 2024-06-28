@@ -108,16 +108,16 @@ spv.debuginfo.hlsl.geom
                               Decorate 141 ArrayStride 64
                               Decorate 143 ArrayStride 64
                               MemberDecorate 145(UBO) 0 RowMajor
-                              MemberDecorate 145(UBO) 0 Offset 0
                               MemberDecorate 145(UBO) 0 MatrixStride 16
+                              MemberDecorate 145(UBO) 0 Offset 0
                               MemberDecorate 145(UBO) 1 RowMajor
-                              MemberDecorate 145(UBO) 1 Offset 128
                               MemberDecorate 145(UBO) 1 MatrixStride 16
+                              MemberDecorate 145(UBO) 1 Offset 128
                               MemberDecorate 145(UBO) 2 Offset 256
-                              MemberDecorate 160(ubo) 0 Offset 0
                               Decorate 160(ubo) Block
-                              Decorate 167 DescriptorSet 0
+                              MemberDecorate 160(ubo) 0 Offset 0
                               Decorate 167 Binding 0
+                              Decorate 167 DescriptorSet 0
                               Decorate 264(outStream.Pos) BuiltIn Position
                               Decorate 273(outStream.ViewportIndex) BuiltIn ViewportIndex
                               Decorate 278(outStream.PrimitiveID) BuiltIn PrimitiveId

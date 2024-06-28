@@ -275,17 +275,17 @@ local_size = (64, 1, 1)
                               Name 85  "gi"
                               Name 87  "param"
                               Decorate 7 ArrayStride 4
+                              Decorate 8 Block
                               MemberDecorate 8 0 NonWritable
                               MemberDecorate 8 0 Offset 0
-                              Decorate 8 Block
                               Decorate 14(buffer_position) NonWritable
-                              Decorate 53(buffer_position_ms) DescriptorSet 0
                               Decorate 53(buffer_position_ms) Binding 0
+                              Decorate 53(buffer_position_ms) DescriptorSet 0
                               Decorate 59 ArrayStride 4
-                              MemberDecorate 60(r) 0 Offset 0
                               Decorate 60(r) Block
-                              Decorate 62(r) DescriptorSet 0
+                              MemberDecorate 60(r) 0 Offset 0
                               Decorate 62(r) Binding 1
+                              Decorate 62(r) DescriptorSet 0
                               Decorate 85(gi) BuiltIn LocalInvocationIndex
                2:             TypeVoid
                3:             TypeFunction 2

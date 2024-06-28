@@ -42,69 +42,69 @@ spv.nvAtomicFp16Vec.frag
                               Name 340  "fimageCubev4"
                               Name 350  "fimageCubeArrayv4"
                               Name 360  "fimage3Dv4"
+                              Decorate 9(Buffer) BufferBlock
                               MemberDecorate 9(Buffer) 0 Offset 0
                               MemberDecorate 9(Buffer) 1 Offset 8
                               MemberDecorate 9(Buffer) 2 Offset 16
                               MemberDecorate 9(Buffer) 3 Offset 24
-                              Decorate 9(Buffer) BufferBlock
-                              Decorate 11(buf) DescriptorSet 0
                               Decorate 11(buf) Binding 0
-                              Decorate 74(fimage1D) DescriptorSet 0
-                              Decorate 74(fimage1D) Binding 0
+                              Decorate 11(buf) DescriptorSet 0
                               Decorate 74(fimage1D) Volatile
                               Decorate 74(fimage1D) Coherent
-                              Decorate 85(fimage1DArray) DescriptorSet 0
-                              Decorate 85(fimage1DArray) Binding 1
+                              Decorate 74(fimage1D) Binding 0
+                              Decorate 74(fimage1D) DescriptorSet 0
                               Decorate 85(fimage1DArray) Volatile
                               Decorate 85(fimage1DArray) Coherent
-                              Decorate 97(fimage2D) DescriptorSet 0
-                              Decorate 97(fimage2D) Binding 2
+                              Decorate 85(fimage1DArray) Binding 1
+                              Decorate 85(fimage1DArray) DescriptorSet 0
                               Decorate 97(fimage2D) Volatile
                               Decorate 97(fimage2D) Coherent
-                              Decorate 107(fimage2DArray) DescriptorSet 0
-                              Decorate 107(fimage2DArray) Binding 3
+                              Decorate 97(fimage2D) Binding 2
+                              Decorate 97(fimage2D) DescriptorSet 0
                               Decorate 107(fimage2DArray) Volatile
                               Decorate 107(fimage2DArray) Coherent
-                              Decorate 119(fimageCube) DescriptorSet 0
-                              Decorate 119(fimageCube) Binding 5
+                              Decorate 107(fimage2DArray) Binding 3
+                              Decorate 107(fimage2DArray) DescriptorSet 0
                               Decorate 119(fimageCube) Volatile
                               Decorate 119(fimageCube) Coherent
-                              Decorate 129(fimageCubeArray) DescriptorSet 0
-                              Decorate 129(fimageCubeArray) Binding 6
+                              Decorate 119(fimageCube) Binding 5
+                              Decorate 119(fimageCube) DescriptorSet 0
                               Decorate 129(fimageCubeArray) Volatile
                               Decorate 129(fimageCubeArray) Coherent
-                              Decorate 139(fimage3D) DescriptorSet 0
-                              Decorate 139(fimage3D) Binding 9
+                              Decorate 129(fimageCubeArray) Binding 6
+                              Decorate 129(fimageCubeArray) DescriptorSet 0
                               Decorate 139(fimage3D) Volatile
                               Decorate 139(fimage3D) Coherent
-                              Decorate 299(fimage1Dv4) DescriptorSet 0
-                              Decorate 299(fimage1Dv4) Binding 10
+                              Decorate 139(fimage3D) Binding 9
+                              Decorate 139(fimage3D) DescriptorSet 0
                               Decorate 299(fimage1Dv4) Volatile
                               Decorate 299(fimage1Dv4) Coherent
-                              Decorate 310(fimage1DArrayv4) DescriptorSet 0
-                              Decorate 310(fimage1DArrayv4) Binding 11
+                              Decorate 299(fimage1Dv4) Binding 10
+                              Decorate 299(fimage1Dv4) DescriptorSet 0
                               Decorate 310(fimage1DArrayv4) Volatile
                               Decorate 310(fimage1DArrayv4) Coherent
-                              Decorate 320(fimage2Dv4) DescriptorSet 0
-                              Decorate 320(fimage2Dv4) Binding 12
+                              Decorate 310(fimage1DArrayv4) Binding 11
+                              Decorate 310(fimage1DArrayv4) DescriptorSet 0
                               Decorate 320(fimage2Dv4) Volatile
                               Decorate 320(fimage2Dv4) Coherent
-                              Decorate 330(fimage2DArrayv4) DescriptorSet 0
-                              Decorate 330(fimage2DArrayv4) Binding 13
+                              Decorate 320(fimage2Dv4) Binding 12
+                              Decorate 320(fimage2Dv4) DescriptorSet 0
                               Decorate 330(fimage2DArrayv4) Volatile
                               Decorate 330(fimage2DArrayv4) Coherent
-                              Decorate 340(fimageCubev4) DescriptorSet 0
-                              Decorate 340(fimageCubev4) Binding 15
+                              Decorate 330(fimage2DArrayv4) Binding 13
+                              Decorate 330(fimage2DArrayv4) DescriptorSet 0
                               Decorate 340(fimageCubev4) Volatile
                               Decorate 340(fimageCubev4) Coherent
-                              Decorate 350(fimageCubeArrayv4) DescriptorSet 0
-                              Decorate 350(fimageCubeArrayv4) Binding 16
+                              Decorate 340(fimageCubev4) Binding 15
+                              Decorate 340(fimageCubev4) DescriptorSet 0
                               Decorate 350(fimageCubeArrayv4) Volatile
                               Decorate 350(fimageCubeArrayv4) Coherent
-                              Decorate 360(fimage3Dv4) DescriptorSet 0
-                              Decorate 360(fimage3Dv4) Binding 19
+                              Decorate 350(fimageCubeArrayv4) Binding 16
+                              Decorate 350(fimageCubeArrayv4) DescriptorSet 0
                               Decorate 360(fimage3Dv4) Volatile
                               Decorate 360(fimage3Dv4) Coherent
+                              Decorate 360(fimage3Dv4) Binding 19
+                              Decorate 360(fimage3Dv4) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 16

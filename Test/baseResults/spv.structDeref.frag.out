@@ -42,8 +42,8 @@ spv.structDeref.frag
                               Name 122  "foo2"
                               Decorate 61(coord) Location 0
                               Decorate 99(gl_FragColor) Location 0
-                              Decorate 116(samp2D) DescriptorSet 0
                               Decorate 116(samp2D) Binding 0
+                              Decorate 116(samp2D) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 1

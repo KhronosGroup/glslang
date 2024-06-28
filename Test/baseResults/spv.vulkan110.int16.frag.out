@@ -77,10 +77,11 @@ spv.vulkan110.int16.frag
                               Name 532  "block"
                               Name 533  "si16"
                               Name 534  "su16"
-                              MemberDecorate 24(Uniforms) 0 Offset 0
                               Decorate 24(Uniforms) Block
-                              Decorate 26 DescriptorSet 0
+                              MemberDecorate 24(Uniforms) 0 Offset 0
                               Decorate 26 Binding 0
+                              Decorate 26 DescriptorSet 0
+                              Decorate 530(Block) Block
                               MemberDecorate 530(Block) 0 Offset 0
                               MemberDecorate 530(Block) 1 Offset 4
                               MemberDecorate 530(Block) 2 Offset 8
@@ -89,9 +90,8 @@ spv.vulkan110.int16.frag
                               MemberDecorate 530(Block) 5 Offset 28
                               MemberDecorate 530(Block) 6 Offset 32
                               MemberDecorate 530(Block) 7 Offset 40
-                              Decorate 530(Block) Block
-                              Decorate 532(block) DescriptorSet 0
                               Decorate 532(block) Binding 1
+                              Decorate 532(block) DescriptorSet 0
                               Decorate 533(si16) SpecId 100
                               Decorate 534(su16) SpecId 101
                2:             TypeVoid

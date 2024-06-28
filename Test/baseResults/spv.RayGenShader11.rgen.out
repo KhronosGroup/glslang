@@ -25,11 +25,11 @@ spv.RayGenShader11.rgen
                               Name 52  "payload"
                               Decorate 11(gl_LaunchIDNV) BuiltIn LaunchIdKHR
                               Decorate 21(gl_LaunchSizeNV) BuiltIn LaunchSizeKHR
-                              Decorate 29(accNV) DescriptorSet 0
                               Decorate 29(accNV) Binding 0
+                              Decorate 29(accNV) DescriptorSet 0
+                              Decorate 37(block) Block
                               MemberDecorate 37(block) 0 Offset 0
                               MemberDecorate 37(block) 1 Offset 16
-                              Decorate 37(block) Block
                               Decorate 52(payload) Location 0
                2:             TypeVoid
                3:             TypeFunction 2

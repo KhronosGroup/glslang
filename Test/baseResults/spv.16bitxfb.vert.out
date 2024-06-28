@@ -31,24 +31,24 @@ spv.16bitxfb.vert
                               Name 46  ""
                               Name 49  "iu16v4"
                               Decorate 9(of16v3) Location 0
+                              Decorate 9(of16v3) Offset 0
                               Decorate 9(of16v3) XfbBuffer 0
                               Decorate 9(of16v3) XfbStride 6
-                              Decorate 9(of16v3) Offset 0
                               Decorate 12(if16v4) Location 0
+                              Decorate 16(F16Out) Block
                               MemberDecorate 16(F16Out) 0 Offset 0
                               MemberDecorate 16(F16Out) 1 Offset 2
-                              Decorate 16(F16Out) Block
                               Decorate 18 Location 1
                               Decorate 18 XfbBuffer 1
                               Decorate 18 XfbStride 6
                               Decorate 36(oi16v3) Location 5
+                              Decorate 36(oi16v3) Offset 0
                               Decorate 36(oi16v3) XfbBuffer 2
                               Decorate 36(oi16v3) XfbStride 6
-                              Decorate 36(oi16v3) Offset 0
                               Decorate 39(ii16v4) Location 1
+                              Decorate 44(I16Out) Block
                               MemberDecorate 44(I16Out) 0 Offset 0
                               MemberDecorate 44(I16Out) 1 Offset 2
-                              Decorate 44(I16Out) Block
                               Decorate 46 Location 6
                               Decorate 46 XfbBuffer 3
                               Decorate 46 XfbStride 6

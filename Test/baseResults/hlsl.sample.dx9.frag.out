@@ -413,16 +413,16 @@ using depth_any
                               Name 125  "flattenTemp"
                               Name 128  "@entryPointOutput.Color"
                               Name 132  "@entryPointOutput.Depth"
-                              Decorate 20(g_sam) DescriptorSet 0
                               Decorate 20(g_sam) Binding 0
-                              Decorate 32(g_sam1D) DescriptorSet 0
+                              Decorate 20(g_sam) DescriptorSet 0
                               Decorate 32(g_sam1D) Binding 1
-                              Decorate 38(g_sam2D) DescriptorSet 0
+                              Decorate 32(g_sam1D) DescriptorSet 0
                               Decorate 38(g_sam2D) Binding 2
-                              Decorate 48(g_sam3D) DescriptorSet 0
+                              Decorate 38(g_sam2D) DescriptorSet 0
                               Decorate 48(g_sam3D) Binding 3
-                              Decorate 58(g_samCube) DescriptorSet 0
+                              Decorate 48(g_sam3D) DescriptorSet 0
                               Decorate 58(g_samCube) Binding 4
+                              Decorate 58(g_samCube) DescriptorSet 0
                               Decorate 128(@entryPointOutput.Color) Location 0
                               Decorate 132(@entryPointOutput.Depth) BuiltIn FragDepth
                3:             TypeVoid

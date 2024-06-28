@@ -21,12 +21,12 @@ spv.perprimitiveNV.frag
                               MemberName 17(C) 0  "h"
                               Name 19  ""
                               Decorate 8(g) Location 8
-                              MemberDecorate 9(B) 0 PerPrimitiveNV
                               Decorate 9(B) Block
+                              MemberDecorate 9(B) 0 PerPrimitiveNV
                               Decorate 11 Location 0
+                              Decorate 17(C) Block
                               MemberDecorate 17(C) 0 Flat
                               MemberDecorate 17(C) 0 Centroid
-                              Decorate 17(C) Block
                               Decorate 19 Location 4
                2:             TypeVoid
                3:             TypeFunction 2

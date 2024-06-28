@@ -551,6 +551,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.floatFetch.frag",
         "spv.atomicRvalue.error.vert",
         "spv.sampledImageBlock.frag",
+        "spv.multiple.var.same.const.frag",
     })),
     FileNameAsCustomTestSuffix
 );

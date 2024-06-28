@@ -183,11 +183,11 @@ gl_FragCoord origin is upper left
                               Name 53  "vpos"
                               Name 65  "@entryPointOutput"
                               Name 66  "param"
+                              Decorate 36($Global) Block
                               MemberDecorate 36($Global) 0 Offset 0
                               MemberDecorate 36($Global) 1 Offset 16
-                              Decorate 36($Global) Block
-                              Decorate 38 DescriptorSet 0
                               Decorate 38 Binding 0
+                              Decorate 38 DescriptorSet 0
                               Decorate 53(vpos) BuiltIn FragCoord
                               Decorate 65(@entryPointOutput) Location 0
                2:             TypeVoid

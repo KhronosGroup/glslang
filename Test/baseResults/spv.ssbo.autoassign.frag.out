@@ -33,21 +33,21 @@ spv.ssbo.autoassign.frag
                               MemberDecorate 14(BufType) 0 Offset 0
                               MemberDecorate 14(BufType) 1 Offset 16
                               Decorate 15 ArrayStride 32
+                              Decorate 16(SB0) BufferBlock
                               MemberDecorate 16(SB0) 0 NonWritable
                               MemberDecorate 16(SB0) 0 Offset 0
-                              Decorate 16(SB0) BufferBlock
-                              Decorate 18(SB0) DescriptorSet 0
                               Decorate 18(SB0) Binding 30
+                              Decorate 18(SB0) DescriptorSet 0
+                              Decorate 26(TestCB) Block
                               MemberDecorate 26(TestCB) 0 Offset 0
                               MemberDecorate 26(TestCB) 1 Offset 4
-                              Decorate 26(TestCB) Block
-                              Decorate 28 DescriptorSet 0
                               Decorate 28 Binding 15
+                              Decorate 28 DescriptorSet 0
                               Decorate 56 ArrayStride 32
-                              MemberDecorate 57(SB1) 0 Offset 0
                               Decorate 57(SB1) BufferBlock
-                              Decorate 59(SB1) DescriptorSet 0
+                              MemberDecorate 57(SB1) 0 Offset 0
                               Decorate 59(SB1) Binding 31
+                              Decorate 59(SB1) DescriptorSet 0
                               Decorate 92(pos) Location 0
                               Decorate 95(@entryPointOutput) Location 0
                2:             TypeVoid

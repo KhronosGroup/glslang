@@ -15,11 +15,11 @@ spv.builtInXFB.vert
                               MemberName 8(gl_PerVertex) 0  "gl_Position"
                               MemberName 8(gl_PerVertex) 1  "gl_PointSize"
                               Name 10  ""
-                              MemberDecorate 8(gl_PerVertex) 0 Offset 20
-                              MemberDecorate 8(gl_PerVertex) 0 BuiltIn Position
-                              MemberDecorate 8(gl_PerVertex) 1 Offset 16
-                              MemberDecorate 8(gl_PerVertex) 1 BuiltIn PointSize
                               Decorate 8(gl_PerVertex) Block
+                              MemberDecorate 8(gl_PerVertex) 0 BuiltIn Position
+                              MemberDecorate 8(gl_PerVertex) 0 Offset 20
+                              MemberDecorate 8(gl_PerVertex) 1 BuiltIn PointSize
+                              MemberDecorate 8(gl_PerVertex) 1 Offset 16
                               Decorate 10 XfbBuffer 1
                               Decorate 10 XfbStride 64
                2:             TypeVoid

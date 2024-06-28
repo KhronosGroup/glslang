@@ -21,10 +21,10 @@ spv.nonuniform5.frag
                               Name 13  "ubos"
                               Name 16  "Index"
                               Decorate 9(FragColor) Location 0
-                              MemberDecorate 10(UBO) 0 Offset 0
                               Decorate 10(UBO) Block
-                              Decorate 13(ubos) DescriptorSet 0
+                              MemberDecorate 10(UBO) 0 Offset 0
                               Decorate 13(ubos) Binding 0
+                              Decorate 13(ubos) DescriptorSet 0
                               Decorate 16(Index) Flat
                               Decorate 16(Index) Location 0
                               Decorate 18 DecorationNonUniformEXT

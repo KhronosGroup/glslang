@@ -25,16 +25,16 @@ spv.multiviewPerViewAttributes.tesc
                               MemberName 27(gl_PerVertex) 3  "gl_CullDistance"
                               MemberName 27(gl_PerVertex) 4  "gl_PositionPerViewNV"
                               Name 31  "gl_in"
+                              Decorate 13(gl_PerVertex) Block
                               MemberDecorate 13(gl_PerVertex) 0 BuiltIn PositionPerViewNV
                               MemberDecorate 13(gl_PerVertex) 1 BuiltIn ViewportMaskPerViewNV
-                              Decorate 13(gl_PerVertex) Block
                               Decorate 19(gl_InvocationID) BuiltIn InvocationId
+                              Decorate 27(gl_PerVertex) Block
                               MemberDecorate 27(gl_PerVertex) 0 BuiltIn Position
                               MemberDecorate 27(gl_PerVertex) 1 BuiltIn PointSize
                               MemberDecorate 27(gl_PerVertex) 2 BuiltIn ClipDistance
                               MemberDecorate 27(gl_PerVertex) 3 BuiltIn CullDistance
                               MemberDecorate 27(gl_PerVertex) 4 BuiltIn PositionPerViewNV
-                              Decorate 27(gl_PerVertex) Block
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

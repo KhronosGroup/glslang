@@ -24,11 +24,11 @@ spv.atomicInt64.comp
                               MemberName 84(Struct) 0  "i64"
                               MemberName 84(Struct) 1  "u64"
                               Name 86  "s"
+                              Decorate 14(Buffer) BufferBlock
                               MemberDecorate 14(Buffer) 0 Offset 0
                               MemberDecorate 14(Buffer) 1 Offset 8
-                              Decorate 14(Buffer) BufferBlock
-                              Decorate 16(buf) DescriptorSet 0
                               Decorate 16(buf) Binding 0
+                              Decorate 16(buf) DescriptorSet 0
                               Decorate 148 BuiltIn WorkgroupSize
                2:             TypeVoid
                3:             TypeFunction 2

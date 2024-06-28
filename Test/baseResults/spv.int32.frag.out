@@ -80,10 +80,11 @@ spv.int32.frag
                               Name 496  "si"
                               Name 497  "su"
                               Name 498  "sb"
-                              MemberDecorate 27(Uniforms) 0 Offset 0
                               Decorate 27(Uniforms) Block
-                              Decorate 29 DescriptorSet 0
+                              MemberDecorate 27(Uniforms) 0 Offset 0
                               Decorate 29 Binding 0
+                              Decorate 29 DescriptorSet 0
+                              Decorate 491(Block) Block
                               MemberDecorate 491(Block) 0 Offset 0
                               MemberDecorate 491(Block) 1 Offset 8
                               MemberDecorate 491(Block) 2 Offset 16
@@ -92,9 +93,8 @@ spv.int32.frag
                               MemberDecorate 491(Block) 5 Offset 56
                               MemberDecorate 491(Block) 6 Offset 64
                               MemberDecorate 491(Block) 7 Offset 80
-                              Decorate 491(Block) Block
-                              Decorate 493(block) DescriptorSet 0
                               Decorate 493(block) Binding 1
+                              Decorate 493(block) DescriptorSet 0
                               Decorate 494(si32) SpecId 100
                               Decorate 495(su32) SpecId 101
                               Decorate 496(si) SpecId 102

@@ -22,8 +22,8 @@ hlsl.autosampledtextures.frag
                               Name 36  "i.vTextureCoords"
                               Name 40  "@entryPointOutput.vColor"
                               Name 41  "param"
-                              Decorate 23(g_tColor) DescriptorSet 0
                               Decorate 23(g_tColor) Binding 0
+                              Decorate 23(g_tColor) DescriptorSet 0
                               Decorate 36(i.vTextureCoords) Location 0
                               Decorate 40(@entryPointOutput.vColor) Location 0
                2:             TypeVoid

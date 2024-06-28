@@ -165,14 +165,14 @@ local_size = (256, 1, 1)
                               Name 57  "dispatchId"
                               Name 60  "param"
                               Decorate 8 ArrayStride 4
+                              Decorate 9 BufferBlock
                               MemberDecorate 9 0 NonWritable
                               MemberDecorate 9 0 Offset 0
-                              Decorate 9 BufferBlock
                               Decorate 14(buffer) NonWritable
-                              Decorate 44(g_input) DescriptorSet 0
                               Decorate 44(g_input) Binding 0
-                              Decorate 50(g_output) DescriptorSet 0
+                              Decorate 44(g_input) DescriptorSet 0
                               Decorate 50(g_output) Binding 1
+                              Decorate 50(g_output) DescriptorSet 0
                               Decorate 57(dispatchId) BuiltIn GlobalInvocationId
                2:             TypeVoid
                3:             TypeFunction 2

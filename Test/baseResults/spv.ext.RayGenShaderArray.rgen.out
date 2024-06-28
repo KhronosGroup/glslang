@@ -35,16 +35,16 @@ spv.ext.RayGenShaderArray.rgen
                               Name 65  "accEXT1"
                               Decorate 11(gl_LaunchIDEXT) BuiltIn LaunchIdKHR
                               Decorate 21(gl_LaunchSizeEXT) BuiltIn LaunchSizeKHR
-                              Decorate 30(accEXT0) DescriptorSet 0
                               Decorate 30(accEXT0) Binding 0
+                              Decorate 30(accEXT0) DescriptorSet 0
+                              Decorate 36(block) Block
                               MemberDecorate 36(block) 0 Offset 0
                               MemberDecorate 36(block) 1 Offset 16
                               MemberDecorate 36(block) 2 Offset 28
                               MemberDecorate 36(block) 3 Offset 32
                               MemberDecorate 36(block) 4 Offset 40
-                              Decorate 36(block) Block
-                              Decorate 65(accEXT1) DescriptorSet 0
                               Decorate 65(accEXT1) Binding 1
+                              Decorate 65(accEXT1) DescriptorSet 0
                               Decorate 80 DecorationNonUniformEXT
                               Decorate 81 DecorationNonUniformEXT
                               Decorate 82 DecorationNonUniformEXT

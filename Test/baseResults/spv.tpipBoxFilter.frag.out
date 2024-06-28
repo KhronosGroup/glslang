@@ -22,17 +22,17 @@ spv.tpipBoxFilter.frag
                               Name 41  "tex2DArray_weights"
                               Name 42  "tex2D_src2"
                               Decorate 15(fragColor) Location 0
-                              Decorate 18(tex2D_src1) DescriptorSet 0
                               Decorate 18(tex2D_src1) Binding 1
-                              Decorate 22(samp) DescriptorSet 0
+                              Decorate 18(tex2D_src1) DescriptorSet 0
                               Decorate 22(samp) Binding 3
+                              Decorate 22(samp) DescriptorSet 0
                               Decorate 27(v_texcoord) Location 0
-                              Decorate 33(tex_samp) DescriptorSet 0
                               Decorate 33(tex_samp) Binding 4
-                              Decorate 41(tex2DArray_weights) DescriptorSet 0
+                              Decorate 33(tex_samp) DescriptorSet 0
                               Decorate 41(tex2DArray_weights) Binding 0
-                              Decorate 42(tex2D_src2) DescriptorSet 0
+                              Decorate 41(tex2DArray_weights) DescriptorSet 0
                               Decorate 42(tex2D_src2) Binding 2
+                              Decorate 42(tex2D_src2) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

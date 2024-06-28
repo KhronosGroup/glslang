@@ -32,16 +32,16 @@ spv.420.geom
                               Name 46  "coord"
                               Name 64  "i"
                               Name 67  "indexable"
-                              MemberDecorate 9(gl_PerVertex) 0 BuiltIn PointSize
                               Decorate 9(gl_PerVertex) Block
-                              MemberDecorate 21(gl_PerVertex) 0 BuiltIn PointSize
+                              MemberDecorate 9(gl_PerVertex) 0 BuiltIn PointSize
                               Decorate 21(gl_PerVertex) Block
+                              MemberDecorate 21(gl_PerVertex) 0 BuiltIn PointSize
                               Decorate 23 Stream 0
-                              Decorate 28(gl_ViewportIndex) Stream 0
                               Decorate 28(gl_ViewportIndex) BuiltIn ViewportIndex
+                              Decorate 28(gl_ViewportIndex) Stream 0
                               Decorate 33(gl_InvocationID) BuiltIn InvocationId
-                              Decorate 41(s2D) DescriptorSet 0
                               Decorate 41(s2D) Binding 0
+                              Decorate 41(s2D) DescriptorSet 0
                               Decorate 46(coord) Location 0
                2:             TypeVoid
                3:             TypeFunction 2

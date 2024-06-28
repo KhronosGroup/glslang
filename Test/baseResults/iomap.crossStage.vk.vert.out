@@ -411,23 +411,23 @@ gl_FragCoord origin is upper left
                               Decorate 14(vgo2) Location 1
                               Decorate 16(outBlock) Block
                               Decorate 18 Location 5
-                              Decorate 25(glass) DescriptorSet 0
                               Decorate 25(glass) Binding 0
+                              Decorate 25(glass) DescriptorSet 0
+                              Decorate 26(crossStageBlock1) Block
                               MemberDecorate 26(crossStageBlock1) 0 Offset 0
                               MemberDecorate 26(crossStageBlock1) 1 Offset 16
-                              Decorate 26(crossStageBlock1) Block
-                              Decorate 28 DescriptorSet 0
                               Decorate 28 Binding 1
+                              Decorate 28 DescriptorSet 0
+                              Decorate 29(vertOnlyBlock) BufferBlock
                               MemberDecorate 29(vertOnlyBlock) 0 NonWritable
                               MemberDecorate 29(vertOnlyBlock) 0 Offset 0
-                              Decorate 29(vertOnlyBlock) BufferBlock
-                              Decorate 31 DescriptorSet 0
                               Decorate 31 Binding 0
+                              Decorate 31 DescriptorSet 0
+                              Decorate 32(crossStageBlock2) Block
                               MemberDecorate 32(crossStageBlock2) 0 Offset 0
                               MemberDecorate 32(crossStageBlock2) 1 Offset 16
-                              Decorate 32(crossStageBlock2) Block
-                              Decorate 37(blockName1) DescriptorSet 0
                               Decorate 37(blockName1) Binding 3
+                              Decorate 37(blockName1) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32
@@ -506,11 +506,11 @@ gl_FragCoord origin is upper left
                               Decorate 37(inBlock) Location 5
                               Decorate 48(vgo1) Location 0
                               Decorate 51(vgo2) Location 1
+                              Decorate 52(crossStageBlock2) Block
                               MemberDecorate 52(crossStageBlock2) 0 Offset 0
                               MemberDecorate 52(crossStageBlock2) 1 Offset 16
-                              Decorate 52(crossStageBlock2) Block
-                              Decorate 56(blockName1) DescriptorSet 0
                               Decorate 56(blockName1) Binding 3
+                              Decorate 56(blockName1) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 1
@@ -613,28 +613,28 @@ gl_FragCoord origin is upper left
                               Name 74  ""
                               Name 76  "gfo2"
                               Name 80  "glass"
+                              Decorate 15(fragOnlyBlock) BufferBlock
                               MemberDecorate 15(fragOnlyBlock) 0 NonWritable
                               MemberDecorate 15(fragOnlyBlock) 0 Offset 0
-                              Decorate 15(fragOnlyBlock) BufferBlock
-                              Decorate 17 DescriptorSet 0
                               Decorate 17 Binding 2
+                              Decorate 17 DescriptorSet 0
+                              Decorate 23(crossStageBlock2) Block
                               MemberDecorate 23(crossStageBlock2) 0 Offset 0
                               MemberDecorate 23(crossStageBlock2) 1 Offset 16
-                              Decorate 23(crossStageBlock2) Block
-                              Decorate 28(blockName2) DescriptorSet 0
                               Decorate 28(blockName2) Binding 3
+                              Decorate 28(blockName2) DescriptorSet 0
+                              Decorate 38(crossStageBlock1) Block
                               MemberDecorate 38(crossStageBlock1) 0 Offset 0
                               MemberDecorate 38(crossStageBlock1) 1 Offset 16
-                              Decorate 38(crossStageBlock1) Block
-                              Decorate 40 DescriptorSet 0
                               Decorate 40 Binding 1
+                              Decorate 40 DescriptorSet 0
                               Decorate 64(gfo1) Location 0
                               Decorate 70(outColor) Location 0
                               Decorate 72(outBlock) Block
                               Decorate 74 Location 5
                               Decorate 76(gfo2) Location 1
-                              Decorate 80(glass) DescriptorSet 0
                               Decorate 80(glass) Binding 0
+                              Decorate 80(glass) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

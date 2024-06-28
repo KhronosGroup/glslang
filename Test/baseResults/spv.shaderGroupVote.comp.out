@@ -17,10 +17,10 @@ spv.shaderGroupVote.comp
                               Name 10  "Buffers"
                               MemberName 10(Buffers) 0  "b"
                               Name 12  ""
-                              MemberDecorate 10(Buffers) 0 Offset 0
                               Decorate 10(Buffers) BufferBlock
-                              Decorate 12 DescriptorSet 0
+                              MemberDecorate 10(Buffers) 0 Offset 0
                               Decorate 12 Binding 0
+                              Decorate 12 DescriptorSet 0
                               Decorate 32 BuiltIn WorkgroupSize
                2:             TypeVoid
                3:             TypeFunction 2

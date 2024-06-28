@@ -33,25 +33,25 @@ spv.bufferhandle14.frag
                               MemberName 38(T4) 1  "j"
                               MemberName 38(T4) 2  "k"
                               Name 40  "t4"
+                              Decorate 8(T1) Block
                               MemberDecorate 8(T1) 0 Offset 0
                               MemberDecorate 8(T1) 1 Offset 4
                               MemberDecorate 8(T1) 2 Offset 8
-                              Decorate 8(T1) Block
                               Decorate 10(t1) DecorationAliasedPointerEXT
+                              Decorate 20(T2) Block
                               MemberDecorate 20(T2) 0 Offset 0
                               MemberDecorate 20(T2) 1 Offset 4
                               MemberDecorate 20(T2) 2 Offset 8
-                              Decorate 20(T2) Block
                               Decorate 22(t2) DecorationAliasedPointerEXT
+                              Decorate 29(T3) Block
                               MemberDecorate 29(T3) 0 Offset 0
                               MemberDecorate 29(T3) 1 Offset 4
                               MemberDecorate 29(T3) 2 Offset 8
-                              Decorate 29(T3) Block
                               Decorate 31(t3) DecorationAliasedPointerEXT
+                              Decorate 38(T4) Block
                               MemberDecorate 38(T4) 0 Offset 0
                               MemberDecorate 38(T4) 1 Offset 4
                               MemberDecorate 38(T4) 2 Offset 8
-                              Decorate 38(T4) Block
                               Decorate 40(t4) DecorationAliasedPointerEXT
                2:             TypeVoid
                3:             TypeFunction 2

@@ -40,8 +40,8 @@ spv.precisionArgs.frag
                               Name 80  "param"
                               Decorate 8(f) RelaxedPrecision
                               Decorate 14(f) RelaxedPrecision
-                              Decorate 20(retM(f1;) RelaxedPrecision
                               Decorate 19(x) RelaxedPrecision
+                              Decorate 20(retM(f1;) RelaxedPrecision
                               Decorate 26(retHM(f1;) RelaxedPrecision
                               Decorate 28(x) RelaxedPrecision
                               Decorate 31 RelaxedPrecision

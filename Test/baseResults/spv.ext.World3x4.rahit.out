@@ -26,8 +26,8 @@ spv.ext.World3x4.rahit
                               Name 89  "hitValue"
                               Decorate 43(gl_LaunchIDEXT) BuiltIn LaunchIdKHR
                               Decorate 60(gl_WorldToObject3x4EXT) BuiltIn WorldToObjectKHR
-                              Decorate 78(result) DescriptorSet 0
                               Decorate 78(result) Binding 0
+                              Decorate 78(result) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

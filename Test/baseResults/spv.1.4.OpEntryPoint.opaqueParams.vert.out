@@ -18,12 +18,12 @@ spv.1.4.OpEntryPoint.opaqueParams.vert
                               Name 41  "s2D"
                               Name 42  "t2D"
                               Name 43  "s"
-                              Decorate 41(s2D) DescriptorSet 0
                               Decorate 41(s2D) Binding 0
-                              Decorate 42(t2D) DescriptorSet 0
+                              Decorate 41(s2D) DescriptorSet 0
                               Decorate 42(t2D) Binding 1
-                              Decorate 43(s) DescriptorSet 0
+                              Decorate 42(t2D) DescriptorSet 0
                               Decorate 43(s) Binding 3
+                              Decorate 43(s) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

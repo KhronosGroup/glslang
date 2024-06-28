@@ -50,6 +50,7 @@ spv.subgroupExtendedTypesVote.comp
                               Decorate 13 RelaxedPrecision
                               Decorate 14 RelaxedPrecision
                               Decorate 16 RelaxedPrecision
+                              Decorate 32(Buffers) Block
                               MemberDecorate 32(Buffers) 0 Offset 0
                               MemberDecorate 32(Buffers) 1 Offset 4
                               MemberDecorate 32(Buffers) 2 Offset 8
@@ -58,9 +59,8 @@ spv.subgroupExtendedTypesVote.comp
                               MemberDecorate 32(Buffers) 5 Offset 64
                               MemberDecorate 32(Buffers) 6 Offset 96
                               MemberDecorate 32(Buffers) 7 Offset 104
-                              Decorate 32(Buffers) Block
-                              Decorate 35(data) DescriptorSet 0
                               Decorate 35(data) Binding 0
+                              Decorate 35(data) DescriptorSet 0
                               Decorate 276 BuiltIn WorkgroupSize
                2:             TypeVoid
                3:             TypeFunction 2

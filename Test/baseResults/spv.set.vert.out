@@ -15,12 +15,12 @@ spv.set.vert
                               Name 12  "setBufInst"
                               Name 21  "samp2D"
                               Decorate 9(color) Location 0
-                              MemberDecorate 10(setBuf) 0 Offset 0
                               Decorate 10(setBuf) BufferBlock
-                              Decorate 12(setBufInst) DescriptorSet 0
+                              MemberDecorate 10(setBuf) 0 Offset 0
                               Decorate 12(setBufInst) Binding 8
-                              Decorate 21(samp2D) DescriptorSet 4
+                              Decorate 12(setBufInst) DescriptorSet 0
                               Decorate 21(samp2D) Binding 7
+                              Decorate 21(samp2D) DescriptorSet 4
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

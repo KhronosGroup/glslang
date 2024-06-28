@@ -70,63 +70,63 @@ Validation failed
                               Name 27  ""
                               Decorate 13 ArrayStride 16
                               Decorate 24 ArrayStride 16
+                              Decorate 25(CB) Block
                               MemberDecorate 25(CB) 0 Offset 0
                               MemberDecorate 25(CB) 1 Offset 16
                               MemberDecorate 25(CB) 2 Offset 60
                               MemberDecorate 25(CB) 3 Offset 64
                               MemberDecorate 25(CB) 4 RowMajor
-                              MemberDecorate 25(CB) 4 Offset 68
                               MemberDecorate 25(CB) 4 MatrixStride 16
+                              MemberDecorate 25(CB) 4 Offset 68
                               MemberDecorate 25(CB) 5 RowMajor
-                              MemberDecorate 25(CB) 5 Offset 80
                               MemberDecorate 25(CB) 5 MatrixStride 16
+                              MemberDecorate 25(CB) 5 Offset 80
                               MemberDecorate 25(CB) 6 RowMajor
-                              MemberDecorate 25(CB) 6 Offset 100
                               MemberDecorate 25(CB) 6 MatrixStride 16
+                              MemberDecorate 25(CB) 6 Offset 100
                               MemberDecorate 25(CB) 7 RowMajor
-                              MemberDecorate 25(CB) 7 Offset 112
                               MemberDecorate 25(CB) 7 MatrixStride 16
+                              MemberDecorate 25(CB) 7 Offset 112
                               MemberDecorate 25(CB) 8 RowMajor
-                              MemberDecorate 25(CB) 8 Offset 144
                               MemberDecorate 25(CB) 8 MatrixStride 16
+                              MemberDecorate 25(CB) 8 Offset 144
                               MemberDecorate 25(CB) 9 Offset 188
                               MemberDecorate 25(CB) 10 RowMajor
-                              MemberDecorate 25(CB) 10 Offset 192
                               MemberDecorate 25(CB) 10 MatrixStride 16
+                              MemberDecorate 25(CB) 10 Offset 192
                               MemberDecorate 25(CB) 11 Offset 252
                               MemberDecorate 25(CB) 12 RowMajor
-                              MemberDecorate 25(CB) 12 Offset 256
                               MemberDecorate 25(CB) 12 MatrixStride 16
+                              MemberDecorate 25(CB) 12 Offset 256
                               MemberDecorate 25(CB) 13 Offset 304
                               MemberDecorate 25(CB) 14 ColMajor
-                              MemberDecorate 25(CB) 14 Offset 308
                               MemberDecorate 25(CB) 14 MatrixStride 16
+                              MemberDecorate 25(CB) 14 Offset 308
                               MemberDecorate 25(CB) 15 ColMajor
-                              MemberDecorate 25(CB) 15 Offset 312
                               MemberDecorate 25(CB) 15 MatrixStride 16
+                              MemberDecorate 25(CB) 15 Offset 312
                               MemberDecorate 25(CB) 16 ColMajor
-                              MemberDecorate 25(CB) 16 Offset 320
                               MemberDecorate 25(CB) 16 MatrixStride 16
+                              MemberDecorate 25(CB) 16 Offset 320
                               MemberDecorate 25(CB) 17 ColMajor
-                              MemberDecorate 25(CB) 17 Offset 352
                               MemberDecorate 25(CB) 17 MatrixStride 16
+                              MemberDecorate 25(CB) 17 Offset 352
                               MemberDecorate 25(CB) 18 ColMajor
-                              MemberDecorate 25(CB) 18 Offset 384
                               MemberDecorate 25(CB) 18 MatrixStride 16
+                              MemberDecorate 25(CB) 18 Offset 384
                               MemberDecorate 25(CB) 19 Offset 428
                               MemberDecorate 25(CB) 20 ColMajor
-                              MemberDecorate 25(CB) 20 Offset 432
                               MemberDecorate 25(CB) 20 MatrixStride 16
+                              MemberDecorate 25(CB) 20 Offset 432
                               MemberDecorate 25(CB) 21 Offset 480
                               MemberDecorate 25(CB) 22 ColMajor
-                              MemberDecorate 25(CB) 22 Offset 496
                               MemberDecorate 25(CB) 22 MatrixStride 16
+                              MemberDecorate 25(CB) 22 Offset 496
                               MemberDecorate 25(CB) 23 Offset 556
                               MemberDecorate 25(CB) 24 Offset 560
                               MemberDecorate 25(CB) 25 Offset 596
-                              Decorate 25(CB) Block
-                              Decorate 27 DescriptorSet 0
                               Decorate 27 Binding 0
+                              Decorate 27 DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                9:             TypeFloat 32

@@ -147,10 +147,10 @@ Shader version: 500
                               Name 33  "@position"
                               Name 44  "@entryPointOutput.pos"
                               Name 47  "@entryPointOutput.somethingelse"
-                              MemberDecorate 16($Global) 0 Offset 0
                               Decorate 16($Global) Block
-                              Decorate 18 DescriptorSet 0
+                              MemberDecorate 16($Global) 0 Offset 0
                               Decorate 18 Binding 0
+                              Decorate 18 DescriptorSet 0
                               Decorate 44(@entryPointOutput.pos) BuiltIn Position
                               Decorate 47(@entryPointOutput.somethingelse) Location 0
                2:             TypeVoid

@@ -31,14 +31,14 @@ spv.RayGenShaderArray.rgen
                               Name 88  "payload"
                               Decorate 11(gl_LaunchIDNV) BuiltIn LaunchIdKHR
                               Decorate 21(gl_LaunchSizeNV) BuiltIn LaunchSizeKHR
-                              Decorate 30(accNV0) DescriptorSet 0
                               Decorate 30(accNV0) Binding 0
+                              Decorate 30(accNV0) DescriptorSet 0
+                              Decorate 34(block) BufferBlock
                               MemberDecorate 34(block) 0 Offset 0
                               MemberDecorate 34(block) 1 Offset 16
                               MemberDecorate 34(block) 2 Offset 28
-                              Decorate 34(block) BufferBlock
-                              Decorate 60(accNV1) DescriptorSet 0
                               Decorate 60(accNV1) Binding 1
+                              Decorate 60(accNV1) DescriptorSet 0
                               Decorate 75 DecorationNonUniformEXT
                               Decorate 76 DecorationNonUniformEXT
                               Decorate 77 DecorationNonUniformEXT

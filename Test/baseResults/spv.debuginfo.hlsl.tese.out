@@ -121,33 +121,33 @@ spv.debuginfo.hlsl.tese
                               Name 468  "@entryPointOutput.LightVec"
                               Name 471  "@entryPointOutput.EyePos"
                               Name 474  "@entryPointOutput.WorldPos"
-                              Decorate 241(displacementMapTexture) DescriptorSet 0
                               Decorate 241(displacementMapTexture) Binding 1
-                              Decorate 253(displacementMapSampler) DescriptorSet 0
+                              Decorate 241(displacementMapTexture) DescriptorSet 0
                               Decorate 253(displacementMapSampler) Binding 1
+                              Decorate 253(displacementMapSampler) DescriptorSet 0
                               Decorate 272 ArrayStride 16
                               MemberDecorate 274(UBO) 0 RowMajor
-                              MemberDecorate 274(UBO) 0 Offset 0
                               MemberDecorate 274(UBO) 0 MatrixStride 16
+                              MemberDecorate 274(UBO) 0 Offset 0
                               MemberDecorate 274(UBO) 1 RowMajor
-                              MemberDecorate 274(UBO) 1 Offset 64
                               MemberDecorate 274(UBO) 1 MatrixStride 16
+                              MemberDecorate 274(UBO) 1 Offset 64
                               MemberDecorate 274(UBO) 2 Offset 128
                               MemberDecorate 274(UBO) 3 Offset 144
                               MemberDecorate 274(UBO) 4 Offset 240
                               MemberDecorate 274(UBO) 5 Offset 244
                               MemberDecorate 274(UBO) 6 Offset 248
                               MemberDecorate 274(UBO) 7 Offset 256
-                              MemberDecorate 297(ubo) 0 Offset 0
                               Decorate 297(ubo) Block
-                              Decorate 303 DescriptorSet 0
+                              MemberDecorate 297(ubo) 0 Offset 0
                               Decorate 303 Binding 0
-                              Decorate 368(input.TessLevelOuter) Patch
+                              Decorate 303 DescriptorSet 0
                               Decorate 368(input.TessLevelOuter) BuiltIn TessLevelOuter
-                              Decorate 383(input.TessLevelInner) Patch
+                              Decorate 368(input.TessLevelOuter) Patch
                               Decorate 383(input.TessLevelInner) BuiltIn TessLevelInner
-                              Decorate 392(TessCoord) Patch
+                              Decorate 383(input.TessLevelInner) Patch
                               Decorate 392(TessCoord) BuiltIn TessCoord
+                              Decorate 392(TessCoord) Patch
                               Decorate 401(patch.Pos) BuiltIn Position
                               Decorate 408(patch.Normal) Location 0
                               Decorate 414(patch.UV) Location 1

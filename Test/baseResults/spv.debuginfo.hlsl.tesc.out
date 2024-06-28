@@ -143,25 +143,25 @@ WARNING: 0:158: '' : attribute does not apply to entry point
                               Name 698  "@patchConstantOutput.TessLevelInner"
                               Decorate 178 ArrayStride 16
                               MemberDecorate 180(UBO) 0 RowMajor
-                              MemberDecorate 180(UBO) 0 Offset 0
                               MemberDecorate 180(UBO) 0 MatrixStride 16
+                              MemberDecorate 180(UBO) 0 Offset 0
                               MemberDecorate 180(UBO) 1 RowMajor
-                              MemberDecorate 180(UBO) 1 Offset 64
                               MemberDecorate 180(UBO) 1 MatrixStride 16
+                              MemberDecorate 180(UBO) 1 Offset 64
                               MemberDecorate 180(UBO) 2 Offset 128
                               MemberDecorate 180(UBO) 3 Offset 144
                               MemberDecorate 180(UBO) 4 Offset 240
                               MemberDecorate 180(UBO) 5 Offset 244
                               MemberDecorate 180(UBO) 6 Offset 248
                               MemberDecorate 180(UBO) 7 Offset 256
-                              MemberDecorate 203(ubo) 0 Offset 0
                               Decorate 203(ubo) Block
-                              Decorate 210 DescriptorSet 0
+                              MemberDecorate 203(ubo) 0 Offset 0
                               Decorate 210 Binding 0
-                              Decorate 334(textureHeight) DescriptorSet 0
+                              Decorate 210 DescriptorSet 0
                               Decorate 334(textureHeight) Binding 1
-                              Decorate 345(samplerHeight) DescriptorSet 0
+                              Decorate 334(textureHeight) DescriptorSet 0
                               Decorate 345(samplerHeight) Binding 1
+                              Decorate 345(samplerHeight) DescriptorSet 0
                               Decorate 597(patch.Pos) BuiltIn Position
                               Decorate 604(patch.Normal) Location 0
                               Decorate 611(patch.UV) Location 1
@@ -169,10 +169,10 @@ WARNING: 0:158: '' : attribute does not apply to entry point
                               Decorate 654(@entryPointOutput.Pos) BuiltIn Position
                               Decorate 661(@entryPointOutput.Normal) Location 0
                               Decorate 668(@entryPointOutput.UV) Location 1
-                              Decorate 683(@patchConstantOutput.TessLevelOuter) Patch
                               Decorate 683(@patchConstantOutput.TessLevelOuter) BuiltIn TessLevelOuter
-                              Decorate 698(@patchConstantOutput.TessLevelInner) Patch
+                              Decorate 683(@patchConstantOutput.TessLevelOuter) Patch
                               Decorate 698(@patchConstantOutput.TessLevelInner) BuiltIn TessLevelInner
+                              Decorate 698(@patchConstantOutput.TessLevelInner) Patch
                4:             TypeVoid
                5:             TypeFunction 4
                8:             TypeFloat 32

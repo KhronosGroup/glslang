@@ -109,21 +109,21 @@ Validation failed
                               MemberDecorate 471(S) 1 Offset 16
                               MemberDecorate 471(S) 2 Offset 32
                               Decorate 472 ArrayStride 64
+                              Decorate 473(B1) Block
                               MemberDecorate 473(B1) 0 Offset 0
                               MemberDecorate 473(B1) 1 Offset 16
                               MemberDecorate 473(B1) 2 Offset 32
                               MemberDecorate 473(B1) 3 Offset 64
                               MemberDecorate 473(B1) 4 ColMajor
-                              MemberDecorate 473(B1) 4 Offset 96
                               MemberDecorate 473(B1) 4 MatrixStride 32
+                              MemberDecorate 473(B1) 4 Offset 96
                               MemberDecorate 473(B1) 5 ColMajor
-                              MemberDecorate 473(B1) 5 Offset 160
                               MemberDecorate 473(B1) 5 MatrixStride 32
+                              MemberDecorate 473(B1) 5 Offset 160
                               MemberDecorate 473(B1) 6 Offset 288
                               MemberDecorate 473(B1) 7 Offset 352
-                              Decorate 473(B1) Block
-                              Decorate 475 DescriptorSet 0
                               Decorate 475 Binding 0
+                              Decorate 475 DescriptorSet 0
                               Decorate 476(sf16) SpecId 100
                               Decorate 478(sf) SpecId 101
                               Decorate 479(sd) SpecId 102

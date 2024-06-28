@@ -49,6 +49,7 @@ spv.subgroupExtendedTypesShuffle.comp
                               Decorate 13 RelaxedPrecision
                               Decorate 14 RelaxedPrecision
                               Decorate 16 RelaxedPrecision
+                              Decorate 31(Buffers) Block
                               MemberDecorate 31(Buffers) 0 Offset 0
                               MemberDecorate 31(Buffers) 1 Offset 4
                               MemberDecorate 31(Buffers) 2 Offset 8
@@ -56,9 +57,8 @@ spv.subgroupExtendedTypesShuffle.comp
                               MemberDecorate 31(Buffers) 4 Offset 32
                               MemberDecorate 31(Buffers) 5 Offset 64
                               MemberDecorate 31(Buffers) 6 Offset 96
-                              Decorate 31(Buffers) Block
-                              Decorate 34(data) DescriptorSet 0
                               Decorate 34(data) Binding 0
+                              Decorate 34(data) DescriptorSet 0
                               Decorate 553 BuiltIn WorkgroupSize
                2:             TypeVoid
                3:             TypeFunction 2

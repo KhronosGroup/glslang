@@ -74,8 +74,8 @@ spv.ext.ClosestHitShader.rchit
                               Decorate 69(gl_GeometryIndexEXT) BuiltIn RayGeometryIndexKHR
                               Decorate 81(gl_CullMaskEXT) BuiltIn CullMaskKHR
                               Decorate 87(gl_HitTriangleVertexPositionsEXT) BuiltIn HitTriangleVertexPositionsKHR
-                              Decorate 93(accEXT) DescriptorSet 0
                               Decorate 93(accEXT) Binding 0
+                              Decorate 93(accEXT) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 0

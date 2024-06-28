@@ -79,10 +79,10 @@ local_size = (4, 6, 8)
                               Name 18  "$Global"
                               MemberName 18($Global) 0  "bound"
                               Name 20  ""
-                              MemberDecorate 18($Global) 0 Offset 0
                               Decorate 18($Global) Block
-                              Decorate 20 DescriptorSet 0
+                              MemberDecorate 18($Global) 0 Offset 0
                               Decorate 20 Binding 0
+                              Decorate 20 DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                8:             TypeInt 32 1

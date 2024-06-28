@@ -51,6 +51,7 @@ spv.subgroupExtendedTypesPartitioned.comp
                               Decorate 13 RelaxedPrecision
                               Decorate 14 RelaxedPrecision
                               Decorate 16 RelaxedPrecision
+                              Decorate 34(Buffers) Block
                               MemberDecorate 34(Buffers) 0 Offset 0
                               MemberDecorate 34(Buffers) 1 Offset 4
                               MemberDecorate 34(Buffers) 2 Offset 8
@@ -58,9 +59,8 @@ spv.subgroupExtendedTypesPartitioned.comp
                               MemberDecorate 34(Buffers) 4 Offset 32
                               MemberDecorate 34(Buffers) 5 Offset 64
                               MemberDecorate 34(Buffers) 6 Offset 96
-                              Decorate 34(Buffers) Block
-                              Decorate 37(data) DescriptorSet 0
                               Decorate 37(data) Binding 0
+                              Decorate 37(data) DescriptorSet 0
                               Decorate 1742 BuiltIn WorkgroupSize
                2:             TypeVoid
                3:             TypeFunction 2

@@ -29,16 +29,16 @@ spv.450.geom
                               Name 20  "gl_in"
                               Name 27  "gl_Layer"
                               Name 29  "gl_ViewportIndex"
+                              Decorate 11(gl_PerVertex) Block
                               MemberDecorate 11(gl_PerVertex) 0 BuiltIn Position
                               MemberDecorate 11(gl_PerVertex) 1 BuiltIn PointSize
                               MemberDecorate 11(gl_PerVertex) 2 BuiltIn ClipDistance
                               MemberDecorate 11(gl_PerVertex) 3 BuiltIn CullDistance
-                              Decorate 11(gl_PerVertex) Block
+                              Decorate 16(gl_PerVertex) Block
                               MemberDecorate 16(gl_PerVertex) 0 BuiltIn Position
                               MemberDecorate 16(gl_PerVertex) 1 BuiltIn PointSize
                               MemberDecorate 16(gl_PerVertex) 2 BuiltIn ClipDistance
                               MemberDecorate 16(gl_PerVertex) 3 BuiltIn CullDistance
-                              Decorate 16(gl_PerVertex) Block
                               Decorate 27(gl_Layer) BuiltIn Layer
                               Decorate 29(gl_ViewportIndex) BuiltIn ViewportIndex
                2:             TypeVoid

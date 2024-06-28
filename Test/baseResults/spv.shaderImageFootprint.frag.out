@@ -66,17 +66,17 @@ spv.shaderImageFootprint.frag
                               Name 478  "ResType"
                               Name 528  "ResType"
                               Name 577  "ResType"
+                              Decorate 8(result2D) BufferBlock
                               MemberDecorate 8(result2D) 0 Offset 0
                               MemberDecorate 8(result2D) 1 Offset 8
                               MemberDecorate 8(result2D) 2 Offset 16
                               MemberDecorate 8(result2D) 3 Offset 24
                               MemberDecorate 8(result2D) 4 Offset 32
                               MemberDecorate 8(result2D) 5 Offset 36
-                              Decorate 8(result2D) BufferBlock
-                              Decorate 10 DescriptorSet 0
                               Decorate 10 Binding 2
-                              Decorate 17(sample2D) DescriptorSet 0
+                              Decorate 10 DescriptorSet 0
                               Decorate 17(sample2D) Binding 0
+                              Decorate 17(sample2D) DescriptorSet 0
                               Decorate 21(P2) Location 0
                               Decorate 24(granularity) Flat
                               Decorate 24(granularity) Location 3
@@ -85,17 +85,17 @@ spv.shaderImageFootprint.frag
                               Decorate 225(lod) Location 5
                               Decorate 275(dx) Location 6
                               Decorate 277(dy) Location 8
+                              Decorate 377(result3D) BufferBlock
                               MemberDecorate 377(result3D) 0 Offset 0
                               MemberDecorate 377(result3D) 1 Offset 16
                               MemberDecorate 377(result3D) 2 Offset 32
                               MemberDecorate 377(result3D) 3 Offset 48
                               MemberDecorate 377(result3D) 4 Offset 56
                               MemberDecorate 377(result3D) 5 Offset 60
-                              Decorate 377(result3D) BufferBlock
-                              Decorate 379 DescriptorSet 0
                               Decorate 379 Binding 3
-                              Decorate 383(sample3D) DescriptorSet 0
+                              Decorate 379 DescriptorSet 0
                               Decorate 383(sample3D) Binding 1
+                              Decorate 383(sample3D) DescriptorSet 0
                               Decorate 387(P3) Location 2
                2:             TypeVoid
                3:             TypeFunction 2

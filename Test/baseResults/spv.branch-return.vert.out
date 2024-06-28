@@ -15,9 +15,9 @@ spv.branch-return.vert
                               MemberName 18(gl_PerVertex) 1  "gl_PointSize"
                               Name 20  ""
                               Decorate 8(gl_InstanceIndex) BuiltIn InstanceIndex
+                              Decorate 18(gl_PerVertex) Block
                               MemberDecorate 18(gl_PerVertex) 0 BuiltIn Position
                               MemberDecorate 18(gl_PerVertex) 1 BuiltIn PointSize
-                              Decorate 18(gl_PerVertex) Block
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 1

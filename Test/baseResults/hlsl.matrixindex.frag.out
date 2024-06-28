@@ -309,13 +309,13 @@ gl_FragCoord origin is upper left
                               Name 63  "r0c"
                               Name 71  "psout"
                               Name 80  "@entryPointOutput.Color"
+                              Decorate 52($Global) Block
                               MemberDecorate 52($Global) 0 Offset 0
                               MemberDecorate 52($Global) 1 RowMajor
-                              MemberDecorate 52($Global) 1 Offset 16
                               MemberDecorate 52($Global) 1 MatrixStride 16
-                              Decorate 52($Global) Block
-                              Decorate 54 DescriptorSet 0
+                              MemberDecorate 52($Global) 1 Offset 16
                               Decorate 54 Binding 0
+                              Decorate 54 DescriptorSet 0
                               Decorate 80(@entryPointOutput.Color) Location 0
                2:             TypeVoid
                3:             TypeFunction 2

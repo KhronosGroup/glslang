@@ -17,12 +17,12 @@ spv.subgroup.frag
                               Name 13  "gl_SubgroupInvocationID"
                               Decorate 9(data) Location 0
                               Decorate 11(gl_SubgroupSize) RelaxedPrecision
-                              Decorate 11(gl_SubgroupSize) Flat
                               Decorate 11(gl_SubgroupSize) BuiltIn SubgroupSize
+                              Decorate 11(gl_SubgroupSize) Flat
                               Decorate 12 RelaxedPrecision
                               Decorate 13(gl_SubgroupInvocationID) RelaxedPrecision
-                              Decorate 13(gl_SubgroupInvocationID) Flat
                               Decorate 13(gl_SubgroupInvocationID) BuiltIn SubgroupLocalInvocationId
+                              Decorate 13(gl_SubgroupInvocationID) Flat
                               Decorate 14 RelaxedPrecision
                               Decorate 16 RelaxedPrecision
                2:             TypeVoid

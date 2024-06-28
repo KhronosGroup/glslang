@@ -41,9 +41,9 @@ spv.precise.tese
                               Decorate 101 NoContraction
                               Decorate 106 NoContraction
                               Decorate 109 NoContraction
+                              Decorate 110(gl_PerVertex) Block
                               MemberDecorate 110(gl_PerVertex) 0 BuiltIn Position
                               MemberDecorate 110(gl_PerVertex) 1 BuiltIn PointSize
-                              Decorate 110(gl_PerVertex) Block
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

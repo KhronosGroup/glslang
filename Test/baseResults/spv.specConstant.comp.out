@@ -13,10 +13,10 @@ spv.specConstant.comp
                               Name 7  "bn"
                               MemberName 7(bn) 0  "a"
                               Name 9  "bi"
-                              MemberDecorate 7(bn) 0 Offset 0
                               Decorate 7(bn) BufferBlock
-                              Decorate 9(bi) DescriptorSet 0
+                              MemberDecorate 7(bn) 0 Offset 0
                               Decorate 9(bi) Binding 0
+                              Decorate 9(bi) DescriptorSet 0
                               Decorate 12 SpecId 18
                               Decorate 14 SpecId 19
                               Decorate 16 BuiltIn WorkgroupSize

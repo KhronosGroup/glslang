@@ -46,36 +46,36 @@ Validation failed
                               Name 240  "u2DMS"
                               Name 458  "ResType"
                               Name 483  "ResType"
+                              Decorate 12(Buf) BufferBlock
                               MemberDecorate 12(Buf) 0 Offset 0
                               MemberDecorate 12(Buf) 1 Offset 8
                               MemberDecorate 12(Buf) 2 Offset 32
                               MemberDecorate 12(Buf) 3 Offset 64
                               MemberDecorate 12(Buf) 4 Offset 96
-                              Decorate 12(Buf) BufferBlock
-                              Decorate 14 DescriptorSet 0
                               Decorate 14 Binding 11
-                              Decorate 18(i1D) DescriptorSet 0
+                              Decorate 14 DescriptorSet 0
                               Decorate 18(i1D) Binding 0
-                              Decorate 35(i3D) DescriptorSet 0
+                              Decorate 18(i1D) DescriptorSet 0
                               Decorate 35(i3D) Binding 2
-                              Decorate 48(iBuf) DescriptorSet 0
+                              Decorate 35(i3D) DescriptorSet 0
                               Decorate 48(iBuf) Binding 4
-                              Decorate 58(i2DArray) DescriptorSet 0
+                              Decorate 48(iBuf) DescriptorSet 0
                               Decorate 58(i2DArray) Binding 6
-                              Decorate 69(i2DRect) DescriptorSet 0
+                              Decorate 58(i2DArray) DescriptorSet 0
                               Decorate 69(i2DRect) Binding 8
-                              Decorate 81(i2DMSArray) DescriptorSet 0
+                              Decorate 69(i2DRect) DescriptorSet 0
                               Decorate 81(i2DMSArray) Binding 10
-                              Decorate 194(u2D) DescriptorSet 0
+                              Decorate 81(i2DMSArray) DescriptorSet 0
                               Decorate 194(u2D) Binding 1
-                              Decorate 207(uCube) DescriptorSet 0
+                              Decorate 194(u2D) DescriptorSet 0
                               Decorate 207(uCube) Binding 3
-                              Decorate 218(u1DArray) DescriptorSet 0
+                              Decorate 207(uCube) DescriptorSet 0
                               Decorate 218(u1DArray) Binding 5
-                              Decorate 229(uCubeArray) DescriptorSet 0
+                              Decorate 218(u1DArray) DescriptorSet 0
                               Decorate 229(uCubeArray) Binding 7
-                              Decorate 240(u2DMS) DescriptorSet 0
+                              Decorate 229(uCubeArray) DescriptorSet 0
                               Decorate 240(u2DMS) Binding 9
+                              Decorate 240(u2DMS) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 64 1

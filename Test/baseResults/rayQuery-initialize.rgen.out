@@ -40,17 +40,17 @@ rayQuery-initialize.rgen
                               Name 90  "param"
                               Decorate 23(gl_LaunchIDNV) BuiltIn LaunchIdKHR
                               Decorate 28(gl_LaunchSizeNV) BuiltIn LaunchSizeKHR
-                              Decorate 50(rtas) DescriptorSet 0
                               Decorate 50(rtas) Binding 0
+                              Decorate 50(rtas) DescriptorSet 0
                               MemberDecorate 72(Ray) 0 Offset 0
                               MemberDecorate 72(Ray) 1 Offset 12
                               MemberDecorate 72(Ray) 2 Offset 16
                               MemberDecorate 72(Ray) 3 Offset 28
                               Decorate 73 ArrayStride 32
-                              MemberDecorate 74(Rays) 0 Offset 0
                               Decorate 74(Rays) BufferBlock
-                              Decorate 76 DescriptorSet 0
+                              MemberDecorate 74(Rays) 0 Offset 0
                               Decorate 76 Binding 2
+                              Decorate 76 DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 0

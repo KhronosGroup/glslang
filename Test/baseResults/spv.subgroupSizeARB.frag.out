@@ -17,8 +17,8 @@ spv.subgroupSizeARB.frag
                               Name 8  "result"
                               Name 10  "gl_SubGroupSizeARB"
                               Decorate 8(result) Location 0
-                              Decorate 10(gl_SubGroupSizeARB) Flat
                               Decorate 10(gl_SubGroupSizeARB) BuiltIn SubgroupSize
+                              Decorate 10(gl_SubGroupSizeARB) Flat
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 0

@@ -21,19 +21,19 @@ hlsl.explicitDescriptorSet.frag
                               MemberName 25($Global) 0  "floatval_amb"
                               Name 27  ""
                               Name 30  "floatbuff"
-                              Decorate 13(g_sSamp2_amb) DescriptorSet 4
                               Decorate 13(g_sSamp2_amb) Binding 10
+                              Decorate 13(g_sSamp2_amb) DescriptorSet 4
                               Decorate 19(@entryPointOutput) Location 0
-                              Decorate 21(g_sSamp) DescriptorSet 4
                               Decorate 21(g_sSamp) Binding 11
-                              Decorate 24(g_tTex1df4) DescriptorSet 4
+                              Decorate 21(g_sSamp) DescriptorSet 4
                               Decorate 24(g_tTex1df4) Binding 20
-                              MemberDecorate 25($Global) 0 Offset 0
+                              Decorate 24(g_tTex1df4) DescriptorSet 4
                               Decorate 25($Global) Block
-                              Decorate 27 DescriptorSet 4
+                              MemberDecorate 25($Global) 0 Offset 0
                               Decorate 27 Binding 0
-                              Decorate 30(floatbuff) DescriptorSet 4
+                              Decorate 27 DescriptorSet 4
                               Decorate 30(floatbuff) Binding 0
+                              Decorate 30(floatbuff) DescriptorSet 4
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

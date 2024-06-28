@@ -41,10 +41,10 @@ Validation failed
                               Decorate 78(infloat) Location 0
                               Decorate 92 ArrayStride 16
                               Decorate 93 ArrayStride 64
-                              MemberDecorate 94(uAofA) 0 Offset 0
                               Decorate 94(uAofA) Block
-                              Decorate 98(nameAofA) DescriptorSet 0
+                              MemberDecorate 94(uAofA) 0 Offset 0
                               Decorate 98(nameAofA) Binding 0
+                              Decorate 98(nameAofA) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

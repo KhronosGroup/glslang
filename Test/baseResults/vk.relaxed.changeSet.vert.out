@@ -168,17 +168,17 @@ gl_FragCoord origin is upper left
                               Decorate 11(aColor) Location 2
                               Decorate 15(UV) Location 1
                               Decorate 17(aUV) Location 1
+                              Decorate 22(gl_PerVertex) Block
                               MemberDecorate 22(gl_PerVertex) 0 BuiltIn Position
                               MemberDecorate 22(gl_PerVertex) 1 BuiltIn PointSize
                               MemberDecorate 22(gl_PerVertex) 2 BuiltIn ClipDistance
                               MemberDecorate 22(gl_PerVertex) 3 BuiltIn CullDistance
-                              Decorate 22(gl_PerVertex) Block
-                              MemberDecorate 28(gl_DefaultUniformBlock) 0 ColMajor
-                              MemberDecorate 28(gl_DefaultUniformBlock) 0 Offset 0
-                              MemberDecorate 28(gl_DefaultUniformBlock) 0 MatrixStride 16
                               Decorate 28(gl_DefaultUniformBlock) Block
-                              Decorate 30 DescriptorSet 0
+                              MemberDecorate 28(gl_DefaultUniformBlock) 0 ColMajor
+                              MemberDecorate 28(gl_DefaultUniformBlock) 0 MatrixStride 16
+                              MemberDecorate 28(gl_DefaultUniformBlock) 0 Offset 0
                               Decorate 30 Binding 0
+                              Decorate 30 DescriptorSet 0
                               Decorate 34(aPos) Location 0
                               Decorate 44(gl_VertexIndex) BuiltIn VertexIndex
                               Decorate 45(gl_InstanceIndex) BuiltIn InstanceIndex
@@ -248,8 +248,8 @@ gl_FragCoord origin is upper left
                               Name 20  "UV"
                               Decorate 9(fragColor) Location 0
                               Decorate 11(Color) Location 0
-                              Decorate 16(sTexture) DescriptorSet 1
                               Decorate 16(sTexture) Binding 0
+                              Decorate 16(sTexture) DescriptorSet 1
                               Decorate 20(UV) Location 1
                2:             TypeVoid
                3:             TypeFunction 2

@@ -67,12 +67,12 @@ gl_FragCoord origin is upper left
                               MemberName 12($Global) 0  "g_GlobalMat1"
                               Name 14  ""
                               Name 23  "@entryPointOutput"
-                              MemberDecorate 12($Global) 0 ColMajor
-                              MemberDecorate 12($Global) 0 Offset 0
-                              MemberDecorate 12($Global) 0 MatrixStride 16
                               Decorate 12($Global) Block
-                              Decorate 14 DescriptorSet 0
+                              MemberDecorate 12($Global) 0 ColMajor
+                              MemberDecorate 12($Global) 0 MatrixStride 16
+                              MemberDecorate 12($Global) 0 Offset 0
                               Decorate 14 Binding 0
+                              Decorate 14 DescriptorSet 0
                               Decorate 23(@entryPointOutput) Location 0
                2:             TypeVoid
                3:             TypeFunction 2

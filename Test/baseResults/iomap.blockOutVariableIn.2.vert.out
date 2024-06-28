@@ -277,10 +277,10 @@ output primitive = triangle_strip
                               Name 32  "gl_InstanceID"
                               Decorate 9(Block) Block
                               Decorate 11 Location 0
+                              Decorate 26(gl_PerVertex) Block
                               MemberDecorate 26(gl_PerVertex) 0 BuiltIn Position
                               MemberDecorate 26(gl_PerVertex) 1 BuiltIn PointSize
                               MemberDecorate 26(gl_PerVertex) 2 BuiltIn ClipDistance
-                              Decorate 26(gl_PerVertex) Block
                               Decorate 31(gl_VertexID) BuiltIn VertexId
                               Decorate 32(gl_InstanceID) BuiltIn InstanceId
                2:             TypeVoid
@@ -346,10 +346,10 @@ output primitive = triangle_strip
                               Decorate 14(in_a1) Location 0
                               Decorate 22(a2) Location 1
                               Decorate 25(in_a2) Location 1
+                              Decorate 31(gl_PerVertex) Block
                               MemberDecorate 31(gl_PerVertex) 0 BuiltIn Position
                               MemberDecorate 31(gl_PerVertex) 1 BuiltIn PointSize
                               MemberDecorate 31(gl_PerVertex) 2 BuiltIn ClipDistance
-                              Decorate 31(gl_PerVertex) Block
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

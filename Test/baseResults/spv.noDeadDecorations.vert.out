@@ -16,13 +16,13 @@ spv.noDeadDecorations.vert
                               MemberName 20(gl_PerVertex) 1  "gl_PointSize"
                               Name 22  ""
                               Name 26  "param"
-                              Decorate 10(func(f1;) RelaxedPrecision
                               Decorate 9(a) RelaxedPrecision
+                              Decorate 10(func(f1;) RelaxedPrecision
                               Decorate 12 RelaxedPrecision
                               Decorate 13 RelaxedPrecision
+                              Decorate 20(gl_PerVertex) Block
                               MemberDecorate 20(gl_PerVertex) 0 BuiltIn Position
                               MemberDecorate 20(gl_PerVertex) 1 BuiltIn PointSize
-                              Decorate 20(gl_PerVertex) Block
                               Decorate 26(param) RelaxedPrecision
                               Decorate 27 RelaxedPrecision
                2:             TypeVoid

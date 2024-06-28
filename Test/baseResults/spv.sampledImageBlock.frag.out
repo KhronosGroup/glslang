@@ -18,14 +18,14 @@ spv.sampledImageBlock.frag
                               Name 23  "paramBuffer"
                               Name 36  "texCoord"
                               Name 45  "fragColor"
-                              Decorate 12(tex0) DescriptorSet 0
                               Decorate 12(tex0) Binding 0
-                              Decorate 16(samp0) DescriptorSet 0
+                              Decorate 12(tex0) DescriptorSet 0
                               Decorate 16(samp0) Binding 1
-                              MemberDecorate 21(ParamBuffer) 0 Offset 0
+                              Decorate 16(samp0) DescriptorSet 0
                               Decorate 21(ParamBuffer) Block
-                              Decorate 23(paramBuffer) DescriptorSet 0
+                              MemberDecorate 21(ParamBuffer) 0 Offset 0
                               Decorate 23(paramBuffer) Binding 2
+                              Decorate 23(paramBuffer) DescriptorSet 0
                               Decorate 36(texCoord) Flat
                               Decorate 36(texCoord) Location 0
                               Decorate 45(fragColor) Location 0

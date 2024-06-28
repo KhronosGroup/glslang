@@ -56,25 +56,25 @@ spv.atomicAdd.bufferReference.comp
                               MemberName 179(Fail) 0  "x"
                               Name 181  "fail"
                               Decorate 17 ArrayStride 4
-                              MemberDecorate 18(PayloadRef) 0 Offset 0
                               Decorate 18(PayloadRef) Block
+                              MemberDecorate 18(PayloadRef) 0 Offset 0
                               Decorate 20(payload) DecorationAliasedPointerEXT
+                              Decorate 22(PC) Block
                               MemberDecorate 22(PC) 0 Offset 0
                               MemberDecorate 22(PC) 1 Offset 8
-                              Decorate 22(PC) Block
                               Decorate 23 ArrayStride 4
-                              MemberDecorate 24(GuardRef) 0 Offset 0
                               Decorate 24(GuardRef) Block
+                              MemberDecorate 24(GuardRef) 0 Offset 0
                               Decorate 37(gl_GlobalInvocationID) BuiltIn GlobalInvocationId
                               Decorate 43(DIM) SpecId 0
                               Decorate 44(NUM_WORKGROUP_EACH_DIM) SpecId 1
                               Decorate 81(gl_WorkGroupID) BuiltIn WorkgroupId
                               Decorate 133(gl_LocalInvocationID) BuiltIn LocalInvocationId
                               Decorate 178 ArrayStride 4
-                              MemberDecorate 179(Fail) 0 Offset 0
                               Decorate 179(Fail) Block
-                              Decorate 181(fail) DescriptorSet 0
+                              MemberDecorate 179(Fail) 0 Offset 0
                               Decorate 181(fail) Binding 2
+                              Decorate 181(fail) DescriptorSet 0
                               Decorate 185 SpecId 0
                               Decorate 186 SpecId 0
                               Decorate 187 BuiltIn WorkgroupSize

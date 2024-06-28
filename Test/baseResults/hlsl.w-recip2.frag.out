@@ -207,11 +207,11 @@ gl_FragCoord origin is upper left
                               Name 66  "VSOut.TexCoord"
                               Name 71  "@entryPointOutput"
                               Name 72  "param"
+                              Decorate 28($Global) Block
                               MemberDecorate 28($Global) 0 Offset 0
                               MemberDecorate 28($Global) 1 Offset 16
-                              Decorate 28($Global) Block
-                              Decorate 30 DescriptorSet 0
                               Decorate 30 Binding 0
+                              Decorate 30 DescriptorSet 0
                               Decorate 44(VSOut.PositionPS) BuiltIn FragCoord
                               Decorate 56(VSOut.PosInLightViewSpace) Location 0
                               Decorate 61(VSOut.NormalWS) Location 1

@@ -465,16 +465,16 @@ triangle order = none
                               Name 109  "param"
                               Name 113  "@entryPointOutput.pos"
                               Name 117  "@entryPointOutput.norm"
-                              Decorate 52(pcf_data.flTessFactor) Patch
                               Decorate 52(pcf_data.flTessFactor) BuiltIn TessLevelOuter
-                              Decorate 67(pcf_data.flInsideTessFactor) Patch
+                              Decorate 52(pcf_data.flTessFactor) Patch
                               Decorate 67(pcf_data.flInsideTessFactor) BuiltIn TessLevelInner
+                              Decorate 67(pcf_data.flInsideTessFactor) Patch
                               Decorate 71(pcf_data.foo) Patch
                               Decorate 71(pcf_data.foo) Location 2
                               Decorate 78(i.pos) Location 0
                               Decorate 85(i.norm) Location 1
-                              Decorate 103(tesscoord) Patch
                               Decorate 103(tesscoord) BuiltIn TessCoord
+                              Decorate 103(tesscoord) Patch
                               Decorate 113(@entryPointOutput.pos) Location 0
                               Decorate 117(@entryPointOutput.norm) Location 1
                2:             TypeVoid

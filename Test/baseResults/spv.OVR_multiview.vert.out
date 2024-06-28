@@ -20,10 +20,10 @@ spv.OVR_multiview.vert
                               Name 17  "gl_ViewID_OVR"
                               Name 25  "gl_VertexID"
                               Name 26  "gl_InstanceID"
+                              Decorate 11(gl_PerVertex) Block
                               MemberDecorate 11(gl_PerVertex) 0 BuiltIn Position
                               MemberDecorate 11(gl_PerVertex) 1 BuiltIn PointSize
                               MemberDecorate 11(gl_PerVertex) 2 BuiltIn ClipDistance
-                              Decorate 11(gl_PerVertex) Block
                               Decorate 17(gl_ViewID_OVR) BuiltIn ViewIndex
                               Decorate 25(gl_VertexID) BuiltIn VertexId
                               Decorate 26(gl_InstanceID) BuiltIn InstanceId

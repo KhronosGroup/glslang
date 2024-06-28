@@ -22,8 +22,8 @@ rayQuery-global.rgen
                               Name 22  "rq2"
                               Name 27  "rtas"
                               Name 40  "rq2"
-                              Decorate 27(rtas) DescriptorSet 0
                               Decorate 27(rtas) Binding 1
+                              Decorate 27(rtas) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeRayQueryKHR

@@ -26,17 +26,17 @@ spv.shaderDrawParams.vert
                               Name 37  "gl_DrawIDARB"
                               Decorate 9(gl_BaseVertexARB) BuiltIn BaseVertex
                               Decorate 16(gl_BaseInstanceARB) BuiltIn BaseInstance
+                              Decorate 27(gl_PerVertex) Block
                               MemberDecorate 27(gl_PerVertex) 0 BuiltIn Position
                               MemberDecorate 27(gl_PerVertex) 1 BuiltIn PointSize
                               MemberDecorate 27(gl_PerVertex) 2 BuiltIn ClipDistance
                               MemberDecorate 27(gl_PerVertex) 3 BuiltIn CullDistance
-                              Decorate 27(gl_PerVertex) Block
                               Decorate 31 ArrayStride 16
                               Decorate 33 ArrayStride 64
-                              MemberDecorate 34(Block) 0 Offset 0
                               Decorate 34(Block) Block
-                              Decorate 36(block) DescriptorSet 0
+                              MemberDecorate 34(Block) 0 Offset 0
                               Decorate 36(block) Binding 0
+                              Decorate 36(block) DescriptorSet 0
                               Decorate 37(gl_DrawIDARB) BuiltIn DrawIndex
                2:             TypeVoid
                3:             TypeFunction 2

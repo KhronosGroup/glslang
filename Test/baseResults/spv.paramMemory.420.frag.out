@@ -41,20 +41,20 @@ Validation failed
                               Decorate 20(image) NonReadable
                               Decorate 27(in_coords) Flat
                               Decorate 27(in_coords) Location 0
-                              Decorate 36(image1) DescriptorSet 0
-                              Decorate 36(image1) Binding 0
                               Decorate 36(image1) Coherent
                               Decorate 36(image1) NonWritable
-                              Decorate 41(image2) DescriptorSet 0
-                              Decorate 41(image2) Binding 2
+                              Decorate 36(image1) Binding 0
+                              Decorate 36(image1) DescriptorSet 0
                               Decorate 41(image2) NonWritable
-                              Decorate 47(image3) DescriptorSet 0
-                              Decorate 47(image3) Binding 1
+                              Decorate 41(image2) Binding 2
+                              Decorate 41(image2) DescriptorSet 0
                               Decorate 47(image3) Coherent
                               Decorate 47(image3) NonReadable
-                              Decorate 57(image4) DescriptorSet 0
-                              Decorate 57(image4) Binding 3
+                              Decorate 47(image3) Binding 1
+                              Decorate 47(image3) DescriptorSet 0
                               Decorate 57(image4) NonReadable
+                              Decorate 57(image4) Binding 3
+                              Decorate 57(image4) DescriptorSet 0
                               Decorate 66(out_color) Location 0
                2:             TypeVoid
                3:             TypeFunction 2

@@ -294,13 +294,13 @@ gl_FragCoord origin is upper left
                               Decorate 114 RelaxedPrecision
                               Decorate 115 RelaxedPrecision
                               Decorate 126(@entryPointOutput.Color) Location 0
+                              Decorate 129($Global) Block
                               MemberDecorate 129($Global) 0 RelaxedPrecision
                               MemberDecorate 129($Global) 0 Offset 0
                               MemberDecorate 129($Global) 1 RelaxedPrecision
                               MemberDecorate 129($Global) 1 Offset 4
-                              Decorate 129($Global) Block
-                              Decorate 131 DescriptorSet 0
                               Decorate 131 Binding 0
+                              Decorate 131 DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

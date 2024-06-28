@@ -43,21 +43,21 @@ spv.400.tesc
                               Name 87  "ivlb"
                               Name 90  "ovla"
                               Name 91  "ovlb"
+                              Decorate 20(gl_PerVertex) Block
                               MemberDecorate 20(gl_PerVertex) 0 BuiltIn Position
                               MemberDecorate 20(gl_PerVertex) 1 BuiltIn PointSize
                               MemberDecorate 20(gl_PerVertex) 2 BuiltIn ClipDistance
-                              Decorate 20(gl_PerVertex) Block
                               Decorate 41(gl_PatchVerticesIn) BuiltIn PatchVertices
                               Decorate 44(gl_PrimitiveID) BuiltIn PrimitiveId
                               Decorate 47(gl_InvocationID) BuiltIn InvocationId
+                              Decorate 50(gl_PerVertex) Block
                               MemberDecorate 50(gl_PerVertex) 0 BuiltIn Position
                               MemberDecorate 50(gl_PerVertex) 1 BuiltIn PointSize
                               MemberDecorate 50(gl_PerVertex) 2 BuiltIn ClipDistance
-                              Decorate 50(gl_PerVertex) Block
-                              Decorate 67(gl_TessLevelOuter) Patch
                               Decorate 67(gl_TessLevelOuter) BuiltIn TessLevelOuter
-                              Decorate 72(gl_TessLevelInner) Patch
+                              Decorate 67(gl_TessLevelOuter) Patch
                               Decorate 72(gl_TessLevelInner) BuiltIn TessLevelInner
+                              Decorate 72(gl_TessLevelInner) Patch
                               Decorate 78(patchOut) Patch
                               Decorate 78(patchOut) Location 0
                               Decorate 82(inb) Location 0

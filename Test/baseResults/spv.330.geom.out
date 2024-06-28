@@ -23,12 +23,12 @@ spv.330.geom
                               MemberName 16(gl_PerVertex) 0  "gl_Position"
                               MemberName 16(gl_PerVertex) 1  "gl_ClipDistance"
                               Name 20  "gl_in"
+                              Decorate 11(gl_PerVertex) Block
                               MemberDecorate 11(gl_PerVertex) 0 BuiltIn Position
                               MemberDecorate 11(gl_PerVertex) 1 BuiltIn ClipDistance
-                              Decorate 11(gl_PerVertex) Block
+                              Decorate 16(gl_PerVertex) Block
                               MemberDecorate 16(gl_PerVertex) 0 BuiltIn Position
                               MemberDecorate 16(gl_PerVertex) 1 BuiltIn ClipDistance
-                              Decorate 16(gl_PerVertex) Block
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

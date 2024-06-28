@@ -33,18 +33,18 @@ spv.meshShaderTaskMem.mesh
                               Decorate 18(outBlock) Block
                               Decorate 22(myblk) Location 0
                               Decorate 27 ArrayStride 4
-                              MemberDecorate 28(taskBlock) 0 PerTaskNV
-                              MemberDecorate 28(taskBlock) 0 Offset 0
-                              MemberDecorate 28(taskBlock) 1 PerTaskNV
-                              MemberDecorate 28(taskBlock) 1 Offset 16
                               Decorate 28(taskBlock) Block
+                              MemberDecorate 28(taskBlock) 0 Offset 0
+                              MemberDecorate 28(taskBlock) 0 PerTaskNV
+                              MemberDecorate 28(taskBlock) 1 Offset 16
+                              MemberDecorate 28(taskBlock) 1 PerTaskNV
                               Decorate 30(mytask) Location 0
                               Decorate 35 ArrayStride 4
+                              Decorate 36(bufferBlock) BufferBlock
                               MemberDecorate 36(bufferBlock) 0 Offset 0
                               MemberDecorate 36(bufferBlock) 1 Offset 16
-                              Decorate 36(bufferBlock) BufferBlock
-                              Decorate 38(mybuf) DescriptorSet 0
                               Decorate 38(mybuf) Binding 0
+                              Decorate 38(mybuf) DescriptorSet 0
                               Decorate 57 BuiltIn WorkgroupSize
                2:             TypeVoid
                3:             TypeFunction 2

@@ -25,16 +25,16 @@ spv.1.4.OpEntryPoint.frag
                               Name 41  "bufferv"
                               Decorate 11(inv) Location 0
                               Decorate 17(outv) Location 0
-                              MemberDecorate 23(ubt) 0 Offset 0
                               Decorate 23(ubt) Block
-                              Decorate 25(uniformv) DescriptorSet 0
+                              MemberDecorate 23(ubt) 0 Offset 0
                               Decorate 25(uniformv) Binding 0
-                              MemberDecorate 31(pushB) 0 Offset 0
+                              Decorate 25(uniformv) DescriptorSet 0
                               Decorate 31(pushB) Block
-                              MemberDecorate 39(bbt) 0 Offset 0
+                              MemberDecorate 31(pushB) 0 Offset 0
                               Decorate 39(bbt) Block
-                              Decorate 41(bufferv) DescriptorSet 0
+                              MemberDecorate 39(bbt) 0 Offset 0
                               Decorate 41(bufferv) Binding 1
+                              Decorate 41(bufferv) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

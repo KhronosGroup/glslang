@@ -81,14 +81,14 @@ PS_OUTPUT MainPs ( PS_INPUT i )
                               Name 71  "i.vTextureCoords"
                               Name 75  "@entryPointOutput.vColor"
                               Name 76  "param"
+                              Decorate 19(PerViewConstantBuffer_t) Block
                               MemberDecorate 19(PerViewConstantBuffer_t) 0 Offset 0
                               MemberDecorate 19(PerViewConstantBuffer_t) 1 Offset 4
                               MemberDecorate 19(PerViewConstantBuffer_t) 2 Offset 8
-                              Decorate 19(PerViewConstantBuffer_t) Block
-                              Decorate 49(g_tColor) DescriptorSet 0
                               Decorate 49(g_tColor) Binding 0
-                              Decorate 56(g_sAniso) DescriptorSet 0
+                              Decorate 49(g_tColor) DescriptorSet 0
                               Decorate 56(g_sAniso) Binding 1
+                              Decorate 56(g_sAniso) DescriptorSet 0
                               Decorate 71(i.vTextureCoords) Location 0
                               Decorate 75(@entryPointOutput.vColor) Location 0
                3:             TypeVoid

@@ -33,23 +33,23 @@ spv.bufferhandle13.frag
                               Name 52  "param"
                               Name 56  "g1"
                               Name 57  "g2"
-                              MemberDecorate 8(t4) 0 Offset 0
                               Decorate 8(t4) Block
+                              MemberDecorate 8(t4) 0 Offset 0
                               Decorate 10(y) Aliased
                               Decorate 15(y) DecorationAliasedPointerEXT
                               Decorate 18(y) Restrict
                               Decorate 21(y) Restrict
                               Decorate 21(y) DecorationRestrictPointerEXT
                               Decorate 34(a) DecorationAliasedPointerEXT
-                              MemberDecorate 35(t5) 0 Offset 0
                               Decorate 35(t5) Block
-                              Decorate 37(s5) DescriptorSet 0
+                              MemberDecorate 35(t5) 0 Offset 0
                               Decorate 37(s5) Binding 0
+                              Decorate 37(s5) DescriptorSet 0
                               Decorate 42(b) DecorationRestrictPointerEXT
-                              Decorate 56(g1) DecorationAliasedPointerEXT
-                              Decorate 57(g2) DecorationRestrictPointerEXT
                               Decorate 47(param) DecorationAliasedPointerEXT
                               Decorate 52(param) DecorationAliasedPointerEXT
+                              Decorate 56(g1) DecorationAliasedPointerEXT
+                              Decorate 57(g2) DecorationRestrictPointerEXT
                2:             TypeVoid
                3:             TypeFunction 2
                               TypeForwardPointer 6 PhysicalStorageBufferEXT

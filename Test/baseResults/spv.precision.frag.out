@@ -35,8 +35,8 @@ spv.precision.frag
                               MemberName 117(S) 1  "b"
                               Name 119  "s"
                               Name 149  "gl_SampleMaskIn"
-                              Decorate 12(foo(vf3;) RelaxedPrecision
                               Decorate 11(mv3) RelaxedPrecision
+                              Decorate 12(foo(vf3;) RelaxedPrecision
                               Decorate 23(highfin) Location 2
                               Decorate 27 RelaxedPrecision
                               Decorate 28 RelaxedPrecision
@@ -99,8 +99,8 @@ spv.precision.frag
                               Decorate 143 RelaxedPrecision
                               Decorate 144 RelaxedPrecision
                               Decorate 145 RelaxedPrecision
-                              Decorate 149(gl_SampleMaskIn) Flat
                               Decorate 149(gl_SampleMaskIn) BuiltIn SampleMask
+                              Decorate 149(gl_SampleMaskIn) Flat
                               Decorate 153 RelaxedPrecision
                               Decorate 156 RelaxedPrecision
                               Decorate 159 RelaxedPrecision

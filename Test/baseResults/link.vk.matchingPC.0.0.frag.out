@@ -109,10 +109,10 @@ gl_FragCoord origin is upper left
                               MemberName 16(PushConstantBlock) 2  "scale"
                               Name 18  "uPC"
                               Decorate 15(color) Location 0
+                              Decorate 16(PushConstantBlock) Block
                               MemberDecorate 16(PushConstantBlock) 0 Offset 0
                               MemberDecorate 16(PushConstantBlock) 1 Offset 16
                               MemberDecorate 16(PushConstantBlock) 2 Offset 32
-                              Decorate 16(PushConstantBlock) Block
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

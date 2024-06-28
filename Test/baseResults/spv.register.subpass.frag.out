@@ -19,14 +19,14 @@ spv.register.subpass.frag
                               Name 29  "result73"
                               Name 30  "subpass_2"
                               Name 38  "@entryPointOutput"
-                              Decorate 15(subpass_f4) DescriptorSet 0
                               Decorate 15(subpass_f4) Binding 21
+                              Decorate 15(subpass_f4) DescriptorSet 0
                               Decorate 15(subpass_f4) InputAttachmentIndex 1
-                              Decorate 25(subpass_ms_f4) DescriptorSet 0
                               Decorate 25(subpass_ms_f4) Binding 20
+                              Decorate 25(subpass_ms_f4) DescriptorSet 0
                               Decorate 25(subpass_ms_f4) InputAttachmentIndex 4
-                              Decorate 30(subpass_2) DescriptorSet 0
                               Decorate 30(subpass_2) Binding 22
+                              Decorate 30(subpass_2) DescriptorSet 0
                               Decorate 30(subpass_2) InputAttachmentIndex 7
                               Decorate 38(@entryPointOutput) Location 0
                2:             TypeVoid

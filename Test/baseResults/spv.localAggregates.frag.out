@@ -45,8 +45,8 @@ spv.localAggregates.frag
                               Decorate 90(condition) Location 18
                               Decorate 98(color) Location 1
                               Decorate 108(gl_FragColor) Location 0
-                              Decorate 128(samp2D) DescriptorSet 0
                               Decorate 128(samp2D) Binding 0
+                              Decorate 128(samp2D) DescriptorSet 0
                               Decorate 134(foo) Flat
                               Decorate 134(foo) Location 2
                               Decorate 135(foo2) Flat

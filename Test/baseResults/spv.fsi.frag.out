@@ -18,14 +18,14 @@ spv.fsi.frag
                               MemberName 7(B1) 0  "x"
                               Name 9  "b1"
                               Name 17  "im"
+                              Decorate 7(B1) BufferBlock
                               MemberDecorate 7(B1) 0 Coherent
                               MemberDecorate 7(B1) 0 Offset 0
-                              Decorate 7(B1) BufferBlock
-                              Decorate 9(b1) DescriptorSet 0
                               Decorate 9(b1) Binding 0
-                              Decorate 17(im) DescriptorSet 0
-                              Decorate 17(im) Binding 1
+                              Decorate 9(b1) DescriptorSet 0
                               Decorate 17(im) Coherent
+                              Decorate 17(im) Binding 1
+                              Decorate 17(im) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 1

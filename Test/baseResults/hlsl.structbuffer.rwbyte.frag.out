@@ -1032,10 +1032,10 @@ gl_FragCoord origin is upper left
                               Name 235  "@entryPointOutput"
                               Name 236  "param"
                               Decorate 15 ArrayStride 4
-                              MemberDecorate 16(sbuf) 0 Offset 0
                               Decorate 16(sbuf) BufferBlock
-                              Decorate 18(sbuf) DescriptorSet 0
+                              MemberDecorate 16(sbuf) 0 Offset 0
                               Decorate 18(sbuf) Binding 0
+                              Decorate 18(sbuf) DescriptorSet 0
                               Decorate 232(pos) Flat
                               Decorate 232(pos) Location 0
                               Decorate 235(@entryPointOutput) Location 0

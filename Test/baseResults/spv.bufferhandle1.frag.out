@@ -29,10 +29,11 @@ spv.bufferhandle1.frag
                               MemberName 13(blockType) 6  "g"
                               Name 15  "t"
                               Name 28  "j"
+                              Decorate 7(t2) Block
                               MemberDecorate 7(t2) 0 Offset 0
                               MemberDecorate 7(t2) 1 Offset 8
-                              Decorate 7(t2) Block
                               Decorate 11 ArrayStride 4
+                              Decorate 13(blockType) Block
                               MemberDecorate 13(blockType) 0 Offset 0
                               MemberDecorate 13(blockType) 1 Offset 4
                               MemberDecorate 13(blockType) 2 Offset 8
@@ -40,9 +41,8 @@ spv.bufferhandle1.frag
                               MemberDecorate 13(blockType) 4 Offset 16
                               MemberDecorate 13(blockType) 5 Offset 32
                               MemberDecorate 13(blockType) 6 Offset 48
-                              Decorate 13(blockType) Block
-                              Decorate 15(t) DescriptorSet 0
                               Decorate 15(t) Binding 0
+                              Decorate 15(t) DescriptorSet 0
                               Decorate 28(j) DecorationAliasedPointerEXT
                2:             TypeVoid
                3:             TypeFunction 2

@@ -17,8 +17,8 @@ rayQuery-OpConvertUToAccelerationStructureKHR.comp
                               Name 11  "params"
                               MemberName 11(params) 0  "tlas"
                               Name 13  ""
-                              MemberDecorate 11(params) 0 Offset 0
                               Decorate 11(params) Block
+                              MemberDecorate 11(params) 0 Offset 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeRayQueryKHR

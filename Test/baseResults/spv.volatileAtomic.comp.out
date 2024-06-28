@@ -14,12 +14,12 @@ spv.volatileAtomic.comp
                               MemberName 8(D) 0  "d"
                               Name 10  "d"
                               Decorate 7 ArrayStride 4
+                              Decorate 8(D) BufferBlock
                               MemberDecorate 8(D) 0 Volatile
                               MemberDecorate 8(D) 0 Coherent
                               MemberDecorate 8(D) 0 Offset 0
-                              Decorate 8(D) BufferBlock
-                              Decorate 10(d) DescriptorSet 0
                               Decorate 10(d) Binding 3
+                              Decorate 10(d) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 0

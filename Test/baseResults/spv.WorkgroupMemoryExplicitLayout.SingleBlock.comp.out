@@ -16,8 +16,8 @@ spv.WorkgroupMemoryExplicitLayout.SingleBlock.comp
                               Name 7  "first"
                               MemberName 7(first) 0  "a"
                               Name 9  ""
-                              MemberDecorate 7(first) 0 Offset 0
                               Decorate 7(first) Block
+                              MemberDecorate 7(first) 0 Offset 0
                               Decorate 18 BuiltIn WorkgroupSize
                2:             TypeVoid
                3:             TypeFunction 2

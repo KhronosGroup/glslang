@@ -46,43 +46,43 @@ Validation failed
                               Name 401  "ic3"
                               Name 410  "i2DMS"
                               Name 419  "outColor"
-                              Decorate 29(s2D) DescriptorSet 0
                               Decorate 29(s2D) Binding 0
+                              Decorate 29(s2D) DescriptorSet 0
                               Decorate 33(c2) Location 0
-                              Decorate 44(s3D) DescriptorSet 0
                               Decorate 44(s3D) Binding 1
+                              Decorate 44(s3D) DescriptorSet 0
                               Decorate 48(c3) Location 1
-                              Decorate 59(isCube) DescriptorSet 0
                               Decorate 59(isCube) Binding 8
-                              Decorate 71(s2DShadow) DescriptorSet 0
+                              Decorate 59(isCube) DescriptorSet 0
                               Decorate 71(s2DShadow) Binding 2
-                              Decorate 86(sCubeArrayShadow) DescriptorSet 0
+                              Decorate 71(s2DShadow) DescriptorSet 0
                               Decorate 86(sCubeArrayShadow) Binding 6
+                              Decorate 86(sCubeArrayShadow) DescriptorSet 0
                               Decorate 89(c4) Location 2
-                              Decorate 108(usCubeArray) DescriptorSet 0
                               Decorate 108(usCubeArray) Binding 10
-                              Decorate 140(us2DRect) DescriptorSet 0
+                              Decorate 108(usCubeArray) DescriptorSet 0
                               Decorate 140(us2DRect) Binding 11
-                              Decorate 154(s2DArrayShadow) DescriptorSet 0
+                              Decorate 140(us2DRect) DescriptorSet 0
                               Decorate 154(s2DArrayShadow) Binding 4
-                              Decorate 188(s2DMS) DescriptorSet 0
+                              Decorate 154(s2DArrayShadow) DescriptorSet 0
                               Decorate 188(s2DMS) Binding 7
-                              Decorate 228(is2DArray) DescriptorSet 0
+                              Decorate 188(s2DMS) DescriptorSet 0
                               Decorate 228(is2DArray) Binding 9
-                              Decorate 259(sCubeShadow) DescriptorSet 0
+                              Decorate 228(is2DArray) DescriptorSet 0
                               Decorate 259(sCubeShadow) Binding 3
-                              Decorate 288(s2DRectShadow) DescriptorSet 0
+                              Decorate 259(sCubeShadow) DescriptorSet 0
                               Decorate 288(s2DRectShadow) Binding 5
-                              Decorate 386(i2D) DescriptorSet 0
+                              Decorate 288(s2DRectShadow) DescriptorSet 0
                               Decorate 386(i2D) Binding 12
+                              Decorate 386(i2D) DescriptorSet 0
                               Decorate 389(ic2) Flat
                               Decorate 389(ic2) Location 3
-                              Decorate 398(ii3D) DescriptorSet 0
                               Decorate 398(ii3D) Binding 13
+                              Decorate 398(ii3D) DescriptorSet 0
                               Decorate 401(ic3) Flat
                               Decorate 401(ic3) Location 4
-                              Decorate 410(i2DMS) DescriptorSet 0
                               Decorate 410(i2DMS) Binding 14
+                              Decorate 410(i2DMS) DescriptorSet 0
                               Decorate 419(outColor) Location 0
                2:             TypeVoid
                3:             TypeFunction 2

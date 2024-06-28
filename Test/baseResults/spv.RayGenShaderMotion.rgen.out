@@ -24,8 +24,8 @@ spv.RayGenShaderMotion.rgen
                               Name 46  "payloadEXT"
                               Decorate 11(gl_LaunchIDEXT) BuiltIn LaunchIdKHR
                               Decorate 21(gl_LaunchSizeEXT) BuiltIn LaunchSizeKHR
-                              Decorate 29(accEXT) DescriptorSet 0
                               Decorate 29(accEXT) Binding 0
+                              Decorate 29(accEXT) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 0

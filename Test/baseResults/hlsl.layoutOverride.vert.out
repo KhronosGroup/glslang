@@ -65,10 +65,10 @@ Shader version: 500
                               Name 13  "tex"
                               Name 17  "samp"
                               Name 30  "@entryPointOutput"
-                              Decorate 13(tex) DescriptorSet 2
                               Decorate 13(tex) Binding 0
-                              Decorate 17(samp) DescriptorSet 0
+                              Decorate 13(tex) DescriptorSet 2
                               Decorate 17(samp) Binding 0
+                              Decorate 17(samp) DescriptorSet 0
                               Decorate 30(@entryPointOutput) BuiltIn Position
                2:             TypeVoid
                3:             TypeFunction 2

@@ -251,39 +251,39 @@ void main()
                               Name 542  "inNormal"
                               Name 557  "outUV"
                               Decorate 95 ArrayStride 16
+                              Decorate 99(UBO) Block
                               MemberDecorate 99(UBO) 0 ColMajor
-                              MemberDecorate 99(UBO) 0 Offset 0
                               MemberDecorate 99(UBO) 0 MatrixStride 16
+                              MemberDecorate 99(UBO) 0 Offset 0
                               MemberDecorate 99(UBO) 1 ColMajor
-                              MemberDecorate 99(UBO) 1 Offset 64
                               MemberDecorate 99(UBO) 1 MatrixStride 16
+                              MemberDecorate 99(UBO) 1 Offset 64
                               MemberDecorate 99(UBO) 2 Offset 128
                               MemberDecorate 99(UBO) 3 Offset 144
                               MemberDecorate 99(UBO) 4 Offset 240
                               MemberDecorate 99(UBO) 5 Offset 244
                               MemberDecorate 99(UBO) 6 Offset 248
                               MemberDecorate 99(UBO) 7 Offset 256
-                              Decorate 99(UBO) Block
-                              Decorate 122(ubo) DescriptorSet 0
                               Decorate 122(ubo) Binding 0
+                              Decorate 122(ubo) DescriptorSet 0
+                              Decorate 243(gl_PerVertex) Block
                               MemberDecorate 243(gl_PerVertex) 0 BuiltIn Position
                               MemberDecorate 243(gl_PerVertex) 1 BuiltIn PointSize
                               MemberDecorate 243(gl_PerVertex) 2 BuiltIn ClipDistance
                               MemberDecorate 243(gl_PerVertex) 3 BuiltIn CullDistance
-                              Decorate 243(gl_PerVertex) Block
                               Decorate 265(gl_InvocationID) BuiltIn InvocationId
-                              Decorate 285(samplerHeight) DescriptorSet 0
                               Decorate 285(samplerHeight) Binding 1
+                              Decorate 285(samplerHeight) DescriptorSet 0
                               Decorate 294(inUV) Location 1
-                              Decorate 383(gl_TessLevelInner) Patch
                               Decorate 383(gl_TessLevelInner) BuiltIn TessLevelInner
-                              Decorate 399(gl_TessLevelOuter) Patch
+                              Decorate 383(gl_TessLevelInner) Patch
                               Decorate 399(gl_TessLevelOuter) BuiltIn TessLevelOuter
+                              Decorate 399(gl_TessLevelOuter) Patch
+                              Decorate 503(gl_PerVertex) Block
                               MemberDecorate 503(gl_PerVertex) 0 BuiltIn Position
                               MemberDecorate 503(gl_PerVertex) 1 BuiltIn PointSize
                               MemberDecorate 503(gl_PerVertex) 2 BuiltIn ClipDistance
                               MemberDecorate 503(gl_PerVertex) 3 BuiltIn CullDistance
-                              Decorate 503(gl_PerVertex) Block
                               Decorate 532(outNormal) Location 0
                               Decorate 542(inNormal) Location 0
                               Decorate 557(outUV) Location 1

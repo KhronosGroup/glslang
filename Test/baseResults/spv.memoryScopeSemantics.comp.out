@@ -51,42 +51,42 @@ spv.memoryScopeSemantics.comp
                               MemberName 151(BufferM) 0  "x"
                               Name 153  "bufferm"
                               Name 165  "imageMS"
-                              Decorate 36(imagei) DescriptorSet 0
                               Decorate 36(imagei) Binding 1
-                              Decorate 46(imageu) DescriptorSet 0
+                              Decorate 36(imagei) DescriptorSet 0
                               Decorate 46(imageu) Binding 0
-                              MemberDecorate 66(BufferU) 0 Offset 0
+                              Decorate 46(imageu) DescriptorSet 0
                               Decorate 66(BufferU) Block
-                              Decorate 68(bufferu) DescriptorSet 0
+                              MemberDecorate 66(BufferU) 0 Offset 0
                               Decorate 68(bufferu) Binding 2
-                              MemberDecorate 78(BufferI) 0 Offset 0
+                              Decorate 68(bufferu) DescriptorSet 0
                               Decorate 78(BufferI) Block
-                              Decorate 80(bufferi) DescriptorSet 0
+                              MemberDecorate 78(BufferI) 0 Offset 0
                               Decorate 80(bufferi) Binding 3
+                              Decorate 80(bufferi) DescriptorSet 0
                               Decorate 83 ArrayStride 4
                               MemberDecorate 84(A) 0 Offset 0
-                              MemberDecorate 85(BufferJ) 0 Offset 0
                               Decorate 85(BufferJ) Block
-                              Decorate 88(bufferj) DescriptorSet 0
+                              MemberDecorate 85(BufferJ) 0 Offset 0
                               Decorate 88(bufferj) Binding 4
-                              MemberDecorate 99(BufferK) 0 Offset 0
+                              Decorate 88(bufferj) DescriptorSet 0
                               Decorate 99(BufferK) Block
-                              Decorate 101(bufferk) DescriptorSet 0
+                              MemberDecorate 99(BufferK) 0 Offset 0
                               Decorate 101(bufferk) Binding 7
-                              Decorate 111(imagej) DescriptorSet 0
+                              Decorate 101(bufferk) DescriptorSet 0
                               Decorate 111(imagej) Binding 5
-                              Decorate 123(samp) DescriptorSet 0
+                              Decorate 111(imagej) DescriptorSet 0
                               Decorate 123(samp) Binding 6
-                              MemberDecorate 144(BufferL) 0 Offset 0
+                              Decorate 123(samp) DescriptorSet 0
                               Decorate 144(BufferL) Block
-                              Decorate 146(bufferl) DescriptorSet 0
+                              MemberDecorate 144(BufferL) 0 Offset 0
                               Decorate 146(bufferl) Binding 8
-                              MemberDecorate 151(BufferM) 0 Offset 0
+                              Decorate 146(bufferl) DescriptorSet 0
                               Decorate 151(BufferM) Block
-                              Decorate 153(bufferm) DescriptorSet 0
+                              MemberDecorate 151(BufferM) 0 Offset 0
                               Decorate 153(bufferm) Binding 9
-                              Decorate 165(imageMS) DescriptorSet 0
+                              Decorate 153(bufferm) DescriptorSet 0
                               Decorate 165(imageMS) Binding 10
+                              Decorate 165(imageMS) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 1

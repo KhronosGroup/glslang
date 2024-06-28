@@ -158,32 +158,32 @@ void main(void)
                               Decorate 64(outNormal) Location 0
                               Decorate 74 ArrayStride 64
                               Decorate 76 ArrayStride 64
-                              MemberDecorate 78(UBO) 0 ColMajor
-                              MemberDecorate 78(UBO) 0 Offset 0
-                              MemberDecorate 78(UBO) 0 MatrixStride 16
-                              MemberDecorate 78(UBO) 1 ColMajor
-                              MemberDecorate 78(UBO) 1 Offset 128
-                              MemberDecorate 78(UBO) 1 MatrixStride 16
-                              MemberDecorate 78(UBO) 2 Offset 256
                               Decorate 78(UBO) Block
-                              Decorate 92(ubo) DescriptorSet 0
+                              MemberDecorate 78(UBO) 0 ColMajor
+                              MemberDecorate 78(UBO) 0 MatrixStride 16
+                              MemberDecorate 78(UBO) 0 Offset 0
+                              MemberDecorate 78(UBO) 1 ColMajor
+                              MemberDecorate 78(UBO) 1 MatrixStride 16
+                              MemberDecorate 78(UBO) 1 Offset 128
+                              MemberDecorate 78(UBO) 2 Offset 256
                               Decorate 92(ubo) Binding 0
+                              Decorate 92(ubo) DescriptorSet 0
                               Decorate 98(gl_InvocationID) BuiltIn InvocationId
                               Decorate 121(inNormal) Location 0
                               Decorate 130(outColor) Location 1
                               Decorate 134(inColor) Location 1
+                              Decorate 151(gl_PerVertex) Block
                               MemberDecorate 151(gl_PerVertex) 0 BuiltIn Position
                               MemberDecorate 151(gl_PerVertex) 1 BuiltIn PointSize
                               MemberDecorate 151(gl_PerVertex) 2 BuiltIn ClipDistance
                               MemberDecorate 151(gl_PerVertex) 3 BuiltIn CullDistance
-                              Decorate 151(gl_PerVertex) Block
                               Decorate 208(outLightVec) Location 3
                               Decorate 217(outViewVec) Location 2
+                              Decorate 225(gl_PerVertex) Block
                               MemberDecorate 225(gl_PerVertex) 0 BuiltIn Position
                               MemberDecorate 225(gl_PerVertex) 1 BuiltIn PointSize
                               MemberDecorate 225(gl_PerVertex) 2 BuiltIn ClipDistance
                               MemberDecorate 225(gl_PerVertex) 3 BuiltIn CullDistance
-                              Decorate 225(gl_PerVertex) Block
                               Decorate 250(gl_ViewportIndex) BuiltIn ViewportIndex
                               Decorate 256(gl_PrimitiveID) BuiltIn PrimitiveId
                               Decorate 260(gl_PrimitiveIDIn) BuiltIn PrimitiveId

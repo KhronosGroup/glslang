@@ -22,10 +22,10 @@ spv.precise.tesc
                               Decorate 12(in_te_position) Location 0
                               Decorate 15(gl_InvocationID) BuiltIn InvocationId
                               Decorate 20(in_tc_position) Location 0
-                              Decorate 30(gl_TessLevelInner) Patch
                               Decorate 30(gl_TessLevelInner) BuiltIn TessLevelInner
-                              Decorate 40(gl_TessLevelOuter) Patch
+                              Decorate 30(gl_TessLevelInner) Patch
                               Decorate 40(gl_TessLevelOuter) BuiltIn TessLevelOuter
+                              Decorate 40(gl_TessLevelOuter) Patch
                               Decorate 45(in_tc_tessParam) Location 1
                               Decorate 52 NoContraction
                               Decorate 53 NoContraction

@@ -35,14 +35,14 @@ WARNING: 0:6: '' : all default precisions are highp; use precision statements to
                               Name 48  "AcBlock"
                               MemberName 48(AcBlock) 0  "ac_numPassed"
                               Name 50  ""
-                              MemberDecorate 26(PC) 0 Offset 0
                               Decorate 26(PC) Block
-                              MemberDecorate 28(Block) 0 Offset 0
+                              MemberDecorate 26(PC) 0 Offset 0
                               Decorate 28(Block) Block
-                              MemberDecorate 48(AcBlock) 0 Offset 0
+                              MemberDecorate 28(Block) 0 Offset 0
                               Decorate 48(AcBlock) Block
-                              Decorate 50 DescriptorSet 0
+                              MemberDecorate 48(AcBlock) 0 Offset 0
                               Decorate 50 Binding 0
+                              Decorate 50 DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 0

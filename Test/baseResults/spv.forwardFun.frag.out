@@ -22,8 +22,8 @@ spv.forwardFun.frag
                               Name 36  "d"
                               Name 59  "bigColor"
                               Decorate 10(unreachableReturn() RelaxedPrecision
-                              Decorate 16(foo(vf4;) RelaxedPrecision
                               Decorate 15(bar) RelaxedPrecision
+                              Decorate 16(foo(vf4;) RelaxedPrecision
                               Decorate 18(color) RelaxedPrecision
                               Decorate 20(BaseColor) RelaxedPrecision
                               Decorate 20(BaseColor) Location 1

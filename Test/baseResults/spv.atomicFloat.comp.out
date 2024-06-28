@@ -38,35 +38,35 @@ spv.atomicFloat.comp
                               Name 352  "fimageCube"
                               Name 392  "fimageCubeArray"
                               Name 430  "fimage3D"
+                              Decorate 25(Buffer) BufferBlock
                               MemberDecorate 25(Buffer) 0 Offset 0
                               MemberDecorate 25(Buffer) 1 Offset 8
-                              Decorate 25(Buffer) BufferBlock
-                              Decorate 27(buf) DescriptorSet 0
                               Decorate 27(buf) Binding 0
+                              Decorate 27(buf) DescriptorSet 0
                               Decorate 143(fimage1D) Location 0
-                              Decorate 143(fimage1D) DescriptorSet 0
                               Decorate 143(fimage1D) Binding 0
+                              Decorate 143(fimage1D) DescriptorSet 0
                               Decorate 189(fimage1DArray) Location 1
-                              Decorate 189(fimage1DArray) DescriptorSet 0
                               Decorate 189(fimage1DArray) Binding 1
+                              Decorate 189(fimage1DArray) DescriptorSet 0
                               Decorate 232(fimage2D) Location 2
-                              Decorate 232(fimage2D) DescriptorSet 0
                               Decorate 232(fimage2D) Binding 2
+                              Decorate 232(fimage2D) DescriptorSet 0
                               Decorate 270(fimage2DRect) Location 4
-                              Decorate 270(fimage2DRect) DescriptorSet 0
                               Decorate 270(fimage2DRect) Binding 4
+                              Decorate 270(fimage2DRect) DescriptorSet 0
                               Decorate 308(fimage2DArray) Location 3
-                              Decorate 308(fimage2DArray) DescriptorSet 0
                               Decorate 308(fimage2DArray) Binding 3
+                              Decorate 308(fimage2DArray) DescriptorSet 0
                               Decorate 352(fimageCube) Location 5
-                              Decorate 352(fimageCube) DescriptorSet 0
                               Decorate 352(fimageCube) Binding 5
+                              Decorate 352(fimageCube) DescriptorSet 0
                               Decorate 392(fimageCubeArray) Location 6
-                              Decorate 392(fimageCubeArray) DescriptorSet 0
                               Decorate 392(fimageCubeArray) Binding 6
+                              Decorate 392(fimageCubeArray) DescriptorSet 0
                               Decorate 430(fimage3D) Location 7
-                              Decorate 430(fimage3D) DescriptorSet 0
                               Decorate 430(fimage3D) Binding 9
+                              Decorate 430(fimage3D) DescriptorSet 0
                               Decorate 469 BuiltIn WorkgroupSize
                2:             TypeVoid
                3:             TypeFunction 2

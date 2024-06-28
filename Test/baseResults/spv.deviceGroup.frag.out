@@ -15,8 +15,8 @@ spv.deviceGroup.frag
                               Name 9  "color"
                               Name 12  "gl_DeviceIndex"
                               Decorate 9(color) Location 0
-                              Decorate 12(gl_DeviceIndex) Flat
                               Decorate 12(gl_DeviceIndex) BuiltIn DeviceIndex
+                              Decorate 12(gl_DeviceIndex) Flat
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

@@ -138,11 +138,11 @@ Shader version: 500
                               Name 33  "vsout"
                               Name 42  "@entryPointOutput.Pos"
                               Name 47  "g_sSamp"
-                              Decorate 17(g_tTex1df4) DescriptorSet 0
                               Decorate 17(g_tTex1df4) Binding 0
+                              Decorate 17(g_tTex1df4) DescriptorSet 0
                               Decorate 42(@entryPointOutput.Pos) BuiltIn Position
-                              Decorate 47(g_sSamp) DescriptorSet 0
                               Decorate 47(g_sSamp) Binding 0
+                              Decorate 47(g_sSamp) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

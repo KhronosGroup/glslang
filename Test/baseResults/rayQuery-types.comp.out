@@ -34,8 +34,8 @@ rayQuery-types.comp
                               Name 73  "objRayOrigin"
                               Name 77  "objToWorld"
                               Name 79  "worldToObj"
-                              Decorate 11(tlas) DescriptorSet 0
                               Decorate 11(tlas) Binding 0
+                              Decorate 11(tlas) DescriptorSet 0
                               Decorate 85 BuiltIn WorkgroupSize
                2:             TypeVoid
                3:             TypeFunction 2

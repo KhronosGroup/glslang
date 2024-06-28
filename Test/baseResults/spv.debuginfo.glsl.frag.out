@@ -352,29 +352,29 @@ void main()
                               Name 814  "spec"
                               Name 861  "param"
                               Name 866  "param"
-                              Decorate 177(samplerShadowMap) DescriptorSet 0
                               Decorate 177(samplerShadowMap) Binding 5
+                              Decorate 177(samplerShadowMap) DescriptorSet 0
                               MemberDecorate 405(Light) 0 Offset 0
                               MemberDecorate 405(Light) 1 Offset 16
                               MemberDecorate 405(Light) 2 Offset 32
                               MemberDecorate 405(Light) 3 ColMajor
-                              MemberDecorate 405(Light) 3 Offset 48
                               MemberDecorate 405(Light) 3 MatrixStride 16
+                              MemberDecorate 405(Light) 3 Offset 48
                               Decorate 416 ArrayStride 112
+                              Decorate 418(UBO) Block
                               MemberDecorate 418(UBO) 0 Offset 0
                               MemberDecorate 418(UBO) 1 Offset 16
                               MemberDecorate 418(UBO) 2 Offset 352
                               MemberDecorate 418(UBO) 3 Offset 356
-                              Decorate 418(UBO) Block
-                              Decorate 431(ubo) DescriptorSet 0
                               Decorate 431(ubo) Binding 4
-                              Decorate 487(samplerposition) DescriptorSet 0
+                              Decorate 431(ubo) DescriptorSet 0
                               Decorate 487(samplerposition) Binding 1
+                              Decorate 487(samplerposition) DescriptorSet 0
                               Decorate 493(inUV) Location 0
-                              Decorate 505(samplerNormal) DescriptorSet 0
                               Decorate 505(samplerNormal) Binding 2
-                              Decorate 518(samplerAlbedo) DescriptorSet 0
+                              Decorate 505(samplerNormal) DescriptorSet 0
                               Decorate 518(samplerAlbedo) Binding 3
+                              Decorate 518(samplerAlbedo) DescriptorSet 0
                               Decorate 546(outFragColor) Location 0
                4:             TypeVoid
                5:             TypeFunction 4

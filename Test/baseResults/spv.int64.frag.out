@@ -71,15 +71,15 @@ Validation failed
                               Name 508  "i_to_u64"
                               Name 510  "i64_to_u"
                               Name 512  "u_to_i64"
-                              MemberDecorate 28(Uniforms) 0 Offset 0
                               Decorate 28(Uniforms) Block
-                              Decorate 30 DescriptorSet 0
+                              MemberDecorate 28(Uniforms) 0 Offset 0
                               Decorate 30 Binding 0
+                              Decorate 30 DescriptorSet 0
+                              Decorate 486(Block) Block
                               MemberDecorate 486(Block) 0 Offset 0
                               MemberDecorate 486(Block) 1 Offset 24
-                              Decorate 486(Block) Block
-                              Decorate 488(block) DescriptorSet 0
                               Decorate 488(block) Binding 1
+                              Decorate 488(block) DescriptorSet 0
                               Decorate 489(si64) SpecId 100
                               Decorate 490(su64) SpecId 101
                               Decorate 491(si) SpecId 102

@@ -21,10 +21,10 @@ spv.smBuiltins.vert
                               Name 22  "gl_WarpIDNV"
                               Name 24  "gl_SMIDNV"
                               Decorate 8 ArrayStride 16
-                              MemberDecorate 9(Output) 0 Offset 0
                               Decorate 9(Output) BufferBlock
-                              Decorate 11 DescriptorSet 0
+                              MemberDecorate 9(Output) 0 Offset 0
                               Decorate 11 Binding 0
+                              Decorate 11 DescriptorSet 0
                               Decorate 15(gl_VertexIndex) BuiltIn VertexIndex
                               Decorate 18(gl_WarpsPerSMNV) BuiltIn WarpsPerSMNV
                               Decorate 20(gl_SMCountNV) BuiltIn SMCountNV

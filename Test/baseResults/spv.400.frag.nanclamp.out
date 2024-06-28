@@ -53,27 +53,27 @@ spv.400.frag
                               Name 1119  "id"
                               Name 1120  "gl_PrimitiveID"
                               Decorate 13(outp) Location 1
-                              Decorate 17(u2drs) DescriptorSet 0
                               Decorate 17(u2drs) Binding 3
-                              Decorate 1025(arrayedSampler) DescriptorSet 0
+                              Decorate 17(u2drs) DescriptorSet 0
                               Decorate 1025(arrayedSampler) Binding 0
+                              Decorate 1025(arrayedSampler) DescriptorSet 0
                               Decorate 1027(i) Flat
                               Decorate 1027(i) Location 1
                               Decorate 1033(c2D) Location 0
                               Decorate 1038(gl_ClipDistance) BuiltIn ClipDistance
                               Decorate 1054(uoutp) Location 3
-                              Decorate 1058(samp2dr) DescriptorSet 0
                               Decorate 1058(samp2dr) Binding 1
+                              Decorate 1058(samp2dr) DescriptorSet 0
                               Decorate 1080(ioutp) Location 2
-                              Decorate 1084(isamp2DA) DescriptorSet 0
                               Decorate 1084(isamp2DA) Binding 2
+                              Decorate 1084(isamp2DA) DescriptorSet 0
                               Decorate 1101(gl_FragCoord) BuiltIn FragCoord
                               Decorate 1103(vl2) Location 6
                               Decorate 1109(uo) Location 0
                               Decorate 1111(u) Flat
                               Decorate 1111(u) Location 2
-                              Decorate 1120(gl_PrimitiveID) Flat
                               Decorate 1120(gl_PrimitiveID) BuiltIn PrimitiveId
+                              Decorate 1120(gl_PrimitiveID) Flat
                2:             TypeVoid
                3:             TypeFunction 2
               10:             TypeFloat 32

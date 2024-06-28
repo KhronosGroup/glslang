@@ -19,17 +19,17 @@ spv.xfb3.vert
                               MemberName 17(ComponentsBlock) 0  "c1"
                               MemberName 17(ComponentsBlock) 1  "c2"
                               Name 19  "components"
-                              MemberDecorate 8(gl_PerVertex) 0 Offset 16
-                              MemberDecorate 8(gl_PerVertex) 0 BuiltIn Position
                               Decorate 8(gl_PerVertex) Block
+                              MemberDecorate 8(gl_PerVertex) 0 BuiltIn Position
+                              MemberDecorate 8(gl_PerVertex) 0 Offset 16
                               Decorate 10 XfbBuffer 3
                               Decorate 10 XfbStride 80
                               Decorate 14(position) Location 0
+                              Decorate 17(ComponentsBlock) Block
                               MemberDecorate 17(ComponentsBlock) 0 Offset 0
                               MemberDecorate 17(ComponentsBlock) 1 Offset 16
-                              Decorate 17(ComponentsBlock) Block
-                              Decorate 19(components) DescriptorSet 0
                               Decorate 19(components) Binding 5
+                              Decorate 19(components) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

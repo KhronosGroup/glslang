@@ -728,31 +728,31 @@ gl_FragCoord origin is upper left
                               Name 196  "structUniform.samplers.tn[2]"
                               Name 197  "structUniform.samplers.tn[3]"
                               Name 198  "param"
+                              Decorate 34(gl_AtomicCounterBlock_0) BufferBlock
                               MemberDecorate 34(gl_AtomicCounterBlock_0) 0 Volatile
                               MemberDecorate 34(gl_AtomicCounterBlock_0) 0 Coherent
                               MemberDecorate 34(gl_AtomicCounterBlock_0) 0 Offset 0
                               MemberDecorate 34(gl_AtomicCounterBlock_0) 1 Volatile
                               MemberDecorate 34(gl_AtomicCounterBlock_0) 1 Coherent
                               MemberDecorate 34(gl_AtomicCounterBlock_0) 1 Offset 4
-                              Decorate 34(gl_AtomicCounterBlock_0) BufferBlock
-                              Decorate 36 DescriptorSet 0
                               Decorate 36 Binding 9
+                              Decorate 36 DescriptorSet 0
+                              Decorate 78(gl_AtomicCounterBlock_1) BufferBlock
                               MemberDecorate 78(gl_AtomicCounterBlock_1) 0 Volatile
                               MemberDecorate 78(gl_AtomicCounterBlock_1) 0 Coherent
                               MemberDecorate 78(gl_AtomicCounterBlock_1) 0 Offset 0
-                              Decorate 78(gl_AtomicCounterBlock_1) BufferBlock
-                              Decorate 80 DescriptorSet 0
                               Decorate 80 Binding 10
+                              Decorate 80 DescriptorSet 0
+                              Decorate 89(UniformBlock) Block
                               MemberDecorate 89(UniformBlock) 0 Offset 0
                               MemberDecorate 89(UniformBlock) 1 Offset 16
-                              Decorate 89(UniformBlock) Block
-                              Decorate 91 DescriptorSet 0
                               Decorate 91 Binding 7
+                              Decorate 91 DescriptorSet 0
+                              Decorate 95(BufferBlock) BufferBlock
                               MemberDecorate 95(BufferBlock) 0 Offset 0
                               MemberDecorate 95(BufferBlock) 1 Offset 16
-                              Decorate 95(BufferBlock) BufferBlock
-                              Decorate 97(bufferInstance) DescriptorSet 0
                               Decorate 97(bufferInstance) Binding 8
+                              Decorate 97(bufferInstance) DescriptorSet 0
                               Decorate 103 ArrayStride 16
                               Decorate 104 ArrayStride 16
                               MemberDecorate 105(SamplerArray) 0 Offset 0
@@ -761,27 +761,27 @@ gl_FragCoord origin is upper left
                               MemberDecorate 106(e) 2 Offset 12
                               MemberDecorate 106(e) 3 Offset 16
                               MemberDecorate 106(e) 4 Offset 32
+                              Decorate 107(gl_DefaultUniformBlock) Block
                               MemberDecorate 107(gl_DefaultUniformBlock) 0 Offset 0
                               MemberDecorate 107(gl_DefaultUniformBlock) 1 Offset 16
                               MemberDecorate 107(gl_DefaultUniformBlock) 2 Offset 24
                               MemberDecorate 107(gl_DefaultUniformBlock) 3 Offset 32
                               MemberDecorate 107(gl_DefaultUniformBlock) 4 Offset 192
-                              Decorate 107(gl_DefaultUniformBlock) Block
-                              Decorate 109 DescriptorSet 0
                               Decorate 109 Binding 0
-                              Decorate 151(t1) DescriptorSet 0
+                              Decorate 109 DescriptorSet 0
                               Decorate 151(t1) Binding 6
-                              Decorate 157(structUniform.t0) DescriptorSet 0
+                              Decorate 151(t1) DescriptorSet 0
                               Decorate 157(structUniform.t0) Binding 1
+                              Decorate 157(structUniform.t0) DescriptorSet 0
                               Decorate 190(o) Location 0
-                              Decorate 194(structUniform.samplers.tn[0]) DescriptorSet 0
                               Decorate 194(structUniform.samplers.tn[0]) Binding 2
-                              Decorate 195(structUniform.samplers.tn[1]) DescriptorSet 0
+                              Decorate 194(structUniform.samplers.tn[0]) DescriptorSet 0
                               Decorate 195(structUniform.samplers.tn[1]) Binding 3
-                              Decorate 196(structUniform.samplers.tn[2]) DescriptorSet 0
+                              Decorate 195(structUniform.samplers.tn[1]) DescriptorSet 0
                               Decorate 196(structUniform.samplers.tn[2]) Binding 4
-                              Decorate 197(structUniform.samplers.tn[3]) DescriptorSet 0
+                              Decorate 196(structUniform.samplers.tn[2]) DescriptorSet 0
                               Decorate 197(structUniform.samplers.tn[3]) Binding 5
+                              Decorate 197(structUniform.samplers.tn[3]) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 0

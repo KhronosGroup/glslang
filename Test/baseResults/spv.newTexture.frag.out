@@ -44,53 +44,53 @@ Validation failed
                               Name 271  "usCube"
                               Name 275  "us2DArray"
                               Name 277  "ic4D"
-                              Decorate 13(s2D) DescriptorSet 0
                               Decorate 13(s2D) Binding 0
+                              Decorate 13(s2D) DescriptorSet 0
                               Decorate 17(c2D) Location 1
-                              Decorate 23(sCubeArrayShadow) DescriptorSet 0
                               Decorate 23(sCubeArrayShadow) Binding 5
+                              Decorate 23(sCubeArrayShadow) DescriptorSet 0
                               Decorate 26(c4D) Location 3
                               Decorate 29(c1D) Location 0
-                              Decorate 42(s3D) DescriptorSet 0
                               Decorate 42(s3D) Binding 2
-                              Decorate 51(s2DArray) DescriptorSet 0
+                              Decorate 42(s3D) DescriptorSet 0
                               Decorate 51(s2DArray) Binding 7
+                              Decorate 51(s2DArray) DescriptorSet 0
                               Decorate 55(c3D) Location 2
-                              Decorate 64(s2DShadow) DescriptorSet 0
                               Decorate 64(s2DShadow) Binding 6
+                              Decorate 64(s2DShadow) DescriptorSet 0
                               Decorate 81(ic3D) Flat
                               Decorate 81(ic3D) Location 6
                               Decorate 84(ic1D) Flat
                               Decorate 84(ic1D) Location 4
                               Decorate 92(ic2D) Flat
                               Decorate 92(ic2D) Location 5
-                              Decorate 102(sr) DescriptorSet 0
                               Decorate 102(sr) Binding 1
-                              Decorate 128(sCube) DescriptorSet 0
+                              Decorate 102(sr) DescriptorSet 0
                               Decorate 128(sCube) Binding 3
-                              Decorate 137(s2DArrayShadow) DescriptorSet 0
+                              Decorate 128(sCube) DescriptorSet 0
                               Decorate 137(s2DArrayShadow) Binding 8
-                              Decorate 166(is2D) DescriptorSet 0
+                              Decorate 137(s2DArrayShadow) DescriptorSet 0
                               Decorate 166(is2D) Binding 9
-                              Decorate 202(is3D) DescriptorSet 0
+                              Decorate 166(is2D) DescriptorSet 0
                               Decorate 202(is3D) Binding 10
-                              Decorate 214(isCube) DescriptorSet 0
+                              Decorate 202(is3D) DescriptorSet 0
                               Decorate 214(isCube) Binding 11
-                              Decorate 226(is2DArray) DescriptorSet 0
+                              Decorate 214(isCube) DescriptorSet 0
                               Decorate 226(is2DArray) Binding 12
-                              Decorate 241(sCubeShadow) DescriptorSet 0
+                              Decorate 226(is2DArray) DescriptorSet 0
                               Decorate 241(sCubeShadow) Binding 4
+                              Decorate 241(sCubeShadow) DescriptorSet 0
                               Decorate 247(FragData) Location 0
-                              Decorate 259(is2Dms) DescriptorSet 0
                               Decorate 259(is2Dms) Binding 0
-                              Decorate 263(us2D) DescriptorSet 0
+                              Decorate 259(is2Dms) DescriptorSet 0
                               Decorate 263(us2D) Binding 0
-                              Decorate 267(us3D) DescriptorSet 0
+                              Decorate 263(us2D) DescriptorSet 0
                               Decorate 267(us3D) Binding 0
-                              Decorate 271(usCube) DescriptorSet 0
+                              Decorate 267(us3D) DescriptorSet 0
                               Decorate 271(usCube) Binding 0
-                              Decorate 275(us2DArray) DescriptorSet 0
+                              Decorate 271(usCube) DescriptorSet 0
                               Decorate 275(us2DArray) Binding 0
+                              Decorate 275(us2DArray) DescriptorSet 0
                               Decorate 277(ic4D) Flat
                               Decorate 277(ic4D) Location 7
                2:             TypeVoid

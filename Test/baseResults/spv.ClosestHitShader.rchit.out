@@ -57,8 +57,8 @@ spv.ClosestHitShader.rchit
                               Decorate 57(gl_HitKindNV) BuiltIn HitKindKHR
                               Decorate 63(gl_ObjectToWorldNV) BuiltIn ObjectToWorldKHR
                               Decorate 66(gl_WorldToObjectNV) BuiltIn WorldToObjectKHR
-                              Decorate 70(accNV) DescriptorSet 0
                               Decorate 70(accNV) Binding 0
+                              Decorate 70(accNV) DescriptorSet 0
                               Decorate 84(localPayload) Location 0
                               Decorate 86(incomingPayload) Location 1
                2:             TypeVoid

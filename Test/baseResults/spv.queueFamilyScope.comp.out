@@ -16,10 +16,10 @@ spv.queueFamilyScope.comp
                               Name 7  "Buffer"
                               MemberName 7(Buffer) 0  "a"
                               Name 9  "A"
-                              MemberDecorate 7(Buffer) 0 Offset 0
                               Decorate 7(Buffer) Block
-                              Decorate 9(A) DescriptorSet 0
+                              MemberDecorate 7(Buffer) 0 Offset 0
                               Decorate 9(A) Binding 0
+                              Decorate 9(A) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 0

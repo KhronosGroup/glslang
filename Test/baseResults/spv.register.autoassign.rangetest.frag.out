@@ -22,10 +22,10 @@ INTERNAL ERROR: mapped binding out of range: g_tScene
                               Name 44  "psout"
                               Name 45  "param"
                               Name 49  "psout.Color"
-                              Decorate 21(g_tScene) DescriptorSet 0
                               Decorate 21(g_tScene) Binding 5
-                              Decorate 27(g_tSamp) DescriptorSet 0
+                              Decorate 21(g_tScene) DescriptorSet 0
                               Decorate 27(g_tSamp) Binding 5
+                              Decorate 27(g_tSamp) DescriptorSet 0
                               Decorate 49(psout.Color) Location 0
                2:             TypeVoid
                3:             TypeFunction 2

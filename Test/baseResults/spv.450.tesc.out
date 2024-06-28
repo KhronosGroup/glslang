@@ -43,36 +43,36 @@ Validation failed
                               MemberName 42(bn) 1  "v2"
                               MemberName 42(bn) 2  "v3"
                               Name 44  ""
+                              Decorate 11(gl_PerVertex) Block
                               MemberDecorate 11(gl_PerVertex) 0 BuiltIn Position
                               MemberDecorate 11(gl_PerVertex) 1 BuiltIn PointSize
                               MemberDecorate 11(gl_PerVertex) 2 BuiltIn ClipDistance
                               MemberDecorate 11(gl_PerVertex) 3 BuiltIn CullDistance
-                              Decorate 11(gl_PerVertex) Block
                               Decorate 18(gl_InvocationID) BuiltIn InvocationId
+                              Decorate 21(gl_PerVertex) Block
                               MemberDecorate 21(gl_PerVertex) 0 BuiltIn Position
                               MemberDecorate 21(gl_PerVertex) 1 BuiltIn PointSize
                               MemberDecorate 21(gl_PerVertex) 2 BuiltIn ClipDistance
                               MemberDecorate 21(gl_PerVertex) 3 BuiltIn CullDistance
-                              Decorate 21(gl_PerVertex) Block
                               Decorate 32(patchOut) Patch
                               Decorate 32(patchOut) Location 1
+                              Decorate 34(TheBlock) Block
                               MemberDecorate 34(TheBlock) 0 Patch
                               MemberDecorate 34(TheBlock) 1 Patch
                               MemberDecorate 34(TheBlock) 2 Patch
-                              Decorate 34(TheBlock) Block
                               Decorate 38(tcBlock) Location 12
+                              Decorate 39(SingleBlock) Block
                               MemberDecorate 39(SingleBlock) 0 Patch
                               MemberDecorate 39(SingleBlock) 1 Patch
                               MemberDecorate 39(SingleBlock) 2 Patch
-                              Decorate 39(SingleBlock) Block
                               Decorate 41(singleBlock) Location 2
+                              Decorate 42(bn) Block
                               MemberDecorate 42(bn) 0 Patch
                               MemberDecorate 42(bn) 0 Location 20
                               MemberDecorate 42(bn) 1 Patch
                               MemberDecorate 42(bn) 1 Location 24
                               MemberDecorate 42(bn) 2 Patch
                               MemberDecorate 42(bn) 2 Location 25
-                              Decorate 42(bn) Block
                               Decorate 44 Location 0
                2:             TypeVoid
                3:             TypeFunction 2

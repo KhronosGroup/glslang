@@ -18,13 +18,13 @@ spv.ext.textureShadowLod.frag
                               Name 24  "sca"
                               Name 43  "sc"
                               Decorate 8(c) Location 0
-                              Decorate 12(s2da) DescriptorSet 0
                               Decorate 12(s2da) Binding 0
+                              Decorate 12(s2da) DescriptorSet 0
                               Decorate 16(tc) Location 0
-                              Decorate 24(sca) DescriptorSet 0
                               Decorate 24(sca) Binding 1
-                              Decorate 43(sc) DescriptorSet 0
+                              Decorate 24(sca) DescriptorSet 0
                               Decorate 43(sc) Binding 2
+                              Decorate 43(sc) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

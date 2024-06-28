@@ -20,13 +20,13 @@ spv.specConstant.float16.comp
                               Name 9  "sb_out"
                               Name 12  "sc0"
                               Name 16  "sc1"
+                              Decorate 7(Output) BufferBlock
                               MemberDecorate 7(Output) 0 NonReadable
                               MemberDecorate 7(Output) 0 Offset 0
                               MemberDecorate 7(Output) 1 NonReadable
                               MemberDecorate 7(Output) 1 Offset 2
-                              Decorate 7(Output) BufferBlock
-                              Decorate 9(sb_out) DescriptorSet 0
                               Decorate 9(sb_out) Binding 0
+                              Decorate 9(sb_out) DescriptorSet 0
                               Decorate 12(sc0) SpecId 1
                               Decorate 16(sc1) SpecId 2
                2:             TypeVoid

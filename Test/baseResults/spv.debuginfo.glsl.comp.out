@@ -304,6 +304,7 @@ void main()
                               Name 719  "a"
                               Name 733  "b"
                               Name 750  "c"
+                              Decorate 78(UBO) Block
                               MemberDecorate 78(UBO) 0 Offset 0
                               MemberDecorate 78(UBO) 1 Offset 4
                               MemberDecorate 78(UBO) 2 Offset 8
@@ -315,9 +316,8 @@ void main()
                               MemberDecorate 78(UBO) 8 Offset 32
                               MemberDecorate 78(UBO) 9 Offset 48
                               MemberDecorate 78(UBO) 10 Offset 64
-                              Decorate 78(UBO) Block
-                              Decorate 101(params) DescriptorSet 0
                               Decorate 101(params) Binding 2
+                              Decorate 101(params) DescriptorSet 0
                               Decorate 133(gl_GlobalInvocationID) BuiltIn GlobalInvocationId
                               MemberDecorate 177(Particle) 0 Offset 0
                               MemberDecorate 177(Particle) 1 Offset 16
@@ -325,17 +325,17 @@ void main()
                               MemberDecorate 177(Particle) 3 Offset 48
                               MemberDecorate 177(Particle) 4 Offset 64
                               Decorate 189 ArrayStride 80
-                              MemberDecorate 191(ParticleIn) 0 Offset 0
                               Decorate 191(ParticleIn) BufferBlock
-                              Decorate 200 DescriptorSet 0
+                              MemberDecorate 191(ParticleIn) 0 Offset 0
                               Decorate 200 Binding 0
+                              Decorate 200 DescriptorSet 0
                               Decorate 214 ArrayStride 80
-                              MemberDecorate 216(ParticleOut) 0 Offset 0
                               Decorate 216(ParticleOut) BufferBlock
-                              Decorate 225 DescriptorSet 0
+                              MemberDecorate 216(ParticleOut) 0 Offset 0
                               Decorate 225 Binding 1
-                              MemberDecorate 675(PushConsts) 0 Offset 0
+                              Decorate 225 DescriptorSet 0
                               Decorate 675(PushConsts) Block
+                              MemberDecorate 675(PushConsts) 0 Offset 0
                               Decorate 974 BuiltIn WorkgroupSize
                4:             TypeVoid
                5:             TypeFunction 4

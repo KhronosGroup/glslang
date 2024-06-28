@@ -18,8 +18,8 @@ spv.conditionalDemote.frag
                               Name 17  "coord"
                               Name 33  "x"
                               Name 36  "o"
-                              Decorate 13(tex) DescriptorSet 0
                               Decorate 13(tex) Binding 0
+                              Decorate 13(tex) DescriptorSet 0
                               Decorate 17(coord) Location 0
                               Decorate 36(o) Location 0
                2:             TypeVoid

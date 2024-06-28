@@ -20,23 +20,23 @@ spv.xfb.vert
                               Name 14  ""
                               Name 15  "out4"
                               Decorate 8(out1) Location 0
+                              Decorate 8(out1) Offset 12
                               Decorate 8(out1) XfbBuffer 3
                               Decorate 8(out1) XfbStride 48
-                              Decorate 8(out1) Offset 12
-                              MemberDecorate 9(outXfb) 0 Offset 8
                               Decorate 9(outXfb) Block
+                              MemberDecorate 9(outXfb) 0 Offset 8
                               Decorate 11 Location 1
                               Decorate 11 XfbBuffer 2
                               Decorate 11 XfbStride 32
-                              MemberDecorate 12(outXfb2) 0 Offset 60
                               Decorate 12(outXfb2) Block
+                              MemberDecorate 12(outXfb2) 0 Offset 60
                               Decorate 14 Location 3
                               Decorate 14 XfbBuffer 1
                               Decorate 14 XfbStride 64
                               Decorate 15(out4) Location 4
+                              Decorate 15(out4) Offset 4
                               Decorate 15(out4) XfbBuffer 0
                               Decorate 15(out4) XfbStride 8
-                              Decorate 15(out4) Offset 4
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

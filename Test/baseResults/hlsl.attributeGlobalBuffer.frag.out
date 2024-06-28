@@ -72,11 +72,11 @@ gl_FragCoord origin is upper left
                               MemberName 11($Global) 1  "u2"
                               Name 13  ""
                               Name 26  "@entryPointOutput"
+                              Decorate 11($Global) Block
                               MemberDecorate 11($Global) 0 Offset 0
                               MemberDecorate 11($Global) 1 Offset 16
-                              Decorate 11($Global) Block
-                              Decorate 13 DescriptorSet 2
                               Decorate 13 Binding 5
+                              Decorate 13 DescriptorSet 2
                               Decorate 26(@entryPointOutput) Location 0
                2:             TypeVoid
                3:             TypeFunction 2

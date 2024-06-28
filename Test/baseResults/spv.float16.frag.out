@@ -122,42 +122,42 @@ Validation failed
                               MemberDecorate 518(S) 1 Offset 4
                               MemberDecorate 518(S) 2 Offset 8
                               Decorate 519 ArrayStride 16
+                              Decorate 520(B1) Block
                               MemberDecorate 520(B1) 0 Offset 0
                               MemberDecorate 520(B1) 1 Offset 4
                               MemberDecorate 520(B1) 2 Offset 8
                               MemberDecorate 520(B1) 3 Offset 16
                               MemberDecorate 520(B1) 4 ColMajor
-                              MemberDecorate 520(B1) 4 Offset 48
                               MemberDecorate 520(B1) 4 MatrixStride 16
+                              MemberDecorate 520(B1) 4 Offset 48
                               MemberDecorate 520(B1) 5 ColMajor
-                              MemberDecorate 520(B1) 5 Offset 80
                               MemberDecorate 520(B1) 5 MatrixStride 16
+                              MemberDecorate 520(B1) 5 Offset 80
                               MemberDecorate 520(B1) 6 Offset 144
                               MemberDecorate 520(B1) 7 Offset 160
-                              Decorate 520(B1) Block
-                              Decorate 522 DescriptorSet 0
                               Decorate 522 Binding 0
+                              Decorate 522 DescriptorSet 0
                               Decorate 523 ArrayStride 2
                               Decorate 524 ArrayStride 12
                               MemberDecorate 525(S) 0 Offset 0
                               MemberDecorate 525(S) 1 Offset 4
                               MemberDecorate 525(S) 2 Offset 8
                               Decorate 526 ArrayStride 16
+                              Decorate 527(B2) BufferBlock
                               MemberDecorate 527(B2) 0 Offset 0
                               MemberDecorate 527(B2) 1 Offset 4
                               MemberDecorate 527(B2) 2 Offset 8
                               MemberDecorate 527(B2) 3 Offset 14
                               MemberDecorate 527(B2) 4 RowMajor
-                              MemberDecorate 527(B2) 4 Offset 20
                               MemberDecorate 527(B2) 4 MatrixStride 4
+                              MemberDecorate 527(B2) 4 Offset 20
                               MemberDecorate 527(B2) 5 RowMajor
-                              MemberDecorate 527(B2) 5 Offset 32
                               MemberDecorate 527(B2) 5 MatrixStride 4
+                              MemberDecorate 527(B2) 5 Offset 32
                               MemberDecorate 527(B2) 6 Offset 56
                               MemberDecorate 527(B2) 7 Offset 72
-                              Decorate 527(B2) BufferBlock
-                              Decorate 529 DescriptorSet 0
                               Decorate 529 Binding 0
+                              Decorate 529 DescriptorSet 0
                               Decorate 530(sf16) SpecId 100
                               Decorate 531(sf) SpecId 101
                               Decorate 532(sd) SpecId 102

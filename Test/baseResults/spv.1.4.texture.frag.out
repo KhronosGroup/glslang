@@ -19,13 +19,13 @@ spv.1.4.texture.frag
                               Name 54  "iLod"
                               Name 76  "t"
                               Name 78  "color"
-                              Decorate 15(texSampler2D) DescriptorSet 0
                               Decorate 15(texSampler2D) Binding 0
+                              Decorate 15(texSampler2D) DescriptorSet 0
                               Decorate 19(coords2D) Location 1
-                              Decorate 28(itexSampler2D) DescriptorSet 0
                               Decorate 28(itexSampler2D) Binding 1
-                              Decorate 40(utexSampler2D) DescriptorSet 0
+                              Decorate 28(itexSampler2D) DescriptorSet 0
                               Decorate 40(utexSampler2D) Binding 2
+                              Decorate 40(utexSampler2D) DescriptorSet 0
                               Decorate 51(iCoords2D) Flat
                               Decorate 51(iCoords2D) Location 2
                               Decorate 54(iLod) Flat

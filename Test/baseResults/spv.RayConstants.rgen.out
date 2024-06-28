@@ -13,8 +13,8 @@ spv.RayConstants.rgen
                               Name 4  "main"
                               Name 8  "accNV"
                               Name 26  "payload"
-                              Decorate 8(accNV) DescriptorSet 0
                               Decorate 8(accNV) Binding 0
+                              Decorate 8(accNV) DescriptorSet 0
                               Decorate 26(payload) Location 0
                2:             TypeVoid
                3:             TypeFunction 2

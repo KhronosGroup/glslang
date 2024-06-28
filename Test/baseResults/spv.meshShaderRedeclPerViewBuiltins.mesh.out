@@ -34,20 +34,20 @@ spv.meshShaderRedeclPerViewBuiltins.mesh
                               Decorate 11(gl_LocalInvocationID) BuiltIn LocalInvocationId
                               Decorate 20(gl_MeshViewIndicesNV) BuiltIn MeshViewIndicesNV
                               Decorate 21(gl_MeshViewCountNV) BuiltIn MeshViewCountNV
-                              MemberDecorate 31(gl_MeshPerVertexNV) 0 PerViewNV
-                              MemberDecorate 31(gl_MeshPerVertexNV) 0 BuiltIn PositionPerViewNV
-                              MemberDecorate 31(gl_MeshPerVertexNV) 1 PerViewNV
-                              MemberDecorate 31(gl_MeshPerVertexNV) 1 BuiltIn ClipDistancePerViewNV
-                              MemberDecorate 31(gl_MeshPerVertexNV) 2 PerViewNV
-                              MemberDecorate 31(gl_MeshPerVertexNV) 2 BuiltIn CullDistancePerViewNV
                               Decorate 31(gl_MeshPerVertexNV) Block
+                              MemberDecorate 31(gl_MeshPerVertexNV) 0 BuiltIn PositionPerViewNV
+                              MemberDecorate 31(gl_MeshPerVertexNV) 0 PerViewNV
+                              MemberDecorate 31(gl_MeshPerVertexNV) 1 BuiltIn ClipDistancePerViewNV
+                              MemberDecorate 31(gl_MeshPerVertexNV) 1 PerViewNV
+                              MemberDecorate 31(gl_MeshPerVertexNV) 2 BuiltIn CullDistancePerViewNV
+                              MemberDecorate 31(gl_MeshPerVertexNV) 2 PerViewNV
+                              Decorate 63(gl_MeshPerPrimitiveNV) Block
+                              MemberDecorate 63(gl_MeshPerPrimitiveNV) 0 BuiltIn LayerPerViewNV
                               MemberDecorate 63(gl_MeshPerPrimitiveNV) 0 PerPrimitiveNV
                               MemberDecorate 63(gl_MeshPerPrimitiveNV) 0 PerViewNV
-                              MemberDecorate 63(gl_MeshPerPrimitiveNV) 0 BuiltIn LayerPerViewNV
+                              MemberDecorate 63(gl_MeshPerPrimitiveNV) 1 BuiltIn ViewportMaskPerViewNV
                               MemberDecorate 63(gl_MeshPerPrimitiveNV) 1 PerPrimitiveNV
                               MemberDecorate 63(gl_MeshPerPrimitiveNV) 1 PerViewNV
-                              MemberDecorate 63(gl_MeshPerPrimitiveNV) 1 BuiltIn ViewportMaskPerViewNV
-                              Decorate 63(gl_MeshPerPrimitiveNV) Block
                               Decorate 119 BuiltIn WorkgroupSize
                2:             TypeVoid
                3:             TypeFunction 2

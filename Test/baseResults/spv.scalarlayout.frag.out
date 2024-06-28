@@ -39,22 +39,22 @@ spv.scalarlayout.frag
                               MemberDecorate 15(S) 4 Offset 28
                               MemberDecorate 15(S) 5 Offset 40
                               Decorate 16 ArrayStride 48
+                              Decorate 17(B1) Block
                               MemberDecorate 17(B1) 0 Offset 0
                               MemberDecorate 17(B1) 1 Offset 4
                               MemberDecorate 17(B1) 2 Offset 12
                               MemberDecorate 17(B1) 3 Offset 24
                               MemberDecorate 17(B1) 4 ColMajor
-                              MemberDecorate 17(B1) 4 Offset 32
                               MemberDecorate 17(B1) 4 MatrixStride 12
+                              MemberDecorate 17(B1) 4 Offset 32
                               MemberDecorate 17(B1) 5 ColMajor
-                              MemberDecorate 17(B1) 5 Offset 56
                               MemberDecorate 17(B1) 5 MatrixStride 12
+                              MemberDecorate 17(B1) 5 Offset 56
                               MemberDecorate 17(B1) 6 Offset 104
                               MemberDecorate 17(B1) 7 Offset 112
                               MemberDecorate 17(B1) 8 Offset 160
-                              Decorate 17(B1) Block
-                              Decorate 19 DescriptorSet 0
                               Decorate 19 Binding 0
+                              Decorate 19 DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

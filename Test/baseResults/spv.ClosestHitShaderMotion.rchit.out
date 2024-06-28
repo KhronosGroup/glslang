@@ -19,8 +19,8 @@ spv.ClosestHitShaderMotion.rchit
                               Name 16  "accEXT"
                               Name 32  "incomingPayloadEXT"
                               Decorate 10(gl_CurrentRayTimeNV) BuiltIn CurrentRayTimeNV
-                              Decorate 16(accEXT) DescriptorSet 0
                               Decorate 16(accEXT) Binding 0
+                              Decorate 16(accEXT) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

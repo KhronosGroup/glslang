@@ -44,13 +44,13 @@ spv.subgroupBallot.comp
                               Decorate 26(gl_SubgroupGtMask) BuiltIn SubgroupGtMaskKHR
                               Decorate 29(gl_SubgroupLeMask) BuiltIn SubgroupLeMaskKHR
                               Decorate 32(gl_SubgroupLtMask) BuiltIn SubgroupLtMaskKHR
+                              Decorate 46(Buffers) Block
                               MemberDecorate 46(Buffers) 0 Offset 0
                               MemberDecorate 46(Buffers) 1 Offset 16
                               MemberDecorate 46(Buffers) 2 Offset 32
                               MemberDecorate 46(Buffers) 3 Offset 64
-                              Decorate 46(Buffers) Block
-                              Decorate 49(data) DescriptorSet 0
                               Decorate 49(data) Binding 0
+                              Decorate 49(data) DescriptorSet 0
                               Decorate 436 BuiltIn WorkgroupSize
                2:             TypeVoid
                3:             TypeFunction 2
