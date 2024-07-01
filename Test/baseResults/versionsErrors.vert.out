@@ -1,7 +1,7 @@
 versionsErrors.vert
-WARNING: 0:38: attribute deprecated in version 130; may be removed in future release
-ERROR: 0:38: 'attribute' : no longer supported in core profile; removed in version 420
-ERROR: 0:45: 'discard' : not supported in this stage: vertex
+WARNING: 0:38:1: attribute deprecated in version 130; may be removed in future release
+ERROR: 0:38:1: 'attribute' : no longer supported in core profile; removed in version 420
+ERROR: 0:45:5: 'discard' : not supported in this stage: vertex
 ERROR: 2 compilation errors.  No code generated.
 
 

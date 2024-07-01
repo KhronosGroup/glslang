@@ -1,18 +1,18 @@
 atomic_uint.frag
-ERROR: 0:4: 'counter' : redefinition 
-ERROR: 0:11: 'atomic_uint' : samplers and atomic_uints cannot be output parameters 
-ERROR: 0:13: 'return' : type does not match, or is not convertible to, the function's return type 
-ERROR: 0:19: 'atomic_uint' : atomic_uints can only be used in uniform variables or function parameters: non_uniform_counter
-ERROR: 0:24: 'binding' : atomic_uint binding is too large; see gl_MaxAtomicCounterBindings 
-ERROR: 0:29: '+' :  wrong operand types: no operation '+' exists that takes a left-hand operand of type 'layout( binding=0 offset=0) uniform atomic_uint' and a right operand of type 'layout( binding=0 offset=0) uniform atomic_uint' (or there is no acceptable conversion)
-ERROR: 0:30: '-' :  wrong operand type no operation '-' exists that takes an operand of type layout( binding=0 offset=0) uniform atomic_uint (or there is no acceptable conversion)
-ERROR: 0:32: '[]' : scalar integer expression required 
-ERROR: 0:35: 'assign' :  l-value required "counter" (can't modify a uniform)
-ERROR: 0:35: 'assign' :  cannot convert from ' const int' to 'layout( binding=0 offset=0) uniform atomic_uint'
-ERROR: 0:38: 'atomic_uint' : atomic_uints can only be used in uniform variables or function parameters: acin
-ERROR: 0:39: 'atomic_uint' : atomic_uints can only be used in uniform variables or function parameters: acg
-ERROR: 0:48: 'offset' : atomic counters sharing the same offset: 12
-ERROR: 0:49: 'binding' : atomic_uint binding is too large; see gl_MaxAtomicCounterBindings 
+ERROR: 0:4:53: 'counter' : redefinition 
+ERROR: 0:11:28: 'atomic_uint' : samplers and atomic_uints cannot be output parameters 
+ERROR: 0:13:5: 'return' : type does not match, or is not convertible to, the function's return type 
+ERROR: 0:19:18: 'atomic_uint' : atomic_uints can only be used in uniform variables or function parameters: non_uniform_counter
+ERROR: 0:24:53: 'binding' : atomic_uint binding is too large; see gl_MaxAtomicCounterBindings 
+ERROR: 0:29:13: '+' :  wrong operand types: no operation '+' exists that takes a left-hand operand of type 'layout( binding=0 offset=0) uniform atomic_uint' and a right operand of type 'layout( binding=0 offset=0) uniform atomic_uint' (or there is no acceptable conversion)
+ERROR: 0:30:5: '-' :  wrong operand type no operation '-' exists that takes an operand of type layout( binding=0 offset=0) uniform atomic_uint (or there is no acceptable conversion)
+ERROR: 0:32:7: '[]' : scalar integer expression required 
+ERROR: 0:35:13: 'assign' :  l-value required "counter" (can't modify a uniform)
+ERROR: 0:35:13: 'assign' :  cannot convert from ' const int' to 'layout( binding=0 offset=0) uniform atomic_uint'
+ERROR: 0:38:16: 'atomic_uint' : atomic_uints can only be used in uniform variables or function parameters: acin
+ERROR: 0:39:13: 'atomic_uint' : atomic_uints can only be used in uniform variables or function parameters: acg
+ERROR: 0:48:54: 'offset' : atomic counters sharing the same offset: 12
+ERROR: 0:49:42: 'binding' : atomic_uint binding is too large; see gl_MaxAtomicCounterBindings 
 ERROR: 14 compilation errors.  No code generated.
 
 

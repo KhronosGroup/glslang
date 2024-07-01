@@ -1,10 +1,10 @@
 constErrors.frag
-ERROR: 0:14: 'non-constant initializer' : not supported for this version or the enabled extensions 
-ERROR: 0:17: '' : array size must be a constant integer expression
-ERROR: 0:18: '' : array size must be a constant integer expression
-ERROR: 0:19: '' : array size must be a constant integer expression
-ERROR: 0:27: '=' : global const initializers must be constant ' const structure{ global 3-component vector of float v3,  global 2-component vector of int iv2}'
-ERROR: 0:33: '=' : global const initializers must be constant ' const structure{ global 3-component vector of float v3,  global 2-component vector of int iv2,  global 2X4 matrix of float m}'
+ERROR: 0:14:15: 'non-constant initializer' : not supported for this version or the enabled extensions 
+ERROR: 0:17:12: '' : array size must be a constant integer expression
+ERROR: 0:18:21: '' : array size must be a constant integer expression
+ERROR: 0:19:23: '' : array size must be a constant integer expression
+ERROR: 0:27:3: '=' : global const initializers must be constant ' const structure{ global 3-component vector of float v3,  global 2-component vector of int iv2}'
+ERROR: 0:33:3: '=' : global const initializers must be constant ' const structure{ global 3-component vector of float v3,  global 2-component vector of int iv2,  global 2X4 matrix of float m}'
 ERROR: 6 compilation errors.  No code generated.
 
 

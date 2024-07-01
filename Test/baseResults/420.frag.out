@@ -1,11 +1,11 @@
 420.frag
-ERROR: 0:4: 'redeclaration' : all redeclarations must use the same depth layout on gl_FragDepth
-ERROR: 0:11: 'layout qualifier' : can only apply depth layout to gl_FragDepth 
-ERROR: 0:12: 'gl_FragDepth' : cannot redeclare after use 
-ERROR: 0:14: 'atomic_uint' : array must be explicitly sized 
-ERROR: 0:17: 'imageSize' : required extension not requested: GL_ARB_shader_image_size
-ERROR: 0:54: 'std430' : not supported for this version or the enabled extensions 
-ERROR: 0:54: '' :  syntax error, unexpected IDENTIFIER, expecting LEFT_BRACE or COMMA or SEMICOLON
+ERROR: 0:4:33: 'redeclaration' : all redeclarations must use the same depth layout on gl_FragDepth
+ERROR: 0:11:29: 'layout qualifier' : can only apply depth layout to gl_FragDepth 
+ERROR: 0:12:29: 'gl_FragDepth' : cannot redeclare after use 
+ERROR: 0:14:39: 'atomic_uint' : array must be explicitly sized 
+ERROR: 0:17:29: 'imageSize' : required extension not requested: GL_ARB_shader_image_size
+ERROR: 0:54:20: 'std430' : not supported for this version or the enabled extensions 
+ERROR: 0:54:44: '' :  syntax error, unexpected IDENTIFIER, expecting LEFT_BRACE or COMMA or SEMICOLON
 ERROR: 7 compilation errors.  No code generated.
 
 

@@ -32,7 +32,7 @@ Shader version: 460
 0:?     'gl_InstanceIndex' ( in int InstanceIndex)
 
 vk.relaxed.errorcheck.frag
-ERROR: 0:11: 'test' :  Redeclaration: already declared as " uniform highp float"
+ERROR: 0:11:14: 'test' :  Redeclaration: already declared as " uniform highp float"
 ERROR: 1 compilation errors.  No code generated.
 
 

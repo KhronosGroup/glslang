@@ -1,10 +1,10 @@
 450.tese
-ERROR: 0:16: 'equal_spacing' : can only apply to a standalone qualifier 
-ERROR: 0:17: 'fractional_even_spacing' : can only apply to a standalone qualifier 
-ERROR: 0:18: 'fractional_odd_spacing' : can only apply to a standalone qualifier 
-ERROR: 0:19: 'cw' : can only apply to a standalone qualifier 
-ERROR: 0:20: 'ccw' : can only apply to a standalone qualifier 
-ERROR: 0:21: 'point_mode' : can only apply to a standalone qualifier 
+ERROR: 0:16:36: 'equal_spacing' : can only apply to a standalone qualifier 
+ERROR: 0:17:36: 'fractional_even_spacing' : can only apply to a standalone qualifier 
+ERROR: 0:18:36: 'fractional_odd_spacing' : can only apply to a standalone qualifier 
+ERROR: 0:19:36: 'cw' : can only apply to a standalone qualifier 
+ERROR: 0:20:36: 'ccw' : can only apply to a standalone qualifier 
+ERROR: 0:21:36: 'point_mode' : can only apply to a standalone qualifier 
 ERROR: 6 compilation errors.  No code generated.
 
 

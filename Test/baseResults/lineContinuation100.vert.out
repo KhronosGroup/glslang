@@ -1,25 +1,25 @@
 lineContinuation100.vert
-WARNING: 0:3: 'line continuation' : used at end of comment, but this version does not provide line continuation 
-ERROR: 0:4: '#error' : good error  
-ERROR: 0:8: 'line continuation' : not supported for this version or the enabled extensions 
-ERROR: 0:11: '#error' : e2  
-ERROR: 0:13: 'line continuation' : not supported for this version or the enabled extensions 
-ERROR: 0:14: 'line continuation' : not supported for this version or the enabled extensions 
-ERROR: 0:15: 'line continuation' : not supported for this version or the enabled extensions 
-ERROR: 0:18: '#error' : e3  
-ERROR: 0:24: 'line continuation' : not supported for this version or the enabled extensions 
-ERROR: 0:40: '\' : illegal use of escape character 
-ERROR: 0:41: '@' : unexpected token 
-ERROR: 0:42: '$' : unexpected token 
-ERROR: 0:43: '\' : illegal use of escape character 
-ERROR: 0:45: '\' : illegal use of escape character 
-ERROR: 0:46: '\' : illegal use of escape character 
-ERROR: 0:47: '$' : unexpected token 
-ERROR: 0:48: '@' : unexpected token 
-ERROR: 0:50: 'line continuation' : not supported for this version or the enabled extensions 
-ERROR: 0:52: 'line continuation' : not supported for this version or the enabled extensions 
-ERROR: 0:53: '#error' : bad continuation  
-ERROR: 0:55: 'line continuation' : not supported for this version or the enabled extensions 
+WARNING: 0:3:34: 'line continuation' : used at end of comment, but this version does not provide line continuation 
+ERROR: 0:4:8: '#error' : good error  
+ERROR: 0:8:8: 'line continuation' : not supported for this version or the enabled extensions 
+ERROR: 0:11:8: '#error' : e2  
+ERROR: 0:13:26: 'line continuation' : not supported for this version or the enabled extensions 
+ERROR: 0:14:26: 'line continuation' : not supported for this version or the enabled extensions 
+ERROR: 0:15:26: 'line continuation' : not supported for this version or the enabled extensions 
+ERROR: 0:18:8: '#error' : e3  
+ERROR: 0:24:21: 'line continuation' : not supported for this version or the enabled extensions 
+ERROR: 0:40:22: '\' : illegal use of escape character 
+ERROR: 0:41:22: '@' : unexpected token 
+ERROR: 0:42:22: '$' : unexpected token 
+ERROR: 0:43:24: '\' : illegal use of escape character 
+ERROR: 0:45:1: '\' : illegal use of escape character 
+ERROR: 0:46:1: '\' : illegal use of escape character 
+ERROR: 0:47:1: '$' : unexpected token 
+ERROR: 0:48:1: '@' : unexpected token 
+ERROR: 0:50:3: 'line continuation' : not supported for this version or the enabled extensions 
+ERROR: 0:52:3: 'line continuation' : not supported for this version or the enabled extensions 
+ERROR: 0:53:11: '#error' : bad continuation  
+ERROR: 0:55:18: 'line continuation' : not supported for this version or the enabled extensions 
 ERROR: 20 compilation errors.  No code generated.
 
 

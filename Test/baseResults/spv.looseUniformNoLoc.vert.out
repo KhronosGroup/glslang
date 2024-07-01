@@ -1,5 +1,5 @@
 spv.looseUniformNoLoc.vert
-ERROR: spv.looseUniformNoLoc.vert:9: 'uv' : non-opaque uniform variables need a layout(location=L) 
+ERROR: spv.looseUniformNoLoc.vert:9:14: 'uv' : non-opaque uniform variables need a layout(location=L) 
 ERROR: 1 compilation errors.  No code generated.
 
 

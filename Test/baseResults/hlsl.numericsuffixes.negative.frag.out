@@ -1,8 +1,8 @@
 hlsl.numericsuffixes.negative.frag
-ERROR: 0:7: '' : bad digit in binary literal 
-ERROR: 0:8: '' : binary literal too big 
-ERROR: 0:9: '' : bad digit in hexadecimal literal 
-ERROR: 0:10: '' : hexadecimal literal too big 
+ERROR: 0:7:17: '' : bad digit in binary literal 
+ERROR: 0:8:17: '' : binary literal too big 
+ERROR: 0:9:17: '' : bad digit in hexadecimal literal 
+ERROR: 0:10:17: '' : hexadecimal literal too big 
 ERROR: 4 compilation errors.  No code generated.
 
 

@@ -1,6 +1,6 @@
 vk.relaxed.frag
-WARNING: 0:7: 'b' : Ignoring initializer for uniform 
-WARNING: 0:8: 'c' : ignoring layout qualifier for uniform location
+WARNING: 0:7:14: 'b' : Ignoring initializer for uniform 
+WARNING: 0:8:35: 'c' : ignoring layout qualifier for uniform location
 
 Shader version: 460
 gl_FragCoord origin is upper left

@@ -1,5 +1,5 @@
 negativeWorkGroupSize.comp
-ERROR: 0:4: 'initializer' : can't read from gl_WorkGroupSize before a fixed workgroup size has been declared 
+ERROR: 0:4:11: 'initializer' : can't read from gl_WorkGroupSize before a fixed workgroup size has been declared 
 ERROR: 1 compilation errors.  No code generated.
 
 

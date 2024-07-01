@@ -1,24 +1,24 @@
 430AofA.frag
-ERROR: 0:6: '[]' : only outermost dimension of an array of arrays can be implicitly sized 
-ERROR: 0:14: 'constructor' : constructing non-array constituent from array argument 
-ERROR: 0:15: 'constructor' : array constructor argument not correct type to construct array element 
-ERROR: 0:28: '[' :  array index out of range '4'
-ERROR: 0:56: 'constructor' :  cannot convert parameter 2 from ' const 3-element array of 4-component vector of float' to ' temp 2-element array of 4-component vector of float'
-ERROR: 0:60: 'constructor' :  cannot convert parameter 2 from ' const 2-element array of 4-component vector of float' to ' temp 3-element array of 4-component vector of float'
-ERROR: 0:64: '=' :  cannot convert from ' const 3-element array of 2-element array of 4-component vector of float' to ' temp 4-element array of 2-element array of 4-component vector of float'
-ERROR: 0:70: 'assign' :  cannot convert from ' global 4-element array of 7-element array of float' to ' global 5-element array of 7-element array of float'
-ERROR: 0:71: 'assign' :  cannot convert from ' global 4-element array of 7-element array of float' to ' global unsized 1-element array of 7-element array of float'
-ERROR: 0:73: 'foo' : no matching overloaded function found 
-ERROR: 0:78: '==' :  wrong operand types: no operation '==' exists that takes a left-hand operand of type ' global 4-element array of 7-element array of float' and a right operand of type ' global 5-element array of 7-element array of float' (or there is no acceptable conversion)
-ERROR: 0:84: '[' :  array index out of range '5'
-ERROR: 0:91: 'length' :  array must be declared with a size before using this method
-ERROR: 0:93: 'length' :  array must be declared with a size before using this method
-ERROR: 0:98: 'length' : does not operate on this type:  temp float
-ERROR: 0:98: '' : function call, method, or subroutine call expected 
-ERROR: 0:98: '' : no matching overloaded function found 
-ERROR: 0:101: 'resize2' : redeclaration of array with a different array dimensions or sizes 
-ERROR: 0:104: 'resize3' : redeclaration of array with a different array dimensions or sizes 
-ERROR: 0:107: 'resize4' : redeclaration of array with a different element type 
+ERROR: 0:6:7: '[]' : only outermost dimension of an array of arrays can be implicitly sized 
+ERROR: 0:14:32: 'constructor' : constructing non-array constituent from array argument 
+ERROR: 0:15:39: 'constructor' : array constructor argument not correct type to construct array element 
+ERROR: 0:28:14: '[' :  array index out of range '4'
+ERROR: 0:56:51: 'constructor' :  cannot convert parameter 2 from ' const 3-element array of 4-component vector of float' to ' temp 2-element array of 4-component vector of float'
+ERROR: 0:60:62: 'constructor' :  cannot convert parameter 2 from ' const 2-element array of 4-component vector of float' to ' temp 3-element array of 4-component vector of float'
+ERROR: 0:64:10: '=' :  cannot convert from ' const 3-element array of 2-element array of 4-component vector of float' to ' temp 4-element array of 2-element array of 4-component vector of float'
+ERROR: 0:70:8: 'assign' :  cannot convert from ' global 4-element array of 7-element array of float' to ' global 5-element array of 7-element array of float'
+ERROR: 0:71:8: 'assign' :  cannot convert from ' global 4-element array of 7-element array of float' to ' global unsized 1-element array of 7-element array of float'
+ERROR: 0:73:11: 'foo' : no matching overloaded function found 
+ERROR: 0:78:17: '==' :  wrong operand types: no operation '==' exists that takes a left-hand operand of type ' global 4-element array of 7-element array of float' and a right operand of type ' global 5-element array of 7-element array of float' (or there is no acceptable conversion)
+ERROR: 0:84:6: '[' :  array index out of range '5'
+ERROR: 0:91:20: 'length' :  array must be declared with a size before using this method
+ERROR: 0:93:20: 'length' :  array must be declared with a size before using this method
+ERROR: 0:98:22: 'length' : does not operate on this type:  temp float
+ERROR: 0:98:18: '' : function call, method, or subroutine call expected 
+ERROR: 0:98:29: '' : no matching overloaded function found 
+ERROR: 0:101:11: 'resize2' : redeclaration of array with a different array dimensions or sizes 
+ERROR: 0:104:11: 'resize3' : redeclaration of array with a different array dimensions or sizes 
+ERROR: 0:107:10: 'resize4' : redeclaration of array with a different element type 
 ERROR: 20 compilation errors.  No code generated.
 
 

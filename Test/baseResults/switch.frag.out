@@ -1,23 +1,23 @@
 switch.frag
-ERROR: 0:11: 'switch' : condition must be a scalar integer expression 
-ERROR: 0:14: 'switch' : condition must be a scalar integer expression 
-ERROR: 0:21: 'switch' : last case/default label not followed by statements 
-ERROR: 0:28: 'switch' : cannot have statements before first case/default label 
-ERROR: 0:43: 'default' : duplicate label 
-ERROR: 0:63: 'case' : duplicated value 
-ERROR: 0:65: 'case' : scalar integer expression required 
-ERROR: 0:67: 'case' : constant expression required 
-ERROR: 0:89: '' : break statement only allowed in switch and loops 
-ERROR: 0:99: 'case' : cannot be nested inside control flow 
-ERROR: 0:104: 'case' : cannot be nested inside control flow 
-ERROR: 0:108: 'case' : cannot be nested inside control flow 
-ERROR: 0:115: 'default' : cannot be nested inside control flow 
-ERROR: 0:119: 'case' : cannot appear outside switch statement 
-ERROR: 0:120: 'default' : cannot appear outside switch statement 
-ERROR: 0:126: 'onlyInSwitch' : undeclared identifier 
-ERROR: 0:128: 'switch' : last case/default label not followed by statements 
-ERROR: 0:140: 'nestedX' : undeclared identifier 
-ERROR: 0:157: 'nestedZ' : undeclared identifier 
+ERROR: 0:11:5: 'switch' : condition must be a scalar integer expression 
+ERROR: 0:14:5: 'switch' : condition must be a scalar integer expression 
+ERROR: 0:21:5: 'switch' : last case/default label not followed by statements 
+ERROR: 0:28:11: 'switch' : cannot have statements before first case/default label 
+ERROR: 0:43:5: 'default' : duplicate label 
+ERROR: 0:63:5: 'case' : duplicated value 
+ERROR: 0:65:10: 'case' : scalar integer expression required 
+ERROR: 0:67:10: 'case' : constant expression required 
+ERROR: 0:89:5: '' : break statement only allowed in switch and loops 
+ERROR: 0:99:17: 'case' : cannot be nested inside control flow 
+ERROR: 0:104:17: 'case' : cannot be nested inside control flow 
+ERROR: 0:108:17: 'case' : cannot be nested inside control flow 
+ERROR: 0:115:13: 'default' : cannot be nested inside control flow 
+ERROR: 0:119:5: 'case' : cannot appear outside switch statement 
+ERROR: 0:120:5: 'default' : cannot appear outside switch statement 
+ERROR: 0:126:5: 'onlyInSwitch' : undeclared identifier 
+ERROR: 0:128:5: 'switch' : last case/default label not followed by statements 
+ERROR: 0:140:9: 'nestedX' : undeclared identifier 
+ERROR: 0:157:5: 'nestedZ' : undeclared identifier 
 ERROR: 19 compilation errors.  No code generated.
 
 

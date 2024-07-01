@@ -1,5 +1,5 @@
 420_size_gl_in.geom
-ERROR: 0:19: 'gl_PerVertex' : can only redeclare a built-in block once, and before any use 
+ERROR: 0:19:1: 'gl_PerVertex' : can only redeclare a built-in block once, and before any use 
 ERROR: 1 compilation errors.  No code generated.
 
 

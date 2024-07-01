@@ -1,53 +1,53 @@
 440.frag
-ERROR: 0:11: 'location' : overlapping use of location 4
-ERROR: 0:13: 'component' : type overflows the available 4 components 
-ERROR: 0:22: 'location' : the aliases sharing the location 30 must be the same basic type and interpolation qualification
-ERROR: 0:24: 'qualifier' : cannot use auxiliary, memory, interpolation, or precision qualifier in a default qualifier declaration (declaration with no type) 
-ERROR: 0:25: 'qualifier' : cannot use auxiliary, memory, interpolation, or precision qualifier in a default qualifier declaration (declaration with no type) 
-ERROR: 0:26: 'qualifier' : cannot use auxiliary, memory, interpolation, or precision qualifier in a default qualifier declaration (declaration with no type) 
-ERROR: 0:29: 'layout qualifier' : cannot use offset or align qualifiers in a default qualifier declaration (declaration with no type) 
-ERROR: 0:30: 'layout qualifier' : cannot use offset or align qualifiers in a default qualifier declaration (declaration with no type) 
-ERROR: 0:30: 'layout' : offset/align can only be used on a uniform or buffer 
-ERROR: 0:31: 'layout qualifier' : cannot use offset or align qualifiers in a default qualifier declaration (declaration with no type) 
-ERROR: 0:31: 'layout' : offset/align can only be used on a uniform or buffer 
-ERROR: 0:33: 'layout qualifier' : cannot use offset or align qualifiers in a default qualifier declaration (declaration with no type) 
-ERROR: 0:34: 'layout qualifier' : cannot use offset or align qualifiers in a default qualifier declaration (declaration with no type) 
-ERROR: 0:34: 'layout' : offset/align can only be used on a uniform or buffer 
-ERROR: 0:35: 'layout qualifier' : cannot use offset or align qualifiers in a default qualifier declaration (declaration with no type) 
-ERROR: 0:35: 'layout' : offset/align can only be used on a uniform or buffer 
-ERROR: 0:37: 'offset' : only applies to block members, not blocks 
-ERROR: 0:38: 'layout' : offset/align can only be used on a uniform or buffer 
-ERROR: 0:38: 'offset' : only applies to block members, not blocks 
-ERROR: 0:39: 'output block' : not supported in this stage: fragment
-ERROR: 0:39: 'layout' : offset/align can only be used on a uniform or buffer 
-ERROR: 0:39: 'offset' : only applies to block members, not blocks 
-ERROR: 0:42: 'align' : can only be used with std140, std430, or scalar layout packing 
-ERROR: 0:43: 'align' : can only be used with std140, std430, or scalar layout packing 
-ERROR: 0:43: 'layout' : offset/align can only be used on a uniform or buffer 
-ERROR: 0:44: 'output block' : not supported in this stage: fragment
-ERROR: 0:44: 'align' : can only be used with std140, std430, or scalar layout packing 
-ERROR: 0:44: 'layout' : offset/align can only be used on a uniform or buffer 
-ERROR: 0:46: 'offset' : cannot specify on a variable declaration 
-ERROR: 0:47: 'layout' : offset/align can only be used on a uniform or buffer 
-ERROR: 0:48: 'layout' : offset/align can only be used on a uniform or buffer 
-ERROR: 0:50: 'align' : cannot specify on a variable declaration 
-ERROR: 0:51: 'layout' : offset/align can only be used on a uniform or buffer 
-ERROR: 0:52: 'layout' : offset/align can only be used on a uniform or buffer 
-ERROR: 0:54: 'layout' : matrix or packing qualifiers can only be used on a uniform or buffer 
-ERROR: 0:55: 'layout' : cannot specify packing on a variable declaration 
-ERROR: 0:57: 'align' : must be a power of 2 
-ERROR: 0:58: 'offset/align' : can only be used with std140, std430, or scalar layout packing 
-ERROR: 0:62: 'offset/align' : can only be used with std140, std430, or scalar layout packing 
-ERROR: 0:63: 'offset/align' : can only be used with std140, std430, or scalar layout packing 
-ERROR: 0:62: 'layout' : offset/align can only be used on a uniform or buffer 
-ERROR: 0:63: 'layout' : offset/align can only be used on a uniform or buffer 
-ERROR: 0:84: 'align' : must be a power of 2 
-ERROR: 0:83: 'offset' : cannot lie in previous members 
-ERROR: 0:85: 'offset' : must be a multiple of the member's alignment (layout offset = 68 | member alignment = 8)
-ERROR: 0:103: 'align' : must be a power of 2 
-ERROR: 0:105: 'align' : must be a power of 2 
-ERROR: 0:102: 'offset' : cannot lie in previous members 
-ERROR: 0:104: 'offset' : must be a multiple of the member's alignment (layout offset = 68 | member alignment = 8)
+ERROR: 0:11:45: 'location' : overlapping use of location 4
+ERROR: 0:13:45: 'component' : type overflows the available 4 components 
+ERROR: 0:22:47: 'location' : the aliases sharing the location 30 must be the same basic type and interpolation qualification
+ERROR: 0:24:1: 'qualifier' : cannot use auxiliary, memory, interpolation, or precision qualifier in a default qualifier declaration (declaration with no type) 
+ERROR: 0:25:1: 'qualifier' : cannot use auxiliary, memory, interpolation, or precision qualifier in a default qualifier declaration (declaration with no type) 
+ERROR: 0:26:1: 'qualifier' : cannot use auxiliary, memory, interpolation, or precision qualifier in a default qualifier declaration (declaration with no type) 
+ERROR: 0:29:8: 'layout qualifier' : cannot use offset or align qualifiers in a default qualifier declaration (declaration with no type) 
+ERROR: 0:30:8: 'layout qualifier' : cannot use offset or align qualifiers in a default qualifier declaration (declaration with no type) 
+ERROR: 0:30:8: 'layout' : offset/align can only be used on a uniform or buffer 
+ERROR: 0:31:8: 'layout qualifier' : cannot use offset or align qualifiers in a default qualifier declaration (declaration with no type) 
+ERROR: 0:31:8: 'layout' : offset/align can only be used on a uniform or buffer 
+ERROR: 0:33:8: 'layout qualifier' : cannot use offset or align qualifiers in a default qualifier declaration (declaration with no type) 
+ERROR: 0:34:8: 'layout qualifier' : cannot use offset or align qualifiers in a default qualifier declaration (declaration with no type) 
+ERROR: 0:34:8: 'layout' : offset/align can only be used on a uniform or buffer 
+ERROR: 0:35:8: 'layout qualifier' : cannot use offset or align qualifiers in a default qualifier declaration (declaration with no type) 
+ERROR: 0:35:8: 'layout' : offset/align can only be used on a uniform or buffer 
+ERROR: 0:37:8: 'offset' : only applies to block members, not blocks 
+ERROR: 0:38:8: 'layout' : offset/align can only be used on a uniform or buffer 
+ERROR: 0:38:8: 'offset' : only applies to block members, not blocks 
+ERROR: 0:39:8: 'output block' : not supported in this stage: fragment
+ERROR: 0:39:8: 'layout' : offset/align can only be used on a uniform or buffer 
+ERROR: 0:39:8: 'offset' : only applies to block members, not blocks 
+ERROR: 0:42:8: 'align' : can only be used with std140, std430, or scalar layout packing 
+ERROR: 0:43:8: 'align' : can only be used with std140, std430, or scalar layout packing 
+ERROR: 0:43:8: 'layout' : offset/align can only be used on a uniform or buffer 
+ERROR: 0:44:8: 'output block' : not supported in this stage: fragment
+ERROR: 0:44:8: 'align' : can only be used with std140, std430, or scalar layout packing 
+ERROR: 0:44:8: 'layout' : offset/align can only be used on a uniform or buffer 
+ERROR: 0:46:32: 'offset' : cannot specify on a variable declaration 
+ERROR: 0:47:32: 'layout' : offset/align can only be used on a uniform or buffer 
+ERROR: 0:48:32: 'layout' : offset/align can only be used on a uniform or buffer 
+ERROR: 0:50:31: 'align' : cannot specify on a variable declaration 
+ERROR: 0:51:31: 'layout' : offset/align can only be used on a uniform or buffer 
+ERROR: 0:52:31: 'layout' : offset/align can only be used on a uniform or buffer 
+ERROR: 0:54:8: 'layout' : matrix or packing qualifiers can only be used on a uniform or buffer 
+ERROR: 0:55:29: 'layout' : cannot specify packing on a variable declaration 
+ERROR: 0:57:8: 'align' : must be a power of 2 
+ERROR: 0:58:38: 'offset/align' : can only be used with std140, std430, or scalar layout packing 
+ERROR: 0:62:29: 'offset/align' : can only be used with std140, std430, or scalar layout packing 
+ERROR: 0:63:27: 'offset/align' : can only be used with std140, std430, or scalar layout packing 
+ERROR: 0:62:29: 'layout' : offset/align can only be used on a uniform or buffer 
+ERROR: 0:63:27: 'layout' : offset/align can only be used on a uniform or buffer 
+ERROR: 0:84:12: 'align' : must be a power of 2 
+ERROR: 0:83:32: 'offset' : cannot lie in previous members 
+ERROR: 0:85:32: 'offset' : must be a multiple of the member's alignment (layout offset = 68 | member alignment = 8)
+ERROR: 0:103:12: 'align' : must be a power of 2 
+ERROR: 0:105:12: 'align' : must be a power of 2 
+ERROR: 0:102:32: 'offset' : cannot lie in previous members 
+ERROR: 0:104:32: 'offset' : must be a multiple of the member's alignment (layout offset = 68 | member alignment = 8)
 ERROR: 49 compilation errors.  No code generated.
 
 

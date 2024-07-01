@@ -1,6 +1,6 @@
 hlsl.float4.frag
-WARNING: 0:5: 'register' : ignoring shader_profile 
-WARNING: 0:6: 'register' : ignoring shader_profile 
+WARNING: 0:5:48: 'register' : ignoring shader_profile 
+WARNING: 0:6:55: 'register' : ignoring shader_profile 
 
 Shader version: 500
 gl_FragCoord origin is upper left
