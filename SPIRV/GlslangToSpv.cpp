@@ -6444,6 +6444,9 @@ spv::Id TGlslangToSpvTraverser::handleUserFunctionCall(const glslang::TIntermAgg
         }
     }
 
+    // Reset source location to the function call location after argument evaluation
+    builder.setDebugSourceLocation(node->getLoc().line, node->getLoc().getFilename());
+
     // 2. Allocate space for anything needing a copy, and if it's "in" or "inout"
     // copy the original into that space.
     //
