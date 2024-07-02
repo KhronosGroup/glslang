@@ -90,21 +90,28 @@ endif()
 # Create a symbolic link to glslang named glslangValidator for backwards compatibility
 set(legacy_glslang_name "glslangValidator${CMAKE_EXECUTABLE_SUFFIX}")
 set(link_method create_symlink)
-if (WIN32 OR MINGW)
-set(link_method copy_if_different)
+if(WIN32 OR MINGW)
+  set(link_method copy_if_different)
 endif()
-add_custom_command(TARGET glslang-standalone
-	       POST_BUILD
-	       COMMAND ${CMAKE_COMMAND} -E ${link_method} $<TARGET_FILE_NAME:glslang-standalone> ${legacy_glslang_name}
-	       WORKING_DIRECTORY $<TARGET_FILE_DIR:glslang-standalone>)
+
+add_custom_command(
+    TARGET glslang-standalone POST_BUILD
+    COMMAND "${CMAKE_COMMAND}" -E "${link_method}" "\$<TARGET_FILE_NAME:glslang-standalone>" "${legacy_glslang_name}"
+    WORKING_DIRECTORY "\$<TARGET_FILE_DIR:glslang-standalone>"
+    VERBATIM
+)
 
 if(GLSLANG_ENABLE_INSTALL)
     install(TARGETS glslang-standalone EXPORT glslang-targets)
 
     # Create the same symlink at install time
-    install(CODE "execute_process( \
-                      COMMAND ${CMAKE_COMMAND} -E ${link_method} $<TARGET_FILE_NAME:glslang-standalone> ${legacy_glslang_name} \
-                      WORKING_DIRECTORY \$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})")
+    install(CODE "\
+        message(STATUS \"Installing (${link_method}): \$<TARGET_FILE_NAME:glslang-standalone> -> \$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR}\")
+        execute_process(
+            COMMAND \"\${CMAKE_COMMAND}\" -E ${link_method} [=[\$<TARGET_FILE_NAME:glslang-standalone>]=] [=[${legacy_glslang_name}]=]
+            WORKING_DIRECTORY \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR}\"
+        )
+    ")
 
     if(ENABLE_SPVREMAPPER)
         install(TARGETS spirv-remap EXPORT glslang-targets)
