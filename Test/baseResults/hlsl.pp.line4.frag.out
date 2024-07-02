@@ -9,7 +9,7 @@ hlsl.pp.line4.frag
                               EntryPoint Fragment 5  "MainPs" 70 74
                               ExecutionMode 5 OriginUpperLeft
                1:             String  "hlsl.pp.line4.frag"
-              17:             String  "C:\\Users\\Greg\\shaders\\line\\foo4.frag"
+               7:             String  "C:\\Users\\Greg\\shaders\\line\\foo4.frag"
               32:             String  "C:\\Users\\Greg\\shaders\\line\\u1.h"
                               Source HLSL 500 1  "// OpModuleProcessed auto-map-locations
 // OpModuleProcessed auto-map-bindings
@@ -84,9 +84,9 @@ PS_OUTPUT MainPs ( PS_INPUT i )
                               Decorate 74(@entryPointOutput.vColor) Location 0
                3:             TypeVoid
                4:             TypeFunction 3
-               7:             TypeFloat 32
-               8:             TypeVector 7(float) 2
-              11:             TypeVector 7(float) 4
+               8:             TypeFloat 32
+               9:             TypeVector 8(float) 2
+              12:             TypeVector 8(float) 4
               18:             TypeInt 32 0
 19(PerViewConstantBuffer_t):             TypeStruct 18(int) 18(int) 18(int)
               20:             TypePointer PushConstant 19(PerViewConstantBuffer_t)
@@ -98,7 +98,7 @@ PS_OUTPUT MainPs ( PS_INPUT i )
               28:     18(int) Constant 0
               35:     22(int) Constant 0
               39:     22(int) Constant 1
-              44:             TypeImage 7(float) 2D sampled format:Unknown
+              44:             TypeImage 8(float) 2D sampled format:Unknown
               45:     18(int) Constant 128
               46:             TypeArray 44 45
               47:             TypePointer UniformConstant 46
@@ -108,17 +108,17 @@ PS_OUTPUT MainPs ( PS_INPUT i )
               54:             TypePointer UniformConstant 53
     55(g_sAniso):     54(ptr) Variable UniformConstant
               57:             TypeSampledImage 44
-              69:             TypePointer Input 8(fvec2)
+              69:             TypePointer Input 9(fvec2)
 70(i.vTextureCoords):     69(ptr) Variable Input
-              73:             TypePointer Output 11(fvec4)
+              73:             TypePointer Output 12(fvec4)
 74(@entryPointOutput.vColor):     73(ptr) Variable Output
-                              Line 17 25 1
+                              Line 7 25 1
        5(MainPs):           3 Function None 4
                               NoLine
                6:             Label
-                              Line 17 25 0
-              71:    8(fvec2) Load 70(i.vTextureCoords)
-                              Line 17 29 0
+                              Line 7 25 0
+              71:    9(fvec2) Load 70(i.vTextureCoords)
+                              Line 7 29 0
               83:     24(ptr) AccessChain 21 23
               84:     18(int) Load 83
               85:    27(bool) INotEqual 84 28
@@ -130,19 +130,19 @@ PS_OUTPUT MainPs ( PS_INPUT i )
               88:     18(int)   Load 87
                                 Branch 92
               89:               Label
-                                Line 17 32 0
+                                Line 7 32 0
               90:     24(ptr)   AccessChain 21 39
               91:     18(int)   Load 90
                                 Branch 92
               92:             Label
              115:     18(int) Phi 88 86 91 89
-                              Line 17 33 0
+                              Line 7 33 0
               94:     50(ptr) AccessChain 48(g_tColor) 115
               95:          44 Load 94
               96:          53 Load 55(g_sAniso)
               97:          57 SampledImage 95 96
-             100:   11(fvec4) ImageSampleImplicitLod 97 71
-                              Line 17 25 0
+             100:   12(fvec4) ImageSampleImplicitLod 97 71
+                              Line 7 25 0
                               Store 74(@entryPointOutput.vColor) 100
                               Return
                               FunctionEnd

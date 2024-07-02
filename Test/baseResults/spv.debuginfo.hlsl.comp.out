@@ -28,14 +28,14 @@ spv.debuginfo.hlsl.comp
               52:             String  "restDist"
               63:             String  "@main"
               67:             String  "id"
-              73:             String  "dist"
-              87:             String  "int"
-              93:             String  "sphereRadius"
-             104:             String  "gravity"
-             109:             String  "particleCount"
-             112:             String  "UBO"
-             115:             String  "params"
-             119:             String  "ubo"
+              74:             String  "dist"
+              88:             String  "int"
+              94:             String  "sphereRadius"
+             105:             String  "gravity"
+             110:             String  "particleCount"
+             113:             String  "UBO"
+             116:             String  "params"
+             120:             String  "ubo"
              146:             String  "index"
              172:             String  "bool"
              184:             String  "normal"
@@ -63,22 +63,22 @@ spv.debuginfo.hlsl.comp
                               Name 29  "restDist"
                               Name 61  "@main(vu3;"
                               Name 60  "id"
-                              Name 71  "dist"
-                              Name 91  "UBO"
-                              MemberName 91(UBO) 0  "deltaT"
-                              MemberName 91(UBO) 1  "particleMass"
-                              MemberName 91(UBO) 2  "springStiffness"
-                              MemberName 91(UBO) 3  "damping"
-                              MemberName 91(UBO) 4  "restDistH"
-                              MemberName 91(UBO) 5  "restDistV"
-                              MemberName 91(UBO) 6  "restDistD"
-                              MemberName 91(UBO) 7  "sphereRadius"
-                              MemberName 91(UBO) 8  "spherePos"
-                              MemberName 91(UBO) 9  "gravity"
-                              MemberName 91(UBO) 10  "particleCount"
-                              Name 113  "ubo"
-                              MemberName 113(ubo) 0  "params"
-                              Name 122  ""
+                              Name 72  "dist"
+                              Name 92  "UBO"
+                              MemberName 92(UBO) 0  "deltaT"
+                              MemberName 92(UBO) 1  "particleMass"
+                              MemberName 92(UBO) 2  "springStiffness"
+                              MemberName 92(UBO) 3  "damping"
+                              MemberName 92(UBO) 4  "restDistH"
+                              MemberName 92(UBO) 5  "restDistV"
+                              MemberName 92(UBO) 6  "restDistD"
+                              MemberName 92(UBO) 7  "sphereRadius"
+                              MemberName 92(UBO) 8  "spherePos"
+                              MemberName 92(UBO) 9  "gravity"
+                              MemberName 92(UBO) 10  "particleCount"
+                              Name 114  "ubo"
+                              MemberName 114(ubo) 0  "params"
+                              Name 123  ""
                               Name 144  "index"
                               Name 182  "Particle"
                               MemberName 182(Particle) 0  "pos"
@@ -133,21 +133,21 @@ spv.debuginfo.hlsl.comp
                               Name 963  "id"
                               Name 965  "id"
                               Name 967  "param"
-                              MemberDecorate 91(UBO) 0 Offset 0
-                              MemberDecorate 91(UBO) 1 Offset 4
-                              MemberDecorate 91(UBO) 2 Offset 8
-                              MemberDecorate 91(UBO) 3 Offset 12
-                              MemberDecorate 91(UBO) 4 Offset 16
-                              MemberDecorate 91(UBO) 5 Offset 20
-                              MemberDecorate 91(UBO) 6 Offset 24
-                              MemberDecorate 91(UBO) 7 Offset 28
-                              MemberDecorate 91(UBO) 8 Offset 32
-                              MemberDecorate 91(UBO) 9 Offset 48
-                              MemberDecorate 91(UBO) 10 Offset 64
-                              Decorate 113(ubo) Block
-                              MemberDecorate 113(ubo) 0 Offset 0
-                              Decorate 122 Binding 2
-                              Decorate 122 DescriptorSet 0
+                              MemberDecorate 92(UBO) 0 Offset 0
+                              MemberDecorate 92(UBO) 1 Offset 4
+                              MemberDecorate 92(UBO) 2 Offset 8
+                              MemberDecorate 92(UBO) 3 Offset 12
+                              MemberDecorate 92(UBO) 4 Offset 16
+                              MemberDecorate 92(UBO) 5 Offset 20
+                              MemberDecorate 92(UBO) 6 Offset 24
+                              MemberDecorate 92(UBO) 7 Offset 28
+                              MemberDecorate 92(UBO) 8 Offset 32
+                              MemberDecorate 92(UBO) 9 Offset 48
+                              MemberDecorate 92(UBO) 10 Offset 64
+                              Decorate 114(ubo) Block
+                              MemberDecorate 114(ubo) 0 Offset 0
+                              Decorate 123 Binding 2
+                              Decorate 123 DescriptorSet 0
                               MemberDecorate 182(Particle) 0 Offset 0
                               MemberDecorate 182(Particle) 1 Offset 16
                               MemberDecorate 182(Particle) 2 Offset 32
@@ -210,65 +210,65 @@ spv.debuginfo.hlsl.comp
               65:     11(int) Constant 82
               64:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 20(DebugFunction) 63 59 34 65 16 37 63 17 65
               66:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 67 55 34 65 16 64 39 38
-              74:     11(int) Constant 76
-              72:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 73 19 34 74 16 33 39
-              82:     11(int) Constant 77
-              84:             TypeVector 8(float) 4
-              85:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 6(DebugTypeVector) 10 39
-              86:             TypeInt 32 1
-              88:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 2(DebugTypeBasic) 87 14 39 16
-              89:             TypeVector 86(int) 2
-              90:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 6(DebugTypeVector) 88 49
-         91(UBO):             TypeStruct 8(float) 8(float) 8(float) 8(float) 8(float) 8(float) 8(float) 8(float) 84(fvec4) 84(fvec4) 89(ivec2)
-              94:     11(int) Constant 48
-              95:     11(int) Constant 20
-              92:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 93 10 34 94 95 16 16 17
-              96:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 93 10 34 94 95 16 16 17
-              97:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 93 10 34 94 95 16 16 17
-              98:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 93 10 34 94 95 16 16 17
-              99:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 93 10 34 94 95 16 16 17
-             100:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 93 10 34 94 95 16 16 17
-             101:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 93 10 34 94 95 16 16 17
-             102:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 93 10 34 94 95 16 16 17
-             105:     11(int) Constant 50
-             106:     11(int) Constant 16
-             103:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 104 85 34 105 106 16 16 17
-             107:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 104 85 34 105 106 16 16 17
-             110:     11(int) Constant 51
-             108:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 109 90 34 110 95 16 16 17
-             111:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 10(DebugTypeComposite) 112 38 34 82 16 37 112 16 17 92 96 97 98 99 100 101 102 103 107 108
-        113(ubo):             TypeStruct 91(UBO)
-             116:     11(int) Constant 56
-             117:     11(int) Constant 12
-             114:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 115 111 34 116 117 16 16 17
-             118:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 10(DebugTypeComposite) 119 38 34 82 16 37 119 16 17 114
-             120:             TypePointer Uniform 113(ubo)
-             121:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 3(DebugTypePointer) 118 49 16
-             122:    120(ptr) Variable Uniform
-             124:     11(int) Constant 8
-             123:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 18(DebugGlobalVariable) 2 118 34 82 16 37 2 122 124
-             125:     86(int) Constant 0
-             126:     86(int) Constant 2
-             127:             TypePointer Uniform 8(float)
-             128:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 3(DebugTypePointer) 10 49 16
+              75:     11(int) Constant 76
+              73:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 74 19 34 75 16 33 39
+              83:     11(int) Constant 77
+              85:             TypeVector 8(float) 4
+              86:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 6(DebugTypeVector) 10 39
+              87:             TypeInt 32 1
+              89:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 2(DebugTypeBasic) 88 14 39 16
+              90:             TypeVector 87(int) 2
+              91:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 6(DebugTypeVector) 89 49
+         92(UBO):             TypeStruct 8(float) 8(float) 8(float) 8(float) 8(float) 8(float) 8(float) 8(float) 85(fvec4) 85(fvec4) 90(ivec2)
+              95:     11(int) Constant 48
+              96:     11(int) Constant 20
+              93:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 94 10 34 95 96 16 16 17
+              97:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 94 10 34 95 96 16 16 17
+              98:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 94 10 34 95 96 16 16 17
+              99:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 94 10 34 95 96 16 16 17
+             100:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 94 10 34 95 96 16 16 17
+             101:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 94 10 34 95 96 16 16 17
+             102:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 94 10 34 95 96 16 16 17
+             103:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 94 10 34 95 96 16 16 17
+             106:     11(int) Constant 50
+             107:     11(int) Constant 16
+             104:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 105 86 34 106 107 16 16 17
+             108:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 105 86 34 106 107 16 16 17
+             111:     11(int) Constant 51
+             109:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 110 91 34 111 96 16 16 17
+             112:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 10(DebugTypeComposite) 113 38 34 83 16 37 113 16 17 93 97 98 99 100 101 102 103 104 108 109
+        114(ubo):             TypeStruct 92(UBO)
+             117:     11(int) Constant 56
+             118:     11(int) Constant 12
+             115:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 116 112 34 117 118 16 16 17
+             119:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 10(DebugTypeComposite) 120 38 34 83 16 37 120 16 17 115
+             121:             TypePointer Uniform 114(ubo)
+             122:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 3(DebugTypePointer) 119 49 16
+             123:    121(ptr) Variable Uniform
+             125:     11(int) Constant 8
+             124:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 18(DebugGlobalVariable) 2 119 34 83 16 37 2 123 125
+             126:     87(int) Constant 0
+             127:     87(int) Constant 2
+             128:             TypePointer Uniform 8(float)
+             129:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 3(DebugTypePointer) 10 49 16
              142:             TypePointer Function 11(int)
              143:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 3(DebugTypePointer) 13 21 16
              147:     11(int) Constant 83
              145:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 146 13 34 147 16 64 39
-             152:     86(int) Constant 10
-             153:             TypePointer Uniform 86(int)
-             154:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 3(DebugTypePointer) 88 49 16
+             152:     87(int) Constant 10
+             153:             TypePointer Uniform 87(int)
+             154:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 3(DebugTypePointer) 89 49 16
              164:     11(int) Constant 84
              171:             TypeBool
              173:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 2(DebugTypeBasic) 172 14 49 16
              179:     11(int) Constant 85
-   182(Particle):             TypeStruct 84(fvec4) 84(fvec4) 84(fvec4) 84(fvec4) 8(float)
+   182(Particle):             TypeStruct 85(fvec4) 85(fvec4) 85(fvec4) 85(fvec4) 8(float)
              185:     11(int) Constant 30
              186:     11(int) Constant 15
-             183:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 184 85 34 185 186 16 16 17
-             187:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 184 85 34 185 186 16 16 17
-             188:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 184 85 34 185 186 16 16 17
-             189:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 184 85 34 185 186 16 16 17
+             183:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 184 86 34 185 186 16 16 17
+             187:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 184 86 34 185 186 16 16 17
+             188:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 184 86 34 185 186 16 16 17
+             189:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 184 86 34 185 186 16 16 17
              192:     11(int) Constant 31
              193:     11(int) Constant 14
              190:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 191 10 34 192 193 16 16 17
@@ -284,8 +284,8 @@ spv.debuginfo.hlsl.comp
              206:             TypePointer Uniform 199(particleIn)
              207:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 3(DebugTypePointer) 204 49 16
  208(particleIn):    206(ptr) Variable Uniform
-             209:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 18(DebugGlobalVariable) 205 204 34 196 16 37 205 208(particleIn) 124
-             213:     86(int) Constant 4
+             209:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 18(DebugGlobalVariable) 205 204 34 196 16 37 205 208(particleIn) 125
+             213:     87(int) Constant 4
              216:    8(float) Constant 1065353216
              220:             TypeRuntimeArray 182(Particle)
              221:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 5(DebugTypeArray) 194 16
@@ -297,17 +297,17 @@ spv.debuginfo.hlsl.comp
              228:             TypePointer Uniform 222(particleOut)
              229:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 3(DebugTypePointer) 225 49 16
 230(particleOut):    228(ptr) Variable Uniform
-             231:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 18(DebugGlobalVariable) 226 225 34 227 16 37 226 230(particleOut) 124
-             236:             TypePointer Uniform 84(fvec4)
-             237:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 3(DebugTypePointer) 85 49 16
+             231:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 18(DebugGlobalVariable) 226 225 34 227 16 37 226 230(particleOut) 125
+             236:             TypePointer Uniform 85(fvec4)
+             237:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 3(DebugTypePointer) 86 49 16
              243:     11(int) Constant 90
-             244:     86(int) Constant 1
+             244:     87(int) Constant 1
              245:    8(float) Constant 0
-             246:   84(fvec4) ConstantComposite 245 245 245 245
+             246:   85(fvec4) ConstantComposite 245 245 245 245
              249:     11(int) Constant 91
              255:     11(int) Constant 95
              253:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 254 19 34 255 16 64 39
-             259:     86(int) Constant 9
+             259:     87(int) Constant 9
              269:     11(int) Constant 97
              267:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 268 19 34 269 16 64 39
              279:     11(int) Constant 98
@@ -318,19 +318,19 @@ spv.debuginfo.hlsl.comp
              325:     11(int) Constant 107
              342:     11(int) Constant 110
              354:     11(int) Constant 111
-             359:     86(int) Constant 5
+             359:     87(int) Constant 5
              375:     11(int) Constant 114
              383:     11(int) Constant 115
              403:     11(int) Constant 118
              419:     11(int) Constant 119
-             425:     86(int) Constant 6
+             425:     87(int) Constant 6
              441:     11(int) Constant 122
              453:     11(int) Constant 123
              474:     11(int) Constant 126
              494:     11(int) Constant 127
              515:     11(int) Constant 130
              531:     11(int) Constant 131
-             549:     86(int) Constant 3
+             549:     87(int) Constant 3
              553:     11(int) Constant 134
              563:     11(int) Constant 137
              561:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 562 19 34 563 16 64 39
@@ -339,9 +339,9 @@ spv.debuginfo.hlsl.comp
              597:     11(int) Constant 139
              612:     11(int) Constant 142
              610:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 611 19 34 612 16 64 39
-             619:     86(int) Constant 8
+             619:     87(int) Constant 8
              626:     11(int) Constant 143
-             628:     86(int) Constant 7
+             628:     87(int) Constant 7
              631:    8(float) Constant 1008981770
              639:     11(int) Constant 145
              658:     11(int) Constant 147
@@ -358,7 +358,7 @@ spv.debuginfo.hlsl.comp
              674:             TypePointer Uniform 668($Global)
              675:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 3(DebugTypePointer) 672 49 16
              676:    674(ptr) Variable Uniform
-             677:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 18(DebugGlobalVariable) 2 672 34 667 16 37 2 676 124
+             677:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 18(DebugGlobalVariable) 2 672 34 667 16 37 2 676 125
              678:             TypePointer Uniform 11(int)
              679:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 3(DebugTypePointer) 13 49 16
              689:     11(int) Constant 152
@@ -408,31 +408,31 @@ spv.debuginfo.hlsl.comp
           28(p1):     20(ptr) FunctionParameter
     29(restDist):     23(ptr) FunctionParameter
               31:             Label
-        71(dist):     20(ptr) Variable Function
+        72(dist):     20(ptr) Variable Function
               45:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 33
               46:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 34 36 36 16 16
               43:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 41 27(p0) 44
               50:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 47 28(p1) 44
               53:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 51 29(restDist) 44
-              70:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 101(DebugFunctionDefinition) 33 30(springForce(vf3;vf3;f1;)
-              76:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 34 74 74 16 16
-              75:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 72 71(dist) 44
-              77:   18(fvec3) Load 27(p0)
-              78:   18(fvec3) Load 28(p1)
-              79:   18(fvec3) FSub 77 78
-                              Store 71(dist) 79
-              81:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 34 82 82 16 16
-              80:   18(fvec3) Load 71(dist)
-              83:   18(fvec3) ExtInst 3(GLSL.std.450) 69(Normalize) 80
-             129:    127(ptr) AccessChain 122 125 126
-             130:    8(float) Load 129
-             131:   18(fvec3) VectorTimesScalar 83 130
-             132:   18(fvec3) Load 71(dist)
-             133:    8(float) ExtInst 3(GLSL.std.450) 66(Length) 132
-             134:    8(float) Load 29(restDist)
-             135:    8(float) FSub 133 134
-             136:   18(fvec3) VectorTimesScalar 131 135
-                              ReturnValue 136
+              71:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 101(DebugFunctionDefinition) 33 30(springForce(vf3;vf3;f1;)
+              77:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 34 75 75 16 16
+              76:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 73 72(dist) 44
+              78:   18(fvec3) Load 27(p0)
+              79:   18(fvec3) Load 28(p1)
+              80:   18(fvec3) FSub 78 79
+                              Store 72(dist) 80
+              82:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 34 83 83 16 16
+              81:   18(fvec3) Load 72(dist)
+              84:   18(fvec3) ExtInst 3(GLSL.std.450) 69(Normalize) 81
+             130:    128(ptr) AccessChain 123 126 127
+             131:    8(float) Load 130
+             132:   18(fvec3) VectorTimesScalar 84 131
+             133:   18(fvec3) Load 72(dist)
+             134:    8(float) ExtInst 3(GLSL.std.450) 66(Length) 133
+             135:    8(float) Load 29(restDist)
+             136:    8(float) FSub 134 135
+             137:   18(fvec3) VectorTimesScalar 132 136
+                              ReturnValue 137
                               FunctionEnd
   61(@main(vu3;):           4 Function None 58
           60(id):     56(ptr) FunctionParameter
@@ -472,15 +472,15 @@ spv.debuginfo.hlsl.comp
           723(b):     20(ptr) Variable Function
           740(c):     20(ptr) Variable Function
               69:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 64
+              70:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 34 65 65 16 16
               68:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 66 60(id) 44
-             141:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 34 65 65 16 16
-             140:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 101(DebugFunctionDefinition) 64 61(@main(vu3;)
+             141:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 101(DebugFunctionDefinition) 64 61(@main(vu3;)
              149:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 34 147 147 16 16
              148:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 145 144(index) 44
              150:    142(ptr) AccessChain 60(id) 38
              151:     11(int) Load 150
-             155:    153(ptr) AccessChain 122 125 152 16
-             156:     86(int) Load 155
+             155:    153(ptr) AccessChain 123 126 152 16
+             156:     87(int) Load 155
              157:     11(int) Bitcast 156
              158:     11(int) IMul 151 157
              159:    142(ptr) AccessChain 60(id) 16
@@ -489,11 +489,11 @@ spv.debuginfo.hlsl.comp
                               Store 144(index) 161
              163:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 34 164 164 16 16
              162:     11(int) Load 144(index)
-             165:    153(ptr) AccessChain 122 125 152 16
-             166:     86(int) Load 165
-             167:    153(ptr) AccessChain 122 125 152 38
-             168:     86(int) Load 167
-             169:     86(int) IMul 166 168
+             165:    153(ptr) AccessChain 123 126 152 16
+             166:     87(int) Load 165
+             167:    153(ptr) AccessChain 123 126 152 38
+             168:     87(int) Load 167
+             169:     87(int) IMul 166 168
              170:     11(int) Bitcast 169
              174:   171(bool) UGreaterThan 162 170
                               SelectionMerge 176 None
@@ -506,7 +506,7 @@ spv.debuginfo.hlsl.comp
              211:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 64
              212:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 34 196 196 16 16
              210:     11(int) Load 144(index)
-             214:    127(ptr) AccessChain 208(particleIn) 125 210 213
+             214:    128(ptr) AccessChain 208(particleIn) 126 210 213
              215:    8(float) Load 214
              217:   171(bool) FOrdEqual 215 216
                               SelectionMerge 219 None
@@ -516,13 +516,13 @@ spv.debuginfo.hlsl.comp
              234:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 34 227 227 16 16
              232:     11(int)   Load 144(index)
              235:     11(int)   Load 144(index)
-             238:    236(ptr)   AccessChain 230(particleOut) 125 235 125
-             239:   84(fvec4)   Load 238
-             240:    236(ptr)   AccessChain 230(particleOut) 125 232 125
+             238:    236(ptr)   AccessChain 230(particleOut) 126 235 126
+             239:   85(fvec4)   Load 238
+             240:    236(ptr)   AccessChain 230(particleOut) 126 232 126
                                 Store 240 239
              242:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 34 243 243 16 16
              241:     11(int)   Load 144(index)
-             247:    236(ptr)   AccessChain 230(particleOut) 125 241 244
+             247:    236(ptr)   AccessChain 230(particleOut) 126 241 244
                                 Store 247 246
              248:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 34 249 249 16 16
                                 Return
@@ -530,25 +530,25 @@ spv.debuginfo.hlsl.comp
              257:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 64
              258:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 34 255 255 16 16
              256:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 253 252(force) 44
-             260:    236(ptr) AccessChain 122 125 259
-             261:   84(fvec4) Load 260
+             260:    236(ptr) AccessChain 123 126 259
+             261:   85(fvec4) Load 260
              262:   18(fvec3) VectorShuffle 261 261 0 1 2
-             263:    127(ptr) AccessChain 122 125 244
+             263:    128(ptr) AccessChain 123 126 244
              264:    8(float) Load 263
              265:   18(fvec3) VectorTimesScalar 262 264
                               Store 252(force) 265
              271:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 34 269 269 16 16
              270:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 267 266(pos) 44
              272:     11(int) Load 144(index)
-             273:    236(ptr) AccessChain 208(particleIn) 125 272 125
-             274:   84(fvec4) Load 273
+             273:    236(ptr) AccessChain 208(particleIn) 126 272 126
+             274:   85(fvec4) Load 273
              275:   18(fvec3) VectorShuffle 274 274 0 1 2
                               Store 266(pos) 275
              281:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 34 279 279 16 16
              280:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 277 276(vel) 44
              282:     11(int) Load 144(index)
-             283:    236(ptr) AccessChain 208(particleIn) 125 282 244
-             284:   84(fvec4) Load 283
+             283:    236(ptr) AccessChain 208(particleIn) 126 282 244
+             284:   85(fvec4) Load 283
              285:   18(fvec3) VectorShuffle 284 284 0 1 2
                               Store 276(vel) 285
              287:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 34 288 288 16 16
@@ -562,13 +562,13 @@ spv.debuginfo.hlsl.comp
              295:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 34 296 296 16 16
              293:     11(int)   Load 144(index)
              297:     11(int)   ISub 293 38
-             299:    236(ptr)   AccessChain 208(particleIn) 125 297 125
-             300:   84(fvec4)   Load 299
+             299:    236(ptr)   AccessChain 208(particleIn) 126 297 126
+             300:   85(fvec4)   Load 299
              301:   18(fvec3)   VectorShuffle 300 300 0 1 2
                                 Store 298(param) 301
              303:   18(fvec3)   Load 266(pos)
                                 Store 302(param) 303
-             305:    127(ptr)   AccessChain 122 125 213
+             305:    128(ptr)   AccessChain 123 126 213
              306:    8(float)   Load 305
                                 Store 304(param) 306
              307:   18(fvec3)   FunctionCall 30(springForce(vf3;vf3;f1;) 298(param) 302(param) 304(param)
@@ -581,9 +581,9 @@ spv.debuginfo.hlsl.comp
              312:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 34 313 313 16 16
              310:    142(ptr) AccessChain 60(id) 16
              314:     11(int) Load 310
-             315:    153(ptr) AccessChain 122 125 152 16
-             316:     86(int) Load 315
-             317:     86(int) ISub 316 244
+             315:    153(ptr) AccessChain 123 126 152 16
+             316:     87(int) Load 315
+             317:     87(int) ISub 316 244
              318:     11(int) Bitcast 317
              319:   171(bool) ULessThan 314 318
                               SelectionMerge 321 None
@@ -593,13 +593,13 @@ spv.debuginfo.hlsl.comp
              324:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 34 325 325 16 16
              322:     11(int)   Load 144(index)
              326:     11(int)   IAdd 322 38
-             328:    236(ptr)   AccessChain 208(particleIn) 125 326 125
-             329:   84(fvec4)   Load 328
+             328:    236(ptr)   AccessChain 208(particleIn) 126 326 126
+             329:   85(fvec4)   Load 328
              330:   18(fvec3)   VectorShuffle 329 329 0 1 2
                                 Store 327(param) 330
              332:   18(fvec3)   Load 266(pos)
                                 Store 331(param) 332
-             334:    127(ptr)   AccessChain 122 125 213
+             334:    128(ptr)   AccessChain 123 126 213
              335:    8(float)   Load 334
                                 Store 333(param) 335
              336:   18(fvec3)   FunctionCall 30(springForce(vf3;vf3;f1;) 327(param) 331(param) 333(param)
@@ -612,9 +612,9 @@ spv.debuginfo.hlsl.comp
              341:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 34 342 342 16 16
              339:    142(ptr) AccessChain 60(id) 38
              343:     11(int) Load 339
-             344:    153(ptr) AccessChain 122 125 152 38
-             345:     86(int) Load 344
-             346:     86(int) ISub 345 244
+             344:    153(ptr) AccessChain 123 126 152 38
+             345:     87(int) Load 344
+             346:     87(int) ISub 345 244
              347:     11(int) Bitcast 346
              348:   171(bool) ULessThan 343 347
                               SelectionMerge 350 None
@@ -623,17 +623,17 @@ spv.debuginfo.hlsl.comp
              352:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 64
              353:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 34 354 354 16 16
              351:     11(int)   Load 144(index)
-             355:    153(ptr)   AccessChain 122 125 152 16
-             356:     86(int)   Load 355
+             355:    153(ptr)   AccessChain 123 126 152 16
+             356:     87(int)   Load 355
              357:     11(int)   Bitcast 356
              358:     11(int)   IAdd 351 357
-             361:    236(ptr)   AccessChain 208(particleIn) 125 358 125
-             362:   84(fvec4)   Load 361
+             361:    236(ptr)   AccessChain 208(particleIn) 126 358 126
+             362:   85(fvec4)   Load 361
              363:   18(fvec3)   VectorShuffle 362 362 0 1 2
                                 Store 360(param) 363
              365:   18(fvec3)   Load 266(pos)
                                 Store 364(param) 365
-             367:    127(ptr)   AccessChain 122 125 359
+             367:    128(ptr)   AccessChain 123 126 359
              368:    8(float)   Load 367
                                 Store 366(param) 368
              369:   18(fvec3)   FunctionCall 30(springForce(vf3;vf3;f1;) 360(param) 364(param) 366(param)
@@ -653,17 +653,17 @@ spv.debuginfo.hlsl.comp
              381:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 64
              382:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 34 383 383 16 16
              380:     11(int)   Load 144(index)
-             384:    153(ptr)   AccessChain 122 125 152 16
-             385:     86(int)   Load 384
+             384:    153(ptr)   AccessChain 123 126 152 16
+             385:     87(int)   Load 384
              386:     11(int)   Bitcast 385
              387:     11(int)   ISub 380 386
-             389:    236(ptr)   AccessChain 208(particleIn) 125 387 125
-             390:   84(fvec4)   Load 389
+             389:    236(ptr)   AccessChain 208(particleIn) 126 387 126
+             390:   85(fvec4)   Load 389
              391:   18(fvec3)   VectorShuffle 390 390 0 1 2
                                 Store 388(param) 391
              393:   18(fvec3)   Load 266(pos)
                                 Store 392(param) 393
-             395:    127(ptr)   AccessChain 122 125 359
+             395:    128(ptr)   AccessChain 123 126 359
              396:    8(float)   Load 395
                                 Store 394(param) 396
              397:   18(fvec3)   FunctionCall 30(springForce(vf3;vf3;f1;) 388(param) 392(param) 394(param)
@@ -679,9 +679,9 @@ spv.debuginfo.hlsl.comp
              405:   171(bool) UGreaterThan 404 16
              406:    142(ptr) AccessChain 60(id) 38
              407:     11(int) Load 406
-             408:    153(ptr) AccessChain 122 125 152 38
-             409:     86(int) Load 408
-             410:     86(int) ISub 409 244
+             408:    153(ptr) AccessChain 123 126 152 38
+             409:     87(int) Load 408
+             410:     87(int) ISub 409 244
              411:     11(int) Bitcast 410
              412:   171(bool) ULessThan 407 411
              413:   171(bool) LogicalAnd 405 412
@@ -691,18 +691,18 @@ spv.debuginfo.hlsl.comp
              417:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 64
              418:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 34 419 419 16 16
              416:     11(int)   Load 144(index)
-             420:    153(ptr)   AccessChain 122 125 152 16
-             421:     86(int)   Load 420
+             420:    153(ptr)   AccessChain 123 126 152 16
+             421:     87(int)   Load 420
              422:     11(int)   Bitcast 421
              423:     11(int)   IAdd 416 422
              424:     11(int)   ISub 423 38
-             427:    236(ptr)   AccessChain 208(particleIn) 125 424 125
-             428:   84(fvec4)   Load 427
+             427:    236(ptr)   AccessChain 208(particleIn) 126 424 126
+             428:   85(fvec4)   Load 427
              429:   18(fvec3)   VectorShuffle 428 428 0 1 2
                                 Store 426(param) 429
              431:   18(fvec3)   Load 266(pos)
                                 Store 430(param) 431
-             433:    127(ptr)   AccessChain 122 125 425
+             433:    128(ptr)   AccessChain 123 126 425
              434:    8(float)   Load 433
                                 Store 432(param) 434
              435:   18(fvec3)   FunctionCall 30(springForce(vf3;vf3;f1;) 426(param) 430(param) 432(param)
@@ -726,18 +726,18 @@ spv.debuginfo.hlsl.comp
              451:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 64
              452:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 34 453 453 16 16
              450:     11(int)   Load 144(index)
-             454:    153(ptr)   AccessChain 122 125 152 16
-             455:     86(int)   Load 454
+             454:    153(ptr)   AccessChain 123 126 152 16
+             455:     87(int)   Load 454
              456:     11(int)   Bitcast 455
              457:     11(int)   ISub 450 456
              458:     11(int)   ISub 457 38
-             460:    236(ptr)   AccessChain 208(particleIn) 125 458 125
-             461:   84(fvec4)   Load 460
+             460:    236(ptr)   AccessChain 208(particleIn) 126 458 126
+             461:   85(fvec4)   Load 460
              462:   18(fvec3)   VectorShuffle 461 461 0 1 2
                                 Store 459(param) 462
              464:   18(fvec3)   Load 266(pos)
                                 Store 463(param) 464
-             466:    127(ptr)   AccessChain 122 125 425
+             466:    128(ptr)   AccessChain 123 126 425
              467:    8(float)   Load 466
                                 Store 465(param) 467
              468:   18(fvec3)   FunctionCall 30(springForce(vf3;vf3;f1;) 459(param) 463(param) 465(param)
@@ -750,16 +750,16 @@ spv.debuginfo.hlsl.comp
              473:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 34 474 474 16 16
              471:    142(ptr) AccessChain 60(id) 16
              475:     11(int) Load 471
-             476:    153(ptr) AccessChain 122 125 152 16
-             477:     86(int) Load 476
-             478:     86(int) ISub 477 244
+             476:    153(ptr) AccessChain 123 126 152 16
+             477:     87(int) Load 476
+             478:     87(int) ISub 477 244
              479:     11(int) Bitcast 478
              480:   171(bool) ULessThan 475 479
              481:    142(ptr) AccessChain 60(id) 38
              482:     11(int) Load 481
-             483:    153(ptr) AccessChain 122 125 152 38
-             484:     86(int) Load 483
-             485:     86(int) ISub 484 244
+             483:    153(ptr) AccessChain 123 126 152 38
+             484:     87(int) Load 483
+             485:     87(int) ISub 484 244
              486:     11(int) Bitcast 485
              487:   171(bool) ULessThan 482 486
              488:   171(bool) LogicalAnd 480 487
@@ -769,18 +769,18 @@ spv.debuginfo.hlsl.comp
              492:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 64
              493:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 34 494 494 16 16
              491:     11(int)   Load 144(index)
-             495:    153(ptr)   AccessChain 122 125 152 16
-             496:     86(int)   Load 495
+             495:    153(ptr)   AccessChain 123 126 152 16
+             496:     87(int)   Load 495
              497:     11(int)   Bitcast 496
              498:     11(int)   IAdd 491 497
              499:     11(int)   IAdd 498 38
-             501:    236(ptr)   AccessChain 208(particleIn) 125 499 125
-             502:   84(fvec4)   Load 501
+             501:    236(ptr)   AccessChain 208(particleIn) 126 499 126
+             502:   85(fvec4)   Load 501
              503:   18(fvec3)   VectorShuffle 502 502 0 1 2
                                 Store 500(param) 503
              505:   18(fvec3)   Load 266(pos)
                                 Store 504(param) 505
-             507:    127(ptr)   AccessChain 122 125 425
+             507:    128(ptr)   AccessChain 123 126 425
              508:    8(float)   Load 507
                                 Store 506(param) 508
              509:   18(fvec3)   FunctionCall 30(springForce(vf3;vf3;f1;) 500(param) 504(param) 506(param)
@@ -793,9 +793,9 @@ spv.debuginfo.hlsl.comp
              514:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 34 515 515 16 16
              512:    142(ptr) AccessChain 60(id) 16
              516:     11(int) Load 512
-             517:    153(ptr) AccessChain 122 125 152 16
-             518:     86(int) Load 517
-             519:     86(int) ISub 518 244
+             517:    153(ptr) AccessChain 123 126 152 16
+             518:     87(int) Load 517
+             519:     87(int) ISub 518 244
              520:     11(int) Bitcast 519
              521:   171(bool) ULessThan 516 520
              522:    142(ptr) AccessChain 60(id) 38
@@ -808,18 +808,18 @@ spv.debuginfo.hlsl.comp
              529:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 64
              530:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 34 531 531 16 16
              528:     11(int)   Load 144(index)
-             532:    153(ptr)   AccessChain 122 125 152 16
-             533:     86(int)   Load 532
+             532:    153(ptr)   AccessChain 123 126 152 16
+             533:     87(int)   Load 532
              534:     11(int)   Bitcast 533
              535:     11(int)   ISub 528 534
              536:     11(int)   IAdd 535 38
-             538:    236(ptr)   AccessChain 208(particleIn) 125 536 125
-             539:   84(fvec4)   Load 538
+             538:    236(ptr)   AccessChain 208(particleIn) 126 536 126
+             539:   85(fvec4)   Load 538
              540:   18(fvec3)   VectorShuffle 539 539 0 1 2
                                 Store 537(param) 540
              542:   18(fvec3)   Load 266(pos)
                                 Store 541(param) 542
-             544:    127(ptr)   AccessChain 122 125 425
+             544:    128(ptr)   AccessChain 123 126 425
              545:    8(float)   Load 544
                                 Store 543(param) 545
              546:   18(fvec3)   FunctionCall 30(springForce(vf3;vf3;f1;) 537(param) 541(param) 543(param)
@@ -830,7 +830,7 @@ spv.debuginfo.hlsl.comp
              527:             Label
              551:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 64
              552:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 34 553 553 16 16
-             550:    127(ptr) AccessChain 122 125 549
+             550:    128(ptr) AccessChain 123 126 549
              554:    8(float) Load 550
              555:    8(float) FNegate 554
              556:   18(fvec3) Load 276(vel)
@@ -841,7 +841,7 @@ spv.debuginfo.hlsl.comp
              565:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 34 563 563 16 16
              564:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 561 560(f) 44
              566:   18(fvec3) Load 252(force)
-             567:    127(ptr) AccessChain 122 125 244
+             567:    128(ptr) AccessChain 123 126 244
              568:    8(float) Load 567
              569:    8(float) FDiv 216 568
              570:   18(fvec3) VectorTimesScalar 566 569
@@ -850,54 +850,54 @@ spv.debuginfo.hlsl.comp
              571:     11(int) Load 144(index)
              574:   18(fvec3) Load 266(pos)
              575:   18(fvec3) Load 276(vel)
-             576:    127(ptr) AccessChain 122 125 125
+             576:    128(ptr) AccessChain 123 126 126
              577:    8(float) Load 576
              578:   18(fvec3) VectorTimesScalar 575 577
              579:   18(fvec3) FAdd 574 578
              581:   18(fvec3) Load 560(f)
              582:   18(fvec3) VectorTimesScalar 581 580
-             583:    127(ptr) AccessChain 122 125 125
+             583:    128(ptr) AccessChain 123 126 126
              584:    8(float) Load 583
              585:   18(fvec3) VectorTimesScalar 582 584
-             586:    127(ptr) AccessChain 122 125 125
+             586:    128(ptr) AccessChain 123 126 126
              587:    8(float) Load 586
              588:   18(fvec3) VectorTimesScalar 585 587
              589:   18(fvec3) FAdd 579 588
              590:    8(float) CompositeExtract 589 0
              591:    8(float) CompositeExtract 589 1
              592:    8(float) CompositeExtract 589 2
-             593:   84(fvec4) CompositeConstruct 590 591 592 216
-             594:    236(ptr) AccessChain 230(particleOut) 125 571 125
+             593:   85(fvec4) CompositeConstruct 590 591 592 216
+             594:    236(ptr) AccessChain 230(particleOut) 126 571 126
                               Store 594 593
              596:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 34 597 597 16 16
              595:     11(int) Load 144(index)
              598:   18(fvec3) Load 276(vel)
              599:   18(fvec3) Load 560(f)
-             600:    127(ptr) AccessChain 122 125 125
+             600:    128(ptr) AccessChain 123 126 126
              601:    8(float) Load 600
              602:   18(fvec3) VectorTimesScalar 599 601
              603:   18(fvec3) FAdd 598 602
              604:    8(float) CompositeExtract 603 0
              605:    8(float) CompositeExtract 603 1
              606:    8(float) CompositeExtract 603 2
-             607:   84(fvec4) CompositeConstruct 604 605 606 245
-             608:    236(ptr) AccessChain 230(particleOut) 125 595 244
+             607:   85(fvec4) CompositeConstruct 604 605 606 245
+             608:    236(ptr) AccessChain 230(particleOut) 126 595 244
                               Store 608 607
              614:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 34 612 612 16 16
              613:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 610 609(sphereDist) 44
              615:     11(int) Load 144(index)
-             616:    236(ptr) AccessChain 230(particleOut) 125 615 125
-             617:   84(fvec4) Load 616
+             616:    236(ptr) AccessChain 230(particleOut) 126 615 126
+             617:   85(fvec4) Load 616
              618:   18(fvec3) VectorShuffle 617 617 0 1 2
-             620:    236(ptr) AccessChain 122 125 619
-             621:   84(fvec4) Load 620
+             620:    236(ptr) AccessChain 123 126 619
+             621:   85(fvec4) Load 620
              622:   18(fvec3) VectorShuffle 621 621 0 1 2
              623:   18(fvec3) FSub 618 622
                               Store 609(sphereDist) 623
              625:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 34 626 626 16 16
              624:   18(fvec3) Load 609(sphereDist)
              627:    8(float) ExtInst 3(GLSL.std.450) 66(Length) 624
-             629:    127(ptr) AccessChain 122 125 628
+             629:    128(ptr) AccessChain 123 126 628
              630:    8(float) Load 629
              632:    8(float) FAdd 630 631
              633:   171(bool) FOrdLessThan 627 632
@@ -907,34 +907,34 @@ spv.debuginfo.hlsl.comp
              637:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 64
              638:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 34 639 639 16 16
              636:     11(int)   Load 144(index)
-             640:    236(ptr)   AccessChain 122 125 619
-             641:   84(fvec4)   Load 640
+             640:    236(ptr)   AccessChain 123 126 619
+             641:   85(fvec4)   Load 640
              642:   18(fvec3)   VectorShuffle 641 641 0 1 2
              643:   18(fvec3)   Load 609(sphereDist)
              644:   18(fvec3)   ExtInst 3(GLSL.std.450) 69(Normalize) 643
-             645:    127(ptr)   AccessChain 122 125 628
+             645:    128(ptr)   AccessChain 123 126 628
              646:    8(float)   Load 645
              647:    8(float)   FAdd 646 631
              648:   18(fvec3)   VectorTimesScalar 644 647
              649:   18(fvec3)   FAdd 642 648
-             650:    127(ptr)   AccessChain 230(particleOut) 125 636 125 16
+             650:    128(ptr)   AccessChain 230(particleOut) 126 636 126 16
              651:    8(float)   CompositeExtract 649 0
                                 Store 650 651
-             652:    127(ptr)   AccessChain 230(particleOut) 125 636 125 38
+             652:    128(ptr)   AccessChain 230(particleOut) 126 636 126 38
              653:    8(float)   CompositeExtract 649 1
                                 Store 652 653
-             654:    127(ptr)   AccessChain 230(particleOut) 125 636 125 49
+             654:    128(ptr)   AccessChain 230(particleOut) 126 636 126 49
              655:    8(float)   CompositeExtract 649 2
                                 Store 654 655
              657:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 34 658 658 16 16
              656:     11(int)   Load 144(index)
-             659:    236(ptr)   AccessChain 230(particleOut) 125 656 244
+             659:    236(ptr)   AccessChain 230(particleOut) 126 656 244
                                 Store 659 246
                                 Branch 635
              635:             Label
              681:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 64
              682:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 34 667 667 16 16
-             680:    678(ptr) AccessChain 676 125 125
+             680:    678(ptr) AccessChain 676 126 126
              683:     11(int) Load 680
              684:   171(bool) IEqual 683 38
                               SelectionMerge 686 None
@@ -964,8 +964,8 @@ spv.debuginfo.hlsl.comp
              713:           4       ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 710 709(a) 44
              716:     11(int)       Load 144(index)
              717:     11(int)       ISub 716 38
-             718:    236(ptr)       AccessChain 208(particleIn) 125 717 125
-             719:   84(fvec4)       Load 718
+             718:    236(ptr)       AccessChain 208(particleIn) 126 717 126
+             719:   85(fvec4)       Load 718
              720:   18(fvec3)       VectorShuffle 719 719 0 1 2
              721:   18(fvec3)       Load 266(pos)
              722:   18(fvec3)       FSub 720 721
@@ -973,13 +973,13 @@ spv.debuginfo.hlsl.comp
              728:           4       ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 34 726 726 16 16
              727:           4       ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 724 723(b) 44
              729:     11(int)       Load 144(index)
-             730:    153(ptr)       AccessChain 122 125 152 16
-             731:     86(int)       Load 730
+             730:    153(ptr)       AccessChain 123 126 152 16
+             731:     87(int)       Load 730
              732:     11(int)       Bitcast 731
              733:     11(int)       ISub 729 732
              734:     11(int)       ISub 733 38
-             735:    236(ptr)       AccessChain 208(particleIn) 125 734 125
-             736:   84(fvec4)       Load 735
+             735:    236(ptr)       AccessChain 208(particleIn) 126 734 126
+             736:   85(fvec4)       Load 735
              737:   18(fvec3)       VectorShuffle 736 736 0 1 2
              738:   18(fvec3)       Load 266(pos)
              739:   18(fvec3)       FSub 737 738
@@ -987,12 +987,12 @@ spv.debuginfo.hlsl.comp
              745:           4       ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 34 743 743 16 16
              744:           4       ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 741 740(c) 44
              746:     11(int)       Load 144(index)
-             747:    153(ptr)       AccessChain 122 125 152 16
-             748:     86(int)       Load 747
+             747:    153(ptr)       AccessChain 123 126 152 16
+             748:     87(int)       Load 747
              749:     11(int)       Bitcast 748
              750:     11(int)       ISub 746 749
-             751:    236(ptr)       AccessChain 208(particleIn) 125 750 125
-             752:   84(fvec4)       Load 751
+             751:    236(ptr)       AccessChain 208(particleIn) 126 750 126
+             752:   85(fvec4)       Load 751
              753:   18(fvec3)       VectorShuffle 752 752 0 1 2
              754:   18(fvec3)       Load 266(pos)
              755:   18(fvec3)       FSub 753 754
@@ -1014,9 +1014,9 @@ spv.debuginfo.hlsl.comp
              769:           4     ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 34 770 770 16 16
              767:    142(ptr)     AccessChain 60(id) 16
              771:     11(int)     Load 767
-             772:    153(ptr)     AccessChain 122 125 152 16
-             773:     86(int)     Load 772
-             774:     86(int)     ISub 773 244
+             772:    153(ptr)     AccessChain 123 126 152 16
+             773:     87(int)     Load 772
+             774:     87(int)     ISub 773 244
              775:     11(int)     Bitcast 774
              776:   171(bool)     ULessThan 771 775
                                   SelectionMerge 778 None
@@ -1025,25 +1025,25 @@ spv.debuginfo.hlsl.comp
              780:           4       ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 64
              781:           4       ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 34 782 782 16 16
              779:     11(int)       Load 144(index)
-             783:    153(ptr)       AccessChain 122 125 152 16
-             784:     86(int)       Load 783
+             783:    153(ptr)       AccessChain 123 126 152 16
+             784:     87(int)       Load 783
              785:     11(int)       Bitcast 784
              786:     11(int)       ISub 779 785
-             787:    236(ptr)       AccessChain 208(particleIn) 125 786 125
-             788:   84(fvec4)       Load 787
+             787:    236(ptr)       AccessChain 208(particleIn) 126 786 126
+             788:   85(fvec4)       Load 787
              789:   18(fvec3)       VectorShuffle 788 788 0 1 2
              790:   18(fvec3)       Load 266(pos)
              791:   18(fvec3)       FSub 789 790
                                     Store 709(a) 791
              793:           4       ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 34 794 794 16 16
              792:     11(int)       Load 144(index)
-             795:    153(ptr)       AccessChain 122 125 152 16
-             796:     86(int)       Load 795
+             795:    153(ptr)       AccessChain 123 126 152 16
+             796:     87(int)       Load 795
              797:     11(int)       Bitcast 796
              798:     11(int)       ISub 792 797
              799:     11(int)       IAdd 798 38
-             800:    236(ptr)       AccessChain 208(particleIn) 125 799 125
-             801:   84(fvec4)       Load 800
+             800:    236(ptr)       AccessChain 208(particleIn) 126 799 126
+             801:   85(fvec4)       Load 800
              802:   18(fvec3)       VectorShuffle 801 801 0 1 2
              803:   18(fvec3)       Load 266(pos)
              804:   18(fvec3)       FSub 802 803
@@ -1051,8 +1051,8 @@ spv.debuginfo.hlsl.comp
              806:           4       ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 34 807 807 16 16
              805:     11(int)       Load 144(index)
              808:     11(int)       IAdd 805 38
-             809:    236(ptr)       AccessChain 208(particleIn) 125 808 125
-             810:   84(fvec4)       Load 809
+             809:    236(ptr)       AccessChain 208(particleIn) 126 808 126
+             810:   85(fvec4)       Load 809
              811:   18(fvec3)       VectorShuffle 810 810 0 1 2
              812:   18(fvec3)       Load 266(pos)
              813:   18(fvec3)       FSub 811 812
@@ -1077,9 +1077,9 @@ spv.debuginfo.hlsl.comp
              828:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 34 829 829 16 16
              826:    142(ptr)   AccessChain 60(id) 38
              830:     11(int)   Load 826
-             831:    153(ptr)   AccessChain 122 125 152 38
-             832:     86(int)   Load 831
-             833:     86(int)   ISub 832 244
+             831:    153(ptr)   AccessChain 123 126 152 38
+             832:     87(int)   Load 831
+             833:     87(int)   ISub 832 244
              834:     11(int)   Bitcast 833
              835:   171(bool)   ULessThan 830 834
                                 SelectionMerge 837 None
@@ -1096,25 +1096,25 @@ spv.debuginfo.hlsl.comp
              847:           4       ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 64
              848:           4       ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 34 849 849 16 16
              846:     11(int)       Load 144(index)
-             850:    153(ptr)       AccessChain 122 125 152 16
-             851:     86(int)       Load 850
+             850:    153(ptr)       AccessChain 123 126 152 16
+             851:     87(int)       Load 850
              852:     11(int)       Bitcast 851
              853:     11(int)       IAdd 846 852
-             854:    236(ptr)       AccessChain 208(particleIn) 125 853 125
-             855:   84(fvec4)       Load 854
+             854:    236(ptr)       AccessChain 208(particleIn) 126 853 126
+             855:   85(fvec4)       Load 854
              856:   18(fvec3)       VectorShuffle 855 855 0 1 2
              857:   18(fvec3)       Load 266(pos)
              858:   18(fvec3)       FSub 856 857
                                     Store 709(a) 858
              860:           4       ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 34 861 861 16 16
              859:     11(int)       Load 144(index)
-             862:    153(ptr)       AccessChain 122 125 152 16
-             863:     86(int)       Load 862
+             862:    153(ptr)       AccessChain 123 126 152 16
+             863:     87(int)       Load 862
              864:     11(int)       Bitcast 863
              865:     11(int)       IAdd 859 864
              866:     11(int)       ISub 865 38
-             867:    236(ptr)       AccessChain 208(particleIn) 125 866 125
-             868:   84(fvec4)       Load 867
+             867:    236(ptr)       AccessChain 208(particleIn) 126 866 126
+             868:   85(fvec4)       Load 867
              869:   18(fvec3)       VectorShuffle 868 868 0 1 2
              870:   18(fvec3)       Load 266(pos)
              871:   18(fvec3)       FSub 869 870
@@ -1122,8 +1122,8 @@ spv.debuginfo.hlsl.comp
              873:           4       ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 34 874 874 16 16
              872:     11(int)       Load 144(index)
              875:     11(int)       ISub 872 38
-             876:    236(ptr)       AccessChain 208(particleIn) 125 875 125
-             877:   84(fvec4)       Load 876
+             876:    236(ptr)       AccessChain 208(particleIn) 126 875 126
+             877:   85(fvec4)       Load 876
              878:   18(fvec3)       VectorShuffle 877 877 0 1 2
              879:   18(fvec3)       Load 266(pos)
              880:   18(fvec3)       FSub 878 879
@@ -1145,9 +1145,9 @@ spv.debuginfo.hlsl.comp
              894:           4     ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 34 895 895 16 16
              892:    142(ptr)     AccessChain 60(id) 16
              896:     11(int)     Load 892
-             897:    153(ptr)     AccessChain 122 125 152 16
-             898:     86(int)     Load 897
-             899:     86(int)     ISub 898 244
+             897:    153(ptr)     AccessChain 123 126 152 16
+             898:     87(int)     Load 897
+             899:     87(int)     ISub 898 244
              900:     11(int)     Bitcast 899
              901:   171(bool)     ULessThan 896 900
                                   SelectionMerge 903 None
@@ -1157,33 +1157,33 @@ spv.debuginfo.hlsl.comp
              906:           4       ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 34 907 907 16 16
              904:     11(int)       Load 144(index)
              908:     11(int)       IAdd 904 38
-             909:    236(ptr)       AccessChain 208(particleIn) 125 908 125
-             910:   84(fvec4)       Load 909
+             909:    236(ptr)       AccessChain 208(particleIn) 126 908 126
+             910:   85(fvec4)       Load 909
              911:   18(fvec3)       VectorShuffle 910 910 0 1 2
              912:   18(fvec3)       Load 266(pos)
              913:   18(fvec3)       FSub 911 912
                                     Store 709(a) 913
              915:           4       ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 34 916 916 16 16
              914:     11(int)       Load 144(index)
-             917:    153(ptr)       AccessChain 122 125 152 16
-             918:     86(int)       Load 917
+             917:    153(ptr)       AccessChain 123 126 152 16
+             918:     87(int)       Load 917
              919:     11(int)       Bitcast 918
              920:     11(int)       IAdd 914 919
              921:     11(int)       IAdd 920 38
-             922:    236(ptr)       AccessChain 208(particleIn) 125 921 125
-             923:   84(fvec4)       Load 922
+             922:    236(ptr)       AccessChain 208(particleIn) 126 921 126
+             923:   85(fvec4)       Load 922
              924:   18(fvec3)       VectorShuffle 923 923 0 1 2
              925:   18(fvec3)       Load 266(pos)
              926:   18(fvec3)       FSub 924 925
                                     Store 723(b) 926
              928:           4       ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 34 929 929 16 16
              927:     11(int)       Load 144(index)
-             930:    153(ptr)       AccessChain 122 125 152 16
-             931:     86(int)       Load 930
+             930:    153(ptr)       AccessChain 123 126 152 16
+             931:     87(int)       Load 930
              932:     11(int)       Bitcast 931
              933:     11(int)       IAdd 927 932
-             934:    236(ptr)       AccessChain 208(particleIn) 125 933 125
-             935:   84(fvec4)       Load 934
+             934:    236(ptr)       AccessChain 208(particleIn) 126 933 126
+             935:   85(fvec4)       Load 934
              936:   18(fvec3)       VectorShuffle 935 935 0 1 2
              937:   18(fvec3)       Load 266(pos)
              938:   18(fvec3)       FSub 936 937
@@ -1212,8 +1212,8 @@ spv.debuginfo.hlsl.comp
              957:    8(float)   CompositeExtract 956 0
              958:    8(float)   CompositeExtract 956 1
              959:    8(float)   CompositeExtract 956 2
-             960:   84(fvec4)   CompositeConstruct 957 958 959 245
-             961:    236(ptr)   AccessChain 230(particleOut) 125 951 549
+             960:   85(fvec4)   CompositeConstruct 957 958 959 245
+             961:    236(ptr)   AccessChain 230(particleOut) 126 951 549
                                 Store 961 960
                                 Branch 686
              686:             Label

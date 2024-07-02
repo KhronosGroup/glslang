@@ -223,29 +223,29 @@ void main()
               56:             String  "offset"
               64:             String  "filterPCF"
               68:             String  "sc"
-              83:             String  "shadow"
-              87:             String  "fragcolor"
-              91:             String  "fragpos"
-              93:             String  "main"
-              97:             String  "int"
-             103:             String  "global_var"
-             118:             String  "shadowCoord"
-             140:             String  "bool"
-             161:             String  "dist"
-             168:             String  "type.2d.image"
-             169:             String  "@type.2d.image"
-             173:             String  "type.sampled.image"
-             174:             String  "@type.sampled.image"
-             179:             String  "samplerShadowMap"
-             229:             String  "texDim"
-             241:             String  "scale"
-             248:             String  "dx"
-             262:             String  "dy"
-             274:             String  "shadowFactor"
-             280:             String  "count"
-             286:             String  "range"
-             293:             String  "x"
-             313:             String  "y"
+              84:             String  "shadow"
+              88:             String  "fragcolor"
+              93:             String  "fragpos"
+              95:             String  "main"
+              99:             String  "int"
+             105:             String  "global_var"
+             120:             String  "shadowCoord"
+             142:             String  "bool"
+             163:             String  "dist"
+             170:             String  "type.2d.image"
+             171:             String  "@type.2d.image"
+             175:             String  "type.sampled.image"
+             176:             String  "@type.sampled.image"
+             181:             String  "samplerShadowMap"
+             230:             String  "texDim"
+             242:             String  "scale"
+             249:             String  "dx"
+             263:             String  "dy"
+             275:             String  "shadowFactor"
+             281:             String  "count"
+             287:             String  "range"
+             294:             String  "x"
+             314:             String  "y"
              379:             String  "i"
              397:             String  "shadowClip"
              407:             String  "color"
@@ -286,26 +286,26 @@ void main()
                               Name 62  "filterPCF(vf4;f1;"
                               Name 60  "sc"
                               Name 61  "layer"
-                              Name 81  "shadow(vf3;vf3;"
-                              Name 79  "fragcolor"
-                              Name 80  "fragpos"
-                              Name 101  "global_var"
-                              Name 110  "shadow"
-                              Name 116  "shadowCoord"
-                              Name 159  "dist"
-                              Name 177  "samplerShadowMap"
-                              Name 227  "texDim"
-                              Name 239  "scale"
-                              Name 246  "dx"
-                              Name 260  "dy"
-                              Name 272  "shadowFactor"
-                              Name 278  "count"
-                              Name 284  "range"
-                              Name 291  "x"
-                              Name 311  "y"
-                              Name 344  "param"
-                              Name 346  "param"
-                              Name 348  "param"
+                              Name 82  "shadow(vf3;vf3;"
+                              Name 80  "fragcolor"
+                              Name 81  "fragpos"
+                              Name 103  "global_var"
+                              Name 112  "shadow"
+                              Name 118  "shadowCoord"
+                              Name 161  "dist"
+                              Name 179  "samplerShadowMap"
+                              Name 228  "texDim"
+                              Name 240  "scale"
+                              Name 247  "dx"
+                              Name 261  "dy"
+                              Name 273  "shadowFactor"
+                              Name 279  "count"
+                              Name 285  "range"
+                              Name 292  "x"
+                              Name 312  "y"
+                              Name 345  "param"
+                              Name 347  "param"
+                              Name 349  "param"
                               Name 377  "i"
                               Name 395  "shadowClip"
                               Name 405  "Light"
@@ -352,8 +352,8 @@ void main()
                               Name 814  "spec"
                               Name 861  "param"
                               Name 866  "param"
-                              Decorate 177(samplerShadowMap) Binding 5
-                              Decorate 177(samplerShadowMap) DescriptorSet 0
+                              Decorate 179(samplerShadowMap) Binding 5
+                              Decorate 179(samplerShadowMap) DescriptorSet 0
                               MemberDecorate 405(Light) 0 Offset 0
                               MemberDecorate 405(Light) 1 Offset 16
                               MemberDecorate 405(Light) 2 Offset 32
@@ -416,93 +416,93 @@ void main()
               66:      7(int) Constant 76
               65:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 20(DebugFunction) 64 59 41 66 12 44 64 13 66
               67:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 68 21 41 66 12 65 20 45
-              71:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 53 18 41 66 12 65 20 28
-              73:             TypeVector 16(float) 3
-              74:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 6(DebugTypeVector) 18 13
-              75:             TypePointer Function 73(fvec3)
-              76:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 3(DebugTypePointer) 74 23 12
-              77:             TypeFunction 73(fvec3) 75(ptr) 75(ptr)
-              78:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 8(DebugTypeFunction) 13 74 74 74
-              85:      7(int) Constant 99
-              84:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 20(DebugFunction) 83 78 41 85 12 44 83 13 85
-              86:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 87 74 41 85 12 84 20 45
-              90:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 91 74 41 85 12 84 20 28
-              95:      7(int) Constant 116
-              94:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 20(DebugFunction) 93 6 41 95 12 44 93 13 95
-              96:             TypeInt 32 1
-              98:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 2(DebugTypeBasic) 97 10 20 12
-              99:             TypePointer Private 96(int)
-             100:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 3(DebugTypePointer) 98 11 12
- 101(global_var):     99(ptr) Variable Private
-             104:      7(int) Constant 41
-             105:      7(int) Constant 8
-             102:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 18(DebugGlobalVariable) 103 98 41 104 12 44 103 101(global_var) 105
-             106:     96(int) Constant 0
-             112:      7(int) Constant 61
-             111:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 83 18 41 112 12 40 20
-             115:   16(float) Constant 1065353216
-             119:      7(int) Constant 62
-             117:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 118 21 41 119 12 40 20
-             129:      7(int) Constant 63
-             131:   16(float) Constant 1056964608
-             139:             TypeBool
-             141:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 2(DebugTypeBasic) 140 10 28 12
-             144:      7(int) Constant 65
-             146:   16(float) Constant 3212836864
-             162:      7(int) Constant 67
-             160:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 161 18 41 162 12 40 20
-             166:             TypeImage 16(float) 2D array sampled format:Unknown
-             170:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 0(DebugInfoNone)
-             167:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 10(DebugTypeComposite) 168 12 41 162 12 44 169 170 13
-             171:             TypeSampledImage 166
-             172:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 10(DebugTypeComposite) 173 12 41 162 12 44 174 170 13
-             175:             TypePointer UniformConstant 171
-             176:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 3(DebugTypePointer) 172 12 12
-177(samplerShadowMap):    175(ptr) Variable UniformConstant
-             178:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 18(DebugGlobalVariable) 179 172 41 162 12 44 179 177(samplerShadowMap) 105
-             193:      7(int) Constant 68
-             195:   16(float) Constant 0
-             209:   16(float) Constant 1048576000
-             212:      7(int) Constant 70
-             217:      7(int) Constant 73
-             223:             TypeVector 96(int) 2
-             224:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 6(DebugTypeVector) 98 28
-             225:             TypePointer Function 223(ivec2)
-             226:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 3(DebugTypePointer) 224 23 12
-             230:      7(int) Constant 78
-             228:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 229 224 41 230 12 65 20
-             235:             TypeVector 96(int) 3
-             236:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 6(DebugTypeVector) 98 13
-             242:      7(int) Constant 79
-             240:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 241 18 41 242 12 65 20
-             245:   16(float) Constant 1069547520
-             249:      7(int) Constant 80
-             247:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 248 18 41 249 12 65 20
-             254:             TypePointer Function 96(int)
-             255:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 3(DebugTypePointer) 98 23 12
-             263:      7(int) Constant 81
-             261:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 262 18 41 263 12 65 20
-             275:      7(int) Constant 83
-             273:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 274 18 41 275 12 65 20
-             281:      7(int) Constant 84
-             279:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 280 98 41 281 12 65 20
-             287:      7(int) Constant 85
-             285:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 286 98 41 287 12 65 20
-             290:     96(int) Constant 1
-             294:      7(int) Constant 87
-             292:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 293 98 41 294 12 65 20
-             314:      7(int) Constant 89
-             312:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 313 98 41 314 12 65 20
-             335:      7(int) Constant 91
-             354:      7(int) Constant 92
-             368:      7(int) Constant 96
+              72:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 53 18 41 66 12 65 20 28
+              74:             TypeVector 16(float) 3
+              75:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 6(DebugTypeVector) 18 13
+              76:             TypePointer Function 74(fvec3)
+              77:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 3(DebugTypePointer) 75 23 12
+              78:             TypeFunction 74(fvec3) 76(ptr) 76(ptr)
+              79:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 8(DebugTypeFunction) 13 75 75 75
+              86:      7(int) Constant 99
+              85:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 20(DebugFunction) 84 79 41 86 12 44 84 13 86
+              87:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 88 75 41 86 12 85 20 45
+              92:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 93 75 41 86 12 85 20 28
+              97:      7(int) Constant 116
+              96:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 20(DebugFunction) 95 6 41 97 12 44 95 13 97
+              98:             TypeInt 32 1
+             100:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 2(DebugTypeBasic) 99 10 20 12
+             101:             TypePointer Private 98(int)
+             102:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 3(DebugTypePointer) 100 11 12
+ 103(global_var):    101(ptr) Variable Private
+             106:      7(int) Constant 41
+             107:      7(int) Constant 8
+             104:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 18(DebugGlobalVariable) 105 100 41 106 12 44 105 103(global_var) 107
+             108:     98(int) Constant 0
+             114:      7(int) Constant 61
+             113:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 84 18 41 114 12 40 20
+             117:   16(float) Constant 1065353216
+             121:      7(int) Constant 62
+             119:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 120 21 41 121 12 40 20
+             131:      7(int) Constant 63
+             133:   16(float) Constant 1056964608
+             141:             TypeBool
+             143:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 2(DebugTypeBasic) 142 10 28 12
+             146:      7(int) Constant 65
+             148:   16(float) Constant 3212836864
+             164:      7(int) Constant 67
+             162:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 163 18 41 164 12 40 20
+             168:             TypeImage 16(float) 2D array sampled format:Unknown
+             172:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 0(DebugInfoNone)
+             169:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 10(DebugTypeComposite) 170 12 41 164 12 44 171 172 13
+             173:             TypeSampledImage 168
+             174:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 10(DebugTypeComposite) 175 12 41 164 12 44 176 172 13
+             177:             TypePointer UniformConstant 173
+             178:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 3(DebugTypePointer) 174 12 12
+179(samplerShadowMap):    177(ptr) Variable UniformConstant
+             180:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 18(DebugGlobalVariable) 181 174 41 164 12 44 181 179(samplerShadowMap) 107
+             195:      7(int) Constant 68
+             197:   16(float) Constant 0
+             211:   16(float) Constant 1048576000
+             214:      7(int) Constant 70
+             219:      7(int) Constant 73
+             224:             TypeVector 98(int) 2
+             225:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 6(DebugTypeVector) 100 28
+             226:             TypePointer Function 224(ivec2)
+             227:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 3(DebugTypePointer) 225 23 12
+             231:      7(int) Constant 78
+             229:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 230 225 41 231 12 65 20
+             236:             TypeVector 98(int) 3
+             237:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 6(DebugTypeVector) 100 13
+             243:      7(int) Constant 79
+             241:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 242 18 41 243 12 65 20
+             246:   16(float) Constant 1069547520
+             250:      7(int) Constant 80
+             248:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 249 18 41 250 12 65 20
+             255:             TypePointer Function 98(int)
+             256:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 3(DebugTypePointer) 100 23 12
+             264:      7(int) Constant 81
+             262:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 263 18 41 264 12 65 20
+             276:      7(int) Constant 83
+             274:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 275 18 41 276 12 65 20
+             282:      7(int) Constant 84
+             280:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 281 100 41 282 12 65 20
+             288:      7(int) Constant 85
+             286:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 287 100 41 288 12 65 20
+             291:     98(int) Constant 1
+             295:      7(int) Constant 87
+             293:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 294 100 41 295 12 65 20
+             315:      7(int) Constant 89
+             313:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 314 100 41 315 12 65 20
+             336:      7(int) Constant 91
+             355:      7(int) Constant 92
+             369:      7(int) Constant 96
              380:      7(int) Constant 100
-             378:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 379 98 41 380 12 84 20
-             393:     96(int) Constant 3
+             378:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 379 100 41 380 12 85 20
+             393:     98(int) Constant 3
              398:      7(int) Constant 102
-             396:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 397 21 41 398 12 84 20
+             396:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 397 21 41 398 12 85 20
              402:             TypeMatrix 19(fvec4) 4
-             404:   139(bool) ConstantTrue
+             404:   141(bool) ConstantTrue
              403:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 108(DebugTypeMatrix) 21 20 404
       405(Light):             TypeStruct 19(fvec4) 19(fvec4) 19(fvec4) 402
              408:      7(int) Constant 47
@@ -514,56 +514,56 @@ void main()
              414:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 10(DebugTypeComposite) 415 45 41 398 12 44 415 12 13 406 409 410 411
              416:             TypeArray 405(Light) 13
              417:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 5(DebugTypeArray) 414 13
-        418(UBO):             TypeStruct 19(fvec4) 416 96(int) 96(int)
+        418(UBO):             TypeStruct 19(fvec4) 416 98(int) 98(int)
              419:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 407 21 41 408 23 12 12 13
              422:      7(int) Constant 54
-             420:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 421 417 41 422 105 12 12 13
+             420:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 421 417 41 422 107 12 12 13
              425:      7(int) Constant 56
-             423:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 424 98 41 425 11 12 12 13
-             426:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 424 98 41 425 11 12 12 13
+             423:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 424 100 41 425 11 12 12 13
+             426:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 424 100 41 425 11 12 12 13
              427:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 10(DebugTypeComposite) 428 45 41 398 12 44 428 12 13 419 420 423 426
              429:             TypePointer Uniform 418(UBO)
              430:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 3(DebugTypePointer) 427 28 12
         431(ubo):    429(ptr) Variable Uniform
-             432:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 18(DebugGlobalVariable) 433 427 41 398 12 44 433 431(ubo) 105
+             432:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 18(DebugGlobalVariable) 433 427 41 398 12 44 433 431(ubo) 107
              435:             TypePointer Uniform 402
              436:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 3(DebugTypePointer) 403 28 12
              447:      7(int) Constant 106
-             446:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 274 18 41 447 12 84 20
+             446:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 275 18 41 447 12 85 20
              458:      7(int) Constant 111
              468:      7(int) Constant 113
              478:      7(int) Constant 119
-             476:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 477 74 41 478 12 94 20
+             476:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 477 75 41 478 12 96 20
              481:             TypeImage 16(float) 2D sampled format:Unknown
-             482:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 10(DebugTypeComposite) 168 12 41 478 12 44 169 170 13
+             482:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 10(DebugTypeComposite) 170 12 41 478 12 44 171 172 13
              483:             TypeSampledImage 481
-             484:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 10(DebugTypeComposite) 173 12 41 478 12 44 174 170 13
+             484:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 10(DebugTypeComposite) 175 12 41 478 12 44 176 172 13
              485:             TypePointer UniformConstant 483
              486:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 3(DebugTypePointer) 484 12 12
 487(samplerposition):    485(ptr) Variable UniformConstant
-             488:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 18(DebugGlobalVariable) 489 484 41 478 12 44 489 487(samplerposition) 105
+             488:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 18(DebugGlobalVariable) 489 484 41 478 12 44 489 487(samplerposition) 107
              491:             TypePointer Input 27(fvec2)
              492:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 3(DebugTypePointer) 29 45 12
        493(inUV):    491(ptr) Variable Input
-             494:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 18(DebugGlobalVariable) 495 29 41 478 12 44 495 493(inUV) 105
+             494:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 18(DebugGlobalVariable) 495 29 41 478 12 44 495 493(inUV) 107
              502:      7(int) Constant 120
-             500:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 501 74 41 502 12 94 20
+             500:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 501 75 41 502 12 96 20
 505(samplerNormal):    485(ptr) Variable UniformConstant
-             506:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 18(DebugGlobalVariable) 507 484 41 502 12 44 507 505(samplerNormal) 105
+             506:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 18(DebugGlobalVariable) 507 484 41 502 12 44 507 505(samplerNormal) 107
              515:      7(int) Constant 121
-             513:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 514 21 41 515 12 94 20
+             513:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 514 21 41 515 12 96 20
 518(samplerAlbedo):    485(ptr) Variable UniformConstant
-             519:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 18(DebugGlobalVariable) 520 484 41 515 12 44 520 518(samplerAlbedo) 105
-             524:             TypePointer Uniform 96(int)
-             525:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 3(DebugTypePointer) 98 28 12
+             519:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 18(DebugGlobalVariable) 520 484 41 515 12 44 520 518(samplerAlbedo) 107
+             524:             TypePointer Uniform 98(int)
+             525:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 3(DebugTypePointer) 100 28 12
              528:      7(int) Constant 124
              536:      7(int) Constant 125
              544:             TypePointer Output 19(fvec4)
              545:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 3(DebugTypePointer) 21 13 12
 546(outFragColor):    544(ptr) Variable Output
              549:      7(int) Constant 127
-             547:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 18(DebugGlobalVariable) 548 21 41 549 12 44 548 546(outFragColor) 105
-             550:   73(fvec3) ConstantComposite 115 115 115
+             547:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 18(DebugGlobalVariable) 548 21 41 549 12 44 548 546(outFragColor) 107
+             550:   74(fvec3) ConstantComposite 117 117 117
              557:             TypePointer Output 16(float)
              558:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 3(DebugTypePointer) 18 13 12
              566:      7(int) Constant 128
@@ -578,102 +578,102 @@ void main()
              631:      7(int) Constant 142
              633:      7(int) Constant 143
              638:      7(int) Constant 147
-             637:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 87 74 41 638 12 94 20
+             637:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 88 75 41 638 12 96 20
              644:   16(float) Constant 1036831949
              649:      7(int) Constant 149
-             647:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 648 74 41 649 12 94 20
+             647:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 648 75 41 649 12 96 20
              656:      7(int) Constant 151
-             655:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 379 98 41 656 12 94 20
+             655:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 379 100 41 656 12 96 20
              673:      7(int) Constant 154
-             671:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 672 74 41 673 12 94 20
+             671:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 672 75 41 673 12 96 20
              678:             TypePointer Uniform 19(fvec4)
              679:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 3(DebugTypePointer) 21 28 12
              687:      7(int) Constant 156
-             686:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 161 18 41 687 12 94 20
+             686:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 163 18 41 687 12 96 20
              694:      7(int) Constant 157
              699:      7(int) Constant 160
-             697:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 698 74 41 699 12 94 20
+             697:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 698 75 41 699 12 96 20
              709:      7(int) Constant 161
              714:      7(int) Constant 163
-             712:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 713 18 41 714 12 94 20
+             712:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 713 18 41 714 12 96 20
              717:   16(float) Constant 1064781546
              721:      7(int) Constant 164
-             719:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 720 18 41 721 12 94 20
+             719:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 720 18 41 721 12 96 20
              724:   16(float) Constant 1063781322
              728:      7(int) Constant 165
-             726:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 727 18 41 728 12 94 20
+             726:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 727 18 41 728 12 96 20
              731:   16(float) Constant 1120403456
              735:      7(int) Constant 168
-             733:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 734 74 41 735 12 94 20
+             733:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 734 75 41 735 12 96 20
              751:      7(int) Constant 171
-             749:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 750 18 41 751 12 94 20
+             749:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 750 18 41 751 12 96 20
              760:      7(int) Constant 172
-             758:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 759 18 41 760 12 94 20
+             758:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 759 18 41 760 12 96 20
              770:      7(int) Constant 173
-             768:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 769 18 41 770 12 94 20
+             768:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 769 18 41 770 12 96 20
              779:      7(int) Constant 176
-             777:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 778 18 41 779 12 94 20
+             777:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 778 18 41 779 12 96 20
              789:      7(int) Constant 177
-             787:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 788 74 41 789 12 94 20
+             787:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 788 75 41 789 12 96 20
              797:      7(int) Constant 180
-             795:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 796 74 41 797 12 94 20
+             795:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 796 75 41 797 12 96 20
              807:      7(int) Constant 181
-             805:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 806 18 41 807 12 94 20
+             805:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 806 18 41 807 12 96 20
              817:      7(int) Constant 182
-             815:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 816 74 41 817 12 94 20
+             815:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 26(DebugLocalVariable) 816 75 41 817 12 96 20
              821:   16(float) Constant 1098907648
              826:   16(float) Constant 1075838976
              831:      7(int) Constant 184
-             839:     96(int) Constant 2
+             839:     98(int) Constant 2
              856:      7(int) Constant 188
              865:      7(int) Constant 190
              872:      7(int) Constant 193
         14(main):           4 Function None 5
               15:             Label
-    475(fragPos):     75(ptr) Variable Function
-     499(normal):     75(ptr) Variable Function
+    475(fragPos):     76(ptr) Variable Function
+     499(normal):     76(ptr) Variable Function
      512(albedo):     22(ptr) Variable Function
-      551(param):     75(ptr) Variable Function
-      554(param):     75(ptr) Variable Function
-  636(fragcolor):     75(ptr) Variable Function
-          646(N):     75(ptr) Variable Function
-          654(i):    254(ptr) Variable Function
-          670(L):     75(ptr) Variable Function
+      551(param):     76(ptr) Variable Function
+      554(param):     76(ptr) Variable Function
+  636(fragcolor):     76(ptr) Variable Function
+          646(N):     76(ptr) Variable Function
+          654(i):    255(ptr) Variable Function
+          670(L):     76(ptr) Variable Function
        685(dist):     25(ptr) Variable Function
-          696(V):     75(ptr) Variable Function
+          696(V):     76(ptr) Variable Function
 711(lightCosInnerAngle):     25(ptr) Variable Function
 718(lightCosOuterAngle):     25(ptr) Variable Function
  725(lightRange):     25(ptr) Variable Function
-        732(dir):     75(ptr) Variable Function
+        732(dir):     76(ptr) Variable Function
      748(cosDir):     25(ptr) Variable Function
  757(spotEffect):     25(ptr) Variable Function
 767(heightAttenuation):     25(ptr) Variable Function
       776(NdotL):     25(ptr) Variable Function
-       786(diff):     75(ptr) Variable Function
-          794(R):     75(ptr) Variable Function
+       786(diff):     76(ptr) Variable Function
+          794(R):     76(ptr) Variable Function
       804(NdotR):     25(ptr) Variable Function
-       814(spec):     75(ptr) Variable Function
-      861(param):     75(ptr) Variable Function
-      866(param):     75(ptr) Variable Function
-             107:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 44
-             108:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 104 104 12 12
-                              Store 101(global_var) 106
-             473:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 94
-             474:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 95 95 12 12
-             472:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 101(DebugFunctionDefinition) 94 14(main)
+       814(spec):     76(ptr) Variable Function
+      861(param):     76(ptr) Variable Function
+      866(param):     76(ptr) Variable Function
+             109:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 44
+             110:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 106 106 12 12
+                              Store 103(global_var) 108
+             473:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 96
+             474:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 97 97 12 12
+             472:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 101(DebugFunctionDefinition) 96 14(main)
              480:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 478 478 12 12
              479:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 476 475(fragPos) 49
              490:         483 Load 487(samplerposition)
              496:   27(fvec2) Load 493(inUV)
              497:   19(fvec4) ImageSampleImplicitLod 490 496
-             498:   73(fvec3) VectorShuffle 497 497 0 1 2
+             498:   74(fvec3) VectorShuffle 497 497 0 1 2
                               Store 475(fragPos) 498
              504:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 502 502 12 12
              503:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 500 499(normal) 49
              508:         483 Load 505(samplerNormal)
              509:   27(fvec2) Load 493(inUV)
              510:   19(fvec4) ImageSampleImplicitLod 508 509
-             511:   73(fvec3) VectorShuffle 510 510 0 1 2
+             511:   74(fvec3) VectorShuffle 510 510 0 1 2
                               Store 499(normal) 511
              517:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 515 515 12 12
              516:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 513 512(albedo) 49
@@ -683,15 +683,15 @@ void main()
                               Store 512(albedo) 523
              527:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 528 528 12 12
              526:    524(ptr) AccessChain 431(ubo) 393
-             529:     96(int) Load 526
-             530:   139(bool) SGreaterThan 529 106
+             529:     98(int) Load 526
+             530:   141(bool) SGreaterThan 529 108
                               SelectionMerge 532 None
                               BranchConditional 530 531 532
              531:               Label
-             534:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 94
+             534:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 96
              535:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 536 536 12 12
              533:    524(ptr)   AccessChain 431(ubo) 393
-             537:     96(int)   Load 533
+             537:     98(int)   Load 533
                                 SelectionMerge 543 None
                                 Switch 537 543 
                                        case 1: 538
@@ -700,12 +700,12 @@ void main()
                                        case 4: 541
                                        case 5: 542
              538:                 Label
-             552:           4     ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 94
+             552:           4     ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 96
              553:           4     ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 549 549 12 12
                                   Store 551(param) 550
-             555:   73(fvec3)     Load 475(fragPos)
+             555:   74(fvec3)     Load 475(fragPos)
                                   Store 554(param) 555
-             556:   73(fvec3)     FunctionCall 81(shadow(vf3;vf3;) 551(param) 554(param)
+             556:   74(fvec3)     FunctionCall 82(shadow(vf3;vf3;) 551(param) 554(param)
              559:    557(ptr)     AccessChain 546(outFragColor) 12
              560:   16(float)     CompositeExtract 556 0
                                   Store 559 560
@@ -718,9 +718,9 @@ void main()
              565:           4     ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 566 566 12 12
                                   Branch 543
              539:                 Label
-             570:           4     ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 94
+             570:           4     ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 96
              571:           4     ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 572 572 12 12
-             569:   73(fvec3)     Load 475(fragPos)
+             569:   74(fvec3)     Load 475(fragPos)
              573:    557(ptr)     AccessChain 546(outFragColor) 12
              574:   16(float)     CompositeExtract 569 0
                                   Store 573 574
@@ -733,9 +733,9 @@ void main()
              579:           4     ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 580 580 12 12
                                   Branch 543
              540:                 Label
-             584:           4     ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 94
+             584:           4     ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 96
              585:           4     ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 586 586 12 12
-             583:   73(fvec3)     Load 499(normal)
+             583:   74(fvec3)     Load 499(normal)
              587:    557(ptr)     AccessChain 546(outFragColor) 12
              588:   16(float)     CompositeExtract 583 0
                                   Store 587 588
@@ -748,10 +748,10 @@ void main()
              593:           4     ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 594 594 12 12
                                   Branch 543
              541:                 Label
-             598:           4     ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 94
+             598:           4     ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 96
              599:           4     ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 600 600 12 12
              597:   19(fvec4)     Load 512(albedo)
-             601:   73(fvec3)     VectorShuffle 597 597 0 1 2
+             601:   74(fvec3)     VectorShuffle 597 597 0 1 2
              602:    557(ptr)     AccessChain 546(outFragColor) 12
              603:   16(float)     CompositeExtract 601 0
                                   Store 602 603
@@ -764,10 +764,10 @@ void main()
              608:           4     ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 609 609 12 12
                                   Branch 543
              542:                 Label
-             613:           4     ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 94
+             613:           4     ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 96
              614:           4     ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 615 615 12 12
              612:   19(fvec4)     Load 512(albedo)
-             616:   73(fvec3)     VectorShuffle 612 612 3 3 3
+             616:   74(fvec3)     VectorShuffle 612 612 3 3 3
              617:    557(ptr)     AccessChain 546(outFragColor) 12
              618:   16(float)     CompositeExtract 616 0
                                   Store 617 618
@@ -780,71 +780,71 @@ void main()
              623:           4     ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 624 624 12 12
                                   Branch 543
              543:               Label
-             629:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 94
+             629:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 96
              630:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 631 631 12 12
              628:    557(ptr)   AccessChain 546(outFragColor) 13
-                                Store 628 115
+                                Store 628 117
              632:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 633 633 12 12
                                 Return
              532:             Label
-             640:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 94
+             640:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 96
              641:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 638 638 12 12
              639:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 637 636(fragcolor) 49
              642:   19(fvec4) Load 512(albedo)
-             643:   73(fvec3) VectorShuffle 642 642 0 1 2
-             645:   73(fvec3) VectorTimesScalar 643 644
+             643:   74(fvec3) VectorShuffle 642 642 0 1 2
+             645:   74(fvec3) VectorTimesScalar 643 644
                               Store 636(fragcolor) 645
              651:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 649 649 12 12
              650:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 647 646(N) 49
-             652:   73(fvec3) Load 499(normal)
-             653:   73(fvec3) ExtInst 3(GLSL.std.450) 69(Normalize) 652
+             652:   74(fvec3) Load 499(normal)
+             653:   74(fvec3) ExtInst 3(GLSL.std.450) 69(Normalize) 652
                               Store 646(N) 653
              658:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 656 656 12 12
              657:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 655 654(i) 49
-                              Store 654(i) 106
+                              Store 654(i) 108
                               Branch 659
              659:             Label
-             663:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 94
+             663:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 96
              664:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 656 656 12 12
                               LoopMerge 661 662 None
                               Branch 665
              665:             Label
-             667:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 94
+             667:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 96
              668:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 656 656 12 12
-             666:     96(int) Load 654(i)
-             669:   139(bool) SLessThan 666 393
+             666:     98(int) Load 654(i)
+             669:   141(bool) SLessThan 666 393
                               BranchConditional 669 660 661
              660:               Label
-             675:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 94
+             675:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 96
              676:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 673 673 12 12
              674:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 671 670(L) 49
-             677:     96(int)   Load 654(i)
-             680:    678(ptr)   AccessChain 431(ubo) 290 677 106
+             677:     98(int)   Load 654(i)
+             680:    678(ptr)   AccessChain 431(ubo) 291 677 108
              681:   19(fvec4)   Load 680
-             682:   73(fvec3)   VectorShuffle 681 681 0 1 2
-             683:   73(fvec3)   Load 475(fragPos)
-             684:   73(fvec3)   FSub 682 683
+             682:   74(fvec3)   VectorShuffle 681 681 0 1 2
+             683:   74(fvec3)   Load 475(fragPos)
+             684:   74(fvec3)   FSub 682 683
                                 Store 670(L) 684
              689:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 687 687 12 12
              688:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 686 685(dist) 49
-             690:   73(fvec3)   Load 670(L)
+             690:   74(fvec3)   Load 670(L)
              691:   16(float)   ExtInst 3(GLSL.std.450) 66(Length) 690
                                 Store 685(dist) 691
              693:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 694 694 12 12
-             692:   73(fvec3)   Load 670(L)
-             695:   73(fvec3)   ExtInst 3(GLSL.std.450) 69(Normalize) 692
+             692:   74(fvec3)   Load 670(L)
+             695:   74(fvec3)   ExtInst 3(GLSL.std.450) 69(Normalize) 692
                                 Store 670(L) 695
              701:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 699 699 12 12
              700:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 697 696(V) 49
-             702:    678(ptr)   AccessChain 431(ubo) 106
+             702:    678(ptr)   AccessChain 431(ubo) 108
              703:   19(fvec4)   Load 702
-             704:   73(fvec3)   VectorShuffle 703 703 0 1 2
-             705:   73(fvec3)   Load 475(fragPos)
-             706:   73(fvec3)   FSub 704 705
+             704:   74(fvec3)   VectorShuffle 703 703 0 1 2
+             705:   74(fvec3)   Load 475(fragPos)
+             706:   74(fvec3)   FSub 704 705
                                 Store 696(V) 706
              708:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 709 709 12 12
-             707:   73(fvec3)   Load 696(V)
-             710:   73(fvec3)   ExtInst 3(GLSL.std.450) 69(Normalize) 707
+             707:   74(fvec3)   Load 696(V)
+             710:   74(fvec3)   ExtInst 3(GLSL.std.450) 69(Normalize) 707
                                 Store 696(V) 710
              716:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 714 714 12 12
              715:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 712 711(lightCosInnerAngle) 49
@@ -857,21 +857,21 @@ void main()
                                 Store 725(lightRange) 731
              737:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 735 735 12 12
              736:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 733 732(dir) 49
-             738:     96(int)   Load 654(i)
-             739:    678(ptr)   AccessChain 431(ubo) 290 738 106
+             738:     98(int)   Load 654(i)
+             739:    678(ptr)   AccessChain 431(ubo) 291 738 108
              740:   19(fvec4)   Load 739
-             741:   73(fvec3)   VectorShuffle 740 740 0 1 2
-             742:     96(int)   Load 654(i)
-             743:    678(ptr)   AccessChain 431(ubo) 290 742 290
+             741:   74(fvec3)   VectorShuffle 740 740 0 1 2
+             742:     98(int)   Load 654(i)
+             743:    678(ptr)   AccessChain 431(ubo) 291 742 291
              744:   19(fvec4)   Load 743
-             745:   73(fvec3)   VectorShuffle 744 744 0 1 2
-             746:   73(fvec3)   FSub 741 745
-             747:   73(fvec3)   ExtInst 3(GLSL.std.450) 69(Normalize) 746
+             745:   74(fvec3)   VectorShuffle 744 744 0 1 2
+             746:   74(fvec3)   FSub 741 745
+             747:   74(fvec3)   ExtInst 3(GLSL.std.450) 69(Normalize) 746
                                 Store 732(dir) 747
              753:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 751 751 12 12
              752:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 749 748(cosDir) 49
-             754:   73(fvec3)   Load 670(L)
-             755:   73(fvec3)   Load 732(dir)
+             754:   74(fvec3)   Load 670(L)
+             755:   74(fvec3)   Load 732(dir)
              756:   16(float)   Dot 754 755
                                 Store 748(cosDir) 756
              762:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 760 760 12 12
@@ -885,33 +885,33 @@ void main()
              771:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 768 767(heightAttenuation) 49
              773:   16(float)   Load 725(lightRange)
              774:   16(float)   Load 685(dist)
-             775:   16(float)   ExtInst 3(GLSL.std.450) 49(SmoothStep) 773 195 774
+             775:   16(float)   ExtInst 3(GLSL.std.450) 49(SmoothStep) 773 197 774
                                 Store 767(heightAttenuation) 775
              781:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 779 779 12 12
              780:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 777 776(NdotL) 49
-             782:   73(fvec3)   Load 646(N)
-             783:   73(fvec3)   Load 670(L)
+             782:   74(fvec3)   Load 646(N)
+             783:   74(fvec3)   Load 670(L)
              784:   16(float)   Dot 782 783
-             785:   16(float)   ExtInst 3(GLSL.std.450) 40(FMax) 195 784
+             785:   16(float)   ExtInst 3(GLSL.std.450) 40(FMax) 197 784
                                 Store 776(NdotL) 785
              791:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 789 789 12 12
              790:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 787 786(diff) 49
              792:   16(float)   Load 776(NdotL)
-             793:   73(fvec3)   CompositeConstruct 792 792 792
+             793:   74(fvec3)   CompositeConstruct 792 792 792
                                 Store 786(diff) 793
              799:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 797 797 12 12
              798:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 795 794(R) 49
-             800:   73(fvec3)   Load 670(L)
-             801:   73(fvec3)   FNegate 800
-             802:   73(fvec3)   Load 646(N)
-             803:   73(fvec3)   ExtInst 3(GLSL.std.450) 71(Reflect) 801 802
+             800:   74(fvec3)   Load 670(L)
+             801:   74(fvec3)   FNegate 800
+             802:   74(fvec3)   Load 646(N)
+             803:   74(fvec3)   ExtInst 3(GLSL.std.450) 71(Reflect) 801 802
                                 Store 794(R) 803
              809:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 807 807 12 12
              808:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 805 804(NdotR) 49
-             810:   73(fvec3)   Load 794(R)
-             811:   73(fvec3)   Load 696(V)
+             810:   74(fvec3)   Load 794(R)
+             811:   74(fvec3)   Load 696(V)
              812:   16(float)   Dot 810 811
-             813:   16(float)   ExtInst 3(GLSL.std.450) 40(FMax) 195 812
+             813:   16(float)   ExtInst 3(GLSL.std.450) 40(FMax) 197 812
                                 Store 804(NdotR) 813
              819:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 817 817 12 12
              818:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 815 814(spec) 49
@@ -921,61 +921,61 @@ void main()
              824:   16(float)   Load 823
              825:   16(float)   FMul 822 824
              827:   16(float)   FMul 825 826
-             828:   73(fvec3)   CompositeConstruct 827 827 827
+             828:   74(fvec3)   CompositeConstruct 827 827 827
                                 Store 814(spec) 828
              830:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 831 831 12 12
-             829:   73(fvec3)   Load 786(diff)
-             832:   73(fvec3)   Load 814(spec)
-             833:   73(fvec3)   FAdd 829 832
+             829:   74(fvec3)   Load 786(diff)
+             832:   74(fvec3)   Load 814(spec)
+             833:   74(fvec3)   FAdd 829 832
              834:   16(float)   Load 757(spotEffect)
-             835:   73(fvec3)   VectorTimesScalar 833 834
+             835:   74(fvec3)   VectorTimesScalar 833 834
              836:   16(float)   Load 767(heightAttenuation)
-             837:   73(fvec3)   VectorTimesScalar 835 836
-             838:     96(int)   Load 654(i)
-             840:    678(ptr)   AccessChain 431(ubo) 290 838 839
+             837:   74(fvec3)   VectorTimesScalar 835 836
+             838:     98(int)   Load 654(i)
+             840:    678(ptr)   AccessChain 431(ubo) 291 838 839
              841:   19(fvec4)   Load 840
-             842:   73(fvec3)   VectorShuffle 841 841 0 1 2
-             843:   73(fvec3)   FMul 837 842
+             842:   74(fvec3)   VectorShuffle 841 841 0 1 2
+             843:   74(fvec3)   FMul 837 842
              844:   19(fvec4)   Load 512(albedo)
-             845:   73(fvec3)   VectorShuffle 844 844 0 1 2
-             846:   73(fvec3)   FMul 843 845
-             847:   73(fvec3)   Load 636(fragcolor)
-             848:   73(fvec3)   FAdd 847 846
+             845:   74(fvec3)   VectorShuffle 844 844 0 1 2
+             846:   74(fvec3)   FMul 843 845
+             847:   74(fvec3)   Load 636(fragcolor)
+             848:   74(fvec3)   FAdd 847 846
                                 Store 636(fragcolor) 848
                                 Branch 662
              662:               Label
-             850:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 94
+             850:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 96
              851:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 656 656 12 12
-             849:     96(int)   Load 654(i)
-             852:     96(int)   IAdd 849 290
+             849:     98(int)   Load 654(i)
+             852:     98(int)   IAdd 849 291
                                 Store 654(i) 852
                                 Branch 659
              661:             Label
-             854:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 94
+             854:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 96
              855:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 856 856 12 12
              853:    524(ptr) AccessChain 431(ubo) 839
-             857:     96(int) Load 853
-             858:   139(bool) SGreaterThan 857 106
+             857:     98(int) Load 853
+             858:   141(bool) SGreaterThan 857 108
                               SelectionMerge 860 None
                               BranchConditional 858 859 860
              859:               Label
-             863:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 94
+             863:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 96
              864:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 865 865 12 12
-             862:   73(fvec3)   Load 636(fragcolor)
+             862:   74(fvec3)   Load 636(fragcolor)
                                 Store 861(param) 862
-             867:   73(fvec3)   Load 475(fragPos)
+             867:   74(fvec3)   Load 475(fragPos)
                                 Store 866(param) 867
-             868:   73(fvec3)   FunctionCall 81(shadow(vf3;vf3;) 861(param) 866(param)
+             868:   74(fvec3)   FunctionCall 82(shadow(vf3;vf3;) 861(param) 866(param)
                                 Store 636(fragcolor) 868
                                 Branch 860
              860:             Label
-             870:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 94
+             870:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 96
              871:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 872 872 12 12
-             869:   73(fvec3) Load 636(fragcolor)
+             869:   74(fvec3) Load 636(fragcolor)
              873:   16(float) CompositeExtract 869 0
              874:   16(float) CompositeExtract 869 1
              875:   16(float) CompositeExtract 869 2
-             876:   19(fvec4) CompositeConstruct 873 874 875 115
+             876:   19(fvec4) CompositeConstruct 873 874 875 117
                               Store 546(outFragColor) 876
                               Return
                               FunctionEnd
@@ -984,299 +984,299 @@ void main()
        35(layer):     25(ptr) FunctionParameter
       36(offset):     30(ptr) FunctionParameter
               38:             Label
-     110(shadow):     25(ptr) Variable Function
-116(shadowCoord):     22(ptr) Variable Function
-       159(dist):     25(ptr) Variable Function
+     112(shadow):     25(ptr) Variable Function
+118(shadowCoord):     22(ptr) Variable Function
+       161(dist):     25(ptr) Variable Function
               50:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 40
               51:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 43 43 12 12
               48:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 46 34(P) 49
               54:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 52 35(layer) 49
               57:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 55 36(offset) 49
-             109:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 101(DebugFunctionDefinition) 40 37(textureProj(vf4;f1;vf2;)
-             114:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 112 112 12 12
-             113:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 111 110(shadow) 49
-                              Store 110(shadow) 115
-             121:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 119 119 12 12
-             120:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 117 116(shadowCoord) 49
-             122:   19(fvec4) Load 34(P)
-             123:     25(ptr) AccessChain 34(P) 13
-             124:   16(float) Load 123
-             125:   19(fvec4) CompositeConstruct 124 124 124 124
-             126:   19(fvec4) FDiv 122 125
-                              Store 116(shadowCoord) 126
-             128:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 129 129 12 12
-             127:   19(fvec4) Load 116(shadowCoord)
-             130:   27(fvec2) VectorShuffle 127 127 0 1
-             132:   27(fvec2) VectorTimesScalar 130 131
-             133:   27(fvec2) CompositeConstruct 131 131
-             134:   27(fvec2) FAdd 132 133
-             135:     25(ptr) AccessChain 116(shadowCoord) 12
-             136:   16(float) CompositeExtract 134 0
-                              Store 135 136
-             137:     25(ptr) AccessChain 116(shadowCoord) 45
-             138:   16(float) CompositeExtract 134 1
+             111:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 101(DebugFunctionDefinition) 40 37(textureProj(vf4;f1;vf2;)
+             116:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 114 114 12 12
+             115:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 113 112(shadow) 49
+                              Store 112(shadow) 117
+             123:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 121 121 12 12
+             122:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 119 118(shadowCoord) 49
+             124:   19(fvec4) Load 34(P)
+             125:     25(ptr) AccessChain 34(P) 13
+             126:   16(float) Load 125
+             127:   19(fvec4) CompositeConstruct 126 126 126 126
+             128:   19(fvec4) FDiv 124 127
+                              Store 118(shadowCoord) 128
+             130:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 131 131 12 12
+             129:   19(fvec4) Load 118(shadowCoord)
+             132:   27(fvec2) VectorShuffle 129 129 0 1
+             134:   27(fvec2) VectorTimesScalar 132 133
+             135:   27(fvec2) CompositeConstruct 133 133
+             136:   27(fvec2) FAdd 134 135
+             137:     25(ptr) AccessChain 118(shadowCoord) 12
+             138:   16(float) CompositeExtract 136 0
                               Store 137 138
-             143:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 144 144 12 12
-             142:     25(ptr) AccessChain 116(shadowCoord) 28
-             145:   16(float) Load 142
-             147:   139(bool) FOrdGreaterThan 145 146
-                              SelectionMerge 149 None
-                              BranchConditional 147 148 149
-             148:               Label
-             151:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 40
-             152:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 144 144 12 12
-             150:     25(ptr)   AccessChain 116(shadowCoord) 28
-             153:   16(float)   Load 150
-             154:   139(bool)   FOrdLessThan 153 115
-                                Branch 149
-             149:             Label
-             156:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 40
-             155:   139(bool) Phi 147 38 154 148
-                              SelectionMerge 158 None
-                              BranchConditional 155 157 158
-             157:               Label
-             164:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 40
-             165:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 162 162 12 12
-             163:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 160 159(dist) 49
-             180:         171   Load 177(samplerShadowMap)
-             181:   19(fvec4)   Load 116(shadowCoord)
-             182:   27(fvec2)   VectorShuffle 181 181 0 1
-             183:   27(fvec2)   Load 36(offset)
-             184:   27(fvec2)   FAdd 182 183
-             185:   16(float)   Load 35(layer)
-             186:   16(float)   CompositeExtract 184 0
-             187:   16(float)   CompositeExtract 184 1
-             188:   73(fvec3)   CompositeConstruct 186 187 185
-             189:   19(fvec4)   ImageSampleImplicitLod 180 188
-             190:   16(float)   CompositeExtract 189 0
-                                Store 159(dist) 190
-             192:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 193 193 12 12
-             191:     25(ptr)   AccessChain 116(shadowCoord) 13
-             194:   16(float)   Load 191
-             196:   139(bool)   FOrdGreaterThan 194 195
-                                SelectionMerge 198 None
-                                BranchConditional 196 197 198
-             197:                 Label
-             200:           4     ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 40
-             201:           4     ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 193 193 12 12
-             199:   16(float)     Load 159(dist)
-             202:     25(ptr)     AccessChain 116(shadowCoord) 28
-             203:   16(float)     Load 202
-             204:   139(bool)     FOrdLessThan 199 203
-                                  Branch 198
-             198:               Label
-             206:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 40
-             205:   139(bool)   Phi 196 157 204 197
-                                SelectionMerge 208 None
-                                BranchConditional 205 207 208
-             207:                 Label
-             210:           4     ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 40
-             211:           4     ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 212 212 12 12
-                                  Store 110(shadow) 209
-                                  Branch 208
-             208:               Label
-             213:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 40
-                                Branch 158
-             158:             Label
-             215:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 40
-             216:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 217 217 12 12
-             214:   16(float) Load 110(shadow)
-                              ReturnValue 214
+             139:     25(ptr) AccessChain 118(shadowCoord) 45
+             140:   16(float) CompositeExtract 136 1
+                              Store 139 140
+             145:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 146 146 12 12
+             144:     25(ptr) AccessChain 118(shadowCoord) 28
+             147:   16(float) Load 144
+             149:   141(bool) FOrdGreaterThan 147 148
+                              SelectionMerge 151 None
+                              BranchConditional 149 150 151
+             150:               Label
+             153:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 40
+             154:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 146 146 12 12
+             152:     25(ptr)   AccessChain 118(shadowCoord) 28
+             155:   16(float)   Load 152
+             156:   141(bool)   FOrdLessThan 155 117
+                                Branch 151
+             151:             Label
+             158:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 40
+             157:   141(bool) Phi 149 38 156 150
+                              SelectionMerge 160 None
+                              BranchConditional 157 159 160
+             159:               Label
+             166:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 40
+             167:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 164 164 12 12
+             165:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 162 161(dist) 49
+             182:         173   Load 179(samplerShadowMap)
+             183:   19(fvec4)   Load 118(shadowCoord)
+             184:   27(fvec2)   VectorShuffle 183 183 0 1
+             185:   27(fvec2)   Load 36(offset)
+             186:   27(fvec2)   FAdd 184 185
+             187:   16(float)   Load 35(layer)
+             188:   16(float)   CompositeExtract 186 0
+             189:   16(float)   CompositeExtract 186 1
+             190:   74(fvec3)   CompositeConstruct 188 189 187
+             191:   19(fvec4)   ImageSampleImplicitLod 182 190
+             192:   16(float)   CompositeExtract 191 0
+                                Store 161(dist) 192
+             194:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 195 195 12 12
+             193:     25(ptr)   AccessChain 118(shadowCoord) 13
+             196:   16(float)   Load 193
+             198:   141(bool)   FOrdGreaterThan 196 197
+                                SelectionMerge 200 None
+                                BranchConditional 198 199 200
+             199:                 Label
+             202:           4     ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 40
+             203:           4     ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 195 195 12 12
+             201:   16(float)     Load 161(dist)
+             204:     25(ptr)     AccessChain 118(shadowCoord) 28
+             205:   16(float)     Load 204
+             206:   141(bool)     FOrdLessThan 201 205
+                                  Branch 200
+             200:               Label
+             208:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 40
+             207:   141(bool)   Phi 198 159 206 199
+                                SelectionMerge 210 None
+                                BranchConditional 207 209 210
+             209:                 Label
+             212:           4     ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 40
+             213:           4     ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 214 214 12 12
+                                  Store 112(shadow) 211
+                                  Branch 210
+             210:               Label
+             215:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 40
+                                Branch 160
+             160:             Label
+             217:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 40
+             218:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 219 219 12 12
+             216:   16(float) Load 112(shadow)
+                              ReturnValue 216
                               FunctionEnd
 62(filterPCF(vf4;f1;):   16(float) Function None 58
           60(sc):     22(ptr) FunctionParameter
        61(layer):     25(ptr) FunctionParameter
               63:             Label
-     227(texDim):    225(ptr) Variable Function
-      239(scale):     25(ptr) Variable Function
-         246(dx):     25(ptr) Variable Function
-         260(dy):     25(ptr) Variable Function
-272(shadowFactor):     25(ptr) Variable Function
-      278(count):    254(ptr) Variable Function
-      284(range):    254(ptr) Variable Function
-          291(x):    254(ptr) Variable Function
-          311(y):    254(ptr) Variable Function
-      344(param):     22(ptr) Variable Function
-      346(param):     25(ptr) Variable Function
-      348(param):     30(ptr) Variable Function
+     228(texDim):    226(ptr) Variable Function
+      240(scale):     25(ptr) Variable Function
+         247(dx):     25(ptr) Variable Function
+         261(dy):     25(ptr) Variable Function
+273(shadowFactor):     25(ptr) Variable Function
+      279(count):    255(ptr) Variable Function
+      285(range):    255(ptr) Variable Function
+          292(x):    255(ptr) Variable Function
+          312(y):    255(ptr) Variable Function
+      345(param):     22(ptr) Variable Function
+      347(param):     25(ptr) Variable Function
+      349(param):     30(ptr) Variable Function
               70:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 65
+              71:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 66 66 12 12
               69:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 67 60(sc) 49
-              72:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 71 61(layer) 49
-             222:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 66 66 12 12
-             221:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 101(DebugFunctionDefinition) 65 62(filterPCF(vf4;f1;)
-             232:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 230 230 12 12
-             231:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 228 227(texDim) 49
-             233:         171 Load 177(samplerShadowMap)
-             234:         166 Image 233
-             237:  235(ivec3) ImageQuerySizeLod 234 106
-             238:  223(ivec2) VectorShuffle 237 237 0 1
-                              Store 227(texDim) 238
-             244:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 242 242 12 12
-             243:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 240 239(scale) 49
-                              Store 239(scale) 245
-             251:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 249 249 12 12
-             250:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 247 246(dx) 49
-             252:   16(float) Load 239(scale)
-             253:   16(float) FMul 252 115
-             256:    254(ptr) AccessChain 227(texDim) 12
-             257:     96(int) Load 256
-             258:   16(float) ConvertSToF 257
-             259:   16(float) FDiv 253 258
-                              Store 246(dx) 259
-             265:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 263 263 12 12
-             264:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 261 260(dy) 49
-             266:   16(float) Load 239(scale)
-             267:   16(float) FMul 266 115
-             268:    254(ptr) AccessChain 227(texDim) 45
-             269:     96(int) Load 268
-             270:   16(float) ConvertSToF 269
-             271:   16(float) FDiv 267 270
-                              Store 260(dy) 271
-             277:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 275 275 12 12
-             276:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 273 272(shadowFactor) 49
-                              Store 272(shadowFactor) 195
-             283:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 281 281 12 12
-             282:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 279 278(count) 49
-                              Store 278(count) 106
-             289:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 287 287 12 12
-             288:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 285 284(range) 49
-                              Store 284(range) 290
-             296:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 294 294 12 12
-             295:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 292 291(x) 49
-             297:     96(int) Load 284(range)
-             298:     96(int) SNegate 297
-                              Store 291(x) 298
-                              Branch 299
-             299:             Label
-             303:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 65
-             304:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 294 294 12 12
-                              LoopMerge 301 302 None
-                              Branch 305
-             305:             Label
-             307:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 65
-             308:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 294 294 12 12
-             306:     96(int) Load 291(x)
-             309:     96(int) Load 284(range)
-             310:   139(bool) SLessThanEqual 306 309
-                              BranchConditional 310 300 301
-             300:               Label
-             316:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 65
-             317:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 314 314 12 12
-             315:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 312 311(y) 49
-             318:     96(int)   Load 284(range)
-             319:     96(int)   SNegate 318
-                                Store 311(y) 319
-                                Branch 320
-             320:               Label
-             324:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 65
-             325:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 314 314 12 12
-                                LoopMerge 322 323 None
-                                Branch 326
-             326:               Label
-             328:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 65
-             329:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 314 314 12 12
-             327:     96(int)   Load 311(y)
-             330:     96(int)   Load 284(range)
-             331:   139(bool)   SLessThanEqual 327 330
-                                BranchConditional 331 321 322
-             321:                 Label
-             333:           4     ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 65
-             334:           4     ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 335 335 12 12
-             332:   16(float)     Load 246(dx)
-             336:     96(int)     Load 291(x)
-             337:   16(float)     ConvertSToF 336
-             338:   16(float)     FMul 332 337
-             339:   16(float)     Load 260(dy)
-             340:     96(int)     Load 311(y)
-             341:   16(float)     ConvertSToF 340
-             342:   16(float)     FMul 339 341
-             343:   27(fvec2)     CompositeConstruct 338 342
-             345:   19(fvec4)     Load 60(sc)
-                                  Store 344(param) 345
-             347:   16(float)     Load 61(layer)
-                                  Store 346(param) 347
-                                  Store 348(param) 343
-             349:   16(float)     FunctionCall 37(textureProj(vf4;f1;vf2;) 344(param) 346(param) 348(param)
-             350:   16(float)     Load 272(shadowFactor)
-             351:   16(float)     FAdd 350 349
-                                  Store 272(shadowFactor) 351
-             353:           4     ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 354 354 12 12
-             352:     96(int)     Load 278(count)
-             355:     96(int)     IAdd 352 290
-                                  Store 278(count) 355
-                                  Branch 323
-             323:                 Label
-             357:           4     ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 65
-             358:           4     ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 314 314 12 12
-             356:     96(int)     Load 311(y)
-             359:     96(int)     IAdd 356 290
-                                  Store 311(y) 359
-                                  Branch 320
-             322:               Label
-             360:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 65
-                                Branch 302
-             302:               Label
-             362:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 65
-             363:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 294 294 12 12
-             361:     96(int)   Load 291(x)
-             364:     96(int)   IAdd 361 290
-                                Store 291(x) 364
-                                Branch 299
-             301:             Label
-             366:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 65
-             367:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 368 368 12 12
-             365:   16(float) Load 272(shadowFactor)
-             369:     96(int) Load 278(count)
-             370:   16(float) ConvertSToF 369
-             371:   16(float) FDiv 365 370
-                              ReturnValue 371
+              73:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 72 61(layer) 49
+             223:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 101(DebugFunctionDefinition) 65 62(filterPCF(vf4;f1;)
+             233:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 231 231 12 12
+             232:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 229 228(texDim) 49
+             234:         173 Load 179(samplerShadowMap)
+             235:         168 Image 234
+             238:  236(ivec3) ImageQuerySizeLod 235 108
+             239:  224(ivec2) VectorShuffle 238 238 0 1
+                              Store 228(texDim) 239
+             245:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 243 243 12 12
+             244:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 241 240(scale) 49
+                              Store 240(scale) 246
+             252:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 250 250 12 12
+             251:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 248 247(dx) 49
+             253:   16(float) Load 240(scale)
+             254:   16(float) FMul 253 117
+             257:    255(ptr) AccessChain 228(texDim) 12
+             258:     98(int) Load 257
+             259:   16(float) ConvertSToF 258
+             260:   16(float) FDiv 254 259
+                              Store 247(dx) 260
+             266:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 264 264 12 12
+             265:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 262 261(dy) 49
+             267:   16(float) Load 240(scale)
+             268:   16(float) FMul 267 117
+             269:    255(ptr) AccessChain 228(texDim) 45
+             270:     98(int) Load 269
+             271:   16(float) ConvertSToF 270
+             272:   16(float) FDiv 268 271
+                              Store 261(dy) 272
+             278:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 276 276 12 12
+             277:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 274 273(shadowFactor) 49
+                              Store 273(shadowFactor) 197
+             284:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 282 282 12 12
+             283:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 280 279(count) 49
+                              Store 279(count) 108
+             290:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 288 288 12 12
+             289:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 286 285(range) 49
+                              Store 285(range) 291
+             297:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 295 295 12 12
+             296:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 293 292(x) 49
+             298:     98(int) Load 285(range)
+             299:     98(int) SNegate 298
+                              Store 292(x) 299
+                              Branch 300
+             300:             Label
+             304:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 65
+             305:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 295 295 12 12
+                              LoopMerge 302 303 None
+                              Branch 306
+             306:             Label
+             308:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 65
+             309:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 295 295 12 12
+             307:     98(int) Load 292(x)
+             310:     98(int) Load 285(range)
+             311:   141(bool) SLessThanEqual 307 310
+                              BranchConditional 311 301 302
+             301:               Label
+             317:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 65
+             318:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 315 315 12 12
+             316:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 313 312(y) 49
+             319:     98(int)   Load 285(range)
+             320:     98(int)   SNegate 319
+                                Store 312(y) 320
+                                Branch 321
+             321:               Label
+             325:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 65
+             326:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 315 315 12 12
+                                LoopMerge 323 324 None
+                                Branch 327
+             327:               Label
+             329:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 65
+             330:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 315 315 12 12
+             328:     98(int)   Load 312(y)
+             331:     98(int)   Load 285(range)
+             332:   141(bool)   SLessThanEqual 328 331
+                                BranchConditional 332 322 323
+             322:                 Label
+             334:           4     ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 65
+             335:           4     ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 336 336 12 12
+             333:   16(float)     Load 247(dx)
+             337:     98(int)     Load 292(x)
+             338:   16(float)     ConvertSToF 337
+             339:   16(float)     FMul 333 338
+             340:   16(float)     Load 261(dy)
+             341:     98(int)     Load 312(y)
+             342:   16(float)     ConvertSToF 341
+             343:   16(float)     FMul 340 342
+             344:   27(fvec2)     CompositeConstruct 339 343
+             346:   19(fvec4)     Load 60(sc)
+                                  Store 345(param) 346
+             348:   16(float)     Load 61(layer)
+                                  Store 347(param) 348
+                                  Store 349(param) 344
+             350:   16(float)     FunctionCall 37(textureProj(vf4;f1;vf2;) 345(param) 347(param) 349(param)
+             351:   16(float)     Load 273(shadowFactor)
+             352:   16(float)     FAdd 351 350
+                                  Store 273(shadowFactor) 352
+             354:           4     ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 355 355 12 12
+             353:     98(int)     Load 279(count)
+             356:     98(int)     IAdd 353 291
+                                  Store 279(count) 356
+                                  Branch 324
+             324:                 Label
+             358:           4     ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 65
+             359:           4     ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 315 315 12 12
+             357:     98(int)     Load 312(y)
+             360:     98(int)     IAdd 357 291
+                                  Store 312(y) 360
+                                  Branch 321
+             323:               Label
+             361:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 65
+                                Branch 303
+             303:               Label
+             363:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 65
+             364:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 295 295 12 12
+             362:     98(int)   Load 292(x)
+             365:     98(int)   IAdd 362 291
+                                Store 292(x) 365
+                                Branch 300
+             302:             Label
+             367:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 65
+             368:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 369 369 12 12
+             366:   16(float) Load 273(shadowFactor)
+             370:     98(int) Load 279(count)
+             371:   16(float) ConvertSToF 370
+             372:   16(float) FDiv 366 371
+                              ReturnValue 372
                               FunctionEnd
-81(shadow(vf3;vf3;):   73(fvec3) Function None 77
-   79(fragcolor):     75(ptr) FunctionParameter
-     80(fragpos):     75(ptr) FunctionParameter
-              82:             Label
-          377(i):    254(ptr) Variable Function
+82(shadow(vf3;vf3;):   74(fvec3) Function None 78
+   80(fragcolor):     76(ptr) FunctionParameter
+     81(fragpos):     76(ptr) FunctionParameter
+              83:             Label
+          377(i):    255(ptr) Variable Function
  395(shadowClip):     22(ptr) Variable Function
 445(shadowFactor):     25(ptr) Variable Function
       452(param):     22(ptr) Variable Function
       454(param):     25(ptr) Variable Function
-              89:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 84
-              88:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 86 79(fragcolor) 49
-              92:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 90 80(fragpos) 49
-             376:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 85 85 12 12
-             375:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 101(DebugFunctionDefinition) 84 81(shadow(vf3;vf3;)
+              90:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 85
+              91:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 86 86 12 12
+              89:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 87 80(fragcolor) 49
+              94:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 92 81(fragpos) 49
+             376:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 101(DebugFunctionDefinition) 85 82(shadow(vf3;vf3;)
              382:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 380 380 12 12
              381:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 378 377(i) 49
-                              Store 377(i) 106
+                              Store 377(i) 108
                               Branch 383
              383:             Label
-             387:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 84
+             387:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 85
              388:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 380 380 12 12
                               LoopMerge 385 386 None
                               Branch 389
              389:             Label
-             391:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 84
+             391:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 85
              392:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 380 380 12 12
-             390:     96(int) Load 377(i)
-             394:   139(bool) SLessThan 390 393
+             390:     98(int) Load 377(i)
+             394:   141(bool) SLessThan 390 393
                               BranchConditional 394 384 385
              384:               Label
-             400:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 84
+             400:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 85
              401:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 398 398 12 12
              399:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 396 395(shadowClip) 49
-             434:     96(int)   Load 377(i)
-             437:    435(ptr)   AccessChain 431(ubo) 290 434 393
+             434:     98(int)   Load 377(i)
+             437:    435(ptr)   AccessChain 431(ubo) 291 434 393
              438:         402   Load 437
-             439:   73(fvec3)   Load 80(fragpos)
+             439:   74(fvec3)   Load 81(fragpos)
              440:   16(float)   CompositeExtract 439 0
              441:   16(float)   CompositeExtract 439 1
              442:   16(float)   CompositeExtract 439 2
-             443:   19(fvec4)   CompositeConstruct 440 441 442 115
+             443:   19(fvec4)   CompositeConstruct 440 441 442 117
              444:   19(fvec4)   MatrixTimesVector 438 443
                                 Store 395(shadowClip) 444
              449:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 447 447 12 12
              448:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 446 445(shadowFactor) 49
-             450:     96(int)   Load 377(i)
+             450:     98(int)   Load 377(i)
              451:   16(float)   ConvertSToF 450
              453:   19(fvec4)   Load 395(shadowClip)
                                 Store 452(param) 453
@@ -1285,20 +1285,20 @@ void main()
                                 Store 445(shadowFactor) 455
              457:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 458 458 12 12
              456:   16(float)   Load 445(shadowFactor)
-             459:   73(fvec3)   Load 79(fragcolor)
-             460:   73(fvec3)   VectorTimesScalar 459 456
-                                Store 79(fragcolor) 460
+             459:   74(fvec3)   Load 80(fragcolor)
+             460:   74(fvec3)   VectorTimesScalar 459 456
+                                Store 80(fragcolor) 460
                                 Branch 386
              386:               Label
-             462:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 84
+             462:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 85
              463:           4   ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 380 380 12 12
-             461:     96(int)   Load 377(i)
-             464:     96(int)   IAdd 461 290
+             461:     98(int)   Load 377(i)
+             464:     98(int)   IAdd 461 291
                                 Store 377(i) 464
                                 Branch 383
              385:             Label
-             466:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 84
+             466:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 85
              467:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 41 468 468 12 12
-             465:   73(fvec3) Load 79(fragcolor)
+             465:   74(fvec3) Load 80(fragcolor)
                               ReturnValue 465
                               FunctionEnd
