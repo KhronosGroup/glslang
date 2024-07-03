@@ -1719,6 +1719,9 @@ public:
     void setSpirvInstruction(const TSpirvInstruction& inst) { spirvInst = inst; }
     const TSpirvInstruction& getSpirvInstruction() const { return spirvInst; }
 
+    void setEndLoc(TSourceLoc loc) { endLoc = loc; }
+    TSourceLoc getEndLoc() const { return endLoc; }
+
     void setLinkType(TLinkType l) { linkType = l; }
     TLinkType getLinkType() const { return linkType; }
 protected:
@@ -1733,6 +1736,10 @@ protected:
     TPragmaTable* pragmaTable;
     TSpirvInstruction spirvInst;
     TLinkType linkType = ELinkNone;
+
+    // Marking the end source location of the aggregate.
+    // This is currently only set for a compound statement or a function body, pointing to '}'.
+    TSourceLoc endLoc;
 };
 
 //
