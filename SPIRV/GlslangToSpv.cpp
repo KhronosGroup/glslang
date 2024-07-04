@@ -5210,17 +5210,17 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
         {
             const glslang::TSampler& sampler = type.getSampler();
             if (sampler.isPureSampler()) {
-                spvType = builder.makeSamplerType();
+                spvType = builder.makeSamplerType(sampler.getString().c_str());
             } else {
                 // an image is present, make its type
                 spvType = builder.makeImageType(getSampledType(sampler), TranslateDimensionality(sampler),
                                                 sampler.isShadow(), sampler.isArrayed(), sampler.isMultiSample(),
-                                                sampler.isImageClass() ? 2 : 1, TranslateImageFormat(type));
+                                                sampler.isImageClass() ? 2 : 1, TranslateImageFormat(type), sampler.removeCombined().getString().c_str());
                 if (sampler.isCombined() &&
                     (!sampler.isBuffer() || glslangIntermediate->getSpv().spv < glslang::EShTargetSpv_1_6)) {
                     // Already has both image and sampler, make the combined type. Only combine sampler to
                     // buffer if before SPIR-V 1.6.
-                    spvType = builder.makeSampledImageType(spvType);
+                    spvType = builder.makeSampledImageType(spvType, sampler.getString().c_str());
                 }
             }
         }
