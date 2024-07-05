@@ -42,6 +42,7 @@ set -x # Display commands being run.
 using cmake-3.17.2
 using gcc-9
 using ninja-1.10.0
+using python-3.12
 
 echo "Building..."
 mkdir /build && cd /build
