@@ -101,7 +101,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                os: [{genus: macos-11, family: osx}]
+                os: [{genus: macos-12, family: osx}]
                 compiler: [{cc: clang, cxx: clang++}]
                 cmake_build_type: [Debug, Release]
         steps:
