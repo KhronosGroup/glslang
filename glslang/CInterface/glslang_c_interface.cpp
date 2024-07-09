@@ -206,6 +206,7 @@ static int c_shader_messages(glslang_messages_t messages)
     CONVERT_MSG(GLSLANG_MSG_HLSL_DX9_COMPATIBLE_BIT, EShMsgHlslDX9Compatible);
     CONVERT_MSG(GLSLANG_MSG_BUILTIN_SYMBOL_TABLE_BIT, EShMsgBuiltinSymbolTable);
     CONVERT_MSG(GLSLANG_MSG_ABSOLUTE_PATH, EShMsgAbsolutePath);
+    CONVERT_MSG(GLSLANG_MSG_DISPLAY_ERROR_COLUMN, EShMsgDisplayErrorColumn);
     return res;
 #undef CONVERT_MSG
 }
