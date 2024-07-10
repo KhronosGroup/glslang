@@ -2121,6 +2121,8 @@ bool TProgram::buildReflection(int opts)
     if (! linked || reflection != nullptr)
         return false;
 
+    SetThreadPoolAllocator(pool);
+
     int firstStage = EShLangVertex, lastStage = EShLangFragment;
 
     if (opts & EShReflectionIntermediateIO) {
@@ -2176,6 +2178,9 @@ bool TProgram::mapIO(TIoMapResolver* pResolver, TIoMapper* pIoMapper)
 {
     if (! linked)
         return false;
+
+    SetThreadPoolAllocator(pool);
+
     TIoMapper* ioMapper = nullptr;
     TIoMapper defaultIOMapper;
     if (pIoMapper == nullptr)
