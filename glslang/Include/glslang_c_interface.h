@@ -40,6 +40,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 typedef struct glslang_shader_s glslang_shader_t;
 typedef struct glslang_program_s glslang_program_t;
+typedef struct glslang_mapper_s glslang_mapper_t;
+typedef struct glslang_resolver_s glslang_resolver_t;
 
 /* Version counterpart */
 typedef struct glslang_version_s {
@@ -285,6 +287,7 @@ GLSLANG_EXPORT int glslang_program_link(glslang_program_t* program, int messages
 GLSLANG_EXPORT void glslang_program_add_source_text(glslang_program_t* program, glslang_stage_t stage, const char* text, size_t len);
 GLSLANG_EXPORT void glslang_program_set_source_file(glslang_program_t* program, glslang_stage_t stage, const char* file);
 GLSLANG_EXPORT int glslang_program_map_io(glslang_program_t* program);
+GLSLANG_EXPORT int glslang_program_map_io_with_resolver_and_mapper(glslang_program_t* program, glslang_resolver_t* resolver, glslang_mapper_t* mapper);
 GLSLANG_EXPORT void glslang_program_SPIRV_generate(glslang_program_t* program, glslang_stage_t stage);
 GLSLANG_EXPORT void glslang_program_SPIRV_generate_with_options(glslang_program_t* program, glslang_stage_t stage, glslang_spv_options_t* spv_options);
 GLSLANG_EXPORT size_t glslang_program_SPIRV_get_size(glslang_program_t* program);
@@ -293,6 +296,12 @@ GLSLANG_EXPORT unsigned int* glslang_program_SPIRV_get_ptr(glslang_program_t* pr
 GLSLANG_EXPORT const char* glslang_program_SPIRV_get_messages(glslang_program_t* program);
 GLSLANG_EXPORT const char* glslang_program_get_info_log(glslang_program_t* program);
 GLSLANG_EXPORT const char* glslang_program_get_info_debug_log(glslang_program_t* program);
+
+GLSLANG_EXPORT glslang_mapper_t* glslang_glsl_mapper_create();
+GLSLANG_EXPORT void glslang_glsl_mapper_delete(glslang_mapper_t* mapper);
+
+GLSLANG_EXPORT glslang_resolver_t* glslang_glsl_resolver_create(glslang_program_t* program, glslang_stage_t stage);
+GLSLANG_EXPORT void glslang_glsl_resolver_delete(glslang_resolver_t* resolver);
 
 #ifdef __cplusplus
 }
