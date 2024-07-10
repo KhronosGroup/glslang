@@ -274,6 +274,7 @@ GLSLANG_EXPORT void glslang_shader_set_default_uniform_block_name(glslang_shader
 GLSLANG_EXPORT int glslang_shader_preprocess(glslang_shader_t* shader, const glslang_input_t* input);
 GLSLANG_EXPORT int glslang_shader_parse(glslang_shader_t* shader, const glslang_input_t* input);
 GLSLANG_EXPORT const char* glslang_shader_get_preprocessed_code(glslang_shader_t* shader);
+GLSLANG_EXPORT void glslang_shader_set_preprocessed_code(glslang_shader_t* shader, const char* code);
 GLSLANG_EXPORT const char* glslang_shader_get_info_log(glslang_shader_t* shader);
 GLSLANG_EXPORT const char* glslang_shader_get_info_debug_log(glslang_shader_t* shader);
 

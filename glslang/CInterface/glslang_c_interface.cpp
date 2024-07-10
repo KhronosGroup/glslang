@@ -391,6 +391,11 @@ GLSLANG_EXPORT const char* glslang_shader_get_preprocessed_code(glslang_shader_t
     return shader->preprocessedGLSL.c_str();
 }
 
+GLSLANG_EXPORT void glslang_shader_set_preprocessed_code(glslang_shader_t* shader, const char* code)
+{
+    shader->preprocessedGLSL.assign(code);
+}
+
 GLSLANG_EXPORT int glslang_shader_preprocess(glslang_shader_t* shader, const glslang_input_t* input)
 {
     DirStackFileIncluder dirStackFileIncluder;
