@@ -38,6 +38,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "glslang/Include/ShHandle.h"
 
 #include "glslang/Include/ResourceLimits.h"
+#include "glslang/MachineIndependent/iomapper.h"
 #include "glslang/MachineIndependent/Versions.h"
 #include "glslang/MachineIndependent/localintermediate.h"
 
@@ -482,6 +483,11 @@ GLSLANG_EXPORT int glslang_program_map_io(glslang_program_t* program)
     return (int)program->program->mapIO();
 }
 
+GLSLANG_EXPORT int glslang_program_map_io_with_resolver_and_mapper(glslang_program_t* program, glslang_resolver_t* resolver, glslang_mapper_t* mapper)
+{
+    return (int)program->program->mapIO(reinterpret_cast<glslang::TDefaultGlslIoResolver*>(resolver), reinterpret_cast<glslang::TGlslIoMapper*>(mapper));
+}
+
 GLSLANG_EXPORT const char* glslang_program_get_info_log(glslang_program_t* program)
 {
     return program->program->getInfoLog();
@@ -490,4 +496,31 @@ GLSLANG_EXPORT const char* glslang_program_get_info_log(glslang_program_t* progr
 GLSLANG_EXPORT const char* glslang_program_get_info_debug_log(glslang_program_t* program)
 {
     return program->program->getInfoDebugLog();
+}
+
+GLSLANG_EXPORT glslang_mapper_t* glslang_glsl_mapper_create()
+{
+    return reinterpret_cast<glslang_mapper_t*>(new glslang::TGlslIoMapper());
+}
+
+GLSLANG_EXPORT void glslang_glsl_mapper_delete(glslang_mapper_t* mapper)
+{
+    if (!mapper)
+        return;
+
+    delete reinterpret_cast<glslang::TGlslIoMapper* >(mapper);
+}
+
+GLSLANG_EXPORT glslang_resolver_t* glslang_glsl_resolver_create(glslang_program_t* program, glslang_stage_t stage)
+{
+    glslang::TIntermediate* intermediate = program->program->getIntermediate(c_shader_stage(stage));
+    return reinterpret_cast<glslang_resolver_t*>(new glslang::TDefaultGlslIoResolver(reinterpret_cast<const glslang::TIntermediate&>(*intermediate)));
+}
+
+GLSLANG_EXPORT void glslang_glsl_resolver_delete(glslang_resolver_t* resolver)
+{
+    if (!resolver)
+        return;
+
+    delete reinterpret_cast<glslang::TDefaultGlslIoResolver* >(resolver);
 }
