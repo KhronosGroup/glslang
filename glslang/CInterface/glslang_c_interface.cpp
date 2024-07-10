@@ -34,6 +34,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "StandAlone/DirStackFileIncluder.h"
 #include "glslang/Public/ResourceLimits.h"
+#include "glslang/Public/ShaderLang.h"
 #include "glslang/Include/ShHandle.h"
 
 #include "glslang/Include/ResourceLimits.h"
@@ -54,6 +55,7 @@ static_assert(int(GLSLANG_REFLECTION_COUNT) == EShReflectionCount, "");
 static_assert(int(GLSLANG_PROFILE_COUNT) == EProfileCount, "");
 static_assert(sizeof(glslang_limits_t) == sizeof(TLimits), "");
 static_assert(sizeof(glslang_resource_t) == sizeof(TBuiltInResource), "");
+static_assert(sizeof(glslang_version_t) == sizeof(glslang::Version), "");
 
 typedef struct glslang_shader_s {
     glslang::TShader* shader;
@@ -140,6 +142,11 @@ private:
     /* User-defined context */
     void* context;
 };
+
+GLSLANG_EXPORT void glslang_get_version(glslang_version_t* version)
+{
+    *reinterpret_cast<glslang::Version*>(version) = glslang::GetVersion();
+}
 
 GLSLANG_EXPORT int glslang_initialize_process() { return static_cast<int>(glslang::InitializeProcess()); }
 
