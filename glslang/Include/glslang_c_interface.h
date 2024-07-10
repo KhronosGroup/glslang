@@ -41,6 +41,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 typedef struct glslang_shader_s glslang_shader_t;
 typedef struct glslang_program_s glslang_program_t;
 
+/* Version counterpart */
+typedef struct glslang_version_s {
+    int major;
+    int minor;
+    int patch;
+    const char* flavor;
+} glslang_version_t;
+
 /* TLimits counterpart */
 typedef struct glslang_limits_s {
     bool non_inductive_for_loops;
@@ -248,6 +256,8 @@ extern "C" {
 #ifndef GLSLANG_EXPORT
 #define GLSLANG_EXPORT
 #endif
+
+GLSLANG_EXPORT void glslang_get_version(glslang_version_t* version);
 
 GLSLANG_EXPORT int glslang_initialize_process(void);
 GLSLANG_EXPORT void glslang_finalize_process(void);
