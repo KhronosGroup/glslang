@@ -507,7 +507,11 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType) 
             case EbtUint8: newConstArray[i].setU8Const(static_cast<unsigned int>(-static_cast<signed int>(unionArray[i].getU8Const())));  break;
             case EbtInt16: newConstArray[i].setI16Const(-unionArray[i].getI16Const()); break;
             case EbtUint16:newConstArray[i].setU16Const(static_cast<unsigned int>(-static_cast<signed int>(unionArray[i].getU16Const())));  break;
-            case EbtInt64: newConstArray[i].setI64Const(-unionArray[i].getI64Const()); break;
+            case EbtInt64: {
+                int64_t i64val = unionArray[i].getI64Const();
+                newConstArray[i].setI64Const(i64val == INT64_MIN ? INT64_MIN : -i64val);
+                break;
+            }
             case EbtUint64: newConstArray[i].setU64Const(static_cast<unsigned long long>(-static_cast<long long>(unionArray[i].getU64Const())));  break;
             default:
                 return nullptr;
