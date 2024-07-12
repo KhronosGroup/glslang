@@ -113,6 +113,28 @@ void TIntermediate::mergeUniformObjects(TInfoSink& infoSink, TIntermediate& unit
     mergeLinkerObjects(infoSink, linkerObjects, unitLinkerObjects, unit.getStage());
 }
 
+static inline bool isSameInterface(TIntermSymbol* symbol, EShLanguage stage, TIntermSymbol* unitSymbol, EShLanguage unitStage) {
+    return // 1) same stage and same shader interface
+        (stage == unitStage && symbol->getType().getShaderInterface() == unitSymbol->getType().getShaderInterface()) ||
+        // 2) accross stages and both are uniform or buffer
+        (symbol->getQualifier().storage == EvqUniform  && unitSymbol->getQualifier().storage == EvqUniform) ||
+        (symbol->getQualifier().storage == EvqBuffer   && unitSymbol->getQualifier().storage == EvqBuffer) ||
+        // 3) in/out matched across stage boundary
+        (stage < unitStage && symbol->getQualifier().storage == EvqVaryingOut  && unitSymbol->getQualifier().storage == EvqVaryingIn) ||
+        (unitStage < stage && symbol->getQualifier().storage == EvqVaryingIn && unitSymbol->getQualifier().storage == EvqVaryingOut);
+}
+
+static bool isSameSymbol(TIntermSymbol* symbol1, EShLanguage stage1, TIntermSymbol* symbol2, EShLanguage stage2) {
+    // If they are both blocks in the same shader interface,
+    // match by the block-name, not the identifier name.
+    if (symbol1->getType().getBasicType() == EbtBlock && symbol2->getType().getBasicType() == EbtBlock) {
+        if (isSameInterface(symbol1, stage1, symbol2, stage2)) {
+            return symbol1->getType().getTypeName() == symbol2->getType().getTypeName();
+        }
+    } else if (symbol1->getName() == symbol2->getName())
+        return true;
+    return false;
+}
 //
 // do error checking on the shader boundary in / out vars
 //
@@ -137,7 +159,32 @@ void TIntermediate::checkStageIO(TInfoSink& infoSink, TIntermediate& unit) {
     // do matching and error checking
     mergeLinkerObjects(infoSink, linkerObjects, unitLinkerObjects, unit.getStage());
 
-    // TODO: final check; make sure that any statically used `in` have matching `out` written to
+    // Check that all of our inputs have matching outputs from the previous stage.
+    // Only do this for Vulkan, since GL_ARB_separate_shader_objects allows for
+    // the in/out to not match
+    if (spvVersion.vulkan > 0) {
+        for (auto& nextStageInterm : unitLinkerObjects) {
+            auto* nextStageSymbol = nextStageInterm->getAsSymbolNode();
+            bool found = false;
+            for (auto& curStageInterm : linkerObjects) {
+                if (isSameSymbol(curStageInterm->getAsSymbolNode(), getStage(), nextStageSymbol, unit.getStage())) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                TString errmsg;
+                errmsg.append("Input '");
+                if (nextStageSymbol->getType().getBasicType() == EbtBlock)
+                    errmsg.append(nextStageSymbol->getType().getTypeName());
+                else
+                    errmsg.append(nextStageSymbol->getName());
+                errmsg.append("' in ").append(StageName(unit.getStage()));
+                errmsg.append(" shader has no corresponding output in ").append(StageName(getStage())).append(" shader.");
+                error(infoSink, errmsg.c_str(), unit.getStage());
+            }
+        }
+    }
 }
 
 void TIntermediate::mergeCallGraphs(TInfoSink& infoSink, TIntermediate& unit)
@@ -511,17 +558,6 @@ void TIntermediate::mergeBodies(TInfoSink& infoSink, TIntermSequence& globals, c
     globals.insert(globals.end() - 1, unitGlobals.begin(), unitGlobals.end() - 1);
 }
 
-static inline bool isSameInterface(TIntermSymbol* symbol, EShLanguage stage, TIntermSymbol* unitSymbol, EShLanguage unitStage) {
-    return // 1) same stage and same shader interface
-        (stage == unitStage && symbol->getType().getShaderInterface() == unitSymbol->getType().getShaderInterface()) ||
-        // 2) accross stages and both are uniform or buffer
-        (symbol->getQualifier().storage == EvqUniform  && unitSymbol->getQualifier().storage == EvqUniform) ||
-        (symbol->getQualifier().storage == EvqBuffer   && unitSymbol->getQualifier().storage == EvqBuffer) ||
-        // 3) in/out matched across stage boundary
-        (stage < unitStage && symbol->getQualifier().storage == EvqVaryingOut  && unitSymbol->getQualifier().storage == EvqVaryingIn) ||
-        (unitStage < stage && symbol->getQualifier().storage == EvqVaryingIn && unitSymbol->getQualifier().storage == EvqVaryingOut);
-}
-
 //
 // Global Unfiform block stores any default uniforms (i.e. uniforms without a block)
 // If two linked stages declare the same member, they are meant to be the same uniform
@@ -707,24 +743,18 @@ void TIntermediate::mergeLinkerObjects(TInfoSink& infoSink, TIntermSequence& lin
     // Error check and merge the linker objects (duplicates should not be created)
     std::size_t initialNumLinkerObjects = linkerObjects.size();
     for (unsigned int unitLinkObj = 0; unitLinkObj < unitLinkerObjects.size(); ++unitLinkObj) {
+        TIntermSymbol* unitSymbol = unitLinkerObjects[unitLinkObj]->getAsSymbolNode();
         bool merge = true;
+
+        // Don't merge inputs backwards into previous stages
+        if (getStage() != unitStage && unitSymbol->getQualifier().storage == EvqVaryingIn)
+            merge = false;
+
         for (std::size_t linkObj = 0; linkObj < initialNumLinkerObjects; ++linkObj) {
             TIntermSymbol* symbol = linkerObjects[linkObj]->getAsSymbolNode();
-            TIntermSymbol* unitSymbol = unitLinkerObjects[unitLinkObj]->getAsSymbolNode();
             assert(symbol && unitSymbol);
 
-            bool isSameSymbol = false;
-            // If they are both blocks in the same shader interface,
-            // match by the block-name, not the identifier name.
-            if (symbol->getType().getBasicType() == EbtBlock && unitSymbol->getType().getBasicType() == EbtBlock) {
-                if (isSameInterface(symbol, getStage(), unitSymbol, unitStage)) {
-                    isSameSymbol = symbol->getType().getTypeName() == unitSymbol->getType().getTypeName();
-                }
-            }
-            else if (symbol->getName() == unitSymbol->getName())
-                isSameSymbol = true;
-
-            if (isSameSymbol) {
+            if (isSameSymbol(symbol, getStage(), unitSymbol, unitStage)) {
                 // filter out copy
                 merge = false;
 
