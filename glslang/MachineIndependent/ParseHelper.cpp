@@ -7387,7 +7387,7 @@ TIntermTyped* TParseContext::vkRelaxedRemapFunctionCall(const TSourceLoc& loc, T
         }
     } else if (function->getName() == "atomicCounter") {
         // change atomicCounter into a direct read of the variable
-        if (arguments->getAsTyped()) {
+        if (arguments && arguments->getAsTyped()) {
             result = arguments->getAsTyped();
         }
     }
