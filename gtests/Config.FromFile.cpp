@@ -98,8 +98,8 @@ TEST_P(ConfigTest, FromFile)
 INSTANTIATE_TEST_SUITE_P(
     Glsl, ConfigTest,
     ::testing::ValuesIn(std::vector<TestCaseSpec>({
-        {"specExamples.vert", "baseResults/test.conf", "specExamplesConf.vert.out", (EShMessages)(EShMsgAST | EShMsgCascadingErrors | EShMsgDisplayErrorColumn)},
-        {"100Limits.vert", "100.conf", "100LimitsConf.vert.out", (EShMessages)(EShMsgCascadingErrors | EShMsgDisplayErrorColumn)},
+        {"specExamples.vert", "baseResults/test.conf", "specExamplesConf.vert.out", (EShMessages)(EShMsgAST | EShMsgCascadingErrors)},
+        {"100Limits.vert", "100.conf", "100LimitsConf.vert.out", EShMsgCascadingErrors},
     }))
 );
 // clang-format on
