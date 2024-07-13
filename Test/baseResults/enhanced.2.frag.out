@@ -1,5 +1,5 @@
 enhanced.2.frag
-ERROR: enhanced.2.frag:5:38: ' vec3 constructor' : too many arguments 
+ERROR: enhanced.2.frag:5: ' vec3 constructor' : too many arguments 
 ERROR: 1 compilation errors.  No code generated.
 
 
