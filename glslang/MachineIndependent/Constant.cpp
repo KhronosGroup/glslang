@@ -1009,6 +1009,12 @@ TIntermTyped* TIntermediate::fold(TIntermAggregate* aggrNode)
         objectSize = std::max(children[0]->getAsTyped()->getType().getVectorSize(),
                               children[2]->getAsTyped()->getType().getVectorSize());
         break;
+    case EOpMul:
+        {
+        TIntermConstantUnion* left = children[0]->getAsConstantUnion();
+        TIntermConstantUnion* right = children[1]->getAsConstantUnion();
+        return left->fold(EOpMul, right);
+        }
     default:
         return aggrNode;
     }
