@@ -51,7 +51,7 @@ jobs:
       matrix:
         compiler: [{cc: gcc, cxx: g++}]
         cmake_build_type: [Debug]
-        flags: ['-fsanitize=address', '-fsanitize=thread']
+        flags: ['-fsanitize=address', '-fsanitize=thread', '-fsanitize=undefined']
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
       - uses: lukka/get-cmake@983956e4a5edce90f0dfcc38c1543077e668402b # v3.30.0
@@ -82,8 +82,12 @@ jobs:
       - name: Install
         run: cmake --install build --prefix build/install
       - name: Test
+        env:
+          UBSAN_OPTIONS: 'halt_on_error=1:print_stacktrace=1'
         run: ctest --output-on-failure --test-dir build
       - name: Test (standalone)
+        env:
+          UBSAN_OPTIONS: halt_on_error=1:print_stacktrace=1
         run: cd Test && ./runtests
 
   # Ensure we can compile/run on an older distro
