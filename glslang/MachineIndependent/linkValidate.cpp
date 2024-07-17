@@ -1743,7 +1743,9 @@ static bool checkType(TBasicType t1, TBasicType t2) {
             (t1 == EbtInt16 && t2 == EbtUint16) ||
             (t2 == EbtInt16 && t1 == EbtUint16)||
             (t1 == EbtInt && t2 == EbtUint) ||
-            (t2 == EbtInt && t1 == EbtUint)) {
+            (t2 == EbtInt && t1 == EbtUint)||
+            (t1 == EbtInt64 && t2 == EbtUint64) ||
+            (t2 == EbtInt64 && t1 == EbtUint64)) {
             return true;
         }
     }
