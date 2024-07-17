@@ -25,6 +25,7 @@ spv.specConstant.float16.comp
                               MemberDecorate 7(Output) 0 Offset 0
                               MemberDecorate 7(Output) 1 NonReadable
                               MemberDecorate 7(Output) 1 Offset 2
+                              Decorate 9(sb_out) NonReadable
                               Decorate 9(sb_out) Binding 0
                               Decorate 9(sb_out) DescriptorSet 0
                               Decorate 12(sc0) SpecId 1

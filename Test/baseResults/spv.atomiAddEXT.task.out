@@ -26,6 +26,7 @@ spv.atomiAddEXT.task
                               Decorate 7(Buffer) Block
                               MemberDecorate 7(Buffer) 0 Coherent
                               MemberDecorate 7(Buffer) 0 Offset 0
+                              Decorate 9 Coherent
                               Decorate 9 Binding 1
                               Decorate 9 DescriptorSet 0
                               Decorate 19 ArrayStride 4

@@ -27,6 +27,7 @@ spv.subgroupRotate.comp
                               Decorate 9(roblock) Block
                               MemberDecorate 9(roblock) 0 NonWritable
                               MemberDecorate 9(roblock) 0 Offset 0
+                              Decorate 11(ro) NonWritable
                               Decorate 11(ro) Binding 1
                               Decorate 11(ro) DescriptorSet 0
                               Decorate 23(Buffers) Block

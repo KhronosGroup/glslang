@@ -23,6 +23,8 @@ spv.specConstantOp.int16.comp
                               MemberDecorate 8(S) 0 Restrict
                               MemberDecorate 8(S) 0 NonReadable
                               MemberDecorate 8(S) 0 Offset 0
+                              Decorate 10 Restrict
+                              Decorate 10 NonReadable
                               Decorate 10 Binding 0
                               Decorate 10 DescriptorSet 0
                               Decorate 13(c) SpecId 0

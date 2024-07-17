@@ -132,8 +132,10 @@ Validation failed
                               Decorate 43(buffer1) BufferBlock
                               MemberDecorate 43(buffer1) 0 NonWritable
                               MemberDecorate 43(buffer1) 0 Offset 0
+                              Decorate 45(buffer1) NonWritable
                               Decorate 45(buffer1) Binding 1
                               Decorate 45(buffer1) DescriptorSet 0
+                              Decorate 46(buffer3) NonWritable
                               Decorate 46(buffer3) Binding 3
                               Decorate 46(buffer3) DescriptorSet 2
                               Decorate 47(ci) SpecId 13

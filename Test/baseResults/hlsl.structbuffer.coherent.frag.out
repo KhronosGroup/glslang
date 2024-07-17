@@ -207,6 +207,7 @@ gl_FragCoord origin is upper left
                               Decorate 15(sbuf2) BufferBlock
                               MemberDecorate 15(sbuf2) 0 Coherent
                               MemberDecorate 15(sbuf2) 0 Offset 0
+                              Decorate 17(sbuf2) Coherent
                               Decorate 17(sbuf2) Binding 1
                               Decorate 17(sbuf2) DescriptorSet 0
                               MemberDecorate 28(sb_t) 0 Offset 0
@@ -215,6 +216,7 @@ gl_FragCoord origin is upper left
                               Decorate 30(sbuf) BufferBlock
                               MemberDecorate 30(sbuf) 0 Coherent
                               MemberDecorate 30(sbuf) 0 Offset 0
+                              Decorate 32(sbuf) Coherent
                               Decorate 32(sbuf) Binding 0
                               Decorate 32(sbuf) DescriptorSet 0
                               Decorate 71(pos) Flat

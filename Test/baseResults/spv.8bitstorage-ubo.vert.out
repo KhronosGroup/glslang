@@ -21,6 +21,7 @@ spv.8bitstorage-ubo.vert
                               Decorate 13 ArrayStride 16
                               Decorate 14(Vertices) Block
                               MemberDecorate 14(Vertices) 0 Offset 0
+                              Decorate 16 NonWritable
                               Decorate 16 Binding 0
                               Decorate 16 DescriptorSet 0
                               Decorate 20(gl_VertexIndex) BuiltIn VertexIndex

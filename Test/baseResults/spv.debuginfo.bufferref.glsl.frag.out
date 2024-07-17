@@ -89,6 +89,7 @@ void main() {
                               Decorate 64(PerPass_meshes) Block
                               MemberDecorate 64(PerPass_meshes) 0 NonWritable
                               MemberDecorate 64(PerPass_meshes) 0 Offset 0
+                              Decorate 73(perPass_meshes) NonWritable
                               Decorate 73(perPass_meshes) Binding 0
                               Decorate 73(perPass_meshes) DescriptorSet 0
                               Decorate 82(tri_idx0) Flat

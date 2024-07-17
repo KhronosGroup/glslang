@@ -228,12 +228,14 @@ gl_FragCoord origin is upper left
                               Decorate 21(sbuf) BufferBlock
                               MemberDecorate 21(sbuf) 0 NonWritable
                               MemberDecorate 21(sbuf) 0 Offset 0
+                              Decorate 23(sbuf) NonWritable
                               Decorate 23(sbuf) Binding 10
                               Decorate 23(sbuf) DescriptorSet 0
                               Decorate 58 ArrayStride 4
                               Decorate 59(sbuf2) BufferBlock
                               MemberDecorate 59(sbuf2) 0 NonWritable
                               MemberDecorate 59(sbuf2) 0 Offset 0
+                              Decorate 61(sbuf2) NonWritable
                               Decorate 61(sbuf2) Binding 0
                               Decorate 61(sbuf2) DescriptorSet 0
                               Decorate 89(pos) Flat

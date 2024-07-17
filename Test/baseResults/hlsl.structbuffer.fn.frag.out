@@ -194,6 +194,7 @@ Validation failed
                               Decorate 47(sbuf2) DescriptorSet 0
                               Decorate 48(sbuf2@count) Binding 0
                               Decorate 48(sbuf2@count) DescriptorSet 0
+                              Decorate 50(sbuf) NonWritable
                               Decorate 50(sbuf) Binding 10
                               Decorate 50(sbuf) DescriptorSet 0
                               Decorate 63(pos) Flat
@@ -207,6 +208,7 @@ Validation failed
                               Decorate 75(sbuf3) BufferBlock
                               MemberDecorate 75(sbuf3) 0 NonWritable
                               MemberDecorate 75(sbuf3) 0 Offset 0
+                              Decorate 77(sbuf3) NonWritable
                               Decorate 77(sbuf3) Binding 12
                               Decorate 77(sbuf3) DescriptorSet 0
                2:             TypeVoid
