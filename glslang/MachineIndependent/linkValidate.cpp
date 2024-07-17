@@ -1689,7 +1689,7 @@ int TIntermediate::addUsedLocation(const TQualifier& qualifier, const TType& typ
         // First range:
         TRange locationRange(qualifier.layoutLocation, qualifier.layoutLocation);
         TRange componentRange(0, 3);
-        TIoRange range(locationRange, componentRange, type.getBasicType(), 0, qualifier.centroid, qualifier.smooth, qualifier.flat);
+        TIoRange range(locationRange, componentRange, type.getBasicType(), 0, qualifier.centroid, qualifier.smooth, qualifier.flat, qualifier.sample, qualifier.patch);
 
         // check for collisions
         collision = checkLocationRange(set, range, type, typeCollision);
@@ -1699,7 +1699,7 @@ int TIntermediate::addUsedLocation(const TQualifier& qualifier, const TType& typ
             // Second range:
             TRange locationRange2(qualifier.layoutLocation + 1, qualifier.layoutLocation + 1);
             TRange componentRange2(0, 1);
-            TIoRange range2(locationRange2, componentRange2, type.getBasicType(), 0, qualifier.centroid, qualifier.smooth, qualifier.flat);
+            TIoRange range2(locationRange2, componentRange2, type.getBasicType(), 0, qualifier.centroid, qualifier.smooth, qualifier.flat, qualifier.sample, qualifier.patch);
 
             // check for collisions
             collision = checkLocationRange(set, range2, type, typeCollision);
@@ -1725,7 +1725,7 @@ int TIntermediate::addUsedLocation(const TQualifier& qualifier, const TType& typ
     TBasicType basicTy = type.getBasicType();
     if (basicTy == EbtSampler && type.getSampler().isAttachmentEXT())
         basicTy = type.getSampler().type;
-    TIoRange range(locationRange, componentRange, basicTy, qualifier.hasIndex() ? qualifier.getIndex() : 0, qualifier.centroid, qualifier.smooth, qualifier.flat);
+    TIoRange range(locationRange, componentRange, basicTy, qualifier.hasIndex() ? qualifier.getIndex() : 0, qualifier.centroid, qualifier.smooth, qualifier.flat, qualifier.sample, qualifier.patch);
 
     // check for collisions, except for vertex inputs on desktop targeting OpenGL
     if (! (!isEsProfile() && language == EShLangVertex && qualifier.isPipeInput()) || spvVersion.vulkan > 0)
@@ -1736,7 +1736,21 @@ int TIntermediate::addUsedLocation(const TQualifier& qualifier, const TType& typ
 
     return collision;
 }
-
+static bool checkType(TBasicType t1, TBasicType t2) {
+    if (t1 != t2) {
+        if ((t1 == EbtInt8 && t2 == EbtUint8) ||
+            (t2 == EbtInt8 && t1 == EbtUint8) ||
+            (t1 == EbtInt16 && t2 == EbtUint16) ||
+            (t2 == EbtInt16 && t1 == EbtUint16)||
+            (t1 == EbtInt && t2 == EbtUint) ||
+            (t2 == EbtInt && t1 == EbtUint)||
+            (t1 == EbtInt64 && t2 == EbtUint64) ||
+            (t2 == EbtInt64 && t1 == EbtUint64)) {
+            return true;
+        }
+    }
+    return t1 == t2;
+}
 // Compare a new (the passed in) 'range' against the existing set, and see
 // if there are any collisions.
 //
@@ -1749,10 +1763,12 @@ int TIntermediate::checkLocationRange(int set, const TIoRange& range, const TTyp
             // there is a collision; pick one
             return std::max(range.location.start, usedIo[set][r].location.start);
         } else if (range.location.overlap(usedIo[set][r].location) &&
-                   (type.getBasicType() != usedIo[set][r].basicType ||
+                   (!checkType(type.getBasicType(), usedIo[set][r].basicType) ||
                     type.getQualifier().centroid != usedIo[set][r].centroid ||
                     type.getQualifier().smooth != usedIo[set][r].smooth ||
-                    type.getQualifier().flat != usedIo[set][r].flat)) {
+                    type.getQualifier().flat != usedIo[set][r].flat ||
+                    type.getQualifier().sample != usedIo[set][r].sample ||
+                    type.getQualifier().patch != usedIo[set][r].patch)) {
             // aliased-type mismatch
             typeCollision = true;
             return std::max(range.location.start, usedIo[set][r].location.start);
