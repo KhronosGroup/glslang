@@ -1736,7 +1736,10 @@ int TIntermediate::addUsedLocation(const TQualifier& qualifier, const TType& typ
 
     return collision;
 }
-static bool checkType(TBasicType t1, TBasicType t2) {
+
+// Check that two types can be stored in different components in the same location.
+// They must be the same type, except signed/unsigned integers are considered compatible.
+static bool checkCompatibleTypes(TBasicType t1, TBasicType t2) {
     if (t1 != t2) {
         if ((t1 == EbtInt8 && t2 == EbtUint8) ||
             (t2 == EbtInt8 && t1 == EbtUint8) ||
@@ -1751,6 +1754,7 @@ static bool checkType(TBasicType t1, TBasicType t2) {
     }
     return t1 == t2;
 }
+
 // Compare a new (the passed in) 'range' against the existing set, and see
 // if there are any collisions.
 //
@@ -1763,7 +1767,7 @@ int TIntermediate::checkLocationRange(int set, const TIoRange& range, const TTyp
             // there is a collision; pick one
             return std::max(range.location.start, usedIo[set][r].location.start);
         } else if (range.location.overlap(usedIo[set][r].location) &&
-                   (!checkType(type.getBasicType(), usedIo[set][r].basicType) ||
+                   (!checkCompatibleTypes(type.getBasicType(), usedIo[set][r].basicType) ||
                     type.getQualifier().centroid != usedIo[set][r].centroid ||
                     type.getQualifier().smooth != usedIo[set][r].smooth ||
                     type.getQualifier().flat != usedIo[set][r].flat ||
