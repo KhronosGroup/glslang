@@ -1,7 +1,7 @@
 matrix.frag
-WARNING: 0:6:1: varying deprecated in version 130; may be removed in future release
-WARNING: 0:17:1: varying deprecated in version 130; may be removed in future release
-WARNING: 0:22:1: varying deprecated in version 130; may be removed in future release
+WARNING: 0:6: varying deprecated in version 130; may be removed in future release
+WARNING: 0:17: varying deprecated in version 130; may be removed in future release
+WARNING: 0:22: varying deprecated in version 130; may be removed in future release
 
 Shader version: 130
 0:? Sequence

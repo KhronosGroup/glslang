@@ -1,5 +1,5 @@
 location_aliasing.tesc
-ERROR: 0:7:49: 'location' : the aliases sharing the location 1 must be the same basic type and interpolation qualification
+ERROR: 0:7: 'location' : the aliases sharing the location 1 must be the same basic type and interpolation qualification
 ERROR: 1 compilation errors.  No code generated.
 
 

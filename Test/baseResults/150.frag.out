@@ -1,23 +1,23 @@
 150.frag
-ERROR: 0:4:57: 'redeclaration' : cannot redeclare with different qualification: gl_FragCoord
-ERROR: 0:5:38: 'redeclaration' : cannot redeclare with different qualification: gl_FragCoord
-ERROR: 0:6:35: 'layout qualifier' : can only apply origin_upper_left and pixel_center_origin to gl_FragCoord 
-ERROR: 0:50:4: 'gl_PerFragment' : undeclared identifier 
-ERROR: 0:53:4: 'double' : Reserved word. 
-ERROR: 0:53:4: 'double' : not supported for this version or the enabled extensions 
-ERROR: 0:53:1: 'double' : must be qualified as flat in
-ERROR: 0:57:5: '=' :  cannot convert from ' global double' to ' global int'
-ERROR: 0:80:29: 'floatBitsToInt' : required extension not requested: Possible extensions include:
+ERROR: 0:4: 'redeclaration' : cannot redeclare with different qualification: gl_FragCoord
+ERROR: 0:5: 'redeclaration' : cannot redeclare with different qualification: gl_FragCoord
+ERROR: 0:6: 'layout qualifier' : can only apply origin_upper_left and pixel_center_origin to gl_FragCoord 
+ERROR: 0:50: 'gl_PerFragment' : undeclared identifier 
+ERROR: 0:53: 'double' : Reserved word. 
+ERROR: 0:53: 'double' : not supported for this version or the enabled extensions 
+ERROR: 0:53: 'double' : must be qualified as flat in
+ERROR: 0:57: '=' :  cannot convert from ' global double' to ' global int'
+ERROR: 0:80: 'floatBitsToInt' : required extension not requested: Possible extensions include:
 GL_ARB_shader_bit_encoding
 GL_ARB_gpu_shader5
-ERROR: 0:100:33: 'packSnorm2x16' : required extension not requested: GL_ARB_shading_language_packing
-ERROR: 0:114:37: 'textureQueryLOD' : required extension not requested: GL_ARB_texture_query_lod
-ERROR: 0:115:39: 'textureQueryLOD' : required extension not requested: GL_ARB_texture_query_lod
-ERROR: 0:154:38: 'textureQueryLOD' : no matching overloaded function found 
-ERROR: 0:154:9: 'assign' :  cannot convert from ' const float' to ' temp 2-component vector of float'
-ERROR: 0:155:40: 'textureQueryLOD' : no matching overloaded function found 
-ERROR: 0:155:9: 'assign' :  cannot convert from ' const float' to ' temp 2-component vector of float'
-ERROR: 0:183:28: 'mix' : required extension not requested: GL_EXT_shader_integer_mix
+ERROR: 0:100: 'packSnorm2x16' : required extension not requested: GL_ARB_shading_language_packing
+ERROR: 0:114: 'textureQueryLOD' : required extension not requested: GL_ARB_texture_query_lod
+ERROR: 0:115: 'textureQueryLOD' : required extension not requested: GL_ARB_texture_query_lod
+ERROR: 0:154: 'textureQueryLOD' : no matching overloaded function found 
+ERROR: 0:154: 'assign' :  cannot convert from ' const float' to ' temp 2-component vector of float'
+ERROR: 0:155: 'textureQueryLOD' : no matching overloaded function found 
+ERROR: 0:155: 'assign' :  cannot convert from ' const float' to ' temp 2-component vector of float'
+ERROR: 0:183: 'mix' : required extension not requested: GL_EXT_shader_integer_mix
 ERROR: 17 compilation errors.  No code generated.
 
 

@@ -1,5 +1,5 @@
 index_outside_sample_mask_range.frag
-ERROR: 0:6:40: '[' : gl_SampleMask array index out of range '1'
+ERROR: 0:6: '[' : gl_SampleMask array index out of range '1'
 ERROR: 1 compilation errors.  No code generated.
 
 

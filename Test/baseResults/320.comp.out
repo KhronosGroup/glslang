@@ -1,13 +1,13 @@
 320.comp
-ERROR: 0:8:12: 'dFdx' : required extension not requested: GL_NV_compute_shader_derivatives
-ERROR: 0:9:12: 'dFdy' : required extension not requested: GL_NV_compute_shader_derivatives
-ERROR: 0:10:14: 'fwidth' : required extension not requested: GL_NV_compute_shader_derivatives
-ERROR: 0:11:18: 'dFdxCoarse' : required extension not requested: GL_NV_compute_shader_derivatives
-ERROR: 0:12:18: 'dFdyCoarse' : required extension not requested: GL_NV_compute_shader_derivatives
-ERROR: 0:13:20: 'fwidthCoarse' : required extension not requested: GL_NV_compute_shader_derivatives
-ERROR: 0:14:16: 'dFdxFine' : required extension not requested: GL_NV_compute_shader_derivatives
-ERROR: 0:15:16: 'dFdyFine' : required extension not requested: GL_NV_compute_shader_derivatives
-ERROR: 0:16:18: 'fwidthFine' : required extension not requested: GL_NV_compute_shader_derivatives
+ERROR: 0:8: 'dFdx' : required extension not requested: GL_NV_compute_shader_derivatives
+ERROR: 0:9: 'dFdy' : required extension not requested: GL_NV_compute_shader_derivatives
+ERROR: 0:10: 'fwidth' : required extension not requested: GL_NV_compute_shader_derivatives
+ERROR: 0:11: 'dFdxCoarse' : required extension not requested: GL_NV_compute_shader_derivatives
+ERROR: 0:12: 'dFdyCoarse' : required extension not requested: GL_NV_compute_shader_derivatives
+ERROR: 0:13: 'fwidthCoarse' : required extension not requested: GL_NV_compute_shader_derivatives
+ERROR: 0:14: 'dFdxFine' : required extension not requested: GL_NV_compute_shader_derivatives
+ERROR: 0:15: 'dFdyFine' : required extension not requested: GL_NV_compute_shader_derivatives
+ERROR: 0:16: 'fwidthFine' : required extension not requested: GL_NV_compute_shader_derivatives
 ERROR: 9 compilation errors.  No code generated.
 
 

@@ -1,6 +1,6 @@
 terminate.frag
-ERROR: 0:3:14: 'terminateInvocation' : undeclared identifier 
-ERROR: 0:9:27: '' :  syntax error, unexpected TERMINATE_INVOCATION, expecting COMMA or SEMICOLON
+ERROR: 0:3: 'terminateInvocation' : undeclared identifier 
+ERROR: 0:9: '' :  syntax error, unexpected TERMINATE_INVOCATION, expecting COMMA or SEMICOLON
 ERROR: 2 compilation errors.  No code generated.
 
 

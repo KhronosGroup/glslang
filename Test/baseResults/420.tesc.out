@@ -1,11 +1,11 @@
 420.tesc
-ERROR: 0:7:1: 'vertices' : inconsistent output number of vertices for array size of gl_out
-ERROR: 0:11:9: 'vertices' : inconsistent output number of vertices for array size of a
-ERROR: 0:12:9: 'vertices' : inconsistent output number of vertices for array size of outb
-ERROR: 0:26:29: 'gl_PointSize' : no such field in structure 'gl_out'
-ERROR: 0:26:42: 'assign' :  cannot convert from ' temp float' to ' temp block{ out 4-component vector of float Position gl_Position}'
-ERROR: 0:29:11: 'out' : type must be an array: outf
-ERROR: 0:43:8: 'vertices' : must be greater than 0 
+ERROR: 0:7: 'vertices' : inconsistent output number of vertices for array size of gl_out
+ERROR: 0:11: 'vertices' : inconsistent output number of vertices for array size of a
+ERROR: 0:12: 'vertices' : inconsistent output number of vertices for array size of outb
+ERROR: 0:26: 'gl_PointSize' : no such field in structure 'gl_out'
+ERROR: 0:26: 'assign' :  cannot convert from ' temp float' to ' temp block{ out 4-component vector of float Position gl_Position}'
+ERROR: 0:29: 'out' : type must be an array: outf
+ERROR: 0:43: 'vertices' : must be greater than 0 
 ERROR: 7 compilation errors.  No code generated.
 
 

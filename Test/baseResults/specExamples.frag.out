@@ -1,43 +1,43 @@
 specExamples.frag
-ERROR: 0:6:6: '=' :  cannot convert from ' const uint' to ' global int'
-ERROR: 0:20:10: '' : numeric literal too big 
-ERROR: 0:21:10: '' : hexadecimal literal too big 
-ERROR: 0:37:8: 'view' : redefinition 
-ERROR: 0:63:1: 'invariant' : can only apply to an output 
-ERROR: 0:68:14: 'lightPosition' : redefinition 
-ERROR: 0:75:19: 'Atten' : member storage qualifier cannot contradict block storage qualifier 
-ERROR: 0:87:6: 'Color' : redefinition 
-ERROR: 0:92:35: 'redeclaration' : cannot redeclare with different qualification: gl_FragCoord
-ERROR: 0:93:38: 'redeclaration' : cannot redeclare with different qualification: gl_FragCoord
-ERROR: 0:99:9: 'local_size_x' : there is no such layout identifier for this stage taking an assigned value 
-ERROR: 0:99:28: 'local_size_y' : there is no such layout identifier for this stage taking an assigned value 
-ERROR: 0:100:9: 'local_size_x' : there is no such layout identifier for this stage taking an assigned value 
-ERROR: 0:102:31: 'color' : redefinition 
-ERROR: 0:112:30: 'redeclaration' : all redeclarations must use the same depth layout on gl_FragDepth
-ERROR: 0:118:31: 'redeclaration' : all redeclarations must use the same depth layout on gl_FragDepth
-ERROR: 0:121:36: 'redeclaration' : all redeclarations must use the same depth layout on gl_FragDepth
-ERROR: 0:123:9: 'gl_Color' : identifiers starting with "gl_" are reserved 
-ERROR: 0:172:5: 'x' : undeclared identifier 
-ERROR: 0:172:5: '[]' : scalar integer expression required 
-ERROR: 0:175:6: 'x' : undeclared identifier 
-ERROR: 0:175:4: '[]' : scalar integer expression required 
-ERROR: 0:175:3: 'b' :  left of '[' is not of type array, matrix, or vector  
-ERROR: 0:175:9: 'a' : vector swizzle selection out of range 
-ERROR: 0:175:11: 'length' : does not operate on this type:  const float
-ERROR: 0:175:3: '' : function call, method, or subroutine call expected 
-ERROR: 0:175:18: '' : no matching overloaded function found 
-ERROR: 0:178:4: '[]' : scalar integer expression required 
-ERROR: 0:178:2: 's' : undeclared identifier 
-ERROR: 0:178:3: 's' :  left of '[' is not of type array, matrix, or vector  
-ERROR: 0:178:7: 'a' : vector swizzle selection out of range 
-ERROR: 0:178:9: 'length' : does not operate on this type:  const float
-ERROR: 0:178:3: '' : function call, method, or subroutine call expected 
-ERROR: 0:178:16: '' : no matching overloaded function found 
-ERROR: 0:198:7: 'e' : redefinition 
-ERROR: 0:226:9: 'in' : not allowed in nested scope 
-ERROR: 0:227:9: 'in' : not allowed in nested scope 
-ERROR: 0:228:9: 'in' : not allowed in nested scope 
-ERROR: 0:232:9: 'out' : not allowed in nested scope 
+ERROR: 0:6: '=' :  cannot convert from ' const uint' to ' global int'
+ERROR: 0:20: '' : numeric literal too big 
+ERROR: 0:21: '' : hexadecimal literal too big 
+ERROR: 0:37: 'view' : redefinition 
+ERROR: 0:63: 'invariant' : can only apply to an output 
+ERROR: 0:68: 'lightPosition' : redefinition 
+ERROR: 0:75: 'Atten' : member storage qualifier cannot contradict block storage qualifier 
+ERROR: 0:87: 'Color' : redefinition 
+ERROR: 0:92: 'redeclaration' : cannot redeclare with different qualification: gl_FragCoord
+ERROR: 0:93: 'redeclaration' : cannot redeclare with different qualification: gl_FragCoord
+ERROR: 0:99: 'local_size_x' : there is no such layout identifier for this stage taking an assigned value 
+ERROR: 0:99: 'local_size_y' : there is no such layout identifier for this stage taking an assigned value 
+ERROR: 0:100: 'local_size_x' : there is no such layout identifier for this stage taking an assigned value 
+ERROR: 0:102: 'color' : redefinition 
+ERROR: 0:112: 'redeclaration' : all redeclarations must use the same depth layout on gl_FragDepth
+ERROR: 0:118: 'redeclaration' : all redeclarations must use the same depth layout on gl_FragDepth
+ERROR: 0:121: 'redeclaration' : all redeclarations must use the same depth layout on gl_FragDepth
+ERROR: 0:123: 'gl_Color' : identifiers starting with "gl_" are reserved 
+ERROR: 0:172: 'x' : undeclared identifier 
+ERROR: 0:172: '[]' : scalar integer expression required 
+ERROR: 0:175: 'x' : undeclared identifier 
+ERROR: 0:175: '[]' : scalar integer expression required 
+ERROR: 0:175: 'b' :  left of '[' is not of type array, matrix, or vector  
+ERROR: 0:175: 'a' : vector swizzle selection out of range 
+ERROR: 0:175: 'length' : does not operate on this type:  const float
+ERROR: 0:175: '' : function call, method, or subroutine call expected 
+ERROR: 0:175: '' : no matching overloaded function found 
+ERROR: 0:178: '[]' : scalar integer expression required 
+ERROR: 0:178: 's' : undeclared identifier 
+ERROR: 0:178: 's' :  left of '[' is not of type array, matrix, or vector  
+ERROR: 0:178: 'a' : vector swizzle selection out of range 
+ERROR: 0:178: 'length' : does not operate on this type:  const float
+ERROR: 0:178: '' : function call, method, or subroutine call expected 
+ERROR: 0:178: '' : no matching overloaded function found 
+ERROR: 0:198: 'e' : redefinition 
+ERROR: 0:226: 'in' : not allowed in nested scope 
+ERROR: 0:227: 'in' : not allowed in nested scope 
+ERROR: 0:228: 'in' : not allowed in nested scope 
+ERROR: 0:232: 'out' : not allowed in nested scope 
 ERROR: 39 compilation errors.  No code generated.
 
 

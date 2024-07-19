@@ -1,5 +1,5 @@
 450.tesc
-ERROR: 0:20:8: 'location' : cannot use in a block array where new locations are needed for each block element 
+ERROR: 0:20: 'location' : cannot use in a block array where new locations are needed for each block element 
 ERROR: 1 compilation errors.  No code generated.
 
 

@@ -1,5 +1,5 @@
 hlsl.samplecmp.negative2.frag
-ERROR: 0:7:17: '' : expected: SamplerComparisonState 
+ERROR: 0:7: '' : expected: SamplerComparisonState 
 ERROR: 1 compilation errors.  No code generated.
 
 

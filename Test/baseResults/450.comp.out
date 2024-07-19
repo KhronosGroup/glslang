@@ -1,7 +1,7 @@
 450.comp
-ERROR: 0:2:8: 'local_size_x' : must be at least 1 
-ERROR: 0:4:1: 'binding' : atomic_uint binding is too large 
-ERROR: 0:8:5: 'shared' : not allowed in nested scope 
+ERROR: 0:2: 'local_size_x' : must be at least 1 
+ERROR: 0:4: 'binding' : atomic_uint binding is too large 
+ERROR: 0:8: 'shared' : not allowed in nested scope 
 ERROR: 3 compilation errors.  No code generated.
 
 

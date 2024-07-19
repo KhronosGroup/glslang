@@ -1,14 +1,14 @@
 140.frag
-WARNING: 0:3:1: varying deprecated in version 130; may be removed in future release
-ERROR: 0:17:8: '#error' : GL_ES is not set  
-ERROR: 0:21:1: 'fragment-shader struct input' : not supported for this version or the enabled extensions 
-ERROR: 0:25:8: 'location' : not supported for this version or the enabled extensions 
-ERROR: 0:25:28: 'location qualifier on input' : not supported for this version or the enabled extensions 
-ERROR: 0:27:8: 'location' : not supported for this version or the enabled extensions 
-ERROR: 0:27:31: 'location qualifier on output' : not supported for this version or the enabled extensions 
-ERROR: 0:41:24: 'assign' :  l-value required "v" (can't modify shader input)
-ERROR: 0:41:24: 'out' : Non-L-value cannot be passed for 'out' or 'inout' parameters. 
-ERROR: 0:56:24: '' :  syntax error, unexpected IDENTIFIER, expecting LEFT_BRACE or COMMA or SEMICOLON
+WARNING: 0:3: varying deprecated in version 130; may be removed in future release
+ERROR: 0:17: '#error' : GL_ES is not set  
+ERROR: 0:21: 'fragment-shader struct input' : not supported for this version or the enabled extensions 
+ERROR: 0:25: 'location' : not supported for this version or the enabled extensions 
+ERROR: 0:25: 'location qualifier on input' : not supported for this version or the enabled extensions 
+ERROR: 0:27: 'location' : not supported for this version or the enabled extensions 
+ERROR: 0:27: 'location qualifier on output' : not supported for this version or the enabled extensions 
+ERROR: 0:41: 'assign' :  l-value required "v" (can't modify shader input)
+ERROR: 0:41: 'out' : Non-L-value cannot be passed for 'out' or 'inout' parameters. 
+ERROR: 0:56: '' :  syntax error, unexpected IDENTIFIER, expecting LEFT_BRACE or COMMA or SEMICOLON
 ERROR: 9 compilation errors.  No code generated.
 
 

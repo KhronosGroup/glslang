@@ -1,5 +1,5 @@
 420.comp
-ERROR: 0:3:8: 'gl_WorkGroupSize' : not supported for this version or the enabled extensions 
+ERROR: 0:3: 'gl_WorkGroupSize' : not supported for this version or the enabled extensions 
 ERROR: 1 compilation errors.  No code generated.
 
 

@@ -1,11 +1,11 @@
 glsl.ext.textureShadowLod.frag
-ERROR: 0:24:30: 'texture(..., float bias)' : required extension not requested: GL_EXT_texture_shadow_lod
-ERROR: 0:25:34: 'texture(..., float bias)' : required extension not requested: GL_EXT_texture_shadow_lod
-ERROR: 0:26:48: 'textureOffset for sampler2DArrayShadow' : required extension not requested: GL_EXT_texture_shadow_lod
-ERROR: 0:27:33: 'textureLod(..., float lod)' : required extension not requested: GL_EXT_texture_shadow_lod
-ERROR: 0:28:31: 'textureLod(..., float lod)' : required extension not requested: GL_EXT_texture_shadow_lod
-ERROR: 0:29:37: 'textureLod(..., float lod)' : required extension not requested: GL_EXT_texture_shadow_lod
-ERROR: 0:30:51: 'textureLodOffset for sampler2DArrayShadow' : required extension not requested: GL_EXT_texture_shadow_lod
+ERROR: 0:24: 'texture(..., float bias)' : required extension not requested: GL_EXT_texture_shadow_lod
+ERROR: 0:25: 'texture(..., float bias)' : required extension not requested: GL_EXT_texture_shadow_lod
+ERROR: 0:26: 'textureOffset for sampler2DArrayShadow' : required extension not requested: GL_EXT_texture_shadow_lod
+ERROR: 0:27: 'textureLod(..., float lod)' : required extension not requested: GL_EXT_texture_shadow_lod
+ERROR: 0:28: 'textureLod(..., float lod)' : required extension not requested: GL_EXT_texture_shadow_lod
+ERROR: 0:29: 'textureLod(..., float lod)' : required extension not requested: GL_EXT_texture_shadow_lod
+ERROR: 0:30: 'textureLodOffset for sampler2DArrayShadow' : required extension not requested: GL_EXT_texture_shadow_lod
 ERROR: 7 compilation errors.  No code generated.
 
 

@@ -1,5 +1,5 @@
 mixedArrayDecls.frag
-ERROR: 0:30:20: '' :  syntax error, unexpected LEFT_PAREN, expecting COMMA or SEMICOLON
+ERROR: 0:30: '' :  syntax error, unexpected LEFT_PAREN, expecting COMMA or SEMICOLON
 ERROR: 1 compilation errors.  No code generated.
 
 

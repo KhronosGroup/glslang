@@ -104,7 +104,7 @@ vertices = 4
 0:?     'patchOut' ( patch out 4-component vector of float)
 
 150.tese
-ERROR: 0:12:13: 'barrier' : no matching overloaded function found 
+ERROR: 0:12: 'barrier' : no matching overloaded function found 
 ERROR: 1 compilation errors.  No code generated.
 
 
@@ -210,29 +210,29 @@ ERROR: node is still EOpNull!
 0:?     'anon@0' ( out block{ gl_Position 4-component vector of float Position gl_Position,  gl_PointSize float PointSize gl_PointSize,  out unsized 3-element array of float ClipDistance gl_ClipDistance})
 
 400.tesc
-ERROR: 0:6:8: 'quads' : unrecognized layout identifier, or qualifier requires assignment (e.g., binding = 4) 
-ERROR: 0:7:8: 'ccw' : unrecognized layout identifier, or qualifier requires assignment (e.g., binding = 4) 
-ERROR: 0:8:8: 'fractional_even_spacing' : unrecognized layout identifier, or qualifier requires assignment (e.g., binding = 4) 
-ERROR: 0:10:1: 'patch' : can only use on output in tessellation-control shader 
-ERROR: 0:39:17: '' : tessellation control barrier() cannot be placed within flow control 
-ERROR: 0:41:17: '' : tessellation control barrier() cannot be placed within flow control 
-ERROR: 0:46:17: '' : tessellation control barrier() cannot be placed within flow control 
-ERROR: 0:51:17: '' : tessellation control barrier() cannot be placed within flow control 
-ERROR: 0:54:27: '' : tessellation control barrier() cannot be placed within flow control 
-ERROR: 0:61:13: '' : tessellation control barrier() cannot be placed after a return from main() 
-ERROR: 0:64:8: 'vertices' : can only apply to 'out' 
-ERROR: 0:65:8: 'vertices' : cannot change previously set layout value 
-ERROR: 0:69:11: '[' :  array index out of range '4'
-ERROR: 0:71:13: '' : tessellation control barrier() must be in main() 
-ERROR: 0:74:9: 'in' : type must be an array: ina
-ERROR: 0:76:9: '[]' : tessellation input array size must be gl_MaxPatchVertices or implicitly sized 
-ERROR: 0:83:30: 'location' : overlapping use of location 4
-ERROR: 0:87:31: 'location' : overlapping use of location 4
-ERROR: 0:104:1: '' : precise qualifier must appear first 
-ERROR: 0:105:11: '' : precise qualifier must appear first 
-ERROR: 0:105:11: '' : precise qualifier must appear first 
-ERROR: 0:109:5: 'gl_DeviceIndex' : required extension not requested: GL_EXT_device_group
-ERROR: 0:110:5: 'gl_ViewIndex' : required extension not requested: GL_EXT_multiview
+ERROR: 0:6: 'quads' : unrecognized layout identifier, or qualifier requires assignment (e.g., binding = 4) 
+ERROR: 0:7: 'ccw' : unrecognized layout identifier, or qualifier requires assignment (e.g., binding = 4) 
+ERROR: 0:8: 'fractional_even_spacing' : unrecognized layout identifier, or qualifier requires assignment (e.g., binding = 4) 
+ERROR: 0:10: 'patch' : can only use on output in tessellation-control shader 
+ERROR: 0:39: '' : tessellation control barrier() cannot be placed within flow control 
+ERROR: 0:41: '' : tessellation control barrier() cannot be placed within flow control 
+ERROR: 0:46: '' : tessellation control barrier() cannot be placed within flow control 
+ERROR: 0:51: '' : tessellation control barrier() cannot be placed within flow control 
+ERROR: 0:54: '' : tessellation control barrier() cannot be placed within flow control 
+ERROR: 0:61: '' : tessellation control barrier() cannot be placed after a return from main() 
+ERROR: 0:64: 'vertices' : can only apply to 'out' 
+ERROR: 0:65: 'vertices' : cannot change previously set layout value 
+ERROR: 0:69: '[' :  array index out of range '4'
+ERROR: 0:71: '' : tessellation control barrier() must be in main() 
+ERROR: 0:74: 'in' : type must be an array: ina
+ERROR: 0:76: '[]' : tessellation input array size must be gl_MaxPatchVertices or implicitly sized 
+ERROR: 0:83: 'location' : overlapping use of location 4
+ERROR: 0:87: 'location' : overlapping use of location 4
+ERROR: 0:104: '' : precise qualifier must appear first 
+ERROR: 0:105: '' : precise qualifier must appear first 
+ERROR: 0:105: '' : precise qualifier must appear first 
+ERROR: 0:109: 'gl_DeviceIndex' : required extension not requested: GL_EXT_device_group
+ERROR: 0:110: 'gl_ViewIndex' : required extension not requested: GL_EXT_multiview
 ERROR: 23 compilation errors.  No code generated.
 
 
@@ -441,37 +441,37 @@ ERROR: node is still EOpNull!
 0:?     'badOrder' ( invariant noContraction out 4-element array of 4-component vector of float)
 
 400.tese
-ERROR: 0:3:8: 'vertices' : there is no such layout identifier for this stage taking an assigned value 
-ERROR: 0:5:8: 'triangles' : cannot change previously set input primitive 
-ERROR: 0:6:8: 'isolines' : cannot change previously set input primitive 
-ERROR: 0:8:8: 'ccw' : cannot change previously set vertex order 
-ERROR: 0:12:8: 'equal_spacing' : cannot change previously set vertex spacing 
-ERROR: 0:13:8: 'fractional_even_spacing' : cannot change previously set vertex spacing 
-ERROR: 0:18:1: 'patch' : can only use on input in tessellation-evaluation shader 
-ERROR: 0:22:13: 'barrier' : no matching overloaded function found 
-ERROR: 0:47:1: 'patch' : cannot use interpolation qualifiers with patch 
-ERROR: 0:48:1: 'patch' : cannot use interpolation qualifiers with patch 
-ERROR: 0:49:1: 'patch' : cannot use interpolation qualifiers with patch 
-ERROR: 0:50:1: '' : can only have one auxiliary qualifier (centroid, patch, and sample) 
-ERROR: 0:59:1: 'gl_PerVertex' : can only redeclare a built-in block once, and before any use 
-ERROR: 0:64:8: 'quads' : cannot apply to 'out' 
-ERROR: 0:64:8: 'cw' : can only apply to 'in' 
-ERROR: 0:65:8: 'triangles' : cannot apply to 'out' 
-ERROR: 0:66:8: 'isolines' : cannot apply to 'out' 
-ERROR: 0:67:8: 'cw' : can only apply to 'in' 
-ERROR: 0:68:8: 'fractional_odd_spacing' : can only apply to 'in' 
-ERROR: 0:69:8: 'equal_spacing' : can only apply to 'in' 
-ERROR: 0:70:8: 'fractional_even_spacing' : can only apply to 'in' 
-ERROR: 0:71:8: 'point_mode' : can only apply to 'in' 
-ERROR: 0:73:9: 'in' : type must be an array: ina
-ERROR: 0:75:9: '[]' : tessellation input array size must be gl_MaxPatchVertices or implicitly sized 
-ERROR: 0:78:1: 'in' : type must be an array: bla
-ERROR: 0:86:1: '[]' : tessellation input array size must be gl_MaxPatchVertices or implicitly sized 
-ERROR: 0:96:31: 'location' : overlapping use of location 24
-ERROR: 0:99:32: 'location' : overlapping use of location 24
-ERROR: 0:101:10: 'gl_TessLevelOuter' : identifiers starting with "gl_" are reserved 
-ERROR: 0:109:5: 'gl_DeviceIndex' : required extension not requested: GL_EXT_device_group
-ERROR: 0:110:5: 'gl_ViewIndex' : required extension not requested: GL_EXT_multiview
+ERROR: 0:3: 'vertices' : there is no such layout identifier for this stage taking an assigned value 
+ERROR: 0:5: 'triangles' : cannot change previously set input primitive 
+ERROR: 0:6: 'isolines' : cannot change previously set input primitive 
+ERROR: 0:8: 'ccw' : cannot change previously set vertex order 
+ERROR: 0:12: 'equal_spacing' : cannot change previously set vertex spacing 
+ERROR: 0:13: 'fractional_even_spacing' : cannot change previously set vertex spacing 
+ERROR: 0:18: 'patch' : can only use on input in tessellation-evaluation shader 
+ERROR: 0:22: 'barrier' : no matching overloaded function found 
+ERROR: 0:47: 'patch' : cannot use interpolation qualifiers with patch 
+ERROR: 0:48: 'patch' : cannot use interpolation qualifiers with patch 
+ERROR: 0:49: 'patch' : cannot use interpolation qualifiers with patch 
+ERROR: 0:50: '' : can only have one auxiliary qualifier (centroid, patch, and sample) 
+ERROR: 0:59: 'gl_PerVertex' : can only redeclare a built-in block once, and before any use 
+ERROR: 0:64: 'quads' : cannot apply to 'out' 
+ERROR: 0:64: 'cw' : can only apply to 'in' 
+ERROR: 0:65: 'triangles' : cannot apply to 'out' 
+ERROR: 0:66: 'isolines' : cannot apply to 'out' 
+ERROR: 0:67: 'cw' : can only apply to 'in' 
+ERROR: 0:68: 'fractional_odd_spacing' : can only apply to 'in' 
+ERROR: 0:69: 'equal_spacing' : can only apply to 'in' 
+ERROR: 0:70: 'fractional_even_spacing' : can only apply to 'in' 
+ERROR: 0:71: 'point_mode' : can only apply to 'in' 
+ERROR: 0:73: 'in' : type must be an array: ina
+ERROR: 0:75: '[]' : tessellation input array size must be gl_MaxPatchVertices or implicitly sized 
+ERROR: 0:78: 'in' : type must be an array: bla
+ERROR: 0:86: '[]' : tessellation input array size must be gl_MaxPatchVertices or implicitly sized 
+ERROR: 0:96: 'location' : overlapping use of location 24
+ERROR: 0:99: 'location' : overlapping use of location 24
+ERROR: 0:101: 'gl_TessLevelOuter' : identifiers starting with "gl_" are reserved 
+ERROR: 0:109: 'gl_DeviceIndex' : required extension not requested: GL_EXT_device_group
+ERROR: 0:110: 'gl_ViewIndex' : required extension not requested: GL_EXT_multiview
 ERROR: 31 compilation errors.  No code generated.
 
 
@@ -609,7 +609,7 @@ ERROR: node is still EOpNull!
 0:?     'pinbi' ( patch in block{ in int a})
 
 410.tesc
-ERROR: 0:4:24: 'length' :  array must first be sized by a redeclaration or layout qualifier
+ERROR: 0:4: 'length' :  array must first be sized by a redeclaration or layout qualifier
 ERROR: 1 compilation errors.  No code generated.
 
 
@@ -624,13 +624,13 @@ ERROR: node is still EOpNull!
 0:?     'patchOut' ( patch out 4-component vector of float)
 
 420.tesc
-ERROR: 0:7:1: 'vertices' : inconsistent output number of vertices for array size of gl_out
-ERROR: 0:11:9: 'vertices' : inconsistent output number of vertices for array size of a
-ERROR: 0:12:9: 'vertices' : inconsistent output number of vertices for array size of outb
-ERROR: 0:26:29: 'gl_PointSize' : no such field in structure 'gl_out'
-ERROR: 0:26:42: 'assign' :  cannot convert from ' temp float' to ' temp block{ out 4-component vector of float Position gl_Position}'
-ERROR: 0:29:11: 'out' : type must be an array: outf
-ERROR: 0:43:8: 'vertices' : must be greater than 0 
+ERROR: 0:7: 'vertices' : inconsistent output number of vertices for array size of gl_out
+ERROR: 0:11: 'vertices' : inconsistent output number of vertices for array size of a
+ERROR: 0:12: 'vertices' : inconsistent output number of vertices for array size of outb
+ERROR: 0:26: 'gl_PointSize' : no such field in structure 'gl_out'
+ERROR: 0:26: 'assign' :  cannot convert from ' temp float' to ' temp block{ out 4-component vector of float Position gl_Position}'
+ERROR: 0:29: 'out' : type must be an array: outf
+ERROR: 0:43: 'vertices' : must be greater than 0 
 ERROR: 7 compilation errors.  No code generated.
 
 
@@ -742,19 +742,19 @@ ERROR: node is still EOpNull!
 0:?     'vs_tcs_last' (layout( location=12) in 32-element array of 2X4 matrix of double)
 
 420.tese
-ERROR: 0:7:7: '=' :  cannot convert from ' const 3-element array of float' to ' global 2-element array of float'
-ERROR: 0:8:6: 'initializer list' : wrong vector size (or rows in a matrix column):  temp 2-component vector of float
-ERROR: 0:9:8: 'initializer list' : wrong number of matrix columns:  temp 3X3 matrix of float
-ERROR: 0:10:8: 'initializer list' : wrong number of matrix columns:  temp 2X2 matrix of float
-ERROR: 0:25:3: 'initializer list' : wrong number of structure members 
-ERROR: 0:27:5: '=' :  cannot convert from ' const bool' to ' global int'
-ERROR: 0:28:21: 'constructor' :  cannot convert parameter 2 from ' const float' to ' temp 4-component vector of float'
-ERROR: 0:29:31: 'constructor' :  cannot convert parameter 2 from ' const 2X2 matrix of float' to ' const 4-component vector of float'
-ERROR: 0:29:44: ' const 2-element array of 4-component vector of float' : cannot construct with these arguments 
-ERROR: 0:29:6: '=' :  cannot convert from ' const float' to ' global 2-element array of 4-component vector of float'
-ERROR: 0:30:8: 'initializer list' : wrong number of matrix columns:  temp 4X2 matrix of float
-ERROR: 0:40:35: 'constructor' :  cannot convert parameter 1 from ' const structure{ global 4-component vector of float a,  global 4-component vector of float b}' to ' temp structure{ global float s,  global float t}'
-ERROR: 0:70:10: 'initializer list' : wrong number of structure members 
+ERROR: 0:7: '=' :  cannot convert from ' const 3-element array of float' to ' global 2-element array of float'
+ERROR: 0:8: 'initializer list' : wrong vector size (or rows in a matrix column):  temp 2-component vector of float
+ERROR: 0:9: 'initializer list' : wrong number of matrix columns:  temp 3X3 matrix of float
+ERROR: 0:10: 'initializer list' : wrong number of matrix columns:  temp 2X2 matrix of float
+ERROR: 0:25: 'initializer list' : wrong number of structure members 
+ERROR: 0:27: '=' :  cannot convert from ' const bool' to ' global int'
+ERROR: 0:28: 'constructor' :  cannot convert parameter 2 from ' const float' to ' temp 4-component vector of float'
+ERROR: 0:29: 'constructor' :  cannot convert parameter 2 from ' const 2X2 matrix of float' to ' const 4-component vector of float'
+ERROR: 0:29: ' const 2-element array of 4-component vector of float' : cannot construct with these arguments 
+ERROR: 0:29: '=' :  cannot convert from ' const float' to ' global 2-element array of 4-component vector of float'
+ERROR: 0:30: 'initializer list' : wrong number of matrix columns:  temp 4X2 matrix of float
+ERROR: 0:40: 'constructor' :  cannot convert parameter 1 from ' const structure{ global 4-component vector of float a,  global 4-component vector of float b}' to ' temp structure{ global float s,  global float t}'
+ERROR: 0:70: 'initializer list' : wrong number of structure members 
 ERROR: 13 compilation errors.  No code generated.
 
 

@@ -1,5 +1,5 @@
 glsl.es320.subgroupBallotNeg.comp
-ERROR: 0:31:67: 'id' : argument must be compile-time constant 
+ERROR: 0:31: 'id' : argument must be compile-time constant 
 ERROR: 1 compilation errors.  No code generated.
 
 

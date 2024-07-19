@@ -1,9 +1,9 @@
 spv.IntersectShader_Errors.rint
-ERROR: 0:3:1: 'rayPayloadInNV' : not supported in this stage: intersection
-ERROR: 0:4:1: 'rayPayloadNV' : not supported in this stage: intersection
-ERROR: 0:8:17: 'gl_HitTNV' : undeclared identifier 
-ERROR: 0:9:17: 'gl_HitKindNV' : undeclared identifier 
-ERROR: 0:10:73: 'traceNV' : no matching overloaded function found 
+ERROR: 0:3: 'rayPayloadInNV' : not supported in this stage: intersection
+ERROR: 0:4: 'rayPayloadNV' : not supported in this stage: intersection
+ERROR: 0:8: 'gl_HitTNV' : undeclared identifier 
+ERROR: 0:9: 'gl_HitKindNV' : undeclared identifier 
+ERROR: 0:10: 'traceNV' : no matching overloaded function found 
 ERROR: 5 compilation errors.  No code generated.
 
 

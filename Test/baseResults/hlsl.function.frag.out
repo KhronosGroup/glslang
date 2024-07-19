@@ -1,6 +1,6 @@
 hlsl.function.frag
-ERROR: 0:29:12: 'fun1' : unknown variable 
-ERROR: 0:29:16: 'return' : type does not match, or is not convertible to, the function's return type 
+ERROR: 0:29: 'fun1' : unknown variable 
+ERROR: 0:29: 'return' : type does not match, or is not convertible to, the function's return type 
 ERROR: 2 compilation errors.  No code generated.
 
 

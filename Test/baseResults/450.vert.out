@@ -1,26 +1,26 @@
 450.vert
-ERROR: 0:12:1: 'out' : cannot be bool 
-ERROR: 0:13:15: 'sampler2D' : sampler/image types can only be used in uniform variables or function parameters: outo
-ERROR: 0:30:7: '::' : not supported 
-ERROR: 0:31:29: 'atomicCounterAdd' : no matching overloaded function found 
-ERROR: 0:32:34: 'atomicCounterSubtract' : no matching overloaded function found 
-ERROR: 0:33:29: 'atomicCounterMin' : no matching overloaded function found 
-ERROR: 0:34:29: 'atomicCounterMax' : no matching overloaded function found 
-ERROR: 0:35:29: 'atomicCounterAnd' : no matching overloaded function found 
-ERROR: 0:36:28: 'atomicCounterOr' : no matching overloaded function found 
-ERROR: 0:37:29: 'atomicCounterXor' : no matching overloaded function found 
-ERROR: 0:38:34: 'atomicCounterExchange' : no matching overloaded function found 
-ERROR: 0:39:38: 'atomicCounterCompSwap' : no matching overloaded function found 
-ERROR: 0:41:13: 'gl_BaseVertex' : undeclared identifier 
-ERROR: 0:41:29: 'gl_BaseInstance' : undeclared identifier 
-ERROR: 0:41:47: 'gl_DrawID' : undeclared identifier 
-ERROR: 0:41:9: '=' :  cannot convert from ' temp float' to ' temp int'
-ERROR: 0:44:21: 'anyInvocation' : no matching overloaded function found 
-ERROR: 0:45:22: 'allInvocations' : no matching overloaded function found 
-ERROR: 0:46:27: 'allInvocationsEqual' : no matching overloaded function found 
-ERROR: 0:48:1: 'extraneous semicolon' : not supported for this version or the enabled extensions 
-ERROR: 0:50:8: 'location' : cannot apply to uniform or buffer block 
-ERROR: 0:54:8: 'location' : cannot apply to uniform or buffer block 
+ERROR: 0:12: 'out' : cannot be bool 
+ERROR: 0:13: 'sampler2D' : sampler/image types can only be used in uniform variables or function parameters: outo
+ERROR: 0:30: '::' : not supported 
+ERROR: 0:31: 'atomicCounterAdd' : no matching overloaded function found 
+ERROR: 0:32: 'atomicCounterSubtract' : no matching overloaded function found 
+ERROR: 0:33: 'atomicCounterMin' : no matching overloaded function found 
+ERROR: 0:34: 'atomicCounterMax' : no matching overloaded function found 
+ERROR: 0:35: 'atomicCounterAnd' : no matching overloaded function found 
+ERROR: 0:36: 'atomicCounterOr' : no matching overloaded function found 
+ERROR: 0:37: 'atomicCounterXor' : no matching overloaded function found 
+ERROR: 0:38: 'atomicCounterExchange' : no matching overloaded function found 
+ERROR: 0:39: 'atomicCounterCompSwap' : no matching overloaded function found 
+ERROR: 0:41: 'gl_BaseVertex' : undeclared identifier 
+ERROR: 0:41: 'gl_BaseInstance' : undeclared identifier 
+ERROR: 0:41: 'gl_DrawID' : undeclared identifier 
+ERROR: 0:41: '=' :  cannot convert from ' temp float' to ' temp int'
+ERROR: 0:44: 'anyInvocation' : no matching overloaded function found 
+ERROR: 0:45: 'allInvocations' : no matching overloaded function found 
+ERROR: 0:46: 'allInvocationsEqual' : no matching overloaded function found 
+ERROR: 0:48: 'extraneous semicolon' : not supported for this version or the enabled extensions 
+ERROR: 0:50: 'location' : cannot apply to uniform or buffer block 
+ERROR: 0:54: 'location' : cannot apply to uniform or buffer block 
 ERROR: 22 compilation errors.  No code generated.
 
 

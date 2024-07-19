@@ -1,37 +1,37 @@
 runtimeArray.vert
-WARNING: 0:33:75: '[]' : assuming binding count of one for compile-time checking of binding numbers for unsized array 
-WARNING: 0:34:75: '[]' : assuming binding count of one for compile-time checking of binding numbers for unsized array 
-WARNING: 0:37:75: '[]' : assuming binding count of one for compile-time checking of binding numbers for unsized array 
-WARNING: 0:38:75: '[]' : assuming binding count of one for compile-time checking of binding numbers for unsized array 
-WARNING: 0:39:75: '[]' : assuming binding count of one for compile-time checking of binding numbers for unsized array 
-WARNING: 0:40:75: '[]' : assuming binding count of one for compile-time checking of binding numbers for unsized array 
-ERROR: 0:61:11: '[' :  array must be redeclared with a size before being indexed with a variable
-ERROR: 0:62:11: '[' :  array must be redeclared with a size before being indexed with a variable
-ERROR: 0:63:10: '[' :  array must be redeclared with a size before being indexed with a variable
-ERROR: 0:66:19: 'length' :  array must be declared with a size before using this method
-ERROR: 0:67:19: 'length' :  array must be declared with a size before using this method
-ERROR: 0:68:18: 'length' :  array must be declared with a size before using this method
-ERROR: 0:71:15: '[' :  array must be redeclared with a size before being indexed with a variable
-ERROR: 0:72:15: '[' :  array must be redeclared with a size before being indexed with a variable
-ERROR: 0:73:14: '[' :  array must be redeclared with a size before being indexed with a variable
-ERROR: 0:76:23: 'length' :  array must be declared with a size before using this method
-ERROR: 0:77:23: 'length' :  array must be declared with a size before using this method
-ERROR: 0:78:22: 'length' :  array must be declared with a size before using this method
-ERROR: 0:81:8: '[' :  array must be redeclared with a size before being indexed with a variable
-ERROR: 0:82:8: '[' :  array must be redeclared with a size before being indexed with a variable
-ERROR: 0:83:8: '[' :  array must be redeclared with a size before being indexed with a variable
-ERROR: 0:86:16: 'length' :  array must be declared with a size before using this method
-ERROR: 0:87:16: 'length' :  array must be declared with a size before using this method
-ERROR: 0:88:16: 'length' :  array must be declared with a size before using this method
-ERROR: 0:100:26: 'variable index' : required extension not requested: GL_EXT_nonuniform_qualifier
-ERROR: 0:101:26: 'variable index' : required extension not requested: GL_EXT_nonuniform_qualifier
-ERROR: 0:102:18: 'variable index' : required extension not requested: GL_EXT_nonuniform_qualifier
-ERROR: 0:103:18: 'variable index' : required extension not requested: GL_EXT_nonuniform_qualifier
-ERROR: 0:104:17: 'variable index' : required extension not requested: GL_EXT_nonuniform_qualifier
-ERROR: 0:105:17: 'variable index' : required extension not requested: GL_EXT_nonuniform_qualifier
-ERROR: 0:106:23: 'variable index' : required extension not requested: GL_EXT_nonuniform_qualifier
-ERROR: 0:107:23: 'variable index' : required extension not requested: GL_EXT_nonuniform_qualifier
-ERROR: 0:109:11: '[]' : array initializer must be sized 
+WARNING: 0:33: '[]' : assuming binding count of one for compile-time checking of binding numbers for unsized array 
+WARNING: 0:34: '[]' : assuming binding count of one for compile-time checking of binding numbers for unsized array 
+WARNING: 0:37: '[]' : assuming binding count of one for compile-time checking of binding numbers for unsized array 
+WARNING: 0:38: '[]' : assuming binding count of one for compile-time checking of binding numbers for unsized array 
+WARNING: 0:39: '[]' : assuming binding count of one for compile-time checking of binding numbers for unsized array 
+WARNING: 0:40: '[]' : assuming binding count of one for compile-time checking of binding numbers for unsized array 
+ERROR: 0:61: '[' :  array must be redeclared with a size before being indexed with a variable
+ERROR: 0:62: '[' :  array must be redeclared with a size before being indexed with a variable
+ERROR: 0:63: '[' :  array must be redeclared with a size before being indexed with a variable
+ERROR: 0:66: 'length' :  array must be declared with a size before using this method
+ERROR: 0:67: 'length' :  array must be declared with a size before using this method
+ERROR: 0:68: 'length' :  array must be declared with a size before using this method
+ERROR: 0:71: '[' :  array must be redeclared with a size before being indexed with a variable
+ERROR: 0:72: '[' :  array must be redeclared with a size before being indexed with a variable
+ERROR: 0:73: '[' :  array must be redeclared with a size before being indexed with a variable
+ERROR: 0:76: 'length' :  array must be declared with a size before using this method
+ERROR: 0:77: 'length' :  array must be declared with a size before using this method
+ERROR: 0:78: 'length' :  array must be declared with a size before using this method
+ERROR: 0:81: '[' :  array must be redeclared with a size before being indexed with a variable
+ERROR: 0:82: '[' :  array must be redeclared with a size before being indexed with a variable
+ERROR: 0:83: '[' :  array must be redeclared with a size before being indexed with a variable
+ERROR: 0:86: 'length' :  array must be declared with a size before using this method
+ERROR: 0:87: 'length' :  array must be declared with a size before using this method
+ERROR: 0:88: 'length' :  array must be declared with a size before using this method
+ERROR: 0:100: 'variable index' : required extension not requested: GL_EXT_nonuniform_qualifier
+ERROR: 0:101: 'variable index' : required extension not requested: GL_EXT_nonuniform_qualifier
+ERROR: 0:102: 'variable index' : required extension not requested: GL_EXT_nonuniform_qualifier
+ERROR: 0:103: 'variable index' : required extension not requested: GL_EXT_nonuniform_qualifier
+ERROR: 0:104: 'variable index' : required extension not requested: GL_EXT_nonuniform_qualifier
+ERROR: 0:105: 'variable index' : required extension not requested: GL_EXT_nonuniform_qualifier
+ERROR: 0:106: 'variable index' : required extension not requested: GL_EXT_nonuniform_qualifier
+ERROR: 0:107: 'variable index' : required extension not requested: GL_EXT_nonuniform_qualifier
+ERROR: 0:109: '[]' : array initializer must be sized 
 ERROR: 27 compilation errors.  No code generated.
 
 

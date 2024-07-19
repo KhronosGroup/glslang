@@ -1,8 +1,8 @@
 invalidSwizzle.vert
-ERROR: 0:7:16: 'rr' : does not apply to this type:  uniform sampler2D
-ERROR: 0:7:10: '=' :  cannot convert from ' uniform sampler2D' to ' temp 2-component vector of float'
-ERROR: 0:8:9: 'xx' : does not apply to this type:  global void
-ERROR: 0:9:9: 'xy' : does not apply to this type:  global void
+ERROR: 0:7: 'rr' : does not apply to this type:  uniform sampler2D
+ERROR: 0:7: '=' :  cannot convert from ' uniform sampler2D' to ' temp 2-component vector of float'
+ERROR: 0:8: 'xx' : does not apply to this type:  global void
+ERROR: 0:9: 'xy' : does not apply to this type:  global void
 ERROR: 4 compilation errors.  No code generated.
 
 

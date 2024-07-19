@@ -1,5 +1,5 @@
 implicitInnerAtomicUint.frag
-ERROR: 0:2:41: '[]' : only outermost dimension of an array of arrays can be implicitly sized 
+ERROR: 0:2: '[]' : only outermost dimension of an array of arrays can be implicitly sized 
 ERROR: 1 compilation errors.  No code generated.
 
 

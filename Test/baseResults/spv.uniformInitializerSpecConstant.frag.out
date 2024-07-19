@@ -1,5 +1,5 @@
 spv.uniformInitializerSpecConstant.frag
-ERROR: 0:9:37: '=' : uniform initializers must be constant 'layout( location=4) uniform float'
+ERROR: 0:9: '=' : uniform initializers must be constant 'layout( location=4) uniform float'
 ERROR: 1 compilation errors.  No code generated.
 
 

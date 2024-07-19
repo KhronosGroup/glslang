@@ -1,20 +1,20 @@
 spv.ext.MissShader_Errors.rmiss
-ERROR: 0:3:1: 'hitAttributeEXT' : not supported in this stage: miss
-ERROR: 0:6:14: 'gl_PrimitiveID' : undeclared identifier 
-ERROR: 0:6:9: '=' :  cannot convert from ' temp float' to ' temp highp int'
-ERROR: 0:7:14: 'gl_InstanceID' : undeclared identifier (Did you mean gl_InstanceIndex?)
-ERROR: 0:7:9: '=' :  cannot convert from ' temp float' to ' temp highp int'
-ERROR: 0:8:14: 'gl_InstanceCustomIndexEXT' : undeclared identifier 
-ERROR: 0:8:9: '=' :  cannot convert from ' temp float' to ' temp highp int'
-ERROR: 0:9:18: 'gl_ObjectToWorldEXT' : undeclared identifier 
-ERROR: 0:9:12: '=' :  cannot convert from ' temp float' to ' temp highp 4X3 matrix of float'
-ERROR: 0:10:18: 'gl_WorldToObjectEXT' : undeclared identifier 
-ERROR: 0:10:12: '=' :  cannot convert from ' temp float' to ' temp highp 4X3 matrix of float'
-ERROR: 0:11:17: 'gl_HitTEXT' : undeclared identifier 
-ERROR: 0:12:17: 'gl_HitKindEXT' : undeclared identifier 
-ERROR: 0:13:34: 'reportIntersectionEXT' : no matching overloaded function found 
-ERROR: 0:14:5: 'ignoreIntersectionEXT' : not supported in this stage: miss
-ERROR: 0:15:5: 'terminateRayEXT' : not supported in this stage: miss
+ERROR: 0:3: 'hitAttributeEXT' : not supported in this stage: miss
+ERROR: 0:6: 'gl_PrimitiveID' : undeclared identifier 
+ERROR: 0:6: '=' :  cannot convert from ' temp float' to ' temp highp int'
+ERROR: 0:7: 'gl_InstanceID' : undeclared identifier (Did you mean gl_InstanceIndex?)
+ERROR: 0:7: '=' :  cannot convert from ' temp float' to ' temp highp int'
+ERROR: 0:8: 'gl_InstanceCustomIndexEXT' : undeclared identifier 
+ERROR: 0:8: '=' :  cannot convert from ' temp float' to ' temp highp int'
+ERROR: 0:9: 'gl_ObjectToWorldEXT' : undeclared identifier 
+ERROR: 0:9: '=' :  cannot convert from ' temp float' to ' temp highp 4X3 matrix of float'
+ERROR: 0:10: 'gl_WorldToObjectEXT' : undeclared identifier 
+ERROR: 0:10: '=' :  cannot convert from ' temp float' to ' temp highp 4X3 matrix of float'
+ERROR: 0:11: 'gl_HitTEXT' : undeclared identifier 
+ERROR: 0:12: 'gl_HitKindEXT' : undeclared identifier 
+ERROR: 0:13: 'reportIntersectionEXT' : no matching overloaded function found 
+ERROR: 0:14: 'ignoreIntersectionEXT' : not supported in this stage: miss
+ERROR: 0:15: 'terminateRayEXT' : not supported in this stage: miss
 ERROR: 16 compilation errors.  No code generated.
 
 

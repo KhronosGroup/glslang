@@ -1,11 +1,11 @@
 150.vert
-ERROR: 0:18:5: 'gl_ClipVertex' : undeclared identifier 
-ERROR: 0:18:19: 'assign' :  cannot convert from ' in 4-component vector of float' to ' temp float'
-ERROR: 0:26:5: 'a' : cannot redeclare a user-block member array 
-ERROR: 0:28:4: 'double' : Reserved word. 
-ERROR: 0:28:4: 'double' : not supported for this version or the enabled extensions 
-ERROR: 0:28:1: 'vertex-shader `double` type input' : not supported for this version or the enabled extensions 
-ERROR: 0:3001:8: '#error' : line of this error should be 3001  
+ERROR: 0:18: 'gl_ClipVertex' : undeclared identifier 
+ERROR: 0:18: 'assign' :  cannot convert from ' in 4-component vector of float' to ' temp float'
+ERROR: 0:26: 'a' : cannot redeclare a user-block member array 
+ERROR: 0:28: 'double' : Reserved word. 
+ERROR: 0:28: 'double' : not supported for this version or the enabled extensions 
+ERROR: 0:28: 'vertex-shader `double` type input' : not supported for this version or the enabled extensions 
+ERROR: 0:3001: '#error' : line of this error should be 3001  
 ERROR: 7 compilation errors.  No code generated.
 
 

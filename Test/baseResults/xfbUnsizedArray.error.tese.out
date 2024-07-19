@@ -1,5 +1,5 @@
 xfbUnsizedArray.error.tese
-ERROR: 0:4:34: 'xfb_offset' : unsized array in buffer 0
+ERROR: 0:4: 'xfb_offset' : unsized array in buffer 0
 ERROR: 1 compilation errors.  No code generated.
 
 

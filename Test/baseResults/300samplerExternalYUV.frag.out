@@ -1,14 +1,14 @@
 300samplerExternalYUV.frag
-ERROR: 0:12:30: 'texture2D' : no matching overloaded function found 
-ERROR: 0:13:35: 'texture2D' : no matching overloaded function found 
-ERROR: 0:14:33: 'texture2D' : no matching overloaded function found 
-ERROR: 0:15:34: 'texture2DProj' : no matching overloaded function found 
-ERROR: 0:16:34: 'texture2DProj' : no matching overloaded function found 
-ERROR: 0:29:30: 'texture3D' : no matching overloaded function found 
-ERROR: 0:30:42: 'texture2DProjLod' : no matching overloaded function found 
-ERROR: 0:31:28: 'texture' : no matching overloaded function found 
-ERROR: 0:32:40: 'textureProjLod' : no matching overloaded function found 
-ERROR: 0:37:40: '' :  syntax error, unexpected IDENTIFIER, expecting LEFT_BRACE or COMMA or SEMICOLON
+ERROR: 0:12: 'texture2D' : no matching overloaded function found 
+ERROR: 0:13: 'texture2D' : no matching overloaded function found 
+ERROR: 0:14: 'texture2D' : no matching overloaded function found 
+ERROR: 0:15: 'texture2DProj' : no matching overloaded function found 
+ERROR: 0:16: 'texture2DProj' : no matching overloaded function found 
+ERROR: 0:29: 'texture3D' : no matching overloaded function found 
+ERROR: 0:30: 'texture2DProjLod' : no matching overloaded function found 
+ERROR: 0:31: 'texture' : no matching overloaded function found 
+ERROR: 0:32: 'textureProjLod' : no matching overloaded function found 
+ERROR: 0:37: '' :  syntax error, unexpected IDENTIFIER, expecting LEFT_BRACE or COMMA or SEMICOLON
 ERROR: 10 compilation errors.  No code generated.
 
 

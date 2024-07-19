@@ -1,5 +1,5 @@
 310runtimeArray.vert
-ERROR: 0:9:1: '' : array size required 
+ERROR: 0:9: '' : array size required 
 ERROR: 1 compilation errors.  No code generated.
 
 

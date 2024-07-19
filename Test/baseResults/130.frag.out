@@ -1,36 +1,36 @@
 130.frag
-ERROR: 0:25:44: 'textureGather(...)' : not supported for this version or the enabled extensions 
-ERROR: 0:35:14: 'redeclaration' : cannot change the type of gl_Color
-ERROR: 0:38:14: 'gl_Color' : redeclaring non-array as array 
-ERROR: 0:39:6: 'redeclaration' : cannot change storage, memory, or auxiliary qualification of gl_Color
-WARNING: 0:45:44: extension GL_ARB_texture_gather is being used for textureGather(...)
-ERROR: 0:62:8: '<' :  wrong operand types: no operation '<' exists that takes a left-hand operand of type ' temp 3-component vector of bool' and a right operand of type ' temp 3-component vector of bool' (or there is no acceptable conversion)
-ERROR: 0:63:9: '>' :  wrong operand types: no operation '>' exists that takes a left-hand operand of type ' temp 3-component vector of uint' and a right operand of type ' temp 3-component vector of uint' (or there is no acceptable conversion)
-ERROR: 0:64:17: '>=' :  wrong operand types: no operation '>=' exists that takes a left-hand operand of type ' const 2-component vector of uint' and a right operand of type ' const 2-component vector of uint' (or there is no acceptable conversion)
-ERROR: 0:65:19: 'gl_NumSamples' : required extension not requested: GL_ARB_sample_shading
-ERROR: 0:82:55: 'textureGatherOffset' : no matching overloaded function found 
-ERROR: 0:82:7: 'assign' :  cannot convert from ' const float' to ' temp 4-component vector of float'
-ERROR: 0:83:57: 'textureGatherOffset(...)' : not supported for this version or the enabled extensions 
-ERROR: 0:86:62: 'textureGatherOffset(...)' : not supported for this version or the enabled extensions 
-ERROR: 0:87:59: 'textureGatherOffset(...)' : not supported for this version or the enabled extensions 
-WARNING: 0:91:39: '#extension' : extension is only partially supported: GL_ARB_gpu_shader5
-ERROR: 0:123:5: 'line continuation' : not supported for this version or the enabled extensions 
-ERROR: 0:129:8: 'uniform block' : not supported for this version or the enabled extensions 
-ERROR: 0:143:11: 'length' : does not operate on this type:  temp bool
-ERROR: 0:143:18: 'boolb' : can't use function syntax on variable 
-ERROR: 0:144:15: 'length' : does not operate on this type:  temp float
-ERROR: 0:144:11: '' : function call, method, or subroutine call expected 
-ERROR: 0:144:22: '' : no matching overloaded function found 
-ERROR: 0:145:8: 'length' : incomplete method syntax 
-ERROR: 0:146:16: 'length' : method does not accept any arguments 
-ERROR: 0:149:10: 'gl_FogFragCoord' : identifiers starting with "gl_" are reserved 
-ERROR: 0:154:1: 'int' : must be qualified as flat in
-ERROR: 0:154:8: 'redeclaration' : cannot change the type of gl_FogFragCoord
-ERROR: 0:156:8: 'early_fragment_tests' : not supported for this version or the enabled extensions 
-ERROR: 0:157:8: 'image load store' : not supported for this version or the enabled extensions 
-ERROR: 0:157:22: 'iimage2D' : Reserved word. 
-ERROR: 0:172:8: 'early_fragment_tests' : can only apply to 'in' 
-ERROR: 0:176:35: 'location qualifier on uniform or buffer' : not supported for this version or the enabled extensions 
+ERROR: 0:25: 'textureGather(...)' : not supported for this version or the enabled extensions 
+ERROR: 0:35: 'redeclaration' : cannot change the type of gl_Color
+ERROR: 0:38: 'gl_Color' : redeclaring non-array as array 
+ERROR: 0:39: 'redeclaration' : cannot change storage, memory, or auxiliary qualification of gl_Color
+WARNING: 0:45: extension GL_ARB_texture_gather is being used for textureGather(...)
+ERROR: 0:62: '<' :  wrong operand types: no operation '<' exists that takes a left-hand operand of type ' temp 3-component vector of bool' and a right operand of type ' temp 3-component vector of bool' (or there is no acceptable conversion)
+ERROR: 0:63: '>' :  wrong operand types: no operation '>' exists that takes a left-hand operand of type ' temp 3-component vector of uint' and a right operand of type ' temp 3-component vector of uint' (or there is no acceptable conversion)
+ERROR: 0:64: '>=' :  wrong operand types: no operation '>=' exists that takes a left-hand operand of type ' const 2-component vector of uint' and a right operand of type ' const 2-component vector of uint' (or there is no acceptable conversion)
+ERROR: 0:65: 'gl_NumSamples' : required extension not requested: GL_ARB_sample_shading
+ERROR: 0:82: 'textureGatherOffset' : no matching overloaded function found 
+ERROR: 0:82: 'assign' :  cannot convert from ' const float' to ' temp 4-component vector of float'
+ERROR: 0:83: 'textureGatherOffset(...)' : not supported for this version or the enabled extensions 
+ERROR: 0:86: 'textureGatherOffset(...)' : not supported for this version or the enabled extensions 
+ERROR: 0:87: 'textureGatherOffset(...)' : not supported for this version or the enabled extensions 
+WARNING: 0:91: '#extension' : extension is only partially supported: GL_ARB_gpu_shader5
+ERROR: 0:123: 'line continuation' : not supported for this version or the enabled extensions 
+ERROR: 0:129: 'uniform block' : not supported for this version or the enabled extensions 
+ERROR: 0:143: 'length' : does not operate on this type:  temp bool
+ERROR: 0:143: 'boolb' : can't use function syntax on variable 
+ERROR: 0:144: 'length' : does not operate on this type:  temp float
+ERROR: 0:144: '' : function call, method, or subroutine call expected 
+ERROR: 0:144: '' : no matching overloaded function found 
+ERROR: 0:145: 'length' : incomplete method syntax 
+ERROR: 0:146: 'length' : method does not accept any arguments 
+ERROR: 0:149: 'gl_FogFragCoord' : identifiers starting with "gl_" are reserved 
+ERROR: 0:154: 'int' : must be qualified as flat in
+ERROR: 0:154: 'redeclaration' : cannot change the type of gl_FogFragCoord
+ERROR: 0:156: 'early_fragment_tests' : not supported for this version or the enabled extensions 
+ERROR: 0:157: 'image load store' : not supported for this version or the enabled extensions 
+ERROR: 0:157: 'iimage2D' : Reserved word. 
+ERROR: 0:172: 'early_fragment_tests' : can only apply to 'in' 
+ERROR: 0:176: 'location qualifier on uniform or buffer' : not supported for this version or the enabled extensions 
 ERROR: 30 compilation errors.  No code generated.
 
 

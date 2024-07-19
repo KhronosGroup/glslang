@@ -1,5 +1,5 @@
 spv.specConstArrayCheck.vert
-ERROR: 0:13:11: '[' :  array index out of range '6'
+ERROR: 0:13: '[' :  array index out of range '6'
 ERROR: 1 compilation errors.  No code generated.
 
 

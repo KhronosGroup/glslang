@@ -1,5 +1,5 @@
 hlsl.sample.basic.dx10.frag
-WARNING: 0:4:5: 'immediate sampler state' : unimplemented 
+WARNING: 0:4: 'immediate sampler state' : unimplemented 
 
 Shader version: 500
 gl_FragCoord origin is upper left

@@ -1,5 +1,5 @@
 spv.subgroupBallotNeg.comp
-ERROR: 0:32:76: 'id' : argument must be compile-time constant 
+ERROR: 0:32: 'id' : argument must be compile-time constant 
 ERROR: 1 compilation errors.  No code generated.
 
 

@@ -1,9 +1,9 @@
 450.frag
-ERROR: 0:70:58: 'offsets' : argument must be compile-time constant 
-ERROR: 0:71:68: 'offsets' : argument must be compile-time constant 
-ERROR: 0:72:73: 'offsets' : argument must be compile-time constant 
-ERROR: 0:88:8: 'location' : cannot use in a block array where new locations are needed for each block element 
-ERROR: 0:93:33: 'early_fragment_tests' : can only apply to a standalone qualifier 
+ERROR: 0:70: 'offsets' : argument must be compile-time constant 
+ERROR: 0:71: 'offsets' : argument must be compile-time constant 
+ERROR: 0:72: 'offsets' : argument must be compile-time constant 
+ERROR: 0:88: 'location' : cannot use in a block array where new locations are needed for each block element 
+ERROR: 0:93: 'early_fragment_tests' : can only apply to a standalone qualifier 
 ERROR: 5 compilation errors.  No code generated.
 
 

@@ -1,29 +1,29 @@
 decls.frag
-ERROR: 0:19:6: 'vi4' : illegal use of type 'void' 
-ERROR: 0:20:6: 'vj' : illegal use of type 'void' 
-ERROR: 0:20:10: 'vk5' : illegal use of type 'void' 
-ERROR: 0:21:6: 'vm2' : illegal use of type 'void' 
-ERROR: 0:21:30: 'vm3' : illegal use of type 'void' 
-ERROR: 0:22:6: 'vn8' : illegal use of type 'void' 
-ERROR: 0:22:38: 'vp' : illegal use of type 'void' 
-ERROR: 0:25:11: 'cij' : variables with qualifier 'const' must be initialized 
-ERROR: 0:27:44: 'cip' : variables with qualifier 'const' must be initialized 
-ERROR: 0:34:5: 'gl_vi4' : identifiers starting with "gl_" are reserved 
-ERROR: 0:35:5: 'gl_vj' : identifiers starting with "gl_" are reserved 
-ERROR: 0:35:12: 'gl_vk5' : identifiers starting with "gl_" are reserved 
-ERROR: 0:36:5: 'gl_vm2' : identifiers starting with "gl_" are reserved 
-ERROR: 0:36:32: 'gl_vm3' : identifiers starting with "gl_" are reserved 
-ERROR: 0:37:5: 'gl_vn8' : identifiers starting with "gl_" are reserved 
-ERROR: 0:37:40: 'gl_vp' : identifiers starting with "gl_" are reserved 
-ERROR: 0:42:16: '' : boolean expression expected 
-ERROR: 0:43:17: 'gl_cond' : identifiers starting with "gl_" are reserved 
-WARNING: 0:46:5: 'foob__vi4' : identifiers containing consecutive underscores ("__") are reserved 
-WARNING: 0:47:5: 'foob__vj' : identifiers containing consecutive underscores ("__") are reserved 
-WARNING: 0:47:15: 'foob__vk5' : identifiers containing consecutive underscores ("__") are reserved 
-WARNING: 0:48:5: '__foobvm2' : identifiers containing consecutive underscores ("__") are reserved 
-WARNING: 0:48:35: '__foobvm3' : identifiers containing consecutive underscores ("__") are reserved 
-WARNING: 0:49:5: 'foob__vn8' : identifiers containing consecutive underscores ("__") are reserved 
-WARNING: 0:49:43: 'foob__vp' : identifiers containing consecutive underscores ("__") are reserved 
+ERROR: 0:19: 'vi4' : illegal use of type 'void' 
+ERROR: 0:20: 'vj' : illegal use of type 'void' 
+ERROR: 0:20: 'vk5' : illegal use of type 'void' 
+ERROR: 0:21: 'vm2' : illegal use of type 'void' 
+ERROR: 0:21: 'vm3' : illegal use of type 'void' 
+ERROR: 0:22: 'vn8' : illegal use of type 'void' 
+ERROR: 0:22: 'vp' : illegal use of type 'void' 
+ERROR: 0:25: 'cij' : variables with qualifier 'const' must be initialized 
+ERROR: 0:27: 'cip' : variables with qualifier 'const' must be initialized 
+ERROR: 0:34: 'gl_vi4' : identifiers starting with "gl_" are reserved 
+ERROR: 0:35: 'gl_vj' : identifiers starting with "gl_" are reserved 
+ERROR: 0:35: 'gl_vk5' : identifiers starting with "gl_" are reserved 
+ERROR: 0:36: 'gl_vm2' : identifiers starting with "gl_" are reserved 
+ERROR: 0:36: 'gl_vm3' : identifiers starting with "gl_" are reserved 
+ERROR: 0:37: 'gl_vn8' : identifiers starting with "gl_" are reserved 
+ERROR: 0:37: 'gl_vp' : identifiers starting with "gl_" are reserved 
+ERROR: 0:42: '' : boolean expression expected 
+ERROR: 0:43: 'gl_cond' : identifiers starting with "gl_" are reserved 
+WARNING: 0:46: 'foob__vi4' : identifiers containing consecutive underscores ("__") are reserved 
+WARNING: 0:47: 'foob__vj' : identifiers containing consecutive underscores ("__") are reserved 
+WARNING: 0:47: 'foob__vk5' : identifiers containing consecutive underscores ("__") are reserved 
+WARNING: 0:48: '__foobvm2' : identifiers containing consecutive underscores ("__") are reserved 
+WARNING: 0:48: '__foobvm3' : identifiers containing consecutive underscores ("__") are reserved 
+WARNING: 0:49: 'foob__vn8' : identifiers containing consecutive underscores ("__") are reserved 
+WARNING: 0:49: 'foob__vp' : identifiers containing consecutive underscores ("__") are reserved 
 ERROR: 18 compilation errors.  No code generated.
 
 

@@ -1,39 +1,39 @@
 150.geom
-ERROR: 0:15:1: 'fromVertex' : block instance name redefinition 
-ERROR: 0:19:5: 'fromVertex' : redefinition 
-ERROR: 0:21:1: 'fooC' : block instance name redefinition 
-ERROR: 0:29:23: 'if the version is 150 , the EmitStreamVertex and EndStreamPrimitive only support at extension GL_ARB_gpu_shader5' : required extension not requested: GL_ARB_gpu_shader5
-ERROR: 0:30:25: 'if the version is 150 , the EmitStreamVertex and EndStreamPrimitive only support at extension GL_ARB_gpu_shader5' : required extension not requested: GL_ARB_gpu_shader5
-ERROR: 0:44:8: 'stream' : can only be used on an output 
-ERROR: 0:45:8: 'stream' : can only be used on an output 
-ERROR: 0:46:32: 'stream' : can only be used on an output 
-ERROR: 0:47:38: 'stream' : can only be used on an output 
-ERROR: 0:47:8: 'stream' : can only be used on an output 
-ERROR: 0:60:29: 'stream' : member cannot contradict block 
-ERROR: 0:66:8: 'max_vertices' : too large, must be less than gl_MaxGeometryOutputVertices 
-ERROR: 0:66:8: 'max_vertices' : cannot change previously set layout value 
-ERROR: 0:67:17: 'max_vertices' : can only apply to a standalone qualifier 
-ERROR: 0:72:8: 'points' : cannot change previously set output primitive 
-ERROR: 0:73:8: 'points' : cannot change previously set output primitive 
-ERROR: 0:74:8: 'triangle_strip' : cannot apply to input 
-ERROR: 0:75:8: 'triangle_strip' : cannot apply to: uniform
-ERROR: 0:76:28: 'triangle_strip' : can only apply to a standalone qualifier 
-ERROR: 0:77:27: 'triangle_strip' : can only apply to a standalone qualifier 
-ERROR: 0:78:8: 'invocations' : not supported for this version or the enabled extensions 
-ERROR: 0:78:8: 'invocations' : can only apply to a standalone qualifier 
-ERROR: 0:80:12: 'invocations' : not supported for this version or the enabled extensions 
-ERROR: 0:80:12: 'invocations' : can only apply to a standalone qualifier 
-ERROR: 0:81:12: 'max_vertices' : can only apply to a standalone qualifier 
-ERROR: 0:82:12: 'triangle_strip' : can only apply to a standalone qualifier 
-ERROR: 0:85:8: 'lines' : cannot apply to 'out' 
-ERROR: 0:87:8: 'triangles' : cannot change previously set input primitive 
-ERROR: 0:88:8: 'triangles_adjacency' : cannot change previously set input primitive 
-ERROR: 0:89:8: 'invocations' : not supported for this version or the enabled extensions 
-ERROR: 0:92:28: 'stream' : member cannot contradict block 
-ERROR: 0:92:28: 'stream' : can only be used on an output 
-ERROR: 0:129:5: 'gl_ViewportIndex' : required extension not requested: GL_ARB_viewport_array
-ERROR: 0:129:24: 'gl_MaxViewports' : required extension not requested: GL_ARB_viewport_array
-ERROR: 0:139:9: 'gl_ViewportIndex' : identifiers starting with "gl_" are reserved 
+ERROR: 0:15: 'fromVertex' : block instance name redefinition 
+ERROR: 0:19: 'fromVertex' : redefinition 
+ERROR: 0:21: 'fooC' : block instance name redefinition 
+ERROR: 0:29: 'if the version is 150 , the EmitStreamVertex and EndStreamPrimitive only support at extension GL_ARB_gpu_shader5' : required extension not requested: GL_ARB_gpu_shader5
+ERROR: 0:30: 'if the version is 150 , the EmitStreamVertex and EndStreamPrimitive only support at extension GL_ARB_gpu_shader5' : required extension not requested: GL_ARB_gpu_shader5
+ERROR: 0:44: 'stream' : can only be used on an output 
+ERROR: 0:45: 'stream' : can only be used on an output 
+ERROR: 0:46: 'stream' : can only be used on an output 
+ERROR: 0:47: 'stream' : can only be used on an output 
+ERROR: 0:47: 'stream' : can only be used on an output 
+ERROR: 0:60: 'stream' : member cannot contradict block 
+ERROR: 0:66: 'max_vertices' : too large, must be less than gl_MaxGeometryOutputVertices 
+ERROR: 0:66: 'max_vertices' : cannot change previously set layout value 
+ERROR: 0:67: 'max_vertices' : can only apply to a standalone qualifier 
+ERROR: 0:72: 'points' : cannot change previously set output primitive 
+ERROR: 0:73: 'points' : cannot change previously set output primitive 
+ERROR: 0:74: 'triangle_strip' : cannot apply to input 
+ERROR: 0:75: 'triangle_strip' : cannot apply to: uniform
+ERROR: 0:76: 'triangle_strip' : can only apply to a standalone qualifier 
+ERROR: 0:77: 'triangle_strip' : can only apply to a standalone qualifier 
+ERROR: 0:78: 'invocations' : not supported for this version or the enabled extensions 
+ERROR: 0:78: 'invocations' : can only apply to a standalone qualifier 
+ERROR: 0:80: 'invocations' : not supported for this version or the enabled extensions 
+ERROR: 0:80: 'invocations' : can only apply to a standalone qualifier 
+ERROR: 0:81: 'max_vertices' : can only apply to a standalone qualifier 
+ERROR: 0:82: 'triangle_strip' : can only apply to a standalone qualifier 
+ERROR: 0:85: 'lines' : cannot apply to 'out' 
+ERROR: 0:87: 'triangles' : cannot change previously set input primitive 
+ERROR: 0:88: 'triangles_adjacency' : cannot change previously set input primitive 
+ERROR: 0:89: 'invocations' : not supported for this version or the enabled extensions 
+ERROR: 0:92: 'stream' : member cannot contradict block 
+ERROR: 0:92: 'stream' : can only be used on an output 
+ERROR: 0:129: 'gl_ViewportIndex' : required extension not requested: GL_ARB_viewport_array
+ERROR: 0:129: 'gl_MaxViewports' : required extension not requested: GL_ARB_viewport_array
+ERROR: 0:139: 'gl_ViewportIndex' : identifiers starting with "gl_" are reserved 
 ERROR: 35 compilation errors.  No code generated.
 
 

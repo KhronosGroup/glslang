@@ -1,63 +1,63 @@
 hlsl.intrinsics.negative.frag
-ERROR: 0:10:5: 'determinant' : ambiguous best function under implicit type conversion 
-ERROR: 0:25:5: 'normalize' : ambiguous best function under implicit type conversion 
-ERROR: 0:26:5: 'reflect' : ambiguous best function under implicit type conversion 
-ERROR: 0:27:5: 'refract' : ambiguous best function under implicit type conversion 
-ERROR: 0:28:5: 'refract' : no matching overloaded function found 
-ERROR: 0:30:5: 'transpose' : ambiguous best function under implicit type conversion 
-ERROR: 0:39:5: 'GetRenderTargetSamplePosition' : no matching overloaded function found 
-ERROR: 0:46:5: 'asdouble' : double2 conversion not implemented 
-ERROR: 0:47:5: 'CheckAccessFullyMapped' : no matching overloaded function found 
-ERROR: 0:49:5: 'cross' : no matching overloaded function found 
-ERROR: 0:50:5: 'D3DCOLORtoUBYTE4' : no matching overloaded function found 
-ERROR: 0:51:5: 'determinant' : no matching overloaded function found 
-ERROR: 0:57:5: 'transpose' : no matching overloaded function found 
-ERROR: 0:64:5: 'CheckAccessFullyMapped' : no matching overloaded function found 
-ERROR: 0:66:5: 'D3DCOLORtoUBYTE4' : no matching overloaded function found 
-ERROR: 0:67:5: 'determinant' : no matching overloaded function found 
-ERROR: 0:73:5: 'transpose' : no matching overloaded function found 
-ERROR: 0:81:5: 'CheckAccessFullyMapped' : no matching overloaded function found 
-ERROR: 0:84:5: 'determinant' : no matching overloaded function found 
-ERROR: 0:90:5: 'transpose' : no matching overloaded function found 
-ERROR: 0:117:12: 'countbits' : no matching overloaded function found 
-ERROR: 0:117:12: 'D3DCOLORtoUBYTE4' : no matching overloaded function found 
-ERROR: 0:117:12: 'cross' : no matching overloaded function found 
-ERROR: 0:117:12: 'f16tof32' : no matching overloaded function found 
-ERROR: 0:117:12: 'firstbithigh' : no matching overloaded function found 
-ERROR: 0:117:12: 'firstbitlow' : no matching overloaded function found 
-ERROR: 0:117:12: 'reversebits' : no matching overloaded function found 
-ERROR: 0:117:12: 'length' : no matching overloaded function found 
-ERROR: 0:117:12: 'noise' : no matching overloaded function found 
-ERROR: 0:117:12: 'normalize' : no matching overloaded function found 
-ERROR: 0:117:12: 'reflect' : no matching overloaded function found 
-ERROR: 0:117:12: 'refract' : no matching overloaded function found 
-ERROR: 0:117:12: 'reversebits' : no matching overloaded function found 
-ERROR: 0:125:12: 'countbits' : no matching overloaded function found 
-ERROR: 0:125:12: 'D3DCOLORtoUBYTE4' : no matching overloaded function found 
-ERROR: 0:125:12: 'cross' : no matching overloaded function found 
-ERROR: 0:125:12: 'f16tof32' : no matching overloaded function found 
-ERROR: 0:125:12: 'firstbithigh' : no matching overloaded function found 
-ERROR: 0:125:12: 'firstbitlow' : no matching overloaded function found 
-ERROR: 0:125:12: 'reversebits' : no matching overloaded function found 
-ERROR: 0:125:12: 'length' : no matching overloaded function found 
-ERROR: 0:125:12: 'noise' : no matching overloaded function found 
-ERROR: 0:125:12: 'normalize' : no matching overloaded function found 
-ERROR: 0:125:12: 'reflect' : no matching overloaded function found 
-ERROR: 0:125:12: 'refract' : no matching overloaded function found 
-ERROR: 0:125:12: 'reversebits' : no matching overloaded function found 
-ERROR: 0:133:12: 'countbits' : no matching overloaded function found 
-ERROR: 0:133:12: 'D3DCOLORtoUBYTE4' : no matching overloaded function found 
-ERROR: 0:133:12: 'cross' : no matching overloaded function found 
-ERROR: 0:133:12: 'f16tof32' : no matching overloaded function found 
-ERROR: 0:133:12: 'firstbithigh' : no matching overloaded function found 
-ERROR: 0:133:12: 'firstbitlow' : no matching overloaded function found 
-ERROR: 0:133:12: 'reversebits' : no matching overloaded function found 
-ERROR: 0:133:12: 'length' : no matching overloaded function found 
-ERROR: 0:133:12: 'noise' : no matching overloaded function found 
-ERROR: 0:133:12: 'normalize' : no matching overloaded function found 
-ERROR: 0:133:12: 'reflect' : no matching overloaded function found 
-ERROR: 0:133:12: 'refract' : no matching overloaded function found 
-ERROR: 0:133:12: 'reversebits' : no matching overloaded function found 
+ERROR: 0:10: 'determinant' : ambiguous best function under implicit type conversion 
+ERROR: 0:25: 'normalize' : ambiguous best function under implicit type conversion 
+ERROR: 0:26: 'reflect' : ambiguous best function under implicit type conversion 
+ERROR: 0:27: 'refract' : ambiguous best function under implicit type conversion 
+ERROR: 0:28: 'refract' : no matching overloaded function found 
+ERROR: 0:30: 'transpose' : ambiguous best function under implicit type conversion 
+ERROR: 0:39: 'GetRenderTargetSamplePosition' : no matching overloaded function found 
+ERROR: 0:46: 'asdouble' : double2 conversion not implemented 
+ERROR: 0:47: 'CheckAccessFullyMapped' : no matching overloaded function found 
+ERROR: 0:49: 'cross' : no matching overloaded function found 
+ERROR: 0:50: 'D3DCOLORtoUBYTE4' : no matching overloaded function found 
+ERROR: 0:51: 'determinant' : no matching overloaded function found 
+ERROR: 0:57: 'transpose' : no matching overloaded function found 
+ERROR: 0:64: 'CheckAccessFullyMapped' : no matching overloaded function found 
+ERROR: 0:66: 'D3DCOLORtoUBYTE4' : no matching overloaded function found 
+ERROR: 0:67: 'determinant' : no matching overloaded function found 
+ERROR: 0:73: 'transpose' : no matching overloaded function found 
+ERROR: 0:81: 'CheckAccessFullyMapped' : no matching overloaded function found 
+ERROR: 0:84: 'determinant' : no matching overloaded function found 
+ERROR: 0:90: 'transpose' : no matching overloaded function found 
+ERROR: 0:117: 'countbits' : no matching overloaded function found 
+ERROR: 0:117: 'D3DCOLORtoUBYTE4' : no matching overloaded function found 
+ERROR: 0:117: 'cross' : no matching overloaded function found 
+ERROR: 0:117: 'f16tof32' : no matching overloaded function found 
+ERROR: 0:117: 'firstbithigh' : no matching overloaded function found 
+ERROR: 0:117: 'firstbitlow' : no matching overloaded function found 
+ERROR: 0:117: 'reversebits' : no matching overloaded function found 
+ERROR: 0:117: 'length' : no matching overloaded function found 
+ERROR: 0:117: 'noise' : no matching overloaded function found 
+ERROR: 0:117: 'normalize' : no matching overloaded function found 
+ERROR: 0:117: 'reflect' : no matching overloaded function found 
+ERROR: 0:117: 'refract' : no matching overloaded function found 
+ERROR: 0:117: 'reversebits' : no matching overloaded function found 
+ERROR: 0:125: 'countbits' : no matching overloaded function found 
+ERROR: 0:125: 'D3DCOLORtoUBYTE4' : no matching overloaded function found 
+ERROR: 0:125: 'cross' : no matching overloaded function found 
+ERROR: 0:125: 'f16tof32' : no matching overloaded function found 
+ERROR: 0:125: 'firstbithigh' : no matching overloaded function found 
+ERROR: 0:125: 'firstbitlow' : no matching overloaded function found 
+ERROR: 0:125: 'reversebits' : no matching overloaded function found 
+ERROR: 0:125: 'length' : no matching overloaded function found 
+ERROR: 0:125: 'noise' : no matching overloaded function found 
+ERROR: 0:125: 'normalize' : no matching overloaded function found 
+ERROR: 0:125: 'reflect' : no matching overloaded function found 
+ERROR: 0:125: 'refract' : no matching overloaded function found 
+ERROR: 0:125: 'reversebits' : no matching overloaded function found 
+ERROR: 0:133: 'countbits' : no matching overloaded function found 
+ERROR: 0:133: 'D3DCOLORtoUBYTE4' : no matching overloaded function found 
+ERROR: 0:133: 'cross' : no matching overloaded function found 
+ERROR: 0:133: 'f16tof32' : no matching overloaded function found 
+ERROR: 0:133: 'firstbithigh' : no matching overloaded function found 
+ERROR: 0:133: 'firstbitlow' : no matching overloaded function found 
+ERROR: 0:133: 'reversebits' : no matching overloaded function found 
+ERROR: 0:133: 'length' : no matching overloaded function found 
+ERROR: 0:133: 'noise' : no matching overloaded function found 
+ERROR: 0:133: 'normalize' : no matching overloaded function found 
+ERROR: 0:133: 'reflect' : no matching overloaded function found 
+ERROR: 0:133: 'refract' : no matching overloaded function found 
+ERROR: 0:133: 'reversebits' : no matching overloaded function found 
 ERROR: 59 compilation errors.  No code generated.
 
 

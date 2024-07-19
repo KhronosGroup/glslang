@@ -1,17 +1,17 @@
 400.vert
-ERROR: 0:3:1: 'vertex-shader `double` type input' : not supported for this version or the enabled extensions 
-ERROR: 0:4:1: 'vertex-shader `double` type input' : not supported for this version or the enabled extensions 
-ERROR: 0:5:1: 'vertex-shader `double` type input' : not supported for this version or the enabled extensions 
-ERROR: 0:70:11: 'foo3' : no matching overloaded function found 
-ERROR: 0:76:11: 'foo3' : ambiguous best function under implicit type conversion 
-ERROR: 0:77:11: 'foo3' : ambiguous best function under implicit type conversion 
-ERROR: 0:78:11: 'foo3' : ambiguous best function under implicit type conversion 
-ERROR: 0:81:11: 'foo3' : ambiguous best function under implicit type conversion 
-ERROR: 0:82:11: 'foo3' : ambiguous best function under implicit type conversion 
-ERROR: 0:83:11: 'foo3' : ambiguous best function under implicit type conversion 
-ERROR: 0:86:11: 'foo3' : ambiguous best function under implicit type conversion 
-ERROR: 0:87:11: 'foo3' : ambiguous best function under implicit type conversion 
-ERROR: 0:88:11: 'foo3' : ambiguous best function under implicit type conversion 
+ERROR: 0:3: 'vertex-shader `double` type input' : not supported for this version or the enabled extensions 
+ERROR: 0:4: 'vertex-shader `double` type input' : not supported for this version or the enabled extensions 
+ERROR: 0:5: 'vertex-shader `double` type input' : not supported for this version or the enabled extensions 
+ERROR: 0:70: 'foo3' : no matching overloaded function found 
+ERROR: 0:76: 'foo3' : ambiguous best function under implicit type conversion 
+ERROR: 0:77: 'foo3' : ambiguous best function under implicit type conversion 
+ERROR: 0:78: 'foo3' : ambiguous best function under implicit type conversion 
+ERROR: 0:81: 'foo3' : ambiguous best function under implicit type conversion 
+ERROR: 0:82: 'foo3' : ambiguous best function under implicit type conversion 
+ERROR: 0:83: 'foo3' : ambiguous best function under implicit type conversion 
+ERROR: 0:86: 'foo3' : ambiguous best function under implicit type conversion 
+ERROR: 0:87: 'foo3' : ambiguous best function under implicit type conversion 
+ERROR: 0:88: 'foo3' : ambiguous best function under implicit type conversion 
 ERROR: 13 compilation errors.  No code generated.
 
 

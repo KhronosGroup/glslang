@@ -1,53 +1,53 @@
 320.frag
-ERROR: 0:3:1: 'output block' : not supported in this stage: fragment
-ERROR: 0:7:5: 'float' : type requires declaration of default precision qualifier 
-ERROR: 0:8:5: '' : cannot nest a structure definition inside a structure or block 
-ERROR: 0:16:31: 'location' : overlapping use of location 13
-ERROR: 0:18:1: 'inbname2' : Cannot reuse block name within the same interface: in
-ERROR: 0:23:1: 'badmember' : nameless block contains a member that already has a name at global scope 
-ERROR: 0:27:5: 'inbname' : redefinition 
-ERROR: 0:29:6: 'vAnon' : redefinition 
-ERROR: 0:43:8: 'origin_upper_left' : not supported with this profile: es
-ERROR: 0:43:27: 'pixel_center_integer' : not supported with this profile: es
-ERROR: 0:43:57: 'redeclaration' : cannot redeclare with different qualification: gl_FragCoord
-ERROR: 0:47:8: 'depth layout qualifier' : not supported with this profile: es
-ERROR: 0:51:18: 'assign' :  l-value required "gl_FragDepth" (can't modify gl_FragDepth if using early_fragment_tests)
-ERROR: 0:79:55: 'textureGatherOffsets(...)' : must be a compile-time constant: offsets argument
-ERROR: 0:124:41: 'rgba32f' : format requires readonly or writeonly memory qualifier 
-ERROR: 0:125:40: 'rgba8ui' : format requires readonly or writeonly memory qualifier 
-ERROR: 0:126:41: 'rgba16i' : format requires readonly or writeonly memory qualifier 
-ERROR: 0:152:37: 'imageAtomicMax' : only supported on image with format r32i or r32ui 
-ERROR: 0:153:37: 'imageAtomicMax' : only supported on image with format r32i or r32ui 
-ERROR: 0:154:42: 'imageAtomicExchange' : only supported on image with format r32f 
-ERROR: 0:157:1: 'centroid/sample/patch' : can't use auxiliary qualifier on a fragment output 
-ERROR: 0:158:1: 'flat/smooth/noperspective' : can't use interpolation qualifier on a fragment output 
-ERROR: 0:159:1: 'flat/smooth/noperspective' : can't use interpolation qualifier on a fragment output 
-ERROR: 0:160:1: 'noperspective' : Reserved word. 
-ERROR: 0:160:1: 'noperspective' : not supported for this version or the enabled extensions 
-ERROR: 0:160:1: 'flat/smooth/noperspective' : can't use interpolation qualifier on a fragment output 
-ERROR: 0:165:1: 'centroid/sample/patch' : can't use auxiliary qualifier on a fragment output 
-ERROR: 0:180:45: 'interpolateAtCentroid' : no matching overloaded function found 
-ERROR: 0:180:10: 'assign' :  cannot convert from ' const float' to ' temp mediump 3-component vector of float'
-ERROR: 0:182:51: 'interpolateAtCentroid' : first argument must be an interpolant, or interpolant-array element 
-ERROR: 0:184:46: 'interpolateAtSample' : no matching overloaded function found 
-ERROR: 0:184:10: 'assign' :  cannot convert from ' const float' to ' temp mediump 3-component vector of float'
-ERROR: 0:186:52: 'interpolateAtSample' : first argument must be an interpolant, or interpolant-array element 
-ERROR: 0:189:54: 'interpolateAtOffset' : no matching overloaded function found 
-ERROR: 0:189:10: 'assign' :  cannot convert from ' const float' to ' temp mediump 3-component vector of float'
-ERROR: 0:191:60: 'interpolateAtOffset' : first argument must be an interpolant, or interpolant-array element 
-ERROR: 0:192:62: 'interpolateAtOffset' : first argument must be an interpolant, or interpolant-array element 
-ERROR: 0:196:35: 'interpolateAtCentroid' : first argument must be an interpolant, or interpolant-array element 
-ERROR: 0:197:32: 'outp' : undeclared identifier 
-ERROR: 0:197:39: 'interpolateAtSample' : first argument must be an interpolant, or interpolant-array element 
-ERROR: 0:197:10: 'assign' :  cannot convert from ' global float' to ' temp mediump 4-component vector of float'
-ERROR: 0:217:8: 'blend equation' : can only apply to 'out' 
-ERROR: 0:218:42: 'blend equation' : can only apply to a standalone qualifier 
-ERROR: 0:219:42: 'blend equation' : can only apply to a standalone qualifier 
-ERROR: 0:220:38: 'blend equation' : can only apply to a standalone qualifier 
-ERROR: 0:221:38: 'blend equation' : can only apply to a standalone qualifier 
-ERROR: 0:222:22: 'blend equation' : can only apply to a standalone qualifier 
-ERROR: 0:223:8: 'blend_support' : unknown blend equation 
-ERROR: 0:225:10: 'fragment-shader array-of-array output' : not supported with this profile: es
+ERROR: 0:3: 'output block' : not supported in this stage: fragment
+ERROR: 0:7: 'float' : type requires declaration of default precision qualifier 
+ERROR: 0:8: '' : cannot nest a structure definition inside a structure or block 
+ERROR: 0:16: 'location' : overlapping use of location 13
+ERROR: 0:18: 'inbname2' : Cannot reuse block name within the same interface: in
+ERROR: 0:23: 'badmember' : nameless block contains a member that already has a name at global scope 
+ERROR: 0:27: 'inbname' : redefinition 
+ERROR: 0:29: 'vAnon' : redefinition 
+ERROR: 0:43: 'origin_upper_left' : not supported with this profile: es
+ERROR: 0:43: 'pixel_center_integer' : not supported with this profile: es
+ERROR: 0:43: 'redeclaration' : cannot redeclare with different qualification: gl_FragCoord
+ERROR: 0:47: 'depth layout qualifier' : not supported with this profile: es
+ERROR: 0:51: 'assign' :  l-value required "gl_FragDepth" (can't modify gl_FragDepth if using early_fragment_tests)
+ERROR: 0:79: 'textureGatherOffsets(...)' : must be a compile-time constant: offsets argument
+ERROR: 0:124: 'rgba32f' : format requires readonly or writeonly memory qualifier 
+ERROR: 0:125: 'rgba8ui' : format requires readonly or writeonly memory qualifier 
+ERROR: 0:126: 'rgba16i' : format requires readonly or writeonly memory qualifier 
+ERROR: 0:152: 'imageAtomicMax' : only supported on image with format r32i or r32ui 
+ERROR: 0:153: 'imageAtomicMax' : only supported on image with format r32i or r32ui 
+ERROR: 0:154: 'imageAtomicExchange' : only supported on image with format r32f 
+ERROR: 0:157: 'centroid/sample/patch' : can't use auxiliary qualifier on a fragment output 
+ERROR: 0:158: 'flat/smooth/noperspective' : can't use interpolation qualifier on a fragment output 
+ERROR: 0:159: 'flat/smooth/noperspective' : can't use interpolation qualifier on a fragment output 
+ERROR: 0:160: 'noperspective' : Reserved word. 
+ERROR: 0:160: 'noperspective' : not supported for this version or the enabled extensions 
+ERROR: 0:160: 'flat/smooth/noperspective' : can't use interpolation qualifier on a fragment output 
+ERROR: 0:165: 'centroid/sample/patch' : can't use auxiliary qualifier on a fragment output 
+ERROR: 0:180: 'interpolateAtCentroid' : no matching overloaded function found 
+ERROR: 0:180: 'assign' :  cannot convert from ' const float' to ' temp mediump 3-component vector of float'
+ERROR: 0:182: 'interpolateAtCentroid' : first argument must be an interpolant, or interpolant-array element 
+ERROR: 0:184: 'interpolateAtSample' : no matching overloaded function found 
+ERROR: 0:184: 'assign' :  cannot convert from ' const float' to ' temp mediump 3-component vector of float'
+ERROR: 0:186: 'interpolateAtSample' : first argument must be an interpolant, or interpolant-array element 
+ERROR: 0:189: 'interpolateAtOffset' : no matching overloaded function found 
+ERROR: 0:189: 'assign' :  cannot convert from ' const float' to ' temp mediump 3-component vector of float'
+ERROR: 0:191: 'interpolateAtOffset' : first argument must be an interpolant, or interpolant-array element 
+ERROR: 0:192: 'interpolateAtOffset' : first argument must be an interpolant, or interpolant-array element 
+ERROR: 0:196: 'interpolateAtCentroid' : first argument must be an interpolant, or interpolant-array element 
+ERROR: 0:197: 'outp' : undeclared identifier 
+ERROR: 0:197: 'interpolateAtSample' : first argument must be an interpolant, or interpolant-array element 
+ERROR: 0:197: 'assign' :  cannot convert from ' global float' to ' temp mediump 4-component vector of float'
+ERROR: 0:217: 'blend equation' : can only apply to 'out' 
+ERROR: 0:218: 'blend equation' : can only apply to a standalone qualifier 
+ERROR: 0:219: 'blend equation' : can only apply to a standalone qualifier 
+ERROR: 0:220: 'blend equation' : can only apply to a standalone qualifier 
+ERROR: 0:221: 'blend equation' : can only apply to a standalone qualifier 
+ERROR: 0:222: 'blend equation' : can only apply to a standalone qualifier 
+ERROR: 0:223: 'blend_support' : unknown blend equation 
+ERROR: 0:225: 'fragment-shader array-of-array output' : not supported with this profile: es
 ERROR: 49 compilation errors.  No code generated.
 
 

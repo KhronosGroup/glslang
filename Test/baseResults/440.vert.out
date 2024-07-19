@@ -1,66 +1,66 @@
 440.vert
-ERROR: 0:8:45: 'component' : type overflows the available 4 components 
-ERROR: 0:15:22: 'component' : component is too large 
-ERROR: 0:23:46: 'location' : overlapping use of location 4
-ERROR: 0:26:46: 'location' : overlapping use of location 2
-ERROR: 0:31:48: 'location' : overlapping use of location 15
-ERROR: 0:32:48: 'location' : overlapping use of location 10
-ERROR: 0:37:47: 'location' : overlapping use of location 20
-ERROR: 0:39:47: 'component' : type overflows the available 4 components 
-ERROR: 0:40:47: 'component' : type overflows the available 4 components 
-ERROR: 0:42:47: 'component' : cannot apply to a matrix, structure, or block 
-ERROR: 0:43:60: 'component' : cannot apply to a matrix, structure, or block 
-ERROR: 0:43:60: 'location' : the aliases sharing the location 33 must be the same basic type and interpolation qualification
-ERROR: 0:44:8: 'component' : cannot apply to a matrix, structure, or block 
-ERROR: 0:44:8: 'location' : the aliases sharing the location 34 must be the same basic type and interpolation qualification
-ERROR: 0:46:33: 'component' : must specify 'location' to use 'component' 
-ERROR: 0:52:51: 'location' : overlapping use of location 40
-ERROR: 0:54:51: 'component' : type overflows the available 4 components 
-ERROR: 0:55:51: 'component' : type overflows the available 4 components 
-ERROR: 0:57:51: 'component' : cannot apply to a matrix, structure, or block 
-ERROR: 0:58:48: 'component' : cannot apply to a matrix, structure, or block 
-ERROR: 0:58:48: 'location' : the aliases sharing the location 43 must be the same basic type and interpolation qualification
-ERROR: 0:61:8: 'location/component/index' : cannot declare a default, use a full declaration 
-ERROR: 0:64:47: 'location' : the aliases sharing the location 50 must be the same basic type and interpolation qualification
-ERROR: 0:66:49: 'component' : doubles cannot start on an odd-numbered component 
-ERROR: 0:67:48: 'component' : type overflows the available 4 components 
-ERROR: 0:69:47: 'location' : the aliases sharing the location 53 must be the same basic type and interpolation qualification
-ERROR: 0:71:33: 'location' : overlapping use of location 55
-ERROR: 0:75:48: 'location' : overlapping use of location 57
-ERROR: 0:78:50: 'location' : overlapping use of location 59
-ERROR: 0:95:32: 'xfb layout qualifier' : can only be used on an output 
-ERROR: 0:101:8: 'xfb_offset' : cannot declare a default, use a full declaration 
-ERROR: 0:111:31: 'xfb_buffer' : member cannot contradict block (or what block inherited from global) 
-ERROR: 0:116:61: 'xfb_buffer' : member cannot contradict block (or what block inherited from global) 
-ERROR: 0:116:61: 'xfb_offset' : overlapping offsets at offset 32 in buffer 3
-ERROR: 0:117:45: 'xfb_offset' : overlapping offsets at offset 0 in buffer 2
-ERROR: 0:119:33: 'xfb_offset' : overlapping offsets at offset 24 in buffer 2
-ERROR: 0:122:8: 'xfb_stride' : all stride settings must match for xfb buffer 15
-ERROR: 0:126:32: 'xfb_offset' : overlapping offsets at offset 4 in buffer 1
-ERROR: 0:128:8: 'xfb_stride' : all stride settings must match for xfb buffer 3
-ERROR: 0:129:33: 'xfb_stride' : all stride settings must match for xfb buffer 3
-ERROR: 0:133:32: 'xfb_stride' : all stride settings must match for xfb buffer 3
-ERROR: 0:131:8: 'xfb_stride' : all stride settings must match for xfb buffer 3
-ERROR: 0:152:12: 'xfb_offset' : overlapping offsets at offset 64 in buffer 0
-ERROR: 0:157:12: 'xfb_buffer' : buffer is too large: gl_MaxTransformFeedbackBuffers is 4
-ERROR: 0:158:31: 'xfb_offset' : must be a multiple of size of first component 
-ERROR: 0:159:29: 'xfb_offset' : type contains double or 64-bit integer; xfb_offset must be a multiple of 8 
-ERROR: 0:161:31: 'xfb_offset' : must be a multiple of size of first component 
-ERROR: 0:162:34: 'xfb_offset' : type contains double or 64-bit integer; xfb_offset must be a multiple of 8 
-ERROR: 0:166:8: 'xfb_buffer' : buffer is too large: gl_MaxTransformFeedbackBuffers is 4
-ERROR: 0:169:8: 'xfb_buffer' : buffer is too large: gl_MaxTransformFeedbackBuffers is 4
-ERROR: 0:169:22: 'xfb_stride' : 1/4 stride is too large: gl_MaxTransformFeedbackInterleavedComponents is 64
-ERROR: 0:171:12: 'xfb_buffer' : buffer is too large: gl_MaxTransformFeedbackBuffers is 4
-ERROR: 0:178:8: 'xfb_offset' : overlapping offsets at offset 36 in buffer 3
-ERROR: 0:179:34: 'xfb_buffer' : member cannot contradict block (or what block inherited from global) 
-ERROR: 0:178:8: 'xfb_offset' : overlapping offsets at offset 32 in buffer 3
-ERROR: 0:185:12: 'gl_BaseVertexARB' : required extension not requested: GL_ARB_shader_draw_parameters
-ERROR: 0:185:31: 'gl_BaseInstanceARB' : required extension not requested: GL_ARB_shader_draw_parameters
-ERROR: 0:185:52: 'gl_DrawIDARB' : required extension not requested: GL_ARB_shader_draw_parameters
-ERROR: 0:193:22: 'assign' :  l-value required "gl_BaseVertexARB" (can't modify shader input)
-ERROR: 0:194:24: 'assign' :  l-value required "gl_BaseInstanceARB" (can't modify shader input)
-ERROR: 0:195:18: 'assign' :  l-value required "gl_DrawIDARB" (can't modify shader input)
-ERROR: 0:196:5: 'glBaseInstanceARB' : undeclared identifier 
+ERROR: 0:8: 'component' : type overflows the available 4 components 
+ERROR: 0:15: 'component' : component is too large 
+ERROR: 0:23: 'location' : overlapping use of location 4
+ERROR: 0:26: 'location' : overlapping use of location 2
+ERROR: 0:31: 'location' : overlapping use of location 15
+ERROR: 0:32: 'location' : overlapping use of location 10
+ERROR: 0:37: 'location' : overlapping use of location 20
+ERROR: 0:39: 'component' : type overflows the available 4 components 
+ERROR: 0:40: 'component' : type overflows the available 4 components 
+ERROR: 0:42: 'component' : cannot apply to a matrix, structure, or block 
+ERROR: 0:43: 'component' : cannot apply to a matrix, structure, or block 
+ERROR: 0:43: 'location' : the aliases sharing the location 33 must be the same basic type and interpolation qualification
+ERROR: 0:44: 'component' : cannot apply to a matrix, structure, or block 
+ERROR: 0:44: 'location' : the aliases sharing the location 34 must be the same basic type and interpolation qualification
+ERROR: 0:46: 'component' : must specify 'location' to use 'component' 
+ERROR: 0:52: 'location' : overlapping use of location 40
+ERROR: 0:54: 'component' : type overflows the available 4 components 
+ERROR: 0:55: 'component' : type overflows the available 4 components 
+ERROR: 0:57: 'component' : cannot apply to a matrix, structure, or block 
+ERROR: 0:58: 'component' : cannot apply to a matrix, structure, or block 
+ERROR: 0:58: 'location' : the aliases sharing the location 43 must be the same basic type and interpolation qualification
+ERROR: 0:61: 'location/component/index' : cannot declare a default, use a full declaration 
+ERROR: 0:64: 'location' : the aliases sharing the location 50 must be the same basic type and interpolation qualification
+ERROR: 0:66: 'component' : doubles cannot start on an odd-numbered component 
+ERROR: 0:67: 'component' : type overflows the available 4 components 
+ERROR: 0:69: 'location' : the aliases sharing the location 53 must be the same basic type and interpolation qualification
+ERROR: 0:71: 'location' : overlapping use of location 55
+ERROR: 0:75: 'location' : overlapping use of location 57
+ERROR: 0:78: 'location' : overlapping use of location 59
+ERROR: 0:95: 'xfb layout qualifier' : can only be used on an output 
+ERROR: 0:101: 'xfb_offset' : cannot declare a default, use a full declaration 
+ERROR: 0:111: 'xfb_buffer' : member cannot contradict block (or what block inherited from global) 
+ERROR: 0:116: 'xfb_buffer' : member cannot contradict block (or what block inherited from global) 
+ERROR: 0:116: 'xfb_offset' : overlapping offsets at offset 32 in buffer 3
+ERROR: 0:117: 'xfb_offset' : overlapping offsets at offset 0 in buffer 2
+ERROR: 0:119: 'xfb_offset' : overlapping offsets at offset 24 in buffer 2
+ERROR: 0:122: 'xfb_stride' : all stride settings must match for xfb buffer 15
+ERROR: 0:126: 'xfb_offset' : overlapping offsets at offset 4 in buffer 1
+ERROR: 0:128: 'xfb_stride' : all stride settings must match for xfb buffer 3
+ERROR: 0:129: 'xfb_stride' : all stride settings must match for xfb buffer 3
+ERROR: 0:133: 'xfb_stride' : all stride settings must match for xfb buffer 3
+ERROR: 0:131: 'xfb_stride' : all stride settings must match for xfb buffer 3
+ERROR: 0:152: 'xfb_offset' : overlapping offsets at offset 64 in buffer 0
+ERROR: 0:157: 'xfb_buffer' : buffer is too large: gl_MaxTransformFeedbackBuffers is 4
+ERROR: 0:158: 'xfb_offset' : must be a multiple of size of first component 
+ERROR: 0:159: 'xfb_offset' : type contains double or 64-bit integer; xfb_offset must be a multiple of 8 
+ERROR: 0:161: 'xfb_offset' : must be a multiple of size of first component 
+ERROR: 0:162: 'xfb_offset' : type contains double or 64-bit integer; xfb_offset must be a multiple of 8 
+ERROR: 0:166: 'xfb_buffer' : buffer is too large: gl_MaxTransformFeedbackBuffers is 4
+ERROR: 0:169: 'xfb_buffer' : buffer is too large: gl_MaxTransformFeedbackBuffers is 4
+ERROR: 0:169: 'xfb_stride' : 1/4 stride is too large: gl_MaxTransformFeedbackInterleavedComponents is 64
+ERROR: 0:171: 'xfb_buffer' : buffer is too large: gl_MaxTransformFeedbackBuffers is 4
+ERROR: 0:178: 'xfb_offset' : overlapping offsets at offset 36 in buffer 3
+ERROR: 0:179: 'xfb_buffer' : member cannot contradict block (or what block inherited from global) 
+ERROR: 0:178: 'xfb_offset' : overlapping offsets at offset 32 in buffer 3
+ERROR: 0:185: 'gl_BaseVertexARB' : required extension not requested: GL_ARB_shader_draw_parameters
+ERROR: 0:185: 'gl_BaseInstanceARB' : required extension not requested: GL_ARB_shader_draw_parameters
+ERROR: 0:185: 'gl_DrawIDARB' : required extension not requested: GL_ARB_shader_draw_parameters
+ERROR: 0:193: 'assign' :  l-value required "gl_BaseVertexARB" (can't modify shader input)
+ERROR: 0:194: 'assign' :  l-value required "gl_BaseInstanceARB" (can't modify shader input)
+ERROR: 0:195: 'assign' :  l-value required "gl_DrawIDARB" (can't modify shader input)
+ERROR: 0:196: 'glBaseInstanceARB' : undeclared identifier 
 ERROR: 62 compilation errors.  No code generated.
 
 

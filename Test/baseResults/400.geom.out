@@ -1,27 +1,27 @@
 400.geom
-ERROR: 0:12:8: 'invocations' : can only apply to a standalone qualifier 
-ERROR: 0:20:34: 'patch' : not supported in this stage: geometry
-ERROR: 0:20:46: 'gl_PointSize' : cannot add non-XFB layout to redeclared block member 
-ERROR: 0:20:46: 'gl_PointSize' : cannot add patch to redeclared block member 
-ERROR: 0:25:18: 'length' :  array must first be sized by a redeclaration or layout qualifier
-ERROR: 0:36:18: 'length' :  array must first be sized by a redeclaration or layout qualifier
-ERROR: 0:40:8: 'triangles' : inconsistent input primitive for array size of colorBad
-ERROR: 0:44:9: 'triangles' : inconsistent input primitive for array size of colorbad2
-ERROR: 0:56:30: 'location' : overlapping use of location 4
-ERROR: 0:58:1: 'patch' : not supported in this stage: geometry
-ERROR: 0:59:1: 'patch' : not supported in this stage: geometry
-ERROR: 0:61:10: 'in' : type must be an array: scalar
-ERROR: 0:63:8: 'invocations' : can only apply to 'in' 
-ERROR: 0:64:8: 'max_vertices' : can only apply to 'out' 
-ERROR: 0:65:8: 'max_vertices' : can only apply to 'out' 
-ERROR: 0:65:8: 'invocations' : can only apply to 'in' 
-ERROR: 0:67:1: 'in' : type must be an array: inbls
-ERROR: 0:71:1: 'triangles' : inconsistent input primitive for array size of inbla
-ERROR: 0:103:22: 'index' : there is no such layout identifier for this stage taking an assigned value 
-ERROR: 0:115:37: 'textureQueryLod' : no matching overloaded function found 
-ERROR: 0:115:9: 'assign' :  cannot convert from ' const float' to ' temp 2-component vector of float'
-ERROR: 0:116:39: 'textureQueryLod' : no matching overloaded function found 
-ERROR: 0:116:9: 'assign' :  cannot convert from ' const float' to ' temp 2-component vector of float'
+ERROR: 0:12: 'invocations' : can only apply to a standalone qualifier 
+ERROR: 0:20: 'patch' : not supported in this stage: geometry
+ERROR: 0:20: 'gl_PointSize' : cannot add non-XFB layout to redeclared block member 
+ERROR: 0:20: 'gl_PointSize' : cannot add patch to redeclared block member 
+ERROR: 0:25: 'length' :  array must first be sized by a redeclaration or layout qualifier
+ERROR: 0:36: 'length' :  array must first be sized by a redeclaration or layout qualifier
+ERROR: 0:40: 'triangles' : inconsistent input primitive for array size of colorBad
+ERROR: 0:44: 'triangles' : inconsistent input primitive for array size of colorbad2
+ERROR: 0:56: 'location' : overlapping use of location 4
+ERROR: 0:58: 'patch' : not supported in this stage: geometry
+ERROR: 0:59: 'patch' : not supported in this stage: geometry
+ERROR: 0:61: 'in' : type must be an array: scalar
+ERROR: 0:63: 'invocations' : can only apply to 'in' 
+ERROR: 0:64: 'max_vertices' : can only apply to 'out' 
+ERROR: 0:65: 'max_vertices' : can only apply to 'out' 
+ERROR: 0:65: 'invocations' : can only apply to 'in' 
+ERROR: 0:67: 'in' : type must be an array: inbls
+ERROR: 0:71: 'triangles' : inconsistent input primitive for array size of inbla
+ERROR: 0:103: 'index' : there is no such layout identifier for this stage taking an assigned value 
+ERROR: 0:115: 'textureQueryLod' : no matching overloaded function found 
+ERROR: 0:115: 'assign' :  cannot convert from ' const float' to ' temp 2-component vector of float'
+ERROR: 0:116: 'textureQueryLod' : no matching overloaded function found 
+ERROR: 0:116: 'assign' :  cannot convert from ' const float' to ' temp 2-component vector of float'
 ERROR: 23 compilation errors.  No code generated.
 
 

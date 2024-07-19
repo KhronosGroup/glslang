@@ -84,7 +84,7 @@ EShLanguage GetShaderStage(const std::string& stage)
 
 EShMessages DeriveOptions(Source source, Semantics semantics, Target target)
 {
-    EShMessages result = static_cast<EShMessages>(EShMsgCascadingErrors | EShMsgDisplayErrorColumn);
+    EShMessages result = EShMsgCascadingErrors;
 
     switch (source) {
         case Source::GLSL:

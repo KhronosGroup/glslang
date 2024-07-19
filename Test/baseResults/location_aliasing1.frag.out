@@ -1,5 +1,5 @@
 location_aliasing1.frag
-ERROR: 0:6:53: 'location' : the aliases sharing the location 1 must be the same basic type and interpolation qualification
+ERROR: 0:6: 'location' : the aliases sharing the location 1 must be the same basic type and interpolation qualification
 ERROR: 1 compilation errors.  No code generated.
 
 

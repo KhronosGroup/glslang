@@ -1,6 +1,6 @@
 terminate.vert
-ERROR: 0:3:14: 'terminateInvocation' : undeclared identifier 
-ERROR: 0:9:5: 'terminateInvocation' : not supported in this stage: vertex
+ERROR: 0:3: 'terminateInvocation' : undeclared identifier 
+ERROR: 0:9: 'terminateInvocation' : not supported in this stage: vertex
 ERROR: 2 compilation errors.  No code generated.
 
 

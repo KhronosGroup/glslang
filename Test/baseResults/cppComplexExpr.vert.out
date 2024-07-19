@@ -1,54 +1,54 @@
 cppComplexExpr.vert
-ERROR: 0:46:38: 'xyxwx' : vector swizzle too long 
-ERROR: 0:46:38: 'xyxwx' : vector swizzle too long 
-ERROR: 0:46:5: 'return' : cannot convert return value to function return type 
-WARNING: 0:46:5: 'return' : type conversion on return values was not explicitly allowed until version 420 
-ERROR: 0:66:9: '#define' : Macro redefined; different substitutions: BIG
-ERROR: 0:81:20: 'preprocessor evaluation' : bad expression 
-ERROR: 0:81:20: '#if' : unexpected tokens following directive 
-ERROR: 0:82:8: '#error' : good macro  
-ERROR: 0:87:5: 'macro expansion' : End of line in macro substitution: foobar
-ERROR: 0:88:0: 'preprocessor evaluation' : can't evaluate expression 
-ERROR: 0:88:1: 'preprocessor evaluation' : bad expression 
-ERROR: 0:88:1: '#if' : unexpected tokens following directive 
-ERROR: 0:92:5: 'macro expansion' : End of line in macro substitution: foobar
-ERROR: 0:93:0: 'preprocessor evaluation' : can't evaluate expression 
-ERROR: 0:93:1: 'preprocessor evaluation' : bad expression 
-ERROR: 0:93:1: '#if' : unexpected tokens following directive 
-ERROR: 0:99:5: 'macro expansion' : End of line in macro substitution: foobar
-ERROR: 0:100:0: 'preprocessor evaluation' : can't evaluate expression 
-ERROR: 0:100:1: 'preprocessor evaluation' : bad expression 
-ERROR: 0:100:1: '#if' : unexpected tokens following directive 
-ERROR: 0:101:5: 'macro expansion' : End of line in macro substitution: foobar
-ERROR: 0:102:0: 'preprocessor evaluation' : can't evaluate expression 
-ERROR: 0:102:1: 'preprocessor evaluation' : bad expression 
-ERROR: 0:102:1: '#if' : unexpected tokens following directive 
-ERROR: 0:108:5: 'preprocessor evaluation' : undefined macro in expression not allowed in es profile UNDEF
-ERROR: 0:111:8: '#error' : good 0  
-ERROR: 0:115:8: '#error' : good 1  
-ERROR: 0:120:13: 'preprocessor evaluation' : undefined macro in expression not allowed in es profile UNDEF
-ERROR: 0:123:13: 'preprocessor evaluation' : undefined macro in expression not allowed in es profile UNDEF
-ERROR: 0:129:8: '#error' : good 1  
-ERROR: 0:133:8: '#error' : good 3  
-ERROR: 0:139:8: '#error' : good 4  
-ERROR: 0:144:35: 'preprocessor evaluation' : undefined macro in expression not allowed in es profile UNDEF
-ERROR: 0:153:13: 'preprocessor evaluation' : undefined macro in expression not allowed in es profile UNDEF
-ERROR: 0:156:24: 'preprocessor evaluation' : undefined macro in expression not allowed in es profile UNDEF2
-ERROR: 0:159:24: 'preprocessor evaluation' : undefined macro in expression not allowed in es profile UNDEF2
-ERROR: 0:3000:8: '#error' : line of this error should be 3000  
-ERROR: 0:3002:9: '#define' : predefined names can't be (un)defined: __LINE__
-ERROR: 0:3003:9: '#define' : predefined names can't be (un)defined: __FILE__
-ERROR: 0:3004:9: '#define' : predefined names can't be (un)defined: __VERSION__
-ERROR: 0:3005:9: '#define' : names beginning with "GL_" can't be (un)defined: GL_SOME_EXTENSION
-ERROR: 0:3006:8: '#undef' : predefined names can't be (un)defined: __LINE__
-ERROR: 0:3007:8: '#undef' : predefined names can't be (un)defined: __FILE__
-ERROR: 0:3008:8: '#undef' : predefined names can't be (un)defined: __VERSION__
-ERROR: 0:3009:8: '#undef' : names beginning with "GL_" can't be (un)defined: GL_SOME_EXTENSION
-ERROR: 0:4000:7: 'preprocessor evaluation' : division by 0 
-ERROR: 0:0:5: 'preprocessor evaluation' : division by 0 
-ERROR: 0:3:19: 'preprocessor evaluation' : bad expression 
-ERROR: 0:3:5: 'preprocessor evaluation' : division by 0 
-ERROR: 0:10001:13: '' : missing #endif 
+ERROR: 0:46: 'xyxwx' : vector swizzle too long 
+ERROR: 0:46: 'xyxwx' : vector swizzle too long 
+ERROR: 0:46: 'return' : cannot convert return value to function return type 
+WARNING: 0:46: 'return' : type conversion on return values was not explicitly allowed until version 420 
+ERROR: 0:66: '#define' : Macro redefined; different substitutions: BIG
+ERROR: 0:81: 'preprocessor evaluation' : bad expression 
+ERROR: 0:81: '#if' : unexpected tokens following directive 
+ERROR: 0:82: '#error' : good macro  
+ERROR: 0:87: 'macro expansion' : End of line in macro substitution: foobar
+ERROR: 0:88: 'preprocessor evaluation' : can't evaluate expression 
+ERROR: 0:88: 'preprocessor evaluation' : bad expression 
+ERROR: 0:88: '#if' : unexpected tokens following directive 
+ERROR: 0:92: 'macro expansion' : End of line in macro substitution: foobar
+ERROR: 0:93: 'preprocessor evaluation' : can't evaluate expression 
+ERROR: 0:93: 'preprocessor evaluation' : bad expression 
+ERROR: 0:93: '#if' : unexpected tokens following directive 
+ERROR: 0:99: 'macro expansion' : End of line in macro substitution: foobar
+ERROR: 0:100: 'preprocessor evaluation' : can't evaluate expression 
+ERROR: 0:100: 'preprocessor evaluation' : bad expression 
+ERROR: 0:100: '#if' : unexpected tokens following directive 
+ERROR: 0:101: 'macro expansion' : End of line in macro substitution: foobar
+ERROR: 0:102: 'preprocessor evaluation' : can't evaluate expression 
+ERROR: 0:102: 'preprocessor evaluation' : bad expression 
+ERROR: 0:102: '#if' : unexpected tokens following directive 
+ERROR: 0:108: 'preprocessor evaluation' : undefined macro in expression not allowed in es profile UNDEF
+ERROR: 0:111: '#error' : good 0  
+ERROR: 0:115: '#error' : good 1  
+ERROR: 0:120: 'preprocessor evaluation' : undefined macro in expression not allowed in es profile UNDEF
+ERROR: 0:123: 'preprocessor evaluation' : undefined macro in expression not allowed in es profile UNDEF
+ERROR: 0:129: '#error' : good 1  
+ERROR: 0:133: '#error' : good 3  
+ERROR: 0:139: '#error' : good 4  
+ERROR: 0:144: 'preprocessor evaluation' : undefined macro in expression not allowed in es profile UNDEF
+ERROR: 0:153: 'preprocessor evaluation' : undefined macro in expression not allowed in es profile UNDEF
+ERROR: 0:156: 'preprocessor evaluation' : undefined macro in expression not allowed in es profile UNDEF2
+ERROR: 0:159: 'preprocessor evaluation' : undefined macro in expression not allowed in es profile UNDEF2
+ERROR: 0:3000: '#error' : line of this error should be 3000  
+ERROR: 0:3002: '#define' : predefined names can't be (un)defined: __LINE__
+ERROR: 0:3003: '#define' : predefined names can't be (un)defined: __FILE__
+ERROR: 0:3004: '#define' : predefined names can't be (un)defined: __VERSION__
+ERROR: 0:3005: '#define' : names beginning with "GL_" can't be (un)defined: GL_SOME_EXTENSION
+ERROR: 0:3006: '#undef' : predefined names can't be (un)defined: __LINE__
+ERROR: 0:3007: '#undef' : predefined names can't be (un)defined: __FILE__
+ERROR: 0:3008: '#undef' : predefined names can't be (un)defined: __VERSION__
+ERROR: 0:3009: '#undef' : names beginning with "GL_" can't be (un)defined: GL_SOME_EXTENSION
+ERROR: 0:4000: 'preprocessor evaluation' : division by 0 
+ERROR: 0:0: 'preprocessor evaluation' : division by 0 
+ERROR: 0:3: 'preprocessor evaluation' : bad expression 
+ERROR: 0:3: 'preprocessor evaluation' : division by 0 
+ERROR: 0:10001: '' : missing #endif 
 ERROR: 49 compilation errors.  No code generated.
 
 

@@ -1,5 +1,5 @@
 struct.error.frag
-ERROR: 0:12:9: 'z' : no such field in structure 
+ERROR: 0:12: 'z' : no such field in structure 
 ERROR: 1 compilation errors.  No code generated.
 
 

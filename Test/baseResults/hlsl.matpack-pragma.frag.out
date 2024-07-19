@@ -1,5 +1,5 @@
 hlsl.matpack-pragma.frag
-WARNING: 0:19:2: 'random_string_foo' : unknown pack_matrix pragma value 
+WARNING: 0:19: 'random_string_foo' : unknown pack_matrix pragma value 
 
 Shader version: 500
 gl_FragCoord origin is upper left

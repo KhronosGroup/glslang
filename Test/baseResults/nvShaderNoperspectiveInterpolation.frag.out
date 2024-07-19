@@ -1,6 +1,6 @@
 nvShaderNoperspectiveInterpolation.frag
-ERROR: 0:5:1: 'noperspective' : Reserved word. 
-ERROR: 0:5:1: 'noperspective' : not supported for this version or the enabled extensions 
+ERROR: 0:5: 'noperspective' : Reserved word. 
+ERROR: 0:5: 'noperspective' : not supported for this version or the enabled extensions 
 ERROR: 2 compilation errors.  No code generated.
 
 
