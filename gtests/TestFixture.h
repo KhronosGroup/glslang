@@ -691,8 +691,8 @@ public:
         std::string ppShader;
         glslang::TShader::ForbidIncluder includer;
         const bool success = shader.preprocess(
-            GetDefaultResources(), defaultVersion, defaultProfile,
-            forceVersionProfile, isForwardCompatible, (EShMessages)(EShMsgOnlyPreprocessor | EShMsgCascadingErrors),
+            GetDefaultResources(), defaultVersion, defaultProfile, forceVersionProfile, isForwardCompatible,
+            (EShMessages)(EShMsgOnlyPreprocessor | EShMsgCascadingErrors),
             &ppShader, includer);
 
         std::string log = shader.getInfoLog();

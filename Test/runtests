@@ -349,6 +349,13 @@ run --enhanced-msgs -V --target-env vulkan1.2 --amb --aml spv.textureError.frag 
 diff -b $BASEDIR/spv.textureError.frag.out "$TARGETDIR/spv.textureError.frag.out" || HASERROR=1
 
 #
+# Test error column
+#
+echo "Testing error-column"
+run --error-column -C -V error-column.vert > "$TARGETDIR/error-column.vert.out"
+diff -b $BASEDIR/error-column.vert.out $TARGETDIR/error-column.vert.out || HASERROR=1
+
+#
 # Test UTF8BOM
 #
 echo "Testing UTF8BOM"

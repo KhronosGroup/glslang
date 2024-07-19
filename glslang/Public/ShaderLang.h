@@ -270,6 +270,7 @@ enum EShMessages : unsigned {
     EShMsgBuiltinSymbolTable   = (1 << 14), // print the builtin symbol table
     EShMsgEnhanced             = (1 << 15), // enhanced message readability
     EShMsgAbsolutePath         = (1 << 16), // Output Absolute path for messages
+    EShMsgDisplayErrorColumn   = (1 << 17), // Display error message column aswell as line
     LAST_ELEMENT_MARKER(EShMsgCount),
 };
 
