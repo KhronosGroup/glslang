@@ -168,6 +168,7 @@ void main()
               82:   34(fvec4) CompositeConstruct 81 81 81 81
               83:   34(fvec4) ExtInst 2(GLSL.std.450) 46(FMix) 73 76 82
                               Store 72(gl_FragColor) 83
+                              Line 1 107 0
                               Return
                               FunctionEnd
                               Line 7 1 20
