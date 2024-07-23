@@ -370,6 +370,15 @@ GLSLANG_EXPORT void glslang_shader_set_glsl_version(glslang_shader_t* shader, in
     shader->shader->setOverrideVersion(version);
 }
 
+GLSLANG_EXPORT void glslang_shader_set_default_uniform_block_set_and_binding(glslang_shader_t* shader, unsigned int set, unsigned int binding) {
+    shader->shader->setGlobalUniformSet(set);
+    shader->shader->setGlobalUniformBinding(binding);
+}
+
+GLSLANG_EXPORT void glslang_shader_set_default_uniform_block_name(glslang_shader_t* shader, const char *name) {
+    shader->shader->setGlobalUniformBlockName(name);
+}
+
 GLSLANG_EXPORT const char* glslang_shader_get_preprocessed_code(glslang_shader_t* shader)
 {
     return shader->preprocessedGLSL.c_str();
