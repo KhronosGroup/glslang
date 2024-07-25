@@ -34,7 +34,7 @@
 if(ENABLE_GLSLANG_JS)
     add_executable(glslang.js "glslang.js.cpp")
     glslang_set_link_args(glslang.js)
-    target_link_libraries(glslang.js glslang SPIRV)
+    target_link_libraries(glslang.js glslang)
 
     # Link library names that start with "-" are treated as link flags.
     # "-Os" should be OK in MSVC; don't use /Os because CMake won't
