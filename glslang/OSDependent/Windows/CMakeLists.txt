@@ -31,12 +31,18 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
+set(OSDEPENDENT_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/ossource.cpp
+    PARENT_SCOPE)
+
+set(OSDEPENDENT_HEADERS
+    ${CMAKE_CURRENT_SOURCE_DIR}/../osinclude.h
+    PARENT_SCOPE)
+
 add_library(OSDependent STATIC)
 
 target_sources(OSDependent PRIVATE
-    ../osinclude.h
-    ossource.cpp
-)
+               ${CMAKE_CURRENT_SOURCE_DIR}/../../stub.cpp)
 
 set_property(TARGET OSDependent PROPERTY FOLDER glslang)
 set_property(TARGET OSDependent PROPERTY POSITION_INDEPENDENT_CODE ON)
@@ -44,7 +50,7 @@ set_property(TARGET OSDependent PROPERTY POSITION_INDEPENDENT_CODE ON)
 # MinGW GCC complains about function pointer casts to void*.
 # Turn that off with -fpermissive.
 if(MINGW AND ${CMAKE_CXX_COMPILER_ID} MATCHES "GNU")
-    target_compile_options(OSDependent PRIVATE -fpermissive)
+    set_source_files_properties(${OSDEPENDENT_SOURCES} PROPERTIES COMPILE_FLAGS -fpermissive)
 endif()
 
 if(WIN32)

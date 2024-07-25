@@ -88,8 +88,7 @@ if(GLSLANG_TESTS)
         endif()
 
         set(LIBRARIES
-            glslang OSDependent glslang
-            SPIRV glslang-default-resource-limits)
+            glslang glslang-default-resource-limits)
 
         if(ENABLE_SPVREMAPPER)
             set(LIBRARIES ${LIBRARIES} SPVRemapper)

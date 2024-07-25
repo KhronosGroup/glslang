@@ -59,9 +59,8 @@ include $(CLEAR_VARS)
 LOCAL_MODULE:=OSDependent
 LOCAL_CXXFLAGS:=-std=c++17 -fno-exceptions -fno-rtti $(GLSLANG_DEFINES)
 LOCAL_EXPORT_C_INCLUDES:=$(LOCAL_PATH)
-LOCAL_SRC_FILES:=glslang/OSDependent/Unix/ossource.cpp
-LOCAL_C_INCLUDES:=$(LOCAL_PATH) $(LOCAL_PATH)/glslang/OSDependent/Unix/
-LOCAL_EXPORT_C_INCLUDES:=$(LOCAL_PATH)/glslang/OSDependent/Unix/
+LOCAL_SRC_FILES:=glslang/stub.cpp
+LOCAL_C_INCLUDES:=$(LOCAL_PATH)
 include $(BUILD_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
@@ -73,7 +72,8 @@ $(LOCAL_PATH)/glslang/MachineIndependent/ShaderLang.cpp: \
 
 LOCAL_MODULE:=glslang
 LOCAL_CXXFLAGS:=-std=c++17 -fno-exceptions -fno-rtti $(GLSLANG_DEFINES)
-LOCAL_EXPORT_C_INCLUDES:=$(LOCAL_PATH)
+LOCAL_EXPORT_C_INCLUDES:=$(LOCAL_PATH) \
+	$(LOCAL_PATH)/glslang/OSDependent/Unix
 LOCAL_SRC_FILES:= \
 		glslang/CInterface/glslang_c_interface.cpp \
 		glslang/GenericCodeGen/CodeGen.cpp \
@@ -112,12 +112,24 @@ LOCAL_SRC_FILES:= \
 		glslang/MachineIndependent/preprocessor/PpContext.cpp \
 		glslang/MachineIndependent/preprocessor/Pp.cpp \
 		glslang/MachineIndependent/preprocessor/PpScanner.cpp \
-		glslang/MachineIndependent/preprocessor/PpTokens.cpp
+		glslang/MachineIndependent/preprocessor/PpTokens.cpp \
+		glslang/OSDependent/Unix/ossource.cpp
+		SPIRV/CInterface/spirv_c_interface.cpp \
+		SPIRV/GlslangToSpv.cpp \
+		SPIRV/InReadableOrder.cpp \
+		SPIRV/Logger.cpp \
+		SPIRV/SPVRemapper.cpp \
+		SPIRV/SpvBuilder.cpp \
+		SPIRV/SpvPostProcess.cpp \
+		SPIRV/SpvTools.cpp \
+		SPIRV/disassemble.cpp \
+		SPIRV/doc.cpp
 LOCAL_C_INCLUDES:=$(LOCAL_PATH) \
 	$(LOCAL_PATH)/glslang/MachineIndependent \
+	$(LOCAL_PATH)/glslang/OSDependent/Unix \
+	$(LOCAL_PATH)/SPIRV \
 	$(GLSLANG_GENERATED_INCLUDEDIR) \
 	$(GLSLANG_OUT_PATH)
-LOCAL_STATIC_LIBRARIES:=OSDependent
 include $(BUILD_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
@@ -128,20 +140,7 @@ $(LOCAL_PATH)/SPIRV/GlslangToSpv.cpp: \
 
 LOCAL_MODULE:=SPIRV
 LOCAL_CXXFLAGS:=-std=c++17 -fno-exceptions -fno-rtti -Werror $(GLSLANG_DEFINES)
-LOCAL_SRC_FILES:= \
-	SPIRV/CInterface/spirv_c_interface.cpp \
-	SPIRV/GlslangToSpv.cpp \
-	SPIRV/InReadableOrder.cpp \
-	SPIRV/Logger.cpp \
-	SPIRV/SPVRemapper.cpp \
-	SPIRV/SpvBuilder.cpp \
-	SPIRV/SpvPostProcess.cpp \
-	SPIRV/SpvTools.cpp \
-	SPIRV/disassemble.cpp \
-	SPIRV/doc.cpp
-LOCAL_C_INCLUDES:=$(LOCAL_PATH) \
-	$(LOCAL_PATH)/glslang/SPIRV \
-	$(GLSLANG_GENERATED_INCLUDEDIR)
-LOCAL_EXPORT_C_INCLUDES:=$(LOCAL_PATH)/glslang/SPIRV
-LOCAL_STATIC_LIBRARIES:=glslang
+LOCAL_SRC_FILES:=glslang/stub.cpp
+LOCAL_C_INCLUDES:=$(LOCAL_PATH)
+LOCAL_EXPORT_C_INCLUDES:=$(LOCAL_PATH)
 include $(BUILD_STATIC_LIBRARY)

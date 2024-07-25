@@ -31,14 +31,17 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-add_library(OSDependent STATIC ossource.cpp ../osinclude.h)
+set(OSDEPENDENT_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/ossource.cpp
+    PARENT_SCOPE)
+
+set(OSDEPENDENT_HEADERS
+    ${CMAKE_CURRENT_SOURCE_DIR}/../osinclude.h
+    PARENT_SCOPE)
+
+add_library(OSDependent STATIC ${CMAKE_CURRENT_SOURCE_DIR}/../../stub.cpp)
 set_property(TARGET OSDependent PROPERTY FOLDER glslang)
 set_property(TARGET OSDependent PROPERTY POSITION_INDEPENDENT_CODE ON)
-
-# Link pthread
-set(THREADS_PREFER_PTHREAD_FLAG ON)
-find_package(Threads REQUIRED)
-target_link_libraries(OSDependent Threads::Threads)
 
 if(GLSLANG_ENABLE_INSTALL AND NOT BUILD_SHARED_LIBS)
     install(TARGETS OSDependent EXPORT glslang-targets)

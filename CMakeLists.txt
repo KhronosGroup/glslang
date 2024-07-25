@@ -97,6 +97,7 @@ option(GLSLANG_TESTS "Enable glslang testing" ${GLSLANG_TESTS_DEFAULT})
 # Always expose this as an option, so the defaults can be overridden.
 option(GLSLANG_ENABLE_INSTALL "Enable glslang installation" ${GLSLANG_ENABLE_INSTALL_DEFAULT})
 
+option(ENABLE_SPIRV "Enables SPIRV output support" ON)
 option(ENABLE_SPVREMAPPER "Enables building of SPVRemapper" ON)
 
 option(ENABLE_GLSLANG_BINARIES "Builds glslang and spirv-remap" ON)
@@ -124,6 +125,10 @@ if(MINGW OR (APPLE AND ${CMAKE_CXX_COMPILER_ID} MATCHES "GNU"))
 endif()
 
 option(ENABLE_PCH "Enables Precompiled header" ON)
+
+if(ENABLE_SPIRV)
+    add_compile_definitions(ENABLE_SPIRV)
+endif()
 
 if(ENABLE_HLSL)
     add_compile_definitions(ENABLE_HLSL)
@@ -313,11 +318,13 @@ else()
     add_definitions(-DENABLE_OPT=0)
 endif()
 
+if(ENABLE_SPIRV)
+    add_subdirectory(SPIRV)
+endif()
 add_subdirectory(glslang)
 if(ENABLE_GLSLANG_BINARIES)
     add_subdirectory(StandAlone)
 endif()
-add_subdirectory(SPIRV)
 
 if(GLSLANG_TESTS)
     enable_testing()

@@ -1509,6 +1509,7 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
 
     std::vector<std::string> outputFiles;
 
+#ifdef ENABLE_SPIRV
     // Dump SPIR-V
     if (Options & EOptionSpv) {
         CompileOrLinkFailed.fetch_or(CompileFailed);
@@ -1571,6 +1572,7 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
             }
         }
     }
+#endif
 
     CompileOrLinkFailed.fetch_or(CompileFailed);
     CompileOrLinkFailed.fetch_or(LinkFailed);
@@ -1669,21 +1671,31 @@ int singleMain()
     }
 
     if (Options & EOptionDumpBareVersion) {
-        printf("%d:%d.%d.%d%s\n", glslang::GetSpirvGeneratorVersion(), GLSLANG_VERSION_MAJOR, GLSLANG_VERSION_MINOR,
+        int spirvGeneratorVersion = 0;
+#ifdef ENABLE_SPIRV
+        spirvGeneratorVersion = glslang::GetSpirvGeneratorVersion();
+#endif
+        printf("%d:%d.%d.%d%s\n", spirvGeneratorVersion, GLSLANG_VERSION_MAJOR, GLSLANG_VERSION_MINOR,
                 GLSLANG_VERSION_PATCH, GLSLANG_VERSION_FLAVOR);
         if (workList.empty())
             return ESuccess;
     } else if (Options & EOptionDumpVersions) {
-        printf("Glslang Version: %d:%d.%d.%d%s\n", glslang::GetSpirvGeneratorVersion(), GLSLANG_VERSION_MAJOR,
+        int spirvGeneratorVersion = 0;
+#ifdef ENABLE_SPIRV
+        spirvGeneratorVersion = glslang::GetSpirvGeneratorVersion();
+#endif
+        printf("Glslang Version: %d:%d.%d.%d%s\n", spirvGeneratorVersion, GLSLANG_VERSION_MAJOR,
                 GLSLANG_VERSION_MINOR, GLSLANG_VERSION_PATCH, GLSLANG_VERSION_FLAVOR);
         printf("ESSL Version: %s\n", glslang::GetEsslVersionString());
         printf("GLSL Version: %s\n", glslang::GetGlslVersionString());
         std::string spirvVersion;
+#if ENABLE_SPIRV
         glslang::GetSpirvVersion(spirvVersion);
+#endif
         printf("SPIR-V Version %s\n", spirvVersion.c_str());
         printf("GLSL.std.450 Version %d, Revision %d\n", GLSLstd450Version, GLSLstd450Revision);
         printf("Khronos Tool ID %d\n", glslang::GetKhronosToolId());
-        printf("SPIR-V Generator Version %d\n", glslang::GetSpirvGeneratorVersion());
+        printf("SPIR-V Generator Version %d\n", spirvGeneratorVersion);
         printf("GL_KHR_vulkan_glsl version %d\n", 100);
         printf("ARB_GL_gl_spirv version %d\n", 100);
         if (workList.empty())
