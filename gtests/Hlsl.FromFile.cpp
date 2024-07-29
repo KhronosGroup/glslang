@@ -170,6 +170,7 @@ INSTANTIATE_TEST_SUITE_P(
         {"hlsl.basic.geom", "main"},
         {"hlsl.boolConv.vert", "main"},
         {"hlsl.buffer.frag", "PixelShaderFunction"},
+        {"hlsl.buffer-offsets.comp", "main"},
         {"hlsl.calculatelod.dx10.frag", "main"},
         {"hlsl.calculatelodunclamped.dx10.frag", "main"},
         {"hlsl.cast.frag", "PixelShaderFunction"},
