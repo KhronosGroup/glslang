@@ -43,6 +43,8 @@ jobs:
         run: ctest --output-on-failure --test-dir build
       - name: Test (standalone)
         run: cd Test && ./runtests
+      - name: Check known validation failure list
+        run: grep -l 'Validation failed' Test/baseResults/* | sort -fd | diff -u Test/baseResults/validation_fails.txt -
 
   linux-asan:
     runs-on: ubuntu-22.04
