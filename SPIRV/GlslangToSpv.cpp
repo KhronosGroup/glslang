@@ -5404,13 +5404,16 @@ void TGlslangToSpvTraverser::updateMemberOffset(const glslang::TType& structType
             memberAlignment = componentAlignment;
 
         // Don't add unnecessary padding after this member
-        if (memberType.isMatrix()) {
-            if (matrixLayout == glslang::ElmRowMajor)
-                memberSize -= componentSize * (4 - memberType.getMatrixCols());
-            else
-                memberSize -= componentSize * (4 - memberType.getMatrixRows());
-        } else if (memberType.isArray())
-            memberSize -= componentSize * (4 - memberType.getVectorSize());
+        // (undo std140 bumping size to a mutliple of vec4)
+        if (explicitLayout == glslang::ElpStd140) {
+            if (memberType.isMatrix()) {
+                if (matrixLayout == glslang::ElmRowMajor)
+                    memberSize -= componentSize * (4 - memberType.getMatrixCols());
+                else
+                    memberSize -= componentSize * (4 - memberType.getMatrixRows());
+            } else if (memberType.isArray())
+                memberSize -= componentSize * (4 - memberType.getVectorSize());
+        }
     }
 
     // Bump up to member alignment
