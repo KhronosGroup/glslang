@@ -44,6 +44,7 @@
 
 #include "SpvTools.h"
 #include "spirv-tools/optimizer.hpp"
+#include "glslang/MachineIndependent/localintermediate.h"
 
 namespace glslang {
 
