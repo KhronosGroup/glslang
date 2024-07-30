@@ -76,7 +76,8 @@ set(PUBLIC_HEADERS
     disassemble.h
     Logger.h
     spirv.hpp
-    SPVRemapper.h)
+    SPVRemapper.h
+    SpvTools.h)
 
 add_library(SPIRV ${LIB_TYPE} ${SOURCES} ${HEADERS})
 add_library(glslang::SPIRV ALIAS SPIRV)
