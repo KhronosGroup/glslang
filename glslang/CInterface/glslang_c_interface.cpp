@@ -37,7 +37,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "glslang/Public/ShaderLang.h"
 #include "glslang/Include/ShHandle.h"
 
+#include "glslang/Include/BaseTypes.h"
 #include "glslang/Include/ResourceLimits.h"
+#include "glslang/Include/Types.h"
 #include "glslang/MachineIndependent/iomapper.h"
 #include "glslang/MachineIndependent/Versions.h"
 #include "glslang/MachineIndependent/localintermediate.h"

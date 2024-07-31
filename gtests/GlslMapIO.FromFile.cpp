@@ -39,6 +39,7 @@
 
 #include "TestFixture.h"
 
+#include "glslang/MachineIndependent/localintermediate.h"
 #include "glslang/MachineIndependent/iomapper.h"
 #include "glslang/MachineIndependent/reflection.h"
 
