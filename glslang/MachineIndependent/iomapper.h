@@ -214,8 +214,6 @@ public:
     // grow the reflection stage by stage
     bool addStage(EShLanguage, TIntermediate&, TInfoSink&, TIoMapResolver*) override;
     bool doMap(TIoMapResolver*, TInfoSink&) override;
-    TVarLiveMap *inVarMaps[EShLangCount], *outVarMaps[EShLangCount],
-                *uniformVarMap[EShLangCount];
     TIntermediate* intermediates[EShLangCount];
     bool hadError = false;
     EProfile profile;
@@ -225,6 +223,8 @@ private:
     TString autoPushConstantBlockName;
     unsigned int autoPushConstantMaxSize;
     TLayoutPacking autoPushConstantBlockPacking;
+    TVarLiveMap *inVarMaps[EShLangCount], *outVarMaps[EShLangCount],
+                *uniformVarMap[EShLangCount];
 };
 
 } // end namespace glslang
