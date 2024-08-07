@@ -8552,7 +8552,7 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
     case EOpConstructF16Mat4x4:
     case EOpConstructFloat16:
         basicOp = EOpConstructFloat16;
-        // 8/16-bit storage extensions don't support constructing composites of 8/16-bit types,
+        // 8/16-bit storage extensions don't support direct constructing composites of 8/16-bit types,
         // so construct a 32-bit type and convert
         // and do not generate any conversion if it is an identity conversion, i.e. float16_t(<float16_t> var)
         if (!intermediate.getArithemeticFloat16Enabled() && (node->getBasicType() != EbtFloat16)) {
@@ -8576,7 +8576,7 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
     case EOpConstructI8Vec4:
     case EOpConstructInt8:
         basicOp = EOpConstructInt8;
-        // 8/16-bit storage extensions don't support constructing composites of 8/16-bit types,
+        // 8/16-bit storage extensions don't support direct constructing composites of 8/16-bit types,
         // so construct a 32-bit type and convert
         // and do not generate any conversion if it is an identity conversion, i.e. int8_t(<int8_t> var)
         if (!intermediate.getArithemeticInt8Enabled() && (node->getBasicType() != EbtInt8)) {
@@ -8600,7 +8600,7 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
     case EOpConstructU8Vec4:
     case EOpConstructUint8:
         basicOp = EOpConstructUint8;
-        // 8/16-bit storage extensions don't support constructing composites of 8/16-bit types,
+        // 8/16-bit storage extensions don't support direct constructing composites of 8/16-bit types,
         // so construct a 32-bit type and convert
         // and do not generate any conversion if it is an identity conversion, i.e. uint8_t(<uint8_t> var)
         if (!intermediate.getArithemeticInt8Enabled() && (node->getBasicType() != EbtUint8)) {
@@ -8624,7 +8624,7 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
     case EOpConstructI16Vec4:
     case EOpConstructInt16:
         basicOp = EOpConstructInt16;
-        // 8/16-bit storage extensions don't support constructing composites of 8/16-bit types,
+        // 8/16-bit storage extensions don't support direct constructing composites of 8/16-bit types,
         // so construct a 32-bit type and convert
         // and do not generate any conversion if it is an identity conversion, i.e. int16_t(<int16_t> var)
         if (!intermediate.getArithemeticInt16Enabled() && (node->getBasicType() != EbtInt16)) {
@@ -8648,7 +8648,7 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
     case EOpConstructU16Vec4:
     case EOpConstructUint16:
         basicOp = EOpConstructUint16;
-        // 8/16-bit storage extensions don't support constructing composites of 8/16-bit types,
+        // 8/16-bit storage extensions don't support direct constructing composites of 8/16-bit types,
         // so construct a 32-bit type and convert
         // and do not generate any conversion if it is an identity conversion, i.e. uint16_t(<uint16_t> var)
         if (!intermediate.getArithemeticInt16Enabled() && (node->getBasicType() != EbtUint16)) {

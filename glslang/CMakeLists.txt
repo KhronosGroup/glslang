@@ -243,6 +243,7 @@ if(GLSLANG_ENABLE_INSTALL)
         Include/glslang_c_interface.h
         Include/glslang_c_shader_types.h
         Include/ResourceLimits.h
+        MachineIndependent/iomapper.h
         MachineIndependent/Versions.h)
 
     foreach(file ${PUBLIC_HEADERS})
