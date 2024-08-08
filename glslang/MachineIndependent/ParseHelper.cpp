@@ -3939,7 +3939,7 @@ void TParseContext::accStructCheck(const TSourceLoc& loc, const TType& type, con
 void TParseContext::hitObjectNVCheck(const TSourceLoc & loc, const TType & type, const TString & identifier)
 {
     if (type.getBasicType() == EbtStruct && containsFieldWithBasicType(type, EbtHitObjectNV)) {
-        error(loc, "struct contains hitObjectNV :", type.getBasicTypeString().c_str(), identifier.c_str());
+        error(loc, "struct is not allowed to contain hitObjectNV:", type.getTypeName().c_str(), identifier.c_str());
     } else if (type.getBasicType() == EbtHitObjectNV) {
         TStorageQualifier qualifier = type.getQualifier().storage;
         if (qualifier != EvqGlobal && qualifier != EvqTemporary) {
