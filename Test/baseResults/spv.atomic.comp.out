@@ -40,6 +40,7 @@ spv.atomic.comp
                               MemberDecorate 62(dataSSB) 0 Offset 0
                               MemberDecorate 62(dataSSB) 1 Restrict
                               MemberDecorate 62(dataSSB) 1 Offset 16
+                              Decorate 64(result) Restrict
                               Decorate 64(result) Binding 0
                               Decorate 64(result) DescriptorSet 0
                2:             TypeVoid

@@ -169,6 +169,7 @@ local_size = (256, 1, 1)
                               MemberDecorate 9 0 NonWritable
                               MemberDecorate 9 0 Offset 0
                               Decorate 14(buffer) NonWritable
+                              Decorate 44(g_input) NonWritable
                               Decorate 44(g_input) Binding 0
                               Decorate 44(g_input) DescriptorSet 0
                               Decorate 50(g_output) Binding 1

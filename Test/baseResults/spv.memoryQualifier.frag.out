@@ -65,6 +65,7 @@ Validation failed
                               MemberDecorate 50(Buffer) 4 Offset 48
                               MemberDecorate 50(Buffer) 5 Coherent
                               MemberDecorate 50(Buffer) 5 Offset 56
+                              Decorate 52 Coherent
                               Decorate 52 Binding 4
                               Decorate 52 DescriptorSet 0
                2:             TypeVoid

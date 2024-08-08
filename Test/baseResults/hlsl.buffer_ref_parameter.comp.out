@@ -279,6 +279,7 @@ local_size = (64, 1, 1)
                               MemberDecorate 8 0 NonWritable
                               MemberDecorate 8 0 Offset 0
                               Decorate 14(buffer_position) NonWritable
+                              Decorate 53(buffer_position_ms) NonWritable
                               Decorate 53(buffer_position_ms) Binding 0
                               Decorate 53(buffer_position_ms) DescriptorSet 0
                               Decorate 59 ArrayStride 4

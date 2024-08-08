@@ -114,14 +114,17 @@ Validation failed
                               Decorate 17(tbufName) BufferBlock
                               MemberDecorate 17(tbufName) 0 NonWritable
                               MemberDecorate 17(tbufName) 0 Offset 16
+                              Decorate 19 NonWritable
                               Decorate 19 Binding 5
                               Decorate 19 DescriptorSet 3
                               Decorate 26(tbufName2) BufferBlock
                               MemberDecorate 26(tbufName2) 0 NonWritable
                               MemberDecorate 26(tbufName2) 0 Offset 0
+                              Decorate 28 NonWritable
                               Decorate 33(tbufName2) BufferBlock
                               MemberDecorate 33(tbufName2) 0 NonWritable
                               MemberDecorate 33(tbufName2) 0 Offset 16
+                              Decorate 35 NonWritable
                               Decorate 35 Binding 7
                               Decorate 35 DescriptorSet 4
                               Decorate 43(specConst) SpecId 17

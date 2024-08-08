@@ -21,6 +21,7 @@ spv.fsi.frag
                               Decorate 7(B1) BufferBlock
                               MemberDecorate 7(B1) 0 Coherent
                               MemberDecorate 7(B1) 0 Offset 0
+                              Decorate 9(b1) Coherent
                               Decorate 9(b1) Binding 0
                               Decorate 9(b1) DescriptorSet 0
                               Decorate 17(im) Coherent

@@ -22,6 +22,7 @@ spv.8bitstorage-ssbo.vert
                               Decorate 12(Vertices) BufferBlock
                               MemberDecorate 12(Vertices) 0 NonWritable
                               MemberDecorate 12(Vertices) 0 Offset 0
+                              Decorate 14 NonWritable
                               Decorate 14 Binding 0
                               Decorate 14 DescriptorSet 0
                               Decorate 18(gl_VertexIndex) BuiltIn VertexIndex

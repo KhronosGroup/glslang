@@ -45,10 +45,12 @@ spv.bufferhandle13.frag
                               MemberDecorate 35(t5) 0 Offset 0
                               Decorate 37(s5) Binding 0
                               Decorate 37(s5) DescriptorSet 0
+                              Decorate 42(b) Restrict
                               Decorate 42(b) DecorationRestrictPointerEXT
                               Decorate 47(param) DecorationAliasedPointerEXT
                               Decorate 52(param) DecorationAliasedPointerEXT
                               Decorate 56(g1) DecorationAliasedPointerEXT
+                              Decorate 57(g2) Restrict
                               Decorate 57(g2) DecorationRestrictPointerEXT
                2:             TypeVoid
                3:             TypeFunction 2

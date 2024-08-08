@@ -7465,6 +7465,8 @@ gl_FragCoord origin is upper left
                               MemberDecorate 919(TDEnvLightBuffer) 0 Restrict
                               MemberDecorate 919(TDEnvLightBuffer) 0 NonWritable
                               MemberDecorate 919(TDEnvLightBuffer) 0 Offset 0
+                              Decorate 922(uTDEnvLightBuffers) Restrict
+                              Decorate 922(uTDEnvLightBuffers) NonWritable
                               Decorate 922(uTDEnvLightBuffers) Binding 0
                               Decorate 922(uTDEnvLightBuffers) DescriptorSet 0
                               Decorate 926(mTD2DImageOutputs) Binding 0
@@ -9146,6 +9148,8 @@ gl_FragCoord origin is upper left
                               MemberDecorate 1293(TDEnvLightBuffer) 0 Restrict
                               MemberDecorate 1293(TDEnvLightBuffer) 0 NonWritable
                               MemberDecorate 1293(TDEnvLightBuffer) 0 Offset 0
+                              Decorate 1296(uTDEnvLightBuffers) Restrict
+                              Decorate 1296(uTDEnvLightBuffers) NonWritable
                               Decorate 1296(uTDEnvLightBuffers) Binding 0
                               Decorate 1296(uTDEnvLightBuffers) DescriptorSet 0
                2:             TypeVoid

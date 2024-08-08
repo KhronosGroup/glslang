@@ -157,6 +157,7 @@ spv.debuginfo.hlsl.comp
                               Decorate 199(particleIn) BufferBlock
                               MemberDecorate 199(particleIn) 0 NonWritable
                               MemberDecorate 199(particleIn) 0 Offset 0
+                              Decorate 208(particleIn) NonWritable
                               Decorate 208(particleIn) Binding 0
                               Decorate 208(particleIn) DescriptorSet 0
                               Decorate 220 ArrayStride 80

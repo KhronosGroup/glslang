@@ -288,12 +288,14 @@ local_size = (128, 1, 1)
                               Decorate 30(sb) Block
                               MemberDecorate 30(sb) 0 NonWritable
                               MemberDecorate 30(sb) 0 Offset 0
+                              Decorate 32(sb) NonWritable
                               Decorate 32(sb) Binding 0
                               Decorate 32(sb) DescriptorSet 0
                               Decorate 54 ArrayStride 12
                               Decorate 55(o) Block
                               MemberDecorate 55(o) 0 NonWritable
                               MemberDecorate 55(o) 0 Offset 0
+                              Decorate 57(o) NonWritable
                               Decorate 57(o) Binding 1
                               Decorate 57(o) DescriptorSet 0
                               Decorate 74(id) BuiltIn LocalInvocationIndex

@@ -4372,7 +4372,14 @@ spv::Id TGlslangToSpvTraverser::createSpvVariable(const glslang::TIntermSymbol* 
         initializer = builder.makeNullConstant(spvType);
     }
 
-    return builder.createVariable(spv::NoPrecision, storageClass, spvType, name, initializer, false);
+    spv::Id var = builder.createVariable(spv::NoPrecision, storageClass, spvType, name, initializer, false);
+    std::vector<spv::Decoration> topLevelDecorations;
+    glslang::TQualifier typeQualifier = node->getType().getQualifier();
+    TranslateMemoryDecoration(typeQualifier, topLevelDecorations, glslangIntermediate->usingVulkanMemoryModel());
+    for (auto deco : topLevelDecorations) {
+        builder.addDecoration(var, deco);
+    }
+    return var;
 }
 
 // Return type Id of the sampled type.
