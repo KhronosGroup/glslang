@@ -710,6 +710,7 @@ INSTANTIATE_TEST_SUITE_P(
 
         // SPV_NV_shader_execution_reorder
 
+        "spv.nv.hitobject-errors.rgen",
         "spv.nv.hitobject-allops.rgen",
         "spv.nv.hitobject-allops.rchit",
         "spv.nv.hitobject-allops.rmiss",
