@@ -1858,6 +1858,9 @@ void TShader::setGlobalUniformBinding(unsigned int binding) { intermediate->setG
 void TShader::setAtomicCounterBlockName(const char* name) { intermediate->setAtomicCounterBlockName(name); }
 void TShader::setAtomicCounterBlockSet(unsigned int set) { intermediate->setAtomicCounterBlockSet(set); }
 
+void TShader::addSourceText(const char* text, size_t len) { intermediate->addSourceText(text, len); }
+void TShader::setSourceFile(const char* file) { intermediate->setSourceFile(file); }
+
 #ifdef ENABLE_HLSL
 // See comment above TDefaultHlslIoMapper in iomapper.cpp:
 void TShader::setHlslIoMapping(bool hlslIoMap)          { intermediate->setHlslIoMapping(hlslIoMap); }
