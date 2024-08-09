@@ -510,6 +510,9 @@ public:
     GLSLANG_EXPORT void setAtomicCounterBlockSet(unsigned int set);
     GLSLANG_EXPORT void setAtomicCounterBlockBinding(unsigned int binding);
 
+    GLSLANG_EXPORT void addSourceText(const char* text, size_t len);
+    GLSLANG_EXPORT void setSourceFile(const char* file);
+
     // For setting up the environment (cleared to nothingness in the constructor).
     // These must be called so that parsing is done for the right source language and
     // target environment, either indirectly through TranslateEnvironment() based on
