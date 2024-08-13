@@ -41,8 +41,6 @@ jobs:
         run: cmake --install build --prefix build/install
       - name: Test
         run: ctest --output-on-failure --test-dir build
-      - name: Test (standalone)
-        run: cd Test && ./runtests
       - name: Check known validation failure list
         run: grep -l 'Validation failed' Test/baseResults/* | sort -fd | diff -u Test/baseResults/validation_fails.txt -
 
@@ -87,10 +85,6 @@ jobs:
         env:
           UBSAN_OPTIONS: 'halt_on_error=1:print_stacktrace=1'
         run: ctest --output-on-failure --test-dir build
-      - name: Test (standalone)
-        env:
-          UBSAN_OPTIONS: halt_on_error=1:print_stacktrace=1
-        run: cd Test && ./runtests
 
   # Ensure we can compile/run on an older distro
   linux_min:
@@ -120,8 +114,6 @@ jobs:
         run: cmake --install build --prefix build/install
       - name: Test
         run: ctest --output-on-failure --test-dir build
-      - name: Test (standalone)
-        run: cd Test && ./runtests
 
   macos:
     runs-on: ${{matrix.os}}
@@ -142,9 +134,6 @@ jobs:
       - run: cmake --build build
       - run: cmake --install build --prefix build/install
       - run: ctest --output-on-failure --test-dir build
-      - name: Test Script (standalone)
-        run: ./runtests
-        working-directory: Test
 
   windows:
     runs-on: ${{matrix.os.genus}}
@@ -168,8 +157,6 @@ jobs:
           cmake --build build --config ${{matrix.cmake_build_type}} --target install
       - name: Test
         run: ctest -C ${{matrix.cmake_build_type}} --output-on-failure --test-dir build
-      - name: Test (standalone)
-        run: bash -c 'cd ./Test && ./runtests'
 
   iOS:
     runs-on: macos-13
