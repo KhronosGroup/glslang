@@ -113,7 +113,7 @@ LOCAL_SRC_FILES:= \
 		glslang/MachineIndependent/preprocessor/Pp.cpp \
 		glslang/MachineIndependent/preprocessor/PpScanner.cpp \
 		glslang/MachineIndependent/preprocessor/PpTokens.cpp \
-		glslang/OSDependent/Unix/ossource.cpp
+		glslang/OSDependent/Unix/ossource.cpp \
 		SPIRV/CInterface/spirv_c_interface.cpp \
 		SPIRV/GlslangToSpv.cpp \
 		SPIRV/InReadableOrder.cpp \
