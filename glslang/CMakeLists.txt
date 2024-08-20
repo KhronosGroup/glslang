@@ -163,7 +163,8 @@ set(GLSLANG_HEADERS
     Include/ResourceLimits.h
     Include/ShHandle.h
     Include/SpirvIntrinsics.h
-    Include/Types.h)
+    Include/Types.h
+    Include/visibility.h)
 
 add_library(glslang ${LIB_TYPE} ${GLSLANG_SOURCES} ${GLSLANG_HEADERS} ${GENERICCODEGEN_SOURCES} ${GENERICCODEGEN_HEADERS} ${OSDEPENDENT_SOURCES} ${OSDEPENDENT_HEADERS} ${MACHINEINDEPENDENT_SOURCES} ${MACHINEINDEPENDENT_HEADERS} ${SPIRV_SOURCES} ${SPIRV_HEADERS})
 add_library(glslang::glslang ALIAS glslang)

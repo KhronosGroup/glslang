@@ -159,6 +159,7 @@ template("glslang_sources_common") {
       "glslang/Include/Types.h",
       "glslang/Include/arrays.h",
       "glslang/Include/intermediate.h",
+      "glslang/Include/visibility.h",
       "glslang/MachineIndependent/Constant.cpp",
       "glslang/MachineIndependent/InfoSink.cpp",
       "glslang/MachineIndependent/Initialize.cpp",
