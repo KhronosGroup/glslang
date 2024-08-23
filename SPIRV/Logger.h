@@ -37,6 +37,7 @@
 
 #include <string>
 #include <vector>
+#include "glslang/Include/visibility.h"
 
 namespace spv {
 
@@ -58,7 +59,7 @@ public:
 
     // Returns all messages accumulated in the order of:
     // TBD functionalities, missing functionalities, warnings, errors.
-    std::string getAllMessages() const;
+    GLSLANG_EXPORT std::string getAllMessages() const;
 
 private:
     SpvBuildLogger(const SpvBuildLogger&);
