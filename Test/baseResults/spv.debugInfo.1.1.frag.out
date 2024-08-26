@@ -296,6 +296,7 @@ void main()
                                 Store 179 186
                                 Branch 181
              181:             Label
+                              Line 1 83 0
                               Return
                               FunctionEnd
                               Line 1 16 13
@@ -411,6 +412,7 @@ void main()
                                 Store 90 96
                                 Branch 92
               92:             Label
+                              Line 1 53 0
               97:   10(float) Load 90
                               Line 1 51 0
               98:   10(float) Load 56(result)
