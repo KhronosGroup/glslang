@@ -243,7 +243,6 @@ int TPpContext::CPPelse(int matchelse, TPpToken* ppToken)
 {
     int depth = 0;
     int token = scanToken(ppToken);
-    inElseSkip = true;
 
     while (token != EndOfInput) {
         if (token != '#') {
@@ -298,7 +297,7 @@ int TPpContext::CPPelse(int matchelse, TPpToken* ppToken)
                     elseSeen[elsetracker] = false;
                     --elsetracker;
                 }
-                inElseSkip = false;
+
                 return CPPif(ppToken);
             }
         } else if (nextAtom == PpAtomElse) {
@@ -312,8 +311,7 @@ int TPpContext::CPPelse(int matchelse, TPpToken* ppToken)
                 parseContext.ppError(ppToken->loc, "#elif after #else", "#elif", "");
         }
     }
-    
-    inElseSkip = false;
+
     return token;
 }
 
