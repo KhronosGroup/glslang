@@ -421,6 +421,7 @@ gl_FragCoord origin is upper left
                               Decorate 29(vertOnlyBlock) BufferBlock
                               MemberDecorate 29(vertOnlyBlock) 0 NonWritable
                               MemberDecorate 29(vertOnlyBlock) 0 Offset 0
+                              Decorate 31 NonWritable
                               Decorate 31 Binding 0
                               Decorate 31 DescriptorSet 0
                               Decorate 32(crossStageBlock2) Block
@@ -616,6 +617,7 @@ gl_FragCoord origin is upper left
                               Decorate 15(fragOnlyBlock) BufferBlock
                               MemberDecorate 15(fragOnlyBlock) 0 NonWritable
                               MemberDecorate 15(fragOnlyBlock) 0 Offset 0
+                              Decorate 17 NonWritable
                               Decorate 17 Binding 2
                               Decorate 17 DescriptorSet 0
                               Decorate 23(crossStageBlock2) Block

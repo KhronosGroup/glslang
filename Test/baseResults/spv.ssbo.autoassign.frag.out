@@ -36,6 +36,7 @@ spv.ssbo.autoassign.frag
                               Decorate 16(SB0) BufferBlock
                               MemberDecorate 16(SB0) 0 NonWritable
                               MemberDecorate 16(SB0) 0 Offset 0
+                              Decorate 18(SB0) NonWritable
                               Decorate 18(SB0) Binding 30
                               Decorate 18(SB0) DescriptorSet 0
                               Decorate 26(TestCB) Block

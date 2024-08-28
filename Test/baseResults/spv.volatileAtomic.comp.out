@@ -18,6 +18,8 @@ spv.volatileAtomic.comp
                               MemberDecorate 8(D) 0 Volatile
                               MemberDecorate 8(D) 0 Coherent
                               MemberDecorate 8(D) 0 Offset 0
+                              Decorate 10(d) Volatile
+                              Decorate 10(d) Coherent
                               Decorate 10(d) Binding 3
                               Decorate 10(d) DescriptorSet 0
                2:             TypeVoid

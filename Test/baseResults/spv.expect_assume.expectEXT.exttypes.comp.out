@@ -121,6 +121,7 @@ spv.expect_assume.expectEXT.exttypes.comp
                               MemberDecorate 42(roblock) 30 Offset 320
                               MemberDecorate 42(roblock) 31 NonWritable
                               MemberDecorate 42(roblock) 31 Offset 352
+                              Decorate 44(ro) NonWritable
                               Decorate 44(ro) Binding 0
                               Decorate 44(ro) DescriptorSet 0
                               Decorate 457 BuiltIn WorkgroupSize

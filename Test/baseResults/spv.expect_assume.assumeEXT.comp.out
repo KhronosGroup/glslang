@@ -19,6 +19,7 @@ spv.expect_assume.assumeEXT.comp
                               Decorate 7(roblock) BufferBlock
                               MemberDecorate 7(roblock) 0 NonWritable
                               MemberDecorate 7(roblock) 0 Offset 0
+                              Decorate 9(ro) NonWritable
                               Decorate 9(ro) Binding 0
                               Decorate 9(ro) DescriptorSet 0
                               Decorate 21 BuiltIn WorkgroupSize

@@ -99,6 +99,7 @@ gl_FragCoord origin is upper left
                               MemberDecorate 15(TextureBuffer_var) 0 Offset 0
                               MemberDecorate 15(TextureBuffer_var) 1 NonWritable
                               MemberDecorate 15(TextureBuffer_var) 1 Offset 16
+                              Decorate 17(TextureBuffer_var) NonWritable
                               Decorate 17(TextureBuffer_var) Binding 0
                               Decorate 17(TextureBuffer_var) DescriptorSet 0
                               Decorate 22(tbuf2) BufferBlock
@@ -106,6 +107,7 @@ gl_FragCoord origin is upper left
                               MemberDecorate 22(tbuf2) 0 Offset 0
                               MemberDecorate 22(tbuf2) 1 NonWritable
                               MemberDecorate 22(tbuf2) 1 Offset 16
+                              Decorate 24 NonWritable
                               Decorate 24 Binding 1
                               Decorate 24 DescriptorSet 0
                               Decorate 32(pos) BuiltIn FragCoord
