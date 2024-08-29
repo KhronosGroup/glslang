@@ -55,6 +55,7 @@ local_size = (1, 1, 1)
                               Decorate 17(bIterData) BufferBlock
                               MemberDecorate 17(bIterData) 0 NonWritable
                               MemberDecorate 17(bIterData) 0 Offset 0
+                              Decorate 19(bIterData) NonWritable
                               Decorate 19(bIterData) Binding 2
                               Decorate 19(bIterData) DescriptorSet 0
                2:             TypeVoid
