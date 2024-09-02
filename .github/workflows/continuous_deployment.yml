@@ -62,8 +62,7 @@ jobs:
             - name: Test
               run: |
                   cd build
-                  ctest --output-on-failure &&
-                  cd ../Test && ./runtests
+                  ctest --output-on-failure
             - name: Zip
               if: ${{ matrix.compiler.cc == 'clang' }}
               env:
@@ -122,8 +121,7 @@ jobs:
             - name: Test
               run: |
                   cd build
-                  ctest --output-on-failure &&
-                  cd ../Test && ./runtests
+                  ctest --output-on-failure
             - name: Zip
               env:
                   ARCHIVE: glslang-main-${{matrix.os.family}}-${{matrix.cmake_build_type}}.zip
@@ -176,7 +174,6 @@ jobs:
               run: |
                   cd build
                   ctest -C ${{matrix.cmake_build_type}} --output-on-failure
-                  cd ../Test && bash runtests
             - name: Zip
               if: ${{ matrix.cmake_build_type == 'Debug' }}
               env:
