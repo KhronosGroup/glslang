@@ -324,7 +324,6 @@ public:
         }
 
         std::ostringstream disassembly_stream;
-        spv::Parameterize();
         spv::Disassemble(disassembly_stream, spirv_binary);
         bool validation_result = !options().validate || logger.getAllMessages().empty();
         return {{
@@ -384,7 +383,6 @@ public:
                                   spirv_binary, &logger, &options());
 
             std::ostringstream disassembly_stream;
-            spv::Parameterize();
             spv::Disassemble(disassembly_stream, spirv_binary);
             bool validation_result = !options().validate || logger.getAllMessages().empty();
             return {{{shaderName, shader.getInfoLog(), shader.getInfoDebugLog()},},
@@ -429,7 +427,6 @@ public:
             spv::spirvbin_t(0 /*verbosity*/).remap(spirv_binary, whiteListStrings, remapOptions);
 
             std::ostringstream disassembly_stream;
-            spv::Parameterize();
             spv::Disassemble(disassembly_stream, spirv_binary);
             bool validation_result = !options().validate || logger.getAllMessages().empty();
             return {{{shaderName, shader.getInfoLog(), shader.getInfoDebugLog()},},
@@ -453,7 +450,6 @@ public:
             spv::spirvbin_t(0 /*verbosity*/).remap(spirv_binary, whiteListStrings, remapOptions);
 
             std::ostringstream disassembly_stream;
-            spv::Parameterize();
             spv::Disassemble(disassembly_stream, spirv_binary);
 
             return {{{shaderName, "", ""},},

@@ -264,7 +264,6 @@ TEST_P(VulkanRelaxedTest, FromFile)
                     spirv_binary, &logger, &options());
 
                 std::ostringstream disassembly_stream;
-                spv::Parameterize();
                 spv::Disassemble(disassembly_stream, spirv_binary);
                 result.spirvWarningsErrors += logger.getAllMessages();
                 result.spirv += disassembly_stream.str();
