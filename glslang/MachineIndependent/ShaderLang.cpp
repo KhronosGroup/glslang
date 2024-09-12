@@ -2055,7 +2055,7 @@ bool TProgram::linkStage(EShLanguage stage, EShMessages messages)
 //
 // Return true if no errors.
 //
-bool TProgram::crossStageCheck(EShMessages) {
+bool TProgram::crossStageCheck(EShMessages messages) {
 
     // make temporary intermediates to hold the linkage symbols for each linking interface
     // while we do the checks
@@ -2108,6 +2108,13 @@ bool TProgram::crossStageCheck(EShMessages) {
     for (unsigned int i = 1; i < activeStages.size(); ++i) {
         activeStages[i - 1]->checkStageIO(*infoSink, *activeStages[i]);
         error |= (activeStages[i - 1]->getNumErrors() != 0);
+    }
+
+    // if requested, optimize cross stage IO
+    if (messages & EShMsgLinkTimeOptimization) {
+        for (unsigned int i = 1; i < activeStages.size(); ++i) {
+            activeStages[i - 1]->optimizeStageIO(*infoSink, *activeStages[i]);
+        }
     }
 
     return !error;
