@@ -100,6 +100,7 @@ if (ENABLE_SPVREMAPPER)
         POSITION_INDEPENDENT_CODE ON
         VERSION   "${GLSLANG_VERSION}"
         SOVERSION "${GLSLANG_VERSION_MAJOR}")
+    glslang_only_export_explicit_symbols(SPVRemapper)
 endif()
 
 if(WIN32 AND BUILD_SHARED_LIBS)
