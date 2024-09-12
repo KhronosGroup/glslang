@@ -1,0 +1,6 @@
+spv.computeShaderDerivativesSpec2.comp
+ERROR: 0:5: 'derivative_group_linearNV' : requires total group size to be multiple of four 
+ERROR: 1 compilation errors.  No code generated.
+
+
+SPIR-V is not generated for failed compile or link
