@@ -400,6 +400,7 @@ GLSLANG_EXPORT int GetKhronosToolId();
 class TIntermediate;
 class TProgram;
 class TPoolAllocator;
+class TIoMapResolver;
 
 // Call this exactly once per process before using anything else
 GLSLANG_EXPORT bool InitializeProcess();
@@ -838,6 +839,19 @@ public:
     virtual void addStage(EShLanguage stage, TIntermediate& stageIntermediate) = 0;
 };
 
+// I/O mapper
+class TIoMapper {
+public:
+    TIoMapper() {}
+    virtual ~TIoMapper() {}
+    // grow the reflection stage by stage
+    bool virtual addStage(EShLanguage, TIntermediate&, TInfoSink&, TIoMapResolver*);
+    bool virtual doMap(TIoMapResolver*, TInfoSink&) { return true; }
+};
+
+// Get the default GLSL IO mapper
+GLSLANG_EXPORT TIoMapper* GetGlslIoMapper();
+
 // Make one TProgram per set of shaders that will get linked together.  Add all
 // the shaders that are to be linked together.  After calling shader.parse()
 // for all shaders, call link().
@@ -945,6 +959,10 @@ public:
     const TType *getAttributeTType(int index) const    { return getPipeInput(index).getType(); }
 
     GLSLANG_EXPORT void dumpReflection();
+
+    // Get the IO resolver to use for mapIO
+    GLSLANG_EXPORT TIoMapResolver* getGlslIoResolver(EShLanguage stage);
+
     // I/O mapping: apply base offsets and map live unbound variables
     // If resolver is not provided it uses the previous approach
     // and respects auto assignment and offsets.

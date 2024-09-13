@@ -189,16 +189,6 @@ protected:
 
 typedef std::map<TString, TVarEntryInfo> TVarLiveMap;
 
-// I/O mapper
-class TIoMapper {
-public:
-    TIoMapper() {}
-    virtual ~TIoMapper() {}
-    // grow the reflection stage by stage
-    bool virtual addStage(EShLanguage, TIntermediate&, TInfoSink&, TIoMapResolver*);
-    bool virtual doMap(TIoMapResolver*, TInfoSink&) { return true; }
-};
-
 // I/O mapper for GLSL
 class TGlslIoMapper : public TIoMapper {
 public:

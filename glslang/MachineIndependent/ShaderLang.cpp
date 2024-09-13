@@ -1716,6 +1716,10 @@ public:
     virtual bool compile(TIntermNode*, int = 0, EProfile = ENoProfile) { return true; }
 };
 
+TIoMapper* GetGlslIoMapper() {
+    return static_cast<TIoMapper*>(new TGlslIoMapper());
+}
+
 TShader::TShader(EShLanguage s)
     : stage(s), lengths(nullptr), stringNames(nullptr), preamble(""), overrideVersion(0)
 {
@@ -2164,6 +2168,12 @@ int TProgram::getNumAtomicCounters() const                            { return r
 const TObjectReflection& TProgram::getAtomicCounter(int index) const  { return reflection->getAtomicCounter(index); }
 void TProgram::dumpReflection() { if (reflection != nullptr) reflection->dump(); }
 
+TIoMapResolver* TProgram::getGlslIoResolver(EShLanguage stage) {
+    auto *intermediate = getIntermediate(stage);
+    if (!intermediate)
+        return NULL;
+    return static_cast<TIoMapResolver*>(new TDefaultGlslIoResolver(*intermediate));
+}
 //
 // I/O mapping implementation.
 //
