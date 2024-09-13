@@ -285,19 +285,21 @@ TEST_P(GlslMapIOTest, FromFile)
     result.linkingOutput = program.getInfoLog();
     result.linkingError = program.getInfoDebugLog();
 
-    unsigned int stage = 0;
-    glslang::TIntermediate* firstIntermediate = nullptr;
-    while (!program.getIntermediate((EShLanguage)stage) && stage < EShLangCount) { stage++; }
-    firstIntermediate = program.getIntermediate((EShLanguage)stage);
-
-    glslang::TDefaultGlslIoResolver resolver(*firstIntermediate);
-    glslang::TGlslIoMapper ioMapper;
+    glslang::TIoMapResolver *resolver;
+    for (unsigned stage = 0; stage < EShLangCount; stage++) {
+        resolver = program.getGlslIoResolver((EShLanguage)stage);
+        if (resolver)
+            break;
+    }
+    glslang::TIoMapper *ioMapper = glslang::GetGlslIoMapper();
 
     if (success) {
-        success &= program.mapIO(&resolver, &ioMapper);
+        success &= program.mapIO(resolver, ioMapper);
         result.linkingOutput = program.getInfoLog();
         result.linkingError = program.getInfoDebugLog();
     }
+    delete ioMapper;
+    delete resolver;
 
     success &= verifyIOMapping(result.linkingError, program);
     result.validationResult = success;
