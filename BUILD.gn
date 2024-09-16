@@ -302,6 +302,7 @@ source_set("glslang_default_resource_limits_sources") {
     "glslang/ResourceLimits/ResourceLimits.cpp",
     "glslang/Public/ResourceLimits.h",
     "glslang/Include/ResourceLimits.h",
+    "glslang/Include/visibility.h",
   ]
   public_configs = [ ":glslang_public" ]
 
