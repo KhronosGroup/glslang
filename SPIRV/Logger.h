@@ -43,7 +43,7 @@ namespace spv {
 
 // A class for holding all SPIR-V build status messages, including
 // missing/TBD functionalities, warnings, and errors.
-class SpvBuildLogger {
+class GLSLANG_EXPORT SpvBuildLogger {
 public:
     SpvBuildLogger() {}
 
@@ -59,7 +59,7 @@ public:
 
     // Returns all messages accumulated in the order of:
     // TBD functionalities, missing functionalities, warnings, errors.
-    GLSLANG_EXPORT std::string getAllMessages() const;
+    std::string getAllMessages() const;
 
 private:
     SpvBuildLogger(const SpvBuildLogger&);
