@@ -1507,9 +1507,9 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
 
     std::vector<std::string> outputFiles;
 
-#ifdef ENABLE_SPIRV
     // Dump SPIR-V
     if (Options & EOptionSpv) {
+#ifdef ENABLE_SPIRV
         CompileOrLinkFailed.fetch_or(CompileFailed);
         CompileOrLinkFailed.fetch_or(LinkFailed);
         if (static_cast<bool>(CompileOrLinkFailed.load()))
@@ -1569,8 +1569,10 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
                 }
             }
         }
-    }
+#else
+        Error("This configuration of glslang does not have SPIR-V support");
 #endif
+    }
 
     CompileOrLinkFailed.fetch_or(CompileFailed);
     CompileOrLinkFailed.fetch_or(LinkFailed);
