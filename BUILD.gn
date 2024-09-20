@@ -235,7 +235,7 @@ template("glslang_sources_common") {
       ]
     }
 
-    defines = []
+    defines = [ "ENABLE_SPIRV=1" ]
     if (invoker.enable_opt) {
       sources += [ "SPIRV/SpvTools.cpp" ]
       defines += [ "ENABLE_OPT=1" ]
@@ -317,7 +317,10 @@ executable("glslang_validator") {
   if (!is_win) {
     cflags = [ "-Woverflow" ]
   }
-  defines = [ "ENABLE_OPT=1" ]
+  defines = [
+    "ENABLE_OPT=1",
+    "ENABLE_SPIRV=1",
+  ]
   deps = [
     ":glslang_build_info",
     ":glslang_default_resource_limits_sources",
@@ -337,7 +340,10 @@ executable("glslang_validator") {
 
 executable("spirv-remap") {
   sources = [ "StandAlone/spirv-remap.cpp" ]
-  defines = [ "ENABLE_OPT=1" ]
+  defines = [
+    "ENABLE_OPT=1",
+    "ENABLE_SPIRV=1",
+  ]
   deps = [ ":glslang_sources" ]
 
   include_dirs = [ "${spirv_tools_dir}/include" ]
