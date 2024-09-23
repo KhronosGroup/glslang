@@ -3,6 +3,41 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## 15.0.0 2024-09-23
+### Breaking changes
+* Explicitly export all symbols that are part of the public API and hide other symbols by default
+
+### Other changes
+* Allow building glslang without the SPIR-V backend using the new ENABLE_SPIRV build option
+* Add setResourceSetBinding method to the API
+* Add interface to get the GLSL IO mapper and resolver
+* Allow compute derivative modes when the workgroup dimensions are spec constants
+* Improve debug location of branch/return instructions
+* Silence preprocessor '#' error reporting in inactive #if/#ifdef/#elif/#else blocks
+* Apply GLSL memory decorations to top-level OpVariable
+* Move definition of GLSLANG_EXPORT to visibility.h
+* Merge ancillary libraries into main glslang library and stub originals
+* Add public setSourceFile and addSourceText methods to TShader class
+* Add type checks for hitObjectNV
+* Add optimizerAllowExpandedIDBound to SpvOptions
+* Add SpvTools.h back to public headers 
+* Add cross-stage check for missing outputs
+* Fix HLSL offsets for non-buffers
+* Add types and functions for IO mapping to API
+* Add function to set preprocessed code to API
+* Add set/get version functions to API
+* Expose setGlobalUniform functions to API
+* Don't emit debug instructions before an OpPhi
+* Add command-line and API option to enable reporting column location for compiler errors
+* Improve location aliasing checks
+* Support constant expression calculated by matrixCompMult
+* Fix crash caused by atomicCounter() use without arguments
+* Fix multi-line function call line numbers
+* Add line info to OpDebugDeclare for function parameters
+* Fix HLSL OpDebugFunction file name
+* Fix duplicate decorations
+* Enable compilation of glslang without thread support for WASI
+
 ## 14.3.0 2024-06-25
 * Generate vector constructions more efficiently when sizes match
 * Skip identity conversions for 8-bit and 16-bit types
