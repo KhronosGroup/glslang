@@ -363,6 +363,13 @@ run --glsl-version 410 -V -S vert UTF8BOM.vert > $TARGETDIR/UTF8BOM.vert.out
 diff -b $BASEDIR/UTF8BOM.vert.out $TARGETDIR/UTF8BOM.vert.out || HASERROR=1
 
 #
+# Test LTO
+#
+echo "Testing link-time optimization"
+run -V -H --amb --aml -l --lto link.crossStageOptimization.vert link.crossStageOptimization.frag > "$TARGETDIR/link.crossStageOptimization.out"
+diff -b $BASEDIR/link.crossStageOptimization.out "$TARGETDIR/link.crossStageOptimization.out" || HASERROR=1
+
+#
 # Final checking
 #
 if [ $HASERROR -eq 0 ]
