@@ -48,6 +48,7 @@
 #define SpvBuilder_H
 
 #include "Logger.h"
+#define SPV_ENABLE_UTILITY_CODE
 #include "spirv.hpp"
 #include "spvIR.h"
 namespace spv {
