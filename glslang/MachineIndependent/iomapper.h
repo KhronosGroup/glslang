@@ -196,10 +196,11 @@ public:
     virtual ~TGlslIoMapper();
     // If set, the uniform block with the given name will be changed to be backed by
     // push_constant if it's size is <= maxSize
-    void setAutoPushConstantBlock(const char* name, unsigned int maxSize, TLayoutPacking packing) {
+    bool setAutoPushConstantBlock(const char* name, unsigned int maxSize, TLayoutPacking packing) override {
         autoPushConstantBlockName = name;
         autoPushConstantMaxSize = maxSize;
         autoPushConstantBlockPacking = packing;
+        return true;
     }
     // grow the reflection stage by stage
     bool addStage(EShLanguage, TIntermediate&, TInfoSink&, TIoMapResolver*) override;
