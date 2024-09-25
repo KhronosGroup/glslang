@@ -173,6 +173,21 @@ typedef enum {
     LAST_ELEMENT_MARKER(EShTargetLanguageVersionCount = 7),
 } EShTargetLanguageVersion;
 
+//
+// Following are a series of helper enums for managing layouts and qualifiers,
+// used for TPublicType, TType, others.
+//
+
+enum TLayoutPacking {
+    ElpNone,
+    ElpShared, // default, but different than saying nothing
+    ElpStd140,
+    ElpStd430,
+    ElpPacked,
+    ElpScalar,
+    ElpCount // If expanding, see bitfield width below
+};
+
 struct TInputLanguage {
     EShSource languageFamily; // redundant information with other input, this one overrides when not EShSourceNone
     EShLanguage stage;        // redundant information with other input, this one overrides when not EShSourceNone
@@ -847,6 +862,7 @@ public:
     // grow the reflection stage by stage
     bool virtual addStage(EShLanguage, TIntermediate&, TInfoSink&, TIoMapResolver*);
     bool virtual doMap(TIoMapResolver*, TInfoSink&) { return true; }
+    bool virtual setAutoPushConstantBlock(const char*, unsigned int, TLayoutPacking) { return false; }
 };
 
 // Get the default GLSL IO mapper

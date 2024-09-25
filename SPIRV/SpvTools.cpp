@@ -82,6 +82,11 @@ spv_target_env MapToSpirvToolsEnv(const SpvVersion& spvVersion, spv::SpvBuildLog
     return spv_target_env::SPV_ENV_UNIVERSAL_1_0;
 }
 
+spv_target_env MapToSpirvToolsEnv(const glslang::TIntermediate& intermediate, spv::SpvBuildLogger* logger)
+{
+    return MapToSpirvToolsEnv(intermediate.getSpv(), logger);
+}
+
 // Callback passed to spvtools::Optimizer::SetMessageConsumer
 void OptimizerMesssageConsumer(spv_message_level_t level, const char *source,
         const spv_position_t &position, const char *message)
