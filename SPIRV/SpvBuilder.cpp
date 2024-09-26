@@ -2406,6 +2406,10 @@ void Builder::makeReturn(bool implicit, Id retVal)
 // Comments in header
 void Builder::enterLexicalBlock(uint32_t line, uint32_t column)
 {
+    if (!emitNonSemanticShaderDebugInfo) {
+        return;
+    }
+
     // Generate new lexical scope debug instruction
     Id lexId = makeDebugLexicalBlock(line, column);
     currentDebugScopeId.push(lexId);
@@ -2415,6 +2419,10 @@ void Builder::enterLexicalBlock(uint32_t line, uint32_t column)
 // Comments in header
 void Builder::leaveLexicalBlock()
 {
+    if (!emitNonSemanticShaderDebugInfo) {
+        return;
+    }
+
     // Pop current scope from stack and clear current scope
     currentDebugScopeId.pop();
     dirtyScopeTracker = true;
