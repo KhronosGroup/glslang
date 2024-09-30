@@ -554,12 +554,12 @@ VSOutput main(VSInput input)
              205:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 30 206 206 16 16
              204:    8(float) Load 130(s)
              207:    8(float) Load 179(c)
+             210:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 30 198 198 16 16
              209:   18(fvec3) CompositeConstruct 201 203 99
-             210:   18(fvec3) CompositeConstruct 204 207 99
-             211:   18(fvec3) CompositeConstruct 99 99 208
-             212:         191 CompositeConstruct 209 210 211
-             213:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 30 198 198 16 16
-                              Store 195(mx) 212
+             211:   18(fvec3) CompositeConstruct 204 207 99
+             212:   18(fvec3) CompositeConstruct 99 99 208
+             213:         191 CompositeConstruct 209 211 212
+                              Store 195(mx) 213
              215:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 30 216 216 16 16
              214:    128(ptr) AccessChain 77(input) 136 52
              217:    8(float) Load 214
@@ -584,12 +584,12 @@ VSOutput main(VSInput input)
              240:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 30 241 241 16 16
              239:    8(float) Load 130(s)
              242:    8(float) Load 179(c)
+             244:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 30 233 233 16 16
              243:   18(fvec3) CompositeConstruct 236 99 238
-             244:   18(fvec3) CompositeConstruct 99 208 99
-             245:   18(fvec3) CompositeConstruct 239 99 242
-             246:         191 CompositeConstruct 243 244 245
-             247:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 30 233 233 16 16
-                              Store 230(my) 246
+             245:   18(fvec3) CompositeConstruct 99 208 99
+             246:   18(fvec3) CompositeConstruct 239 99 242
+             247:         191 CompositeConstruct 243 245 246
+                              Store 230(my) 247
              249:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 30 250 250 16 16
              248:    128(ptr) AccessChain 77(input) 136 21
              251:    8(float) Load 248
@@ -615,12 +615,12 @@ VSOutput main(VSInput input)
              276:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 30 277 277 16 16
              275:    8(float) Load 130(s)
              278:    8(float) Load 179(c)
+             280:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 30 267 267 16 16
              279:   18(fvec3) CompositeConstruct 208 99 99
-             280:   18(fvec3) CompositeConstruct 99 270 274
-             281:   18(fvec3) CompositeConstruct 99 275 278
-             282:         191 CompositeConstruct 279 280 281
-             283:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 30 267 267 16 16
-                              Store 264(mz) 282
+             281:   18(fvec3) CompositeConstruct 99 270 274
+             282:   18(fvec3) CompositeConstruct 99 275 278
+             283:         191 CompositeConstruct 279 281 282
+                              Store 264(mz) 283
              289:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 103(DebugLine) 30 287 287 16 16
              288:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 28(DebugDeclare) 285 284(rotMat) 85
              290:         191 Load 195(mx)
