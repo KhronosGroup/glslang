@@ -2858,9 +2858,16 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
                                                             // SPIR-V, for an out parameter
     std::vector<spv::Id> temporaryLvalues;                  // temporaries to pass, as proxies for complexLValues
 
-    auto resultType = [&invertedType, &node, this](){ return invertedType != spv::NoType ?
-        invertedType :
-        convertGlslangToSpvType(node->getType()); };
+    auto resultType = [&invertedType, &node, this](){
+        if (invertedType != spv::NoType) {
+            return invertedType;
+        } else {
+            auto ret = convertGlslangToSpvType(node->getType());
+            // convertGlslangToSpvType may clobber the debug location, reset it
+            builder.setDebugSourceLocation(node->getLoc().line, node->getLoc().getFilename());
+            return ret;
+        }
+    };
 
     // try texturing
     result = createImageTextureFunctionCall(node);
