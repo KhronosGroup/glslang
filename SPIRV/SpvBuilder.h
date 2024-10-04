@@ -1004,6 +1004,6 @@ public:
     SpvBuildLogger* logger;
 };  // end Builder class
 
-};  // end spv namespace
+} // end spv namespace
 
 #endif // SpvBuilder_H

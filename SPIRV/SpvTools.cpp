@@ -309,6 +309,6 @@ void SpirvToolsStripDebugInfo(const glslang::TIntermediate& intermediate,
     optimizer.Run(spirv.data(), spirv.size(), &spirv, spvOptOptions);
 }
 
-}; // end namespace glslang
+} // end namespace glslang
 
 #endif

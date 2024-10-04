@@ -4881,7 +4881,7 @@ bool TGlslangToSpvTraverser::filterMember(const glslang::TType& member)
     }
 
     return false;
-};
+}
 
 // Do full recursive conversion of a glslang structure (or block) type to a SPIR-V Id.
 // explicitLayout can be kept the same throughout the hierarchical recursive walk.
@@ -10309,7 +10309,7 @@ spv::Id TGlslangToSpvTraverser::getExtBuiltins(const char* name)
     }
 }
 
-};  // end anonymous namespace
+} // end anonymous namespace
 
 namespace glslang {
 
@@ -10446,4 +10446,4 @@ void GlslangToSpv(const TIntermediate& intermediate, std::vector<unsigned int>& 
     GetThreadPoolAllocator().pop();
 }
 
-}; // end namespace glslang
+} // end namespace glslang
