@@ -65,10 +65,10 @@ namespace glslang {
 // Returns the added node.
 //
 
-TIntermSymbol* TIntermediate::addSymbol(long long id, const TString& name, const TType& type, const TConstUnionArray& constArray,
+TIntermSymbol* TIntermediate::addSymbol(long long id, const TString& name, const TString& mangledName, const TType& type, const TConstUnionArray& constArray,
                                         TIntermTyped* constSubtree, const TSourceLoc& loc)
 {
-    TIntermSymbol* node = new TIntermSymbol(id, name, type);
+    TIntermSymbol* node = new TIntermSymbol(id, name, type, &mangledName);
     node->setLoc(loc);
     node->setConstArray(constArray);
     node->setConstSubtree(constSubtree);
@@ -80,6 +80,7 @@ TIntermSymbol* TIntermediate::addSymbol(const TIntermSymbol& intermSymbol)
 {
     return addSymbol(intermSymbol.getId(),
                      intermSymbol.getName(),
+                     intermSymbol.getMangledName(),
                      intermSymbol.getType(),
                      intermSymbol.getConstArray(),
                      intermSymbol.getConstSubtree(),
@@ -96,14 +97,14 @@ TIntermSymbol* TIntermediate::addSymbol(const TVariable& variable)
 
 TIntermSymbol* TIntermediate::addSymbol(const TVariable& variable, const TSourceLoc& loc)
 {
-    return addSymbol(variable.getUniqueId(), variable.getName(), variable.getType(), variable.getConstArray(), variable.getConstSubtree(), loc);
+    return addSymbol(variable.getUniqueId(), variable.getName(), variable.getMangledName(), variable.getType(), variable.getConstArray(), variable.getConstSubtree(), loc);
 }
 
 TIntermSymbol* TIntermediate::addSymbol(const TType& type, const TSourceLoc& loc)
 {
     TConstUnionArray unionArray;  // just a null constant
 
-    return addSymbol(0, "", type, unionArray, nullptr, loc);
+    return addSymbol(0, "", "", type, unionArray, nullptr, loc);
 }
 
 //
@@ -1032,6 +1033,10 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
     if (node->getType().isCoopMat() &&
         op != EOpConstructCooperativeMatrixNV &&
         op != EOpConstructCooperativeMatrixKHR)
+        return nullptr;
+
+    if (node->getType().isTensorLayoutNV() ||
+        node->getType().isTensorViewNV())
         return nullptr;
 
     // Note: callers are responsible for other aspects of shape,

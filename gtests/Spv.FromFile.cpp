@@ -738,6 +738,9 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.1.6.samplerBuffer.frag",
         "spv.1.6.separate.frag",
         "spv.1.6.quad.frag",
+        "spv.coopmat2_constructor.comp",
+        "spv.coopmat2_error.comp",
+        "spv.coopmat2_tensor.comp",
     })),
     FileNameAsCustomTestSuffix
 );

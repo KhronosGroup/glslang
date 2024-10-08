@@ -288,6 +288,7 @@ public:
     bool isCooperativeMatrix(Id resultId)const { return isCooperativeMatrixType(getTypeId(resultId)); }
     bool isAggregate(Id resultId)    const { return isAggregateType(getTypeId(resultId)); }
     bool isSampledImage(Id resultId) const { return isSampledImageType(getTypeId(resultId)); }
+    bool isTensorView(Id resultId)const { return isTensorViewType(getTypeId(resultId)); }
 
     bool isBoolType(Id typeId)
         { return groupedTypes[OpTypeBool].size() > 0 && typeId == groupedTypes[OpTypeBool].back()->getResultId(); }
@@ -308,6 +309,7 @@ public:
     {
         return getTypeClass(typeId) == OpTypeCooperativeMatrixKHR || getTypeClass(typeId) == OpTypeCooperativeMatrixNV;
     }
+    bool isTensorViewType(Id typeId)   const { return getTypeClass(typeId) == OpTypeTensorViewNV; }
     bool isAggregateType(Id typeId)    const
         { return isArrayType(typeId) || isStructType(typeId) || isCooperativeMatrixType(typeId); }
     bool isImageType(Id typeId)        const { return getTypeClass(typeId) == OpTypeImage; }
@@ -608,6 +610,11 @@ public:
 
     // matrix constructor
     Id createMatrixConstructor(Decoration precision, const std::vector<Id>& sources, Id constructee);
+
+    // coopmat conversion
+    Id createCooperativeMatrixConversion(Id typeId, Id source);
+    Id createCooperativeMatrixReduce(Op opcode, Id typeId, Id source, unsigned int mask, Id func);
+    Id createCooperativeMatrixPerElementOp(Id typeId, const std::vector<Id>& operands);
 
     // Helper to use for building nested control flow with if-then-else.
     class If {
