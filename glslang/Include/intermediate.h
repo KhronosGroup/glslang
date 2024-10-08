@@ -628,7 +628,24 @@ enum TOperator {
     EOpCooperativeMatrixMulAdd,
     EOpCooperativeMatrixLoadNV,
     EOpCooperativeMatrixStoreNV,
+    EOpCooperativeMatrixLoadTensorNV,
+    EOpCooperativeMatrixStoreTensorNV,
     EOpCooperativeMatrixMulAddNV,
+    EOpCooperativeMatrixReduceNV,
+    EOpCooperativeMatrixPerElementOpNV,
+    EOpCooperativeMatrixTransposeNV,
+
+    EOpCreateTensorLayoutNV,
+    EOpTensorLayoutSetBlockSizeNV,
+    EOpTensorLayoutSetDimensionNV,
+    EOpTensorLayoutSetStrideNV,
+    EOpTensorLayoutSliceNV,
+    EOpTensorLayoutSetClampValueNV,
+
+    EOpCreateTensorViewNV,
+    EOpTensorViewSetDimensionNV,
+    EOpTensorViewSetStrideNV,
+    EOpTensorViewSetClipNV,
 
     EOpBeginInvocationInterlock, // Fragment only
     EOpEndInvocationInterlock, // Fragment only
@@ -1356,11 +1373,19 @@ public:
     // if symbol is initialized as symbol(sym), the memory comes from the pool allocator of sym. If sym comes from
     // per process threadPoolAllocator, then it causes increased memory usage per compile
     // it is essential to use "symbol = sym" to assign to symbol
-    TIntermSymbol(long long i, const TString& n, const TType& t)
-        : TIntermTyped(t), id(i), flattenSubset(-1), constSubtree(nullptr) { name = n; }
+    TIntermSymbol(long long i, const TString& n, const TType& t, const TString* mn = nullptr)
+        : TIntermTyped(t), id(i), flattenSubset(-1), constSubtree(nullptr) { 
+        name = n;
+        if (mn) {
+            mangledName = *mn;
+        } else {
+            mangledName = n;
+        }
+    }
     virtual long long getId() const { return id; }
     virtual void changeId(long long i) { id = i; }
     virtual const TString& getName() const { return name; }
+    virtual const TString& getMangledName() const { return mangledName; }
     virtual void traverse(TIntermTraverser*);
     virtual       TIntermSymbol* getAsSymbolNode()       { return this; }
     virtual const TIntermSymbol* getAsSymbolNode() const { return this; }
@@ -1381,6 +1406,7 @@ protected:
     long long id;                // the unique id of the symbol this node represents
     int flattenSubset;           // how deeply the flattened object rooted at id has been dereferenced
     TString name;                // the name of the symbol this node represents
+    TString mangledName;         // mangled function name, or a copy of name if not a function
     TConstUnionArray constArray; // if the symbol is a front-end compile-time constant, this is its value
     TIntermTyped* constSubtree;
 };
