@@ -324,7 +324,7 @@ static EProfile c_shader_profile(glslang_profile_t profile)
 GLSLANG_EXPORT glslang_shader_t* glslang_shader_create(const glslang_input_t* input)
 {
     if (!input || !input->code) {
-        printf("Error creating shader: null input(%p)/input->code\n", input);
+        printf("Error creating shader: null input(%p)/input->code\n", (void*)input);
 
         if (input)
             printf("input->code = %p\n", input->code);
