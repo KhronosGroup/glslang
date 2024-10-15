@@ -133,8 +133,8 @@ Linked vertex stage:
 
 Linked fragment stage:
 
-WARNING: Linking unknown stage and fragment stages: Matched shader interfaces are using different instance names.
-    unknown stage stage: Block: crossStageBlock2 Instance: blockName1: ""
+WARNING: Linking fragment stage: Matched shader interfaces are using different instance names.
+    vertex stage: Block: crossStageBlock2 Instance: blockName1: ""
     fragment stage: Block: crossStageBlock2 Instance: blockName2: ""
 
 Shader version: 460

@@ -345,6 +345,7 @@ INSTANTIATE_TEST_SUITE_P(
         {{"iomap.variableOutBlockIn.vert", "iomap.variableOutBlockIn.frag"}, Semantics::OpenGL},
         {{"iomap.blockOutVariableIn.2.vert", "iomap.blockOutVariableIn.geom"}, Semantics::OpenGL},
         {{"iomap.variableOutBlockIn.2.vert", "iomap.variableOutBlockIn.geom"}, Semantics::OpenGL},
+        {{"iomap.mismatchedBufferTypes.vert", "iomap.mismatchedBufferTypes.frag"}, Semantics::OpenGL},
         // vulkan semantics
         {{"iomap.crossStage.vk.vert", "iomap.crossStage.vk.geom", "iomap.crossStage.vk.frag" }, Semantics::Vulkan},
         {{"iomap.crossStage.vk.2.vert", "iomap.crossStage.vk.2.geom", "iomap.crossStage.vk.2.frag" }, Semantics::Vulkan},
