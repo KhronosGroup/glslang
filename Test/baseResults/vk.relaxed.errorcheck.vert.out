@@ -72,8 +72,8 @@ Linked vertex stage:
 
 Linked fragment stage:
 
-ERROR: Linking unknown stage stage: Types must match:
-    a: " uniform highp 2-component vector of float" versus " uniform highp 4-component vector of float"
+ERROR: Linking fragment stage: Types must match:
+    a: " uniform highp 2-component vector of float" in stage vertex versus " uniform highp 4-component vector of float" in stage fragment
 
 Shader version: 460
 0:? Sequence

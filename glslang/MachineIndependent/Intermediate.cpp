@@ -68,7 +68,7 @@ namespace glslang {
 TIntermSymbol* TIntermediate::addSymbol(long long id, const TString& name, const TType& type, const TConstUnionArray& constArray,
                                         TIntermTyped* constSubtree, const TSourceLoc& loc)
 {
-    TIntermSymbol* node = new TIntermSymbol(id, name, type);
+    TIntermSymbol* node = new TIntermSymbol(id, name, getStage(), type);
     node->setLoc(loc);
     node->setConstArray(constArray);
     node->setConstSubtree(constSubtree);
