@@ -46,6 +46,7 @@
 // even if no merging was done (i.e., the stage was only one compilation unit).
 //
 
+#include "glslang/Public/ShaderLang.h"
 #include "localintermediate.h"
 #include "../Include/InfoSink.h"
 #include "SymbolTable.h"
@@ -755,10 +756,10 @@ void TIntermediate::mergeBlockDefinitions(TInfoSink& infoSink, TIntermSymbol* bl
                 // don't need as many checks as when merging symbols, since
                 // initializers and most qualifiers are stripped when the member is moved into the block
                 if ((*memberType) != (*unitMemberType)) {
-                    error(infoSink, "Types must match:");
+                    error(infoSink, "Types must match:", unitBlock->getStage());
                     infoSink.info << "    " << memberType->getFieldName() << ": ";
-                    infoSink.info << "\"" << memberType->getCompleteString() << "\" versus ";
-                    infoSink.info << "\"" << unitMemberType->getCompleteString() << "\"\n";
+                    infoSink.info << "\"" << memberType->getCompleteString() << "\" in stage " << StageName(block->getStage()) << " versus ";
+                    infoSink.info << "\"" << unitMemberType->getCompleteString() << "\" in stage " << StageName(unitBlock->getStage()) << "\n";
                 }
 
                 memberIndexUpdates[i] = j;
