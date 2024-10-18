@@ -8805,7 +8805,17 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
         builder.promoteScalar(precision, operands.front(), operands.back());
         break;
     case glslang::EOpModf:
-        libCall = spv::GLSLstd450Modf;
+        {
+            libCall = spv::GLSLstd450ModfStruct;
+            assert(builder.isFloatType(builder.getScalarTypeId(typeId0)));
+            int width = builder.getScalarTypeWidth(typeId0);
+            if (width == 16)
+                // Using 16-bit whole number operand, enable extension E_SPV_AMD_gpu_shader_half_float
+                builder.addExtension(spv::E_SPV_AMD_gpu_shader_half_float);
+            // The two members of the returned struct and x must all be the same type.
+            typeId = builder.makeStructResultType(typeId0, typeId0);
+            consumedOperands = 1;
+        }
         break;
     case glslang::EOpMax:
         if (isFloat)
@@ -9427,6 +9437,13 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
     case glslang::EOpIMulExtended:
         builder.createStore(builder.createCompositeExtract(id, typeId0, 0), operands[3]);
         builder.createStore(builder.createCompositeExtract(id, typeId0, 1), operands[2]);
+        break;
+    case glslang::EOpModf:
+        {
+            assert(operands.size() == 2);
+            builder.createStore(builder.createCompositeExtract(id, typeId0, 1), operands[1]);
+            id = builder.createCompositeExtract(id, typeId0, 0);
+        }
         break;
     case glslang::EOpFrexp:
         {
