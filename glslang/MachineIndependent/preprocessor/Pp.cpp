@@ -922,6 +922,40 @@ int TPpContext::CPPextension(TPpToken* ppToken)
     return token;
 }
 
+
+
+// Handle #scheduler
+// int TPpContext::CPPscheduler(TPpToken* ppToken)
+// {
+//     int line = ppToken->loc.line;
+//     int token = scanToken(ppToken);
+//     char schedulerName[MaxTokenLength + 1];
+
+//     if (token=='\n') {
+//         parseContext.ppError(ppToken->loc, "scheduler name not specified", "#scheduler", "");
+//         return token;
+//     }
+
+//     if (token != PpAtomIdentifier)
+//         parseContext.ppError(ppToken->loc, "scheduler name expected", "#scheduler", "");
+
+//     printf("scheduler name: %s\n", ppToken->name);
+//     snprintf(schedulerName, sizeof(schedulerName), "%s", ppToken->name);
+
+//     token = scanToken(ppToken);
+//     if (token == '\n') {
+//         printf("scheduler name: %s\n", schedulerName);
+//         parseContext.notifySchedulerDirective(line, schedulerName);
+//         return token;
+//     }
+//     else
+//         parseContext.ppError(ppToken->loc,  "extra tokens -- expected newline", "#scheduler","");
+
+//     return token;
+// }
+
+
+
 int TPpContext::readCPPline(TPpToken* ppToken)
 {
     int token = scanToken(ppToken);
@@ -995,6 +1029,8 @@ int TPpContext::readCPPline(TPpToken* ppToken)
         case PpAtomExtension:
             token = CPPextension(ppToken);
             break;
+        // case PpAtomScheduler:
+        //     token = CPPscheduler(ppToken);
         default:
             parseContext.ppError(ppToken->loc, "invalid directive:", "#", ppToken->name);
             break;

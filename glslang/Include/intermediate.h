@@ -1716,8 +1716,10 @@ public:
     virtual const TQualifierList& getQualifierList() const { return qualifier; }
     void setOptimize(bool o) { optimize = o; }
     void setDebug(bool d) { debug = d; }
+    void setScheduler(TString s) { scheduler = s; }
     bool getOptimize() const { return optimize; }
     bool getDebug() const { return debug; }
+    TString getScheduler() const { return scheduler; }
     void setPragmaTable(const TPragmaTable& pTable);
     const TPragmaTable& getPragmaTable() const { return *pragmaTable; }
     void setSpirvInstruction(const TSpirvInstruction& inst) { spirvInst = inst; }
@@ -1737,6 +1739,7 @@ protected:
     bool userDefined; // used for user defined function names
     bool optimize;
     bool debug;
+    TString scheduler;
     TPragmaTable* pragmaTable;
     TSpirvInstruction spirvInst;
     TLinkType linkType = ELinkNone;

@@ -737,6 +737,9 @@ enum BuiltIn {
     BuiltInHitKindBackFacingMicroTriangleNV = 5406,
     BuiltInCullMaskKHR = 6021,
     BuiltInMax = 0x7fffffff,
+    BuiltInTlaScheduler = 44,
+    BuiltInTlaNUmWorkgroups = 45,
+    BuiltInTlaSubgroupSize = 46,
 };
 
 enum SelectionControlShift {

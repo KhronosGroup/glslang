@@ -308,6 +308,7 @@ public:
         dxPositionW(false),
         enhancedMsgs(false),
         debugInfo(false),
+        scheduler("HSA"),
         useStorageBuffer(false),
         invariantAll(false),
         nanMinMaxClamp(false),
@@ -369,6 +370,10 @@ public:
         localSizeSpecId[0] = TQualifier::layoutNotSet;
         localSizeSpecId[1] = TQualifier::layoutNotSet;
         localSizeSpecId[2] = TQualifier::layoutNotSet;
+        numWorkGroups = 1;
+        subgroupSize = 1;
+        numWorkGroupsNotDefault = false;
+        subgroupSizeNotDefault = false;
         xfbBuffers.resize(TQualifier::layoutXfbBufferEnd);
         shiftBinding.fill(0);
     }
@@ -481,6 +486,13 @@ public:
         debugInfo = debuginfo;
     }
     bool getDebugInfo() const { return debugInfo; }
+
+    void setScheduler(TString s)
+    {
+        scheduler = s;
+    }
+
+    TString getScheduler() const { return scheduler; }
 
     void setInvertY(bool invert)
     {
@@ -643,6 +655,24 @@ public:
                localSizeSpecId[1] != TQualifier::layoutNotSet ||
                localSizeSpecId[2] != TQualifier::layoutNotSet;
     }
+    bool setNumWorkGroups(int size)
+    {
+        if (numWorkGroupsNotDefault)
+            return size == numWorkGroups;
+        numWorkGroupsNotDefault = true;
+        numWorkGroups = size;
+        return true;
+    }
+    unsigned int getNumWorkGroups() const { return numWorkGroups; }
+    bool setSubgroupSize(int size)
+    {
+        if (subgroupSizeNotDefault)
+            return size == subgroupSize;
+        subgroupSizeNotDefault = true;
+        subgroupSize = size;
+        return true;
+    }
+    unsigned int getSubgroupSize() const { return subgroupSize; }
     void output(TInfoSink&, bool tree);
 
     bool isEsProfile() const { return profile == EEsProfile; }
@@ -1172,13 +1202,18 @@ protected:
     bool dxPositionW;
     bool enhancedMsgs;
     bool debugInfo;
+    TString scheduler;
     bool useStorageBuffer;
     bool invariantAll;
     bool nanMinMaxClamp;            // true if desiring min/max/clamp to favor non-NaN over NaN
     bool depthReplacing;
     bool stencilReplacing;
     int localSize[3];
+    int numWorkGroups;
+    int subgroupSize;
     bool localSizeNotDefault[3];
+    bool numWorkGroupsNotDefault;
+    bool subgroupSizeNotDefault;
     int localSizeSpecId[3];
     unsigned long long uniqueId;
 

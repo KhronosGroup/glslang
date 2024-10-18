@@ -162,6 +162,9 @@ enum EFixedAtoms {
     // #extension
     PpAtomExtension,
 
+    // #scheduler
+    // PpAtomScheduler,
+
     // __LINE__, __FILE__, __VERSION__
 
     PpAtomLineMacro,

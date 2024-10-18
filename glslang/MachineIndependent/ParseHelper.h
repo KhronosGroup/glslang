@@ -58,9 +58,11 @@
 namespace glslang {
 
 struct TPragma {
-    TPragma(bool o, bool d) : optimize(o), debug(d) { }
+    TPragma(bool o, bool d, TString s) : optimize(o), debug(d), scheduler(s) { }
     bool optimize;
     bool debug;
+    // by default the scheduler is HSA
+    TString scheduler;
     TPragmaTable pragmaTable;
 };
 
@@ -86,7 +88,7 @@ public:
             statementNestingLevel(0), loopNestingLevel(0), structNestingLevel(0), blockNestingLevel(0), controlFlowNestingLevel(0),
             currentFunctionType(nullptr),
             postEntryPointReturn(false),
-            contextPragma(true, false),
+            contextPragma(true, false, "HSA"),
             beginInvocationInterlockCount(0), endInvocationInterlockCount(0),
             parsingBuiltins(parsingBuiltins), scanContext(nullptr), ppContext(nullptr),
             limits(resources.limits),

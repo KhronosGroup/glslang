@@ -1140,6 +1140,9 @@ void TReflection::buildAttributeReflection(EShLanguage stage, const TIntermediat
         // Remember thread dimensions
         for (int dim=0; dim<3; ++dim)
             localSize[dim] = intermediate.getLocalSize(dim);
+        
+        tlaNumWorkGroups = intermediate.getNumWorkGroups();
+        tlaSubgroupSize = intermediate.getSubgroupSize();
     }
 }
 

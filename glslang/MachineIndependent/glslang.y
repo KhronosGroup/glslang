@@ -4142,6 +4142,7 @@ function_definition
         // information. This information can be queried from the parse tree
         $$->getAsAggregate()->setOptimize(parseContext.contextPragma.optimize);
         $$->getAsAggregate()->setDebug(parseContext.contextPragma.debug);
+        $$->getAsAggregate()->setScheduler(parseContext.contextPragma.scheduler);
         $$->getAsAggregate()->setPragmaTable(parseContext.contextPragma.pragmaTable);
 
         // Set currentFunctionType to empty pointer when goes outside of the function

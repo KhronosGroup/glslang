@@ -141,6 +141,7 @@ const struct {
     { PpAtomCompatibility,  "compatibility" },
     { PpAtomEs,             "es" },
     { PpAtomExtension,      "extension" },
+    // { PpAtomScheduler,       "scheduler"},
 
     { PpAtomLineMacro,       "__LINE__" },
     { PpAtomFileMacro,       "__FILE__" },

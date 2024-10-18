@@ -11860,6 +11860,7 @@ yyreduce:
         // information. This information can be queried from the parse tree
         (yyval.interm.intermNode)->getAsAggregate()->setOptimize(parseContext.contextPragma.optimize);
         (yyval.interm.intermNode)->getAsAggregate()->setDebug(parseContext.contextPragma.debug);
+        (yyval.interm.intermNode)->getAsAggregate()->setScheduler(parseContext.contextPragma.scheduler);
         (yyval.interm.intermNode)->getAsAggregate()->setPragmaTable(parseContext.contextPragma.pragmaTable);
 
         // Set currentFunctionType to empty pointer when goes outside of the function

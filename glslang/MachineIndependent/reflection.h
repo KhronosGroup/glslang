@@ -213,6 +213,8 @@ protected:
     TIndices atomicCounterUniformIndices;
 
     unsigned int localSize[3];
+    unsigned int tlaNumWorkGroups;
+    unsigned int tlaSubgroupSize;
 };
 
 } // end namespace glslang

@@ -1,0 +1,30 @@
+#version 450
+#pragma scheduler(HSA)
+layout(local_size_x = 256) in;
+
+layout(tla_num_workgroups = aaaa) in;
+
+layout(tla_subgroup_size = 2) in;
+
+
+layout(std430, binding = 0) buffer Lock {
+    uint lock;
+};
+
+void main() {
+    uint tla_subgroup_size = 2;
+    switch (gl_LocalInvocationID.x % 4) {
+        case 0:
+            atomicAdd(lock, 1);
+            break;
+        case 1:
+            atomicAdd(lock, 1);
+            break;
+        case 2:
+            atomicAdd(lock, 1);
+            break;
+        case 3:
+            atomicAdd(lock, 1);
+            break;
+    }
+}

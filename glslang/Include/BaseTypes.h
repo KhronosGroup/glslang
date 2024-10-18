@@ -331,7 +331,11 @@ enum TBuiltInVariable {
 
     EbvPositionFetch,
 
-    EbvLast
+    EbvLast,
+
+    TlaScheduler,
+    TlaNumWorkGroups,
+    TlaSubgroupSize,
 };
 
 // In this enum, order matters; users can assume higher precision is a bigger value
@@ -529,6 +533,10 @@ __inline const char* GetBuiltInVariableString(TBuiltInVariable v)
 
     case EbvHitKindFrontFacingMicroTriangleNV: return "HitKindFrontFacingMicroTriangleNV";
     case EbvHitKindBackFacingMicroTriangleNV:  return "HitKindBackFacingMicroTriangleNV";
+
+    case TlaScheduler:                  return "TlaScheduler";
+    case TlaNumWorkGroups:              return "TlaNumWorkGroups";
+    case TlaSubgroupSize:               return "TlaSubgroupSize";
 
     default:                      return "unknown built-in variable";
     }

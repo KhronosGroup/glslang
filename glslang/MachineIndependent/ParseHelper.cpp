@@ -385,6 +385,29 @@ void TParseContext::handlePragma(const TSourceLoc& loc, const TVector<TString>& 
             error(loc, "\")\" expected to end 'debug' pragma", "#pragma", "");
             return;
         }
+    } else     if (tokens[0].compare("scheduler") == 0) {
+        if (tokens.size() != 4) {
+            error(loc, "scheduler pragma syntax is incorrect", "#pragma", "");
+            return;
+        }
+
+        if (tokens[1] != "(") {
+            error(loc, "\"(\" expected after 'scheduler' keyword", "#pragma", "");
+            return;
+        }
+
+        if (tokens[2].compare("HSA") == 0 || tokens[2].compare("OBE") == 0) {
+            contextPragma.scheduler = tokens[2];
+        } else {
+            error(loc, "\"HSA\" or \"OBE\" expected after '(' for 'scheduler' pragma", "#pragma", "");
+            return;
+        }
+
+        if (tokens[3] != ")") {
+            error(loc, "\")\" expected to end 'scheduler' pragma", "#pragma", "");
+            return;
+        }
+        
     } else if (spvVersion.spv > 0 && tokens[0].compare("use_storage_buffer") == 0) {
         if (tokens.size() != 1)
             error(loc, "extra tokens", "#pragma", "");
@@ -3290,7 +3313,7 @@ void TParseContext::reservedErrorCheck(const TSourceLoc& loc, const TString& ide
     if (! symbolTable.atBuiltInLevel()) {
         if (builtInName(identifier) && !extensionTurnedOn(E_GL_EXT_spirv_intrinsics))
             // The extension GL_EXT_spirv_intrinsics allows us to declare identifiers starting with "gl_".
-            error(loc, "identifiers starting with \"gl_\" are reserved", identifier.c_str(), "");
+            error(loc, "identifiers starting with \"gl_\" or \"tla_\" are reserved", identifier.c_str(), "");
 
         // "__" are not supposed to be an error.  ES 300 (and desktop) added the clarification:
         // "In addition, all identifiers containing two consecutive underscores (__) are
@@ -3378,7 +3401,7 @@ bool TParseContext::lineContinuationCheck(const TSourceLoc& loc, bool endOfComme
 
 bool TParseContext::builtInName(const TString& identifier)
 {
-    return identifier.compare(0, 3, "gl_") == 0;
+    return identifier.compare(0, 3, "gl_") == 0 || identifier.compare(0, 4, "tla_") == 0;
 }
 
 //
@@ -5576,7 +5599,8 @@ void TParseContext::finish()
 
     if (parsingBuiltins)
         return;
-
+    
+    intermediate.setScheduler(contextPragma.scheduler);
     // Check on array indexes for ES 2.0 (version 100) limitations.
     for (size_t i = 0; i < needsIndexLimitationChecking.size(); ++i)
         constantIndexExpressionCheck(needsIndexLimitationChecking[i]);
@@ -6340,6 +6364,31 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
                     return;
                 }
             }
+        }
+        // number of workgroups 
+        else if (id == "tla_num_workgroups") {
+            if (nonLiteral)
+                error(loc, "needs a literal integer", "tla_num_workgroups", "");
+            if (value == 0) {
+                error(loc, "number of workgroup must be at least 1", id.c_str(), "");
+                return;
+            }
+            publicType.shaderQualifiers.tlaNumWorkGroups = value;
+            publicType.shaderQualifiers.tlaNumWorkGroupsNotDefault = true;
+            return;
+            
+        }
+        // subgroup size
+        else if (id == "tla_subgroup_size") {
+            if (nonLiteral)
+                error(loc, "needs a literal integer", "tla_subgroup_size", "");
+            if (value == 0) {
+                error(loc, "subgroup size must be at least 1", id.c_str(), "");
+                return;
+            }
+            publicType.shaderQualifiers.tlaSubgroupSize = value;
+            publicType.shaderQualifiers.tlaSubgroupSizeNotDefault = true;
+            return;
         }
         break;
 
@@ -9865,6 +9914,32 @@ void TParseContext::updateStandaloneQualifierDefaults(const TSourceLoc& loc, con
             TVariable* workGroupSize = getEditableVariable("gl_WorkGroupSize");
             if (workGroupSize != nullptr)
                 workGroupSize->getWritableType().getQualifier().specConstant = true;
+        }
+    }
+    if (publicType.shaderQualifiers.tlaNumWorkGroupsNotDefault){
+        if (publicType.qualifier.storage == EvqVaryingIn) {
+            if (! intermediate.setNumWorkGroups(publicType.shaderQualifiers.tlaNumWorkGroups))
+                error(loc, "cannot change previously set size", "num_work_groups", "");
+        } else {
+            error(loc, "can only apply to 'in'", "num_work_groups", "");
+        }
+        TVariable* NumWorkGroups = getEditableVariable("tla_NumWorkGroups");
+        if (NumWorkGroups != nullptr){
+            // NumWorkGroups->getWritableConstArray()[i].setUConst(intermediate.getLocalSize(i));
+            NumWorkGroups->getWritableConstArray()[0].setUConst(intermediate.getNumWorkGroups());
+        }
+    }
+
+    if (publicType.shaderQualifiers.tlaSubgroupSizeNotDefault){
+        if (publicType.qualifier.storage == EvqVaryingIn) {
+            if (! intermediate.setSubgroupSize(publicType.shaderQualifiers.tlaSubgroupSize))
+                error(loc, "cannot change previously set size", "subgroup_size", "");
+        } else {
+            error(loc, "can only apply to 'in'", "subgroup_size", "");
+        }
+        TVariable* SubgroupSize = getEditableVariable("tla_SubgroupSize");
+        if (SubgroupSize != nullptr){
+            SubgroupSize->getWritableConstArray()[0].setUConst(intermediate.getSubgroupSize());
         }
     }
 

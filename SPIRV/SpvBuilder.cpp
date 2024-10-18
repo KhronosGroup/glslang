@@ -2063,6 +2063,27 @@ void Builder::addDecoration(Id id, Decoration decoration, const std::vector<cons
     decorations.insert(std::unique_ptr<Instruction>(dec));
 }
 
+void Builder::addSchedulerDecoration(const char* schedulerName) {
+    
+    // Create a unique ID for the scheduler info
+    spv::Id schedulerId = getUniqueId();
+
+    addName(schedulerId, "scheduler");
+    // Create an OpString instruction for the scheduler name
+    // addName(schedulerId, schedulerName);
+
+    // Add an OpName instruction to associate the scheduler name with the schedulerId
+    // addName(schedulerId, schedulerName);
+
+    // Optionally, you can create a dummy variable or type to attach the name to
+    // For example, create a void type and assign the name to it
+    // spv::Id voidTypeId = makeVoidType();
+    // addName(voidTypeId, schedulerName);
+    // addDecoration(schedulerId, spv::Builtin, schedulerName);
+    addDecoration(schedulerId, DecorationUserSemantic, schedulerName);
+    // addInstruction(std::unique_ptr<Instruction>(inst));
+}
+
 void Builder::addLinkageDecoration(Id id, const char* name, spv::LinkageType linkType) {
     Instruction* dec = new Instruction(OpDecorate);
     dec->reserveOperands(4);

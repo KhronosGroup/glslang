@@ -692,6 +692,13 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
     case glslang::EbvLocalInvocationIndex: return spv::BuiltInLocalInvocationIndex;
     case glslang::EbvGlobalInvocationId:   return spv::BuiltInGlobalInvocationId;
 
+    case glslang::TlaScheduler:            return spv::BuiltInTlaScheduler;
+    case glslang::TlaNumWorkGroups:        return spv::BuiltInTlaNUmWorkgroups;
+    case glslang::TlaSubgroupSize:         return spv::BuiltInTlaSubgroupSize;
+    // case glslang::TlaScheduler:            return spv::BuiltInMax;
+    // case glslang::TlaNumWorkGroups:        return spv::BuiltInMax;
+    // case glslang::TlaSubgroupSize:         return spv::BuiltInMax;
+
     // These *Distance capabilities logically belong here, but if the member is declared and
     // then never used, consumers of SPIR-V prefer the capability not be declared.
     // They are now generated when used, rather than here when declared.
@@ -1990,6 +1997,9 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion,
 // Finish creating SPV, after the traversal is complete.
 void TGlslangToSpvTraverser::finishSpv(bool compileOnly)
 {
+
+    const auto& schedulerName = glslangIntermediate->getScheduler();
+    builder.addSchedulerDecoration(schedulerName.c_str());
     // If not linking, an entry point is not expected
     if (!compileOnly) {
         // Finish the entry point function
@@ -5054,6 +5064,19 @@ void TGlslangToSpvTraverser::decorateStructType(const glslang::TType& type,
 
         // built-in variable decorations
         spv::BuiltIn builtIn = TranslateBuiltInDecoration(glslangMember.getQualifier().builtIn, true);
+        // if (builtIn == spv::BuiltInTlaNUmWorkgroups) {
+        //     // spv::Id numWorkGroupsId = builder.makeUintConstant(glslangIntermediate->getNumWorkGroups(), true);
+        //         spv::Id numWorkGroupsId = builder.getUniqueId();
+        //         builder.addName(numWorkGroupsId, "tla_num_workgroups");
+        //     builder.addDecoration(numWorkGroupsId, spv::DecorationUserSemantic, glslangIntermediate->getNumWorkGroups());
+        // }
+        // else if (builtIn == spv::BuiltInTlaSubgroupSize) {
+        //     // spv::Id subgroupSizeId = builder.makeUintConstant(glslangIntermediate->getSubgroupSize(), true);
+        //     spv::Id subgroupSizeId = builder.getUniqueId();
+        //     builder.addName(subgroupSizeId, "tla_subgroup_size");
+        //     builder.addDecoration(subgroupSizeId, spv::DecorationUserSemantic, glslangIntermediate->getSubgroupSize());
+        // }
+        // else 
         if (builtIn != spv::BuiltInMax)
             builder.addMemberDecoration(spvType, member, spv::DecorationBuiltIn, (int)builtIn);
 
@@ -9747,9 +9770,21 @@ spv::Id TGlslangToSpvTraverser::getSymbolId(const glslang::TIntermSymbol* symbol
 
     // add built-in variable decoration
     if (builtIn != spv::BuiltInMax) {
+        if (builtIn == spv::BuiltInTlaNUmWorkgroups) {
+            spv::Id numWorkGroupsId = builder.getUniqueId();
+            builder.addName(numWorkGroupsId, "tla_num_workgroups");
+            std::string num_work_groups = std::to_string(glslangIntermediate->getNumWorkGroups());
+            builder.addDecoration(numWorkGroupsId, spv::DecorationUserSemantic, num_work_groups.c_str());
+        }
+        else if (builtIn == spv::BuiltInTlaSubgroupSize) {
+            spv::Id subgroupSizeId = builder.getUniqueId();
+            builder.addName(subgroupSizeId, "tla_subgroup_size");
+            std::string subgroup_size = std::to_string(glslangIntermediate->getSubgroupSize());
+            builder.addDecoration(subgroupSizeId, spv::DecorationUserSemantic, subgroup_size.c_str());
+        }
         // WorkgroupSize deprecated in spirv1.6
-        if (glslangIntermediate->getSpv().spv < glslang::EShTargetSpv_1_6 ||
-            builtIn != spv::BuiltInWorkgroupSize)
+        else if (glslangIntermediate->getSpv().spv < glslang::EShTargetSpv_1_6 ||
+            builtIn != spv::BuiltInWorkgroupSize) 
             builder.addDecoration(id, spv::DecorationBuiltIn, (int)builtIn);
     }
 
@@ -9952,7 +9987,6 @@ void TGlslangToSpvTraverser::addImageProcessing2QCOMDecoration(spv::Id id, bool 
 spv::Id TGlslangToSpvTraverser::createSpvConstant(const glslang::TIntermTyped& node)
 {
     assert(node.getQualifier().isConstant());
-
     // Handle front-end constants first (non-specialization constants).
     if (! node.getQualifier().specConstant) {
         // hand off to the non-spec-constant path
@@ -9991,6 +10025,12 @@ spv::Id TGlslangToSpvTraverser::createSpvConstant(const glslang::TIntermTyped& n
         }
         return builder.makeCompositeConstant(builder.makeVectorType(builder.makeUintType(32), 3), dimConstId, true);
     }
+
+    // if (node.getType().getQualifier().builtIn == glslang::TlaNumWorkGroups) {
+    //     spv::Id numWorkGroupsId = builder.makeUintConstant(glslangIntermediate->getNumWorkGroups(), true);
+    //     builder.addDecoration(numWorkGroupsId, spv::DecorationUserSemantic, glslangIntermediate->getNumWorkGroups());
+    //     // return numWorkGroupsId;
+    // }
 
     // An AST node labelled as specialization constant should be a symbol node.
     // Its initializer should either be a sub tree with constant nodes, or a constant union array.
