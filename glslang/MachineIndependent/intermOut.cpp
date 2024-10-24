@@ -673,6 +673,17 @@ bool TOutputTraverser::visitUnary(TVisit /* visit */, TIntermUnary* node)
 
     case EOpSpirvInst: out.debug << "spirv_instruction"; break;
 
+    case EOpCreateTensorLayoutNV:           out.debug << "createTensorLayoutNV"; break;
+    case EOpTensorLayoutSetBlockSizeNV:     out.debug << "setTensorLayoutBlockSizeNV"; break;
+    case EOpTensorLayoutSetDimensionNV:     out.debug << "setTensorLayoutDimensionNV"; break;
+    case EOpTensorLayoutSetStrideNV:        out.debug << "setTensorLayoutStrideNV"; break;
+    case EOpTensorLayoutSliceNV:            out.debug << "sliceTensorLayoutNV"; break;
+    case EOpTensorLayoutSetClampValueNV:    out.debug << "setTensorLayoutClampValueNV"; break;
+    case EOpCreateTensorViewNV:             out.debug << "createTensorViewNV"; break;
+    case EOpTensorViewSetDimensionNV:       out.debug << "setTensorViewDimensionsNV"; break;
+    case EOpTensorViewSetStrideNV:          out.debug << "setTensorViewStrideNV"; break;
+    case EOpTensorViewSetClipNV:            out.debug << "setTensorViewClipNV"; break;
+
     default: out.debug.message(EPrefixError, "Bad unary op");
     }
 
@@ -1113,7 +1124,12 @@ bool TOutputTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node
     case EOpCooperativeMatrixMulAdd: out.debug << "MulAdd cooperative matrices KHR"; break;
     case EOpCooperativeMatrixLoadNV:  out.debug << "Load cooperative matrix NV"; break;
     case EOpCooperativeMatrixStoreNV:  out.debug << "Store cooperative matrix NV"; break;
+    case EOpCooperativeMatrixLoadTensorNV:  out.debug << "Load cooperative matrix tensor NV"; break;
+    case EOpCooperativeMatrixStoreTensorNV:  out.debug << "Store cooperative matrix tensor NV"; break;
     case EOpCooperativeMatrixMulAddNV: out.debug << "MulAdd cooperative matrices NV"; break;
+    case EOpCooperativeMatrixReduceNV: out.debug << "Reduce cooperative matrices"; break;
+    case EOpCooperativeMatrixPerElementOpNV: out.debug << "cooperative matrix per element op"; break;
+    case EOpCooperativeMatrixTransposeNV: out.debug << "Transpose cooperative matrix"; break;
 
     case EOpIsHelperInvocation: out.debug << "IsHelperInvocation"; break;
     case EOpDebugPrintf:  out.debug << "Debug printf";  break;
@@ -1155,6 +1171,17 @@ bool TOutputTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node
     case EOpSpirvInst: out.debug << "spirv_instruction"; break;
     case EOpStencilAttachmentReadEXT: out.debug << "stencilAttachmentReadEXT"; break;
     case EOpDepthAttachmentReadEXT: out.debug << "depthAttachmentReadEXT"; break;
+
+    case EOpCreateTensorLayoutNV:           out.debug << "createTensorLayout"; break;
+    case EOpTensorLayoutSetBlockSizeNV:     out.debug << "setBlockSize"; break;
+    case EOpTensorLayoutSetDimensionNV:     out.debug << "setDimension"; break;
+    case EOpTensorLayoutSetStrideNV:        out.debug << "setStride"; break;
+    case EOpTensorLayoutSliceNV:            out.debug << "slice"; break;
+    case EOpTensorLayoutSetClampValueNV:    out.debug << "setClampValue"; break;
+    case EOpCreateTensorViewNV:             out.debug << "createTensorView"; break;
+    case EOpTensorViewSetDimensionNV:       out.debug << "setTensorViewDimensions"; break;
+    case EOpTensorViewSetStrideNV:          out.debug << "setTensorViewStride"; break;
+    case EOpTensorViewSetClipNV:            out.debug << "clipTensorView"; break;
 
     default: out.debug.message(EPrefixError, "Bad aggregation op");
     }
