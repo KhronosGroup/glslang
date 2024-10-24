@@ -922,15 +922,9 @@ declaration
         parseContext.updateStandaloneQualifierDefaults($1.loc, $1);
         $$ = 0;
     }
-    | type_qualifier IDENTIFIER SEMICOLON {
+    | type_qualifier identifier_list SEMICOLON {
         parseContext.checkNoShaderLayouts($1.loc, $1.shaderQualifiers);
-        parseContext.addQualifierToExisting($1.loc, $1.qualifier, *$2.string);
-        $$ = 0;
-    }
-    | type_qualifier IDENTIFIER identifier_list SEMICOLON {
-        parseContext.checkNoShaderLayouts($1.loc, $1.shaderQualifiers);
-        $3->push_back($2.string);
-        parseContext.addQualifierToExisting($1.loc, $1.qualifier, *$3);
+        parseContext.addQualifierToExisting($1.loc, $1.qualifier, *$2);
         $$ = 0;
     }
     ;
@@ -947,9 +941,9 @@ block_structure
     }
 
 identifier_list
-    : COMMA IDENTIFIER {
+    : IDENTIFIER {
         $$ = new TIdentifierList;
-        $$->push_back($2.string);
+        $$->push_back($1.string);
     }
     | identifier_list COMMA IDENTIFIER {
         $$ = $1;
