@@ -139,7 +139,7 @@ def describe(directory):
             # clock time with environment variable SOURCE_DATE_EPOCH
             # containing a (presumably) fixed timestamp.
             timestamp = int(os.environ.get('SOURCE_DATE_EPOCH', time.time()))
-            formatted = datetime.datetime.utcfromtimestamp(timestamp).isoformat()
+            formatted = datetime.datetime.fromtimestamp(timestamp, datetime.timezone.utc).isoformat()
             return 'unknown hash, {}'.format(formatted)
 
 def parse_args():
