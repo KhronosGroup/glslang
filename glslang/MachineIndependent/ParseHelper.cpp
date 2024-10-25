@@ -2579,7 +2579,7 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
                 TSampler s = arg0->getType().getSampler();
                 if (s.is2D() && s.isArrayed() && s.isShadow()) {
                     if (
-                        ((*argp)[1]->getAsTyped()->getType().getBasicType() == EbtFloat) && 
+                        ((*argp)[1]->getAsTyped()->getType().getBasicType() == EbtFloat) &&
                         ((*argp)[1]->getAsTyped()->getType().getVectorSize() == 4) &&
                         (fnCandidate.getParamCount() == 4)) {
                         featureString = fnCandidate.getName() + " for sampler2DArrayShadow";
@@ -2763,7 +2763,7 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
                 error(loc, "only supported on image with format r64i", fnCandidate.getName().c_str(), "");
             else if (callNode.getType().getBasicType() == EbtUint64 && imageType.getQualifier().getFormat() != ElfR64ui)
                 error(loc, "only supported on image with format r64ui", fnCandidate.getName().c_str(), "");
-        } else if(callNode.getType().getBasicType() == EbtFloat16 && 
+        } else if(callNode.getType().getBasicType() == EbtFloat16 &&
                 ((callNode.getType().getVectorSize() == 2 && arg0->getType().getQualifier().getFormat() == ElfRg16f) ||
                   (callNode.getType().getVectorSize() == 4 && arg0->getType().getQualifier().getFormat() == ElfRgba16f))) {
             if (StartsWith(fnCandidate.getName(), "imageAtomicAdd") ||
@@ -2834,7 +2834,7 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
             requireExtensions(loc, 2, extensions, fnCandidate.getName().c_str());
         } else if ((callNode.getOp() == EOpAtomicAdd || callNode.getOp() == EOpAtomicExchange ||
                     callNode.getOp() == EOpAtomicMin || callNode.getOp() == EOpAtomicMax) &&
-                   arg0->getType().getBasicType() == EbtFloat16 && 
+                   arg0->getType().getBasicType() == EbtFloat16 &&
                    (arg0->getType().getVectorSize() == 2 || arg0->getType().getVectorSize() == 4 )) {
             requireExtensions(loc, 1, &E_GL_NV_shader_atomic_fp16_vector, fnCandidate.getName().c_str());
         } else if ((callNode.getOp() == EOpAtomicAdd || callNode.getOp() == EOpAtomicExchange) &&
@@ -9920,6 +9920,15 @@ void TParseContext::addQualifierToExisting(const TSourceLoc& loc, TQualifier qua
     // type with an empty type list, which will be filled in later in
     // TParseContext::declareBlock.
     if (!symbol && qualifier.hasBufferReference()) {
+        // The layout qualifiers are ignored in forward declaration, give warning for the most probable to be seen
+        if (qualifier.hasBufferReferenceAlign()) {
+            warn(loc, "the buffer_reference_align layout is ignored when defined in forward declaration",
+                 identifier.c_str(), "");
+        }
+        if (qualifier.hasPacking()) {
+            warn(loc, "the packing layout (scalar, std430, etc) is ignored when defined in forward declaration",
+                 identifier.c_str(), "");
+        }
         TTypeList typeList;
         TType blockType(&typeList, identifier, qualifier);
         TType blockNameType(EbtReference, blockType, identifier);
