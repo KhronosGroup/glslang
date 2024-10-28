@@ -561,6 +561,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.atomicRvalue.error.vert",
         "spv.sampledImageBlock.frag",
         "spv.multiple.var.same.const.frag",
+        "spv.textureoffset_non_const.vert",
     })),
     FileNameAsCustomTestSuffix
 );
