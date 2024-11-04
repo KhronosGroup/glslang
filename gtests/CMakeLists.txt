@@ -98,5 +98,10 @@ if(GLSLANG_TESTS)
 
         add_test(NAME glslang-gtests
                  COMMAND glslangtests --test-root "${GLSLANG_TEST_DIRECTORY}")
+
+        # Prepend paths to DLLs for Windows tests.
+        if(WIN32)
+            set_tests_properties(glslang-gtests PROPERTIES ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:$<JOIN:$<TARGET_RUNTIME_DLL_DIRS:glslangtests>,\;>")
+        endif()
     endif()
 endif()
