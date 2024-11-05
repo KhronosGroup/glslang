@@ -10,6 +10,7 @@ permissions: read-all
 
 jobs:
   linux:
+    needs: linux-shared # fastest job to do sanity check
     runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
@@ -78,6 +79,7 @@ jobs:
         run: ctest --output-on-failure --test-dir build
 
   linux-asan:
+    needs: linux-shared # fastest job to do sanity check
     runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
@@ -149,13 +151,15 @@ jobs:
         run: ctest --output-on-failure --test-dir build
 
   macos:
+    # iOS is 10x expensive to run on GitHub machines, so only run if we know something else passed as well
+    needs: macos
     runs-on: ${{matrix.os}}
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-14, macos-13]
+        os: [macos-14]
         compiler: [{cc: clang, cxx: clang++}, {cc: gcc, cxx: g++}]
-        cmake_build_type: [Debug, Release]
+        cmake_build_type: [Release]
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - uses: lukka/get-cmake@b516803a3c5fac40e2e922349d15cdebdba01e60 # v3.30.5
@@ -169,6 +173,8 @@ jobs:
       - run: ctest --output-on-failure --test-dir build
 
   macos-shared:
+    # iOS is 10x expensive to run on GitHub machines, so only run if we know something else passed as well
+    needs: macos
     runs-on: ${{matrix.os}}
     strategy:
       fail-fast: false
@@ -189,6 +195,7 @@ jobs:
       - run: ctest --output-on-failure --test-dir build
 
   windows:
+    needs: linux-shared # fastest job to do sanity check
     runs-on: ${{matrix.os.genus}}
     permissions:
       contents: write
@@ -212,6 +219,7 @@ jobs:
         run: ctest -C ${{matrix.cmake_build_type}} --output-on-failure --test-dir build
 
   windows-shared:
+    needs: linux-shared # fastest job to do sanity check
     runs-on: ${{matrix.os.genus}}
     permissions:
       contents: write
@@ -236,6 +244,8 @@ jobs:
       #   run: ctest -C ${{matrix.cmake_build_type}} --output-on-failure --test-dir build
 
   iOS:
+    # iOS is 10x expensive to run on GitHub machines, so only run if we know something else passed as well
+    needs: windows-shared
     runs-on: macos-13
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -260,6 +270,7 @@ jobs:
       - run: cmake --install build --prefix /tmp
 
   android:
+    needs: linux-shared # fastest job to do sanity check
     runs-on: ubuntu-22.04
     strategy:
       matrix:
