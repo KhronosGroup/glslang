@@ -20,7 +20,7 @@ ERROR: node is still EOpNull!
 0:5      'c' ( in int16_t)
 0:7    Sequence
 0:7      Branch: Return with expression
-0:7        Convert int16_t to int64 ( temp int64_t)
+0:7        Convert int16_t to int64_t ( temp int64_t)
 0:7          inclusive-or ( temp int16_t)
 0:7            Convert int8_t to int16_t ( temp int16_t)
 0:7              'a' ( in int8_t)
@@ -34,7 +34,7 @@ ERROR: node is still EOpNull!
 0:10      'c' ( in int)
 0:12    Sequence
 0:12      Branch: Return with expression
-0:12        Convert int to int64 ( temp int64_t)
+0:12        Convert int to int64_t ( temp int64_t)
 0:12          inclusive-or ( temp int)
 0:12            Convert int8_t to int ( temp int)
 0:12              'a' ( in int8_t)
@@ -49,7 +49,7 @@ ERROR: node is still EOpNull!
 0:15      'c' ( in int)
 0:17    Sequence
 0:17      Branch: Return with expression
-0:17        Convert int to int64 ( temp int64_t)
+0:17        Convert int to int64_t ( temp int64_t)
 0:17          add ( temp int)
 0:17            divide ( temp int)
 0:17              'a' ( in int)
@@ -62,7 +62,7 @@ ERROR: node is still EOpNull!
 0:20      'c' ( in float)
 0:22    Sequence
 0:22      Branch: Return with expression
-0:22        Convert float to int64 ( temp int64_t)
+0:22        Convert float to int64_t ( temp int64_t)
 0:22          subtract ( temp float)
 0:22            Convert float16_t to float ( temp float)
 0:22              'a' ( in float16_t)
@@ -77,7 +77,7 @@ ERROR: node is still EOpNull!
 0:25      'c' ( in float)
 0:27    Sequence
 0:27      Branch: Return with expression
-0:27        Convert float to int64 ( temp int64_t)
+0:27        Convert float to int64_t ( temp int64_t)
 0:27          subtract ( temp float)
 0:27            Convert float16_t to float ( temp float)
 0:27              'a' ( in float16_t)
@@ -146,7 +146,7 @@ ERROR: node is still EOpNull!
 0:10      'c' ( in int)
 0:12    Sequence
 0:12      Branch: Return with expression
-0:12        Convert int to int64 ( temp int64_t)
+0:12        Convert int to int64_t ( temp int64_t)
 0:12          inclusive-or ( temp int)
 0:12            Convert int8_t to int ( temp int)
 0:12              'a' ( in int8_t)
@@ -161,7 +161,7 @@ ERROR: node is still EOpNull!
 0:20      'c' ( in float)
 0:22    Sequence
 0:22      Branch: Return with expression
-0:22        Convert float to int64 ( temp int64_t)
+0:22        Convert float to int64_t ( temp int64_t)
 0:22          subtract ( temp float)
 0:22            Convert float16_t to float ( temp float)
 0:22              'a' ( in float16_t)
@@ -176,7 +176,7 @@ ERROR: node is still EOpNull!
 0:25      'c' ( in float)
 0:27    Sequence
 0:27      Branch: Return with expression
-0:27        Convert float to int64 ( temp int64_t)
+0:27        Convert float to int64_t ( temp int64_t)
 0:27          subtract ( temp float)
 0:27            Convert float16_t to float ( temp float)
 0:27              'a' ( in float16_t)
