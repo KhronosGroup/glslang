@@ -209,8 +209,9 @@ protected:
     spv::Id createUnaryMatrixOperation(spv::Op op, OpDecorations&, spv::Id typeId, spv::Id operand,
                                        glslang::TBasicType typeProxy);
     spv::Id createConversion(glslang::TOperator op, OpDecorations&, spv::Id destTypeId, spv::Id operand,
-                             glslang::TBasicType typeProxy);
-    spv::Id createIntWidthConversion(glslang::TOperator op, spv::Id operand, int vectorSize, spv::Id destType);
+                             glslang::TBasicType resultBasicType, glslang::TBasicType operandBasicType);
+    spv::Id createIntWidthConversion(spv::Id operand, int vectorSize, spv::Id destType,
+                                     glslang::TBasicType resultBasicType, glslang::TBasicType operandBasicType);
     spv::Id makeSmearedConstant(spv::Id constant, int vectorSize);
     spv::Id createAtomicOperation(glslang::TOperator op, spv::Decoration precision, spv::Id typeId,
         std::vector<spv::Id>& operands, glslang::TBasicType typeProxy,
@@ -2688,7 +2689,7 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
     // it could be a conversion
     if (! result) {
         result = createConversion(node->getOp(), decorations, resultType(), operand,
-            node->getOperand()->getBasicType());
+            node->getType().getBasicType(), node->getOperand()->getBasicType());
         if (result) {
             if (node->getType().isCoopMatKHR() && node->getOperand()->getAsTyped()->getType().isCoopMatKHR() &&
                 !node->getAsTyped()->getType().sameCoopMatUse(node->getOperand()->getAsTyped()->getType())) {
@@ -7662,73 +7663,22 @@ spv::Id TGlslangToSpvTraverser::createUnaryMatrixOperation(spv::Op op, OpDecorat
 // for the signedness conversion.
 // destType is the final type that will be converted to, but this function
 // may only be doing part of that conversion.
-spv::Id TGlslangToSpvTraverser::createIntWidthConversion(glslang::TOperator op, spv::Id operand, int vectorSize, spv::Id destType)
+spv::Id TGlslangToSpvTraverser::createIntWidthConversion(spv::Id operand, int vectorSize, spv::Id destType,
+                                                         glslang::TBasicType resultBasicType, glslang::TBasicType operandBasicType)
 {
     // Get the result type width, based on the type to convert to.
-    int width = 32;
-    switch(op) {
-    case glslang::EOpConvInt16ToUint8:
-    case glslang::EOpConvIntToUint8:
-    case glslang::EOpConvInt64ToUint8:
-    case glslang::EOpConvUint16ToInt8:
-    case glslang::EOpConvUintToInt8:
-    case glslang::EOpConvUint64ToInt8:
-        width = 8;
-        break;
-    case glslang::EOpConvInt8ToUint16:
-    case glslang::EOpConvIntToUint16:
-    case glslang::EOpConvInt64ToUint16:
-    case glslang::EOpConvUint8ToInt16:
-    case glslang::EOpConvUintToInt16:
-    case glslang::EOpConvUint64ToInt16:
-        width = 16;
-        break;
-    case glslang::EOpConvInt8ToUint:
-    case glslang::EOpConvInt16ToUint:
-    case glslang::EOpConvInt64ToUint:
-    case glslang::EOpConvUint8ToInt:
-    case glslang::EOpConvUint16ToInt:
-    case glslang::EOpConvUint64ToInt:
-        width = 32;
-        break;
-    case glslang::EOpConvInt8ToUint64:
-    case glslang::EOpConvInt16ToUint64:
-    case glslang::EOpConvIntToUint64:
-    case glslang::EOpConvUint8ToInt64:
-    case glslang::EOpConvUint16ToInt64:
-    case glslang::EOpConvUintToInt64:
-        width = 64;
-        break;
-
-    default:
-        assert(false && "Default missing");
-        break;
-    }
+    int width = GetNumBits(resultBasicType);
 
     // Get the conversion operation and result type,
     // based on the target width, but the source type.
     spv::Id type = spv::NoType;
     spv::Op convOp = spv::OpNop;
-    switch(op) {
-    case glslang::EOpConvInt8ToUint16:
-    case glslang::EOpConvInt8ToUint:
-    case glslang::EOpConvInt8ToUint64:
-    case glslang::EOpConvInt16ToUint8:
-    case glslang::EOpConvInt16ToUint:
-    case glslang::EOpConvInt16ToUint64:
-    case glslang::EOpConvIntToUint8:
-    case glslang::EOpConvIntToUint16:
-    case glslang::EOpConvIntToUint64:
-    case glslang::EOpConvInt64ToUint8:
-    case glslang::EOpConvInt64ToUint16:
-    case glslang::EOpConvInt64ToUint:
+    if (isTypeSignedInt(operandBasicType)) {
         convOp = spv::OpSConvert;
         type = builder.makeIntType(width);
-        break;
-    default:
+    } else {
         convOp = spv::OpUConvert;
         type = builder.makeUintType(width);
-        break;
     }
 
     if (vectorSize > 0)
@@ -7743,7 +7693,7 @@ spv::Id TGlslangToSpvTraverser::createIntWidthConversion(glslang::TOperator op, 
 }
 
 spv::Id TGlslangToSpvTraverser::createConversion(glslang::TOperator op, OpDecorations& decorations, spv::Id destType,
-                                                 spv::Id operand, glslang::TBasicType typeProxy)
+                                                 spv::Id operand, glslang::TBasicType resultBasicType, glslang::TBasicType operandBasicType)
 {
     spv::Op convOp = spv::OpNop;
     spv::Id zero = 0;
@@ -7751,317 +7701,124 @@ spv::Id TGlslangToSpvTraverser::createConversion(glslang::TOperator op, OpDecora
 
     int vectorSize = builder.isVectorType(destType) ? builder.getNumTypeComponents(destType) : 0;
 
-    switch (op) {
-    case glslang::EOpConvIntToBool:
-    case glslang::EOpConvUintToBool:
-        zero = builder.makeUintConstant(0);
-        zero = makeSmearedConstant(zero, vectorSize);
-        return builder.createBinOp(spv::OpINotEqual, destType, operand, zero);
-    case glslang::EOpConvFloatToBool:
-        zero = builder.makeFloatConstant(0.0F);
-        zero = makeSmearedConstant(zero, vectorSize);
-        return builder.createBinOp(spv::OpFUnordNotEqual, destType, operand, zero);
-    case glslang::EOpConvBoolToFloat:
-        convOp = spv::OpSelect;
-        zero = builder.makeFloatConstant(0.0F);
-        one  = builder.makeFloatConstant(1.0F);
-        break;
-
-    case glslang::EOpConvBoolToInt:
-    case glslang::EOpConvBoolToInt64:
-        if (op == glslang::EOpConvBoolToInt64) {
-            zero = builder.makeInt64Constant(0);
-            one = builder.makeInt64Constant(1);
-        } else {
-            zero = builder.makeIntConstant(0);
-            one = builder.makeIntConstant(1);
+    if (IsOpNumericConv(op)) {
+        if (isTypeSignedInt(operandBasicType) && isTypeFloat(resultBasicType)) {
+            convOp = spv::OpConvertSToF;
         }
-
-        convOp = spv::OpSelect;
-        break;
-
-    case glslang::EOpConvBoolToUint:
-    case glslang::EOpConvBoolToUint64:
-        if (op == glslang::EOpConvBoolToUint64) {
-            zero = builder.makeUint64Constant(0);
-            one = builder.makeUint64Constant(1);
-        } else {
-            zero = builder.makeUintConstant(0);
-            one = builder.makeUintConstant(1);
+        if (isTypeUnsignedInt(operandBasicType) && isTypeFloat(resultBasicType)) {
+            convOp = spv::OpConvertUToF;
         }
+        if (isTypeFloat(operandBasicType) && isTypeSignedInt(resultBasicType)) {
+            convOp = spv::OpConvertFToS;
+        }
+        if (isTypeFloat(operandBasicType) && isTypeUnsignedInt(resultBasicType)) {
+            convOp = spv::OpConvertFToU;
+        }
+        if (isTypeSignedInt(operandBasicType) && isTypeSignedInt(resultBasicType)) {
+            convOp = spv::OpSConvert;
+        }
+        if (isTypeUnsignedInt(operandBasicType) && isTypeUnsignedInt(resultBasicType)) {
+            convOp = spv::OpUConvert;
+        }
+        if (isTypeFloat(operandBasicType) && isTypeFloat(resultBasicType)) {
+            convOp = spv::OpFConvert;
+            if (builder.isMatrixType(destType))
+                return createUnaryMatrixOperation(convOp, decorations, destType, operand, operandBasicType);
+        }
+        if (isTypeInt(operandBasicType) && isTypeInt(resultBasicType) &&
+            isTypeUnsignedInt(operandBasicType) != isTypeUnsignedInt(resultBasicType)) {
 
-        convOp = spv::OpSelect;
-        break;
+            if (GetNumBits(operandBasicType) != GetNumBits(resultBasicType)) {
+                // OpSConvert/OpUConvert + OpBitCast
+                operand = createIntWidthConversion(operand, vectorSize, destType, resultBasicType, operandBasicType);
+            }
 
-    case glslang::EOpConvInt8ToFloat16:
-    case glslang::EOpConvInt8ToFloat:
-    case glslang::EOpConvInt8ToDouble:
-    case glslang::EOpConvInt16ToFloat16:
-    case glslang::EOpConvInt16ToFloat:
-    case glslang::EOpConvInt16ToDouble:
-    case glslang::EOpConvIntToFloat16:
-    case glslang::EOpConvIntToFloat:
-    case glslang::EOpConvIntToDouble:
-    case glslang::EOpConvInt64ToFloat:
-    case glslang::EOpConvInt64ToDouble:
-    case glslang::EOpConvInt64ToFloat16:
-        convOp = spv::OpConvertSToF;
-        break;
-
-    case glslang::EOpConvUint8ToFloat16:
-    case glslang::EOpConvUint8ToFloat:
-    case glslang::EOpConvUint8ToDouble:
-    case glslang::EOpConvUint16ToFloat16:
-    case glslang::EOpConvUint16ToFloat:
-    case glslang::EOpConvUint16ToDouble:
-    case glslang::EOpConvUintToFloat16:
-    case glslang::EOpConvUintToFloat:
-    case glslang::EOpConvUintToDouble:
-    case glslang::EOpConvUint64ToFloat:
-    case glslang::EOpConvUint64ToDouble:
-    case glslang::EOpConvUint64ToFloat16:
-        convOp = spv::OpConvertUToF;
-        break;
-
-    case glslang::EOpConvFloat16ToInt8:
-    case glslang::EOpConvFloatToInt8:
-    case glslang::EOpConvDoubleToInt8:
-    case glslang::EOpConvFloat16ToInt16:
-    case glslang::EOpConvFloatToInt16:
-    case glslang::EOpConvDoubleToInt16:
-    case glslang::EOpConvFloat16ToInt:
-    case glslang::EOpConvFloatToInt:
-    case glslang::EOpConvDoubleToInt:
-    case glslang::EOpConvFloat16ToInt64:
-    case glslang::EOpConvFloatToInt64:
-    case glslang::EOpConvDoubleToInt64:
-        convOp = spv::OpConvertFToS;
-        break;
-
-    case glslang::EOpConvUint8ToInt8:
-    case glslang::EOpConvInt8ToUint8:
-    case glslang::EOpConvUint16ToInt16:
-    case glslang::EOpConvInt16ToUint16:
-    case glslang::EOpConvUintToInt:
-    case glslang::EOpConvIntToUint:
-    case glslang::EOpConvUint64ToInt64:
-    case glslang::EOpConvInt64ToUint64:
-        if (builder.isInSpecConstCodeGenMode()) {
-            // Build zero scalar or vector for OpIAdd.
-            if(op == glslang::EOpConvUint8ToInt8 || op == glslang::EOpConvInt8ToUint8) {
-                zero = builder.makeUint8Constant(0);
-            } else if (op == glslang::EOpConvUint16ToInt16 || op == glslang::EOpConvInt16ToUint16) {
-                zero = builder.makeUint16Constant(0);
-            } else if (op == glslang::EOpConvUint64ToInt64 || op == glslang::EOpConvInt64ToUint64) {
-                zero = builder.makeUint64Constant(0);
+            if (builder.isInSpecConstCodeGenMode()) {
+                uint32_t bits = GetNumBits(resultBasicType);
+                spv::Id zeroType = builder.makeUintType(bits);
+                if (bits == 64) {
+                    zero = builder.makeInt64Constant(zeroType, 0, false);
+                } else {
+                    zero = builder.makeIntConstant(zeroType, 0, false);
+                }
+                zero = makeSmearedConstant(zero, vectorSize);
+                // Use OpIAdd, instead of OpBitcast to do the conversion when
+                // generating for OpSpecConstantOp instruction.
+                return builder.createBinOp(spv::OpIAdd, destType, operand, zero);
+            }
+            // For normal run-time conversion instruction, use OpBitcast.
+            convOp = spv::OpBitcast;
+        }
+        if (resultBasicType == glslang::EbtBool) {
+            uint32_t bits = GetNumBits(operandBasicType);
+            if (isTypeInt(operandBasicType)) {
+                spv::Id zeroType = builder.makeUintType(bits);
+                if (bits == 64) {
+                    zero = builder.makeInt64Constant(zeroType, 0, false);
+                } else {
+                    zero = builder.makeIntConstant(zeroType, 0, false);
+                }
+                zero = makeSmearedConstant(zero, vectorSize);
+                return builder.createBinOp(spv::OpINotEqual, destType, operand, zero);
             } else {
-                zero = builder.makeUintConstant(0);
+                assert(isTypeFloat(operandBasicType));
+                if (bits == 64) {
+                    zero = builder.makeDoubleConstant(0.0);
+                } else if (bits == 32) {
+                    zero = builder.makeFloatConstant(0.0);
+                } else {
+                    assert(bits == 16);
+                    zero = builder.makeFloat16Constant(0.0);
+                }
+                zero = makeSmearedConstant(zero, vectorSize);
+                return builder.createBinOp(spv::OpFUnordNotEqual, destType, operand, zero);
             }
-            zero = makeSmearedConstant(zero, vectorSize);
-            // Use OpIAdd, instead of OpBitcast to do the conversion when
-            // generating for OpSpecConstantOp instruction.
-            return builder.createBinOp(spv::OpIAdd, destType, operand, zero);
         }
-        // For normal run-time conversion instruction, use OpBitcast.
-        convOp = spv::OpBitcast;
-        break;
-
-    case glslang::EOpConvFloat16ToUint8:
-    case glslang::EOpConvFloatToUint8:
-    case glslang::EOpConvDoubleToUint8:
-    case glslang::EOpConvFloat16ToUint16:
-    case glslang::EOpConvFloatToUint16:
-    case glslang::EOpConvDoubleToUint16:
-    case glslang::EOpConvFloat16ToUint:
-    case glslang::EOpConvFloatToUint:
-    case glslang::EOpConvDoubleToUint:
-    case glslang::EOpConvFloatToUint64:
-    case glslang::EOpConvDoubleToUint64:
-    case glslang::EOpConvFloat16ToUint64:
-        convOp = spv::OpConvertFToU;
-        break;
-
-    case glslang::EOpConvInt8ToBool:
-    case glslang::EOpConvUint8ToBool:
-        zero = builder.makeUint8Constant(0);
-        zero = makeSmearedConstant(zero, vectorSize);
-        return builder.createBinOp(spv::OpINotEqual, destType, operand, zero);
-    case glslang::EOpConvInt16ToBool:
-    case glslang::EOpConvUint16ToBool:
-        zero = builder.makeUint16Constant(0);
-        zero = makeSmearedConstant(zero, vectorSize);
-        return builder.createBinOp(spv::OpINotEqual, destType, operand, zero);
-    case glslang::EOpConvInt64ToBool:
-    case glslang::EOpConvUint64ToBool:
-        zero = builder.makeUint64Constant(0);
-        zero = makeSmearedConstant(zero, vectorSize);
-        return builder.createBinOp(spv::OpINotEqual, destType, operand, zero);
-    case glslang::EOpConvDoubleToBool:
-        zero = builder.makeDoubleConstant(0.0);
-        zero = makeSmearedConstant(zero, vectorSize);
-        return builder.createBinOp(spv::OpFUnordNotEqual, destType, operand, zero);
-    case glslang::EOpConvFloat16ToBool:
-        zero = builder.makeFloat16Constant(0.0F);
-        zero = makeSmearedConstant(zero, vectorSize);
-        return builder.createBinOp(spv::OpFUnordNotEqual, destType, operand, zero);
-    case glslang::EOpConvBoolToDouble:
-        convOp = spv::OpSelect;
-        zero = builder.makeDoubleConstant(0.0);
-        one  = builder.makeDoubleConstant(1.0);
-        break;
-    case glslang::EOpConvBoolToFloat16:
-        convOp = spv::OpSelect;
-        zero = builder.makeFloat16Constant(0.0F);
-        one = builder.makeFloat16Constant(1.0F);
-        break;
-    case glslang::EOpConvBoolToInt8:
-        zero = builder.makeInt8Constant(0);
-        one  = builder.makeInt8Constant(1);
-        convOp = spv::OpSelect;
-        break;
-    case glslang::EOpConvBoolToUint8:
-        zero = builder.makeUint8Constant(0);
-        one  = builder.makeUint8Constant(1);
-        convOp = spv::OpSelect;
-        break;
-    case glslang::EOpConvBoolToInt16:
-        zero = builder.makeInt16Constant(0);
-        one  = builder.makeInt16Constant(1);
-        convOp = spv::OpSelect;
-        break;
-    case glslang::EOpConvBoolToUint16:
-        zero = builder.makeUint16Constant(0);
-        one  = builder.makeUint16Constant(1);
-        convOp = spv::OpSelect;
-        break;
-    case glslang::EOpConvDoubleToFloat:
-    case glslang::EOpConvFloatToDouble:
-    case glslang::EOpConvDoubleToFloat16:
-    case glslang::EOpConvFloat16ToDouble:
-    case glslang::EOpConvFloatToFloat16:
-    case glslang::EOpConvFloat16ToFloat:
-        convOp = spv::OpFConvert;
-        if (builder.isMatrixType(destType))
-            return createUnaryMatrixOperation(convOp, decorations, destType, operand, typeProxy);
-        break;
-
-    case glslang::EOpConvInt8ToInt16:
-    case glslang::EOpConvInt8ToInt:
-    case glslang::EOpConvInt8ToInt64:
-    case glslang::EOpConvInt16ToInt8:
-    case glslang::EOpConvInt16ToInt:
-    case glslang::EOpConvInt16ToInt64:
-    case glslang::EOpConvIntToInt8:
-    case glslang::EOpConvIntToInt16:
-    case glslang::EOpConvIntToInt64:
-    case glslang::EOpConvInt64ToInt8:
-    case glslang::EOpConvInt64ToInt16:
-    case glslang::EOpConvInt64ToInt:
-        convOp = spv::OpSConvert;
-        break;
-
-    case glslang::EOpConvUint8ToUint16:
-    case glslang::EOpConvUint8ToUint:
-    case glslang::EOpConvUint8ToUint64:
-    case glslang::EOpConvUint16ToUint8:
-    case glslang::EOpConvUint16ToUint:
-    case glslang::EOpConvUint16ToUint64:
-    case glslang::EOpConvUintToUint8:
-    case glslang::EOpConvUintToUint16:
-    case glslang::EOpConvUintToUint64:
-    case glslang::EOpConvUint64ToUint8:
-    case glslang::EOpConvUint64ToUint16:
-    case glslang::EOpConvUint64ToUint:
-        convOp = spv::OpUConvert;
-        break;
-
-    case glslang::EOpConvInt8ToUint16:
-    case glslang::EOpConvInt8ToUint:
-    case glslang::EOpConvInt8ToUint64:
-    case glslang::EOpConvInt16ToUint8:
-    case glslang::EOpConvInt16ToUint:
-    case glslang::EOpConvInt16ToUint64:
-    case glslang::EOpConvIntToUint8:
-    case glslang::EOpConvIntToUint16:
-    case glslang::EOpConvIntToUint64:
-    case glslang::EOpConvInt64ToUint8:
-    case glslang::EOpConvInt64ToUint16:
-    case glslang::EOpConvInt64ToUint:
-    case glslang::EOpConvUint8ToInt16:
-    case glslang::EOpConvUint8ToInt:
-    case glslang::EOpConvUint8ToInt64:
-    case glslang::EOpConvUint16ToInt8:
-    case glslang::EOpConvUint16ToInt:
-    case glslang::EOpConvUint16ToInt64:
-    case glslang::EOpConvUintToInt8:
-    case glslang::EOpConvUintToInt16:
-    case glslang::EOpConvUintToInt64:
-    case glslang::EOpConvUint64ToInt8:
-    case glslang::EOpConvUint64ToInt16:
-    case glslang::EOpConvUint64ToInt:
-        // OpSConvert/OpUConvert + OpBitCast
-        operand = createIntWidthConversion(op, operand, vectorSize, destType);
-
-        if (builder.isInSpecConstCodeGenMode()) {
-            // Build zero scalar or vector for OpIAdd.
-            switch(op) {
-            case glslang::EOpConvInt16ToUint8:
-            case glslang::EOpConvIntToUint8:
-            case glslang::EOpConvInt64ToUint8:
-            case glslang::EOpConvUint16ToInt8:
-            case glslang::EOpConvUintToInt8:
-            case glslang::EOpConvUint64ToInt8:
-                zero = builder.makeUint8Constant(0);
-                break;
-            case glslang::EOpConvInt8ToUint16:
-            case glslang::EOpConvIntToUint16:
-            case glslang::EOpConvInt64ToUint16:
-            case glslang::EOpConvUint8ToInt16:
-            case glslang::EOpConvUintToInt16:
-            case glslang::EOpConvUint64ToInt16:
-                zero = builder.makeUint16Constant(0);
-                break;
-            case glslang::EOpConvInt8ToUint:
-            case glslang::EOpConvInt16ToUint:
-            case glslang::EOpConvInt64ToUint:
-            case glslang::EOpConvUint8ToInt:
-            case glslang::EOpConvUint16ToInt:
-            case glslang::EOpConvUint64ToInt:
-                zero = builder.makeUintConstant(0);
-                break;
-            case glslang::EOpConvInt8ToUint64:
-            case glslang::EOpConvInt16ToUint64:
-            case glslang::EOpConvIntToUint64:
-            case glslang::EOpConvUint8ToInt64:
-            case glslang::EOpConvUint16ToInt64:
-            case glslang::EOpConvUintToInt64:
-                zero = builder.makeUint64Constant(0);
-                break;
-            default:
-                assert(false && "Default missing");
-                break;
+        if (operandBasicType == glslang::EbtBool) {
+            uint32_t bits = GetNumBits(resultBasicType);
+            convOp = spv::OpSelect;
+            if (isTypeInt(resultBasicType)) {
+                spv::Id zeroType = isTypeSignedInt(resultBasicType) ? builder.makeIntType(bits) : builder.makeUintType(bits);
+                if (bits == 64) {
+                    zero = builder.makeInt64Constant(zeroType, 0, false);
+                    one = builder.makeInt64Constant(zeroType, 1, false);
+                } else {
+                    zero = builder.makeIntConstant(zeroType, 0, false);
+                    one = builder.makeIntConstant(zeroType, 1, false);
+                }
+            } else {
+                assert(isTypeFloat(resultBasicType));
+                if (bits == 64) {
+                    zero = builder.makeDoubleConstant(0.0);
+                    one = builder.makeDoubleConstant(1.0);
+                } else if (bits == 32) {
+                    zero = builder.makeFloatConstant(0.0);
+                    one = builder.makeFloatConstant(1.0);
+                } else {
+                    assert(bits == 16);
+                    zero = builder.makeFloat16Constant(0.0);
+                    one = builder.makeFloat16Constant(1.0);
+                }
             }
-            zero = makeSmearedConstant(zero, vectorSize);
-            // Use OpIAdd, instead of OpBitcast to do the conversion when
-            // generating for OpSpecConstantOp instruction.
-            return builder.createBinOp(spv::OpIAdd, destType, operand, zero);
         }
-        // For normal run-time conversion instruction, use OpBitcast.
-        convOp = spv::OpBitcast;
-        break;
-    case glslang::EOpConvUint64ToPtr:
-        convOp = spv::OpConvertUToPtr;
-        break;
-    case glslang::EOpConvPtrToUint64:
-        convOp = spv::OpConvertPtrToU;
-        break;
-    case glslang::EOpConvPtrToUvec2:
-    case glslang::EOpConvUvec2ToPtr:
-        convOp = spv::OpBitcast;
-        break;
+    }
 
-    default:
-        break;
+    if (convOp == spv::OpNop) {
+        switch (op) {
+        case glslang::EOpConvUint64ToPtr:
+            convOp = spv::OpConvertUToPtr;
+            break;
+        case glslang::EOpConvPtrToUint64:
+            convOp = spv::OpConvertPtrToU;
+            break;
+        case glslang::EOpConvPtrToUvec2:
+        case glslang::EOpConvUvec2ToPtr:
+            convOp = spv::OpBitcast;
+            break;
+
+        default:
+            break;
+        }
     }
 
     spv::Id result = 0;
@@ -10453,12 +10210,13 @@ bool TGlslangToSpvTraverser::isTrivial(const glslang::TIntermTyped* node)
         return false;
     }
 
+    if (IsOpNumericConv(node->getAsOperator()->getOp()) &&
+        node->getType().getBasicType() == glslang::EbtBool) {
+        return true;
+    }
+
     switch (node->getAsOperator()->getOp()) {
     case glslang::EOpLogicalNot:
-    case glslang::EOpConvIntToBool:
-    case glslang::EOpConvUintToBool:
-    case glslang::EOpConvFloatToBool:
-    case glslang::EOpConvDoubleToBool:
     case glslang::EOpEqual:
     case glslang::EOpNotEqual:
     case glslang::EOpLessThan:
