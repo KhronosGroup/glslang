@@ -52,6 +52,7 @@
 //
 
 #include <array>
+#include <sstream>
 #include "Initialize.h"
 #include "span.h"
 
