@@ -36,6 +36,7 @@
 // Disassembler for SPIR-V.
 //
 
+#include <cstdint>
 #include <cstdlib>
 #include <cstring>
 #include <cassert>
