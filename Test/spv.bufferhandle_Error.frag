@@ -17,11 +17,15 @@ layout(buffer_reference) buffer bufType5;
 
 layout(buffer_reference) buffer bufType6 { int x[]; };
 
+layout(buffer_reference, std140, buffer_reference_align = 16) buffer bufType7;
+layout(buffer_reference) buffer bufType7 { int x[]; };
+
 buffer bufType4 {
     bufType1 b1;
     bufType2 b2;
     bufType3 b3;
     bufType6 b6;
+    bufType7 b7;
 } b4;
 
 void f()
