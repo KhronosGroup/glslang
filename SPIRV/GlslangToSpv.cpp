@@ -2811,6 +2811,8 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
                 one = builder.makeDoubleConstant(1.0);
             else if (node->getBasicType() == glslang::EbtFloat16)
                 one = builder.makeFloat16Constant(1.0F);
+            else if (node->getBasicType() == glslang::EbtBFloat16)
+                one = builder.makeBFloat16Constant(1.0F);
             else if (node->getBasicType() == glslang::EbtInt8  || node->getBasicType() == glslang::EbtUint8)
                 one = builder.makeInt8Constant(1);
             else if (node->getBasicType() == glslang::EbtInt16 || node->getBasicType() == glslang::EbtUint16)
@@ -3150,6 +3152,10 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
     case glslang::EOpConstructF16Vec2:
     case glslang::EOpConstructF16Vec3:
     case glslang::EOpConstructF16Vec4:
+    case glslang::EOpConstructBFloat16:
+    case glslang::EOpConstructBF16Vec2:
+    case glslang::EOpConstructBF16Vec3:
+    case glslang::EOpConstructBF16Vec4:
     case glslang::EOpConstructBool:
     case glslang::EOpConstructBVec2:
     case glslang::EOpConstructBVec3:
@@ -4972,6 +4978,9 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
     case glslang::EbtFloat16:
         spvType = builder.makeFloatType(16);
         break;
+    case glslang::EbtBFloat16:
+        spvType = builder.makeBFloat16Type();
+        break;
     case glslang::EbtInt8:
         spvType = builder.makeIntType(8);
         break;
@@ -5216,6 +5225,11 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
     if (type.isCoopMatKHR()) {
         builder.addCapability(spv::CapabilityCooperativeMatrixKHR);
         builder.addExtension(spv::E_SPV_KHR_cooperative_matrix);
+
+        if (type.getBasicType() == glslang::EbtBFloat16) {
+            builder.addExtension(spv::E_SPV_KHR_bfloat16);
+            builder.addCapability(spv::CapabilityBFloat16CooperativeMatrixKHR);
+        }
 
         if (type.getBasicType() == glslang::EbtFloat16)
             builder.addCapability(spv::CapabilityFloat16);
@@ -9138,6 +9152,10 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
             if (builder.isFloatType(builder.getScalarTypeId(typeId0)) ||
                 // HLSL supports dot(int,int) which is just a multiply
                 glslangIntermediate->getSource() == glslang::EShSourceHlsl) {
+                if (typeProxy == glslang::EbtBFloat16) {
+                    builder.addExtension(spv::E_SPV_KHR_bfloat16);
+                    builder.addCapability(spv::CapabilityBFloat16DotProductKHR);
+                }
                 opCode = spv::OpDot;
             } else {
                 builder.addExtension(spv::E_SPV_KHR_integer_dot_product);
@@ -10523,6 +10541,9 @@ spv::Id TGlslangToSpvTraverser::createSpvConstantFromConstUnionArray(const glsla
                 builder.addCapability(spv::CapabilityFloat16);
                 spvConsts.push_back(builder.makeFloat16Constant(zero ? 0.0F : (float)consts[nextConst].getDConst()));
                 break;
+            case glslang::EbtBFloat16:
+                spvConsts.push_back(builder.makeBFloat16Constant(zero ? 0.0F : (float)consts[nextConst].getDConst()));
+                break;
             default:
                 assert(0);
                 break;
@@ -10574,6 +10595,9 @@ spv::Id TGlslangToSpvTraverser::createSpvConstantFromConstUnionArray(const glsla
         case glslang::EbtFloat16:
             builder.addCapability(spv::CapabilityFloat16);
             scalar = builder.makeFloat16Constant(zero ? 0.0F : (float)consts[nextConst].getDConst(), specConstant);
+            break;
+        case glslang::EbtBFloat16:
+            scalar = builder.makeBFloat16Constant(zero ? 0.0F : (float)consts[nextConst].getDConst(), specConstant);
             break;
         case glslang::EbtReference:
             scalar = builder.makeUint64Constant(zero ? 0 : consts[nextConst].getU64Const(), specConstant);
