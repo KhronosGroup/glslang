@@ -686,6 +686,7 @@ namespace spv {
 
             // Single word operands we simply ignore, as they hold no IDs
             case spv::OperandLiteralNumber:
+            case spv::OperandOptionalLiteral:
             case spv::OperandSource:
             case spv::OperandExecutionModel:
             case spv::OperandAddressing:
