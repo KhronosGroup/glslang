@@ -16,6 +16,10 @@ jobs:
       matrix:
         compiler: [{cc: clang, cxx: clang++}, {cc: gcc, cxx: g++}]
         cmake_build_type: [Debug, Release]
+        shared_libs: [ON, OFF]
+        exclude:
+          - cmake_build_type: Debug
+            shared_libs: ON
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - uses: lukka/get-cmake@b516803a3c5fac40e2e922349d15cdebdba01e60 # v3.30.5
@@ -28,7 +32,9 @@ jobs:
           key: ubuntu-22-${{ matrix.cmake_build_type }}-${{ matrix.compiler.cc }}-${{matrix.compiler.cxx}}
       - run: ./update_glslang_sources.py
       - name: Configure
-        run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{ matrix.cmake_build_type }} -DBUILD_WERROR=ON -D GLSLANG_TESTS=ON
+        run: |
+          cmake -S . -B build -D CMAKE_BUILD_TYPE=${{ matrix.cmake_build_type }} \
+                -DBUILD_WERROR=ON -D GLSLANG_TESTS=ON -D BUILD_SHARED_LIBS=${{ matrix.shared_libs }}
         env:
           CC: ${{matrix.compiler.cc}}
           CXX: ${{matrix.compiler.cxx}}
@@ -43,39 +49,6 @@ jobs:
         run: ctest --output-on-failure --test-dir build
       - name: Check known validation failure list
         run: grep -l 'Validation failed' Test/baseResults/* | sort -fd | diff -u Test/baseResults/validation_fails.txt -
-
-  linux-shared:
-    runs-on: ubuntu-22.04
-    strategy:
-      fail-fast: false
-      matrix:
-        compiler: [{cc: clang, cxx: clang++}, {cc: gcc, cxx: g++}]
-        cmake_build_type: [Release]
-    steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-      - uses: lukka/get-cmake@b516803a3c5fac40e2e922349d15cdebdba01e60 # v3.30.5
-      - uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # v5.3.0
-        with:
-          python-version: '3.7'
-      - name: Setup ccache
-        uses: hendrikmuhs/ccache-action@ed74d11c0b343532753ecead8a951bb09bb34bc9 # v1.2.14
-        with:
-          key: ubuntu-22-${{ matrix.cmake_build_type }}-${{ matrix.compiler.cc }}-${{matrix.compiler.cxx}}
-      - run: ./update_glslang_sources.py
-      - name: Configure
-        run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{ matrix.cmake_build_type }} -DBUILD_WERROR=ON -D GLSLANG_TESTS=ON -DBUILD_SHARED_LIBS=ON
-        env:
-          CC: ${{matrix.compiler.cc}}
-          CXX: ${{matrix.compiler.cxx}}
-          CMAKE_GENERATOR: Ninja
-          CMAKE_C_COMPILER_LAUNCHER: ccache
-          CMAKE_CXX_COMPILER_LAUNCHER: ccache
-      - name: Build
-        run: cmake --build build
-      - name: Install
-        run: cmake --install build --prefix build/install
-      - name: Test
-        run: ctest --output-on-failure --test-dir build
 
   linux-asan:
     runs-on: ubuntu-22.04
@@ -156,31 +129,19 @@ jobs:
         os: [macos-14, macos-13]
         compiler: [{cc: clang, cxx: clang++}, {cc: gcc, cxx: g++}]
         cmake_build_type: [Debug, Release]
+        shared_libs: [OFF]
+        include:
+          - os: macos-14
+            compiler: {cc: clang, cxx: clang++}
+            cmake_build_type: Debug
+            shared_libs: ON
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - uses: lukka/get-cmake@b516803a3c5fac40e2e922349d15cdebdba01e60 # v3.30.5
       - run: ./update_glslang_sources.py
-      - run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{matrix.cmake_build_type}} -G Ninja -DBUILD_WERROR=ON -D GLSLANG_TESTS=ON
-        env:
-          CC: ${{matrix.compiler.cc}}
-          CXX: ${{matrix.compiler.cxx}}
-      - run: cmake --build build
-      - run: cmake --install build --prefix build/install
-      - run: ctest --output-on-failure --test-dir build
-
-  macos-shared:
-    runs-on: ${{matrix.os}}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [macos-14]
-        compiler: [{cc: clang, cxx: clang++}]
-        cmake_build_type: [Release]
-    steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-      - uses: lukka/get-cmake@b516803a3c5fac40e2e922349d15cdebdba01e60 # v3.30.5
-      - run: ./update_glslang_sources.py
-      - run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{matrix.cmake_build_type}} -G Ninja -DBUILD_WERROR=ON -D GLSLANG_TESTS=ON -DBUILD_SHARED_LIBS=ON
+      - run: |
+          cmake -S . -B build -D CMAKE_BUILD_TYPE=${{matrix.cmake_build_type}} -G Ninja \
+                -DBUILD_WERROR=ON -D GLSLANG_TESTS=ON -D BUILD_SHARED_LIBS=${{matrix.shared_libs}}
         env:
           CC: ${{matrix.compiler.cc}}
           CXX: ${{matrix.compiler.cxx}}
@@ -197,6 +158,7 @@ jobs:
       matrix:
           os: [{genus: windows-2019, family: windows}]
           cmake_build_type: [Debug, Release]
+          shared_libs: [ON, OFF]
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - uses: lukka/get-cmake@b516803a3c5fac40e2e922349d15cdebdba01e60 # v3.30.5
@@ -206,34 +168,12 @@ jobs:
       - run: python update_glslang_sources.py
       - name: Build
         run: |
-          cmake -S. -Bbuild -G "Visual Studio 16 2019" -A x64 -DCMAKE_INSTALL_PREFIX="$PWD/build/install" -DBUILD_WERROR=ON -D GLSLANG_TESTS=ON
+          cmake -S. -Bbuild -G "Visual Studio 16 2019" -A x64 -DCMAKE_INSTALL_PREFIX="$PWD/build/install" \
+                -DBUILD_WERROR=ON -D GLSLANG_TESTS=ON -DBUILD_SHARED_LIBS=${{ matrix.shared_libs }}
           cmake --build build --config ${{matrix.cmake_build_type}} --target install
       - name: Test
+        if: ${{ matrix.shared_libs != 'ON' }}
         run: ctest -C ${{matrix.cmake_build_type}} --output-on-failure --test-dir build
-
-  windows-shared:
-    runs-on: ${{matrix.os.genus}}
-    permissions:
-      contents: write
-    strategy:
-      fail-fast: false
-      matrix:
-          os: [{genus: windows-2019, family: windows}]
-          cmake_build_type: [Debug, Release]
-    steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-      - uses: lukka/get-cmake@b516803a3c5fac40e2e922349d15cdebdba01e60 # v3.30.5
-      - uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # v5.3.0
-        with:
-          python-version: '3.7'
-      - run: python update_glslang_sources.py
-      - name: Build
-        run: |
-          cmake -S. -Bbuild -G "Visual Studio 16 2019" -A x64 -DCMAKE_INSTALL_PREFIX="$PWD/build/install" -DBUILD_WERROR=ON -D GLSLANG_TESTS=ON -DBUILD_SHARED_LIBS=ON
-          cmake --build build --config ${{matrix.cmake_build_type}} --target install
-      # disabled until we figure out DLL issues.
-      # - name: Test
-      #   run: ctest -C ${{matrix.cmake_build_type}} --output-on-failure --test-dir build
 
   iOS:
     runs-on: macos-13
