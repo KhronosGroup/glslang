@@ -1205,7 +1205,7 @@ public:
         } else {
             mangledName = n;
         }
-    
+    }
     virtual long long getId() const { return id; }
     virtual void changeId(long long i) { id = i; }
     virtual const TString& getName() const { return name; }
