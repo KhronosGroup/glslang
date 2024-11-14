@@ -1197,8 +1197,8 @@ public:
     // if symbol is initialized as symbol(sym), the memory comes from the pool allocator of sym. If sym comes from
     // per process threadPoolAllocator, then it causes increased memory usage per compile
     // it is essential to use "symbol = sym" to assign to symbol
-    TIntermSymbol(long long i, const TString& n, const TType& t, const TString* mn = nullptr)
-        : TIntermTyped(t), id(i), flattenSubset(-1), constSubtree(nullptr) { 
+    TIntermSymbol(long long i, const TString& n, EShLanguage s, const TType& t, const TString* mn = nullptr)
+        : TIntermTyped(t), id(i), flattenSubset(-1), stage(s), constSubtree(nullptr) { 
         name = n;
         if (mn) {
             mangledName = *mn;
@@ -1225,11 +1225,13 @@ public:
     // This is meant for cases where a node has already been constructed, and
     // later on, it becomes necessary to switch to a different symbol.
     virtual void switchId(long long newId) { id = newId; }
+    EShLanguage getStage() const { return stage; }
 
 protected:
     long long id;                // the unique id of the symbol this node represents
     int flattenSubset;           // how deeply the flattened object rooted at id has been dereferenced
     TString name;                // the name of the symbol this node represents
+    EShLanguage stage;
     TString mangledName;         // mangled function name, or a copy of name if not a function
     TConstUnionArray constArray; // if the symbol is a front-end compile-time constant, this is its value
     TIntermTyped* constSubtree;
