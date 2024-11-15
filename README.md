@@ -12,8 +12,6 @@
 
 4. `OGLCompiler` and `HLSL` stub libraries have been fully removed from the build.
 
-Users are encouraged to utilize the standard approach via [CMAKE_MSVC_RUNTIME_LIBRARY](https://cmake.org/cmake/help/latest/variable/CMAKE_MSVC_RUNTIME_LIBRARY.html).
-
 # Glslang Components and Status
 
 There are several components:
@@ -126,24 +124,24 @@ git clone https://github.com/KhronosGroup/glslang.git
 
 #### 3) Configure
 
-Assume the source directory is `$SOURCE_DIR` and the build directory is
-`$BUILD_DIR`. First ensure the build directory exists, then navigate to it:
+Assume the source directory is `$SOURCE_DIR` and the build directory is `$BUILD_DIR`.
+CMake will create the `$BUILD_DIR` for the user if it doesn't exist.
 
+First change your working directory:
 ```bash
-mkdir -p $BUILD_DIR
-cd $BUILD_DIR
+cd $SOURCE_DIR
 ```
 
 For building on Linux:
 
 ```bash
-cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$(pwd)/install" $SOURCE_DIR
+cmake -B $BUILD_DIR -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$(pwd)/install"
 # "Release" (for CMAKE_BUILD_TYPE) could also be "Debug" or "RelWithDebInfo"
 ```
 
 For building on Android:
 ```bash
-cmake $SOURCE_DIR -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="$(pwd)/install" -DANDROID_ABI=arm64-v8a -DCMAKE_BUILD_TYPE=Release -DANDROID_STL=c++_static -DANDROID_PLATFORM=android-24 -DCMAKE_SYSTEM_NAME=Android -DANDROID_TOOLCHAIN=clang -DANDROID_ARM_MODE=arm -DCMAKE_MAKE_PROGRAM=$ANDROID_NDK_HOME/prebuilt/linux-x86_64/bin/make -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_HOME/build/cmake/android.toolchain.cmake
+cmake -B $BUILD_DIR -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="$(pwd)/install" -DANDROID_ABI=arm64-v8a -DCMAKE_BUILD_TYPE=Release -DANDROID_STL=c++_static -DANDROID_PLATFORM=android-24 -DCMAKE_SYSTEM_NAME=Android -DANDROID_TOOLCHAIN=clang -DANDROID_ARM_MODE=arm -DCMAKE_MAKE_PROGRAM=$ANDROID_NDK_HOME/prebuilt/linux-x86_64/bin/make -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_HOME/build/cmake/android.toolchain.cmake
 # If on Windows will be -DCMAKE_MAKE_PROGRAM=%ANDROID_NDK_HOME%\prebuilt\windows-x86_64\bin\make.exe
 # -G is needed for building on Windows
 # -DANDROID_ABI can also be armeabi-v7a for 32 bit
@@ -152,11 +150,9 @@ cmake $SOURCE_DIR -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="$(pwd)/install" -D
 For building on Windows:
 
 ```bash
-cmake $SOURCE_DIR -DCMAKE_INSTALL_PREFIX="$(pwd)/install"
+cmake -B $BUILD_DIR -DCMAKE_INSTALL_PREFIX="$(pwd)/install"
 # The CMAKE_INSTALL_PREFIX part is for testing (explained later).
 ```
-
-The CMake GUI also works for Windows (version 3.4.1 tested).
 
 Also, consider using `git config --global core.fileMode false` (or with `--local`) on Windows
 to prevent the addition of execution permission on files.
@@ -174,10 +170,6 @@ cmake --build . --config Release --target install
 
 If using MSVC, after running CMake to configure, use the
 Configuration Manager to check the `INSTALL` project.
-
-If you want to enable testing via CMake set `GLSLANG_TESTS=ON` when configuring the build.
-
-`GLSLANG_TESTS` is off by default to streamline the packaging / Vulkan SDK process.
 
 ### Building (GN)
 
