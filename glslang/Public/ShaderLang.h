@@ -994,7 +994,13 @@ protected:
     TIntermediate* intermediate[EShLangCount];
     bool newedIntermediate[EShLangCount];      // track which intermediate were "new" versus reusing a singleton unit in a stage
     TInfoSink* infoSink;
+#ifdef HYP_GLSL_MODIFICATIONS // Make reflection member public
+public:
+#endif
     TReflection* reflection;
+#ifdef HYP_GLSL_MODIFICATIONS
+private:
+#endif
     bool linked;
 
 private:

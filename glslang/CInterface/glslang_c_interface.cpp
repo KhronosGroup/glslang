@@ -345,6 +345,16 @@ GLSLANG_EXPORT glslang_shader_t* glslang_shader_create(const glslang_input_t* in
     return shader;
 }
 
+#ifdef HYP_GLSLANG_MODIFICATIONS
+GLSLANG_EXPORT glslang::TShader* glslang_get_cpp_shader(glslang_shader_t* shader) {
+    return shader->shader;
+}
+
+GLSLANG_EXPORT glslang::TProgram* glslang_get_cpp_program(glslang_program_t* program) {
+    return program->program;
+}
+#endif
+
 GLSLANG_EXPORT void glslang_shader_set_preamble(glslang_shader_t* shader, const char* s) {
     shader->shader->setPreamble(s);
 }

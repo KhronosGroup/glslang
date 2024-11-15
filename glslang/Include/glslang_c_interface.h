@@ -39,6 +39,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "glslang_c_shader_types.h"
 #include "visibility.h"
 
+#ifdef HYP_GLSLANG_MODIFICATIONS
+namespace glslang {
+class TShader;
+class TProgram;
+} // namespace glslang
+#endif
+
 typedef struct glslang_shader_s glslang_shader_t;
 typedef struct glslang_program_s glslang_program_t;
 typedef struct glslang_mapper_s glslang_mapper_t;
@@ -243,6 +250,11 @@ typedef struct glslang_spv_options_s {
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+
+#ifdef HYP_GLSLANG_MODIFICATIONS
+GLSLANG_EXPORT glslang::TShader* glslang_get_cpp_shader(glslang_shader_t* shader);
+GLSLANG_EXPORT glslang::TProgram* glslang_get_cpp_program(glslang_program_t* program);
 #endif
 
 GLSLANG_EXPORT void glslang_get_version(glslang_version_t* version);
