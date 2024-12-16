@@ -96,12 +96,17 @@ if(GLSLANG_TESTS)
 
         target_link_libraries(glslangtests PRIVATE ${LIBRARIES} gmock)
 
-        add_test(NAME glslang-gtests
-                 COMMAND glslangtests --test-root "${GLSLANG_TEST_DIRECTORY}")
+        # The TARGET_RUNTIME_DLL_DIRS feature requires CMake 3.27 or greater.
+        if(WIN32 AND BUILD_SHARED_LIBS AND CMAKE_VERSION VERSION_LESS "3.27")
+            message(WARNING "The Windows shared library test configuration requires CMake 3.27 or greater")
+        else()
+            add_test(NAME glslang-gtests
+                     COMMAND glslangtests --test-root "${GLSLANG_TEST_DIRECTORY}")
 
-        # Prepend paths to DLLs for Windows tests.
-        if(WIN32)
-            set_tests_properties(glslang-gtests PROPERTIES ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:$<JOIN:$<TARGET_RUNTIME_DLL_DIRS:glslangtests>,\;>")
+            # Prepend paths to shared libraries.
+            if (BUILD_SHARED_LIBS)
+                set_tests_properties(glslang-gtests PROPERTIES ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:$<JOIN:$<TARGET_RUNTIME_DLL_DIRS:glslangtests>,\;>")
+            endif()
         endif()
     endif()
 endif()
