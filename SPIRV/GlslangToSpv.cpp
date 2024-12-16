@@ -8742,9 +8742,6 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
         {
             libCall = spv::GLSLstd450ModfStruct;
             assert(builder.isFloatType(builder.getScalarTypeId(typeId0)));
-            int width = builder.getScalarTypeWidth(typeId0);
-            if (width == 16)
-                builder.addExtension(spv::E_SPV_AMD_gpu_shader_half_float);
             // The returned struct has two members of the same type as the first argument
             typeId = builder.makeStructResultType(typeId0, typeId0);
             consumedOperands = 1;
