@@ -1089,6 +1089,11 @@ const char* CapabilityString(int info)
 
     case CapabilityReplicatedCompositesEXT:             return "CapabilityReplicatedCompositesEXT";
 
+    case CapabilityDotProductKHR:                       return "DotProductKHR";
+    case CapabilityDotProductInputAllKHR:               return "DotProductInputAllKHR";
+    case CapabilityDotProductInput4x8BitKHR:            return "DotProductInput4x8BitKHR";
+    case CapabilityDotProductInput4x8BitPackedKHR:      return "DotProductInput4x8BitPackedKHR";
+
     default: return "Bad";
     }
 }
@@ -1630,6 +1635,13 @@ const char* OpcodeString(int op)
     case OpConstantCompositeReplicateEXT: return "OpConstantCompositeReplicateEXT";
     case OpSpecConstantCompositeReplicateEXT: return "OpSpecConstantCompositeReplicateEXT";
     case OpCompositeConstructReplicateEXT: return "OpCompositeConstructReplicateEXT";
+
+    case OpSDotKHR: return "OpSDotKHR";
+    case OpUDotKHR: return "OpUDotKHR";
+    case OpSUDotKHR: return "OpSUDotKHR";
+    case OpSDotAccSatKHR: return "OpSDotAccSatKHR";
+    case OpUDotAccSatKHR: return "OpUDotAccSatKHR";
+    case OpSUDotAccSatKHR: return "OpSUDotAccSatKHR";
 
     default:
         return "Bad";
@@ -3592,6 +3604,33 @@ void Parameterize()
         InstructionDesc[OpTensorViewSetClipNV].operands.push(OperandId, "'ClipRowSpan'");
         InstructionDesc[OpTensorViewSetClipNV].operands.push(OperandId, "'ClipColOffset'");
         InstructionDesc[OpTensorViewSetClipNV].operands.push(OperandId, "'ClipColSpan'");
+
+        InstructionDesc[OpSDotKHR].operands.push(OperandId, "'Vector1'");
+        InstructionDesc[OpSDotKHR].operands.push(OperandId, "'Vector2'");
+        InstructionDesc[OpSDotKHR].operands.push(OperandLiteralNumber, "'PackedVectorFormat'");
+
+        InstructionDesc[OpUDotKHR].operands.push(OperandId, "'Vector1'");
+        InstructionDesc[OpUDotKHR].operands.push(OperandId, "'Vector2'");
+        InstructionDesc[OpUDotKHR].operands.push(OperandLiteralNumber, "'PackedVectorFormat'");
+
+        InstructionDesc[OpSUDotKHR].operands.push(OperandId, "'Vector1'");
+        InstructionDesc[OpSUDotKHR].operands.push(OperandId, "'Vector2'");
+        InstructionDesc[OpSUDotKHR].operands.push(OperandLiteralNumber, "'PackedVectorFormat'");
+
+        InstructionDesc[OpSDotAccSatKHR].operands.push(OperandId, "'Vector1'");
+        InstructionDesc[OpSDotAccSatKHR].operands.push(OperandId, "'Vector2'");
+        InstructionDesc[OpSDotAccSatKHR].operands.push(OperandId, "'Accumulator'");
+        InstructionDesc[OpSDotAccSatKHR].operands.push(OperandLiteralNumber, "'PackedVectorFormat'");
+
+        InstructionDesc[OpUDotAccSatKHR].operands.push(OperandId, "'Vector1'");
+        InstructionDesc[OpUDotAccSatKHR].operands.push(OperandId, "'Vector2'");
+        InstructionDesc[OpUDotAccSatKHR].operands.push(OperandId, "'Accumulator'");
+        InstructionDesc[OpUDotAccSatKHR].operands.push(OperandLiteralNumber, "'PackedVectorFormat'");
+
+        InstructionDesc[OpSUDotAccSatKHR].operands.push(OperandId, "'Vector1'");
+        InstructionDesc[OpSUDotAccSatKHR].operands.push(OperandId, "'Vector2'");
+        InstructionDesc[OpSUDotAccSatKHR].operands.push(OperandId, "'Accumulator'");
+        InstructionDesc[OpSUDotAccSatKHR].operands.push(OperandLiteralNumber, "'PackedVectorFormat'");
     });
 }
 
