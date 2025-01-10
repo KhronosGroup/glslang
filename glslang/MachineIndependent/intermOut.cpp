@@ -667,6 +667,9 @@ bool TOutputTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node
 
     case EOpDistance:      out.debug << "distance";                break;
     case EOpDot:           out.debug << "dot-product";             break;
+    case EOpDotPackedEXT:  out.debug << "dot-product-packed";break;
+    case EOpDotAccSatEXT:  out.debug << "dot-product-accumulate-saturate";break;
+    case EOpDotPackedAccSatEXT:  out.debug << "dot-product-packed-accumulate-saturate";break;
     case EOpCross:         out.debug << "cross-product";           break;
     case EOpFaceForward:   out.debug << "face-forward";            break;
     case EOpReflect:       out.debug << "reflect";                 break;

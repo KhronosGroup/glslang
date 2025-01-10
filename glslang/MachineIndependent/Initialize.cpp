@@ -2082,6 +2082,143 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "\n");
     }
 
+    // GL_EXT_integer_dot_product
+    if ((profile == EEsProfile && version >= 300) ||
+        (profile != EEsProfile && version >= 450)) {
+        commonBuiltins.append(
+
+            "uint dotEXT(uvec2 a, uvec2 b);"
+            "int dotEXT(ivec2 a, ivec2 b);"
+            "int dotEXT(ivec2 a, uvec2 b);"
+            "int dotEXT(uvec2 a, ivec2 b);"
+
+            "uint dotEXT(uvec3 a, uvec3 b);"
+            "int dotEXT(ivec3 a, ivec3 b);"
+            "int dotEXT(ivec3 a, uvec3 b);"
+            "int dotEXT(uvec3 a, ivec3 b);"
+
+            "uint dotEXT(uvec4 a, uvec4 b);"
+            "int dotEXT(ivec4 a, ivec4 b);"
+            "int dotEXT(ivec4 a, uvec4 b);"
+            "int dotEXT(uvec4 a, ivec4 b);"
+
+            "uint dotPacked4x8EXT(uint a, uint b);"
+            "int dotPacked4x8EXT(int a, uint b);"
+            "int dotPacked4x8EXT(uint a, int b);"
+            "int dotPacked4x8EXT(int a, int b);"
+
+            "uint dotEXT(u8vec2 a, u8vec2 b);"
+            "int dotEXT(i8vec2 a, u8vec2 b);"
+            "int dotEXT(u8vec2 a, i8vec2 b);"
+            "int dotEXT(i8vec2 a, i8vec2 b);"
+
+            "uint dotEXT(u8vec3 a, u8vec3 b);"
+            "int dotEXT(i8vec3 a, u8vec3 b);"
+            "int dotEXT(u8vec3 a, i8vec3 b);"
+            "int dotEXT(i8vec3 a, i8vec3 b);"
+
+            "uint dotEXT(u8vec4 a, u8vec4 b);"
+            "int dotEXT(i8vec4 a, u8vec4 b);"
+            "int dotEXT(u8vec4 a, i8vec4 b);"
+            "int dotEXT(i8vec4 a, i8vec4 b);"
+
+            "uint dotEXT(u16vec2 a, u16vec2 b);"
+            "int dotEXT(i16vec2 a, u16vec2 b);"
+            "int dotEXT(u16vec2 a, i16vec2 b);"
+            "int dotEXT(i16vec2 a, i16vec2 b);"
+
+            "uint dotEXT(u16vec3 a, u16vec3 b);"
+            "int dotEXT(i16vec3 a, u16vec3 b);"
+            "int dotEXT(u16vec3 a, i16vec3 b);"
+            "int dotEXT(i16vec3 a, i16vec3 b);"
+
+            "uint dotEXT(u16vec4 a, u16vec4 b);"
+            "int dotEXT(i16vec4 a, u16vec4 b);"
+            "int dotEXT(u16vec4 a, i16vec4 b);"
+            "int dotEXT(i16vec4 a, i16vec4 b);"
+
+            "uint64_t dotEXT(u64vec2 a, u64vec2 b);"
+            "int64_t dotEXT(i64vec2 a, u64vec2 b);"
+            "int64_t dotEXT(u64vec2 a, i64vec2 b);"
+            "int64_t dotEXT(i64vec2 a, i64vec2 b);"
+
+            "uint64_t dotEXT(u64vec3 a, u64vec3 b);"
+            "int64_t dotEXT(i64vec3 a, u64vec3 b);"
+            "int64_t dotEXT(u64vec3 a, i64vec3 b);"
+            "int64_t dotEXT(i64vec3 a, i64vec3 b);"
+
+            "uint64_t dotEXT(u64vec4 a, u64vec4 b);"
+            "int64_t dotEXT(i64vec4 a, u64vec4 b);"
+            "int64_t dotEXT(u64vec4 a, i64vec4 b);"
+            "int64_t dotEXT(i64vec4 a, i64vec4 b);"
+
+            "uint dotAccSatEXT(uvec2 a, uvec2 b, uint c);"
+            "int dotAccSatEXT(ivec2 a, uvec2 b, int c);"
+            "int dotAccSatEXT(uvec2 a, ivec2 b, int c);"
+            "int dotAccSatEXT(ivec2 a, ivec2 b, int c);"
+
+            "uint dotAccSatEXT(uvec3 a, uvec3 b, uint c);"
+            "int dotAccSatEXT(ivec3 a, uvec3 b, int c);"
+            "int dotAccSatEXT(uvec3 a, ivec3 b, int c);"
+            "int dotAccSatEXT(ivec3 a, ivec3 b, int c);"
+
+            "uint dotAccSatEXT(uvec4 a, uvec4 b, uint c);"
+            "int dotAccSatEXT(ivec4 a, uvec4 b, int c);"
+            "int dotAccSatEXT(uvec4 a, ivec4 b, int c);"
+            "int dotAccSatEXT(ivec4 a, ivec4 b, int c);"
+
+            "uint dotPacked4x8AccSatEXT(uint a, uint b, uint c);"
+            "int dotPacked4x8AccSatEXT(int a, uint b, int c);"
+            "int dotPacked4x8AccSatEXT(uint a, int b, int c);"
+            "int dotPacked4x8AccSatEXT(int a, int b, int c);"
+
+            "uint dotAccSatEXT(u8vec2 a, u8vec2 b, uint c);"
+            "int dotAccSatEXT(i8vec2 a, u8vec2 b, int c);"
+            "int dotAccSatEXT(u8vec2 a, i8vec2 b, int c);"
+            "int dotAccSatEXT(i8vec2 a, i8vec2 b, int c);"
+
+            "uint dotAccSatEXT(u8vec3 a, u8vec3 b, uint c);"
+            "int dotAccSatEXT(i8vec3 a, u8vec3 b, int c);"
+            "int dotAccSatEXT(u8vec3 a, i8vec3 b, int c);"
+            "int dotAccSatEXT(i8vec3 a, i8vec3 b, int c);"
+
+            "uint dotAccSatEXT(u8vec4 a, u8vec4 b, uint c);"
+            "int dotAccSatEXT(i8vec4 a, u8vec4 b, int c);"
+            "int dotAccSatEXT(u8vec4 a, i8vec4 b, int c);"
+            "int dotAccSatEXT(i8vec4 a, i8vec4 b, int c);"
+
+            "uint dotAccSatEXT(u16vec2 a, u16vec2 b, uint c);"
+            "int dotAccSatEXT(i16vec2 a, u16vec2 b, int c);"
+            "int dotAccSatEXT(u16vec2 a, i16vec2 b, int c);"
+            "int dotAccSatEXT(i16vec2 a, i16vec2 b, int c);"
+
+            "uint dotAccSatEXT(u16vec3 a, u16vec3 b, uint c);"
+            "int dotAccSatEXT(i16vec3 a, u16vec3 b, int c);"
+            "int dotAccSatEXT(u16vec3 a, i16vec3 b, int c);"
+            "int dotAccSatEXT(i16vec3 a, i16vec3 b, int c);"
+
+            "uint dotAccSatEXT(u16vec4 a, u16vec4 b, uint c);"
+            "int dotAccSatEXT(i16vec4 a, u16vec4 b, int c);"
+            "int dotAccSatEXT(u16vec4 a, i16vec4 b, int c);"
+            "int dotAccSatEXT(i16vec4 a, i16vec4 b, int c);"
+
+            "uint64_t dotAccSatEXT(u64vec2 a, u64vec2 b, uint64_t c);"
+            "int64_t dotAccSatEXT(i64vec2 a, u64vec2 b, int64_t c);"
+            "int64_t dotAccSatEXT(u64vec2 a, i64vec2 b, int64_t c);"
+            "int64_t dotAccSatEXT(i64vec2 a, i64vec2 b, int64_t c);"
+
+            "uint64_t dotAccSatEXT(u64vec3 a, u64vec3 b, uint64_t c);"
+            "int64_t dotAccSatEXT(i64vec3 a, u64vec3 b, int64_t c);"
+            "int64_t dotAccSatEXT(u64vec3 a, i64vec3 b, int64_t c);"
+            "int64_t dotAccSatEXT(i64vec3 a, i64vec3 b, int64_t c);"
+
+            "uint64_t dotAccSatEXT(u64vec4 a, u64vec4 b, uint64_t c);"
+            "int64_t dotAccSatEXT(i64vec4 a, u64vec4 b, int64_t c);"
+            "int64_t dotAccSatEXT(u64vec4 a, i64vec4 b, int64_t c);"
+            "int64_t dotAccSatEXT(i64vec4 a, i64vec4 b, int64_t c);"
+            "\n");
+    }
+
     // GL_KHR_shader_subgroup
     if ((profile == EEsProfile && version >= 310) ||
         (profile != EEsProfile && version >= 140)) {
@@ -9144,6 +9281,15 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setFunctionExtensions("fetchMicroTriangleVertexPositionNV", 1, &E_GL_NV_displacement_micromap);
             symbolTable.setFunctionExtensions("fetchMicroTriangleVertexBarycentricNV", 1, &E_GL_NV_displacement_micromap);
         }
+
+        // GL_EXT_integer_dot_product
+        if ((profile == EEsProfile && version >= 300) ||
+            (profile != EEsProfile && version >= 450)) {
+            symbolTable.setFunctionExtensions("dotEXT", 1, &E_GL_EXT_integer_dot_product);
+            symbolTable.setFunctionExtensions("dotPacked4x8EXT", 1, &E_GL_EXT_integer_dot_product);
+            symbolTable.setFunctionExtensions("dotAccSatEXT", 1, &E_GL_EXT_integer_dot_product);
+            symbolTable.setFunctionExtensions("dotPacked4x8AccSatEXT", 1, &E_GL_EXT_integer_dot_product);
+        }
         break;
 
     case EShLangRayGen:
@@ -10080,6 +10226,15 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
 
             symbolTable.relateToOperator("fragmentMaskFetchAMD",                EOpFragmentMaskFetch);
             symbolTable.relateToOperator("fragmentFetchAMD",                    EOpFragmentFetch);
+        }
+
+        // GL_EXT_integer_dot_product
+        if ((profile == EEsProfile && version >= 300) ||
+            (profile != EEsProfile && version >= 450)) {
+            symbolTable.relateToOperator("dotEXT", EOpDot);
+            symbolTable.relateToOperator("dotPacked4x8EXT", EOpDotPackedEXT);
+            symbolTable.relateToOperator("dotAccSatEXT", EOpDotAccSatEXT);
+            symbolTable.relateToOperator("dotPacked4x8AccSatEXT", EOpDotPackedAccSatEXT);
         }
 
         // GL_KHR_shader_subgroup

@@ -396,6 +396,8 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_EXT_shader_atomic_float]                    = EBhDisable;
     extensionBehavior[E_GL_EXT_shader_atomic_float2]                   = EBhDisable;
 
+    extensionBehavior[E_GL_EXT_integer_dot_product]                    = EBhDisable;
+
     // Record extensions not for spv.
     spvUnsupportedExt.push_back(E_GL_ARB_bindless_texture);
 }
@@ -603,6 +605,8 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_EXT_texture_array 1\n"
 
             "#define GL_EXT_control_flow_attributes2 1\n"
+
+            "#define GL_EXT_integer_dot_product 1\n"
             ;
 
         if (spvVersion.spv == 0) {

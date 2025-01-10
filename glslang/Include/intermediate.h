@@ -387,6 +387,11 @@ enum TOperator {
     EOpSubgroupPartitionedExclusiveXor,
 
     EOpSubgroupGuardStop,
+    
+    // Integer dot product
+    EOpDotPackedEXT,
+    EOpDotAccSatEXT,
+    EOpDotPackedAccSatEXT,
 
     EOpMinInvocations,
     EOpMaxInvocations,

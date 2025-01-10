@@ -418,6 +418,8 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.GeometryShaderPassthrough.geom",
         "spv.funcall.array.frag",
         "spv.load.bool.array.interface.block.frag",
+        "spv.int_dot.frag",
+        "spv.int_dot_Error.frag",
         "spv.interpOps.frag",
         "spv.int64.frag",
         "spv.intcoopmat.comp",

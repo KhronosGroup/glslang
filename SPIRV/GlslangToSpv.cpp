@@ -8760,7 +8760,49 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
         libCall = spv::GLSLstd450Pow;
         break;
     case glslang::EOpDot:
-        opCode = spv::OpDot;
+    case glslang::EOpDotPackedEXT:
+    case glslang::EOpDotAccSatEXT:
+    case glslang::EOpDotPackedAccSatEXT:
+        {
+            if (builder.isFloatType(builder.getScalarTypeId(typeId0)) ||
+                // HLSL supports dot(int,int) which is just a multiply
+                glslangIntermediate->getSource() == glslang::EShSourceHlsl) {
+                opCode = spv::OpDot;
+            } else {
+                builder.addExtension(spv::E_SPV_KHR_integer_dot_product);
+                builder.addCapability(spv::CapabilityDotProductKHR);
+                const unsigned int vectorSize = builder.getNumComponents(operands[0]);
+                if (op == glslang::EOpDotPackedEXT || op == glslang::EOpDotPackedAccSatEXT) {
+                    builder.addCapability(spv::CapabilityDotProductInput4x8BitPackedKHR);
+                } else if (vectorSize == 4 && builder.getScalarTypeWidth(typeId0) == 8) {
+                    builder.addCapability(spv::CapabilityDotProductInput4x8BitKHR);
+                } else {
+                    builder.addCapability(spv::CapabilityDotProductInputAllKHR);
+                }
+                const bool type0isSigned = builder.isIntType(builder.getScalarTypeId(typeId0));
+                const bool type1isSigned = builder.isIntType(builder.getScalarTypeId(typeId1));
+                const bool accSat = (op == glslang::EOpDotAccSatEXT || op == glslang::EOpDotPackedAccSatEXT);
+                if (!type0isSigned && !type1isSigned) {
+                    opCode = accSat ? spv::OpUDotAccSatKHR : spv::OpUDotKHR;
+                } else if (type0isSigned && type1isSigned) {
+                    opCode = accSat ? spv::OpSDotAccSatKHR : spv::OpSDotKHR;
+                } else {
+                    opCode = accSat ? spv::OpSUDotAccSatKHR : spv::OpSUDotKHR;
+                    // the spir-v opcode assumes the operands to be "signed, unsigned" in that order, so swap if needed
+                    if (type1isSigned) {
+                        std::swap(operands[0], operands[1]);
+                    }
+                }
+                std::vector<spv::IdImmediate> operands2;
+                for (auto &o : operands) {
+                    operands2.push_back({true, o});
+                }
+                if (op == glslang::EOpDotPackedEXT || op == glslang::EOpDotPackedAccSatEXT) {
+                    operands2.push_back({false, 0});
+                }
+                return builder.createOp(opCode, typeId, operands2);
+            }
+        }
         break;
     case glslang::EOpAtan:
         libCall = spv::GLSLstd450Atan2;
