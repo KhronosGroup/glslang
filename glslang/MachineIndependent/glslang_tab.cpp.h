@@ -504,22 +504,23 @@ extern int yydebug;
     RESTRICT = 705,                /* RESTRICT  */
     READONLY = 706,                /* READONLY  */
     WRITEONLY = 707,               /* WRITEONLY  */
-    DEVICECOHERENT = 708,          /* DEVICECOHERENT  */
-    QUEUEFAMILYCOHERENT = 709,     /* QUEUEFAMILYCOHERENT  */
-    WORKGROUPCOHERENT = 710,       /* WORKGROUPCOHERENT  */
-    SUBGROUPCOHERENT = 711,        /* SUBGROUPCOHERENT  */
-    NONPRIVATE = 712,              /* NONPRIVATE  */
-    SHADERCALLCOHERENT = 713,      /* SHADERCALLCOHERENT  */
-    NOPERSPECTIVE = 714,           /* NOPERSPECTIVE  */
-    EXPLICITINTERPAMD = 715,       /* EXPLICITINTERPAMD  */
-    PERVERTEXEXT = 716,            /* PERVERTEXEXT  */
-    PERVERTEXNV = 717,             /* PERVERTEXNV  */
-    PERPRIMITIVENV = 718,          /* PERPRIMITIVENV  */
-    PERVIEWNV = 719,               /* PERVIEWNV  */
-    PERTASKNV = 720,               /* PERTASKNV  */
-    PERPRIMITIVEEXT = 721,         /* PERPRIMITIVEEXT  */
-    TASKPAYLOADWORKGROUPEXT = 722, /* TASKPAYLOADWORKGROUPEXT  */
-    PRECISE = 723                  /* PRECISE  */
+    NONTEMPORAL = 708,             /* NONTEMPORAL  */
+    DEVICECOHERENT = 709,          /* DEVICECOHERENT  */
+    QUEUEFAMILYCOHERENT = 710,     /* QUEUEFAMILYCOHERENT  */
+    WORKGROUPCOHERENT = 711,       /* WORKGROUPCOHERENT  */
+    SUBGROUPCOHERENT = 712,        /* SUBGROUPCOHERENT  */
+    NONPRIVATE = 713,              /* NONPRIVATE  */
+    SHADERCALLCOHERENT = 714,      /* SHADERCALLCOHERENT  */
+    NOPERSPECTIVE = 715,           /* NOPERSPECTIVE  */
+    EXPLICITINTERPAMD = 716,       /* EXPLICITINTERPAMD  */
+    PERVERTEXEXT = 717,            /* PERVERTEXEXT  */
+    PERVERTEXNV = 718,             /* PERVERTEXNV  */
+    PERPRIMITIVENV = 719,          /* PERPRIMITIVENV  */
+    PERVIEWNV = 720,               /* PERVIEWNV  */
+    PERTASKNV = 721,               /* PERTASKNV  */
+    PERPRIMITIVEEXT = 722,         /* PERPRIMITIVEEXT  */
+    TASKPAYLOADWORKGROUPEXT = 723, /* TASKPAYLOADWORKGROUPEXT  */
+    PRECISE = 724                  /* PRECISE  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -567,7 +568,7 @@ union YYSTYPE
         glslang::TTypeParameters* typeParameters;
     } interm;
 
-#line 571 "MachineIndependent/glslang_tab.cpp.h"
+#line 572 "MachineIndependent/glslang_tab.cpp.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

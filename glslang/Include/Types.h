@@ -552,6 +552,7 @@ public:
         shadercallcoherent = false;
         nonprivate = false;
         volatil      = false;
+        nontemporal = false;
         restrict     = false;
         readonly     = false;
         writeonly    = false;
@@ -589,6 +590,7 @@ public:
     bool writeonly    : 1;
     bool coherent     : 1;
     bool volatil      : 1;
+    bool nontemporal  : 1;
     bool devicecoherent : 1;
     bool queuefamilycoherent : 1;
     bool workgroupcoherent : 1;
@@ -603,14 +605,15 @@ public:
     bool isRestrict() const { return restrict; }
     bool isCoherent() const { return coherent; }
     bool isVolatile() const { return volatil; }
+    bool isNonTemporal() const { return nontemporal; }
     bool isSample() const { return sample; }
     bool isMemory() const
     {
-        return shadercallcoherent || subgroupcoherent || workgroupcoherent || queuefamilycoherent || devicecoherent || coherent || volatil || restrict || readonly || writeonly || nonprivate;
+        return shadercallcoherent || subgroupcoherent || workgroupcoherent || queuefamilycoherent || devicecoherent || coherent || volatil || nontemporal || restrict || readonly || writeonly || nonprivate;
     }
     bool isMemoryQualifierImageAndSSBOOnly() const
     {
-        return shadercallcoherent || subgroupcoherent || workgroupcoherent || queuefamilycoherent || devicecoherent || coherent || volatil || restrict || readonly || writeonly;
+        return shadercallcoherent || subgroupcoherent || workgroupcoherent || queuefamilycoherent || devicecoherent || coherent || volatil || nontemporal || restrict || readonly || writeonly;
     }
     bool bufferReferenceNeedsVulkanMemoryModel() const
     {
@@ -2297,6 +2300,8 @@ public:
             appendStr(" nonprivate");
           if (qualifier.volatil)
             appendStr(" volatile");
+          if (qualifier.nontemporal)
+            appendStr(" nontemporal");
           if (qualifier.restrict)
             appendStr(" restrict");
           if (qualifier.readonly)

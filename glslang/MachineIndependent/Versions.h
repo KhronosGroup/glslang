@@ -225,6 +225,7 @@ const char* const E_GL_EXT_expect_assume                    = "GL_EXT_expect_ass
 const char* const E_GL_EXT_control_flow_attributes2         = "GL_EXT_control_flow_attributes2";
 const char* const E_GL_EXT_spec_constant_composites         = "GL_EXT_spec_constant_composites";
 const char* const E_GL_EXT_texture_offset_non_const         = "GL_EXT_texture_offset_non_const";
+const char* const E_GL_EXT_nontemporal_keyword              = "GL_EXT_nontemporal_keyword";
 
 // Arrays of extensions for the above viewportEXTs duplications
 

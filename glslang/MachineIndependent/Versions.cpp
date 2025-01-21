@@ -146,6 +146,7 @@
 // 7) If the extension has additional requirements like minimum SPIR-V version required, add them
 //    to extensionRequires()
 
+#include "glslang/MachineIndependent/Versions.h"
 #include "parseVersions.h"
 #include "localintermediate.h"
 
@@ -375,6 +376,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_EXT_draw_instanced]              = EBhDisable;
     extensionBehavior[E_GL_EXT_texture_array]               = EBhDisable;
     extensionBehavior[E_GL_EXT_texture_offset_non_const]    = EBhDisable;
+    extensionBehavior[E_GL_EXT_nontemporal_keyword]         = EBhDisable;
 
     // OVR extensions
     extensionBehavior[E_GL_OVR_multiview]                = EBhDisable;

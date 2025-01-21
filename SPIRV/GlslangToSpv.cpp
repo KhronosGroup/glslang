@@ -569,6 +569,9 @@ spv::MemoryAccessMask TGlslangToSpvTraverser::TranslateMemoryAccess(
     if (coherentFlags.volatil) {
         mask = mask | spv::MemoryAccessVolatileMask;
     }
+    if (coherentFlags.nontemporal) {
+        mask = mask | spv::MemoryAccessNontemporalMask;
+    }
     if (mask != spv::MemoryAccessMaskNone) {
         builder.addCapability(spv::CapabilityVulkanMemoryModelKHR);
     }
@@ -595,6 +598,9 @@ spv::ImageOperandsMask TGlslangToSpvTraverser::TranslateImageOperands(
     if (coherentFlags.volatil) {
         mask = mask | spv::ImageOperandsVolatileTexelKHRMask;
     }
+    if (coherentFlags.nontemporal && builder.getSpvVersion() >= spv::Spv_1_6) {
+        mask = mask | spv::ImageOperandsNontemporalMask;
+    }
     if (mask != spv::ImageOperandsMaskNone) {
         builder.addCapability(spv::CapabilityVulkanMemoryModelKHR);
     }
@@ -614,6 +620,7 @@ spv::Builder::AccessChain::CoherentFlags TGlslangToSpvTraverser::TranslateCohere
     flags.subgroupcoherent = type.getQualifier().subgroupcoherent;
     flags.shadercallcoherent = type.getQualifier().shadercallcoherent;
     flags.volatil = type.getQualifier().volatil;
+    flags.nontemporal = type.getQualifier().nontemporal;
     // *coherent variables are implicitly nonprivate in GLSL
     flags.nonprivate = type.getQualifier().nonprivate ||
                        flags.anyCoherent() ||
@@ -1498,6 +1505,8 @@ void InheritQualifiers(glslang::TQualifier& child, const glslang::TQualifier& pa
         child.nonprivate = true;
     if (parent.volatil)
         child.volatil = true;
+    if (parent.nontemporal)
+        child.nontemporal = true;
     if (parent.restrict)
         child.restrict = true;
     if (parent.readonly)
@@ -6748,6 +6757,10 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
     // volatile
     if (imageType.getQualifier().volatil) {
         params.volatil = true;
+    }
+
+    if (imageType.getQualifier().nontemporal) {
+        params.nontemporal = true;
     }
 
     std::vector<spv::Id> result( 1,
