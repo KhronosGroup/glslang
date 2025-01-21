@@ -1194,6 +1194,10 @@ void TIntermediate::mergeErrorCheck(TInfoSink& infoSink, const TIntermSymbol& sy
         error(infoSink, "Memory volatil qualifier must match:", unitStage);
         memoryQualifierError = true;
     }
+    if (symbol.getQualifier().nontemporal != unitSymbol.getQualifier().nontemporal) {
+        error(infoSink, "Memory nontemporal qualifier must match:", unitStage);
+        memoryQualifierError = true;
+    }
     if (symbol.getQualifier().restrict != unitSymbol.getQualifier().restrict) {
         error(infoSink, "Memory restrict qualifier must match:", unitStage);
         memoryQualifierError = true;
