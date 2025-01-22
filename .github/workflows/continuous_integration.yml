@@ -130,7 +130,7 @@ jobs:
           python-version: '3.7'
       - uses: lukka/get-cmake@acb35cf920333f4dc3fc4f424f1b30d5e7d561b4 # v3.31.4
         with:
-          cmakeVersion: 3.17.2
+          cmakeVersion: 3.22.1
       - name: Setup ccache
         uses: hendrikmuhs/ccache-action@53911442209d5c18de8a31615e0923161e435875 # v1.2.16
         with:

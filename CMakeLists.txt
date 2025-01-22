@@ -30,13 +30,8 @@
 # LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
-cmake_minimum_required(VERSION 3.17.2)
+cmake_minimum_required(VERSION 3.22.1)
 project(glslang)
-
-if (CMAKE_VERSION VERSION_LESS "3.21")
-    # https://cmake.org/cmake/help/latest/variable/PROJECT_IS_TOP_LEVEL.html
-    string(COMPARE EQUAL ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_SOURCE_DIR} PROJECT_IS_TOP_LEVEL)
-endif()
 
 set(GLSLANG_TESTS_DEFAULT ON) # Can be turned off, below, based on environment.
 set(GLSLANG_ENABLE_INSTALL_DEFAULT ON) # Can be turned off, below, based on environment.
