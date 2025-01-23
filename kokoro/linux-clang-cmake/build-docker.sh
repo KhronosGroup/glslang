@@ -40,7 +40,7 @@ set -e # Fail on any error.
 set -x # Display commands being run.
 
 using cmake-3.31.2
-using clang-10.0.0
+using clang-13.0.1
 using ninja-1.10.0
 using python-3.12
 
