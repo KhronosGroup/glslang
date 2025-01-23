@@ -18,6 +18,7 @@ Test/baseResults/hlsl.matrixSwizzle.vert.out
 Test/baseResults/hlsl.matType.bool.frag.out
 Test/baseResults/hlsl.matType.frag.out
 Test/baseResults/hlsl.matType.int.frag.out
+Test/baseResults/hlsl.nested-runtimeArray.frag.out
 Test/baseResults/hlsl.partialInit.frag.out
 Test/baseResults/hlsl.PointSize.geom.out
 Test/baseResults/hlsl.samplecmp.array.dx10.frag.out
@@ -34,6 +35,8 @@ Test/baseResults/hlsl.structarray.flatten.frag.out
 Test/baseResults/hlsl.structbuffer.append.fn.frag.out
 Test/baseResults/hlsl.structbuffer.atomics.frag.out
 Test/baseResults/hlsl.structbuffer.fn.frag.out
+Test/baseResults/hlsl.structcopy.comp.out
+Test/baseResults/hlsl.structcopylogical.comp.out
 Test/baseResults/hlsl.struct.frag.out
 Test/baseResults/hlsl.struct.split.assign.frag.out
 Test/baseResults/hlsl.texture.struct.frag.out
