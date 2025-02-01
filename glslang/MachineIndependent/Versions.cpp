@@ -146,7 +146,6 @@
 // 7) If the extension has additional requirements like minimum SPIR-V version required, add them
 //    to extensionRequires()
 
-#include "glslang/MachineIndependent/Versions.h"
 #include "parseVersions.h"
 #include "localintermediate.h"
 
