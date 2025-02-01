@@ -118,12 +118,12 @@ enum ArgClass {
     ClassFIO    = 1 << 9,  // first argument is inout
     ClassRS     = 1 << 10, // the return is held scalar as the arguments cycle
     ClassNS     = 1 << 11, // no scalar prototype
-    ClassCV     = 1 << 12, // first argument is 'coherent volatile'
+    ClassCVN    = 1 << 12, // first argument is 'coherent volatile nontemporal nontemporal'
     ClassFO     = 1 << 13, // first argument is output
     ClassV3     = 1 << 14, // vec3 only
 };
 // Mixtures of the above, to help the function tables
-const ArgClass ClassV1FIOCV = (ArgClass)(ClassV1 | ClassFIO | ClassCV);
+const ArgClass ClassV1FIOCVN = (ArgClass)(ClassV1 | ClassFIO | ClassCVN);
 const ArgClass ClassBNS     = (ArgClass)(ClassB  | ClassNS);
 const ArgClass ClassRSNS    = (ArgClass)(ClassRS | ClassNS);
 
@@ -246,14 +246,14 @@ const std::array BaseFunctions = {
     BuiltInFunction{ EOpGreaterThanEqual, "greaterThanEqual", 2,   TypeU,     ClassBNS,     {Es300Desktop130Version} },
     BuiltInFunction{ EOpVectorEqual,      "equal",            2,   TypeU,     ClassBNS,     {Es300Desktop130Version} },
     BuiltInFunction{ EOpVectorNotEqual,   "notEqual",         2,   TypeU,     ClassBNS,     {Es300Desktop130Version} },
-    BuiltInFunction{ EOpAtomicAdd,        "atomicAdd",        2,   TypeIU,    ClassV1FIOCV, {Es310Desktop400Version} },
-    BuiltInFunction{ EOpAtomicMin,        "atomicMin",        2,   TypeIU,    ClassV1FIOCV, {Es310Desktop400Version} },
-    BuiltInFunction{ EOpAtomicMax,        "atomicMax",        2,   TypeIU,    ClassV1FIOCV, {Es310Desktop400Version} },
-    BuiltInFunction{ EOpAtomicAnd,        "atomicAnd",        2,   TypeIU,    ClassV1FIOCV, {Es310Desktop400Version} },
-    BuiltInFunction{ EOpAtomicOr,         "atomicOr",         2,   TypeIU,    ClassV1FIOCV, {Es310Desktop400Version} },
-    BuiltInFunction{ EOpAtomicXor,        "atomicXor",        2,   TypeIU,    ClassV1FIOCV, {Es310Desktop400Version} },
-    BuiltInFunction{ EOpAtomicExchange,   "atomicExchange",   2,   TypeIU,    ClassV1FIOCV, {Es310Desktop400Version} },
-    BuiltInFunction{ EOpAtomicCompSwap,   "atomicCompSwap",   3,   TypeIU,    ClassV1FIOCV, {Es310Desktop400Version} },
+    BuiltInFunction{ EOpAtomicAdd,        "atomicAdd",        2,   TypeIU,    ClassV1FIOCVN, {Es310Desktop400Version} },
+    BuiltInFunction{ EOpAtomicMin,        "atomicMin",        2,   TypeIU,    ClassV1FIOCVN, {Es310Desktop400Version} },
+    BuiltInFunction{ EOpAtomicMax,        "atomicMax",        2,   TypeIU,    ClassV1FIOCVN, {Es310Desktop400Version} },
+    BuiltInFunction{ EOpAtomicAnd,        "atomicAnd",        2,   TypeIU,    ClassV1FIOCVN, {Es310Desktop400Version} },
+    BuiltInFunction{ EOpAtomicOr,         "atomicOr",         2,   TypeIU,    ClassV1FIOCVN, {Es310Desktop400Version} },
+    BuiltInFunction{ EOpAtomicXor,        "atomicXor",        2,   TypeIU,    ClassV1FIOCVN, {Es310Desktop400Version} },
+    BuiltInFunction{ EOpAtomicExchange,   "atomicExchange",   2,   TypeIU,    ClassV1FIOCVN, {Es310Desktop400Version} },
+    BuiltInFunction{ EOpAtomicCompSwap,   "atomicCompSwap",   3,   TypeIU,    ClassV1FIOCVN, {Es310Desktop400Version} },
     BuiltInFunction{ EOpMix,              "mix",              3,   TypeB,     ClassRegular, {Es310Desktop450Version} },
     BuiltInFunction{ EOpMix,              "mix",              3,   TypeIU,    ClassLB,      {Es310Desktop450Version} },
 };
@@ -369,8 +369,8 @@ void AddTabledBuiltin(TString& decls, const BuiltInFunction& function)
                 if (arg == function.numArguments - 1 && (function.classes & ClassLO))
                     decls.append("out ");
                 if (arg == 0) {
-                    if (function.classes & ClassCV)
-                        decls.append("coherent volatile ");
+                    if (function.classes & ClassCVN)
+                        decls.append("coherent volatile nontemporal ");
                     if (function.classes & ClassFIO)
                         decls.append("inout ");
                     if (function.classes & ClassFO)
@@ -1353,130 +1353,130 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
     if ((profile == EEsProfile && version >= 310) ||
         (profile != EEsProfile && version >= 430)) {
         commonBuiltins.append(
-            "uint atomicAdd(coherent volatile inout uint, uint, int, int, int);"
-            " int atomicAdd(coherent volatile inout  int,  int, int, int, int);"
+            "uint atomicAdd(coherent volatile nontemporal inout uint, uint, int, int, int);"
+            " int atomicAdd(coherent volatile nontemporal inout  int,  int, int, int, int);"
 
-            "uint atomicMin(coherent volatile inout uint, uint, int, int, int);"
-            " int atomicMin(coherent volatile inout  int,  int, int, int, int);"
+            "uint atomicMin(coherent volatile nontemporal inout uint, uint, int, int, int);"
+            " int atomicMin(coherent volatile nontemporal inout  int,  int, int, int, int);"
 
-            "uint atomicMax(coherent volatile inout uint, uint, int, int, int);"
-            " int atomicMax(coherent volatile inout  int,  int, int, int, int);"
+            "uint atomicMax(coherent volatile nontemporal inout uint, uint, int, int, int);"
+            " int atomicMax(coherent volatile nontemporal inout  int,  int, int, int, int);"
 
-            "uint atomicAnd(coherent volatile inout uint, uint, int, int, int);"
-            " int atomicAnd(coherent volatile inout  int,  int, int, int, int);"
+            "uint atomicAnd(coherent volatile nontemporal inout uint, uint, int, int, int);"
+            " int atomicAnd(coherent volatile nontemporal inout  int,  int, int, int, int);"
 
-            "uint atomicOr (coherent volatile inout uint, uint, int, int, int);"
-            " int atomicOr (coherent volatile inout  int,  int, int, int, int);"
+            "uint atomicOr (coherent volatile nontemporal inout uint, uint, int, int, int);"
+            " int atomicOr (coherent volatile nontemporal inout  int,  int, int, int, int);"
 
-            "uint atomicXor(coherent volatile inout uint, uint, int, int, int);"
-            " int atomicXor(coherent volatile inout  int,  int, int, int, int);"
+            "uint atomicXor(coherent volatile nontemporal inout uint, uint, int, int, int);"
+            " int atomicXor(coherent volatile nontemporal inout  int,  int, int, int, int);"
 
-            "uint atomicExchange(coherent volatile inout uint, uint, int, int, int);"
-            " int atomicExchange(coherent volatile inout  int,  int, int, int, int);"
+            "uint atomicExchange(coherent volatile nontemporal inout uint, uint, int, int, int);"
+            " int atomicExchange(coherent volatile nontemporal inout  int,  int, int, int, int);"
 
-            "uint atomicCompSwap(coherent volatile inout uint, uint, uint, int, int, int, int, int);"
-            " int atomicCompSwap(coherent volatile inout  int,  int,  int, int, int, int, int, int);"
+            "uint atomicCompSwap(coherent volatile nontemporal inout uint, uint, uint, int, int, int, int, int);"
+            " int atomicCompSwap(coherent volatile nontemporal inout  int,  int,  int, int, int, int, int, int);"
 
-            "uint atomicLoad(coherent volatile in uint, int, int, int);"
-            " int atomicLoad(coherent volatile in  int, int, int, int);"
+            "uint atomicLoad(coherent volatile nontemporal in uint, int, int, int);"
+            " int atomicLoad(coherent volatile nontemporal in  int, int, int, int);"
 
-            "void atomicStore(coherent volatile out uint, uint, int, int, int);"
-            "void atomicStore(coherent volatile out  int,  int, int, int, int);"
+            "void atomicStore(coherent volatile nontemporal out uint, uint, int, int, int);"
+            "void atomicStore(coherent volatile nontemporal out  int,  int, int, int, int);"
 
             "\n");
     }
 
     if (profile != EEsProfile && version >= 440) {
         commonBuiltins.append(
-            "uint64_t atomicMin(coherent volatile inout uint64_t, uint64_t);"
-            " int64_t atomicMin(coherent volatile inout  int64_t,  int64_t);"
-            "uint64_t atomicMin(coherent volatile inout uint64_t, uint64_t, int, int, int);"
-            " int64_t atomicMin(coherent volatile inout  int64_t,  int64_t, int, int, int);"
-            "float16_t atomicMin(coherent volatile inout float16_t, float16_t);"
-            "float16_t atomicMin(coherent volatile inout float16_t, float16_t, int, int, int);"
-            "   float atomicMin(coherent volatile inout float, float);"
-            "   float atomicMin(coherent volatile inout float, float, int, int, int);"
-            "  double atomicMin(coherent volatile inout double, double);"
-            "  double atomicMin(coherent volatile inout double, double, int, int, int);"
+            "uint64_t atomicMin(coherent volatile nontemporal inout uint64_t, uint64_t);"
+            " int64_t atomicMin(coherent volatile nontemporal inout  int64_t,  int64_t);"
+            "uint64_t atomicMin(coherent volatile nontemporal inout uint64_t, uint64_t, int, int, int);"
+            " int64_t atomicMin(coherent volatile nontemporal inout  int64_t,  int64_t, int, int, int);"
+            "float16_t atomicMin(coherent volatile nontemporal inout float16_t, float16_t);"
+            "float16_t atomicMin(coherent volatile nontemporal inout float16_t, float16_t, int, int, int);"
+            "   float atomicMin(coherent volatile nontemporal inout float, float);"
+            "   float atomicMin(coherent volatile nontemporal inout float, float, int, int, int);"
+            "  double atomicMin(coherent volatile nontemporal inout double, double);"
+            "  double atomicMin(coherent volatile nontemporal inout double, double, int, int, int);"
 
-            "uint64_t atomicMax(coherent volatile inout uint64_t, uint64_t);"
-            " int64_t atomicMax(coherent volatile inout  int64_t,  int64_t);"
-            "uint64_t atomicMax(coherent volatile inout uint64_t, uint64_t, int, int, int);"
-            " int64_t atomicMax(coherent volatile inout  int64_t,  int64_t, int, int, int);"
-            "float16_t atomicMax(coherent volatile inout float16_t, float16_t);"
-            "float16_t atomicMax(coherent volatile inout float16_t, float16_t, int, int, int);"
-            "   float atomicMax(coherent volatile inout float, float);"
-            "   float atomicMax(coherent volatile inout float, float, int, int, int);"
-            "  double atomicMax(coherent volatile inout double, double);"
-            "  double atomicMax(coherent volatile inout double, double, int, int, int);"
+            "uint64_t atomicMax(coherent volatile nontemporal inout uint64_t, uint64_t);"
+            " int64_t atomicMax(coherent volatile nontemporal inout  int64_t,  int64_t);"
+            "uint64_t atomicMax(coherent volatile nontemporal inout uint64_t, uint64_t, int, int, int);"
+            " int64_t atomicMax(coherent volatile nontemporal inout  int64_t,  int64_t, int, int, int);"
+            "float16_t atomicMax(coherent volatile nontemporal inout float16_t, float16_t);"
+            "float16_t atomicMax(coherent volatile nontemporal inout float16_t, float16_t, int, int, int);"
+            "   float atomicMax(coherent volatile nontemporal inout float, float);"
+            "   float atomicMax(coherent volatile nontemporal inout float, float, int, int, int);"
+            "  double atomicMax(coherent volatile nontemporal inout double, double);"
+            "  double atomicMax(coherent volatile nontemporal inout double, double, int, int, int);"
 
-            "uint64_t atomicAnd(coherent volatile inout uint64_t, uint64_t);"
-            " int64_t atomicAnd(coherent volatile inout  int64_t,  int64_t);"
-            "uint64_t atomicAnd(coherent volatile inout uint64_t, uint64_t, int, int, int);"
-            " int64_t atomicAnd(coherent volatile inout  int64_t,  int64_t, int, int, int);"
+            "uint64_t atomicAnd(coherent volatile nontemporal inout uint64_t, uint64_t);"
+            " int64_t atomicAnd(coherent volatile nontemporal inout  int64_t,  int64_t);"
+            "uint64_t atomicAnd(coherent volatile nontemporal inout uint64_t, uint64_t, int, int, int);"
+            " int64_t atomicAnd(coherent volatile nontemporal inout  int64_t,  int64_t, int, int, int);"
 
-            "uint64_t atomicOr (coherent volatile inout uint64_t, uint64_t);"
-            " int64_t atomicOr (coherent volatile inout  int64_t,  int64_t);"
-            "uint64_t atomicOr (coherent volatile inout uint64_t, uint64_t, int, int, int);"
-            " int64_t atomicOr (coherent volatile inout  int64_t,  int64_t, int, int, int);"
+            "uint64_t atomicOr (coherent volatile nontemporal inout uint64_t, uint64_t);"
+            " int64_t atomicOr (coherent volatile nontemporal inout  int64_t,  int64_t);"
+            "uint64_t atomicOr (coherent volatile nontemporal inout uint64_t, uint64_t, int, int, int);"
+            " int64_t atomicOr (coherent volatile nontemporal inout  int64_t,  int64_t, int, int, int);"
 
-            "uint64_t atomicXor(coherent volatile inout uint64_t, uint64_t);"
-            " int64_t atomicXor(coherent volatile inout  int64_t,  int64_t);"
-            "uint64_t atomicXor(coherent volatile inout uint64_t, uint64_t, int, int, int);"
-            " int64_t atomicXor(coherent volatile inout  int64_t,  int64_t, int, int, int);"
+            "uint64_t atomicXor(coherent volatile nontemporal inout uint64_t, uint64_t);"
+            " int64_t atomicXor(coherent volatile nontemporal inout  int64_t,  int64_t);"
+            "uint64_t atomicXor(coherent volatile nontemporal inout uint64_t, uint64_t, int, int, int);"
+            " int64_t atomicXor(coherent volatile nontemporal inout  int64_t,  int64_t, int, int, int);"
 
-            "uint64_t atomicAdd(coherent volatile inout uint64_t, uint64_t);"
-            " int64_t atomicAdd(coherent volatile inout  int64_t,  int64_t);"
-            "uint64_t atomicAdd(coherent volatile inout uint64_t, uint64_t, int, int, int);"
-            " int64_t atomicAdd(coherent volatile inout  int64_t,  int64_t, int, int, int);"
-            "float16_t atomicAdd(coherent volatile inout float16_t, float16_t);"
-            "float16_t atomicAdd(coherent volatile inout float16_t, float16_t, int, int, int);"
-            "   float atomicAdd(coherent volatile inout float, float);"
-            "   float atomicAdd(coherent volatile inout float, float, int, int, int);"
-            "  double atomicAdd(coherent volatile inout double, double);"
-            "  double atomicAdd(coherent volatile inout double, double, int, int, int);"
+            "uint64_t atomicAdd(coherent volatile nontemporal inout uint64_t, uint64_t);"
+            " int64_t atomicAdd(coherent volatile nontemporal inout  int64_t,  int64_t);"
+            "uint64_t atomicAdd(coherent volatile nontemporal inout uint64_t, uint64_t, int, int, int);"
+            " int64_t atomicAdd(coherent volatile nontemporal inout  int64_t,  int64_t, int, int, int);"
+            "float16_t atomicAdd(coherent volatile nontemporal inout float16_t, float16_t);"
+            "float16_t atomicAdd(coherent volatile nontemporal inout float16_t, float16_t, int, int, int);"
+            "   float atomicAdd(coherent volatile nontemporal inout float, float);"
+            "   float atomicAdd(coherent volatile nontemporal inout float, float, int, int, int);"
+            "  double atomicAdd(coherent volatile nontemporal inout double, double);"
+            "  double atomicAdd(coherent volatile nontemporal inout double, double, int, int, int);"
 
-            "uint64_t atomicExchange(coherent volatile inout uint64_t, uint64_t);"
-            " int64_t atomicExchange(coherent volatile inout  int64_t,  int64_t);"
-            "uint64_t atomicExchange(coherent volatile inout uint64_t, uint64_t, int, int, int);"
-            " int64_t atomicExchange(coherent volatile inout  int64_t,  int64_t, int, int, int);"
-            "float16_t atomicExchange(coherent volatile inout float16_t, float16_t);"
-            "float16_t atomicExchange(coherent volatile inout float16_t, float16_t, int, int, int);"
-            "   float atomicExchange(coherent volatile inout float, float);"
-            "   float atomicExchange(coherent volatile inout float, float, int, int, int);"
-            "  double atomicExchange(coherent volatile inout double, double);"
-            "  double atomicExchange(coherent volatile inout double, double, int, int, int);"
+            "uint64_t atomicExchange(coherent volatile nontemporal inout uint64_t, uint64_t);"
+            " int64_t atomicExchange(coherent volatile nontemporal inout  int64_t,  int64_t);"
+            "uint64_t atomicExchange(coherent volatile nontemporal inout uint64_t, uint64_t, int, int, int);"
+            " int64_t atomicExchange(coherent volatile nontemporal inout  int64_t,  int64_t, int, int, int);"
+            "float16_t atomicExchange(coherent volatile nontemporal inout float16_t, float16_t);"
+            "float16_t atomicExchange(coherent volatile nontemporal inout float16_t, float16_t, int, int, int);"
+            "   float atomicExchange(coherent volatile nontemporal inout float, float);"
+            "   float atomicExchange(coherent volatile nontemporal inout float, float, int, int, int);"
+            "  double atomicExchange(coherent volatile nontemporal inout double, double);"
+            "  double atomicExchange(coherent volatile nontemporal inout double, double, int, int, int);"
 
-            "uint64_t atomicCompSwap(coherent volatile inout uint64_t, uint64_t, uint64_t);"
-            " int64_t atomicCompSwap(coherent volatile inout  int64_t,  int64_t,  int64_t);"
-            "uint64_t atomicCompSwap(coherent volatile inout uint64_t, uint64_t, uint64_t, int, int, int, int, int);"
-            " int64_t atomicCompSwap(coherent volatile inout  int64_t,  int64_t,  int64_t, int, int, int, int, int);"
+            "uint64_t atomicCompSwap(coherent volatile nontemporal inout uint64_t, uint64_t, uint64_t);"
+            " int64_t atomicCompSwap(coherent volatile nontemporal inout  int64_t,  int64_t,  int64_t);"
+            "uint64_t atomicCompSwap(coherent volatile nontemporal inout uint64_t, uint64_t, uint64_t, int, int, int, int, int);"
+            " int64_t atomicCompSwap(coherent volatile nontemporal inout  int64_t,  int64_t,  int64_t, int, int, int, int, int);"
 
-            "uint64_t atomicLoad(coherent volatile in uint64_t, int, int, int);"
-            " int64_t atomicLoad(coherent volatile in  int64_t, int, int, int);"
-            "float16_t atomicLoad(coherent volatile in float16_t, int, int, int);"
-            "   float atomicLoad(coherent volatile in float, int, int, int);"
-            "  double atomicLoad(coherent volatile in double, int, int, int);"
+            "uint64_t atomicLoad(coherent volatile nontemporal in uint64_t, int, int, int);"
+            " int64_t atomicLoad(coherent volatile nontemporal in  int64_t, int, int, int);"
+            "float16_t atomicLoad(coherent volatile nontemporal in float16_t, int, int, int);"
+            "   float atomicLoad(coherent volatile nontemporal in float, int, int, int);"
+            "  double atomicLoad(coherent volatile nontemporal in double, int, int, int);"
 
-            "void atomicStore(coherent volatile out uint64_t, uint64_t, int, int, int);"
-            "void atomicStore(coherent volatile out  int64_t,  int64_t, int, int, int);"
-            "void atomicStore(coherent volatile out float16_t, float16_t, int, int, int);"
-            "void atomicStore(coherent volatile out float, float, int, int, int);"
-            "void atomicStore(coherent volatile out double, double, int, int, int);"
+            "void atomicStore(coherent volatile nontemporal out uint64_t, uint64_t, int, int, int);"
+            "void atomicStore(coherent volatile nontemporal out  int64_t,  int64_t, int, int, int);"
+            "void atomicStore(coherent volatile nontemporal out float16_t, float16_t, int, int, int);"
+            "void atomicStore(coherent volatile nontemporal out float, float, int, int, int);"
+            "void atomicStore(coherent volatile nontemporal out double, double, int, int, int);"
             "\n");
     }
 
     // NV_shader_atomic_fp16_vector
     if (profile != EEsProfile && version >= 430) {
         commonBuiltins.append(
-            "f16vec2 atomicAdd(coherent volatile inout f16vec2, f16vec2);"
-            "f16vec4 atomicAdd(coherent volatile inout f16vec4, f16vec4);"
-            "f16vec2 atomicMin(coherent volatile inout f16vec2, f16vec2);"
-            "f16vec4 atomicMin(coherent volatile inout f16vec4, f16vec4);"
-            "f16vec2 atomicMax(coherent volatile inout f16vec2, f16vec2);"
-            "f16vec4 atomicMax(coherent volatile inout f16vec4, f16vec4);"
-            "f16vec2 atomicExchange(coherent volatile inout f16vec2, f16vec2);"
-            "f16vec4 atomicExchange(coherent volatile inout f16vec4, f16vec4);"
+            "f16vec2 atomicAdd(coherent volatile nontemporal inout f16vec2, f16vec2);"
+            "f16vec4 atomicAdd(coherent volatile nontemporal inout f16vec4, f16vec4);"
+            "f16vec2 atomicMin(coherent volatile nontemporal inout f16vec2, f16vec2);"
+            "f16vec4 atomicMin(coherent volatile nontemporal inout f16vec4, f16vec4);"
+            "f16vec2 atomicMax(coherent volatile nontemporal inout f16vec2, f16vec2);"
+            "f16vec4 atomicMax(coherent volatile nontemporal inout f16vec4, f16vec4);"
+            "f16vec2 atomicExchange(coherent volatile nontemporal inout f16vec2, f16vec2);"
+            "f16vec4 atomicExchange(coherent volatile nontemporal inout f16vec4, f16vec4);"
             "\n");
     }
 
@@ -1865,29 +1865,29 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
     else if (spvVersion.vulkanRelaxed) {
         //
         // Atomic counter functions act as aliases to normal atomic functions.
-        // replace definitions to take 'volatile coherent uint' instead of 'atomic_uint'
+        // replace definitions to take 'volatile coherent nontemporal uint' instead of 'atomic_uint'
         // and map to equivalent non-counter atomic op
         //
         if ((profile != EEsProfile && version >= 300) ||
             (profile == EEsProfile && version >= 310)) {
             commonBuiltins.append(
-                "uint atomicCounterIncrement(volatile coherent uint);"
-                "uint atomicCounterDecrement(volatile coherent uint);"
-                "uint atomicCounter(volatile coherent uint);"
+                "uint atomicCounterIncrement(volatile coherent nontemporal uint);"
+                "uint atomicCounterDecrement(volatile coherent nontemporal uint);"
+                "uint atomicCounter(volatile coherent nontemporal uint);"
 
                 "\n");
         }
         if (profile != EEsProfile && version >= 460) {
             commonBuiltins.append(
-                "uint atomicCounterAdd(volatile coherent uint, uint);"
-                "uint atomicCounterSubtract(volatile coherent uint, uint);"
-                "uint atomicCounterMin(volatile coherent uint, uint);"
-                "uint atomicCounterMax(volatile coherent uint, uint);"
-                "uint atomicCounterAnd(volatile coherent uint, uint);"
-                "uint atomicCounterOr(volatile coherent uint, uint);"
-                "uint atomicCounterXor(volatile coherent uint, uint);"
-                "uint atomicCounterExchange(volatile coherent uint, uint);"
-                "uint atomicCounterCompSwap(volatile coherent uint, uint, uint);"
+                "uint atomicCounterAdd(volatile coherent nontemporal uint, uint);"
+                "uint atomicCounterSubtract(volatile coherent nontemporal uint, uint);"
+                "uint atomicCounterMin(volatile coherent nontemporal uint, uint);"
+                "uint atomicCounterMax(volatile coherent nontemporal uint, uint);"
+                "uint atomicCounterAnd(volatile coherent nontemporal uint, uint);"
+                "uint atomicCounterOr(volatile coherent nontemporal uint, uint);"
+                "uint atomicCounterXor(volatile coherent nontemporal uint, uint);"
+                "uint atomicCounterExchange(volatile coherent nontemporal uint, uint);"
+                "uint atomicCounterCompSwap(volatile coherent nontemporal uint, uint, uint);"
 
                 "\n");
         }
@@ -4535,77 +4535,77 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
         // adding it introduces undesirable tempArgs on the stack. What we want
         // is more like "buf" thought of as a pointer value being an in parameter.
         stageBuiltins[EShLangCompute].append(
-            "void coopMatLoadNV(out fcoopmatNV m, volatile coherent float16_t[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatLoadNV(out fcoopmatNV m, volatile coherent float[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatLoadNV(out fcoopmatNV m, volatile coherent uint8_t[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatLoadNV(out fcoopmatNV m, volatile coherent uint16_t[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatLoadNV(out fcoopmatNV m, volatile coherent uint[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatLoadNV(out fcoopmatNV m, volatile coherent uint64_t[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatLoadNV(out fcoopmatNV m, volatile coherent uvec2[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatLoadNV(out fcoopmatNV m, volatile coherent uvec4[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatLoadNV(out fcoopmatNV m, volatile coherent nontemporal float16_t[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatLoadNV(out fcoopmatNV m, volatile coherent nontemporal float[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatLoadNV(out fcoopmatNV m, volatile coherent nontemporal uint8_t[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatLoadNV(out fcoopmatNV m, volatile coherent nontemporal uint16_t[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatLoadNV(out fcoopmatNV m, volatile coherent nontemporal uint[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatLoadNV(out fcoopmatNV m, volatile coherent nontemporal uint64_t[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatLoadNV(out fcoopmatNV m, volatile coherent nontemporal uvec2[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatLoadNV(out fcoopmatNV m, volatile coherent nontemporal uvec4[] buf, uint element, uint stride, bool colMajor);\n"
 
-            "void coopMatStoreNV(fcoopmatNV m, volatile coherent float16_t[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatStoreNV(fcoopmatNV m, volatile coherent float[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatStoreNV(fcoopmatNV m, volatile coherent float64_t[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatStoreNV(fcoopmatNV m, volatile coherent uint8_t[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatStoreNV(fcoopmatNV m, volatile coherent uint16_t[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatStoreNV(fcoopmatNV m, volatile coherent uint[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatStoreNV(fcoopmatNV m, volatile coherent uint64_t[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatStoreNV(fcoopmatNV m, volatile coherent uvec2[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatStoreNV(fcoopmatNV m, volatile coherent uvec4[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatStoreNV(fcoopmatNV m, volatile coherent nontemporal float16_t[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatStoreNV(fcoopmatNV m, volatile coherent nontemporal float[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatStoreNV(fcoopmatNV m, volatile coherent nontemporal float64_t[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatStoreNV(fcoopmatNV m, volatile coherent nontemporal uint8_t[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatStoreNV(fcoopmatNV m, volatile coherent nontemporal uint16_t[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatStoreNV(fcoopmatNV m, volatile coherent nontemporal uint[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatStoreNV(fcoopmatNV m, volatile coherent nontemporal uint64_t[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatStoreNV(fcoopmatNV m, volatile coherent nontemporal uvec2[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatStoreNV(fcoopmatNV m, volatile coherent nontemporal uvec4[] buf, uint element, uint stride, bool colMajor);\n"
 
             "fcoopmatNV coopMatMulAddNV(fcoopmatNV A, fcoopmatNV B, fcoopmatNV C);\n"
-            "void coopMatLoadNV(out icoopmatNV m, volatile coherent int8_t[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatLoadNV(out icoopmatNV m, volatile coherent int16_t[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatLoadNV(out icoopmatNV m, volatile coherent int[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatLoadNV(out icoopmatNV m, volatile coherent int64_t[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatLoadNV(out icoopmatNV m, volatile coherent ivec2[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatLoadNV(out icoopmatNV m, volatile coherent ivec4[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatLoadNV(out icoopmatNV m, volatile coherent uint8_t[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatLoadNV(out icoopmatNV m, volatile coherent uint16_t[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatLoadNV(out icoopmatNV m, volatile coherent uint[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatLoadNV(out icoopmatNV m, volatile coherent uint64_t[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatLoadNV(out icoopmatNV m, volatile coherent uvec2[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatLoadNV(out icoopmatNV m, volatile coherent uvec4[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatLoadNV(out icoopmatNV m, volatile coherent nontemporal int8_t[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatLoadNV(out icoopmatNV m, volatile coherent nontemporal int16_t[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatLoadNV(out icoopmatNV m, volatile coherent nontemporal int[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatLoadNV(out icoopmatNV m, volatile coherent nontemporal int64_t[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatLoadNV(out icoopmatNV m, volatile coherent nontemporal ivec2[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatLoadNV(out icoopmatNV m, volatile coherent nontemporal ivec4[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatLoadNV(out icoopmatNV m, volatile coherent nontemporal uint8_t[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatLoadNV(out icoopmatNV m, volatile coherent nontemporal uint16_t[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatLoadNV(out icoopmatNV m, volatile coherent nontemporal uint[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatLoadNV(out icoopmatNV m, volatile coherent nontemporal uint64_t[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatLoadNV(out icoopmatNV m, volatile coherent nontemporal uvec2[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatLoadNV(out icoopmatNV m, volatile coherent nontemporal uvec4[] buf, uint element, uint stride, bool colMajor);\n"
 
-            "void coopMatLoadNV(out ucoopmatNV m, volatile coherent int8_t[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatLoadNV(out ucoopmatNV m, volatile coherent int16_t[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatLoadNV(out ucoopmatNV m, volatile coherent int[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatLoadNV(out ucoopmatNV m, volatile coherent int64_t[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatLoadNV(out ucoopmatNV m, volatile coherent ivec2[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatLoadNV(out ucoopmatNV m, volatile coherent ivec4[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatLoadNV(out ucoopmatNV m, volatile coherent uint8_t[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatLoadNV(out ucoopmatNV m, volatile coherent uint16_t[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatLoadNV(out ucoopmatNV m, volatile coherent uint[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatLoadNV(out ucoopmatNV m, volatile coherent uint64_t[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatLoadNV(out ucoopmatNV m, volatile coherent uvec2[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatLoadNV(out ucoopmatNV m, volatile coherent uvec4[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatLoadNV(out ucoopmatNV m, volatile coherent nontemporal int8_t[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatLoadNV(out ucoopmatNV m, volatile coherent nontemporal int16_t[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatLoadNV(out ucoopmatNV m, volatile coherent nontemporal int[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatLoadNV(out ucoopmatNV m, volatile coherent nontemporal int64_t[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatLoadNV(out ucoopmatNV m, volatile coherent nontemporal ivec2[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatLoadNV(out ucoopmatNV m, volatile coherent nontemporal ivec4[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatLoadNV(out ucoopmatNV m, volatile coherent nontemporal uint8_t[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatLoadNV(out ucoopmatNV m, volatile coherent nontemporal uint16_t[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatLoadNV(out ucoopmatNV m, volatile coherent nontemporal uint[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatLoadNV(out ucoopmatNV m, volatile coherent nontemporal uint64_t[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatLoadNV(out ucoopmatNV m, volatile coherent nontemporal uvec2[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatLoadNV(out ucoopmatNV m, volatile coherent nontemporal uvec4[] buf, uint element, uint stride, bool colMajor);\n"
 
-            "void coopMatStoreNV(icoopmatNV m, volatile coherent int8_t[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatStoreNV(icoopmatNV m, volatile coherent int16_t[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatStoreNV(icoopmatNV m, volatile coherent int[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatStoreNV(icoopmatNV m, volatile coherent int64_t[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatStoreNV(icoopmatNV m, volatile coherent ivec2[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatStoreNV(icoopmatNV m, volatile coherent ivec4[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatStoreNV(icoopmatNV m, volatile coherent uint8_t[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatStoreNV(icoopmatNV m, volatile coherent uint16_t[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatStoreNV(icoopmatNV m, volatile coherent uint[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatStoreNV(icoopmatNV m, volatile coherent uint64_t[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatStoreNV(icoopmatNV m, volatile coherent uvec2[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatStoreNV(icoopmatNV m, volatile coherent uvec4[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatStoreNV(icoopmatNV m, volatile coherent nontemporal int8_t[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatStoreNV(icoopmatNV m, volatile coherent nontemporal int16_t[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatStoreNV(icoopmatNV m, volatile coherent nontemporal int[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatStoreNV(icoopmatNV m, volatile coherent nontemporal int64_t[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatStoreNV(icoopmatNV m, volatile coherent nontemporal ivec2[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatStoreNV(icoopmatNV m, volatile coherent nontemporal ivec4[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatStoreNV(icoopmatNV m, volatile coherent nontemporal uint8_t[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatStoreNV(icoopmatNV m, volatile coherent nontemporal uint16_t[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatStoreNV(icoopmatNV m, volatile coherent nontemporal uint[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatStoreNV(icoopmatNV m, volatile coherent nontemporal uint64_t[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatStoreNV(icoopmatNV m, volatile coherent nontemporal uvec2[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatStoreNV(icoopmatNV m, volatile coherent nontemporal uvec4[] buf, uint element, uint stride, bool colMajor);\n"
 
-            "void coopMatStoreNV(ucoopmatNV m, volatile coherent int8_t[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatStoreNV(ucoopmatNV m, volatile coherent int16_t[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatStoreNV(ucoopmatNV m, volatile coherent int[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatStoreNV(ucoopmatNV m, volatile coherent int64_t[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatStoreNV(ucoopmatNV m, volatile coherent ivec2[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatStoreNV(ucoopmatNV m, volatile coherent ivec4[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatStoreNV(ucoopmatNV m, volatile coherent uint8_t[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatStoreNV(ucoopmatNV m, volatile coherent uint16_t[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatStoreNV(ucoopmatNV m, volatile coherent uint[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatStoreNV(ucoopmatNV m, volatile coherent uint64_t[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatStoreNV(ucoopmatNV m, volatile coherent uvec2[] buf, uint element, uint stride, bool colMajor);\n"
-            "void coopMatStoreNV(ucoopmatNV m, volatile coherent uvec4[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatStoreNV(ucoopmatNV m, volatile coherent nontemporal int8_t[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatStoreNV(ucoopmatNV m, volatile coherent nontemporal int16_t[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatStoreNV(ucoopmatNV m, volatile coherent nontemporal int[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatStoreNV(ucoopmatNV m, volatile coherent nontemporal int64_t[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatStoreNV(ucoopmatNV m, volatile coherent nontemporal ivec2[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatStoreNV(ucoopmatNV m, volatile coherent nontemporal ivec4[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatStoreNV(ucoopmatNV m, volatile coherent nontemporal uint8_t[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatStoreNV(ucoopmatNV m, volatile coherent nontemporal uint16_t[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatStoreNV(ucoopmatNV m, volatile coherent nontemporal uint[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatStoreNV(ucoopmatNV m, volatile coherent nontemporal uint64_t[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatStoreNV(ucoopmatNV m, volatile coherent nontemporal uvec2[] buf, uint element, uint stride, bool colMajor);\n"
+            "void coopMatStoreNV(ucoopmatNV m, volatile coherent nontemporal uvec4[] buf, uint element, uint stride, bool colMajor);\n"
 
             "icoopmatNV coopMatMulAddNV(icoopmatNV A, icoopmatNV B, icoopmatNV C);\n"
             "ucoopmatNV coopMatMulAddNV(ucoopmatNV A, ucoopmatNV B, ucoopmatNV C);\n"
@@ -4629,16 +4629,16 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "uint64_t", "u64vec2", "u64vec4",
             };
             for (auto t : allTypes) {
-                cooperativeMatrixFuncs << "void coopMatLoad(out coopmat m, volatile coherent " << t << "[] buf, uint element, uint stride, int matrixLayout);\n";
-                cooperativeMatrixFuncs << "void coopMatStore(coopmat m, volatile coherent " << t << "[] buf, uint element, uint stride, int matrixLayout);\n";
+                cooperativeMatrixFuncs << "void coopMatLoad(out coopmat m, volatile coherent nontemporal " << t << "[] buf, uint element, uint stride, int matrixLayout);\n";
+                cooperativeMatrixFuncs << "void coopMatStore(coopmat m, volatile coherent nontemporal " << t << "[] buf, uint element, uint stride, int matrixLayout);\n";
             }
             // Just use uint8_t for buffer type, we have special matching rules to allow any conversion
-            cooperativeMatrixFuncs << "void coopMatLoadTensorNV(inout coopmat m, volatile coherent uint8_t[] buf, uint element, tensorLayoutNV t);\n";
-            cooperativeMatrixFuncs << "void coopMatLoadTensorNV(inout coopmat m, volatile coherent uint8_t[] buf, uint element, tensorLayoutNV t, tensorViewNV v);\n";
-            cooperativeMatrixFuncs << "void coopMatLoadTensorNV(inout coopmat m, volatile coherent uint8_t[] buf, uint element, tensorLayoutNV t, __function f);\n";
-            cooperativeMatrixFuncs << "void coopMatLoadTensorNV(inout coopmat m, volatile coherent uint8_t[] buf, uint element, tensorLayoutNV t, tensorViewNV v, __function f);\n";
-            cooperativeMatrixFuncs << "void coopMatStoreTensorNV(coopmat m, volatile coherent uint8_t[] buf, uint element, tensorLayoutNV t);\n";
-            cooperativeMatrixFuncs << "void coopMatStoreTensorNV(coopmat m, volatile coherent uint8_t[] buf, uint element, tensorLayoutNV t, tensorViewNV v);\n";
+            cooperativeMatrixFuncs << "void coopMatLoadTensorNV(inout coopmat m, volatile coherent nontemporal uint8_t[] buf, uint element, tensorLayoutNV t);\n";
+            cooperativeMatrixFuncs << "void coopMatLoadTensorNV(inout coopmat m, volatile coherent nontemporal uint8_t[] buf, uint element, tensorLayoutNV t, tensorViewNV v);\n";
+            cooperativeMatrixFuncs << "void coopMatLoadTensorNV(inout coopmat m, volatile coherent nontemporal uint8_t[] buf, uint element, tensorLayoutNV t, __function f);\n";
+            cooperativeMatrixFuncs << "void coopMatLoadTensorNV(inout coopmat m, volatile coherent nontemporal uint8_t[] buf, uint element, tensorLayoutNV t, tensorViewNV v, __function f);\n";
+            cooperativeMatrixFuncs << "void coopMatStoreTensorNV(coopmat m, volatile coherent nontemporal uint8_t[] buf, uint element, tensorLayoutNV t);\n";
+            cooperativeMatrixFuncs << "void coopMatStoreTensorNV(coopmat m, volatile coherent nontemporal uint8_t[] buf, uint element, tensorLayoutNV t, tensorViewNV v);\n";
         }
 
         cooperativeMatrixFuncs <<
@@ -6830,7 +6830,7 @@ void TBuiltIns::addQueryFunctions(TSampler sampler, const TString& typeName, int
         commonBuiltins.append(postfixes[sizeDims]);
     }
     if (sampler.isImage())
-        commonBuiltins.append(" imageSize(readonly writeonly volatile coherent ");
+        commonBuiltins.append(" imageSize(readonly writeonly volatile coherent nontemporal ");
     else
         commonBuiltins.append(" textureSize(");
     commonBuiltins.append(typeName);
@@ -6848,7 +6848,7 @@ void TBuiltIns::addQueryFunctions(TSampler sampler, const TString& typeName, int
     if (profile != EEsProfile && version >= 430 && sampler.isMultiSample()) {
         commonBuiltins.append("int ");
         if (sampler.isImage())
-            commonBuiltins.append("imageSamples(readonly writeonly volatile coherent ");
+            commonBuiltins.append("imageSamples(readonly writeonly volatile coherent nontemporal ");
         else
             commonBuiltins.append("textureSamples(");
         commonBuiltins.append(typeName);
@@ -6936,18 +6936,18 @@ void TBuiltIns::addImageFunctions(TSampler sampler, const TString& typeName, int
     if (profile == EEsProfile)
         commonBuiltins.append("highp ");
     commonBuiltins.append(prefixes[sampler.type]);
-    commonBuiltins.append("vec4 imageLoad(readonly volatile coherent ");
+    commonBuiltins.append("vec4 imageLoad(readonly volatile coherent nontemporal ");
     commonBuiltins.append(imageParams);
     commonBuiltins.append(");\n");
 
-    commonBuiltins.append("void imageStore(writeonly volatile coherent ");
+    commonBuiltins.append("void imageStore(writeonly volatile coherent nontemporal ");
     commonBuiltins.append(imageParams);
     commonBuiltins.append(", ");
     commonBuiltins.append(prefixes[sampler.type]);
     commonBuiltins.append("vec4);\n");
 
     if (! sampler.is1D() && ! sampler.isBuffer() && profile != EEsProfile && version >= 450) {
-        commonBuiltins.append("int sparseImageLoadARB(readonly volatile coherent ");
+        commonBuiltins.append("int sparseImageLoadARB(readonly volatile coherent nontemporal ");
         commonBuiltins.append(imageParams);
         commonBuiltins.append(", out ");
         commonBuiltins.append(prefixes[sampler.type]);
@@ -6971,13 +6971,13 @@ void TBuiltIns::addImageFunctions(TSampler sampler, const TString& typeName, int
             const int numBuiltins = 7;
 
             static const char* atomicFunc[numBuiltins] = {
-                " imageAtomicAdd(volatile coherent ",
-                " imageAtomicMin(volatile coherent ",
-                " imageAtomicMax(volatile coherent ",
-                " imageAtomicAnd(volatile coherent ",
-                " imageAtomicOr(volatile coherent ",
-                " imageAtomicXor(volatile coherent ",
-                " imageAtomicExchange(volatile coherent "
+                " imageAtomicAdd(volatile coherent nontemporal ",
+                " imageAtomicMin(volatile coherent nontemporal ",
+                " imageAtomicMax(volatile coherent nontemporal ",
+                " imageAtomicAnd(volatile coherent nontemporal ",
+                " imageAtomicOr(volatile coherent nontemporal ",
+                " imageAtomicXor(volatile coherent nontemporal ",
+                " imageAtomicExchange(volatile coherent nontemporal "
             };
 
             // Loop twice to add prototypes with/without scope/semantics
@@ -6995,7 +6995,7 @@ void TBuiltIns::addImageFunctions(TSampler sampler, const TString& typeName, int
                 }
 
                 commonBuiltins.append(dataType);
-                commonBuiltins.append(" imageAtomicCompSwap(volatile coherent ");
+                commonBuiltins.append(" imageAtomicCompSwap(volatile coherent nontemporal ");
                 commonBuiltins.append(imageParams);
                 commonBuiltins.append(", ");
                 commonBuiltins.append(dataType);
@@ -7008,11 +7008,11 @@ void TBuiltIns::addImageFunctions(TSampler sampler, const TString& typeName, int
             }
 
             commonBuiltins.append(dataType);
-            commonBuiltins.append(" imageAtomicLoad(volatile coherent ");
+            commonBuiltins.append(" imageAtomicLoad(volatile coherent nontemporal ");
             commonBuiltins.append(imageParams);
             commonBuiltins.append(", int, int, int);\n");
 
-            commonBuiltins.append("void imageAtomicStore(volatile coherent ");
+            commonBuiltins.append("void imageAtomicStore(volatile coherent nontemporal ");
             commonBuiltins.append(imageParams);
             commonBuiltins.append(", ");
             commonBuiltins.append(dataType);
@@ -7023,7 +7023,7 @@ void TBuiltIns::addImageFunctions(TSampler sampler, const TString& typeName, int
             // GL_ARB_ES3_1_compatibility
             // TODO: spec issue: are there restrictions on the kind of layout() that can be used?  what about dropping memory qualifiers?
             if (profile == EEsProfile && version >= 310) {
-                commonBuiltins.append("float imageAtomicExchange(volatile coherent ");
+                commonBuiltins.append("float imageAtomicExchange(volatile coherent nontemporal ");
                 commonBuiltins.append(imageParams);
                 commonBuiltins.append(", float);\n");
             }
@@ -7032,10 +7032,10 @@ void TBuiltIns::addImageFunctions(TSampler sampler, const TString& typeName, int
             if (profile != EEsProfile && version >= 430) {
                 const int numFp16Builtins = 4;
                 const char* atomicFp16Func[numFp16Builtins] = {
-                    " imageAtomicAdd(volatile coherent ",
-                    " imageAtomicMin(volatile coherent ",
-                    " imageAtomicMax(volatile coherent ",
-                    " imageAtomicExchange(volatile coherent "
+                    " imageAtomicAdd(volatile coherent nontemporal ",
+                    " imageAtomicMin(volatile coherent nontemporal ",
+                    " imageAtomicMax(volatile coherent nontemporal ",
+                    " imageAtomicExchange(volatile coherent nontemporal "
                 };
                 const int numFp16DataTypes = 2;
                 const char* atomicFp16DataTypes[numFp16DataTypes] = {
@@ -7056,47 +7056,47 @@ void TBuiltIns::addImageFunctions(TSampler sampler, const TString& typeName, int
             }
 
             if (profile != EEsProfile && version >= 450) {
-                commonBuiltins.append("float imageAtomicAdd(volatile coherent ");
+                commonBuiltins.append("float imageAtomicAdd(volatile coherent nontemporal ");
                 commonBuiltins.append(imageParams);
                 commonBuiltins.append(", float);\n");
 
-                commonBuiltins.append("float imageAtomicAdd(volatile coherent ");
+                commonBuiltins.append("float imageAtomicAdd(volatile coherent nontemporal ");
                 commonBuiltins.append(imageParams);
                 commonBuiltins.append(", float");
                 commonBuiltins.append(", int, int, int);\n");
 
-                commonBuiltins.append("float imageAtomicExchange(volatile coherent ");
+                commonBuiltins.append("float imageAtomicExchange(volatile coherent nontemporal ");
                 commonBuiltins.append(imageParams);
                 commonBuiltins.append(", float);\n");
 
-                commonBuiltins.append("float imageAtomicExchange(volatile coherent ");
+                commonBuiltins.append("float imageAtomicExchange(volatile coherent nontemporal ");
                 commonBuiltins.append(imageParams);
                 commonBuiltins.append(", float");
                 commonBuiltins.append(", int, int, int);\n");
 
-                commonBuiltins.append("float imageAtomicLoad(readonly volatile coherent ");
+                commonBuiltins.append("float imageAtomicLoad(readonly volatile coherent nontemporal ");
                 commonBuiltins.append(imageParams);
                 commonBuiltins.append(", int, int, int);\n");
 
-                commonBuiltins.append("void imageAtomicStore(writeonly volatile coherent ");
+                commonBuiltins.append("void imageAtomicStore(writeonly volatile coherent nontemporal ");
                 commonBuiltins.append(imageParams);
                 commonBuiltins.append(", float");
                 commonBuiltins.append(", int, int, int);\n");
 
-                commonBuiltins.append("float imageAtomicMin(volatile coherent ");
+                commonBuiltins.append("float imageAtomicMin(volatile coherent nontemporal ");
                 commonBuiltins.append(imageParams);
                 commonBuiltins.append(", float);\n");
 
-                commonBuiltins.append("float imageAtomicMin(volatile coherent ");
+                commonBuiltins.append("float imageAtomicMin(volatile coherent nontemporal ");
                 commonBuiltins.append(imageParams);
                 commonBuiltins.append(", float");
                 commonBuiltins.append(", int, int, int);\n");
 
-                commonBuiltins.append("float imageAtomicMax(volatile coherent ");
+                commonBuiltins.append("float imageAtomicMax(volatile coherent nontemporal ");
                 commonBuiltins.append(imageParams);
                 commonBuiltins.append(", float);\n");
 
-                commonBuiltins.append("float imageAtomicMax(volatile coherent ");
+                commonBuiltins.append("float imageAtomicMax(volatile coherent nontemporal ");
                 commonBuiltins.append(imageParams);
                 commonBuiltins.append(", float");
                 commonBuiltins.append(", int, int, int);\n");
@@ -7120,18 +7120,18 @@ void TBuiltIns::addImageFunctions(TSampler sampler, const TString& typeName, int
     imageLodParams.append(", int");
 
     commonBuiltins.append(prefixes[sampler.type]);
-    commonBuiltins.append("vec4 imageLoadLodAMD(readonly volatile coherent ");
+    commonBuiltins.append("vec4 imageLoadLodAMD(readonly volatile coherent nontemporal ");
     commonBuiltins.append(imageLodParams);
     commonBuiltins.append(");\n");
 
-    commonBuiltins.append("void imageStoreLodAMD(writeonly volatile coherent ");
+    commonBuiltins.append("void imageStoreLodAMD(writeonly volatile coherent nontemporal ");
     commonBuiltins.append(imageLodParams);
     commonBuiltins.append(", ");
     commonBuiltins.append(prefixes[sampler.type]);
     commonBuiltins.append("vec4);\n");
 
     if (! sampler.is1D()) {
-        commonBuiltins.append("int sparseImageLoadLodAMD(readonly volatile coherent ");
+        commonBuiltins.append("int sparseImageLoadLodAMD(readonly volatile coherent nontemporal ");
         commonBuiltins.append(imageLodParams);
         commonBuiltins.append(", out ");
         commonBuiltins.append(prefixes[sampler.type]);
