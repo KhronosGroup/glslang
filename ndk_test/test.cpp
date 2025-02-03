@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "SPIRV/GlslangToSpv.h"
+#include "glslang/SPIRV/GlslangToSpv.h"
 
 void android_main(struct android_app* state) {
   int version = glslang::GetSpirvGeneratorVersion();

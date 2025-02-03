@@ -242,8 +242,8 @@ if(WIN32)
     source_group("MachineIndependent\\Preprocessor" REGULAR_EXPRESSION "MachineIndependent/preprocessor/*")
     source_group("HLSL" REGULAR_EXPRESSION "HLSL/*")
     source_group("CInterface" REGULAR_EXPRESSION "CInterface/*")
-    source_group("SPIRV" REGULAR_EXPRESSION "SPIRV/[^/]*")
-    source_group("SPIRV\\CInterface" REGULAR_EXPRESSION "SPIRV/CInterface/*")
+    source_group("SPIRV" REGULAR_EXPRESSION "glslang/SPIRV/[^/]*")
+    source_group("SPIRV\\CInterface" REGULAR_EXPRESSION "glslang/SPIRV/CInterface/*")
 endif()
 
 ################################################################################

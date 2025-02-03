@@ -45,10 +45,10 @@
 
 #include <gtest/gtest.h>
 
-#include "SPIRV/GlslangToSpv.h"
-#include "SPIRV/disassemble.h"
-#include "SPIRV/doc.h"
-#include "SPIRV/SPVRemapper.h"
+#include "glslang/SPIRV/GlslangToSpv.h"
+#include "glslang/SPIRV/disassemble.h"
+#include "glslang/SPIRV/doc.h"
+#include "glslang/SPIRV/SPVRemapper.h"
 #include "glslang/Include/Types.h"
 #include "glslang/Public/ResourceLimits.h"
 #include "glslang/Public/ShaderLang.h"
@@ -378,7 +378,7 @@ public:
 
         glslang::TProgram program;
         program.addShader(&shader);
-        
+
         success &= program.link(controls);
         if (success)
             program.mapIO();
