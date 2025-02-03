@@ -41,8 +41,8 @@
 #include <emscripten.h>
 #endif
 
-#include "../../../SPIRV/GlslangToSpv.h"
-#include "../../../glslang/Public/ShaderLang.h"
+#include "glslang/SPIRV/GlslangToSpv.h"
+#include "glslang/Public/ShaderLang.h"
 
 #ifndef __EMSCRIPTEN__
 #define EMSCRIPTEN_KEEPALIVE

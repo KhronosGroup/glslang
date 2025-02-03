@@ -20,7 +20,7 @@
 #include <tuple>
 
 #include <gmock/gmock.h>
-#include "SPIRV/hex_float.h"
+#include "glslang/SPIRV/hex_float.h"
 
 namespace {
 using ::testing::Eq;
