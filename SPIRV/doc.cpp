@@ -440,6 +440,7 @@ const char* BuiltInString(int builtIn)
 //    case BuiltInInvocationsPerPixelNV:      return "InvocationsPerPixelNV"; // superseded by BuiltInFragInvocationCountEXT
     case BuiltInBaryCoordKHR:                return "BaryCoordKHR";
     case BuiltInBaryCoordNoPerspKHR:         return "BaryCoordNoPerspKHR";
+    case BuiltInClusterIDNV:                 return "ClusterIDNV";
 
     case BuiltInFragSizeEXT:                 return "FragSizeEXT";
     case BuiltInFragInvocationCountEXT:      return "FragInvocationCountEXT";
@@ -1097,6 +1098,8 @@ const char* CapabilityString(int info)
     case CapabilityDotProductInput4x8BitKHR:            return "DotProductInput4x8BitKHR";
     case CapabilityDotProductInput4x8BitPackedKHR:      return "DotProductInput4x8BitPackedKHR";
 
+    case CapabilityRayTracingClusterAccelerationStructureNV:   return "RayTracingClusterAccelerationStructureNV";
+
     default: return "Bad";
     }
 }
@@ -1549,6 +1552,7 @@ const char* OpcodeString(int op)
     case OpRayQueryGetIntersectionObjectToWorldKHR:                           return "OpRayQueryGetIntersectionObjectToWorldKHR";
     case OpRayQueryGetIntersectionWorldToObjectKHR:                           return "OpRayQueryGetIntersectionWorldToObjectKHR";
     case OpRayQueryGetIntersectionTriangleVertexPositionsKHR:                 return "OpRayQueryGetIntersectionTriangleVertexPositionsKHR";
+    case OpRayQueryGetIntersectionClusterIdNV:                                return "OpRayQueryGetIntersectionClusterIdNV";
 
     case OpTypeCooperativeMatrixNV:         return "OpTypeCooperativeMatrixNV";
     case OpCooperativeMatrixLoadNV:         return "OpCooperativeMatrixLoadNV";
@@ -1626,6 +1630,7 @@ const char* OpcodeString(int op)
     case OpHitObjectIsMissNV:                   return "OpHitObjectIsMissNV";
     case OpHitObjectGetShaderBindingTableRecordIndexNV: return "OpHitObjectGetShaderBindingTableRecordIndexNV";
     case OpHitObjectGetShaderRecordBufferHandleNV:   return "OpHitObjectGetShaderRecordBufferHandleNV";
+    case OpHitObjectGetClusterIdNV:             return "OpHitObjectGetClusterIdNV";
 
     case OpFetchMicroTriangleVertexBarycentricNV:       return "OpFetchMicroTriangleVertexBarycentricNV";
     case OpFetchMicroTriangleVertexPositionNV:    return "OpFetchMicroTriangleVertexPositionNV";
@@ -3213,6 +3218,10 @@ void Parameterize()
         InstructionDesc[OpRayQueryGetIntersectionTriangleVertexPositionsKHR].operands.push(OperandId, "'Committed'");
         InstructionDesc[OpRayQueryGetIntersectionTriangleVertexPositionsKHR].setResultAndType(true, true);
 
+        InstructionDesc[OpRayQueryGetIntersectionClusterIdNV].operands.push(OperandId, "'RayQuery'");
+        InstructionDesc[OpRayQueryGetIntersectionClusterIdNV].operands.push(OperandId, "'Committed'");
+        InstructionDesc[OpRayQueryGetIntersectionClusterIdNV].setResultAndType(true, true);
+
         InstructionDesc[OpImageSampleFootprintNV].operands.push(OperandId, "'Sampled Image'");
         InstructionDesc[OpImageSampleFootprintNV].operands.push(OperandId, "'Coordinate'");
         InstructionDesc[OpImageSampleFootprintNV].operands.push(OperandId, "'Granularity'");
@@ -3531,6 +3540,9 @@ void Parameterize()
         InstructionDesc[OpHitObjectTraceRayMotionNV].operands.push(OperandId, "'Time'");
         InstructionDesc[OpHitObjectTraceRayMotionNV].operands.push(OperandId, "'Payload'");
         InstructionDesc[OpHitObjectTraceRayMotionNV].setResultAndType(false, false);
+
+        InstructionDesc[OpHitObjectGetClusterIdNV].operands.push(OperandId, "'HitObject'");
+        InstructionDesc[OpHitObjectGetClusterIdNV].setResultAndType(true, true);
 
         InstructionDesc[OpFetchMicroTriangleVertexBarycentricNV].operands.push(OperandId, "'Acceleration Structure'");
         InstructionDesc[OpFetchMicroTriangleVertexBarycentricNV].operands.push(OperandId, "'Instance ID'");

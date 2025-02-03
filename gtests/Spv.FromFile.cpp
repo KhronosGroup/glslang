@@ -741,6 +741,14 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.nv.dmm-allops.rahit",
         "spv.nv.dmm-allops.mesh",
         "spv.nv.dmm-allops.comp",
+
+        // SPV_NV_cluster_acceleration_structure
+        "spv.nv.cluster-allops.rgen",
+        "spv.nv.cluster-allops.rchit",
+        "spv.nv.cluster-allops.rmiss",
+        "spv.nv.cluster-allops.rahit",
+        "spv.nv.cluster-allops.frag",
+
     })),
     FileNameAsCustomTestSuffix
 );
