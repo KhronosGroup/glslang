@@ -786,6 +786,7 @@ enum BuiltIn {
     BuiltInSMIDNV = 5377,
     BuiltInHitKindFrontFacingMicroTriangleNV = 5405,
     BuiltInHitKindBackFacingMicroTriangleNV = 5406,
+    BuiltInClusterIDNV = 5436,
     BuiltInCullMaskKHR = 6021,
     BuiltInMax = 0x7fffffff,
 };
@@ -1177,6 +1178,7 @@ enum Capability {
     CapabilityCooperativeMatrixTensorAddressingNV = 5433,
     CapabilityCooperativeMatrixBlockLoadsNV = 5434,
     CapabilityCooperativeVectorTrainingNV = 5435,
+    CapabilityRayTracingClusterAccelerationStructureNV = 5437,
     CapabilityTensorAddressingNV = 5439,
     CapabilitySubgroupShuffleINTEL = 5568,
     CapabilitySubgroupBufferBlockIOINTEL = 5569,
@@ -1994,6 +1996,8 @@ enum Op {
     OpTypeAccelerationStructureKHR = 5341,
     OpTypeAccelerationStructureNV = 5341,
     OpExecuteCallableNV = 5344,
+    OpRayQueryGetIntersectionClusterIdNV = 5345,
+    OpHitObjectGetClusterIdNV = 5346,
     OpTypeCooperativeMatrixNV = 5358,
     OpCooperativeMatrixLoadNV = 5359,
     OpCooperativeMatrixStoreNV = 5360,
@@ -2747,6 +2751,7 @@ inline void HasResultAndType(Op opcode, bool *hasResult, bool *hasResultType) {
     case OpHitObjectIsEmptyNV: *hasResult = true; *hasResultType = true; break;
     case OpHitObjectIsHitNV: *hasResult = true; *hasResultType = true; break;
     case OpHitObjectIsMissNV: *hasResult = true; *hasResultType = true; break;
+    case OpHitObjectGetClusterIdNV: *hasResult = true; *hasResultType = true; break;
     case OpReorderThreadWithHitObjectNV: *hasResult = false; *hasResultType = false; break;
     case OpReorderThreadWithHintNV: *hasResult = false; *hasResultType = false; break;
     case OpTypeHitObjectNV: *hasResult = true; *hasResultType = false; break;
@@ -3042,6 +3047,7 @@ inline void HasResultAndType(Op opcode, bool *hasResult, bool *hasResultType) {
     case OpRayQueryGetWorldRayOriginKHR: *hasResult = true; *hasResultType = true; break;
     case OpRayQueryGetIntersectionObjectToWorldKHR: *hasResult = true; *hasResultType = true; break;
     case OpRayQueryGetIntersectionWorldToObjectKHR: *hasResult = true; *hasResultType = true; break;
+    case OpRayQueryGetIntersectionClusterIdNV: *hasResult = true; *hasResultType = true; break;
     case OpAtomicFAddEXT: *hasResult = true; *hasResultType = true; break;
     case OpTypeBufferSurfaceINTEL: *hasResult = true; *hasResultType = false; break;
     case OpTypeStructContinuedINTEL: *hasResult = false; *hasResultType = false; break;

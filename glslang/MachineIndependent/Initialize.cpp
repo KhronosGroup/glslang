@@ -5089,6 +5089,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "mat4x3 rayQueryGetIntersectionObjectToWorldEXT(rayQueryEXT, bool);"
             "mat4x3 rayQueryGetIntersectionWorldToObjectEXT(rayQueryEXT, bool);"
             "void rayQueryGetIntersectionTriangleVertexPositionsEXT(rayQueryEXT, bool, out vec3[3]);"
+            "int rayQueryGetIntersectionClusterIdNV(rayQueryEXT, bool);"
             "\n");
 
         stageBuiltins[EShLangRayGen].append(
@@ -5127,6 +5128,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "float hitObjectGetCurrentTimeNV(hitObjectNV);"
             "uint hitObjectGetShaderBindingTableRecordIndexNV(hitObjectNV);"
             "uvec2 hitObjectGetShaderRecordBufferHandleNV(hitObjectNV);"
+            "int hitObjectGetClusterIdNV(hitObjectNV);"
             "void reorderThreadNV(uint, uint);"
             "void reorderThreadNV(hitObjectNV);"
             "void reorderThreadNV(hitObjectNV, uint, uint);"
@@ -5177,6 +5179,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "float hitObjectGetCurrentTimeNV(hitObjectNV);"
             "uint hitObjectGetShaderBindingTableRecordIndexNV(hitObjectNV);"
             "uvec2 hitObjectGetShaderRecordBufferHandleNV(hitObjectNV);"
+            "int hitObjectGetClusterIdNV(hitObjectNV);"
             "\n");
         stageBuiltins[EShLangMiss].append(
             "void traceNV(accelerationStructureNV,uint,uint,uint,uint,uint,vec3,float,vec3,float,int);"
@@ -5214,6 +5217,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "float hitObjectGetCurrentTimeNV(hitObjectNV);"
             "uint hitObjectGetShaderBindingTableRecordIndexNV(hitObjectNV);"
             "uvec2 hitObjectGetShaderRecordBufferHandleNV(hitObjectNV);"
+            "int hitObjectGetClusterIdNV(hitObjectNV);"
             "\n");
         stageBuiltins[EShLangCallable].append(
             "void executeCallableNV(uint, int);"
@@ -6448,6 +6452,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "const uint gl_HitKindBackFacingTriangleEXT = 255U;"
             "in    uint gl_HitKindFrontFacingMicroTriangleNV;"
             "in    uint gl_HitKindBackFacingMicroTriangleNV;"
+            "const int  gl_ClusterIDNoneNV = -1;"
             "\n";
 
         const char *constRayQueryIntersection =
@@ -6538,6 +6543,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "in    vec3   gl_HitTriangleVertexPositionsEXT[3];"
             "in    vec3   gl_HitMicroTriangleVertexPositionsNV[3];"
             "in    vec2   gl_HitMicroTriangleVertexBarycentricsNV[3];"
+            "in    int    gl_ClusterIDNV;"
             "\n";
 
         const char *missDecls =
@@ -8726,6 +8732,7 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setFunctionExtensions("rayQueryGetWorldRayOriginEXT",                                     1, &E_GL_EXT_ray_query);
             symbolTable.setFunctionExtensions("rayQueryGetWorldRayDirectionEXT",                                  1, &E_GL_EXT_ray_query);
             symbolTable.setFunctionExtensions("rayQueryGetIntersectionTriangleVertexPositionsEXT",                1, &E_GL_EXT_ray_tracing_position_fetch);
+            symbolTable.setFunctionExtensions("rayQueryGetIntersectionClusterIdNV",                               1, &E_GL_NV_cluster_acceleration_structure);
             symbolTable.setVariableExtensions("gl_RayFlagsSkipAABBEXT",                         1, &E_GL_EXT_ray_flags_primitive_culling);
             symbolTable.setVariableExtensions("gl_RayFlagsSkipTrianglesEXT",                    1, &E_GL_EXT_ray_flags_primitive_culling);
             symbolTable.setVariableExtensions("gl_RayFlagsForceOpacityMicromap2StateEXT",                  1, &E_GL_EXT_opacity_micromap);
@@ -9500,6 +9507,7 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setVariableExtensions("gl_HitTriangleVertexPositionsEXT", 1, &E_GL_EXT_ray_tracing_position_fetch);
             symbolTable.setVariableExtensions("gl_HitMicroTriangleVertexPositionsNV", 1, &E_GL_NV_displacement_micromap);
             symbolTable.setVariableExtensions("gl_HitMicroTriangleVertexBarycentricsNV", 1, &E_GL_NV_displacement_micromap);
+            symbolTable.setVariableExtensions("gl_ClusterIDNV", 1, &E_GL_NV_cluster_acceleration_structure);
 
             symbolTable.setVariableExtensions("gl_DeviceIndex", 1, &E_GL_EXT_device_group);
 
@@ -9544,6 +9552,7 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setFunctionExtensions("hitObjectGetCurrentTimeNV", 1, &E_GL_NV_shader_invocation_reorder);
             symbolTable.setFunctionExtensions("hitObjectGetShaderBindingTableRecordIndexNV", 1, &E_GL_NV_shader_invocation_reorder);
             symbolTable.setFunctionExtensions("hitObjectGetShaderRecordBufferHandleNV", 1, &E_GL_NV_shader_invocation_reorder);
+            symbolTable.setFunctionExtensions("hitObjectGetClusterIdNV", 1, &E_GL_NV_cluster_acceleration_structure);
             symbolTable.setFunctionExtensions("reorderThreadNV", 1, &E_GL_NV_shader_invocation_reorder);
             symbolTable.setFunctionExtensions("fetchMicroTriangleVertexPositionNV", 1, &E_GL_NV_displacement_micromap);
             symbolTable.setFunctionExtensions("fetchMicroTriangleVertexBarycentricNV", 1, &E_GL_NV_displacement_micromap);
@@ -9588,6 +9597,7 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             BuiltInVariable("gl_HitMicroTriangleVertexBarycentricsNV", EbvMicroTriangleBaryNV, symbolTable);
             BuiltInVariable("gl_HitKindFrontFacingMicroTriangleNV", EbvHitKindFrontFacingMicroTriangleNV, symbolTable);
             BuiltInVariable("gl_HitKindBackFacingMicroTriangleNV", EbvHitKindBackFacingMicroTriangleNV, symbolTable);
+            BuiltInVariable("gl_ClusterIDNV",            EbvClusterIDNV,         symbolTable);
 
             // gl_HitT variables are aliases of their gl_RayTmax counterparts.
             RetargetVariable("gl_HitTNV",                "gl_RayTmaxNV",        symbolTable);
@@ -10577,6 +10587,7 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.relateToOperator("rayQueryGetIntersectionObjectToWorldEXT",                           EOpRayQueryGetIntersectionObjectToWorld);
             symbolTable.relateToOperator("rayQueryGetIntersectionWorldToObjectEXT",                           EOpRayQueryGetIntersectionWorldToObject);
             symbolTable.relateToOperator("rayQueryGetIntersectionTriangleVertexPositionsEXT",                 EOpRayQueryGetIntersectionTriangleVertexPositionsEXT);
+            symbolTable.relateToOperator("rayQueryGetIntersectionClusterIdNV",                                EOpRayQueryGetIntersectionClusterIdNV);
         }
 
         symbolTable.relateToOperator("interpolateAtCentroid", EOpInterpolateAtCentroid);
@@ -10687,6 +10698,7 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.relateToOperator("hitObjectGetCurrentTimeNV", EOpHitObjectGetCurrentTimeNV);
             symbolTable.relateToOperator("hitObjectGetShaderBindingTableRecordIndexNV", EOpHitObjectGetShaderBindingTableRecordIndexNV);
             symbolTable.relateToOperator("hitObjectGetShaderRecordBufferHandleNV", EOpHitObjectGetShaderRecordBufferHandleNV);
+            symbolTable.relateToOperator("hitObjectGetClusterIdNV", EOpHitObjectGetClusterIdNV);
             symbolTable.relateToOperator("reorderThreadNV", EOpReorderThreadNV);
         }
         break;
