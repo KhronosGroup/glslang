@@ -46,7 +46,7 @@ spv.1.6.nontemporalimage.frag
               13:          10 Load 12(u_image)
               21:     20(ptr) AccessChain 18 19
               22:   15(ivec2) Load 21
-              23:    7(fvec4) ImageRead 13 22 
+              23:    7(fvec4) ImageRead 13 22 Nontemporal 
                               Store 9(out_color) 23
                               Return
                               FunctionEnd
