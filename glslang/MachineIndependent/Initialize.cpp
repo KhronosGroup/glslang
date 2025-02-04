@@ -118,7 +118,7 @@ enum ArgClass {
     ClassFIO    = 1 << 9,  // first argument is inout
     ClassRS     = 1 << 10, // the return is held scalar as the arguments cycle
     ClassNS     = 1 << 11, // no scalar prototype
-    ClassCVN    = 1 << 12, // first argument is 'coherent volatile nontemporal nontemporal'
+    ClassCVN    = 1 << 12, // first argument is 'coherent volatile nontemporal'
     ClassFO     = 1 << 13, // first argument is output
     ClassV3     = 1 << 14, // vec3 only
 };
