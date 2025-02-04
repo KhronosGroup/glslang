@@ -630,7 +630,7 @@ const char* ImageChannelDataTypeString(int type)
     }
 }
 
-const int ImageOperandsCeiling = 14;
+const int ImageOperandsCeiling = 15;
 
 const char* ImageOperandsString(int format)
 {
@@ -649,6 +649,7 @@ const char* ImageOperandsString(int format)
     case ImageOperandsVolatileTexelKHRShift:        return "VolatileTexelKHR";
     case ImageOperandsSignExtendShift:              return "SignExtend";
     case ImageOperandsZeroExtendShift:              return "ZeroExtend";
+    case ImageOperandsNontemporalShift:             return "Nontemporal";
 
     case ImageOperandsCeiling:
     default:
