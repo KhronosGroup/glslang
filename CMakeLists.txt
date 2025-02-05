@@ -1,4 +1,4 @@
-# Copyright (C) 2020-2023 The Khronos Group Inc.
+# Copyright (C) 2020-2025 The Khronos Group Inc.
 #
 # All rights reserved.
 #
@@ -175,12 +175,7 @@ elseif(${CMAKE_CXX_COMPILER_ID} MATCHES "Clang" AND NOT MSVC)
     endif()
 elseif(MSVC)
     if(NOT ENABLE_RTTI)
-        string(FIND "${CMAKE_CXX_FLAGS}" "/GR" MSVC_HAS_GR)
-        if(MSVC_HAS_GR)
-            string(REGEX REPLACE "/GR" "/GR-" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-        else()
-            add_compile_options(/GR-) # Disable RTTI
-        endif()
+        add_compile_options(/GR-) # Disable RTTI
     endif()
     if(ENABLE_EXCEPTIONS)
         add_compile_options(/EHsc) # Enable Exceptions
@@ -224,7 +219,7 @@ function(glslang_set_link_args TARGET)
         set_target_properties(${TARGET} PROPERTIES
                               LINK_FLAGS "-static -static-libgcc -static-libstdc++")
     endif()
-endfunction(glslang_set_link_args)
+endfunction()
 
 # Root directory for build-time generated include files
 set(GLSLANG_GENERATED_INCLUDEDIR "${CMAKE_BINARY_DIR}/include")
@@ -357,7 +352,7 @@ if(GLSLANG_TESTS)
             set_tests_properties(glslang-testsuite PROPERTIES ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:$<JOIN:$<TARGET_RUNTIME_DLL_DIRS:spirv-remap>,\;>")
         endif()
     endif()
-endif(GLSLANG_TESTS)
+endif()
 
 if (GLSLANG_ENABLE_INSTALL)
     file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/glslang-config.cmake.in" [=[
@@ -403,4 +398,4 @@ if (GLSLANG_ENABLE_INSTALL)
         DESTINATION
             "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}"
     )
-endif(GLSLANG_ENABLE_INSTALL)
+endif()
