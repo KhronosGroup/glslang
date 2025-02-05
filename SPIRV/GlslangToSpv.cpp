@@ -1026,6 +1026,30 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
         builder.addCapability(spv::CapabilityRayTracingClusterAccelerationStructureNV);
         builder.addExtension("SPV_NV_cluster_acceleration_structure");
         return spv::BuiltInClusterIDNV;
+    case glslang::EbvHitIsSphereNV:
+        builder.addCapability(spv::CapabilityRayTracingSpheresGeometryNV);
+        builder.addExtension("SPV_NV_linear_swept_spheres");
+        return spv::BuiltInHitIsSphereNV;
+    case glslang::EbvHitIsLSSNV:
+        builder.addCapability(spv::CapabilityRayTracingLinearSweptSpheresGeometryNV);
+        builder.addExtension("SPV_NV_linear_swept_spheres");
+        return spv::BuiltInHitIsLSSNV;
+    case glslang::EbvHitSpherePositionNV:
+        builder.addCapability(spv::CapabilityRayTracingSpheresGeometryNV);
+        builder.addExtension("SPV_NV_linear_swept_spheres");
+        return spv::BuiltInHitSpherePositionNV;
+    case glslang::EbvHitSphereRadiusNV:
+        builder.addCapability(spv::CapabilityRayTracingSpheresGeometryNV);
+        builder.addExtension("SPV_NV_linear_swept_spheres");
+        return spv::BuiltInHitSphereRadiusNV;
+    case glslang::EbvHitLSSPositionsNV:
+        builder.addCapability(spv::CapabilityRayTracingLinearSweptSpheresGeometryNV);
+        builder.addExtension("SPV_NV_linear_swept_spheres");
+        return spv::BuiltInHitLSSPositionsNV;
+    case glslang::EbvHitLSSRadiiNV:
+        builder.addCapability(spv::CapabilityRayTracingLinearSweptSpheresGeometryNV);
+        builder.addExtension("SPV_NV_linear_swept_spheres");
+        return spv::BuiltInHitLSSRadiiNV;
 
     // barycentrics
     case glslang::EbvBaryCoordNV:
@@ -2659,6 +2683,10 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
             case glslang::EOpHitObjectGetShaderBindingTableRecordIndexNV:
             case glslang::EOpHitObjectGetShaderRecordBufferHandleNV:
             case glslang::EOpHitObjectGetClusterIdNV:
+            case glslang::EOpHitObjectGetSpherePositionNV:
+            case glslang::EOpHitObjectGetSphereRadiusNV:
+            case glslang::EOpHitObjectIsSphereHitNV:
+            case glslang::EOpHitObjectIsLSSHitNV:
                 return true;
             default:
                 return false;
@@ -3417,6 +3445,53 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         builder.addExtension(spv::E_SPV_NV_shader_invocation_reorder);
         builder.addCapability(spv::CapabilityShaderInvocationReorderNV);
         break;
+
+    case glslang::EOpHitObjectGetLSSPositionsNV:
+    case glslang::EOpHitObjectGetLSSRadiiNV:
+        builder.addExtension(spv::E_SPV_NV_linear_swept_spheres);
+        builder.addCapability(spv::CapabilityShaderInvocationReorderNV);
+        builder.addCapability(spv::CapabilityRayTracingLinearSweptSpheresGeometryNV);
+        noReturnValue = true;
+        break;
+
+    case glslang::EOpHitObjectGetSpherePositionNV:
+    case glslang::EOpHitObjectGetSphereRadiusNV:
+    case glslang::EOpHitObjectIsSphereHitNV:
+        builder.addExtension(spv::E_SPV_NV_linear_swept_spheres);
+        builder.addCapability(spv::CapabilityShaderInvocationReorderNV);
+        builder.addCapability(spv::CapabilityRayTracingSpheresGeometryNV);
+        break;
+
+    case glslang::EOpHitObjectIsLSSHitNV:
+        builder.addExtension(spv::E_SPV_NV_linear_swept_spheres);
+        builder.addCapability(spv::CapabilityShaderInvocationReorderNV);
+        builder.addCapability(spv::CapabilityRayTracingLinearSweptSpheresGeometryNV);
+        break;
+
+    case glslang::EOpRayQueryGetIntersectionLSSPositionsNV:
+    case glslang::EOpRayQueryGetIntersectionLSSRadiiNV:
+        builder.addExtension(spv::E_SPV_NV_linear_swept_spheres);
+        builder.addCapability(spv::CapabilityRayQueryKHR);
+        builder.addCapability(spv::CapabilityRayTracingLinearSweptSpheresGeometryNV);
+        noReturnValue = true;
+        break;
+
+    case glslang::EOpRayQueryGetIntersectionSpherePositionNV:
+    case glslang::EOpRayQueryGetIntersectionSphereRadiusNV:
+    case glslang::EOpRayQueryIsSphereHitNV:
+        builder.addExtension(spv::E_SPV_NV_linear_swept_spheres);
+        builder.addCapability(spv::CapabilityRayQueryKHR);
+        builder.addCapability(spv::CapabilityRayTracingSpheresGeometryNV);
+        builder.addCapability(spv::CapabilityRayTracingLinearSweptSpheresGeometryNV);
+        break;
+
+    case glslang::EOpRayQueryGetIntersectionLSSHitValueNV:
+    case glslang::EOpRayQueryIsLSSHitNV:
+        builder.addExtension(spv::E_SPV_NV_linear_swept_spheres);
+        builder.addCapability(spv::CapabilityRayQueryKHR);
+        builder.addCapability(spv::CapabilityRayTracingLinearSweptSpheresGeometryNV);
+        break;
+
     case glslang::EOpRayQueryGetIntersectionTriangleVertexPositionsEXT:
         builder.addExtension(spv::E_SPV_KHR_ray_tracing_position_fetch);
         builder.addCapability(spv::CapabilityRayQueryPositionFetchKHR);
@@ -3537,6 +3612,11 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
                 lvalue = true;
             break;
 
+        case glslang::EOpHitObjectGetLSSPositionsNV:
+        case glslang::EOpHitObjectGetLSSRadiiNV:
+            lvalue = true;
+            break;
+
         case glslang::EOpRayQueryInitialize:
         case glslang::EOpRayQueryTerminate:
         case glslang::EOpRayQueryConfirmIntersection:
@@ -3556,6 +3636,11 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         case glslang::EOpRayQueryGetIntersectionObjectToWorld:
         case glslang::EOpRayQueryGetIntersectionWorldToObject:
         case glslang::EOpRayQueryGetIntersectionClusterIdNV:
+        case glslang::EOpRayQueryGetIntersectionSpherePositionNV:
+        case glslang::EOpRayQueryGetIntersectionSphereRadiusNV:
+        case glslang::EOpRayQueryGetIntersectionLSSHitValueNV:
+        case glslang::EOpRayQueryIsSphereHitNV:
+        case glslang::EOpRayQueryIsLSSHitNV:
             if (arg == 0)
                 lvalue = true;
             break;
@@ -3671,6 +3756,8 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
                 lvalue = true;
             break;
         case glslang::EOpRayQueryGetIntersectionTriangleVertexPositionsEXT:
+        case glslang::EOpRayQueryGetIntersectionLSSPositionsNV:
+        case glslang::EOpRayQueryGetIntersectionLSSRadiiNV:
             if (arg == 0 || arg == 2)
                 lvalue = true;
             break;
@@ -3785,7 +3872,14 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
                  glslangOp == glslang::EOpRayQueryGetIntersectionObjectToWorld ||
                  glslangOp == glslang::EOpRayQueryGetIntersectionWorldToObject ||
                  glslangOp == glslang::EOpRayQueryGetIntersectionTriangleVertexPositionsEXT ||
-                 glslangOp == glslang::EOpRayQueryGetIntersectionClusterIdNV
+                 glslangOp == glslang::EOpRayQueryGetIntersectionClusterIdNV ||
+                 glslangOp == glslang::EOpRayQueryGetIntersectionSpherePositionNV ||
+                 glslangOp == glslang::EOpRayQueryGetIntersectionSphereRadiusNV ||
+                 glslangOp == glslang::EOpRayQueryGetIntersectionLSSHitValueNV ||
+                 glslangOp == glslang::EOpRayQueryGetIntersectionLSSPositionsNV ||
+                 glslangOp == glslang::EOpRayQueryGetIntersectionLSSRadiiNV ||
+                 glslangOp == glslang::EOpRayQueryIsLSSHitNV ||
+                 glslangOp == glslang::EOpRayQueryIsSphereHitNV
                     )) {
                 bool cond = glslangOperands[arg]->getAsConstantUnion()->getConstArray()[0].getBConst();
                 operands.push_back(builder.makeIntConstant(cond ? 1 : 0));
@@ -3956,6 +4050,65 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         // store the result to the pointer (out param 'm')
         builder.createStore(result, operands[2]);
         result = 0;
+    } else if (node->getOp() == glslang::EOpRayQueryGetIntersectionLSSPositionsNV) {
+        std::vector<spv::IdImmediate> idImmOps;
+
+        idImmOps.push_back(spv::IdImmediate(true, operands[0])); // q
+        idImmOps.push_back(spv::IdImmediate(true, operands[1])); // committed
+
+        spv::Id typeId = builder.makeArrayType(builder.makeVectorType(builder.makeFloatType(32), 3),
+                                               builder.makeUintConstant(2), 0);
+        // do the op
+
+        spv::Op spvOp = spv::OpRayQueryGetIntersectionLSSPositionsNV;
+
+        spv::Id result = builder.createOp(spvOp, typeId, idImmOps);
+        // store the result to the pointer (out param 'm')
+        builder.createStore(result, operands[2]);
+        result = 0;
+    } else if (node->getOp() == glslang::EOpRayQueryGetIntersectionLSSRadiiNV) {
+        std::vector<spv::IdImmediate> idImmOps;
+
+        idImmOps.push_back(spv::IdImmediate(true, operands[0])); // q
+        idImmOps.push_back(spv::IdImmediate(true, operands[1])); // committed
+
+        spv::Id typeId = builder.makeArrayType(builder.makeFloatType(32),
+                                               builder.makeUintConstant(2), 0);
+        // do the op
+
+        spv::Op spvOp = spv::OpRayQueryGetIntersectionLSSRadiiNV;
+
+        spv::Id result = builder.createOp(spvOp, typeId, idImmOps);
+        // store the result to the pointer (out param 'm')
+        builder.createStore(result, operands[2]);
+        result = 0;
+    } else if (node->getOp() == glslang::EOpHitObjectGetLSSPositionsNV) {
+        std::vector<spv::IdImmediate> idImmOps;
+
+        idImmOps.push_back(spv::IdImmediate(true, operands[0])); // hitObject
+
+        spv::Op spvOp = spv::OpHitObjectGetLSSPositionsNV;
+        spv::Id typeId = builder.makeArrayType(builder.makeVectorType(builder.makeFloatType(32), 3),
+                                               builder.makeUintConstant(2), 0);
+
+        spv::Id result = builder.createOp(spvOp, typeId, idImmOps);
+        // store the result to the pointer (out param 'm')
+        builder.createStore(result, operands[1]);
+        result = 0;
+    } else if (node->getOp() == glslang::EOpHitObjectGetLSSRadiiNV) {
+        std::vector<spv::IdImmediate> idImmOps;
+
+        idImmOps.push_back(spv::IdImmediate(true, operands[0])); // hitObject
+
+        spv::Op spvOp = spv::OpHitObjectGetLSSRadiiNV;
+        spv::Id typeId = builder.makeArrayType(builder.makeFloatType(32),
+                                               builder.makeUintConstant(2), 0);
+
+        spv::Id result = builder.createOp(spvOp, typeId, idImmOps);
+        // store the result to the pointer (out param 'm')
+        builder.createStore(result, operands[1]);
+        result = 0;
+
     } else if (node->getOp() == glslang::EOpCooperativeMatrixMulAdd) {
         uint32_t matrixOperands = 0;
 
@@ -6160,6 +6313,8 @@ void TGlslangToSpvTraverser::translateArguments(const glslang::TIntermAggregate&
                 lvalue = true;
             break;
         case glslang::EOpRayQueryGetIntersectionTriangleVertexPositionsEXT:
+        case glslang::EOpRayQueryGetIntersectionLSSPositionsNV:
+        case glslang::EOpRayQueryGetIntersectionLSSRadiiNV:
             if (i == 2)
                 lvalue = true;
             break;
@@ -7761,6 +7916,22 @@ spv::Id TGlslangToSpvTraverser::createUnaryOperation(glslang::TOperator op, OpDe
         builder.addCapability(spv::CapabilityRayTracingClusterAccelerationStructureNV);
         break;
 
+    case glslang::EOpHitObjectGetSpherePositionNV:
+        unaryOp = spv::OpHitObjectGetSpherePositionNV;
+        break;
+
+    case glslang::EOpHitObjectGetSphereRadiusNV:
+        unaryOp = spv::OpHitObjectGetSphereRadiusNV;
+        break;
+
+    case glslang::EOpHitObjectIsSphereHitNV:
+        unaryOp = spv::OpHitObjectIsSphereHitNV;
+        break;
+
+    case glslang::EOpHitObjectIsLSSHitNV:
+        unaryOp = spv::OpHitObjectIsLSSHitNV;
+        break;
+
     case glslang::EOpFetchMicroTriangleVertexPositionNV:
         unaryOp = spv::OpFetchMicroTriangleVertexPositionNV;
         break;
@@ -9355,6 +9526,26 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
         typeId = builder.makeMatrixType(builder.makeFloatType(32), 4, 3);
         opCode = spv::OpRayQueryGetIntersectionWorldToObjectKHR;
         break;
+    case glslang::EOpRayQueryGetIntersectionSpherePositionNV:
+        typeId = builder.makeVectorType(builder.makeFloatType(32), 3);
+        opCode = spv::OpRayQueryGetIntersectionSpherePositionNV;
+        break;
+    case glslang::EOpRayQueryGetIntersectionSphereRadiusNV:
+        typeId = builder.makeFloatType(32);
+        opCode = spv::OpRayQueryGetIntersectionSphereRadiusNV;
+        break;
+    case glslang::EOpRayQueryGetIntersectionLSSHitValueNV:
+        typeId = builder.makeFloatType(32);
+        opCode = spv::OpRayQueryGetIntersectionLSSHitValueNV;
+        break;
+    case glslang::EOpRayQueryIsSphereHitNV:
+        typeId = builder.makeBoolType();
+        opCode = spv::OpRayQueryIsSphereHitNV;
+        break;
+    case glslang::EOpRayQueryIsLSSHitNV:
+        typeId = builder.makeBoolType();
+        opCode = spv::OpRayQueryIsLSSHitNV;
+        break;
     case glslang::EOpWritePackedPrimitiveIndices4x8NV:
         builder.createNoResultOp(spv::OpWritePackedPrimitiveIndices4x8NV, operands);
         return 0;
@@ -9408,6 +9599,14 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
     case glslang::EOpHitObjectIsHitNV:
         typeId = builder.makeBoolType();
         opCode = spv::OpHitObjectIsHitNV;
+        break;
+    case glslang::EOpHitObjectIsSphereHitNV:
+        typeId = builder.makeBoolType();
+        opCode = spv::OpHitObjectIsSphereHitNV;
+        break;
+    case glslang::EOpHitObjectIsLSSHitNV:
+        typeId = builder.makeBoolType();
+        opCode = spv::OpHitObjectIsLSSHitNV;
         break;
     case glslang::EOpHitObjectGetRayTMinNV:
         typeId = builder.makeFloatType(32);

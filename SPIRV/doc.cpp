@@ -424,6 +424,12 @@ const char* BuiltInString(int builtIn)
     case BuiltInHitMicroTriangleVertexBarycentricsNV: return "HitMicroTriangleVertexBarycentricsNV";
     case BuiltInHitKindFrontFacingMicroTriangleNV: return "HitKindFrontFacingMicroTriangleNV";
     case BuiltInHitKindBackFacingMicroTriangleNV: return "HitKindBackFacingMicroTriangleNV";
+    case BuiltInHitIsSphereNV:               return "HitIsSphereNV";
+    case BuiltInHitIsLSSNV:                  return "HitIsLSSNV";
+    case BuiltInHitSpherePositionNV:         return "HitSpherePositionNV";
+    case BuiltInHitSphereRadiusNV:           return "HitSphereRadiusNV";
+    case BuiltInHitLSSPositionsNV:           return "HitLSSPositionsNV";
+    case BuiltInHitLSSRadiiNV:               return "HitLLSSRadiiNV";
     case BuiltInInstanceCustomIndexKHR:      return "InstanceCustomIndexKHR";
     case BuiltInRayGeometryIndexKHR:         return "RayGeometryIndexKHR";
     case BuiltInObjectToWorldKHR:            return "ObjectToWorldKHR";
@@ -1100,6 +1106,8 @@ const char* CapabilityString(int info)
 
     case CapabilityRayTracingClusterAccelerationStructureNV:   return "RayTracingClusterAccelerationStructureNV";
 
+    case CapabilityRayTracingSpheresGeometryNV:             return "RayTracingSpheresGeometryNV";
+    case CapabilityRayTracingLinearSweptSpheresGeometryNV:  return "RayTracingLinearSweptSpheresGeometryNV";
     default: return "Bad";
     }
 }
@@ -1554,6 +1562,14 @@ const char* OpcodeString(int op)
     case OpRayQueryGetIntersectionTriangleVertexPositionsKHR:                 return "OpRayQueryGetIntersectionTriangleVertexPositionsKHR";
     case OpRayQueryGetIntersectionClusterIdNV:                                return "OpRayQueryGetIntersectionClusterIdNV";
 
+    case OpRayQueryGetIntersectionSpherePositionNV:                           return "OpRayQueryGetIntersectionSpherePositionNV";
+    case OpRayQueryGetIntersectionSphereRadiusNV:                             return "OpRayQueryGetIntersectionSphereRadiusNV";
+    case OpRayQueryGetIntersectionLSSHitValueNV:                              return "OpRayQueryGetIntersectionLSSHitValueNV";
+    case OpRayQueryGetIntersectionLSSPositionsNV:                             return "OpRayQueryGetIntersectionLSSPositionsNV";
+    case OpRayQueryGetIntersectionLSSRadiiNV:                                 return "OpRayQueryGetIntersectionLSSRadiiNV";
+    case OpRayQueryIsSphereHitNV:                                             return "OpRayQueryIsSphereHitNV";
+    case OpRayQueryIsLSSHitNV:                                                return "OpRayQueryIsLSSHitNV";
+
     case OpTypeCooperativeMatrixNV:         return "OpTypeCooperativeMatrixNV";
     case OpCooperativeMatrixLoadNV:         return "OpCooperativeMatrixLoadNV";
     case OpCooperativeMatrixStoreNV:        return "OpCooperativeMatrixStoreNV";
@@ -1631,6 +1647,12 @@ const char* OpcodeString(int op)
     case OpHitObjectGetShaderBindingTableRecordIndexNV: return "OpHitObjectGetShaderBindingTableRecordIndexNV";
     case OpHitObjectGetShaderRecordBufferHandleNV:   return "OpHitObjectGetShaderRecordBufferHandleNV";
     case OpHitObjectGetClusterIdNV:             return "OpHitObjectGetClusterIdNV";
+    case OpHitObjectGetSpherePositionNV:        return "OpHitObjectGetSpherePositionNV";
+    case OpHitObjectGetSphereRadiusNV:          return "OpHitObjectGetSphereRadiusNV";
+    case OpHitObjectGetLSSPositionsNV:          return "OpHitObjectGetLSSPositionsNV";
+    case OpHitObjectGetLSSRadiiNV:              return "OpHitObjectGetLSSRadiiNV";
+    case OpHitObjectIsSphereHitNV:              return "OpHitObjectIsSphereHitNV";
+    case OpHitObjectIsLSSHitNV:                 return "OpHitObjectIsLSSHitNV";
 
     case OpFetchMicroTriangleVertexBarycentricNV:       return "OpFetchMicroTriangleVertexBarycentricNV";
     case OpFetchMicroTriangleVertexPositionNV:    return "OpFetchMicroTriangleVertexPositionNV";
@@ -3221,6 +3243,33 @@ void Parameterize()
         InstructionDesc[OpRayQueryGetIntersectionClusterIdNV].operands.push(OperandId, "'RayQuery'");
         InstructionDesc[OpRayQueryGetIntersectionClusterIdNV].operands.push(OperandId, "'Committed'");
         InstructionDesc[OpRayQueryGetIntersectionClusterIdNV].setResultAndType(true, true);
+        InstructionDesc[OpRayQueryGetIntersectionSpherePositionNV].operands.push(OperandId, "'RayQuery'");
+        InstructionDesc[OpRayQueryGetIntersectionSpherePositionNV].operands.push(OperandId, "'Committed'");
+        InstructionDesc[OpRayQueryGetIntersectionSpherePositionNV].setResultAndType(true, true);
+
+        InstructionDesc[OpRayQueryGetIntersectionSphereRadiusNV].operands.push(OperandId, "'RayQuery'");
+        InstructionDesc[OpRayQueryGetIntersectionSphereRadiusNV].operands.push(OperandId, "'Committed'");
+        InstructionDesc[OpRayQueryGetIntersectionSphereRadiusNV].setResultAndType(true, true);
+
+        InstructionDesc[OpRayQueryGetIntersectionLSSHitValueNV].operands.push(OperandId, "'RayQuery'");
+        InstructionDesc[OpRayQueryGetIntersectionLSSHitValueNV].operands.push(OperandId, "'Committed'");
+        InstructionDesc[OpRayQueryGetIntersectionLSSHitValueNV].setResultAndType(true, true);
+
+        InstructionDesc[OpRayQueryGetIntersectionLSSPositionsNV].operands.push(OperandId, "'RayQuery'");
+        InstructionDesc[OpRayQueryGetIntersectionLSSPositionsNV].operands.push(OperandId, "'Committed'");
+        InstructionDesc[OpRayQueryGetIntersectionLSSPositionsNV].setResultAndType(true, true);
+
+        InstructionDesc[OpRayQueryGetIntersectionLSSRadiiNV].operands.push(OperandId, "'RayQuery'");
+        InstructionDesc[OpRayQueryGetIntersectionLSSRadiiNV].operands.push(OperandId, "'Committed'");
+        InstructionDesc[OpRayQueryGetIntersectionLSSRadiiNV].setResultAndType(true, true);
+
+        InstructionDesc[OpRayQueryIsSphereHitNV].operands.push(OperandId, "'RayQuery'");
+        InstructionDesc[OpRayQueryIsSphereHitNV].operands.push(OperandId, "'Committed'");
+        InstructionDesc[OpRayQueryIsSphereHitNV].setResultAndType(true, true);
+
+        InstructionDesc[OpRayQueryIsLSSHitNV].operands.push(OperandId, "'RayQuery'");
+        InstructionDesc[OpRayQueryIsLSSHitNV].operands.push(OperandId, "'Committed'");
+        InstructionDesc[OpRayQueryIsLSSHitNV].setResultAndType(true, true);
 
         InstructionDesc[OpImageSampleFootprintNV].operands.push(OperandId, "'Sampled Image'");
         InstructionDesc[OpImageSampleFootprintNV].operands.push(OperandId, "'Coordinate'");
@@ -3543,6 +3592,23 @@ void Parameterize()
 
         InstructionDesc[OpHitObjectGetClusterIdNV].operands.push(OperandId, "'HitObject'");
         InstructionDesc[OpHitObjectGetClusterIdNV].setResultAndType(true, true);
+        InstructionDesc[OpHitObjectGetSpherePositionNV].operands.push(OperandId, "'HitObject'");
+        InstructionDesc[OpHitObjectGetSpherePositionNV].setResultAndType(true, true);
+
+        InstructionDesc[OpHitObjectGetSphereRadiusNV].operands.push(OperandId, "'HitObject'");
+        InstructionDesc[OpHitObjectGetSphereRadiusNV].setResultAndType(true, true);
+
+        InstructionDesc[OpHitObjectGetLSSPositionsNV].operands.push(OperandId, "'HitObject'");
+        InstructionDesc[OpHitObjectGetLSSPositionsNV].setResultAndType(true, true);
+
+        InstructionDesc[OpHitObjectGetLSSRadiiNV].operands.push(OperandId, "'HitObject'");
+        InstructionDesc[OpHitObjectGetLSSRadiiNV].setResultAndType(true, true);
+
+        InstructionDesc[OpHitObjectIsSphereHitNV].operands.push(OperandId, "'HitObject'");
+        InstructionDesc[OpHitObjectIsSphereHitNV].setResultAndType(true, true);
+
+        InstructionDesc[OpHitObjectIsLSSHitNV].operands.push(OperandId, "'HitObject'");
+        InstructionDesc[OpHitObjectIsLSSHitNV].setResultAndType(true, true);
 
         InstructionDesc[OpFetchMicroTriangleVertexBarycentricNV].operands.push(OperandId, "'Acceleration Structure'");
         InstructionDesc[OpFetchMicroTriangleVertexBarycentricNV].operands.push(OperandId, "'Instance ID'");

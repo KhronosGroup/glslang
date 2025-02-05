@@ -971,6 +971,21 @@ enum TOperator {
     // GL_NV_cluster_acceleration_structure
     EOpRayQueryGetIntersectionClusterIdNV,
     EOpHitObjectGetClusterIdNV,
+
+    // GL_NV_linear_swept_spheres
+    EOpRayQueryGetIntersectionSpherePositionNV,
+    EOpRayQueryGetIntersectionSphereRadiusNV,
+    EOpRayQueryGetIntersectionLSSHitValueNV,
+    EOpRayQueryGetIntersectionLSSPositionsNV,
+    EOpRayQueryGetIntersectionLSSRadiiNV,
+    EOpRayQueryIsSphereHitNV,
+    EOpRayQueryIsLSSHitNV,
+    EOpHitObjectGetSpherePositionNV,
+    EOpHitObjectGetSphereRadiusNV,
+    EOpHitObjectGetLSSPositionsNV,
+    EOpHitObjectGetLSSRadiiNV,
+    EOpHitObjectIsSphereHitNV,
+    EOpHitObjectIsLSSHitNV,
 };
 
 inline bool IsOpNumericConv(const TOperator op) {

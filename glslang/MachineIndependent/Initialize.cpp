@@ -5090,6 +5090,13 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "mat4x3 rayQueryGetIntersectionWorldToObjectEXT(rayQueryEXT, bool);"
             "void rayQueryGetIntersectionTriangleVertexPositionsEXT(rayQueryEXT, bool, out vec3[3]);"
             "int rayQueryGetIntersectionClusterIdNV(rayQueryEXT, bool);"
+            "vec3 rayQueryGetIntersectionSpherePositionNV(rayQueryEXT, bool);"
+            "float rayQueryGetIntersectionSphereRadiusNV(rayQueryEXT, bool);"
+            "float rayQueryGetIntersectionLSSHitValueNV(rayQueryEXT, bool);"
+            "void rayQueryGetIntersectionLSSPositionsNV(rayQueryEXT, bool, out vec3[2]);"
+            "void rayQueryGetIntersectionLSSRadiiNV(rayQueryEXT, bool, out float[2]);"
+            "bool rayQueryIsSphereHitNV(rayQueryEXT, bool);"
+            "bool rayQueryIsLSSHitNV(rayQueryEXT, bool);"
             "\n");
 
         stageBuiltins[EShLangRayGen].append(
@@ -5134,6 +5141,12 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "void reorderThreadNV(hitObjectNV, uint, uint);"
             "vec3 fetchMicroTriangleVertexPositionNV(accelerationStructureEXT, int, int, int, ivec2);"
             "vec2 fetchMicroTriangleVertexBarycentricNV(accelerationStructureEXT, int, int, int, ivec2);"
+            "vec3 hitObjectGetSpherePositionNV(hitObjectNV);"
+            "float hitObjectGetSphereRadiusNV(hitObjectNV);"
+            "void hitObjectGetLSSPositionsNV(hitObjectNV, out vec3[2]);"
+            "void hitObjectGetLSSRadiiNV(hitObjectNV, out float[2]);"
+            "bool hitObjectIsSphereHitNV(hitObjectNV);"
+            "bool hitObjectIsLSSHitNV(hitObjectNV);"
             "\n");
         stageBuiltins[EShLangIntersect].append(
             "bool reportIntersectionNV(float, uint);"
@@ -5180,6 +5193,12 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "uint hitObjectGetShaderBindingTableRecordIndexNV(hitObjectNV);"
             "uvec2 hitObjectGetShaderRecordBufferHandleNV(hitObjectNV);"
             "int hitObjectGetClusterIdNV(hitObjectNV);"
+            "vec3 hitObjectGetSpherePositionNV(hitObjectNV);"
+            "float hitObjectGetSphereRadiusNV(hitObjectNV);"
+            "void hitObjectGetLSSPositionsNV(hitObjectNV, out vec3[2]);"
+            "void hitObjectGetLSSRadiiNV(hitObjectNV, out float[2]);"
+            "bool hitObjectIsSphereHitNV(hitObjectNV);"
+            "bool hitObjectIsLSSHitNV(hitObjectNV);"
             "\n");
         stageBuiltins[EShLangMiss].append(
             "void traceNV(accelerationStructureNV,uint,uint,uint,uint,uint,vec3,float,vec3,float,int);"
@@ -5218,6 +5237,12 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "uint hitObjectGetShaderBindingTableRecordIndexNV(hitObjectNV);"
             "uvec2 hitObjectGetShaderRecordBufferHandleNV(hitObjectNV);"
             "int hitObjectGetClusterIdNV(hitObjectNV);"
+            "vec3 hitObjectGetSpherePositionNV(hitObjectNV);"
+            "float hitObjectGetSphereRadiusNV(hitObjectNV);"
+            "void hitObjectGetLSSPositionsNV(hitObjectNV, out vec3[2]);"
+            "void hitObjectGetLSSRadiiNV(hitObjectNV, out float[2]);"
+            "bool hitObjectIsSphereHitNV(hitObjectNV);"
+            "bool hitObjectIsLSSHitNV(hitObjectNV);"
             "\n");
         stageBuiltins[EShLangCallable].append(
             "void executeCallableNV(uint, int);"
@@ -6446,6 +6471,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "const uint gl_RayFlagsCullNoOpaqueNV = 128U;"
             "const uint gl_RayFlagsCullNoOpaqueEXT = 128U;"
             "const uint gl_RayFlagsSkipTrianglesEXT = 256U;"
+            "const uint gl_RayFlagsSkipBuiltinPrimitivesNV = 256U;"
             "const uint gl_RayFlagsSkipAABBEXT = 512U;"
             "const uint gl_RayFlagsForceOpacityMicromap2StateEXT = 1024U;"
             "const uint gl_HitKindFrontFacingTriangleEXT = 254U;"
@@ -6544,6 +6570,12 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "in    vec3   gl_HitMicroTriangleVertexPositionsNV[3];"
             "in    vec2   gl_HitMicroTriangleVertexBarycentricsNV[3];"
             "in    int    gl_ClusterIDNV;"
+            "in    bool   gl_HitIsSphereNV;"
+            "in    bool   gl_HitIsLSSNV;"
+            "in    vec3   gl_HitSpherePositionNV;"
+            "in    float  gl_HitSphereRadiusNV;"
+            "in    vec3   gl_HitLSSPositionsNV[2];"
+            "in    float  gl_HitLSSRadiiNV[2];"
             "\n";
 
         const char *missDecls =
@@ -8733,6 +8765,13 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setFunctionExtensions("rayQueryGetWorldRayDirectionEXT",                                  1, &E_GL_EXT_ray_query);
             symbolTable.setFunctionExtensions("rayQueryGetIntersectionTriangleVertexPositionsEXT",                1, &E_GL_EXT_ray_tracing_position_fetch);
             symbolTable.setFunctionExtensions("rayQueryGetIntersectionClusterIdNV",                               1, &E_GL_NV_cluster_acceleration_structure);
+            symbolTable.setFunctionExtensions("rayQueryGetIntersectionSpherePositionNV",                          1, &E_GL_NV_linear_swept_spheres);
+            symbolTable.setFunctionExtensions("rayQueryGetIntersectionSphereRadiusNV",                            1, &E_GL_NV_linear_swept_spheres);
+            symbolTable.setFunctionExtensions("rayQueryGetIntersectionLSSHitValueNV",                             1, &E_GL_NV_linear_swept_spheres);
+            symbolTable.setFunctionExtensions("rayQueryGetIntersectionLSSPositionsNV",                            1, &E_GL_NV_linear_swept_spheres);
+            symbolTable.setFunctionExtensions("rayQueryGetIntersectionLSSRadiiNV",                                1, &E_GL_NV_linear_swept_spheres);
+            symbolTable.setFunctionExtensions("rayQueryIsSphereHitNV",                                            1, &E_GL_NV_linear_swept_spheres);
+            symbolTable.setFunctionExtensions("rayQueryIsLSSHitNV",                                               1, &E_GL_NV_linear_swept_spheres);
             symbolTable.setVariableExtensions("gl_RayFlagsSkipAABBEXT",                         1, &E_GL_EXT_ray_flags_primitive_culling);
             symbolTable.setVariableExtensions("gl_RayFlagsSkipTrianglesEXT",                    1, &E_GL_EXT_ray_flags_primitive_culling);
             symbolTable.setVariableExtensions("gl_RayFlagsForceOpacityMicromap2StateEXT",                  1, &E_GL_EXT_opacity_micromap);
@@ -9508,6 +9547,12 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setVariableExtensions("gl_HitMicroTriangleVertexPositionsNV", 1, &E_GL_NV_displacement_micromap);
             symbolTable.setVariableExtensions("gl_HitMicroTriangleVertexBarycentricsNV", 1, &E_GL_NV_displacement_micromap);
             symbolTable.setVariableExtensions("gl_ClusterIDNV", 1, &E_GL_NV_cluster_acceleration_structure);
+            symbolTable.setVariableExtensions("gl_HitKindSphereNV", 1, &E_GL_NV_linear_swept_spheres);
+            symbolTable.setVariableExtensions("gl_HitKindLSSNV", 1, &E_GL_NV_linear_swept_spheres);
+            symbolTable.setVariableExtensions("gl_HitSpherePositionNV", 1, &E_GL_NV_linear_swept_spheres);
+            symbolTable.setVariableExtensions("gl_HitSphereRadiusNV", 1, &E_GL_NV_linear_swept_spheres);
+            symbolTable.setVariableExtensions("gl_HitLSSPositionNV", 1, &E_GL_NV_linear_swept_spheres);
+            symbolTable.setVariableExtensions("gl_HitLSSRadiiNV", 1, &E_GL_NV_linear_swept_spheres);
 
             symbolTable.setVariableExtensions("gl_DeviceIndex", 1, &E_GL_EXT_device_group);
 
@@ -9556,6 +9601,12 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setFunctionExtensions("reorderThreadNV", 1, &E_GL_NV_shader_invocation_reorder);
             symbolTable.setFunctionExtensions("fetchMicroTriangleVertexPositionNV", 1, &E_GL_NV_displacement_micromap);
             symbolTable.setFunctionExtensions("fetchMicroTriangleVertexBarycentricNV", 1, &E_GL_NV_displacement_micromap);
+            symbolTable.setFunctionExtensions("hitObjectGetSpherePositionNV", 1, &E_GL_NV_linear_swept_spheres);
+            symbolTable.setFunctionExtensions("hitObjectGetSphereRadiusNV", 1, &E_GL_NV_linear_swept_spheres);
+            symbolTable.setFunctionExtensions("hitObjectGetLSSPositionsNV", 1, &E_GL_NV_linear_swept_spheres);
+            symbolTable.setFunctionExtensions("hitObjectGetLSSRadiiNV", 1, &E_GL_NV_linear_swept_spheres);
+            symbolTable.setFunctionExtensions("hitObjectIsSphereHitNV", 1, &E_GL_NV_linear_swept_spheres);
+            symbolTable.setFunctionExtensions("hitObjectIsLSSHitNV", 1, &E_GL_NV_linear_swept_spheres);
 
 
             BuiltInVariable("gl_LaunchIDNV",             EbvLaunchId,           symbolTable);
@@ -9598,6 +9649,12 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             BuiltInVariable("gl_HitKindFrontFacingMicroTriangleNV", EbvHitKindFrontFacingMicroTriangleNV, symbolTable);
             BuiltInVariable("gl_HitKindBackFacingMicroTriangleNV", EbvHitKindBackFacingMicroTriangleNV, symbolTable);
             BuiltInVariable("gl_ClusterIDNV",            EbvClusterIDNV,         symbolTable);
+            BuiltInVariable("gl_HitIsSphereNV", EbvHitIsSphereNV, symbolTable);
+            BuiltInVariable("gl_HitIsLSSNV", EbvHitIsLSSNV, symbolTable);
+            BuiltInVariable("gl_HitSpherePositionNV", EbvHitSpherePositionNV, symbolTable);
+            BuiltInVariable("gl_HitSphereRadiusNV", EbvHitSphereRadiusNV, symbolTable);
+            BuiltInVariable("gl_HitLSSPositionsNV", EbvHitLSSPositionsNV, symbolTable);
+            BuiltInVariable("gl_HitLSSRadiiNV", EbvHitLSSRadiiNV, symbolTable);
 
             // gl_HitT variables are aliases of their gl_RayTmax counterparts.
             RetargetVariable("gl_HitTNV",                "gl_RayTmaxNV",        symbolTable);
@@ -10588,6 +10645,13 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.relateToOperator("rayQueryGetIntersectionWorldToObjectEXT",                           EOpRayQueryGetIntersectionWorldToObject);
             symbolTable.relateToOperator("rayQueryGetIntersectionTriangleVertexPositionsEXT",                 EOpRayQueryGetIntersectionTriangleVertexPositionsEXT);
             symbolTable.relateToOperator("rayQueryGetIntersectionClusterIdNV",                                EOpRayQueryGetIntersectionClusterIdNV);
+            symbolTable.relateToOperator("rayQueryGetIntersectionSpherePositionNV",                           EOpRayQueryGetIntersectionSpherePositionNV);
+            symbolTable.relateToOperator("rayQueryGetIntersectionSphereRadiusNV",                             EOpRayQueryGetIntersectionSphereRadiusNV);
+            symbolTable.relateToOperator("rayQueryGetIntersectionLSSHitValueNV",                              EOpRayQueryGetIntersectionLSSHitValueNV);
+            symbolTable.relateToOperator("rayQueryGetIntersectionLSSPositionsNV",                             EOpRayQueryGetIntersectionLSSPositionsNV);
+            symbolTable.relateToOperator("rayQueryGetIntersectionLSSRadiiNV",                                 EOpRayQueryGetIntersectionLSSRadiiNV);
+            symbolTable.relateToOperator("rayQueryIsSphereHitNV",                                             EOpRayQueryIsSphereHitNV);
+            symbolTable.relateToOperator("rayQueryIsLSSHitNV",                                                EOpRayQueryIsLSSHitNV);
         }
 
         symbolTable.relateToOperator("interpolateAtCentroid", EOpInterpolateAtCentroid);
@@ -10700,6 +10764,12 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.relateToOperator("hitObjectGetShaderRecordBufferHandleNV", EOpHitObjectGetShaderRecordBufferHandleNV);
             symbolTable.relateToOperator("hitObjectGetClusterIdNV", EOpHitObjectGetClusterIdNV);
             symbolTable.relateToOperator("reorderThreadNV", EOpReorderThreadNV);
+            symbolTable.relateToOperator("hitObjectGetSpherePositionNV", EOpHitObjectGetSpherePositionNV);
+            symbolTable.relateToOperator("hitObjectGetSphereRadiusNV", EOpHitObjectGetSphereRadiusNV);
+            symbolTable.relateToOperator("hitObjectGetLSSPositionsNV", EOpHitObjectGetLSSPositionsNV);
+            symbolTable.relateToOperator("hitObjectGetLSSRadiiNV", EOpHitObjectGetLSSRadiiNV);
+            symbolTable.relateToOperator("hitObjectIsSphereHitNV", EOpHitObjectIsSphereHitNV);
+            symbolTable.relateToOperator("hitObjectIsLSSHitNV", EOpHitObjectIsLSSHitNV);
         }
         break;
     case EShLangIntersect:

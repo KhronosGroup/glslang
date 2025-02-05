@@ -300,6 +300,13 @@ enum TBuiltInVariable {
     EbvHitKindFrontFacingMicroTriangleNV,
     EbvHitKindBackFacingMicroTriangleNV,
 
+    EbvHitIsSphereNV,
+    EbvHitIsLSSNV,
+    EbvHitSpherePositionNV,
+    EbvHitSphereRadiusNV,
+    EbvHitLSSPositionsNV,
+    EbvHitLSSRadiiNV,
+
     //GL_EXT_mesh_shader
     EbvPrimitivePointIndicesEXT,
     EbvPrimitiveLineIndicesEXT,
@@ -535,6 +542,13 @@ __inline const char* GetBuiltInVariableString(TBuiltInVariable v)
 
     case EbvHitKindFrontFacingMicroTriangleNV: return "HitKindFrontFacingMicroTriangleNV";
     case EbvHitKindBackFacingMicroTriangleNV:  return "HitKindBackFacingMicroTriangleNV";
+
+    case EbvHitIsSphereNV:              return "HitIsSphereNV";
+    case EbvHitIsLSSNV:                 return "HitIsLSSNV";
+    case EbvHitSpherePositionNV:        return "HitSpherePositionNV";
+    case EbvHitSphereRadiusNV:          return "HitSphereRadiusNV";
+    case EbvHitLSSPositionsNV:          return "HitSpherePositionsNV";
+    case EbvHitLSSRadiiNV:              return "HitLSSRadiiNV";
 
     default:                      return "unknown built-in variable";
     }
