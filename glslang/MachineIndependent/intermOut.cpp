@@ -944,6 +944,13 @@ bool TOutputTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node
     case EOpRayQueryGetIntersectionWorldToObject:                          out.debug << "rayQueryGetIntersectionWorldToObjectEXT"; break;
     case EOpRayQueryGetIntersectionTriangleVertexPositionsEXT:             out.debug << "rayQueryGetIntersectionTriangleVertexPositionsEXT"; break;
     case EOpRayQueryGetIntersectionClusterIdNV:                            out.debug << "rayQueryGetIntersectionClusterIdNV"; break;
+    case EOpRayQueryGetIntersectionSpherePositionNV:                       out.debug << "rayQueryGetIntersectionSpherePositionNV"; break;
+    case EOpRayQueryGetIntersectionSphereRadiusNV:                         out.debug << "rayQueryGetIntersectionSphereRadiusNV"; break;
+    case EOpRayQueryGetIntersectionLSSHitValueNV:                          out.debug << "rayQueryGetIntersectionLSSHitValueNV"; break;
+    case EOpRayQueryGetIntersectionLSSPositionsNV:                         out.debug << "rayQueryGetIntersectionLSSPositionsNV"; break;
+    case EOpRayQueryGetIntersectionLSSRadiiNV:                             out.debug << "rayQueryGetIntersectionLSSRadiiNV"; break;
+    case EOpRayQueryIsSphereHitNV:                                         out.debug << "rayQueryIsSphereHitNV"; break;
+    case EOpRayQueryIsLSSHitNV:                                            out.debug << "rayQueryIsLSSHitNV"; break;
 
     case EOpCooperativeMatrixLoad:  out.debug << "Load cooperative matrix KHR"; break;
     case EOpCooperativeMatrixStore:  out.debug << "Store cooperative matrix KHR"; break;
@@ -1001,6 +1008,12 @@ bool TOutputTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node
     case EOpReorderThreadNV: out.debug << "ReorderThreadNV"; break;
     case EOpFetchMicroTriangleVertexPositionNV: out.debug << "MicroTriangleVertexPositionNV"; break;
     case EOpFetchMicroTriangleVertexBarycentricNV: out.debug << "MicroTriangleVertexBarycentricNV"; break;
+    case EOpHitObjectGetSpherePositionNV: out.debug << "HitObjectGetSpherePositionNV"; break;
+    case EOpHitObjectGetSphereRadiusNV:   out.debug << "HitObjectGetSphereRadiusNV"; break;
+    case EOpHitObjectGetLSSPositionsNV:   out.debug << "HitObjectGetLSSPositionsNV"; break;
+    case EOpHitObjectGetLSSRadiiNV:       out.debug << "HitObjectGetLSSRadiiNV"; break;
+    case EOpHitObjectIsSphereHitNV:       out.debug << "HitObjectIsSphereHitNV"; break;
+    case EOpHitObjectIsLSSHitNV:          out.debug << "HitObjectIsLSSHitNV"; break;
 
     case EOpSpirvInst: out.debug << "spirv_instruction"; break;
     case EOpStencilAttachmentReadEXT: out.debug << "stencilAttachmentReadEXT"; break;

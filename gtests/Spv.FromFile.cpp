@@ -750,6 +750,13 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.nv.cluster-allops.rahit",
         "spv.nv.cluster-allops.frag",
 
+        // SPV_NV_linear_swept_spheres
+
+        "spv.nv.lss-allops.rgen",
+        "spv.nv.lss-allops.rchit",
+        "spv.nv.lss-allops.rmiss",
+        "spv.nv.lss-allops.frag",
+
     })),
     FileNameAsCustomTestSuffix
 );
