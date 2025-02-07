@@ -146,7 +146,7 @@ extern int yylex(YYSTYPE*, TParseContext&);
 %token <lex> UTEXTURE2D UTEXTURE3D UTEXTURECUBE UTEXTURE2DARRAY
 
 %token <lex> ATTRIBUTE VARYING
-%token <lex> BFLOAT16_T FLOAT16_T FLOAT32_T DOUBLE FLOAT64_T
+%token <lex> FLOATE5M2_T FLOATE4M3_T BFLOAT16_T FLOAT16_T FLOAT32_T DOUBLE FLOAT64_T
 %token <lex> INT64_T UINT64_T INT32_T UINT32_T INT16_T UINT16_T INT8_T UINT8_T
 %token <lex> I64VEC2 I64VEC3 I64VEC4
 %token <lex> U64VEC2 U64VEC3 U64VEC4
@@ -158,6 +158,8 @@ extern int yylex(YYSTYPE*, TParseContext&);
 %token <lex> U8VEC2  U8VEC3  U8VEC4
 %token <lex> DVEC2 DVEC3 DVEC4 DMAT2 DMAT3 DMAT4
 %token <lex> BF16VEC2 BF16VEC3 BF16VEC4
+%token <lex> FE5M2VEC2 FE5M2VEC3 FE5M2VEC4
+%token <lex> FE4M3VEC2 FE4M3VEC3 FE4M3VEC4
 %token <lex> F16VEC2 F16VEC3 F16VEC4 F16MAT2 F16MAT3 F16MAT4
 %token <lex> F32VEC2 F32VEC3 F32VEC4 F32MAT2 F32MAT3 F32MAT4
 %token <lex> F64VEC2 F64VEC3 F64VEC4 F64MAT2 F64MAT3 F64MAT4
@@ -1943,6 +1945,16 @@ type_specifier_nonarray
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtBFloat16;
     }
+    | FLOATE5M2_T {
+        parseContext.floate5m2ScalarVectorCheck($1.loc, "floate5m2_t", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloatE5M2;
+    }
+    | FLOATE4M3_T {
+        parseContext.floate4m3ScalarVectorCheck($1.loc, "floate4m3_t", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloatE4M3;
+    }
     | FLOAT16_T {
         parseContext.float16ScalarVectorCheck($1.loc, "float16_t", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
@@ -2038,6 +2050,42 @@ type_specifier_nonarray
         parseContext.bfloat16ScalarVectorCheck($1.loc, "half float vector", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtBFloat16;
+        $$.setVector(4);
+    }
+    | FE5M2VEC2 {
+        parseContext.floate5m2ScalarVectorCheck($1.loc, "fe5m2 vector", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloatE5M2;
+        $$.setVector(2);
+    }
+    | FE5M2VEC3 {
+        parseContext.floate5m2ScalarVectorCheck($1.loc, "fe5m2 vector", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloatE5M2;
+        $$.setVector(3);
+    }
+    | FE5M2VEC4 {
+        parseContext.floate5m2ScalarVectorCheck($1.loc, "fe5m2 vector", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloatE5M2;
+        $$.setVector(4);
+    }
+    | FE4M3VEC2 {
+        parseContext.floate4m3ScalarVectorCheck($1.loc, "fe4m3 vector", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloatE4M3;
+        $$.setVector(2);
+    }
+    | FE4M3VEC3 {
+        parseContext.floate4m3ScalarVectorCheck($1.loc, "fe4m3 vector", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloatE4M3;
+        $$.setVector(3);
+    }
+    | FE4M3VEC4 {
+        parseContext.floate4m3ScalarVectorCheck($1.loc, "fe4m3 vector", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloatE4M3;
         $$.setVector(4);
     }
     | F16VEC2 {

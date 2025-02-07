@@ -209,6 +209,8 @@ public:
     Id makeUintType(int width) { return makeIntegerType(width, false); }
     Id makeFloatType(int width);
     Id makeBFloat16Type();
+    Id makeFloatE5M2Type();
+    Id makeFloatE4M3Type();
     Id makeStructType(const std::vector<Id>& members, const char* name, bool const compilerGenerated = true);
     Id makeStructResultType(Id type0, Id type1);
     Id makeVectorType(Id component, int size);
@@ -414,6 +416,8 @@ public:
     Id makeDoubleConstant(double d, bool specConstant = false);
     Id makeFloat16Constant(float f16, bool specConstant = false);
     Id makeBFloat16Constant(float bf16, bool specConstant = false);
+    Id makeFloatE5M2Constant(float fe5m2, bool specConstant = false);
+    Id makeFloatE4M3Constant(float fe4m3, bool specConstant = false);
     Id makeFpConstant(Id type, double d, bool specConstant = false);
 
     Id importNonSemanticShaderDebugInfoInstructions();

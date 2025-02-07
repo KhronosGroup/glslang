@@ -2386,6 +2386,8 @@ int TIntermediate::getBaseAlignmentScalar(const TType& type, int& size)
     case EbtDouble:  size = 8; return 8;
     case EbtFloat16: size = 2; return 2;
     case EbtBFloat16: size = 2; return 2;
+    case EbtFloatE5M2:
+    case EbtFloatE4M3:
     case EbtInt8:
     case EbtUint8:   size = 1; return 1;
     case EbtInt16:

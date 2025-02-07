@@ -344,6 +344,8 @@ const char* DecorationString(int decoration)
     case (int)Decoration::AliasedPointerEXT:       return "DecorationAliasedPointerEXT";
 
     case (int)Decoration::HitObjectShaderRecordBufferNV:  return "DecorationHitObjectShaderRecordBufferNV";
+
+    case (int)Decoration::SaturatedToLargestFloat8NormalConversionEXT: return "DecorationSaturatedToLargestFloat8NormalConversionEXT";
     }
 }
 
@@ -1126,6 +1128,9 @@ const char* CapabilityString(int info)
     case (int)Capability::BFloat16TypeKHR:                     return "CapabilityBFloat16TypeKHR";
     case (int)Capability::BFloat16DotProductKHR:               return "CapabilityBFloat16DotProductKHR";
     case (int)Capability::BFloat16CooperativeMatrixKHR:        return "CapabilityBFloat16CooperativeMatrixKHR";
+
+    case (int)Capability::Float8EXT:                           return "CapabilityFloat8EXT";
+    case (int)Capability::Float8CooperativeMatrixEXT:          return "CapabilityFloat8CooperativeMatrixEXT";
 
     default: return "Bad";
     }

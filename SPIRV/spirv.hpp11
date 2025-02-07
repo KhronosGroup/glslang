@@ -547,6 +547,7 @@ enum class Decoration : unsigned {
     MaxByteOffset = 45,
     AlignmentId = 46,
     MaxByteOffsetId = 47,
+    SaturatedToLargestFloat8NormalConversionEXT = 4216,
     NoSignedWrap = 4469,
     NoUnsignedWrap = 4470,
     WeightTextureQCOM = 4487,
@@ -1070,6 +1071,8 @@ enum class Capability : unsigned {
     TileImageDepthReadAccessEXT = 4167,
     TileImageStencilReadAccessEXT = 4168,
     CooperativeMatrixLayoutsARM = 4201,
+    Float8EXT = 4212,
+    Float8CooperativeMatrixEXT = 4213,
     FragmentShadingRateKHR = 4422,
     SubgroupBallotKHR = 4423,
     DrawParameters = 4427,
@@ -1543,6 +1546,8 @@ enum class RawAccessChainOperandsMask : unsigned {
 
 enum class FPEncoding : unsigned {
     BFloat16KHR = 0,
+    Float8E4M3EXT = 4214,
+    Float8E5M2EXT = 4215,
     Max = 0x7fffffff,
 };
 
@@ -3596,6 +3601,7 @@ inline const char* DecorationToString(Decoration value) {
     case Decoration::MaxByteOffset: return "MaxByteOffset";
     case Decoration::AlignmentId: return "AlignmentId";
     case Decoration::MaxByteOffsetId: return "MaxByteOffsetId";
+    case Decoration::SaturatedToLargestFloat8NormalConversionEXT: return "SaturatedToLargestFloat8NormalConversionEXT";
     case Decoration::NoSignedWrap: return "NoSignedWrap";
     case Decoration::NoUnsignedWrap: return "NoUnsignedWrap";
     case Decoration::WeightTextureQCOM: return "WeightTextureQCOM";
@@ -3939,6 +3945,8 @@ inline const char* CapabilityToString(Capability value) {
     case Capability::TileImageDepthReadAccessEXT: return "TileImageDepthReadAccessEXT";
     case Capability::TileImageStencilReadAccessEXT: return "TileImageStencilReadAccessEXT";
     case Capability::CooperativeMatrixLayoutsARM: return "CooperativeMatrixLayoutsARM";
+    case Capability::Float8EXT: return "Float8EXT";
+    case Capability::Float8CooperativeMatrixEXT: return "Float8CooperativeMatrixEXT";
     case Capability::FragmentShadingRateKHR: return "FragmentShadingRateKHR";
     case Capability::SubgroupBallotKHR: return "SubgroupBallotKHR";
     case Capability::DrawParameters: return "DrawParameters";
@@ -4277,6 +4285,8 @@ inline const char* NamedMaximumNumberOfRegistersToString(NamedMaximumNumberOfReg
 inline const char* FPEncodingToString(FPEncoding value) {
     switch (value) {
     case FPEncoding::BFloat16KHR: return "BFloat16KHR";
+    case FPEncoding::Float8E4M3EXT: return "Float8E4M3EXT";
+    case FPEncoding::Float8E5M2EXT: return "Float8E5M2EXT";
     default: return "Unknown";
     }
 }

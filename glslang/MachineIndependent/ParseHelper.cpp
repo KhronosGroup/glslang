@@ -1527,6 +1527,11 @@ TIntermTyped* TParseContext::handleFunctionCall(const TSourceLoc& loc, TFunction
                 else
                     result->setType(result->getAsAggregate()->getSequence()[0]->getAsTyped()->getType());
             }
+
+            if (fnCandidate->getBuiltInOp() == EOpConstructSaturated) {
+                // result type is taken from the first parameter
+                result->setType(result->getAsAggregate()->getSequence()[0]->getAsTyped()->getType());
+            }
         }
     }
 
@@ -1873,6 +1878,7 @@ void TParseContext::computeBuiltinPrecisions(TIntermTyped& node, const TFunction
         case EOpDebugPrintf:
         case EOpCooperativeMatrixPerElementOpNV:
         case EOpCooperativeMatrixReduceNV:
+        case EOpConstructSaturated:
             numArgs = 0;
             break;
         default:
@@ -3148,6 +3154,32 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
         break;
     }
 
+    case EOpConstructSaturated:
+    {
+        auto &sequence = callNode.getAsAggregate()->getSequence();
+        if (sequence.size() != 2) {
+            error(loc, "requires exactly two parameters", "", "");
+        }
+        auto &op0Type = sequence[0]->getAsTyped()->getType();
+        auto &op1Type = sequence[1]->getAsTyped()->getType();
+        if (op0Type.getBasicType() != EbtFloatE5M2 && op0Type.getBasicType() != EbtFloatE4M3) {
+            error(loc, "first parameter must have floate5m2 or floate4m3 basic type", "", "");
+        }
+        if (op1Type.getBasicType() == EbtFloatE5M2 || op1Type.getBasicType() == EbtFloatE4M3) {
+            error(loc, "second parameter must not have floate5m2 or floate4m3 basic type", "", "");
+        }
+
+        if (!(op0Type.isScalar() || op0Type.isVector() || op0Type.isCoopMatKHR())) {
+            error(loc, "first parameter must be scalar, vector, or cooperative matrix", "", "");
+        }
+        if (!(op1Type.isScalar() || op1Type.isVector() || op1Type.isCoopMatKHR())) {
+            error(loc, "second parameter must be scalar, vector, or cooperative matrix", "", "");
+        }
+        if (!(op0Type.sameElementShape(op1Type) || op0Type.sameCoopMatShape(op1Type))) {
+            error(loc, "types must match other than scalar type and coopmat Use", "", "");
+        }
+        break;
+    }
     default:
         break;
     }
@@ -7214,6 +7246,8 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
         case EbtDouble:
         case EbtFloat16:
         case EbtBFloat16:
+        case EbtFloatE5M2:
+        case EbtFloatE4M3:
             break;
         default:
             error(loc, "cannot be applied to this type", "constant_id", "");
@@ -7494,6 +7528,12 @@ const TFunction* TParseContext::findFunction(const TSourceLoc& loc, const TFunct
     // checking in handleCoopMat2FunctionCall.
     if (call.getName() == "coopMatPerElementNV") {
         TSymbol* symbol = symbolTable.find("coopMatPerElementNV(", &builtIn);
+        if (symbol)
+            return symbol->getAsFunction();
+    }
+
+    if (call.getName() == "saturatedConvertEXT") {
+        TSymbol* symbol = symbolTable.find("saturatedConvertEXT(", &builtIn);
         if (symbol)
             return symbol->getAsFunction();
     }
@@ -7955,6 +7995,8 @@ void TParseContext::typeParametersCheck(const TSourceLoc& loc, const TPublicType
         case EbtFloat:
         case EbtFloat16:
         case EbtBFloat16:
+        case EbtFloatE5M2:
+        case EbtFloatE4M3:
         case EbtInt:
         case EbtInt8:
         case EbtInt16:
@@ -8468,6 +8510,10 @@ TIntermNode* TParseContext::declareVariable(const TSourceLoc& loc, TString& iden
     if (type.getBasicType() == EbtBFloat16 &&
         (type.getQualifier().storage == EvqVaryingIn || type.getQualifier().storage == EvqVaryingOut))
         error(loc, "qualifier", "bfloat16 types not allowed as input/output", "");
+
+    if ((type.getBasicType() == EbtFloatE5M2 || type.getBasicType() == EbtFloatE4M3) &&
+        (type.getQualifier().storage == EvqVaryingIn || type.getQualifier().storage == EvqVaryingOut))
+        error(loc, "qualifier", "fp8 types not allowed as input/output", "");
 
     if (type.getQualifier().storage == EvqtaskPayloadSharedEXT)
         intermediate.addTaskPayloadEXTCount();
@@ -9143,6 +9189,20 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
     case EOpConstructBF16Vec4:
     case EOpConstructBFloat16:
         basicOp = EOpConstructBFloat16;
+        break;
+
+    case EOpConstructFloatE5M2Vec2:
+    case EOpConstructFloatE5M2Vec3:
+    case EOpConstructFloatE5M2Vec4:
+    case EOpConstructFloatE5M2:
+        basicOp = EOpConstructFloatE5M2;
+        break;
+
+    case EOpConstructFloatE4M3Vec2:
+    case EOpConstructFloatE4M3Vec3:
+    case EOpConstructFloatE4M3Vec4:
+    case EOpConstructFloatE4M3:
+        basicOp = EOpConstructFloatE4M3;
         break;
 
     case EOpConstructI8Vec2:
