@@ -39,6 +39,10 @@ jobs:
         run: cmake --build build
       - name: Install
         run: cmake --install build --prefix build/install
+      - name: Test find_package support
+        run: |
+          cmake -S Test/find_package -B build/find_package && \
+          cmake --build build/find_package
       - name: Test
         run: ctest --output-on-failure --test-dir build
       - name: Check known validation failure list
@@ -74,6 +78,10 @@ jobs:
         run: cmake --build build
       - name: Install
         run: cmake --install build --prefix build/install
+      - name: Test find_package support
+        run: |
+          cmake -S Test/find_package -B build/find_package && \
+          cmake --build build/find_package
       - name: Test
         run: ctest --output-on-failure --test-dir build
 
@@ -145,6 +153,10 @@ jobs:
         run: cmake --build build
       - name: Install
         run: cmake --install build --prefix build/install
+      - name: Test find_package support
+        run: |
+          cmake -S Test/find_package -B build/find_package && \
+          cmake --build build/find_package
       - name: Test
         run: ctest --output-on-failure --test-dir build
 
@@ -166,6 +178,10 @@ jobs:
           CXX: ${{matrix.compiler.cxx}}
       - run: cmake --build build
       - run: cmake --install build --prefix build/install
+      - name: Test find_package support
+        run: |
+          cmake -S Test/find_package -B build/find_package && \
+          cmake --build build/find_package
       - run: ctest --output-on-failure --test-dir build
 
   macos-shared:
@@ -186,6 +202,10 @@ jobs:
           CXX: ${{matrix.compiler.cxx}}
       - run: cmake --build build
       - run: cmake --install build --prefix build/install
+      - name: Test find_package support
+        run: |
+          cmake -S Test/find_package -B build/find_package && \
+          cmake --build build/find_package
       - run: ctest --output-on-failure --test-dir build
 
   windows:
@@ -208,6 +228,10 @@ jobs:
         run: |
           cmake -S. -Bbuild -G "Visual Studio 16 2019" -A x64 -DCMAKE_INSTALL_PREFIX="$PWD/build/install" -DBUILD_WERROR=ON -D GLSLANG_TESTS=ON
           cmake --build build --config ${{matrix.cmake_build_type}} --target install
+      - name: Test find_package support
+        run: |
+          cmake -S Test/find_package -B build/find_package
+          cmake --build build/find_package
       - name: Test
         run: ctest -C ${{matrix.cmake_build_type}} --output-on-failure --test-dir build
 
@@ -231,6 +255,10 @@ jobs:
         run: |
           cmake -S. -Bbuild -G "Visual Studio 16 2019" -A x64 -DCMAKE_INSTALL_PREFIX="$PWD/build/install" -DBUILD_WERROR=ON -D GLSLANG_TESTS=ON -DBUILD_SHARED_LIBS=ON
           cmake --build build --config ${{matrix.cmake_build_type}} --target install
+      - name: Test find_package support
+        run: |
+          cmake -S Test/find_package -B build/find_package
+          cmake --build build/find_package
       - name: Test
         run: ctest -C ${{matrix.cmake_build_type}} --output-on-failure --test-dir build
 
