@@ -128,7 +128,9 @@ if(GLSLANG_ENABLE_INSTALL)
         install(TARGETS SPVRemapper EXPORT glslang-targets)
     endif()
 
-    install(TARGETS SPIRV EXPORT glslang-targets)
+    if (NOT BUILD_SHARED_LIBS)
+        install(TARGETS SPIRV EXPORT glslang-targets)
+    endif()
 
     install(FILES ${PUBLIC_HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/glslang/SPIRV/)
 endif()
