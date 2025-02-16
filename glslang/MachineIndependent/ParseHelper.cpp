@@ -1517,7 +1517,7 @@ TIntermTyped* TParseContext::handleFunctionCall(const TSourceLoc& loc, TFunction
                !result->getAsTyped()->getType().isParameterized()) {
                 if (auto unaryNode = result->getAsUnaryNode())
                     result->setType(unaryNode->getOperand()->getAsTyped()->getType());
-                else 
+                else
                     result->setType(result->getAsAggregate()->getSequence()[0]->getAsTyped()->getType());
             }
         }
@@ -1573,7 +1573,7 @@ void TParseContext::handleCoopMat2FunctionCall(const TSourceLoc& loc, const TFun
                         error(loc, "coordinate parameters must be uint32_t", param->getAsSymbolNode()->getMangledName().c_str(), "");
                     }
                 }
-                
+
                 // error checking reduce function has matching parameters
                 if (fnCandidate->getBuiltInOp() == EOpCooperativeMatrixReduceNV) {
                     const TFunction* combineOp = symbolTable.find(param->getAsSymbolNode()->getMangledName())->getAsFunction();
@@ -7059,6 +7059,15 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
             error(loc, "can only be used with a block", "push_constant", "");
         if (type.isArray())
             error(loc, "Push constants blocks can't be an array", "push_constant", "");
+    }
+
+    if (type.getBasicType() == EbtReference) {
+        if (qualifier.isPipeInput())
+            error(loc, "can not contain any structs with buffer_reference", "in",
+                  "If you want to interface shader stages with a buffer_reference cast to a uint64 or uvec2 instead.");
+        if (qualifier.isPipeOutput())
+            error(loc, "can not contain any structs with buffer_reference", "out",
+                  "If you want to interface shader stages with a buffer_reference cast to a uint64 or uvec2 instead.");
     }
 
     if (qualifier.hasBufferReference() && type.getBasicType() != EbtBlock)
