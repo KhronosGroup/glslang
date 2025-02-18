@@ -7063,10 +7063,10 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
 
     if (type.getBasicType() == EbtReference) {
         if (qualifier.isPipeInput())
-            error(loc, "can not contain any structs with buffer_reference", "in",
+            error(loc, "cannot contain any structs with buffer_reference.", "in",
                   "If you want to interface shader stages with a buffer_reference cast to a uint64 or uvec2 instead.");
         if (qualifier.isPipeOutput())
-            error(loc, "can not contain any structs with buffer_reference", "out",
+            error(loc, "cannot contain any structs with buffer_reference.", "out",
                   "If you want to interface shader stages with a buffer_reference cast to a uint64 or uvec2 instead.");
     }
 
@@ -7079,7 +7079,8 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
     // input attachment
     if (type.isSubpass()) {
         if (extensionTurnedOn(E_GL_EXT_shader_tile_image))
-	    error(loc, "can not be used with GL_EXT_shader_tile_image enabled", type.getSampler().getString().c_str(), "");
+            error(loc, "cannot be used with GL_EXT_shader_tile_image enabled", type.getSampler().getString().c_str(),
+                  "");
         if (! qualifier.hasAttachment())
             error(loc, "requires an input_attachment_index layout qualifier", "subpass", "");
     } else {
@@ -10320,7 +10321,7 @@ void TParseContext::updateStandaloneQualifierDefaults(const TSourceLoc& loc, con
 
     if (publicType.shaderQualifiers.layoutPrimitiveCulling) {
         if (publicType.qualifier.storage != EvqTemporary)
-            error(loc, "layout qualifier can not have storage qualifiers", "primitive_culling","", "");
+            error(loc, "layout qualifier cannot have storage qualifiers", "primitive_culling", "", "");
         else {
             intermediate.setLayoutPrimitiveCulling();
         }
