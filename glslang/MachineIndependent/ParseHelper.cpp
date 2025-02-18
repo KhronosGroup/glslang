@@ -1517,7 +1517,7 @@ TIntermTyped* TParseContext::handleFunctionCall(const TSourceLoc& loc, TFunction
                !result->getAsTyped()->getType().isParameterized()) {
                 if (auto unaryNode = result->getAsUnaryNode())
                     result->setType(unaryNode->getOperand()->getAsTyped()->getType());
-                else 
+                else
                     result->setType(result->getAsAggregate()->getSequence()[0]->getAsTyped()->getType());
             }
         }
@@ -1573,7 +1573,7 @@ void TParseContext::handleCoopMat2FunctionCall(const TSourceLoc& loc, const TFun
                         error(loc, "coordinate parameters must be uint32_t", param->getAsSymbolNode()->getMangledName().c_str(), "");
                     }
                 }
-                
+
                 // error checking reduce function has matching parameters
                 if (fnCandidate->getBuiltInOp() == EOpCooperativeMatrixReduceNV) {
                     const TFunction* combineOp = symbolTable.find(param->getAsSymbolNode()->getMangledName())->getAsFunction();
@@ -7061,6 +7061,15 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
             error(loc, "Push constants blocks can't be an array", "push_constant", "");
     }
 
+    if (type.getBasicType() == EbtReference) {
+        if (qualifier.isPipeInput())
+            error(loc, "cannot contain any structs with buffer_reference.", "in",
+                  "If you want to interface shader stages with a buffer_reference cast to a uint64 or uvec2 instead.");
+        if (qualifier.isPipeOutput())
+            error(loc, "cannot contain any structs with buffer_reference.", "out",
+                  "If you want to interface shader stages with a buffer_reference cast to a uint64 or uvec2 instead.");
+    }
+
     if (qualifier.hasBufferReference() && type.getBasicType() != EbtBlock)
         error(loc, "can only be used with a block", "buffer_reference", "");
 
@@ -7070,7 +7079,8 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
     // input attachment
     if (type.isSubpass()) {
         if (extensionTurnedOn(E_GL_EXT_shader_tile_image))
-	    error(loc, "can not be used with GL_EXT_shader_tile_image enabled", type.getSampler().getString().c_str(), "");
+            error(loc, "cannot be used with GL_EXT_shader_tile_image enabled", type.getSampler().getString().c_str(),
+                  "");
         if (! qualifier.hasAttachment())
             error(loc, "requires an input_attachment_index layout qualifier", "subpass", "");
     } else {
@@ -10311,7 +10321,7 @@ void TParseContext::updateStandaloneQualifierDefaults(const TSourceLoc& loc, con
 
     if (publicType.shaderQualifiers.layoutPrimitiveCulling) {
         if (publicType.qualifier.storage != EvqTemporary)
-            error(loc, "layout qualifier can not have storage qualifiers", "primitive_culling","", "");
+            error(loc, "layout qualifier cannot have storage qualifiers", "primitive_culling", "", "");
         else {
             intermediate.setLayoutPrimitiveCulling();
         }
