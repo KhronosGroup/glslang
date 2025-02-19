@@ -118,14 +118,14 @@ private:
     unsigned char* mem;           // beginning of our allocation (pts to header)
     TAllocation* prevAlloc;       // prior allocation in the chain
 
-    static inline constexpr unsigned char guardBlockBeginVal = 0xfb;
-    static inline constexpr unsigned char guardBlockEndVal = 0xfe;
-    static inline constexpr unsigned char userDataFill = 0xcd;
+    static constexpr unsigned char guardBlockBeginVal = 0xfb;
+    static constexpr unsigned char guardBlockEndVal = 0xfe;
+    static constexpr unsigned char userDataFill = 0xcd;
 
 #   ifdef GUARD_BLOCKS
-    static inline constexpr size_t guardBlockSize = 16;
+    static constexpr size_t guardBlockSize = 16;
 #   else
-    static inline constexpr size_t guardBlockSize = 0;
+    static constexpr size_t guardBlockSize = 0;
 #   endif
 
 #   ifdef GUARD_BLOCKS

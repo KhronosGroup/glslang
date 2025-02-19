@@ -30,7 +30,7 @@
 # LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
-cmake_minimum_required(VERSION 3.22.1)
+cmake_minimum_required(VERSION 3.10)
 project(glslang)
 
 set(GLSLANG_TESTS_DEFAULT ON) # Can be turned off, below, based on environment.
