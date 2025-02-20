@@ -346,7 +346,8 @@ void TSymbolTableLevel::setFunctionExtensions(const char* name, int num, const c
 // Should only be used for a version/profile that actually needs the extension(s).
 void TSymbolTableLevel::setSingleFunctionExtensions(const char* name, int num, const char* const extensions[])
 {
-    if (auto candidate = level.find(name); candidate != level.end()) {
+    auto candidate = level.find(name);
+    if (candidate != level.end()) {
         candidate->second->setExtensions(num, extensions);
     }
 }
