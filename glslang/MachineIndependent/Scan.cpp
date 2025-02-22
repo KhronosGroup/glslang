@@ -1110,10 +1110,11 @@ int TScanContext::tokenizeIdentifier()
     case NONTEMPORAL:
         if (parseContext.symbolTable.atBuiltInLevel())
             return keyword;
-        if (!parseContext.intermediate.usingVulkanMemoryModel())
-            parseContext.warn(loc, "Nontemporal without the Vulkan Memory Model is ignored", tokenText, "");
-        if (parseContext.extensionTurnedOn(E_GL_EXT_nontemporal_keyword))
+        if (parseContext.extensionTurnedOn(E_GL_EXT_nontemporal_keyword)) {
+            if (!parseContext.intermediate.usingVulkanMemoryModel())
+                parseContext.warn(loc, "Nontemporal without the Vulkan Memory Model is ignored", tokenText, "");
             return keyword;
+        }
         return identifierOrType();
     case PATCH:
         if (parseContext.symbolTable.atBuiltInLevel() ||
