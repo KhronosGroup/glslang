@@ -56,7 +56,6 @@
 #include <memory>
 #include <vector>
 #include <set>
-#include <optional>
 
 namespace spv {
 
@@ -231,8 +230,8 @@ public:
     // Returns true if the source location is actually updated.
     // Note we still need the builder to insert the line marker instruction. This is just a tracker.
     bool updateDebugSourceLocation(int line, int column, spv::Id fileId) {
-        if (currentSourceLoc && currentSourceLoc->line == line && currentSourceLoc->column == column &&
-            currentSourceLoc->fileId == fileId) {
+        if (currentSourceLoc.line == line && currentSourceLoc.column == column &&
+            currentSourceLoc.fileId == fileId) {
             return false;
         }
 
@@ -243,7 +242,7 @@ public:
     // Note we still need the builder to insert the debug scope instruction. This is just a tracker.
     bool updateDebugScope(spv::Id scopeId) {
         assert(scopeId);
-        if (currentDebugScope && *currentDebugScope == scopeId) {
+        if (currentDebugScope == scopeId) {
             return false;
         }
 
@@ -343,10 +342,10 @@ protected:
     Function& parent;
 
     // Track source location of the last source location marker instruction.
-    std::optional<DebugSourceLocation> currentSourceLoc;
+    DebugSourceLocation currentSourceLoc;
 
     // Track scope of the last debug scope instruction.
-    std::optional<spv::Id> currentDebugScope;
+    spv::Id currentDebugScope;
 
     // track whether this block is known to be uncreachable (not necessarily
     // true for all unreachable blocks, but should be set at least
