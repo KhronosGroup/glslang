@@ -152,6 +152,8 @@ jobs:
 
     windows:
         runs-on: ${{matrix.os.genus}}
+        env:
+            CMAKE_GENERATOR: "Ninja Multi-Config"
         permissions:
             contents: write
         strategy:
@@ -160,20 +162,21 @@ jobs:
                 os: [{genus: windows-2019, family: windows}]
                 cmake_build_type: [Debug, Release]
         steps:
+            - uses: ilammy/msvc-dev-cmd@v1
             - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
             - uses: lukka/get-cmake@56d043d188c3612951d8755da8f4b709ec951ad6 # v3.31.6
             - uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38 # v5.4.0
               with:
                   python-version: '3.7'
             - run: python update_glslang_sources.py
+            - name: Configure
+              run: cmake -S. -B build -D BUILD_WERROR=ON -D GLSLANG_TESTS=ON
             - name: Build
-              run: |
-                  cmake -S. -Bbuild -G "Visual Studio 16 2019" -A x64 -DCMAKE_INSTALL_PREFIX="$PWD/build/install"
-                  cmake --build build --config ${{matrix.cmake_build_type}} --target install
+              run: cmake --build build --config ${{matrix.cmake_build_type}}
+            - name: Install
+              run: cmake --install build --prefix build/install --config ${{matrix.cmake_build_type}}
             - name: Test
-              run: |
-                  cd build
-                  ctest -C ${{matrix.cmake_build_type}} --output-on-failure
+              run: ctest -C ${{matrix.cmake_build_type}} --output-on-failure --test-dir build
             - name: Zip
               if: ${{ matrix.cmake_build_type == 'Debug' }}
               env:
