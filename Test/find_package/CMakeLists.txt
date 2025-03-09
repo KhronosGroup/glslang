@@ -84,3 +84,46 @@ if (target_type STREQUAL STATIC_LIBRARY)
         COMMAND glslang::spirv-remap --help
     )
 endif()
+
+# Ensure glslang.pc was installed
+find_file(glslang_PC glslang.pc PATH_SUFFIXES lib/pkgconfig)
+
+# NOTE: Windows cannot ship a single reliable glslang.pc
+#
+# pkg-config simply doesn't have a way to handle binaries having
+# different names based on the configuration. While CMake configuration files
+# do support multi-config.
+# https://github.com/microsoft/vcpkg/discussions/37570
+#
+# IE: glslangd.lib vs glslang.lib
+#
+# The debug binaries have a different name on Windows.
+#
+# CMAKE_DEBUG_POSTFIX has been part of the codebase since 2016 changing it WILL break someone.
+# https://github.com/KhronosGroup/glslang/issues/310
+if (WIN32)
+    if (EXISTS ${glslang_PC})
+        message(FATAL_ERROR "glslang.pc invalid on Windows")
+    endif()
+
+    return()
+endif()
+
+# Use CMake itself to verify the pc file.
+if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.31")
+    cmake_pkg_config(EXTRACT ${glslang_PC} REQUIRED STRICTNESS "STRICT")
+
+    # Ensure glslang.pc matches up with cmake packaging
+    if (NOT (CMAKE_PKG_CONFIG_VERSION VERSION_EQUAL glslang_VERSION))
+        message(FATAL_ERROR "${CMAKE_PKG_CONFIG_VERSION} != ${glslang_VERSION}")
+    endif()
+endif()
+
+# Additional sanity check the glslang.pc is correct.
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(glslang REQUIRED IMPORTED_TARGET glslang)
+
+add_library(stub_pc STATIC stub.cpp)
+target_link_libraries(example PRIVATE
+    PkgConfig::glslang
+)

@@ -28,7 +28,7 @@ jobs:
           key: ubuntu-22-${{ matrix.cmake_build_type }}-${{ matrix.compiler.cc }}-${{matrix.compiler.cxx}}
       - run: ./update_glslang_sources.py
       - name: Configure
-        run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{ matrix.cmake_build_type }} -DBUILD_WERROR=ON -D GLSLANG_TESTS=ON
+        run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{ matrix.cmake_build_type }} -DBUILD_WERROR=ON -D GLSLANG_TESTS=ON -DCMAKE_INSTALL_PREFIX="$PWD/build/install"
         env:
           CC: ${{matrix.compiler.cc}}
           CXX: ${{matrix.compiler.cxx}}
@@ -38,7 +38,7 @@ jobs:
       - name: Build
         run: cmake --build build
       - name: Install
-        run: cmake --install build --prefix build/install
+        run: cmake --install build
       - name: Test find_package support
         run: |
           cmake -S Test/find_package -B build/find_package && \
@@ -67,7 +67,7 @@ jobs:
           key: ubuntu-22-${{ matrix.cmake_build_type }}-${{ matrix.compiler.cc }}-${{matrix.compiler.cxx}}
       - run: ./update_glslang_sources.py
       - name: Configure
-        run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{ matrix.cmake_build_type }} -DBUILD_WERROR=ON -D GLSLANG_TESTS=ON -DBUILD_SHARED_LIBS=ON
+        run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{ matrix.cmake_build_type }} -DBUILD_WERROR=ON -D GLSLANG_TESTS=ON -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX="$PWD/build/install"
         env:
           CC: ${{matrix.compiler.cc}}
           CXX: ${{matrix.compiler.cxx}}
@@ -77,7 +77,7 @@ jobs:
       - name: Build
         run: cmake --build build
       - name: Install
-        run: cmake --install build --prefix build/install
+        run: cmake --install build
       - name: Test find_package support
         run: |
           cmake -S Test/find_package -B build/find_package && \
@@ -145,14 +145,14 @@ jobs:
           key: linux_backcompat
       - run: ./update_glslang_sources.py
       - name: Configure
-        run: cmake -S . -B build -D CMAKE_BUILD_TYPE=Release -D GLSLANG_TESTS=ON
+        run: cmake -S . -B build -D CMAKE_BUILD_TYPE=Release -D GLSLANG_TESTS=ON -DCMAKE_INSTALL_PREFIX="$PWD/build/install"
         env:
           CMAKE_C_COMPILER_LAUNCHER: ccache
           CMAKE_CXX_COMPILER_LAUNCHER: ccache
       - name: Build
         run: cmake --build build
       - name: Install
-        run: cmake --install build --prefix build/install
+        run: cmake --install build
       - name: Test find_package support
         run: |
           cmake -S Test/find_package -B build/find_package && \
@@ -172,12 +172,12 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - uses: lukka/get-cmake@56d043d188c3612951d8755da8f4b709ec951ad6 # v3.31.6
       - run: ./update_glslang_sources.py
-      - run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{matrix.cmake_build_type}} -G Ninja -DBUILD_WERROR=ON -D GLSLANG_TESTS=ON
+      - run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{matrix.cmake_build_type}} -G Ninja -DBUILD_WERROR=ON -D GLSLANG_TESTS=ON -DCMAKE_INSTALL_PREFIX="$PWD/build/install"
         env:
           CC: ${{matrix.compiler.cc}}
           CXX: ${{matrix.compiler.cxx}}
       - run: cmake --build build
-      - run: cmake --install build --prefix build/install
+      - run: cmake --install build
       - name: Test find_package support
         run: |
           cmake -S Test/find_package -B build/find_package && \
@@ -196,12 +196,12 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - uses: lukka/get-cmake@56d043d188c3612951d8755da8f4b709ec951ad6 # v3.31.6
       - run: ./update_glslang_sources.py
-      - run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{matrix.cmake_build_type}} -G Ninja -DBUILD_WERROR=ON -D GLSLANG_TESTS=ON -DBUILD_SHARED_LIBS=ON
+      - run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{matrix.cmake_build_type}} -G Ninja -DBUILD_WERROR=ON -D GLSLANG_TESTS=ON -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX="$PWD/build/install"
         env:
           CC: ${{matrix.compiler.cc}}
           CXX: ${{matrix.compiler.cxx}}
       - run: cmake --build build
-      - run: cmake --install build --prefix build/install
+      - run: cmake --install build
       - name: Test find_package support
         run: |
           cmake -S Test/find_package -B build/find_package && \

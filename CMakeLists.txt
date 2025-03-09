@@ -364,6 +364,9 @@ if (GLSLANG_ENABLE_INSTALL)
         @INSTALL_CONFIG_UNIX@
         include("@PACKAGE_PATH_EXPORT_TARGETS@")
     ]=])
+    if (ENABLE_OPT)
+        set(GLSLANG_PRIVATE_LIBS "-lSPIRV-Tools-opt")
+    endif()
 
     set(PATH_EXPORT_TARGETS "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}/glslang-targets.cmake")
     if(UNIX OR "${CMAKE_SYSTEM_NAME}" STREQUAL "Fuchsia")
@@ -371,6 +374,7 @@ if (GLSLANG_ENABLE_INSTALL)
             set(THREADS_PREFER_PTHREAD_FLAG ON)
             find_dependency(Threads)
         ]=])
+        set(GLSLANG_PRIVATE_LIBS "${GLSLANG_PRIVATE_LIBS} -lpthread")
     endif()
     configure_package_config_file(
         "${CMAKE_CURRENT_BINARY_DIR}/glslang-config.cmake.in"
@@ -397,5 +401,28 @@ if (GLSLANG_ENABLE_INSTALL)
             "${CMAKE_CURRENT_BINARY_DIR}/glslang-config-version.cmake"
         DESTINATION
             "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}"
+    )
+
+    # Don't install glslang.pc on Windows.
+    # See Test/find_package/CMakeLists.txt for full reasoning.
+    if (WIN32)
+        return()
+    endif()
+
+    # CMAKE_INSTALL_LIBDIR and CMAKE_INSTALL_INCLUDEDIR can be absolute paths or relative.
+    cmake_path(APPEND CMAKE_INSTALL_LIBDIR_PC "\${exec_prefix}" ${CMAKE_INSTALL_LIBDIR})
+    cmake_path(APPEND CMAKE_INSTALL_INCLUDEDIR_PC "\${prefix}" ${CMAKE_INSTALL_INCLUDEDIR})
+    # NOTE: CMAKE_INSTALL_PREFIX is required to be specified at configure time.
+    # This means installing via --prefix will result in a broken glslang.pc
+    configure_file(
+        "${CMAKE_CURRENT_SOURCE_DIR}/glslang/glslang.pc.in"
+        "${CMAKE_CURRENT_BINARY_DIR}/glslang.pc"
+        @ONLY
+    )
+    install(
+        FILES
+            "${CMAKE_CURRENT_BINARY_DIR}/glslang.pc"
+        DESTINATION
+            "${CMAKE_INSTALL_LIBDIR}/pkgconfig"
     )
 endif()
