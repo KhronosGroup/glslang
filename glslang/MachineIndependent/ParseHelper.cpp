@@ -2103,7 +2103,8 @@ TIntermTyped* TParseContext::addOutputArgumentConversions(const TFunction& funct
     // Will there be any output conversions?
     bool outputConversions = false;
     for (int i = 0; i < function.getParamCount(); ++i) {
-        if (*function[i].type != arguments[i]->getAsTyped()->getType() && function[i].type->getQualifier().isParamOutput()) {
+        if (*function[i].type != arguments[i]->getAsTyped()->getType() && function[i].type->getQualifier().isParamOutput() &&
+            !function[i].type->isCoopMat()) {
             outputConversions = true;
             break;
         }
@@ -2147,13 +2148,6 @@ TIntermTyped* TParseContext::addOutputArgumentConversions(const TFunction& funct
                 }
                 TVariable* tempArg = makeInternalVariable("tempArg", paramType);
                 tempArg->getWritableType().getQualifier().makeTemporary();
-                if (function[i].type->getQualifier().isParamInput()) {
-                    // If the parameter is also an input, copy-in.
-                    TIntermSymbol* tempArgNode = intermediate.addSymbol(*tempArg, intermNode.getLoc());
-                    TIntermTyped* tempAssign = intermediate.addAssign(EOpAssign, tempArgNode, intermediate.addSymbol(*arguments[i]->getAsTyped()->getAsSymbolNode()), arguments[i]->getLoc());
-                    conversionTree = intermediate.mergeAggregate(tempAssign, conversionTree, intermNode.getLoc());
-                }
-
                 TIntermSymbol* tempArgNode = intermediate.addSymbol(*tempArg, intermNode.getLoc());
                 TIntermTyped* tempAssign = intermediate.addAssign(EOpAssign, arguments[i]->getAsTyped(), tempArgNode, arguments[i]->getLoc());
                 conversionTree = intermediate.growAggregate(conversionTree, tempAssign, arguments[i]->getLoc());
