@@ -1009,6 +1009,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.debuginfo.multiline.glsl.frag",
         "spv.debuginfo.implicit_br.glsl.frag",
         "spv.debuginfo.non_ascii.glsl.frag",
+        "spv.debuginfo.continued.glsl.vert",
     })),
     FileNameAsCustomTestSuffix
 );
