@@ -1194,24 +1194,49 @@ Id Builder::makeDebugSource(const Id fileName) {
     sourceInst->addIdOperand(nonSemanticShaderDebugInfo);
     sourceInst->addImmediateOperand(NonSemanticShaderDebugInfo100DebugSource);
     sourceInst->addIdOperand(fileName);
+    constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(sourceInst));
+    module.mapInstruction(sourceInst);
     if (emitNonSemanticShaderDebugSource) {
-        spv::Id sourceId = 0;
+        const int maxWordCount = 0xFFFF;
+        const int opSourceWordCount = 4;
+        const int nonNullBytesPerInstruction = 4 * (maxWordCount - opSourceWordCount) - 1;
+        auto processDebugSource = [&](std::string source) {
+            if (source.size() > 0) {
+                int nextByte = 0;
+                while ((int)source.size() - nextByte > 0) {
+                    auto subString = source.substr(nextByte, nonNullBytesPerInstruction);
+                    auto sourceId = getStringId(subString);
+                    if (nextByte == 0) {
+                        // DebugSource
+                        sourceInst->addIdOperand(sourceId);
+                    } else {
+                        // DebugSourceContinued
+                        Instruction* sourceContinuedInst = new Instruction(getUniqueId(), makeVoidType(), OpExtInst);
+                        sourceContinuedInst->reserveOperands(2);
+                        sourceContinuedInst->addIdOperand(nonSemanticShaderDebugInfo);
+                        sourceContinuedInst->addImmediateOperand(NonSemanticShaderDebugInfo100DebugSourceContinued);
+                        sourceContinuedInst->addIdOperand(sourceId);
+                        constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(sourceContinuedInst));
+                        module.mapInstruction(sourceContinuedInst);
+                    }
+                    nextByte += nonNullBytesPerInstruction;
+                }
+            } else {
+                auto sourceId = getStringId(source);
+                sourceInst->addIdOperand(sourceId);
+            }
+        };
         if (fileName == mainFileId) {
-            sourceId = getStringId(sourceText);
+            processDebugSource(sourceText);
         } else {
             auto incItr = includeFiles.find(fileName);
             if (incItr != includeFiles.end()) {
-                sourceId = getStringId(*incItr->second);
+                processDebugSource(*incItr->second);
+            } else {
+                // We omit the optional source text item if not available in glslang
             }
         }
-
-        // We omit the optional source text item if not available in glslang
-        if (sourceId != 0) {
-            sourceInst->addIdOperand(sourceId);
-        }
     }
-    constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(sourceInst));
-    module.mapInstruction(sourceInst);
     debugSourceId[fileName] = resultId;
     return resultId;
 }
