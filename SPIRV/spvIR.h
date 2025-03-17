@@ -128,7 +128,7 @@ public:
     {
         unsigned int word = 0;
         unsigned int shiftAmount = 0;
-        char c;
+        unsigned char c;
 
         do {
             c = *(str++);
