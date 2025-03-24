@@ -53,6 +53,7 @@
 #include "spvIR.h"
 namespace spv {
     #include "GLSL.ext.KHR.h"
+    #include "GLSL.ext.EXT.h"
     #include "NonSemanticShaderDebugInfo100.h"
 }
 
@@ -204,6 +205,7 @@ public:
     Id makeIntType(int width) { return makeIntegerType(width, true); }
     Id makeUintType(int width) { return makeIntegerType(width, false); }
     Id makeFloatType(int width);
+    Id makeBFloat16Type();
     Id makeStructType(const std::vector<Id>& members, const char* name, bool const compilerGenerated = true);
     Id makeStructResultType(Id type0, Id type1);
     Id makeVectorType(Id component, int size);
@@ -400,6 +402,7 @@ public:
     Id makeFloatConstant(float f, bool specConstant = false);
     Id makeDoubleConstant(double d, bool specConstant = false);
     Id makeFloat16Constant(float f16, bool specConstant = false);
+    Id makeBFloat16Constant(float bf16, bool specConstant = false);
     Id makeFpConstant(Id type, double d, bool specConstant = false);
 
     Id importNonSemanticShaderDebugInfoInstructions();

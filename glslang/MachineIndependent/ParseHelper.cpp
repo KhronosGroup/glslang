@@ -7102,6 +7102,7 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
         case EbtFloat:
         case EbtDouble:
         case EbtFloat16:
+        case EbtBFloat16:
             break;
         default:
             error(loc, "cannot be applied to this type", "constant_id", "");
@@ -7809,6 +7810,7 @@ void TParseContext::typeParametersCheck(const TSourceLoc& loc, const TPublicType
         switch (publicType.typeParameters->basicType) {
         case EbtFloat:
         case EbtFloat16:
+        case EbtBFloat16:
         case EbtInt:
         case EbtInt8:
         case EbtInt16:
@@ -8319,6 +8321,9 @@ TIntermNode* TParseContext::declareVariable(const TSourceLoc& loc, TString& iden
         if (type.contains8BitInt())
             requireInt8Arithmetic(loc, "qualifier", "(u)int8 types can only be in uniform block or buffer storage");
     }
+    if (type.getBasicType() == EbtBFloat16 &&
+        (type.getQualifier().storage == EvqVaryingIn || type.getQualifier().storage == EvqVaryingOut))
+        error(loc, "qualifier", "bfloat16 types not allowed as input/output", "");
 
     if (type.getQualifier().storage == EvqtaskPayloadSharedEXT)
         intermediate.addTaskPayloadEXTCount();
@@ -8987,6 +8992,13 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
             newNode = intermediate.addConversion(EbtFloat16, newNode);
             return newNode;
         }
+        break;
+
+    case EOpConstructBF16Vec2:
+    case EOpConstructBF16Vec3:
+    case EOpConstructBF16Vec4:
+    case EOpConstructBFloat16:
+        basicOp = EOpConstructBFloat16;
         break;
 
     case EOpConstructI8Vec2:

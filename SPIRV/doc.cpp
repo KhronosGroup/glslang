@@ -1110,6 +1110,11 @@ const char* CapabilityString(int info)
 
     case CapabilityRayTracingSpheresGeometryNV:             return "RayTracingSpheresGeometryNV";
     case CapabilityRayTracingLinearSweptSpheresGeometryNV:  return "RayTracingLinearSweptSpheresGeometryNV";
+
+    case CapabilityBFloat16TypeKHR:                     return "CapabilityBFloat16TypeKHR";
+    case CapabilityBFloat16DotProductKHR:               return "CapabilityBFloat16DotProductKHR";
+    case CapabilityBFloat16CooperativeMatrixKHR:        return "CapabilityBFloat16CooperativeMatrixKHR";
+
     default: return "Bad";
     }
 }
@@ -1933,6 +1938,7 @@ void Parameterize()
         InstructionDesc[OpTypeInt].operands.push(OperandLiteralNumber, "'Signedness'");
 
         InstructionDesc[OpTypeFloat].operands.push(OperandLiteralNumber, "'Width'");
+        InstructionDesc[OpTypeFloat].operands.push(OperandOptionalLiteral, "'FP Encoding'");
 
         InstructionDesc[OpTypeVector].operands.push(OperandId, "'Component Type'");
         InstructionDesc[OpTypeVector].operands.push(OperandLiteralNumber, "'Component Count'");

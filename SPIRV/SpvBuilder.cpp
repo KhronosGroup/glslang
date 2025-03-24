@@ -268,6 +268,9 @@ Id Builder::makeFloatType(int width)
     Instruction* type;
     for (int t = 0; t < (int)groupedTypes[OpTypeFloat].size(); ++t) {
         type = groupedTypes[OpTypeFloat][t];
+        if (type->getNumOperands() != 1) {
+            continue;
+        }
         if (type->getImmediateOperand(0) == (unsigned)width)
             return type->getResultId();
     }
@@ -296,6 +299,43 @@ Id Builder::makeFloatType(int width)
         auto const debugResultId = makeFloatDebugType(width);
         debugId[type->getResultId()] = debugResultId;
     }
+
+    return type->getResultId();
+}
+
+Id Builder::makeBFloat16Type()
+{
+    // try to find it
+    Instruction* type;
+    for (int t = 0; t < (int)groupedTypes[OpTypeFloat].size(); ++t) {
+        type = groupedTypes[OpTypeFloat][t];
+        if (type->getNumOperands() != 2) {
+            continue;
+        }
+        if (type->getImmediateOperand(0) == (unsigned)16 &&
+            type->getImmediateOperand(1) == FPEncodingBFloat16KHR)
+            return type->getResultId();
+    }
+
+    // not found, make it
+    type = new Instruction(getUniqueId(), NoType, OpTypeFloat);
+    type->addImmediateOperand(16);
+    type->addImmediateOperand(FPEncodingBFloat16KHR);
+    groupedTypes[OpTypeFloat].push_back(type);
+    constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
+    module.mapInstruction(type);
+
+    addExtension(spv::E_SPV_KHR_bfloat16);
+    addCapability(CapabilityBFloat16TypeKHR);
+
+#if 0
+    // XXX not supported
+    if (emitNonSemanticShaderDebugInfo)
+    {
+        auto const debugResultId = makeFloatDebugType(width);
+        debugId[type->getResultId()] = debugResultId;
+    }
+#endif
 
     return type->getResultId();
 }
@@ -1777,6 +1817,37 @@ Id Builder::makeFloat16Constant(float f16, bool specConstant)
     fVal.castTo(f16Val, spvutils::kRoundToZero);
 
     unsigned value = f16Val.value().getAsFloat().get_value();
+
+    // See if we already made it. Applies only to regular constants, because specialization constants
+    // must remain distinct for the purpose of applying a SpecId decoration.
+    if (!specConstant) {
+        Id existing = findScalarConstant(OpTypeFloat, opcode, typeId, value);
+        if (existing)
+            return existing;
+    }
+
+    Instruction* c = new Instruction(getUniqueId(), typeId, opcode);
+    c->addImmediateOperand(value);
+    constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(c));
+    groupedConstants[OpTypeFloat].push_back(c);
+    module.mapInstruction(c);
+
+    return c->getResultId();
+}
+
+Id Builder::makeBFloat16Constant(float bf16, bool specConstant)
+{
+    Op opcode = specConstant ? OpSpecConstant : OpConstant;
+    Id typeId = makeBFloat16Type();
+
+    union {
+        float f;
+        uint32_t u;
+    } un;
+    un.f = bf16;
+
+    // take high 16b of fp32 value. This is effectively round-to-zero, other than certain NaNs.
+    unsigned value = un.u >> 16;
 
     // See if we already made it. Applies only to regular constants, because specialization constants
     // must remain distinct for the purpose of applying a SpecId decoration.

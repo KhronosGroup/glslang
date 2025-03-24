@@ -381,7 +381,13 @@ void SpirvStream::disassembleInstruction(Id resultId, Id /*typeId*/, Op opCode, 
                 break;
             case OpTypeFloat:
                 switch (stream[word]) {
-                case 16: idDescriptor[resultId] = "float16_t"; break;
+                case 16:
+                    if (numOperands > 1 && stream[word+1] == spv::FPEncodingBFloat16KHR) {
+                        idDescriptor[resultId] = "bfloat16_t";
+                    } else {
+                        idDescriptor[resultId] = "float16_t";
+                    }
+                    break;
                 default: assert(0); [[fallthrough]];
                 case 32: idDescriptor[resultId] = "float"; break;
                 case 64: idDescriptor[resultId] = "float64_t"; break;
@@ -398,7 +404,11 @@ void SpirvStream::disassembleInstruction(Id resultId, Id /*typeId*/, Op opCode, 
                 break;
             case OpTypeVector:
                 if (idDescriptor[stream[word]].size() > 0) {
-                    idDescriptor[resultId].append(idDescriptor[stream[word]].begin(), idDescriptor[stream[word]].begin() + 1);
+                    if (idDescriptor[stream[word]].substr(0,2) == "bf") {
+                        idDescriptor[resultId].append(idDescriptor[stream[word]].begin(), idDescriptor[stream[word]].begin() + 2);
+                    } else {
+                        idDescriptor[resultId].append(idDescriptor[stream[word]].begin(), idDescriptor[stream[word]].begin() + 1);
+                    }
                     if (strstr(idDescriptor[stream[word]].c_str(), "8")) {
                         idDescriptor[resultId].append("8");
                     }
