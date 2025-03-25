@@ -582,7 +582,8 @@ Id Builder::makeArrayType(Id element, Id sizeId, int stride)
         for (int t = 0; t < (int)groupedTypes[OpTypeArray].size(); ++t) {
             type = groupedTypes[OpTypeArray][t];
             if (type->getIdOperand(0) == element &&
-                type->getIdOperand(1) == sizeId)
+                type->getIdOperand(1) == sizeId &&
+                explicitlyLaidOut.find(type->getResultId()) == explicitlyLaidOut.end())
                 return type->getResultId();
         }
     }
@@ -595,6 +596,10 @@ Id Builder::makeArrayType(Id element, Id sizeId, int stride)
     groupedTypes[OpTypeArray].push_back(type);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
+
+    if (stride != 0) {
+        explicitlyLaidOut.insert(type->getResultId());
+    }
 
     if (emitNonSemanticShaderDebugInfo)
     {
