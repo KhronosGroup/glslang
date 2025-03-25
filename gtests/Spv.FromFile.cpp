@@ -786,7 +786,8 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.coopmat2_constructor.comp",
         "spv.coopmat2_error.comp",
         "spv.coopmat2_tensor.comp",
-        "spv.1.6.nontemporalimage.frag"
+        "spv.1.6.nontemporalimage.frag",
+        "spv.noexplicitlayout.comp",
     })),
     FileNameAsCustomTestSuffix
 );
