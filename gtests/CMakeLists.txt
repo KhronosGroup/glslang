@@ -88,7 +88,8 @@ if(GLSLANG_TESTS)
         endif()
 
         set(LIBRARIES
-            glslang glslang-default-resource-limits)
+            glslang glslang-default-resource-limits
+            $<$<AND:$<CXX_COMPILER_ID:GNU>,$<VERSION_LESS:$<CXX_COMPILER_VERSION>,9.0>>:stdc++fs>)
 
         if(ENABLE_SPVREMAPPER)
             set(LIBRARIES ${LIBRARIES} SPVRemapper)
