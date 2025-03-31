@@ -114,6 +114,9 @@ INSTANTIATE_TEST_SUITE_P(
         {"link.tesselation.vert", "link.tesselation.frag"},
         {"link.tesselation.tese", "link.tesselation.tesc"},
         {"link.redeclareBuiltin.vert", "link.redeclareBuiltin.geom"},
+        {"link.crossStageIO.0.vert", "link.crossStageIO.0.frag"},
+        {"link.crossStageIO.1.vert", "link.crossStageIO.1.geom", "link.crossStageIO.1.frag"},
+        {"link.missingCrossStageIO.0.vert", "link.missingCrossStageIO.0.frag"},
     }))
 );
 // clang-format on
