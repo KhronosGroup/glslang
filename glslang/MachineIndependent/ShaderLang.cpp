@@ -2135,8 +2135,8 @@ bool TProgram::crossStageCheck(EShMessages messages) {
 
     // compare cross stage symbols for each stage boundary
     for (unsigned int i = 1; i < activeStages.size(); ++i) {
-        activeStages[i - 1]->checkStageIO(*infoSink, *activeStages[i]);
-        error |= (activeStages[i - 1]->getNumErrors() != 0);
+        activeStages[i - 1]->checkStageIO(*infoSink, *activeStages[i], messages);
+        error |= (activeStages[i - 1]->getNumErrors() != 0 || activeStages[i]->getNumErrors() != 0);
     }
 
     // if requested, optimize cross stage IO
