@@ -83,12 +83,12 @@ output primitive = line_strip
 0:7    Sequence
 0:7      move second child to first child ( temp float)
 0:7        direct index (layout( stream=0) temp float)
-0:7          'o' (layout( stream=0) out 2-element array of float)
+0:7          'o' (layout( stream=0) out unsized 2-element array of float)
 0:7          Constant:
 0:7            1 (const int)
 0:7        direct index ( temp float)
 0:7          direct index ( temp 3-element array of float)
-0:7            'g' ( in 2-element array of 3-element array of float)
+0:7            'g' ( in unsized 2-element array of 3-element array of float)
 0:7            Constant:
 0:7              1 (const int)
 0:7          Constant:
