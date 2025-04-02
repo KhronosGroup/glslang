@@ -143,6 +143,39 @@ static bool isSameSymbol(TIntermSymbol* symbol1, TIntermSymbol* symbol2) {
         return true;
     return false;
 }
+
+//
+// merge implicit array sizes for uniform/buffer objects
+//
+void TIntermediate::mergeImplicitArraySizes(TInfoSink&, TIntermediate& unit) {
+    if (unit.treeRoot == nullptr || treeRoot == nullptr)
+        return;
+
+    // Get the linker-object lists
+    TIntermSequence& linkerObjects = findLinkerObjects()->getSequence();
+    TIntermSequence unitLinkerObjects = unit.findLinkerObjects()->getSequence();
+
+    // filter unitLinkerObjects to only contain uniforms
+    auto end = std::remove_if(unitLinkerObjects.begin(), unitLinkerObjects.end(),
+        [](TIntermNode* node) {return node->getAsSymbolNode()->getQualifier().storage != EvqUniform &&
+                                      node->getAsSymbolNode()->getQualifier().storage != EvqBuffer; });
+    unitLinkerObjects.resize(end - unitLinkerObjects.begin());
+
+    std::size_t initialNumLinkerObjects = linkerObjects.size();
+    for (unsigned int unitLinkObj = 0; unitLinkObj < unitLinkerObjects.size(); ++unitLinkObj) {
+        for (std::size_t linkObj = 0; linkObj < initialNumLinkerObjects; ++linkObj) {
+            TIntermSymbol* symbol = linkerObjects[linkObj]->getAsSymbolNode();
+            TIntermSymbol* unitSymbol = unitLinkerObjects[unitLinkObj]->getAsSymbolNode();
+            assert(symbol && unitSymbol);
+
+            if (isSameSymbol(symbol, unitSymbol)) {
+                // Update implicit array sizes
+                mergeImplicitArraySizes(symbol->getWritableType(), unitSymbol->getType());
+            }
+        }
+    }
+}
+
 //
 // do error checking on the shader boundary in / out vars
 //
@@ -859,11 +892,32 @@ void TIntermediate::mergeLinkerObjects(TInfoSink& infoSink, TIntermSequence& lin
                 }
                 else if (symbol->getWritableType().isImplicitlySizedArray() && unitSymbol->getType().isSizedArray()) {
                     if (symbol->getWritableType().getImplicitArraySize() > unitSymbol->getType().getOuterArraySize())
-                        error(infoSink, "Implicit size of unsized array doesn't match same symbol among multiple shaders.");
+                        error(infoSink, "Implicit size of unsized array doesn't match same symbol among multiple shaders.", unitStage);
                 }
                 else if (unitSymbol->getType().isImplicitlySizedArray() && symbol->getWritableType().isSizedArray()) {
                     if (unitSymbol->getType().getImplicitArraySize() > symbol->getWritableType().getOuterArraySize())
-                        error(infoSink, "Implicit size of unsized array doesn't match same symbol among multiple shaders.");
+                        error(infoSink, "Implicit size of unsized array doesn't match same symbol among multiple shaders.", unitStage);
+                }
+
+                if (symbol->getType().isStruct() && unitSymbol->getType().isStruct() &&
+                    symbol->getType().getStruct()->size() == unitSymbol->getType().getStruct()->size()) {
+                    for (int i = 0; i < (int)symbol->getType().getStruct()->size(); ++i) {
+                        auto& type = (*symbol->getWritableType().getStruct())[i];
+                        auto& unitType = (*unitSymbol->getWritableType().getStruct())[i];
+
+                        if (type.type->isImplicitlySizedArray() && unitType.type->isImplicitlySizedArray()) {
+                            if (unitType.type->getImplicitArraySize() > type.type->getImplicitArraySize())
+                                type.type->updateImplicitArraySize(unitType.type->getImplicitArraySize());
+                        }
+                        else if (type.type->isImplicitlySizedArray() && unitType.type->isSizedArray()) {
+                            if (type.type->getImplicitArraySize() > unitType.type->getOuterArraySize())
+                                error(infoSink, "Implicit size of unsized array doesn't match same symbol among multiple shaders.", unitStage);
+                        }
+                        else if (type.type->isSizedArray() && unitType.type->isImplicitlySizedArray()) {
+                            if (type.type->getOuterArraySize() < unitType.type->getImplicitArraySize())
+                                error(infoSink, "Implicit size of unsized array doesn't match same symbol among multiple shaders.", unitStage);
+                        }
+                    }
                 }
 
                 // Update implicit array sizes
@@ -1316,7 +1370,8 @@ void TIntermediate::sharedBlockCheck(TInfoSink& infoSink)
 // Do final link-time error checking of a complete (merged) intermediate representation.
 // (Much error checking was done during merging).
 //
-// Also, lock in defaults of things not set, including array sizes.
+// Also, lock in defaults of things not set.
+// Defer adopting implicit array sizes to later, after all stages are merged.
 //
 void TIntermediate::finalCheck(TInfoSink& infoSink, bool keepUncalled)
 {
@@ -1477,23 +1532,6 @@ void TIntermediate::finalCheck(TInfoSink& infoSink, bool keepUncalled)
         error(infoSink, "Unknown Stage.");
         break;
     }
-
-    // Process the tree for any node-specific work.
-    class TFinalLinkTraverser : public TIntermTraverser {
-    public:
-        TFinalLinkTraverser() { }
-        virtual ~TFinalLinkTraverser() { }
-
-        virtual void visitSymbol(TIntermSymbol* symbol)
-        {
-            // Implicitly size arrays.
-            // If an unsized array is left as unsized, it effectively
-            // becomes run-time sized.
-            symbol->getWritableType().adoptImplicitArraySizes(false);
-        }
-    } finalLinkTraverser;
-
-    treeRoot->traverse(&finalLinkTraverser);
 }
 
 //

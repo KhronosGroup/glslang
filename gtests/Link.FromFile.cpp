@@ -93,6 +93,8 @@ INSTANTIATE_TEST_SUITE_P(
         {"implicitArraySize.vert", "implicitArraySize.frag"},
         {"implicitArraySizeBuiltin.vert", "implicitArraySizeBuiltin.geom"},
         {"implicitArraySize1.geom", "implicitArraySize2.geom"},
+        {"implicitArraySizeUniform.vert", "implicitArraySizeUniform.frag"},
+        {"implicitArraySizeUniformContradict.vert", "implicitArraySizeUniformContradict.frag"},
         {"noMain.vert", "mains.frag"},
         {"link1.frag", "link2.frag", "link3.frag"},
         {"recurse1.vert", "recurse1.frag", "recurse2.frag"},
