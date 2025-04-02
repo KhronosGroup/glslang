@@ -59,7 +59,7 @@ Linked vertex stage:
 
 Linked fragment stage:
 
-ERROR: Linking vertex stage: Implicit size of unsized array doesn't match same symbol among multiple shaders.
+ERROR: Linking vertex and fragment stages: Implicit size of unsized array doesn't match same symbol among multiple shaders.
 
 Shader version: 460
 0:? Sequence
