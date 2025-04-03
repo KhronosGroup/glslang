@@ -34,7 +34,6 @@ Shader version: 450
 
 Linked fragment stage:
 
-ERROR: Linking fragment stage: Contradictory depth layouts
 
 Shader version: 450
 using depth_greater

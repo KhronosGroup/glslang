@@ -55,7 +55,6 @@ ERROR: node is still EOpNull!
 
 Linked mesh stage:
 
-ERROR: Linking mesh stage: Contradictory layout max_primitives values
 
 Shader version: 460
 Requested GL_EXT_mesh_shader
