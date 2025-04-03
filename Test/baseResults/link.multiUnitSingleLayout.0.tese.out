@@ -86,8 +86,6 @@ triangle order = none
 
 Linked tessellation evaluation stage:
 
-ERROR: Linking tessellation evaluation stage: Contradictory input vertex spacing
-ERROR: Linking tessellation evaluation stage: Contradictory triangle ordering
 
 Shader version: 410
 input primitive = triangles

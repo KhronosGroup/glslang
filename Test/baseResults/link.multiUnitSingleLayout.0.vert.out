@@ -43,7 +43,6 @@ Shader version: 450
 
 Linked vertex stage:
 
-ERROR: Linking vertex stage: Contradictory xfb_stride
 
 Shader version: 450
 in xfb mode
