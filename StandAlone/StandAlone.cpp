@@ -2018,7 +2018,7 @@ void usage()
            "  -e <name> | --entry-point <name>\n"
            "              specify <name> as the entry-point function name\n"
            "  -f{hlsl_functionality1}\n"
-           "              'hlsl_functionality1' enables use of the \n"
+           "              'hlsl_functionality1' enables use of the\n"
            "              SPV_GOOGLE_hlsl_functionality1 extension\n"
            "  -g          generate debug information\n"
            "  -g0         strip debug information\n"
