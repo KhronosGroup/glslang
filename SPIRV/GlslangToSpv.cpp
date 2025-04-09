@@ -3276,6 +3276,8 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         glslang::TIntermSequence& glslangOperands = node->getSequence();
         if (glslangOperands[0]->getAsTyped()->getVectorSize() == 1)
             binOp = glslang::EOpMul;
+        else if (isTypeFloat(node->getType().getBasicType()))
+            binOp = glslang::EOpDot;
         break;
     }
     case glslang::EOpMod:
@@ -7129,6 +7131,9 @@ spv::Id TGlslangToSpvTraverser::createBinaryOperation(glslang::TOperator op, OpD
     case glslang::EOpOuterProduct:
         binOp = spv::OpOuterProduct;
         needMatchingVectors = false;
+        break;
+    case glslang::EOpDot:
+        binOp = spv::OpDot;
         break;
 
     case glslang::EOpDiv:
