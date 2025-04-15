@@ -65,5 +65,10 @@ void main()
     b++;
     b--;
     -b;
+
+    b+b;
+
+    coopmat<bfloat16_t, gl_ScopeSubgroup, 16, 16, gl_MatrixUseA> cmA;
+    cmA+cmA;
 }
 

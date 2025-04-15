@@ -1994,6 +1994,10 @@ public:
     {
         return containsBasicType(EbtFloat16);
     }
+    bool containsBFloat16() const
+    {
+        return containsBasicType(EbtBFloat16);
+    }
     bool contains64BitInt() const
     {
         return containsBasicType(EbtInt64) || containsBasicType(EbtUint64);
