@@ -33,7 +33,9 @@ ERROR: 0:63: 'assign' :  cannot convert from ' const float' to ' temp bfloat16_t
 ERROR: 0:65: '++' :  wrong operand type no operation '++' exists that takes an operand of type  temp bfloat16_t (or there is no acceptable conversion)
 ERROR: 0:66: '--' :  wrong operand type no operation '--' exists that takes an operand of type  temp bfloat16_t (or there is no acceptable conversion)
 ERROR: 0:67: '-' :  wrong operand type no operation '-' exists that takes an operand of type  temp bfloat16_t (or there is no acceptable conversion)
-ERROR: 34 compilation errors.  No code generated.
+ERROR: 0:69: '+' :  wrong operand types: no operation '+' exists that takes a left-hand operand of type ' temp bfloat16_t' and a right operand of type ' temp bfloat16_t' (or there is no acceptable conversion)
+ERROR: 0:72: '+' :  wrong operand types: no operation '+' exists that takes a left-hand operand of type ' temp coopmat<3, 16, 16, 0> bfloat16_t' and a right operand of type ' temp coopmat<3, 16, 16, 0> bfloat16_t' (or there is no acceptable conversion)
+ERROR: 36 compilation errors.  No code generated.
 
 
 SPIR-V is not generated for failed compile or link

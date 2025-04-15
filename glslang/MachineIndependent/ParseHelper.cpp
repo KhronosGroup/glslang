@@ -906,7 +906,8 @@ TIntermTyped* TParseContext::handleBinaryMath(const TSourceLoc& loc, const char*
 
     if (((left->getType().contains16BitFloat() || right->getType().contains16BitFloat()) && !float16Arithmetic()) ||
         ((left->getType().contains16BitInt() || right->getType().contains16BitInt()) && !int16Arithmetic()) ||
-        ((left->getType().contains8BitInt() || right->getType().contains8BitInt()) && !int8Arithmetic())) {
+        ((left->getType().contains8BitInt() || right->getType().contains8BitInt()) && !int8Arithmetic()) ||
+        (left->getType().containsBFloat16() || right->getType().containsBFloat16())) {
         allowed = false;
     }
 
@@ -933,7 +934,8 @@ TIntermTyped* TParseContext::handleUnaryMath(const TSourceLoc& loc, const char* 
     bool allowed = true;
     if ((childNode->getType().contains16BitFloat() && !float16Arithmetic()) ||
         (childNode->getType().contains16BitInt() && !int16Arithmetic()) ||
-        (childNode->getType().contains8BitInt() && !int8Arithmetic())) {
+        (childNode->getType().contains8BitInt() && !int8Arithmetic()) ||
+        (childNode->getType().containsBFloat16())) {
         allowed = false;
     }
 
