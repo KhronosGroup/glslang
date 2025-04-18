@@ -10363,7 +10363,7 @@ void TGlslangToSpvTraverser::addImageProcessing2QCOMDecoration(spv::Id id, bool 
 
   auto addDecor =
     [this](spv::Id id, spv::Decoration decor) {
-      spv::Id tsopc = this->builder.getOpCode(id);
+      spv::Op tsopc = this->builder.getOpCode(id);
       if (tsopc == spv::Op::OpLoad) {
         spv::Id tsid = this->builder.getIdOperand(id, 0);
         if (this->glslangIntermediate->getSpv().spv >= glslang::EShTargetSpv_1_4) {
@@ -10376,7 +10376,7 @@ void TGlslangToSpvTraverser::addImageProcessing2QCOMDecoration(spv::Id id, bool 
       }
     };
 
-  spv::Id opc = builder.getOpCode(id);
+  spv::Op opc = builder.getOpCode(id);
   bool isInterfaceObject = (opc != spv::Op::OpSampledImage);
 
   if (!isInterfaceObject) {
