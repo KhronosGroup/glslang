@@ -37,7 +37,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                os: [{genus: ubuntu-20.04, family: linux}]
+                os: [{genus: ubuntu-22.04, family: linux}]
                 compiler: [{cc: clang, cxx: clang++}, {cc: gcc, cxx: g++}]
                 cmake_build_type: [Debug, Release]
         steps:
