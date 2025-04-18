@@ -321,28 +321,17 @@ spv::ExecutionModel TranslateExecutionModel(EShLanguage stage, bool isMeshShader
     case EShLangVertex:           return spv::ExecutionModel::Vertex;
     case EShLangFragment:         return spv::ExecutionModel::Fragment;
     case EShLangCompute:          return spv::ExecutionModel::GLCompute;
-    case EShLangTessControl:
-        return spv::ExecutionModel::TessellationControl;
-    case EShLangTessEvaluation:
-        return spv::ExecutionModel::TessellationEvaluation;
-    case EShLangGeometry:
-        return spv::ExecutionModel::Geometry;
-    case EShLangRayGen:
-        return spv::ExecutionModel::RayGenerationKHR;
-    case EShLangIntersect:
-        return spv::ExecutionModel::IntersectionKHR;
-    case EShLangAnyHit:
-        return spv::ExecutionModel::AnyHitKHR;
-    case EShLangClosestHit:
-        return spv::ExecutionModel::ClosestHitKHR;
-    case EShLangMiss:
-        return spv::ExecutionModel::MissKHR;
-    case EShLangCallable:
-        return spv::ExecutionModel::CallableKHR;
-    case EShLangTask:
-        return (isMeshShaderEXT) ? spv::ExecutionModel::TaskEXT : spv::ExecutionModel::TaskNV;
-    case EShLangMesh:
-        return (isMeshShaderEXT) ? spv::ExecutionModel::MeshEXT : spv::ExecutionModel::MeshNV;
+    case EShLangTessControl:      return spv::ExecutionModel::TessellationControl;
+    case EShLangTessEvaluation:   return spv::ExecutionModel::TessellationEvaluation;
+    case EShLangGeometry:         return spv::ExecutionModel::Geometry;
+    case EShLangRayGen:           return spv::ExecutionModel::RayGenerationKHR;
+    case EShLangIntersect:        return spv::ExecutionModel::IntersectionKHR;
+    case EShLangAnyHit:           return spv::ExecutionModel::AnyHitKHR;
+    case EShLangClosestHit:       return spv::ExecutionModel::ClosestHitKHR;
+    case EShLangMiss:             return spv::ExecutionModel::MissKHR;
+    case EShLangCallable:         return spv::ExecutionModel::CallableKHR;
+    case EShLangTask:             return (isMeshShaderEXT) ? spv::ExecutionModel::TaskEXT : spv::ExecutionModel::TaskNV;
+    case EShLangMesh:             return (isMeshShaderEXT) ? spv::ExecutionModel::MeshEXT : spv::ExecutionModel::MeshNV;
     default:
         assert(0);
         return spv::ExecutionModel::Fragment;
@@ -353,22 +342,14 @@ spv::ExecutionModel TranslateExecutionModel(EShLanguage stage, bool isMeshShader
 spv::Dim TranslateDimensionality(const glslang::TSampler& sampler)
 {
     switch (sampler.dim) {
-    case glslang::Esd1D:
-        return spv::Dim::Dim1D;
-    case glslang::Esd2D:
-        return spv::Dim::Dim2D;
-    case glslang::Esd3D:
-        return spv::Dim::Dim3D;
-    case glslang::EsdCube:
-        return spv::Dim::Cube;
-    case glslang::EsdRect:
-        return spv::Dim::Rect;
-    case glslang::EsdBuffer:
-        return spv::Dim::Buffer;
-    case glslang::EsdSubpass:
-        return spv::Dim::SubpassData;
-    case glslang::EsdAttachmentEXT:
-        return spv::Dim::TileImageDataEXT;
+    case glslang::Esd1D:      return spv::Dim::Dim1D;
+    case glslang::Esd2D:      return spv::Dim::Dim2D;
+    case glslang::Esd3D:      return spv::Dim::Dim3D;
+    case glslang::EsdCube:    return spv::Dim::Cube;
+    case glslang::EsdRect:    return spv::Dim::Rect;
+    case glslang::EsdBuffer:  return spv::Dim::Buffer;
+    case glslang::EsdSubpass: return spv::Dim::SubpassData;
+    case glslang::EsdAttachmentEXT: return spv::Dim::TileImageDataEXT;
     default:
         assert(0);
         return spv::Dim::Dim2D;
@@ -379,10 +360,8 @@ spv::Dim TranslateDimensionality(const glslang::TSampler& sampler)
 spv::Decoration TranslatePrecisionDecoration(glslang::TPrecisionQualifier glslangPrecision)
 {
     switch (glslangPrecision) {
-    case glslang::EpqLow:
-        return spv::Decoration::RelaxedPrecision;
-    case glslang::EpqMedium:
-        return spv::Decoration::RelaxedPrecision;
+    case glslang::EpqLow:    return spv::Decoration::RelaxedPrecision;
+    case glslang::EpqMedium: return spv::Decoration::RelaxedPrecision;
     default:
         return spv::NoPrecision;
     }
@@ -398,28 +377,17 @@ spv::Decoration TranslatePrecisionDecoration(const glslang::TType& type)
 spv::Decoration TranslateBlockDecoration(const glslang::TStorageQualifier storage, bool useStorageBuffer)
 {
     switch (storage) {
-    case glslang::EvqUniform:
-        return spv::Decoration::Block;
-    case glslang::EvqBuffer:
-        return useStorageBuffer ? spv::Decoration::Block : spv::Decoration::BufferBlock;
-    case glslang::EvqVaryingIn:
-        return spv::Decoration::Block;
-    case glslang::EvqVaryingOut:
-        return spv::Decoration::Block;
-    case glslang::EvqShared:
-        return spv::Decoration::Block;
-    case glslang::EvqPayload:
-        return spv::Decoration::Block;
-    case glslang::EvqPayloadIn:
-        return spv::Decoration::Block;
-    case glslang::EvqHitAttr:
-        return spv::Decoration::Block;
-    case glslang::EvqCallableData:
-        return spv::Decoration::Block;
-    case glslang::EvqCallableDataIn:
-        return spv::Decoration::Block;
-    case glslang::EvqHitObjectAttrNV:
-        return spv::Decoration::Block;
+    case glslang::EvqUniform:      return spv::Decoration::Block;
+    case glslang::EvqBuffer:       return useStorageBuffer ? spv::Decoration::Block : spv::Decoration::BufferBlock;
+    case glslang::EvqVaryingIn:    return spv::Decoration::Block;
+    case glslang::EvqVaryingOut:   return spv::Decoration::Block;
+    case glslang::EvqShared:       return spv::Decoration::Block;
+    case glslang::EvqPayload:      return spv::Decoration::Block;
+    case glslang::EvqPayloadIn:    return spv::Decoration::Block;
+    case glslang::EvqHitAttr:      return spv::Decoration::Block;
+    case glslang::EvqCallableData:   return spv::Decoration::Block;
+    case glslang::EvqCallableDataIn: return spv::Decoration::Block;
+    case glslang::EvqHitObjectAttrNV: return spv::Decoration::Block;
     default:
         assert(0);
         break;
@@ -595,7 +563,8 @@ spv::MemoryAccessMask TGlslangToSpvTraverser::TranslateMemoryAccess(
         return mask;
 
     if (coherentFlags.isVolatile() || coherentFlags.anyCoherent()) {
-        mask = mask | spv::MemoryAccessMask::MakePointerAvailableKHR | spv::MemoryAccessMask::MakePointerVisibleKHR;
+        mask = mask | spv::MemoryAccessMask::MakePointerAvailableKHR | 
+                      spv::MemoryAccessMask::MakePointerVisibleKHR;
     }
 
     if (coherentFlags.nonprivate) {
@@ -1394,14 +1363,10 @@ spv::StorageClass TGlslangToSpvTraverser::TranslateStorageClass(const glslang::T
     }
 
     switch (type.getQualifier().storage) {
-    case glslang::EvqGlobal:
-        return spv::StorageClass::Private;
-    case glslang::EvqConstReadOnly:
-        return spv::StorageClass::Function;
-    case glslang::EvqTemporary:
-        return spv::StorageClass::Function;
-    case glslang::EvqShared:
-        return spv::StorageClass::Workgroup;
+    case glslang::EvqGlobal:        return spv::StorageClass::Private;
+    case glslang::EvqConstReadOnly: return spv::StorageClass::Function;
+    case glslang::EvqTemporary:     return spv::StorageClass::Function;
+    case glslang::EvqShared:           return spv::StorageClass::Workgroup;
     case glslang::EvqPayload:        return spv::StorageClass::RayPayloadKHR;
     case glslang::EvqPayloadIn:      return spv::StorageClass::IncomingRayPayloadKHR;
     case glslang::EvqHitAttr:        return spv::StorageClass::HitAttributeKHR;
@@ -1785,7 +1750,7 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion,
             builder.addExecutionMode(shaderEntry, spv::ExecutionMode::StencilRefReplacingEXT);
 
         switch(glslangIntermediate->getDepth()) {
-            case glslang::EldGreater:   mode = spv::ExecutionMode::DepthGreater;   break;
+        case glslang::EldGreater:   mode = spv::ExecutionMode::DepthGreater;   break;
         case glslang::EldLess:      mode = spv::ExecutionMode::DepthLess;      break;
         case glslang::EldUnchanged: mode = spv::ExecutionMode::DepthUnchanged; break;
         default:                    mode = spv::ExecutionMode::Max;            break;
@@ -1795,7 +1760,7 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion,
             builder.addExecutionMode(shaderEntry, mode);
 
         switch (glslangIntermediate->getStencil()) {
-            case glslang::ElsRefUnchangedFrontAMD:  mode = spv::ExecutionMode::StencilRefUnchangedFrontAMD; break;
+        case glslang::ElsRefUnchangedFrontAMD:  mode = spv::ExecutionMode::StencilRefUnchangedFrontAMD; break;
         case glslang::ElsRefGreaterFrontAMD:    mode = spv::ExecutionMode::StencilRefGreaterFrontAMD;   break;
         case glslang::ElsRefLessFrontAMD:       mode = spv::ExecutionMode::StencilRefLessFrontAMD;      break;
         case glslang::ElsRefUnchangedBackAMD:   mode = spv::ExecutionMode::StencilRefUnchangedBackAMD;  break;
@@ -1807,23 +1772,17 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion,
         if (mode != spv::ExecutionMode::Max)
             builder.addExecutionMode(shaderEntry, (spv::ExecutionMode)mode);
         switch (glslangIntermediate->getInterlockOrdering()) {
-        case glslang::EioPixelInterlockOrdered:
-            mode = spv::ExecutionMode::PixelInterlockOrderedEXT;
+        case glslang::EioPixelInterlockOrdered:         mode = spv::ExecutionMode::PixelInterlockOrderedEXT;
             break;
-        case glslang::EioPixelInterlockUnordered:
-            mode = spv::ExecutionMode::PixelInterlockUnorderedEXT;
+        case glslang::EioPixelInterlockUnordered:       mode = spv::ExecutionMode::PixelInterlockUnorderedEXT;
             break;
-        case glslang::EioSampleInterlockOrdered:
-            mode = spv::ExecutionMode::SampleInterlockOrderedEXT;
+        case glslang::EioSampleInterlockOrdered:        mode = spv::ExecutionMode::SampleInterlockOrderedEXT;
             break;
-        case glslang::EioSampleInterlockUnordered:
-            mode = spv::ExecutionMode::SampleInterlockUnorderedEXT;
+        case glslang::EioSampleInterlockUnordered:      mode = spv::ExecutionMode::SampleInterlockUnorderedEXT;
             break;
-        case glslang::EioShadingRateInterlockOrdered:
-            mode = spv::ExecutionMode::ShadingRateInterlockOrderedEXT;
+        case glslang::EioShadingRateInterlockOrdered:   mode = spv::ExecutionMode::ShadingRateInterlockOrderedEXT;
             break;
-        case glslang::EioShadingRateInterlockUnordered:
-            mode = spv::ExecutionMode::ShadingRateInterlockUnorderedEXT;
+        case glslang::EioShadingRateInterlockUnordered: mode = spv::ExecutionMode::ShadingRateInterlockUnorderedEXT;
             break;
         default:
             mode = spv::ExecutionMode::Max;
@@ -1896,7 +1855,7 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion,
         }
 
         switch (primitive) {
-            case glslang::ElgTriangles:           mode = spv::ExecutionMode::Triangles;     break;
+        case glslang::ElgTriangles:           mode = spv::ExecutionMode::Triangles;     break;
         case glslang::ElgQuads:               mode = spv::ExecutionMode::Quads;         break;
         case glslang::ElgIsolines:            mode = spv::ExecutionMode::Isolines;      break;
         default:                              mode = spv::ExecutionMode::Max;           break;
@@ -1905,7 +1864,7 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion,
             builder.addExecutionMode(shaderEntry, mode);
 
         switch (glslangIntermediate->getVertexSpacing()) {
-            case glslang::EvsEqual:            mode = spv::ExecutionMode::SpacingEqual;          break;
+        case glslang::EvsEqual:            mode = spv::ExecutionMode::SpacingEqual;          break;
         case glslang::EvsFractionalEven:   mode = spv::ExecutionMode::SpacingFractionalEven; break;
         case glslang::EvsFractionalOdd:    mode = spv::ExecutionMode::SpacingFractionalOdd;  break;
         default:                           mode = spv::ExecutionMode::Max;                   break;
@@ -1928,7 +1887,7 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion,
     case EShLangGeometry:
         builder.addCapability(spv::Capability::Geometry);
         switch (glslangIntermediate->getInputPrimitive()) {
-            case glslang::ElgPoints:             mode = spv::ExecutionMode::InputPoints;             break;
+        case glslang::ElgPoints:             mode = spv::ExecutionMode::InputPoints;             break;
         case glslang::ElgLines:              mode = spv::ExecutionMode::InputLines;              break;
         case glslang::ElgLinesAdjacency:     mode = spv::ExecutionMode::InputLinesAdjacency;     break;
         case glslang::ElgTriangles:          mode = spv::ExecutionMode::Triangles;               break;
@@ -1941,7 +1900,7 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion,
         builder.addExecutionMode(shaderEntry, spv::ExecutionMode::Invocations, glslangIntermediate->getInvocations());
 
         switch (glslangIntermediate->getOutputPrimitive()) {
-            case glslang::ElgPoints:        mode = spv::ExecutionMode::OutputPoints;                 break;
+        case glslang::ElgPoints:        mode = spv::ExecutionMode::OutputPoints;                 break;
         case glslang::ElgLineStrip:     mode = spv::ExecutionMode::OutputLineStrip;              break;
         case glslang::ElgTriangleStrip: mode = spv::ExecutionMode::OutputTriangleStrip;          break;
         default:                        mode = spv::ExecutionMode::Max;                          break;
@@ -2015,7 +1974,7 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion,
                 glslangIntermediate->getPrimitives());
 
             switch (glslangIntermediate->getOutputPrimitive()) {
-                case glslang::ElgPoints:        mode = spv::ExecutionMode::OutputPoints;      break;
+            case glslang::ElgPoints:        mode = spv::ExecutionMode::OutputPoints;      break;
             case glslang::ElgLines:         mode = spv::ExecutionMode::OutputLinesNV;     break;
             case glslang::ElgTriangles:     mode = spv::ExecutionMode::OutputTrianglesNV; break;
             default:                        mode = spv::ExecutionMode::Max;               break;
@@ -8572,7 +8531,7 @@ spv::Id TGlslangToSpvTraverser::createInvocationsOperation(glslang::TOperator op
         default:
             break;
         }
-        spv::IdImmediate scope = {true, builder.makeUintConstant(spv::Scope::Subgroup)};
+        spv::IdImmediate scope = { true, builder.makeUintConstant(spv::Scope::Subgroup) };
         spvGroupOperands.push_back(scope);
         if (groupOperation != spv::GroupOperation::Max) {
             spv::IdImmediate groupOp = { false, (unsigned)groupOperation };
@@ -8760,13 +8719,13 @@ spv::Id TGlslangToSpvTraverser::CreateInvocationsVectorOperation(spv::Op op, spv
         } else if (op == spv::Op::OpSubgroupFirstInvocationKHR) {
             spvGroupOperands.push_back(scalar);
         } else if (op == spv::Op::OpGroupBroadcast) {
-            spv::IdImmediate scope = {true, builder.makeUintConstant(spv::Scope::Subgroup)};
+            spv::IdImmediate scope = { true, builder.makeUintConstant(spv::Scope::Subgroup) };
             spvGroupOperands.push_back(scope);
             spvGroupOperands.push_back(scalar);
             spv::IdImmediate operand = { true, operands[1] };
             spvGroupOperands.push_back(operand);
         } else {
-            spv::IdImmediate scope = {true, builder.makeUintConstant(spv::Scope::Subgroup)};
+            spv::IdImmediate scope = { true, builder.makeUintConstant(spv::Scope::Subgroup) };
             spvGroupOperands.push_back(scope);
             spv::IdImmediate groupOp = { false, (unsigned)groupOperation };
             spvGroupOperands.push_back(groupOp);
@@ -9106,7 +9065,7 @@ spv::Id TGlslangToSpvTraverser::createSubgroupOperation(glslang::TOperator op, s
     std::vector<spv::IdImmediate> spvGroupOperands;
 
     // Every operation begins with the Execution Scope operand.
-    spv::IdImmediate executionScope = {true, builder.makeUintConstant(spv::Scope::Subgroup)};
+    spv::IdImmediate executionScope = { true, builder.makeUintConstant(spv::Scope::Subgroup) };
     // All other ops need the execution scope. Quad Control Ops don't need scope, it's always Quad.
     if (opCode != spv::Op::OpGroupNonUniformQuadAllKHR && opCode != spv::Op::OpGroupNonUniformQuadAnyKHR) {
         spvGroupOperands.push_back(executionScope);
@@ -9303,8 +9262,8 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
                              spv::MemorySemanticsMask::Volatile)) {
                 builder.addCapability(spv::Capability::VulkanMemoryModelKHR);
             }
-            if (glslangIntermediate->usingVulkanMemoryModel() &&
-                (executionScope == spv::Scope::Device || memoryScope == spv::Scope::Device)) {
+            if (glslangIntermediate->usingVulkanMemoryModel() && (executionScope == spv::Scope::Device ||
+                memoryScope == spv::Scope::Device)) {
                 builder.addCapability(spv::Capability::VulkanMemoryModelDeviceScopeKHR);
             }
             return 0;
@@ -9940,8 +9899,8 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
 spv::Id TGlslangToSpvTraverser::createNoArgOperation(glslang::TOperator op, spv::Decoration precision, spv::Id typeId)
 {
     // GLSL memory barriers use queuefamily scope in new model, device scope in old model
-    spv::Scope memoryBarrierScope =
-        glslangIntermediate->usingVulkanMemoryModel() ? spv::Scope::QueueFamilyKHR : spv::Scope::Device;
+    spv::Scope memoryBarrierScope = glslangIntermediate->usingVulkanMemoryModel() ?
+        spv::Scope::QueueFamilyKHR : spv::Scope::Device;
 
     switch (op) {
     case glslang::EOpBarrier:
@@ -9988,13 +9947,13 @@ spv::Id TGlslangToSpvTraverser::createNoArgOperation(glslang::TOperator op, spv:
         return 0;
     case glslang::EOpAllMemoryBarrierWithGroupSync:
         builder.createControlBarrier(spv::Scope::Workgroup, spv::Scope::Device,
-                                     spv::MemorySemanticsAllMemory |
+                                        spv::MemorySemanticsAllMemory |
                                         spv::MemorySemanticsMask::AcquireRelease);
         return 0;
     case glslang::EOpDeviceMemoryBarrier:
         builder.createMemoryBarrier(spv::Scope::Device, spv::MemorySemanticsMask::UniformMemory |
-                                                            spv::MemorySemanticsMask::ImageMemory |
-                                                            spv::MemorySemanticsMask::AcquireRelease);
+                                                        spv::MemorySemanticsMask::ImageMemory |
+                                                        spv::MemorySemanticsMask::AcquireRelease);
         return 0;
     case glslang::EOpDeviceMemoryBarrierWithGroupSync:
         builder.createControlBarrier(spv::Scope::Workgroup, spv::Scope::Device,
@@ -10008,17 +9967,16 @@ spv::Id TGlslangToSpvTraverser::createNoArgOperation(glslang::TOperator op, spv:
         return 0;
     case glslang::EOpWorkgroupMemoryBarrierWithGroupSync:
         builder.createControlBarrier(spv::Scope::Workgroup, spv::Scope::Workgroup,
-                                     spv::MemorySemanticsMask::WorkgroupMemory |
-                                         spv::MemorySemanticsMask::AcquireRelease);
+                                        spv::MemorySemanticsMask::WorkgroupMemory |
+                                        spv::MemorySemanticsMask::AcquireRelease);
         return 0;
     case glslang::EOpSubgroupBarrier:
-        builder.createControlBarrier(spv::Scope::Subgroup, spv::Scope::Subgroup,
-                                     spv::MemorySemanticsAllMemory |
-                                                                             spv::MemorySemanticsMask::AcquireRelease);
+        builder.createControlBarrier(spv::Scope::Subgroup, spv::Scope::Subgroup, spv::MemorySemanticsAllMemory |
+                                                                                 spv::MemorySemanticsMask::AcquireRelease);
         return spv::NoResult;
     case glslang::EOpSubgroupMemoryBarrier:
-        builder.createMemoryBarrier(spv::Scope::Subgroup,
-                                    spv::MemorySemanticsAllMemory | spv::MemorySemanticsMask::AcquireRelease);
+        builder.createMemoryBarrier(spv::Scope::Subgroup, spv::MemorySemanticsAllMemory |
+                                                          spv::MemorySemanticsMask::AcquireRelease);
         return spv::NoResult;
     case glslang::EOpSubgroupMemoryBarrierBuffer:
         builder.createMemoryBarrier(spv::Scope::Subgroup, spv::MemorySemanticsMask::UniformMemory |
@@ -10031,7 +9989,7 @@ spv::Id TGlslangToSpvTraverser::createNoArgOperation(glslang::TOperator op, spv:
         return spv::NoResult;
     case glslang::EOpSubgroupMemoryBarrierShared:
         builder.createMemoryBarrier(spv::Scope::Subgroup, spv::MemorySemanticsMask::WorkgroupMemory |
-                                                              spv::MemorySemanticsMask::AcquireRelease);
+                                                          spv::MemorySemanticsMask::AcquireRelease);
         return spv::NoResult;
 
     case glslang::EOpEmitVertex:
@@ -10197,12 +10155,12 @@ spv::Id TGlslangToSpvTraverser::getSymbolId(const glslang::TIntermSymbol* symbol
     if (symbol->getQualifier().hasLocation()) {
         if (!(glslangIntermediate->isRayTracingStage() &&
               (glslangIntermediate->IsRequestedExtension(glslang::E_GL_EXT_ray_tracing) ||
-               glslangIntermediate->IsRequestedExtension(glslang::E_GL_NV_shader_invocation_reorder)) &&
-              (builder.getStorageClass(id) == spv::StorageClass::RayPayloadKHR ||
-               builder.getStorageClass(id) == spv::StorageClass::IncomingRayPayloadKHR ||
-               builder.getStorageClass(id) == spv::StorageClass::CallableDataKHR ||
-               builder.getStorageClass(id) == spv::StorageClass::IncomingCallableDataKHR ||
-               builder.getStorageClass(id) == spv::StorageClass::HitObjectAttributeNV))) {
+               glslangIntermediate->IsRequestedExtension(glslang::E_GL_NV_shader_invocation_reorder))
+              && (builder.getStorageClass(id) == spv::StorageClass::RayPayloadKHR ||
+                  builder.getStorageClass(id) == spv::StorageClass::IncomingRayPayloadKHR ||
+                  builder.getStorageClass(id) == spv::StorageClass::CallableDataKHR ||
+                  builder.getStorageClass(id) == spv::StorageClass::IncomingCallableDataKHR ||
+                  builder.getStorageClass(id) == spv::StorageClass::HitObjectAttributeNV))) {
             // Location values are used to link TraceRayKHR/ExecuteCallableKHR/HitObjectGetAttributesNV
             // to corresponding variables but are not valid in SPIRV since they are supported only
             // for Input/Output Storage classes.
