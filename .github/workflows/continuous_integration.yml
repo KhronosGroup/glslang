@@ -121,7 +121,7 @@ jobs:
   # Ensure we can compile/run on an older distro, with older tools (cmake, python, etc)
   linux_min:
     name: Linux Backcompat
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38 # v5.4.0
