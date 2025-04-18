@@ -2935,6 +2935,15 @@ void Builder::createMemoryBarrier(unsigned executionScope, unsigned memorySemant
     addInstruction(std::unique_ptr<Instruction>(op));
 }
 
+void Builder::createMemoryBarrier(Scope executionScope, MemorySemanticsMask memorySemantics)
+{
+    Instruction* op = new Instruction(Op::OpMemoryBarrier);
+    op->reserveOperands(2);
+    op->addIdOperand(makeUintConstant((unsigned)executionScope));
+    op->addIdOperand(makeUintConstant((unsigned)memorySemantics));
+    addInstruction(std::unique_ptr<Instruction>(op));
+}
+
 // An opcode that has one operands, a result id, and a type
 Id Builder::createUnaryOp(Op opCode, Id typeId, Id operand)
 {
@@ -3267,7 +3276,7 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool sparse, 
     mask = mask | signExtensionMask;
     // insert the operand for the mask, if any bits were set.
     if (mask != ImageOperandsMask::MaskNone)
-        texArgs.insert(texArgs.begin() + optArgNum, mask);
+        texArgs.insert(texArgs.begin() + optArgNum, (Id)mask);
 
     //
     // Set up the instruction
@@ -3839,7 +3848,7 @@ Id Builder::createMatrixConstructor(Decoration precision, const std::vector<Id>&
 }
 
 // Comments in header
-Builder::If::If(Id cond, unsigned int ctrl, Builder& gb) :
+Builder::If::If(Id cond, SelectionControlMask ctrl, Builder& gb) :
     builder(gb),
     condition(cond),
     control(ctrl),
@@ -3895,7 +3904,7 @@ void Builder::If::makeEndIf()
 }
 
 // Comments in header
-void Builder::makeSwitch(Id selector, unsigned int control, int numSegments, const std::vector<int>& caseValues,
+void Builder::makeSwitch(Id selector, SelectionControlMask control, int numSegments, const std::vector<int>& caseValues,
                          const std::vector<int>& valueIndexToSegment, int defaultSegment,
                          std::vector<Block*>& segmentBlocks)
 {
@@ -4453,7 +4462,7 @@ void Builder::createBranch(bool implicit, Block* block)
     block->addPredecessor(buildPoint);
 }
 
-void Builder::createSelectionMerge(Block* mergeBlock, unsigned int control)
+void Builder::createSelectionMerge(Block* mergeBlock, SelectionControlMask control)
 {
     Instruction* merge = new Instruction(Op::OpSelectionMerge);
     merge->reserveOperands(2);
@@ -4462,7 +4471,7 @@ void Builder::createSelectionMerge(Block* mergeBlock, unsigned int control)
     addInstruction(std::unique_ptr<Instruction>(merge));
 }
 
-void Builder::createLoopMerge(Block* mergeBlock, Block* continueBlock, unsigned int control,
+void Builder::createLoopMerge(Block* mergeBlock, Block* continueBlock, LoopControlMask control,
                               const std::vector<unsigned int>& operands)
 {
     Instruction* merge = new Instruction(Op::OpLoopMerge);

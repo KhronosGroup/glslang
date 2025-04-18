@@ -3829,12 +3829,12 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
                     node->getOp() == glslang::EOpCooperativeMatrixLoadNV ||
                     node->getOp() == glslang::EOpCooperativeMatrixLoadTensorNV ||
                     node->getOp() == glslang::EOpCooperativeVectorLoadNV)
-                    memoryAccess &= ~spv::MemoryAccessMask::MakePointerAvailableKHR;
+                    memoryAccess = (memoryAccess & ~spv::MemoryAccessMask::MakePointerAvailableKHR);
                 if (node->getOp() == glslang::EOpCooperativeMatrixStore ||
                     node->getOp() == glslang::EOpCooperativeMatrixStoreNV ||
                     node->getOp() == glslang::EOpCooperativeMatrixStoreTensorNV ||
                     node->getOp() == glslang::EOpCooperativeVectorStoreNV)
-                    memoryAccess &= ~spv::MemoryAccessMask::MakePointerVisibleKHR;
+                    memoryAccess = (memoryAccess & ~spv::MemoryAccessMask::MakePointerVisibleKHR);
                 if (builder.getStorageClass(builder.getAccessChain().base) ==
                     spv::StorageClass::PhysicalStorageBufferEXT) {
                     memoryAccess = (spv::MemoryAccessMask)(memoryAccess | spv::MemoryAccessMask::Aligned);
@@ -3983,7 +3983,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         idImmOps.push_back(spv::IdImmediate(true, operands[1])); // buf
         if (node->getOp() == glslang::EOpCooperativeMatrixLoad) {
             idImmOps.push_back(spv::IdImmediate(true, operands[3])); // matrixLayout
-            auto layout = builder.getConstantScalar(operands[3]);
+            auto layout = (spv::CooperativeMatrixLayout)builder.getConstantScalar(operands[3]);
             if (layout == spv::CooperativeMatrixLayout::RowBlockedInterleavedARM ||
                 layout == spv::CooperativeMatrixLayout::ColumnBlockedInterleavedARM) {
                 builder.addExtension(spv::E_SPV_ARM_cooperative_matrix_layouts);
@@ -4035,7 +4035,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         idImmOps.push_back(spv::IdImmediate(true, operands[0])); // object
         if (node->getOp() == glslang::EOpCooperativeMatrixStore) {
             idImmOps.push_back(spv::IdImmediate(true, operands[3])); // matrixLayout
-            auto layout = builder.getConstantScalar(operands[3]);
+            auto layout = (spv::CooperativeMatrixLayout)builder.getConstantScalar(operands[3]);
             if (layout == spv::CooperativeMatrixLayout::RowBlockedInterleavedARM ||
                 layout == spv::CooperativeMatrixLayout::ColumnBlockedInterleavedARM) {
                 builder.addExtension(spv::E_SPV_ARM_cooperative_matrix_layouts);

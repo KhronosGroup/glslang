@@ -67,7 +67,7 @@ namespace spv {
             break;
         }
 
-        return opCode * 19 + offset; // 19 = small prime
+        return ((unsigned)opCode) * 19 + offset; // 19 = small prime
     }
 
     spirvbin_t::range_t spirvbin_t::literalRange(spv::Op opCode) const

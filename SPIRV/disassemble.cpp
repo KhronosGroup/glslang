@@ -355,7 +355,7 @@ void SpirvStream::disassembleInstruction(Id resultId, Id /*typeId*/, Op opCode, 
 {
     // Process the opcode
 
-    out << (OpcodeString(opCode) + 2);  // leave out the "Op"
+    out << (OpcodeString((int)opCode) + 2);  // leave out the "Op"
 
     if (opCode == Op::OpLoopMerge || opCode == Op::OpSelectionMerge)
         nextNestedControl = stream[word];
@@ -443,7 +443,7 @@ void SpirvStream::disassembleInstruction(Id resultId, Id /*typeId*/, Op opCode, 
     if (opCode == Op::OpTypeImage) {
         out << " ";
         disassembleIds(1);
-        out << " " << DimensionString((Dim)stream[word++]);
+        out << " " << DimensionString((int)(Dim)stream[word++]);
         out << (stream[word++] != 0 ? " depth" : "");
         out << (stream[word++] != 0 ? " array" : "");
         out << (stream[word++] != 0 ? " multi-sampled" : "");
@@ -452,7 +452,7 @@ void SpirvStream::disassembleInstruction(Id resultId, Id /*typeId*/, Op opCode, 
         case 1: out << " sampled";    break;
         case 2: out << " nonsampled"; break;
         }
-        out << " format:" << ImageFormatString((ImageFormat)stream[word++]);
+        out << " format:" << ImageFormatString((int)(ImageFormat)stream[word++]);
 
         if (numOperands == 8) {
             out << " " << AccessQualifierString(stream[word++]);
@@ -767,41 +767,41 @@ static const char* GLSLextNVGetDebugNames(const char* name, unsigned entrypoint)
         strcmp(name, spv::E_SPV_NV_shader_image_footprint) == 0) {
         switch (entrypoint) {
         // NV builtins
-        case BuiltIn::ViewportMaskNV:                 return "ViewportMaskNV";
-        case BuiltIn::SecondaryPositionNV:            return "SecondaryPositionNV";
-        case BuiltIn::SecondaryViewportMaskNV:        return "SecondaryViewportMaskNV";
-        case BuiltIn::PositionPerViewNV:              return "PositionPerViewNV";
-        case BuiltIn::ViewportMaskPerViewNV:          return "ViewportMaskPerViewNV";
-        case BuiltIn::BaryCoordNV:                    return "BaryCoordNV";
-        case BuiltIn::BaryCoordNoPerspNV:             return "BaryCoordNoPerspNV";
-        case BuiltIn::TaskCountNV:                    return "TaskCountNV";
-        case BuiltIn::PrimitiveCountNV:               return "PrimitiveCountNV";
-        case BuiltIn::PrimitiveIndicesNV:             return "PrimitiveIndicesNV";
-        case BuiltIn::ClipDistancePerViewNV:          return "ClipDistancePerViewNV";
-        case BuiltIn::CullDistancePerViewNV:          return "CullDistancePerViewNV";
-        case BuiltIn::LayerPerViewNV:                 return "LayerPerViewNV";
-        case BuiltIn::MeshViewCountNV:                return "MeshViewCountNV";
-        case BuiltIn::MeshViewIndicesNV:              return "MeshViewIndicesNV";
+        case (unsigned)BuiltIn::ViewportMaskNV:                 return "ViewportMaskNV";
+        case (unsigned)BuiltIn::SecondaryPositionNV:            return "SecondaryPositionNV";
+        case (unsigned)BuiltIn::SecondaryViewportMaskNV:        return "SecondaryViewportMaskNV";
+        case (unsigned)BuiltIn::PositionPerViewNV:              return "PositionPerViewNV";
+        case (unsigned)BuiltIn::ViewportMaskPerViewNV:          return "ViewportMaskPerViewNV";
+        case (unsigned)BuiltIn::BaryCoordNV:                    return "BaryCoordNV";
+        case (unsigned)BuiltIn::BaryCoordNoPerspNV:             return "BaryCoordNoPerspNV";
+        case (unsigned)BuiltIn::TaskCountNV:                    return "TaskCountNV";
+        case (unsigned)BuiltIn::PrimitiveCountNV:               return "PrimitiveCountNV";
+        case (unsigned)BuiltIn::PrimitiveIndicesNV:             return "PrimitiveIndicesNV";
+        case (unsigned)BuiltIn::ClipDistancePerViewNV:          return "ClipDistancePerViewNV";
+        case (unsigned)BuiltIn::CullDistancePerViewNV:          return "CullDistancePerViewNV";
+        case (unsigned)BuiltIn::LayerPerViewNV:                 return "LayerPerViewNV";
+        case (unsigned)BuiltIn::MeshViewCountNV:                return "MeshViewCountNV";
+        case (unsigned)BuiltIn::MeshViewIndicesNV:              return "MeshViewIndicesNV";
 
         // NV Capabilities
-        case Capability::GeometryShaderPassthroughNV: return "GeometryShaderPassthroughNV";
-        case Capability::ShaderViewportMaskNV:        return "ShaderViewportMaskNV";
-        case Capability::ShaderStereoViewNV:          return "ShaderStereoViewNV";
-        case Capability::PerViewAttributesNV:         return "PerViewAttributesNV";
-        case Capability::FragmentBarycentricNV:       return "FragmentBarycentricNV";
-        case Capability::MeshShadingNV:               return "MeshShadingNV";
-        case Capability::ImageFootprintNV:            return "ImageFootprintNV";
-        case Capability::SampleMaskOverrideCoverageNV:return "SampleMaskOverrideCoverageNV";
+        case (unsigned)Capability::GeometryShaderPassthroughNV: return "GeometryShaderPassthroughNV";
+        case (unsigned)Capability::ShaderViewportMaskNV:        return "ShaderViewportMaskNV";
+        case (unsigned)Capability::ShaderStereoViewNV:          return "ShaderStereoViewNV";
+        case (unsigned)Capability::PerViewAttributesNV:         return "PerViewAttributesNV";
+        case (unsigned)Capability::FragmentBarycentricNV:       return "FragmentBarycentricNV";
+        case (unsigned)Capability::MeshShadingNV:               return "MeshShadingNV";
+        case (unsigned)Capability::ImageFootprintNV:            return "ImageFootprintNV";
+        case (unsigned)Capability::SampleMaskOverrideCoverageNV:return "SampleMaskOverrideCoverageNV";
 
         // NV Decorations
-        case Decoration::OverrideCoverageNV:          return "OverrideCoverageNV";
-        case Decoration::PassthroughNV:               return "PassthroughNV";
-        case Decoration::ViewportRelativeNV:          return "ViewportRelativeNV";
-        case Decoration::SecondaryViewportRelativeNV: return "SecondaryViewportRelativeNV";
-        case Decoration::PerVertexNV:                 return "PerVertexNV";
-        case Decoration::PerPrimitiveNV:              return "PerPrimitiveNV";
-        case Decoration::PerViewNV:                   return "PerViewNV";
-        case Decoration::PerTaskNV:                   return "PerTaskNV";
+        case (unsigned)Decoration::OverrideCoverageNV:          return "OverrideCoverageNV";
+        case (unsigned)Decoration::PassthroughNV:               return "PassthroughNV";
+        case (unsigned)Decoration::ViewportRelativeNV:          return "ViewportRelativeNV";
+        case (unsigned)Decoration::SecondaryViewportRelativeNV: return "SecondaryViewportRelativeNV";
+        case (unsigned)Decoration::PerVertexNV:                 return "PerVertexNV";
+        case (unsigned)Decoration::PerPrimitiveNV:              return "PerPrimitiveNV";
+        case (unsigned)Decoration::PerViewNV:                   return "PerViewNV";
+        case (unsigned)Decoration::PerTaskNV:                   return "PerTaskNV";
 
         default:                                    return "Bad";
         }

@@ -86,6 +86,9 @@ struct IdImmediate {
     bool isId;      // true if word is an Id, false if word is an immediate
     unsigned word;
     IdImmediate(bool i, unsigned w) : isId(i), word(w) {}
+    IdImmediate(bool i, spv::MemoryAccessMask w) : isId(i), word((unsigned)w) {}
+    IdImmediate(bool i, spv::TensorAddressingOperandsMask w) : isId(i), word((unsigned)w) {}
+    IdImmediate(bool i, spv::ImageOperandsMask w) : isId(i), word((unsigned)w) {}
 };
 
 //
@@ -119,6 +122,67 @@ public:
         operands.push_back(immediate);
         idOperand.push_back(false);
     }
+
+    void addImmediateOperand(spv::StorageClass immediate) {
+        addImmediateOperand((unsigned)immediate);
+    }
+
+    void addImmediateOperand(spv::ExecutionMode immediate) {
+        addImmediateOperand((unsigned)immediate);
+    }
+
+    void addImmediateOperand(spv::ExecutionModel immediate) {
+        addImmediateOperand((unsigned)immediate);
+    }
+
+    void addImmediateOperand(spv::Decoration immediate) {
+        addImmediateOperand((unsigned)immediate);
+    }
+
+    void addImmediateOperand(spv::LinkageType immediate) {
+        addImmediateOperand((unsigned)immediate);
+    }
+
+    void addImmediateOperand(spv::MemoryAccessMask immediate) {
+        addImmediateOperand((unsigned)immediate);
+    }
+
+    void addImmediateOperand(spv::Capability immediate) {
+        addImmediateOperand((unsigned)immediate);
+    }
+
+    void addImmediateOperand(spv::AddressingModel immediate) {
+        addImmediateOperand((unsigned)immediate);
+    }
+
+    void addImmediateOperand(spv::MemoryModel immediate) {
+        addImmediateOperand((unsigned)immediate);
+    }
+
+    void addImmediateOperand(spv::FPEncoding immediate) {
+        addImmediateOperand((unsigned)immediate);
+    }
+
+    void addImmediateOperand(spv::SourceLanguage immediate) {
+        addImmediateOperand((unsigned)immediate);
+    }
+
+    void addImmediateOperand(spv::Dim immediate) {
+        addImmediateOperand((unsigned)immediate);
+    }
+
+    void addImmediateOperand(spv::FunctionControlMask immediate){
+        addImmediateOperand((unsigned)immediate);
+    }
+
+    void addImmediateOperand(spv::SelectionControlMask immediate) {
+        addImmediateOperand((unsigned)immediate);
+    }
+
+    void addImmediateOperand(spv::LoopControlMask immediate) {
+        addImmediateOperand((unsigned)immediate);
+    }
+
     void setImmediateOperand(unsigned idx, unsigned int immediate) {
         assert(!idOperand[idx]);
         operands[idx] = immediate;

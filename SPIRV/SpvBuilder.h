@@ -396,6 +396,14 @@ public:
         { return makeIntConstant(makeIntType(32),  (unsigned)i, specConstant); }
     Id makeUintConstant(unsigned u, bool specConstant = false)
         { return makeIntConstant(makeUintType(32),           u, specConstant); }
+    Id makeUintConstant(Scope u, bool specConstant = false)
+        { return makeUintConstant((unsigned)u, specConstant); }
+    Id makeUintConstant(StorageClass u, bool specConstant = false)
+        { return makeUintConstant((unsigned)u, specConstant); }
+    Id makeUintConstant(MemorySemanticsMask u, bool specConstant = false)
+        { return makeUintConstant((unsigned)u, specConstant); }
+    Id makeUintConstant(SourceLanguage u, bool specConstant = false)
+        { return makeUintConstant((unsigned)u, specConstant); }
     Id makeInt64Constant(long long i, bool specConstant = false)
         { return makeInt64Constant(makeIntType(64),  (unsigned long long)i, specConstant); }
     Id makeUint64Constant(unsigned long long u, bool specConstant = false)
@@ -525,6 +533,7 @@ public:
     void createNoResultOp(Op, const std::vector<IdImmediate>& operands);
     void createControlBarrier(Scope execution, Scope memory, MemorySemanticsMask);
     void createMemoryBarrier(unsigned executionScope, unsigned memorySemantics);
+    void createMemoryBarrier(Scope executionScope, MemorySemanticsMask memorySemantics);
     Id createUnaryOp(Op, Id typeId, Id operand);
     Id createBinOp(Op, Id typeId, Id operand1, Id operand2);
     Id createTriOp(Op, Id typeId, Id operand1, Id operand2, Id operand3);
@@ -631,7 +640,7 @@ public:
     // Helper to use for building nested control flow with if-then-else.
     class If {
     public:
-        If(Id condition, unsigned int ctrl, Builder& builder);
+        If(Id condition, SelectionControlMask ctrl, Builder& builder);
         ~If() {}
 
         void makeBeginElse();
@@ -643,7 +652,7 @@ public:
 
         Builder& builder;
         Id condition;
-        unsigned int control;
+        SelectionControlMask control;
         Function* function;
         Block* headerBlock;
         Block* thenBlock;
@@ -663,7 +672,7 @@ public:
     // Returns the right set of basic blocks to start each code segment with, so that the caller's
     // recursion stack can hold the memory for it.
     //
-    void makeSwitch(Id condition, unsigned int control, int numSegments, const std::vector<int>& caseValues,
+    void makeSwitch(Id condition, SelectionControlMask control, int numSegments, const std::vector<int>& caseValues,
                     const std::vector<int>& valueToSegment, int defaultSegment, std::vector<Block*>& segmentBB);
 
     // Add a branch to the innermost switch's merge block.
@@ -896,7 +905,7 @@ public:
     // If set implicit, the branch instruction shouldn't have debug source location.
     void createBranch(bool implicit, Block* block);
     void createConditionalBranch(Id condition, Block* thenBlock, Block* elseBlock);
-    void createLoopMerge(Block* mergeBlock, Block* continueBlock, unsigned int control,
+    void createLoopMerge(Block* mergeBlock, Block* continueBlock, LoopControlMask control,
         const std::vector<unsigned int>& operands);
 
     // Sets to generate opcode for specialization constants.
@@ -918,7 +927,7 @@ public:
     void transferAccessChainSwizzle(bool dynamic);
     void simplifyAccessChainSwizzle();
     void createAndSetNoPredecessorBlock(const char*);
-    void createSelectionMerge(Block* mergeBlock, unsigned int control);
+    void createSelectionMerge(Block* mergeBlock, SelectionControlMask control);
     void dumpSourceInstructions(std::vector<unsigned int>&) const;
     void dumpSourceInstructions(const spv::Id fileId, const std::string& text, std::vector<unsigned int>&) const;
     template <class Range> void dumpInstructions(std::vector<unsigned int>& out, const Range& instructions) const;
