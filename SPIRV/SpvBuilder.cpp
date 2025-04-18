@@ -3420,7 +3420,7 @@ Id Builder::createTextureQueryCall(Op opCode, const TextureParameters& parameter
         case Dim::SubpassData:
             numComponents = 2;
             break;
-        case Dim::3D:
+        case Dim::Dim3D:
             numComponents = 3;
             break;
 
