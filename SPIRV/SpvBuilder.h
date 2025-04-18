@@ -49,7 +49,7 @@
 
 #include "Logger.h"
 #define SPV_ENABLE_UTILITY_CODE
-#include "spirv.hpp"
+#include "spirv.hpp11"
 #include "spvIR.h"
 namespace spv {
     #include "GLSL.ext.KHR.h"
@@ -100,7 +100,7 @@ public:
         if (sItr != stringIds.end())
             return sItr->second;
         spv::Id strId = getUniqueId();
-        Instruction* fileString = new Instruction(strId, NoType, OpString);
+        Instruction* fileString = new Instruction(strId, NoType, Op::OpString);
         const char* file_c_str = str.c_str();
         fileString->addStringOperand(file_c_str);
         strings.push_back(std::unique_ptr<Instruction>(fileString));
@@ -298,46 +298,55 @@ public:
     bool isTensorView(Id resultId)const { return isTensorViewType(getTypeId(resultId)); }
 
     bool isBoolType(Id typeId)
-        { return groupedTypes[OpTypeBool].size() > 0 && typeId == groupedTypes[OpTypeBool].back()->getResultId(); }
+    {
+        return groupedTypes[Op::OpTypeBool].size() > 0 && typeId == groupedTypes[Op::OpTypeBool].back()->getResultId();
+    }
     bool isIntType(Id typeId)          const
-        { return getTypeClass(typeId) == OpTypeInt && module.getInstruction(typeId)->getImmediateOperand(1) != 0; }
+    {
+        return getTypeClass(typeId) == Op::OpTypeInt && module.getInstruction(typeId)->getImmediateOperand(1) != 0;
+    }
     bool isUintType(Id typeId)         const
-        { return getTypeClass(typeId) == OpTypeInt && module.getInstruction(typeId)->getImmediateOperand(1) == 0; }
-    bool isFloatType(Id typeId)        const { return getTypeClass(typeId) == OpTypeFloat; }
-    bool isPointerType(Id typeId)      const { return getTypeClass(typeId) == OpTypePointer; }
+    {
+        return getTypeClass(typeId) == Op::OpTypeInt && module.getInstruction(typeId)->getImmediateOperand(1) == 0;
+    }
+    bool isFloatType(Id typeId) const { return getTypeClass(typeId) == Op::OpTypeFloat; }
+    bool isPointerType(Id typeId) const { return getTypeClass(typeId) == Op::OpTypePointer; }
     bool isScalarType(Id typeId)       const
-        { return getTypeClass(typeId) == OpTypeFloat || getTypeClass(typeId) == OpTypeInt ||
-          getTypeClass(typeId) == OpTypeBool; }
-    bool isVectorType(Id typeId)       const { return getTypeClass(typeId) == OpTypeVector; }
-    bool isMatrixType(Id typeId)       const { return getTypeClass(typeId) == OpTypeMatrix; }
-    bool isStructType(Id typeId)       const { return getTypeClass(typeId) == OpTypeStruct; }
-    bool isArrayType(Id typeId)        const { return getTypeClass(typeId) == OpTypeArray; }
+    {
+        return getTypeClass(typeId) == Op::OpTypeFloat || getTypeClass(typeId) == Op::OpTypeInt ||
+               getTypeClass(typeId) == Op::OpTypeBool;
+    }
+    bool isVectorType(Id typeId) const { return getTypeClass(typeId) == Op::OpTypeVector; }
+    bool isMatrixType(Id typeId) const { return getTypeClass(typeId) == Op::OpTypeMatrix; }
+    bool isStructType(Id typeId) const { return getTypeClass(typeId) == Op::OpTypeStruct; }
+    bool isArrayType(Id typeId) const { return getTypeClass(typeId) == Op::OpTypeArray; }
     bool isCooperativeMatrixType(Id typeId)const
     {
-        return getTypeClass(typeId) == OpTypeCooperativeMatrixKHR || getTypeClass(typeId) == OpTypeCooperativeMatrixNV;
+        return getTypeClass(typeId) == Op::OpTypeCooperativeMatrixKHR ||
+               getTypeClass(typeId) == Op::OpTypeCooperativeMatrixNV;
     }
-    bool isTensorViewType(Id typeId)   const { return getTypeClass(typeId) == OpTypeTensorViewNV; }
-    bool isCooperativeVectorType(Id typeId)const { return getTypeClass(typeId) == OpTypeCooperativeVectorNV; }
+    bool isTensorViewType(Id typeId) const { return getTypeClass(typeId) == Op::OpTypeTensorViewNV; }
+    bool isCooperativeVectorType(Id typeId) const { return getTypeClass(typeId) == Op::OpTypeCooperativeVectorNV; }
     bool isAggregateType(Id typeId)    const
         { return isArrayType(typeId) || isStructType(typeId) || isCooperativeMatrixType(typeId); }
-    bool isImageType(Id typeId)        const { return getTypeClass(typeId) == OpTypeImage; }
-    bool isSamplerType(Id typeId)      const { return getTypeClass(typeId) == OpTypeSampler; }
-    bool isSampledImageType(Id typeId) const { return getTypeClass(typeId) == OpTypeSampledImage; }
+        bool isImageType(Id typeId) const { return getTypeClass(typeId) == Op::OpTypeImage; }
+        bool isSamplerType(Id typeId) const { return getTypeClass(typeId) == Op::OpTypeSampler; }
+        bool isSampledImageType(Id typeId) const { return getTypeClass(typeId) == Op::OpTypeSampledImage; }
     bool containsType(Id typeId, Op typeOp, unsigned int width) const;
     bool containsPhysicalStorageBufferOrArray(Id typeId) const;
 
     bool isConstantOpCode(Op opcode) const;
     bool isSpecConstantOpCode(Op opcode) const;
     bool isConstant(Id resultId) const { return isConstantOpCode(getOpCode(resultId)); }
-    bool isConstantScalar(Id resultId) const { return getOpCode(resultId) == OpConstant; }
+    bool isConstantScalar(Id resultId) const { return getOpCode(resultId) == Op::OpConstant; }
     bool isSpecConstant(Id resultId) const { return isSpecConstantOpCode(getOpCode(resultId)); }
     unsigned int getConstantScalar(Id resultId) const
         { return module.getInstruction(resultId)->getImmediateOperand(0); }
     StorageClass getStorageClass(Id resultId) const { return getTypeStorageClass(getTypeId(resultId)); }
 
-    bool isVariableOpCode(Op opcode) const { return opcode == OpVariable; }
+    bool isVariableOpCode(Op opcode) const { return opcode == Op::OpVariable; }
     bool isVariable(Id resultId) const { return isVariableOpCode(getOpCode(resultId)); }
-    bool isGlobalStorage(Id resultId) const { return getStorageClass(resultId) != StorageClassFunction; }
+    bool isGlobalStorage(Id resultId) const { return getStorageClass(resultId) != StorageClass::Function; }
     bool isGlobalVariable(Id resultId) const { return isVariable(resultId) && isGlobalStorage(resultId); }
     // See if a resultId is valid for use as an initializer.
     bool isValidInitializer(Id resultId) const { return isConstant(resultId) || isGlobalVariable(resultId); }
@@ -345,7 +354,7 @@ public:
     int getScalarTypeWidth(Id typeId) const
     {
         Id scalarTypeId = getScalarTypeId(typeId);
-        assert(getTypeClass(scalarTypeId) == OpTypeInt || getTypeClass(scalarTypeId) == OpTypeFloat);
+        assert(getTypeClass(scalarTypeId) == Op::OpTypeInt || getTypeClass(scalarTypeId) == Op::OpTypeFloat);
         return module.getInstruction(scalarTypeId)->getImmediateOperand(0);
     }
 
@@ -491,13 +500,13 @@ public:
     Id createUndefined(Id type);
 
     // Store into an Id and return the l-value
-    void createStore(Id rValue, Id lValue, spv::MemoryAccessMask memoryAccess = spv::MemoryAccessMaskNone,
-        spv::Scope scope = spv::ScopeMax, unsigned int alignment = 0);
+    void createStore(Id rValue, Id lValue, spv::MemoryAccessMask memoryAccess = spv::MemoryAccessMask::MaskNone,
+        spv::Scope scope = spv::Scope::Max, unsigned int alignment = 0);
 
     // Load from an Id and return it
     Id createLoad(Id lValue, spv::Decoration precision,
-        spv::MemoryAccessMask memoryAccess = spv::MemoryAccessMaskNone,
-        spv::Scope scope = spv::ScopeMax, unsigned int alignment = 0);
+        spv::MemoryAccessMask memoryAccess = spv::MemoryAccessMask::MaskNone,
+        spv::Scope scope = spv::Scope::Max, unsigned int alignment = 0);
 
     // Create an OpAccessChain instruction
     Id createAccessChain(StorageClass, Id base, const std::vector<Id>& offsets);
@@ -854,12 +863,12 @@ public:
 
     // use accessChain and swizzle to store value
     void accessChainStore(Id rvalue, Decoration nonUniform,
-        spv::MemoryAccessMask memoryAccess = spv::MemoryAccessMaskNone,
-        spv::Scope scope = spv::ScopeMax, unsigned int alignment = 0);
+        spv::MemoryAccessMask memoryAccess = spv::MemoryAccessMask::MaskNone,
+        spv::Scope scope = spv::Scope::Max, unsigned int alignment = 0);
 
     // use accessChain and swizzle to load an r-value
     Id accessChainLoad(Decoration precision, Decoration l_nonUniform, Decoration r_nonUniform, Id ResultType,
-        spv::MemoryAccessMask memoryAccess = spv::MemoryAccessMaskNone, spv::Scope scope = spv::ScopeMax,
+        spv::MemoryAccessMask memoryAccess = spv::MemoryAccessMask::MaskNone, spv::Scope scope = spv::Scope::Max,
             unsigned int alignment = 0);
 
     // Return whether or not the access chain can be represented in SPIR-V
