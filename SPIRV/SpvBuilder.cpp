@@ -46,6 +46,7 @@
 #include <algorithm>
 
 #include "SpvBuilder.h"
+#include "spvUtil.h"
 #include "hex_float.h"
 
 #ifndef _WIN32
@@ -2694,10 +2695,10 @@ void Builder::createStore(Id rValue, Id lValue, spv::MemoryAccessMask memoryAcce
 
     if (memoryAccess != MemoryAccessMask::MaskNone) {
         store->addImmediateOperand(memoryAccess);
-        if (memoryAccess & spv::MemoryAccessMask::Aligned) {
+        if (anySet(memoryAccess, spv::MemoryAccessMask::Aligned)) {
             store->addImmediateOperand(alignment);
         }
-        if (memoryAccess & spv::MemoryAccessMask::MakePointerVisibleKHR) {
+        if (anySet(memoryAccess, spv::MemoryAccessMask::MakePointerVisibleKHR)) {
             store->addIdOperand(makeUintConstant(scope));
         }
     }
@@ -2716,10 +2717,10 @@ Id Builder::createLoad(Id lValue, spv::Decoration precision, spv::MemoryAccessMa
 
     if (memoryAccess != MemoryAccessMask::MaskNone) {
         load->addImmediateOperand(memoryAccess);
-        if (memoryAccess & spv::MemoryAccessMask::Aligned) {
+        if (anySet(memoryAccess, spv::MemoryAccessMask::Aligned)) {
             load->addImmediateOperand(alignment);
         }
-        if (memoryAccess & spv::MemoryAccessMask::MakePointerVisibleKHR) {
+        if (anySet(memoryAccess, spv::MemoryAccessMask::MakePointerVisibleKHR)) {
             load->addIdOperand(makeUintConstant(scope));
         }
     }

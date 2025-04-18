@@ -89,6 +89,7 @@ struct IdImmediate {
     IdImmediate(bool i, spv::MemoryAccessMask w) : isId(i), word((unsigned)w) {}
     IdImmediate(bool i, spv::TensorAddressingOperandsMask w) : isId(i), word((unsigned)w) {}
     IdImmediate(bool i, spv::ImageOperandsMask w) : isId(i), word((unsigned)w) {}
+    IdImmediate(bool i, spv::CooperativeMatrixOperandsMask w) : isId(i), word((unsigned)w) {}
 };
 
 //
@@ -242,7 +243,7 @@ public:
         wordCount += (unsigned int)operands.size();
 
         // Write out the beginning of the instruction
-        out.push_back(((wordCount) << WordCountShift) | opCode);
+        out.push_back(((wordCount) << WordCountShift) | (unsigned)opCode);
         if (typeId)
             out.push_back(typeId);
         if (resultId)

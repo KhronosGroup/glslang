@@ -35,6 +35,7 @@
 
 #include "SPVRemapper.h"
 #include "doc.h"
+#include "spvUtil.h"
 
 #include <algorithm>
 #include <cassert>
@@ -911,9 +912,9 @@ namespace spv {
             [&](spv::Op opCode, unsigned start) {
                 // Add inputs and uniforms to the map
                 if ((opCode == spv::Op::OpVariable && asWordCount(start) == 4) &&
-                    (spv[start+3] == spv::StorageClass::Uniform ||
-                    spv[start+3] == spv::StorageClass::UniformConstant ||
-                    spv[start+3] == spv::StorageClass::Input))
+                    (spv[start+3] == (unsigned)spv::StorageClass::Uniform ||
+                    spv[start+3] == (unsigned)spv::StorageClass::UniformConstant ||
+                    spv[start+3] == (unsigned)spv::StorageClass::Input))
                     fnLocalVars.insert(asId(start+2));
 
                 if (opCode == spv::Op::OpAccessChain && fnLocalVars.count(asId(start+3)) > 0)
@@ -941,7 +942,7 @@ namespace spv {
             [&](spv::Op opCode, unsigned start) {
                 // Add inputs and uniforms to the map
                 if ((opCode == spv::Op::OpVariable && asWordCount(start) == 4) &&
-                    (spv[start+3] == spv::StorageClass::Output))
+                    (spv[start+3] == (int)spv::StorageClass::Output))
                     fnLocalVars.insert(asId(start+2));
 
                 if (opCode == spv::Op::OpStore && fnLocalVars.count(asId(start+1)) > 0) {
@@ -985,7 +986,7 @@ namespace spv {
                     ++blockNum;
 
                 // Add local variables to the map
-                if ((opCode == spv::Op::OpVariable && spv[start + 3] == spv::StorageClass::Function && asWordCount(start) == 4)) {
+                if ((opCode == spv::Op::OpVariable && spv[start + 3] == (unsigned)spv::StorageClass::Function && asWordCount(start) == 4)) {
                     fnLocalVars.insert(asId(start+2));
                     return true;
                 }

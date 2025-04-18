@@ -45,6 +45,7 @@
 
 #include "SpvBuilder.h"
 #include "spirv.hpp11"
+#include "spvUtil.h"
 
 namespace spv {
     #include "GLSL.std.450.h"
@@ -64,7 +65,7 @@ namespace spv {
 void Builder::postProcessType(const Instruction& inst, Id typeId)
 {
     // Characterize the type being questioned
-    Id basicTypeOp = getMostBasicTypeClass(typeId);
+    Op basicTypeOp = getMostBasicTypeClass(typeId);
     int width = 0;
     if (basicTypeOp == Op::OpTypeFloat || basicTypeOp == Op::OpTypeInt)
         width = getScalarTypeWidth(typeId);
@@ -302,8 +303,8 @@ void Builder::postProcess(Instruction& inst)
                     }
                 }
                 assert(inst.getNumOperands() >= 3);
-                unsigned int memoryAccess = inst.getImmediateOperand((inst.getOpCode() == Op::OpStore) ? 2 : 1);
-                assert(memoryAccess & MemoryAccessMask::Aligned);
+                auto const memoryAccess = (MemoryAccessMask)inst.getImmediateOperand((inst.getOpCode() == Op::OpStore) ? 2 : 1);
+                assert(anySet(memoryAccess, MemoryAccessMask::Aligned));
                 static_cast<void>(memoryAccess);
                 // Compute the index of the alignment operand.
                 int alignmentIdx = 2;

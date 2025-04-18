@@ -44,6 +44,8 @@
 #include "GlslangToSpv.h"
 #include "SpvBuilder.h"
 #include "SpvTools.h"
+#include "spvUtil.h"
+
 namespace spv {
     #include "GLSL.std.450.h"
     #include "GLSL.ext.KHR.h"
@@ -3842,12 +3844,12 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
 
                 memoryAccessOperands.push_back(spv::IdImmediate(false, memoryAccess));
 
-                if (memoryAccess & spv::MemoryAccessMask::Aligned) {
+                if (anySet(memoryAccess, spv::MemoryAccessMask::Aligned)) {
                     memoryAccessOperands.push_back(spv::IdImmediate(false, alignment));
                 }
 
-                if (memoryAccess &
-                    (spv::MemoryAccessMask::MakePointerAvailableKHR | spv::MemoryAccessMask::MakePointerVisibleKHR)) {
+                if (anySet(memoryAccess,
+                    spv::MemoryAccessMask::MakePointerAvailableKHR | spv::MemoryAccessMask::MakePointerVisibleKHR)) {
                     memoryAccessOperands.push_back(spv::IdImmediate(true,
                         builder.makeUintConstant(TranslateMemoryScope(coherentFlags))));
                 }
@@ -3959,10 +3961,10 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
 
         for (uint32_t i = 3; i < operands.size(); ++i) {
             if (builder.isTensorView(operands[i])) {
-                idImmOps[tensorOpIdx].word |= spv::TensorAddressingOperandsMask::TensorView;
+                addMask(idImmOps[tensorOpIdx].word, spv::TensorAddressingOperandsMask::TensorView);
             } else {
                 // must be the decode func
-                idImmOps[tensorOpIdx].word |= spv::TensorAddressingOperandsMask::DecodeFunc;
+                addMask(idImmOps[tensorOpIdx].word, spv::TensorAddressingOperandsMask::DecodeFunc);
                 builder.addCapability(spv::Capability::CooperativeMatrixBlockLoadsNV);
             }
             idImmOps.push_back(spv::IdImmediate(true, operands[i])); // tensorView or decodeFunc
@@ -4129,28 +4131,28 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         result = 0;
 
     } else if (node->getOp() == glslang::EOpCooperativeMatrixMulAdd) {
-        uint32_t matrixOperands = 0;
+        auto matrixOperands = spv::CooperativeMatrixOperandsMask::MaskNone;
 
         // If the optional operand is present, initialize matrixOperands to that value.
         if (glslangOperands.size() == 4 && glslangOperands[3]->getAsConstantUnion()) {
-            matrixOperands = glslangOperands[3]->getAsConstantUnion()->getConstArray()[0].getIConst();
+            matrixOperands = (spv::CooperativeMatrixOperandsMask)glslangOperands[3]->getAsConstantUnion()->getConstArray()[0].getIConst();
         }
 
         // Determine Cooperative Matrix Operands bits from the signedness of the types.
         if (isTypeSignedInt(glslangOperands[0]->getAsTyped()->getBasicType()))
-            matrixOperands |= spv::CooperativeMatrixOperandsMask::MatrixASignedComponentsKHR;
+            addMask(matrixOperands, spv::CooperativeMatrixOperandsMask::MatrixASignedComponentsKHR);
         if (isTypeSignedInt(glslangOperands[1]->getAsTyped()->getBasicType()))
-            matrixOperands |= spv::CooperativeMatrixOperandsMask::MatrixBSignedComponentsKHR;
+            addMask(matrixOperands, spv::CooperativeMatrixOperandsMask::MatrixBSignedComponentsKHR);
         if (isTypeSignedInt(glslangOperands[2]->getAsTyped()->getBasicType()))
-            matrixOperands |= spv::CooperativeMatrixOperandsMask::MatrixCSignedComponentsKHR;
+            addMask(matrixOperands, spv::CooperativeMatrixOperandsMask::MatrixCSignedComponentsKHR);
         if (isTypeSignedInt(node->getBasicType()))
-            matrixOperands |= spv::CooperativeMatrixOperandsMask::MatrixResultSignedComponentsKHR;
+            addMask(matrixOperands, spv::CooperativeMatrixOperandsMask::MatrixResultSignedComponentsKHR);
 
         std::vector<spv::IdImmediate> idImmOps;
         idImmOps.push_back(spv::IdImmediate(true, operands[0]));
         idImmOps.push_back(spv::IdImmediate(true, operands[1]));
         idImmOps.push_back(spv::IdImmediate(true, operands[2]));
-        if (matrixOperands != 0)
+        if (matrixOperands != spv::CooperativeMatrixOperandsMask::MaskNone)
             idImmOps.push_back(spv::IdImmediate(false, matrixOperands));
 
         result = builder.createOp(spv::Op::OpCooperativeMatrixMulAddKHR, resultType(), idImmOps);
@@ -4193,16 +4195,16 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         result = 0;
     } else if (node->getOp() == glslang::EOpCooperativeVectorMatMulNV ||
                node->getOp() == glslang::EOpCooperativeVectorMatMulAddNV) {
-        uint32_t matrixOperands = 0;
+        auto matrixOperands = spv::CooperativeMatrixOperandsMask::MaskNone;
 
         bool isMulAdd = node->getOp() == glslang::EOpCooperativeVectorMatMulAddNV;
 
         // Determine Cooperative Matrix Operands bits from the signedness of the types.
 
         if (isTypeSignedInt(glslangOperands[1]->getAsTyped()->getBasicType()))
-            matrixOperands |= spv::CooperativeMatrixOperandsMask::MatrixBSignedComponentsKHR;
+            addMask(matrixOperands, spv::CooperativeMatrixOperandsMask::MatrixBSignedComponentsKHR);
         if (isTypeSignedInt(glslangOperands[0]->getAsTyped()->getBasicType()))
-            matrixOperands |= spv::CooperativeMatrixOperandsMask::MatrixResultSignedComponentsKHR;
+            addMask(matrixOperands, spv::CooperativeMatrixOperandsMask::MatrixResultSignedComponentsKHR);
 
         uint32_t opIdx = 1;
         std::vector<spv::IdImmediate> idImmOps;
@@ -4221,7 +4223,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         idImmOps.push_back(spv::IdImmediate(true, operands[opIdx++])); // MemoryLayout
         idImmOps.push_back(spv::IdImmediate(true, operands[opIdx++])); // Transpose
         idImmOps.push_back(spv::IdImmediate(true, operands[opIdx++])); // MatrixStride
-        if (matrixOperands != 0)
+        if (matrixOperands != spv::CooperativeMatrixOperandsMask::MaskNone)
             idImmOps.push_back(spv::IdImmediate(false, matrixOperands));  // Cooperative Matrix Operands
 
         // get the pointee type
@@ -6489,11 +6491,11 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
                 builder.makeCompositeConstant(builder.makeVectorType(builder.makeIntType(32), 2), comps) };
             operands.push_back(coord);
             spv::IdImmediate imageOperands = { false, spv::ImageOperandsMask::MaskNone };
-            imageOperands.word = imageOperands.word | signExtensionMask();
+            imageOperands.word = imageOperands.word | (unsigned)signExtensionMask();
             if (sampler.isMultiSample()) {
-                imageOperands.word = imageOperands.word | spv::ImageOperandsMask::Sample;
+                imageOperands.word = imageOperands.word | (unsigned)spv::ImageOperandsMask::Sample;
             }
-            if (imageOperands.word != spv::ImageOperandsMask::MaskNone) {
+            if (imageOperands.word != (unsigned)spv::ImageOperandsMask::MaskNone) {
                 operands.push_back(imageOperands);
                 if (sampler.isMultiSample()) {
                     spv::IdImmediate imageOperand = { true, *(opIt++) };
@@ -6535,15 +6537,15 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
                 spv::IdImmediate imageOperands = { false, (unsigned int)mask };
                 operands.push_back(imageOperands);
             }
-            if (mask & spv::ImageOperandsMask::Sample) {
+            if (anySet(mask, spv::ImageOperandsMask::Sample)) {
                 spv::IdImmediate imageOperand = { true, *opIt++ };
                 operands.push_back(imageOperand);
             }
-            if (mask & spv::ImageOperandsMask::Lod) {
+            if (anySet(mask, spv::ImageOperandsMask::Lod)) {
                 spv::IdImmediate imageOperand = { true, *opIt++ };
                 operands.push_back(imageOperand);
             }
-            if (mask & spv::ImageOperandsMask::MakeTexelVisibleKHR) {
+            if (anySet(mask, spv::ImageOperandsMask::MakeTexelVisibleKHR)) {
                 spv::IdImmediate imageOperand = { true,
                                     builder.makeUintConstant(TranslateMemoryScope(TranslateCoherent(imageType))) };
                 operands.push_back(imageOperand);
@@ -6587,15 +6589,15 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
                 spv::IdImmediate imageOperands = { false, (unsigned int)mask };
                 operands.push_back(imageOperands);
             }
-            if (mask & spv::ImageOperandsMask::Sample) {
+            if (anySet(mask, spv::ImageOperandsMask::Sample)) {
                 spv::IdImmediate imageOperand = { true, *opIt++ };
                 operands.push_back(imageOperand);
             }
-            if (mask & spv::ImageOperandsMask::Lod) {
+            if (anySet(mask, spv::ImageOperandsMask::Lod)) {
                 spv::IdImmediate imageOperand = { true, *opIt++ };
                 operands.push_back(imageOperand);
             }
-            if (mask & spv::ImageOperandsMask::MakeTexelAvailableKHR) {
+            if (anySet(mask, spv::ImageOperandsMask::MakeTexelAvailableKHR)) {
                 spv::IdImmediate imageOperand = { true,
                     builder.makeUintConstant(TranslateMemoryScope(TranslateCoherent(imageType))) };
                 operands.push_back(imageOperand);
@@ -6628,15 +6630,15 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
                 spv::IdImmediate imageOperands = { false, (unsigned int)mask };
                 operands.push_back(imageOperands);
             }
-            if (mask & spv::ImageOperandsMask::Sample) {
+            if (anySet(mask, spv::ImageOperandsMask::Sample)) {
                 spv::IdImmediate imageOperand = { true, *opIt++ };
                 operands.push_back(imageOperand);
             }
-            if (mask & spv::ImageOperandsMask::Lod) {
+            if (anySet(mask, spv::ImageOperandsMask::Lod)) {
                 spv::IdImmediate imageOperand = { true, *opIt++ };
                 operands.push_back(imageOperand);
             }
-            if (mask & spv::ImageOperandsMask::MakeTexelVisibleKHR) {
+            if (anySet(mask, spv::ImageOperandsMask::MakeTexelVisibleKHR)) {
                 spv::IdImmediate imageOperand = { true, builder.makeUintConstant(TranslateMemoryScope(
                     TranslateCoherent(imageType))) };
                 operands.push_back(imageOperand);
@@ -8422,19 +8424,20 @@ spv::Id TGlslangToSpvTraverser::createAtomicOperation(glslang::TOperator op, spv
     }
 
     // Check for capabilities
-    unsigned semanticsImmediate = builder.getConstantScalar(semanticsId) | builder.getConstantScalar(semanticsId2);
-    if (semanticsImmediate & (spv::MemorySemanticsMask::MakeAvailableKHR |
-                              spv::MemorySemanticsMask::MakeVisibleKHR |
-                              spv::MemorySemanticsMask::OutputMemoryKHR |
-                              spv::MemorySemanticsMask::Volatile)) {
+    auto const semanticsImmediate = (spv::MemorySemanticsMask)(builder.getConstantScalar(semanticsId) | builder.getConstantScalar(semanticsId2));
+    if (anySet(semanticsImmediate, spv::MemorySemanticsMask::MakeAvailableKHR |
+                                   spv::MemorySemanticsMask::MakeVisibleKHR |
+                                   spv::MemorySemanticsMask::OutputMemoryKHR |
+                                   spv::MemorySemanticsMask::Volatile)) {
         builder.addCapability(spv::Capability::VulkanMemoryModelKHR);
     }
 
-    if (builder.getConstantScalar(scopeId) == spv::Scope::QueueFamily) {
+    auto const scope = (spv::Scope)builder.getConstantScalar(scopeId);
+    if (scope == spv::Scope::QueueFamily) {
         builder.addCapability(spv::Capability::VulkanMemoryModelKHR);
     }
 
-    if (glslangIntermediate->usingVulkanMemoryModel() && builder.getConstantScalar(scopeId) == spv::Scope::Device) {
+    if (glslangIntermediate->usingVulkanMemoryModel() && scope == spv::Scope::Device) {
         builder.addCapability(spv::Capability::VulkanMemoryModelDeviceScopeKHR);
     }
 
@@ -9247,15 +9250,15 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
             // This is for the extended controlBarrier function, with four operands.
             // The unextended barrier() goes through createNoArgOperation.
             assert(operands.size() == 4);
-            unsigned int executionScope = builder.getConstantScalar(operands[0]);
-            unsigned int memoryScope = builder.getConstantScalar(operands[1]);
-            unsigned int semantics = builder.getConstantScalar(operands[2]) | builder.getConstantScalar(operands[3]);
-            builder.createControlBarrier((spv::Scope)executionScope, (spv::Scope)memoryScope,
-                (spv::MemorySemanticsMask)semantics);
-            if (semantics & (spv::MemorySemanticsMask::MakeAvailableKHR |
-                             spv::MemorySemanticsMask::MakeVisibleKHR |
-                             spv::MemorySemanticsMask::OutputMemoryKHR |
-                             spv::MemorySemanticsMask::Volatile)) {
+            auto const executionScope = (spv::Scope)builder.getConstantScalar(operands[0]);
+            auto const memoryScope = (spv::Scope)builder.getConstantScalar(operands[1]);
+            auto const semantics = (spv::MemorySemanticsMask)(builder.getConstantScalar(operands[2]) | builder.getConstantScalar(operands[3]));
+            builder.createControlBarrier(executionScope, memoryScope,
+                semantics);
+            if (anySet(semantics, spv::MemorySemanticsMask::MakeAvailableKHR |
+                                  spv::MemorySemanticsMask::MakeVisibleKHR |
+                                  spv::MemorySemanticsMask::OutputMemoryKHR |
+                                  spv::MemorySemanticsMask::Volatile)) {
                 builder.addCapability(spv::Capability::VulkanMemoryModelKHR);
             }
             if (glslangIntermediate->usingVulkanMemoryModel() && (executionScope == spv::Scope::Device ||
@@ -9270,13 +9273,13 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
             // This is for the extended memoryBarrier function, with three operands.
             // The unextended memoryBarrier() goes through createNoArgOperation.
             assert(operands.size() == 3);
-            unsigned int memoryScope = builder.getConstantScalar(operands[0]);
-            unsigned int semantics = builder.getConstantScalar(operands[1]) | builder.getConstantScalar(operands[2]);
-            builder.createMemoryBarrier((spv::Scope)memoryScope, (spv::MemorySemanticsMask)semantics);
-            if (semantics & (spv::MemorySemanticsMask::MakeAvailableKHR |
-                             spv::MemorySemanticsMask::MakeVisibleKHR |
-                             spv::MemorySemanticsMask::OutputMemoryKHR |
-                             spv::MemorySemanticsMask::Volatile)) {
+            auto const memoryScope = (spv::Scope)builder.getConstantScalar(operands[0]);
+            auto const semantics = (spv::MemorySemanticsMask)(builder.getConstantScalar(operands[1]) | builder.getConstantScalar(operands[2]));
+            builder.createMemoryBarrier(memoryScope, semantics);
+            if (anySet(semantics, spv::MemorySemanticsMask::MakeAvailableKHR |
+                                  spv::MemorySemanticsMask::MakeVisibleKHR |
+                                  spv::MemorySemanticsMask::OutputMemoryKHR |
+                                  spv::MemorySemanticsMask::Volatile)) {
                 builder.addCapability(spv::Capability::VulkanMemoryModelKHR);
             }
             if (glslangIntermediate->usingVulkanMemoryModel() && memoryScope == spv::Scope::Device) {

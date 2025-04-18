@@ -48,6 +48,7 @@
 
 #include "disassemble.h"
 #include "doc.h"
+#include "spvUtil.h"
 
 namespace spv {
     extern "C" {
@@ -585,14 +586,14 @@ void SpirvStream::disassembleInstruction(Id resultId, Id /*typeId*/, Op opCode, 
                 uint32_t mask = stream[word-1];
                 // Aligned is the only memory access operand that uses an immediate
                 // value, and it is also the first operand that uses a value at all.
-                if (mask & MemoryAccessMask::Aligned) {
+                if (mask & (uint32_t)MemoryAccessMask::Aligned) {
                     disassembleImmediates(1);
                     numOperands--;
                     if (numOperands)
                         out << " ";
                 }
 
-                uint32_t bitCount = popcount(mask & (MemoryAccessMask::MakePointerAvailable | MemoryAccessMask::MakePointerVisible));
+                uint32_t bitCount = popcount(mask & (uint32_t)(MemoryAccessMask::MakePointerAvailable | MemoryAccessMask::MakePointerVisible));
                 disassembleIds(bitCount);
                 numOperands -= bitCount;
             }
