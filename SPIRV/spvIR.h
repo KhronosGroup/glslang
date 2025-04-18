@@ -77,8 +77,10 @@ const Decoration NoPrecision = Decoration::Max;
 
 POTENTIALLY_UNUSED
 const MemorySemanticsMask MemorySemanticsAllMemory =
-                (MemorySemanticsMask)(MemorySemanticsMask::UniformMemory | MemorySemanticsMask::WorkgroupMemory |
-                          MemorySemanticsMask::AtomicCounterMemory | MemorySemanticsMask::ImageMemory);
+                (MemorySemanticsMask)(MemorySemanticsMask::UniformMemory |
+                                      MemorySemanticsMask::WorkgroupMemory |
+                                      MemorySemanticsMask::AtomicCounterMemory | 
+                                      MemorySemanticsMask::ImageMemory);
 
 struct IdImmediate {
     bool isId;      // true if word is an Id, false if word is an immediate
@@ -264,8 +266,8 @@ public:
         if (instructions.size() < 2) return nullptr;
         const Instruction* nextToLast = (instructions.cend() - 2)->get();
         switch (nextToLast->getOpCode()) {
-        case Op::OpSelectionMerge:
-        case Op::OpLoopMerge:
+            case Op::OpSelectionMerge:
+            case Op::OpLoopMerge:
                 return nextToLast;
             default:
                 return nullptr;
@@ -305,7 +307,7 @@ public:
     bool isTerminated() const
     {
         switch (instructions.back()->getOpCode()) {
-            case Op::OpBranch:
+        case Op::OpBranch:
         case Op::OpBranchConditional:
         case Op::OpSwitch:
         case Op::OpKill:

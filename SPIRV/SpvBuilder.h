@@ -298,40 +298,31 @@ public:
     bool isTensorView(Id resultId)const { return isTensorViewType(getTypeId(resultId)); }
 
     bool isBoolType(Id typeId)
-    {
-        return groupedTypes[Op::OpTypeBool].size() > 0 && typeId == groupedTypes[Op::OpTypeBool].back()->getResultId();
-    }
+        { return groupedTypes[Op::OpTypeBool].size() > 0 && typeId == groupedTypes[Op::OpTypeBool].back()->getResultId(); }
     bool isIntType(Id typeId)          const
-    {
-        return getTypeClass(typeId) == Op::OpTypeInt && module.getInstruction(typeId)->getImmediateOperand(1) != 0;
-    }
+        { return getTypeClass(typeId) == Op::OpTypeInt && module.getInstruction(typeId)->getImmediateOperand(1) != 0; }
     bool isUintType(Id typeId)         const
-    {
-        return getTypeClass(typeId) == Op::OpTypeInt && module.getInstruction(typeId)->getImmediateOperand(1) == 0;
-    }
-    bool isFloatType(Id typeId) const { return getTypeClass(typeId) == Op::OpTypeFloat; }
-    bool isPointerType(Id typeId) const { return getTypeClass(typeId) == Op::OpTypePointer; }
+        { return getTypeClass(typeId) == Op::OpTypeInt && module.getInstruction(typeId)->getImmediateOperand(1) == 0; }
+    bool isFloatType(Id typeId)        const { return getTypeClass(typeId) == Op::OpTypeFloat; }
+    bool isPointerType(Id typeId)      const { return getTypeClass(typeId) == Op::OpTypePointer; }
     bool isScalarType(Id typeId)       const
-    {
-        return getTypeClass(typeId) == Op::OpTypeFloat || getTypeClass(typeId) == Op::OpTypeInt ||
-               getTypeClass(typeId) == Op::OpTypeBool;
-    }
-    bool isVectorType(Id typeId) const { return getTypeClass(typeId) == Op::OpTypeVector; }
-    bool isMatrixType(Id typeId) const { return getTypeClass(typeId) == Op::OpTypeMatrix; }
-    bool isStructType(Id typeId) const { return getTypeClass(typeId) == Op::OpTypeStruct; }
-    bool isArrayType(Id typeId) const { return getTypeClass(typeId) == Op::OpTypeArray; }
+        { return getTypeClass(typeId) == Op::OpTypeFloat || getTypeClass(typeId) == Op::OpTypeInt ||
+          getTypeClass(typeId) == Op::OpTypeBool; }
+    bool isVectorType(Id typeId)       const { return getTypeClass(typeId) == Op::OpTypeVector; }
+    bool isMatrixType(Id typeId)       const { return getTypeClass(typeId) == Op::OpTypeMatrix; }
+    bool isStructType(Id typeId)       const { return getTypeClass(typeId) == Op::OpTypeStruct; }
+    bool isArrayType(Id typeId)        const { return getTypeClass(typeId) == Op::OpTypeArray; }
     bool isCooperativeMatrixType(Id typeId)const
     {
-        return getTypeClass(typeId) == Op::OpTypeCooperativeMatrixKHR ||
-               getTypeClass(typeId) == Op::OpTypeCooperativeMatrixNV;
+        return getTypeClass(typeId) == Op::OpTypeCooperativeMatrixKHR || getTypeClass(typeId) == Op::OpTypeCooperativeMatrixNV;
     }
     bool isTensorViewType(Id typeId) const { return getTypeClass(typeId) == Op::OpTypeTensorViewNV; }
     bool isCooperativeVectorType(Id typeId) const { return getTypeClass(typeId) == Op::OpTypeCooperativeVectorNV; }
     bool isAggregateType(Id typeId)    const
         { return isArrayType(typeId) || isStructType(typeId) || isCooperativeMatrixType(typeId); }
-        bool isImageType(Id typeId) const { return getTypeClass(typeId) == Op::OpTypeImage; }
-        bool isSamplerType(Id typeId) const { return getTypeClass(typeId) == Op::OpTypeSampler; }
-        bool isSampledImageType(Id typeId) const { return getTypeClass(typeId) == Op::OpTypeSampledImage; }
+    bool isImageType(Id typeId) const { return getTypeClass(typeId) == Op::OpTypeImage; }
+    bool isSamplerType(Id typeId) const { return getTypeClass(typeId) == Op::OpTypeSampler; }
+    bool isSampledImageType(Id typeId) const { return getTypeClass(typeId) == Op::OpTypeSampledImage; }
     bool containsType(Id typeId, Op typeOp, unsigned int width) const;
     bool containsPhysicalStorageBufferOrArray(Id typeId) const;
 

@@ -767,7 +767,7 @@ static const char* GLSLextNVGetDebugNames(const char* name, unsigned entrypoint)
         strcmp(name, spv::E_SPV_NV_shader_image_footprint) == 0) {
         switch (entrypoint) {
         // NV builtins
-            case BuiltIn::ViewportMaskNV:                 return "ViewportMaskNV";
+        case BuiltIn::ViewportMaskNV:                 return "ViewportMaskNV";
         case BuiltIn::SecondaryPositionNV:            return "SecondaryPositionNV";
         case BuiltIn::SecondaryViewportMaskNV:        return "SecondaryViewportMaskNV";
         case BuiltIn::PositionPerViewNV:              return "PositionPerViewNV";

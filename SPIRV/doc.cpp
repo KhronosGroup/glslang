@@ -133,10 +133,8 @@ const char* MemoryString(int mem)
     switch (mem) {
     case MemoryModel::Simple:     return "Simple";
     case MemoryModel::GLSL450:    return "GLSL450";
-    case MemoryModel::OpenCL:
-        return "OpenCL";
-    case MemoryModel::VulkanKHR:
-        return "VulkanKHR";
+    case MemoryModel::OpenCL:     return "OpenCL";
+    case MemoryModel::VulkanKHR:  return "VulkanKHR";
 
     default: return "Bad";
     }
@@ -746,7 +744,7 @@ const int LoopControlCeiling = LoopControlShift::PartialCount + 1;
 const char* LoopControlString(int cont)
 {
     switch (cont) {
-        case LoopControlShift::Unroll:             return "Unroll";
+    case LoopControlShift::Unroll:             return "Unroll";
     case LoopControlShift::DontUnroll:         return "DontUnroll";
     case LoopControlShift::DependencyInfinite: return "DependencyInfinite";
     case LoopControlShift::DependencyLength:   return "DependencyLength";
@@ -802,7 +800,7 @@ const int MemoryAccessCeiling = 6;
 const char* MemoryAccessString(int mem)
 {
     switch (mem) {
-        case MemoryAccessShift::Volatile:                 return "Volatile";
+    case MemoryAccessShift::Volatile:                 return "Volatile";
     case MemoryAccessShift::Aligned:                  return "Aligned";
     case MemoryAccessShift::Nontemporal:              return "Nontemporal";
     case MemoryAccessShift::MakePointerAvailableKHR:  return "MakePointerAvailableKHR";
@@ -818,7 +816,7 @@ const int CooperativeMatrixOperandsCeiling = 6;
 const char* CooperativeMatrixOperandsString(int op)
 {
     switch (op) {
-        case CooperativeMatrixOperandsShift::MatrixASignedComponentsKHR:  return "ASignedComponentsKHR";
+    case CooperativeMatrixOperandsShift::MatrixASignedComponentsKHR:  return "ASignedComponentsKHR";
     case CooperativeMatrixOperandsShift::MatrixBSignedComponentsKHR:  return "BSignedComponentsKHR";
     case CooperativeMatrixOperandsShift::MatrixCSignedComponentsKHR:  return "CSignedComponentsKHR";
     case CooperativeMatrixOperandsShift::MatrixResultSignedComponentsKHR:  return "ResultSignedComponentsKHR";
@@ -833,8 +831,8 @@ const int TensorAddressingOperandsCeiling = 3;
 const char* TensorAddressingOperandsString(int op)
 {
     switch (op) {
-        case TensorAddressingOperandsShift::TensorView:  return "TensorView";
-        case TensorAddressingOperandsShift::DecodeFunc:  return "DecodeFunc";
+    case TensorAddressingOperandsShift::TensorView:  return "TensorView";
+    case TensorAddressingOperandsShift::DecodeFunc:  return "DecodeFunc";
 
     default: return "Bad";
     }
@@ -858,7 +856,7 @@ const char* GroupOperationString(int gop)
 
     switch (gop)
     {
-        case GroupOperation::Reduce:  return "Reduce";
+    case GroupOperation::Reduce:  return "Reduce";
     case GroupOperation::InclusiveScan:  return "InclusiveScan";
     case GroupOperation::ExclusiveScan:  return "ExclusiveScan";
     case GroupOperation::ClusteredReduce:  return "ClusteredReduce";
@@ -1448,10 +1446,8 @@ const char* OpcodeString(int op)
     case 320: return "OpImageSparseRead";
 
     case Op::OpModuleProcessed: return "OpModuleProcessed";
-    case Op::OpExecutionModeId:
-        return "OpExecutionModeId";
-    case Op::OpDecorateId:
-        return "OpDecorateId";
+    case Op::OpExecutionModeId: return "OpExecutionModeId";
+    case Op::OpDecorateId:      return "OpDecorateId";
 
     case 333: return "OpGroupNonUniformElect";
     case 334: return "OpGroupNonUniformAll";
@@ -1488,8 +1484,7 @@ const char* OpcodeString(int op)
     case 365: return "OpGroupNonUniformQuadBroadcast";
     case 366: return "OpGroupNonUniformQuadSwap";
 
-    case Op::OpTerminateInvocation:
-        return "OpTerminateInvocation";
+    case Op::OpTerminateInvocation: return "OpTerminateInvocation";
 
     case 4421: return "OpSubgroupBallotKHR";
     case 4422: return "OpSubgroupFirstInvocationKHR";
@@ -1499,22 +1494,15 @@ const char* OpcodeString(int op)
     case 4432: return "OpSubgroupReadInvocationKHR";
     case 4433: return "OpExtInstWithForwardRefsKHR";
 
-    case Op::OpGroupNonUniformQuadAllKHR:
-        return "OpGroupNonUniformQuadAllKHR";
-    case Op::OpGroupNonUniformQuadAnyKHR:
-        return "OpGroupNonUniformQuadAnyKHR";
+    case Op::OpGroupNonUniformQuadAllKHR: return "OpGroupNonUniformQuadAllKHR";
+    case Op::OpGroupNonUniformQuadAnyKHR: return "OpGroupNonUniformQuadAnyKHR";
 
-    case Op::OpAtomicFAddEXT:
-        return "OpAtomicFAddEXT";
-    case Op::OpAtomicFMinEXT:
-        return "OpAtomicFMinEXT";
-    case Op::OpAtomicFMaxEXT:
-        return "OpAtomicFMaxEXT";
+    case Op::OpAtomicFAddEXT: return "OpAtomicFAddEXT";
+    case Op::OpAtomicFMinEXT: return "OpAtomicFMinEXT";
+    case Op::OpAtomicFMaxEXT: return "OpAtomicFMaxEXT";
 
-    case Op::OpAssumeTrueKHR:
-        return "OpAssumeTrueKHR";
-    case Op::OpExpectKHR:
-        return "OpExpectKHR";
+    case Op::OpAssumeTrueKHR: return "OpAssumeTrueKHR";
+    case Op::OpExpectKHR: return "OpExpectKHR";
 
     case 5000: return "OpGroupIAddNonUniformAMD";
     case 5001: return "OpGroupFAddNonUniformAMD";

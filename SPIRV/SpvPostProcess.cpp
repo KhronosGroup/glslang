@@ -84,7 +84,7 @@ void Builder::postProcessType(const Instruction& inst, Id typeId)
             StorageClass storageClass = getStorageClass(inst.getIdOperand(0));
             if (width == 8) {
                 switch (storageClass) {
-                    case StorageClass::PhysicalStorageBufferEXT:
+                case StorageClass::PhysicalStorageBufferEXT:
                 case StorageClass::Uniform:
                 case StorageClass::StorageBuffer:
                 case StorageClass::PushConstant:
@@ -95,7 +95,7 @@ void Builder::postProcessType(const Instruction& inst, Id typeId)
                 }
             } else if (width == 16) {
                 switch (storageClass) {
-                    case StorageClass::PhysicalStorageBufferEXT:
+                case StorageClass::PhysicalStorageBufferEXT:
                 case StorageClass::Uniform:
                 case StorageClass::StorageBuffer:
                 case StorageClass::PushConstant:
@@ -154,7 +154,7 @@ void Builder::postProcessType(const Instruction& inst, Id typeId)
             }
         }
         break;
-        Op::OpExtInst :
+    case Op::OpExtInst :
         switch (inst.getImmediateOperand(1)) {
         case GLSLstd450Frexp:
         case GLSLstd450FrexpStruct:
@@ -283,7 +283,8 @@ void Builder::postProcess(Instruction& inst)
                         // get the next member type
                         typeId = type->getIdOperand(c);
                         type = module.getInstruction(typeId);
-                    } else if (type->getOpCode() == Op::OpTypeArray || type->getOpCode() == Op::OpTypeRuntimeArray) {
+                    } else if (type->getOpCode() == Op::OpTypeArray || 
+                               type->getOpCode() == Op::OpTypeRuntimeArray) {
                         const auto function = [&](const std::unique_ptr<Instruction>& decoration) {
                             if (decoration.get()->getOpCode() == Op::OpDecorate &&
                                 decoration.get()->getIdOperand(0) == typeId &&
@@ -496,7 +497,7 @@ void Builder::postProcessSamplers()
     for (auto f: module.getFunctions()) {
 	for (auto b: f->getBlocks()) {
 	    for (auto &i: b->getInstructions()) {
-                if (i->getOpCode() == spv::Op::OpSampledImage) {
+        if (i->getOpCode() == spv::Op::OpSampledImage) {
 		    sampledImageInstrs[i->getResultId()] = i.get();
 		}
 	    }
@@ -516,7 +517,8 @@ void Builder::postProcessSamplers()
                         Instruction *opSampImg = sampledImageInstrs[i->getIdOperand(opnum)];
                         if (i->getBlock() != opSampImg->getBlock()) {
                             Instruction *newInstr = new Instruction(getUniqueId(),
-                                                                    opSampImg->getTypeId(), spv::Op::OpSampledImage);
+                                                                    opSampImg->getTypeId(),
+                                                                    spv::Op::OpSampledImage);
                             newInstr->addIdOperand(opSampImg->getIdOperand(0));
                             newInstr->addIdOperand(opSampImg->getIdOperand(1));
                             newInstr->setBlock(b);

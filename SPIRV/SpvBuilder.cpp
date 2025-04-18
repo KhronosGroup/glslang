@@ -829,8 +829,7 @@ Id Builder::makeImageType(Id sampledType, Dim dim, bool depth, bool arrayed, boo
                 case Dim::Dim1D: return "type.1d.image";
                 case Dim::Dim2D: return "type.2d.image";
                 case Dim::Dim3D: return "type.3d.image";
-                case Dim::Cube:
-                    return "type.cube.image";
+                case Dim::Cube:  return "type.cube.image";
                 default: return "type.image";
             }
         };
@@ -1172,7 +1171,7 @@ Id Builder::makeForwardPointerDebugType(StorageClass storageClass)
 
     this->addExtension(spv::E_SPV_KHR_relaxed_extended_instruction);
 
-    Instruction* type = new Instruction(getUniqueId(), makeVoidType(), Op::OpExtInstWithForwardRefsKHR);
+    Instruction *type = new Instruction(getUniqueId(), makeVoidType(), Op::OpExtInstWithForwardRefsKHR);
     type->addIdOperand(nonSemanticShaderDebugInfo);
     type->addImmediateOperand(NonSemanticShaderDebugInfo100DebugTypePointer);
     type->addIdOperand(type->getResultId());
@@ -1623,7 +1622,7 @@ Id Builder::findScalarConstant(Op typeClass, Op opcode, Id typeId, unsigned v1, 
 bool Builder::isConstantOpCode(Op opcode) const
 {
     switch (opcode) {
-        case Op::OpUndef:
+    case Op::OpUndef:
     case Op::OpConstantTrue:
     case Op::OpConstantFalse:
     case Op::OpConstant:
@@ -1647,7 +1646,7 @@ bool Builder::isConstantOpCode(Op opcode) const
 bool Builder::isSpecConstantOpCode(Op opcode) const
 {
     switch (opcode) {
-        case Op::OpSpecConstantTrue:
+    case Op::OpSpecConstantTrue:
     case Op::OpSpecConstantFalse:
     case Op::OpSpecConstant:
     case Op::OpSpecConstantComposite:
@@ -1687,8 +1686,7 @@ Id Builder::makeBoolConstant(bool b, bool specConstant)
 {
     Id typeId = makeBoolType();
     Instruction* constant;
-    Op opcode = specConstant ? (b ? Op::OpSpecConstantTrue : Op::OpSpecConstantFalse)
-                             : (b ? Op::OpConstantTrue : Op::OpConstantFalse);
+    Op opcode = specConstant ? (b ? Op::OpSpecConstantTrue : Op::OpSpecConstantFalse) : (b ? Op::OpConstantTrue : Op::OpConstantFalse);
 
     // See if we already made it. Applies only to regular constants, because specialization constants
     // must remain distinct for the purpose of applying a SpecId decoration.
@@ -1985,9 +1983,9 @@ Id Builder::makeCompositeConstant(Id typeId, const std::vector<Id>& members, boo
         }
     }
 
-    Op opcode = replicate
-                    ? (specConstant ? Op::OpSpecConstantCompositeReplicateEXT : Op::OpConstantCompositeReplicateEXT)
-                          : (specConstant ? Op::OpSpecConstantComposite : Op::OpConstantComposite);
+    Op opcode = replicate ?
+        (specConstant ? Op::OpSpecConstantCompositeReplicateEXT : Op::OpConstantCompositeReplicateEXT) :
+        (specConstant ? Op::OpSpecConstantComposite : Op::OpConstantComposite);
 
     switch (typeClass) {
     case Op::OpTypeVector:
@@ -2658,7 +2656,7 @@ Id Builder::createVariable(Decoration precision, StorageClass storageClass, Id t
 // Comments in header
 Id Builder::createUndefined(Id type)
 {
-    Instruction* inst = new Instruction(getUniqueId(), type, Op::OpUndef);
+  Instruction* inst = new Instruction(getUniqueId(), type, Op::OpUndef);
   addInstruction(std::unique_ptr<Instruction>(inst));
   return inst->getResultId();
 }
@@ -2668,7 +2666,7 @@ spv::MemoryAccessMask Builder::sanitizeMemoryAccessForStorageClass(spv::MemoryAc
     const
 {
     switch (sc) {
-        case spv::StorageClass::Uniform:
+    case spv::StorageClass::Uniform:
     case spv::StorageClass::Workgroup:
     case spv::StorageClass::StorageBuffer:
     case spv::StorageClass::PhysicalStorageBufferEXT:
@@ -2676,8 +2674,8 @@ spv::MemoryAccessMask Builder::sanitizeMemoryAccessForStorageClass(spv::MemoryAc
     default:
         memoryAccess = spv::MemoryAccessMask(memoryAccess &
                         ~(spv::MemoryAccessMask::MakePointerAvailableKHR |
-                                                              spv::MemoryAccessMask::MakePointerVisibleKHR |
-                                                              spv::MemoryAccessMask::NonPrivatePointerKHR));
+                          spv::MemoryAccessMask::MakePointerVisibleKHR |
+                          spv::MemoryAccessMask::NonPrivatePointerKHR));
         break;
     }
     return memoryAccess;
@@ -2769,8 +2767,7 @@ Id Builder::createCooperativeMatrixLengthKHR(Id type)
     // Generate code for spec constants if in spec constant operation
     // generation mode.
     if (generatingOpCodeForSpecConst) {
-        return createSpecConstantOp(Op::OpCooperativeMatrixLengthKHR, intType, std::vector<Id>(1, type),
-                                    std::vector<Id>());
+        return createSpecConstantOp(Op::OpCooperativeMatrixLengthKHR, intType, std::vector<Id>(1, type), std::vector<Id>());
     }
 
     Instruction* length = new Instruction(getUniqueId(), intType, Op::OpCooperativeMatrixLengthKHR);
@@ -2787,8 +2784,7 @@ Id Builder::createCooperativeMatrixLengthNV(Id type)
     // Generate code for spec constants if in spec constant operation
     // generation mode.
     if (generatingOpCodeForSpecConst) {
-        return createSpecConstantOp(Op::OpCooperativeMatrixLengthNV, intType, std::vector<Id>(1, type),
-                                    std::vector<Id>());
+        return createSpecConstantOp(Op::OpCooperativeMatrixLengthNV, intType, std::vector<Id>(1, type), std::vector<Id>());
     }
 
     Instruction* length = new Instruction(getUniqueId(), intType, Op::OpCooperativeMatrixLengthNV);
@@ -3292,9 +3288,9 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool sparse, 
                 opCode = Op::OpImageDrefGather;
         else
             if (sparse)
-            opCode = Op::OpImageSparseGather;
+                opCode = Op::OpImageSparseGather;
             else
-            opCode = Op::OpImageGather;
+                opCode = Op::OpImageGather;
     } else if (explicitLod) {
         if (parameters.Dref) {
             if (proj)
@@ -3304,9 +3300,9 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool sparse, 
                     opCode = Op::OpImageSampleProjDrefExplicitLod;
             else
                 if (sparse)
-                opCode = Op::OpImageSparseSampleDrefExplicitLod;
+                    opCode = Op::OpImageSparseSampleDrefExplicitLod;
                 else
-                opCode = Op::OpImageSampleDrefExplicitLod;
+                    opCode = Op::OpImageSampleDrefExplicitLod;
         } else {
             if (proj)
                 if (sparse)
@@ -3315,9 +3311,9 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool sparse, 
                     opCode = Op::OpImageSampleProjExplicitLod;
             else
                 if (sparse)
-                opCode = Op::OpImageSparseSampleExplicitLod;
+                    opCode = Op::OpImageSparseSampleExplicitLod;
                 else
-                opCode = Op::OpImageSampleExplicitLod;
+                    opCode = Op::OpImageSampleExplicitLod;
         }
     } else {
         if (parameters.Dref) {
@@ -3328,9 +3324,9 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool sparse, 
                     opCode = Op::OpImageSampleProjDrefImplicitLod;
             else
                 if (sparse)
-                opCode = Op::OpImageSparseSampleDrefImplicitLod;
+                    opCode = Op::OpImageSparseSampleDrefImplicitLod;
                 else
-                opCode = Op::OpImageSampleDrefImplicitLod;
+                    opCode = Op::OpImageSampleDrefImplicitLod;
         } else {
             if (proj)
                 if (sparse)
@@ -3339,9 +3335,9 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool sparse, 
                     opCode = Op::OpImageSampleProjImplicitLod;
             else
                 if (sparse)
-                opCode = Op::OpImageSparseSampleImplicitLod;
+                    opCode = Op::OpImageSparseSampleImplicitLod;
                 else
-                opCode = Op::OpImageSampleImplicitLod;
+                    opCode = Op::OpImageSampleImplicitLod;
         }
     }
 
@@ -3530,8 +3526,7 @@ Id Builder::createCompositeCompare(Decoration precision, Id value1, Id value2, b
         if (constituent == 0)
             resultId = subResultId;
         else
-            resultId = setPrecision(
-                createBinOp(equal ? Op::OpLogicalAnd : Op::OpLogicalOr, boolType, resultId, subResultId),
+            resultId = setPrecision(createBinOp(equal ? Op::OpLogicalAnd : Op::OpLogicalOr, boolType, resultId, subResultId),
                                     precision);
     }
 

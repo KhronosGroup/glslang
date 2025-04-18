@@ -75,21 +75,16 @@ namespace spv {
         static const int maxCount = 1<<30;
 
         switch (opCode) {
-        case spv::Op::OpTypeFloat: // fall through...
-        case spv::Op::OpTypePointer:
-            return range_t(2, 3);
-        case spv::Op::OpTypeInt:
-            return range_t(2, 4);
+        case spv::Op::OpTypeFloat:    // fall through...
+        case spv::Op::OpTypePointer:  return range_t(2, 3);
+        case spv::Op::OpTypeInt:      return range_t(2, 4);
         // TODO: case spv::OpTypeImage:
         // TODO: case spv::OpTypeSampledImage:
-        case spv::Op::OpTypeSampler:
-            return range_t(3, 8);
-        case spv::Op::OpTypeVector: // fall through
-        case spv::Op::OpTypeMatrix: // ...
-        case spv::Op::OpTypePipe:
-            return range_t(3, 4);
-        case spv::Op::OpConstant:
-            return range_t(3, maxCount);
+        case spv::Op::OpTypeSampler:  return range_t(3, 8);
+        case spv::Op::OpTypeVector:   // fall through
+        case spv::Op::OpTypeMatrix:   // ...
+        case spv::Op::OpTypePipe:     return range_t(3, 4);
+        case spv::Op::OpConstant:     return range_t(3, maxCount);
         default:                      return range_t(0, 0);
         }
     }
@@ -102,7 +97,7 @@ namespace spv {
             return range_t(1, 2);
 
         switch (opCode) {
-            case spv::Op::OpTypeVector:       // fall through
+        case spv::Op::OpTypeVector:       // fall through
         case spv::Op::OpTypeMatrix:       // ...
         case spv::Op::OpTypeSampler:      // ...
         case spv::Op::OpTypeArray:        // ...
@@ -120,7 +115,7 @@ namespace spv {
         static const int maxCount = 1<<30;
 
         switch (opCode) {
-            case spv::Op::OpTypeArray:         // fall through...
+        case spv::Op::OpTypeArray:         // fall through...
         case spv::Op::OpTypeRuntimeArray:  return range_t(3, 4);
         case spv::Op::OpConstantComposite: return range_t(3, maxCount);
         default:                       return range_t(0, 0);
@@ -140,8 +135,7 @@ namespace spv {
 
         switch (opCode) {
         case spv::Op::OpTypeInt:   // fall through...
-        case spv::Op::OpTypeFloat:
-            return (spv[typeStart + 2] + 31) / 32;
+        case spv::Op::OpTypeFloat: return (spv[typeStart + 2] + 31) / 32;
         default:
             return 0;
         }
@@ -198,9 +192,8 @@ namespace spv {
         case spv::Op::OpSelectionMerge:
         case spv::Op::OpLabel:
         case spv::Op::OpFunction:
-        case spv::Op::OpFunctionEnd:
-            return true;
-        default:                    return false;
+        case spv::Op::OpFunctionEnd: return true;
+        default:                     return false;
         }
     }
 
@@ -208,7 +201,7 @@ namespace spv {
     bool spirvbin_t::isTypeOp(spv::Op opCode) const
     {
         switch (opCode) {
-            case spv::Op::OpTypeVoid:
+        case spv::Op::OpTypeVoid:
         case spv::Op::OpTypeBool:
         case spv::Op::OpTypeInt:
         case spv::Op::OpTypeFloat:
@@ -228,7 +221,7 @@ namespace spv {
         case spv::Op::OpTypeQueue:
         case spv::Op::OpTypeSampledImage:
         case spv::Op::OpTypePipe:         return true;
-        default:                      return false;
+        default:                          return false;
         }
     }
 
@@ -856,7 +849,7 @@ namespace spv {
                     fnId = asId(start + 2);
                     break;
 
-                    case spv::Op::OpImageSampleImplicitLod:
+                case spv::Op::OpImageSampleImplicitLod:
                 case spv::Op::OpImageSampleExplicitLod:
                 case spv::Op::OpImageSampleDrefImplicitLod:
                 case spv::Op::OpImageSampleDrefExplicitLod:
@@ -923,10 +916,10 @@ namespace spv {
                     spv[start+3] == spv::StorageClass::Input))
                     fnLocalVars.insert(asId(start+2));
 
-                if (opCode == spv::Op::OpAccessChain && fnLocalVars.count(asId(start + 3)) > 0)
+                if (opCode == spv::Op::OpAccessChain && fnLocalVars.count(asId(start+3)) > 0)
                     fnLocalVars.insert(asId(start+2));
 
-                if (opCode == spv::Op::OpLoad && fnLocalVars.count(asId(start + 3)) > 0) {
+                if (opCode == spv::Op::OpLoad && fnLocalVars.count(asId(start+3)) > 0) {
                     idMap[asId(start+2)] = asId(start+3);
                     stripInst(start);
                 }
@@ -951,7 +944,7 @@ namespace spv {
                     (spv[start+3] == spv::StorageClass::Output))
                     fnLocalVars.insert(asId(start+2));
 
-                if (opCode == spv::Op::OpStore && fnLocalVars.count(asId(start + 1)) > 0) {
+                if (opCode == spv::Op::OpStore && fnLocalVars.count(asId(start+1)) > 0) {
                     idMap[asId(start+2)] = asId(start+1);
                     stripInst(start);
                 }
@@ -992,15 +985,13 @@ namespace spv {
                     ++blockNum;
 
                 // Add local variables to the map
-                if ((opCode == spv::Op::OpVariable && spv[start + 3] == spv::StorageClass::Function &&
-                     asWordCount(start) == 4)) {
+                if ((opCode == spv::Op::OpVariable && spv[start + 3] == spv::StorageClass::Function && asWordCount(start) == 4)) {
                     fnLocalVars.insert(asId(start+2));
                     return true;
                 }
 
                 // Ignore process vars referenced via access chain
-                if ((opCode == spv::Op::OpAccessChain || opCode == spv::Op::OpInBoundsAccessChain) &&
-                    fnLocalVars.count(asId(start + 3)) > 0) {
+                if ((opCode == spv::Op::OpAccessChain || opCode == spv::Op::OpInBoundsAccessChain) && fnLocalVars.count(asId(start+3)) > 0) {
                     fnLocalVars.erase(asId(start+3));
                     idMap.erase(asId(start+3));
                     return true;
@@ -1032,7 +1023,7 @@ namespace spv {
                     return true;
                 }
 
-                if (opCode == spv::Op::OpStore && fnLocalVars.count(asId(start + 1)) > 0) {
+                if (opCode == spv::Op::OpStore && fnLocalVars.count(asId(start+1)) > 0) {
                     const spv::Id varId = asId(start+1);
 
                     if (idMap.find(varId) == idMap.end()) {
@@ -1077,7 +1068,7 @@ namespace spv {
 
         process(
             [&](spv::Op opCode, unsigned start) {
-                if (opCode == spv::Op::OpLoad && fnLocalVars.count(asId(start + 3)) > 0)
+                if (opCode == spv::Op::OpLoad && fnLocalVars.count(asId(start+3)) > 0)
                     idMap[asId(start+2)] = idMap[asId(start+3)];
                 return false;
             },
@@ -1103,9 +1094,9 @@ namespace spv {
         // Remove the load/store/variables for the ones we've discovered
         process(
             [&](spv::Op opCode, unsigned start) {
-                if ((opCode == spv::Op::OpLoad && fnLocalVars.count(asId(start + 3)) > 0) ||
-                    (opCode == spv::Op::OpStore && fnLocalVars.count(asId(start + 1)) > 0) ||
-                    (opCode == spv::Op::OpVariable && fnLocalVars.count(asId(start + 2)) > 0)) {
+                if ((opCode == spv::Op::OpLoad && fnLocalVars.count(asId(start+3)) > 0) ||
+                    (opCode == spv::Op::OpStore && fnLocalVars.count(asId(start+1)) > 0) ||
+                    (opCode == spv::Op::OpVariable && fnLocalVars.count(asId(start+2)) > 0)) {
 
                     stripInst(start);
                     return true;
@@ -1353,14 +1344,10 @@ namespace spv {
         const spv::Op  opCode      = asOpCode(typeStart);
 
         switch (opCode) {
-        case spv::Op::OpTypeVoid:
-            return 0;
-        case spv::Op::OpTypeBool:
-            return 1;
-        case spv::Op::OpTypeInt:
-            return 3 + (spv[typeStart + 3]);
-        case spv::Op::OpTypeFloat:
-            return 5;
+        case spv::Op::OpTypeVoid:         return 0;
+        case spv::Op::OpTypeBool:         return 1;
+        case spv::Op::OpTypeInt:          return 3 + (spv[typeStart+3]);
+        case spv::Op::OpTypeFloat:        return 5;
         case spv::Op::OpTypeVector:
             return 6 + hashType(idPos(spv[typeStart+2])) * (spv[typeStart+3] - 1);
         case spv::Op::OpTypeMatrix:
@@ -1388,10 +1375,8 @@ namespace spv {
                 return hash;
             }
 
-        case spv::Op::OpTypeOpaque:
-                return 6000 + spv[typeStart + 2];
-        case spv::Op::OpTypePointer:
-            return 100000 + hashType(idPos(spv[typeStart + 3]));
+        case spv::Op::OpTypeOpaque:         return 6000 + spv[typeStart+2];
+        case spv::Op::OpTypePointer:        return 100000  + hashType(idPos(spv[typeStart+3]));
         case spv::Op::OpTypeFunction:
             {
                 std::uint32_t hash = 200000;
