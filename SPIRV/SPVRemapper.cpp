@@ -440,11 +440,11 @@ namespace spv {
                 unsigned word = start+1;
                 spv::Id  typeId = spv::NoResult;
 
-                if (spv::InstructionDesc[opCode].hasType())
+                if (spv::InstructionDesc[enumCast(opCode)].hasType())
                     typeId = asId(word++);
 
                 // If there's a result ID, remember the size of its type
-                if (spv::InstructionDesc[opCode].hasResult()) {
+                if (spv::InstructionDesc[enumCast(opCode)].hasResult()) {
                     const spv::Id resultId = asId(word++);
                     idPosR[resultId] = start;
 
@@ -547,12 +547,12 @@ namespace spv {
             return nextInst;
 
         // Read type and result ID from instruction desc table
-        if (spv::InstructionDesc[opCode].hasType()) {
+        if (spv::InstructionDesc[enumCast(opCode)].hasType()) {
             idFn(asId(word++));
             --numOperands;
         }
 
-        if (spv::InstructionDesc[opCode].hasResult()) {
+        if (spv::InstructionDesc[enumCast(opCode)].hasResult()) {
             idFn(asId(word++));
             --numOperands;
         }
@@ -591,7 +591,7 @@ namespace spv {
                 }
             }
 
-            switch (spv::InstructionDesc[opCode].operands.getClass(op)) {
+            switch (spv::InstructionDesc[enumCast(opCode)].operands.getClass(op)) {
             case spv::OperandId:
             case spv::OperandScope:
             case spv::OperandMemorySemantics:
@@ -808,8 +808,8 @@ namespace spv {
                 fnId = spv::NoResult;
 
             if (fnId != spv::NoResult) { // if inside a function
-                if (spv::InstructionDesc[opCode].hasResult()) {
-                    const unsigned word    = start + (spv::InstructionDesc[opCode].hasType() ? 2 : 1);
+                if (spv::InstructionDesc[enumCast(opCode)].hasResult()) {
+                    const unsigned word    = start + (spv::InstructionDesc[enumCast(opCode)].hasType() ? 2 : 1);
                     const spv::Id  resId   = asId(word);
                     std::uint32_t  hashval = fnId * 17; // small prime
 
@@ -870,7 +870,7 @@ namespace spv {
                 case spv::Op::OpStore:
                 case spv::Op::OpCompositeConstruct:
                 case spv::Op::OpFunctionCall:
-                    ++opCounter[opCode];
+                    ++opCounter[enumCast(opCode)];
                     idCounter = 0;
                     thisOpCode = opCode;
                     break;
@@ -888,8 +888,8 @@ namespace spv {
                         // Explicitly cast operands to unsigned int to avoid integer
                         // promotion to signed int followed by integer overflow,
                         // which would result in undefined behavior.
-                        static_cast<unsigned int>(opCounter[thisOpCode])
-                        * thisOpCode
+                        static_cast<unsigned int>(opCounter[enumCast(thisOpCode)])
+                        * enumCast(thisOpCode)
                         * 50047
                         + idCounter
                         + static_cast<unsigned int>(fnId) * 117;

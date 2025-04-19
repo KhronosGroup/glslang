@@ -2,6 +2,8 @@
 #ifndef spvUtil_H
 #define spvUtil_H
 
+#include <type_traits>
+
 #include "spirv.hpp11"
 
 namespace spv {
@@ -39,6 +41,12 @@ __inline void addMask(uint32_t& word, spv::TensorAddressingOperandsMask mask) { 
 __inline void addMask(spv::CooperativeMatrixOperandsMask& word, spv::CooperativeMatrixOperandsMask mask)
 {
     word = word | mask;
+}
+
+template<typename Enum, typename To = std::underlying_type_t<Enum>>
+__inline To enumCast(Enum value)
+{
+    return static_cast<To>(value);
 }
 }
 

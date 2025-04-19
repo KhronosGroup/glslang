@@ -89,17 +89,17 @@ Id Builder::import(const char* name)
 Id Builder::makeVoidType()
 {
     Instruction* type;
-    if (groupedTypes[Op::OpTypeVoid].size() == 0) {
+    if (groupedTypes[enumCast(Op::OpTypeVoid)].size() == 0) {
         Id typeId = getUniqueId();
         type = new Instruction(typeId, NoType, Op::OpTypeVoid);
-        groupedTypes[Op::OpTypeVoid].push_back(type);
+        groupedTypes[enumCast(Op::OpTypeVoid)].push_back(type);
         constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
         module.mapInstruction(type);
         // Core OpTypeVoid used for debug void type
         if (emitNonSemanticShaderDebugInfo)
             debugId[typeId] = typeId;
     } else
-        type = groupedTypes[Op::OpTypeVoid].back();
+        type = groupedTypes[enumCast(Op::OpTypeVoid)].back();
 
     return type->getResultId();
 }
@@ -107,9 +107,9 @@ Id Builder::makeVoidType()
 Id Builder::makeBoolType()
 {
     Instruction* type;
-    if (groupedTypes[Op::OpTypeBool].size() == 0) {
+    if (groupedTypes[enumCast(Op::OpTypeBool)].size() == 0) {
         type = new Instruction(getUniqueId(), NoType, Op::OpTypeBool);
-        groupedTypes[Op::OpTypeBool].push_back(type);
+        groupedTypes[enumCast(Op::OpTypeBool)].push_back(type);
         constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
         module.mapInstruction(type);
 
@@ -119,7 +119,7 @@ Id Builder::makeBoolType()
         }
 
     } else
-        type = groupedTypes[Op::OpTypeBool].back();
+        type = groupedTypes[enumCast(Op::OpTypeBool)].back();
 
 
     return type->getResultId();
@@ -128,13 +128,13 @@ Id Builder::makeBoolType()
 Id Builder::makeSamplerType()
 {
     Instruction* type;
-    if (groupedTypes[Op::OpTypeSampler].size() == 0) {
+    if (groupedTypes[enumCast(Op::OpTypeSampler)].size() == 0) {
         type = new Instruction(getUniqueId(), NoType, Op::OpTypeSampler);
-        groupedTypes[Op::OpTypeSampler].push_back(type);
+        groupedTypes[enumCast(Op::OpTypeSampler)].push_back(type);
         constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
         module.mapInstruction(type);
     } else
-        type = groupedTypes[Op::OpTypeSampler].back();
+        type = groupedTypes[enumCast(Op::OpTypeSampler)].back();
 
     if (emitNonSemanticShaderDebugInfo)
     {
@@ -149,8 +149,8 @@ Id Builder::makePointer(StorageClass storageClass, Id pointee)
 {
     // try to find it
     Instruction* type;
-    for (int t = 0; t < (int)groupedTypes[Op::OpTypePointer].size(); ++t) {
-        type = groupedTypes[Op::OpTypePointer][t];
+    for (int t = 0; t < (int)groupedTypes[enumCast(Op::OpTypePointer)].size(); ++t) {
+        type = groupedTypes[enumCast(Op::OpTypePointer)][t];
         if (type->getImmediateOperand(0) == (unsigned)storageClass &&
             type->getIdOperand(1) == pointee)
             return type->getResultId();
@@ -161,7 +161,7 @@ Id Builder::makePointer(StorageClass storageClass, Id pointee)
     type->reserveOperands(2);
     type->addImmediateOperand(storageClass);
     type->addIdOperand(pointee);
-    groupedTypes[Op::OpTypePointer].push_back(type);
+    groupedTypes[enumCast(Op::OpTypePointer)].push_back(type);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
 
@@ -194,8 +194,8 @@ Id Builder::makePointerFromForwardPointer(StorageClass storageClass, Id forwardP
 {
     // try to find it
     Instruction* type;
-    for (int t = 0; t < (int)groupedTypes[Op::OpTypePointer].size(); ++t) {
-        type = groupedTypes[Op::OpTypePointer][t];
+    for (int t = 0; t < (int)groupedTypes[enumCast(Op::OpTypePointer)].size(); ++t) {
+        type = groupedTypes[enumCast(Op::OpTypePointer)][t];
         if (type->getImmediateOperand(0) == (unsigned)storageClass &&
             type->getIdOperand(1) == pointee)
             return type->getResultId();
@@ -205,7 +205,7 @@ Id Builder::makePointerFromForwardPointer(StorageClass storageClass, Id forwardP
     type->reserveOperands(2);
     type->addImmediateOperand(storageClass);
     type->addIdOperand(pointee);
-    groupedTypes[Op::OpTypePointer].push_back(type);
+    groupedTypes[enumCast(Op::OpTypePointer)].push_back(type);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
 
@@ -225,8 +225,8 @@ Id Builder::makeIntegerType(int width, bool hasSign)
 {
     // try to find it
     Instruction* type;
-    for (int t = 0; t < (int)groupedTypes[Op::OpTypeInt].size(); ++t) {
-        type = groupedTypes[Op::OpTypeInt][t];
+    for (int t = 0; t < (int)groupedTypes[enumCast(Op::OpTypeInt)].size(); ++t) {
+        type = groupedTypes[enumCast(Op::OpTypeInt)][t];
         if (type->getImmediateOperand(0) == (unsigned)width &&
             type->getImmediateOperand(1) == (hasSign ? 1u : 0u))
             return type->getResultId();
@@ -237,7 +237,7 @@ Id Builder::makeIntegerType(int width, bool hasSign)
     type->reserveOperands(2);
     type->addImmediateOperand(width);
     type->addImmediateOperand(hasSign ? 1 : 0);
-    groupedTypes[Op::OpTypeInt].push_back(type);
+    groupedTypes[enumCast(Op::OpTypeInt)].push_back(type);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
 
@@ -267,8 +267,8 @@ Id Builder::makeFloatType(int width)
 {
     // try to find it
     Instruction* type;
-    for (int t = 0; t < (int)groupedTypes[Op::OpTypeFloat].size(); ++t) {
-        type = groupedTypes[Op::OpTypeFloat][t];
+    for (int t = 0; t < (int)groupedTypes[enumCast(Op::OpTypeFloat)].size(); ++t) {
+        type = groupedTypes[enumCast(Op::OpTypeFloat)][t];
         if (type->getNumOperands() != 1) {
             continue;
         }
@@ -279,7 +279,7 @@ Id Builder::makeFloatType(int width)
     // not found, make it
     type = new Instruction(getUniqueId(), NoType, Op::OpTypeFloat);
     type->addImmediateOperand(width);
-    groupedTypes[Op::OpTypeFloat].push_back(type);
+    groupedTypes[enumCast(Op::OpTypeFloat)].push_back(type);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
 
@@ -308,8 +308,8 @@ Id Builder::makeBFloat16Type()
 {
     // try to find it
     Instruction* type;
-    for (int t = 0; t < (int)groupedTypes[Op::OpTypeFloat].size(); ++t) {
-        type = groupedTypes[Op::OpTypeFloat][t];
+    for (int t = 0; t < (int)groupedTypes[enumCast(Op::OpTypeFloat)].size(); ++t) {
+        type = groupedTypes[enumCast(Op::OpTypeFloat)][t];
         if (type->getNumOperands() != 2) {
             continue;
         }
@@ -322,7 +322,7 @@ Id Builder::makeBFloat16Type()
     type = new Instruction(getUniqueId(), NoType, Op::OpTypeFloat);
     type->addImmediateOperand(16);
     type->addImmediateOperand(FPEncoding::BFloat16KHR);
-    groupedTypes[Op::OpTypeFloat].push_back(type);
+    groupedTypes[enumCast(Op::OpTypeFloat)].push_back(type);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
 
@@ -354,7 +354,7 @@ Id Builder::makeStructType(const std::vector<Id>& members, const char* name, boo
     Instruction* type = new Instruction(getUniqueId(), NoType, Op::OpTypeStruct);
     for (int op = 0; op < (int)members.size(); ++op)
         type->addIdOperand(members[op]);
-    groupedTypes[Op::OpTypeStruct].push_back(type);
+    groupedTypes[enumCast(Op::OpTypeStruct)].push_back(type);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
     addName(type->getResultId(), name);
@@ -374,8 +374,8 @@ Id Builder::makeStructResultType(Id type0, Id type1)
 {
     // try to find it
     Instruction* type;
-    for (int t = 0; t < (int)groupedTypes[Op::OpTypeStruct].size(); ++t) {
-        type = groupedTypes[Op::OpTypeStruct][t];
+    for (int t = 0; t < (int)groupedTypes[enumCast(Op::OpTypeStruct)].size(); ++t) {
+        type = groupedTypes[enumCast(Op::OpTypeStruct)][t];
         if (type->getNumOperands() != 2)
             continue;
         if (type->getIdOperand(0) != type0 ||
@@ -396,8 +396,8 @@ Id Builder::makeVectorType(Id component, int size)
 {
     // try to find it
     Instruction* type;
-    for (int t = 0; t < (int)groupedTypes[Op::OpTypeVector].size(); ++t) {
-        type = groupedTypes[Op::OpTypeVector][t];
+    for (int t = 0; t < (int)groupedTypes[enumCast(Op::OpTypeVector)].size(); ++t) {
+        type = groupedTypes[enumCast(Op::OpTypeVector)][t];
         if (type->getIdOperand(0) == component &&
             type->getImmediateOperand(1) == (unsigned)size)
             return type->getResultId();
@@ -408,7 +408,7 @@ Id Builder::makeVectorType(Id component, int size)
     type->reserveOperands(2);
     type->addIdOperand(component);
     type->addImmediateOperand(size);
-    groupedTypes[Op::OpTypeVector].push_back(type);
+    groupedTypes[enumCast(Op::OpTypeVector)].push_back(type);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
 
@@ -429,8 +429,8 @@ Id Builder::makeMatrixType(Id component, int cols, int rows)
 
     // try to find it
     Instruction* type;
-    for (int t = 0; t < (int)groupedTypes[Op::OpTypeMatrix].size(); ++t) {
-        type = groupedTypes[Op::OpTypeMatrix][t];
+    for (int t = 0; t < (int)groupedTypes[enumCast(Op::OpTypeMatrix)].size(); ++t) {
+        type = groupedTypes[enumCast(Op::OpTypeMatrix)][t];
         if (type->getIdOperand(0) == column &&
             type->getImmediateOperand(1) == (unsigned)cols)
             return type->getResultId();
@@ -441,7 +441,7 @@ Id Builder::makeMatrixType(Id component, int cols, int rows)
     type->reserveOperands(2);
     type->addIdOperand(column);
     type->addImmediateOperand(cols);
-    groupedTypes[Op::OpTypeMatrix].push_back(type);
+    groupedTypes[enumCast(Op::OpTypeMatrix)].push_back(type);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
 
@@ -458,8 +458,8 @@ Id Builder::makeCooperativeMatrixTypeKHR(Id component, Id scope, Id rows, Id col
 {
     // try to find it
     Instruction* type;
-    for (int t = 0; t < (int)groupedTypes[Op::OpTypeCooperativeMatrixKHR].size(); ++t) {
-        type = groupedTypes[Op::OpTypeCooperativeMatrixKHR][t];
+    for (int t = 0; t < (int)groupedTypes[enumCast(Op::OpTypeCooperativeMatrixKHR)].size(); ++t) {
+        type = groupedTypes[enumCast(Op::OpTypeCooperativeMatrixKHR)][t];
         if (type->getIdOperand(0) == component &&
             type->getIdOperand(1) == scope &&
             type->getIdOperand(2) == rows &&
@@ -476,7 +476,7 @@ Id Builder::makeCooperativeMatrixTypeKHR(Id component, Id scope, Id rows, Id col
     type->addIdOperand(rows);
     type->addIdOperand(cols);
     type->addIdOperand(use);
-    groupedTypes[Op::OpTypeCooperativeMatrixKHR].push_back(type);
+    groupedTypes[enumCast(Op::OpTypeCooperativeMatrixKHR)].push_back(type);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
 
@@ -524,8 +524,8 @@ Id Builder::makeCooperativeMatrixTypeNV(Id component, Id scope, Id rows, Id cols
 {
     // try to find it
     Instruction* type;
-    for (int t = 0; t < (int)groupedTypes[Op::OpTypeCooperativeMatrixNV].size(); ++t) {
-        type = groupedTypes[Op::OpTypeCooperativeMatrixNV][t];
+    for (int t = 0; t < (int)groupedTypes[enumCast(Op::OpTypeCooperativeMatrixNV)].size(); ++t) {
+        type = groupedTypes[enumCast(Op::OpTypeCooperativeMatrixNV)][t];
         if (type->getIdOperand(0) == component && type->getIdOperand(1) == scope && type->getIdOperand(2) == rows &&
             type->getIdOperand(3) == cols)
             return type->getResultId();
@@ -538,7 +538,7 @@ Id Builder::makeCooperativeMatrixTypeNV(Id component, Id scope, Id rows, Id cols
     type->addIdOperand(scope);
     type->addIdOperand(rows);
     type->addIdOperand(cols);
-    groupedTypes[Op::OpTypeCooperativeMatrixNV].push_back(type);
+    groupedTypes[enumCast(Op::OpTypeCooperativeMatrixNV)].push_back(type);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
 
@@ -560,8 +560,8 @@ Id Builder::makeCooperativeVectorTypeNV(Id componentType, Id components)
 {
     // try to find it
     Instruction* type;
-    for (int t = 0; t < (int)groupedTypes[Op::OpTypeCooperativeVectorNV].size(); ++t) {
-        type = groupedTypes[Op::OpTypeCooperativeVectorNV][t];
+    for (int t = 0; t < (int)groupedTypes[enumCast(Op::OpTypeCooperativeVectorNV)].size(); ++t) {
+        type = groupedTypes[enumCast(Op::OpTypeCooperativeVectorNV)][t];
         if (type->getIdOperand(0) == componentType &&
             type->getIdOperand(1) == components)
             return type->getResultId();
@@ -571,7 +571,7 @@ Id Builder::makeCooperativeVectorTypeNV(Id componentType, Id components)
     type = new Instruction(getUniqueId(), NoType, Op::OpTypeCooperativeVectorNV);
     type->addIdOperand(componentType);
     type->addIdOperand(components);
-    groupedTypes[Op::OpTypeCooperativeVectorNV].push_back(type);
+    groupedTypes[enumCast(Op::OpTypeCooperativeVectorNV)].push_back(type);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
 
@@ -582,8 +582,8 @@ Id Builder::makeGenericType(spv::Op opcode, std::vector<spv::IdImmediate>& opera
 {
     // try to find it
     Instruction* type;
-    for (int t = 0; t < (int)groupedTypes[opcode].size(); ++t) {
-        type = groupedTypes[opcode][t];
+    for (int t = 0; t < (int)groupedTypes[enumCast(opcode)].size(); ++t) {
+        type = groupedTypes[enumCast(opcode)][t];
         if (static_cast<size_t>(type->getNumOperands()) != operands.size())
             continue; // Number mismatch, find next
 
@@ -604,7 +604,7 @@ Id Builder::makeGenericType(spv::Op opcode, std::vector<spv::IdImmediate>& opera
         else
             type->addImmediateOperand(operands[op].word);
     }
-    groupedTypes[opcode].push_back(type);
+    groupedTypes[enumCast(opcode)].push_back(type);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
 
@@ -620,8 +620,8 @@ Id Builder::makeArrayType(Id element, Id sizeId, int stride)
     Instruction* type;
     if (stride == 0) {
         // try to find existing type
-        for (int t = 0; t < (int)groupedTypes[Op::OpTypeArray].size(); ++t) {
-            type = groupedTypes[Op::OpTypeArray][t];
+        for (int t = 0; t < (int)groupedTypes[enumCast(Op::OpTypeArray)].size(); ++t) {
+            type = groupedTypes[enumCast(Op::OpTypeArray)][t];
             if (type->getIdOperand(0) == element &&
                 type->getIdOperand(1) == sizeId &&
                 explicitlyLaidOut.find(type->getResultId()) == explicitlyLaidOut.end())
@@ -634,7 +634,7 @@ Id Builder::makeArrayType(Id element, Id sizeId, int stride)
     type->reserveOperands(2);
     type->addIdOperand(element);
     type->addIdOperand(sizeId);
-    groupedTypes[Op::OpTypeArray].push_back(type);
+    groupedTypes[enumCast(Op::OpTypeArray)].push_back(type);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
 
@@ -671,8 +671,8 @@ Id Builder::makeFunctionType(Id returnType, const std::vector<Id>& paramTypes)
 {
     // try to find it
     Instruction* type;
-    for (int t = 0; t < (int)groupedTypes[Op::OpTypeFunction].size(); ++t) {
-        type = groupedTypes[Op::OpTypeFunction][t];
+    for (int t = 0; t < (int)groupedTypes[enumCast(Op::OpTypeFunction)].size(); ++t) {
+        type = groupedTypes[enumCast(Op::OpTypeFunction)][t];
         if (type->getIdOperand(0) != returnType || (int)paramTypes.size() != type->getNumOperands() - 1)
             continue;
         bool mismatch = false;
@@ -706,7 +706,7 @@ Id Builder::makeFunctionType(Id returnType, const std::vector<Id>& paramTypes)
     type->addIdOperand(returnType);
     for (int p = 0; p < (int)paramTypes.size(); ++p)
         type->addIdOperand(paramTypes[p]);
-    groupedTypes[Op::OpTypeFunction].push_back(type);
+    groupedTypes[enumCast(Op::OpTypeFunction)].push_back(type);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
 
@@ -750,8 +750,8 @@ Id Builder::makeImageType(Id sampledType, Dim dim, bool depth, bool arrayed, boo
 
     // try to find it
     Instruction* type;
-    for (int t = 0; t < (int)groupedTypes[Op::OpTypeImage].size(); ++t) {
-        type = groupedTypes[Op::OpTypeImage][t];
+    for (int t = 0; t < (int)groupedTypes[enumCast(Op::OpTypeImage)].size(); ++t) {
+        type = groupedTypes[enumCast(Op::OpTypeImage)][t];
         if (type->getIdOperand(0) == sampledType &&
             type->getImmediateOperand(1) == (unsigned int)dim &&
             type->getImmediateOperand(2) == (  depth ? 1u : 0u) &&
@@ -773,7 +773,7 @@ Id Builder::makeImageType(Id sampledType, Dim dim, bool depth, bool arrayed, boo
     type->addImmediateOperand(sampled);
     type->addImmediateOperand((unsigned int)format);
 
-    groupedTypes[Op::OpTypeImage].push_back(type);
+    groupedTypes[enumCast(Op::OpTypeImage)].push_back(type);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
 
@@ -846,8 +846,8 @@ Id Builder::makeSampledImageType(Id imageType)
 {
     // try to find it
     Instruction* type;
-    for (int t = 0; t < (int)groupedTypes[Op::OpTypeSampledImage].size(); ++t) {
-        type = groupedTypes[Op::OpTypeSampledImage][t];
+    for (int t = 0; t < (int)groupedTypes[enumCast(Op::OpTypeSampledImage)].size(); ++t) {
+        type = groupedTypes[enumCast(Op::OpTypeSampledImage)][t];
         if (type->getIdOperand(0) == imageType)
             return type->getResultId();
     }
@@ -856,7 +856,7 @@ Id Builder::makeSampledImageType(Id imageType)
     type = new Instruction(getUniqueId(), NoType, Op::OpTypeSampledImage);
     type->addIdOperand(imageType);
 
-    groupedTypes[Op::OpTypeSampledImage].push_back(type);
+    groupedTypes[enumCast(Op::OpTypeSampledImage)].push_back(type);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
 
@@ -1340,9 +1340,9 @@ Id Builder::makeDebugValue(Id const debugLocalVariable, Id const value)
 Id Builder::makeAccelerationStructureType()
 {
     Instruction *type;
-    if (groupedTypes[Op::OpTypeAccelerationStructureKHR].size() == 0) {
+    if (groupedTypes[enumCast(Op::OpTypeAccelerationStructureKHR)].size() == 0) {
         type = new Instruction(getUniqueId(), NoType, Op::OpTypeAccelerationStructureKHR);
-        groupedTypes[Op::OpTypeAccelerationStructureKHR].push_back(type);
+        groupedTypes[enumCast(Op::OpTypeAccelerationStructureKHR)].push_back(type);
         constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
         module.mapInstruction(type);
         if (emitNonSemanticShaderDebugInfo) {
@@ -1350,7 +1350,7 @@ Id Builder::makeAccelerationStructureType()
             debugId[type->getResultId()] = debugType;
         }
     } else {
-        type = groupedTypes[Op::OpTypeAccelerationStructureKHR].back();
+        type = groupedTypes[enumCast(Op::OpTypeAccelerationStructureKHR)].back();
     }
 
     return type->getResultId();
@@ -1359,9 +1359,9 @@ Id Builder::makeAccelerationStructureType()
 Id Builder::makeRayQueryType()
 {
     Instruction *type;
-    if (groupedTypes[Op::OpTypeRayQueryKHR].size() == 0) {
+    if (groupedTypes[enumCast(Op::OpTypeRayQueryKHR)].size() == 0) {
         type = new Instruction(getUniqueId(), NoType, Op::OpTypeRayQueryKHR);
-        groupedTypes[Op::OpTypeRayQueryKHR].push_back(type);
+        groupedTypes[enumCast(Op::OpTypeRayQueryKHR)].push_back(type);
         constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
         module.mapInstruction(type);
         if (emitNonSemanticShaderDebugInfo) {
@@ -1369,7 +1369,7 @@ Id Builder::makeRayQueryType()
             debugId[type->getResultId()] = debugType;
         }
     } else {
-        type = groupedTypes[Op::OpTypeRayQueryKHR].back();
+        type = groupedTypes[enumCast(Op::OpTypeRayQueryKHR)].back();
     }
 
     return type->getResultId();
@@ -1378,13 +1378,13 @@ Id Builder::makeRayQueryType()
 Id Builder::makeHitObjectNVType()
 {
     Instruction *type;
-    if (groupedTypes[Op::OpTypeHitObjectNV].size() == 0) {
+    if (groupedTypes[enumCast(Op::OpTypeHitObjectNV)].size() == 0) {
         type = new Instruction(getUniqueId(), NoType, Op::OpTypeHitObjectNV);
-        groupedTypes[Op::OpTypeHitObjectNV].push_back(type);
+        groupedTypes[enumCast(Op::OpTypeHitObjectNV)].push_back(type);
         constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
         module.mapInstruction(type);
     } else {
-        type = groupedTypes[Op::OpTypeHitObjectNV].back();
+        type = groupedTypes[enumCast(Op::OpTypeHitObjectNV)].back();
     }
 
     return type->getResultId();
@@ -1590,8 +1590,8 @@ bool Builder::containsPhysicalStorageBufferOrArray(Id typeId) const
 Id Builder::findScalarConstant(Op typeClass, Op opcode, Id typeId, unsigned value)
 {
     Instruction* constant;
-    for (int i = 0; i < (int)groupedConstants[typeClass].size(); ++i) {
-        constant = groupedConstants[typeClass][i];
+    for (int i = 0; i < (int)groupedConstants[enumCast(typeClass)].size(); ++i) {
+        constant = groupedConstants[enumCast(typeClass)][i];
         if (constant->getOpCode() == opcode &&
             constant->getTypeId() == typeId &&
             constant->getImmediateOperand(0) == value)
@@ -1605,8 +1605,8 @@ Id Builder::findScalarConstant(Op typeClass, Op opcode, Id typeId, unsigned valu
 Id Builder::findScalarConstant(Op typeClass, Op opcode, Id typeId, unsigned v1, unsigned v2)
 {
     Instruction* constant;
-    for (int i = 0; i < (int)groupedConstants[typeClass].size(); ++i) {
-        constant = groupedConstants[typeClass][i];
+    for (int i = 0; i < (int)groupedConstants[enumCast(typeClass)].size(); ++i) {
+        constant = groupedConstants[enumCast(typeClass)][i];
         if (constant->getOpCode() == opcode &&
             constant->getTypeId() == typeId &&
             constant->getImmediateOperand(0) == v1 &&
@@ -1693,8 +1693,8 @@ Id Builder::makeBoolConstant(bool b, bool specConstant)
     // must remain distinct for the purpose of applying a SpecId decoration.
     if (! specConstant) {
         Id existing = 0;
-        for (int i = 0; i < (int)groupedConstants[Op::OpTypeBool].size(); ++i) {
-            constant = groupedConstants[Op::OpTypeBool][i];
+        for (int i = 0; i < (int)groupedConstants[enumCast(Op::OpTypeBool)].size(); ++i) {
+            constant = groupedConstants[enumCast(Op::OpTypeBool)][i];
             if (constant->getTypeId() == typeId && constant->getOpCode() == opcode)
                 existing = constant->getResultId();
         }
@@ -1706,7 +1706,7 @@ Id Builder::makeBoolConstant(bool b, bool specConstant)
     // Make it
     Instruction* c = new Instruction(getUniqueId(), typeId, opcode);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(c));
-    groupedConstants[Op::OpTypeBool].push_back(c);
+    groupedConstants[enumCast(Op::OpTypeBool)].push_back(c);
     module.mapInstruction(c);
 
     return c->getResultId();
@@ -1727,7 +1727,7 @@ Id Builder::makeIntConstant(Id typeId, unsigned value, bool specConstant)
     Instruction* c = new Instruction(getUniqueId(), typeId, opcode);
     c->addImmediateOperand(value);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(c));
-    groupedConstants[Op::OpTypeInt].push_back(c);
+    groupedConstants[enumCast(Op::OpTypeInt)].push_back(c);
     module.mapInstruction(c);
 
     return c->getResultId();
@@ -1753,7 +1753,7 @@ Id Builder::makeInt64Constant(Id typeId, unsigned long long value, bool specCons
     c->addImmediateOperand(op1);
     c->addImmediateOperand(op2);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(c));
-    groupedConstants[Op::OpTypeInt].push_back(c);
+    groupedConstants[enumCast(Op::OpTypeInt)].push_back(c);
     module.mapInstruction(c);
 
     return c->getResultId();
@@ -1778,7 +1778,7 @@ Id Builder::makeFloatConstant(float f, bool specConstant)
     Instruction* c = new Instruction(getUniqueId(), typeId, opcode);
     c->addImmediateOperand(value);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(c));
-    groupedConstants[Op::OpTypeFloat].push_back(c);
+    groupedConstants[enumCast(Op::OpTypeFloat)].push_back(c);
     module.mapInstruction(c);
 
     return c->getResultId();
@@ -1807,7 +1807,7 @@ Id Builder::makeDoubleConstant(double d, bool specConstant)
     c->addImmediateOperand(op1);
     c->addImmediateOperand(op2);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(c));
-    groupedConstants[Op::OpTypeFloat].push_back(c);
+    groupedConstants[enumCast(Op::OpTypeFloat)].push_back(c);
     module.mapInstruction(c);
 
     return c->getResultId();
@@ -1835,7 +1835,7 @@ Id Builder::makeFloat16Constant(float f16, bool specConstant)
     Instruction* c = new Instruction(getUniqueId(), typeId, opcode);
     c->addImmediateOperand(value);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(c));
-    groupedConstants[Op::OpTypeFloat].push_back(c);
+    groupedConstants[enumCast(Op::OpTypeFloat)].push_back(c);
     module.mapInstruction(c);
 
     return c->getResultId();
@@ -1866,7 +1866,7 @@ Id Builder::makeBFloat16Constant(float bf16, bool specConstant)
     Instruction* c = new Instruction(getUniqueId(), typeId, opcode);
     c->addImmediateOperand(value);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(c));
-    groupedConstants[Op::OpTypeFloat].push_back(c);
+    groupedConstants[enumCast(Op::OpTypeFloat)].push_back(c);
     module.mapInstruction(c);
 
     return c->getResultId();
@@ -1910,8 +1910,8 @@ Id Builder::findCompositeConstant(Op typeClass, Op opcode, Id typeId, const std:
 {
     Instruction* constant = nullptr;
     bool found = false;
-    for (int i = 0; i < (int)groupedConstants[typeClass].size(); ++i) {
-        constant = groupedConstants[typeClass][i];
+    for (int i = 0; i < (int)groupedConstants[enumCast(typeClass)].size(); ++i) {
+        constant = groupedConstants[enumCast(typeClass)][i];
 
         if (constant->getTypeId() != typeId)
             continue;
@@ -2021,7 +2021,7 @@ Id Builder::makeCompositeConstant(Id typeId, const std::vector<Id>& members, boo
     if (typeClass == Op::OpTypeStruct)
         groupedStructConstants[typeId].push_back(c);
     else
-        groupedConstants[typeClass].push_back(c);
+        groupedConstants[enumCast(typeClass)].push_back(c);
     module.mapInstruction(c);
 
     return c->getResultId();

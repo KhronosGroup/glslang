@@ -51,6 +51,8 @@
 #define SPV_ENABLE_UTILITY_CODE
 #include "spirv.hpp11"
 #include "spvIR.h"
+#include "spvUtil.h"
+
 namespace spv {
     #include "GLSL.ext.KHR.h"
     #include "GLSL.ext.EXT.h"
@@ -298,7 +300,7 @@ public:
     bool isTensorView(Id resultId)const { return isTensorViewType(getTypeId(resultId)); }
 
     bool isBoolType(Id typeId)
-        { return groupedTypes[Op::OpTypeBool].size() > 0 && typeId == groupedTypes[Op::OpTypeBool].back()->getResultId(); }
+        { return groupedTypes[enumCast(Op::OpTypeBool)].size() > 0 && typeId == groupedTypes[enumCast(Op::OpTypeBool)].back()->getResultId(); }
     bool isIntType(Id typeId)          const
         { return getTypeClass(typeId) == Op::OpTypeInt && module.getInstruction(typeId)->getImmediateOperand(1) != 0; }
     bool isUintType(Id typeId)         const

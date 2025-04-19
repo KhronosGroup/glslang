@@ -188,14 +188,14 @@ void SpirvStream::processInstructions()
 
         // Type <id>
         Id typeId = 0;
-        if (InstructionDesc[opCode].hasType()) {
+        if (InstructionDesc[enumCast(opCode)].hasType()) {
             typeId = stream[word++];
             --numOperands;
         }
 
         // Result <id>
         Id resultId = 0;
-        if (InstructionDesc[opCode].hasResult()) {
+        if (InstructionDesc[enumCast(opCode)].hasResult()) {
             resultId = stream[word++];
             --numOperands;
 
@@ -462,9 +462,9 @@ void SpirvStream::disassembleInstruction(Id resultId, Id /*typeId*/, Op opCode, 
     }
 
     // Handle all the parameterized operands
-    for (int op = 0; op < InstructionDesc[opCode].operands.getNum() && numOperands > 0; ++op) {
+    for (int op = 0; op < InstructionDesc[enumCast(opCode)].operands.getNum() && numOperands > 0; ++op) {
         out << " ";
-        OperandClass operandClass = InstructionDesc[opCode].operands.getClass(op);
+        OperandClass operandClass = InstructionDesc[enumCast(opCode)].operands.getClass(op);
         switch (operandClass) {
         case OperandId:
         case OperandScope:

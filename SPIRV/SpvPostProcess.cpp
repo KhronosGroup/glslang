@@ -405,8 +405,8 @@ void Builder::postProcessFeatures() {
     // Look for any 8/16 bit type in physical storage buffer class, and set the
     // appropriate capability. This happens in createSpvVariable for other storage
     // classes, but there isn't always a variable for physical storage buffer.
-    for (int t = 0; t < (int)groupedTypes[Op::OpTypePointer].size(); ++t) {
-        Instruction* type = groupedTypes[Op::OpTypePointer][t];
+    for (int t = 0; t < (int)groupedTypes[enumCast(Op::OpTypePointer)].size(); ++t) {
+        Instruction* type = groupedTypes[enumCast(Op::OpTypePointer)][t];
         if (type->getImmediateOperand(0) == (unsigned)StorageClass::PhysicalStorageBufferEXT) {
             if (containsType(type->getIdOperand(1), Op::OpTypeInt, 8)) {
                 addIncorporatedExtension(spv::E_SPV_KHR_8bit_storage, spv::Spv_1_5);
