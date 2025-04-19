@@ -2698,7 +2698,7 @@ void Builder::createStore(Id rValue, Id lValue, spv::MemoryAccessMask memoryAcce
         if (anySet(memoryAccess, spv::MemoryAccessMask::Aligned)) {
             store->addImmediateOperand(alignment);
         }
-        if (anySet(memoryAccess, spv::MemoryAccessMask::MakePointerVisibleKHR)) {
+        if (anySet(memoryAccess, spv::MemoryAccessMask::MakePointerAvailableKHR)) {
             store->addIdOperand(makeUintConstant(scope));
         }
     }
