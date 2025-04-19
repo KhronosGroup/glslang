@@ -2,6 +2,7 @@
 #ifndef spvUtil_H
 #define spvUtil_H
 
+#include <cstdint>
 #include <type_traits>
 
 #include "spirv.hpp11"
