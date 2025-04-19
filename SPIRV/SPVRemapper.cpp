@@ -986,7 +986,7 @@ namespace spv {
                     ++blockNum;
 
                 // Add local variables to the map
-                if ((opCode == spv::Op::OpVariable && spv[start + 3] == (unsigned)spv::StorageClass::Function && asWordCount(start) == 4)) {
+                if ((opCode == spv::Op::OpVariable && spv[start+3] == (unsigned)spv::StorageClass::Function && asWordCount(start) == 4)) {
                     fnLocalVars.insert(asId(start+2));
                     return true;
                 }

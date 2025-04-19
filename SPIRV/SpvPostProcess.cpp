@@ -155,7 +155,7 @@ void Builder::postProcessType(const Instruction& inst, Id typeId)
             }
         }
         break;
-    case Op::OpExtInst :
+    case Op::OpExtInst:
         switch (inst.getImmediateOperand(1)) {
         case GLSLstd450Frexp:
         case GLSLstd450FrexpStruct:
@@ -284,7 +284,7 @@ void Builder::postProcess(Instruction& inst)
                         // get the next member type
                         typeId = type->getIdOperand(c);
                         type = module.getInstruction(typeId);
-                    } else if (type->getOpCode() == Op::OpTypeArray || 
+                    } else if (type->getOpCode() == Op::OpTypeArray ||
                                type->getOpCode() == Op::OpTypeRuntimeArray) {
                         const auto function = [&](const std::unique_ptr<Instruction>& decoration) {
                             if (decoration.get()->getOpCode() == Op::OpDecorate &&

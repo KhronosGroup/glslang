@@ -322,8 +322,8 @@ public:
     bool isCooperativeVectorType(Id typeId) const { return getTypeClass(typeId) == Op::OpTypeCooperativeVectorNV; }
     bool isAggregateType(Id typeId)    const
         { return isArrayType(typeId) || isStructType(typeId) || isCooperativeMatrixType(typeId); }
-    bool isImageType(Id typeId) const { return getTypeClass(typeId) == Op::OpTypeImage; }
-    bool isSamplerType(Id typeId) const { return getTypeClass(typeId) == Op::OpTypeSampler; }
+    bool isImageType(Id typeId)        const { return getTypeClass(typeId) == Op::OpTypeImage; }
+    bool isSamplerType(Id typeId)      const { return getTypeClass(typeId) == Op::OpTypeSampler; }
     bool isSampledImageType(Id typeId) const { return getTypeClass(typeId) == Op::OpTypeSampledImage; }
     bool containsType(Id typeId, Op typeOp, unsigned int width) const;
     bool containsPhysicalStorageBufferOrArray(Id typeId) const;
