@@ -105,8 +105,9 @@ public:
         strings.push_back(std::unique_ptr<Instruction>(fileString));
         module.mapInstruction(fileString);
 
-        opStringBuffers.push_back(std::string(str));
-        stringIds[opStringBuffers.back()] = strId;
+        opStringBuffers.push_back(std::make_unique<char[]>(str.size()));
+        std::copy(str.begin(), str.end(), opStringBuffers.back().get());
+        stringIds[std::string_view(opStringBuffers.back().get(), str.size())] = strId;
         return strId;
     }
 
@@ -1031,7 +1032,7 @@ public:
     std::unordered_map<std::string_view, spv::Id> stringIds;
     // These are the actual buffers that hold the strings for OpString instructions.
     // We need to store them separately since heterogeneous lookup isn't supported for unordered_map in C++17.
-    std::vector<std::string> opStringBuffers;
+    std::vector<std::unique_ptr<char[]>> opStringBuffers;
 
     // map from include file name ids to their contents
     std::map<spv::Id, const std::string*> includeFiles;
