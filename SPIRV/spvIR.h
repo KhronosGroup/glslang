@@ -146,6 +146,33 @@ public:
             addImmediateOperand(word);
         }
     }
+    void addStringOperand(std::string_view str) {
+        unsigned int word = 0;
+        unsigned int shiftAmount = 0;
+
+        for (unsigned char c : str) {
+            word |= ((unsigned int)c) << shiftAmount;
+            shiftAmount += 8;
+            if (shiftAmount == 32) {
+                addImmediateOperand(word);
+                word = 0;
+                shiftAmount = 0;
+            }
+        }
+
+        // Add null terminator
+        shiftAmount += 8;
+        if (shiftAmount == 32) {
+            addImmediateOperand(word);
+            word = 0;
+            shiftAmount = 0;
+        }
+
+        // deal with partial last word
+        if (shiftAmount > 0) {
+            addImmediateOperand(word);
+        }
+    }
     bool isIdOperand(int op) const { return idOperand[op]; }
     void setBlock(Block* b) { block = b; }
     Block* getBlock() const { return block; }

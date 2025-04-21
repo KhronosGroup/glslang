@@ -94,22 +94,35 @@ public:
         sourceLang = lang;
         sourceVersion = version;
     }
-    spv::Id getStringId(const std::string& str)
+    spv::Id getStringId(std::string_view str)
     {
-        auto sItr = stringIds.find(str);
-        if (sItr != stringIds.end())
-            return sItr->second;
+        if (auto it = stringIds.find(str); it != stringIds.end())
+            return it->second;
+
         spv::Id strId = getUniqueId();
         Instruction* fileString = new Instruction(strId, NoType, OpString);
-        const char* file_c_str = str.c_str();
-        fileString->addStringOperand(file_c_str);
+        fileString->addStringOperand(str);
         strings.push_back(std::unique_ptr<Instruction>(fileString));
         module.mapInstruction(fileString);
-        stringIds[file_c_str] = strId;
+
+        opStringBuffers.push_back(std::string(str));
+        stringIds[opStringBuffers.back()] = strId;
         return strId;
     }
 
     spv::Id getMainFileId() const { return mainFileId; }
+
+    std::string_view getSourceText(spv::Id fileNameId) const {
+        if (fileNameId == mainFileId) {
+            return mainSourceText;
+        }
+        
+        if (auto it = includeFiles.find(fileNameId); it != includeFiles.end()) {
+            return *it->second;
+        }
+
+        return {};
+    }
 
     // Initialize the main source file name
     void setDebugMainSourceFile(const std::string& file)
@@ -138,7 +151,7 @@ public:
         }
     }
 
-    void setSourceText(const std::string& text) { sourceText = text; }
+    void setMainSourceText(const std::string& text) { mainSourceText = text; }
     void addSourceExtension(const char* ext) { sourceExtensions.push_back(ext); }
     void addModuleProcessed(const std::string& p) { moduleProcesses.push_back(p.c_str()); }
     void setEmitSpirvDebugInfo()
@@ -936,7 +949,9 @@ public:
     spv::Id nonSemanticShaderDebugInfo {0};
     spv::Id debugInfoNone {0};
     spv::Id debugExpression {0}; // Debug expression with zero operations.
-    std::string sourceText;
+
+    // Source text of the main file.
+    std::string mainSourceText;
 
     // True if an new OpLine/OpDebugLine may need to be inserted. Either:
     // 1. The current debug location changed
@@ -1013,7 +1028,10 @@ public:
     std::stack<LoopBlocks> loops;
 
     // map from strings to their string ids
-    std::unordered_map<std::string, spv::Id> stringIds;
+    std::unordered_map<std::string_view, spv::Id> stringIds;
+    // These are the actual buffers that hold the strings for OpString instructions.
+    // We need to store them separately since heterogeneous lookup isn't supported for unordered_map in C++17.
+    std::vector<std::string> opStringBuffers;
 
     // map from include file name ids to their contents
     std::map<spv::Id, const std::string*> includeFiles;

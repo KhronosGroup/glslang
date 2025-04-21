@@ -42,6 +42,7 @@
 #include <cassert>
 #include <cstdlib>
 
+#include <string_view>
 #include <unordered_set>
 #include <algorithm>
 
@@ -917,7 +918,7 @@ Id Builder::makeBoolDebugType(int const size)
 
 Id Builder::makeIntegerDebugType(int const width, bool const hasSign)
 {
-    const char* typeName = nullptr;
+    std::string_view typeName;
     switch (width) {
         case 8:  typeName = hasSign ? "int8_t" : "uint8_t"; break;
         case 16: typeName = hasSign ? "int16_t" : "uint16_t"; break;
@@ -958,7 +959,7 @@ Id Builder::makeIntegerDebugType(int const width, bool const hasSign)
 
 Id Builder::makeFloatDebugType(int const width)
 {
-    const char* typeName = nullptr;
+    std::string_view typeName;
     switch (width) {
         case 16: typeName = "float16_t"; break;
         case 64: typeName = "double"; break;
@@ -1188,30 +1189,48 @@ Id Builder::makeForwardPointerDebugType(StorageClass storageClass)
 Id Builder::makeDebugSource(const Id fileName) {
     if (debugSourceId.find(fileName) != debugSourceId.end())
         return debugSourceId[fileName];
+
+    // Collect the source text into sections that fit into OpString instructions, if any.
+    std::vector<std::string_view> sourceTextSections;
+    if (emitNonSemanticShaderDebugSource) {
+        std::string_view sourceText = getSourceText(fileName);
+
+        if (!sourceText.empty()) {
+            static constexpr size_t maxWordCount = 0xFFFF;
+            static constexpr size_t opStringWordCount = 3;
+            static constexpr size_t maxSourceTextSectionLength = (maxWordCount - opStringWordCount) * 4 - 1;
+
+            for (size_t i = 0; i < sourceText.size(); i += maxSourceTextSectionLength) {
+                sourceTextSections.push_back(sourceText.substr(i, maxSourceTextSectionLength));
+            }
+        }
+    }
+
+    // Emits a DebugSource instruction
     spv::Id resultId = getUniqueId();
     Instruction* sourceInst = new Instruction(resultId, makeVoidType(), OpExtInst);
-    sourceInst->reserveOperands(3);
+    sourceInst->reserveOperands(4);
     sourceInst->addIdOperand(nonSemanticShaderDebugInfo);
     sourceInst->addImmediateOperand(NonSemanticShaderDebugInfo100DebugSource);
     sourceInst->addIdOperand(fileName);
-    if (emitNonSemanticShaderDebugSource) {
-        spv::Id sourceId = 0;
-        if (fileName == mainFileId) {
-            sourceId = getStringId(sourceText);
-        } else {
-            auto incItr = includeFiles.find(fileName);
-            if (incItr != includeFiles.end()) {
-                sourceId = getStringId(*incItr->second);
-            }
-        }
-
-        // We omit the optional source text item if not available in glslang
-        if (sourceId != 0) {
-            sourceInst->addIdOperand(sourceId);
-        }
+    if (!sourceTextSections.empty()) {
+        // Note the source text is optional
+        sourceInst->addIdOperand(getStringId(sourceTextSections.front()));
     }
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(sourceInst));
     module.mapInstruction(sourceInst);
+
+    // Emits DebugSourceContinued instructions if required
+    for (size_t i = 1; i < sourceTextSections.size(); ++i) {
+        Instruction* sourceContinuedInst = new Instruction(getUniqueId(), makeVoidType(), OpExtInst);
+        sourceContinuedInst->reserveOperands(3);
+        sourceContinuedInst->addIdOperand(nonSemanticShaderDebugInfo);
+        sourceContinuedInst->addImmediateOperand(NonSemanticShaderDebugInfo100DebugSource);
+        sourceContinuedInst->addIdOperand(getStringId(sourceTextSections[i]));
+        constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(sourceContinuedInst));
+        module.mapInstruction(sourceContinuedInst);
+    }
+
     debugSourceId[fileName] = resultId;
     return resultId;
 }
@@ -4517,12 +4536,12 @@ void Builder::dumpSourceInstructions(const spv::Id fileId, const std::string& te
                     subString = text.substr(nextByte, nonNullBytesPerInstruction);
                     if (nextByte == 0) {
                         // OpSource
-                        sourceInst.addStringOperand(subString.c_str());
+                        sourceInst.addStringOperand(subString);
                         sourceInst.dump(out);
                     } else {
                         // OpSourcContinued
                         Instruction sourceContinuedInst(OpSourceContinued);
-                        sourceContinuedInst.addStringOperand(subString.c_str());
+                        sourceContinuedInst.addStringOperand(subString);
                         sourceContinuedInst.dump(out);
                     }
                     nextByte += nonNullBytesPerInstruction;
@@ -4538,7 +4557,7 @@ void Builder::dumpSourceInstructions(const spv::Id fileId, const std::string& te
 void Builder::dumpSourceInstructions(std::vector<unsigned int>& out) const
 {
     if (emitNonSemanticShaderDebugInfo) return;
-    dumpSourceInstructions(mainFileId, sourceText, out);
+    dumpSourceInstructions(mainFileId, mainSourceText, out);
     for (auto iItr = includeFiles.begin(); iItr != includeFiles.end(); ++iItr)
         dumpSourceInstructions(iItr->first, *iItr->second, out);
 }

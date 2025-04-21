@@ -1614,7 +1614,7 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion,
         if (glslangIntermediate->getSpv().spv < glslang::EShTargetSpv_1_1 && (int)processes.size() > 0)
             text.append("#line 1\n");
         text.append(glslangIntermediate->getSourceText());
-        builder.setSourceText(text);
+        builder.setMainSourceText(text);
         // Pass name and text for all included files
         const std::map<std::string, std::string>& include_txt = glslangIntermediate->getIncludeText();
         for (auto iItr = include_txt.begin(); iItr != include_txt.end(); ++iItr)
@@ -10604,7 +10604,7 @@ spv::Id TGlslangToSpvTraverser::createSpvConstantFromConstUnionArray(const glsla
             scalar = builder.createUnaryOp(spv::OpBitcast, typeId, scalar);
             break;
         case glslang::EbtString:
-            scalar = builder.getStringId(consts[nextConst].getSConst()->c_str());
+            scalar = builder.getStringId(std::string_view(*consts[nextConst].getSConst()));
             break;
         default:
             assert(0);
