@@ -638,7 +638,7 @@ const char* ImageChannelDataTypeString(int type)
     }
 }
 
-const int ImageOperandsCeiling = 15;
+const int ImageOperandsCeiling = 17;
 
 const char* ImageOperandsString(int format)
 {
@@ -658,6 +658,7 @@ const char* ImageOperandsString(int format)
     case (int)ImageOperandsShift::SignExtend:              return "SignExtend";
     case (int)ImageOperandsShift::ZeroExtend:              return "ZeroExtend";
     case (int)ImageOperandsShift::Nontemporal:             return "Nontemporal";
+    case (int)ImageOperandsShift::Offsets:                 return "Offsets";
 
     case ImageOperandsCeiling:
     default:
