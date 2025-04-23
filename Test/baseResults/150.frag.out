@@ -10,6 +10,7 @@ ERROR: 0:57: '=' :  cannot convert from ' global double' to ' global int'
 ERROR: 0:80: 'floatBitsToInt' : required extension not requested: Possible extensions include:
 GL_ARB_shader_bit_encoding
 GL_ARB_gpu_shader5
+GL_NV_gpu_shader5
 ERROR: 0:100: 'packSnorm2x16' : required extension not requested: GL_ARB_shading_language_packing
 ERROR: 0:114: 'textureQueryLOD' : required extension not requested: GL_ARB_texture_query_lod
 ERROR: 0:115: 'textureQueryLOD' : required extension not requested: GL_ARB_texture_query_lod

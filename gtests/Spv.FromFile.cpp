@@ -963,6 +963,7 @@ INSTANTIATE_TEST_SUITE_P(
     "spv.meshShaderRedeclPerViewBuiltins.mesh",
     "spv.meshTaskShader.task",
     "spv.perprimitiveNV.frag",
+    "spv.nvgpushader5.frag"
 })),
 FileNameAsCustomTestSuffix
 );
