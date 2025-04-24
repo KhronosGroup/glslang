@@ -1081,6 +1081,9 @@ const char* CapabilityString(int info)
 
     case (int)Capability::ExpectAssumeKHR:                         return "ExpectAssumeKHR";
 
+    case (int)CapabilityAbortKHR:                                  return "AbortKHR";
+    case (int)CapabilityConstantDataKHR:                           return "ConstantDataKHR";
+
     case (int)Capability::AtomicFloat16AddEXT:                     return "AtomicFloat16AddEXT";
     case (int)Capability::AtomicFloat32AddEXT:                     return "AtomicFloat32AddEXT";
     case (int)Capability::AtomicFloat64AddEXT:                     return "AtomicFloat64AddEXT";
@@ -1497,6 +1500,10 @@ const char* OpcodeString(int op)
 
     case (int)Op::OpGroupNonUniformQuadAllKHR: return "OpGroupNonUniformQuadAllKHR";
     case (int)Op::OpGroupNonUniformQuadAnyKHR: return "OpGroupNonUniformQuadAnyKHR";
+
+    case (int)OpAbortKHR:            return "OpAbortKHR";
+    case (int)OpConstantDataKHR:     return "OpConstantDataKHR";
+    case (int)OpSpecConstantDataKHR: return "OpSpecConstantDataKHR";
 
     case (int)Op::OpAtomicFAddEXT: return "OpAtomicFAddEXT";
     case (int)Op::OpAtomicFMinEXT: return "OpAtomicFMinEXT";
@@ -3088,6 +3095,11 @@ void Parameterize()
         InstructionDesc[enumCast(Op::OpGroupNonUniformQuadAllKHR)].operands.push(OperandId, "'Predicate'");
         InstructionDesc[enumCast(Op::OpGroupNonUniformQuadAnyKHR)].operands.push(OperandId, "'Predicate'");
         InstructionDesc[enumCast(Op::OpTypeAccelerationStructureKHR)].setResultAndType(true, false);
+
+        InstructionDesc[enumCast(OpConstantDataKHR)].operands.push(OperandLiteralString, "'Data'");
+        InstructionDesc[enumCast(OpSpecConstantDataKHR)].operands.push(OperandLiteralString, "'Data'");
+        InstructionDesc[enumCast(OpAbortKHR)].operands.push(OperandId, "'Message'");
+        InstructionDesc[enumCast(OpAbortKHR)].setResultAndType(false, true);
 
         InstructionDesc[enumCast(Op::OpTraceNV)].operands.push(OperandId, "'Acceleration Structure'");
         InstructionDesc[enumCast(Op::OpTraceNV)].operands.push(OperandId, "'Ray Flags'");

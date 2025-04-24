@@ -239,6 +239,7 @@ namespace spv {
         case spv::Op::OpConstantFalse:
         case spv::Op::OpConstantComposite:
         case spv::Op::OpConstant:
+        case spv::Op::OpConstantDataKHR:
             return true;
 
         default:

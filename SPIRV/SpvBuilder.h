@@ -533,6 +533,7 @@ public:
     void createNoResultOp(Op, Id operand);
     void createNoResultOp(Op, const std::vector<Id>& operands);
     void createNoResultOp(Op, const std::vector<IdImmediate>& operands);
+    void createNoResultOp(Op, Id typeId, Id operand);
     void createControlBarrier(Scope execution, Scope memory, MemorySemanticsMask);
     void createMemoryBarrier(Scope executionScope, MemorySemanticsMask memorySemantics);
     Id createUnaryOp(Op, Id typeId, Id operand);
@@ -540,6 +541,8 @@ public:
     Id createTriOp(Op, Id typeId, Id operand1, Id operand2, Id operand3);
     Id createOp(Op, Id typeId, const std::vector<Id>& operands);
     Id createOp(Op, Id typeId, const std::vector<IdImmediate>& operands);
+    Id createConstDataOp(Op opCode, Id typeId, const std::vector<const char*> operands);
+    Id createSpecConst(Op opCode, Id typeId, const unsigned int literalOp);
     Id createFunctionCall(spv::Function*, const std::vector<spv::Id>&);
     Id createSpecConstantOp(Op, Id typeId, const std::vector<spv::Id>& operands, const std::vector<unsigned>& literals);
 

@@ -8,6 +8,7 @@ ERROR: 0:6: 'string' : End of line in string
 ERROR: 0:6: 'string literal' : required extension not requested: Possible extensions include:
 GL_EXT_debug_printf
 GL_EXT_spirv_intrinsics
+GL_EXT_abort
 ERROR: 0:6: '' :  syntax error, unexpected INT, expecting COMMA or SEMICOLON
 ERROR: 7 compilation errors.  No code generated.
 
