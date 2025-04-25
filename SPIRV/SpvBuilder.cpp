@@ -2964,14 +2964,6 @@ void Builder::createMemoryBarrier(Scope executionScope, MemorySemanticsMask memo
     addInstruction(std::unique_ptr<Instruction>(op));
 }
 
-// An opcode that has one operands, no result id, and a result type
-void Builder::createNoResultOp(Op opCode, Id typeId, Id operand)
-{
-    Instruction* op = new Instruction(NoResult, typeId, opCode);
-    op->addIdOperand(operand);
-    addInstruction(std::unique_ptr<Instruction>(op));
-}
-
 // An opcode that has one operands, a result id, and a type
 Id Builder::createUnaryOp(Op opCode, Id typeId, Id operand)
 {
@@ -3027,7 +3019,7 @@ Id Builder::createTriOp(Op opCode, Id typeId, Id op1, Id op2, Id op3)
     return op->getResultId();
 }
 
-Id Builder::createConstDataOp(Op opCode, Id typeId, const std::vector<const char*> operands)
+Id Builder::createConstData(Op opCode, Id typeId, const std::vector<const char*> operands)
 {
     Instruction* op = new Instruction(getUniqueId(), typeId, opCode);
     op->reserveOperands(operands.size());

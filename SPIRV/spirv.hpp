@@ -2752,7 +2752,7 @@ inline void HasResultAndType(Op opcode, bool *hasResult, bool *hasResultType) {
     case OpSpecConstantStringAMDX: *hasResult = true; *hasResultType = false; break;
     case OpGroupNonUniformQuadAllKHR: *hasResult = true; *hasResultType = true; break;
     case OpGroupNonUniformQuadAnyKHR: *hasResult = true; *hasResultType = true; break;
-    case OpAbortKHR: *hasResult = false; *hasResultType = true; break;
+    case OpAbortKHR: *hasResult = false; *hasResultType = false; break;
     case OpConstantDataKHR: *hasResult = true; *hasResultType = true; break;
     case OpSpecConstantDataKHR : *hasResult = true; *hasResultType = true; break;
     case OpHitObjectRecordHitMotionNV: *hasResult = false; *hasResultType = false; break;

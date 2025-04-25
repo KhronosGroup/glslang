@@ -2984,7 +2984,7 @@ void TGlslangToSpvTraverser::createAbortEXT(const glslang::TIntermSequence glsla
         auto strElemArrType = builder.makeArrayType(charType, constLen, 1);
         auto strElemLoadArrType = builder.makeArrayType(charType, constLen, 1);
         // 2.3 add sub string constant data
-        auto strElemConstData = builder.createConstDataOp(constDataOp, strElemArrType, {elem.string.c_str()});
+        auto strElemConstData = builder.createConstData(constDataOp, strElemArrType, {elem.string.c_str()});
         // 2.4 add decoration for those sub string.
         builder.addDecoration(strElemArrType, spv::DecorationUTFCodePointsKHR);
         builder.addDecoration(strElemLoadArrType, spv::DecorationUTFCodePointsKHR);
@@ -3016,7 +3016,7 @@ void TGlslangToSpvTraverser::createAbortEXT(const glslang::TIntermSequence glsla
         builder.addMemberDecoration(structLoadType, i, spv::DecorationOffset, structMemberOffsets[i]);
     auto structType = builder.makeStructType(structMemberType, "abortMessage");
     auto messageVar = builder.createCompositeConstruct(structType, structMemberData);
-    builder.createNoResultOp(spv::OpAbortKHR, structLoadType, messageVar);
+    builder.createNoResultOp(spv::OpAbortKHR, {structLoadType, messageVar});
 }
 
 bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TIntermAggregate* node)

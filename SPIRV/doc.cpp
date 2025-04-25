@@ -3098,8 +3098,9 @@ void Parameterize()
 
         InstructionDesc[enumCast(OpConstantDataKHR)].operands.push(OperandLiteralString, "'Data'");
         InstructionDesc[enumCast(OpSpecConstantDataKHR)].operands.push(OperandLiteralString, "'Data'");
+        InstructionDesc[enumCast(OpAbortKHR)].operands.push(OperandId, "'Message Type'");
         InstructionDesc[enumCast(OpAbortKHR)].operands.push(OperandId, "'Message'");
-        InstructionDesc[enumCast(OpAbortKHR)].setResultAndType(false, true);
+        InstructionDesc[enumCast(OpAbortKHR)].setResultAndType(false, false);
 
         InstructionDesc[enumCast(Op::OpTraceNV)].operands.push(OperandId, "'Acceleration Structure'");
         InstructionDesc[enumCast(Op::OpTraceNV)].operands.push(OperandId, "'Ray Flags'");
