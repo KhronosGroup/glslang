@@ -3282,6 +3282,8 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         glslang::TIntermSequence& glslangOperands = node->getSequence();
         if (glslangOperands[0]->getAsTyped()->getVectorSize() == 1)
             binOp = glslang::EOpMul;
+        else if (isTypeFloat(node->getType().getBasicType()))
+            binOp = glslang::EOpDot;
         break;
     }
     case glslang::EOpMod:
@@ -7144,6 +7146,13 @@ spv::Id TGlslangToSpvTraverser::createBinaryOperation(glslang::TOperator op, OpD
         binOp = spv::OpOuterProduct;
         needMatchingVectors = false;
         break;
+    case glslang::EOpDot:
+        if (typeProxy == glslang::EbtBFloat16) {
+            builder.addExtension(spv::E_SPV_KHR_bfloat16);
+            builder.addCapability(spv::CapabilityBFloat16DotProductKHR);
+        }
+        binOp = spv::OpDot;
+        break;
 
     case glslang::EOpDiv:
     case glslang::EOpDivAssign:
@@ -9152,10 +9161,6 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
             if (builder.isFloatType(builder.getScalarTypeId(typeId0)) ||
                 // HLSL supports dot(int,int) which is just a multiply
                 glslangIntermediate->getSource() == glslang::EShSourceHlsl) {
-                if (typeProxy == glslang::EbtBFloat16) {
-                    builder.addExtension(spv::E_SPV_KHR_bfloat16);
-                    builder.addCapability(spv::CapabilityBFloat16DotProductKHR);
-                }
                 opCode = spv::OpDot;
             } else {
                 builder.addExtension(spv::E_SPV_KHR_integer_dot_product);

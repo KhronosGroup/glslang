@@ -531,6 +531,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.subgroupSizeARB.frag",
         "spv.precise.tese",
         "spv.precise.tesc",
+        "spv.precise.dot.vert",
         "spv.viewportindex.tese",
         "spv.volatileAtomic.comp",
         "spv.vulkan100.subgroupArithmetic.comp",
