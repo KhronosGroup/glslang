@@ -10,6 +10,15 @@ ERROR: 0:57: '=' :  cannot convert from ' global double' to ' global int'
 ERROR: 0:80: 'floatBitsToInt' : required extension not requested: Possible extensions include:
 GL_ARB_shader_bit_encoding
 GL_ARB_gpu_shader5
+GL_NV_gpu_shader5
+ERROR: 0:91: 'packUnorm2x16' : required extension not requested: Possible extensions include:
+GL_ARB_shader_bit_encoding
+GL_ARB_gpu_shader5
+GL_NV_gpu_shader5
+ERROR: 0:92: 'unpackUnorm2x16' : required extension not requested: Possible extensions include:
+GL_ARB_shader_bit_encoding
+GL_ARB_gpu_shader5
+GL_NV_gpu_shader5
 ERROR: 0:100: 'packSnorm2x16' : required extension not requested: GL_ARB_shading_language_packing
 ERROR: 0:114: 'textureQueryLOD' : required extension not requested: GL_ARB_texture_query_lod
 ERROR: 0:115: 'textureQueryLOD' : required extension not requested: GL_ARB_texture_query_lod
@@ -18,7 +27,7 @@ ERROR: 0:154: 'assign' :  cannot convert from ' const float' to ' temp 2-compone
 ERROR: 0:155: 'textureQueryLOD' : no matching overloaded function found 
 ERROR: 0:155: 'assign' :  cannot convert from ' const float' to ' temp 2-component vector of float'
 ERROR: 0:183: 'mix' : required extension not requested: GL_EXT_shader_integer_mix
-ERROR: 17 compilation errors.  No code generated.
+ERROR: 19 compilation errors.  No code generated.
 
 
 Shader version: 150
