@@ -547,7 +547,7 @@ void TIntermediate::mergeModes(TInfoSink& infoSink, TIntermediate& unit)
     }
     if (primitives == TQualifier::layoutNotSet)
         primitives = unit.primitives;
-    else if (primitives != unit.primitives) {
+    else if (unit.primitives != TQualifier::layoutNotSet && primitives != unit.primitives) {
         if (language == EShLangMesh)
             error(infoSink, "Contradictory layout max_primitives values");
         else
@@ -569,12 +569,12 @@ void TIntermediate::mergeModes(TInfoSink& infoSink, TIntermediate& unit)
 
     if (vertexSpacing == EvsNone)
         vertexSpacing = unit.vertexSpacing;
-    else if (vertexSpacing != unit.vertexSpacing)
+    else if (unit.vertexSpacing != EvsNone && vertexSpacing != unit.vertexSpacing)
         error(infoSink, "Contradictory input vertex spacing");
 
     if (vertexOrder == EvoNone)
         vertexOrder = unit.vertexOrder;
-    else if (vertexOrder != unit.vertexOrder)
+    else if (unit.vertexOrder != EvoNone && vertexOrder != unit.vertexOrder)
         error(infoSink, "Contradictory triangle ordering");
 
     MERGE_TRUE(pointMode);
@@ -591,7 +591,7 @@ void TIntermediate::mergeModes(TInfoSink& infoSink, TIntermediate& unit)
 
         if (localSizeSpecId[i] == TQualifier::layoutNotSet)
             localSizeSpecId[i] = unit.localSizeSpecId[i];
-        else if (localSizeSpecId[i] != unit.localSizeSpecId[i])
+        else if (unit.localSizeSpecId[i] != TQualifier::layoutNotSet && localSizeSpecId[i] != unit.localSizeSpecId[i])
             error(infoSink, "Contradictory local size specialization ids");
     }
 
@@ -603,7 +603,7 @@ void TIntermediate::mergeModes(TInfoSink& infoSink, TIntermediate& unit)
 
     if (depthLayout == EldNone)
         depthLayout = unit.depthLayout;
-    else if (depthLayout != unit.depthLayout)
+    else if (unit.depthLayout != EldNone && depthLayout != unit.depthLayout)
         error(infoSink, "Contradictory depth layouts");
 
     MERGE_TRUE(depthReplacing);
@@ -616,7 +616,7 @@ void TIntermediate::mergeModes(TInfoSink& infoSink, TIntermediate& unit)
     for (size_t b = 0; b < xfbBuffers.size(); ++b) {
         if (xfbBuffers[b].stride == TQualifier::layoutXfbStrideEnd)
             xfbBuffers[b].stride = unit.xfbBuffers[b].stride;
-        else if (xfbBuffers[b].stride != unit.xfbBuffers[b].stride)
+        else if (unit.xfbBuffers[b].stride != TQualifier::layoutXfbStrideEnd && xfbBuffers[b].stride != unit.xfbBuffers[b].stride)
             error(infoSink, "Contradictory xfb_stride");
         xfbBuffers[b].implicitStride = std::max(xfbBuffers[b].implicitStride, unit.xfbBuffers[b].implicitStride);
         if (unit.xfbBuffers[b].contains64BitType)
