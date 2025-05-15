@@ -343,6 +343,7 @@ public:
         numTaskNVBlocks(0),
         layoutPrimitiveCulling(false),
         numTaskEXTPayloads(0),
+        nonCoherentTileAttachmentReadQCOM(false),
         autoMapBindings(false),
         autoMapLocations(false),
         flattenUniformArrays(false),
@@ -371,6 +372,12 @@ public:
         localSizeSpecId[1] = TQualifier::layoutNotSet;
         localSizeSpecId[2] = TQualifier::layoutNotSet;
         xfbBuffers.resize(TQualifier::layoutXfbBufferEnd);
+        tileShadingRateQCOM[0] = 0;
+        tileShadingRateQCOM[1] = 0;
+        tileShadingRateQCOM[2] = 0;
+        tileShadingRateQCOMNotDefault[0] = false;
+        tileShadingRateQCOMNotDefault[1] = false;
+        tileShadingRateQCOMNotDefault[2] = false;
         shiftBinding.fill(0);
     }
 
@@ -651,6 +658,21 @@ public:
 
     bool isEsProfile() const { return profile == EEsProfile; }
 
+    bool setTileShadingRateQCOM(int dim, int size)
+    {
+        if (tileShadingRateQCOMNotDefault[dim])
+            return size == tileShadingRateQCOM[dim];
+        tileShadingRateQCOMNotDefault[dim] = true;
+        tileShadingRateQCOM[dim] = size;
+        return true;
+    }
+    unsigned int getTileShadingRateQCOM(int dim) const { return tileShadingRateQCOM[dim]; }
+    bool isTileShadingRateQCOMSet() const
+    {
+        // Return true if any component has been set (i.e. any component is not default).
+        return tileShadingRateQCOMNotDefault[0] || tileShadingRateQCOMNotDefault[1] || tileShadingRateQCOMNotDefault[2];
+    }
+
     void setShiftBinding(TResourceType res, unsigned int shift)
     {
         shiftBinding[res] = shift;
@@ -896,6 +918,8 @@ public:
     bool getNonCoherentDepthAttachmentReadEXT() const { return nonCoherentDepthAttachmentReadEXT; }
     void setNonCoherentStencilAttachmentReadEXT() { nonCoherentStencilAttachmentReadEXT = true; }
     bool getNonCoherentStencilAttachmentReadEXT() const { return nonCoherentStencilAttachmentReadEXT; }
+    void setNonCoherentTileAttachmentReadQCOM() { nonCoherentTileAttachmentReadQCOM = true; }
+    bool getNonCoherentTileAttachmentReadQCOM() const { return nonCoherentTileAttachmentReadQCOM; }
     void setPostDepthCoverage() { postDepthCoverage = true; }
     bool getPostDepthCoverage() const { return postDepthCoverage; }
     void setEarlyFragmentTests() { earlyFragmentTests = true; }
@@ -1241,6 +1265,10 @@ protected:
     int numTaskNVBlocks;
     bool layoutPrimitiveCulling;
     int numTaskEXTPayloads;
+
+    bool nonCoherentTileAttachmentReadQCOM;
+    int  tileShadingRateQCOM[3];
+    bool tileShadingRateQCOMNotDefault[3];
 
     // Base shift values
     std::array<unsigned int, EResCount> shiftBinding;

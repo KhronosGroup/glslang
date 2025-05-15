@@ -23,7 +23,7 @@ ERROR: 0:63: 'xxy' : vector swizzle selection out of range
 ERROR: 0:66: 'binding' : cannot declare a default, include a type or full declaration 
 ERROR: 0:69: 'location/component/index' : cannot declare a default, use a full declaration 
 ERROR: 0:70: 'input block' : not supported in this stage: vertex
-ERROR: 0:70: 'binding' : requires uniform or buffer storage qualifier 
+ERROR: 0:70: 'binding' : requires uniform or buffer or tile image storage qualifier 
 ERROR: 0:71: 'binding' : binding is too large 
 ERROR: 0:74: 'binding' : sampler binding not less than gl_MaxCombinedTextureImageUnits 
 ERROR: 0:76: 'binding' : sampler binding not less than gl_MaxCombinedTextureImageUnits (using array)
