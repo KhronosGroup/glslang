@@ -4123,10 +4123,16 @@ bool TParseContext::constructorTextureSamplerError(const TSourceLoc& loc, const 
         error(loc, "sampler-constructor first argument must be a scalar *texture* type", token, "");
         return true;
     }
+
     // simulate the first argument's impact on the result type, so it can be compared with the encapsulated operator!=()
     TSampler texture = function.getType().getSampler();
     texture.setCombined(false);
     texture.shadow = false;
+    if (function[0].type->getSampler().isTileAttachmentQCOM()) {
+      //TSampler& texture = const_cast<TFunction&>(function).getWritableType().getSampler();
+      texture.image = true;
+      texture.tileQCOM = true;
+    }
     if (texture != function[0].type->getSampler()) {
         error(loc, "sampler-constructor first argument must be a *texture* type"
                    " matching the dimensionality and sampled type of the constructor", token, "");
@@ -4218,7 +4224,7 @@ void TParseContext::samplerCheck(const TSourceLoc& loc, const TType& type, const
             // if (! initializer)
             if (type.getSampler().isAttachmentEXT() && type.getQualifier().storage != EvqTileImageEXT)
                  error(loc, "can only be used in tileImageEXT variables or function parameters:", type.getBasicTypeString().c_str(), identifier.c_str());
-             else if (type.getQualifier().storage != EvqTileImageEXT)
+            else if (type.getQualifier().storage != EvqTileImageEXT)
                  error(loc, "sampler/image types can only be used in uniform variables or function parameters:", type.getBasicTypeString().c_str(), identifier.c_str());
         }
     }
@@ -6258,6 +6264,16 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
             publicType.qualifier.layoutFullQuads = true;
             return;
         }
+        if (id == "non_coherent_attachment_readqcom") {
+            requireExtensions(loc, 1, &E_GL_QCOM_tile_shading, "tile shading QCOM");
+            publicType.shaderQualifiers.layoutNonCoherentTileAttachmentReadQCOM = true;
+            return;
+        }
+        if (id == "tile_attachmentqcom") {
+            requireExtensions(loc, 1, &E_GL_QCOM_tile_shading, "tile shading QCOM");
+            publicType.qualifier.layoutTileAttachmentQCOM = true;
+            return;
+        }
     }
     if (language == EShLangVertex ||
         language == EShLangTessControl ||
@@ -6299,6 +6315,49 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
                 return;
             }
         }
+        if (id == "tile_attachmentqcom") {
+            requireExtensions(loc, 1, &E_GL_QCOM_tile_shading, "tile shading QCOM");
+            publicType.qualifier.layoutTileAttachmentQCOM = true;
+            return;
+        }
+#if THIS_NEED_NUMBER_SET
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+        if (id.compare(0, 18, "shading_rate_xqcom") == 0 ||
+            id.compare(0, 18, "shading_rate_yqcom") == 0 ||
+            id.compare(0, 18, "shading_rate_zqcom") == 0) {
+            requireExtensions(loc, 1, &E_GL_QCOM_tile_shading, "tile shading QCOM");
+            if (nonLiteral)
+                error(loc, "needs a literal integer", "shading_rate_*QCOM", "");
+            if (id.size() == 18 && value == 0) {
+                error(loc, "must be at least 1", id.c_str(), "");
+                return;
+            }
+            if (id == "shading_rate_xqcom") {
+                publicType.shaderQualifiers.layoutTileShadingRateQCOM[0] = value;
+                publicType.shaderQualifiers.layoutTileShadingRateQCOMNotDefault[0] = true;
+                if ((value & (value - 1)) != 0) {
+                    error(loc, "must be a power of 2", id.c_str(), "");
+                }
+                return;
+            }
+            if (id == "shading_rate_yqcom") {
+                publicType.shaderQualifiers.layoutTileShadingRateQCOM[1] = value;
+                publicType.shaderQualifiers.layoutTileShadingRateQCOMNotDefault[1] = true;
+                if ((value & (value - 1)) != 0) {
+                    error(loc, "must be a power of 2", id.c_str(), "");
+                }
+                return;
+            }
+            if (id == "shading_rate_zqcom") {
+                publicType.shaderQualifiers.layoutTileShadingRateQCOM[2] = value;
+                publicType.shaderQualifiers.layoutTileShadingRateQCOMNotDefault[2] = true;
+                if (value > 0) {
+                    error(loc, "must be a positive value", id.c_str(), "");
+                }
+                return;
+            }
+        }
+#endif
     }
 
     if (id == "primitive_culling") {
@@ -6585,6 +6644,18 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
                 error(loc, "needs a literal integer", "index", "");
             return;
         }
+#if THESE_DONT_NEED_NUMBER_SET
+        if (id == "non_coherent_attachment_readqcom") {
+            requireExtensions(loc, 1, &E_GL_QCOM_tile_shading, "tile shading QCOM");
+            publicType.shaderQualifiers.nonCoherentAttachmentReadQCOM = true;
+            return;
+        }
+        if (id == "tile_memoryqcom") {
+            requireExtensions(loc, 1, &E_GL_QCOM_tile_shading, "tile shading QCOM");
+            publicType.qualifier.layoutTileAttachmentQCOM = true;
+            return;
+        }
+#endif
         break;
 
     case EShLangMesh:
@@ -6664,6 +6735,45 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
                     publicType.shaderQualifiers.localSizeSpecId[2] = value;
                     return;
                 }
+            }
+        }
+#if THESE_DONT_NEED_NUMBER_SET
+        if (id == "tile_memoryqcom") {
+            requireExtensions(loc, 1, &E_GL_QCOM_tile_shading, "tile shading QCOM");
+            publicType.qualifier.layoutTileAttachmentQCOM = true;
+            return;
+        }
+#endif
+        if (id.compare(0, 18, "shading_rate_xqcom") == 0 ||
+            id.compare(0, 18, "shading_rate_yqcom") == 0 ||
+            id.compare(0, 18, "shading_rate_zqcom") == 0) {
+            requireExtensions(loc, 1, &E_GL_QCOM_tile_shading, "tile shading QCOM");
+            if (nonLiteral)
+                error(loc, "needs a literal integer", "shading_rate_*QCOM", "");
+            if (id.size() == 18 && value == 0) {
+                error(loc, "must be at least 1", id.c_str(), "");
+                return;
+            }
+            if (id == "shading_rate_xqcom") {
+                publicType.shaderQualifiers.layoutTileShadingRateQCOM[0] = value;
+                publicType.shaderQualifiers.layoutTileShadingRateQCOMNotDefault[0] = true;
+                if (! IsPow2(value))
+                    error(loc, "must be a power of 2", id.c_str(), "");
+                return;
+            }
+            if (id == "shading_rate_yqcom") {
+                publicType.shaderQualifiers.layoutTileShadingRateQCOM[1] = value;
+                publicType.shaderQualifiers.layoutTileShadingRateQCOMNotDefault[1] = true;
+                if (! IsPow2(value))
+                    error(loc, "must be a power of 2", id.c_str(), "");
+                return;
+            }
+            if (id == "shading_rate_zqcom") {
+                publicType.shaderQualifiers.layoutTileShadingRateQCOM[2] = value;
+                publicType.shaderQualifiers.layoutTileShadingRateQCOMNotDefault[2] = true;
+                if (value <= 0)
+                    error(loc, "must be a positive value", id.c_str(), "");
+                return;
             }
         }
         break;
@@ -6759,6 +6869,7 @@ void TParseContext::mergeObjectLayoutQualifiers(TQualifier& dst, const TQualifie
             dst.pervertexEXT = true;
         if (src.layoutHitObjectShaderRecordNV)
             dst.layoutHitObjectShaderRecordNV = true;
+        dst.layoutTileAttachmentQCOM |= src.layoutTileAttachmentQCOM;
     }
 }
 
@@ -6885,7 +6996,7 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
                     error(loc, "doubles cannot start on an odd-numbered component", "component", "");
         }
 
-        switch (qualifier.storage) {
+        switch (qualifier.getStorage()) {
         case EvqVaryingIn:
         case EvqVaryingOut:
             if (type.getBasicType() == EbtBlock)
@@ -7203,8 +7314,8 @@ void TParseContext::layoutQualifierCheck(const TSourceLoc& loc, const TQualifier
     }
 
     if (qualifier.hasBinding()) {
-        if (! qualifier.isUniformOrBuffer() && !qualifier.isTaskMemory())
-            error(loc, "requires uniform or buffer storage qualifier", "binding", "");
+        if (! qualifier.isUniformOrBuffer() && !qualifier.isTaskMemory() && !qualifier.isTileAttachmentQCOM())
+            error(loc, "requires uniform or buffer or tile image storage qualifier", "binding", "");
     }
     if (qualifier.hasStream()) {
         if (!qualifier.isPipeOutput())
@@ -7309,6 +7420,15 @@ void TParseContext::checkNoShaderLayouts(const TSourceLoc& loc, const TShaderQua
         error(loc, message, TQualifier::getInterlockOrderingString(shaderQualifiers.interlockOrdering), "");
     if (shaderQualifiers.layoutPrimitiveCulling)
         error(loc, "can only be applied as standalone", "primitive_culling", "");
+
+    if (shaderQualifiers.layoutNonCoherentTileAttachmentReadQCOM)
+        error(loc, message, "non_coherent_attachment_readQCOM", "");
+    if (shaderQualifiers.layoutTileShadingRateQCOM[0] >= 1)
+        error(loc, message, "shading_rate_xQCOM", "");
+    if (shaderQualifiers.layoutTileShadingRateQCOM[1] >= 1)
+        error(loc, message, "shading_rate_yQCOM", "");
+    if (shaderQualifiers.layoutTileShadingRateQCOM[2] >= 1)
+        error(loc, message, "shading_rate_zQCOM", "");
 }
 
 // Correct and/or advance an object's offset layout qualifier.
@@ -10274,6 +10394,12 @@ void TParseContext::updateStandaloneQualifierDefaults(const TSourceLoc& loc, con
         else
             error(loc, "can only apply to 'in'", "non_coherent_stencil_attachment_readEXT", "");
     }
+    if (publicType.shaderQualifiers.layoutNonCoherentTileAttachmentReadQCOM) {
+        if (publicType.qualifier.storage == EvqVaryingIn)
+            intermediate.setNonCoherentTileAttachmentReadQCOM();
+        else
+            error(loc, "can only apply to 'in'", "non_coherent_attachment_readQCOM", "");
+    }
     if (publicType.shaderQualifiers.hasBlendEquation()) {
         if (publicType.qualifier.storage != EvqVaryingOut)
             error(loc, "can only apply to 'out'", "blend equation", "");
@@ -10335,6 +10461,16 @@ void TParseContext::updateStandaloneQualifierDefaults(const TSourceLoc& loc, con
         }
         // Exit early as further checks are not valid
         return;
+    }
+
+    for (int i = 0; i < 3; ++i) {
+        if (publicType.shaderQualifiers.layoutTileShadingRateQCOMNotDefault[i]) {
+            if (publicType.qualifier.storage == EvqVaryingIn) {
+                if (! intermediate.setTileShadingRateQCOM(i, publicType.shaderQualifiers.layoutTileShadingRateQCOM[i]))
+                    error(loc, "cannot change previously set size", (i==0?"shading_rate_xQCOM":(i==1?"shading_rate_yQCOM":"shading_rate_zQCOM")), "");
+            } else
+                error(loc, "can only apply to 'in'", (i==0?"shading_rate_xQCOM":(i==1?"shading_rate_yQCOM":"shading_rate_zQCOM")), "");
+        }
     }
 
     const TQualifier& qualifier = publicType.qualifier;

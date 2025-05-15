@@ -301,6 +301,7 @@ const int Num_viewportEXTs = sizeof(viewportEXTs) / sizeof(viewportEXTs[0]);
 
 const char* const E_GL_QCOM_image_processing                    = "GL_QCOM_image_processing";
 const char* const E_GL_QCOM_image_processing2                   = "GL_QCOM_image_processing2";
+const char* const E_GL_QCOM_tile_shading                        = "GL_QCOM_tile_shading";
 
 // AEP
 const char* const E_GL_ANDROID_extension_pack_es31a             = "GL_ANDROID_extension_pack_es31a";

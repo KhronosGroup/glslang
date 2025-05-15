@@ -322,6 +322,7 @@ void TParseVersions::initializeExtensionBehavior()
     // QCOM
     extensionBehavior[E_GL_QCOM_image_processing]                    = EBhDisable;
     extensionBehavior[E_GL_QCOM_image_processing2]                   = EBhDisable;
+    extensionBehavior[E_GL_QCOM_tile_shading]                        = EBhDisable;
 
     // AEP
     extensionBehavior[E_GL_ANDROID_extension_pack_es31a]             = EBhDisable;
@@ -459,6 +460,7 @@ void TParseVersions::getPreamble(std::string& preamble)
 
             "#define GL_QCOM_image_processing 1\n"
             "#define GL_QCOM_image_processing2 1\n"
+            "#define GL_QCOM_tile_shading 1\n"
             ;
 
             if (version >= 300) {
@@ -588,6 +590,7 @@ void TParseVersions::getPreamble(std::string& preamble)
 
             "#define GL_QCOM_image_processing 1\n"
             "#define GL_QCOM_image_processing2 1\n"
+            "#define GL_QCOM_tile_shading 1\n"
 
             "#define GL_EXT_shader_explicit_arithmetic_types 1\n"
             "#define GL_EXT_shader_explicit_arithmetic_types_int8 1\n"
@@ -1424,6 +1427,22 @@ void TParseVersions::coopvecCheck(const TSourceLoc& loc, const char* op, bool bu
 {
     if (!builtIn) {
         const char* const extensions[] = {E_GL_NV_cooperative_vector};
+        requireExtensions(loc, sizeof(extensions)/sizeof(extensions[0]), extensions, op);
+    }
+}
+
+void TParseVersions::fattachmentCheck(const TSourceLoc& loc, const char* op, bool builtIn)
+{
+    if (!builtIn) {
+        const char* const extensions[] = {E_GL_QCOM_tile_shading};
+        requireExtensions(loc, sizeof(extensions)/sizeof(extensions[0]), extensions, op);
+    }
+}
+
+void TParseVersions::intattachmentCheck(const TSourceLoc& loc, const char* op, bool builtIn)
+{
+    if (!builtIn) {
+        const char* const extensions[] = {E_GL_QCOM_tile_shading};
         requireExtensions(loc, sizeof(extensions)/sizeof(extensions[0]), extensions, op);
     }
 }

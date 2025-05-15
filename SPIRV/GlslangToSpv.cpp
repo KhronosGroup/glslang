@@ -1147,6 +1147,17 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
         builder.addCapability(spv::Capability::CoreBuiltinsARM);
         return spv::BuiltIn::WarpMaxIDARM;
 
+    // QCOM builtins
+    case glslang::EbvTileOffsetQCOM:
+        builder.addExtension(spv::E_SPV_QCOM_tile_shading);
+        return spv::BuiltIn::TileOffsetQCOM;
+    case glslang::EbvTileDimensionQCOM:
+        builder.addExtension(spv::E_SPV_QCOM_tile_shading);
+        return spv::BuiltIn::TileDimensionQCOM;
+    case glslang::EbvTileApronSizeQCOM:
+        builder.addExtension(spv::E_SPV_QCOM_tile_shading);
+        return spv::BuiltIn::TileApronSizeQCOM;
+
     default:
         return spv::BuiltIn::Max;
     }
@@ -1326,6 +1337,12 @@ spv::StorageClass TGlslangToSpvTraverser::TranslateStorageClass(const glslang::T
         builder.addExtension(spv::E_SPV_EXT_shader_tile_image);
         builder.addCapability(spv::Capability::TileImageColorReadAccessEXT);
         return spv::StorageClass::TileImageEXT;
+    }
+
+    if (type.getQualifier().isTileAttachmentQCOM()) {
+        builder.addExtension(spv::E_SPV_QCOM_tile_shading);
+        builder.addCapability(spv::Capability::TileShadingQCOM);
+        return spv::StorageClass::TileAttachmentQCOM;
     }
 
     if (glslangIntermediate->getSource() != glslang::EShSourceHlsl ||
@@ -1741,6 +1758,12 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion,
             builder.addExtension(spv::E_SPV_EXT_shader_tile_image);
         }
 
+        if (glslangIntermediate->getNonCoherentTileAttachmentReadQCOM()) {
+            builder.addCapability(spv::Capability::TileShadingQCOM);
+            builder.addExecutionMode(shaderEntry, spv::ExecutionMode::NonCoherentTileAttachmentReadQCOM);
+            builder.addExtension(spv::E_SPV_QCOM_tile_shading);
+        }
+
         if (glslangIntermediate->isDepthReplacing())
             builder.addExecutionMode(shaderEntry, spv::ExecutionMode::DepthReplacing);
 
@@ -1822,9 +1845,19 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion,
             }
             builder.addExecutionModeId(shaderEntry, spv::ExecutionMode::LocalSizeId, dimConstId);
         } else {
-            builder.addExecutionMode(shaderEntry, spv::ExecutionMode::LocalSize, glslangIntermediate->getLocalSize(0),
-                                                                               glslangIntermediate->getLocalSize(1),
-                                                                               glslangIntermediate->getLocalSize(2));
+            if (glslangIntermediate->getTileShadingRateQCOM(0) >= 1 || glslangIntermediate->getTileShadingRateQCOM(1) >= 1 || glslangIntermediate->getTileShadingRateQCOM(2) >= 1) {
+                auto rate_x = glslangIntermediate->getTileShadingRateQCOM(0);
+                auto rate_y = glslangIntermediate->getTileShadingRateQCOM(1);
+                auto rate_z = glslangIntermediate->getTileShadingRateQCOM(2);
+                rate_x = ( rate_x == 0 ? 1 : rate_x );
+                rate_y = ( rate_y == 0 ? 1 : rate_y );
+                rate_z = ( rate_z == 0 ? 1 : rate_z );
+                builder.addExecutionMode(shaderEntry, spv::ExecutionMode::TileShadingRateQCOM, rate_x, rate_y, rate_z);
+            } else {
+                builder.addExecutionMode(shaderEntry, spv::ExecutionMode::LocalSize, glslangIntermediate->getLocalSize(0),
+                                                                                   glslangIntermediate->getLocalSize(1),
+                                                                                   glslangIntermediate->getLocalSize(2));
+            }
         }
         if (glslangIntermediate->getLayoutDerivativeModeNone() == glslang::LayoutDerivativeGroupQuads) {
             builder.addCapability(spv::Capability::ComputeDerivativeGroupQuadsNV);
@@ -1835,6 +1868,13 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion,
             builder.addExecutionMode(shaderEntry, spv::ExecutionMode::DerivativeGroupLinearNV);
             builder.addExtension(spv::E_SPV_NV_compute_shader_derivatives);
         }
+
+        if (glslangIntermediate->getNonCoherentTileAttachmentReadQCOM()) {
+            builder.addCapability(spv::Capability::TileShadingQCOM);
+            builder.addExecutionMode(shaderEntry, spv::ExecutionMode::NonCoherentTileAttachmentReadQCOM);
+            builder.addExtension(spv::E_SPV_QCOM_tile_shading);
+        }
+
         break;
     }
     case EShLangTessEvaluation:
@@ -3518,7 +3558,6 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         builder.addCapability(spv::Capability::RayQueryPositionFetchKHR);
         noReturnValue = true;
         break;
-
     case glslang::EOpImageSampleWeightedQCOM:
         builder.addCapability(spv::Capability::TextureSampleWeightedQCOM);
         builder.addExtension(spv::E_SPV_QCOM_image_processing);
@@ -3877,8 +3916,8 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
             lvalueCoherentFlags |= TranslateCoherent(glslangOperands[arg]->getAsTyped()->getType());
         } else {
             builder.setDebugSourceLocation(node->getLoc().line, node->getLoc().getFilename());
-             glslang::TOperator glslangOp = node->getOp();
-             if (arg == 1 &&
+            glslang::TOperator glslangOp = node->getOp();
+            if (arg == 1 &&
                 (glslangOp == glslang::EOpRayQueryGetIntersectionType ||
                  glslangOp == glslang::EOpRayQueryGetIntersectionT ||
                  glslangOp == glslang::EOpRayQueryGetIntersectionInstanceCustomIndex ||
@@ -3904,18 +3943,18 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
                     )) {
                 bool cond = glslangOperands[arg]->getAsConstantUnion()->getConstArray()[0].getBConst();
                 operands.push_back(builder.makeIntConstant(cond ? 1 : 0));
-             } else if ((arg == 10 && glslangOp == glslang::EOpTraceKHR) ||
-                        (arg == 11 && glslangOp == glslang::EOpTraceRayMotionNV) ||
-                        (arg == 1  && glslangOp == glslang::EOpExecuteCallableKHR) ||
-                        (arg == 1  && glslangOp == glslang::EOpHitObjectExecuteShaderNV) ||
-                        (arg == 11 && glslangOp == glslang::EOpHitObjectTraceRayNV) ||
-                        (arg == 12 && glslangOp == glslang::EOpHitObjectTraceRayMotionNV)) {
-                 const int set = glslangOp == glslang::EOpExecuteCallableKHR ? 1 : 0;
-                 const int location = glslangOperands[arg]->getAsConstantUnion()->getConstArray()[0].getUConst();
-                 auto itNode = locationToSymbol[set].find(location);
-                 visitSymbol(itNode->second);
-                 spv::Id symId = getSymbolId(itNode->second);
-                 operands.push_back(symId);
+            } else if ((arg == 10 && glslangOp == glslang::EOpTraceKHR) ||
+                       (arg == 11 && glslangOp == glslang::EOpTraceRayMotionNV) ||
+                       (arg == 1  && glslangOp == glslang::EOpExecuteCallableKHR) ||
+                       (arg == 1  && glslangOp == glslang::EOpHitObjectExecuteShaderNV) ||
+                       (arg == 11 && glslangOp == glslang::EOpHitObjectTraceRayNV) ||
+                       (arg == 12 && glslangOp == glslang::EOpHitObjectTraceRayMotionNV)) {
+                const int set = glslangOp == glslang::EOpExecuteCallableKHR ? 1 : 0;
+                const int location = glslangOperands[arg]->getAsConstantUnion()->getConstArray()[0].getUConst();
+                auto itNode = locationToSymbol[set].find(location);
+                visitSymbol(itNode->second);
+                spv::Id symId = getSymbolId(itNode->second);
+                operands.push_back(symId);
             } else if ((arg == 12 && glslangOp == glslang::EOpHitObjectRecordHitNV) ||
                        (arg == 13 && glslangOp == glslang::EOpHitObjectRecordHitMotionNV) ||
                        (arg == 11 && glslangOp == glslang::EOpHitObjectRecordHitWithIndexNV) ||
@@ -3927,16 +3966,16 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
                  visitSymbol(itNode->second);
                  spv::Id symId = getSymbolId(itNode->second);
                  operands.push_back(symId);
-             } else if (glslangOperands[arg]->getAsTyped()->getQualifier().isSpirvLiteral()) {
-                 // Will be translated to a literal value, make a placeholder here
-                 operands.push_back(spv::NoResult);
-             } else if (glslangOperands[arg]->getAsTyped()->getBasicType() == glslang::EbtFunction) {
-                 spv::Function* function = functionMap[glslangOperands[arg]->getAsSymbolNode()->getMangledName().c_str()];
-                 assert(function);
-                 operands.push_back(function->getId());
-             } else  {
-                operands.push_back(accessChainLoad(glslangOperands[arg]->getAsTyped()->getType()));
-             }
+            } else if (glslangOperands[arg]->getAsTyped()->getQualifier().isSpirvLiteral()) {
+                // Will be translated to a literal value, make a placeholder here
+                operands.push_back(spv::NoResult);
+            } else if (glslangOperands[arg]->getAsTyped()->getBasicType() == glslang::EbtFunction) {
+                spv::Function* function = functionMap[glslangOperands[arg]->getAsSymbolNode()->getMangledName().c_str()];
+                assert(function);
+                operands.push_back(function->getId());
+            } else  {
+               operands.push_back(accessChainLoad(glslangOperands[arg]->getAsTyped()->getType()));
+            }
         }
     }
 
@@ -4811,6 +4850,9 @@ spv::Id TGlslangToSpvTraverser::createSpvVariable(const glslang::TIntermSymbol* 
         case spv::StorageClass::PhysicalStorageBufferEXT:
             builder.addIncorporatedExtension(spv::E_SPV_KHR_16bit_storage, spv::Spv_1_3);
             builder.addCapability(spv::Capability::StorageUniformBufferBlock16);
+            break;
+        case spv::StorageClass::TileAttachmentQCOM:
+            builder.addCapability(spv::Capability::TileShadingQCOM);
             break;
         default:
             if (storageClass == spv::StorageClass::Workgroup &&
