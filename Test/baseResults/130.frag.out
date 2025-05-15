@@ -13,7 +13,6 @@ ERROR: 0:82: 'assign' :  cannot convert from ' const float' to ' temp 4-componen
 ERROR: 0:83: 'textureGatherOffset(...)' : not supported for this version or the enabled extensions 
 ERROR: 0:86: 'textureGatherOffset(...)' : not supported for this version or the enabled extensions 
 ERROR: 0:87: 'textureGatherOffset(...)' : not supported for this version or the enabled extensions 
-WARNING: 0:91: '#extension' : extension is only partially supported: GL_ARB_gpu_shader5
 ERROR: 0:123: 'line continuation' : not supported for this version or the enabled extensions 
 ERROR: 0:129: 'uniform block' : not supported for this version or the enabled extensions 
 ERROR: 0:143: 'length' : does not operate on this type:  temp bool

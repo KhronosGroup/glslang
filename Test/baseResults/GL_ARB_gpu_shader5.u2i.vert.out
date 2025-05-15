@@ -1,6 +1,4 @@
 GL_ARB_gpu_shader5.u2i.vert
-WARNING: 0:2: '#extension' : extension is only partially supported: GL_ARB_gpu_shader5
-
 Shader version: 150
 Requested GL_ARB_gpu_shader5
 0:? Sequence
