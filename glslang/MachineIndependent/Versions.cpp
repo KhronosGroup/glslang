@@ -1455,14 +1455,6 @@ void TParseVersions::coopvecCheck(const TSourceLoc& loc, const char* op, bool bu
     }
 }
 
-void TParseVersions::fattachmentCheck(const TSourceLoc& loc, const char* op, bool builtIn)
-{
-    if (!builtIn) {
-        const char* const extensions[] = {E_GL_QCOM_tile_shading};
-        requireExtensions(loc, sizeof(extensions)/sizeof(extensions[0]), extensions, op);
-    }
-}
-
 void TParseVersions::intattachmentCheck(const TSourceLoc& loc, const char* op, bool builtIn)
 {
     if (!builtIn) {

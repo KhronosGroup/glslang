@@ -213,13 +213,6 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
         dim = EsdAttachmentEXT;
     }
 
-    // make an AttachmentQCOM
-    void setTileAttachmentQCOM(TBasicType t)
-    {
-        setImage(t, Esd2D);
-        tileQCOM = true;
-    }
-
     bool operator==(const TSampler& right) const
     {
         return      type == right.type &&
@@ -615,7 +608,6 @@ public:
     bool nullInit : 1;
     bool spirvByReference : 1;
     bool spirvLiteral : 1;
-    TStorageQualifier getStorage() const { return (TStorageQualifier) (storage & 0x3FU); }
     bool isWriteOnly() const { return writeonly; }
     bool isReadOnly() const { return readonly; }
     bool isRestrict() const { return restrict; }
@@ -737,7 +729,7 @@ public:
 
     bool isIo() const
     {
-        switch (getStorage()) {
+        switch (storage) {
         case EvqUniform:
         case EvqBuffer:
         case EvqVaryingIn:
@@ -2067,10 +2059,6 @@ public:
     {
         return contains([](const TType* t) { return t->coopvecNV; } );
     }
-    bool containsTileAttachmentQCOM() const
-    {
-        return contains([](const TType* t) { return t->tileAttachmentQCOM; } );
-    }
     bool containsReference() const
     {
         return containsBasicType(EbtReference);
@@ -2592,7 +2580,6 @@ public:
         assert(s >= 0);
         vectorSize = static_cast<uint32_t>(s) & 0b1111;
     }
-    void setTileAttachmentQCOM() { tileAttachmentQCOM = true; }
 
     int computeNumComponents() const
     {

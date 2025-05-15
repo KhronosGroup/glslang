@@ -6373,44 +6373,6 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
             publicType.qualifier.layoutTileAttachmentQCOM = true;
             return;
         }
-#if THIS_NEED_NUMBER_SET
-        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-        if (id.compare(0, 18, "shading_rate_xqcom") == 0 ||
-            id.compare(0, 18, "shading_rate_yqcom") == 0 ||
-            id.compare(0, 18, "shading_rate_zqcom") == 0) {
-            requireExtensions(loc, 1, &E_GL_QCOM_tile_shading, "tile shading QCOM");
-            if (nonLiteral)
-                error(loc, "needs a literal integer", "shading_rate_*QCOM", "");
-            if (id.size() == 18 && value == 0) {
-                error(loc, "must be at least 1", id.c_str(), "");
-                return;
-            }
-            if (id == "shading_rate_xqcom") {
-                publicType.shaderQualifiers.layoutTileShadingRateQCOM[0] = value;
-                publicType.shaderQualifiers.layoutTileShadingRateQCOMNotDefault[0] = true;
-                if ((value & (value - 1)) != 0) {
-                    error(loc, "must be a power of 2", id.c_str(), "");
-                }
-                return;
-            }
-            if (id == "shading_rate_yqcom") {
-                publicType.shaderQualifiers.layoutTileShadingRateQCOM[1] = value;
-                publicType.shaderQualifiers.layoutTileShadingRateQCOMNotDefault[1] = true;
-                if ((value & (value - 1)) != 0) {
-                    error(loc, "must be a power of 2", id.c_str(), "");
-                }
-                return;
-            }
-            if (id == "shading_rate_zqcom") {
-                publicType.shaderQualifiers.layoutTileShadingRateQCOM[2] = value;
-                publicType.shaderQualifiers.layoutTileShadingRateQCOMNotDefault[2] = true;
-                if (value > 0) {
-                    error(loc, "must be a positive value", id.c_str(), "");
-                }
-                return;
-            }
-        }
-#endif
     }
 
     if (id == "primitive_culling") {
@@ -6699,18 +6661,6 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
                 error(loc, "needs a literal integer", "index", "");
             return;
         }
-#if THESE_DONT_NEED_NUMBER_SET
-        if (id == "non_coherent_attachment_readqcom") {
-            requireExtensions(loc, 1, &E_GL_QCOM_tile_shading, "tile shading QCOM");
-            publicType.shaderQualifiers.nonCoherentAttachmentReadQCOM = true;
-            return;
-        }
-        if (id == "tile_memoryqcom") {
-            requireExtensions(loc, 1, &E_GL_QCOM_tile_shading, "tile shading QCOM");
-            publicType.qualifier.layoutTileAttachmentQCOM = true;
-            return;
-        }
-#endif
         break;
 
     case EShLangMesh:
@@ -6792,13 +6742,6 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
                 }
             }
         }
-#if THESE_DONT_NEED_NUMBER_SET
-        if (id == "tile_memoryqcom") {
-            requireExtensions(loc, 1, &E_GL_QCOM_tile_shading, "tile shading QCOM");
-            publicType.qualifier.layoutTileAttachmentQCOM = true;
-            return;
-        }
-#endif
         if (id.compare(0, 18, "shading_rate_xqcom") == 0 ||
             id.compare(0, 18, "shading_rate_yqcom") == 0 ||
             id.compare(0, 18, "shading_rate_zqcom") == 0) {
@@ -7051,7 +6994,7 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
                     error(loc, "doubles cannot start on an odd-numbered component", "component", "");
         }
 
-        switch (qualifier.getStorage()) {
+        switch (qualifier.storage) {
         case EvqVaryingIn:
         case EvqVaryingOut:
             if (type.getBasicType() == EbtBlock)
