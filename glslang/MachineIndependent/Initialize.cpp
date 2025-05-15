@@ -5631,6 +5631,16 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "\n");
     }
 
+    // GL_QCOM_tile_shading
+    if ((profile == EEsProfile && version >= 310) ||
+        (profile != EEsProfile && version >= 460)) {
+        stageBuiltins[EShLangCompute].append(
+            "in highp uvec2 gl_TileOffsetQCOM;"     // GL_QCOM_tile_shading
+            "in highp uvec3 gl_TileDimensionQCOM;"  // GL_QCOM_tile_shading
+            "in highp uvec2 gl_TileApronSizeQCOM;"  // GL_QCOM_tile_shading
+            "\n");
+    }
+
     //============================================================================
     //
     // Define the interface to the mesh/task shader.
@@ -6469,6 +6479,16 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
     if (version >= 300 /* both ES and non-ES */) {
         stageBuiltins[EShLangFragment].append(
             "flat in highp uint gl_ViewID_OVR;"     // GL_OVR_multiview, GL_OVR_multiview2
+            "\n");
+    }
+    
+    // GL_QCOM_tile_shading
+    if ((profile == EEsProfile && version >= 310) ||
+        (profile != EEsProfile && version >= 460)) {
+        stageBuiltins[EShLangFragment].append(
+            "flat in highp uvec2 gl_TileOffsetQCOM;"     // GL_QCOM_tile_shading
+            "flat in highp uvec3 gl_TileDimensionQCOM;"  // GL_QCOM_tile_shading
+            "flat in highp uvec2 gl_TileApronSizeQCOM;"  // GL_QCOM_tile_shading
             "\n");
     }
 
@@ -8869,18 +8889,18 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             BuiltInVariable("gl_WarpMaxIDARM", EbvWarpMaxIDARM, symbolTable);
         }
 
-		if (language == EShLangGeometry || language == EShLangVertex) {
-			if ((profile == EEsProfile && version >= 310) ||
-				(profile != EEsProfile && version >= 450)) {
-				symbolTable.setVariableExtensions("gl_PrimitiveShadingRateEXT", 1, &E_GL_EXT_fragment_shading_rate);
-				BuiltInVariable("gl_PrimitiveShadingRateEXT", EbvPrimitiveShadingRateKHR, symbolTable);
+        if (language == EShLangGeometry || language == EShLangVertex) {
+            if ((profile == EEsProfile && version >= 310) ||
+                (profile != EEsProfile && version >= 450)) {
+                symbolTable.setVariableExtensions("gl_PrimitiveShadingRateEXT", 1, &E_GL_EXT_fragment_shading_rate);
+                BuiltInVariable("gl_PrimitiveShadingRateEXT", EbvPrimitiveShadingRateKHR, symbolTable);
 
-				symbolTable.setVariableExtensions("gl_ShadingRateFlag2VerticalPixelsEXT", 1, &E_GL_EXT_fragment_shading_rate);
-				symbolTable.setVariableExtensions("gl_ShadingRateFlag4VerticalPixelsEXT", 1, &E_GL_EXT_fragment_shading_rate);
-				symbolTable.setVariableExtensions("gl_ShadingRateFlag2HorizontalPixelsEXT", 1, &E_GL_EXT_fragment_shading_rate);
-				symbolTable.setVariableExtensions("gl_ShadingRateFlag4HorizontalPixelsEXT", 1, &E_GL_EXT_fragment_shading_rate);
-			}
-		}
+                symbolTable.setVariableExtensions("gl_ShadingRateFlag2VerticalPixelsEXT", 1, &E_GL_EXT_fragment_shading_rate);
+                symbolTable.setVariableExtensions("gl_ShadingRateFlag4VerticalPixelsEXT", 1, &E_GL_EXT_fragment_shading_rate);
+                symbolTable.setVariableExtensions("gl_ShadingRateFlag2HorizontalPixelsEXT", 1, &E_GL_EXT_fragment_shading_rate);
+                symbolTable.setVariableExtensions("gl_ShadingRateFlag4HorizontalPixelsEXT", 1, &E_GL_EXT_fragment_shading_rate);
+            }
+        }
         break;
 
     case EShLangFragment:
@@ -9518,6 +9538,17 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setFunctionExtensions("textureBlockMatchGatherSSDQCOM", 1, &E_GL_QCOM_image_processing2);
             symbolTable.setFunctionExtensions("textureBlockMatchGatherSADQCOM", 1, &E_GL_QCOM_image_processing2);
         }
+
+        if ((profile == EEsProfile && version >= 310) ||
+            (profile != EEsProfile && version >= 460)) {
+            BuiltInVariable("gl_TileOffsetQCOM",    EbvTileOffsetQCOM,      symbolTable);
+            BuiltInVariable("gl_TileDimensionQCOM", EbvTileDimensionQCOM,   symbolTable);
+            BuiltInVariable("gl_TileApronSizeQCOM", EbvTileApronSizeQCOM,   symbolTable);
+
+            symbolTable.setVariableExtensions("gl_TileOffsetQCOM",        1, &E_GL_QCOM_tile_shading);
+            symbolTable.setVariableExtensions("gl_TileDimensionQCOM",     1, &E_GL_QCOM_tile_shading);
+            symbolTable.setVariableExtensions("gl_TileApronSizeQCOM",     1, &E_GL_QCOM_tile_shading);
+        }
         break;
 
     case EShLangCompute:
@@ -9723,6 +9754,17 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setFunctionExtensions("uintBitsToBFloat16EXT", 1, &E_GL_EXT_bfloat16);
         }
 
+        // E_SPV_QCOM_tile_shading
+        if ((profile == EEsProfile && version >= 310) ||
+            (profile != EEsProfile && version >= 460)) {
+            BuiltInVariable("gl_TileOffsetQCOM",        EbvTileOffsetQCOM,      symbolTable);
+            BuiltInVariable("gl_TileDimensionQCOM",     EbvTileDimensionQCOM,   symbolTable);
+            BuiltInVariable("gl_TileApronSizeQCOM",     EbvTileApronSizeQCOM,   symbolTable);
+
+            symbolTable.setVariableExtensions("gl_TileOffsetQCOM",        1, &E_GL_QCOM_tile_shading);
+            symbolTable.setVariableExtensions("gl_TileDimensionQCOM",     1, &E_GL_QCOM_tile_shading);
+            symbolTable.setVariableExtensions("gl_TileApronSizeQCOM",     1, &E_GL_QCOM_tile_shading);
+        }
         break;
 
     case EShLangRayGen:
