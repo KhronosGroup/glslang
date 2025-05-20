@@ -5627,7 +5627,7 @@ yyreduce:
   case 24: /* integer_expression: expression  */
 #line 453 "MachineIndependent/glslang.y"
                  {
-        parseContext.integerCheck((yyvsp[0].interm.intermTypedNode), "[]");
+        parseContext.arrayIndexCheck((yyvsp[0].interm.intermTypedNode), "[]");
         (yyval.interm.intermTypedNode) = (yyvsp[0].interm.intermTypedNode);
     }
 #line 5634 "MachineIndependent/glslang_tab.cpp"
@@ -5763,7 +5763,7 @@ yyreduce:
 
         TIntermMethod* method = (yyvsp[0].interm.intermTypedNode)->getAsMethodNode();
         if (method) {
-            (yyval.interm).function = new TFunction(&method->getMethodName(), TType(EbtInt), EOpArrayLength);
+            (yyval.interm).function = new TFunction(&method->getMethodName(), method->getType(), EOpArrayLength);
             (yyval.interm).intermNode = method->getObject();
         } else {
             TIntermSymbol* symbol = (yyvsp[0].interm.intermTypedNode)->getAsSymbolNode();

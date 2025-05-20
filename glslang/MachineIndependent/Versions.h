@@ -365,6 +365,8 @@ const char* const E_GL_EXT_bfloat16 = "GL_EXT_bfloat16";
 const char* const E_GL_EXT_float_e5m2 = "GL_EXT_float_e5m2";
 const char* const E_GL_EXT_float_e4m3 = "GL_EXT_float_e4m3";
 
+const char* const E_GL_EXT_shader_64bit_indexing = "GL_EXT_shader_64bit_indexing";
+
 // Arrays of extensions for the above AEP duplications
 
 const char* const AEP_geometry_shader[] = { E_GL_EXT_geometry_shader, E_GL_OES_geometry_shader };

@@ -531,7 +531,7 @@ public:
     Id createAccessChain(StorageClass, Id base, const std::vector<Id>& offsets);
 
     // Create an OpArrayLength instruction
-    Id createArrayLength(Id base, unsigned int member);
+    Id createArrayLength(Id base, unsigned int member, unsigned int bits);
 
     // Create an OpCooperativeMatrixLengthKHR instruction
     Id createCooperativeMatrixLengthKHR(Id type);

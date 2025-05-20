@@ -115,7 +115,7 @@ public:
 
     virtual void setLimits(const TBuiltInResource&) = 0;
 
-    void checkIndex(const TSourceLoc&, const TType&, int& index);
+    void checkIndex(const TSourceLoc&, const TType&, int64_t& index);
 
     EShLanguage getLanguage() const { return language; }
     void setScanContext(TScanContext* c) { scanContext = c; }
@@ -381,6 +381,7 @@ public:
     void rValueErrorCheck(const TSourceLoc&, const char* op, TIntermTyped*) override;
     void constantValueCheck(TIntermTyped* node, const char* token);
     void integerCheck(const TIntermTyped* node, const char* token);
+    void arrayIndexCheck(const TIntermTyped* node, const char* token);
     void globalCheck(const TSourceLoc&, const char* token);
     bool constructorError(const TSourceLoc&, TIntermNode*, TFunction&, TOperator, TType&);
     bool constructorTextureSamplerError(const TSourceLoc&, const TFunction&);

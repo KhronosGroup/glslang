@@ -4830,17 +4830,19 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "uint", "uvec2", "uvec4",
                 "uint64_t", "u64vec2", "u64vec4",
             };
-            for (auto t : allTypes) {
-                cooperativeMatrixFuncs << "void coopMatLoad(out coopmat m, volatile coherent nontemporal " << t << "[] buf, uint element, uint stride, int matrixLayout);\n";
-                cooperativeMatrixFuncs << "void coopMatStore(coopmat m, volatile coherent nontemporal " << t << "[] buf, uint element, uint stride, int matrixLayout);\n";
+            for (auto elemTy : {"uint", "uint64_t"}) {
+                for (auto t : allTypes) {
+                    cooperativeMatrixFuncs << "void coopMatLoad(out coopmat m, volatile coherent nontemporal " << t << "[] buf, " << elemTy << " element, uint stride, int matrixLayout);\n";
+                    cooperativeMatrixFuncs << "void coopMatStore(coopmat m, volatile coherent nontemporal " << t << "[] buf, " << elemTy << " element, uint stride, int matrixLayout);\n";
+                }
+                // Just use uint8_t for buffer type, we have special matching rules to allow any conversion
+                cooperativeMatrixFuncs << "void coopMatLoadTensorNV(inout coopmat m, volatile coherent nontemporal uint8_t[] buf, " << elemTy << " element, tensorLayoutNV t);\n";
+                cooperativeMatrixFuncs << "void coopMatLoadTensorNV(inout coopmat m, volatile coherent nontemporal uint8_t[] buf, " << elemTy << " element, tensorLayoutNV t, tensorViewNV v);\n";
+                cooperativeMatrixFuncs << "void coopMatLoadTensorNV(inout coopmat m, volatile coherent nontemporal uint8_t[] buf, " << elemTy << " element, tensorLayoutNV t, __function f);\n";
+                cooperativeMatrixFuncs << "void coopMatLoadTensorNV(inout coopmat m, volatile coherent nontemporal uint8_t[] buf, " << elemTy << " element, tensorLayoutNV t, tensorViewNV v, __function f);\n";
+                cooperativeMatrixFuncs << "void coopMatStoreTensorNV(coopmat m, volatile coherent nontemporal uint8_t[] buf, " << elemTy << " element, tensorLayoutNV t);\n";
+                cooperativeMatrixFuncs << "void coopMatStoreTensorNV(coopmat m, volatile coherent nontemporal uint8_t[] buf, " << elemTy << " element, tensorLayoutNV t, tensorViewNV v);\n";
             }
-            // Just use uint8_t for buffer type, we have special matching rules to allow any conversion
-            cooperativeMatrixFuncs << "void coopMatLoadTensorNV(inout coopmat m, volatile coherent nontemporal uint8_t[] buf, uint element, tensorLayoutNV t);\n";
-            cooperativeMatrixFuncs << "void coopMatLoadTensorNV(inout coopmat m, volatile coherent nontemporal uint8_t[] buf, uint element, tensorLayoutNV t, tensorViewNV v);\n";
-            cooperativeMatrixFuncs << "void coopMatLoadTensorNV(inout coopmat m, volatile coherent nontemporal uint8_t[] buf, uint element, tensorLayoutNV t, __function f);\n";
-            cooperativeMatrixFuncs << "void coopMatLoadTensorNV(inout coopmat m, volatile coherent nontemporal uint8_t[] buf, uint element, tensorLayoutNV t, tensorViewNV v, __function f);\n";
-            cooperativeMatrixFuncs << "void coopMatStoreTensorNV(coopmat m, volatile coherent nontemporal uint8_t[] buf, uint element, tensorLayoutNV t);\n";
-            cooperativeMatrixFuncs << "void coopMatStoreTensorNV(coopmat m, volatile coherent nontemporal uint8_t[] buf, uint element, tensorLayoutNV t, tensorViewNV v);\n";
         }
 
         cooperativeMatrixFuncs <<
@@ -5001,49 +5003,54 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "float32_t",
             "float64_t",
         };
-        for (uint32_t i = 0; i < sizeof(basicTypes)/sizeof(basicTypes[0]); ++i) {
-            std::string func = std::string("void coopVecMatMulNV(out coopvecNV result, ") +
-                               std::string("coopvecNV v, ") +
-                               std::string("int inputInterpretation, ") +
-                               std::string(basicTypes[i]) + std::string("[] matrix, ") +
-                               std::string("uint matrixOffset, ") +
-                               std::string("int matrixInterpretation, ") +
-                               std::string("uint M, ") +
-                               std::string("uint K, ") +
-                               std::string("int matrixLayout, ") +
-                               std::string("bool transpose, ") +
-                               std::string("uint matrixStride);\n");
-            commonBuiltins.append(func.c_str());
+        std::string coopVecOffsetTypes[] = {
+            "uint",
+            "uint64_t",
+        };
+        for (auto offsetTy : coopVecOffsetTypes) {
+            for (uint32_t i = 0; i < sizeof(basicTypes)/sizeof(basicTypes[0]); ++i) {
+                std::string func = std::string("void coopVecMatMulNV(out coopvecNV result, ") +
+                                   std::string("coopvecNV v, ") +
+                                   std::string("int inputInterpretation, ") +
+                                   std::string(basicTypes[i]) + std::string("[] matrix, ") +
+                                   offsetTy + std::string(" matrixOffset, ") +
+                                   std::string("int matrixInterpretation, ") +
+                                   std::string("uint M, ") +
+                                   std::string("uint K, ") +
+                                   std::string("int matrixLayout, ") +
+                                   std::string("bool transpose, ") +
+                                   std::string("uint matrixStride);\n");
+                commonBuiltins.append(func.c_str());
 
-            for (uint32_t j = 0; j < sizeof(basicTypes)/sizeof(basicTypes[0]); ++j) {
-                func = std::string("void coopVecMatMulAddNV(out coopvecNV result, ") +
-                       std::string("coopvecNV v, ") +
-                       std::string("int inputInterpretation, ") +
-                       std::string(basicTypes[i]) + std::string("[] matrix, ") +
-                       std::string("uint matrixOffset, ") +
-                       std::string("int matrixInterpretation, ") +
-                       std::string(basicTypes[j]) + std::string("[] bias, ") +
-                       std::string("uint biasOffset, ") +
-                       std::string("int biasInterpretation, ") +
-                       std::string("uint M, ") +
-                       std::string("uint K, ") +
-                       std::string("int matrixLayout, ") +
-                       std::string("bool transpose, ") +
-                       std::string("uint matrixStride);\n");
+                for (uint32_t j = 0; j < sizeof(basicTypes)/sizeof(basicTypes[0]); ++j) {
+                    func = std::string("void coopVecMatMulAddNV(out coopvecNV result, ") +
+                           std::string("coopvecNV v, ") +
+                           std::string("int inputInterpretation, ") +
+                           std::string(basicTypes[i]) + std::string("[] matrix, ") +
+                           offsetTy + std::string(" matrixOffset, ") +
+                           std::string("int matrixInterpretation, ") +
+                           std::string(basicTypes[j]) + std::string("[] bias, ") +
+                           offsetTy + std::string(" biasOffset, ") +
+                           std::string("int biasInterpretation, ") +
+                           std::string("uint M, ") +
+                           std::string("uint K, ") +
+                           std::string("int matrixLayout, ") +
+                           std::string("bool transpose, ") +
+                           std::string("uint matrixStride);\n");
+                    commonBuiltins.append(func.c_str());
+                }
+
+                func = std::string("void coopVecOuterProductAccumulateNV(coopvecNV v1, coopvecNV v2, ") +
+                       std::string(basicTypes[i]) +
+                       std::string("[] buf, ") + offsetTy + std::string(" offset, uint stride, int matrixLayout, int matrixInterpretation);\n");
+                commonBuiltins.append(func.c_str());
+            
+                func = std::string("void coopVecReduceSumAccumulateNV(coopvecNV v, ") +
+                       std::string(basicTypes[i]) +
+                       std::string("[] buf, ") + offsetTy + std::string(" offset);\n");
                 commonBuiltins.append(func.c_str());
             }
-
-            func = std::string("void coopVecOuterProductAccumulateNV(coopvecNV v1, coopvecNV v2, ") +
-                   std::string(basicTypes[i]) +
-                   std::string("[] buf, uint offset, uint stride, int matrixLayout, int matrixInterpretation);\n");
-            commonBuiltins.append(func.c_str());
-            
-            func = std::string("void coopVecReduceSumAccumulateNV(coopvecNV v, ") +
-                   std::string(basicTypes[i]) +
-                   std::string("[] buf, uint offset);\n");
-            commonBuiltins.append(func.c_str());
         }
-
         std::string cooperativeVectorFuncs =
             "coopvecNV fma(coopvecNV, coopvecNV, coopvecNV);\n"
             "coopvecNV min(coopvecNV, coopvecNV);\n"
@@ -5105,13 +5112,16 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "f32vec4",
             "f64vec4",
         };
-        for (uint32_t i = 0; i < sizeof(scalarAndVectorTypes)/sizeof(scalarAndVectorTypes[0]); ++i) {
-            std::string load = std::string("void coopVecLoadNV(out coopvecNV v, volatile coherent ") +
-                               std::string(scalarAndVectorTypes[i]) + std::string("[] buf, uint offset);");
-            std::string store = std::string("void coopVecStoreNV(coopvecNV v, volatile coherent ") +
-                               std::string(scalarAndVectorTypes[i]) + std::string("[] buf, uint offset);");
-            commonBuiltins.append(load.c_str());
-            commonBuiltins.append(store.c_str());
+
+        for (auto offsetTy : coopVecOffsetTypes) {
+            for (uint32_t i = 0; i < sizeof(scalarAndVectorTypes)/sizeof(scalarAndVectorTypes[0]); ++i) {
+                std::string load = std::string("void coopVecLoadNV(out coopvecNV v, volatile coherent ") +
+                                   std::string(scalarAndVectorTypes[i]) + std::string("[] buf, ") + offsetTy + std::string(" offset);");
+                std::string store = std::string("void coopVecStoreNV(coopvecNV v, volatile coherent ") +
+                                   std::string(scalarAndVectorTypes[i]) + std::string("[] buf, ") + offsetTy + std::string(" offset);");
+                commonBuiltins.append(load.c_str());
+                commonBuiltins.append(store.c_str());
+            }
         }
 
         commonBuiltins.append(
@@ -9782,9 +9792,31 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         }
 
         {
-            symbolTable.setFunctionExtensions("coopMatLoad",   1, &E_GL_KHR_cooperative_matrix);
-            symbolTable.setFunctionExtensions("coopMatStore",  1, &E_GL_KHR_cooperative_matrix);
+            auto coopMatKHRCallback = [](const char *name) -> std::vector<const char *> {
+                std::vector<const char *> ret;
+                if (strstr(name, "u64") != nullptr) {
+                    ret.push_back(E_GL_EXT_shader_64bit_indexing);
+                } else {
+                    ret.push_back(E_GL_KHR_cooperative_matrix);
+                }
+                return ret;
+            };
+            auto coopMat2NVCallback = [](const char *name) -> std::vector<const char *> {
+                std::vector<const char *> ret;
+                if (strstr(name, "u64") != nullptr) {
+                    ret.push_back(E_GL_EXT_shader_64bit_indexing);
+                } else {
+                    ret.push_back(E_GL_NV_cooperative_matrix2);
+                }
+                return ret;
+            };
+
+            symbolTable.setFunctionExtensionsCallback("coopMatLoad",   coopMatKHRCallback);
+            symbolTable.setFunctionExtensionsCallback("coopMatStore",  coopMatKHRCallback);
             symbolTable.setFunctionExtensions("coopMatMulAdd", 1, &E_GL_KHR_cooperative_matrix);
+
+            symbolTable.setFunctionExtensionsCallback("coopMatLoadTensorNV",   coopMat2NVCallback);
+            symbolTable.setFunctionExtensionsCallback("coopMatStoreTensorNV",   coopMat2NVCallback);
 
             symbolTable.setFunctionExtensions("coopMatReduceNV",   1, &E_GL_NV_cooperative_matrix2);
             symbolTable.setFunctionExtensions("coopMatPerElementNV",  1, &E_GL_NV_cooperative_matrix2);
@@ -9808,12 +9840,23 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setFunctionExtensions("tensorWriteARM",  1, &E_GL_ARM_tensors);
             symbolTable.setFunctionExtensions("tensorSizeARM",   1, &E_GL_ARM_tensors);
         }
-
         {
-            symbolTable.setFunctionExtensions("coopVecMatMulNV",                    1, &E_GL_NV_cooperative_vector);
-            symbolTable.setFunctionExtensions("coopVecMatMulAddNV",                 1, &E_GL_NV_cooperative_vector);
-            symbolTable.setFunctionExtensions("coopVecOuterProductAccumulateNV",    1, &E_GL_NV_cooperative_vector);
-            symbolTable.setFunctionExtensions("coopVecReduceSumAccumulateNV",       1, &E_GL_NV_cooperative_vector);
+            auto coopVecCallback = [](const char *name) -> std::vector<const char *> {
+                std::vector<const char *> ret;
+                // This looks for u64 as the last parameter (the offset)
+                if (strstr(name, "u641;") != nullptr) {
+                    ret.push_back(E_GL_EXT_shader_64bit_indexing);
+                } else {
+                    ret.push_back(E_GL_NV_cooperative_vector);
+                }
+                return ret;
+            };
+            symbolTable.setFunctionExtensionsCallback("coopVecMatMulNV", coopVecCallback);
+            symbolTable.setFunctionExtensionsCallback("coopVecMatMulAddNV", coopVecCallback);
+            symbolTable.setFunctionExtensionsCallback("coopVecLoadNV", coopVecCallback);
+            symbolTable.setFunctionExtensionsCallback("coopVecStoreNV", coopVecCallback);
+            symbolTable.setFunctionExtensionsCallback("coopVecOuterProductAccumulateNV", coopVecCallback);
+            symbolTable.setFunctionExtensionsCallback("coopVecReduceSumAccumulateNV", coopVecCallback);
         }
 
         {
