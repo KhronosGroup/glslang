@@ -25,7 +25,7 @@ jobs:
           key: ubuntu-22-${{ matrix.cmake_build_type }}-${{ matrix.compiler.cc }}-${{matrix.compiler.cxx}}
       - run: ./update_glslang_sources.py
       - name: Configure
-        run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{ matrix.cmake_build_type }} -DBUILD_WERROR=ON -D GLSLANG_TESTS=ON
+        run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{ matrix.cmake_build_type }} -DGLSLANG_BUILD_WERROR=ON -D GLSLANG_TESTS=ON
         env:
           CC: ${{matrix.compiler.cc}}
           CXX: ${{matrix.compiler.cxx}}
@@ -61,7 +61,7 @@ jobs:
           key: ubuntu-22-${{ matrix.cmake_build_type }}-${{ matrix.compiler.cc }}-${{matrix.compiler.cxx}}
       - run: ./update_glslang_sources.py
       - name: Configure
-        run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{ matrix.cmake_build_type }} -DBUILD_WERROR=ON -D GLSLANG_TESTS=ON -DBUILD_SHARED_LIBS=ON
+        run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{ matrix.cmake_build_type }} -DGLSLANG_BUILD_WERROR=ON -D GLSLANG_TESTS=ON -DBUILD_SHARED_LIBS=ON
         env:
           CC: ${{matrix.compiler.cc}}
           CXX: ${{matrix.compiler.cxx}}
@@ -163,7 +163,7 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - uses: lukka/get-cmake@57c20a23a6cac5b90f31864439996e5b206df9dc # v4.0.1
       - run: ./update_glslang_sources.py
-      - run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{matrix.cmake_build_type}} -G Ninja -DBUILD_WERROR=ON -D GLSLANG_TESTS=ON
+      - run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{matrix.cmake_build_type}} -G Ninja -DGLSLANG_BUILD_WERROR=ON -D GLSLANG_TESTS=ON
         env:
           CC: ${{matrix.compiler.cc}}
           CXX: ${{matrix.compiler.cxx}}
@@ -187,7 +187,7 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - uses: lukka/get-cmake@57c20a23a6cac5b90f31864439996e5b206df9dc # v4.0.1
       - run: ./update_glslang_sources.py
-      - run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{matrix.cmake_build_type}} -G Ninja -DBUILD_WERROR=ON -D GLSLANG_TESTS=ON -DBUILD_SHARED_LIBS=ON
+      - run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{matrix.cmake_build_type}} -G Ninja -DGLSLANG_BUILD_WERROR=ON -D GLSLANG_TESTS=ON -DBUILD_SHARED_LIBS=ON
         env:
           CC: ${{matrix.compiler.cc}}
           CXX: ${{matrix.compiler.cxx}}
@@ -214,7 +214,7 @@ jobs:
       - run: python update_glslang_sources.py
       - name: Build
         run: |
-          cmake -S. -Bbuild -G "Visual Studio 16 2019" -A x64 -DCMAKE_INSTALL_PREFIX="$PWD/build/install" -DBUILD_WERROR=ON -D GLSLANG_TESTS=ON
+          cmake -S. -Bbuild -G "Visual Studio 16 2019" -A x64 -DCMAKE_INSTALL_PREFIX="$PWD/build/install" -DGLSLANG_BUILD_WERROR=ON -D GLSLANG_TESTS=ON
           cmake --build build --config ${{matrix.cmake_build_type}} --target install
       - name: Test find_package support
         run: |
@@ -238,7 +238,7 @@ jobs:
       - run: python update_glslang_sources.py
       - name: Build
         run: |
-          cmake -S. -Bbuild -G "Visual Studio 16 2019" -A x64 -DCMAKE_INSTALL_PREFIX="$PWD/build/install" -DBUILD_WERROR=ON -D GLSLANG_TESTS=ON -DBUILD_SHARED_LIBS=ON
+          cmake -S. -Bbuild -G "Visual Studio 16 2019" -A x64 -DCMAKE_INSTALL_PREFIX="$PWD/build/install" -DGLSLANG_BUILD_WERROR=ON -D GLSLANG_TESTS=ON -DBUILD_SHARED_LIBS=ON
           cmake --build build --config ${{matrix.cmake_build_type}} --target install
       - name: Test find_package support
         run: |

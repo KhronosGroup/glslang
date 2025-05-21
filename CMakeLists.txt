@@ -46,8 +46,8 @@ include(CMakePackageConfigHelpers)
 include(CMakeDependentOption)
 
 option(BUILD_SHARED_LIBS "Build Shared Libraries")
-option(BUILD_EXTERNAL "Build external dependencies in /External" ON)
-option(BUILD_WERROR "Enable warnings as errors (default is OFF)" OFF)
+option(GLSLANG_BUILD_EXTERNAL "Build external dependencies in /External" ON)
+option(GLSLANG_BUILD_WERROR "Enable warnings as errors (default is OFF)" OFF)
 
 set(LIB_TYPE STATIC)
 
@@ -187,7 +187,7 @@ elseif(MSVC)
 endif()
 
 # NOTE we could potentially replace this logic with COMPILE_WARNING_AS_ERROR if cmake minimum is bumped to >= 3.24
-if (BUILD_WERROR)
+if (GLSLANG_BUILD_WERROR)
     if (NOT MSVC)
         add_compile_options(-Werror)
     else()
@@ -274,7 +274,7 @@ function(glslang_pch target pch)
     endif()
 endfunction()
 
-if(BUILD_EXTERNAL AND IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/External)
+if(GLSLANG_BUILD_EXTERNAL AND IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/External)
     # We depend on these for later projects, so they should come first.
     add_subdirectory(External)
 endif()
