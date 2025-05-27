@@ -2930,8 +2930,8 @@ void TGlslangToSpvTraverser::createAbortEXT(const glslang::TIntermSequence glsla
 {
     bool isEmptyMsg = glslangOperands.size() == 0;
     // Add Capability and extensions.
-    builder.addCapability(spv::CapabilityAbortKHR);
-    builder.addCapability(spv::CapabilityConstantDataKHR);
+    builder.addCapability(spv::Capability::AbortKHR);
+    builder.addCapability(spv::Capability::ConstantDataKHR);
     builder.addExtension(spv::E_SPV_KHR_constant_data);
     builder.addExtension(spv::E_SPV_KHR_abort);
 
@@ -2977,10 +2977,10 @@ void TGlslangToSpvTraverser::createAbortEXT(const glslang::TIntermSequence glsla
         // 2.1 get sub string's length (if specifier, be spec const).
         unsigned int strElemLen = isEmptyMsg ? 1 : elem.string.size();
         spv::Id constLen = builder.makeUintConstant(strElemLen);
-        spv::Op constDataOp = spv::OpConstantDataKHR;
+        spv::Op constDataOp = spv::Op::OpConstantDataKHR;
         if (elem.specifierIndex >= 0) {
-            constLen = builder.createSpecConst(spv::OpSpecConstant, builder.makeUintType(32), strElemLen);
-            constDataOp = spv::OpSpecConstantDataKHR;
+            constLen = builder.createSpecConst(spv::Op::OpSpecConstant, builder.makeUintType(32), strElemLen);
+            constDataOp = spv::Op::OpSpecConstantDataKHR;
         }
         // 2.2 get sub string's array type (if specifier, be spec const).
         auto strElemArrType = builder.makeArrayType(charType, constLen, 1);
@@ -2988,9 +2988,9 @@ void TGlslangToSpvTraverser::createAbortEXT(const glslang::TIntermSequence glsla
         // 2.3 add sub string constant data
         auto strElemConstData = builder.createConstData(constDataOp, strElemArrType, {elem.string.c_str()});
         // 2.4 add decoration for those sub string.
-        builder.addDecoration(strElemArrType, spv::DecorationUTFCodePointsKHR);
-        builder.addDecoration(strElemLoadArrType, spv::DecorationUTFCodePointsKHR);
-        builder.addDecoration(strElemLoadArrType, spv::DecorationArrayStride, 1);
+        builder.addDecoration(strElemArrType, spv::Decoration::UTFCodePointsKHR);
+        builder.addDecoration(strElemLoadArrType, spv::Decoration::UTFCodePointsKHR);
+        builder.addDecoration(strElemLoadArrType, spv::Decoration::ArrayStride, 1);
         // 2.5 Collect data and type for construct an internal message structure member.
         structMemberType.push_back(strElemArrType);
         structLoadMemberType.push_back(strElemLoadArrType);
@@ -3015,10 +3015,10 @@ void TGlslangToSpvTraverser::createAbortEXT(const glslang::TIntermSequence glsla
     // 4. Construct struct message variable, add abortExt instruction.
     auto structLoadType = builder.makeStructType(structLoadMemberType, "abortMessageLoadType");
     for (int i = 0; i < structMemberOffsets.size(); i++)
-        builder.addMemberDecoration(structLoadType, i, spv::DecorationOffset, structMemberOffsets[i]);
+        builder.addMemberDecoration(structLoadType, i, spv::Decoration::Offset, structMemberOffsets[i]);
     auto structType = builder.makeStructType(structMemberType, "abortMessage");
     auto messageVar = builder.createCompositeConstruct(structType, structMemberData);
-    builder.createNoResultOp(spv::OpAbortKHR, {structLoadType, messageVar});
+    builder.createNoResultOp(spv::Op::OpAbortKHR, {structLoadType, messageVar});
 }
 
 bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TIntermAggregate* node)
