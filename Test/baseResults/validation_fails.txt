@@ -70,6 +70,7 @@ Test/baseResults/spv.image.frag.out
 Test/baseResults/spv.int64.frag.out
 Test/baseResults/spv.memoryQualifier.frag.out
 Test/baseResults/spv.newTexture.frag.out
+Test/baseResults/spv.nvgpushader5.frag.out
 Test/baseResults/spv.paramMemory.420.frag.out
 Test/baseResults/spv.paramMemory.frag.out
 Test/baseResults/spv.queryL.frag.out

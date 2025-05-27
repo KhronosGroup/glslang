@@ -645,9 +645,13 @@ TIntermTyped* TParseContext::handleBracketDereference(const TSourceLoc& loc, TIn
         if (base->getBasicType() == EbtBlock) {
             if (base->getQualifier().storage == EvqBuffer)
                 requireProfile(base->getLoc(), ~EEsProfile, "variable indexing buffer block array");
-            else if (base->getQualifier().storage == EvqUniform)
+            else if (base->getQualifier().storage == EvqUniform) {
                 profileRequires(base->getLoc(), EEsProfile, 320, Num_AEP_gpu_shader5, AEP_gpu_shader5,
                                 "variable indexing uniform block array");
+                profileRequires(base->getLoc(), ECoreProfile, 400, Num_AEP_core_gpu_shader5, AEP_core_gpu_shader5,
+                                "variable indexing uniform block array");
+
+            }
             else {
                 // input/output blocks either don't exist or can't be variably indexed
             }
@@ -657,7 +661,8 @@ TIntermTyped* TParseContext::handleBracketDereference(const TSourceLoc& loc, TIn
             const char* explanation = "variable indexing sampler array";
             requireProfile(base->getLoc(), EEsProfile | ECoreProfile | ECompatibilityProfile, explanation);
             profileRequires(base->getLoc(), EEsProfile, 320, Num_AEP_gpu_shader5, AEP_gpu_shader5, explanation);
-            profileRequires(base->getLoc(), ECoreProfile | ECompatibilityProfile, 400, nullptr, explanation);
+            profileRequires(base->getLoc(), ECoreProfile | ECompatibilityProfile, 400, Num_AEP_core_gpu_shader5,
+                            AEP_core_gpu_shader5, explanation);
         }
 
         result = intermediate.addIndex(EOpIndexIndirect, base, index, loc);
@@ -2389,23 +2394,27 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
         feature = featureString.c_str();
         profileRequires(loc, EEsProfile, 310, nullptr, feature);
         int compArg = -1;  // track which argument, if any, is the constant component argument
+        const int numTexGatherExts = 3;
+        const char* texGatherExts[numTexGatherExts] = { E_GL_ARB_texture_gather,
+                                                        E_GL_ARB_gpu_shader5,
+                                                        E_GL_NV_gpu_shader5};
         switch (callNode.getOp()) {
         case EOpTextureGather:
             // More than two arguments needs gpu_shader5, and rectangular or shadow needs gpu_shader5,
             // otherwise, need GL_ARB_texture_gather.
             if (fnCandidate.getParamCount() > 2 || fnCandidate[0].type->getSampler().dim == EsdRect || fnCandidate[0].type->getSampler().shadow) {
-                profileRequires(loc, ~EEsProfile, 400, E_GL_ARB_gpu_shader5, feature);
+                profileRequires(loc, ~EEsProfile, 400, Num_AEP_core_gpu_shader5, AEP_core_gpu_shader5, feature);
                 if (! fnCandidate[0].type->getSampler().shadow)
                     compArg = 2;
             } else
-                profileRequires(loc, ~EEsProfile, 400, E_GL_ARB_texture_gather, feature);
+                profileRequires(loc, ~EEsProfile, 400, numTexGatherExts, texGatherExts, feature);
             break;
         case EOpTextureGatherOffset:
             // GL_ARB_texture_gather is good enough for 2D non-shadow textures with no component argument
             if (fnCandidate[0].type->getSampler().dim == Esd2D && ! fnCandidate[0].type->getSampler().shadow && fnCandidate.getParamCount() == 3)
-                profileRequires(loc, ~EEsProfile, 400, E_GL_ARB_texture_gather, feature);
+                profileRequires(loc, ~EEsProfile, 400, numTexGatherExts, texGatherExts, feature);
             else
-                profileRequires(loc, ~EEsProfile, 400, E_GL_ARB_gpu_shader5, feature);
+                profileRequires(loc, ~EEsProfile, 400, Num_AEP_core_gpu_shader5, AEP_core_gpu_shader5, feature);
             if (! (*argp)[fnCandidate[0].type->getSampler().shadow ? 3 : 2]->getAsConstantUnion())
                 profileRequires(loc, EEsProfile, 320, Num_AEP_gpu_shader5, AEP_gpu_shader5,
                                 "non-constant offset argument");
@@ -2413,11 +2422,13 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
                 compArg = 3;
             break;
         case EOpTextureGatherOffsets:
-            profileRequires(loc, ~EEsProfile, 400, E_GL_ARB_gpu_shader5, feature);
+            profileRequires(loc, ~EEsProfile, 400, Num_AEP_core_gpu_shader5, AEP_core_gpu_shader5, feature);
             if (! fnCandidate[0].type->getSampler().shadow)
                 compArg = 3;
             // check for constant offsets
-            if (! (*argp)[fnCandidate[0].type->getSampler().shadow ? 3 : 2]->getAsConstantUnion())
+            if (! (*argp)[fnCandidate[0].type->getSampler().shadow ? 3 : 2]->getAsConstantUnion() 
+                // NV_gpu_shader5 relaxes this limitation and allows for non-constant offsets
+                && !extensionTurnedOn(E_GL_NV_gpu_shader5))
                 error(loc, "must be a compile-time constant:", feature, "offsets argument");
             break;
         default:
@@ -2595,8 +2606,15 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
                                     arg0->getType().getSampler().shadow;
             if (f16ShadowCompare)
                 ++arg;
+            // Allow non-constant offsets for certain texture ops
+            bool variableOffsetSupport = extensionTurnedOn(E_GL_NV_gpu_shader5) && 
+                (callNode.getOp() == EOpTextureOffset || 
+                 callNode.getOp() == EOpTextureFetchOffset ||
+                 callNode.getOp() == EOpTextureProjOffset || 
+                 callNode.getOp() == EOpTextureLodOffset ||
+                 callNode.getOp() == EOpTextureProjLodOffset);
             if (! (*argp)[arg]->getAsTyped()->getQualifier().isConstant()) {
-                if (!extensionTurnedOn(E_GL_EXT_texture_offset_non_const))
+				if (!extensionTurnedOn(E_GL_EXT_texture_offset_non_const) && !variableOffsetSupport)
                     error(loc, "argument must be compile-time constant", "texel offset", "");
             }
             else if ((*argp)[arg]->getAsConstantUnion()) {
@@ -2984,7 +3002,7 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
     case EOpEmitStreamVertex:
     case EOpEndStreamPrimitive:
         if (version == 150)
-            requireExtensions(loc, 1, &E_GL_ARB_gpu_shader5, "if the version is 150 , the EmitStreamVertex and EndStreamPrimitive only support at extension GL_ARB_gpu_shader5");
+            requireExtensions(loc, Num_AEP_core_gpu_shader5, AEP_core_gpu_shader5, "if the verison is 150 , the EmitStreamVertex and EndStreamPrimitive only support at extension GL_ARB_gpu_shader5/GL_NV_gpu_shader5");
         intermediate.setMultiStream();
         break;
 
@@ -3044,6 +3062,28 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
                 (*argp)[1]->getAsTyped()->getBasicType() != EbtDouble &&
                 (*argp)[2]->getAsTyped()->getBasicType() == EbtBool) {
                 requireExtensions(loc, 1, &E_GL_EXT_shader_integer_mix, fnCandidate.getName().c_str());
+            }
+        }
+
+        break;
+    case EOpLessThan:
+    case EOpLessThanEqual:
+    case EOpGreaterThan:
+    case EOpGreaterThanEqual:
+    case EOpEqual:
+    case EOpNotEqual:
+        if (profile != EEsProfile && version >= 150 && version < 450) {
+            if ((*argp)[1]->getAsTyped()->getBasicType() == EbtInt64 ||                 
+                (*argp)[1]->getAsTyped()->getBasicType() == EbtUint64)
+                requireExtensions(loc, 1, &E_GL_NV_gpu_shader5, fnCandidate.getName().c_str());
+        }
+    break;
+    case EOpFma:
+    case EOpFrexp:
+    case EOpLdexp:
+        if (profile != EEsProfile && version < 400) {
+            if ((*argp)[0]->getAsTyped()->getBasicType() == EbtFloat) {
+                requireExtensions(loc, Num_AEP_core_gpu_shader5, AEP_core_gpu_shader5, fnCandidate.getName().c_str());
             }
         }
 
@@ -3193,7 +3233,7 @@ void TParseContext::nonOpBuiltInCheck(const TSourceLoc& loc, const TFunction& fn
                     compArg = 3;
                 // check for constant offsets
                 int offsetArg = fnCandidate[0].type->getSampler().shadow ? 3 : 2;
-                if (! callNode.getSequence()[offsetArg]->getAsConstantUnion())
+                if (! callNode.getSequence()[offsetArg]->getAsConstantUnion() && !extensionTurnedOn(E_GL_NV_gpu_shader5))
                     error(loc, "must be a compile-time constant:", feature, "offsets argument");
             } else if (fnCandidate.getName().compare("textureGather") == 0) {
                 // More than two arguments needs gpu_shader5, and rectangular or shadow needs gpu_shader5,
@@ -4295,6 +4335,10 @@ void TParseContext::memberQualifierCheck(glslang::TPublicType& publicType)
         error(publicType.loc, "not allowed on block or structure members", "nonuniformEXT", "");
         publicType.qualifier.nonUniform = false;
     }
+    if (publicType.qualifier.isPatch()) {
+        error(publicType.loc, "not allowed on block or structure members",
+              "patch", "");
+    }
 }
 
 //
@@ -4435,6 +4479,12 @@ void TParseContext::globalQualifierTypeCheck(const TSourceLoc& loc, const TQuali
     if (qualifier.isPatch() && qualifier.isInterpolation())
         error(loc, "cannot use interpolation qualifiers with patch", "patch", "");
 
+    // Only "patch in" is supported via GL_NV_gpu_shader5
+    if (! symbolTable.atBuiltInLevel() && qualifier.isPatch() && 
+        (language == EShLangGeometry) && qualifier.storage != EvqVaryingIn &&
+        extensionTurnedOn(E_GL_NV_gpu_shader5))
+            error(loc, "only 'patch in' is supported in this stage:", "patch", "geometry");
+
     if (qualifier.isTaskPayload() && publicType.basicType == EbtBlock)
         error(loc, "taskPayloadSharedEXT variables should not be declared as interface blocks", "taskPayloadSharedEXT", "");
 
@@ -4452,8 +4502,11 @@ void TParseContext::globalQualifierTypeCheck(const TSourceLoc& loc, const TQuali
                 requireProfile(loc, ~EEsProfile, "vertex input arrays");
                 profileRequires(loc, ENoProfile, 150, nullptr, "vertex input arrays");
             }
-            if (publicType.basicType == EbtDouble)
-                profileRequires(loc, ~EEsProfile, 410, E_GL_ARB_vertex_attrib_64bit, "vertex-shader `double` type input");
+            if (publicType.basicType == EbtDouble) {
+            	const char* const float64_attrib[] = {E_GL_NV_gpu_shader5, E_GL_ARB_vertex_attrib_64bit};
+                const int Num_float64_attrib = sizeof(float64_attrib) / sizeof(float64_attrib[0]);        
+                profileRequires(loc, ~EEsProfile, 410, Num_float64_attrib, float64_attrib, "vertex-shader `double` type input");
+			}
             if (qualifier.isAuxiliary() || qualifier.isInterpolation() || qualifier.isMemory() || qualifier.invariant)
                 error(loc, "vertex input cannot be further qualified", "", "");
             break;
@@ -6599,7 +6652,9 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
 
     case EShLangGeometry:
         if (id == "invocations") {
-            profileRequires(loc, ECompatibilityProfile | ECoreProfile, 400, nullptr, "invocations");
+            profileRequires(loc, ECompatibilityProfile | ECoreProfile, 400,
+                Num_AEP_core_gpu_shader5, AEP_core_gpu_shader5, "invocations");
+
             if (value == 0)
                 error(loc, "must be at least 1", "invocations", "");
             else
@@ -7518,7 +7573,9 @@ const TFunction* TParseContext::findFunction(const TSourceLoc& loc, const TFunct
     else if (version < 120)
         function = findFunctionExact(loc, call, builtIn);
     else if (version < 400) {
-        bool needfindFunction400 = extensionTurnedOn(E_GL_ARB_gpu_shader_fp64) || extensionTurnedOn(E_GL_ARB_gpu_shader5);
+        bool needfindFunction400 = extensionTurnedOn(E_GL_ARB_gpu_shader_fp64)
+                                  || extensionTurnedOn(E_GL_ARB_gpu_shader5)
+                                  || extensionTurnedOn(E_GL_NV_gpu_shader5);
         function = needfindFunction400 ? findFunction400(loc, call, builtIn) : findFunction120(loc, call, builtIn);
     }
     else if (explicitTypesEnabled)
@@ -7701,13 +7758,35 @@ const TFunction* TParseContext::findFunction400(const TSourceLoc& loc, const TFu
     // Is 'to2' a better conversion than 'to1'?
     // Ties should not be considered as better.
     // Assumes 'convertible' already said true.
-    const auto better = [](const TType& from, const TType& to1, const TType& to2) -> bool {
+    const auto better = [&](const TType& from, const TType& to1, const TType& to2) -> bool {
         // 1. exact match
         if (from == to2)
             return from != to1;
         if (from == to1)
             return false;
-
+        if (extensionTurnedOn(E_GL_NV_gpu_shader5)) {
+            // This map refers to the conversion table mentioned under the 
+            // section "Modify Section 6.1, Function Definitions, p. 63" in NV_gpu_shader5 spec
+            const static std::map<int, std::vector<int>> conversionTable = {
+                {EbtInt8,   {EbtInt, EbtInt64}},
+                {EbtInt16,  {EbtInt, EbtInt64}},
+                {EbtInt,    {EbtInt64}},
+                {EbtUint8,  {EbtUint, EbtUint64}}, 
+                {EbtUint16, {EbtUint, EbtUint64}}, 
+                {EbtUint,   {EbtUint64}},
+            };
+            auto source = conversionTable.find(from.getBasicType());
+            if (source != conversionTable.end()) {
+                for (auto destination : source->second) {
+                    if (to2.getBasicType() == destination &&
+                        to1.getBasicType() != destination) // to2 is better then to1
+                        return true;
+                    else if (to1.getBasicType() == destination &&
+                             to2.getBasicType() != destination) // This means to1 is better then to2
+                        return false;
+                }
+            }
+        }
         // 2. float -> double is better
         if (from.getBasicType() == EbtFloat) {
             if (to2.getBasicType() == EbtDouble && to1.getBasicType() != EbtDouble)

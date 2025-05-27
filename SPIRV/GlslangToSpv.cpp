@@ -4747,12 +4747,8 @@ bool TGlslangToSpvTraverser::visitBranch(glslang::TVisit /* visit */, glslang::T
     switch (node->getFlowOp()) {
     case glslang::EOpKill:
         if (glslangIntermediate->getSpv().spv >= glslang::EShTargetSpv_1_6) {
-            if (glslangIntermediate->getSource() == glslang::EShSourceHlsl) {
-              builder.addCapability(spv::Capability::DemoteToHelperInvocation);
-              builder.createNoResultOp(spv::Op::OpDemoteToHelperInvocationEXT);
-            } else {
-                builder.makeStatementTerminator(spv::Op::OpTerminateInvocation, "post-terminate-invocation");
-            }
+            builder.addCapability(spv::Capability::DemoteToHelperInvocation);
+            builder.createNoResultOp(spv::Op::OpDemoteToHelperInvocationEXT);
         } else {
             builder.makeStatementTerminator(spv::Op::OpKill, "post-discard");
         }
