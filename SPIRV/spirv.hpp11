@@ -558,6 +558,7 @@ enum class Decoration : unsigned {
     PayloadNodeSparseArrayAMDX = 5099,
     PayloadNodeArraySizeAMDX = 5100,
     PayloadDispatchIndirectAMDX = 5105,
+    UTFCodePointsKHR = 5145,
     OverrideCoverageNV = 5248,
     PassthroughNV = 5250,
     ViewportRelativeNV = 5252,
@@ -1112,6 +1113,8 @@ enum class Capability : unsigned {
     BFloat16TypeKHR = 5116,
     BFloat16DotProductKHR = 5117,
     BFloat16CooperativeMatrixKHR = 5118,
+    AbortKHR = 5120,
+    ConstantDataKHR = 5146,
     SampleMaskOverrideCoverageNV = 5249,
     GeometryShaderPassthroughNV = 5251,
     ShaderViewportIndexLayerEXT = 5254,
@@ -1992,6 +1995,9 @@ enum class Op : unsigned {
     OpSpecConstantStringAMDX = 5104,
     OpGroupNonUniformQuadAllKHR = 5110,
     OpGroupNonUniformQuadAnyKHR = 5111,
+    OpAbortKHR = 5121,
+    OpConstantDataKHR = 5147,
+    OpSpecConstantDataKHR = 5148,
     OpHitObjectRecordHitMotionNV = 5249,
     OpHitObjectRecordHitWithIndexMotionNV = 5250,
     OpHitObjectRecordMissMotionNV = 5251,
@@ -2795,6 +2801,9 @@ inline void HasResultAndType(Op opcode, bool *hasResult, bool *hasResultType) {
     case Op::OpSpecConstantStringAMDX: *hasResult = true; *hasResultType = false; break;
     case Op::OpGroupNonUniformQuadAllKHR: *hasResult = true; *hasResultType = true; break;
     case Op::OpGroupNonUniformQuadAnyKHR: *hasResult = true; *hasResultType = true; break;
+    case Op::OpAbortKHR: *hasResult = false; *hasResultType = false; break;
+    case Op::OpConstantDataKHR: *hasResult = true; *hasResultType = true; break;
+    case Op::OpSpecConstantDataKHR : *hasResult = true; *hasResultType = true; break;
     case Op::OpHitObjectRecordHitMotionNV: *hasResult = false; *hasResultType = false; break;
     case Op::OpHitObjectRecordHitWithIndexMotionNV: *hasResult = false; *hasResultType = false; break;
     case Op::OpHitObjectRecordMissMotionNV: *hasResult = false; *hasResultType = false; break;
@@ -3600,6 +3609,7 @@ inline const char* DecorationToString(Decoration value) {
     case Decoration::PayloadNodeSparseArrayAMDX: return "PayloadNodeSparseArrayAMDX";
     case Decoration::PayloadNodeArraySizeAMDX: return "PayloadNodeArraySizeAMDX";
     case Decoration::PayloadDispatchIndirectAMDX: return "PayloadDispatchIndirectAMDX";
+    case Decoration::UTFCodePointsKHR: return "UTFCodePointsKHR";
     case Decoration::OverrideCoverageNV: return "OverrideCoverageNV";
     case Decoration::PassthroughNV: return "PassthroughNV";
     case Decoration::ViewportRelativeNV: return "ViewportRelativeNV";
@@ -3972,6 +3982,8 @@ inline const char* CapabilityToString(Capability value) {
     case Capability::BFloat16TypeKHR: return "BFloat16TypeKHR";
     case Capability::BFloat16DotProductKHR: return "BFloat16DotProductKHR";
     case Capability::BFloat16CooperativeMatrixKHR: return "BFloat16CooperativeMatrixKHR";
+    case Capability::AbortKHR: return "AbortKHR";
+    case Capability::ConstantDataKHR: return "ConstantDataKHR";
     case Capability::SampleMaskOverrideCoverageNV: return "SampleMaskOverrideCoverageNV";
     case Capability::GeometryShaderPassthroughNV: return "GeometryShaderPassthroughNV";
     case Capability::ShaderViewportIndexLayerEXT: return "ShaderViewportIndexLayerEXT";
@@ -4719,6 +4731,9 @@ inline const char* OpToString(Op value) {
     case Op::OpSpecConstantStringAMDX: return "OpSpecConstantStringAMDX";
     case Op::OpGroupNonUniformQuadAllKHR: return "OpGroupNonUniformQuadAllKHR";
     case Op::OpGroupNonUniformQuadAnyKHR: return "OpGroupNonUniformQuadAnyKHR";
+    case Op::OpAbortKHR: return "OpAbortKHR";
+    case Op::OpConstantDataKHR: return "OpConstantDataKHR";
+    case Op::OpSpecConstantDataKHR: return "OpSpecConstantDataKHR";
     case Op::OpHitObjectRecordHitMotionNV: return "OpHitObjectRecordHitMotionNV";
     case Op::OpHitObjectRecordHitWithIndexMotionNV: return "OpHitObjectRecordHitWithIndexMotionNV";
     case Op::OpHitObjectRecordMissMotionNV: return "OpHitObjectRecordMissMotionNV";

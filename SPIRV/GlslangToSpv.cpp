@@ -2928,6 +2928,7 @@ spv::Id TGlslangToSpvTraverser::createCompositeConstruct(spv::Id resultTypeId, s
 
 void TGlslangToSpvTraverser::createAbortEXT(const glslang::TIntermSequence glslangOperands)
 {
+    bool isEmptyMsg = glslangOperands.size() == 0;
     // Add Capability and extensions.
     builder.addCapability(spv::CapabilityAbortKHR);
     builder.addCapability(spv::CapabilityConstantDataKHR);
@@ -2944,7 +2945,8 @@ void TGlslangToSpvTraverser::createAbortEXT(const glslang::TIntermSequence glsla
     const uint32_t formatSpecifiersSize = 4;
     const char* formatSpecifiers[formatSpecifiersSize] = {"%d", "%i", "%f", "%u"};
     // 1. Split original message string with format specifiers.
-    const glslang::TString* msg = glslangOperands[0]->getAsConstantUnion()->getConstArray()[0].getSConst();
+    const glslang::TString* msg = !isEmptyMsg ? glslangOperands[0]->getAsConstantUnion()->getConstArray()[0].getSConst()
+                                             : new glslang::TString("\0");
     splitedStr.push_back(strInfo(*const_cast<glslang::TString*>(msg), -1));
     for (uint32_t i = 0; i < formatSpecifiersSize; i++) {
         for (uint32_t j = 0; j < splitedStr.size(); j++) {
@@ -2957,7 +2959,7 @@ void TGlslangToSpvTraverser::createAbortEXT(const glslang::TIntermSequence glsla
                 str = str.substr(pos + strlen(formatSpecifiers[i]));
                 pos = str.find(formatSpecifiers[i]);
             }
-            if (str.size() > 0)
+            if (str.size() > 0 || isEmptyMsg)
                 tempSplitedStr.push_back(strInfo(str, specifierIndex));
         }
         splitedStr.clear();
@@ -2973,7 +2975,7 @@ void TGlslangToSpvTraverser::createAbortEXT(const glslang::TIntermSequence glsla
     auto charType = builder.makeIntType(8);
     for (auto elem : splitedStr) {
         // 2.1 get sub string's length (if specifier, be spec const).
-        unsigned int strElemLen = elem.string.size();
+        unsigned int strElemLen = isEmptyMsg ? 1 : elem.string.size();
         spv::Id constLen = builder.makeUintConstant(strElemLen);
         spv::Op constDataOp = spv::OpConstantDataKHR;
         if (elem.specifierIndex >= 0) {
@@ -3701,6 +3703,10 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
     glslang::TIntermSequence& glslangOperands = node->getSequence();
     std::vector<spv::Id> operands;
     std::vector<spv::IdImmediate> memoryAccessOperands;
+    if (node->getOp() == glslang::EOpAbortEXT) {
+        createAbortEXT(glslangOperands);
+        return false;
+    }
     for (int arg = 0; arg < (int)glslangOperands.size(); ++arg) {
         // special case l-value operands; there are just a few
         bool lvalue = false;
@@ -3880,10 +3886,6 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
             break;
         }
         builder.clearAccessChain();
-        if (node->getOp() == glslang::EOpAbortEXT) {
-            createAbortEXT(glslangOperands);
-            return false;
-        }
 
         if (invertedType != spv::NoType && arg == 0)
             glslangOperands[0]->getAsBinaryNode()->getLeft()->traverse(this);
