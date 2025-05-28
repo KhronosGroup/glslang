@@ -1797,6 +1797,7 @@ public:
         return *typeName;
     }
 
+    virtual bool hasFieldName() const { return (fieldName != nullptr); }
     virtual const TString& getFieldName() const
     {
         assert(fieldName);
