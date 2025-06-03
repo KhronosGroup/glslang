@@ -77,3 +77,4 @@ Test/baseResults/spv.separate.frag.out
 Test/baseResults/spv.sparseTextureClamp.frag.out
 Test/baseResults/spv.sparseTexture.frag.out
 Test/baseResults/vk.relaxed.errorcheck.vert.out
+Test/baseResults/vk.relaxed.syntaxerror.vert.out
