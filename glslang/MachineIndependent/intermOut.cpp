@@ -629,6 +629,14 @@ bool TOutputTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node
     case EOpConstructBF16Vec2:  out.debug << "Construct bf16vec2";   break;
     case EOpConstructBF16Vec3:  out.debug << "Construct bf16vec3";   break;
     case EOpConstructBF16Vec4:  out.debug << "Construct bf16vec4";   break;
+    case EOpConstructFloatE5M2:  out.debug << "Construct floate5m2_t"; break;
+    case EOpConstructFloatE5M2Vec2:  out.debug << "Construct fe5m2vec2";   break;
+    case EOpConstructFloatE5M2Vec3:  out.debug << "Construct fe5m2vec3";   break;
+    case EOpConstructFloatE5M2Vec4:  out.debug << "Construct fe5m2vec4";   break;
+    case EOpConstructFloatE4M3:  out.debug << "Construct floate4m3_t"; break;
+    case EOpConstructFloatE4M3Vec2:  out.debug << "Construct fe4m3vec2";   break;
+    case EOpConstructFloatE4M3Vec3:  out.debug << "Construct fe4m3vec3";   break;
+    case EOpConstructFloatE4M3Vec4:  out.debug << "Construct fe4m3vec4";   break;
     case EOpConstructFloat16:   out.debug << "Construct float16_t"; break;
     case EOpConstructF16Vec2:   out.debug << "Construct f16vec2";   break;
     case EOpConstructF16Vec3:   out.debug << "Construct f16vec3";   break;
@@ -1164,6 +1172,8 @@ static void OutputConstantUnion(TInfoSink& out, const TIntermTyped* node, const 
         case EbtDouble:
         case EbtFloat16:
         case EbtBFloat16:
+        case EbtFloatE5M2:
+        case EbtFloatE4M3:
             OutputDouble(out, constUnion[i].getDConst(), extra);
             out.debug << "\n";
             break;

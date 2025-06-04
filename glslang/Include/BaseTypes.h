@@ -50,6 +50,8 @@ enum TBasicType {
     EbtDouble,
     EbtFloat16,
     EbtBFloat16,
+    EbtFloatE5M2,
+    EbtFloatE4M3,
     EbtInt8,
     EbtUint8,
     EbtInt16,
@@ -604,6 +606,8 @@ __inline bool isTypeFloat(TBasicType type)
     case EbtDouble:
     case EbtFloat16:
     case EbtBFloat16:
+    case EbtFloatE5M2:
+    case EbtFloatE4M3:
         return true;
     default:
         return false;
@@ -615,6 +619,8 @@ __inline uint32_t GetNumBits(TBasicType type)
     switch (type) {
     case EbtInt8:
     case EbtUint8:
+    case EbtFloatE5M2:
+    case EbtFloatE4M3:
         return 8;
     case EbtBFloat16:
     case EbtFloat16:

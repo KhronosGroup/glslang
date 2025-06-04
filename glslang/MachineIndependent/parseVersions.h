@@ -104,6 +104,8 @@ public:
     virtual void float16Check(const TSourceLoc&, const char* op, bool builtIn = false);
     virtual void float16ScalarVectorCheck(const TSourceLoc&, const char* op, bool builtIn = false);
     virtual void bfloat16ScalarVectorCheck(const TSourceLoc&, const char* op, bool builtIn = false);
+    virtual void floate5m2ScalarVectorCheck(const TSourceLoc&, const char* op, bool builtIn = false);
+    virtual void floate4m3ScalarVectorCheck(const TSourceLoc&, const char* op, bool builtIn = false);
     virtual bool float16Arithmetic();
     virtual void requireFloat16Arithmetic(const TSourceLoc& loc, const char* op, const char* featureDesc);
     virtual void int16ScalarVectorCheck(const TSourceLoc&, const char* op, bool builtIn = false);
