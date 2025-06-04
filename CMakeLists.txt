@@ -337,16 +337,16 @@ if(GLSLANG_TESTS)
         set(REMAP_PATH ${CMAKE_CURRENT_BINARY_DIR}/StandAlone/spirv-remap)
     endif()
 
-    # The TARGET_RUNTIME_DLL_DIRS feature requires CMake 3.27 or greater.
-    if(WIN32 AND BUILD_SHARED_LIBS AND CMAKE_VERSION VERSION_LESS "3.27")
-        message(WARNING "The Windows shared library test configuration requires CMake 3.27 or greater")
-    else()
-        add_test(NAME glslang-testsuite
-            COMMAND bash ${IGNORE_CR_FLAG} runtests ${RESULTS_PATH} ${VALIDATOR_PATH} ${REMAP_PATH}
-            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Test/)
+    if(WIN32 AND BUILD_SHARED_LIBS)
+        # The TARGET_RUNTIME_DLL_DIRS feature requires CMake 3.27 or greater.
+        if(CMAKE_VERSION VERSION_LESS "3.27")
+            message(WARNING "The Windows shared library test configuration requires CMake 3.27 or greater")
+        else()
+            add_test(NAME glslang-testsuite
+                COMMAND bash ${IGNORE_CR_FLAG} runtests ${RESULTS_PATH} ${VALIDATOR_PATH} ${REMAP_PATH}
+                WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Test/)
 
-        # Prepend paths to shared libraries.
-        if (BUILD_SHARED_LIBS)
+            # Prepend paths to shared libraries.
             set_tests_properties(glslang-testsuite PROPERTIES ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:$<JOIN:$<TARGET_RUNTIME_DLL_DIRS:glslang-standalone>,\;>")
             set_tests_properties(glslang-testsuite PROPERTIES ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:$<JOIN:$<TARGET_RUNTIME_DLL_DIRS:spirv-remap>,\;>")
         endif()
