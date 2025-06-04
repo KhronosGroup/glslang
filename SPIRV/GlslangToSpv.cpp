@@ -3515,20 +3515,6 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         noReturnValue = true;
         break;
 
-    case glslang::EOpHitObjectGetSpherePositionNV:
-    case glslang::EOpHitObjectGetSphereRadiusNV:
-    case glslang::EOpHitObjectIsSphereHitNV:
-        builder.addExtension(spv::E_SPV_NV_linear_swept_spheres);
-        builder.addCapability(spv::Capability::ShaderInvocationReorderNV);
-        builder.addCapability(spv::Capability::RayTracingSpheresGeometryNV);
-        break;
-
-    case glslang::EOpHitObjectIsLSSHitNV:
-        builder.addExtension(spv::E_SPV_NV_linear_swept_spheres);
-        builder.addCapability(spv::Capability::ShaderInvocationReorderNV);
-        builder.addCapability(spv::Capability::RayTracingLinearSweptSpheresGeometryNV);
-        break;
-
     case glslang::EOpRayQueryGetIntersectionLSSPositionsNV:
     case glslang::EOpRayQueryGetIntersectionLSSRadiiNV:
         builder.addExtension(spv::E_SPV_NV_linear_swept_spheres);
@@ -7989,18 +7975,30 @@ spv::Id TGlslangToSpvTraverser::createUnaryOperation(glslang::TOperator op, OpDe
 
     case glslang::EOpHitObjectGetSpherePositionNV:
         unaryOp = spv::Op::OpHitObjectGetSpherePositionNV;
+        builder.addExtension(spv::E_SPV_NV_linear_swept_spheres);
+        builder.addCapability(spv::Capability::ShaderInvocationReorderNV);
+        builder.addCapability(spv::Capability::RayTracingSpheresGeometryNV);
         break;
 
     case glslang::EOpHitObjectGetSphereRadiusNV:
         unaryOp = spv::Op::OpHitObjectGetSphereRadiusNV;
+        builder.addExtension(spv::E_SPV_NV_linear_swept_spheres);
+        builder.addCapability(spv::Capability::ShaderInvocationReorderNV);
+        builder.addCapability(spv::Capability::RayTracingSpheresGeometryNV);
         break;
 
     case glslang::EOpHitObjectIsSphereHitNV:
         unaryOp = spv::Op::OpHitObjectIsSphereHitNV;
+        builder.addExtension(spv::E_SPV_NV_linear_swept_spheres);
+        builder.addCapability(spv::Capability::ShaderInvocationReorderNV);
+        builder.addCapability(spv::Capability::RayTracingSpheresGeometryNV);
         break;
 
     case glslang::EOpHitObjectIsLSSHitNV:
         unaryOp = spv::Op::OpHitObjectIsLSSHitNV;
+        builder.addExtension(spv::E_SPV_NV_linear_swept_spheres);
+        builder.addCapability(spv::Capability::ShaderInvocationReorderNV);
+        builder.addCapability(spv::Capability::RayTracingLinearSweptSpheresGeometryNV);
         break;
 
     case glslang::EOpFetchMicroTriangleVertexPositionNV:

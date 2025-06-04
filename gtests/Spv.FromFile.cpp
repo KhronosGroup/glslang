@@ -770,6 +770,8 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.nv.lss-allops.rchit",
         "spv.nv.lss-allops.rmiss",
         "spv.nv.lss-allops.frag",
+        "spv.nv.lss-spheregeomcap.rgen",
+        "spv.nv.lss-lssgeomcap.rgen",
 
     })),
     FileNameAsCustomTestSuffix
