@@ -23,7 +23,6 @@
 //  - Setting basic options: setting a preprocessor symbol.
 //  - Checking compilation status and extracting an error message.
 
-// #include "glslc/src/file_includer.h"
 #include <algorithm>
 #include <cassert>
 #include <cstdio>
@@ -172,7 +171,8 @@ static const TBuiltInResource kDefaultTBuiltInResource = {
         /*.generalConstantMatrixVectorIndexing = */ 1,
     }};
 
-glslang::TIntermediate* parse_ast(glslang::TShader& shader, std::string const& input_source_string,
+glslang::TIntermediate* parse_ast(glslang::TShader& shader, std::string const& fname,
+                                  std::string const& input_source_string,
                                   std::map<std::string, std::string> const& defines)
 {
     std::string preambles;
@@ -186,7 +186,7 @@ glslang::TIntermediate* parse_ast(glslang::TShader& shader, std::string const& i
 
     // Parsing requires its own Glslang symbol tables.
     auto used_shader_stage = EShLangCompute;
-    std::string error_tag = "glsld";
+    std::string error_tag = fname;
     const char* shader_strings = input_source_string.data();
     const int shader_lengths = static_cast<int>(input_source_string.size());
     const char* string_names = error_tag.c_str();
@@ -230,9 +230,10 @@ glslang::TIntermediate* parse_ast(glslang::TShader& shader, std::string const& i
     auto default_profile_ = ENoProfile;
     auto force_version_profile_ = false;
 
+	bool success = false;
 #if 0
     std::string preprocessed_source;
-    auto success = shader.preprocess(&kDefaultTBuiltInResource, default_version_, default_profile_,
+    success = shader.preprocess(&kDefaultTBuiltInResource, default_version_, default_profile_,
                                      force_version_profile_, false, rules, &preprocessed_source, includer);
     if (!success) {
         std::cerr << "preprocess source code failed" << std::endl;
@@ -241,11 +242,14 @@ glslang::TIntermediate* parse_ast(glslang::TShader& shader, std::string const& i
 
     std::cerr << "preprocess source code: " << std::endl << preprocessed_source << std::endl;
 #endif
-    auto success = shader.parse(&kDefaultTBuiltInResource, default_version_, default_profile_, force_version_profile_, false,
-                           rules, includer);
+    success = shader.parse(&kDefaultTBuiltInResource, default_version_, default_profile_, force_version_profile_,
+                                false, rules, includer);
 
-    if (!success)
+    if (!success) {
+        std::cerr << "compile info log : " << shader.getInfoLog() << std::endl
+                  << "compile debug log: " << shader.getInfoDebugLog() << std::endl;
         return nullptr;
+    }
 
     auto ast = shader.getIntermediate();
     return ast;
@@ -1351,7 +1355,7 @@ int main(const int argc, const char* argv[])
     std::copy(it, std::istreambuf_iterator<char>(), std::back_inserter(source));
 
     glslang::TShader shader(EShLangCompute);
-    glslang::TIntermediate* ast = parse_ast(shader, source,
+    glslang::TIntermediate* ast = parse_ast(shader, argv[1], source,
                                             {{"ACC_TYPE", "float"},
                                              {"ALIGNED", "1"},
                                              {"B_TYPE", "f16vec4"},
@@ -1365,11 +1369,11 @@ int main(const int argc, const char* argv[])
         return -1;
     }
 
-    // TInfoSink sink;
-    // ast->output(sink, true);
-    // std::cerr << sink.info.c_str() << std::endl;
-    // std::cerr << sink.debug.c_str() << std::endl;
-    visitAllTypesAndSymbols(ast);
+    TInfoSink sink;
+    ast->output(sink, true);
+    std::cerr << sink.info.c_str() << std::endl;
+    std::cerr << sink.debug.c_str() << std::endl;
+    // visitAllTypesAndSymbols(ast);
 
     return 0;
 }
