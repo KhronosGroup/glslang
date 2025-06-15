@@ -94,6 +94,7 @@ option(GLSLANG_ENABLE_INSTALL "Enable glslang installation" ${GLSLANG_ENABLE_INS
 
 option(ENABLE_SPIRV "Enables SPIRV output support" ON)
 option(ENABLE_SPVREMAPPER "Enables building of SPVRemapper" ON)
+option(ENABLE_GLSLD "Enable glsl language server" ON)
 
 option(ENABLE_GLSLANG_BINARIES "Builds glslang and spirv-remap" ON)
 
@@ -314,6 +315,10 @@ endif()
 add_subdirectory(glslang)
 if(ENABLE_GLSLANG_BINARIES)
     add_subdirectory(StandAlone)
+endif()
+
+if (ENABLE_GLSLD)
+    add_subdirectory(glsld)
 endif()
 
 if(GLSLANG_TESTS)

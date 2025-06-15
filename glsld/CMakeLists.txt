@@ -1,0 +1,2 @@
+add_executable(compile_compute_shader compile_compute_shader.cc)
+target_link_libraries(compile_compute_shader PUBLIC MachineIndependent)
