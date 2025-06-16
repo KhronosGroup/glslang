@@ -8588,6 +8588,7 @@ TIntermNode* TParseContext::declareVariable(const TSourceLoc& loc, TString& iden
 	aggNode->setType(TType(EbtVoid));
 	auto* declNode = intermediate.addUnaryNode(EOpDeclare, intermediate.addSymbol(*symbol->getAsVariable()), loc);
 	declNode->setType(symbol->getType());
+	declNode->setLoc(loc);
 	aggNode->getSequence().push_back(declNode);
 
     TIntermNode* initNode = nullptr;

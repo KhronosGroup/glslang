@@ -229,7 +229,7 @@ glslang::TIntermediate* parse_ast(glslang::TShader& shader, std::string const& f
     auto default_profile_ = ENoProfile;
     auto force_version_profile_ = false;
 
-	bool success = false;
+    bool success = false;
 #if 0
     std::string preprocessed_source;
     success = shader.preprocess(&kDefaultTBuiltInResource, default_version_, default_profile_,
@@ -241,8 +241,8 @@ glslang::TIntermediate* parse_ast(glslang::TShader& shader, std::string const& f
 
     std::cerr << "preprocess source code: " << std::endl << preprocessed_source << std::endl;
 #endif
-    success = shader.parse(&kDefaultTBuiltInResource, default_version_, default_profile_, force_version_profile_,
-                                false, rules, includer);
+    success = shader.parse(&kDefaultTBuiltInResource, default_version_, default_profile_, force_version_profile_, false,
+                           rules, includer);
 
     if (!success) {
         std::cerr << "compile info log : " << shader.getInfoLog() << std::endl
@@ -267,6 +267,14 @@ public:
                 loc.line, loc.column, typeName.c_str());
         fflush(stderr);
     }
+
+    bool visitUnary(glslang::TVisit v, glslang::TIntermUnary* node) override { 
+		if (node->getOp() != glslang::EOpDeclare) return true;
+
+		auto sym = node->getOperand()->getAsSymbolNode();
+		auto loc = node->getLoc();
+		fprintf(stderr, "%s defined at %s:%d:%d\n", sym->getName().c_str(), loc.getFilename(), loc.line, loc.column);
+		return true; }
 
     bool visitAggregate(glslang::TVisit v, glslang::TIntermAggregate* agg) override
     {
@@ -1241,26 +1249,6 @@ public:
                 op_map[op]);
         fflush(stderr);
 
-        if (op == glslang::EOpSequence) {
-            auto children = agg->getSequence();
-            for (auto* node : children) {
-                auto loc = node->getLoc();
-                auto p = node->getAsOperator();
-                if (p) {
-                    fprintf(stderr, "agg %s child node op: %s at %s:%d:%d\n", aggName, op_map[p->getOp()],
-                            loc.getFilename(), loc.line, loc.column);
-                    fflush(stderr);
-                }
-
-                auto* s = node->getAsSymbolNode();
-                if (s) {
-                    fprintf(stderr, "agg %s child symbol: %s at %s:%d:%d\n", aggName, s->getName().c_str(),
-                            loc.getFilename(), loc.line, loc.column);
-                    fflush(stderr);
-                }
-            }
-        }
-
         if (op != glslang::EOpFunction)
             return true;
         fprintf(stderr, "meet aggregate function define: %s at loc: %s:%d:%d\n", aggName, agg->getLoc().getFilename(),
@@ -1368,11 +1356,11 @@ int main(const int argc, const char* argv[])
         return -1;
     }
 
-    TInfoSink sink;
-    ast->output(sink, true);
-    std::cerr << sink.info.c_str() << std::endl;
-    std::cerr << sink.debug.c_str() << std::endl;
-    // visitAllTypesAndSymbols(ast);
+    // TInfoSink sink;
+    // ast->output(sink, true);
+    // std::cerr << sink.info.c_str() << std::endl;
+    // std::cerr << sink.debug.c_str() << std::endl;
+    visitAllTypesAndSymbols(ast);
 
     return 0;
 }
