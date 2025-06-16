@@ -1,2 +1,16 @@
+find_package(PkgConfig QUIET)
+pkg_search_module(LIBEVENT libevent)
+if (LIBEVENT_FOUND)
+    message(STATUS "Found libevent ${LIBEVENT_FOUND}")
+    message(STATUS "libevent inc : ${LIBEVENT_INCLUDE_DIRS}")
+    message(STATUS "libevent lib : ${LIBEVENT_LIBRARIES}")
+    message(STATUS "libevent path: ${LIBEVENT_LIBRARY_DIRS}")
+endif ()
+
 add_executable(compile_compute_shader compile_compute_shader.cc)
 target_link_libraries(compile_compute_shader PUBLIC MachineIndependent)
+
+add_executable(server server.cc)
+target_link_libraries(server PUBLIC MachineIndependent ${LIBEVENT_LIBRARIES})
+target_include_directories(server PUBLIC ${LIBEVENT_INCLUDE_DIRS})
+target_link_directories(server PUBLIC ${LIBEVENT_LIBRARY_DIRS})
