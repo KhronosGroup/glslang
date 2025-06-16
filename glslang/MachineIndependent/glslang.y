@@ -67,7 +67,7 @@ using namespace glslang;
 
 %}
 
-%define parse.error verbose
+%define "parse.error" "verbose"
 
 %union {
     struct {
@@ -1186,13 +1186,11 @@ single_declaration
     }
     | fully_specified_type IDENTIFIER {
         $$.type = $1;
-        $$.intermNode = 0;
-        parseContext.declareVariable($2.loc, *$2.string, $1);
+        $$.intermNode = parseContext.declareVariable($2.loc, *$2.string, $1);
     }
     | fully_specified_type IDENTIFIER array_specifier {
         $$.type = $1;
-        $$.intermNode = 0;
-        parseContext.declareVariable($2.loc, *$2.string, $1, $3.arraySizes);
+        $$.intermNode = parseContext.declareVariable($2.loc, *$2.string, $1, $3.arraySizes);
     }
     | fully_specified_type IDENTIFIER array_specifier EQUAL initializer {
         $$.type = $1;

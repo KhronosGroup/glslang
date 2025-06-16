@@ -30,7 +30,6 @@
 #include <iostream>
 #include <map>
 #include <ostream>
-#include <shaderc/shaderc.hpp>
 #include <string>
 
 #include "StandAlone/DirStackFileIncluder.h"

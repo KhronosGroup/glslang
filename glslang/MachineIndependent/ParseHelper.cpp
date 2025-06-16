@@ -8582,6 +8582,14 @@ TIntermNode* TParseContext::declareVariable(const TSourceLoc& loc, TString& iden
         return nullptr;
 
     // Deal with initializer
+	TIntermAggregate* aggNode = new TIntermAggregate;
+	aggNode->setOperator(EOpSequence);
+	aggNode->setLoc(loc);
+	aggNode->setType(TType(EbtVoid));
+	auto* declNode = intermediate.addUnaryNode(EOpDeclare, intermediate.addSymbol(*symbol->getAsVariable()), loc);
+	declNode->setType(symbol->getType());
+	aggNode->getSequence().push_back(declNode);
+
     TIntermNode* initNode = nullptr;
     if (symbol != nullptr && initializer) {
         TVariable* variable = symbol->getAsVariable();
@@ -8590,6 +8598,7 @@ TIntermNode* TParseContext::declareVariable(const TSourceLoc& loc, TString& iden
             return nullptr;
         }
         initNode = executeInitializer(loc, initializer, variable);
+		aggNode->getSequence().push_back(initNode);
     }
 
     // look for errors in layout qualifier use
@@ -8598,7 +8607,7 @@ TIntermNode* TParseContext::declareVariable(const TSourceLoc& loc, TString& iden
     // fix up
     fixOffset(loc, *symbol);
 
-    return initNode;
+    return aggNode;
 }
 
 // Pick up global defaults from the provide global defaults into dst.
