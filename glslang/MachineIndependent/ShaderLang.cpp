@@ -83,7 +83,11 @@ int NumberOfClients = 0;
 
 // global initialization lock
 #ifndef DISABLE_THREAD_SUPPORT
-std::mutex init_lock;
+// Use a static local variable to prevent static initialization order fiasco.
+std::mutex& GetInitLock() {
+    static std::mutex init_lock;
+    return init_lock;
+}
 #endif
 
 
@@ -430,7 +434,7 @@ bool SetupBuiltinSymbolTable(int version, EProfile profile, const SpvVersion& sp
 
     // Make sure only one thread tries to do this at a time
 #ifndef DISABLE_THREAD_SUPPORT
-    const std::lock_guard<std::mutex> lock(init_lock);
+    const std::lock_guard<std::mutex> lock(GetInitLock());
 #endif
 
     // See if it's already been done for this version/profile combination
@@ -1333,7 +1337,7 @@ bool CompileDeferred(
 int ShInitialize()
 {
 #ifndef DISABLE_THREAD_SUPPORT
-    const std::lock_guard<std::mutex> lock(init_lock);
+    const std::lock_guard<std::mutex> lock(GetInitLock());
 #endif
     ++NumberOfClients;
 
@@ -1390,7 +1394,7 @@ void ShDestruct(ShHandle handle)
 int ShFinalize()
 {
 #ifndef DISABLE_THREAD_SUPPORT
-    const std::lock_guard<std::mutex> lock(init_lock);
+    const std::lock_guard<std::mutex> lock(GetInitLock());
 #endif
     --NumberOfClients;
     assert(NumberOfClients >= 0);
