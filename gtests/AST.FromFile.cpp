@@ -225,6 +225,7 @@ INSTANTIATE_TEST_SUITE_P(
         "types.frag",
         "uniformArray.frag",
         "variableArrayIndex.frag",
+        "variadic.comp",
         "varyingArray.frag",
         "varyingArrayIndirect.frag",
         "voidFunction.frag",
