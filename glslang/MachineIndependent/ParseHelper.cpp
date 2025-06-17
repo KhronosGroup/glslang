@@ -1405,6 +1405,24 @@ TIntermTyped* TParseContext::handleFunctionCall(const TSourceLoc& loc, TFunction
                     // At this early point there is a slight ambiguity between whether an aggregate 'arguments'
                     // is the single argument itself or its children are the arguments.  Only one argument
                     // means take 'arguments' itself as the one argument.
+                    if ((*fnCandidate)[i].defaultValue) {
+                        if (!aggregate) {
+                            // Only one argument was passed (rest are default arguments) so arguments isn't a TIntermAggregate.
+                            // But the function takes at least one more argument, so a TIntermAggregate is needed.
+                            aggregate = new TIntermAggregate;
+                            aggregate->getSequence().push_back(arguments);
+                            arguments = aggregate;
+                        }
+                        if (i >= static_cast<int>(aggregate->getSequence().size())) {
+                            // Append the default value if there are no more arguments left in the aggregate.
+                            TIntermConstantUnion *defaultValue = nullptr;
+                            if (const auto *constUnion = (*fnCandidate)[i].defaultValue->getAsConstantUnion()) {
+                                defaultValue = new TIntermConstantUnion(constUnion->getConstArray(), constUnion->getType());
+                            }
+                            assert(defaultValue && "unsupported default value construct");
+                            aggregate->getSequence().push_back(defaultValue);
+                        }
+                    }
                     TIntermNode* arg = fnCandidate->getParamCount() == 1 ? arguments : (aggregate ? aggregate->getSequence()[i] : arguments);
                     TQualifier& formalQualifier = (*fnCandidate)[i].type->getQualifier();
                     if (formalQualifier.isParamOutput()) {
@@ -9438,6 +9456,26 @@ void TParseContext::makeVariadic(TFunction *F, const TSourceLoc &loc) {
     } else {
         error(loc, "variadic argument specifier is only available for builtins", "...", "");
     }
+}
+
+TParameter TParseContext::getParamWithDefault(const TPublicType& ty, TString* identifier, TIntermTyped* initializer,
+                                              const TSourceLoc& loc)
+{
+    if (!parsingBuiltins) {
+        error(loc, "default argument values are only available for builtins", "=", "");
+        initializer = nullptr;
+    }
+    if (ty.arraySizes) {
+        error(loc, "array arguments cannot be default-initialized", identifier->c_str(), "");
+        initializer = nullptr;
+    }
+    if (ty.basicType == EbtVoid) {
+        error(loc, "illegal use of type 'void'", identifier->c_str(), "");
+        initializer = nullptr;
+    }
+    reservedErrorCheck(loc, *identifier);
+    TParameter param = {identifier, new TType(ty), initializer};
+    return param;
 }
 
 // This function tests for the type of the parameters to the structure or array constructor. Raises

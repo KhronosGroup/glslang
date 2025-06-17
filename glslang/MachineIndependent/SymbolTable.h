@@ -232,6 +232,13 @@ struct TParameter {
             name = nullptr;
         type = param.type->clone();
         defaultValue = param.defaultValue;
+        if (defaultValue) {
+            // The defaultValue of a builtin is created in a TPoolAllocator that no longer exists
+            // when parsing the user program, so make a deep copy.
+            if (const auto *constUnion = defaultValue->getAsConstantUnion()) {
+                defaultValue = new TIntermConstantUnion(*constUnion->getConstArray().clone(), constUnion->getType());
+            }
+        }
         return *this;
     }
     TBuiltInVariable getDeclaredBuiltIn() const { return type->getQualifier().declaredBuiltIn; }

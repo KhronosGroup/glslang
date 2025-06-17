@@ -1103,6 +1103,11 @@ parameter_declarator
         $$.loc = $2.loc;
         $$.param = param;
     }
+    | type_specifier IDENTIFIER EQUAL initializer {
+        TParameter param = parseContext.getParamWithDefault($1, $2.string, $4, $3.loc);
+        $$.loc = $2.loc;
+        $$.param = param;
+    }
     ;
 
 parameter_declaration

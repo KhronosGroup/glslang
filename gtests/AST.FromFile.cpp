@@ -189,6 +189,7 @@ INSTANTIATE_TEST_SUITE_P(
         "dataOut.frag",
         "dataOutIndirect.frag",
         "deepRvalue.frag",
+        "defaultArgs.comp",
         "depthOut.frag",
         "discard-dce.frag",
         "doWhileLoop.frag",
