@@ -1039,6 +1039,10 @@ function_header_with_parameters
                 parseContext.vkRelaxedRemapFunctionParameter($1, $3.param);
         }
     }
+    | function_header_with_parameters COMMA DOT DOT DOT {
+        $$ = $1;
+        parseContext.makeVariadic($1, $3.loc);
+    }
     ;
 
 function_header

@@ -1887,6 +1887,8 @@ void TParseContext::computeBuiltinPrecisions(TIntermTyped& node, const TFunction
         // find the maximum precision from the arguments and parameters
         for (unsigned int arg = 0; arg < numArgs; ++arg) {
             operationPrecision = std::max(operationPrecision, sequence[arg]->getAsTyped()->getQualifier().precision);
+        }
+        for (int arg = 0; arg < function.getParamCount(); ++arg) {
             operationPrecision = std::max(operationPrecision, function[arg].type->getQualifier().precision);
         }
         // compute the result precision
@@ -9428,6 +9430,14 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
 
     // setAggregateOperator will insert a new node for the constructor, as needed.
     return intermediate.setAggregateOperator(newNode, op, type, loc);
+}
+
+void TParseContext::makeVariadic(TFunction *F, const TSourceLoc &loc) {
+    if (parsingBuiltins) {
+        F->setVariadic();
+    } else {
+        error(loc, "variadic argument specifier is only available for builtins", "...", "");
+    }
 }
 
 // This function tests for the type of the parameters to the structure or array constructor. Raises
