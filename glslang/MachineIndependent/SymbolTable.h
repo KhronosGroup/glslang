@@ -84,8 +84,8 @@ typedef TVector<const char*> TExtensionList;
 class TSymbol {
 public:
     POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
-    explicit TSymbol(const TString *n, const TString *mn) :  name(n), mangledName(mn), uniqueId(0), extensions(nullptr), writable(true) { }
-    explicit TSymbol(const TString *n) : TSymbol(n, n) { }
+    explicit TSymbol(const TString *n, const TString *mn) :  name(n), mangledName(mn), uniqueId(0), extensions(nullptr), writable(true) { loc.init(); }
+    explicit TSymbol(const TString *n) : TSymbol(n, n) { loc.init(); }
     virtual TSymbol* clone() const = 0;
     virtual ~TSymbol() { }  // rely on all symbol owned memory coming from the pool
 
@@ -123,6 +123,8 @@ public:
 
     virtual bool isReadOnly() const { return ! writable; }
     virtual void makeReadOnly() { writable = false; }
+	void setLoc(TSourceLoc const& loc){ this->loc = loc;}
+	const TSourceLoc& getLoc() const{return loc;}
 
 protected:
     explicit TSymbol(const TSymbol&);
@@ -141,6 +143,7 @@ protected:
     // to avoid overwriting shared symbol-table information.
     //
     bool writable;
+    TSourceLoc loc;
 };
 
 //

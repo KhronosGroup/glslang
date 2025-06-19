@@ -372,6 +372,7 @@ TSymbol::TSymbol(const TSymbol& copyOf)
     mangledName = NewPoolTString(copyOf.mangledName->c_str());
     uniqueId = copyOf.uniqueId;
     writable = true;
+	loc = copyOf.loc;
 }
 
 TVariable::TVariable(const TVariable& copyOf) : TSymbol(copyOf)

@@ -2797,7 +2797,7 @@ void TIntermediate::addSymbolLinkageNode(TIntermAggregate*& linkage, const TSymb
         const TAnonMember* anon = symbol.getAsAnonMember();
         variable = &anon->getAnonContainer();
     }
-    TIntermSymbol* node = addSymbol(*variable);
+    TIntermSymbol* node = addSymbol(*variable, symbol.getLoc());
     linkage = growAggregate(linkage, node);
 }
 

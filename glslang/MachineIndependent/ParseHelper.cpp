@@ -441,6 +441,7 @@ void TParseContext::handlePragma(const TSourceLoc& loc, const TVector<TString>& 
 TIntermTyped* TParseContext::handleVariable(const TSourceLoc& loc, TSymbol* symbol, const TString* string)
 {
     TIntermTyped* node = nullptr;
+	if (symbol) symbol->setLoc(loc);
 
     // Error check for requiring specific extensions present.
     if (symbol && symbol->getNumExtensions())
@@ -8545,8 +8546,11 @@ TIntermNode* TParseContext::declareVariable(const TSourceLoc& loc, TString& iden
 
     // Check for redeclaration of built-ins and/or attempting to declare a reserved name
     TSymbol* symbol = redeclareBuiltinVariable(loc, identifier, type.getQualifier(), publicType.shaderQualifiers);
-    if (symbol == nullptr)
+    if (symbol == nullptr){
         reservedErrorCheck(loc, identifier);
+	}else{
+		symbol->setLoc(loc);
+	}
 
     if (symbol == nullptr && spvVersion.vulkan > 0 && spvVersion.vulkanRelaxed) {
         bool remapped = vkRelaxedRemapUniformVariable(loc, identifier, publicType, arraySizes, initializer, type);
@@ -9794,6 +9798,7 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
     } else
         fixIoArraySize(loc, variable.getWritableType());
 
+	variable.setLoc(loc);
     // Save it in the AST for linker use.
     trackLinkage(variable);
 }
