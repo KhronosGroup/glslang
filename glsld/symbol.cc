@@ -6,13 +6,14 @@ Symbol::Symbol()
     status_->ref = 1;
 }
 
-Symbol::Symbol(const glslang::TIntermSymbol* sym)
+Symbol::Symbol(glslang::TIntermSymbol* sym)
 {
     status_ = new __SymbolStatus;
     status_->name = sym->getName().c_str();
     status_->mangled_name = sym->getMangledName().c_str();
     status_->type = SymbolType::VARIABLE;
-    status_->loc = sym->getLoc();
+
+	status_->def = sym;
     status_->ref = 1;
 }
 
@@ -30,7 +31,9 @@ Symbol::Symbol(Symbol&& rhs)
     rhs.status_ = nullptr;
 }
 
-void Symbol::add_uses(const glslang::TIntermSymbol* sym) { status_->uses.push_back(sym); }
+void Symbol::add_uses(glslang::TIntermSymbol* sym) { 
+	status_->uses.push_back(sym); 
+}
 
 Symbol& Symbol::operator=(const Symbol& rhs)
 {

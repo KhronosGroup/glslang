@@ -28,9 +28,9 @@ Symbol* Workspace::find_symbol_by_use(std::string const& uri, const int line, co
     auto& table = docs_[uri].symbols();
     for (auto& [name, sym] : table) {
         for (auto& use : sym.uses()) {
-            auto loc = use.loc();
+            auto loc = use->getLoc();
             if (loc.line == line) {
-                auto offset = loc.col;
+                auto offset = loc.column;
                 if (col >= offset && col <= offset + sym.name().size()) {
                     return &sym;
                 }
