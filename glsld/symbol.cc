@@ -27,9 +27,8 @@ Symbol::Symbol(Symbol&& rhs)
 {
     release_();
     status_ = rhs.status_;
-	rhs.status_ = nullptr;
+    rhs.status_ = nullptr;
 }
-
 
 void Symbol::add_uses(const glslang::TIntermSymbol* sym) { status_->uses.push_back(sym); }
 
@@ -45,20 +44,20 @@ Symbol& Symbol::operator=(Symbol&& rhs)
 {
     release_();
     status_ = rhs.status_;
-	rhs.status_ = nullptr;
+    rhs.status_ = nullptr;
     return *this;
 }
-
 
 Symbol::~Symbol() { release_(); }
 
 void Symbol::release_()
 {
     if (status_) {
-        status_->ref -= 1;
         if (status_->ref == 1) {
             delete status_;
-			status_ = nullptr;
+            status_ = nullptr;
+        } else {
+            status_->ref -= 1;
         }
     }
 }

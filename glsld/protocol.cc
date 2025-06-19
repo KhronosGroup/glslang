@@ -126,8 +126,12 @@ void Protocol::didOpen_(nlohmann::json& req)
     std::string uri = textDoc["uri"];
     int version = textDoc["version"];
     std::string source = textDoc["text"];
-
-    workspace_.add_doc(Doc(uri, version, source));
+    Doc doc(uri, version, source);
+    if (doc.parse({workspace_.get_root()})) {
+        workspace_.add_doc(std::move(doc));
+    } else {
+        fprintf(stderr, "open file %s failed.\n", uri.c_str());
+    }
 }
 
 void Protocol::goto_definition_(nlohmann::json& req)
@@ -154,7 +158,7 @@ void Protocol::goto_definition_(nlohmann::json& req)
         result["uri"] = uri;
         result["range"] = {{"start", start}, {"end", end}};
         make_response_(req, &result);
-    }else{
+    } else {
         make_response_(req, nullptr);
-	}
+    }
 }
