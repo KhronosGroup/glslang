@@ -153,7 +153,7 @@ void Protocol::goto_definition_(nlohmann::json& req)
     if (loc.name) {
         nlohmann::json result;
         nlohmann::json start = {{"line", loc.line - 1}, {"character", loc.column - 1}};
-        result["uri"] = uri;
+        result["uri"] = loc.name->c_str();
         result["range"] = {{"start", start}, {"end", start}};
         make_response_(req, &result);
     } else {

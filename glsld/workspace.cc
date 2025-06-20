@@ -26,6 +26,8 @@ glslang::TSourceLoc Workspace::locate_symbol_def(std::string const& uri, const i
     for (auto& node : nodes) {
         if (node.kind == Doc::LookupResult::Kind::SYMBOL) {
             return docs_[uri].locate_symbol_def(node.sym);
+        } else if (node.kind == Doc::LookupResult::Kind::FIELD) {
+            return node.field.loc;
         }
     }
 

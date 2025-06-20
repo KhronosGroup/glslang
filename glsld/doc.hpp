@@ -44,7 +44,7 @@ public:
     std::vector<glslang::TIntermSymbol*>& symbols() { return resource_->symbols; }
 
     struct LookupResult {
-        enum class Kind { SYMBOL, TYPE } kind;
+        enum class Kind { SYMBOL, FIELD, ERROR } kind;
         union {
             glslang::TIntermSymbol* sym;
             glslang::TTypeLoc field;

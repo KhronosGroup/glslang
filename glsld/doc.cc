@@ -346,6 +346,40 @@ bool Doc::parse(std::vector<std::string> const& include_dirs)
     return true;
 }
 
+static Doc::LookupResult lookup_binop(glslang::TIntermBinary* binary, const int line, const int col)
+{
+    if (binary->getOp() != glslang::EOpIndexDirectStruct) {
+        return {Doc::LookupResult::Kind::ERROR};
+    }
+
+    auto loc = binary->getLoc();
+    if (loc.line != line) {
+        return {Doc::LookupResult::Kind::ERROR};
+    }
+
+    auto* left = binary->getLeft();
+    auto* right = binary->getRight();
+    const auto rloc = right->getLoc();
+    const auto lloc = left->getLoc();
+
+    bool isref = left->getType().isReference();
+    const auto* members = isref ? left->getType().getReferentType()->getStruct() : left->getType().getStruct();
+    const auto index = right->getAsConstantUnion()->getConstArray()[0].getIConst();
+    const auto field = (*members)[index];
+
+    if (rloc.column <= col && col <= rloc.column + field.type->getFieldName().size()) {
+        return {Doc::LookupResult::Kind::FIELD, .field = field};
+    }
+
+    if (auto* left_sym = left->getAsSymbolNode()) {
+        if (lloc.line == line && lloc.column <= col && col <= lloc.column + left_sym->getName().size()) {
+            return {.kind = Doc::LookupResult::Kind::SYMBOL, .sym = left_sym};
+        }
+    }
+
+    return {Doc::LookupResult::Kind::ERROR};
+}
+
 std::vector<Doc::LookupResult> Doc::lookup_nodes_at(const int line, const int col)
 {
     std::vector<LookupResult> result;
@@ -362,21 +396,9 @@ std::vector<Doc::LookupResult> Doc::lookup_nodes_at(const int line, const int co
                 result.push_back({.kind = LookupResult::Kind::SYMBOL, .sym = sym});
             }
         } else if (auto binop = node->getAsBinaryNode()) {
-            if (binop->getOp() != glslang::EOpIndexDirectStruct) {
-                continue;
-            }
-
-            auto* left = binop->getLeft();
-            auto* right = binop->getRight();
-            const auto rloc = right->getLoc();
-
-            bool isref = left->getType().isReference();
-            const auto* members = isref ? left->getType().getReferentType()->getStruct() : left->getType().getStruct();
-            const auto index = right->getAsConstantUnion()->getConstArray()[0].getIConst();
-            const auto field = (*members)[index];
-            if (rloc.column <= col && col <= rloc.column + field.type->getFieldName().size()) {
-                result.push_back({.kind = LookupResult::Kind::TYPE, .field = field});
-            } else {
+            auto bin_result = lookup_binop(binop, line, col);
+            if (bin_result.kind != LookupResult::Kind::ERROR) {
+                result.push_back(bin_result);
             }
         }
     }
