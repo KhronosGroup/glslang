@@ -4,7 +4,7 @@
 int Protocol::handle(nlohmann::json& req)
 {
     nlohmann::json resp;
-    std::cerr << "start handle protocol req: " << req.dump(4) << std::endl;
+    std::cerr << "start handle protocol req: \n" << req.dump(4) << std::endl;
 
     std::string method = req["method"];
     if (method == "initialize") {

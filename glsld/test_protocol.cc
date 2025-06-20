@@ -29,7 +29,7 @@ int main(int argc, char* argv[])
     for (auto const& f : files) {
         std::ifstream ifs(f);
         nlohmann::json body = nlohmann::json::parse(ifs);
-		protocol.handle(body);
+        protocol.handle(body);
     }
 
     return 0;
