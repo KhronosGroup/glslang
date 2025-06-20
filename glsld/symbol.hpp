@@ -10,7 +10,7 @@ class Symbol {
         std::string mangled_name;
         SymbolType type = Symbol::SymbolType::UNKOWN;
         std::vector<glslang::TIntermSymbol*> uses;
-		glslang::TIntermSymbol* def;
+        glslang::TIntermSymbol* def;
         int ref = 1;
     };
 
@@ -24,13 +24,14 @@ public:
     Symbol(glslang::TIntermSymbol* interm);
     Symbol(const Symbol& rhs);
     Symbol& operator=(const Symbol& rhs);
-	Symbol& operator=(Symbol&&);
-	Symbol(Symbol&&);
+    Symbol& operator=(Symbol&&);
+    Symbol(Symbol&&);
     virtual ~Symbol();
 
     std::string const& name() const { return status_->name; }
     std::vector<glslang::TIntermSymbol*>& uses() { return status_->uses; }
     void add_uses(glslang::TIntermSymbol* sym);
+    glslang::TIntermSymbol* def() { return status_->def; }
     glslang::TSourceLoc loc() const { return status_->def->getLoc(); }
 };
 

@@ -137,10 +137,7 @@ static const TBuiltInResource kDefaultTBuiltInResource = {
         /*.generalConstantMatrixVectorIndexing = */ 1,
     }};
 
-Doc::Doc()
-{
-	resource_ = nullptr;
-}
+Doc::Doc() { resource_ = nullptr; }
 
 Doc::Doc(std::string const& uri, const int version, std::string const& text)
 {
@@ -220,7 +217,8 @@ public:
 
 bool Doc::parse(std::vector<std::string> const& include_dirs)
 {
-	if (!resource_) return false;
+    if (!resource_)
+        return false;
 
     auto& shader = *resource_->shader;
     std::string preambles;
@@ -312,4 +310,34 @@ bool Doc::parse(std::vector<std::string> const& include_dirs)
     }
 
     return true;
+}
+
+std::vector<glslang::TIntermSymbol*> Doc::locate_symbols_at(const int line, const int col)
+{
+    std::vector<glslang::TIntermSymbol*> result;
+    for (auto& [name, sym] : symbols()) {
+
+        for (auto* use : sym.uses()) {
+            auto loc = use->getLoc();
+            auto l = use->getName().length();
+            auto endcol = col + l;
+
+            if (line == loc.line && loc.column <= col && col <= endcol) {
+                result.push_back(use);
+            }
+        }
+    }
+
+    return result;
+}
+
+Symbol* Doc::locate_symbol_def(glslang::TIntermSymbol* use)
+{
+	for (auto& [name, sym]: symbols()){
+		if (sym.def()->getId() == use->getId()){
+			return &sym;
+		}
+	}
+
+	return nullptr;
 }

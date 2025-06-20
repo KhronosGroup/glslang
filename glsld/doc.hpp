@@ -40,5 +40,7 @@ public:
     void set_text(std::string const& text) { resource_->text = text; }
     void set_uri(std::string const& uri) { resource_->uri = uri; }
     std::map<std::string, Symbol>& symbols() { return resource_->symbols; }
+    std::vector<glslang::TIntermSymbol*> locate_symbols_at(const int line, const int col);
+	Symbol* locate_symbol_def(glslang::TIntermSymbol* use);
 };
 #endif

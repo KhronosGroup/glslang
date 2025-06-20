@@ -148,13 +148,13 @@ void Protocol::goto_definition_(nlohmann::json& req)
     int line = params["position"]["line"];
 
     std::cerr << "target sym at " << line << ":" << col << std::endl;
-    auto* sym = workspace_.find_symbol_by_use(uri, line + 1, col + 1);
+    auto def = workspace_.locate_symbol_def(uri, line + 1, col + 1);
 
-    if (sym) {
+    if (def) {
         nlohmann::json result;
-        auto loc = sym->loc();
+        auto loc = def->loc();
         nlohmann::json start = {{"line", loc.line - 1}, {"character", loc.column - 1}};
-        nlohmann::json end = {{"line", loc.line - 1}, {"character", loc.column - 1 + sym->name().size()}};
+        nlohmann::json end = {{"line", loc.line - 1}, {"character", loc.column - 1 + def->name().size()}};
         result["uri"] = uri;
         result["range"] = {{"start", start}, {"end", end}};
         make_response_(req, &result);
