@@ -15,6 +15,7 @@ class Doc {
         EShLanguage language;
         std::unique_ptr<glslang::TShader> shader;
         std::map<std::string, Symbol> symbols;
+		std::map<int, std::vector<TIntermNode*>> nodes_by_line;
         int ref = 1;
     };
 

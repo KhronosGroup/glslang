@@ -3,6 +3,7 @@
 #include "StandAlone/DirStackFileIncluder.h"
 #include <cstdio>
 #include <iostream>
+#include <map>
 #include <memory>
 #include <vector>
 
@@ -199,9 +200,23 @@ void Doc::release_()
 
 class AllTypesAndSymbolsVisitor_ : public glslang::TIntermTraverser {
 public:
-    std::vector<glslang::TIntermSymbol*> uses;
+    std::map<int, std::vector<TIntermNode*>> nodes_by_line;
     std::vector<glslang::TIntermSymbol*> defs;
-    void visitSymbol(glslang::TIntermSymbol* symbol) override { uses.push_back(symbol); }
+    void visitSymbol(glslang::TIntermSymbol* symbol) override
+    {
+        nodes_by_line[symbol->getLoc().line].push_back(symbol);
+    }
+
+    bool visitBinary(glslang::TVisit, glslang::TIntermBinary* node) override
+    {
+        if (node->getOp() == glslang::EOpIndexDirectStruct || node->getOp() == glslang::EOpIndexDirect ||
+            node->getOp() == glslang::EOpIndexIndirect) {
+            nodes_by_line[node->getLoc().line].push_back(node);
+        }
+        return true;
+    }
+
+    void visitConstantUnion(glslang::TIntermConstantUnion* node) override {}
 
     bool visitUnary(glslang::TVisit v, glslang::TIntermUnary* unary) override
     {
@@ -333,13 +348,13 @@ std::vector<glslang::TIntermSymbol*> Doc::locate_symbols_at(const int line, cons
 
 Symbol* Doc::locate_symbol_def(glslang::TIntermSymbol* target)
 {
-	for (auto& [name, sym]: symbols()){
-		for (auto* use: sym.uses()){
-			if (use == target){
-				return &sym;
-			}
-		}
-	}
+    for (auto& [name, sym] : symbols()) {
+        for (auto* use : sym.uses()) {
+            if (use == target) {
+                return &sym;
+            }
+        }
+    }
 
-	return nullptr;
+    return nullptr;
 }
