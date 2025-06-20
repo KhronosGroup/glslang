@@ -218,6 +218,24 @@ public:
         return true;
     }
 
+    bool visitAggregate(glslang::TVisit, glslang::TIntermAggregate* agg) override
+    {
+        if (agg->getOp() != glslang::EOpLinkerObjects) {
+            return true;
+        }
+
+        for (auto& obj : agg->getSequence()) {
+            auto sym = obj->getAsSymbolNode();
+            if (!sym)
+                continue;
+            auto loc = sym->getLoc();
+            if (!loc.name) // builtin
+                continue;
+            defs.push_back(sym);
+        }
+        return false;
+    }
+
     void visitConstantUnion(glslang::TIntermConstantUnion* node) override {}
 
     bool visitUnary(glslang::TVisit v, glslang::TIntermUnary* unary) override
