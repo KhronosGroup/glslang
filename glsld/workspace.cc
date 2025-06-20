@@ -32,8 +32,8 @@ Symbol* Workspace::locate_symbol_def(std::string const& uri, const int line, con
 {
     if (docs_.count(uri) <= 0)
         return nullptr;
-    auto uses = locate_symbol_at(uri, line, col);
 
+    auto uses = locate_symbol_at(uri, line, col);
     for (auto& use : uses) {
         auto def = docs_[uri].locate_symbol_def(use);
         if (def)

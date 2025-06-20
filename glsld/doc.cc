@@ -320,7 +320,7 @@ std::vector<glslang::TIntermSymbol*> Doc::locate_symbols_at(const int line, cons
         for (auto* use : sym.uses()) {
             auto loc = use->getLoc();
             auto l = use->getName().length();
-            auto endcol = col + l;
+            auto endcol = loc.column + l;
 
             if (line == loc.line && loc.column <= col && col <= endcol) {
                 result.push_back(use);
@@ -331,11 +331,13 @@ std::vector<glslang::TIntermSymbol*> Doc::locate_symbols_at(const int line, cons
     return result;
 }
 
-Symbol* Doc::locate_symbol_def(glslang::TIntermSymbol* use)
+Symbol* Doc::locate_symbol_def(glslang::TIntermSymbol* target)
 {
 	for (auto& [name, sym]: symbols()){
-		if (sym.def()->getId() == use->getId()){
-			return &sym;
+		for (auto* use: sym.uses()){
+			if (use == target){
+				return &sym;
+			}
 		}
 	}
 
