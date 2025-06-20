@@ -346,9 +346,9 @@ bool Doc::parse(std::vector<std::string> const& include_dirs)
     return true;
 }
 
-std::vector<glslang::TIntermSymbol*> Doc::locate_symbols_at(const int line, const int col)
+std::vector<Doc::LookupResult> Doc::lookup_nodes_at(const int line, const int col)
 {
-    std::vector<glslang::TIntermSymbol*> result;
+    std::vector<LookupResult> result;
     if (resource_->nodes_by_line.count(line) <= 0) {
         return result;
     }
@@ -359,7 +359,7 @@ std::vector<glslang::TIntermSymbol*> Doc::locate_symbols_at(const int line, cons
             auto loc = sym->getLoc();
             auto endcol = loc.column + sym->getName().length();
             if (line == loc.line && loc.column <= col && col <= endcol) {
-                result.push_back(sym);
+                result.push_back({.kind = LookupResult::Kind::SYMBOL, .sym = sym});
             }
         } else if (auto binop = node->getAsBinaryNode()) {
             if (binop->getOp() != glslang::EOpIndexDirectStruct) {
@@ -368,29 +368,28 @@ std::vector<glslang::TIntermSymbol*> Doc::locate_symbols_at(const int line, cons
 
             auto* left = binop->getLeft();
             auto* right = binop->getRight();
+            const auto rloc = right->getLoc();
 
             bool isref = left->getType().isReference();
             const auto* members = isref ? left->getType().getReferentType()->getStruct() : left->getType().getStruct();
-
-			const auto indices= right->getAsConstantUnion()->getConstArray();
-			if (auto s = left->getAsSymbolNode()){
-				std::cerr << "access struct " << s->getName();
-			}
-			for(auto i = 0; i < indices.size(); ++i){
-				glslang::TTypeLoc field= (*members)[indices[i].getIConst()];
-				std::cerr << field.type->getFieldName() << " at " << field.loc.line << field.loc.column << std::endl; 
-			}
+            const auto index = right->getAsConstantUnion()->getConstArray()[0].getIConst();
+            const auto field = (*members)[index];
+            if (rloc.column <= col && col <= rloc.column + field.type->getFieldName().size()) {
+                result.push_back({.kind = LookupResult::Kind::TYPE, .field = field});
+            } else {
+            }
         }
     }
 
     return result;
 }
 
-glslang::TIntermSymbol* Doc::locate_symbol_def(glslang::TIntermSymbol* target)
+glslang::TSourceLoc Doc::locate_symbol_def(glslang::TIntermSymbol* target)
 {
     if (resource_->defs.count(target->getId())) {
-        return resource_->defs[target->getId()];
+        auto def = resource_->defs[target->getId()];
+        return def->getLoc();
     }
 
-    return nullptr;
+    return {.name = nullptr, .line = 0, .column = 0};
 }

@@ -17,7 +17,7 @@ public:
     void add_doc(Doc&& doc);
     std::string const& get_root() const;
     void set_root(std::string const& root);
-	glslang::TIntermSymbol* locate_symbol_def(std::string const& uri, const int line, const int col);
-    std::vector<glslang::TIntermSymbol*> locate_symbol_at(std::string const& uri, const int line, const int col);
+	glslang::TSourceLoc locate_symbol_def(std::string const& uri, const int line, const int col);
+    std::vector<Doc::LookupResult> lookup_nodes_at(std::string const& uri, const int line, const int col);
 };
 #endif

@@ -42,7 +42,16 @@ public:
     void set_text(std::string const& text) { resource_->text = text; }
     void set_uri(std::string const& uri) { resource_->uri = uri; }
     std::vector<glslang::TIntermSymbol*>& symbols() { return resource_->symbols; }
-    std::vector<glslang::TIntermSymbol*> locate_symbols_at(const int line, const int col);
-    glslang::TIntermSymbol* locate_symbol_def(glslang::TIntermSymbol* use);
+
+    struct LookupResult {
+        enum class Kind { SYMBOL, TYPE } kind;
+        union {
+            glslang::TIntermSymbol* sym;
+            glslang::TTypeLoc field;
+        };
+    };
+
+    std::vector<LookupResult> lookup_nodes_at(const int line, const int col);
+    glslang::TSourceLoc locate_symbol_def(glslang::TIntermSymbol* use);
 };
 #endif
