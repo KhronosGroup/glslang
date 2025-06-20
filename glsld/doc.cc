@@ -1,6 +1,7 @@
 #include "doc.hpp"
 #include "../glslang/MachineIndependent/localintermediate.h"
 #include "StandAlone/DirStackFileIncluder.h"
+#include "glslang/Include/intermediate.h"
 #include <cstdio>
 #include <iostream>
 #include <map>
@@ -360,6 +361,25 @@ std::vector<glslang::TIntermSymbol*> Doc::locate_symbols_at(const int line, cons
             if (line == loc.line && loc.column <= col && col <= endcol) {
                 result.push_back(sym);
             }
+        } else if (auto binop = node->getAsBinaryNode()) {
+            if (binop->getOp() != glslang::EOpIndexDirectStruct) {
+                continue;
+            }
+
+            auto* left = binop->getLeft();
+            auto* right = binop->getRight();
+
+            bool isref = left->getType().isReference();
+            const auto* members = isref ? left->getType().getReferentType()->getStruct() : left->getType().getStruct();
+
+			const auto indices= right->getAsConstantUnion()->getConstArray();
+			if (auto s = left->getAsSymbolNode()){
+				std::cerr << "access struct " << s->getName();
+			}
+			for(auto i = 0; i < indices.size(); ++i){
+				glslang::TTypeLoc field= (*members)[indices[i].getIConst()];
+				std::cerr << field.type->getFieldName() << " at " << field.loc.line << field.loc.column << std::endl; 
+			}
         }
     }
 
