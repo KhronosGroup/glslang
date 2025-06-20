@@ -202,9 +202,11 @@ class AllTypesAndSymbolsVisitor_ : public glslang::TIntermTraverser {
 public:
     std::map<int, std::vector<TIntermNode*>> nodes_by_line;
     std::vector<glslang::TIntermSymbol*> defs;
+    std::vector<glslang::TIntermSymbol*> symbols;
     void visitSymbol(glslang::TIntermSymbol* symbol) override
     {
         nodes_by_line[symbol->getLoc().line].push_back(symbol);
+        symbols.push_back(symbol);
     }
 
     bool visitBinary(glslang::TVisit, glslang::TIntermBinary* node) override
@@ -302,27 +304,25 @@ bool Doc::parse(std::vector<std::string> const& include_dirs)
     AllTypesAndSymbolsVisitor_ visitor;
     interm->getTreeRoot()->traverse(&visitor);
 
-    auto& table = resource_->symbols;
-
     for (auto& s : visitor.defs) {
-        auto const& name = s->getName();
         auto loc = s->getLoc();
         fprintf(stderr, "symbol %s define at %s:%d:%d\n", s->getName().c_str(), loc.getFilename(), loc.line,
                 loc.column);
-        table[name.c_str()] = Symbol(s);
+        resource_->defs[s->getId()] = s;
     }
 
-    for (auto& s : visitor.uses) {
+    for (auto& s : visitor.symbols) {
         std::string name = s->getName().c_str();
         auto loc = s->getLoc();
         fprintf(stderr, "symbol %s use at %s:%d:%d\n", s->getName().c_str(), loc.getFilename(), loc.line, loc.column);
-        if (table.count(name) > 0) {
-            auto& symbol = table[name];
-            symbol.add_uses(s);
+        if (resource_->defs.count(s->getId()) > 0) {
+            resource_->symbols.push_back(s);
         } else {
             fprintf(stderr, "found symbol %s use but not defined.\n", name.c_str());
         }
     }
+
+    resource_->nodes_by_line.swap(visitor.nodes_by_line);
 
     return true;
 }
@@ -330,15 +330,17 @@ bool Doc::parse(std::vector<std::string> const& include_dirs)
 std::vector<glslang::TIntermSymbol*> Doc::locate_symbols_at(const int line, const int col)
 {
     std::vector<glslang::TIntermSymbol*> result;
-    for (auto& [name, sym] : symbols()) {
+    if (resource_->nodes_by_line.count(line) <= 0) {
+        return result;
+    }
 
-        for (auto* use : sym.uses()) {
-            auto loc = use->getLoc();
-            auto l = use->getName().length();
-            auto endcol = loc.column + l;
-
+    auto& nodes = resource_->nodes_by_line[line];
+    for (auto* node : nodes) {
+        if (auto sym = node->getAsSymbolNode()) {
+            auto loc = sym->getLoc();
+            auto endcol = loc.column + sym->getName().length();
             if (line == loc.line && loc.column <= col && col <= endcol) {
-                result.push_back(use);
+                result.push_back(sym);
             }
         }
     }
@@ -346,14 +348,10 @@ std::vector<glslang::TIntermSymbol*> Doc::locate_symbols_at(const int line, cons
     return result;
 }
 
-Symbol* Doc::locate_symbol_def(glslang::TIntermSymbol* target)
+glslang::TIntermSymbol* Doc::locate_symbol_def(glslang::TIntermSymbol* target)
 {
-    for (auto& [name, sym] : symbols()) {
-        for (auto* use : sym.uses()) {
-            if (use == target) {
-                return &sym;
-            }
-        }
+    if (resource_->defs.count(target->getId())) {
+        return resource_->defs[target->getId()];
     }
 
     return nullptr;

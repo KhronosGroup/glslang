@@ -1,7 +1,7 @@
 #ifndef __GLSLD_DOC_HPP__
 #define __GLSLD_DOC_HPP__
+#include "../glslang/MachineIndependent/localintermediate.h"
 #include "../glslang/Public/ShaderLang.h"
-#include "symbol.hpp"
 #include <map>
 #include <memory>
 #include <string>
@@ -14,8 +14,9 @@ class Doc {
         std::string text;
         EShLanguage language;
         std::unique_ptr<glslang::TShader> shader;
-        std::map<std::string, Symbol> symbols;
-		std::map<int, std::vector<TIntermNode*>> nodes_by_line;
+        std::map<int, std::vector<TIntermNode*>> nodes_by_line;
+        std::map<long long, glslang::TIntermSymbol*> defs;
+        std::vector<glslang::TIntermSymbol*> symbols;
         int ref = 1;
     };
 
@@ -40,8 +41,8 @@ public:
     void set_version(const int version) { resource_->version = version; }
     void set_text(std::string const& text) { resource_->text = text; }
     void set_uri(std::string const& uri) { resource_->uri = uri; }
-    std::map<std::string, Symbol>& symbols() { return resource_->symbols; }
+    std::vector<glslang::TIntermSymbol*>& symbols() { return resource_->symbols; }
     std::vector<glslang::TIntermSymbol*> locate_symbols_at(const int line, const int col);
-	Symbol* locate_symbol_def(glslang::TIntermSymbol* use);
+    glslang::TIntermSymbol* locate_symbol_def(glslang::TIntermSymbol* use);
 };
 #endif

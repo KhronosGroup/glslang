@@ -152,9 +152,9 @@ void Protocol::goto_definition_(nlohmann::json& req)
 
     if (def) {
         nlohmann::json result;
-        auto loc = def->loc();
+        auto loc = def->getLoc();
         nlohmann::json start = {{"line", loc.line - 1}, {"character", loc.column - 1}};
-        nlohmann::json end = {{"line", loc.line - 1}, {"character", loc.column - 1 + def->name().size()}};
+        nlohmann::json end = {{"line", loc.line - 1}, {"character", loc.column - 1 + def->getName().size()}};
         result["uri"] = uri;
         result["range"] = {{"start", start}, {"end", end}};
         make_response_(req, &result);
