@@ -141,6 +141,8 @@ static const TBuiltInResource kDefaultTBuiltInResource = {
 
 Doc::Doc() { resource_ = nullptr; }
 
+Doc::~Doc() { release_(); }
+
 Doc::Doc(std::string const& uri, const int version, std::string const& text)
 {
     resource_ = new __Resource;
@@ -179,6 +181,7 @@ Doc& Doc::operator=(Doc&& rhs)
 {
     release_();
     resource_ = rhs.resource_;
+    rhs.resource_ = nullptr;
     return *this;
 }
 
@@ -273,7 +276,6 @@ bool Doc::parse(std::vector<std::string> const& include_dirs)
 
     bool auto_bind_uniforms_ = false;
     auto auto_combined_image_sampler_ = false;
-    auto auto_map_locations_ = false;
 
     shader.setAutoMapBindings(auto_bind_uniforms_);
     if (auto_combined_image_sampler_) {

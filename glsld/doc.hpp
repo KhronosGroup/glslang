@@ -31,6 +31,7 @@ public:
     Doc(Doc&& rhs);
     Doc& operator=(const Doc& doc);
     Doc& operator=(Doc&& doc);
+    virtual ~Doc();
 
     bool parse(std::vector<std::string> const& include_dirs);
 
