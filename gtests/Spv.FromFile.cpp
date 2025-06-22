@@ -795,8 +795,10 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.1.6.nontemporalimage.frag",
         "spv.noexplicitlayout.comp",
         "spv.floate4m3.comp",
+        "spv.floate4m3.const.comp",
         "spv.floate4m3_error.comp",
         "spv.floate5m2.comp",
+        "spv.floate5m2.const.comp",
         "spv.floate5m2_error.comp",
     })),
     FileNameAsCustomTestSuffix
