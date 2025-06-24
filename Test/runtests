@@ -82,14 +82,16 @@ diff -b $BASEDIR/hlsl.automap.frag.out "$TARGETDIR/hlsl.automap.frag.out" || HAS
 # multi-threaded test
 #
 echo Comparing single thread to multithread for all tests in current directory...
-run -i -C *.vert *.geom *.frag *.tesc *.tese *.comp > "$TARGETDIR/singleThread.out"
-run -i -C *.vert *.geom *.frag *.tesc *.tese *.comp -t > "$TARGETDIR/multiThread.out"
-diff "$TARGETDIR/singleThread.out" "$TARGETDIR/multiThread.out" || HASERROR=1
-if [ $HASERROR -eq 0 ]
-then
-    rm "$TARGETDIR/singleThread.out"
-    rm "$TARGETDIR/multiThread.out"
-fi
+for stage in vert frag geom tesc tese comp; do
+    run -i -C *.$stage > "$TARGETDIR/$stage.singleThread.out"
+    run -i -C *.$stage -t > "$TARGETDIR/$stage.multiThread.out"
+    diff "$TARGETDIR/$stage.singleThread.out" "$TARGETDIR/$stage.multiThread.out" || HASERROR=1
+    if [ $HASERROR -eq 0 ]
+    then
+        rm "$TARGETDIR/$stage.singleThread.out"
+        rm "$TARGETDIR/$stage.multiThread.out"
+    fi
+done
 
 #
 # entry point renaming tests
