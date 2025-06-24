@@ -293,6 +293,7 @@ const char* const E_GL_NV_gpu_shader5                           = "GL_NV_gpu_sha
 
 // ARM
 const char* const E_GL_ARM_shader_core_builtins                 = "GL_ARM_shader_core_builtins";
+const char* const E_GL_ARM_tensors                              = "GL_ARM_tensors";
 
 // Arrays of extensions for the above viewportEXTs duplications
 

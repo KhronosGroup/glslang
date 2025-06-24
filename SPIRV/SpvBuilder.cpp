@@ -652,6 +652,26 @@ Id Builder::makeCooperativeVectorTypeNV(Id componentType, Id components)
     return type->getResultId();
 }
 
+Id Builder::makeTensorTypeARM(Id elementType, Id rank)
+{
+    // See if an OpTypeTensorARM with same element type and rank already exists.
+    for (int t = 0; t < (int)groupedTypes[enumCast(Op::OpTypeTensorARM)].size(); ++t) {
+        const Instruction *type = groupedTypes[enumCast(Op::OpTypeTensorARM)][t];
+        if (type->getIdOperand(0) == elementType && type->getIdOperand(1) == rank)
+            return type->getResultId();
+    }
+
+    // Not found, make it.
+    std::unique_ptr<Instruction> type(new Instruction(getUniqueId(), NoType, Op::OpTypeTensorARM));
+    type->addIdOperand(elementType);
+    type->addIdOperand(rank);
+    groupedTypes[enumCast(Op::OpTypeTensorARM)].push_back(type.get());
+    module.mapInstruction(type.get());
+    Id resultID = type->getResultId();
+    constantsTypesGlobals.push_back(std::move(type));
+    return resultID;
+}
+
 Id Builder::makeGenericType(spv::Op opcode, std::vector<spv::IdImmediate>& operands)
 {
     // try to find it

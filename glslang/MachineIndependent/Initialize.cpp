@@ -4937,6 +4937,29 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "tensorViewNV setTensorViewClipNV(tensorViewNV v, uint clipRowOffset, uint clipRowSpan, uint clipColOffset, uint clipColSpan);\n"
             "\n"
         );
+
+        // GL_ARM_tensors builtins.
+        static const char *tensorDataTypesARM[] = {
+            "bool",
+            "int8_t", "int16_t", "int32_t", "int64_t",
+            "uint8_t", "uint16_t", "uint32_t", "uint64_t",
+            "float16_t", "float32_t", "float64_t",
+        };
+        std::ostringstream ostream;
+        for (auto t : tensorDataTypesARM) {
+            // Scalar
+            ostream << "void tensorReadARM(readonly tensorARM t, uint coords[], out "
+                    << t << " data, uint tensorOperands = 0U, ...);\n";
+            ostream << "void tensorWriteARM(writeonly tensorARM t, uint coords[], "
+                    << t << " data, uint tensorOperands = 0U, ...);\n";
+            // Array
+            ostream << "void tensorReadARM(readonly tensorARM t, uint coords[], "
+                    << t << " data[], uint tensorOperands = 0U, ...);\n";
+            ostream << "void tensorWriteARM(writeonly tensorARM t, uint coords[], "
+                    << t << " data[], uint tensorOperands = 0U, ...);\n";
+        }
+        ostream << "uint tensorSizeARM(readonly writeonly tensorARM t, uint dim);\n";
+        commonBuiltins.append(ostream.str());
     }
 
     if (profile != EEsProfile && version >= 450) {
@@ -8328,6 +8351,12 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
         snprintf(builtInConstant, maxSize, "const int gl_MaxComputeTextureImageUnits = %d;", resources.maxComputeTextureImageUnits);
         s.append(builtInConstant);
 
+        // GL_ARM_tensors operands.
+        snprintf(builtInConstant, maxSize, "const uint gl_TensorOperandsNonTemporalARM = 0x1U;");
+        s.append(builtInConstant);
+        snprintf(builtInConstant, maxSize, "const uint gl_TensorOperandsOutOfBoundsValueARM = 0x2U;");
+        s.append(builtInConstant);
+
         s.append("\n");
     }
 
@@ -9750,6 +9779,12 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         }
 
         {
+            symbolTable.setFunctionExtensions("tensorReadARM",   1, &E_GL_ARM_tensors);
+            symbolTable.setFunctionExtensions("tensorWriteARM",  1, &E_GL_ARM_tensors);
+            symbolTable.setFunctionExtensions("tensorSizeARM",   1, &E_GL_ARM_tensors);
+        }
+
+        {
             symbolTable.setFunctionExtensions("coopVecMatMulNV",                    1, &E_GL_NV_cooperative_vector);
             symbolTable.setFunctionExtensions("coopVecMatMulAddNV",                 1, &E_GL_NV_cooperative_vector);
             symbolTable.setFunctionExtensions("coopVecOuterProductAccumulateNV",    1, &E_GL_NV_cooperative_vector);
@@ -11064,6 +11099,10 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         symbolTable.relateToOperator("setTensorViewDimensionsNV",    EOpTensorViewSetDimensionNV);
         symbolTable.relateToOperator("setTensorViewStrideNV",        EOpTensorViewSetStrideNV);
         symbolTable.relateToOperator("setTensorViewClipNV",          EOpTensorViewSetClipNV);
+
+        symbolTable.relateToOperator("tensorReadARM",                EOpTensorReadARM);
+        symbolTable.relateToOperator("tensorWriteARM",               EOpTensorWriteARM);
+        symbolTable.relateToOperator("tensorSizeARM",                EOpTensorSizeARM);
 
         if (profile != EEsProfile && version >= 460) {
             symbolTable.relateToOperator("fetchMicroTriangleVertexPositionNV", EOpFetchMicroTriangleVertexPositionNV);

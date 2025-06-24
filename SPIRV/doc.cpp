@@ -1080,6 +1080,7 @@ const char* CapabilityString(int info)
     case (int)Capability::TileImageStencilReadAccessEXT:         return "TileImageStencilReadAccessEXT";
 
     case (int)Capability::CooperativeMatrixLayoutsARM:             return "CooperativeMatrixLayoutsARM";
+    case (int)Capability::TensorsARM:                              return "TensorsARM";
 
     case (int)Capability::FragmentShadingRateKHR:                  return "FragmentShadingRateKHR";
 
@@ -1626,6 +1627,11 @@ const char* OpcodeString(int op)
     case (int)Op::OpTensorViewSetStrideNV:           return "OpTensorViewSetStrideNV";
     case (int)Op::OpTensorViewSetClipNV:             return "OpTensorViewSetClipNV";
 
+    case (int)Op::OpTypeTensorARM:                   return "OpTypeTensorARM";
+    case (int)Op::OpTensorReadARM:                   return "OpTensorReadARM";
+    case (int)Op::OpTensorWriteARM:                  return "OpTensorWriteARM";
+    case (int)Op::OpTensorQuerySizeARM:              return "OpTensorQuerySizeARM";
+
     case (int)Op::OpTypeCooperativeVectorNV:         return "OpTypeCooperativeVectorNV";
     case (int)Op::OpCooperativeVectorMatrixMulNV:    return "OpCooperativeVectorMatrixMulNV";
     case (int)Op::OpCooperativeVectorMatrixMulAddNV: return "OpCooperativeVectorMatrixMulAddNV";
@@ -1832,6 +1838,10 @@ void Parameterize()
         InstructionDesc[enumCast(Op::OpCooperativeVectorStoreNV)].setResultAndType(false, false);
         InstructionDesc[enumCast(Op::OpCooperativeVectorOuterProductAccumulateNV)].setResultAndType(false, false);
         InstructionDesc[enumCast(Op::OpCooperativeVectorReduceSumAccumulateNV)].setResultAndType(false, false);
+
+        InstructionDesc[enumCast(Op::OpTypeTensorARM)].setResultAndType(true, false);
+        InstructionDesc[enumCast(Op::OpTensorReadARM)].setResultAndType(true, true);
+        InstructionDesc[enumCast(Op::OpTensorWriteARM)].setResultAndType(false, false);
 
         // Specific additional context-dependent operands
 
@@ -3805,6 +3815,24 @@ void Parameterize()
         InstructionDesc[enumCast(Op::OpSUDotAccSatKHR)].operands.push(OperandId, "'Vector2'");
         InstructionDesc[enumCast(Op::OpSUDotAccSatKHR)].operands.push(OperandId, "'Accumulator'");
         InstructionDesc[enumCast(Op::OpSUDotAccSatKHR)].operands.push(OperandLiteralNumber, "'PackedVectorFormat'");
+
+        InstructionDesc[enumCast(Op::OpTypeTensorARM)].operands.push(OperandId, "'Element Type'");
+        InstructionDesc[enumCast(Op::OpTypeTensorARM)].operands.push(OperandId, "'Rank'");
+
+        InstructionDesc[enumCast(Op::OpTensorReadARM)].operands.push(OperandId, "'Tensor'");
+        InstructionDesc[enumCast(Op::OpTensorReadARM)].operands.push(OperandId, "'Coordinate'");
+        InstructionDesc[enumCast(Op::OpTensorReadARM)].operands.push(OperandLiteralNumber, "'Tensor Operand'", true);
+        InstructionDesc[enumCast(Op::OpTensorReadARM)].operands.push(OperandVariableIds, "'Tensor Operands'");
+
+        InstructionDesc[enumCast(Op::OpTensorWriteARM)].operands.push(OperandId, "'Tensor'");
+        InstructionDesc[enumCast(Op::OpTensorWriteARM)].operands.push(OperandId, "'Coordinate'");
+        InstructionDesc[enumCast(Op::OpTensorWriteARM)].operands.push(OperandId, "'Object'");
+        InstructionDesc[enumCast(Op::OpTensorWriteARM)].operands.push(OperandLiteralNumber, "'Tensor Operand'", true);
+        InstructionDesc[enumCast(Op::OpTensorWriteARM)].operands.push(OperandVariableIds, "'Tensor Operands'");
+
+        InstructionDesc[enumCast(Op::OpTensorQuerySizeARM)].operands.push(OperandId, "'Tensor'");
+        InstructionDesc[enumCast(Op::OpTensorQuerySizeARM)].operands.push(OperandId, "'Dimension'", true);
+
     });
 }
 

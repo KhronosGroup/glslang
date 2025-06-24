@@ -2103,7 +2103,7 @@ void TParseContext::addInputArgumentConversions(const TFunction& function, TInte
         TIntermTyped* arg = function.getParamCount() == 1 ? arguments->getAsTyped() : (aggregate ? aggregate->getSequence()[i]->getAsTyped() : arguments->getAsTyped());
         if (*function[i].type != arg->getType()) {
             if (function[i].type->getQualifier().isParamInput() &&
-               !function[i].type->isCoopMat()) {
+               !function[i].type->isCoopMat() && !function[i].type->isTensorARM()) {
                 // In-qualified arguments just need an extra node added above the argument to
                 // convert to the correct type.
                 arg = intermediate.addConversion(EOpFunctionCall, *function[i].type, arg);
@@ -3200,6 +3200,76 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
         }
         break;
     }
+    case EOpTensorReadARM:
+    case EOpTensorWriteARM:
+    {
+        const TType &tensorType = (*argp)[0]->getAsTyped()->getType();
+
+        // Check that coordinates argument length matches rank of tensor argument.
+        int tensorRank = tensorType.getTensorRankARM();
+        const TArraySizes *coordArgArrayTy = (*argp)[1]->getAsTyped()->getType().getArraySizes();
+        assert(coordArgArrayTy->getNumDims() == 1 && "expecting 1D coordinate array");
+        if (coordArgArrayTy->getDimSize(0) != tensorRank) {
+            error(loc, "number of coordinates does not match tensor rank", "coord", "");
+        }
+
+        // Check that tensor element type matches data argument.
+        TBasicType eltTy = tensorType.getBasicType();
+        TBasicType argTy = (*argp)[2]->getAsTyped()->getType().getBasicType();
+        if (eltTy != argTy) {
+            error(loc, "", "data", "data argument type (%s) does not match tensor element type (%s)",
+                  TType::getBasicString(argTy), TType::getBasicString(eltTy));
+        }
+
+        // Check optional tensor operands.
+        if (argp->size() > 3) {
+            const TIntermConstantUnion* opArg = (*argp)[3]->getAsConstantUnion();
+            if (!opArg) {
+                error(loc, "tensor operands argument must be a constant integral expression", "tensorOps", "");
+            }
+            const unsigned int ops = opArg ? opArg->getConstArray()[0].getUConst() : 0;
+            const int gl_TensorOperandsOutOfBoundsValueARM = 0x2;
+            if (ops & gl_TensorOperandsOutOfBoundsValueARM) {
+                // Out-of-bounds values can only be used with reads.
+                if (callNode.getOp() != EOpTensorReadARM) {
+                    error(loc, "out-of-bounds value is only valid with tensorReadARM", "tensorOps", "");
+                }
+                // Check that an out-of-bounds value is present.
+                if (argp->size() == 4) {
+                    error(loc, "expecting out-of-bounds value as next argument", "tensorOps", "");
+                } else {
+                    // Check constantness of out-of-bounds value.
+                    const TIntermConstantUnion* oobArg = (*argp)[4]->getAsConstantUnion();
+                    if (!oobArg) {
+                        error(loc, "argument following gl_TensorOperandsOutOfBoundsValueARM must be constant", "vararg",
+                              "");
+                    } else if (oobArg->getType().getBasicType() != tensorType.getBasicType()) {
+                        // The type of the OOB value does not match the tensor type.
+                        error(loc, "", "vararg",
+                            "out-of-bounds value type (%s) does not match tensor element type (%s)",
+                            TType::getBasicString(oobArg->getBasicType()), TType::getBasicString(eltTy));
+
+                    }
+                }
+            }
+        }
+        break;
+    }
+
+    case EOpTensorSizeARM:
+    {
+        unsigned int tensorRank = (*argp)[0]->getAsTyped()->getType().getTensorRankARM();
+        const TIntermConstantUnion *dimArg = (*argp)[1]->getAsConstantUnion();
+        if (dimArg) {
+            if (dimArg->getConstArray()[0].getUConst() >= tensorRank) {
+                error(loc, "dimension argument exceeds tensor rank", "dim", "");
+            }
+        } else {
+            error(loc, "dimension argument must be constant", "dim", "");
+        }
+        break;
+    }
+
     default:
         break;
     }
@@ -4320,6 +4390,9 @@ void TParseContext::samplerCheck(const TSourceLoc& loc, const TType& type, const
                  error(loc, "sampler/image types can only be used in uniform variables or function parameters:", type.getBasicTypeString().c_str(), identifier.c_str());
         }
     }
+    else if (type.isTensorARM() && type.getQualifier().storage != EvqUniform) {
+        error(loc, "tensorARM types can only be used in uniform variables or function parameters:", "tensorARM", identifier.c_str());
+    }
 }
 
 void TParseContext::atomicUintCheck(const TSourceLoc& loc, const TType& type, const TString& identifier)
@@ -4476,7 +4549,7 @@ void TParseContext::globalQualifierTypeCheck(const TSourceLoc& loc, const TQuali
     if (! symbolTable.atGlobalLevel())
         return;
 
-    if (!(publicType.userDef && publicType.userDef->isReference()) && !parsingBuiltins) {
+    if (!(publicType.userDef && publicType.userDef->isReference()) && !publicType.isTensorARM() && !parsingBuiltins) {
         if (qualifier.isMemoryQualifierImageAndSSBOOnly() && ! publicType.isImage() && publicType.qualifier.storage != EvqBuffer) {
             error(loc, "memory qualifiers cannot be used on this type", "", "");
         } else if (qualifier.isMemory() && (publicType.basicType != EbtSampler) && !publicType.qualifier.isUniformOrBuffer()) {
@@ -4827,7 +4900,7 @@ TPrecisionQualifier TParseContext::getDefaultPrecision(TPublicType& publicType)
         return defaultPrecision[publicType.basicType];
 }
 
-void TParseContext::precisionQualifierCheck(const TSourceLoc& loc, TBasicType baseType, TQualifier& qualifier, bool isCoopMatOrVec)
+void TParseContext::precisionQualifierCheck(const TSourceLoc& loc, TBasicType baseType, TQualifier& qualifier, bool hasTypeParameter)
 {
     // Built-in symbols are allowed some ambiguous precisions, to be pinned down
     // later by context.
@@ -4837,7 +4910,7 @@ void TParseContext::precisionQualifierCheck(const TSourceLoc& loc, TBasicType ba
     if (baseType == EbtAtomicUint && qualifier.precision != EpqNone && qualifier.precision != EpqHigh)
         error(loc, "atomic counters can only be highp", "atomic_uint", "");
 
-    if (isCoopMatOrVec)
+    if (hasTypeParameter)
         return;
 
     if (baseType == EbtFloat || baseType == EbtUint || baseType == EbtInt || baseType == EbtSampler || baseType == EbtAtomicUint) {
@@ -7755,6 +7828,8 @@ const TFunction* TParseContext::findFunction400(const TSourceLoc& loc, const TFu
             return from.sameCoopMatBaseType(to);
         if (from.isCoopVecNV() && to.isCoopVecNV())
             return from.sameCoopVecBaseType(to);
+        if (from.isTensorARM() && to.isTensorARM())
+            return from.sameTensorBaseTypeARM(to);
         return intermediate.canImplicitlyPromote(from.getBasicType(), to.getBasicType());
     };
 
@@ -7867,6 +7942,8 @@ const TFunction* TParseContext::findFunctionExplicitTypes(const TSourceLoc& loc,
             return from.sameCoopMatBaseType(to);
         if (from.isCoopVecNV() && to.isCoopVecNV())
             return from.sameCoopVecBaseType(to);
+        if (from.isTensorARM() && to.isTensorARM())
+            return from.sameTensorBaseTypeARM(to);
         return intermediate.canImplicitlyPromote(from.getBasicType(), to.getBasicType());
     };
 
@@ -8071,6 +8148,24 @@ void TParseContext::typeParametersCheck(const TSourceLoc& loc, const TPublicType
                 publicType.typeParameters->arraySizes->addInnerSize(dim);
                 numDims++;
             }
+        }
+    }
+    if (publicType.isTensorARM()) {
+        if (publicType.typeParameters == nullptr) {
+            error(loc, "tensor type is missing type parameters", "", "");
+            return;
+        }
+        if (publicType.typeParameters->arraySizes == nullptr) {
+            error(loc, "tensor type is missing rank information", "", "");
+            return;
+        }
+        if (publicType.typeParameters->arraySizes->getNumDims() != 1) {
+            error(loc, "tensor type requires exactly 1 rank specifier", "", "");
+            return;
+        }
+        if (publicType.typeParameters->arraySizes->getDimSize(0) < 1) {
+            error(loc, "tensor rank must be greater than or equal to 1", "", "");
+            return;
         }
     }
 }
@@ -8494,6 +8589,29 @@ TIntermNode* TParseContext::declareVariable(const TSourceLoc& loc, TString& iden
             error(loc, "expected two type parameters", identifier.c_str(), "");
         } else if (publicType.typeParameters->arraySizes->getDimSize(0) <= 0) {
             error(loc, "expected positive number of components", identifier.c_str(), "");
+        }
+    } else if (type.isTensorARM()) {
+        intermediate.setUseStorageBuffer();
+
+        if (!publicType.typeParameters || publicType.typeParameters->arraySizes->getNumDims() != 1) {
+            error(loc, "expected two type parameters", identifier.c_str(), "");
+        }
+        if (publicType.typeParameters) {
+            if (publicType.typeParameters->basicType != EbtBool &&
+                publicType.typeParameters->basicType != EbtInt8 &&
+                publicType.typeParameters->basicType != EbtInt16 &&
+                publicType.typeParameters->basicType != EbtInt &&
+                publicType.typeParameters->basicType != EbtInt64 &&
+                publicType.typeParameters->basicType != EbtUint8 &&
+                publicType.typeParameters->basicType != EbtUint16 &&
+                publicType.typeParameters->basicType != EbtUint &&
+                publicType.typeParameters->basicType != EbtUint64 &&
+                publicType.typeParameters->basicType != EbtFloat16 &&
+                publicType.typeParameters->basicType != EbtFloat &&
+                publicType.typeParameters->basicType != EbtDouble) {
+                error(loc, "expected bool, integer or floating point type parameter", identifier.c_str(), "");
+            }
+
         }
     } else {
         if (publicType.typeParameters && publicType.typeParameters->arraySizes->getNumDims() != 0) {

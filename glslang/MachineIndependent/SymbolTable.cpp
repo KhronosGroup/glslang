@@ -55,7 +55,9 @@ namespace glslang {
 //
 void TType::buildMangledName(TString& mangledName) const
 {
-    if (isMatrix())
+    if (isTensorARM())
+        mangledName += 'T';
+    else if (isMatrix())
         mangledName += 'm';
     else if (isVector())
         mangledName += 'v';

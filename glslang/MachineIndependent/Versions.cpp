@@ -319,6 +319,7 @@ void TParseVersions::initializeExtensionBehavior()
 
     // ARM
     extensionBehavior[E_GL_ARM_shader_core_builtins]                 = EBhDisable;
+    extensionBehavior[E_GL_ARM_tensors]                              = EBhDisable;
 
     // QCOM
     extensionBehavior[E_GL_QCOM_image_processing]                    = EBhDisable;
@@ -1483,6 +1484,14 @@ void TParseVersions::intattachmentCheck(const TSourceLoc& loc, const char* op, b
 {
     if (!builtIn) {
         const char* const extensions[] = {E_GL_QCOM_tile_shading};
+        requireExtensions(loc, sizeof(extensions)/sizeof(extensions[0]), extensions, op);
+    }
+}
+
+void TParseVersions::tensorCheckARM(const TSourceLoc& loc, const char* op, bool builtIn)
+{
+    if (!builtIn) {
+        const char* const extensions[] = {E_GL_ARM_tensors};
         requireExtensions(loc, sizeof(extensions)/sizeof(extensions[0]), extensions, op);
     }
 }

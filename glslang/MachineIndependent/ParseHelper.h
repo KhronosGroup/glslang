@@ -407,7 +407,7 @@ public:
     void setDefaultPrecision(const TSourceLoc&, TPublicType&, TPrecisionQualifier);
     int computeSamplerTypeIndex(TSampler&);
     TPrecisionQualifier getDefaultPrecision(TPublicType&);
-    void precisionQualifierCheck(const TSourceLoc&, TBasicType, TQualifier&, bool isCoopMatOrVec);
+    void precisionQualifierCheck(const TSourceLoc&, TBasicType, TQualifier&, bool hasTypeParameter);
     void parameterTypeCheck(const TSourceLoc&, TStorageQualifier qualifier, const TType& type);
     bool containsFieldWithBasicType(const TType& type ,TBasicType basicType);
     TSymbol* redeclareBuiltinVariable(const TSourceLoc&, const TString&, const TQualifier&, const TShaderQualifiers&);

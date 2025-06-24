@@ -983,6 +983,10 @@ bool TOutputTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node
     case EOpCooperativeVectorOuterProductAccumulateNV: out.debug << "Cooperative vector outer product accumulate NV"; break;
     case EOpCooperativeVectorReduceSumAccumulateNV: out.debug << "Cooperative vector reduce sum accumulate NV"; break;
 
+    case EOpTensorReadARM:   out.debug << "Read from tensor";  break;
+    case EOpTensorWriteARM:  out.debug << "Write to tensor";  break;
+    case EOpTensorSizeARM:   out.debug << "Get tensor size";  break;
+
     case EOpIsHelperInvocation: out.debug << "IsHelperInvocation"; break;
     case EOpDebugPrintf:  out.debug << "Debug printf";  break;
 
