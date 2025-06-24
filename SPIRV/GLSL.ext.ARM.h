@@ -28,9 +28,10 @@
 #define GLSLextARM_H
 
 static const int GLSLextARMVersion = 100;
-static const int GLSLextARMRevision = 1;
+static const int GLSLextARMRevision = 2;
 
 static const char* const E_SPV_ARM_core_builtins = "SPV_ARM_core_builtins";
 static const char* const E_SPV_ARM_cooperative_matrix_layouts = "SPV_ARM_cooperative_matrix_layouts";
+static const char* const E_SPV_ARM_tensors = "SPV_ARM_tensors";
 
 #endif  // #ifndef GLSLextARM_H

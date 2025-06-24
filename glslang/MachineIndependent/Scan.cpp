@@ -769,6 +769,8 @@ const std::unordered_map<const char*, int, str_hash, str_eq> KeywordMap {
     {"hitObjectNV",HITOBJECTNV},
     {"hitObjectAttributeNV",HITOBJECTATTRNV},
 
+    {"tensorARM",TENSORARM},
+
     {"__function",FUNCTION},
     {"tensorLayoutNV",TENSORLAYOUTNV},
     {"tensorViewNV",TENSORVIEWNV},
@@ -1854,6 +1856,12 @@ int TScanContext::tokenizeIdentifier()
         afterType = true;
         if (parseContext.symbolTable.atBuiltInLevel() ||
             parseContext.extensionTurnedOn(E_GL_NV_integer_cooperative_matrix))
+            return keyword;
+        return identifierOrType();
+    case TENSORARM:
+        afterType = true;
+        if (parseContext.symbolTable.atBuiltInLevel() ||
+            parseContext.extensionTurnedOn(E_GL_ARM_tensors))
             return keyword;
         return identifierOrType();
 

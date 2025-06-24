@@ -479,6 +479,10 @@ enum TOperator {
     EOpCooperativeVectorOuterProductAccumulateNV,
     EOpCooperativeVectorReduceSumAccumulateNV,
 
+    EOpTensorReadARM,
+    EOpTensorWriteARM,
+    EOpTensorSizeARM,
+
     EOpBeginInvocationInterlock, // Fragment only
     EOpEndInvocationInterlock, // Fragment only
 
@@ -1104,6 +1108,7 @@ public:
     virtual int getVectorSize() const { return type.getVectorSize(); }
     virtual int getMatrixCols() const { return type.getMatrixCols(); }
     virtual int getMatrixRows() const { return type.getMatrixRows(); }
+    virtual int getTensorRankARM() const { return type.getTensorRankARM(); }
     virtual bool isMatrix() const { return type.isMatrix(); }
     virtual bool isArray()  const { return type.isArray(); }
     virtual bool isVector() const { return type.isVector(); }
