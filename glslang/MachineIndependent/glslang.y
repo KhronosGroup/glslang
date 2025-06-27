@@ -182,6 +182,7 @@ extern int yylex(YYSTYPE*, TParseContext&);
 %token <lex> FCOOPMATNV ICOOPMATNV UCOOPMATNV
 %token <lex> COOPMAT
 %token <lex> COOPVECNV
+%token <lex> VECTOR
 %token <lex> HITOBJECTNV HITOBJECTATTRNV HITOBJECTEXT HITOBJECTATTREXT
 %token <lex> TENSORLAYOUTNV TENSORVIEWNV
 %token <lex> TENSORARM
@@ -3651,6 +3652,12 @@ type_specifier_nonarray
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.tensorRankARM = 1; // placeholder value
         $$.basicType = EbtTensorARM;
+    }
+    | VECTOR {
+        parseContext.longVectorCheck($1.loc, "vector", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtLongVector;
+        $$.longVector = true;
     }
     | spirv_type_specifier {
         parseContext.requireExtensions($1.loc, 1, &E_GL_EXT_spirv_intrinsics, "SPIR-V type specifier");
