@@ -184,6 +184,8 @@ INSTANTIATE_TEST_SUITE_P(
         "aggOps.frag",
         "always-discard.frag",
         "always-discard2.frag",
+        "boolinput.error.frag",
+        "booloutput.error.vert",
         "conditionalDiscard.frag",
         "conversion.frag",
         "dataOut.frag",
