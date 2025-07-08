@@ -4575,11 +4575,6 @@ void TParseContext::globalQualifierTypeCheck(const TSourceLoc& loc, const TQuali
 
     // now, knowing it is a shader in/out, do all the in/out semantic checks
 
-    if (publicType.basicType == EbtBool && !parsingBuiltins) {
-        error(loc, "cannot be bool", GetStorageQualifierString(qualifier.storage), "");
-        return;
-    }
-
     if (isTypeInt(publicType.basicType) || publicType.basicType == EbtDouble) {
         profileRequires(loc, EEsProfile, 300, nullptr, "non-float shader input/output");
         profileRequires(loc, ~EEsProfile, 130, nullptr, "non-float shader input/output");
@@ -7065,6 +7060,22 @@ void TParseContext::layoutObjectCheck(const TSourceLoc& loc, const TSymbol& symb
             break;
         default:
             // these were already filtered by layoutTypeCheck() (or its callees)
+            break;
+        }
+    }
+
+    // Check that an in/out variable or block doesn't contain a boolean member
+    // Don't enforce if redeclaring a builtin, which are allowed to contain bool
+    if (!parsingBuiltins && type.containsBasicType(EbtBool) && !builtInName(symbol.getName())) {
+        switch(qualifier.storage) {
+        case EvqVaryingIn:
+        case EvqVaryingOut:
+        {
+            const char *reason = type.getBasicType() == EbtBool ? "cannot be bool" : "cannot contain bool";
+            error(loc, reason, GetStorageQualifierString(qualifier.storage), "");
+            break;
+        }
+        default:
             break;
         }
     }
