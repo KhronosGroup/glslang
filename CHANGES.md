@@ -3,6 +3,89 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## 15.4.0 2025-06-26
+* Support GL_NV_gpu_shader5/GL_ARB_gpu_shader5
+* Remove BUILD_SHARED_LIBS option (defer to built-in variable)
+* Remap discard to OpDemoteToHelperInvocation
+* Fix typos and improve readability of help message
+* Support GLSL_QCOM_tile_shading
+* Emit correct capability for linear swept sphere
+* Support GL_EXT_float8_e5m2_e4m3
+* Move E_SPV_ARM_cooperative_matrix_layouts into GLSL.ext.ARM.h
+* Support GL_ARM_tensors
+
+## 15.3.0 2025-04-24
+* Fix CMake find_package on Windows when building shared libraries
+* Fix crash calling coopMatLoadTensorNV on an array element
+* Avoid reusing array types with stride when no stride is requested
+* Fix non-ASCII comments
+* Support GL_EXT_bfloat16
+* Fix several issues with link-time implicit array size merging
+* Support DebugSourceContinued
+* LiveTraverser no longer traverses switch cases that are statically not accessed
+* Implement optional cross-stage check for inputs with no matching outputs
+
+## 15.2.0 2025-02-24
+* Fix find_package on Windows when BUILD_SHARED_LIBS=ON
+* Emit error if using in/out with struct pointer
+* Emit SPV_EXT_opacity_micromap if GL extension is present
+* Support GL_NV_linear_swept_spheres
+* Support GLSL_EXT_nontemporal_keyword
+* Support GL_NV_cluster_acceleration_structure
+* Support GL_NV_cooperative_vector
+* Check SparseTextureOffset non-const parameters
+* Support GL_EXT_texture_offset_non_const
+* Revert cross-stage check for missing outputs
+* Support EXT_integer_dot_product
+* Add support for OpTypeRayQueryKHR and OpTypeAccelerationStructureKHR to SPVRemapper
+
+## 15.1.0 2024-12-13
+* Add Vulkan 1.4 target and client
+* Improve conversion of uniform block to push constant
+* Improve cross stage error reporting by reporting proper stager rather than "unkwown stage"
+* Add warning if forward declaration uses layout qualifiers
+* Implement GLSL_NV_cooperative_matrix2
+* Emit OpModfStruct instead of depracated OpModf
+* Add link-time cross stage optimization
+* Add column to DebugLexicalBlock
+* Propagate errors from symbol table initialization
+* Fix nonsemantic debuginfo line attribution for cooperative matrix
+
+## 15.0.0 2024-09-23
+### Breaking changes
+* Explicitly export all symbols that are part of the public API and hide other symbols by default
+
+### Other changes
+* Allow building glslang without the SPIR-V backend using the new ENABLE_SPIRV build option
+* Add setResourceSetBinding method to the API
+* Add interface to get the GLSL IO mapper and resolver
+* Allow compute derivative modes when the workgroup dimensions are spec constants
+* Improve debug location of branch/return instructions
+* Silence preprocessor '#' error reporting in inactive #if/#ifdef/#elif/#else blocks
+* Apply GLSL memory decorations to top-level OpVariable
+* Move definition of GLSLANG_EXPORT to visibility.h
+* Merge ancillary libraries into main glslang library and stub originals
+* Add public setSourceFile and addSourceText methods to TShader class
+* Add type checks for hitObjectNV
+* Add optimizerAllowExpandedIDBound to SpvOptions
+* Add SpvTools.h back to public headers 
+* Add cross-stage check for missing outputs
+* Fix HLSL offsets for non-buffers
+* Add types and functions for IO mapping to API
+* Add function to set preprocessed code to API
+* Add set/get version functions to API
+* Expose setGlobalUniform functions to API
+* Don't emit debug instructions before an OpPhi
+* Add command-line and API option to enable reporting column location for compiler errors
+* Improve location aliasing checks
+* Support constant expression calculated by matrixCompMult
+* Fix crash caused by atomicCounter() use without arguments
+* Fix multi-line function call line numbers
+* Add line info to OpDebugDeclare for function parameters
+* Fix HLSL OpDebugFunction file name
+* Fix duplicate decorations
+* Enable compilation of glslang without thread support for WASI
+
 ## 14.3.0 2024-06-25
 * Generate vector constructions more efficiently when sizes match
 * Skip identity conversions for 8-bit and 16-bit types

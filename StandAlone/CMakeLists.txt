@@ -1,4 +1,4 @@
-# Copyright (C) 2020-2023 The Khronos Group Inc.
+# Copyright (C) 2020-2025 The Khronos Group Inc.
 #
 # All rights reserved.
 #
@@ -59,7 +59,8 @@ glslang_set_link_args(glslang-standalone)
 
 set(LIBRARIES
     glslang
-    glslang-default-resource-limits)
+    glslang-default-resource-limits
+    $<$<AND:$<CXX_COMPILER_ID:GNU>,$<VERSION_LESS:$<CXX_COMPILER_VERSION>,9.0>>:stdc++fs>)
 
 if(WIN32)
     set(LIBRARIES ${LIBRARIES} psapi)
@@ -118,4 +119,4 @@ if(GLSLANG_ENABLE_INSTALL)
             install(TARGETS spirv-remap EXPORT glslang-targets)
         endif()
     endif()
-endif(GLSLANG_ENABLE_INSTALL)
+endif()

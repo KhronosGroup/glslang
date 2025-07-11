@@ -156,8 +156,9 @@ typedef enum {
     EShTargetVulkan_1_1 = (1 << 22) | (1 << 12),      // Vulkan 1.1
     EShTargetVulkan_1_2 = (1 << 22) | (2 << 12),      // Vulkan 1.2
     EShTargetVulkan_1_3 = (1 << 22) | (3 << 12),      // Vulkan 1.3
+    EShTargetVulkan_1_4 = (1 << 22) | (4 << 12),      // Vulkan 1.4
     EShTargetOpenGL_450 = 450,                        // OpenGL
-    LAST_ELEMENT_MARKER(EShTargetClientVersionCount = 5),
+    LAST_ELEMENT_MARKER(EShTargetClientVersionCount = 6),
 } EShTargetClientVersion;
 
 typedef EShTargetClientVersion EshTargetClientVersion;
@@ -172,6 +173,21 @@ typedef enum {
     EShTargetSpv_1_6 = (1 << 16) | (6 << 8),          // SPIR-V 1.6
     LAST_ELEMENT_MARKER(EShTargetLanguageVersionCount = 7),
 } EShTargetLanguageVersion;
+
+//
+// Following are a series of helper enums for managing layouts and qualifiers,
+// used for TPublicType, TType, others.
+//
+
+enum TLayoutPacking {
+    ElpNone,
+    ElpShared, // default, but different than saying nothing
+    ElpStd140,
+    ElpStd430,
+    ElpPacked,
+    ElpScalar,
+    ElpCount // If expanding, see bitfield width below
+};
 
 struct TInputLanguage {
     EShSource languageFamily; // redundant information with other input, this one overrides when not EShSourceNone
@@ -256,6 +272,8 @@ enum EShMessages : unsigned {
     EShMsgEnhanced             = (1 << 15), // enhanced message readability
     EShMsgAbsolutePath         = (1 << 16), // Output Absolute path for messages
     EShMsgDisplayErrorColumn   = (1 << 17), // Display error message column aswell as line
+    EShMsgLinkTimeOptimization = (1 << 18), // perform cross-stage optimizations during linking
+    EShMsgValidateCrossStageIO = (1 << 19), // validate shader inputs have matching outputs in previous stage
     LAST_ELEMENT_MARKER(EShMsgCount),
 };
 
@@ -400,6 +418,7 @@ GLSLANG_EXPORT int GetKhronosToolId();
 class TIntermediate;
 class TProgram;
 class TPoolAllocator;
+class TIoMapResolver;
 
 // Call this exactly once per process before using anything else
 GLSLANG_EXPORT bool InitializeProcess();
@@ -838,6 +857,20 @@ public:
     virtual void addStage(EShLanguage stage, TIntermediate& stageIntermediate) = 0;
 };
 
+// I/O mapper
+class TIoMapper {
+public:
+    TIoMapper() {}
+    virtual ~TIoMapper() {}
+    // grow the reflection stage by stage
+    bool virtual addStage(EShLanguage, TIntermediate&, TInfoSink&, TIoMapResolver*);
+    bool virtual doMap(TIoMapResolver*, TInfoSink&) { return true; }
+    bool virtual setAutoPushConstantBlock(const char*, unsigned int, TLayoutPacking) { return false; }
+};
+
+// Get the default GLSL IO mapper
+GLSLANG_EXPORT TIoMapper* GetGlslIoMapper();
+
 // Make one TProgram per set of shaders that will get linked together.  Add all
 // the shaders that are to be linked together.  After calling shader.parse()
 // for all shaders, call link().
@@ -862,6 +895,7 @@ public:
     // call first, to do liveness analysis, index mapping, etc.; returns false on failure
     GLSLANG_EXPORT bool buildReflection(int opts = EShReflectionDefault);
     GLSLANG_EXPORT unsigned getLocalSize(int dim) const;                  // return dim'th local size
+    GLSLANG_EXPORT unsigned getTileShadingRateQCOM(int dim) const;        // return dim'th tile shading rate QCOM
     GLSLANG_EXPORT int getReflectionIndex(const char *name) const;
     GLSLANG_EXPORT int getReflectionPipeIOIndex(const char* name, const bool inOrOut) const;
     GLSLANG_EXPORT int getNumUniformVariables() const;
@@ -945,6 +979,10 @@ public:
     const TType *getAttributeTType(int index) const    { return getPipeInput(index).getType(); }
 
     GLSLANG_EXPORT void dumpReflection();
+
+    // Get the IO resolver to use for mapIO
+    GLSLANG_EXPORT TIoMapResolver* getGlslIoResolver(EShLanguage stage);
+
     // I/O mapping: apply base offsets and map live unbound variables
     // If resolver is not provided it uses the previous approach
     // and respects auto assignment and offsets.

@@ -3707,7 +3707,7 @@ Shader version: 460
 0:194        add ( temp highp int)
 0:194          'gl_InstanceIndex' ( in highp int InstanceIndex)
 0:194          uTDInstanceIDOffset: direct index for structure ( uniform highp int)
-0:194            'anon@0' (layout( column_major std140) uniform block{ uniform highp int uTDInstanceIDOffset,  uniform highp int uTDNumInstances,  uniform highp float uTDAlphaTestVal})
+0:194            'anon@0' (layout( column_major std140) uniform block{ uniform highp int uTDInstanceIDOffset,  uniform highp int uTDNumInstances,  uniform highp float uTDAlphaTestVal,  uniform highp 3-component vector of float uConstant,  uniform highp float uShadowStrength,  uniform highp 3-component vector of float uShadowColor,  uniform highp 4-component vector of float uDiffuseColor,  uniform highp 4-component vector of float uAmbientColor})
 0:194            Constant:
 0:194              0 (const uint)
 0:196  Function Definition: TDCameraIndex( ( global highp int)
@@ -3863,7 +3863,7 @@ Shader version: 460
 0:125      subtract second child into first child ( temp highp int)
 0:125        'index' ( in highp int)
 0:125        uTDInstanceIDOffset: direct index for structure ( uniform highp int)
-0:125          'anon@0' (layout( column_major std140) uniform block{ uniform highp int uTDInstanceIDOffset,  uniform highp int uTDNumInstances,  uniform highp float uTDAlphaTestVal})
+0:125          'anon@0' (layout( column_major std140) uniform block{ uniform highp int uTDInstanceIDOffset,  uniform highp int uTDNumInstances,  uniform highp float uTDAlphaTestVal,  uniform highp 3-component vector of float uConstant,  uniform highp float uShadowStrength,  uniform highp 3-component vector of float uShadowColor,  uniform highp 4-component vector of float uDiffuseColor,  uniform highp 4-component vector of float uAmbientColor})
 0:125          Constant:
 0:125            0 (const uint)
 0:127      Sequence
@@ -3899,7 +3899,7 @@ Shader version: 460
 0:134      subtract second child into first child ( temp highp int)
 0:134        'index' ( in highp int)
 0:134        uTDInstanceIDOffset: direct index for structure ( uniform highp int)
-0:134          'anon@0' (layout( column_major std140) uniform block{ uniform highp int uTDInstanceIDOffset,  uniform highp int uTDNumInstances,  uniform highp float uTDAlphaTestVal})
+0:134          'anon@0' (layout( column_major std140) uniform block{ uniform highp int uTDInstanceIDOffset,  uniform highp int uTDNumInstances,  uniform highp float uTDAlphaTestVal,  uniform highp 3-component vector of float uConstant,  uniform highp float uShadowStrength,  uniform highp 3-component vector of float uShadowColor,  uniform highp 4-component vector of float uDiffuseColor,  uniform highp 4-component vector of float uAmbientColor})
 0:134          Constant:
 0:134            0 (const uint)
 0:136      Sequence
@@ -3957,7 +3957,7 @@ Shader version: 460
 0:145      subtract second child into first child ( temp highp int)
 0:145        'index' ( in highp int)
 0:145        uTDInstanceIDOffset: direct index for structure ( uniform highp int)
-0:145          'anon@0' (layout( column_major std140) uniform block{ uniform highp int uTDInstanceIDOffset,  uniform highp int uTDNumInstances,  uniform highp float uTDAlphaTestVal})
+0:145          'anon@0' (layout( column_major std140) uniform block{ uniform highp int uTDInstanceIDOffset,  uniform highp int uTDNumInstances,  uniform highp float uTDAlphaTestVal,  uniform highp 3-component vector of float uConstant,  uniform highp float uShadowStrength,  uniform highp 3-component vector of float uShadowColor,  uniform highp 4-component vector of float uDiffuseColor,  uniform highp 4-component vector of float uAmbientColor})
 0:145          Constant:
 0:145            0 (const uint)
 0:147      Sequence
@@ -4006,7 +4006,7 @@ Shader version: 460
 0:155      subtract second child into first child ( temp highp int)
 0:155        'index' ( in highp int)
 0:155        uTDInstanceIDOffset: direct index for structure ( uniform highp int)
-0:155          'anon@0' (layout( column_major std140) uniform block{ uniform highp int uTDInstanceIDOffset,  uniform highp int uTDNumInstances,  uniform highp float uTDAlphaTestVal})
+0:155          'anon@0' (layout( column_major std140) uniform block{ uniform highp int uTDInstanceIDOffset,  uniform highp int uTDNumInstances,  uniform highp float uTDAlphaTestVal,  uniform highp 3-component vector of float uConstant,  uniform highp float uShadowStrength,  uniform highp 3-component vector of float uShadowColor,  uniform highp 4-component vector of float uDiffuseColor,  uniform highp 4-component vector of float uAmbientColor})
 0:155          Constant:
 0:155            0 (const uint)
 0:156      Sequence
@@ -4038,7 +4038,7 @@ Shader version: 460
 0:164      subtract second child into first child ( temp highp int)
 0:164        'index' ( in highp int)
 0:164        uTDInstanceIDOffset: direct index for structure ( uniform highp int)
-0:164          'anon@0' (layout( column_major std140) uniform block{ uniform highp int uTDInstanceIDOffset,  uniform highp int uTDNumInstances,  uniform highp float uTDAlphaTestVal})
+0:164          'anon@0' (layout( column_major std140) uniform block{ uniform highp int uTDInstanceIDOffset,  uniform highp int uTDNumInstances,  uniform highp float uTDAlphaTestVal,  uniform highp 3-component vector of float uConstant,  uniform highp float uShadowStrength,  uniform highp 3-component vector of float uShadowColor,  uniform highp 4-component vector of float uDiffuseColor,  uniform highp 4-component vector of float uAmbientColor})
 0:164          Constant:
 0:164            0 (const uint)
 0:165      Sequence
@@ -4057,7 +4057,7 @@ Shader version: 460
 0:169      subtract second child into first child ( temp highp int)
 0:169        'index' ( in highp int)
 0:169        uTDInstanceIDOffset: direct index for structure ( uniform highp int)
-0:169          'anon@0' (layout( column_major std140) uniform block{ uniform highp int uTDInstanceIDOffset,  uniform highp int uTDNumInstances,  uniform highp float uTDAlphaTestVal})
+0:169          'anon@0' (layout( column_major std140) uniform block{ uniform highp int uTDInstanceIDOffset,  uniform highp int uTDNumInstances,  uniform highp float uTDAlphaTestVal,  uniform highp 3-component vector of float uConstant,  uniform highp float uShadowStrength,  uniform highp 3-component vector of float uShadowColor,  uniform highp 4-component vector of float uDiffuseColor,  uniform highp 4-component vector of float uAmbientColor})
 0:169          Constant:
 0:169            0 (const uint)
 0:170      Sequence
@@ -4076,7 +4076,7 @@ Shader version: 460
 0:174      subtract second child into first child ( temp highp int)
 0:174        'index' ( in highp int)
 0:174        uTDInstanceIDOffset: direct index for structure ( uniform highp int)
-0:174          'anon@0' (layout( column_major std140) uniform block{ uniform highp int uTDInstanceIDOffset,  uniform highp int uTDNumInstances,  uniform highp float uTDAlphaTestVal})
+0:174          'anon@0' (layout( column_major std140) uniform block{ uniform highp int uTDInstanceIDOffset,  uniform highp int uTDNumInstances,  uniform highp float uTDAlphaTestVal,  uniform highp 3-component vector of float uConstant,  uniform highp float uShadowStrength,  uniform highp 3-component vector of float uShadowColor,  uniform highp 4-component vector of float uDiffuseColor,  uniform highp 4-component vector of float uAmbientColor})
 0:174          Constant:
 0:174            0 (const uint)
 0:175      Sequence
@@ -4095,7 +4095,7 @@ Shader version: 460
 0:179      subtract second child into first child ( temp highp int)
 0:179        'index' ( in highp int)
 0:179        uTDInstanceIDOffset: direct index for structure ( uniform highp int)
-0:179          'anon@0' (layout( column_major std140) uniform block{ uniform highp int uTDInstanceIDOffset,  uniform highp int uTDNumInstances,  uniform highp float uTDAlphaTestVal})
+0:179          'anon@0' (layout( column_major std140) uniform block{ uniform highp int uTDInstanceIDOffset,  uniform highp int uTDNumInstances,  uniform highp float uTDAlphaTestVal,  uniform highp 3-component vector of float uConstant,  uniform highp float uShadowStrength,  uniform highp 3-component vector of float uShadowColor,  uniform highp 4-component vector of float uDiffuseColor,  uniform highp 4-component vector of float uAmbientColor})
 0:179          Constant:
 0:179            0 (const uint)
 0:180      Sequence
@@ -4451,7 +4451,7 @@ Shader version: 460
 0:217      subtract second child into first child ( temp highp int)
 0:217        'index' ( in highp int)
 0:217        uTDInstanceIDOffset: direct index for structure ( uniform highp int)
-0:217          'anon@0' (layout( column_major std140) uniform block{ uniform highp int uTDInstanceIDOffset,  uniform highp int uTDNumInstances,  uniform highp float uTDAlphaTestVal})
+0:217          'anon@0' (layout( column_major std140) uniform block{ uniform highp int uTDInstanceIDOffset,  uniform highp int uTDNumInstances,  uniform highp float uTDAlphaTestVal,  uniform highp 3-component vector of float uConstant,  uniform highp float uShadowStrength,  uniform highp 3-component vector of float uShadowColor,  uniform highp 4-component vector of float uDiffuseColor,  uniform highp 4-component vector of float uAmbientColor})
 0:217          Constant:
 0:217            0 (const uint)
 0:219      Sequence
@@ -4830,7 +4830,7 @@ Shader version: 460
 0:319      Branch: Return with expression
 0:319        'vec' ( in highp 3-component vector of float)
 0:?   Linker Objects
-0:?     'anon@0' (layout( column_major std140) uniform block{ uniform highp int uTDInstanceIDOffset,  uniform highp int uTDNumInstances,  uniform highp float uTDAlphaTestVal})
+0:?     'anon@0' (layout( column_major std140) uniform block{ uniform highp int uTDInstanceIDOffset,  uniform highp int uTDNumInstances,  uniform highp float uTDAlphaTestVal,  uniform highp 3-component vector of float uConstant,  uniform highp float uShadowStrength,  uniform highp 3-component vector of float uShadowColor,  uniform highp 4-component vector of float uDiffuseColor,  uniform highp 4-component vector of float uAmbientColor})
 0:?     'anon@1' (layout( column_major std140) uniform block{layout( column_major std140 offset=0) uniform 1-element array of structure{layout( column_major std140) global highp 4X4 matrix of float world, layout( column_major std140) global highp 4X4 matrix of float worldInverse, layout( column_major std140) global highp 4X4 matrix of float worldCam, layout( column_major std140) global highp 4X4 matrix of float worldCamInverse, layout( column_major std140) global highp 4X4 matrix of float cam, layout( column_major std140) global highp 4X4 matrix of float camInverse, layout( column_major std140) global highp 4X4 matrix of float camProj, layout( column_major std140) global highp 4X4 matrix of float camProjInverse, layout( column_major std140) global highp 4X4 matrix of float proj, layout( column_major std140) global highp 4X4 matrix of float projInverse, layout( column_major std140) global highp 4X4 matrix of float worldCamProj, layout( column_major std140) global highp 4X4 matrix of float worldCamProjInverse, layout( column_major std140) global highp 4X4 matrix of float quadReproject, layout( column_major std140) global highp 3X3 matrix of float worldForNormals, layout( column_major std140) global highp 3X3 matrix of float camForNormals, layout( column_major std140) global highp 3X3 matrix of float worldCamForNormals} uTDMats})
 0:?     'anon@2' (layout( column_major std140) uniform block{layout( column_major std140 offset=0) uniform 1-element array of structure{ global highp 4-component vector of float nearFar,  global highp 4-component vector of float fog,  global highp 4-component vector of float fogColor,  global highp int renderTOPCameraIndex} uTDCamInfos})
 0:?     'anon@3' (layout( column_major std140) uniform block{layout( column_major std140 offset=0) uniform structure{ global highp 4-component vector of float ambientColor,  global highp 4-component vector of float nearFar,  global highp 4-component vector of float viewport,  global highp 4-component vector of float viewportRes,  global highp 4-component vector of float fog,  global highp 4-component vector of float fogColor} uTDGeneral})

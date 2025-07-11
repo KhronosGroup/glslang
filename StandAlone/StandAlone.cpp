@@ -56,10 +56,12 @@
 #include <cmath>
 #include <cstdlib>
 #include <cstring>
+#include <iterator>
 #include <map>
 #include <memory>
 #include <set>
 #include <thread>
+#include <type_traits>
 
 #include "../glslang/OSDependent/osinclude.h"
 
@@ -109,6 +111,8 @@ enum TOptions : uint64_t {
     EOptionDumpBareVersion = (1ull << 31),
     EOptionCompileOnly = (1ull << 32),
     EOptionDisplayErrorColumn = (1ull << 33),
+    EOptionLinkTimeOptimization = (1ull << 34),
+    EOptionValidateCrossStageIO = (1ull << 35),
 };
 bool targetHlslFunctionality1 = false;
 bool SpvToolsDisassembler = false;
@@ -841,6 +845,9 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                             } else if (strcmp(argv[1], "vulkan1.3") == 0) {
                                 setVulkanSpv();
                                 ClientVersion = glslang::EShTargetVulkan_1_3;
+                            } else if (strcmp(argv[1], "vulkan1.4") == 0) {
+                                setVulkanSpv();
+                                ClientVersion = glslang::EShTargetVulkan_1_4;
                             } else if (strcmp(argv[1], "opengl") == 0) {
                                 setOpenGlSpv();
                                 ClientVersion = glslang::EShTargetOpenGL_450;
@@ -899,6 +906,10 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                         Options |= EOptionCompileOnly;
                     } else if (lowerword == "error-column") {
                         Options |= EOptionDisplayErrorColumn;
+                    } else if (lowerword == "lto") {
+                        Options |= EOptionLinkTimeOptimization;
+                    } else if (lowerword == "validate-io") {
+                        Options |= EOptionValidateCrossStageIO;
                     } else if (lowerword == "help") {
                         usage();
                         break;
@@ -1083,6 +1094,14 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
     if ((Options & EOptionDumpReflection) && !(Options & EOptionLinkProgram))
         Error("reflection requires -l for linking");
 
+    // link time optimization makes no sense unless linking
+    if ((Options & EOptionLinkTimeOptimization) && !(Options & EOptionLinkProgram))
+        Error("link time optimization requires -l for linking");
+
+    // cross stage IO validation makes no sense unless linking
+    if ((Options & EOptionValidateCrossStageIO) && !(Options & EOptionLinkProgram))
+        Error("cross stage IO validation requires -l for linking");
+
     // -o or -x makes no sense if there is no target binary
     if (binaryFileName && (Options & EOptionSpv) == 0)
         Error("no binary generation requested (e.g., -V)");
@@ -1111,6 +1130,10 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
             TargetVersion = glslang::EShTargetSpv_1_5;
             break;
         case glslang::EShTargetVulkan_1_3:
+            TargetLanguage = glslang::EShTargetSpv;
+            TargetVersion = glslang::EShTargetSpv_1_6;
+            break;
+        case glslang::EShTargetVulkan_1_4:
             TargetLanguage = glslang::EShTargetSpv;
             TargetVersion = glslang::EShTargetSpv_1_6;
             break;
@@ -1167,6 +1190,10 @@ void SetMessageOptions(EShMessages& messages)
         messages = (EShMessages)(messages | EShMsgAbsolutePath);
     if (Options & EOptionDisplayErrorColumn)
         messages = (EShMessages)(messages | EShMsgDisplayErrorColumn);
+    if (Options & EOptionLinkTimeOptimization)
+        messages = (EShMessages)(messages | EShMsgLinkTimeOptimization);
+    if (Options & EOptionValidateCrossStageIO)
+        messages = (EShMessages)(messages | EShMsgValidateCrossStageIO);
 }
 
 //
@@ -1507,9 +1534,9 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
 
     std::vector<std::string> outputFiles;
 
-#ifdef ENABLE_SPIRV
     // Dump SPIR-V
     if (Options & EOptionSpv) {
+#ifdef ENABLE_SPIRV
         CompileOrLinkFailed.fetch_or(CompileFailed);
         CompileOrLinkFailed.fetch_or(LinkFailed);
         if (static_cast<bool>(CompileOrLinkFailed.load()))
@@ -1569,8 +1596,10 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
                 }
             }
         }
-    }
+#else
+        Error("This configuration of glslang does not have SPIR-V support");
 #endif
+    }
 
     CompileOrLinkFailed.fetch_or(CompileFailed);
     CompileOrLinkFailed.fetch_or(LinkFailed);
@@ -1925,25 +1954,26 @@ void usage()
 {
     printf("Usage: glslang [option]... [file]...\n"
            "\n"
-           "'file' can end in .<stage> for auto-stage classification, where <stage> is:\n"
-           "    .conf   to provide a config file that replaces the default configuration\n"
-           "            (see -c option below for generating a template)\n"
-           "    .vert   for a vertex shader\n"
-           "    .tesc   for a tessellation control shader\n"
-           "    .tese   for a tessellation evaluation shader\n"
-           "    .geom   for a geometry shader\n"
-           "    .frag   for a fragment shader\n"
-           "    .comp   for a compute shader\n"
-           "    .mesh   for a mesh shader\n"
-           "    .task   for a task shader\n"
-           "    .rgen    for a ray generation shader\n"
-           "    .rint    for a ray intersection shader\n"
-           "    .rahit   for a ray any hit shader\n"
-           "    .rchit   for a ray closest hit shader\n"
-           "    .rmiss   for a ray miss shader\n"
-           "    .rcall   for a ray callable shader\n"
-           "    .glsl   for .vert.glsl, .tesc.glsl, ..., .comp.glsl compound suffixes\n"
-           "    .hlsl   for .vert.hlsl, .tesc.hlsl, ..., .comp.hlsl compound suffixes\n"
+           "'file' with one of the following three endings can be auto-classified:\n"
+           "1) .<stage>, where <stage> is one of:\n"
+           "    vert    for a vertex shader\n"
+           "    tesc    for a tessellation control shader\n"
+           "    tese    for a tessellation evaluation shader\n"
+           "    geom    for a geometry shader\n"
+           "    frag    for a fragment shader\n"
+           "    comp    for a compute shader\n"
+           "    mesh    for a mesh shader\n"
+           "    task    for a task shader\n"
+           "    rgen    for a ray generation shader\n"
+           "    rint    for a ray intersection shader\n"
+           "    rahit   for a ray any hit shader\n"
+           "    rchit   for a ray closest hit shader\n"
+           "    rmiss   for a ray miss shader\n"
+           "    rcall   for a ray callable shader\n"
+           "2) .<stage>.glsl or .<stage>.hlsl compound suffix, where stage options are\n"
+           "   described above\n"
+           "3) .conf, to provide a config file that replaces the default configuration\n"
+           "   (see -c option below for generating a template)\n"
            "\n"
            "Options:\n"
            "  -C          cascading errors; risk crash from accumulation of error recoveries\n"
@@ -1971,7 +2001,8 @@ void usage()
            "              allowing the use of default uniforms, atomic_uints, and\n"
            "              gl_VertexID and gl_InstanceID keywords.\n"
            "  -S <stage>  uses specified stage rather than parsing the file extension\n"
-           "              choices for <stage> are vert, tesc, tese, geom, frag, or comp\n"
+           "              choices for <stage> include vert, tesc, tese, geom, frag, comp.\n"
+           "              A full list of options is given above."
            "  -U<name> | --undef-macro <name> | --U <name>\n"
            "              undefine a pre-processor macro\n"
            "  -V[ver]     create SPIR-V binary, under Vulkan semantics; turns on -l;\n"
@@ -1999,7 +2030,7 @@ void usage()
            "  -m          memory leak mode\n"
            "  -o <file>   save binary to <file>, requires a binary option (e.g., -V)\n"
            "  -q          dump reflection query database; requires -l for linking\n"
-           "  -r | --relaxed-errors"
+           "  -r | --relaxed-errors\n"
            "              relaxed GLSL semantic error-checking mode\n"
            "  -s          silence syntax and semantic error reporting\n"
            "  -t          multi-threaded mode\n"
@@ -2024,10 +2055,10 @@ void usage()
            "  --flatten-uniform-arrays | --fua  flatten uniform texture/sampler arrays to\n"
            "                                    scalars\n"
            "  --glsl-version {100 | 110 | 120 | 130 | 140 | 150 |\n"
-           "                300es | 310es | 320es | 330\n"
-           "                400 | 410 | 420 | 430 | 440 | 450 | 460}\n"
+           "                  300es | 310es | 320es | 330\n"
+           "                  400 | 410 | 420 | 430 | 440 | 450 | 460}\n"
            "                                    set GLSL version, overrides #version\n"
-           "                                    in shader sourcen\n"
+           "                                    in shader source\n"
            "  --hlsl-offsets                    allow block offsets to follow HLSL rules\n"
            "                                    works independently of source language\n"
            "  --hlsl-iomap                      perform IO mapping in HLSL register space\n"
@@ -2133,7 +2164,9 @@ void usage()
            "                                    initialized with the shader binary code\n"
            "  --no-link                         Only compile shader; do not link (GLSL-only)\n"
            "                                    NOTE: this option will set the export linkage\n"
-           "                                          attribute on all functions\n");
+           "                                          attribute on all functions\n"
+           "  --lto                             perform link time optimization\n"
+           "  --validate-io                     validate cross stage IO\n");
 
     exit(EFailUsage);
 }

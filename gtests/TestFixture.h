@@ -262,6 +262,14 @@ public:
             shader.setAutoMapLocations(true);
             shader.setAutoMapBindings(true);
         }
+
+        if (enableDebug) {
+            shader.setDebugInfo(true);
+        }
+        if (enableNonSemanticShaderDebugInfo) {
+            assert(enableDebug && "Debug must be on for non-semantic debug info");
+        }
+
         shader.setTextureSamplerTransformMode(texSampTransMode);
 #ifdef ENABLE_HLSL
         shader.setFlattenUniformArrays(flattenUniformArrays);

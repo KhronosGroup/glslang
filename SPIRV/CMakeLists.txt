@@ -49,7 +49,7 @@ set(SPVREMAP_SOURCES
 
 set(SPIRV_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/bitutils.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/spirv.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/spirv.hpp11
     ${CMAKE_CURRENT_SOURCE_DIR}/GLSL.std.450.h
     ${CMAKE_CURRENT_SOURCE_DIR}/GLSL.ext.EXT.h
     ${CMAKE_CURRENT_SOURCE_DIR}/GLSL.ext.KHR.h
@@ -58,6 +58,7 @@ set(SPIRV_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/Logger.h
     ${CMAKE_CURRENT_SOURCE_DIR}/SpvBuilder.h
     ${CMAKE_CURRENT_SOURCE_DIR}/spvIR.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/spvUtil.h
     ${CMAKE_CURRENT_SOURCE_DIR}/doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/SpvTools.h
     ${CMAKE_CURRENT_SOURCE_DIR}/disassemble.h
@@ -77,7 +78,7 @@ set(PUBLIC_HEADERS
     GlslangToSpv.h
     disassemble.h
     Logger.h
-    spirv.hpp
+    spirv.hpp11
     SPVRemapper.h
     SpvTools.h)
 
@@ -91,6 +92,7 @@ set_target_properties(SPIRV PROPERTIES
 target_include_directories(SPIRV PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
+glslang_only_export_explicit_symbols(SPIRV)
 
 if (ENABLE_SPVREMAPPER)
     add_library(SPVRemapper ${LIB_TYPE} ${SPVREMAP_SOURCES} ${SPVREMAP_HEADERS})
@@ -100,6 +102,7 @@ if (ENABLE_SPVREMAPPER)
         POSITION_INDEPENDENT_CODE ON
         VERSION   "${GLSLANG_VERSION}"
         SOVERSION "${GLSLANG_VERSION_MAJOR}")
+    glslang_only_export_explicit_symbols(SPVRemapper)
 endif()
 
 if(WIN32 AND BUILD_SHARED_LIBS)
@@ -110,11 +113,11 @@ if(WIN32 AND BUILD_SHARED_LIBS)
 endif()
 
 if(ENABLE_OPT)
-    target_link_libraries(SPIRV PRIVATE glslang PUBLIC SPIRV-Tools-opt)
+    target_link_libraries(SPIRV INTERFACE glslang PUBLIC SPIRV-Tools-opt)
     target_include_directories(SPIRV PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../External>)
 else()
-    target_link_libraries(SPIRV PRIVATE glslang)
+    target_link_libraries(SPIRV INTERFACE glslang)
 endif()
 
 if(WIN32)

@@ -285,19 +285,21 @@ TEST_P(GlslMapIOTest, FromFile)
     result.linkingOutput = program.getInfoLog();
     result.linkingError = program.getInfoDebugLog();
 
-    unsigned int stage = 0;
-    glslang::TIntermediate* firstIntermediate = nullptr;
-    while (!program.getIntermediate((EShLanguage)stage) && stage < EShLangCount) { stage++; }
-    firstIntermediate = program.getIntermediate((EShLanguage)stage);
-
-    glslang::TDefaultGlslIoResolver resolver(*firstIntermediate);
-    glslang::TGlslIoMapper ioMapper;
+    glslang::TIoMapResolver *resolver;
+    for (unsigned stage = 0; stage < EShLangCount; stage++) {
+        resolver = program.getGlslIoResolver((EShLanguage)stage);
+        if (resolver)
+            break;
+    }
+    glslang::TIoMapper *ioMapper = glslang::GetGlslIoMapper();
 
     if (success) {
-        success &= program.mapIO(&resolver, &ioMapper);
+        success &= program.mapIO(resolver, ioMapper);
         result.linkingOutput = program.getInfoLog();
         result.linkingError = program.getInfoDebugLog();
     }
+    delete ioMapper;
+    delete resolver;
 
     success &= verifyIOMapping(result.linkingError, program);
     result.validationResult = success;
@@ -343,9 +345,9 @@ INSTANTIATE_TEST_SUITE_P(
         {{"iomap.variableOutBlockIn.vert", "iomap.variableOutBlockIn.frag"}, Semantics::OpenGL},
         {{"iomap.blockOutVariableIn.2.vert", "iomap.blockOutVariableIn.geom"}, Semantics::OpenGL},
         {{"iomap.variableOutBlockIn.2.vert", "iomap.variableOutBlockIn.geom"}, Semantics::OpenGL},
+        {{"iomap.mismatchedBufferTypes.vert", "iomap.mismatchedBufferTypes.frag"}, Semantics::OpenGL},
         // vulkan semantics
         {{"iomap.crossStage.vk.vert", "iomap.crossStage.vk.geom", "iomap.crossStage.vk.frag" }, Semantics::Vulkan},
-        {{"iomap.crossStage.vk.2.vert", "iomap.crossStage.vk.2.geom", "iomap.crossStage.vk.2.frag" }, Semantics::Vulkan},
     }))
 );
 // clang-format on

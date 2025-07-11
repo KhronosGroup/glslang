@@ -37,19 +37,12 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                os: [{genus: ubuntu-20.04, family: linux}]
+                os: [{genus: ubuntu-22.04, family: linux}]
                 compiler: [{cc: clang, cxx: clang++}, {cc: gcc, cxx: g++}]
                 cmake_build_type: [Debug, Release]
         steps:
-            - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
-            - uses: lukka/get-cmake@070a0507a7abe157ef918deec391da1be197d2d1 # v3.30.3
-            - uses: actions/setup-python@f677139bbe7f9c59b41e40162b753c062f5d49a3 # v5.2.0
-              with:
-                  python-version: '3.7'
-            - name: Install Ubuntu Package Dependencies
-              run: |
-                  sudo apt-get -qq update
-                  sudo apt-get install -y clang-6.0
+            - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+            - uses: lukka/get-cmake@6b3e96a9bc9976b8b546346fdd102effedae0ca8 # v4.0.3
             - run: ./update_glslang_sources.py
             - name: Build
               env:
@@ -100,15 +93,12 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                os: [{genus: macos-12, family: osx}]
+                os: [{genus: macos-13, family: osx}]
                 compiler: [{cc: clang, cxx: clang++}]
                 cmake_build_type: [Debug, Release]
         steps:
-            - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
-            - uses: lukka/get-cmake@070a0507a7abe157ef918deec391da1be197d2d1 # v3.30.3
-            - uses: actions/setup-python@f677139bbe7f9c59b41e40162b753c062f5d49a3 # v5.2.0
-              with:
-                  python-version: '3.7'
+            - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+            - uses: lukka/get-cmake@6b3e96a9bc9976b8b546346fdd102effedae0ca8 # v4.0.3
             - run: ./update_glslang_sources.py
             - name: Build
               env:
@@ -157,18 +147,15 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                os: [{genus: windows-2019, family: windows}]
+                os: [{genus: windows-2022, family: windows}]
                 cmake_build_type: [Debug, Release]
         steps:
-            - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
-            - uses: lukka/get-cmake@070a0507a7abe157ef918deec391da1be197d2d1 # v3.30.3
-            - uses: actions/setup-python@f677139bbe7f9c59b41e40162b753c062f5d49a3 # v5.2.0
-              with:
-                  python-version: '3.7'
+            - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+            - uses: lukka/get-cmake@6b3e96a9bc9976b8b546346fdd102effedae0ca8 # v4.0.3
             - run: python update_glslang_sources.py
             - name: Build
               run: |
-                  cmake -S. -Bbuild -G "Visual Studio 16 2019" -A x64 -DCMAKE_INSTALL_PREFIX="$PWD/build/install"
+                  cmake -S. -Bbuild -G "Visual Studio 17 2022" -A x64 -DCMAKE_INSTALL_PREFIX="$PWD/build/install"
                   cmake --build build --config ${{matrix.cmake_build_type}} --target install
             - name: Test
               run: |

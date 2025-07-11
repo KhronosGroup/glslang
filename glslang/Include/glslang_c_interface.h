@@ -259,6 +259,7 @@ GLSLANG_EXPORT void glslang_shader_set_options(glslang_shader_t* shader, int opt
 GLSLANG_EXPORT void glslang_shader_set_glsl_version(glslang_shader_t* shader, int version);
 GLSLANG_EXPORT void glslang_shader_set_default_uniform_block_set_and_binding(glslang_shader_t* shader, unsigned int set, unsigned int binding);
 GLSLANG_EXPORT void glslang_shader_set_default_uniform_block_name(glslang_shader_t* shader, const char *name);
+GLSLANG_EXPORT void glslang_shader_set_resource_set_binding(glslang_shader_t* shader, const char *const *bindings, unsigned int num_bindings);
 GLSLANG_EXPORT int glslang_shader_preprocess(glslang_shader_t* shader, const glslang_input_t* input);
 GLSLANG_EXPORT int glslang_shader_parse(glslang_shader_t* shader, const glslang_input_t* input);
 GLSLANG_EXPORT const char* glslang_shader_get_preprocessed_code(glslang_shader_t* shader);
@@ -283,7 +284,7 @@ GLSLANG_EXPORT const char* glslang_program_SPIRV_get_messages(glslang_program_t*
 GLSLANG_EXPORT const char* glslang_program_get_info_log(glslang_program_t* program);
 GLSLANG_EXPORT const char* glslang_program_get_info_debug_log(glslang_program_t* program);
 
-GLSLANG_EXPORT glslang_mapper_t* glslang_glsl_mapper_create();
+GLSLANG_EXPORT glslang_mapper_t* glslang_glsl_mapper_create(void);
 GLSLANG_EXPORT void glslang_glsl_mapper_delete(glslang_mapper_t* mapper);
 
 GLSLANG_EXPORT glslang_resolver_t* glslang_glsl_resolver_create(glslang_program_t* program, glslang_stage_t stage);

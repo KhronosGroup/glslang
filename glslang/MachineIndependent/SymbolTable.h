@@ -84,7 +84,8 @@ typedef TVector<const char*> TExtensionList;
 class TSymbol {
 public:
     POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
-    explicit TSymbol(const TString *n) :  name(n), uniqueId(0), extensions(nullptr), writable(true) { }
+    explicit TSymbol(const TString *n, const TString *mn) :  name(n), mangledName(mn), uniqueId(0), extensions(nullptr), writable(true) { }
+    explicit TSymbol(const TString *n) : TSymbol(n, n) { }
     virtual TSymbol* clone() const = 0;
     virtual ~TSymbol() { }  // rely on all symbol owned memory coming from the pool
 
@@ -96,7 +97,7 @@ public:
         newName.append(*name);
         changeName(NewPoolTString(newName.c_str()));
     }
-    virtual const TString& getMangledName() const { return getName(); }
+    virtual const TString& getMangledName() const { return *mangledName; }
     virtual TFunction* getAsFunction() { return nullptr; }
     virtual const TFunction* getAsFunction() const { return nullptr; }
     virtual TVariable* getAsVariable() { return nullptr; }
@@ -128,6 +129,7 @@ protected:
     TSymbol& operator=(const TSymbol&);
 
     const TString *name;
+    const TString *mangledName;
     unsigned long long uniqueId;      // For cross-scope comparing during code generation
 
     // For tracking what extensions must be present
@@ -154,7 +156,9 @@ protected:
 class TVariable : public TSymbol {
 public:
     TVariable(const TString *name, const TType& t, bool uT = false )
-        : TSymbol(name),
+        : TVariable(name, name, t, uT) {}
+    TVariable(const TString *name, const TString *mangledName, const TType& t, bool uT = false )
+        : TSymbol(name, mangledName),
           userType(uT),
           constSubtree(nullptr),
           memberExtensions(nullptr),
@@ -228,6 +232,13 @@ struct TParameter {
             name = nullptr;
         type = param.type->clone();
         defaultValue = param.defaultValue;
+        if (defaultValue) {
+            // The defaultValue of a builtin is created in a TPoolAllocator that no longer exists
+            // when parsing the user program, so make a deep copy.
+            if (const auto *constUnion = defaultValue->getAsConstantUnion()) {
+                defaultValue = new TIntermConstantUnion(*constUnion->getConstArray().clone(), constUnion->getType());
+            }
+        }
         return *this;
     }
     TBuiltInVariable getDeclaredBuiltIn() const { return type->getQualifier().declaredBuiltIn; }
@@ -241,12 +252,12 @@ public:
     explicit TFunction(TOperator o) :
         TSymbol(nullptr),
         op(o),
-        defined(false), prototyped(false), implicitThis(false), illegalImplicitThis(false), defaultParamCount(0) { }
+        defined(false), prototyped(false), implicitThis(false), illegalImplicitThis(false), variadic(false), defaultParamCount(0) { }
     TFunction(const TString *name, const TType& retType, TOperator tOp = EOpNull) :
         TSymbol(name),
         mangledName(*name + '('),
         op(tOp),
-        defined(false), prototyped(false), implicitThis(false), illegalImplicitThis(false), defaultParamCount(0),
+        defined(false), prototyped(false), implicitThis(false), illegalImplicitThis(false), variadic(false), defaultParamCount(0),
         linkType(ELinkNone)
     {
         returnType.shallowCopy(retType);
@@ -264,6 +275,7 @@ public:
     virtual void addParameter(TParameter& p)
     {
         assert(writable);
+        assert(!variadic && "cannot add more parameters if function is marked variadic");
         parameters.push_back(p);
         p.type->appendMangledName(mangledName);
 
@@ -306,6 +318,13 @@ public:
     virtual bool hasImplicitThis() const { return implicitThis; }
     virtual void setIllegalImplicitThis() { assert(writable); illegalImplicitThis = true; }
     virtual bool hasIllegalImplicitThis() const { return illegalImplicitThis; }
+    virtual void setVariadic() {
+        assert(writable);
+        assert(!variadic && "function was already marked variadic");
+        variadic = true;
+        mangledName += 'z';
+    }
+    virtual bool isVariadic() const { return variadic; }
 
     // Return total number of parameters
     virtual int getParamCount() const { return static_cast<int>(parameters.size()); }
@@ -348,6 +367,7 @@ protected:
                                // even if it finds member variables in the symbol table.
                                // This is important for a static member function that has member variables in scope,
                                // but is not allowed to use them, or see hidden symbols instead.
+    bool variadic;
     int  defaultParamCount;
 
     TSpirvInstruction spirvInst; // SPIR-V instruction qualifiers
