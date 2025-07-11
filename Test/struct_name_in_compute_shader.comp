@@ -1,0 +1,14 @@
+#version 400
+struct B
+{
+    vec3 t;
+};
+
+layout(local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
+
+void main()
+{
+    float B = 1.0; // Struct name as local variable - should work
+    int B = 42;    // Struct name as local variable - should work
+    vec2 B = vec2(1.0, 2.0); // Struct name as local variable - should work
+} 
