@@ -1199,45 +1199,21 @@ single_declaration
         $$.intermNode = 0;
         parseContext.declareVariable($2.loc, *$2.string, $1);
     }
-    | fully_specified_type TYPE_NAME {
-        $$.type = $1;
-        $$.intermNode = 0;
-        parseContext.declareVariable($2.loc, *$2.string, $1);
-    }
-
     | fully_specified_type IDENTIFIER array_specifier {
         $$.type = $1;
         $$.intermNode = 0;
         parseContext.declareVariable($2.loc, *$2.string, $1, $3.arraySizes);
     }
-    | fully_specified_type TYPE_NAME array_specifier {
-        $$.type = $1;
-        $$.intermNode = 0;
-        parseContext.declareVariable($2.loc, *$2.string, $1, $3.arraySizes);
-    }
-
     | fully_specified_type IDENTIFIER array_specifier EQUAL initializer {
         $$.type = $1;
         TIntermNode* initNode = parseContext.declareVariable($2.loc, *$2.string, $1, $3.arraySizes, $5);
         $$.intermNode = parseContext.intermediate.growAggregate(0, initNode, $4.loc);
     }
-    | fully_specified_type TYPE_NAME array_specifier EQUAL initializer {
-        $$.type = $1;
-        TIntermNode* initNode = parseContext.declareVariable($2.loc, *$2.string, $1, $3.arraySizes, $5);
-        $$.intermNode = parseContext.intermediate.growAggregate(0, initNode, $4.loc);
-    }
-
     | fully_specified_type IDENTIFIER EQUAL initializer {
         $$.type = $1;
         TIntermNode* initNode = parseContext.declareVariable($2.loc, *$2.string, $1, 0, $4);
         $$.intermNode = parseContext.intermediate.growAggregate(0, initNode, $3.loc);
     }
-    | fully_specified_type TYPE_NAME EQUAL initializer {
-        $$.type = $1;
-        TIntermNode* initNode = parseContext.declareVariable($2.loc, *$2.string, $1, 0, $4);
-        $$.intermNode = parseContext.intermediate.growAggregate(0, initNode, $3.loc);
-    }
-
 
 // Grammar Note:  No 'enum', or 'typedef'.
 
@@ -3828,6 +3804,22 @@ struct_declarator
         $$.type->setFieldName(*$1.string);
     }
     | IDENTIFIER array_specifier {
+        parseContext.arrayOfArrayVersionCheck($1.loc, $2.arraySizes);
+
+        $$.type = new TType(EbtVoid);
+        $$.loc = $1.loc;
+        $$.type->setFieldName(*$1.string);
+        $$.type->transferArraySizes($2.arraySizes);
+    }
+    | TYPE_NAME {
+        // Allow struct names as struct member names (GLSL name hiding)
+        // This fixes the original GitHub issue #3931
+        $$.type = new TType(EbtVoid);
+        $$.loc = $1.loc;
+        $$.type->setFieldName(*$1.string);
+    }
+    | TYPE_NAME array_specifier {
+        // Allow struct names as struct member array names (GLSL name hiding)
         parseContext.arrayOfArrayVersionCheck($1.loc, $2.arraySizes);
 
         $$.type = new TType(EbtVoid);
