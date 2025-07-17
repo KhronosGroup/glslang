@@ -2063,6 +2063,10 @@ public:
     {
         return containsBasicType(EbtBFloat16);
     }
+    bool contains8BitFloat() const
+    {
+        return containsBasicType(EbtFloatE5M2) || containsBasicType(EbtFloatE4M3);
+    }
     bool contains64BitInt() const
     {
         return containsBasicType(EbtInt64) || containsBasicType(EbtUint64);
