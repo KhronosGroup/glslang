@@ -3811,22 +3811,6 @@ struct_declarator
         $$.type->setFieldName(*$1.string);
         $$.type->transferArraySizes($2.arraySizes);
     }
-    | TYPE_NAME {
-        // Allow struct names as struct member names (GLSL name hiding)
-        // This fixes the original GitHub issue #3931
-        $$.type = new TType(EbtVoid);
-        $$.loc = $1.loc;
-        $$.type->setFieldName(*$1.string);
-    }
-    | TYPE_NAME array_specifier {
-        // Allow struct names as struct member array names (GLSL name hiding)
-        parseContext.arrayOfArrayVersionCheck($1.loc, $2.arraySizes);
-
-        $$.type = new TType(EbtVoid);
-        $$.loc = $1.loc;
-        $$.type->setFieldName(*$1.string);
-        $$.type->transferArraySizes($2.arraySizes);
-    }
     ;
 
 initializer
