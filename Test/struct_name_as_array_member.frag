@@ -11,4 +11,4 @@ struct K
     float A[2], B[3]; // This should work - struct name B is used as an array member name.
 };
 
-void main(){} 
+void main(){}
