@@ -836,11 +836,12 @@ int TScanContext::tokenize(TPpContext* pp, TParserToken& token)
         loc = ppToken.loc;
         parserToken->sType.lex.loc = loc;
         switch (token) {
-        case ';':  afterType = false; afterBuffer = false; inDeclaratorList = false; afterDeclarator = false; angleBracketDepth = 0; squareBracketDepth = 0; return SEMICOLON;
+        case ';':  afterType = false; afterBuffer = false; inDeclaratorList = false; afterDeclarator = false; angleBracketDepth = 0; squareBracketDepth = 0; parenDepth = 0; return SEMICOLON;
         case ',':
             // If we just processed a declarator (identifier after a type), this comma
             // indicates that we're in a declarator list. Note that 'afterDeclarator' is
-            // only set when we are not inside a template parameter list or array expression.
+            // only set when we are not inside a template parameter list, array expression,
+            // or function parameter list.
             if (afterDeclarator) {
                 inDeclaratorList = true;
             }
@@ -848,9 +849,9 @@ int TScanContext::tokenize(TPpContext* pp, TParserToken& token)
             afterDeclarator = false;
             return COMMA;
         case ':':                       return COLON;
-        case '=':  afterType = false; inDeclaratorList = false; afterDeclarator = false;   return EQUAL;
-        case '(':  afterType = false; inDeclaratorList = false; afterDeclarator = false;   return LEFT_PAREN;
-        case ')':  afterType = false; inDeclaratorList = false; afterDeclarator = false;   return RIGHT_PAREN;
+        case '=':  afterType = false; inDeclaratorList = false; afterDeclarator = false; return EQUAL;
+        case '(':  afterType = false; inDeclaratorList = false; afterDeclarator = false; parenDepth++; return LEFT_PAREN;
+        case ')':  afterType = false; inDeclaratorList = false; afterDeclarator = false; if (parenDepth > 0) parenDepth--; return RIGHT_PAREN;
         case '.':  field = true;        return DOT;
         case '!':                       return BANG;
         case '-':                       return DASH;
@@ -867,8 +868,8 @@ int TScanContext::tokenize(TPpContext* pp, TParserToken& token)
         case '?':                       return QUESTION;
         case '[':                       squareBracketDepth++; return LEFT_BRACKET;
         case ']':                       if (squareBracketDepth > 0) squareBracketDepth--; return RIGHT_BRACKET;
-        case '{':  afterStruct = false; afterBuffer = false; inDeclaratorList = false; afterDeclarator = false; angleBracketDepth = 0; squareBracketDepth = 0; return LEFT_BRACE;
-        case '}':  inDeclaratorList = false; afterDeclarator = false; angleBracketDepth = 0; squareBracketDepth = 0; return RIGHT_BRACE;
+        case '{':  afterStruct = false; afterBuffer = false; inDeclaratorList = false; afterDeclarator = false; angleBracketDepth = 0; squareBracketDepth = 0; parenDepth = 0; return LEFT_BRACE;
+        case '}':  inDeclaratorList = false; afterDeclarator = false; angleBracketDepth = 0; squareBracketDepth = 0; parenDepth = 0; return RIGHT_BRACE;
         case '\\':
             parseContext.error(loc, "illegal use of escape character", "\\", "");
             break;
@@ -1944,6 +1945,15 @@ int TScanContext::identifierOrType()
     if (field)
         return IDENTIFIER;
 
+    // If we see an identifier right after a type, this might be a declarator.
+    // But not in template parameters (inside angle brackets), array expressions (inside square brackets),
+    // or function parameters (inside parentheses)
+    if (afterType && angleBracketDepth == 0 && squareBracketDepth == 0 && parenDepth == 0) {
+        afterDeclarator = true;
+        afterType = false;
+        return IDENTIFIER;
+    }
+
     parserToken->sType.lex.symbol = parseContext.symbolTable.find(*parserToken->sType.lex.string);
     if ((afterType == false && afterStruct == false) && parserToken->sType.lex.symbol != nullptr) {
         if (const TVariable* variable = parserToken->sType.lex.symbol->getAsVariable()) {
@@ -1961,13 +1971,6 @@ int TScanContext::identifierOrType()
                 return TYPE_NAME;
             }
         }
-    }
-
-    // If we see an identifier right after a type, this might be a declarator.
-    // But not in template parameters (inside angle brackets) or array expressions (inside square brackets)
-    if (afterType && angleBracketDepth == 0 && squareBracketDepth == 0) {
-        afterDeclarator = true;
-        afterType = false;
     }
 
     return IDENTIFIER;

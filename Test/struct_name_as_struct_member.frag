@@ -17,4 +17,4 @@ struct K
 
 void main(){
   int x, B, y, K;
-}
+} 
