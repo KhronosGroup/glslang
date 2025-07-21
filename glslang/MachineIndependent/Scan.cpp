@@ -837,14 +837,14 @@ int TScanContext::tokenize(TPpContext* pp, TParserToken& token)
         parserToken->sType.lex.loc = loc;
         switch (token) {
         case ';':  afterType = false; afterBuffer = false; inDeclaratorList = false; afterDeclarator = false; angleBracketDepth = 0; squareBracketDepth = 0; return SEMICOLON;
-        case ',':
+        case ',':  
             // If we just processed a declarator (identifier after a type), this comma
             // indicates that we're in a declarator list. Note that 'afterDeclarator' is
             // only set when we are not inside a template parameter list or array expression.
             if (afterDeclarator) {
                 inDeclaratorList = true;
             }
-            afterType = false;
+            afterType = false; 
             afterDeclarator = false;
             return COMMA;
         case ':':                       return COLON;
