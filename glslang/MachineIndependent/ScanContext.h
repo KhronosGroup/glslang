@@ -53,7 +53,7 @@ public:
     explicit TScanContext(TParseContextBase& pc) :
         parseContext(pc),
         afterType(false), afterStruct(false),
-        field(false), afterBuffer(false), inDeclaratorList(false), afterDeclarator(false), angleBracketDepth(0), squareBracketDepth(0) { }
+        field(false), afterBuffer(false), inDeclaratorList(false), afterDeclarator(false), angleBracketDepth(0), squareBracketDepth(0), parenDepth(0) { }
     virtual ~TScanContext() { }
 
     static void fillInKeywordMap();
@@ -86,6 +86,7 @@ protected:
     bool afterDeclarator;     // true if we just saw an identifier after a type (potential declarator)
     int angleBracketDepth;    // track nesting level of < > to detect template parameters
     int squareBracketDepth;   // track nesting level of [ ] to detect array expressions
+    int parenDepth;           // track nesting level of ( ) to detect function parameters
     TSourceLoc loc;
     TParserToken* parserToken;
     TPpToken* ppToken;
