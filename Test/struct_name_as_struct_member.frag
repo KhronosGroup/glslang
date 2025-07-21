@@ -15,6 +15,4 @@ struct K
 		// than the B struct.
 };
 
-void main(){
-  int x, B, y, K;
-} 
+void main(){} 

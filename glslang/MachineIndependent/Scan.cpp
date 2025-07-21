@@ -836,21 +836,12 @@ int TScanContext::tokenize(TPpContext* pp, TParserToken& token)
         loc = ppToken.loc;
         parserToken->sType.lex.loc = loc;
         switch (token) {
-        case ';':  afterType = false; afterBuffer = false; inDeclaratorList = false; afterDeclarator = false; angleBracketDepth = 0; squareBracketDepth = 0; return SEMICOLON;
-        case ',':  
-            // If we just processed a declarator (identifier after a type), this comma
-            // indicates that we're in a declarator list. Note that 'afterDeclarator' is
-            // only set when we are not inside a template parameter list or array expression.
-            if (afterDeclarator) {
-                inDeclaratorList = true;
-            }
-            afterType = false; 
-            afterDeclarator = false;
-            return COMMA;
+        case ';':  afterType = false; afterBuffer = false; return SEMICOLON;
+        case ',':  afterType = false;   return COMMA;
         case ':':                       return COLON;
-        case '=':  afterType = false; inDeclaratorList = false; afterDeclarator = false;   return EQUAL;
-        case '(':  afterType = false; inDeclaratorList = false; afterDeclarator = false;   return LEFT_PAREN;
-        case ')':  afterType = false; inDeclaratorList = false; afterDeclarator = false;   return RIGHT_PAREN;
+        case '=':  afterType = false;   return EQUAL;
+        case '(':  afterType = false;   return LEFT_PAREN;
+        case ')':  afterType = false;   return RIGHT_PAREN;
         case '.':  field = true;        return DOT;
         case '!':                       return BANG;
         case '-':                       return DASH;
@@ -859,16 +850,16 @@ int TScanContext::tokenize(TPpContext* pp, TParserToken& token)
         case '*':                       return STAR;
         case '/':                       return SLASH;
         case '%':                       return PERCENT;
-        case '<':                       angleBracketDepth++; return LEFT_ANGLE;
-        case '>':                       if (angleBracketDepth > 0) angleBracketDepth--; return RIGHT_ANGLE;
+        case '<':                       return LEFT_ANGLE;
+        case '>':                       return RIGHT_ANGLE;
         case '|':                       return VERTICAL_BAR;
         case '^':                       return CARET;
         case '&':                       return AMPERSAND;
         case '?':                       return QUESTION;
-        case '[':                       squareBracketDepth++; return LEFT_BRACKET;
-        case ']':                       if (squareBracketDepth > 0) squareBracketDepth--; return RIGHT_BRACKET;
-        case '{':  afterStruct = false; afterBuffer = false; inDeclaratorList = false; afterDeclarator = false; angleBracketDepth = 0; squareBracketDepth = 0; return LEFT_BRACE;
-        case '}':  inDeclaratorList = false; afterDeclarator = false; angleBracketDepth = 0; squareBracketDepth = 0; return RIGHT_BRACE;
+        case '[':                       return LEFT_BRACKET;
+        case ']':                       return RIGHT_BRACKET;
+        case '{':  afterStruct = false; afterBuffer = false; return LEFT_BRACE;
+        case '}':                       return RIGHT_BRACE;
         case '\\':
             parseContext.error(loc, "illegal use of escape character", "\\", "");
             break;
@@ -1950,24 +1941,11 @@ int TScanContext::identifierOrType()
             if (variable->isUserType() &&
                 // treat redeclaration of forward-declared buffer/uniform reference as an identifier
                 !(variable->getType().isReference() && afterBuffer)) {
-
-                // If we're in a declarator list (like "float a, B;"), treat struct names as IDENTIFIER
-                // to fix GitHub issue #3931
-                if (inDeclaratorList) {
-                    return IDENTIFIER;
-                }
-                
                 afterType = true;
+
                 return TYPE_NAME;
             }
         }
-    }
-
-    // If we see an identifier right after a type, this might be a declarator.
-    // But not in template parameters (inside angle brackets) or array expressions (inside square brackets)
-    if (afterType && angleBracketDepth == 0 && squareBracketDepth == 0) {
-        afterDeclarator = true;
-        afterType = false;
     }
 
     return IDENTIFIER;
