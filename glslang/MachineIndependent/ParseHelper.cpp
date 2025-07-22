@@ -8276,12 +8276,15 @@ static void ForEachOpaque(const TType& type, const TString& path, Function callb
                  ++flatIndex)
             {
                 TString subscriptPath = path;
-                for (size_t dimIndex = 0; dimIndex < indices.size(); ++dimIndex)
+                if (path != "")
                 {
-                    int index = indices[dimIndex];
-                    subscriptPath.append("[");
-                    subscriptPath.append(String(index));
-                    subscriptPath.append("]");
+                    for (size_t dimIndex = 0; dimIndex < indices.size(); ++dimIndex)
+                    {
+                        int index = indices[dimIndex];
+                        subscriptPath.append("[");
+                        subscriptPath.append(String(index));
+                        subscriptPath.append("]");
+                    }
                 }
 
                 recursion(type, subscriptPath, true, recursion);
@@ -8303,8 +8306,11 @@ static void ForEachOpaque(const TType& type, const TString& path, Function callb
             for (const TTypeLoc& typeLoc : types)
             {
                 TString nextPath = path;
-                nextPath.append(".");
-                nextPath.append(typeLoc.type->getFieldName());
+                if (path != "")
+                {
+                    nextPath.append(".");
+                    nextPath.append(typeLoc.type->getFieldName());
+                }
 
                 recursion(*(typeLoc.type), nextPath, false, recursion);
             }
@@ -8362,9 +8368,13 @@ void TParseContext::vkRelaxedRemapFunctionParameter(TFunction* function, TParame
     if (!param.type->isStruct() || !param.type->containsOpaque())
         return;
 
-    ForEachOpaque(*param.type, (param.name ? *param.name : param.type->getFieldName()),
+    TString fieldName = param.name
+        ? *param.name
+        : param.type->hasFieldName() ? param.type->getFieldName() : "";
+
+    ForEachOpaque(*param.type, fieldName,
                   [function, param, newParams](const TType& type, const TString& path) {
-                      TString* memberName = NewPoolTString(path.c_str());
+                      TString* memberName = path != "" ? NewPoolTString(path.c_str()) : nullptr;
 
                       TType* memberType = new TType();
                       memberType->shallowCopy(type);
