@@ -2403,7 +2403,7 @@ bool TGlslangToSpvTraverser::visitBinary(glslang::TVisit /* visit */, glslang::T
             node->getRight()->traverse(this);
             spv::Id index = accessChainLoad(node->getRight()->getType());
 
-            // Zero-extend smaller unsigned integer types for array indexing
+            // Zero-extend smaller unsigned integer types for array indexing.
             // SPIR-V OpAccessChain treats indices as signed, so we need to zero-extend
             // unsigned types to preserve their values (signed types are fine as-is).
             spv::Id indexType = builder.getTypeId(index);
