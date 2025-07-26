@@ -3151,9 +3151,36 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
         if (!(*argp)[6]->getAsTyped()->getType().getQualifier().isConstant())
             error(loc, "argument must be compile-time constant", "matrixInterpretation", "");
         break;
+
+    case EOpCooperativeMatrixLoad:
+    case EOpCooperativeMatrixLoadNV:
+    case EOpCooperativeMatrixLoadTensorNV:
+    case EOpCooperativeMatrixStore:
+    case EOpCooperativeMatrixStoreNV:
+    case EOpCooperativeMatrixStoreTensorNV:
+    {
+        const TIntermTyped *arg1 = (*argp)[1]->getAsTyped();
+        const TIntermTyped* base = TIntermediate::traverseLValueBase(arg1, true, false);
+        const char* errMsg = "Only l-values corresponding to storage block or shared variables can be used with "
+                             "cooperative matrix load/store functions.";
+        if (base) {
+            const TType* refType = (base->getType().isReference()) ? base->getType().getReferentType() : nullptr;
+            const TQualifier& qualifier =
+                (refType != nullptr) ? refType->getQualifier() : base->getType().getQualifier();
+            if (qualifier.storage != EvqShared && qualifier.storage != EvqBuffer)
+                error(loc, errMsg, fnCandidate.getName().c_str(), "");
+        } else {
+            error(loc, errMsg, fnCandidate.getName().c_str(), "");
+        }
+    }
+    break;
+
     default:
         break;
     }
+
+
+
 
     // Texture operations on texture objects (aside from texelFetch on a
     // textureBuffer) require EXT_samplerless_texture_functions.
@@ -7828,8 +7855,7 @@ const TFunction* TParseContext::findFunction400(const TSourceLoc& loc, const TFu
             TType toElementType(to, 0);
             // Load/store tensor functions allow any element type for the pointer
             if ((op == EOpCooperativeMatrixLoadTensorNV || op == EOpCooperativeMatrixStoreTensorNV) &&
-                param == 1 &&
-                (from.getQualifier().storage == EvqBuffer || from.getQualifier().storage == EvqShared)) {
+                param == 1) {
                 return true;
             }
             if (fromElementType == toElementType)
@@ -7942,8 +7968,7 @@ const TFunction* TParseContext::findFunctionExplicitTypes(const TSourceLoc& loc,
             TType toElementType(to, 0);
             // Load/store tensor functions allow any element type for the pointer
             if ((op == EOpCooperativeMatrixLoadTensorNV || op == EOpCooperativeMatrixStoreTensorNV) &&
-                param == 1 &&
-                (from.getQualifier().storage == EvqBuffer || from.getQualifier().storage == EvqShared)) {
+                param == 1) {
                 return true;
             }
             if (fromElementType == toElementType)
