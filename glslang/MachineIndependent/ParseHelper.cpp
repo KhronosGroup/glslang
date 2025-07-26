@@ -3160,7 +3160,7 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
     case EOpCooperativeMatrixStoreTensorNV:
     {
         const TIntermTyped *arg1 = (*argp)[1]->getAsTyped();
-        const TIntermTyped* base = TIntermediate::traverseLValueBase(arg1, true, false);
+        const TIntermTyped* base = TIntermediate::traverseLValueBase(arg1, true, true);
         const char* errMsg = "Only l-values corresponding to storage block or shared variables can be used with "
                              "cooperative matrix load/store functions.";
         if (base) {
@@ -3178,9 +3178,6 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
     default:
         break;
     }
-
-
-
 
     // Texture operations on texture objects (aside from texelFetch on a
     // textureBuffer) require EXT_samplerless_texture_functions.
