@@ -2232,6 +2232,9 @@ void TParseContext::memorySemanticsCheck(const TSourceLoc& loc, const TFunction&
     const int gl_StorageSemanticsImage    = 0x800;
     const int gl_StorageSemanticsOutput   = 0x1000;
 
+    const int nonRelaxedMemoryOrder = gl_SemanticsAcquire |
+                                      gl_SemanticsRelease |
+                                      gl_SemanticsAcquireRelease;
 
     unsigned int semantics = 0, storageClassSemantics = 0;
     unsigned int semantics2 = 0, storageClassSemantics2 = 0;
@@ -2298,22 +2301,6 @@ void TParseContext::memorySemanticsCheck(const TSourceLoc& loc, const TFunction&
         break;
     }
 
-    if ((semantics & gl_SemanticsAcquire) &&
-        (callNode.getOp() == EOpAtomicStore || callNode.getOp() == EOpImageAtomicStore)) {
-        error(loc, "gl_SemanticsAcquire must not be used with (image) atomic store",
-              fnCandidate.getName().c_str(), "");
-    }
-    if ((semantics & gl_SemanticsRelease) &&
-        (callNode.getOp() == EOpAtomicLoad || callNode.getOp() == EOpImageAtomicLoad)) {
-        error(loc, "gl_SemanticsRelease must not be used with (image) atomic load",
-              fnCandidate.getName().c_str(), "");
-    }
-    if ((semantics & gl_SemanticsAcquireRelease) &&
-        (callNode.getOp() == EOpAtomicStore || callNode.getOp() == EOpImageAtomicStore ||
-         callNode.getOp() == EOpAtomicLoad  || callNode.getOp() == EOpImageAtomicLoad)) {
-        error(loc, "gl_SemanticsAcquireRelease must not be used with (image) atomic load/store",
-              fnCandidate.getName().c_str(), "");
-    }
     if (((semantics | semantics2) & ~(gl_SemanticsAcquire |
                                       gl_SemanticsRelease |
                                       gl_SemanticsAcquireRelease |
@@ -2322,6 +2309,7 @@ void TParseContext::memorySemanticsCheck(const TSourceLoc& loc, const TFunction&
                                       gl_SemanticsVolatile))) {
         error(loc, "Invalid semantics value", fnCandidate.getName().c_str(), "");
     }
+
     if (((storageClassSemantics | storageClassSemantics2) & ~(gl_StorageSemanticsBuffer |
                                                               gl_StorageSemanticsShared |
                                                               gl_StorageSemanticsImage |
@@ -2329,57 +2317,101 @@ void TParseContext::memorySemanticsCheck(const TSourceLoc& loc, const TFunction&
         error(loc, "Invalid storage class semantics value", fnCandidate.getName().c_str(), "");
     }
 
-    if (callNode.getOp() == EOpMemoryBarrier) {
-        if (!IsPow2(semantics & (gl_SemanticsAcquire | gl_SemanticsRelease | gl_SemanticsAcquireRelease))) {
-            error(loc, "Semantics must include exactly one of gl_SemanticsRelease, gl_SemanticsAcquire, or "
-                       "gl_SemanticsAcquireRelease", fnCandidate.getName().c_str(), "");
-        }
-    } else {
-        if (semantics & (gl_SemanticsAcquire | gl_SemanticsRelease | gl_SemanticsAcquireRelease)) {
-            if (!IsPow2(semantics & (gl_SemanticsAcquire | gl_SemanticsRelease | gl_SemanticsAcquireRelease))) {
-                error(loc, "Semantics must not include multiple of gl_SemanticsRelease, gl_SemanticsAcquire, or "
-                           "gl_SemanticsAcquireRelease", fnCandidate.getName().c_str(), "");
-            }
-        }
-        if (semantics2 & (gl_SemanticsAcquire | gl_SemanticsRelease | gl_SemanticsAcquireRelease)) {
-            if (!IsPow2(semantics2 & (gl_SemanticsAcquire | gl_SemanticsRelease | gl_SemanticsAcquireRelease))) {
-                error(loc, "semUnequal must not include multiple of gl_SemanticsRelease, gl_SemanticsAcquire, or "
-                           "gl_SemanticsAcquireRelease", fnCandidate.getName().c_str(), "");
-            }
-        }
-    }
-    if (callNode.getOp() == EOpMemoryBarrier) {
-        if (storageClassSemantics == 0) {
-            error(loc, "Storage class semantics must not be zero", fnCandidate.getName().c_str(), "");
-        }
-    }
-    if (callNode.getOp() == EOpBarrier && semantics != 0 && storageClassSemantics == 0) {
-        error(loc, "Storage class semantics must not be zero", fnCandidate.getName().c_str(), "");
-    }
-    if ((callNode.getOp() == EOpAtomicCompSwap || callNode.getOp() == EOpImageAtomicCompSwap) &&
-        (semantics2 & (gl_SemanticsRelease | gl_SemanticsAcquireRelease))) {
-        error(loc, "semUnequal must not be gl_SemanticsRelease or gl_SemanticsAcquireRelease",
+    if (((semantics & nonRelaxedMemoryOrder) && !IsPow2(semantics & nonRelaxedMemoryOrder)) ||
+        ((semantics2 & nonRelaxedMemoryOrder) && !IsPow2(semantics2 & nonRelaxedMemoryOrder))) {
+        error(loc,
+              "Semantics must not include multiple of gl_SemanticsRelease, gl_SemanticsAcquire, or "
+              "gl_SemanticsAcquireRelease",
               fnCandidate.getName().c_str(), "");
     }
-    if ((semantics & gl_SemanticsMakeAvailable) &&
-        !(semantics & (gl_SemanticsRelease | gl_SemanticsAcquireRelease))) {
+
+    if (((semantics & nonRelaxedMemoryOrder) && !storageClassSemantics) ||
+        ((semantics2 & nonRelaxedMemoryOrder) && !storageClassSemantics2)) {
+        error(loc,
+              "Storage class semantics must not be zero when used with gl_SemanticsRelease, "
+              "gl_SemanticsAcquire, or gl_SemanticsAcquireRelease",
+              fnCandidate.getName().c_str(), "");
+    }
+
+    if ((storageClassSemantics && !(semantics & nonRelaxedMemoryOrder)) ||
+        (storageClassSemantics2 && !(semantics2 & nonRelaxedMemoryOrder))) {
+        error(loc,
+              "Semantics must be gl_SemanticsRelease, gl_SemanticsAcquire, or gl_SemanticsAcquireRelease when used "
+              "with non-zero storage class semantics",
+              fnCandidate.getName().c_str(), "");
+    }
+
+    if (((semantics & gl_SemanticsMakeAvailable) &&
+         !(semantics & (gl_SemanticsRelease | gl_SemanticsAcquireRelease))) ||
+        ((semantics2 & gl_SemanticsMakeAvailable) &&
+         !(semantics2 & (gl_SemanticsRelease | gl_SemanticsAcquireRelease)))) {
         error(loc, "gl_SemanticsMakeAvailable requires gl_SemanticsRelease or gl_SemanticsAcquireRelease",
               fnCandidate.getName().c_str(), "");
     }
-    if ((semantics & gl_SemanticsMakeVisible) &&
-        !(semantics & (gl_SemanticsAcquire | gl_SemanticsAcquireRelease))) {
+
+    if (((semantics & gl_SemanticsMakeVisible) && !(semantics & (gl_SemanticsAcquire | gl_SemanticsAcquireRelease))) ||
+        ((semantics2 & gl_SemanticsMakeVisible) &&
+         !(semantics2 & (gl_SemanticsAcquire | gl_SemanticsAcquireRelease)))) {
         error(loc, "gl_SemanticsMakeVisible requires gl_SemanticsAcquire or gl_SemanticsAcquireRelease",
               fnCandidate.getName().c_str(), "");
     }
-    if ((semantics & gl_SemanticsVolatile) &&
-        (callNode.getOp() == EOpMemoryBarrier || callNode.getOp() == EOpBarrier)) {
+
+    if ((callNode.getOp() == EOpAtomicStore || callNode.getOp() == EOpImageAtomicStore) &&
+        (semantics & gl_SemanticsAcquire)) {
+        error(loc, "gl_SemanticsAcquire must not be used with (image) atomic store", fnCandidate.getName().c_str(), "");
+    }
+
+    if ((callNode.getOp() == EOpAtomicLoad || callNode.getOp() == EOpImageAtomicLoad) &&
+        (semantics & gl_SemanticsRelease)) {
+        error(loc, "gl_SemanticsRelease must not be used with (image) atomic load", fnCandidate.getName().c_str(), "");
+    }
+
+    if ((callNode.getOp() == EOpAtomicStore || callNode.getOp() == EOpImageAtomicStore ||
+         callNode.getOp() == EOpAtomicLoad || callNode.getOp() == EOpImageAtomicLoad) &&
+        (semantics & gl_SemanticsAcquireRelease)) {
+        error(loc, "gl_SemanticsAcquireRelease must not be used with (image) atomic load/store",
+              fnCandidate.getName().c_str(), "");
+    }
+
+    if (callNode.getOp() == EOpMemoryBarrier &&
+        !(semantics & (gl_SemanticsAcquire | gl_SemanticsRelease | gl_SemanticsAcquireRelease))) {
+        error(loc,
+              "Semantics must include exactly one of gl_SemanticsRelease, gl_SemanticsAcquire, or "
+              "gl_SemanticsAcquireRelease when used with memoryBarrier",
+              fnCandidate.getName().c_str(), "");
+    }
+
+    if ((callNode.getOp() == EOpMemoryBarrier || callNode.getOp() == EOpBarrier) &&
+        (semantics & gl_SemanticsVolatile)) {
         error(loc, "gl_SemanticsVolatile must not be used with memoryBarrier or controlBarrier",
               fnCandidate.getName().c_str(), "");
     }
-    if ((callNode.getOp() == EOpAtomicCompSwap || callNode.getOp() == EOpImageAtomicCompSwap) &&
-        ((semantics ^ semantics2) & gl_SemanticsVolatile)) {
-        error(loc, "semEqual and semUnequal must either both include gl_SemanticsVolatile or neither",
-              fnCandidate.getName().c_str(), "");
+
+    if (callNode.getOp() == EOpAtomicCompSwap || callNode.getOp() == EOpImageAtomicCompSwap) {
+        if (semantics2 & (gl_SemanticsRelease | gl_SemanticsAcquireRelease)) {
+            error(loc, "semUnequal must not be gl_SemanticsRelease or gl_SemanticsAcquireRelease",
+                  fnCandidate.getName().c_str(), "");
+        }
+        if ((semantics2 & gl_SemanticsAcquire) && !(semantics & (gl_SemanticsAcquire | gl_SemanticsAcquireRelease))) {
+            error(loc,
+                  "semUnequal must not be gl_SemanticsAcquire unless semEqual is gl_SemanticsAcquire "
+                  "or gl_SemanticsAcquireRelease",
+                  fnCandidate.getName().c_str(), "");
+        }
+        if ((semantics2 & gl_SemanticsMakeVisible) && !(semantics & gl_SemanticsMakeVisible)) {
+            error(loc,
+                  "semUnequal must not include gl_SemanticsMakeVisible unless semEqual also includes "
+                  "gl_SemanticsMakeVisible",
+                  fnCandidate.getName().c_str(), "");
+        }
+        if (storageClassSemantics2 & ~(storageClassSemantics)) {
+            error(loc, "semStorageUnequal must not include any option that is not present in semStorageEqual",
+                  fnCandidate.getName().c_str(), "");
+        }
+        if ((semantics ^ semantics2) & gl_SemanticsVolatile) {
+            error(loc, "semEqual and semUnequal must either both include gl_SemanticsVolatile or neither",
+                  fnCandidate.getName().c_str(), "");
+        }
     }
 }
 
