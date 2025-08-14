@@ -2105,7 +2105,10 @@ void TParseContext::addInputArgumentConversions(const TFunction& function, TInte
         TIntermTyped* arg = function.getParamCount() == 1 ? arguments->getAsTyped() : (aggregate ? aggregate->getSequence()[i]->getAsTyped() : arguments->getAsTyped());
         if (*function[i].type != arg->getType()) {
             if (function[i].type->getQualifier().isParamInput() &&
-               !function[i].type->isCoopMat() && !function[i].type->isTensorARM()) {
+               !function[i].type->isCoopMat() && !function[i].type->isTensorARM() &&
+               // tensor layout/view type declarations don't do conversions, so we can't convert these parameters either
+               (function.getName() != "createTensorLayoutNV") &&
+               (function.getName() != "createTensorViewNV")) {
                 // In-qualified arguments just need an extra node added above the argument to
                 // convert to the correct type.
                 arg = intermediate.addConversion(EOpFunctionCall, *function[i].type, arg);
