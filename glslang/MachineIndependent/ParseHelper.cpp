@@ -1540,6 +1540,8 @@ TIntermTyped* TParseContext::handleFunctionCall(const TSourceLoc& loc, TFunction
 
             handleCoopMat2FunctionCall(loc, fnCandidate, result, arguments);
 
+            handleVector2CoopMatConversionCall(loc, fnCandidate, result, arguments);
+
             if (result->getAsTyped()->getType().isCoopVecNV() &&
                !result->getAsTyped()->getType().isParameterized()) {
                 if (auto unaryNode = result->getAsUnaryNode())
@@ -1780,6 +1782,297 @@ void TParseContext::handleCoopMat2FunctionCall(const TSourceLoc& loc, const TFun
         }
     }
 }
+
+
+static const uint32_t spv_Scope_Subgroup = 3;
+
+void TParseContext::handleVector2CoopMatConversionCall(const TSourceLoc& loc, const TFunction* fnCandidate,
+                                                       TIntermTyped*& result, TIntermNode* arguments)
+{
+  const int CM_MatrixUseA = 0;           // == gl_MatrixUseA
+  const int CM_MatrixUseB = 1;           // == gl_MatrixUseB
+  const int CM_MatrixUseAccumulator = 2; // == gl_MatrixUseAccumulator
+
+  TOperator builtinOp = fnCandidate->getBuiltInOp();
+
+  if (!(builtinOp == EOpBitCastArrayQCOM || builtinOp == EOpExtractSubArrayQCOM ||
+        builtinOp == EOpCompositeConstructCoopMatQCOM || builtinOp == EOpCompositeExtractCoopMatQCOM))
+    return;
+
+  TPublicType pubType{};
+  auto* oldResult = result;
+
+  if (builtinOp == EOpBitCastArrayQCOM) {
+    auto srcArr = arguments->getAsAggregate()->getSequence()[0]->getAsTyped();
+    auto& srcTy = srcArr->getType();
+    auto srcArrLen = srcTy.getArraySizes()->getDimSize(0);
+    auto srcLenAsNode = srcTy.getArraySizes()->getDimNode(0);
+
+    auto dstArr = arguments->getAsAggregate()->getSequence()[1]->getAsTyped();
+    auto& dstTy = dstArr->getType();
+    auto dstArrLen = dstTy.getArraySizes()->getDimSize(0);
+    auto dstLenAsNode = dstTy.getArraySizes()->getDimNode(0);
+
+    if (srcLenAsNode == nullptr && dstLenAsNode == nullptr) {
+      //do basic tests:
+      if ((srcArrLen * GetNumBits(srcTy.getBasicType())) != (dstArrLen * GetNumBits(dstTy.getBasicType())))
+        error(loc, "source and target arrays have different bit sizes", "", "");
+    }
+
+    pubType.basicType = dstTy.getBasicType();
+    pubType.vectorSize = 1u;
+    pubType.qualifier.precision = EpqNone;
+    pubType.coopmatNV = false;
+    pubType.coopmatKHR = false;
+    pubType.arraySizes = new TArraySizes;
+    pubType.arraySizes->addInnerSize(dstArrLen, dstLenAsNode);
+    pubType.typeParameters = nullptr;
+  }
+
+  if (builtinOp == EOpExtractSubArrayQCOM) {
+    auto dstArr = arguments->getAsAggregate()->getSequence()[2]->getAsTyped();
+    auto& dstTy = dstArr->getType();
+    auto dstArrLen = dstTy.getArraySizes()->getDimSize(0);
+    auto dstLenAsNode = dstTy.getArraySizes()->getDimNode(0);
+
+    if (dstLenAsNode == nullptr) {
+      if ((dstArrLen * GetNumBits(dstTy.getBasicType())) == 32)
+        error(loc, "the byte size of the target array must be 32", "", "");
+    }
+
+    pubType.basicType = dstTy.getBasicType();
+    pubType.vectorSize = 1u;
+    pubType.qualifier.precision = EpqNone;
+    pubType.coopmatNV = false;
+    pubType.coopmatKHR = false;
+    pubType.arraySizes = new TArraySizes;
+    pubType.arraySizes->addInnerSize(dstArrLen, dstLenAsNode);
+    pubType.typeParameters = nullptr;
+  }
+
+  if (builtinOp == EOpCompositeConstructCoopMatQCOM) {
+
+    auto& srcType = arguments->getAsAggregate()->getSequence()[0]->getAsTyped()->getType();
+    auto& dstType = arguments->getAsAggregate()->getSequence()[1]->getAsTyped()->getType();
+
+    glslang::TBasicType srcBasicType = srcType.getBasicType();
+    glslang::TBasicType dstBasicType = dstType.getBasicType();
+
+    if (srcBasicType != EbtUint && srcBasicType != dstBasicType)
+      error(loc, "source and destination element types are not compatible", "", "");
+
+    uint32_t scope = spv_Scope_Subgroup;
+    uint32_t coopMatKHRuse = -1u;
+    uint32_t coopMatNumRows = -1u, coopMatNumCols = -1u;
+    TIntermTyped *nodeNumRows = nullptr, *nodeNumCols = nullptr;
+    const TTypeParameters* dstTypeParameters = dstType.getTypeParameters();
+    if (dstTypeParameters->arraySizes == nullptr || dstTypeParameters->arraySizes->getNumDims() != 4) {
+      error(loc, "destination cooperative matrix has an unsupported type", "", "");
+    } else {
+      auto arraySizes = dstTypeParameters->arraySizes;
+      scope = arraySizes->getDimSize(0);
+      coopMatNumRows = arraySizes->getDimSize(1);
+      nodeNumRows = arraySizes->getDimNode(1);
+      coopMatNumCols = arraySizes->getDimSize(2);
+      nodeNumCols = arraySizes->getDimNode(2);
+      coopMatKHRuse = arraySizes->getDimSize(3);
+    }
+
+    if (scope != spv_Scope_Subgroup) {
+      scope = spv_Scope_Subgroup;
+      error(loc, "cooperative matrix has unsupported scope; gl_SubgroupScope is expected", "", "");
+    }
+
+    if (coopMatKHRuse < CM_MatrixUseA || coopMatKHRuse > CM_MatrixUseAccumulator) {
+      coopMatKHRuse = CM_MatrixUseA;
+      error(loc, "cooperative matrix use must be one of gl_MatrixUseA, gl_MatrixUseB, gl_MatrixUseAccumulator",
+            "", "");
+    }
+
+    uint32_t dstBasicTypeSize = GetNumBits(dstBasicType) / 8;
+
+    unsigned numRows = coopMatNumRows;
+    TIntermTyped* specConstRows = nodeNumRows;
+    unsigned numCols = coopMatNumCols;
+    TIntermTyped* specConstCols = nodeNumCols;
+
+    // input array type
+    const TType& type = arguments->getAsAggregate()->getSequence()[0]->getAsTyped()->getType();
+    uint32_t arrayLen = type.getArraySizes()->getDimSize(0);
+    auto arrayDimNode = type.getArraySizes()->getDimNode(0);
+
+    if (coopMatKHRuse == CM_MatrixUseA || coopMatKHRuse == CM_MatrixUseAccumulator) {
+      // update numCols
+      if (arrayDimNode == nullptr && specConstCols == nullptr)
+        numCols = arrayLen * (sizeof(uint32_t) / dstBasicTypeSize);
+    } else if (coopMatKHRuse == CM_MatrixUseB) {
+      // update numRows
+      if (arrayDimNode == nullptr && specConstRows == nullptr) {
+        numRows = arrayLen * (sizeof(uint32_t) / dstBasicTypeSize);
+      }
+    }
+
+    // construct the type
+    TArraySizes* arraySizes = new TArraySizes;
+
+    // add Scope
+    arraySizes->addInnerSize(scope);
+
+    // add the row size
+    arraySizes->addInnerSize(numRows, specConstRows); // copy from source
+    // add the column size
+    arraySizes->addInnerSize(numCols, specConstCols); // copy from source
+    // add cooperative matrix use
+    arraySizes->addInnerSize(coopMatKHRuse);
+
+    pubType.basicType = dstBasicType;
+    pubType.vectorSize = 1u;
+    pubType.qualifier = srcType.getQualifier();
+    pubType.qualifier.precision = EpqNone;
+    pubType.coopmatNV = dstType.isCoopMatNV();
+    pubType.coopmatKHR = dstType.isCoopMatKHR();
+    pubType.arraySizes = nullptr;
+    pubType.typeParameters = const_cast<glslang::TTypeParameters*>(dstTypeParameters);
+  }
+
+  if (builtinOp == EOpCompositeExtractCoopMatQCOM) {
+    auto& srcType = arguments->getAsAggregate()->getSequence()[0]->getAsTyped()->getType();
+    auto& dstType = arguments->getAsAggregate()->getSequence()[1]->getAsTyped()->getType();
+
+    glslang::TBasicType srcBasicType = srcType.getBasicType();
+    glslang::TBasicType dstBasicType = dstType.getBasicType();
+
+    if (dstBasicType != EbtUint && srcBasicType != dstBasicType)
+      error(loc, "source and destination element types are not compatible", "", "");
+
+    uint32_t scope = spv_Scope_Subgroup;
+    unsigned coopMatKHRuse = -1u;
+    const TTypeParameters* srcTypeParameters = srcType.getTypeParameters();
+    if (srcTypeParameters->arraySizes == nullptr || srcTypeParameters->arraySizes->getNumDims() != 4) {
+      error(loc, "source cooperative matrix has an unsupported type", "", "");
+    } else {
+      auto arraySizes = srcTypeParameters->arraySizes;
+      scope = arraySizes->getDimSize(0);
+      coopMatKHRuse = arraySizes->getDimSize(3);
+    }
+
+    if (scope != spv_Scope_Subgroup) {
+      scope = spv_Scope_Subgroup;
+      error(loc, "cooperative matrix has unsupported scope; gl_SubgroupScope is expected", "", "");
+    }
+
+    if (coopMatKHRuse < CM_MatrixUseA || coopMatKHRuse > CM_MatrixUseAccumulator) {
+      coopMatKHRuse = CM_MatrixUseA;
+      error(loc, "cooperative matrix use must be one of gl_MatrixUseA, gl_MatrixUseB, gl_MatrixUseAccumulator",
+            "", "");
+    }
+
+    auto dstArrLen = dstType.getArraySizes()->getDimSize(0);
+    auto dstLenAsNode = dstType.getArraySizes()->getDimNode(0);
+
+    if (dstLenAsNode == nullptr) {
+      bool ok = true;
+      switch (dstBasicType) {
+      case EbtUint:
+      case EbtInt:
+      case EbtFloat:
+        ok = (((coopMatKHRuse == CM_MatrixUseA || coopMatKHRuse == CM_MatrixUseB) && dstArrLen == 8) ||
+              (coopMatKHRuse ==
+               CM_MatrixUseAccumulator) /* && (dstArrLen == 64 || dstArrLen == 32 || dstArrLen == 16))*/);
+        break;
+      case EbtFloat16:
+        ok = (((coopMatKHRuse == CM_MatrixUseA || coopMatKHRuse == CM_MatrixUseB) && dstArrLen == 16) ||
+              (coopMatKHRuse ==
+               CM_MatrixUseAccumulator) /* && (dstArrLen == 64 || dstArrLen == 32 || dstArrLen == 16))*/);
+        break;
+      case EbtInt8:
+      case EbtUint8:
+        ok = (((coopMatKHRuse == CM_MatrixUseA || coopMatKHRuse == CM_MatrixUseB) && dstArrLen == 32) ||
+              (coopMatKHRuse ==
+               CM_MatrixUseAccumulator) /* && (dstArrLen == 64 || dstArrLen == 32 || dstArrLen == 16))*/);
+        break;
+      default:
+        error(loc, "unsupported element type", "", "");
+      }
+      if (!ok)
+        error(loc, "unsupported destination array length", "", "");
+    }
+
+    pubType.basicType = dstBasicType;
+    pubType.vectorSize = 1u;
+    pubType.qualifier.precision = EpqNone;
+    pubType.coopmatNV = false;
+    pubType.coopmatKHR = false;
+
+    pubType.arraySizes = new TArraySizes;
+
+    {
+      //int coopMatKHRuse = srcTypeParameters->arraySizes->getDimSize(3);
+      uint32_t index = -1u;
+      if (coopMatKHRuse == CM_MatrixUseA) {
+        index = 2;
+      } else if (coopMatKHRuse == CM_MatrixUseB) {
+        index = 1;
+      } else if (coopMatKHRuse == CM_MatrixUseAccumulator) {
+        index = 2;
+      } else {
+        error(loc, "source cooperative matrix has an unexpected cooperative matrix use", "", "");
+      }
+      int32_t numRowsOrCols = srcTypeParameters->arraySizes->getDimSize(index);
+      auto dimNode = srcTypeParameters->arraySizes->getDimNode(index);
+      if (dimNode != nullptr && dstLenAsNode == nullptr) {
+        numRowsOrCols = dstType.getArraySizes()->getDimSize(0);
+        dimNode = nullptr;
+      }
+      //int32_t dstArrLen = dstType.getArraySizes()->getDimSize(0);
+      pubType.arraySizes->addInnerSize(dstArrLen, dstLenAsNode);
+      if (dimNode == nullptr && dstLenAsNode == nullptr) {
+        const char* msg = nullptr;
+        if (coopMatKHRuse == CM_MatrixUseA && (numRowsOrCols != dstArrLen && dstArrLen != 8)) {
+          msg = "the source matrix's column is not compatible with the destination array";
+        } else if (coopMatKHRuse == CM_MatrixUseB && (numRowsOrCols != dstArrLen && dstArrLen != 8)) {
+          msg = "the source matrix's row is not compatible with the destination array";
+        } else if (coopMatKHRuse == CM_MatrixUseAccumulator &&
+                   (numRowsOrCols != dstArrLen &&
+                    (srcBasicType == EbtFloat16 && numRowsOrCols != 2 * dstArrLen))) {
+          msg = "the source matrix's column is not compatible with the destination array";
+        }
+        if (msg != nullptr)
+          error(loc, msg, "", "");
+      }
+    }
+
+    pubType.typeParameters = nullptr;
+  }
+
+  TType resultType(pubType);
+  if (pubType.typeParameters != nullptr)
+    resultType.copyTypeParameters(*pubType.typeParameters);
+  // need to make StorageQualifier temp
+  resultType.makeTemporary();
+  result->setType(resultType);
+
+  // the RHS of an assignment to be formed
+  auto rhs = result;
+
+  // the LHS of an assignment to be formed; pick the last argument
+  int lhsIdx = (builtinOp == EOpExtractSubArrayQCOM ? 2 : 1);
+  auto lhs = arguments->getAsAggregate()->getSequence()[lhsIdx]->getAsTyped();
+  // pop the last argument from the arguments sequence
+  arguments->getAsAggregate()->getSequence().pop_back();
+
+  // Create OpAssign
+  {
+    arrayObjectCheck(loc, lhs->getType(), "array assignment");
+    storage16BitAssignmentCheck(loc, lhs->getType(), "=");
+    lValueErrorCheck(loc, "assign", lhs);
+    rValueErrorCheck(loc, "assign", rhs);
+    result = addAssign(loc, EOpAssign, lhs, rhs);
+    if (result == nullptr)
+      result = oldResult;
+  }
+}
+
 
 TIntermTyped* TParseContext::handleBuiltInFunctionCall(TSourceLoc loc, TIntermNode* arguments,
                                                        const TFunction& function)
@@ -2489,7 +2782,7 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
             if (! fnCandidate[0].type->getSampler().shadow)
                 compArg = 3;
             // check for constant offsets
-            if (! (*argp)[fnCandidate[0].type->getSampler().shadow ? 3 : 2]->getAsConstantUnion() 
+            if (! (*argp)[fnCandidate[0].type->getSampler().shadow ? 3 : 2]->getAsConstantUnion()
                 // NV_gpu_shader5 relaxes this limitation and allows for non-constant offsets
                 && !extensionTurnedOn(E_GL_NV_gpu_shader5))
                 error(loc, "must be a compile-time constant:", feature, "offsets argument");
@@ -7963,7 +8256,7 @@ const TFunction* TParseContext::findFunction400(const TSourceLoc& loc, const TFu
 // "To determine whether the conversion for a single argument in one match
 //  is better than that for another match, the conversion is assigned of the
 //  three ranks ordered from best to worst:
-//   1. Exact match: no conversion.
+//    1. Exact match: no conversion.
 //    2. Promotion: integral or floating-point promotion.
 //    3. Conversion: integral conversion, floating-point conversion,
 //       floating-integral conversion.

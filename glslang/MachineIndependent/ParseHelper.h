@@ -513,6 +513,7 @@ protected:
     TIntermTyped* convertInitializerList(const TSourceLoc&, const TType&, TIntermTyped* initializer);
     void finish() override;
     void handleCoopMat2FunctionCall(const TSourceLoc& loc, const TFunction* fnCandidate, TIntermTyped* result, TIntermNode* arguments);
+    void handleVector2CoopMatConversionCall(const TSourceLoc& loc, const TFunction* fnCandidate, TIntermTyped* &result, TIntermNode* arguments);
 
     virtual const char* getGlobalUniformBlockName() const override;
     virtual void finalizeGlobalUniformBlockLayout(TVariable&) override;
