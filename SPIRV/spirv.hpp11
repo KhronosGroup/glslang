@@ -1110,6 +1110,7 @@ enum class Capability : unsigned {
     TextureBoxFilterQCOM = 4485,
     TextureBlockMatchQCOM = 4486,
     TileShadingQCOM = 4495,
+    CooperativeMatrixConversionQCOM = 4496,
     TextureBlockMatch2QCOM = 4498,
     Float16ImageAMD = 5008,
     ImageGatherBiasLodAMD = 5009,
@@ -1996,10 +1997,14 @@ enum class Op : unsigned {
     OpImageBoxFilterQCOM = 4481,
     OpImageBlockMatchSSDQCOM = 4482,
     OpImageBlockMatchSADQCOM = 4483,
+    OpBitCastArrayQCOM = 4497,
     OpImageBlockMatchWindowSSDQCOM = 4500,
     OpImageBlockMatchWindowSADQCOM = 4501,
     OpImageBlockMatchGatherSSDQCOM = 4502,
     OpImageBlockMatchGatherSADQCOM = 4503,
+    OpCompositeConstructCoopMatQCOM = 4540,
+    OpCompositeExtractCoopMatQCOM = 4541,
+    OpExtractSubArrayQCOM = 4542,
     OpGroupIAddNonUniformAMD = 5000,
     OpGroupFAddNonUniformAMD = 5001,
     OpGroupFMinNonUniformAMD = 5002,
@@ -2803,10 +2808,14 @@ inline void HasResultAndType(Op opcode, bool *hasResult, bool *hasResultType) {
     case Op::OpImageBoxFilterQCOM: *hasResult = true; *hasResultType = true; break;
     case Op::OpImageBlockMatchSSDQCOM: *hasResult = true; *hasResultType = true; break;
     case Op::OpImageBlockMatchSADQCOM: *hasResult = true; *hasResultType = true; break;
+    case Op::OpBitCastArrayQCOM: *hasResult = true; *hasResultType = true; break;
     case Op::OpImageBlockMatchWindowSSDQCOM: *hasResult = true; *hasResultType = true; break;
     case Op::OpImageBlockMatchWindowSADQCOM: *hasResult = true; *hasResultType = true; break;
     case Op::OpImageBlockMatchGatherSSDQCOM: *hasResult = true; *hasResultType = true; break;
     case Op::OpImageBlockMatchGatherSADQCOM: *hasResult = true; *hasResultType = true; break;
+    case Op::OpCompositeConstructCoopMatQCOM: *hasResult = true; *hasResultType = true; break;
+    case Op::OpCompositeExtractCoopMatQCOM: *hasResult = true; *hasResultType = true; break;
+    case Op::OpExtractSubArrayQCOM: *hasResult = true; *hasResultType = true; break;
     case Op::OpGroupIAddNonUniformAMD: *hasResult = true; *hasResultType = true; break;
     case Op::OpGroupFAddNonUniformAMD: *hasResult = true; *hasResultType = true; break;
     case Op::OpGroupFMinNonUniformAMD: *hasResult = true; *hasResultType = true; break;
@@ -4003,6 +4012,7 @@ inline const char* CapabilityToString(Capability value) {
     case Capability::TextureBoxFilterQCOM: return "TextureBoxFilterQCOM";
     case Capability::TextureBlockMatchQCOM: return "TextureBlockMatchQCOM";
     case Capability::TileShadingQCOM: return "TileShadingQCOM";
+    case Capability::CooperativeMatrixConversionQCOM: return "CooperativeMatrixConversionQCOM";
     case Capability::TextureBlockMatch2QCOM: return "TextureBlockMatch2QCOM";
     case Capability::Float16ImageAMD: return "Float16ImageAMD";
     case Capability::ImageGatherBiasLodAMD: return "ImageGatherBiasLodAMD";
@@ -4744,10 +4754,14 @@ inline const char* OpToString(Op value) {
     case Op::OpImageBoxFilterQCOM: return "OpImageBoxFilterQCOM";
     case Op::OpImageBlockMatchSSDQCOM: return "OpImageBlockMatchSSDQCOM";
     case Op::OpImageBlockMatchSADQCOM: return "OpImageBlockMatchSADQCOM";
+    case Op::OpBitCastArrayQCOM: return "OpBitCastArrayQCOM";
     case Op::OpImageBlockMatchWindowSSDQCOM: return "OpImageBlockMatchWindowSSDQCOM";
     case Op::OpImageBlockMatchWindowSADQCOM: return "OpImageBlockMatchWindowSADQCOM";
     case Op::OpImageBlockMatchGatherSSDQCOM: return "OpImageBlockMatchGatherSSDQCOM";
     case Op::OpImageBlockMatchGatherSADQCOM: return "OpImageBlockMatchGatherSADQCOM";
+    case Op::OpCompositeConstructCoopMatQCOM: return "OpCompositeConstructCoopMatQCOM";
+    case Op::OpCompositeExtractCoopMatQCOM: return "OpCompositeExtractCoopMatQCOM";
+    case Op::OpExtractSubArrayQCOM: return "OpExtractSubArrayQCOM";
     case Op::OpGroupIAddNonUniformAMD: return "OpGroupIAddNonUniformAMD";
     case Op::OpGroupFAddNonUniformAMD: return "OpGroupFAddNonUniformAMD";
     case Op::OpGroupFMinNonUniformAMD: return "OpGroupFMinNonUniformAMD";

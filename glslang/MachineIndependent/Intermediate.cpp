@@ -839,7 +839,8 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
     // Reject implicit conversions to cooperative matrix types
     if (node->getType().isCoopMat() &&
         op != EOpConstructCooperativeMatrixNV &&
-        op != EOpConstructCooperativeMatrixKHR)
+        op != EOpConstructCooperativeMatrixKHR &&
+        op != glslang::EOpCompositeConstructCoopMatQCOM)
         return nullptr;
 
     if (node->getType().isTensorLayoutNV() ||

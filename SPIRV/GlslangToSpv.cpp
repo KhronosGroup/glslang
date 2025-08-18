@@ -4262,6 +4262,24 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         // store the result to the pointer
         builder.createStore(result, operands[0]);
         result = 0;
+    } else if (node->getOp() == glslang::EOpBitCastArrayQCOM) {
+        builder.addCapability(spv::Capability::CooperativeMatrixConversionQCOM);
+        builder.addExtension(spv::E_SPV_QCOM_cooperative_matrix_conversion);
+        result = builder.createUnaryOp(spv::Op::OpBitCastArrayQCOM, resultType(), operands[0]);
+    } else if (node->getOp() == glslang::EOpCompositeConstructCoopMatQCOM) {
+        builder.addCapability(spv::Capability::CooperativeMatrixConversionQCOM);
+        builder.addExtension(spv::E_SPV_QCOM_cooperative_matrix_conversion);
+        result = builder.createUnaryOp(spv::Op::OpCompositeConstructCoopMatQCOM, resultType(), operands[0]);
+    } else if (node->getOp() == glslang::EOpCompositeExtractCoopMatQCOM) {
+        builder.addCapability(spv::Capability::CooperativeMatrixConversionQCOM);
+        builder.addExtension(spv::E_SPV_QCOM_cooperative_matrix_conversion);
+        result = builder.createUnaryOp(spv::Op::OpCompositeExtractCoopMatQCOM, resultType(), operands[0]);
+    } else if (node->getOp() == glslang::EOpExtractSubArrayQCOM) {
+        builder.addCapability(spv::Capability::CooperativeMatrixConversionQCOM);
+        builder.addExtension(spv::E_SPV_QCOM_cooperative_matrix_conversion);
+
+        std::vector<spv::Id> arguments { operands[0], operands[1] };;
+        result = builder.createOp(spv::Op::OpExtractSubArrayQCOM, resultType(), arguments);
     } else if (node->getOp() == glslang::EOpCooperativeVectorMatMulNV ||
                node->getOp() == glslang::EOpCooperativeVectorMatMulAddNV) {
         auto matrixOperands = spv::CooperativeMatrixOperandsMask::MaskNone;

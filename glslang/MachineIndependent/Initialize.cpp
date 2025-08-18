@@ -4884,6 +4884,31 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "\n"
             );
 
+        {
+          std::stringstream coopMatConvFuncs;
+
+          const std::string eltTypes[] = {"uint32_t", "uint", "int32_t", "int", "float32_t", "float", "float16_t"};
+
+          for (auto srcEltTy : eltTypes) {
+            for (auto dstEltTy : eltTypes) {
+              coopMatConvFuncs << "void bitcastQCOM(" << srcEltTy.c_str() << " SrcArr[], " << dstEltTy.c_str()
+                << " DstArr[]);\n";
+            }
+          }
+          coopMatConvFuncs << "\n";
+
+          for (auto eltTy : {"float32_t", "float16_t", "int8_t", "uint8_t", "uint32_t", "uint", "int32_t", "int"}) {
+            coopMatConvFuncs << "void vectorToCoopmatQCOM(" << eltTy << " SrcVec[], coopmat CM);\n";
+            coopMatConvFuncs << "void coopmatToVectorQCOM(coopmat CM, " << eltTy << " Dstvec[]);\n";
+          }
+
+          for (auto eltTy : {"uint32_t", "uint", "int32_t", "int", "float32_t", "float", "float16_t"}) {
+            coopMatConvFuncs << "void extractSubArrayQCOM(" << eltTy << " arr[], uint index, " << eltTy << " subarr[]);\n";
+          }
+
+          commonBuiltins.append(coopMatConvFuncs.str().c_str());
+        }
+
         commonBuiltins.append(
             "tensorLayoutNV createTensorLayoutNV(uint Dim);\n"
             "tensorLayoutNV createTensorLayoutNV(uint Dim, uint Mode);\n"
@@ -9791,6 +9816,13 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setFunctionExtensions("coopVecReduceSumAccumulateNV",       1, &E_GL_NV_cooperative_vector);
         }
 
+        {
+          symbolTable.setFunctionExtensions("bitcastQCOM", 1, &E_GL_QCOM_cooperative_matrix_conversion);
+          symbolTable.setFunctionExtensions("extractSubArrayQCOM", 1, &E_GL_QCOM_cooperative_matrix_conversion);
+          symbolTable.setFunctionExtensions("vectorToCoopmatQCOM", 1, &E_GL_QCOM_cooperative_matrix_conversion);
+          symbolTable.setFunctionExtensions("coopmatToVectorQCOM", 1, &E_GL_QCOM_cooperative_matrix_conversion);
+        }
+
         if ((profile != EEsProfile && version >= 450) || (profile == EEsProfile && version >= 320)) {
             symbolTable.setFunctionExtensions("dFdx",                   1, &E_GL_NV_compute_shader_derivatives);
             symbolTable.setFunctionExtensions("dFdy",                   1, &E_GL_NV_compute_shader_derivatives);
@@ -11103,6 +11135,11 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         symbolTable.relateToOperator("tensorReadARM",                EOpTensorReadARM);
         symbolTable.relateToOperator("tensorWriteARM",               EOpTensorWriteARM);
         symbolTable.relateToOperator("tensorSizeARM",                EOpTensorSizeARM);
+
+        symbolTable.relateToOperator("bitcastQCOM", EOpBitCastArrayQCOM);
+        symbolTable.relateToOperator("extractSubArrayQCOM", EOpExtractSubArrayQCOM);
+        symbolTable.relateToOperator("vectorToCoopmatQCOM", EOpCompositeConstructCoopMatQCOM);
+        symbolTable.relateToOperator("coopmatToVectorQCOM", EOpCompositeExtractCoopMatQCOM);
 
         if (profile != EEsProfile && version >= 460) {
             symbolTable.relateToOperator("fetchMicroTriangleVertexPositionNV", EOpFetchMicroTriangleVertexPositionNV);

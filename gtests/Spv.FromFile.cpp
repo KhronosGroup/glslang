@@ -77,6 +77,7 @@ using VulkanAstSemantics = GlslangTest<::testing::TestWithParam<std::string>>;
 using HlslIoMap = GlslangTest<::testing::TestWithParam<IoMapData>>;
 using GlslIoMap = GlslangTest<::testing::TestWithParam<IoMapData>>;
 using CompileVulkanToSpirvTestQCOM = GlslangTest<::testing::TestWithParam<std::string>>;
+using CompileVulkanToSpirv13TestQCOM = GlslangTest<::testing::TestWithParam<std::string>>;
 using CompileVulkanToSpirvTestAMD = GlslangTest<::testing::TestWithParam<std::string>>;
 using CompileVulkanToSpirvTestNV = GlslangTest<::testing::TestWithParam<std::string>>;
 using CompileVulkanToSpirv14TestNV = GlslangTest<::testing::TestWithParam<std::string>>;
@@ -213,6 +214,14 @@ TEST_P(CompileVulkanToSpirvTestQCOM, FromFile)
                             Source::GLSL, Semantics::Vulkan, glslang::EShTargetVulkan_1_0, glslang::EShTargetSpv_1_0,
                             Target::Spv);
 }
+
+TEST_P(CompileVulkanToSpirv13TestQCOM, FromFile)
+{
+    loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam(),
+                            Source::GLSL, Semantics::Vulkan, glslang::EShTargetVulkan_1_1, glslang::EShTargetSpv_1_3,
+                            Target::Spv);
+}
+
 
 // Compiling GLSL to SPIR-V under Vulkan semantics (AMD extensions enabled).
 // Expected to successfully generate SPIR-V.
@@ -928,6 +937,15 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.qcom.tileShading.1.frag",
         "spv.qcom.es.tileShading.0.frag",
         "spv.qcom.es.tileShading.1.frag",
+    })),
+    FileNameAsCustomTestSuffix
+);
+
+INSTANTIATE_TEST_SUITE_P(
+    Glsl, CompileVulkanToSpirv13TestQCOM,
+    ::testing::ValuesIn(std::vector<std::string>({
+        "spv.qcom.coopmatConversion.1.comp",
+        "spv.qcom.coopmatConversion.2.comp",
     })),
     FileNameAsCustomTestSuffix
 );

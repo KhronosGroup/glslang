@@ -658,6 +658,11 @@ bool TOutputTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node
     case EOpConstructCooperativeVectorNV:  out.debug << "Construct cooperative vector NV";  break;
     case EOpConstructAccStruct: out.debug << "Construct acceleration structure"; break;
 
+    case EOpBitCastArrayQCOM:              out.debug << "Bitcast To Array QCOM"; break;
+    case EOpExtractSubArrayQCOM:           out.debug << "Extract Subarray QCOM"; break;
+    case EOpCompositeConstructCoopMatQCOM:   out.debug << "Construct Cooperative Matrix QCOM"; break;
+    case EOpCompositeExtractCoopMatQCOM:     out.debug << "Extract Cooperative Matrix QCOM"; break;
+
     case EOpLessThan:         out.debug << "Compare Less Than";             break;
     case EOpGreaterThan:      out.debug << "Compare Greater Than";          break;
     case EOpLessThanEqual:    out.debug << "Compare Less Than or Equal";    break;
