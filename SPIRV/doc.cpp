@@ -1114,6 +1114,8 @@ const char* CapabilityString(int info)
     case (int)Capability::TileShadingQCOM:                     return "TileShadingQCOM";
     case (int)Capability::TextureBlockMatch2QCOM:              return "TextureBlockMatch2QCOM";
 
+    case (int)Capability::CooperativeMatrixConversionQCOM:     return "CooperativeMatrixConversionQCOM";
+
     case (int)Capability::ReplicatedCompositesEXT:             return "CapabilityReplicatedCompositesEXT";
 
     case (int)Capability::DotProductKHR:                       return "DotProductKHR";
@@ -1699,6 +1701,11 @@ const char* OpcodeString(int op)
     case (int)Op::OpImageBlockMatchWindowSADQCOM:    return "OpImageBlockMatchWindowSADQCOM";
     case (int)Op::OpImageBlockMatchGatherSSDQCOM:    return "OpImageBlockMatchGatherSSDQCOM";
     case (int)Op::OpImageBlockMatchGatherSADQCOM:    return "OpImageBlockMatchGatherSADQCOM";
+
+    case (int)Op::OpBitCastArrayQCOM:                return "OpBitCastArrayQCOM";
+    case (int)Op::OpCompositeConstructCoopMatQCOM:   return "OpCompositeConstructCoopMatQCOM";
+    case (int)Op::OpCompositeExtractCoopMatQCOM:     return "OpCompositeExtractCoopMatQCOM";
+    case (int)Op::OpExtractSubArrayQCOM:             return "OpExtractSubArrayQCOM";
 
     case (int)Op::OpConstantCompositeReplicateEXT: return "OpConstantCompositeReplicateEXT";
     case (int)Op::OpSpecConstantCompositeReplicateEXT: return "OpSpecConstantCompositeReplicateEXT";
@@ -3723,6 +3730,19 @@ void Parameterize()
         InstructionDesc[enumCast(Op::OpImageBlockMatchGatherSADQCOM)].operands.push(OperandId, "'block size'");
         InstructionDesc[enumCast(Op::OpImageBlockMatchGatherSADQCOM)].operands.push(OperandImageOperands, "", true);
         InstructionDesc[enumCast(Op::OpImageBlockMatchGatherSADQCOM)].setResultAndType(true, true);
+
+        InstructionDesc[enumCast(Op::OpBitCastArrayQCOM)].operands.push(OperandId, "'source array'");
+        InstructionDesc[enumCast(Op::OpBitCastArrayQCOM)].setResultAndType(true, true);
+
+        InstructionDesc[enumCast(Op::OpCompositeConstructCoopMatQCOM)].operands.push(OperandId, "'source array'");
+        InstructionDesc[enumCast(Op::OpCompositeConstructCoopMatQCOM)].setResultAndType(true, true);
+
+        InstructionDesc[enumCast(Op::OpCompositeExtractCoopMatQCOM)].operands.push(OperandId, "'source cooperative matrix'");
+        InstructionDesc[enumCast(Op::OpCompositeExtractCoopMatQCOM)].setResultAndType(true, true);
+
+        InstructionDesc[enumCast(Op::OpExtractSubArrayQCOM)].operands.push(OperandId, "'source array'");
+        InstructionDesc[enumCast(Op::OpExtractSubArrayQCOM)].operands.push(OperandId, "'start index'");
+        InstructionDesc[enumCast(Op::OpExtractSubArrayQCOM)].setResultAndType(true, true);
 
         InstructionDesc[enumCast(Op::OpConstantCompositeReplicateEXT)].operands.push(OperandId, "'Value'");
         InstructionDesc[enumCast(Op::OpSpecConstantCompositeReplicateEXT)].operands.push(OperandId, "'Value'");

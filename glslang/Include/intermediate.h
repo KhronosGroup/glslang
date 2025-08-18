@@ -985,6 +985,12 @@ enum TOperator {
     EOpImageBlockMatchGatherSSDQCOM,
     EOpImageBlockMatchGatherSADQCOM,
 
+    // Cooperative Matrix Conversion
+    EOpBitCastArrayQCOM,
+    EOpExtractSubArrayQCOM,
+    EOpCompositeConstructCoopMatQCOM,
+    EOpCompositeExtractCoopMatQCOM,
+
     // GL_NV_cluster_acceleration_structure
     EOpRayQueryGetIntersectionClusterIdNV,
     EOpHitObjectGetClusterIdNV,
