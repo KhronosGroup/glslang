@@ -1777,7 +1777,44 @@ void TParseContext::handleCoopMat2FunctionCall(const TSourceLoc& loc, const TFun
             // Set result type to match type of first parameter
             result->setType(result->getAsAggregate()->getSequence()[0]->getAsTyped()->getType());
         } else {
-            // For MulAdd, set result type to match type of C parameter
+            // The only remaining operation is MulAdd
+            assert(fnCandidate->getBuiltInOp() == EOpCooperativeMatrixMulAdd ||
+                   fnCandidate->getBuiltInOp() == EOpCooperativeMatrixMulAddNV);
+
+            // Validate that the matrix sizes are compatible for multiplication and addition
+            const auto &sequence = arguments->getAsAggregate()->getSequence();
+            const auto *aSize = sequence[0]->getAsTyped()->getType().getTypeParameters()->arraySizes;
+            const auto *bSize = sequence[1]->getAsTyped()->getType().getTypeParameters()->arraySizes;
+            const auto *cSize = sequence[2]->getAsTyped()->getType().getTypeParameters()->arraySizes;
+
+            // sizes look like: [scope, rows, cols, use]
+            auto aRows = aSize->getDimSize(1);
+            auto aCols = aSize->getDimSize(2);
+            auto bRows = bSize->getDimSize(1);
+            auto bCols = bSize->getDimSize(2);
+            auto cRows = cSize->getDimSize(1);
+            auto cCols = cSize->getDimSize(2);
+
+            std::stringstream msg;
+            if (aCols != bRows)
+                error(loc, "cannot multiply coop matrices with incompatible sizes",
+                      sequence[0]->getAsSymbolNode()->getMangledName().c_str(),
+                      "%d x %d with %d x %d", aRows, aCols, bRows, bCols);
+            else if (aRows != cRows || bCols != cCols)
+                error(loc, "cannot add coop matrices with incompatible sizes",
+                      sequence[2]->getAsSymbolNode()->getMangledName().c_str(),
+                      "%d x %d with %d x %d", aRows, bCols, cRows, cCols);
+            else if (auto aUse = aSize->getDimSize(3); aUse != 0)
+                error(loc, "coop matrix A in MulAdd operation has incompatible usage property",
+                      sequence[0]->getAsSymbolNode()->getMangledName().c_str(), "");
+            else if (auto bUse = bSize->getDimSize(3); bUse != 1)
+                error(loc, "coop matrix B in MulAdd operation has incompatible usage property",
+                      sequence[1]->getAsSymbolNode()->getMangledName().c_str(), "");
+            else if (auto cUse = cSize->getDimSize(3); cUse != 2)
+                error(loc, "coop matrix C in MulAdd operation has incompatible usage property",
+                      sequence[2]->getAsSymbolNode()->getMangledName().c_str(), "");
+
+            // Set result type to match type of C parameter
             result->setType(result->getAsAggregate()->getSequence()[2]->getAsTyped()->getType());
         }
     }
