@@ -1795,7 +1795,6 @@ void TParseContext::handleCoopMat2FunctionCall(const TSourceLoc& loc, const TFun
             auto cRows = cSize->getDimSize(1);
             auto cCols = cSize->getDimSize(2);
 
-            std::stringstream msg;
             if (aCols != bRows)
                 error(loc, "cannot multiply coop matrices with incompatible sizes",
                       sequence[0]->getAsSymbolNode()->getMangledName().c_str(),
