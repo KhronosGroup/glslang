@@ -43,6 +43,7 @@
 #include "Scan.h"
 
 #include <algorithm>
+#include <sys/types.h>
 
 #include "Versions.h"
 #include "preprocessor/PpContext.h"
@@ -1783,17 +1784,24 @@ void TParseContext::handleCoopMat2FunctionCall(const TSourceLoc& loc, const TFun
 
             // Validate that the matrix sizes are compatible for multiplication and addition
             const auto &sequence = arguments->getAsAggregate()->getSequence();
-            const auto *aSize = sequence[0]->getAsTyped()->getType().getTypeParameters()->arraySizes;
-            const auto *bSize = sequence[1]->getAsTyped()->getType().getTypeParameters()->arraySizes;
-            const auto *cSize = sequence[2]->getAsTyped()->getType().getTypeParameters()->arraySizes;
+
+            auto getDim = [](const TIntermSequence& sequence, int idx) -> std::tuple<int, int, int> {
+                const auto &type = sequence[idx]->getAsTyped()->getType();
+                const auto *size = type.getTypeParameters()->arraySizes;
+
+                if (type.isCoopMatNV()) {
+                    // coopmatNV don't encode usage, so provide the correct usage by default
+                    return {size->getDimSize(2), size->getDimSize(3), idx};
+                } else {
+                    assert(type.isCoopMatKHR());
+                    return {size->getDimSize(1), size->getDimSize(2), size->getDimSize(3)};
+                }
+            };
 
             // sizes look like: [scope, rows, cols, use]
-            auto aRows = aSize->getDimSize(1);
-            auto aCols = aSize->getDimSize(2);
-            auto bRows = bSize->getDimSize(1);
-            auto bCols = bSize->getDimSize(2);
-            auto cRows = cSize->getDimSize(1);
-            auto cCols = cSize->getDimSize(2);
+            auto [aRows, aCols, aUse] = getDim(sequence, 0);
+            auto [bRows, bCols, bUse] = getDim(sequence, 1);
+            auto [cRows, cCols, cUse] = getDim(sequence, 2);
 
             if (aCols != bRows)
                 error(loc, "cannot multiply coop matrices with incompatible sizes",
@@ -1803,13 +1811,13 @@ void TParseContext::handleCoopMat2FunctionCall(const TSourceLoc& loc, const TFun
                 error(loc, "cannot add coop matrices with incompatible sizes",
                       sequence[2]->getAsSymbolNode()->getMangledName().c_str(),
                       "%d x %d with %d x %d", aRows, bCols, cRows, cCols);
-            else if (auto aUse = aSize->getDimSize(3); aUse != 0)
+            else if (aUse != 0)
                 error(loc, "coop matrix A in MulAdd operation has incompatible usage property",
                       sequence[0]->getAsSymbolNode()->getMangledName().c_str(), "");
-            else if (auto bUse = bSize->getDimSize(3); bUse != 1)
+            else if (bUse != 1)
                 error(loc, "coop matrix B in MulAdd operation has incompatible usage property",
                       sequence[1]->getAsSymbolNode()->getMangledName().c_str(), "");
-            else if (auto cUse = cSize->getDimSize(3); cUse != 2)
+            else if (cUse != 2)
                 error(loc, "coop matrix C in MulAdd operation has incompatible usage property",
                       sequence[2]->getAsSymbolNode()->getMangledName().c_str(), "");
 
