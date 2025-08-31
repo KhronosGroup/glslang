@@ -52,6 +52,7 @@
 #include "glslang/Include/Types.h"
 #include "glslang/Public/ResourceLimits.h"
 #include "glslang/Public/ShaderLang.h"
+#include "glslang/Include/glslang_c_interface.h"
 
 #include "Initializer.h"
 #include "Settings.h"
@@ -706,6 +707,189 @@ public:
         } else {
             return std::make_tuple(false, "", log);
         }
+    }
+
+    std::tuple<bool, std::string> preprocessAndCompileWithCAPI(const std::string& source)
+    {
+        const char * shaderStrings = source.data();
+        const int shaderLengths = static_cast<int>(source.size());
+
+        // Done by framework
+        //glslang_initialize_process();
+
+        glslang_resource_t resources = glslang_resource_t{
+            /* .MaxLights = */ 32,
+            /* .MaxClipPlanes = */ 6,
+            /* .MaxTextureUnits = */ 32,
+            /* .MaxTextureCoords = */ 32,
+            /* .MaxVertexAttribs = */ 64,
+            /* .MaxVertexUniformComponents = */ 4096,
+            /* .MaxVaryingFloats = */ 64,
+            /* .MaxVertexTextureImageUnits = */ 32,
+            /* .MaxCombinedTextureImageUnits = */ 80,
+            /* .MaxTextureImageUnits = */ 32,
+            /* .MaxFragmentUniformComponents = */ 4096,
+            /* .MaxDrawBuffers = */ 32,
+            /* .MaxVertexUniformVectors = */ 128,
+            /* .MaxVaryingVectors = */ 8,
+            /* .MaxFragmentUniformVectors = */ 16,
+            /* .MaxVertexOutputVectors = */ 16,
+            /* .MaxFragmentInputVectors = */ 15,
+            /* .MinProgramTexelOffset = */ -8,
+            /* .MaxProgramTexelOffset = */ 7,
+            /* .MaxClipDistances = */ 8,
+            /* .MaxComputeWorkGroupCountX = */ 65535,
+            /* .MaxComputeWorkGroupCountY = */ 65535,
+            /* .MaxComputeWorkGroupCountZ = */ 65535,
+            /* .MaxComputeWorkGroupSizeX = */ 1024,
+            /* .MaxComputeWorkGroupSizeY = */ 1024,
+            /* .MaxComputeWorkGroupSizeZ = */ 64,
+            /* .MaxComputeUniformComponents = */ 1024,
+            /* .MaxComputeTextureImageUnits = */ 16,
+            /* .MaxComputeImageUniforms = */ 8,
+            /* .MaxComputeAtomicCounters = */ 8,
+            /* .MaxComputeAtomicCounterBuffers = */ 1,
+            /* .MaxVaryingComponents = */ 60,
+            /* .MaxVertexOutputComponents = */ 64,
+            /* .MaxGeometryInputComponents = */ 64,
+            /* .MaxGeometryOutputComponents = */ 128,
+            /* .MaxFragmentInputComponents = */ 128,
+            /* .MaxImageUnits = */ 8,
+            /* .MaxCombinedImageUnitsAndFragmentOutputs = */ 8,
+            /* .MaxCombinedShaderOutputResources = */ 8,
+            /* .MaxImageSamples = */ 0,
+            /* .MaxVertexImageUniforms = */ 0,
+            /* .MaxTessControlImageUniforms = */ 0,
+            /* .MaxTessEvaluationImageUniforms = */ 0,
+            /* .MaxGeometryImageUniforms = */ 0,
+            /* .MaxFragmentImageUniforms = */ 8,
+            /* .MaxCombinedImageUniforms = */ 8,
+            /* .MaxGeometryTextureImageUnits = */ 16,
+            /* .MaxGeometryOutputVertices = */ 256,
+            /* .MaxGeometryTotalOutputComponents = */ 1024,
+            /* .MaxGeometryUniformComponents = */ 1024,
+            /* .MaxGeometryVaryingComponents = */ 64,
+            /* .MaxTessControlInputComponents = */ 128,
+            /* .MaxTessControlOutputComponents = */ 128,
+            /* .MaxTessControlTextureImageUnits = */ 16,
+            /* .MaxTessControlUniformComponents = */ 1024,
+            /* .MaxTessControlTotalOutputComponents = */ 4096,
+            /* .MaxTessEvaluationInputComponents = */ 128,
+            /* .MaxTessEvaluationOutputComponents = */ 128,
+            /* .MaxTessEvaluationTextureImageUnits = */ 16,
+            /* .MaxTessEvaluationUniformComponents = */ 1024,
+            /* .MaxTessPatchComponents = */ 120,
+            /* .MaxPatchVertices = */ 32,
+            /* .MaxTessGenLevel = */ 64,
+            /* .MaxViewports = */ 16,
+            /* .MaxVertexAtomicCounters = */ 0,
+            /* .MaxTessControlAtomicCounters = */ 0,
+            /* .MaxTessEvaluationAtomicCounters = */ 0,
+            /* .MaxGeometryAtomicCounters = */ 0,
+            /* .MaxFragmentAtomicCounters = */ 8,
+            /* .MaxCombinedAtomicCounters = */ 8,
+            /* .MaxAtomicCounterBindings = */ 1,
+            /* .MaxVertexAtomicCounterBuffers = */ 0,
+            /* .MaxTessControlAtomicCounterBuffers = */ 0,
+            /* .MaxTessEvaluationAtomicCounterBuffers = */ 0,
+            /* .MaxGeometryAtomicCounterBuffers = */ 0,
+            /* .MaxFragmentAtomicCounterBuffers = */ 1,
+            /* .MaxCombinedAtomicCounterBuffers = */ 1,
+            /* .MaxAtomicCounterBufferSize = */ 16384,
+            /* .MaxTransformFeedbackBuffers = */ 4,
+            /* .MaxTransformFeedbackInterleavedComponents = */ 64,
+            /* .MaxCullDistances = */ 8,
+            /* .MaxCombinedClipAndCullDistances = */ 8,
+            /* .MaxSamples = */ 4,
+            /* .maxMeshOutputVerticesNV = */ 256,
+            /* .maxMeshOutputPrimitivesNV = */ 512,
+            /* .maxMeshWorkGroupSizeX_NV = */ 32,
+            /* .maxMeshWorkGroupSizeY_NV = */ 1,
+            /* .maxMeshWorkGroupSizeZ_NV = */ 1,
+            /* .maxTaskWorkGroupSizeX_NV = */ 32,
+            /* .maxTaskWorkGroupSizeY_NV = */ 1,
+            /* .maxTaskWorkGroupSizeZ_NV = */ 1,
+            /* .maxMeshViewCountNV = */ 4,
+            /* .maxMeshOutputVerticesEXT = */ 256,
+            /* .maxMeshOutputPrimitivesEXT = */ 512,
+            /* .maxMeshWorkGroupSizeX_EXT = */ 32,
+            /* .maxMeshWorkGroupSizeY_EXT = */ 1,
+            /* .maxMeshWorkGroupSizeZ_EXT = */ 1,
+            /* .maxTaskWorkGroupSizeX_EXT = */ 32,
+            /* .maxTaskWorkGroupSizeY_EXT = */ 1,
+            /* .maxTaskWorkGroupSizeZ_EXT = */ 1,
+            /* .maxMeshViewCountEXT = */ 4,
+            /* .maxDualSourceDrawBuffersEXT = */ 1,
+
+            /* .limits = */
+            {
+                /* .nonInductiveForLoops = */ 1,
+                /* .whileLoops = */ 1,
+                /* .doWhileLoops = */ 1,
+                /* .generalUniformIndexing = */ 1,
+                /* .generalAttributeMatrixVectorIndexing = */ 1,
+                /* .generalVaryingIndexing = */ 1,
+                /* .generalSamplerIndexing = */ 1,
+                /* .generalVariableIndexing = */ 1,
+                /* .generalConstantMatrixVectorIndexing = */ 1,
+            }};
+
+        glslang_input_t shader_input{};
+        shader_input.language = GLSLANG_SOURCE_GLSL;
+        shader_input.stage = GLSLANG_STAGE_COMPUTE;
+        shader_input.client = GLSLANG_CLIENT_VULKAN;
+        shader_input.client_version = GLSLANG_TARGET_VULKAN_1_3;
+        shader_input.target_language = GLSLANG_TARGET_SPV;
+        shader_input.target_language_version = GLSLANG_TARGET_SPV_1_6;
+        shader_input.code = source.data();
+        shader_input.default_version = 100;
+        shader_input.default_profile = GLSLANG_NO_PROFILE;
+        shader_input.force_default_version_and_profile = 0;
+        shader_input.forward_compatible = GLSLANG_MSG_DEFAULT_BIT;
+        shader_input.messages = GLSLANG_MSG_DEFAULT_BIT;
+        shader_input.resource = &resources;
+        shader_input.callbacks = glsl_include_callbacks_s{
+            NULL,
+            NULL,
+            NULL
+        };
+        shader_input.callbacks_ctx = NULL;
+
+        glslang_shader_t* shader = glslang_shader_create(&shader_input);
+        if (glslang_shader_preprocess(shader, &shader_input) != 1) {
+            const std::string logs = std::string(glslang_shader_get_info_log(shader));
+            glslang_shader_delete(shader);
+            return std::make_tuple(false, logs);
+        }
+        if (glslang_shader_parse(shader, &shader_input) != 1) {
+            const std::string logs = std::string(glslang_shader_get_info_log(shader));
+            glslang_shader_delete(shader);
+            return std::make_tuple(false, logs);
+        }
+        const std::string logs = std::string(glslang_shader_get_info_log(shader));
+        glslang_shader_delete(shader);
+
+        return std::make_tuple(true, logs);
+    }
+
+    void loadFilePreprocessFileReturn(const std::string& testDir, const std::string& testName)
+    {
+        const std::string inputFname = testDir + "/" + testName;
+        const std::string expectedErrorFname = testDir + "/baseResults/" + testName + ".err";
+        std::string input, expectedOutput, expectedError;
+
+        tryLoadFile(inputFname, "input", &input);
+        tryLoadFile(expectedErrorFname, "expected error", &expectedError);
+
+        bool ppOk;
+        std::string error;
+        std::tie(ppOk, error) = preprocessAndCompileWithCAPI(input);
+        if (!error.empty())
+            error += '\n';
+
+        checkEqAndUpdateIfRequested(expectedError, error, expectedErrorFname);
+        
+        EXPECT_TRUE(ppOk);
     }
 
     void loadFilePreprocessAndCheck(const std::string& testDir,
