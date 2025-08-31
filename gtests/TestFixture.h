@@ -856,11 +856,12 @@ public:
         shader_input.callbacks_ctx = NULL;
 
         glslang_shader_t* shader = glslang_shader_create(&shader_input);
-        if (glslang_shader_preprocess(shader, &shader_input) != 1) {
+        // Uncommenting following code will make code being preprocessed twice
+        /*if (glslang_shader_preprocess(shader, &shader_input) != 1) {
             const std::string logs = std::string(glslang_shader_get_info_log(shader));
             glslang_shader_delete(shader);
             return std::make_tuple(false, logs);
-        }
+        }*/
         if (glslang_shader_parse(shader, &shader_input) != 1) {
             const std::string logs = std::string(glslang_shader_get_info_log(shader));
             glslang_shader_delete(shader);
@@ -875,20 +876,13 @@ public:
     void loadFilePreprocessFileReturn(const std::string& testDir, const std::string& testName)
     {
         const std::string inputFname = testDir + "/" + testName;
-        const std::string expectedErrorFname = testDir + "/baseResults/" + testName + ".err";
-        std::string input, expectedOutput, expectedError;
-
+        std::string input;
         tryLoadFile(inputFname, "input", &input);
-        tryLoadFile(expectedErrorFname, "expected error", &expectedError);
 
         bool ppOk;
         std::string error;
         std::tie(ppOk, error) = preprocessAndCompileWithCAPI(input);
-        if (!error.empty())
-            error += '\n';
-
-        checkEqAndUpdateIfRequested(expectedError, error, expectedErrorFname);
-        
+        EXPECT_TRUE(error.empty());
         EXPECT_TRUE(ppOk);
     }
 
