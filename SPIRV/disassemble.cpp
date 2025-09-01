@@ -61,7 +61,7 @@ namespace spv {
         #include "GLSL.ext.QCOM.h"
     }
 }
-const char* GlslStd450DebugNames[spv::GLSLstd450Count];
+static const char* GlslStd450DebugNames[spv::GLSLstd450Count];
 
 namespace spv {
 
