@@ -10647,7 +10647,7 @@ spv::Id TGlslangToSpvTraverser::createSpvConstant(const glslang::TIntermTyped& n
             int nextConst = 0;
             result = createSpvConstantFromConstUnionArray(sn->getType(), *const_union_array, nextConst, true);
         } else {
-            logger->missingFunctionality("Invalid initializer for spec onstant.");
+            logger->missingFunctionality("Invalid initializer for spec constant.");
             return spv::NoResult;
         }
         builder.addName(result, sn->getName().c_str());
