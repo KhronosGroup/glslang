@@ -3,14 +3,9 @@
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/KhronosGroup/glslang/badge)](https://securityscorecards.dev/viewer/?uri=github.com/KhronosGroup/glslang)
 
 # News
+1. The spirv-remap utility from glslang has been ported to the SPIRV-Tools repository as a new optimization pass called canonicalize-ids, available in spirv-opt. See spirv-opt --help for usage details.
 
-1. Building glslang as a DLL or shared library is now possible and supported.
-
-2. The `GenericCodeGen`, `MachineIndependent`, `OSDependent`, and `SPIRV` libraries have been integrated into the main `glslang` library. The old separate libraries have replaced with empty stubs for a temporary compatibility period, and they will be removed entirely in the future.
-
-3. A new CMake `ENABLE_SPIRV` option has been added to control whether glslang is built with SPIR-V support. Its default value is `ON`.
-
-4. `OGLCompiler` and `HLSL` stub libraries have been fully removed from the build.
+2. Building glslang as a DLL or shared library is now possible and supported.
 
 # Glslang Components and Status
 

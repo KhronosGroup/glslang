@@ -339,17 +339,3 @@ executable("glslang_validator") {
   configs -= _configs_to_remove
   configs += _configs_to_add
 }
-
-executable("spirv-remap") {
-  sources = [ "StandAlone/spirv-remap.cpp" ]
-  defines = [
-    "ENABLE_OPT=1",
-    "ENABLE_SPIRV=1",
-  ]
-  deps = [ ":glslang_sources" ]
-
-  include_dirs = [ "${spirv_tools_dir}/include" ]
-
-  configs -= _configs_to_remove
-  configs += _configs_to_add
-}
