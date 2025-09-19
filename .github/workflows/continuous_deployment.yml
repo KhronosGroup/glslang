@@ -17,7 +17,6 @@ on:
             - main
         paths-ignore:
             - 'README.md'
-            - 'README-spirv-remap.txt'
             - 'LICENSE.txt'
             - 'CODE_OF_CONDUCT.md'
             - 'BUILD.*'
@@ -170,7 +169,6 @@ jobs:
                   7z a ${{env.ARCHIVE}} `
                       bin/glslang.exe `
                       bin/glslangValidator.exe `
-                      bin/spirv-remap.exe `
                       include/glslang/* `
                       lib/GenericCodeGend.lib `
                       lib/glslangd.lib `
@@ -190,7 +188,6 @@ jobs:
                   7z a ${{env.ARCHIVE}} `
                       bin/glslang.exe `
                       bin/glslangValidator.exe `
-                      bin/spirv-remap.exe `
                       include/glslang/* `
                       lib/GenericCodeGen.lib `
                       lib/glslang.lib `
