@@ -55,10 +55,6 @@ target_link_libraries(example PRIVATE
     glslang::glslang-default-resource-limits    
 )
 
-if (NOT TARGET glslang::SPVRemapper)
-    message(FATAL_ERROR "glslang::SPVRemapper does not exist!")
-endif()
-
 if (NOT TARGET glslang::glslang-standalone)
     message(FATAL_ERROR "glslang::glslang-standalone does not exist!")
 endif()

@@ -72,7 +72,6 @@ jobs:
                       lib/libMachineIndependent.a \
                       lib/libOSDependent.a \
                       lib/libSPIRV.a \
-                      lib/libSPVRemapper.a \
                       lib/libSPIRV-Tools.a \
                       lib/libSPIRV-Tools-opt.a
             - name: Deploy
@@ -127,7 +126,6 @@ jobs:
                       lib/libMachineIndependent.a \
                       lib/libOSDependent.a \
                       lib/libSPIRV.a \
-                      lib/libSPVRemapper.a \
                       lib/libSPIRV-Tools.a \
                       lib/libSPIRV-Tools-opt.a
             - name: Deploy
@@ -176,7 +174,6 @@ jobs:
                       lib/MachineIndependentd.lib `
                       lib/OSDependentd.lib `
                       lib/SPIRVd.lib `
-                      lib/SPVRemapperd.lib `
                       lib/SPIRV-Toolsd.lib `
                       lib/SPIRV-Tools-optd.lib
             - name: Zip
@@ -195,7 +192,6 @@ jobs:
                       lib/MachineIndependent.lib `
                       lib/OSDependent.lib `
                       lib/SPIRV.lib `
-                      lib/SPVRemapper.lib `
                       lib/SPIRV-Tools.lib `
                       lib/SPIRV-Tools-opt.lib
             - name: Deploy
