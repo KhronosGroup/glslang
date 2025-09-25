@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## 16.0.0 2025-09-25
+### Breaking changes
+* Remove spirv-remapper (ported to SPIRV-Tools as canonicalize-ids optimization pass)
+
+### Other changes
+* Emit error for in/out structs containing booleans
+* Fix contradictory layout link errors
+* Improve error checks for float8 math
+* Fix bug in cooperative matrix load/store handling of array slices
+* Update memory semantic validation rules to match update to Vulkan specification
+* Simplify glslang grammar for identifier lists
+* Fix erroneous parse errors in variable declarations using existing struct names
+* Fix type conversions for createTensorLayout/ViewNV
+* Fix OpAccessChain signed index issue for small unsigned integers
+* Support GLSL_QCOM_cooperative_matrix_conversion
+* Allow spec constant matrix use
+* Fix inconsistent labeling of capability strings
+* Fix crash on unnamed function parameters under relaxed rules
+* Fix exported member functions in ShaderLang.h
+
 ## 15.4.0 2025-06-26
 * Support GL_NV_gpu_shader5/GL_ARB_gpu_shader5
 * Remove BUILD_SHARED_LIBS option (defer to built-in variable)
