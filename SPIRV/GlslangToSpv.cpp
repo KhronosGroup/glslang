@@ -2034,7 +2034,6 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion,
                 if (specConst) {
                     builder.addDecoration(dimConstId.back(), spv::Decoration::SpecId,
                                           glslangIntermediate->getLocalSizeSpecId(dim));
-                    needSizeId = true;
                 }
             }
             builder.addExecutionModeId(shaderEntry, spv::ExecutionMode::LocalSizeId, dimConstId);
