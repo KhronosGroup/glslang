@@ -236,7 +236,6 @@ public:
     Id makeGenericType(spv::Op opcode, std::vector<spv::IdImmediate>& operands);
 
     // SPIR-V NonSemantic Shader DebugInfo Instructions
-    std::unordered_map<Id, DebugTypeLoc> debugTypeLocs;
     Id makeDebugInfoNone();
     Id makeBoolDebugType(int const size);
     Id makeIntegerDebugType(int const width, bool const hasSign);
