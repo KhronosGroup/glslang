@@ -5596,7 +5596,7 @@ spv::Id TGlslangToSpvTraverser::convertGlslangStructToSpvType(const glslang::TTy
     int memberDelta = 0;  // how much the member's index changes from glslang to SPIR-V, normally 0,
                           // except sometimes for blocks
     std::vector<std::pair<glslang::TType*, glslang::TQualifier> > deferredForwardPointers;
-    std::vector<spv::DebugTypeLoc> memberDebugInfo;
+    std::vector<spv::StructMemberDebugInfo> memberDebugInfo;
     for (int i = 0; i < (int)glslangMembers->size(); i++) {
         auto& glslangMember = (*glslangMembers)[i];
         if (glslangMember.type->hiddenMember()) {
@@ -5647,11 +5647,35 @@ spv::Id TGlslangToSpvTraverser::convertGlslangStructToSpvType(const glslang::TTy
             //  + Not as clean as desired. Traverser queries/sets persistent state. This is fragile.
             //  + Table lookup during creation of composite debug types. This really shouldn't be necessary.
             if(options.emitNonSemanticShaderDebugInfo) {
-                spv::DebugTypeLoc typeLoc{};
-                typeLoc.name = glslangMember.type->getFieldName().c_str();
-                typeLoc.line = glslangMember.loc.line;
-                typeLoc.column = glslangMember.loc.column;
-                memberDebugInfo.push_back(typeLoc);
+                spv::StructMemberDebugInfo debugInfo{};
+                debugInfo.name = glslangMember.type->getFieldName();
+                debugInfo.line = glslangMember.loc.line;
+                debugInfo.column = glslangMember.loc.column;
+
+                // Per the GLSL spec, bool variables inside of a uniform or buffer block are generated as uint.
+                // But for debug info, we want to represent them as bool because that is the original type in
+                // the source code. The bool type can be nested within a vector or a multidimensional array, 
+                // so we must construct the chain of types up from the scalar bool.
+                if (glslangIntermediate->getSource() == glslang::EShSourceGlsl && explicitLayout != glslang::ElpNone &&
+                    glslangMember.type->getBasicType() == glslang::EbtBool) {
+                    std::vector<unsigned int> dimensions{};
+                    auto typeId = builder.makeBoolType();
+                    if (glslangMember.type->isVector()) {
+                        typeId = builder.makeVectorType(typeId, glslangMember.type->getVectorSize());
+                    }
+                    if (glslangMember.type->isArray()) {
+                        const auto* arraySizes = glslangMember.type->getArraySizes();
+                        int dims = arraySizes->getNumDims();
+                        for (int i = dims - 1; i >= 0; --i) {
+                            spv::Id size = builder.makeIntConstant(arraySizes->getDimSize(i));
+                            typeId = builder.makeArrayType(typeId, size, 0);
+                        }
+
+                    }
+                    debugInfo.debugTypeOverride = builder.getDebugType(typeId);
+                }
+
+                memberDebugInfo.push_back(debugInfo);
             }
         }
     }
