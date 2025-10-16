@@ -815,6 +815,14 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                                lowerword == "shift-ssbo-binding"  ||
                                lowerword == "sbb") {
                         ProcessBindingBase(argc, argv, glslang::EResSsbo);
+                    } else if (lowerword == "shift-combined-sampler-bindings" ||
+                               lowerword == "shift-combined-sampler-binding" ||
+                               lowerword == "scsb") {
+                        ProcessBindingBase(argc, argv, glslang::EResCombinedSampler);
+                    } else if (lowerword == "shift-as-bindings" ||
+                               lowerword == "shift-as-binding" ||
+                               lowerword == "sab") {
+                        ProcessBindingBase(argc, argv, glslang::EResAs);
                     } else if (lowerword == "source-entrypoint" || // synonyms
                                lowerword == "sep") {
                         if (argc <= 1)
@@ -2147,6 +2155,18 @@ void usage()
            "  --shift-ubo-bindings | --sub |\n"
            "  --shift-cbuffer-binding | --shift-cbuffer-bindings | --scb\n"
            "                                    synonyms for --shift-ubo-binding\n"
+           "  --shift-combined-sampler-binding [stage] <num>\n"
+           "                                    base binding number for combined samplers\n"
+           "  --shift-combined-sampler-binding [stage] <num> <set>...\n"
+           "                                    per-descriptor-set shift values\n"
+           "  --shift-combined-sampler-bindings | --scsb\n"
+           "                                    synonyms for --shift-combined-sampler-binding\n"
+           "  --shift-as-binding [stage] <num>\n"
+           "                                    base binding number for acceleration structures\n"
+           "  --shift-as-binding [stage] <num> <set>...\n"
+           "                                    per-descriptor-set shift values\n"
+           "  --shift-as-bindings | --sab\n"
+           "                                    synonyms for --shift-as-binding\n"
            "  --spirv-dis                       output standard-form disassembly; works only\n"
            "                                    when a SPIR-V generation option is also used\n"
            "  --spirv-val                       execute the SPIRV-Tools validator\n"

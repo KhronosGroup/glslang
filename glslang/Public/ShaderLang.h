@@ -434,6 +434,9 @@ enum TResourceType {
     EResUbo,
     EResSsbo,
     EResUav,
+    EResCombinedSampler,
+    EResAs,
+    EResTensor,
     EResCount
 };
 
