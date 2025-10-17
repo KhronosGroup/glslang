@@ -1785,16 +1785,17 @@ void TParseContext::handleCoopMat2FunctionCall(const TSourceLoc& loc, const TFun
             // Validate that the matrix sizes are compatible for multiplication and addition
             const auto &sequence = arguments->getAsAggregate()->getSequence();
 
-            auto getDim = [](const TIntermSequence& sequence, int idx) -> std::tuple<int, int, int> {
-                const auto &type = sequence[idx]->getAsTyped()->getType();
+            using ArrayDim = const TArraySize&;
+            auto getDim = [](const TIntermSequence& seq, int idx) -> std::tuple<ArrayDim, ArrayDim, int> {
+                const auto &type = seq[idx]->getAsTyped()->getType();
                 const auto *size = type.getTypeParameters()->arraySizes;
 
                 if (type.isCoopMatNV()) {
                     // coopmatNV don't encode usage, so provide the correct usage by default
-                    return {size->getDimSize(2), size->getDimSize(3), idx};
+                    return {size->getArraySize(2), size->getArraySize(3), idx};
                 } else {
                     assert(type.isCoopMatKHR());
-                    return {size->getDimSize(1), size->getDimSize(2), size->getDimSize(3)};
+                    return {size->getArraySize(1), size->getArraySize(2), size->getDimSize(3)};
                 }
             };
 
@@ -1803,14 +1804,38 @@ void TParseContext::handleCoopMat2FunctionCall(const TSourceLoc& loc, const TFun
             auto [bRows, bCols, bUse] = getDim(sequence, 1);
             auto [cRows, cCols, cUse] = getDim(sequence, 2);
 
+            auto toString = [](ArrayDim dim) -> std::string {
+                std::stringstream buf;
+                if (dim.node == nullptr)
+                    buf << dim.size;
+                else
+                    buf << "spec_const";
+                return buf.str();
+            };
+
+            auto aRowsStr = toString(aRows);
+            auto aColsStr = toString(aCols);
+            auto bRowsStr = toString(bRows);
+            auto bColsStr = toString(bCols);
+            auto cRowsStr = toString(cRows);
+            auto cColsStr = toString(cCols);
+
             if (aCols != bRows)
                 error(loc, "cannot multiply coop matrices with incompatible sizes",
                       sequence[0]->getAsSymbolNode()->getMangledName().c_str(),
-                      "%d x %d with %d x %d", aRows, aCols, bRows, bCols);
+                      "%s x %s with %s x %s",
+                      aRowsStr.c_str(),
+                      aColsStr.c_str(),
+                      bRowsStr.c_str(),
+                      bColsStr.c_str());
             else if (aRows != cRows || bCols != cCols)
                 error(loc, "cannot add coop matrices with incompatible sizes",
                       sequence[2]->getAsSymbolNode()->getMangledName().c_str(),
-                      "%d x %d with %d x %d", aRows, bCols, cRows, cCols);
+                      "%s x %s with %s x %s",
+                      aRowsStr.c_str(),
+                      bColsStr.c_str(),
+                      cRowsStr.c_str(),
+                      cColsStr.c_str());
             else if (aUse != 0)
                 error(loc, "coop matrix A in MulAdd operation has incompatible usage property",
                       sequence[0]->getAsSymbolNode()->getMangledName().c_str(), "");
