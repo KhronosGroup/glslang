@@ -1418,7 +1418,7 @@ Id Builder::createDebugLocalVariable(Id type, char const*const name, size_t cons
     inst->addIdOperand(currentDebugScopeId.top()); // scope id
     inst->addIdOperand(makeUintConstant(NonSemanticShaderDebugInfo100FlagIsLocal)); // flags id
     if(argNumber != 0) {
-        inst->addIdOperand(makeUintConstant(argNumber));
+        inst->addIdOperand(makeUintConstant(static_cast<unsigned int>(argNumber)));
     }
 
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(inst));
