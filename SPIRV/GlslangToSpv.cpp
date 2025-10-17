@@ -5658,7 +5658,6 @@ spv::Id TGlslangToSpvTraverser::convertGlslangStructToSpvType(const glslang::TTy
                 // so we must construct the chain of types up from the scalar bool.
                 if (glslangIntermediate->getSource() == glslang::EShSourceGlsl && explicitLayout != glslang::ElpNone &&
                     glslangMember.type->getBasicType() == glslang::EbtBool) {
-                    std::vector<unsigned int> dimensions{};
                     auto typeId = builder.makeBoolType();
                     if (glslangMember.type->isVector()) {
                         typeId = builder.makeVectorType(typeId, glslangMember.type->getVectorSize());
@@ -5670,7 +5669,6 @@ spv::Id TGlslangToSpvTraverser::convertGlslangStructToSpvType(const glslang::TTy
                             spv::Id size = builder.makeIntConstant(arraySizes->getDimSize(i));
                             typeId = builder.makeArrayType(typeId, size, 0);
                         }
-
                     }
                     debugInfo.debugTypeOverride = builder.getDebugType(typeId);
                 }
