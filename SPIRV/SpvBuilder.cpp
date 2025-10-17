@@ -420,7 +420,7 @@ Id Builder::makeFloatE4M3Type()
 // needed as the result of some instructions, which does
 // check for duplicates.
 // For compiler-generated structs, debug info is ignored.
-Id Builder::makeStructType(const std::vector<Id>& members, const std::vector<spv::DebugTypeLoc>& memberDebugInfo,
+Id Builder::makeStructType(const std::vector<Id>& members, const std::vector<spv::StructMemberDebugInfo>& memberDebugInfo,
                            const char* name, bool const compilerGenerated)
 {
     // Don't look for previous one, because in the general case,
@@ -1156,7 +1156,7 @@ Id Builder::makeMatrixDebugType(Id const vectorType, int const vectorCount, bool
     return type->getResultId();
 }
 
-Id Builder::makeMemberDebugType(Id const memberType, DebugTypeLoc const& debugTypeLoc)
+Id Builder::makeMemberDebugType(Id const memberType, StructMemberDebugInfo const& debugTypeLoc)
 {
     assert(debugId[memberType] != 0);
 
@@ -1165,12 +1165,13 @@ Id Builder::makeMemberDebugType(Id const memberType, DebugTypeLoc const& debugTy
     type->addIdOperand(nonSemanticShaderDebugInfo);
     type->addImmediateOperand(NonSemanticShaderDebugInfo100DebugTypeMember);
     type->addIdOperand(getStringId(debugTypeLoc.name)); // name id
-    type->addIdOperand(debugId[memberType]); // type id
-    type->addIdOperand(makeDebugSource(currentFileId)); // source id
-    type->addIdOperand(makeUintConstant(debugTypeLoc.line)); // line id TODO: currentLine is always zero
+    type->addIdOperand(debugTypeLoc.debugTypeOverride != 0 ? debugTypeLoc.debugTypeOverride
+                                                           : debugId[memberType]); // type id
+    type->addIdOperand(makeDebugSource(currentFileId));                            // source id
+    type->addIdOperand(makeUintConstant(debugTypeLoc.line));   // line id TODO: currentLine is always zero
     type->addIdOperand(makeUintConstant(debugTypeLoc.column)); // TODO: column id
-    type->addIdOperand(makeUintConstant(0)); // TODO: offset id
-    type->addIdOperand(makeUintConstant(0)); // TODO: size id
+    type->addIdOperand(makeUintConstant(0));                   // TODO: offset id
+    type->addIdOperand(makeUintConstant(0));                   // TODO: size id
     type->addIdOperand(makeUintConstant(NonSemanticShaderDebugInfo100FlagIsPublic)); // flags id
 
     groupedDebugTypes[NonSemanticShaderDebugInfo100DebugTypeMember].push_back(type);
@@ -1180,7 +1181,7 @@ Id Builder::makeMemberDebugType(Id const memberType, DebugTypeLoc const& debugTy
     return type->getResultId();
 }
 
-Id Builder::makeCompositeDebugType(std::vector<Id> const& memberTypes, std::vector<DebugTypeLoc> const& memberDebugInfo,
+Id Builder::makeCompositeDebugType(std::vector<Id> const& memberTypes, std::vector<StructMemberDebugInfo> const& memberDebugInfo,
                                    char const* const name, NonSemanticShaderDebugInfo100DebugCompositeType const tag)
 {
     // Create the debug member types.
