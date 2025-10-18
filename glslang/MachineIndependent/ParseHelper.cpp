@@ -1806,21 +1806,19 @@ void TParseContext::handleCoopMat2FunctionCall(const TSourceLoc& loc, const TFun
 
             auto toString = [](ArrayDim dim) -> std::string {
                 std::stringstream buf;
-                if (dim.node == nullptr)
+                if (dim.node == nullptr) {
                     buf << dim.size;
-                else
+                } else {
                     buf << "spec_const";
+                }
                 return buf.str();
             };
 
-            auto aRowsStr = toString(aRows);
-            auto aColsStr = toString(aCols);
-            auto bRowsStr = toString(bRows);
-            auto bColsStr = toString(bCols);
-            auto cRowsStr = toString(cRows);
-            auto cColsStr = toString(cCols);
-
-            if (aCols != bRows)
+            if (aCols != bRows) {
+                auto aRowsStr = toString(aRows);
+                auto aColsStr = toString(aCols);
+                auto bRowsStr = toString(bRows);
+                auto bColsStr = toString(bCols);
                 error(loc, "cannot multiply coop matrices with incompatible sizes",
                       sequence[0]->getAsSymbolNode()->getMangledName().c_str(),
                       "%s x %s with %s x %s",
@@ -1828,7 +1826,11 @@ void TParseContext::handleCoopMat2FunctionCall(const TSourceLoc& loc, const TFun
                       aColsStr.c_str(),
                       bRowsStr.c_str(),
                       bColsStr.c_str());
-            else if (aRows != cRows || bCols != cCols)
+            } else if (aRows != cRows || bCols != cCols) {
+                auto aRowsStr = toString(aRows);
+                auto bColsStr = toString(bCols);
+                auto cRowsStr = toString(cRows);
+                auto cColsStr = toString(cCols);
                 error(loc, "cannot add coop matrices with incompatible sizes",
                       sequence[2]->getAsSymbolNode()->getMangledName().c_str(),
                       "%s x %s with %s x %s",
@@ -1836,15 +1838,16 @@ void TParseContext::handleCoopMat2FunctionCall(const TSourceLoc& loc, const TFun
                       bColsStr.c_str(),
                       cRowsStr.c_str(),
                       cColsStr.c_str());
-            else if (aUse != 0)
+            } else if (aUse != 0) {
                 error(loc, "coop matrix A in MulAdd operation has incompatible usage property",
                       sequence[0]->getAsSymbolNode()->getMangledName().c_str(), "");
-            else if (bUse != 1)
+            } else if (bUse != 1) {
                 error(loc, "coop matrix B in MulAdd operation has incompatible usage property",
                       sequence[1]->getAsSymbolNode()->getMangledName().c_str(), "");
-            else if (cUse != 2)
+            } else if (cUse != 2) {
                 error(loc, "coop matrix C in MulAdd operation has incompatible usage property",
                       sequence[2]->getAsSymbolNode()->getMangledName().c_str(), "");
+            }
 
             // Set result type to match type of C parameter
             result->setType(result->getAsAggregate()->getSequence()[2]->getAsTyped()->getType());

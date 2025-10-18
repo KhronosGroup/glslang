@@ -201,7 +201,7 @@ struct TSmallArrayVector {
 
     const TArraySize& operator[](int index) const
     {
-        assert(sizes && index < sizes->size());
+        assert(sizes && index < (int)sizes->size());
         return (*sizes)[index];
     }
 
