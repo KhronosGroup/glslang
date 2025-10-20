@@ -97,7 +97,6 @@ namespace glslang {
 /////////////////////////////////// Floating point constants: /////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-// 
 // Scan a single- or double-precision floating point constant.
 // Assumes that the scanner has seen at least one digit,
 // followed by either a decimal '.' or the letter 'e', or a
@@ -1226,7 +1225,9 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
 //
 int TPpContext::tokenize(TPpToken& ppToken)
 {
-    for(;;) {
+    int stringifyDepth = 0;
+    TPpToken stringifiedToken; // Tokens are appended to this as they come in
+    for (;;) {
         int token = scanToken(&ppToken);
 
         // Handle token-pasting logic
@@ -1253,6 +1254,20 @@ int TPpContext::tokenize(TPpToken& ppToken)
 
         if (token == '\n')
             continue;
+
+        if (token == tStringifyLevelInput::PUSH) {
+            stringifyDepth++;
+            continue;
+        }
+        if (token == tStringifyLevelInput::POP) {
+            assert(stringifyDepth > 0);
+            stringifyDepth--;
+            if (stringifyDepth == 0) {
+                snprintf(ppToken.name, sizeof(ppToken.name), "%s", stringifiedToken.name);
+                return PpAtomConstString;
+            }
+            continue;
+        }
 
         // expand macros
         if (token == PpAtomIdentifier) {
@@ -1298,6 +1313,17 @@ int TPpContext::tokenize(TPpToken& ppToken)
         default:
             snprintf(ppToken.name, sizeof(ppToken.name), "%s", atomStrings.getString(token));
             break;
+        }
+        if (stringifyDepth > 0) {
+            size_t existingLen = strlen(stringifiedToken.name);
+            char* dst = stringifiedToken.name + existingLen;
+            // stringify_depth would determine how many layers of \\\"\\\" are needed, if we wanted to.
+            if (ppToken.space) {
+                snprintf(dst, sizeof(stringifiedToken.name) - existingLen - 1, " %s", ppToken.name);
+            } else {
+                snprintf(dst, sizeof(stringifiedToken.name) - existingLen, "%s", ppToken.name);
+            }
+            continue;
         }
 
         return token;

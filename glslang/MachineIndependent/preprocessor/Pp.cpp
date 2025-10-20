@@ -155,7 +155,45 @@ int TPpContext::CPPdefine(TPpToken* ppToken)
 
     // record the definition of the macro
     while (token != '\n' && token != EndOfInput) {
-        mac.body.putToken(token, ppToken);
+        int numberOfPoundSymbols = 0;
+        TPpToken savePound;
+        while (token == '#') {
+            savePound = *ppToken;
+            numberOfPoundSymbols++;
+            token = scanToken(ppToken);
+        }
+        // This behavior mimics the GCC preprocessor
+        if (numberOfPoundSymbols == 0) {
+            mac.body.putToken(token, ppToken);
+        } else if (numberOfPoundSymbols == 1) {
+            // A single #: stringify
+            bool isArg = false;
+            if (token == PpAtomIdentifier) {
+                for (int i = (int)mac.args.size() - 1; i >= 0; i--) {
+                    if (strcmp(atomStrings.getString(mac.args[i]), ppToken->name) == 0) {
+                        isArg = true;
+                        break;
+                    }
+                }
+            }
+            if (!isArg) {
+                parseContext.ppError(ppToken->loc, "'#' is not followed by a macro parameter.", "#", "");
+                return token;
+            }
+            mac.body.putToken(tStringifyLevelInput::PUSH, ppToken);
+            mac.body.putToken(token, ppToken);
+            mac.body.putToken(tStringifyLevelInput::POP, ppToken);
+        } else if (numberOfPoundSymbols % 2 == 0) {
+            // Any number of pastes '##' in a row: idempotent, just becomes one paste
+            for (int i = 0; i < numberOfPoundSymbols / 2; i++) {
+                mac.body.putToken(PpAtomPaste, &savePound);
+            }
+            mac.body.putToken(token, ppToken);
+        } else {
+            // An odd number of '#' i.e., mix of paste and stringify: does not give valid preprocessing token
+            parseContext.ppError(ppToken->loc, "Illegal sequence of paste (##) and stringify (#).", "#", "");
+            return token;
+        }
         token = scanToken(ppToken);
         if (token != '\n' && ppToken->space)
             mac.body.putToken(' ', ppToken);
@@ -1119,7 +1157,7 @@ int TPpContext::tMacroInput::scan(TPpToken* ppToken)
     }
 
     // see if are preceding a ##
-    if (mac->body.peekUntokenizedPasting()) {
+    if (mac->body.peekTokenizedPasting(false)) {
         prepaste = true;
         pasting = true;
     }
