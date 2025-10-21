@@ -6965,7 +6965,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                                                                           false,
                                                                           ms      ? true : false);
 
-                        TString typeName = sampler.getString();
+                        TString typeName = TString{sampler.getString()};
 
                         addQueryFunctions(sampler, typeName, version, profile);
                         addImageFunctions(sampler, typeName, version, profile);
@@ -7068,7 +7068,7 @@ void TBuiltIns::add2ndGenerationSamplingImaging(int version, EProfile profile, c
                                                                              ms      ? true : false);
                             }
 
-                            TString typeName = sampler.getString();
+                            TString typeName = TString{sampler.getString()};
 
                             if (dim == EsdSubpass) {
                                 addSubpassSampling(sampler, typeName, version, profile);
@@ -7092,7 +7092,7 @@ void TBuiltIns::add2ndGenerationSamplingImaging(int version, EProfile profile, c
                                     // texture types.
                                     sampler.setTexture(sampler.type, sampler.dim, sampler.arrayed, sampler.shadow,
                                                        sampler.ms);
-                                    TString textureTypeName = sampler.getString();
+                                    TString textureTypeName = TString{sampler.getString()};
                                     addSamplingFunctions(sampler, textureTypeName, version, profile);
                                     addQueryFunctions(sampler, textureTypeName, version, profile);
                                 }

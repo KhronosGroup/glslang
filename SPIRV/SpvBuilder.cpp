@@ -125,7 +125,7 @@ Id Builder::makeBoolType()
     return type->getResultId();
 }
 
-Id Builder::makeSamplerType()
+Id Builder::makeSamplerType(const char* debugName)
 {
     Instruction* type;
     if (groupedTypes[enumCast(Op::OpTypeSampler)].size() == 0) {
@@ -138,7 +138,7 @@ Id Builder::makeSamplerType()
 
     if (emitNonSemanticShaderDebugInfo)
     {
-        auto const debugResultId = makeOpaqueDebugType("type.sampler");
+        auto const debugResultId = makeOpaqueDebugType(debugName);
         debugId[type->getResultId()] = debugResultId;
     }
 
@@ -841,7 +841,7 @@ Id Builder::makeDebugFunctionType(Id returnType, const std::vector<Id>& paramTyp
 }
 
 Id Builder::makeImageType(Id sampledType, Dim dim, bool depth, bool arrayed, bool ms, unsigned sampled,
-    ImageFormat format)
+    ImageFormat format, const char* debugName)
 {
     assert(sampled == 1 || sampled == 2);
 
@@ -922,24 +922,14 @@ Id Builder::makeImageType(Id sampledType, Dim dim, bool depth, bool arrayed, boo
 
     if (emitNonSemanticShaderDebugInfo)
     {
-        auto TypeName = [&dim]() -> char const* {
-            switch (dim) {
-                case Dim::Dim1D: return "type.1d.image";
-                case Dim::Dim2D: return "type.2d.image";
-                case Dim::Dim3D: return "type.3d.image";
-                case Dim::Cube:  return "type.cube.image";
-                default: return "type.image";
-            }
-        };
-
-        auto const debugResultId = makeOpaqueDebugType(TypeName());
+        auto const debugResultId = makeOpaqueDebugType(debugName);
         debugId[type->getResultId()] = debugResultId;
     }
 
     return type->getResultId();
 }
 
-Id Builder::makeSampledImageType(Id imageType)
+Id Builder::makeSampledImageType(Id imageType, const char* debugName)
 {
     // try to find it
     Instruction* type;
@@ -959,7 +949,7 @@ Id Builder::makeSampledImageType(Id imageType)
 
     if (emitNonSemanticShaderDebugInfo)
     {
-        auto const debugResultId = makeOpaqueDebugType("type.sampled.image");
+        auto const debugResultId = makeOpaqueDebugType(debugName);
         debugId[type->getResultId()] = debugResultId;
     }
 
