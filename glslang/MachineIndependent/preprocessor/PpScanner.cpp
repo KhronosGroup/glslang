@@ -1282,6 +1282,18 @@ int TPpContext::tokenize(TPpToken& ppToken)
             }
         }
 
+        bool needStringSupport = ifdepth == 0 && (token == PpAtomConstString || stringifyDepth > 0);
+        if (needStringSupport && parseContext.intermediate.getSource() != EShSourceHlsl) {
+            // HLSL allows string literals.
+            // GLSL allows string literals with GL_EXT_debug_printf.
+            const char* const string_literal_EXTs[] = { E_GL_EXT_debug_printf, E_GL_EXT_spirv_intrinsics };
+            parseContext.requireExtensions(ppToken.loc, 2, string_literal_EXTs, "string literal");
+            if (!parseContext.extensionTurnedOn(E_GL_EXT_debug_printf) &&
+                !parseContext.extensionTurnedOn(E_GL_EXT_spirv_intrinsics)) {
+                continue;
+            }
+        }
+
         switch (token) {
         case PpAtomIdentifier:
         case PpAtomConstInt:
@@ -1293,19 +1305,9 @@ int TPpContext::tokenize(TPpToken& ppToken)
         case PpAtomConstUint16:
         case PpAtomConstDouble:
         case PpAtomConstFloat16:
+        case PpAtomConstString:
             if (ppToken.name[0] == '\0')
                 continue;
-            break;
-        case PpAtomConstString:
-            // HLSL allows string literals.
-            // GLSL allows string literals with GL_EXT_debug_printf.
-            if (ifdepth == 0 && parseContext.intermediate.getSource() != EShSourceHlsl) {
-              const char* const string_literal_EXTs[] = { E_GL_EXT_debug_printf, E_GL_EXT_spirv_intrinsics };
-              parseContext.requireExtensions(ppToken.loc, 2, string_literal_EXTs, "string literal");
-              if (!parseContext.extensionTurnedOn(E_GL_EXT_debug_printf) &&
-                  !parseContext.extensionTurnedOn(E_GL_EXT_spirv_intrinsics))
-                  continue;
-            }
             break;
         case '\'':
             parseContext.ppError(ppToken.loc, "character literals not supported", "\'", "");
