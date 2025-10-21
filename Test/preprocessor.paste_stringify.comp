@@ -1,0 +1,31 @@
+#version 450
+#extension GL_EXT_debug_printf : enable
+
+#define PASTE(arg) pasted_##arg
+#define STRINGIFY(arg) #arg
+#define STRINGIFY_TWICE(arg, regular) before #arg #arg after regular
+#define STRINGIFY_WITH_SPACE(arg) before # arg
+#define PASTE_WITH_SPACE(arg) pasted_## arg
+#define BOTH(arg1,    arg2) pasted_##arg1 and     #arg2
+#define NOARGS(arg) 1 1 1 1
+
+#define REGULAR(arg1, arg2) arg1    : arg2 :arg1
+#define STR(a) STRHELP(a)
+#define STRHELP(a) #a
+
+#define LEGAL(arg) a######arg
+
+
+void main() {
+    REGULAR(8,9);
+    STRINGIFY(12 3);
+    STRINGIFY_TWICE(letters_too,       1);
+    STRINGIFY_WITH_SPACE(aaa1);
+    PASTE(symbol);
+    PASTE_WITH_SPACE(symbol);
+    BOTH(symbol, string);
+    STRHELP(REGULAR(3, 4));
+    STR(REGULAR(3, 4));
+    STR(aaa     );
+    STR(STR(hello));
+}
