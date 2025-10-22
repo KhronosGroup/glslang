@@ -47,6 +47,7 @@ Test/baseResults/link.vk.crossStageIO.1.vert.out
 Test/baseResults/link.vk.differentPC.0.0.frag.out
 Test/baseResults/link.vk.differentPC.1.0.frag.out
 Test/baseResults/link.vk.missingCrossStageIO.0.vert.out
+Test/baseResults/link.vk.multiUnitLayout.2.comp.out
 Test/baseResults/link.vk.pcNamingInvalid.0.0.vert.out
 Test/baseResults/spv.130.frag.out
 Test/baseResults/spv.140.frag.out
@@ -70,6 +71,7 @@ Test/baseResults/spv.image.frag.out
 Test/baseResults/spv.int64.frag.out
 Test/baseResults/spv.memoryQualifier.frag.out
 Test/baseResults/spv.newTexture.frag.out
+Test/baseResults/spv.nvgpushader5.frag.out
 Test/baseResults/spv.paramMemory.420.frag.out
 Test/baseResults/spv.paramMemory.frag.out
 Test/baseResults/spv.queryL.frag.out
@@ -77,3 +79,4 @@ Test/baseResults/spv.separate.frag.out
 Test/baseResults/spv.sparseTextureClamp.frag.out
 Test/baseResults/spv.sparseTexture.frag.out
 Test/baseResults/vk.relaxed.errorcheck.vert.out
+Test/baseResults/vk.relaxed.syntaxerror.vert.out

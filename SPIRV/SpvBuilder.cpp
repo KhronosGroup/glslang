@@ -138,7 +138,7 @@ Id Builder::makeSamplerType()
 
     if (emitNonSemanticShaderDebugInfo)
     {
-        auto const debugResultId = makeCompositeDebugType({}, "type.sampler", NonSemanticShaderDebugInfo100Structure, true);
+        auto const debugResultId = makeOpaqueDebugType("type.sampler");
         debugId[type->getResultId()] = debugResultId;
     }
 
@@ -341,11 +341,87 @@ Id Builder::makeBFloat16Type()
     return type->getResultId();
 }
 
+Id Builder::makeFloatE5M2Type()
+{
+    // try to find it
+    Instruction* type;
+    for (int t = 0; t < (int)groupedTypes[enumCast(Op::OpTypeFloat)].size(); ++t) {
+        type = groupedTypes[enumCast(Op::OpTypeFloat)][t];
+        if (type->getNumOperands() != 2) {
+            continue;
+        }
+        if (type->getImmediateOperand(0) == (unsigned)8 &&
+            type->getImmediateOperand(1) == FPEncoding::Float8E5M2EXT)
+            return type->getResultId();
+    }
+
+    // not found, make it
+    type = new Instruction(getUniqueId(), NoType, Op::OpTypeFloat);
+    type->addImmediateOperand(8);
+    type->addImmediateOperand(FPEncoding::Float8E5M2EXT);
+    groupedTypes[enumCast(Op::OpTypeFloat)].push_back(type);
+    constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
+    module.mapInstruction(type);
+
+    addExtension(spv::E_SPV_EXT_float8);
+    addCapability(Capability::Float8EXT);
+
+#if 0
+    // XXX not supported
+    if (emitNonSemanticShaderDebugInfo)
+    {
+        auto const debugResultId = makeFloatDebugType(width);
+        debugId[type->getResultId()] = debugResultId;
+    }
+#endif
+
+    return type->getResultId();
+}
+
+Id Builder::makeFloatE4M3Type()
+{
+    // try to find it
+    Instruction* type;
+    for (int t = 0; t < (int)groupedTypes[enumCast(Op::OpTypeFloat)].size(); ++t) {
+        type = groupedTypes[enumCast(Op::OpTypeFloat)][t];
+        if (type->getNumOperands() != 2) {
+            continue;
+        }
+        if (type->getImmediateOperand(0) == (unsigned)8 &&
+            type->getImmediateOperand(1) == FPEncoding::Float8E4M3EXT)
+            return type->getResultId();
+    }
+
+    // not found, make it
+    type = new Instruction(getUniqueId(), NoType, Op::OpTypeFloat);
+    type->addImmediateOperand(8);
+    type->addImmediateOperand(FPEncoding::Float8E4M3EXT);
+    groupedTypes[enumCast(Op::OpTypeFloat)].push_back(type);
+    constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
+    module.mapInstruction(type);
+
+    addExtension(spv::E_SPV_EXT_float8);
+    addCapability(Capability::Float8EXT);
+
+#if 0
+    // XXX not supported
+    if (emitNonSemanticShaderDebugInfo)
+    {
+        auto const debugResultId = makeFloatDebugType(width);
+        debugId[type->getResultId()] = debugResultId;
+    }
+#endif
+
+    return type->getResultId();
+}
+
 // Make a struct without checking for duplication.
 // See makeStructResultType() for non-decorated structs
 // needed as the result of some instructions, which does
 // check for duplicates.
-Id Builder::makeStructType(const std::vector<Id>& members, const char* name, bool const compilerGenerated)
+// For compiler-generated structs, debug info is ignored.
+Id Builder::makeStructType(const std::vector<Id>& members, const std::vector<spv::DebugTypeLoc>& memberDebugInfo,
+                           const char* name, bool const compilerGenerated)
 {
     // Don't look for previous one, because in the general case,
     // structs can be duplicated except for decorations.
@@ -359,9 +435,10 @@ Id Builder::makeStructType(const std::vector<Id>& members, const char* name, boo
     module.mapInstruction(type);
     addName(type->getResultId(), name);
 
-    if (emitNonSemanticShaderDebugInfo && !compilerGenerated)
-    {
-        auto const debugResultId = makeCompositeDebugType(members, name, NonSemanticShaderDebugInfo100Structure);
+    if (emitNonSemanticShaderDebugInfo && !compilerGenerated) {
+        assert(members.size() == memberDebugInfo.size());
+        auto const debugResultId =
+            makeCompositeDebugType(members, memberDebugInfo, name, NonSemanticShaderDebugInfo100Structure);
         debugId[type->getResultId()] = debugResultId;
     }
 
@@ -389,7 +466,7 @@ Id Builder::makeStructResultType(Id type0, Id type1)
     members.push_back(type0);
     members.push_back(type1);
 
-    return makeStructType(members, "ResType");
+    return makeStructType(members, {}, "ResType");
 }
 
 Id Builder::makeVectorType(Id component, int size)
@@ -513,7 +590,7 @@ Id Builder::makeCooperativeMatrixTypeKHR(Id component, Id scope, Id rows, Id col
         debugName += std::string(findName(cols)) + ">";
         // There's no nonsemantic debug info instruction for cooperative matrix types,
         // use opaque composite instead.
-        auto const debugResultId = makeCompositeDebugType({}, debugName.c_str(), NonSemanticShaderDebugInfo100Structure, true);
+        auto const debugResultId = makeOpaqueDebugType(debugName.c_str());
         debugId[type->getResultId()] = debugResultId;
     }
 
@@ -576,6 +653,26 @@ Id Builder::makeCooperativeVectorTypeNV(Id componentType, Id components)
     module.mapInstruction(type);
 
     return type->getResultId();
+}
+
+Id Builder::makeTensorTypeARM(Id elementType, Id rank)
+{
+    // See if an OpTypeTensorARM with same element type and rank already exists.
+    for (int t = 0; t < (int)groupedTypes[enumCast(Op::OpTypeTensorARM)].size(); ++t) {
+        const Instruction *type = groupedTypes[enumCast(Op::OpTypeTensorARM)][t];
+        if (type->getIdOperand(0) == elementType && type->getIdOperand(1) == rank)
+            return type->getResultId();
+    }
+
+    // Not found, make it.
+    std::unique_ptr<Instruction> type(new Instruction(getUniqueId(), NoType, Op::OpTypeTensorARM));
+    type->addIdOperand(elementType);
+    type->addIdOperand(rank);
+    groupedTypes[enumCast(Op::OpTypeTensorARM)].push_back(type.get());
+    module.mapInstruction(type.get());
+    Id resultID = type->getResultId();
+    constantsTypesGlobals.push_back(std::move(type));
+    return resultID;
 }
 
 Id Builder::makeGenericType(spv::Op opcode, std::vector<spv::IdImmediate>& operands)
@@ -835,7 +932,7 @@ Id Builder::makeImageType(Id sampledType, Dim dim, bool depth, bool arrayed, boo
             }
         };
 
-        auto const debugResultId = makeCompositeDebugType({}, TypeName(), NonSemanticShaderDebugInfo100Class, true);
+        auto const debugResultId = makeOpaqueDebugType(TypeName());
         debugId[type->getResultId()] = debugResultId;
     }
 
@@ -862,7 +959,7 @@ Id Builder::makeSampledImageType(Id imageType)
 
     if (emitNonSemanticShaderDebugInfo)
     {
-        auto const debugResultId = makeCompositeDebugType({}, "type.sampled.image", NonSemanticShaderDebugInfo100Class, true);
+        auto const debugResultId = makeOpaqueDebugType("type.sampled.image");
         debugId[type->getResultId()] = debugResultId;
     }
 
@@ -1083,23 +1180,16 @@ Id Builder::makeMemberDebugType(Id const memberType, DebugTypeLoc const& debugTy
     return type->getResultId();
 }
 
-// Note: To represent a source language opaque type, this instruction must have no Members operands, Size operand must be
-// DebugInfoNone, and Name must start with @ to avoid clashes with user defined names.
-Id Builder::makeCompositeDebugType(std::vector<Id> const& memberTypes, char const*const name,
-    NonSemanticShaderDebugInfo100DebugCompositeType const tag, bool const isOpaqueType)
+Id Builder::makeCompositeDebugType(std::vector<Id> const& memberTypes, std::vector<DebugTypeLoc> const& memberDebugInfo,
+                                   char const* const name, NonSemanticShaderDebugInfo100DebugCompositeType const tag)
 {
     // Create the debug member types.
     std::vector<Id> memberDebugTypes;
-    for(auto const memberType : memberTypes) {
-        assert(debugTypeLocs.find(memberType) != debugTypeLocs.end());
-
-        // There _should_ be debug types for all the member types but currently buffer references
-        // do not have member debug info generated.
-        if (debugId[memberType])
-            memberDebugTypes.emplace_back(makeMemberDebugType(memberType, debugTypeLocs[memberType]));
-
-        // TODO: Need to rethink this method of passing location information.
-        // debugTypeLocs.erase(memberType);
+    assert(memberTypes.size() == memberDebugInfo.size());
+    for (size_t i = 0; i < memberTypes.size(); i++) {
+        if (debugId[memberTypes[i]]) {
+            memberDebugTypes.emplace_back(makeMemberDebugType(memberTypes[i], memberDebugInfo[i]));
+        }
     }
 
     // Create The structure debug type.
@@ -1113,19 +1203,40 @@ Id Builder::makeCompositeDebugType(std::vector<Id> const& memberTypes, char cons
     type->addIdOperand(makeUintConstant(currentLine)); // line id TODO: currentLine always zero?
     type->addIdOperand(makeUintConstant(0)); // TODO: column id
     type->addIdOperand(makeDebugCompilationUnit()); // scope id
-    if(isOpaqueType == true) {
-        // Prepend '@' to opaque types.
-        type->addIdOperand(getStringId('@' + std::string(name))); // linkage name id
-        type->addIdOperand(makeDebugInfoNone()); // size id
-    } else {
-        type->addIdOperand(getStringId(name)); // linkage name id
-        type->addIdOperand(makeUintConstant(0)); // TODO: size id
-    }
+    type->addIdOperand(getStringId(name)); // linkage name id
+    type->addIdOperand(makeUintConstant(0)); // TODO: size id
     type->addIdOperand(makeUintConstant(NonSemanticShaderDebugInfo100FlagIsPublic)); // flags id
-    assert(isOpaqueType == false || (isOpaqueType == true && memberDebugTypes.empty()));
     for(auto const memberDebugType : memberDebugTypes) {
         type->addIdOperand(memberDebugType);
     }
+
+    groupedDebugTypes[NonSemanticShaderDebugInfo100DebugTypeComposite].push_back(type);
+    constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
+    module.mapInstruction(type);
+
+    return type->getResultId();
+}
+
+// The NonSemantic Shader Debug Info doesn't really have a dedicated opcode for opaque types. Instead, we use DebugTypeComposite.
+// To represent a source language opaque type, this instruction must have no Members operands, Size operand must be
+// DebugInfoNone, and Name must start with @ to avoid clashes with user defined names.
+Id Builder::makeOpaqueDebugType(char const* const name)
+{
+    // Create The structure debug type.
+    Instruction* type = new Instruction(getUniqueId(), makeVoidType(), Op::OpExtInst);
+    type->reserveOperands(11);
+    type->addIdOperand(nonSemanticShaderDebugInfo);
+    type->addImmediateOperand(NonSemanticShaderDebugInfo100DebugTypeComposite);
+    type->addIdOperand(getStringId(name)); // name id
+    type->addIdOperand(makeUintConstant(NonSemanticShaderDebugInfo100Structure)); // tag id
+    type->addIdOperand(makeDebugSource(currentFileId)); // source id
+    type->addIdOperand(makeUintConstant(currentLine)); // line id TODO: currentLine always zero?
+    type->addIdOperand(makeUintConstant(0)); // TODO: column id
+    type->addIdOperand(makeDebugCompilationUnit()); // scope id
+    // Prepend '@' to opaque types.
+    type->addIdOperand(getStringId('@' + std::string(name))); // linkage name id
+    type->addIdOperand(makeDebugInfoNone()); // size id
+    type->addIdOperand(makeUintConstant(NonSemanticShaderDebugInfo100FlagIsPublic)); // flags id
 
     groupedDebugTypes[NonSemanticShaderDebugInfo100DebugTypeComposite].push_back(type);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
@@ -1371,7 +1482,7 @@ Id Builder::makeAccelerationStructureType()
         constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
         module.mapInstruction(type);
         if (emitNonSemanticShaderDebugInfo) {
-            spv::Id debugType = makeCompositeDebugType({}, "accelerationStructure", NonSemanticShaderDebugInfo100Structure, true);
+            spv::Id debugType = makeOpaqueDebugType("accelerationStructure");
             debugId[type->getResultId()] = debugType;
         }
     } else {
@@ -1390,7 +1501,7 @@ Id Builder::makeRayQueryType()
         constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
         module.mapInstruction(type);
         if (emitNonSemanticShaderDebugInfo) {
-            spv::Id debugType = makeCompositeDebugType({}, "rayQuery", NonSemanticShaderDebugInfo100Structure, true);
+            spv::Id debugType = makeOpaqueDebugType("rayQuery");
             debugId[type->getResultId()] = debugType;
         }
     } else {
@@ -1882,6 +1993,62 @@ Id Builder::makeBFloat16Constant(float bf16, bool specConstant)
 
     // take high 16b of fp32 value. This is effectively round-to-zero, other than certain NaNs.
     unsigned value = un.u >> 16;
+
+    // See if we already made it. Applies only to regular constants, because specialization constants
+    // must remain distinct for the purpose of applying a SpecId decoration.
+    if (!specConstant) {
+        Id existing = findScalarConstant(Op::OpTypeFloat, opcode, typeId, value);
+        if (existing)
+            return existing;
+    }
+
+    Instruction* c = new Instruction(getUniqueId(), typeId, opcode);
+    c->addImmediateOperand(value);
+    constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(c));
+    groupedConstants[enumCast(Op::OpTypeFloat)].push_back(c);
+    module.mapInstruction(c);
+
+    return c->getResultId();
+}
+
+Id Builder::makeFloatE5M2Constant(float fe5m2, bool specConstant)
+{
+    Op opcode = specConstant ? Op::OpSpecConstant : Op::OpConstant;
+    Id typeId = makeFloatE5M2Type();
+
+    spvutils::HexFloat<spvutils::FloatProxy<float>> fVal(fe5m2);
+    spvutils::HexFloat<spvutils::FloatProxy<spvutils::FloatE5M2>> fe5m2Val(0);
+    fVal.castTo(fe5m2Val, spvutils::kRoundToZero);
+
+    unsigned value = fe5m2Val.value().getAsFloat().get_value();
+
+    // See if we already made it. Applies only to regular constants, because specialization constants
+    // must remain distinct for the purpose of applying a SpecId decoration.
+    if (!specConstant) {
+        Id existing = findScalarConstant(Op::OpTypeFloat, opcode, typeId, value);
+        if (existing)
+            return existing;
+    }
+
+    Instruction* c = new Instruction(getUniqueId(), typeId, opcode);
+    c->addImmediateOperand(value);
+    constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(c));
+    groupedConstants[enumCast(Op::OpTypeFloat)].push_back(c);
+    module.mapInstruction(c);
+
+    return c->getResultId();
+}
+
+Id Builder::makeFloatE4M3Constant(float fe4m3, bool specConstant)
+{
+    Op opcode = specConstant ? Op::OpSpecConstant : Op::OpConstant;
+    Id typeId = makeFloatE4M3Type();
+
+    spvutils::HexFloat<spvutils::FloatProxy<float>> fVal(fe4m3);
+    spvutils::HexFloat<spvutils::FloatProxy<spvutils::FloatE4M3>> fe4m3Val(0);
+    fVal.castTo(fe4m3Val, spvutils::kRoundToZero);
+
+    unsigned value = fe4m3Val.value().getAsFloat().get_value();
 
     // See if we already made it. Applies only to regular constants, because specialization constants
     // must remain distinct for the purpose of applying a SpecId decoration.
@@ -3292,8 +3459,12 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool sparse, 
         texArgs.push_back(parameters.offset);
     }
     if (parameters.offsets) {
-        addCapability(Capability::ImageGatherExtended);
-        mask = (ImageOperandsMask)(mask | ImageOperandsMask::ConstOffsets);
+        if (!isConstant(parameters.offsets) && sourceLang == spv::SourceLanguage::GLSL) {
+            mask = (ImageOperandsMask)(mask | ImageOperandsMask::Offsets);
+        } else {
+            addCapability(Capability::ImageGatherExtended);
+            mask = (ImageOperandsMask)(mask | ImageOperandsMask::ConstOffsets);
+        }
         texArgs.push_back(parameters.offsets);
     }
     if (parameters.sample) {

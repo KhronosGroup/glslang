@@ -3,12 +3,10 @@
 # Arguments:
 #  1- TargetDirectory, where to write test results and intermediary files
 #  2- Path to glslang
-#  3- Path to spirv-remap
 
 TARGETDIR=${1:-localResults}
 BASEDIR=baseResults
 EXE=${2:-../build/install/bin/glslang}
-REMAPEXE=${3:-../build/install/bin/spirv-remap}
 HASERROR=0
 mkdir -p "$TARGETDIR"
 
@@ -82,14 +80,16 @@ diff -b $BASEDIR/hlsl.automap.frag.out "$TARGETDIR/hlsl.automap.frag.out" || HAS
 # multi-threaded test
 #
 echo Comparing single thread to multithread for all tests in current directory...
-run -i -C *.vert *.geom *.frag *.tesc *.tese *.comp > "$TARGETDIR/singleThread.out"
-run -i -C *.vert *.geom *.frag *.tesc *.tese *.comp -t > "$TARGETDIR/multiThread.out"
-diff "$TARGETDIR/singleThread.out" "$TARGETDIR/multiThread.out" || HASERROR=1
-if [ $HASERROR -eq 0 ]
-then
-    rm "$TARGETDIR/singleThread.out"
-    rm "$TARGETDIR/multiThread.out"
-fi
+for stage in vert frag geom tesc tese comp; do
+    run -i -C *.$stage > "$TARGETDIR/$stage.singleThread.out"
+    run -i -C *.$stage -t > "$TARGETDIR/$stage.multiThread.out"
+    diff "$TARGETDIR/$stage.singleThread.out" "$TARGETDIR/$stage.multiThread.out" || HASERROR=1
+    if [ $HASERROR -eq 0 ]
+    then
+        rm "$TARGETDIR/$stage.singleThread.out"
+        rm "$TARGETDIR/$stage.multiThread.out"
+    fi
+done
 
 #
 # entry point renaming tests
@@ -243,15 +243,6 @@ run -H -e foo --source-entrypoint bar glsl.entryPointRename.vert > "$TARGETDIR/g
 diff -b $BASEDIR/glsl.entryPointRename.vert.bad.out "$TARGETDIR/glsl.entryPointRename.vert.bad.out" || HASERROR=1
 run -H -e foo --source-entrypoint main glsl.entryPointRename2.vert > "$TARGETDIR/glsl.entryPointRename2.vert.out"
 diff -b $BASEDIR/glsl.entryPointRename2.vert.out "$TARGETDIR/glsl.entryPointRename2.vert.out" || HASERROR=1
-
-#
-# Testing remapper error handling
-#
-echo "Testing remapper error handling"
-"$REMAPEXE" --do-everything -i remap.invalid-spirv-1.spv -o "$TARGETDIR" > "$TARGETDIR/remap.invalid-spirv-1.out" && HASERROR=1
-diff -b $BASEDIR/remap.invalid-spirv-1.out "$TARGETDIR/remap.invalid-spirv-1.out" || HASERROR=1
-"$REMAPEXE" --do-everything -i remap.invalid-spirv-2.spv -o "$TARGETDIR" > "$TARGETDIR/remap.invalid-spirv-2.out" && HASERROR=1
-diff -b $BASEDIR/remap.invalid-spirv-2.out "$TARGETDIR/remap.invalid-spirv-2.out" || HASERROR=1
 
 #
 # Testing position Y inversion

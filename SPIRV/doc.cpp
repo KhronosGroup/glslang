@@ -194,6 +194,10 @@ const char* ExecutionModeString(int mode)
     case (int)ExecutionMode::SignedZeroInfNanPreserve:      return "SignedZeroInfNanPreserve";
     case (int)ExecutionMode::RoundingModeRTE:               return "RoundingModeRTE";
     case (int)ExecutionMode::RoundingModeRTZ:               return "RoundingModeRTZ";
+
+    case (int)ExecutionMode::NonCoherentTileAttachmentReadQCOM: return "NonCoherentTileAttachmentReadQCOM";
+    case (int)ExecutionMode::TileShadingRateQCOM:               return "TileShadingRateQCOM";
+
     case (int)ExecutionMode::EarlyAndLateFragmentTestsAMD:  return "EarlyAndLateFragmentTestsAMD";
     case (int)ExecutionMode::StencilRefUnchangedFrontAMD:   return "StencilRefUnchangedFrontAMD";
     case (int)ExecutionMode::StencilRefLessFrontAMD:        return "StencilRefLessFrontAMD";
@@ -249,6 +253,7 @@ const char* StorageClassString(int StorageClass)
     case 11: return "Image";
     case 12: return "StorageBuffer";
 
+    case (int)StorageClass::TileAttachmentQCOM:       return "TileAttachmentQCOM";
     case (int)StorageClass::RayPayloadKHR:            return "RayPayloadKHR";
     case (int)StorageClass::HitAttributeKHR:          return "HitAttributeKHR";
     case (int)StorageClass::IncomingRayPayloadKHR:    return "IncomingRayPayloadKHR";
@@ -339,6 +344,8 @@ const char* DecorationString(int decoration)
     case (int)Decoration::AliasedPointerEXT:       return "DecorationAliasedPointerEXT";
 
     case (int)Decoration::HitObjectShaderRecordBufferNV:  return "DecorationHitObjectShaderRecordBufferNV";
+
+    case (int)Decoration::SaturatedToLargestFloat8NormalConversionEXT: return "DecorationSaturatedToLargestFloat8NormalConversionEXT";
     }
 }
 
@@ -403,6 +410,10 @@ const char* BuiltInString(int builtIn)
     case 4432: return "PrimitiveShadingRateKHR";
     case 4444: return "ShadingRateKHR";
     case 5014: return "FragStencilRefEXT";
+
+    case (int)BuiltIn::TileOffsetQCOM:     return "TileOffsetQCOM";
+    case (int)BuiltIn::TileDimensionQCOM:  return "TileDimensionQCOM";
+    case (int)BuiltIn::TileApronSizeQCOM:  return "TileApronSizeQCOM";
 
     case 4992: return "BaryCoordNoPerspAMD";
     case 4993: return "BaryCoordNoPerspCentroidAMD";
@@ -638,7 +649,7 @@ const char* ImageChannelDataTypeString(int type)
     }
 }
 
-const int ImageOperandsCeiling = 15;
+const int ImageOperandsCeiling = 17;
 
 const char* ImageOperandsString(int format)
 {
@@ -658,6 +669,7 @@ const char* ImageOperandsString(int format)
     case (int)ImageOperandsShift::SignExtend:              return "SignExtend";
     case (int)ImageOperandsShift::ZeroExtend:              return "ZeroExtend";
     case (int)ImageOperandsShift::Nontemporal:             return "Nontemporal";
+    case (int)ImageOperandsShift::Offsets:                 return "Offsets";
 
     case ImageOperandsCeiling:
     default:
@@ -965,7 +977,7 @@ const char* CapabilityString(int info)
     case (int)Capability::SubgroupBallotKHR: return "SubgroupBallotKHR";
     case (int)Capability::DrawParameters:    return "DrawParameters";
     case (int)Capability::SubgroupVoteKHR:   return "SubgroupVoteKHR";
-    case (int)Capability::GroupNonUniformRotateKHR: return "CapabilityGroupNonUniformRotateKHR";
+    case (int)Capability::GroupNonUniformRotateKHR: return "GroupNonUniformRotateKHR";
 
     case (int)Capability::StorageUniformBufferBlock16: return "StorageUniformBufferBlock16";
     case (int)Capability::StorageUniform16:            return "StorageUniform16";
@@ -1011,7 +1023,7 @@ const char* CapabilityString(int info)
     case (int)Capability::RayTracingPositionFetchKHR:      return "RayTracingPositionFetchKHR";
     case (int)Capability::DisplacementMicromapNV:           return "DisplacementMicromapNV";
     case (int)Capability::RayTracingOpacityMicromapEXT:    return "RayTracingOpacityMicromapEXT";
-    case (int)Capability::RayTracingDisplacementMicromapNV: return "CapabilityRayTracingDisplacementMicromapNV";
+    case (int)Capability::RayTracingDisplacementMicromapNV: return "RayTracingDisplacementMicromapNV";
     case (int)Capability::RayQueryPositionFetchKHR:        return "RayQueryPositionFetchKHR";
     case (int)Capability::ComputeDerivativeGroupQuadsNV:   return "ComputeDerivativeGroupQuadsNV";
     case (int)Capability::ComputeDerivativeGroupLinearNV:  return "ComputeDerivativeGroupLinearNV";
@@ -1059,15 +1071,16 @@ const char* CapabilityString(int info)
     case (int)Capability::CooperativeVectorNV:                     return "CooperativeVectorNV";
     case (int)Capability::CooperativeVectorTrainingNV:             return "CooperativeVectorTrainingNV";
 
-    case (int)Capability::FragmentShaderSampleInterlockEXT:        return "CapabilityFragmentShaderSampleInterlockEXT";
-    case (int)Capability::FragmentShaderPixelInterlockEXT:         return "CapabilityFragmentShaderPixelInterlockEXT";
-    case (int)Capability::FragmentShaderShadingRateInterlockEXT:   return "CapabilityFragmentShaderShadingRateInterlockEXT";
+    case (int)Capability::FragmentShaderSampleInterlockEXT:        return "FragmentShaderSampleInterlockEXT";
+    case (int)Capability::FragmentShaderPixelInterlockEXT:         return "FragmentShaderPixelInterlockEXT";
+    case (int)Capability::FragmentShaderShadingRateInterlockEXT:   return "FragmentShaderShadingRateInterlockEXT";
 
     case (int)Capability::TileImageColorReadAccessEXT:           return "TileImageColorReadAccessEXT";
     case (int)Capability::TileImageDepthReadAccessEXT:           return "TileImageDepthReadAccessEXT";
     case (int)Capability::TileImageStencilReadAccessEXT:         return "TileImageStencilReadAccessEXT";
 
     case (int)Capability::CooperativeMatrixLayoutsARM:             return "CooperativeMatrixLayoutsARM";
+    case (int)Capability::TensorsARM:                              return "TensorsARM";
 
     case (int)Capability::FragmentShadingRateKHR:                  return "FragmentShadingRateKHR";
 
@@ -1077,7 +1090,7 @@ const char* CapabilityString(int info)
     case (int)Capability::QuadControlKHR:                          return "QuadControlKHR";
     case (int)Capability::Int64ImageEXT:                           return "Int64ImageEXT";
 
-    case (int)Capability::IntegerFunctions2INTEL:              return "CapabilityIntegerFunctions2INTEL";
+    case (int)Capability::IntegerFunctions2INTEL:              return "IntegerFunctions2INTEL";
 
     case (int)Capability::ExpectAssumeKHR:                         return "ExpectAssumeKHR";
 
@@ -1091,9 +1104,9 @@ const char* CapabilityString(int info)
     case (int)Capability::AtomicFloat32MinMaxEXT:                  return "AtomicFloat32MinMaxEXT";
     case (int)Capability::AtomicFloat64MinMaxEXT:                  return "AtomicFloat64MinMaxEXT";
 
-    case (int)Capability::WorkgroupMemoryExplicitLayoutKHR:            return "CapabilityWorkgroupMemoryExplicitLayoutKHR";
-    case (int)Capability::WorkgroupMemoryExplicitLayout8BitAccessKHR:  return "CapabilityWorkgroupMemoryExplicitLayout8BitAccessKHR";
-    case (int)Capability::WorkgroupMemoryExplicitLayout16BitAccessKHR: return "CapabilityWorkgroupMemoryExplicitLayout16BitAccessKHR";
+    case (int)Capability::WorkgroupMemoryExplicitLayoutKHR:            return "WorkgroupMemoryExplicitLayoutKHR";
+    case (int)Capability::WorkgroupMemoryExplicitLayout8BitAccessKHR:  return "WorkgroupMemoryExplicitLayout8BitAccessKHR";
+    case (int)Capability::WorkgroupMemoryExplicitLayout16BitAccessKHR: return "WorkgroupMemoryExplicitLayout16BitAccessKHR";
     case (int)Capability::CoreBuiltinsARM:                             return "CoreBuiltinsARM";
 
     case (int)Capability::ShaderInvocationReorderNV:                return "ShaderInvocationReorderNV";
@@ -1101,9 +1114,12 @@ const char* CapabilityString(int info)
     case (int)Capability::TextureSampleWeightedQCOM:           return "TextureSampleWeightedQCOM";
     case (int)Capability::TextureBoxFilterQCOM:                return "TextureBoxFilterQCOM";
     case (int)Capability::TextureBlockMatchQCOM:               return "TextureBlockMatchQCOM";
+    case (int)Capability::TileShadingQCOM:                     return "TileShadingQCOM";
     case (int)Capability::TextureBlockMatch2QCOM:              return "TextureBlockMatch2QCOM";
 
-    case (int)Capability::ReplicatedCompositesEXT:             return "CapabilityReplicatedCompositesEXT";
+    case (int)Capability::CooperativeMatrixConversionQCOM:     return "CooperativeMatrixConversionQCOM";
+
+    case (int)Capability::ReplicatedCompositesEXT:             return "ReplicatedCompositesEXT";
 
     case (int)Capability::DotProductKHR:                       return "DotProductKHR";
     case (int)Capability::DotProductInputAllKHR:               return "DotProductInputAllKHR";
@@ -1115,9 +1131,12 @@ const char* CapabilityString(int info)
     case (int)Capability::RayTracingSpheresGeometryNV:             return "RayTracingSpheresGeometryNV";
     case (int)Capability::RayTracingLinearSweptSpheresGeometryNV:  return "RayTracingLinearSweptSpheresGeometryNV";
 
-    case (int)Capability::BFloat16TypeKHR:                     return "CapabilityBFloat16TypeKHR";
-    case (int)Capability::BFloat16DotProductKHR:               return "CapabilityBFloat16DotProductKHR";
-    case (int)Capability::BFloat16CooperativeMatrixKHR:        return "CapabilityBFloat16CooperativeMatrixKHR";
+    case (int)Capability::BFloat16TypeKHR:                     return "BFloat16TypeKHR";
+    case (int)Capability::BFloat16DotProductKHR:               return "BFloat16DotProductKHR";
+    case (int)Capability::BFloat16CooperativeMatrixKHR:        return "BFloat16CooperativeMatrixKHR";
+
+    case (int)Capability::Float8EXT:                           return "Float8EXT";
+    case (int)Capability::Float8CooperativeMatrixEXT:          return "Float8CooperativeMatrixEXT";
 
     default: return "Bad";
     }
@@ -1617,6 +1636,11 @@ const char* OpcodeString(int op)
     case (int)Op::OpTensorViewSetStrideNV:           return "OpTensorViewSetStrideNV";
     case (int)Op::OpTensorViewSetClipNV:             return "OpTensorViewSetClipNV";
 
+    case (int)Op::OpTypeTensorARM:                   return "OpTypeTensorARM";
+    case (int)Op::OpTensorReadARM:                   return "OpTensorReadARM";
+    case (int)Op::OpTensorWriteARM:                  return "OpTensorWriteARM";
+    case (int)Op::OpTensorQuerySizeARM:              return "OpTensorQuerySizeARM";
+
     case (int)Op::OpTypeCooperativeVectorNV:         return "OpTypeCooperativeVectorNV";
     case (int)Op::OpCooperativeVectorMatrixMulNV:    return "OpCooperativeVectorMatrixMulNV";
     case (int)Op::OpCooperativeVectorMatrixMulAddNV: return "OpCooperativeVectorMatrixMulAddNV";
@@ -1684,6 +1708,11 @@ const char* OpcodeString(int op)
     case (int)Op::OpImageBlockMatchWindowSADQCOM:    return "OpImageBlockMatchWindowSADQCOM";
     case (int)Op::OpImageBlockMatchGatherSSDQCOM:    return "OpImageBlockMatchGatherSSDQCOM";
     case (int)Op::OpImageBlockMatchGatherSADQCOM:    return "OpImageBlockMatchGatherSADQCOM";
+
+    case (int)Op::OpBitCastArrayQCOM:                return "OpBitCastArrayQCOM";
+    case (int)Op::OpCompositeConstructCoopMatQCOM:   return "OpCompositeConstructCoopMatQCOM";
+    case (int)Op::OpCompositeExtractCoopMatQCOM:     return "OpCompositeExtractCoopMatQCOM";
+    case (int)Op::OpExtractSubArrayQCOM:             return "OpExtractSubArrayQCOM";
 
     case (int)Op::OpConstantCompositeReplicateEXT: return "OpConstantCompositeReplicateEXT";
     case (int)Op::OpSpecConstantCompositeReplicateEXT: return "OpSpecConstantCompositeReplicateEXT";
@@ -1823,6 +1852,10 @@ void Parameterize()
         InstructionDesc[enumCast(Op::OpCooperativeVectorStoreNV)].setResultAndType(false, false);
         InstructionDesc[enumCast(Op::OpCooperativeVectorOuterProductAccumulateNV)].setResultAndType(false, false);
         InstructionDesc[enumCast(Op::OpCooperativeVectorReduceSumAccumulateNV)].setResultAndType(false, false);
+
+        InstructionDesc[enumCast(Op::OpTypeTensorARM)].setResultAndType(true, false);
+        InstructionDesc[enumCast(Op::OpTensorReadARM)].setResultAndType(true, true);
+        InstructionDesc[enumCast(Op::OpTensorWriteARM)].setResultAndType(false, false);
 
         // Specific additional context-dependent operands
 
@@ -3711,6 +3744,19 @@ void Parameterize()
         InstructionDesc[enumCast(Op::OpImageBlockMatchGatherSADQCOM)].operands.push(OperandImageOperands, "", true);
         InstructionDesc[enumCast(Op::OpImageBlockMatchGatherSADQCOM)].setResultAndType(true, true);
 
+        InstructionDesc[enumCast(Op::OpBitCastArrayQCOM)].operands.push(OperandId, "'source array'");
+        InstructionDesc[enumCast(Op::OpBitCastArrayQCOM)].setResultAndType(true, true);
+
+        InstructionDesc[enumCast(Op::OpCompositeConstructCoopMatQCOM)].operands.push(OperandId, "'source array'");
+        InstructionDesc[enumCast(Op::OpCompositeConstructCoopMatQCOM)].setResultAndType(true, true);
+
+        InstructionDesc[enumCast(Op::OpCompositeExtractCoopMatQCOM)].operands.push(OperandId, "'source cooperative matrix'");
+        InstructionDesc[enumCast(Op::OpCompositeExtractCoopMatQCOM)].setResultAndType(true, true);
+
+        InstructionDesc[enumCast(Op::OpExtractSubArrayQCOM)].operands.push(OperandId, "'source array'");
+        InstructionDesc[enumCast(Op::OpExtractSubArrayQCOM)].operands.push(OperandId, "'start index'");
+        InstructionDesc[enumCast(Op::OpExtractSubArrayQCOM)].setResultAndType(true, true);
+
         InstructionDesc[enumCast(Op::OpConstantCompositeReplicateEXT)].operands.push(OperandId, "'Value'");
         InstructionDesc[enumCast(Op::OpSpecConstantCompositeReplicateEXT)].operands.push(OperandId, "'Value'");
         InstructionDesc[enumCast(Op::OpCompositeConstructReplicateEXT)].operands.push(OperandId, "'Value'");
@@ -3802,6 +3848,24 @@ void Parameterize()
         InstructionDesc[enumCast(Op::OpSUDotAccSatKHR)].operands.push(OperandId, "'Vector2'");
         InstructionDesc[enumCast(Op::OpSUDotAccSatKHR)].operands.push(OperandId, "'Accumulator'");
         InstructionDesc[enumCast(Op::OpSUDotAccSatKHR)].operands.push(OperandLiteralNumber, "'PackedVectorFormat'");
+
+        InstructionDesc[enumCast(Op::OpTypeTensorARM)].operands.push(OperandId, "'Element Type'");
+        InstructionDesc[enumCast(Op::OpTypeTensorARM)].operands.push(OperandId, "'Rank'");
+
+        InstructionDesc[enumCast(Op::OpTensorReadARM)].operands.push(OperandId, "'Tensor'");
+        InstructionDesc[enumCast(Op::OpTensorReadARM)].operands.push(OperandId, "'Coordinate'");
+        InstructionDesc[enumCast(Op::OpTensorReadARM)].operands.push(OperandLiteralNumber, "'Tensor Operand'", true);
+        InstructionDesc[enumCast(Op::OpTensorReadARM)].operands.push(OperandVariableIds, "'Tensor Operands'");
+
+        InstructionDesc[enumCast(Op::OpTensorWriteARM)].operands.push(OperandId, "'Tensor'");
+        InstructionDesc[enumCast(Op::OpTensorWriteARM)].operands.push(OperandId, "'Coordinate'");
+        InstructionDesc[enumCast(Op::OpTensorWriteARM)].operands.push(OperandId, "'Object'");
+        InstructionDesc[enumCast(Op::OpTensorWriteARM)].operands.push(OperandLiteralNumber, "'Tensor Operand'", true);
+        InstructionDesc[enumCast(Op::OpTensorWriteARM)].operands.push(OperandVariableIds, "'Tensor Operands'");
+
+        InstructionDesc[enumCast(Op::OpTensorQuerySizeARM)].operands.push(OperandId, "'Tensor'");
+        InstructionDesc[enumCast(Op::OpTensorQuerySizeARM)].operands.push(OperandId, "'Dimension'", true);
+
     });
 }
 
