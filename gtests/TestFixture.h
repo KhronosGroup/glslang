@@ -487,7 +487,7 @@ public:
         EShMessages controls = DeriveOptions(source, semantics, target);
         controls = static_cast<EShMessages>(controls | additionalOptions);
         GlslangResult result = compileAndLink(testName, input, entryPointName, controls, clientTargetVersion,
-            targetLanguageVersion, false, EShTexSampTransKeep, false, automap);
+            targetLanguageVersion, false, EShTexSampTransKeep, false, false, false, automap);
 
         // Generate the hybrid output in the way of glslang.
         std::ostringstream stream;
