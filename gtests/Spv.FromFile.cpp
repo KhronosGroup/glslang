@@ -693,6 +693,8 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.coopvec2.comp",
         "spv.coopvecloadstore.comp",
         "spv.coopvec_Error.comp",
+        "spv.coopvecloadstore_Error.comp",
+        "spv.coopvecStoreLocal.comp",
         "spv.coopvecTraining.comp",
         "spv.coopvecTraining_Error.comp",
         "spv.intcoopmat.comp",
