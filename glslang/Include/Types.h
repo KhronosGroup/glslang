@@ -130,6 +130,13 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
 
     bool isTileAttachmentQCOM() const { return tileQCOM; }
 
+    // For combined sampler, returns the underlying texture. Otherwise, returns identity.
+    TSampler removeCombined() const {
+        TSampler result = *this;
+        result.combined = false;
+        return result;
+    }
+
     void clear()
     {
         type = EbtVoid;
@@ -238,9 +245,9 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
         return ! operator==(right);
     }
 
-    TString getString() const
+    std::string getString() const
     {
-        TString s;
+        std::string s;
 
         if (isPureSampler()) {
             s.append("sampler");
@@ -2595,7 +2602,7 @@ public:
     TString getBasicTypeString() const
     {
         if (basicType == EbtSampler)
-            return sampler.getString();
+            return TString{sampler.getString()};
         else
             return getBasicString();
     }

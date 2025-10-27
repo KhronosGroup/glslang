@@ -5209,18 +5209,50 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
     case glslang::EbtSampler:
         {
             const glslang::TSampler& sampler = type.getSampler();
+            std::string debugName;
+
             if (sampler.isPureSampler()) {
-                spvType = builder.makeSamplerType();
+                if (options.emitNonSemanticShaderDebugInfo) {
+                    if (glslangIntermediate->getSource() == glslang::EShSourceGlsl) {
+                        debugName = sampler.getString();
+                    }
+                    else {
+                        debugName = "type.sampler";
+                    }
+                }
+                spvType = builder.makeSamplerType(debugName.c_str());
             } else {
                 // an image is present, make its type
+                if (options.emitNonSemanticShaderDebugInfo) {
+                    if (glslangIntermediate->getSource() == glslang::EShSourceGlsl) {
+                        debugName = sampler.removeCombined().getString();
+                    }
+                    else {
+                        switch (sampler.dim) {
+                        case glslang::Esd1D:           debugName = "type.1d.image"; break;
+                        case glslang::Esd2D:           debugName = "type.2d.image"; break;
+                        case glslang::Esd3D:           debugName = "type.3d.image"; break;
+                        case glslang::EsdCube:         debugName = "type.cube.image"; break;
+                        default:                       debugName = "type.image"; break;
+                        }
+                    }
+                }
                 spvType = builder.makeImageType(getSampledType(sampler), TranslateDimensionality(sampler),
                                                 sampler.isShadow(), sampler.isArrayed(), sampler.isMultiSample(),
-                                                sampler.isImageClass() ? 2 : 1, TranslateImageFormat(type));
+                                                sampler.isImageClass() ? 2 : 1, TranslateImageFormat(type), debugName.c_str());
                 if (sampler.isCombined() &&
                     (!sampler.isBuffer() || glslangIntermediate->getSpv().spv < glslang::EShTargetSpv_1_6)) {
                     // Already has both image and sampler, make the combined type. Only combine sampler to
                     // buffer if before SPIR-V 1.6.
-                    spvType = builder.makeSampledImageType(spvType);
+                    if (options.emitNonSemanticShaderDebugInfo) {
+                        if (glslangIntermediate->getSource() == glslang::EShSourceGlsl) {
+                            debugName = sampler.getString();
+                        }
+                        else {
+                            debugName = "type.sampled.image";
+                        }
+                    }
+                    spvType = builder.makeSampledImageType(spvType, debugName.c_str());
                 }
             }
         }

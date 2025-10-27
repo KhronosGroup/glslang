@@ -235,9 +235,9 @@ public:
     Id makeArrayType(Id element, Id sizeId, int stride);  // 0 stride means no stride decoration
     Id makeRuntimeArray(Id element);
     Id makeFunctionType(Id returnType, const std::vector<Id>& paramTypes);
-    Id makeImageType(Id sampledType, Dim, bool depth, bool arrayed, bool ms, unsigned sampled, ImageFormat format);
-    Id makeSamplerType();
-    Id makeSampledImageType(Id imageType);
+    Id makeImageType(Id sampledType, Dim, bool depth, bool arrayed, bool ms, unsigned sampled, ImageFormat format, const char* debugNames);
+    Id makeSamplerType(const char* debugName);
+    Id makeSampledImageType(Id imageType, const char* debugName);
     Id makeCooperativeMatrixTypeKHR(Id component, Id scope, Id rows, Id cols, Id use);
     Id makeCooperativeMatrixTypeNV(Id component, Id scope, Id rows, Id cols);
     Id makeCooperativeMatrixTypeWithSameShape(Id component, Id otherType);
