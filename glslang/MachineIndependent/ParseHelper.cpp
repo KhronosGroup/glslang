@@ -9174,9 +9174,16 @@ TIntermNode* TParseContext::declareVariable(const TSourceLoc& loc, TString& iden
 
     // TODO: The decl AST is turned on based on debug info right now. We should expose it as an explicit option.
     if (intermediate.getDebugInfo()) {
-        auto decl = new TIntermVariableDecl(intermediate.addSymbol(*symbol->getAsVariable(), loc), initNode);
-        decl->setLoc(loc);
-        return decl;
+        TVariable* variable = symbol->getAsVariable();
+        if (variable) {
+            auto decl = new TIntermVariableDecl(intermediate.addSymbol(*variable, loc), initNode);
+            decl->setLoc(loc);
+            return decl;
+        }
+        else {
+            // We ignore builtins redeclarations
+            return nullptr;
+        }
     }
     else {
         return initNode;
