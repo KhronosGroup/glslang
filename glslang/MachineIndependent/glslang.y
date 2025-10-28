@@ -912,15 +912,12 @@ declaration
         $$ = 0;
     }
     | block_structure SEMICOLON {
-        parseContext.declareBlock($1.loc, *$1.typeList);
         $$ = parseContext.declareBlock($1.loc, *$1.typeList);
     }
     | block_structure IDENTIFIER SEMICOLON {
-        parseContext.declareBlock($1.loc, *$1.typeList, $2.string);
         $$ = parseContext.declareBlock($1.loc, *$1.typeList, $2.string);
     }
     | block_structure IDENTIFIER array_specifier SEMICOLON {
-        parseContext.declareBlock($1.loc, *$1.typeList, $2.string, $3.arraySizes);
         $$ = parseContext.declareBlock($1.loc, *$1.typeList, $2.string, $3.arraySizes);
     }
     | type_qualifier SEMICOLON {
