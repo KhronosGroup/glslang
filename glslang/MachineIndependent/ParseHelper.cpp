@@ -10395,10 +10395,14 @@ TIntermNode* TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeL
     // Save it in the AST for linker use.
     trackLinkage(variable);
 
-    TIntermNode* declNode = nullptr;
+    TIntermAggregate* declNode = nullptr;
     if (intermediate.getDebugInfo()) {
-        declNode = new TIntermVariableDecl(intermediate.addSymbol(variable, loc), nullptr);
-        declNode->setLoc(loc);
+        auto blockDeclNode = new TIntermVariableDecl(intermediate.addSymbol(variable, loc), nullptr);
+        blockDeclNode->setLoc(loc);
+
+        // We have to wrap the decalaration with a sequence to fit the same processing logic with variables.
+        declNode = new TIntermAggregate(EOpSequence);
+        declNode->getSequence().push_back(blockDeclNode);
     }
     return declNode;
 }

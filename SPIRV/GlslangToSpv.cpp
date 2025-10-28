@@ -4943,9 +4943,12 @@ bool TGlslangToSpvTraverser::visitBranch(glslang::TVisit /* visit */, glslang::T
 
 bool TGlslangToSpvTraverser::visitVariableDecl(glslang::TVisit visit, glslang::TIntermVariableDecl* node)
 {
-    builder.setDebugSourceLocation(node->getDeclSymbol()->getLoc().line, node->getDeclSymbol()->getLoc().getFilename());
-    // We touch the symbol once here to create the debug info.
-    getSymbolId(node->getDeclSymbol());
+    if (visit == glslang::EvPreVisit) {
+        builder.setDebugSourceLocation(node->getDeclSymbol()->getLoc().line, node->getDeclSymbol()->getLoc().getFilename());
+        // We touch the symbol once here to create the debug info.
+        getSymbolId(node->getDeclSymbol());
+    }
+
     return true;
 }
 
