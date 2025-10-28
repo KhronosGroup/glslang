@@ -127,15 +127,16 @@ public:
         glslang::SpvOptions& options);
     virtual ~TGlslangToSpvTraverser() { }
 
-    bool visitAggregate(glslang::TVisit, glslang::TIntermAggregate*);
-    bool visitBinary(glslang::TVisit, glslang::TIntermBinary*);
-    void visitConstantUnion(glslang::TIntermConstantUnion*);
-    bool visitSelection(glslang::TVisit, glslang::TIntermSelection*);
-    bool visitSwitch(glslang::TVisit, glslang::TIntermSwitch*);
-    void visitSymbol(glslang::TIntermSymbol* symbol);
-    bool visitUnary(glslang::TVisit, glslang::TIntermUnary*);
-    bool visitLoop(glslang::TVisit, glslang::TIntermLoop*);
-    bool visitBranch(glslang::TVisit visit, glslang::TIntermBranch*);
+    bool visitAggregate(glslang::TVisit, glslang::TIntermAggregate*) override;
+    bool visitBinary(glslang::TVisit, glslang::TIntermBinary*) override;
+    void visitConstantUnion(glslang::TIntermConstantUnion*) override;
+    bool visitSelection(glslang::TVisit, glslang::TIntermSelection*) override;
+    bool visitSwitch(glslang::TVisit, glslang::TIntermSwitch*) override;
+    void visitSymbol(glslang::TIntermSymbol* symbol) override;
+    bool visitUnary(glslang::TVisit, glslang::TIntermUnary*) override;
+    bool visitLoop(glslang::TVisit, glslang::TIntermLoop*) override;
+    bool visitBranch(glslang::TVisit visit, glslang::TIntermBranch*) override;
+    bool visitVariableDecl(glslang::TVisit, glslang::TIntermVariableDecl*) override;
 
     void finishSpv(bool compileOnly);
     void dumpSpv(std::vector<unsigned int>& out);
@@ -3138,6 +3139,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
                 currentFunction->setDebugLineInfo(sourceFileId, loc.line, loc.column);
             }
         } else {
+            currentFunction = nullptr;
             if (options.generateDebugInfo) {
                 if (glslangIntermediate->getSource() == glslang::EShSourceGlsl && node->getSequence().size() > 1) {
                     auto endLoc = node->getSequence()[1]->getAsAggregate()->getEndLoc();
@@ -4939,6 +4941,15 @@ bool TGlslangToSpvTraverser::visitBranch(glslang::TVisit /* visit */, glslang::T
     return false;
 }
 
+bool TGlslangToSpvTraverser::visitVariableDecl(glslang::TVisit visit, glslang::TIntermVariableDecl* node)
+{
+    builder.setDebugSourceLocation(node->getDeclSymbol()->getLoc().line, node->getDeclSymbol()->getLoc().getFilename());
+    // We touch the symbol once here to create the debug info.
+    getSymbolId(node->getDeclSymbol());
+    return true;
+}
+
+
 spv::Id TGlslangToSpvTraverser::createSpvVariable(const glslang::TIntermSymbol* node, spv::Id forcedType)
 {
     // First, steer off constants, which are not SPIR-V variables, but
@@ -4946,8 +4957,12 @@ spv::Id TGlslangToSpvTraverser::createSpvVariable(const glslang::TIntermSymbol* 
     // This includes specialization constants.
     if (node->getQualifier().isConstant()) {
         spv::Id result = createSpvConstant(*node);
-        if (result != spv::NoResult)
+        if (result != spv::NoResult) {
+            auto name = node->getAsSymbolNode()->getAccessName().c_str();
+            auto typeId = convertGlslangToSpvType(node->getType());
+            builder.createConstVariable(typeId, name, result, currentFunction == nullptr);
             return result;
+        }
     }
 
     // Now, handle actual variables

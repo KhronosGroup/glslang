@@ -1164,21 +1164,23 @@ init_declarator_list
     }
     | init_declarator_list COMMA IDENTIFIER {
         $$ = $1;
-        parseContext.declareVariable($3.loc, *$3.string, $1.type);
+        auto declNode = parseContext.declareVariable($3.loc, *$3.string, $1.type);
+        $$.intermNode = parseContext.intermediate.growAggregate($1.intermNode, declNode, $3.loc);
     }
     | init_declarator_list COMMA IDENTIFIER array_specifier {
         $$ = $1;
-        parseContext.declareVariable($3.loc, *$3.string, $1.type, $4.arraySizes);
+        auto declNode = parseContext.declareVariable($3.loc, *$3.string, $1.type, $4.arraySizes);
+        $$.intermNode = parseContext.intermediate.growAggregate($1.intermNode, declNode, $3.loc);
     }
     | init_declarator_list COMMA IDENTIFIER array_specifier EQUAL initializer {
         $$.type = $1.type;
-        TIntermNode* initNode = parseContext.declareVariable($3.loc, *$3.string, $1.type, $4.arraySizes, $6);
-        $$.intermNode = parseContext.intermediate.growAggregate($1.intermNode, initNode, $5.loc);
+        TIntermNode* declNode = parseContext.declareVariable($3.loc, *$3.string, $1.type, $4.arraySizes, $6);
+        $$.intermNode = parseContext.intermediate.growAggregate($1.intermNode, declNode, $5.loc);
     }
     | init_declarator_list COMMA IDENTIFIER EQUAL initializer {
         $$.type = $1.type;
-        TIntermNode* initNode = parseContext.declareVariable($3.loc, *$3.string, $1.type, 0, $5);
-        $$.intermNode = parseContext.intermediate.growAggregate($1.intermNode, initNode, $4.loc);
+        TIntermNode* declNode = parseContext.declareVariable($3.loc, *$3.string, $1.type, 0, $5);
+        $$.intermNode = parseContext.intermediate.growAggregate($1.intermNode, declNode, $4.loc);
     }
     ;
 
@@ -1190,23 +1192,24 @@ single_declaration
     }
     | fully_specified_type IDENTIFIER {
         $$.type = $1;
-        $$.intermNode = 0;
-        parseContext.declareVariable($2.loc, *$2.string, $1);
+        TIntermNode* declNode = parseContext.declareVariable($2.loc, *$2.string, $1);
+        $$.intermNode = parseContext.intermediate.growAggregate(nullptr, declNode, $2.loc);
+
     }
     | fully_specified_type IDENTIFIER array_specifier {
         $$.type = $1;
-        $$.intermNode = 0;
-        parseContext.declareVariable($2.loc, *$2.string, $1, $3.arraySizes);
+        TIntermNode* declNode = parseContext.declareVariable($2.loc, *$2.string, $1, $3.arraySizes);
+        $$.intermNode = parseContext.intermediate.growAggregate(nullptr, declNode, $2.loc);
     }
     | fully_specified_type IDENTIFIER array_specifier EQUAL initializer {
         $$.type = $1;
-        TIntermNode* initNode = parseContext.declareVariable($2.loc, *$2.string, $1, $3.arraySizes, $5);
-        $$.intermNode = parseContext.intermediate.growAggregate(0, initNode, $4.loc);
+        TIntermNode* declNode = parseContext.declareVariable($2.loc, *$2.string, $1, $3.arraySizes, $5);
+        $$.intermNode = parseContext.intermediate.growAggregate(nullptr, declNode, $2.loc);
     }
     | fully_specified_type IDENTIFIER EQUAL initializer {
         $$.type = $1;
-        TIntermNode* initNode = parseContext.declareVariable($2.loc, *$2.string, $1, 0, $4);
-        $$.intermNode = parseContext.intermediate.growAggregate(0, initNode, $3.loc);
+        TIntermNode* declNode = parseContext.declareVariable($2.loc, *$2.string, $1, 0, $4);
+        $$.intermNode = parseContext.intermediate.growAggregate(nullptr, declNode, $2.loc);
     }
 
 // Grammar Note:  No 'enum', or 'typedef'.
@@ -3990,11 +3993,20 @@ condition
         parseContext.boolCheck($2.loc, $1);
 
         TType type($1);
-        TIntermNode* initNode = parseContext.declareVariable($2.loc, *$2.string, $1, 0, $4);
-        if (initNode)
-            $$ = initNode->getAsTyped();
-        else
+        TIntermNode* declNode = parseContext.declareVariable($2.loc, *$2.string, $1, 0, $4);
+        if (declNode) {
+            if (declNode->getAsVariableDecl()) {
+                // FIXME: could we support decl AST in this case?
+                $$ = declNode->getAsVariableDecl()->getInitNode()->getAsTyped();
+                delete declNode;
+            }
+            else {
+                $$ = declNode->getAsTyped();
+            }
+        }
+        else {
             $$ = 0;
+        }
     }
     ;
 

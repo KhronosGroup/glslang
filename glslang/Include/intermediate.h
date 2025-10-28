@@ -1021,6 +1021,7 @@ enum TLinkType {
 };
 
 class TIntermTraverser;
+class TIntermVariableDecl;
 class TIntermOperator;
 class TIntermAggregate;
 class TIntermUnary;
@@ -1049,6 +1050,7 @@ public:
     virtual const glslang::TSourceLoc& getLoc() const { return loc; }
     virtual void setLoc(const glslang::TSourceLoc& l) { loc = l; }
     virtual void traverse(glslang::TIntermTraverser*) = 0;
+    virtual       glslang::TIntermVariableDecl*  getAsVariableDecl()        { return nullptr; }
     virtual       glslang::TIntermTyped*         getAsTyped()               { return nullptr; }
     virtual       glslang::TIntermOperator*      getAsOperator()            { return nullptr; }
     virtual       glslang::TIntermConstantUnion* getAsConstantUnion()       { return nullptr; }
@@ -1062,6 +1064,7 @@ public:
     virtual       glslang::TIntermBranch*        getAsBranchNode()          { return nullptr; }
     virtual       glslang::TIntermLoop*          getAsLoopNode()            { return nullptr; }
 
+    virtual const glslang::TIntermVariableDecl*  getAsVariableDecl()  const { return nullptr; }
     virtual const glslang::TIntermTyped*         getAsTyped()         const { return nullptr; }
     virtual const glslang::TIntermOperator*      getAsOperator()      const { return nullptr; }
     virtual const glslang::TIntermConstantUnion* getAsConstantUnion() const { return nullptr; }
@@ -1090,6 +1093,37 @@ namespace glslang {
 struct TIntermNodePair {
     TIntermNode* node1;
     TIntermNode* node2;
+};
+
+//
+// Represent declaration of a variable.
+//
+class TIntermVariableDecl : public TIntermNode {
+public:
+    TIntermVariableDecl(TIntermSymbol* declSymbol, TIntermNode* initNode) : declSymbol(declSymbol), initNode(initNode)
+    {
+    }
+    TIntermVariableDecl(const TIntermVariableDecl&) = delete;
+    TIntermVariableDecl& operator=(const TIntermVariableDecl&) = delete;
+
+    void traverse(glslang::TIntermTraverser* traverser) override;
+
+    TIntermVariableDecl* getAsVariableDecl() override { return this; }
+    const TIntermVariableDecl* getAsVariableDecl() const override { return this; }
+
+    TIntermSymbol* getDeclSymbol() { return declSymbol; }
+    const TIntermSymbol* getDeclSymbol() const { return declSymbol; }
+
+    TIntermNode* getInitNode() { return initNode; }
+    const TIntermNode* getInitNode() const { return initNode; }
+
+private:
+    // This symbol is an imaginary access of the variable defined, which isn't an AST node and 
+    // doesn't participate tree traversal.
+    TIntermSymbol* declSymbol = nullptr;
+
+    // The initializer
+    TIntermNode* initNode = nullptr;
 };
 
 //
@@ -1762,15 +1796,16 @@ public:
             maxDepth(0) { }
     virtual ~TIntermTraverser() { }
 
-    virtual void visitSymbol(TIntermSymbol*)               { }
-    virtual void visitConstantUnion(TIntermConstantUnion*) { }
-    virtual bool visitBinary(TVisit, TIntermBinary*)       { return true; }
-    virtual bool visitUnary(TVisit, TIntermUnary*)         { return true; }
-    virtual bool visitSelection(TVisit, TIntermSelection*) { return true; }
-    virtual bool visitAggregate(TVisit, TIntermAggregate*) { return true; }
-    virtual bool visitLoop(TVisit, TIntermLoop*)           { return true; }
-    virtual bool visitBranch(TVisit, TIntermBranch*)       { return true; }
-    virtual bool visitSwitch(TVisit, TIntermSwitch*)       { return true; }
+    virtual void visitSymbol(TIntermSymbol*)                     { }
+    virtual void visitConstantUnion(TIntermConstantUnion*)       { }
+    virtual bool visitBinary(TVisit, TIntermBinary*)             { return true; }
+    virtual bool visitUnary(TVisit, TIntermUnary*)               { return true; }
+    virtual bool visitSelection(TVisit, TIntermSelection*)       { return true; }
+    virtual bool visitAggregate(TVisit, TIntermAggregate*)       { return true; }
+    virtual bool visitLoop(TVisit, TIntermLoop*)                 { return true; }
+    virtual bool visitBranch(TVisit, TIntermBranch*)             { return true; }
+    virtual bool visitSwitch(TVisit, TIntermSwitch*)             { return true; }
+    virtual bool visitVariableDecl(TVisit, TIntermVariableDecl*) { return true; }
 
     int getMaxDepth() const { return maxDepth; }
 
