@@ -10101,9 +10101,9 @@ void TParseContext::updateBindlessQualifier(TType& memberType)
 }
 
 //
-// Do everything needed to add an interface block.
+// Do everything needed to add an interface block. Returns the declarator node if there's an instance declaration.
 //
-void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, const TString* instanceName,
+TIntermNode* TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, const TString* instanceName,
     TArraySizes* arraySizes)
 {
     if (spvVersion.vulkan > 0 && spvVersion.vulkanRelaxed)
@@ -10169,7 +10169,7 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
     // do all the rest.
     if (! symbolTable.atBuiltInLevel() && builtInName(*blockName)) {
         redeclareBuiltinBlock(loc, typeList, *blockName, instanceName, arraySizes);
-        return;
+        return nullptr;
     }
 
     // Not a redeclaration of a built-in; check that all names are user names.
@@ -10335,7 +10335,7 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
             }
         }
         if (!instanceName) {
-            return;
+            return nullptr;
         }
     } else {
         //
@@ -10358,11 +10358,11 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
             if (existingName->getType().getBasicType() == EbtBlock) {
                 if (existingName->getType().getQualifier().storage == blockType.getQualifier().storage) {
                     error(loc, "Cannot reuse block name within the same interface:", blockName->c_str(), blockType.getStorageQualifierString());
-                    return;
+                    return nullptr;
                 }
             } else {
                 error(loc, "block name cannot redefine a non-block name", blockName->c_str(), "");
-                return;
+                return nullptr;
             }
         }
     }
@@ -10379,7 +10379,7 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
         else
             error(loc, "block instance name redefinition", variable.getName().c_str(), "");
 
-        return;
+        return nullptr;
     }
 
     // Check for general layout qualifier errors
@@ -10394,6 +10394,13 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
 
     // Save it in the AST for linker use.
     trackLinkage(variable);
+
+    TIntermNode* declNode = nullptr;
+    if (intermediate.getDebugInfo()) {
+        declNode = new TIntermVariableDecl(intermediate.addSymbol(variable, loc), nullptr);
+        declNode->setLoc(loc);
+    }
+    return declNode;
 }
 
 //
