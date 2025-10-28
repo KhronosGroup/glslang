@@ -4096,6 +4096,10 @@ iteration_statement_nonattributed
       condition RIGHT_PAREN statement_no_new_scope {
         parseContext.symbolTable.pop(&parseContext.defaultPrecision[0]);
         $$ = parseContext.intermediate.addLoop($6, $4, 0, true, $1.loc);
+        if (parseContext.intermediate.getDebugInfo()) {
+            $$ = parseContext.intermediate.makeAggregate($$, $1.loc);
+            $$->getAsAggregate()->setOperator(EOpScope);
+        }
         --parseContext.loopNestingLevel;
         --parseContext.statementNestingLevel;
         --parseContext.controlFlowNestingLevel;
@@ -4113,6 +4117,10 @@ iteration_statement_nonattributed
         parseContext.boolCheck($8.loc, $6);
 
         $$ = parseContext.intermediate.addLoop($3, $6, 0, false, $4.loc);
+        if (parseContext.intermediate.getDebugInfo()) {
+            $$ = parseContext.intermediate.makeAggregate($$, $4.loc);
+            $$->getAsAggregate()->setOperator(EOpScope);
+        }
         parseContext.symbolTable.pop(&parseContext.defaultPrecision[0]);
         --parseContext.loopNestingLevel;
         --parseContext.statementNestingLevel;
@@ -4131,7 +4139,7 @@ iteration_statement_nonattributed
         if (! parseContext.limits.nonInductiveForLoops)
             parseContext.inductiveLoopCheck($1.loc, $4, forLoop);
         $$ = parseContext.intermediate.growAggregate($$, forLoop, $1.loc);
-        $$->getAsAggregate()->setOperator(EOpSequence);
+        $$->getAsAggregate()->setOperator(parseContext.intermediate.getDebugInfo() ? EOpScope : EOpSequence);
         --parseContext.loopNestingLevel;
         --parseContext.statementNestingLevel;
         --parseContext.controlFlowNestingLevel;
