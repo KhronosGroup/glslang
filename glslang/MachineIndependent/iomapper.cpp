@@ -253,6 +253,13 @@ public:
         }
     }
 
+    virtual bool visitVariableDecl(TVisit, TIntermVariableDecl* decl) {
+        // Because variable declaration node doesn't participate in tree traversal,
+        // we need to handle it here to set its symbol's binding info.
+        visitSymbol(decl->getDeclSymbol());
+        return true;
+    }
+
   private:
     const TVarLiveMap&    inputList;
     const TVarLiveMap&    outputList;

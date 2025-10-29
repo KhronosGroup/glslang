@@ -2793,6 +2793,20 @@ void Builder::makeStatementTerminator(spv::Op opcode, const std::vector<Id>& ope
     createAndSetNoPredecessorBlock(name);
 }
 
+void Builder::createConstVariable(Id type, const char* name, Id constant, bool isGlobal)
+{
+    if (emitNonSemanticShaderDebugInfo) {
+        Id debugType = getDebugType(type);
+        if (isGlobal) {
+            createDebugGlobalVariable(debugType, name, constant);
+        }
+        else {
+            auto debugLocal = createDebugLocalVariable(debugType, name);
+            makeDebugValue(debugLocal, constant);
+        }
+    }
+}
+
 // Comments in header
 Id Builder::createVariable(Decoration precision, StorageClass storageClass, Id type, const char* name, Id initializer,
     bool const compilerGenerated)

@@ -103,6 +103,12 @@ struct TRemoveTraverser : TIntermTraverser {
 
         return true;
     }
+
+    virtual bool visitVariableDecl(TVisit /* visit */, TIntermVariableDecl* decl)
+    {
+        delete decl;
+        return true;
+    }
 };
 
 //

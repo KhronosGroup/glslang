@@ -454,7 +454,7 @@ public:
     TParameter getParamWithDefault(const TPublicType& ty, TString* identifier, TIntermTyped* initializer,
                                    const TSourceLoc& loc);
     void inheritMemoryQualifiers(const TQualifier& from, TQualifier& to);
-    void declareBlock(const TSourceLoc&, TTypeList& typeList, const TString* instanceName = nullptr, TArraySizes* arraySizes = nullptr);
+    TIntermNode* declareBlock(const TSourceLoc&, TTypeList& typeList, const TString* instanceName = nullptr, TArraySizes* arraySizes = nullptr);
     void blockStorageRemap(const TSourceLoc&, const TString*, TQualifier&);
     void blockStageIoCheck(const TSourceLoc&, const TQualifier&);
     void blockQualifierCheck(const TSourceLoc&, const TQualifier&, bool instanceName);
