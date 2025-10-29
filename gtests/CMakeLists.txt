@@ -59,7 +59,8 @@ if(GLSLANG_TESTS)
             ${CMAKE_CURRENT_SOURCE_DIR}/StructName.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/SpvPatternTest.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/VkRelaxed.FromFile.cpp
-            ${CMAKE_CURRENT_SOURCE_DIR}/GlslMapIO.FromFile.cpp)
+            ${CMAKE_CURRENT_SOURCE_DIR}/GlslMapIO.FromFile.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/UboUnsizedArray.cpp)
 
         add_executable(glslangtests ${TEST_SOURCES})
         glslang_pch(glslangtests ${CMAKE_CURRENT_SOURCE_DIR}/pch.h)

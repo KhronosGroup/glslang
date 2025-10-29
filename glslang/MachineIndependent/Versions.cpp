@@ -385,6 +385,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_EXT_bfloat16]                    = EBhDisable;
     extensionBehavior[E_GL_EXT_float_e4m3]                  = EBhDisable;
     extensionBehavior[E_GL_EXT_float_e5m2]                  = EBhDisable;
+    extensionBehavior[E_GL_EXT_uniform_buffer_unsized_array] = EBhDisable;
 
     // OVR extensions
     extensionBehavior[E_GL_OVR_multiview]                = EBhDisable;
@@ -627,6 +628,7 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_EXT_bfloat16 1\n"
             "#define GL_EXT_float_e5m2 1\n"
             "#define GL_EXT_float_e4m3 1\n"
+            "#define GL_EXT_uniform_buffer_unsized_array 1\n"
             ;
 
         if (spvVersion.spv == 0) {

@@ -5513,6 +5513,9 @@ void TParseContext::arraySizesCheck(const TSourceLoc& loc, const TQualifier& qua
     if (qualifier.storage == EvqBuffer && lastMember)
         return;
 
+    if (qualifier.storage == EvqUniform && lastMember && extensionTurnedOn(E_GL_EXT_uniform_buffer_unsized_array))
+        return;
+
     arraySizeRequiredCheck(loc, *arraySizes);
 }
 
@@ -5632,6 +5635,20 @@ void TParseContext::checkRuntimeSizable(const TSourceLoc& loc, const TIntermType
 
             const int index = binary->getRight()->getAsConstantUnion()->getConstArray()[0].getIConst();
             const int memberCount = (int)binary->getLeft()->getType().getReferentType()->getStruct()->size();
+            if (index == memberCount - 1)
+                return;
+        }
+    }
+
+    // Check for last member of a uniform block, which can be runtime sizeable
+    // when using GL_EXT_uniform_buffer_unsized_array
+    if (base.getType().getQualifier().storage == EvqUniform && extensionTurnedOn(E_GL_EXT_uniform_buffer_unsized_array)) {
+        const TIntermBinary* binary = base.getAsBinaryNode();
+        if (binary != nullptr &&
+            binary->getOp() == EOpIndexDirectStruct) {
+
+            const int index = binary->getRight()->getAsConstantUnion()->getConstArray()[0].getIConst();
+            const int memberCount = (int)binary->getLeft()->getType().getStruct()->size();
             if (index == memberCount - 1)
                 return;
         }
