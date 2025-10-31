@@ -121,6 +121,9 @@ TIntermTyped* TIntermediate::addBinaryMath(TOperator op, TIntermTyped* left, TIn
     if (left->getType().getBasicType() == EbtBlock || right->getType().getBasicType() == EbtBlock)
         return nullptr;
 
+    if (left->getType().getBasicType() == EbtString || right->getType().getBasicType() == EbtString)
+        return nullptr;
+
     // Convert "reference +/- int" and "reference - reference" to integer math
     if (op == EOpAdd || op == EOpSub) {
 
@@ -2383,6 +2386,9 @@ TIntermTyped* TIntermediate::addSelection(TIntermTyped* cond, TIntermTyped* true
     falseBlock = std::get<1>(children);
 
     if (trueBlock == nullptr || falseBlock == nullptr)
+        return nullptr;
+
+    if (trueBlock->getBasicType() == EbtString || falseBlock->getBasicType() == EbtString)
         return nullptr;
 
     // Handle a vector condition as a mix
