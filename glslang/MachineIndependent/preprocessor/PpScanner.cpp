@@ -1295,6 +1295,8 @@ int TPpContext::tokenize(TPpToken& ppToken)
         }
 
         switch (token) {
+        case PpAtomConstString:
+            break;
         case PpAtomIdentifier:
         case PpAtomConstInt:
         case PpAtomConstUint:
@@ -1305,7 +1307,6 @@ int TPpContext::tokenize(TPpToken& ppToken)
         case PpAtomConstUint16:
         case PpAtomConstDouble:
         case PpAtomConstFloat16:
-        case PpAtomConstString:
             if (ppToken.name[0] == '\0')
                 continue;
             break;
@@ -1357,6 +1358,7 @@ int TPpContext::tokenPaste(int token, TPpToken& ppToken)
 
         // This covers end of macro expansion
         if (endOfReplacementList()) {
+            // this should be unreachable, incomplete #/## sequences are caught at macro parsing time.
             parseContext.ppError(ppToken.loc, "unexpected location; end of replacement list", "##", "");
             break;
         }
