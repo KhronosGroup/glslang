@@ -638,6 +638,7 @@ TIntermTyped* TParseContext::handleBracketDereference(const TSourceLoc& loc, TIn
                     TType& leftType = binaryNode->getLeft()->getWritableType();
                     TArraySizes& arraySizes = *leftType.getArraySizes();
                     assert(arraySizes.getNumDims() == 2);
+                    assert(indexValue < std::numeric_limits<int>::max());
                     arraySizes.setDimSize(1, std::max(arraySizes.getDimSize(1), (int)indexValue + 1));
                 }
             }
