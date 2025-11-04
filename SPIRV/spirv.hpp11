@@ -207,6 +207,7 @@ enum class ExecutionMode : unsigned {
     SampleInterlockUnorderedEXT = 5369,
     ShadingRateInterlockOrderedEXT = 5370,
     ShadingRateInterlockUnorderedEXT = 5371,
+    Shader64BitIndexingEXT = 5427,
     SharedLocalMemorySizeINTEL = 5618,
     RoundingModeRTPINTEL = 5620,
     RoundingModeRTNINTEL = 5621,
@@ -1196,6 +1197,7 @@ enum class Capability : unsigned {
     RawAccessChainsNV = 5414,
     RayTracingSpheresGeometryNV = 5418,
     RayTracingLinearSweptSpheresGeometryNV = 5419,
+    Shader64BitIndexingEXT = 5426,
     CooperativeMatrixReductionsNV = 5430,
     CooperativeMatrixConversionsNV = 5431,
     CooperativeMatrixPerElementOperationsNV = 5432,
@@ -3350,6 +3352,7 @@ inline const char* ExecutionModeToString(ExecutionMode value) {
     case ExecutionMode::SampleInterlockUnorderedEXT: return "SampleInterlockUnorderedEXT";
     case ExecutionMode::ShadingRateInterlockOrderedEXT: return "ShadingRateInterlockOrderedEXT";
     case ExecutionMode::ShadingRateInterlockUnorderedEXT: return "ShadingRateInterlockUnorderedEXT";
+    case ExecutionMode::Shader64BitIndexingEXT: return "Shader64BitIndexingEXT";
     case ExecutionMode::SharedLocalMemorySizeINTEL: return "SharedLocalMemorySizeINTEL";
     case ExecutionMode::RoundingModeRTPINTEL: return "RoundingModeRTPINTEL";
     case ExecutionMode::RoundingModeRTNINTEL: return "RoundingModeRTNINTEL";
@@ -4077,6 +4080,7 @@ inline const char* CapabilityToString(Capability value) {
     case Capability::RawAccessChainsNV: return "RawAccessChainsNV";
     case Capability::RayTracingSpheresGeometryNV: return "RayTracingSpheresGeometryNV";
     case Capability::RayTracingLinearSweptSpheresGeometryNV: return "RayTracingLinearSweptSpheresGeometryNV";
+    case Capability::Shader64BitIndexingEXT: return "Shader64BitIndexingEXT";
     case Capability::CooperativeMatrixReductionsNV: return "CooperativeMatrixReductionsNV";
     case Capability::CooperativeMatrixConversionsNV: return "CooperativeMatrixConversionsNV";
     case Capability::CooperativeMatrixPerElementOperationsNV: return "CooperativeMatrixPerElementOperationsNV";

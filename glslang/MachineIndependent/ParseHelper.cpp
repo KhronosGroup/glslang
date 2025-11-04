@@ -404,6 +404,14 @@ void TParseContext::handlePragma(const TSourceLoc& loc, const TVector<TString>& 
         if (tokens.size() != 1)
             error(loc, "extra tokens", "#pragma", "");
         intermediate.setReplicatedComposites();
+    } else if (spvVersion.spv > 0 && tokens[0].compare("promote_uint32_indices") == 0) {
+        if (tokens.size() != 1)
+            error(loc, "extra tokens", "#pragma", "");
+        intermediate.setPromoteUint32Indices();
+    } else if (spvVersion.spv > 0 && tokens[0].compare("shader_64bit_indexing") == 0) {
+        if (tokens.size() != 1)
+            error(loc, "extra tokens", "#pragma", "");
+        intermediate.setShader64BitIndexing();
     } else if (tokens[0].compare("once") == 0) {
         warn(loc, "not implemented", "#pragma once", "");
     } else if (tokens[0].compare("glslang_binary_double_output") == 0) {
@@ -542,10 +550,16 @@ TIntermTyped* TParseContext::handleVariable(const TSourceLoc& loc, TSymbol* symb
 //
 TIntermTyped* TParseContext::handleBracketDereference(const TSourceLoc& loc, TIntermTyped* base, TIntermTyped* index)
 {
-    int indexValue = 0;
-    if (index->getQualifier().isFrontEndConstant())
-        indexValue = index->getAsConstantUnion()->getConstArray()[0].getIConst();
-
+    int64_t indexValue = 0;
+    if (index->getQualifier().isFrontEndConstant()) {
+        if (index->getType().contains64BitInt()) {
+            indexValue = index->getAsConstantUnion()->getConstArray()[0].getI64Const();
+        } else if (index->getType().getBasicType() == EbtUint) {
+            indexValue = index->getAsConstantUnion()->getConstArray()[0].getUConst();
+        } else {
+            indexValue = index->getAsConstantUnion()->getConstArray()[0].getIConst();
+        }
+    }
     // basic type checks...
     variableCheck(base);
 
@@ -624,7 +638,8 @@ TIntermTyped* TParseContext::handleBracketDereference(const TSourceLoc& loc, TIn
                     TType& leftType = binaryNode->getLeft()->getWritableType();
                     TArraySizes& arraySizes = *leftType.getArraySizes();
                     assert(arraySizes.getNumDims() == 2);
-                    arraySizes.setDimSize(1, std::max(arraySizes.getDimSize(1), indexValue + 1));
+                    assert(indexValue < std::numeric_limits<int>::max());
+                    arraySizes.setDimSize(1, std::max(arraySizes.getDimSize(1), (int)indexValue + 1));
                 }
             }
         } else
@@ -972,10 +987,10 @@ TIntermTyped* TParseContext::handleDotDereference(const TSourceLoc& loc, TInterm
     // Save away the name in the AST for now.  Processing is completed in
     // handleLengthMethod().
     //
-    if (field == "length") {
+    if (field == "length" || field == "length64") {
         if (base->isArray()) {
-            profileRequires(loc, ENoProfile, 120, E_GL_3DL_array_objects, ".length");
-            profileRequires(loc, EEsProfile, 300, nullptr, ".length");
+            profileRequires(loc, ENoProfile, 120, E_GL_3DL_array_objects, (TString(".") + field).c_str());
+            profileRequires(loc, EEsProfile, 300, nullptr, (TString(".") + field).c_str());
         } else if (base->isVector() || base->isMatrix()) {
             const char* feature = ".length() on vectors and matrices";
             requireProfile(loc, ~EEsProfile, feature);
@@ -986,7 +1001,12 @@ TIntermTyped* TParseContext::handleDotDereference(const TSourceLoc& loc, TInterm
             return base;
         }
 
-        return intermediate.addMethod(base, TType(EbtInt), &field, loc);
+        if (field == "length") {
+            return intermediate.addMethod(base, TType(EbtInt), &field, loc);
+        } else {
+            requireExtensions(loc, 1, &E_GL_EXT_shader_64bit_indexing, "length64");
+            return intermediate.addMethod(base, TType(EbtInt64), &field, loc);
+        }
     }
 
     // It's not .length() if we get to here.
@@ -2365,7 +2385,7 @@ TIntermTyped* TParseContext::handleLengthMethod(const TSourceLoc& loc, TFunction
                         error(loc, "", function->getName().c_str(), "array must first be sized by a redeclaration or layout qualifier");
                     else if (isRuntimeLength(*intermNode->getAsTyped())) {
                         // Create a unary op and let the back end handle it
-                        return intermediate.addBuiltInFunctionCall(loc, EOpArrayLength, true, intermNode, TType(EbtInt));
+                        return intermediate.addBuiltInFunctionCall(loc, EOpArrayLength, true, intermNode, function->getType());
                     } else
                         error(loc, "", function->getName().c_str(), "array must be declared with a size before using this method");
                 }
@@ -4107,6 +4127,21 @@ void TParseContext::integerCheck(const TIntermTyped* node, const char* token)
         return;
 
     error(node->getLoc(), "scalar integer expression required", token, "");
+}
+
+//
+// Both test, and if necessary spit out an error, to see if the node is really
+// supported as an array index.
+//
+void TParseContext::arrayIndexCheck(const TIntermTyped* node, const char* token)
+{
+    auto from_type = node->getBasicType();
+
+    if ((from_type == EbtInt64 || from_type == EbtUint64) &&
+        extensionTurnedOn(E_GL_EXT_shader_64bit_indexing))
+        return;
+
+    integerCheck(node, token);
 }
 
 //

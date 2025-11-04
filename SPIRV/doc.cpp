@@ -231,6 +231,8 @@ const char* ExecutionModeString(int mode)
     case (int)ExecutionMode::NonCoherentDepthAttachmentReadEXT:        return "NonCoherentDepthAttachmentReadEXT";
     case (int)ExecutionMode::NonCoherentStencilAttachmentReadEXT:      return "NonCoherentStencilAttachmentReadEXT";
 
+    case (int)ExecutionMode::Shader64BitIndexingEXT:                   return "Shader64BitIndexingEXT";
+
     case ExecutionModeCeiling:
     default: return "Bad";
     }
@@ -1134,6 +1136,8 @@ const char* CapabilityString(int info)
 
     case (int)Capability::Float8EXT:                           return "Float8EXT";
     case (int)Capability::Float8CooperativeMatrixEXT:          return "Float8CooperativeMatrixEXT";
+
+    case (int)Capability::Shader64BitIndexingEXT:              return "CapabilityShader64BitIndexingEXT";
 
     default: return "Bad";
     }

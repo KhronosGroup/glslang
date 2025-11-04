@@ -821,6 +821,8 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.1.6.samplerBuffer.frag",
         "spv.1.6.separate.frag",
         "spv.1.6.quad.frag",
+        "spv.64bit_indexing.comp",
+        "spv.64bit_indexing_error.comp",
         "spv.coopmat2_constructor.comp",
         "spv.coopmat2_error.comp",
         "spv.coopmat2_tensor.comp",
@@ -832,6 +834,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.floate5m2.comp",
         "spv.floate5m2.const.comp",
         "spv.floate5m2_error.comp",
+        "spv.promote_uint32_indices.comp",
     })),
     FileNameAsCustomTestSuffix
 );

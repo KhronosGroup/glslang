@@ -451,7 +451,7 @@ postfix_expression
 
 integer_expression
     : expression {
-        parseContext.integerCheck($1, "[]");
+        parseContext.arrayIndexCheck($1, "[]");
         $$ = $1;
     }
     ;
@@ -555,7 +555,7 @@ function_identifier
 
         TIntermMethod* method = $1->getAsMethodNode();
         if (method) {
-            $$.function = new TFunction(&method->getMethodName(), TType(EbtInt), EOpArrayLength);
+            $$.function = new TFunction(&method->getMethodName(), method->getType(), EOpArrayLength);
             $$.intermNode = method->getObject();
         } else {
             TIntermSymbol* symbol = $1->getAsSymbolNode();

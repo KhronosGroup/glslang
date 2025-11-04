@@ -1713,6 +1713,13 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion,
         builder.addExecutionMode(shaderEntry, spv::ExecutionMode::RequireFullQuadsKHR);
     }
 
+    if (glslangIntermediate->usingShader64BitIndexing())
+    {
+        builder.addCapability(spv::Capability::Shader64BitIndexingEXT);
+        builder.addExtension(spv::E_SPV_EXT_shader_64bit_indexing);
+        builder.addExecutionMode(shaderEntry, spv::ExecutionMode::Shader64BitIndexingEXT);
+    }
+
     spv::ExecutionMode mode;
     switch (glslangIntermediate->getStage()) {
     case EShLangVertex:
@@ -2373,10 +2380,20 @@ bool TGlslangToSpvTraverser::visitBinary(glslang::TVisit /* visit */, glslang::T
                 coherentFlags.nonUniform = 0;
 
                 // normal case for indexing array or structure or block
-                builder.accessChainPush(builder.makeIntConstant(spvIndex),
-                        coherentFlags,
-                        node->getLeft()->getType().getBufferReferenceAlignment());
+                if ((node->getRight()->getType().getBasicType() == glslang::EbtUint && glslangIntermediate->usingPromoteUint32Indices()) ||
+                     node->getRight()->getType().contains64BitInt()) {
+                    int64_t idx = node->getRight()->getType().contains64BitInt() ?
+                                    node->getRight()->getAsConstantUnion()->getConstArray()[0].getI64Const() :
+                                    node->getRight()->getAsConstantUnion()->getConstArray()[0].getUConst();
+                    builder.accessChainPush(builder.makeInt64Constant(idx),
+                            coherentFlags,
+                            node->getLeft()->getType().getBufferReferenceAlignment());
 
+                } else {
+                    builder.accessChainPush(builder.makeIntConstant(spvIndex),
+                            coherentFlags,
+                            node->getLeft()->getType().getBufferReferenceAlignment());
+                }
                 // Add capabilities here for accessing PointSize and clip/cull distance.
                 // We have deferred generation of associated capabilities until now.
                 if (node->getLeft()->getType().isStruct() && ! node->getLeft()->getType().isArray())
@@ -2429,9 +2446,15 @@ bool TGlslangToSpvTraverser::visitBinary(glslang::TVisit /* visit */, glslang::T
                     index, convertGlslangToSpvType(node->getLeft()->getType()), coherent_flags,
                                                 glslangIntermediate->getBaseAlignmentScalar(node->getLeft()->getType(),
                                                 dummySize));
-            } else
+            } else {
+                if (glslangIntermediate->usingPromoteUint32Indices() &&
+                    node->getRight()->getType().getBasicType() == glslang::EbtUint) {
+                    index = createIntWidthConversion(index, 0, builder.makeIntegerType(64, true), glslang::EbtInt64, node->getRight()->getType().getBasicType());
+                }
+
                 builder.accessChainPush(index, coherent_flags,
                                         node->getLeft()->getType().getBufferReferenceAlignment());
+            }
         }
         return false;
     case glslang::EOpVectorSwizzle:
@@ -2658,6 +2681,8 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
         // So, this has to be block.lastMember.length().
         // SPV wants "block" and member number as the operands, go get them.
 
+        uint32_t bits = node->getType().contains64BitInt() ? 64 : 32;
+
         spv::Id length;
         if (node->getOperand()->getType().isCoopMat()) {
             spv::Id typeId = convertGlslangToSpvType(node->getOperand()->getType());
@@ -2677,7 +2702,7 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
             block->traverse(this);
             unsigned int member = node->getOperand()->getAsBinaryNode()->getRight()->getAsConstantUnion()
                 ->getConstArray()[0].getUConst();
-            length = builder.createArrayLength(builder.accessChainGetLValue(), member);
+            length = builder.createArrayLength(builder.accessChainGetLValue(), member, bits);
         }
 
         // GLSL semantics say the result of .length() is an int, while SPIR-V says
@@ -2685,9 +2710,9 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
         // AST expectation of a signed result.
         if (glslangIntermediate->getSource() == glslang::EShSourceGlsl) {
             if (builder.isInSpecConstCodeGenMode()) {
-                length = builder.createBinOp(spv::Op::OpIAdd, builder.makeIntType(32), length, builder.makeIntConstant(0));
+                length = builder.createBinOp(spv::Op::OpIAdd, builder.makeIntType(bits), length, builder.makeIntConstant(0));
             } else {
-                length = builder.createUnaryOp(spv::Op::OpBitcast, builder.makeIntType(32), length);
+                length = builder.createUnaryOp(spv::Op::OpBitcast, builder.makeIntType(bits), length);
             }
         }
 

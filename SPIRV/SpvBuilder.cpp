@@ -2932,9 +2932,9 @@ Id Builder::createAccessChain(StorageClass storageClass, Id base, const std::vec
     return chain->getResultId();
 }
 
-Id Builder::createArrayLength(Id base, unsigned int member)
+Id Builder::createArrayLength(Id base, unsigned int member, unsigned int bits)
 {
-    spv::Id intType = makeUintType(32);
+    spv::Id intType = makeUintType(bits);
     Instruction* length = new Instruction(getUniqueId(), intType, Op::OpArrayLength);
     length->reserveOperands(2);
     length->addIdOperand(base);
