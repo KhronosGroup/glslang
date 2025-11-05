@@ -1839,14 +1839,17 @@ void TParseContext::handleCoopMat2FunctionCall(const TSourceLoc& loc, const TFun
                       cRowsStr.c_str(),
                       cColsStr.c_str());
             } else if (aUse != 0) {
-                error(loc, "coop matrix A in MulAdd operation has incompatible usage property",
-                      sequence[0]->getAsSymbolNode()->getMangledName().c_str(), "");
+                error(loc, "coop matrix A in MulAdd operation has incompatible usage property,",
+                      sequence[0]->getAsSymbolNode()->getMangledName().c_str(),
+                      "found %d, but needed 0", aUse);
             } else if (bUse != 1) {
-                error(loc, "coop matrix B in MulAdd operation has incompatible usage property",
-                      sequence[1]->getAsSymbolNode()->getMangledName().c_str(), "");
+                error(loc, "coop matrix B in MulAdd operation has incompatible usage property,",
+                      sequence[1]->getAsSymbolNode()->getMangledName().c_str(),
+                      "found %d, but needed 1", bUse);
             } else if (cUse != 2) {
-                error(loc, "coop matrix C in MulAdd operation has incompatible usage property",
-                      sequence[2]->getAsSymbolNode()->getMangledName().c_str(), "");
+                error(loc, "coop matrix C in MulAdd operation has incompatible usage property,",
+                      sequence[2]->getAsSymbolNode()->getMangledName().c_str(),
+                      "found %d, but needed 2", cUse);
             }
 
             // Set result type to match type of C parameter

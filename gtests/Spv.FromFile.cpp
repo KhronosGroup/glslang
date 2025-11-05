@@ -689,6 +689,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.coopmatKHR_Error.comp",
         "spv.coopmatKHR_constructor.comp",
         "spv.coopmatKHR_constructorError.comp",
+        "spv.coopmatKHR_matmuladd_Error.comp",
         "spv.coopvec.comp",
         "spv.coopvec2.comp",
         "spv.coopvecloadstore.comp",
