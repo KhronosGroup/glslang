@@ -102,9 +102,10 @@ jobs:
               env:
                   CC: ${{matrix.compiler.cc}}
                   CXX: ${{matrix.compiler.cxx}}
+                  MACOSX_DEPLOYMENT_TARGET: 11.0
               run: |
                   mkdir build && cd build
-                  cmake -DCMAKE_BUILD_TYPE=${{matrix.cmake_build_type}} -DCMAKE_INSTALL_PREFIX=`pwd`/install ..
+                  cmake -DCMAKE_BUILD_TYPE=${{matrix.cmake_build_type}} -DCMAKE_INSTALL_PREFIX=`pwd`/install "-D CMAKE_OSX_ARCHITECTURES=arm64;x86_64" ..
                   make -j4 install
             - name: Test
               run: |
