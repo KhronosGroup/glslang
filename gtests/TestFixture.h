@@ -377,7 +377,7 @@ public:
 
         glslang::TProgram program;
         program.addShader(&shader);
-        
+
         success &= program.link(controls);
         if (success)
             program.mapIO();
