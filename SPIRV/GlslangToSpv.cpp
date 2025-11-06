@@ -5711,7 +5711,7 @@ spv::Id TGlslangToSpvTraverser::convertGlslangStructToSpvType(const glslang::TTy
 
                 // Per the GLSL spec, bool variables inside of a uniform or buffer block are generated as uint.
                 // But for debug info, we want to represent them as bool because that is the original type in
-                // the source code. The bool type can be nested within a vector or a multidimensional array, 
+                // the source code. The bool type can be nested within a vector or a multidimensional array,
                 // so we must construct the chain of types up from the scalar bool.
                 if (glslangIntermediate->getSource() == glslang::EShSourceGlsl && explicitLayout != glslang::ElpNone &&
                     glslangMember.type->getBasicType() == glslang::EbtBool) {

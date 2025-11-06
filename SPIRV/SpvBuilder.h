@@ -138,7 +138,7 @@ public:
         if (trackDebugInfo) {
             dirtyLineTracker = true;
             if (line != 0) {
-                // TODO: This is special handling of some AST nodes having (untracked) line 0. 
+                // TODO: This is special handling of some AST nodes having (untracked) line 0.
                 //       But they should have a valid line number.
                 currentLine = line;
                 if (filename) {
@@ -936,7 +936,11 @@ public:
 
     void setUseReplicatedComposites(bool use) { useReplicatedComposites = use; }
 
- protected:
+private:
+    // Helper to get size of a scalar (in bytes)
+    unsigned int postProcessGetLargestScalarSize(const Instruction& type);
+
+protected:
     Id findScalarConstant(Op typeClass, Op opcode, Id typeId, unsigned value);
     Id findScalarConstant(Op typeClass, Op opcode, Id typeId, unsigned v1, unsigned v2);
     Id findCompositeConstant(Op typeClass, Op opcode, Id typeId, const std::vector<Id>& comps, size_t numMembers);
