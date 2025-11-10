@@ -825,6 +825,9 @@ public:
     bool isHitObjectAttrNV() const {
         return storage == EvqHitObjectAttrNV;
     }
+    bool isHitObjectAttrEXT() const {
+        return storage == EvqHitObjectAttrEXT;
+    }
 
     // True if this type of IO is supposed to be arrayed with extra level for per-vertex data
     bool isArrayedIo(EShLanguage language) const
@@ -861,6 +864,7 @@ public:
         layoutFullQuads = false;
         layoutQuadDeriv = false;
         layoutHitObjectShaderRecordNV = false;
+        layoutHitObjectShaderRecordEXT = false;
         layoutBindlessSampler = false;
         layoutBindlessImage = false;
         layoutBufferReferenceAlign = layoutBufferReferenceAlignEnd;
@@ -961,6 +965,7 @@ public:
     bool layoutFullQuads;
     bool layoutQuadDeriv;
     bool layoutHitObjectShaderRecordNV;
+    bool layoutHitObjectShaderRecordEXT;
 
     // GL_EXT_spirv_intrinsics
     int spirvStorageClass;
@@ -1072,6 +1077,7 @@ public:
     bool isFullQuads() const { return layoutFullQuads; }
     bool isQuadDeriv() const { return layoutQuadDeriv; }
     bool hasHitObjectShaderRecordNV() const { return layoutHitObjectShaderRecordNV; }
+    bool hasHitObjectShaderRecordEXT() const { return layoutHitObjectShaderRecordEXT; }
     bool hasBufferReference() const { return layoutBufferReference; }
     bool hasBufferReferenceAlign() const
     {
@@ -1937,7 +1943,7 @@ public:
     }
     virtual bool isOpaque() const { return basicType == EbtSampler
             || basicType == EbtAtomicUint || basicType == EbtAccStruct || basicType == EbtRayQuery
-            || basicType == EbtHitObjectNV || isTileAttachmentQCOM()
+            || basicType == EbtHitObjectNV || basicType == EbtHitObjectEXT || isTileAttachmentQCOM()
             || isTensorARM();
     }
     virtual bool isBuiltIn() const { return getQualifier().builtIn != EbvNone; }
@@ -2333,6 +2339,8 @@ public:
                 appendStr(" quad_derivatives");
               if (qualifier.layoutHitObjectShaderRecordNV)
                 appendStr(" hitobjectshaderrecordnv");
+              if (qualifier.layoutHitObjectShaderRecordEXT)
+                appendStr(" hitobjectshaderrecordext");
 
               if (qualifier.layoutBindlessSampler)
                   appendStr(" layoutBindlessSampler");
