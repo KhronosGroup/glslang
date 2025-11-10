@@ -3164,6 +3164,7 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
         break;
 
     case EOpHitObjectTraceRayNV:
+    case EOpHitObjectTraceRayEXT:
         if (!(*argp)[11]->getAsConstantUnion())
             error(loc, "argument must be compile-time constant", "payload number", "");
         else {
@@ -3173,6 +3174,7 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
         }
         break;
     case EOpHitObjectTraceRayMotionNV:
+    case EOpHitObjectTraceRayMotionEXT:
         if (!(*argp)[12]->getAsConstantUnion())
             error(loc, "argument must be compile-time constant", "payload number", "");
         else {
@@ -3182,6 +3184,7 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
         }
         break;
     case EOpHitObjectExecuteShaderNV:
+    case EOpHitObjectExecuteShaderEXT:
         if (!(*argp)[1]->getAsConstantUnion())
             error(loc, "argument must be compile-time constant", "payload number", "");
         else {
@@ -3227,12 +3230,74 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
         }
         break;
     case EOpHitObjectGetAttributesNV:
+    case EOpHitObjectGetAttributesEXT:
         if (!(*argp)[1]->getAsConstantUnion())
             error(loc, "argument must be compile-time constant", "hitobjectattribute number", "");
         else {
             unsigned int location = (*argp)[1]->getAsConstantUnion()->getAsConstantUnion()->getConstArray()[0].getUConst();
             if (!extensionTurnedOn(E_GL_EXT_spirv_intrinsics) && intermediate.checkLocationRT(2, location) < 0)
                 error(loc, "with layout(location =", "no hitObjectAttributeNV declared", "%d)", location);
+        }
+        break;
+    case EOpHitObjectReorderExecuteEXT:
+    {
+        int payloadArgIndex;
+        if (argp->size() == 2)
+            payloadArgIndex = 1;
+         else
+            payloadArgIndex = 3;
+
+        if (!(*argp)[payloadArgIndex]->getAsConstantUnion())
+            error(loc, "argument must be compile-time constant", "payload number", "");
+        else {
+            unsigned int location = (*argp)[payloadArgIndex]->getAsConstantUnion()->getAsConstantUnion()->getConstArray()[0].getUConst();
+            if (!extensionTurnedOn(E_GL_EXT_spirv_intrinsics) && intermediate.checkLocationRT(0, location) < 0)
+                error(loc, "with layout(location =", "no rayPayloadEXT/rayPayloadInEXT declared", "%d)", location);
+        }
+    }
+    break;
+
+    case EOpHitObjectTraceReorderExecuteEXT:
+    {
+        int payloadArgIndex;
+        if (argp->size() == 12)
+            payloadArgIndex = 11;
+         else
+            payloadArgIndex = 13;
+        if (!(*argp)[payloadArgIndex]->getAsConstantUnion())
+            error(loc, "argument must be compile-time constant", "payload number", "");
+        else {
+            unsigned int location = (*argp)[payloadArgIndex]->getAsConstantUnion()->getAsConstantUnion()->getConstArray()[0].getUConst();
+            if (!extensionTurnedOn(E_GL_EXT_spirv_intrinsics) && intermediate.checkLocationRT(0, location) < 0)
+                error(loc, "with layout(location =", "no rayPayloadEXT/rayPayloadInEXT declared", "%d)", location);
+        }
+    }
+    break;
+
+    case EOpHitObjectTraceMotionReorderExecuteEXT:
+    {
+        int payloadArgIndex;
+        if (argp->size() == 13)
+            payloadArgIndex = 12;
+         else
+            payloadArgIndex = 14;
+        if (!(*argp)[payloadArgIndex]->getAsConstantUnion())
+            error(loc, "argument must be compile-time constant", "payload number", "");
+        else {
+            unsigned int location = (*argp)[payloadArgIndex]->getAsConstantUnion()->getAsConstantUnion()->getConstArray()[0].getUConst();
+            if (!extensionTurnedOn(E_GL_EXT_spirv_intrinsics) && intermediate.checkLocationRT(0, location) < 0)
+                error(loc, "with layout(location =", "no rayPayloadEXT/rayPayloadInEXT declared", "%d)", location);
+        }
+    }
+    break;
+
+    case EOpHitObjectRecordFromQueryEXT:
+        if (!(*argp)[3]->getAsConstantUnion())
+            error(loc, "argument must be compile-time constant", "hitobjectattribute number", "");
+        else {
+            unsigned int location = (*argp)[3]->getAsConstantUnion()->getAsConstantUnion()->getConstArray()[0].getUConst();
+            if (!extensionTurnedOn(E_GL_EXT_spirv_intrinsics) && intermediate.checkLocationRT(2, location) < 0)
+                error(loc, "with layout(location =", "no hitObjectAttributeEXT declared", "%d)", location);
         }
         break;
 
@@ -4894,11 +4959,22 @@ void TParseContext::accStructCheck(const TSourceLoc& loc, const TType& type, con
 
 }
 
+void TParseContext::hitObjectEXTCheck(const TSourceLoc & loc, const TType & type, const TString & identifier)
+{
+    if (type.getBasicType() == EbtStruct && containsFieldWithBasicType(type, EbtHitObjectEXT)) {
+        error(loc, "struct is not allowed to contain hitObjectEXT:", type.getTypeName().c_str(), identifier.c_str());
+    } else if ((type.getBasicType() == EbtHitObjectEXT)) {
+        TStorageQualifier qualifier = type.getQualifier().storage;
+        if (qualifier != EvqGlobal && qualifier != EvqTemporary) {
+            error(loc, "hitObjectEXT can only be declared in global or function scope with no storage qualifier:", "hitObjectEXT", identifier.c_str());
+        }
+    }
+}
 void TParseContext::hitObjectNVCheck(const TSourceLoc & loc, const TType & type, const TString & identifier)
 {
-    if (type.getBasicType() == EbtStruct && containsFieldWithBasicType(type, EbtHitObjectNV)) {
+    if (type.getBasicType() == EbtStruct && ( containsFieldWithBasicType(type, EbtHitObjectNV))) {
         error(loc, "struct is not allowed to contain hitObjectNV:", type.getTypeName().c_str(), identifier.c_str());
-    } else if (type.getBasicType() == EbtHitObjectNV) {
+    } else if ((type.getBasicType() == EbtHitObjectNV)) {
         TStorageQualifier qualifier = type.getQualifier().storage;
         if (qualifier != EvqGlobal && qualifier != EvqTemporary) {
             error(loc, "hitObjectNV can only be declared in global or function scope with no storage qualifier:", "hitObjectNV", identifier.c_str());
@@ -6967,6 +7043,10 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
                 requireExtensions(loc, 1, &E_GL_NV_shader_invocation_reorder, "hitobject shader record NV");
                 publicType.qualifier.layoutHitObjectShaderRecordNV = true;
                 return;
+            } else if (id == "hitobjectshaderrecordext") {
+                requireExtensions(loc, 1, &E_GL_EXT_shader_invocation_reorder, "hitobject shader record EXT");
+                publicType.qualifier.layoutHitObjectShaderRecordEXT = true;
+                return;
             }
 
         }
@@ -7482,6 +7562,8 @@ void TParseContext::mergeObjectLayoutQualifiers(TQualifier& dst, const TQualifie
         if (src.layoutHitObjectShaderRecordNV)
             dst.layoutHitObjectShaderRecordNV = true;
         dst.layoutTileAttachmentQCOM |= src.layoutTileAttachmentQCOM;
+        if (src.layoutHitObjectShaderRecordEXT)
+            dst.layoutHitObjectShaderRecordEXT = true;
     }
 }
 
@@ -7648,6 +7730,7 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
         case EvqCallableData:
         case EvqCallableDataIn:
         case EvqHitObjectAttrNV:
+        case EvqHitObjectAttrEXT:
         case EvqSpirvStorageClass:
             break;
         case EvqTileImageEXT:
@@ -9045,7 +9128,7 @@ TIntermNode* TParseContext::declareVariable(const TSourceLoc& loc, TString& iden
     if (initializer) {
         if (type.getBasicType() == EbtRayQuery) {
             error(loc, "ray queries can only be initialized by using the rayQueryInitializeEXT intrinsic:", "=", identifier.c_str());
-        } else if (type.getBasicType() == EbtHitObjectNV) {
+        } else if ((type.getBasicType() == EbtHitObjectNV) || (type.getBasicType() == EbtHitObjectEXT)) {
             error(loc, "hit objects cannot be initialized using initializers", "=", identifier.c_str());
         }
 
@@ -9145,6 +9228,7 @@ TIntermNode* TParseContext::declareVariable(const TSourceLoc& loc, TString& iden
     atomicUintCheck(loc, type, identifier);
     accStructCheck(loc, type, identifier);
     hitObjectNVCheck(loc, type, identifier);
+    hitObjectEXTCheck(loc, type, identifier);
     checkAndResizeMeshViewDim(loc, type, /*isBlockMember*/ false);
     if (type.getQualifier().storage == EvqConst && type.containsReference()) {
         error(loc, "variables with reference type can't have qualifier 'const'", "qualifier", "");
@@ -10576,6 +10660,10 @@ void TParseContext::blockStageIoCheck(const TSourceLoc& loc, const TQualifier& q
     case EvqHitObjectAttrNV:
         profileRequires(loc, ~EEsProfile, 460, E_GL_NV_shader_invocation_reorder, "hitObjectAttributeNV block");
         requireStage(loc, (EShLanguageMask)(EShLangRayGenMask | EShLangClosestHitMask | EShLangMissMask), "hitObjectAttributeNV block");
+        break;
+    case EvqHitObjectAttrEXT:
+        profileRequires(loc, ~EEsProfile, 460, E_GL_EXT_shader_invocation_reorder, "hitObjectAttributeEXT block");
+        requireStage(loc, (EShLanguageMask)(EShLangRayGenMask | EShLangClosestHitMask | EShLangMissMask), "hitObjectAttributeEXT block");
         break;
     default:
         error(loc, "only uniform, buffer, in, or out blocks are supported", blockName->c_str(), "");

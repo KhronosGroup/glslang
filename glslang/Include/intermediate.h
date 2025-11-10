@@ -875,6 +875,44 @@ enum TOperator {
     EOpFetchMicroTriangleVertexPositionNV,
     EOpFetchMicroTriangleVertexBarycentricNV,
 
+    // 
+    // GL_EXT_shader_invocation_reorder
+    //
+
+    EOpHitObjectTraceRayEXT,
+    EOpHitObjectTraceRayMotionEXT,
+    EOpHitObjectRecordMissEXT,
+    EOpHitObjectRecordMissMotionEXT,
+    EOpHitObjectRecordEmptyEXT,
+    EOpHitObjectExecuteShaderEXT,
+    EOpHitObjectIsEmptyEXT,
+    EOpHitObjectIsMissEXT,
+    EOpHitObjectIsHitEXT,
+    EOpHitObjectGetRayTMinEXT,
+    EOpHitObjectGetRayTMaxEXT,
+    EOpHitObjectGetRayFlagsEXT,
+    EOpHitObjectGetObjectRayOriginEXT,
+    EOpHitObjectGetObjectRayDirectionEXT,
+    EOpHitObjectGetWorldRayOriginEXT,
+    EOpHitObjectGetWorldRayDirectionEXT,
+    EOpHitObjectGetWorldToObjectEXT,
+    EOpHitObjectGetObjectToWorldEXT,
+    EOpHitObjectGetInstanceCustomIndexEXT,
+    EOpHitObjectGetInstanceIdEXT,
+    EOpHitObjectGetGeometryIndexEXT,
+    EOpHitObjectGetPrimitiveIndexEXT,
+    EOpHitObjectGetHitKindEXT,
+    EOpHitObjectGetShaderBindingTableRecordIndexEXT,
+    EOpHitObjectSetShaderBindingTableRecordIndexEXT,
+    EOpHitObjectGetShaderRecordBufferHandleEXT,
+    EOpHitObjectGetAttributesEXT,
+    EOpHitObjectGetCurrentTimeEXT,
+    EOpReorderThreadEXT,
+    EOpHitObjectReorderExecuteEXT,
+    EOpHitObjectTraceReorderExecuteEXT,
+    EOpHitObjectTraceMotionReorderExecuteEXT,
+    EOpHitObjectRecordFromQueryEXT,
+    EOpHitObjectGetIntersectionTriangleVertexPositionsEXT,
     // HLSL operations
     //
 

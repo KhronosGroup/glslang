@@ -171,6 +171,9 @@ bool TParseContextBase::lValueErrorCheck(const TSourceLoc& loc, const char* op, 
         case EbtHitObjectNV:
             message = "can't modify hitObjectNV";
             break;
+        case EbtHitObjectEXT:
+            message = "can't modify hitObjectEXT";
+            break;
         default:
             break;
         }

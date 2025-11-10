@@ -182,7 +182,7 @@ extern int yylex(YYSTYPE*, TParseContext&);
 %token <lex> FCOOPMATNV ICOOPMATNV UCOOPMATNV
 %token <lex> COOPMAT
 %token <lex> COOPVECNV
-%token <lex> HITOBJECTNV HITOBJECTATTRNV
+%token <lex> HITOBJECTNV HITOBJECTATTRNV HITOBJECTEXT HITOBJECTATTREXT
 %token <lex> TENSORLAYOUTNV TENSORVIEWNV
 %token <lex> TENSORARM
 
@@ -1538,14 +1538,22 @@ storage_qualifier
         $$.init($1.loc);
         $$.qualifier.storage = EvqHitAttr;
     }
-	| HITOBJECTATTRNV {
+    | HITOBJECTATTRNV {
         parseContext.globalCheck($1.loc, "hitAttributeNV");
         parseContext.requireStage($1.loc, (EShLanguageMask)(EShLangRayGenMask | EShLangClosestHitMask
             | EShLangMissMask), "hitObjectAttributeNV");
         parseContext.profileRequires($1.loc, ECoreProfile, 460, E_GL_NV_shader_invocation_reorder, "hitObjectAttributeNV");
         $$.init($1.loc);
         $$.qualifier.storage = EvqHitObjectAttrNV;
-	}
+    }
+    | HITOBJECTATTREXT {
+        parseContext.globalCheck($1.loc, "hitAttributeEXT");
+        parseContext.requireStage($1.loc, (EShLanguageMask)(EShLangRayGenMask | EShLangClosestHitMask
+            | EShLangMissMask), "hitObjectAttributeEXT");
+        parseContext.profileRequires($1.loc, ECoreProfile, 460, E_GL_EXT_shader_invocation_reorder, "hitObjectAttributeEXT");
+        $$.init($1.loc);
+        $$.qualifier.storage = EvqHitObjectAttrEXT;
+    }
     | HITATTREXT {
         parseContext.globalCheck($1.loc, "hitAttributeEXT");
         parseContext.requireStage($1.loc, (EShLanguageMask)(EShLangIntersectMask | EShLangClosestHitMask
@@ -3648,10 +3656,14 @@ type_specifier_nonarray
         parseContext.requireExtensions($1.loc, 1, &E_GL_EXT_spirv_intrinsics, "SPIR-V type specifier");
         $$ = $1;
     }
-	| HITOBJECTNV {
+    | HITOBJECTNV {
        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
        $$.basicType = EbtHitObjectNV;
-	}
+    }
+    | HITOBJECTEXT {
+       $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+       $$.basicType = EbtHitObjectEXT;
+    }
     | struct_specifier {
         $$ = $1;
         $$.qualifier.storage = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
