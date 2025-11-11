@@ -286,7 +286,7 @@ void Builder::postProcess(Instruction& inst)
                 Id typeId = base->getTypeId();
                 Instruction *type = module.getInstruction(typeId);
                 assert(type->getOpCode() == Op::OpTypePointer);
-                if (type->getImmediateOperand(0) != StorageClass::PhysicalStorageBufferEXT) {
+                if (type->getImmediateOperand(0) != StorageClass::PhysicalStorageBuffer) {
                     break;
                 }
                 // Get the pointee type.
@@ -341,15 +341,30 @@ void Builder::postProcess(Instruction& inst)
                     }
                 }
                 assert(inst.getNumOperands() >= 3);
-                auto const memoryAccess = (MemoryAccessMask)inst.getImmediateOperand((inst.getOpCode() == Op::OpStore) ? 2 : 1);
+                const bool is_store = inst.getOpCode() == Op::OpStore;
+                auto const memoryAccess = (MemoryAccessMask)inst.getImmediateOperand(is_store ? 2 : 1);
                 assert(anySet(memoryAccess, MemoryAccessMask::Aligned));
                 static_cast<void>(memoryAccess);
+
                 // Compute the index of the alignment operand.
                 int alignmentIdx = 2;
-                if (inst.getOpCode() == Op::OpStore)
+                if (is_store)
                     alignmentIdx++;
                 // Merge new and old (mis)alignment
                 alignment |= inst.getImmediateOperand(alignmentIdx);
+
+                if (!is_store) {
+                    Instruction* inst_type = module.getInstruction(inst.getTypeId());
+                    if (inst_type->getOpCode() == Op::OpTypePointer &&
+                        inst_type->getImmediateOperand(0) == StorageClass::PhysicalStorageBuffer) {
+                        // This means we are loading a pointer which means need to ensure it is at least 8-byte aligned
+                        // See https://github.com/KhronosGroup/glslang/issues/4084
+                        // In case the alignment is currently 4, need to ensure it is 8 before grabbing the LSB
+                        alignment |= 8;
+                        alignment &= 8;
+                    }
+                }
+
                 // Pick the LSB
                 alignment = alignment & ~(alignment & (alignment-1));
 
