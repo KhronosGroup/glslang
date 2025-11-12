@@ -10156,7 +10156,7 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setFunctionExtensions("hitObjectGetWorldRayOriginEXT", 1, &E_GL_EXT_shader_invocation_reorder);
             symbolTable.setFunctionExtensions("hitObjectGetWorldRayDirectionEXT", 1, &E_GL_EXT_shader_invocation_reorder);
             symbolTable.setFunctionExtensions("hitObjectGetWorldToObjectEXT", 1, &E_GL_EXT_shader_invocation_reorder);
-            symbolTable.setFunctionExtensions("hitObjectGetbjectToWorldEXT", 1, &E_GL_EXT_shader_invocation_reorder);
+            symbolTable.setFunctionExtensions("hitObjectGetObjectToWorldEXT", 1, &E_GL_EXT_shader_invocation_reorder);
             symbolTable.setFunctionExtensions("hitObjectGetInstanceCustomIndexEXT", 1, &E_GL_EXT_shader_invocation_reorder);
             symbolTable.setFunctionExtensions("hitObjectGetInstanceIdEXT", 1, &E_GL_EXT_shader_invocation_reorder);
             symbolTable.setFunctionExtensions("hitObjectGetGeometryIndexEXT", 1, &E_GL_EXT_shader_invocation_reorder);

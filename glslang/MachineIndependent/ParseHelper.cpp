@@ -2843,6 +2843,19 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
 
     TString featureString;
     const char* feature = nullptr;
+
+    auto checkConstantArgWithLocation = [&](int argIndex, const char* argDescription,
+                                                       const char* errMsg, int ioRTLocationSet) {
+        //ioRTLocationSet refers to grouping of locations of RT input/outputs as defined in TIntermediate::usedIoRT
+        if (!(*argp)[argIndex]->getAsConstantUnion()) {
+            error(loc, "argument must be compile-time constant", argDescription, argIndex == 10 ? "a" : "");
+        } else if (ioRTLocationSet >= 0) {
+            unsigned int location = (*argp)[argIndex]->getAsConstantUnion()->getAsConstantUnion()->getConstArray()[0].getUConst();
+            if (!extensionTurnedOn(E_GL_EXT_spirv_intrinsics) && intermediate.checkLocationRT(ioRTLocationSet, location) < 0)
+                error(loc, "with layout(location =", errMsg, "%d)", location);
+        }
+    };
+
     switch (callNode.getOp()) {
     case EOpTextureGather:
     case EOpTextureGatherOffset:
@@ -3132,173 +3145,46 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
         break;
     }
 
+
     case EOpTraceNV:
-        if (!(*argp)[10]->getAsConstantUnion())
-            error(loc, "argument must be compile-time constant", "payload number", "a");
+        checkConstantArgWithLocation(10, "payload number", nullptr, -1);
         break;
     case EOpTraceRayMotionNV:
-        if (!(*argp)[11]->getAsConstantUnion())
-            error(loc, "argument must be compile-time constant", "payload number", "a");
+        checkConstantArgWithLocation(11, "payload number", nullptr, -1);
         break;
     case EOpTraceKHR:
-        if (!(*argp)[10]->getAsConstantUnion())
-            error(loc, "argument must be compile-time constant", "payload number", "a");
-        else {
-            unsigned int location = (*argp)[10]->getAsConstantUnion()->getAsConstantUnion()->getConstArray()[0].getUConst();
-            if (!extensionTurnedOn(E_GL_EXT_spirv_intrinsics) && intermediate.checkLocationRT(0, location) < 0)
-                error(loc, "with layout(location =", "no rayPayloadEXT/rayPayloadInEXT declared", "%d)", location);
-        }
+        checkConstantArgWithLocation(10, "payload number", "no rayPayloadEXT/rayPayloadInEXT declared", 0);
         break;
     case EOpExecuteCallableNV:
-        if (!(*argp)[1]->getAsConstantUnion())
-            error(loc, "argument must be compile-time constant", "callable data number", "");
+        checkConstantArgWithLocation(1, "callable data number", nullptr, -1);
         break;
     case EOpExecuteCallableKHR:
-        if (!(*argp)[1]->getAsConstantUnion())
-            error(loc, "argument must be compile-time constant", "callable data number", "");
-        else {
-            unsigned int location = (*argp)[1]->getAsConstantUnion()->getAsConstantUnion()->getConstArray()[0].getUConst();
-            if (!extensionTurnedOn(E_GL_EXT_spirv_intrinsics) && intermediate.checkLocationRT(1, location) < 0)
-                error(loc, "with layout(location =", "no callableDataEXT/callableDataInEXT declared", "%d)", location);
-        }
+        checkConstantArgWithLocation(1, "callable data number", "no callableDataEXT/callableDataInEXT declared", 1);
         break;
 
     case EOpHitObjectTraceRayNV:
-    case EOpHitObjectTraceRayEXT:
-        if (!(*argp)[11]->getAsConstantUnion())
-            error(loc, "argument must be compile-time constant", "payload number", "");
-        else {
-            unsigned int location = (*argp)[11]->getAsConstantUnion()->getAsConstantUnion()->getConstArray()[0].getUConst();
-            if (!extensionTurnedOn(E_GL_EXT_spirv_intrinsics) && intermediate.checkLocationRT(0, location) < 0)
-                error(loc, "with layout(location =", "no rayPayloadEXT/rayPayloadInEXT declared", "%d)", location);
-        }
+        checkConstantArgWithLocation(11, "payload number", "no rayPayloadEXT/rayPayloadInEXT declared", 0);
         break;
     case EOpHitObjectTraceRayMotionNV:
-    case EOpHitObjectTraceRayMotionEXT:
-        if (!(*argp)[12]->getAsConstantUnion())
-            error(loc, "argument must be compile-time constant", "payload number", "");
-        else {
-            unsigned int location = (*argp)[12]->getAsConstantUnion()->getAsConstantUnion()->getConstArray()[0].getUConst();
-            if (!extensionTurnedOn(E_GL_EXT_spirv_intrinsics) && intermediate.checkLocationRT(0, location) < 0)
-                error(loc, "with layout(location =", "no rayPayloadEXT/rayPayloadInEXT declared", "%d)", location);
-        }
+        checkConstantArgWithLocation(12, "payload number", "no rayPayloadEXT/rayPayloadInEXT declared", 0);
         break;
     case EOpHitObjectExecuteShaderNV:
-    case EOpHitObjectExecuteShaderEXT:
-        if (!(*argp)[1]->getAsConstantUnion())
-            error(loc, "argument must be compile-time constant", "payload number", "");
-        else {
-            unsigned int location = (*argp)[1]->getAsConstantUnion()->getAsConstantUnion()->getConstArray()[0].getUConst();
-            if (!extensionTurnedOn(E_GL_EXT_spirv_intrinsics) && intermediate.checkLocationRT(0, location) < 0)
-                error(loc, "with layout(location =", "no rayPayloadEXT/rayPayloadInEXT declared", "%d)", location);
-        }
+        checkConstantArgWithLocation(1, "payload number", "no rayPayloadEXT/rayPayloadInEXT declared", 0);
         break;
     case EOpHitObjectRecordHitNV:
-        if (!(*argp)[12]->getAsConstantUnion())
-            error(loc, "argument must be compile-time constant", "hitobjectattribute number", "");
-        else {
-            unsigned int location = (*argp)[12]->getAsConstantUnion()->getAsConstantUnion()->getConstArray()[0].getUConst();
-            if (!extensionTurnedOn(E_GL_EXT_spirv_intrinsics) && intermediate.checkLocationRT(2, location) < 0)
-                error(loc, "with layout(location =", "no hitObjectAttributeNV declared", "%d)", location);
-        }
+        checkConstantArgWithLocation(12, "hitobjectattribute number", "no hitObjectAttributeNV declared", 2);
         break;
     case EOpHitObjectRecordHitMotionNV:
-        if (!(*argp)[13]->getAsConstantUnion())
-            error(loc, "argument must be compile-time constant", "hitobjectattribute number", "");
-        else {
-            unsigned int location = (*argp)[13]->getAsConstantUnion()->getAsConstantUnion()->getConstArray()[0].getUConst();
-            if (!extensionTurnedOn(E_GL_EXT_spirv_intrinsics) && intermediate.checkLocationRT(2, location) < 0)
-                error(loc, "with layout(location =", "no hitObjectAttributeNV declared", "%d)", location);
-        }
+        checkConstantArgWithLocation(13, "hitobjectattribute number", "no hitObjectAttributeNV declared", 2);
         break;
     case EOpHitObjectRecordHitWithIndexNV:
-        if (!(*argp)[11]->getAsConstantUnion())
-            error(loc, "argument must be compile-time constant", "hitobjectattribute number", "");
-        else {
-            unsigned int location = (*argp)[11]->getAsConstantUnion()->getAsConstantUnion()->getConstArray()[0].getUConst();
-            if (!extensionTurnedOn(E_GL_EXT_spirv_intrinsics) && intermediate.checkLocationRT(2, location) < 0)
-                error(loc, "with layout(location =", "no hitObjectAttributeNV declared", "%d)", location);
-        }
+        checkConstantArgWithLocation(11, "hitobjectattribute number", "no hitObjectAttributeNV declared", 2);
         break;
     case EOpHitObjectRecordHitWithIndexMotionNV:
-        if (!(*argp)[12]->getAsConstantUnion())
-            error(loc, "argument must be compile-time constant", "hitobjectattribute number", "");
-        else {
-            unsigned int location = (*argp)[12]->getAsConstantUnion()->getAsConstantUnion()->getConstArray()[0].getUConst();
-            if (!extensionTurnedOn(E_GL_EXT_spirv_intrinsics) && intermediate.checkLocationRT(2, location) < 0)
-                error(loc, "with layout(location =", "no hitObjectAttributeNV declared", "%d)", location);
-        }
+        checkConstantArgWithLocation(12, "hitobjectattribute number", "no hitObjectAttributeNV declared", 2);
         break;
     case EOpHitObjectGetAttributesNV:
-    case EOpHitObjectGetAttributesEXT:
-        if (!(*argp)[1]->getAsConstantUnion())
-            error(loc, "argument must be compile-time constant", "hitobjectattribute number", "");
-        else {
-            unsigned int location = (*argp)[1]->getAsConstantUnion()->getAsConstantUnion()->getConstArray()[0].getUConst();
-            if (!extensionTurnedOn(E_GL_EXT_spirv_intrinsics) && intermediate.checkLocationRT(2, location) < 0)
-                error(loc, "with layout(location =", "no hitObjectAttributeNV declared", "%d)", location);
-        }
-        break;
-    case EOpHitObjectReorderExecuteEXT:
-    {
-        int payloadArgIndex;
-        if (argp->size() == 2)
-            payloadArgIndex = 1;
-         else
-            payloadArgIndex = 3;
-
-        if (!(*argp)[payloadArgIndex]->getAsConstantUnion())
-            error(loc, "argument must be compile-time constant", "payload number", "");
-        else {
-            unsigned int location = (*argp)[payloadArgIndex]->getAsConstantUnion()->getAsConstantUnion()->getConstArray()[0].getUConst();
-            if (!extensionTurnedOn(E_GL_EXT_spirv_intrinsics) && intermediate.checkLocationRT(0, location) < 0)
-                error(loc, "with layout(location =", "no rayPayloadEXT/rayPayloadInEXT declared", "%d)", location);
-        }
-    }
-    break;
-
-    case EOpHitObjectTraceReorderExecuteEXT:
-    {
-        int payloadArgIndex;
-        if (argp->size() == 12)
-            payloadArgIndex = 11;
-         else
-            payloadArgIndex = 13;
-        if (!(*argp)[payloadArgIndex]->getAsConstantUnion())
-            error(loc, "argument must be compile-time constant", "payload number", "");
-        else {
-            unsigned int location = (*argp)[payloadArgIndex]->getAsConstantUnion()->getAsConstantUnion()->getConstArray()[0].getUConst();
-            if (!extensionTurnedOn(E_GL_EXT_spirv_intrinsics) && intermediate.checkLocationRT(0, location) < 0)
-                error(loc, "with layout(location =", "no rayPayloadEXT/rayPayloadInEXT declared", "%d)", location);
-        }
-    }
-    break;
-
-    case EOpHitObjectTraceMotionReorderExecuteEXT:
-    {
-        int payloadArgIndex;
-        if (argp->size() == 13)
-            payloadArgIndex = 12;
-         else
-            payloadArgIndex = 14;
-        if (!(*argp)[payloadArgIndex]->getAsConstantUnion())
-            error(loc, "argument must be compile-time constant", "payload number", "");
-        else {
-            unsigned int location = (*argp)[payloadArgIndex]->getAsConstantUnion()->getAsConstantUnion()->getConstArray()[0].getUConst();
-            if (!extensionTurnedOn(E_GL_EXT_spirv_intrinsics) && intermediate.checkLocationRT(0, location) < 0)
-                error(loc, "with layout(location =", "no rayPayloadEXT/rayPayloadInEXT declared", "%d)", location);
-        }
-    }
-    break;
-
-    case EOpHitObjectRecordFromQueryEXT:
-        if (!(*argp)[3]->getAsConstantUnion())
-            error(loc, "argument must be compile-time constant", "hitobjectattribute number", "");
-        else {
-            unsigned int location = (*argp)[3]->getAsConstantUnion()->getAsConstantUnion()->getConstArray()[0].getUConst();
-            if (!extensionTurnedOn(E_GL_EXT_spirv_intrinsics) && intermediate.checkLocationRT(2, location) < 0)
-                error(loc, "with layout(location =", "no hitObjectAttributeEXT declared", "%d)", location);
-        }
+        checkConstantArgWithLocation(1, "hitobjectattribute number", "no hitObjectAttributeNV declared", 2);
         break;
 
     case EOpRayQueryGetIntersectionType:
@@ -4963,7 +4849,7 @@ void TParseContext::hitObjectEXTCheck(const TSourceLoc & loc, const TType & type
 {
     if (type.getBasicType() == EbtStruct && containsFieldWithBasicType(type, EbtHitObjectEXT)) {
         error(loc, "struct is not allowed to contain hitObjectEXT:", type.getTypeName().c_str(), identifier.c_str());
-    } else if ((type.getBasicType() == EbtHitObjectEXT)) {
+    } else if (type.getBasicType() == EbtHitObjectEXT) {
         TStorageQualifier qualifier = type.getQualifier().storage;
         if (qualifier != EvqGlobal && qualifier != EvqTemporary) {
             error(loc, "hitObjectEXT can only be declared in global or function scope with no storage qualifier:", "hitObjectEXT", identifier.c_str());

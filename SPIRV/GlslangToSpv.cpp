@@ -10331,6 +10331,9 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
         if (operands.size() == 2) {
             builder.createNoResultOp(spv::Op::OpHitObjectReorderExecuteShaderEXT, operands);
         } else {
+            // GLSL intrinsic is
+            // hitObjectReorderExecuteEXT(hitObjectEXT hitObject, uint hint, uint bits,int payload) while
+            // SPIRV is hitObject id , payload id, optional hint id, optional bits id hence reorder operands
             builder.createNoResultOp(spv::Op::OpHitObjectReorderExecuteShaderEXT, {operands[0], operands[3], operands[1], operands[2]});
         }
         return 0;
