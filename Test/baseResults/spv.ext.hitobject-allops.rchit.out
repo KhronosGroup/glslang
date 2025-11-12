@@ -203,7 +203,7 @@ spv.ext.hitobject-allops.rchit
                               Store 98(pid) 99
              101:     15(int) HitObjectGetGeometryIndexEXT 22(hObj)
                               Store 100(gid) 101
-             103:     27(int) HitObjectGetFrontFaceEXT 22(hObj)
+             103:     27(int) HitObjectGetHitKindEXT 22(hObj)
                               Store 102(hkind) 103
                               HitObjectGetAttributesEXT 22(hObj) 9(attr)
              107:  104(ivec2) HitObjectGetShaderRecordBufferHandleEXT 22(hObj)

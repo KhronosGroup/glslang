@@ -1736,7 +1736,7 @@ const char* OpcodeString(int op)
     case (int)Op::OpReorderThreadWithHitObjectEXT:        return "OpReorderThreadWithHitObjectEXT";
     case (int)Op::OpHitObjectGetCurrentTimeEXT:           return "OpHitObjectGetCurrentTimeEXT";
     case (int)Op::OpHitObjectGetAttributesEXT:            return "OpHitObjectGetAttributesEXT";
-    case (int)Op::OpHitObjectGetHitKindEXT:               return "OpHitObjectGetFrontFaceEXT";
+    case (int)Op::OpHitObjectGetHitKindEXT:               return "OpHitObjectGetHitKindEXT";
     case (int)Op::OpHitObjectGetPrimitiveIndexEXT:        return "OpHitObjectGetPrimitiveIndexEXT";
     case (int)Op::OpHitObjectGetGeometryIndexEXT:         return "OpHitObjectGetGeometryIndexEXT";
     case (int)Op::OpHitObjectGetInstanceIdEXT:            return "OpHitObjectGetInstanceIdEXT";
@@ -1755,7 +1755,7 @@ const char* OpcodeString(int op)
     case (int)Op::OpHitObjectIsMissEXT:                   return "OpHitObjectIsMissEXT";
     case (int)Op::OpHitObjectGetShaderBindingTableRecordIndexEXT: return "OpHitObjectGetShaderBindingTableRecordIndexEXT";
     case (int)Op::OpHitObjectGetShaderRecordBufferHandleEXT:   return "OpHitObjectGetShaderRecordBufferHandleEXT";
-    case (int)Op::OpHitObjectSetShaderBindingTableRecordIndexEXT: return "OpHitObjectSetShaderBindingTableRecordIndexNV";
+    case (int)Op::OpHitObjectSetShaderBindingTableRecordIndexEXT: return "OpHitObjectSetShaderBindingTableRecordIndexEXT";
     case (int)Op::OpHitObjectReorderExecuteShaderEXT:     return "OpHitObjectReorderExecuteEXT";
     case (int)Op::OpHitObjectTraceReorderExecuteEXT:      return "OpHitObjectTraceReorderExecuteEXT";
     case (int)Op::OpHitObjectTraceMotionReorderExecuteEXT: return "OpHitObjectTraceMotionReorderExecuteEXT";
