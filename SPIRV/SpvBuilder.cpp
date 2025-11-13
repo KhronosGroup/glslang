@@ -1502,6 +1502,20 @@ Id Builder::makeRayQueryType()
     return type->getResultId();
 }
 
+Id Builder::makeHitObjectEXTType()
+{
+    Instruction *type;
+    if (groupedTypes[enumCast(Op::OpTypeHitObjectEXT)].size() == 0) {
+        type = new Instruction(getUniqueId(), NoType, Op::OpTypeHitObjectEXT);
+        groupedTypes[enumCast(Op::OpTypeHitObjectEXT)].push_back(type);
+        constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
+        module.mapInstruction(type);
+    } else {
+        type = groupedTypes[enumCast(Op::OpTypeHitObjectEXT)].back();
+    }
+
+    return type->getResultId();
+}
 Id Builder::makeHitObjectNVType()
 {
     Instruction *type;
