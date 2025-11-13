@@ -253,10 +253,6 @@ public:
         }
     }
 
-    virtual bool visitVariableDecl(TVisit, TIntermVariableDecl* base) override {
-        return true;
-    }
-
   private:
     const TVarLiveMap&    inputList;
     const TVarLiveMap&    outputList;
