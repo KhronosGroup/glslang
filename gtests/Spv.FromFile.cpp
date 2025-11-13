@@ -1093,6 +1093,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.debuginfo.sampler_type.glsl.frag",
         "spv.debuginfo.const_variables.glsl.frag",
         "spv.debuginfo.ubo.glsl.frag",
+        "spv.debuginfo.declaration.glsl.frag",
     })),
     FileNameAsCustomTestSuffix
 );
