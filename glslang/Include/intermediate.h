@@ -1119,7 +1119,7 @@ public:
 
 private:
     // This symbol is an imaginary access of the variable defined, which isn't an AST node and 
-    // doesn't participate tree traversal.
+    // doesn't participate in tree traversal.
     TIntermSymbol* declSymbol = nullptr;
 
     // The initializer

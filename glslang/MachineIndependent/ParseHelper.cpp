@@ -10407,7 +10407,7 @@ TIntermNode* TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeL
         auto blockDeclNode = new TIntermVariableDecl(intermediate.addSymbol(variable, loc), nullptr);
         blockDeclNode->setLoc(loc);
 
-        // We have to wrap the decalaration with a sequence to fit the same processing logic with variables.
+        // We have to wrap the declaration with a sequence to fit the same processing logic with variables.
         declNode = new TIntermAggregate(EOpSequence);
         declNode->getSequence().push_back(blockDeclNode);
     }
