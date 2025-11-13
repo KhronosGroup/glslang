@@ -1119,7 +1119,7 @@ public:
 
 private:
     // This symbol is an imaginary access of the variable defined, which isn't an AST node and 
-    // doesn't participate in tree traversal.
+    // doesn't participate in tree traversal by default.
     TIntermSymbol* declSymbol = nullptr;
 
     // The initializer
@@ -1787,11 +1787,12 @@ enum TVisit
 class TIntermTraverser {
 public:
     POOL_ALLOCATOR_NEW_DELETE(glslang::GetThreadPoolAllocator())
-    TIntermTraverser(bool preVisit = true, bool inVisit = false, bool postVisit = false, bool rightToLeft = false) :
+    TIntermTraverser(bool preVisit = true, bool inVisit = false, bool postVisit = false, bool rightToLeft = false, bool includeDeclSymbol = false) :
             preVisit(preVisit),
             inVisit(inVisit),
             postVisit(postVisit),
             rightToLeft(rightToLeft),
+            includeDeclSymbol(includeDeclSymbol),
             depth(0),
             maxDepth(0) { }
     virtual ~TIntermTraverser() { }
@@ -1831,6 +1832,11 @@ public:
     const bool inVisit;
     const bool postVisit;
     const bool rightToLeft;
+
+    // Whether to traverse declaration symbols in the traversal.
+    // By default, declaration symbols are not visited in the traversal to avoid 
+    // visiting them in SPIR-V generation where they are not needed.
+    const bool includeDeclSymbol;
 
 protected:
     TIntermTraverser& operator=(TIntermTraverser&);

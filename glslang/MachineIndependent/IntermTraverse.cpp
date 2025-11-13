@@ -316,9 +316,20 @@ void TIntermVariableDecl::traverse(TIntermTraverser *it)
     if (it->preVisit)
         visit = it->visitVariableDecl(EvPreVisit, this);
 
-    if (visit && initNode) {
+    if (visit) {
         it->incrementDepth(this);
-        initNode->traverse(it);
+        if (it->rightToLeft) {
+            if (it->includeDeclSymbol)
+                declSymbol->traverse(it);
+            if (initNode)
+                initNode->traverse(it);
+        }
+        else {
+            if (initNode)
+                initNode->traverse(it);
+            if (it->includeDeclSymbol)
+                declSymbol->traverse(it);
+        }
         it->decrementDepth();
     }
 

@@ -43,7 +43,7 @@ namespace glslang {
 // Code to recursively delete the intermediate tree.
 //
 struct TRemoveTraverser : TIntermTraverser {
-    TRemoveTraverser() : TIntermTraverser(false, false, true, false) {}
+    TRemoveTraverser() : TIntermTraverser(false, false, true, false, true) {}
 
     virtual void visitSymbol(TIntermSymbol* node)
     {
