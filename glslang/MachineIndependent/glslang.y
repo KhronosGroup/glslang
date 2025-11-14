@@ -298,7 +298,8 @@ extern int yylex(YYSTYPE*, TParseContext&);
 %type <interm.intermTypedNode> conditional_expression constant_expression
 %type <interm.intermTypedNode> logical_or_expression logical_xor_expression logical_and_expression
 %type <interm.intermTypedNode> shift_expression and_expression exclusive_or_expression inclusive_or_expression
-%type <interm.intermTypedNode> function_call initializer condition conditionopt
+%type <interm.intermTypedNode> function_call initializer
+%type <interm.intermNode> condition conditionopt
 
 %type <interm.intermNode> translation_unit function_definition
 %type <interm.intermNode> statement simple_statement
@@ -912,16 +913,13 @@ declaration
         $$ = 0;
     }
     | block_structure SEMICOLON {
-        parseContext.declareBlock($1.loc, *$1.typeList);
-        $$ = 0;
+        $$ = parseContext.declareBlock($1.loc, *$1.typeList);
     }
     | block_structure IDENTIFIER SEMICOLON {
-        parseContext.declareBlock($1.loc, *$1.typeList, $2.string);
-        $$ = 0;
+        $$ = parseContext.declareBlock($1.loc, *$1.typeList, $2.string);
     }
     | block_structure IDENTIFIER array_specifier SEMICOLON {
-        parseContext.declareBlock($1.loc, *$1.typeList, $2.string, $3.arraySizes);
-        $$ = 0;
+        $$ = parseContext.declareBlock($1.loc, *$1.typeList, $2.string, $3.arraySizes);
     }
     | type_qualifier SEMICOLON {
         parseContext.globalQualifierFixCheck($1.loc, $1.qualifier);
@@ -1164,21 +1162,23 @@ init_declarator_list
     }
     | init_declarator_list COMMA IDENTIFIER {
         $$ = $1;
-        parseContext.declareVariable($3.loc, *$3.string, $1.type);
+        auto declNode = parseContext.declareVariable($3.loc, *$3.string, $1.type);
+        $$.intermNode = parseContext.intermediate.growAggregate($1.intermNode, declNode, $3.loc);
     }
     | init_declarator_list COMMA IDENTIFIER array_specifier {
         $$ = $1;
-        parseContext.declareVariable($3.loc, *$3.string, $1.type, $4.arraySizes);
+        auto declNode = parseContext.declareVariable($3.loc, *$3.string, $1.type, $4.arraySizes);
+        $$.intermNode = parseContext.intermediate.growAggregate($1.intermNode, declNode, $3.loc);
     }
     | init_declarator_list COMMA IDENTIFIER array_specifier EQUAL initializer {
         $$.type = $1.type;
-        TIntermNode* initNode = parseContext.declareVariable($3.loc, *$3.string, $1.type, $4.arraySizes, $6);
-        $$.intermNode = parseContext.intermediate.growAggregate($1.intermNode, initNode, $5.loc);
+        TIntermNode* declNode = parseContext.declareVariable($3.loc, *$3.string, $1.type, $4.arraySizes, $6);
+        $$.intermNode = parseContext.intermediate.growAggregate($1.intermNode, declNode, $5.loc);
     }
     | init_declarator_list COMMA IDENTIFIER EQUAL initializer {
         $$.type = $1.type;
-        TIntermNode* initNode = parseContext.declareVariable($3.loc, *$3.string, $1.type, 0, $5);
-        $$.intermNode = parseContext.intermediate.growAggregate($1.intermNode, initNode, $4.loc);
+        TIntermNode* declNode = parseContext.declareVariable($3.loc, *$3.string, $1.type, 0, $5);
+        $$.intermNode = parseContext.intermediate.growAggregate($1.intermNode, declNode, $4.loc);
     }
     ;
 
@@ -1190,23 +1190,24 @@ single_declaration
     }
     | fully_specified_type IDENTIFIER {
         $$.type = $1;
-        $$.intermNode = 0;
-        parseContext.declareVariable($2.loc, *$2.string, $1);
+        TIntermNode* declNode = parseContext.declareVariable($2.loc, *$2.string, $1);
+        $$.intermNode = parseContext.intermediate.growAggregate(nullptr, declNode, $2.loc);
+
     }
     | fully_specified_type IDENTIFIER array_specifier {
         $$.type = $1;
-        $$.intermNode = 0;
-        parseContext.declareVariable($2.loc, *$2.string, $1, $3.arraySizes);
+        TIntermNode* declNode = parseContext.declareVariable($2.loc, *$2.string, $1, $3.arraySizes);
+        $$.intermNode = parseContext.intermediate.growAggregate(nullptr, declNode, $2.loc);
     }
     | fully_specified_type IDENTIFIER array_specifier EQUAL initializer {
         $$.type = $1;
-        TIntermNode* initNode = parseContext.declareVariable($2.loc, *$2.string, $1, $3.arraySizes, $5);
-        $$.intermNode = parseContext.intermediate.growAggregate(0, initNode, $4.loc);
+        TIntermNode* declNode = parseContext.declareVariable($2.loc, *$2.string, $1, $3.arraySizes, $5);
+        $$.intermNode = parseContext.intermediate.growAggregate(nullptr, declNode, $2.loc);
     }
     | fully_specified_type IDENTIFIER EQUAL initializer {
         $$.type = $1;
-        TIntermNode* initNode = parseContext.declareVariable($2.loc, *$2.string, $1, 0, $4);
-        $$.intermNode = parseContext.intermediate.growAggregate(0, initNode, $3.loc);
+        TIntermNode* declNode = parseContext.declareVariable($2.loc, *$2.string, $1, 0, $4);
+        $$.intermNode = parseContext.intermediate.growAggregate(nullptr, declNode, $2.loc);
     }
 
 // Grammar Note:  No 'enum', or 'typedef'.
@@ -3990,11 +3991,7 @@ condition
         parseContext.boolCheck($2.loc, $1);
 
         TType type($1);
-        TIntermNode* initNode = parseContext.declareVariable($2.loc, *$2.string, $1, 0, $4);
-        if (initNode)
-            $$ = initNode->getAsTyped();
-        else
-            $$ = 0;
+        $$ = parseContext.declareVariable($2.loc, *$2.string, $1, 0, $4);
     }
     ;
 
@@ -4084,6 +4081,10 @@ iteration_statement_nonattributed
       condition RIGHT_PAREN statement_no_new_scope {
         parseContext.symbolTable.pop(&parseContext.defaultPrecision[0]);
         $$ = parseContext.intermediate.addLoop($6, $4, 0, true, $1.loc);
+        if (parseContext.intermediate.getDebugInfo()) {
+            $$ = parseContext.intermediate.makeAggregate($$, $1.loc);
+            $$->getAsAggregate()->setOperator(EOpScope);
+        }
         --parseContext.loopNestingLevel;
         --parseContext.statementNestingLevel;
         --parseContext.controlFlowNestingLevel;
@@ -4101,6 +4102,10 @@ iteration_statement_nonattributed
         parseContext.boolCheck($8.loc, $6);
 
         $$ = parseContext.intermediate.addLoop($3, $6, 0, false, $4.loc);
+        if (parseContext.intermediate.getDebugInfo()) {
+            $$ = parseContext.intermediate.makeAggregate($$, $4.loc);
+            $$->getAsAggregate()->setOperator(EOpScope);
+        }
         parseContext.symbolTable.pop(&parseContext.defaultPrecision[0]);
         --parseContext.loopNestingLevel;
         --parseContext.statementNestingLevel;
@@ -4119,7 +4124,7 @@ iteration_statement_nonattributed
         if (! parseContext.limits.nonInductiveForLoops)
             parseContext.inductiveLoopCheck($1.loc, $4, forLoop);
         $$ = parseContext.intermediate.growAggregate($$, forLoop, $1.loc);
-        $$->getAsAggregate()->setOperator(EOpSequence);
+        $$->getAsAggregate()->setOperator(parseContext.intermediate.getDebugInfo() ? EOpScope : EOpSequence);
         --parseContext.loopNestingLevel;
         --parseContext.statementNestingLevel;
         --parseContext.controlFlowNestingLevel;
