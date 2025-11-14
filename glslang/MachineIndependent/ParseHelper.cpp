@@ -43,6 +43,7 @@
 #include "Scan.h"
 
 #include <algorithm>
+#include <sys/types.h>
 
 #include "Versions.h"
 #include "preprocessor/PpContext.h"
@@ -1808,7 +1809,81 @@ void TParseContext::handleCoopMat2FunctionCall(const TSourceLoc& loc, const TFun
             // Set result type to match type of first parameter
             result->setType(result->getAsAggregate()->getSequence()[0]->getAsTyped()->getType());
         } else {
-            // For MulAdd, set result type to match type of C parameter
+            // The only remaining operation is MulAdd
+            assert(fnCandidate->getBuiltInOp() == EOpCooperativeMatrixMulAdd ||
+                   fnCandidate->getBuiltInOp() == EOpCooperativeMatrixMulAddNV);
+
+            // Validate that the matrix sizes are compatible for multiplication and addition
+            const auto &sequence = arguments->getAsAggregate()->getSequence();
+
+            using ArrayDim = const TArraySize&;
+            auto getDim = [](const TIntermSequence& seq, int idx) -> std::tuple<ArrayDim, ArrayDim, int> {
+                const auto &type = seq[idx]->getAsTyped()->getType();
+                const auto *size = type.getTypeParameters()->arraySizes;
+
+                if (type.isCoopMatNV()) {
+                    // coopmatNV don't encode usage, so provide the correct usage by default
+                    return {size->getArraySize(2), size->getArraySize(3), idx};
+                } else {
+                    assert(type.isCoopMatKHR());
+                    return {size->getArraySize(1), size->getArraySize(2), size->getDimSize(3)};
+                }
+            };
+
+            // sizes look like: [scope, rows, cols, use]
+            auto [aRows, aCols, aUse] = getDim(sequence, 0);
+            auto [bRows, bCols, bUse] = getDim(sequence, 1);
+            auto [cRows, cCols, cUse] = getDim(sequence, 2);
+
+            auto toString = [](ArrayDim dim) -> std::string {
+                std::stringstream buf;
+                if (dim.node == nullptr) {
+                    buf << dim.size;
+                } else {
+                    buf << "spec_const";
+                }
+                return buf.str();
+            };
+
+            if (aCols != bRows) {
+                auto aRowsStr = toString(aRows);
+                auto aColsStr = toString(aCols);
+                auto bRowsStr = toString(bRows);
+                auto bColsStr = toString(bCols);
+                error(loc, "cannot multiply coop matrices with incompatible sizes",
+                      sequence[0]->getAsSymbolNode()->getMangledName().c_str(),
+                      "%s x %s with %s x %s",
+                      aRowsStr.c_str(),
+                      aColsStr.c_str(),
+                      bRowsStr.c_str(),
+                      bColsStr.c_str());
+            } else if (aRows != cRows || bCols != cCols) {
+                auto aRowsStr = toString(aRows);
+                auto bColsStr = toString(bCols);
+                auto cRowsStr = toString(cRows);
+                auto cColsStr = toString(cCols);
+                error(loc, "cannot add coop matrices with incompatible sizes",
+                      sequence[2]->getAsSymbolNode()->getMangledName().c_str(),
+                      "%s x %s with %s x %s",
+                      aRowsStr.c_str(),
+                      bColsStr.c_str(),
+                      cRowsStr.c_str(),
+                      cColsStr.c_str());
+            } else if (aUse != 0) {
+                error(loc, "coop matrix A in MulAdd operation has incompatible usage property,",
+                      sequence[0]->getAsSymbolNode()->getMangledName().c_str(),
+                      "found %d, but needed 0", aUse);
+            } else if (bUse != 1) {
+                error(loc, "coop matrix B in MulAdd operation has incompatible usage property,",
+                      sequence[1]->getAsSymbolNode()->getMangledName().c_str(),
+                      "found %d, but needed 1", bUse);
+            } else if (cUse != 2) {
+                error(loc, "coop matrix C in MulAdd operation has incompatible usage property,",
+                      sequence[2]->getAsSymbolNode()->getMangledName().c_str(),
+                      "found %d, but needed 2", cUse);
+            }
+
+            // Set result type to match type of C parameter
             result->setType(result->getAsAggregate()->getSequence()[2]->getAsTyped()->getType());
         }
     }
