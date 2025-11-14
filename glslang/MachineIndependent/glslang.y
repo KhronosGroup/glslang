@@ -298,7 +298,8 @@ extern int yylex(YYSTYPE*, TParseContext&);
 %type <interm.intermTypedNode> conditional_expression constant_expression
 %type <interm.intermTypedNode> logical_or_expression logical_xor_expression logical_and_expression
 %type <interm.intermTypedNode> shift_expression and_expression exclusive_or_expression inclusive_or_expression
-%type <interm.intermTypedNode> function_call initializer condition conditionopt
+%type <interm.intermTypedNode> function_call initializer
+%type <interm.intermNode> condition conditionopt
 
 %type <interm.intermNode> translation_unit function_definition
 %type <interm.intermNode> statement simple_statement
@@ -3990,20 +3991,7 @@ condition
         parseContext.boolCheck($2.loc, $1);
 
         TType type($1);
-        TIntermNode* declNode = parseContext.declareVariable($2.loc, *$2.string, $1, 0, $4);
-        if (declNode) {
-            if (declNode->getAsVariableDecl()) {
-                // FIXME: could we support decl AST in this case?
-                $$ = declNode->getAsVariableDecl()->getInitNode()->getAsTyped();
-                delete declNode;
-            }
-            else {
-                $$ = declNode->getAsTyped();
-            }
-        }
-        else {
-            $$ = 0;
-        }
+        $$ = parseContext.declareVariable($2.loc, *$2.string, $1, 0, $4);
     }
     ;
 

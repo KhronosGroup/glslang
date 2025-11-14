@@ -1118,8 +1118,8 @@ public:
     const TIntermNode* getInitNode() const { return initNode; }
 
 private:
-    // This symbol is an imaginary access of the variable defined, which isn't an AST node and 
-    // doesn't participate in tree traversal by default.
+    // This symbol represents the declared variable at its declaration point.
+    // It's not traversed by default. To traverse it, the visitor needs to have includeDeclSymbol enabled.
     TIntermSymbol* declSymbol = nullptr;
 
     // The initializer
@@ -1170,7 +1170,7 @@ protected:
 //
 class TIntermLoop : public TIntermNode {
 public:
-    TIntermLoop(TIntermNode* aBody, TIntermTyped* aTest, TIntermTyped* aTerminal, bool testFirst) :
+    TIntermLoop(TIntermNode* aBody, TIntermNode* aTest, TIntermTyped* aTerminal, bool testFirst) :
         body(aBody),
         test(aTest),
         terminal(aTerminal),
@@ -1189,9 +1189,19 @@ public:
     virtual const TIntermLoop* getAsLoopNode() const { return this; }
     virtual void traverse(TIntermTraverser*);
     TIntermNode*  getBody() const { return body; }
-    TIntermTyped* getTest() const { return test; }
+    TIntermNode*  getTest() const { return test; }
     TIntermTyped* getTerminal() const { return terminal; }
     bool testFirst() const { return first; }
+
+    // Because the test node can be a declaration in a while loop, this function unwraps it to get the actual expression.
+    TIntermTyped* getTestExpr() const {
+        if (auto decl = test->getAsVariableDecl()) {
+            return decl->getInitNode()->getAsTyped();
+        }
+        else {
+            return test->getAsTyped();
+        }
+    }
 
     void setUnroll()     { unroll = true; }
     void setDontUnroll() {
@@ -1226,7 +1236,7 @@ public:
 
 protected:
     TIntermNode* body;       // code to loop over
-    TIntermTyped* test;      // exit condition associated with loop, could be 0 for 'for' loops
+    TIntermNode* test;       // exit condition associated with loop, could be 0 for 'for' loops
     TIntermTyped* terminal;  // exists for for-loops
     bool first;              // true for while and for, not for do-while
     bool unroll;             // true if unroll requested

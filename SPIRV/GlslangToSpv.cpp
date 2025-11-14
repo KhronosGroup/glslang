@@ -4827,7 +4827,7 @@ bool TGlslangToSpvTraverser::visitLoop(glslang::TVisit /* visit */, glslang::TIn
 
         builder.setBuildPoint(&test);
         node->getTest()->traverse(this);
-        spv::Id condition = accessChainLoad(node->getTest()->getType());
+        spv::Id condition = accessChainLoad(node->getTestExpr()->getType());
         builder.createConditionalBranch(condition, &blocks.body, &blocks.merge);
 
         builder.setBuildPoint(&blocks.body);
@@ -4858,7 +4858,7 @@ bool TGlslangToSpvTraverser::visitLoop(glslang::TVisit /* visit */, glslang::TIn
         if (node->getTest()) {
             node->getTest()->traverse(this);
             spv::Id condition =
-                accessChainLoad(node->getTest()->getType());
+                accessChainLoad(node->getTestExpr()->getType());
             builder.createConditionalBranch(condition, &blocks.head, &blocks.merge);
         } else {
             // TODO: unless there was a break/return/discard instruction

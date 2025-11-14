@@ -2652,7 +2652,7 @@ const TIntermTyped* TIntermediate::traverseLValueBase(const TIntermTyped* node, 
 //
 // Create while and do-while loop nodes.
 //
-TIntermLoop* TIntermediate::addLoop(TIntermNode* body, TIntermTyped* test, TIntermTyped* terminal, bool testFirst,
+TIntermLoop* TIntermediate::addLoop(TIntermNode* body, TIntermNode* test, TIntermTyped* terminal, bool testFirst,
     const TSourceLoc& loc)
 {
     TIntermLoop* node = new TIntermLoop(body, test, terminal, testFirst);
@@ -2664,7 +2664,7 @@ TIntermLoop* TIntermediate::addLoop(TIntermNode* body, TIntermTyped* test, TInte
 //
 // Create a for-loop sequence.
 //
-TIntermAggregate* TIntermediate::addForLoop(TIntermNode* body, TIntermNode* initializer, TIntermTyped* test,
+TIntermAggregate* TIntermediate::addForLoop(TIntermNode* body, TIntermNode* initializer, TIntermNode* test,
     TIntermTyped* terminal, bool testFirst, const TSourceLoc& loc, TIntermLoop*& node)
 {
     node = new TIntermLoop(body, test, terminal, testFirst);

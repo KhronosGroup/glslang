@@ -6397,9 +6397,9 @@ void TParseContext::inductiveLoopCheck(const TSourceLoc& loc, TIntermNode* init,
     inductiveLoopIds.insert(loopIndex);
 
     // condition's form must be "loop-index relational-operator constant-expression"
-    bool badCond = ! loop->getTest();
+    bool badCond = ! loop->getTestExpr();
     if (! badCond) {
-        TIntermBinary* binaryCond = loop->getTest()->getAsBinaryNode();
+        TIntermBinary* binaryCond = loop->getTestExpr()->getAsBinaryNode();
         badCond = ! binaryCond;
         if (! badCond) {
             switch (binaryCond->getOp()) {
