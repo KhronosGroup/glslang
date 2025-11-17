@@ -1510,6 +1510,10 @@ Id Builder::makeHitObjectNVType()
         groupedTypes[enumCast(Op::OpTypeHitObjectNV)].push_back(type);
         constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
         module.mapInstruction(type);
+        if (emitNonSemanticShaderDebugInfo) {
+            spv::Id debugType = makeOpaqueDebugType("hitObjectNV");
+            debugId[type->getResultId()] = debugType;
+        }
     } else {
         type = groupedTypes[enumCast(Op::OpTypeHitObjectNV)].back();
     }
@@ -2724,6 +2728,8 @@ void Builder::leaveLexicalBlock()
 // Comments in header
 void Builder::enterFunction(Function const* function)
 {
+    currentFunction = function;
+
     // Save and disable debugInfo for HLSL entry point function. It is a wrapper
     // function with no user code in it.
     restoreNonSemanticShaderDebugInfo = emitNonSemanticShaderDebugInfo;
@@ -2774,6 +2780,9 @@ void Builder::leaveFunction()
         currentDebugScopeId.pop();
 
     emitNonSemanticShaderDebugInfo = restoreNonSemanticShaderDebugInfo;
+
+    // Clear current function record
+    currentFunction = nullptr;
 }
 
 // Comments in header
@@ -2817,31 +2826,30 @@ Id Builder::createVariable(Decoration precision, StorageClass storageClass, Id t
     if (initializer != NoResult)
         inst->addIdOperand(initializer);
 
-    switch (storageClass) {
-    case StorageClass::Function:
+    if (storageClass == StorageClass::Function) {
         // Validation rules require the declaration in the entry block
         buildPoint->getParent().addLocalVariable(std::unique_ptr<Instruction>(inst));
+    }
+    else {
+        constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(inst));
+        module.mapInstruction(inst);
+    }
 
-        if (emitNonSemanticShaderDebugInfo && !compilerGenerated)
-        {
+    if (emitNonSemanticShaderDebugInfo && !compilerGenerated)
+    {
+        // For debug info, we prefer respecting how the variable is declared in source code.
+        // We may emulate some local variables as global variable with private storage in SPIR-V, but we still want to
+        // treat them as local variables in debug info.
+        if (storageClass == StorageClass::Function || (currentFunction && storageClass == StorageClass::Private)) {
             auto const debugLocalVariableId = createDebugLocalVariable(debugId[type], name);
             debugId[inst->getResultId()] = debugLocalVariableId;
 
             makeDebugDeclare(debugLocalVariableId, inst->getResultId());
         }
-
-        break;
-
-    default:
-        constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(inst));
-        module.mapInstruction(inst);
-
-        if (emitNonSemanticShaderDebugInfo)
-        {
+        else {
             auto const debugResultId = createDebugGlobalVariable(debugId[type], name, inst->getResultId());
             debugId[inst->getResultId()] = debugResultId;
         }
-        break;
     }
 
     if (name)

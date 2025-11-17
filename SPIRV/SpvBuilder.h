@@ -1010,6 +1010,8 @@ protected:
     Block* buildPoint;
     Id uniqueId;
     Function* entryPointFunction;
+    // This tracks the current function being built, or nullptr if not in a function.
+    Function const* currentFunction { nullptr };
     bool generatingOpCodeForSpecConst;
     bool useReplicatedComposites { false };
     AccessChain accessChain;
