@@ -6397,9 +6397,9 @@ void TParseContext::inductiveLoopCheck(const TSourceLoc& loc, TIntermNode* init,
     inductiveLoopIds.insert(loopIndex);
 
     // condition's form must be "loop-index relational-operator constant-expression"
-    bool badCond = ! loop->getTest();
+    bool badCond = ! loop->getTestExpr();
     if (! badCond) {
-        TIntermBinary* binaryCond = loop->getTest()->getAsBinaryNode();
+        TIntermBinary* binaryCond = loop->getTestExpr()->getAsBinaryNode();
         badCond = ! binaryCond;
         if (! badCond) {
             switch (binaryCond->getOp()) {
@@ -9172,7 +9172,22 @@ TIntermNode* TParseContext::declareVariable(const TSourceLoc& loc, TString& iden
     // fix up
     fixOffset(loc, *symbol);
 
-    return initNode;
+    // TODO: The decl AST is turned on based on debug info right now. We should expose it as an explicit option.
+    if (intermediate.getDebugInfo()) {
+        TVariable* variable = symbol->getAsVariable();
+        if (variable) {
+            auto decl = new TIntermVariableDecl(intermediate.addSymbol(*variable, loc), initNode);
+            decl->setLoc(loc);
+            return decl;
+        }
+        else {
+            // We ignore builtins redeclarations
+            return nullptr;
+        }
+    }
+    else {
+        return initNode;
+    }
 }
 
 // Pick up global defaults from the provide global defaults into dst.
@@ -10093,9 +10108,9 @@ void TParseContext::updateBindlessQualifier(TType& memberType)
 }
 
 //
-// Do everything needed to add an interface block.
+// Do everything needed to add an interface block. Returns the declarator node if there's an instance declaration.
 //
-void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, const TString* instanceName,
+TIntermNode* TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, const TString* instanceName,
     TArraySizes* arraySizes)
 {
     if (spvVersion.vulkan > 0 && spvVersion.vulkanRelaxed)
@@ -10161,7 +10176,7 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
     // do all the rest.
     if (! symbolTable.atBuiltInLevel() && builtInName(*blockName)) {
         redeclareBuiltinBlock(loc, typeList, *blockName, instanceName, arraySizes);
-        return;
+        return nullptr;
     }
 
     // Not a redeclaration of a built-in; check that all names are user names.
@@ -10327,7 +10342,7 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
             }
         }
         if (!instanceName) {
-            return;
+            return nullptr;
         }
     } else {
         //
@@ -10350,11 +10365,11 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
             if (existingName->getType().getBasicType() == EbtBlock) {
                 if (existingName->getType().getQualifier().storage == blockType.getQualifier().storage) {
                     error(loc, "Cannot reuse block name within the same interface:", blockName->c_str(), blockType.getStorageQualifierString());
-                    return;
+                    return nullptr;
                 }
             } else {
                 error(loc, "block name cannot redefine a non-block name", blockName->c_str(), "");
-                return;
+                return nullptr;
             }
         }
     }
@@ -10371,7 +10386,7 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
         else
             error(loc, "block instance name redefinition", variable.getName().c_str(), "");
 
-        return;
+        return nullptr;
     }
 
     // Check for general layout qualifier errors
@@ -10386,6 +10401,17 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
 
     // Save it in the AST for linker use.
     trackLinkage(variable);
+
+    TIntermAggregate* declNode = nullptr;
+    if (intermediate.getDebugInfo()) {
+        auto blockDeclNode = new TIntermVariableDecl(intermediate.addSymbol(variable, loc), nullptr);
+        blockDeclNode->setLoc(loc);
+
+        // We have to wrap the declaration with a sequence to fit the same processing logic with variables.
+        declNode = new TIntermAggregate(EOpSequence);
+        declNode->getSequence().push_back(blockDeclNode);
+    }
+    return declNode;
 }
 
 //

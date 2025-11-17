@@ -511,6 +511,10 @@ public:
     // such as OpEmitMeshTasksEXT
     void makeStatementTerminator(spv::Op opcode, const std::vector<Id>& operands, const char* name);
 
+    // Create a global/local constant. Because OpConstant is automatically emitted by getting the constant
+    // ids, this function only handles debug info.
+    void createConstVariable(Id type, const char* name, Id constant, bool isGlobal);
+
     // Create a global or function local or IO variable.
     Id createVariable(Decoration precision, StorageClass storageClass, Id type, const char* name = nullptr,
         Id initializer = NoResult, bool const compilerGenerated = true);

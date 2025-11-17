@@ -574,8 +574,8 @@ public:
     TIntermConstantUnion* addConstantUnion(const TString*, const TSourceLoc&, bool literal = false) const;
     TIntermTyped* promoteConstantUnion(TBasicType, TIntermConstantUnion*) const;
     bool parseConstTree(TIntermNode*, TConstUnionArray, TOperator, const TType&, bool singleConstantParam = false);
-    TIntermLoop* addLoop(TIntermNode*, TIntermTyped*, TIntermTyped*, bool testFirst, const TSourceLoc&);
-    TIntermAggregate* addForLoop(TIntermNode*, TIntermNode*, TIntermTyped*, TIntermTyped*, bool testFirst,
+    TIntermLoop* addLoop(TIntermNode*, TIntermNode*, TIntermTyped*, bool testFirst, const TSourceLoc&);
+    TIntermAggregate* addForLoop(TIntermNode*, TIntermNode*, TIntermNode*, TIntermTyped*, bool testFirst,
         const TSourceLoc&, TIntermLoop*&);
     TIntermBranch* addBranch(TOperator, const TSourceLoc&);
     TIntermBranch* addBranch(TOperator, TIntermTyped*, const TSourceLoc&);
