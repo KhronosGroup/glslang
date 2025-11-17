@@ -195,7 +195,6 @@ protected:
     void makeGlobalInitializers(const glslang::TIntermSequence&);
     void collectRayTracingLinkerObjects();
     void visitFunctions(const glslang::TIntermSequence&);
-    void handleFunctionEntry(const glslang::TIntermAggregate* node);
     void translateArguments(const glslang::TIntermAggregate& node, std::vector<spv::Id>& arguments,
         spv::Builder::AccessChain::CoherentFlags &lvalueCoherentFlags);
     void translateArguments(glslang::TIntermUnary& node, std::vector<spv::Id>& arguments);
@@ -3130,7 +3129,12 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
                 builder.enterFunction(shaderEntry);
                 currentFunction = shaderEntry;
             } else {
-                handleFunctionEntry(node);
+                // SPIR-V functions should already be in the functionMap from the prepass
+                // that called makeFunctions().
+                currentFunction = functionMap[node->getName().c_str()];
+                spv::Block* functionBlock = currentFunction->getEntryBlock();
+                builder.setBuildPoint(functionBlock);
+                builder.enterFunction(currentFunction);
             }
             if (options.generateDebugInfo && !options.emitNonSemanticShaderDebugInfo) {
                 const auto& loc = node->getLoc();
@@ -3139,7 +3143,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
                 currentFunction->setDebugLineInfo(sourceFileId, loc.line, loc.column);
             }
         } else {
-            currentFunction = nullptr;
+            // Here we have finished visiting the function (post-visit). Finalize it.
             if (options.generateDebugInfo) {
                 if (glslangIntermediate->getSource() == glslang::EShSourceGlsl && node->getSequence().size() > 1) {
                     auto endLoc = node->getSequence()[1]->getAsAggregate()->getEndLoc();
@@ -3150,6 +3154,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
                 entryPointTerminated = true;
             builder.leaveFunction();
             inEntryPoint = false;
+            currentFunction = nullptr;
         }
 
         return true;
@@ -6491,16 +6496,6 @@ void TGlslangToSpvTraverser::visitFunctions(const glslang::TIntermSequence& glsl
         if (node && (node->getOp() == glslang::EOpFunction || node->getOp() == glslang::EOpLinkerObjects))
             node->traverse(this);
     }
-}
-
-void TGlslangToSpvTraverser::handleFunctionEntry(const glslang::TIntermAggregate* node)
-{
-    // SPIR-V functions should already be in the functionMap from the prepass
-    // that called makeFunctions().
-    currentFunction = functionMap[node->getName().c_str()];
-    spv::Block* functionBlock = currentFunction->getEntryBlock();
-    builder.setBuildPoint(functionBlock);
-    builder.enterFunction(currentFunction);
 }
 
 void TGlslangToSpvTraverser::translateArguments(const glslang::TIntermAggregate& node, std::vector<spv::Id>& arguments,
