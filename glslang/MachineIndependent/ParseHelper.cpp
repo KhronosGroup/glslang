@@ -6799,8 +6799,10 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
         }
         for (TLayoutDepth depth = (TLayoutDepth)(EldNone + 1); depth < EldCount; depth = (TLayoutDepth)(depth+1)) {
             if (id == TQualifier::getLayoutDepthString(depth)) {
-                requireProfile(loc, ECoreProfile | ECompatibilityProfile, "depth layout qualifier");
-                profileRequires(loc, ECoreProfile | ECompatibilityProfile, 420, nullptr, "depth layout qualifier");
+                const char* feature = "depth layout qualifier";
+                requireProfile(loc, ECoreProfile | ECompatibilityProfile | EEsProfile, feature);
+                profileRequires(loc, ECoreProfile | ECompatibilityProfile, 420, nullptr, feature);
+                profileRequires(loc, EEsProfile, 300, E_GL_EXT_conservative_depth, feature);
                 publicType.shaderQualifiers.layoutDepth = depth;
                 return;
             }
