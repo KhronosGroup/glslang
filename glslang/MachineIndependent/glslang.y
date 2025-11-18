@@ -1162,12 +1162,12 @@ init_declarator_list
     }
     | init_declarator_list COMMA IDENTIFIER {
         $$ = $1;
-        auto declNode = parseContext.declareVariable($3.loc, *$3.string, $1.type);
+        TIntermNode* declNode = parseContext.declareVariable($3.loc, *$3.string, $1.type);
         $$.intermNode = parseContext.intermediate.growAggregate($1.intermNode, declNode, $3.loc);
     }
     | init_declarator_list COMMA IDENTIFIER array_specifier {
         $$ = $1;
-        auto declNode = parseContext.declareVariable($3.loc, *$3.string, $1.type, $4.arraySizes);
+        TIntermNode* declNode = parseContext.declareVariable($3.loc, *$3.string, $1.type, $4.arraySizes);
         $$.intermNode = parseContext.intermediate.growAggregate($1.intermNode, declNode, $3.loc);
     }
     | init_declarator_list COMMA IDENTIFIER array_specifier EQUAL initializer {
