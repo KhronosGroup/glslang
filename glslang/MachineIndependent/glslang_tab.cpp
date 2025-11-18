@@ -6734,7 +6734,7 @@ yyreduce:
 #line 1163 "MachineIndependent/glslang.y"
                                             {
         (yyval.interm) = (yyvsp[-2].interm);
-        auto declNode = parseContext.declareVariable((yyvsp[0].lex).loc, *(yyvsp[0].lex).string, (yyvsp[-2].interm).type);
+        TIntermNode* declNode = parseContext.declareVariable((yyvsp[0].lex).loc, *(yyvsp[0].lex).string, (yyvsp[-2].interm).type);
         (yyval.interm).intermNode = parseContext.intermediate.growAggregate((yyvsp[-2].interm).intermNode, declNode, (yyvsp[0].lex).loc);
     }
 #line 6741 "MachineIndependent/glslang_tab.cpp"
@@ -6744,7 +6744,7 @@ yyreduce:
 #line 1168 "MachineIndependent/glslang.y"
                                                             {
         (yyval.interm) = (yyvsp[-3].interm);
-        auto declNode = parseContext.declareVariable((yyvsp[-1].lex).loc, *(yyvsp[-1].lex).string, (yyvsp[-3].interm).type, (yyvsp[0].interm).arraySizes);
+        TIntermNode* declNode = parseContext.declareVariable((yyvsp[-1].lex).loc, *(yyvsp[-1].lex).string, (yyvsp[-3].interm).type, (yyvsp[0].interm).arraySizes);
         (yyval.interm).intermNode = parseContext.intermediate.growAggregate((yyvsp[-3].interm).intermNode, declNode, (yyvsp[-1].lex).loc);
     }
 #line 6751 "MachineIndependent/glslang_tab.cpp"
