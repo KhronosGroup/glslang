@@ -165,6 +165,7 @@ const char* const E_GL_ARB_vertex_attrib_64bit          = "GL_ARB_vertex_attrib_
 const char* const E_GL_ARB_draw_instanced               = "GL_ARB_draw_instanced";
 const char* const E_GL_ARB_fragment_coord_conventions   = "GL_ARB_fragment_coord_conventions";
 const char* const E_GL_ARB_bindless_texture             = "GL_ARB_bindless_texture";
+const char* const E_GL_ARB_conservative_depth           = "GL_ARB_conservative_depth";
 
 const char* const E_GL_KHR_shader_subgroup_basic            = "GL_KHR_shader_subgroup_basic";
 const char* const E_GL_KHR_shader_subgroup_vote             = "GL_KHR_shader_subgroup_vote";

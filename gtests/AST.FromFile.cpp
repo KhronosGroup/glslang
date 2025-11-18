@@ -187,6 +187,7 @@ INSTANTIATE_TEST_SUITE_P(
         "boolinput.error.frag",
         "booloutput.error.vert",
         "conditionalDiscard.frag",
+        "conservativeDepth.frag",
         "conversion.frag",
         "dataOut.frag",
         "dataOutIndirect.frag",
