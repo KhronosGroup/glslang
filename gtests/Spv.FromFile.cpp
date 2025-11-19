@@ -796,6 +796,12 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.nv.hitobject-allops.rchit",
         "spv.nv.hitobject-allops.rmiss",
 
+        // SPV_EXT_shader_execution_reorder
+
+        "spv.ext.hitobject-errors.rgen",
+        "spv.ext.hitobject-allops.rgen",
+        "spv.ext.hitobject-allops.rchit",
+        "spv.ext.hitobject-allops.rmiss",
 
         // SPV_NV_displacment_micromap
 

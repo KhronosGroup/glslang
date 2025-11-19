@@ -5407,6 +5407,45 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "void hitObjectGetLSSRadiiNV(hitObjectNV, out float[2]);"
             "bool hitObjectIsSphereHitNV(hitObjectNV);"
             "bool hitObjectIsLSSHitNV(hitObjectNV);"
+            "void hitObjectTraceRayEXT(hitObjectEXT,accelerationStructureEXT,uint,uint,uint,uint,uint,vec3,float,vec3,float,int);"
+            "void hitObjectTraceRayMotionEXT(hitObjectEXT,accelerationStructureEXT,uint,uint,uint,uint,uint,vec3,float,vec3,float,float,int);"
+            "void hitObjectRecordMissEXT(hitObjectEXT,uint,uint,vec3,float,vec3,float);"
+            "void hitObjectRecordMissMotionEXT(hitObjectEXT,uint,uint,vec3,float,vec3,float,float);"
+            "void hitObjectRecordEmptyEXT(hitObjectEXT);"
+            "void hitObjectExecuteShaderEXT(hitObjectEXT,int);"
+            "bool hitObjectIsEmptyEXT(hitObjectEXT);"
+            "bool hitObjectIsMissEXT(hitObjectEXT);"
+            "bool hitObjectIsHitEXT(hitObjectEXT);"
+            "float hitObjectGetRayTMinEXT(hitObjectEXT);"
+            "float hitObjectGetRayTMaxEXT(hitObjectEXT);"
+            "uint hitObjectGetRayFlagsEXT(hitObjectEXT);"
+            "vec3 hitObjectGetWorldRayOriginEXT(hitObjectEXT);"
+            "vec3 hitObjectGetWorldRayDirectionEXT(hitObjectEXT);"
+            "vec3 hitObjectGetObjectRayOriginEXT(hitObjectEXT);"
+            "vec3 hitObjectGetObjectRayDirectionEXT(hitObjectEXT);"
+            "mat4x3 hitObjectGetWorldToObjectEXT(hitObjectEXT);"
+            "mat4x3 hitObjectGetObjectToWorldEXT(hitObjectEXT);"
+            "int hitObjectGetInstanceCustomIndexEXT(hitObjectEXT);"
+            "int hitObjectGetInstanceIdEXT(hitObjectEXT);"
+            "int hitObjectGetGeometryIndexEXT(hitObjectEXT);"
+            "int hitObjectGetPrimitiveIndexEXT(hitObjectEXT);"
+            "uint hitObjectGetHitKindEXT(hitObjectEXT);"
+            "void hitObjectGetAttributesEXT(hitObjectEXT,int);"
+            "float hitObjectGetCurrentTimeEXT(hitObjectEXT);"
+            "uint hitObjectGetShaderBindingTableRecordIndexEXT(hitObjectEXT);"
+            "uvec2 hitObjectGetShaderRecordBufferHandleEXT(hitObjectEXT);"
+            "void hitObjectSetShaderBindingTableRecordIndexEXT(hitObjectEXT, uint);"
+            "void hitObjectReorderExecuteEXT(hitObjectEXT,int);"
+            "void hitObjectReorderExecuteEXT(hitObjectEXT,uint,uint,int);"
+            "void hitObjectTraceReorderExecuteEXT(hitObjectEXT,accelerationStructureEXT,uint,uint,uint,uint,uint,vec3,float,vec3,float,int);"
+            "void hitObjectTraceReorderExecuteEXT(hitObjectEXT,accelerationStructureEXT,uint,uint,uint,uint,uint,vec3,float,vec3,float,uint,uint,int);"
+            "void hitObjectTraceMotionReorderExecuteEXT(hitObjectEXT,accelerationStructureEXT,uint,uint,uint,uint,uint,vec3,float,vec3,float,float,int);"
+            "void hitObjectTraceMotionReorderExecuteEXT(hitObjectEXT,accelerationStructureEXT,uint,uint,uint,uint,uint,vec3,float,vec3,float,float,uint,uint,int);"
+            "void hitObjectRecordFromQueryEXT(hitObjectEXT, rayQueryEXT, uint, int);"
+            "void hitObjectGetIntersectionTriangleVertexPositionsEXT(hitObjectEXT, out vec3[3]);"
+            "void reorderThreadEXT(uint, uint);"
+            "void reorderThreadEXT(hitObjectEXT);"
+            "void reorderThreadEXT(hitObjectEXT, uint, uint);"
             "\n");
         stageBuiltins[EShLangIntersect].append(
             "bool reportIntersectionNV(float, uint);"
@@ -5459,6 +5498,36 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "void hitObjectGetLSSRadiiNV(hitObjectNV, out float[2]);"
             "bool hitObjectIsSphereHitNV(hitObjectNV);"
             "bool hitObjectIsLSSHitNV(hitObjectNV);"
+            "void hitObjectTraceRayEXT(hitObjectEXT,accelerationStructureEXT,uint,uint,uint,uint,uint,vec3,float,vec3,float,int);"
+            "void hitObjectTraceRayMotionEXT(hitObjectEXT,accelerationStructureEXT,uint,uint,uint,uint,uint,vec3,float,vec3,float,float,int);"
+            "void hitObjectRecordMissEXT(hitObjectEXT,uint,uint,vec3,float,vec3,float);"
+            "void hitObjectRecordMissMotionEXT(hitObjectEXT,uint,uint,vec3,float,vec3,float,float);"
+            "void hitObjectRecordEmptyEXT(hitObjectEXT);"
+            "void hitObjectExecuteShaderEXT(hitObjectEXT,int);"
+            "bool hitObjectIsEmptyEXT(hitObjectEXT);"
+            "bool hitObjectIsMissEXT(hitObjectEXT);"
+            "bool hitObjectIsHitEXT(hitObjectEXT);"
+            "float hitObjectGetRayTMinEXT(hitObjectEXT);"
+            "float hitObjectGetRayTMaxEXT(hitObjectEXT);"
+            "uint hitObjectGetRayFlagsEXT(hitObjectEXT);"
+            "vec3 hitObjectGetWorldRayOriginEXT(hitObjectEXT);"
+            "vec3 hitObjectGetWorldRayDirectionEXT(hitObjectEXT);"
+            "vec3 hitObjectGetObjectRayOriginEXT(hitObjectEXT);"
+            "vec3 hitObjectGetObjectRayDirectionEXT(hitObjectEXT);"
+            "mat4x3 hitObjectGetWorldToObjectEXT(hitObjectEXT);"
+            "mat4x3 hitObjectGetObjectToWorldEXT(hitObjectEXT);"
+            "int hitObjectGetInstanceCustomIndexEXT(hitObjectEXT);"
+            "int hitObjectGetInstanceIdEXT(hitObjectEXT);"
+            "int hitObjectGetGeometryIndexEXT(hitObjectEXT);"
+            "int hitObjectGetPrimitiveIndexEXT(hitObjectEXT);"
+            "uint hitObjectGetHitKindEXT(hitObjectEXT);"
+            "void hitObjectGetAttributesEXT(hitObjectEXT,int);"
+            "float hitObjectGetCurrentTimeEXT(hitObjectEXT);"
+            "uint hitObjectGetShaderBindingTableRecordIndexEXT(hitObjectEXT);"
+            "uvec2 hitObjectGetShaderRecordBufferHandleEXT(hitObjectEXT);"
+            "void hitObjectSetShaderBindingTableRecordIndexEXT(hitObjectEXT, uint);"
+            "void hitObjectRecordFromQueryEXT(hitObjectEXT, rayQueryEXT,uint, int);"
+            "void hitObjectGetIntersectionTriangleVertexPositionsEXT(hitObjectEXT, out vec3[3]);"
             "\n");
         stageBuiltins[EShLangMiss].append(
             "void traceNV(accelerationStructureNV,uint,uint,uint,uint,uint,vec3,float,vec3,float,int);"
@@ -5503,6 +5572,36 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "void hitObjectGetLSSRadiiNV(hitObjectNV, out float[2]);"
             "bool hitObjectIsSphereHitNV(hitObjectNV);"
             "bool hitObjectIsLSSHitNV(hitObjectNV);"
+            "void hitObjectTraceRayEXT(hitObjectEXT,accelerationStructureEXT,uint,uint,uint,uint,uint,vec3,float,vec3,float,int);"
+            "void hitObjectTraceRayMotionEXT(hitObjectEXT,accelerationStructureEXT,uint,uint,uint,uint,uint,vec3,float,vec3,float,float,int);"
+            "void hitObjectRecordMissEXT(hitObjectEXT,uint,uint,vec3,float,vec3,float);"
+            "void hitObjectRecordMissMotionEXT(hitObjectEXT,uint,uint,vec3,float,vec3,float,float);"
+            "void hitObjectRecordEmptyEXT(hitObjectEXT);"
+            "void hitObjectExecuteShaderEXT(hitObjectEXT,int);"
+            "bool hitObjectIsEmptyEXT(hitObjectEXT);"
+            "bool hitObjectIsMissEXT(hitObjectEXT);"
+            "bool hitObjectIsHitEXT(hitObjectEXT);"
+            "float hitObjectGetRayTMinEXT(hitObjectEXT);"
+            "float hitObjectGetRayTMaxEXT(hitObjectEXT);"
+            "uint hitObjectGetRayFlagsEXT(hitObjectEXT);"
+            "vec3 hitObjectGetWorldRayOriginEXT(hitObjectEXT);"
+            "vec3 hitObjectGetWorldRayDirectionEXT(hitObjectEXT);"
+            "vec3 hitObjectGetObjectRayOriginEXT(hitObjectEXT);"
+            "vec3 hitObjectGetObjectRayDirectionEXT(hitObjectEXT);"
+            "mat4x3 hitObjectGetWorldToObjectEXT(hitObjectEXT);"
+            "mat4x3 hitObjectGetObjectToWorldEXT(hitObjectEXT);"
+            "int hitObjectGetInstanceCustomIndexEXT(hitObjectEXT);"
+            "int hitObjectGetInstanceIdEXT(hitObjectEXT);"
+            "int hitObjectGetGeometryIndexEXT(hitObjectEXT);"
+            "int hitObjectGetPrimitiveIndexEXT(hitObjectEXT);"
+            "uint hitObjectGetHitKindEXT(hitObjectEXT);"
+            "void hitObjectGetAttributesEXT(hitObjectEXT,int);"
+            "float hitObjectGetCurrentTimeEXT(hitObjectEXT);"
+            "uint hitObjectGetShaderBindingTableRecordIndexEXT(hitObjectEXT);"
+            "uvec2 hitObjectGetShaderRecordBufferHandleEXT(hitObjectEXT);"
+            "void hitObjectSetShaderBindingTableRecordIndexEXT(hitObjectEXT, uint);"
+            "void hitObjectRecordFromQueryEXT(hitObjectEXT, rayQueryEXT, uint, int);"
+            "void hitObjectGetIntersectionTriangleVertexPositionsEXT(hitObjectEXT, out vec3[3]);"
             "\n");
         stageBuiltins[EShLangCallable].append(
             "void executeCallableNV(uint, int);"
@@ -10040,6 +10139,40 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setFunctionExtensions("hitObjectGetLSSRadiiNV", 1, &E_GL_NV_linear_swept_spheres);
             symbolTable.setFunctionExtensions("hitObjectIsSphereHitNV", 1, &E_GL_NV_linear_swept_spheres);
             symbolTable.setFunctionExtensions("hitObjectIsLSSHitNV", 1, &E_GL_NV_linear_swept_spheres);
+            symbolTable.setFunctionExtensions("hitObjectTraceRayEXT", 1, &E_GL_EXT_shader_invocation_reorder);
+            symbolTable.setFunctionExtensions("hitObjectTraceRayMotionEXT", 1, &E_GL_EXT_shader_invocation_reorder);
+            symbolTable.setFunctionExtensions("hitObjectRecordMissEXT", 1, &E_GL_EXT_shader_invocation_reorder);
+            symbolTable.setFunctionExtensions("hitObjectRecordMissMotionEXT", 1, &E_GL_EXT_shader_invocation_reorder);
+            symbolTable.setFunctionExtensions("hitObjectRecordEmptyEXT", 1, &E_GL_EXT_shader_invocation_reorder);
+            symbolTable.setFunctionExtensions("hitObjectExecuteShaderEXT", 1, &E_GL_EXT_shader_invocation_reorder);
+            symbolTable.setFunctionExtensions("hitObjectIsEmptyEXT", 1, &E_GL_EXT_shader_invocation_reorder);
+            symbolTable.setFunctionExtensions("hitObjectIsMissEXT", 1, &E_GL_EXT_shader_invocation_reorder);
+            symbolTable.setFunctionExtensions("hitObjectIsHitEXT", 1, &E_GL_EXT_shader_invocation_reorder);
+            symbolTable.setFunctionExtensions("hitObjectGetRayTMinEXT", 1, &E_GL_EXT_shader_invocation_reorder);
+            symbolTable.setFunctionExtensions("hitObjectGetRayTMaxEXT", 1, &E_GL_EXT_shader_invocation_reorder);
+            symbolTable.setFunctionExtensions("hitObjectGetRayFlagsEXT", 1, &E_GL_EXT_shader_invocation_reorder);
+            symbolTable.setFunctionExtensions("hitObjectGetObjectRayOriginEXT", 1, &E_GL_EXT_shader_invocation_reorder);
+            symbolTable.setFunctionExtensions("hitObjectGetObjectRayDirectionEXT", 1, &E_GL_EXT_shader_invocation_reorder);
+            symbolTable.setFunctionExtensions("hitObjectGetWorldRayOriginEXT", 1, &E_GL_EXT_shader_invocation_reorder);
+            symbolTable.setFunctionExtensions("hitObjectGetWorldRayDirectionEXT", 1, &E_GL_EXT_shader_invocation_reorder);
+            symbolTable.setFunctionExtensions("hitObjectGetWorldToObjectEXT", 1, &E_GL_EXT_shader_invocation_reorder);
+            symbolTable.setFunctionExtensions("hitObjectGetObjectToWorldEXT", 1, &E_GL_EXT_shader_invocation_reorder);
+            symbolTable.setFunctionExtensions("hitObjectGetInstanceCustomIndexEXT", 1, &E_GL_EXT_shader_invocation_reorder);
+            symbolTable.setFunctionExtensions("hitObjectGetInstanceIdEXT", 1, &E_GL_EXT_shader_invocation_reorder);
+            symbolTable.setFunctionExtensions("hitObjectGetGeometryIndexEXT", 1, &E_GL_EXT_shader_invocation_reorder);
+            symbolTable.setFunctionExtensions("hitObjectGetPrimitiveIndexEXT", 1, &E_GL_EXT_shader_invocation_reorder);
+            symbolTable.setFunctionExtensions("hitObjectGetHitKindEXT", 1, &E_GL_EXT_shader_invocation_reorder);
+            symbolTable.setFunctionExtensions("hitObjectGetAttributesEXT", 1, &E_GL_EXT_shader_invocation_reorder);
+            symbolTable.setFunctionExtensions("hitObjectGetCurrentTimeEXT", 1, &E_GL_EXT_shader_invocation_reorder);
+            symbolTable.setFunctionExtensions("hitObjectGetShaderBindingTableRecordIndexEXT", 1, &E_GL_EXT_shader_invocation_reorder);
+            symbolTable.setFunctionExtensions("hitObjectGetShaderRecordBufferHandleEXT", 1, &E_GL_EXT_shader_invocation_reorder);
+            symbolTable.setFunctionExtensions("hitObjectSetShaderBindingTableRecordIndexEXT", 1, &E_GL_EXT_shader_invocation_reorder);
+            symbolTable.setFunctionExtensions("reorderThreadEXT", 1, &E_GL_EXT_shader_invocation_reorder);
+            symbolTable.setFunctionExtensions("hitObjectReorderExecuteEXT", 1, &E_GL_EXT_shader_invocation_reorder);
+            symbolTable.setFunctionExtensions("hitObjectTraceReorderExecuteEXT", 1, &E_GL_EXT_shader_invocation_reorder);
+            symbolTable.setFunctionExtensions("hitObjectTraceMotionReorderExecuteEXT", 1, &E_GL_EXT_shader_invocation_reorder);
+            symbolTable.setFunctionExtensions("hitObjectRecordFromQueryEXT", 1, &E_GL_EXT_shader_invocation_reorder);
+            symbolTable.setFunctionExtensions("hitObjectGetIntersectionTriangleVertexPositionsEXT", 1, &E_GL_EXT_shader_invocation_reorder);
 
 
             BuiltInVariable("gl_LaunchIDNV",             EbvLaunchId,           symbolTable);
@@ -11243,6 +11376,40 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.relateToOperator("hitObjectGetLSSRadiiNV", EOpHitObjectGetLSSRadiiNV);
             symbolTable.relateToOperator("hitObjectIsSphereHitNV", EOpHitObjectIsSphereHitNV);
             symbolTable.relateToOperator("hitObjectIsLSSHitNV", EOpHitObjectIsLSSHitNV);
+            symbolTable.relateToOperator("hitObjectTraceRayEXT", EOpHitObjectTraceRayEXT);
+            symbolTable.relateToOperator("hitObjectTraceRayMotionEXT", EOpHitObjectTraceRayMotionEXT);
+            symbolTable.relateToOperator("hitObjectRecordMissEXT", EOpHitObjectRecordMissEXT);
+            symbolTable.relateToOperator("hitObjectRecordMissMotionEXT", EOpHitObjectRecordMissMotionEXT);
+            symbolTable.relateToOperator("hitObjectRecordEmptyEXT", EOpHitObjectRecordEmptyEXT);
+            symbolTable.relateToOperator("hitObjectExecuteShaderEXT", EOpHitObjectExecuteShaderEXT);
+            symbolTable.relateToOperator("hitObjectIsEmptyEXT", EOpHitObjectIsEmptyEXT);
+            symbolTable.relateToOperator("hitObjectIsMissEXT", EOpHitObjectIsMissEXT);
+            symbolTable.relateToOperator("hitObjectIsHitEXT", EOpHitObjectIsHitEXT);
+            symbolTable.relateToOperator("hitObjectGetRayTMinEXT", EOpHitObjectGetRayTMinEXT);
+            symbolTable.relateToOperator("hitObjectGetRayTMaxEXT", EOpHitObjectGetRayTMaxEXT);
+            symbolTable.relateToOperator("hitObjectGetRayFlagsEXT", EOpHitObjectGetRayFlagsEXT);
+            symbolTable.relateToOperator("hitObjectGetObjectRayOriginEXT", EOpHitObjectGetObjectRayOriginEXT);
+            symbolTable.relateToOperator("hitObjectGetObjectRayDirectionEXT", EOpHitObjectGetObjectRayDirectionEXT);
+            symbolTable.relateToOperator("hitObjectGetWorldRayOriginEXT", EOpHitObjectGetWorldRayOriginEXT);
+            symbolTable.relateToOperator("hitObjectGetWorldRayDirectionEXT", EOpHitObjectGetWorldRayDirectionEXT);
+            symbolTable.relateToOperator("hitObjectGetWorldToObjectEXT", EOpHitObjectGetWorldToObjectEXT);
+            symbolTable.relateToOperator("hitObjectGetObjectToWorldEXT", EOpHitObjectGetObjectToWorldEXT);
+            symbolTable.relateToOperator("hitObjectGetInstanceCustomIndexEXT", EOpHitObjectGetInstanceCustomIndexEXT);
+            symbolTable.relateToOperator("hitObjectGetInstanceIdEXT", EOpHitObjectGetInstanceIdEXT);
+            symbolTable.relateToOperator("hitObjectGetGeometryIndexEXT", EOpHitObjectGetGeometryIndexEXT);
+            symbolTable.relateToOperator("hitObjectGetPrimitiveIndexEXT", EOpHitObjectGetPrimitiveIndexEXT);
+            symbolTable.relateToOperator("hitObjectGetHitKindEXT", EOpHitObjectGetHitKindEXT);
+            symbolTable.relateToOperator("hitObjectGetAttributesEXT", EOpHitObjectGetAttributesEXT);
+            symbolTable.relateToOperator("hitObjectGetCurrentTimeEXT", EOpHitObjectGetCurrentTimeEXT);
+            symbolTable.relateToOperator("hitObjectGetShaderBindingTableRecordIndexEXT", EOpHitObjectGetShaderBindingTableRecordIndexEXT);
+            symbolTable.relateToOperator("hitObjectGetShaderRecordBufferHandleEXT", EOpHitObjectGetShaderRecordBufferHandleEXT);
+            symbolTable.relateToOperator("hitObjectSetShaderBindingTableRecordIndexEXT", EOpHitObjectSetShaderBindingTableRecordIndexEXT);
+            symbolTable.relateToOperator("reorderThreadEXT", EOpReorderThreadEXT);
+            symbolTable.relateToOperator("hitObjectReorderExecuteEXT", EOpHitObjectReorderExecuteEXT);
+            symbolTable.relateToOperator("hitObjectTraceReorderExecuteEXT", EOpHitObjectTraceReorderExecuteEXT);
+            symbolTable.relateToOperator("hitObjectTraceMotionReorderExecuteEXT", EOpHitObjectTraceMotionReorderExecuteEXT);
+            symbolTable.relateToOperator("hitObjectRecordFromQueryEXT", EOpHitObjectRecordFromQueryEXT);
+            symbolTable.relateToOperator("hitObjectGetIntersectionTriangleVertexPositionsEXT", EOpHitObjectGetIntersectionTriangleVertexPositionsEXT);
         }
         break;
     case EShLangIntersect:

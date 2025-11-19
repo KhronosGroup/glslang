@@ -86,6 +86,7 @@ void TType::buildMangledName(TString& mangledName) const
     case EbtRayQuery:           mangledName += "rq";     break;
     case EbtSpirvType:          mangledName += "spv-t";  break;
     case EbtHitObjectNV:        mangledName += "ho";     break;
+    case EbtHitObjectEXT:       mangledName += "ho";     break;
     case EbtTensorLayoutNV:     mangledName += "tl";     break;
     case EbtTensorViewNV:       mangledName += "tv";     break;
     case EbtSampler:
