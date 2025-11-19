@@ -1895,9 +1895,9 @@ static const uint32_t spv_Scope_Subgroup = 3;
 void TParseContext::handleVector2CoopMatConversionCall(const TSourceLoc& loc, const TFunction* fnCandidate,
                                                        TIntermTyped*& result, TIntermNode* arguments)
 {
-  const int CM_MatrixUseA = 0;           // == gl_MatrixUseA
-  const int CM_MatrixUseB = 1;           // == gl_MatrixUseB
-  const int CM_MatrixUseAccumulator = 2; // == gl_MatrixUseAccumulator
+  const uint32_t CM_MatrixUseA = 0;           // == gl_MatrixUseA
+  const uint32_t CM_MatrixUseB = 1;           // == gl_MatrixUseB
+  const uint32_t CM_MatrixUseAccumulator = 2; // == gl_MatrixUseAccumulator
 
   TOperator builtinOp = fnCandidate->getBuiltInOp();
 
@@ -1989,7 +1989,7 @@ void TParseContext::handleVector2CoopMatConversionCall(const TSourceLoc& loc, co
       error(loc, "cooperative matrix has unsupported scope; gl_SubgroupScope is expected", "", "");
     }
 
-    if (coopMatKHRuse < CM_MatrixUseA || coopMatKHRuse > CM_MatrixUseAccumulator) {
+    if (coopMatKHRuse > CM_MatrixUseAccumulator) {
       coopMatKHRuse = CM_MatrixUseA;
       error(loc, "cooperative matrix use must be one of gl_MatrixUseA, gl_MatrixUseB, gl_MatrixUseAccumulator",
             "", "");
@@ -2067,7 +2067,7 @@ void TParseContext::handleVector2CoopMatConversionCall(const TSourceLoc& loc, co
       error(loc, "cooperative matrix has unsupported scope; gl_SubgroupScope is expected", "", "");
     }
 
-    if (coopMatKHRuse < CM_MatrixUseA || coopMatKHRuse > CM_MatrixUseAccumulator) {
+    if (coopMatKHRuse > CM_MatrixUseAccumulator) {
       coopMatKHRuse = CM_MatrixUseA;
       error(loc, "cooperative matrix use must be one of gl_MatrixUseA, gl_MatrixUseB, gl_MatrixUseAccumulator",
             "", "");
