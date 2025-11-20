@@ -5173,7 +5173,7 @@ spv::Id TGlslangToSpvTraverser::createSpvVariable(const glslang::TIntermSymbol* 
         // Notably, this is only applicable to built-in variables so that it is okay to only use name as the key.
         auto [itBegin, itEnd] = glslangIntermediate->getBuiltinAliasLookup().equal_range(name);
         for (auto it = itBegin; it != itEnd; ++it) {
-            builder.createDebugGlobalVariable(spvType, it->second.c_str(), var);
+            builder.createDebugGlobalVariable(builder.getDebugType(spvType), it->second.c_str(), var);
         }
     }
 
