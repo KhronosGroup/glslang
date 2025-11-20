@@ -838,7 +838,7 @@ public:
 
     std::unordered_multimap<std::string, std::string> collectBuiltinAlias() {
         std::unordered_multimap<std::string, std::string> allRetargets;
-        for (int level = 0; level < std::min(currentLevel() + 1, builtinLevel); ++level)
+        for (int level = 0; level <= std::min(currentLevel(), builtinLevel); ++level)
             table[level]->collectRetargetedSymbols(allRetargets);
 
         return allRetargets;
