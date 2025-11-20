@@ -1124,6 +1124,8 @@ INSTANTIATE_TEST_SUITE_P(
     Glsl, GlslNonSemanticShaderDebugInfoVulkanLatestTest,
     ::testing::ValuesIn(std::vector<std::string>({
         "spv.debuginfo.rt_types.glsl.rgen",
+        "spv.debuginfo.rt_nv_builtins.glsl.rahit",
+        "spv.debuginfo.rt_ext_builtins.glsl.rahit",
     })),
     FileNameAsCustomTestSuffix
 );
