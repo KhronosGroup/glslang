@@ -668,8 +668,8 @@ public:
     //
 protected:
     static const uint32_t LevelFlagBitOffset = 56;
-    static const int builtinLevel = 2;
-    static const int globalLevel = 3;
+    static constexpr int builtinLevel = 2;
+    static constexpr int globalLevel = 3;
     static bool isSharedLevel(int level)  { return level <= 1; }            // exclude all per-compile levels
     static bool isBuiltInLevel(int level) { return level <= builtinLevel; } // exclude user globals
     static bool isGlobalLevel(int level)  { return level <= globalLevel; }  // include user globals
