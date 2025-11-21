@@ -6535,6 +6535,9 @@ void TParseContext::finish()
     if (parsingBuiltins)
         return;
 
+    // Forward builtin alias to AST for later use
+    intermediate.setBuiltinAliasLookup(symbolTable.collectBuiltinAlias());
+
     // Check on array indexes for ES 2.0 (version 100) limitations.
     for (size_t i = 0; i < needsIndexLimitationChecking.size(); ++i)
         constantIndexExpressionCheck(needsIndexLimitationChecking[i]);

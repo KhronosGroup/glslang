@@ -5167,6 +5167,16 @@ spv::Id TGlslangToSpvTraverser::createSpvVariable(const glslang::TIntermSymbol* 
     }
 
     spv::Id var = builder.createVariable(spv::NoPrecision, storageClass, spvType, name, initializer, false);
+
+    if (options.emitNonSemanticShaderDebugInfo && storageClass != spv::StorageClass::Function) {
+        // Create variable alias for retargeted symbols if any.
+        // Notably, this is only applicable to built-in variables so that it is okay to only use name as the key.
+        auto [itBegin, itEnd] = glslangIntermediate->getBuiltinAliasLookup().equal_range(name);
+        for (auto it = itBegin; it != itEnd; ++it) {
+            builder.createDebugGlobalVariable(builder.getDebugType(spvType), it->second.c_str(), var);
+        }
+    }
+
     std::vector<spv::Decoration> topLevelDecorations;
     glslang::TQualifier typeQualifier = node->getType().getQualifier();
     TranslateMemoryDecoration(typeQualifier, topLevelDecorations, glslangIntermediate->usingVulkanMemoryModel());

@@ -97,7 +97,7 @@ Id Builder::makeVoidType()
         module.mapInstruction(type);
         // Core OpTypeVoid used for debug void type
         if (emitNonSemanticShaderDebugInfo)
-            debugId[typeId] = typeId;
+            debugTypeIdLookup[typeId] = typeId;
     } else
         type = groupedTypes[enumCast(Op::OpTypeVoid)].back();
 
@@ -115,7 +115,7 @@ Id Builder::makeBoolType()
 
         if (emitNonSemanticShaderDebugInfo) {
             auto const debugResultId = makeBoolDebugType(32);
-            debugId[type->getResultId()] = debugResultId;
+            debugTypeIdLookup[type->getResultId()] = debugResultId;
         }
 
     } else
@@ -139,7 +139,7 @@ Id Builder::makeSamplerType(const char* debugName)
     if (emitNonSemanticShaderDebugInfo)
     {
         auto const debugResultId = makeOpaqueDebugType(debugName);
-        debugId[type->getResultId()] = debugResultId;
+        debugTypeIdLookup[type->getResultId()] = debugResultId;
     }
 
     return type->getResultId();
@@ -167,7 +167,7 @@ Id Builder::makePointer(StorageClass storageClass, Id pointee)
 
     if (emitNonSemanticShaderDebugInfo) {
         const Id debugResultId = makePointerDebugType(storageClass, pointee);
-        debugId[type->getResultId()] = debugResultId;
+        debugTypeIdLookup[type->getResultId()] = debugResultId;
     }
 
     return type->getResultId();
@@ -185,7 +185,7 @@ Id Builder::makeForwardPointer(StorageClass storageClass)
 
     if (emitNonSemanticShaderDebugInfo) {
         const Id debugResultId = makeForwardPointerDebugType(storageClass);
-        debugId[type->getResultId()] = debugResultId;
+        debugTypeIdLookup[type->getResultId()] = debugResultId;
     }
     return type->getResultId();
 }
@@ -213,9 +213,9 @@ Id Builder::makePointerFromForwardPointer(StorageClass storageClass, Id forwardP
     // that was emitted alongside the forward pointer, now that we have a pointee debug
     // type for it to point to.
     if (emitNonSemanticShaderDebugInfo) {
-        Instruction *debugForwardPointer = module.getInstruction(debugId[forwardPointerType]);
-        assert(debugId[pointee]);
-        debugForwardPointer->setIdOperand(2, debugId[pointee]);
+        Instruction *debugForwardPointer = module.getInstruction(getDebugType(forwardPointerType));
+        assert(getDebugType(pointee));
+        debugForwardPointer->setIdOperand(2, getDebugType(pointee));
     }
 
     return type->getResultId();
@@ -257,7 +257,7 @@ Id Builder::makeIntegerType(int width, bool hasSign)
     if (emitNonSemanticShaderDebugInfo)
     {
         auto const debugResultId = makeIntegerDebugType(width, hasSign);
-        debugId[type->getResultId()] = debugResultId;
+        debugTypeIdLookup[type->getResultId()] = debugResultId;
     }
 
     return type->getResultId();
@@ -298,7 +298,7 @@ Id Builder::makeFloatType(int width)
     if (emitNonSemanticShaderDebugInfo)
     {
         auto const debugResultId = makeFloatDebugType(width);
-        debugId[type->getResultId()] = debugResultId;
+        debugTypeIdLookup[type->getResultId()] = debugResultId;
     }
 
     return type->getResultId();
@@ -334,7 +334,7 @@ Id Builder::makeBFloat16Type()
     if (emitNonSemanticShaderDebugInfo)
     {
         auto const debugResultId = makeFloatDebugType(width);
-        debugId[type->getResultId()] = debugResultId;
+        debugTypeIdLookup[type->getResultId()] = debugResultId;
     }
 #endif
 
@@ -371,7 +371,7 @@ Id Builder::makeFloatE5M2Type()
     if (emitNonSemanticShaderDebugInfo)
     {
         auto const debugResultId = makeFloatDebugType(width);
-        debugId[type->getResultId()] = debugResultId;
+        debugTypeIdLookup[type->getResultId()] = debugResultId;
     }
 #endif
 
@@ -408,7 +408,7 @@ Id Builder::makeFloatE4M3Type()
     if (emitNonSemanticShaderDebugInfo)
     {
         auto const debugResultId = makeFloatDebugType(width);
-        debugId[type->getResultId()] = debugResultId;
+        debugTypeIdLookup[type->getResultId()] = debugResultId;
     }
 #endif
 
@@ -439,7 +439,7 @@ Id Builder::makeStructType(const std::vector<Id>& members, const std::vector<spv
         assert(members.size() == memberDebugInfo.size());
         auto const debugResultId =
             makeCompositeDebugType(members, memberDebugInfo, name, NonSemanticShaderDebugInfo100Structure);
-        debugId[type->getResultId()] = debugResultId;
+        debugTypeIdLookup[type->getResultId()] = debugResultId;
     }
 
     return type->getResultId();
@@ -492,7 +492,7 @@ Id Builder::makeVectorType(Id component, int size)
     if (emitNonSemanticShaderDebugInfo)
     {
         auto const debugResultId = makeVectorDebugType(component, size);
-        debugId[type->getResultId()] = debugResultId;
+        debugTypeIdLookup[type->getResultId()] = debugResultId;
     }
 
     return type->getResultId();
@@ -525,7 +525,7 @@ Id Builder::makeMatrixType(Id component, int cols, int rows)
     if (emitNonSemanticShaderDebugInfo)
     {
         auto const debugResultId = makeMatrixDebugType(column, cols);
-        debugId[type->getResultId()] = debugResultId;
+        debugTypeIdLookup[type->getResultId()] = debugResultId;
     }
 
     return type->getResultId();
@@ -562,7 +562,7 @@ Id Builder::makeCooperativeMatrixTypeKHR(Id component, Id scope, Id rows, Id col
         // Find a name for one of the parameters. It can either come from debuginfo for another
         // type, or an OpName from a constant.
         auto const findName = [&](Id id) {
-            Id id2 = debugId[id];
+            Id id2 = getDebugType(id);
             for (auto &t : groupedDebugTypes[NonSemanticShaderDebugInfo100DebugTypeBasic]) {
                 if (t->getResultId() == id2) {
                     for (auto &s : strings) {
@@ -591,7 +591,7 @@ Id Builder::makeCooperativeMatrixTypeKHR(Id component, Id scope, Id rows, Id col
         // There's no nonsemantic debug info instruction for cooperative matrix types,
         // use opaque composite instead.
         auto const debugResultId = makeOpaqueDebugType(debugName.c_str());
-        debugId[type->getResultId()] = debugResultId;
+        debugTypeIdLookup[type->getResultId()] = debugResultId;
     }
 
     return type->getResultId();
@@ -742,7 +742,7 @@ Id Builder::makeArrayType(Id element, Id sizeId, int stride)
     if (emitNonSemanticShaderDebugInfo)
     {
         auto const debugResultId = makeArrayDebugType(element, sizeId);
-        debugId[type->getResultId()] = debugResultId;
+        debugTypeIdLookup[type->getResultId()] = debugResultId;
     }
 
     return type->getResultId();
@@ -758,7 +758,7 @@ Id Builder::makeRuntimeArray(Id element)
     if (emitNonSemanticShaderDebugInfo)
     {
         auto const debugResultId = makeArrayDebugType(element, makeUintConstant(0));
-        debugId[type->getResultId()] = debugResultId;
+        debugTypeIdLookup[type->getResultId()] = debugResultId;
     }
 
     return type->getResultId();
@@ -785,12 +785,12 @@ Id Builder::makeFunctionType(Id returnType, const std::vector<Id>& paramTypes)
             // function type is created for the wrapper function. However, nonsemantic shader debug information is disabled
             // while creating the HLSL wrapper. Consequently, if we encounter another void(void) function, we need to create
             // the associated debug function type if it hasn't been created yet.
-            if(emitNonSemanticShaderDebugInfo && debugId[type->getResultId()] == 0) {
+            if(emitNonSemanticShaderDebugInfo && getDebugType(type->getResultId()) == NoType) {
                 assert(sourceLang == spv::SourceLanguage::HLSL);
                 assert(getTypeClass(returnType) == Op::OpTypeVoid && paramTypes.size() == 0);
 
-                Id debugTypeId = makeDebugFunctionType(returnType, {});
-                debugId[type->getResultId()] = debugTypeId;
+                Id id = makeDebugFunctionType(returnType, {});
+                debugTypeIdLookup[type->getResultId()] = id;
             }
             return type->getResultId();
         }
@@ -810,7 +810,7 @@ Id Builder::makeFunctionType(Id returnType, const std::vector<Id>& paramTypes)
     // make debug type and map it
     if (emitNonSemanticShaderDebugInfo) {
         Id debugTypeId = makeDebugFunctionType(returnType, paramTypes);
-        debugId[typeId] = debugTypeId;
+        debugTypeIdLookup[typeId] = debugTypeId;
     }
 
     return type->getResultId();
@@ -818,7 +818,7 @@ Id Builder::makeFunctionType(Id returnType, const std::vector<Id>& paramTypes)
 
 Id Builder::makeDebugFunctionType(Id returnType, const std::vector<Id>& paramTypes)
 {
-    assert(debugId[returnType] != 0);
+    assert(getDebugType(returnType) != NoType);
 
     Id typeId = getUniqueId();
     auto type = new Instruction(typeId, makeVoidType(), Op::OpExtInst);
@@ -826,13 +826,13 @@ Id Builder::makeDebugFunctionType(Id returnType, const std::vector<Id>& paramTyp
     type->addIdOperand(nonSemanticShaderDebugInfo);
     type->addImmediateOperand(NonSemanticShaderDebugInfo100DebugTypeFunction);
     type->addIdOperand(makeUintConstant(NonSemanticShaderDebugInfo100FlagIsPublic));
-    type->addIdOperand(debugId[returnType]);
+    type->addIdOperand(getDebugType(returnType));
     for (auto const paramType : paramTypes) {
         if (isPointerType(paramType) || isArrayType(paramType)) {
-            type->addIdOperand(debugId[getContainedTypeId(paramType)]);
+            type->addIdOperand(getDebugType(getContainedTypeId(paramType)));
         }
         else {
-            type->addIdOperand(debugId[paramType]);
+            type->addIdOperand(getDebugType(paramType));
         }
     }
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
@@ -923,7 +923,7 @@ Id Builder::makeImageType(Id sampledType, Dim dim, bool depth, bool arrayed, boo
     if (emitNonSemanticShaderDebugInfo)
     {
         auto const debugResultId = makeOpaqueDebugType(debugName);
-        debugId[type->getResultId()] = debugResultId;
+        debugTypeIdLookup[type->getResultId()] = debugResultId;
     }
 
     return type->getResultId();
@@ -950,7 +950,7 @@ Id Builder::makeSampledImageType(Id imageType, const char* debugName)
     if (emitNonSemanticShaderDebugInfo)
     {
         auto const debugResultId = makeOpaqueDebugType(debugName);
-        debugId[type->getResultId()] = debugResultId;
+        debugTypeIdLookup[type->getResultId()] = debugResultId;
     }
 
     return type->getResultId();
@@ -1099,7 +1099,7 @@ Id Builder::makeSequentialDebugType(Id const baseType, Id const componentCount, 
     type->reserveOperands(4);
     type->addIdOperand(nonSemanticShaderDebugInfo);
     type->addImmediateOperand(sequenceType);
-    type->addIdOperand(debugId[baseType]); // base type
+    type->addIdOperand(getDebugType(baseType)); // base type
     type->addIdOperand(componentCount); // component count
 
     groupedDebugTypes[sequenceType].push_back(type);
@@ -1135,7 +1135,7 @@ Id Builder::makeMatrixDebugType(Id const vectorType, int const vectorCount, bool
     type->reserveOperands(5);
     type->addIdOperand(nonSemanticShaderDebugInfo);
     type->addImmediateOperand(NonSemanticShaderDebugInfo100DebugTypeMatrix);
-    type->addIdOperand(debugId[vectorType]); // vector type id
+    type->addIdOperand(getDebugType(vectorType)); // vector type id
     type->addIdOperand(makeUintConstant(vectorCount)); // component count id
     type->addIdOperand(makeBoolConstant(columnMajor)); // column-major id
 
@@ -1148,7 +1148,7 @@ Id Builder::makeMatrixDebugType(Id const vectorType, int const vectorCount, bool
 
 Id Builder::makeMemberDebugType(Id const memberType, StructMemberDebugInfo const& debugTypeLoc)
 {
-    assert(debugId[memberType] != 0);
+    assert(getDebugType(memberType) != NoType);
 
     Instruction* type = new Instruction(getUniqueId(), makeVoidType(), Op::OpExtInst);
     type->reserveOperands(10);
@@ -1156,7 +1156,7 @@ Id Builder::makeMemberDebugType(Id const memberType, StructMemberDebugInfo const
     type->addImmediateOperand(NonSemanticShaderDebugInfo100DebugTypeMember);
     type->addIdOperand(getStringId(debugTypeLoc.name)); // name id
     type->addIdOperand(debugTypeLoc.debugTypeOverride != 0 ? debugTypeLoc.debugTypeOverride
-                                                           : debugId[memberType]); // type id
+                                                           : getDebugType(memberType)); // type id
     type->addIdOperand(makeDebugSource(currentFileId));                            // source id
     type->addIdOperand(makeUintConstant(debugTypeLoc.line));   // line id TODO: currentLine is always zero
     type->addIdOperand(makeUintConstant(debugTypeLoc.column)); // TODO: column id
@@ -1178,7 +1178,7 @@ Id Builder::makeCompositeDebugType(std::vector<Id> const& memberTypes, std::vect
     std::vector<Id> memberDebugTypes;
     assert(memberTypes.size() == memberDebugInfo.size());
     for (size_t i = 0; i < memberTypes.size(); i++) {
-        if (debugId[memberTypes[i]]) {
+        if (getDebugType(memberTypes[i]) != NoType) {
             memberDebugTypes.emplace_back(makeMemberDebugType(memberTypes[i], memberDebugInfo[i]));
         }
     }
@@ -1238,7 +1238,7 @@ Id Builder::makeOpaqueDebugType(char const* const name)
 
 Id Builder::makePointerDebugType(StorageClass storageClass, Id const baseType)
 {
-    const Id debugBaseType = debugId[baseType];
+    const Id debugBaseType = getDebugType(baseType);
     if (!debugBaseType) {
         return makeDebugInfoNone();
     }
@@ -1474,7 +1474,7 @@ Id Builder::makeAccelerationStructureType()
         module.mapInstruction(type);
         if (emitNonSemanticShaderDebugInfo) {
             spv::Id debugType = makeOpaqueDebugType("accelerationStructure");
-            debugId[type->getResultId()] = debugType;
+            debugTypeIdLookup[type->getResultId()] = debugType;
         }
     } else {
         type = groupedTypes[enumCast(Op::OpTypeAccelerationStructureKHR)].back();
@@ -1493,7 +1493,7 @@ Id Builder::makeRayQueryType()
         module.mapInstruction(type);
         if (emitNonSemanticShaderDebugInfo) {
             spv::Id debugType = makeOpaqueDebugType("rayQuery");
-            debugId[type->getResultId()] = debugType;
+            debugTypeIdLookup[type->getResultId()] = debugType;
         }
     } else {
         type = groupedTypes[enumCast(Op::OpTypeRayQueryKHR)].back();
@@ -1526,7 +1526,7 @@ Id Builder::makeHitObjectNVType()
         module.mapInstruction(type);
         if (emitNonSemanticShaderDebugInfo) {
             spv::Id debugType = makeOpaqueDebugType("hitObjectNV");
-            debugId[type->getResultId()] = debugType;
+            debugTypeIdLookup[type->getResultId()] = debugType;
         }
     } else {
         type = groupedTypes[enumCast(Op::OpTypeHitObjectNV)].back();
@@ -2603,14 +2603,14 @@ void Builder::setupFunctionDebugInfo(Function* function, const char* name, const
 
     Id nameId = getStringId(unmangleFunctionName(name));
     Id funcTypeId = function->getFuncTypeId();
-    assert(debugId[funcTypeId] != 0);
+    assert(getDebugType(funcTypeId) != NoType);
     Id funcId = function->getId();
 
     assert(funcId != 0);
 
     // Make the debug function instruction
     Id debugFuncId = makeDebugFunction(function, nameId, funcTypeId);
-    debugId[funcId] = debugFuncId;
+    debugFuncIdLookup[funcId] = debugFuncId;
     currentDebugScopeId.push(debugFuncId);
 
     // DebugScope and DebugLine for parameter DebugDeclares
@@ -2629,9 +2629,8 @@ void Builder::setupFunctionDebugInfo(Function* function, const char* name, const
             }
 
             auto const& paramName = paramNames[p];
-            auto const debugLocalVariableId = createDebugLocalVariable(debugId[paramTypeId], paramName, p + 1);
+            auto const debugLocalVariableId = createDebugLocalVariable(getDebugType(paramTypeId), paramName, p + 1);
             auto const paramId = static_cast<Id>(firstParamId + p);
-            debugId[paramId] = debugLocalVariableId;
 
             if (passByRef) {
                 makeDebugDeclare(debugLocalVariableId, paramId);
@@ -2651,7 +2650,7 @@ Id Builder::makeDebugFunction([[maybe_unused]] Function* function, Id nameId, Id
     assert(function != nullptr);
     assert(nameId != 0);
     assert(funcTypeId != 0);
-    assert(debugId[funcTypeId] != 0);
+    assert(getDebugType(funcTypeId) != NoType);
 
     Id funcId = getUniqueId();
     auto type = new Instruction(funcId, makeVoidType(), Op::OpExtInst);
@@ -2659,7 +2658,7 @@ Id Builder::makeDebugFunction([[maybe_unused]] Function* function, Id nameId, Id
     type->addIdOperand(nonSemanticShaderDebugInfo);
     type->addImmediateOperand(NonSemanticShaderDebugInfo100DebugFunction);
     type->addIdOperand(nameId);
-    type->addIdOperand(debugId[funcTypeId]);
+    type->addIdOperand(getDebugType(funcTypeId));
     type->addIdOperand(makeDebugSource(currentFileId)); // TODO: This points to file of definition instead of declaration
     type->addIdOperand(makeUintConstant(currentLine)); // TODO: This points to line of definition instead of declaration
     type->addIdOperand(makeUintConstant(0)); // column
@@ -2754,14 +2753,15 @@ void Builder::enterFunction(Function const* function)
     if (emitNonSemanticShaderDebugInfo) {
         // Initialize scope state
         Id funcId = function->getFuncId();
-        currentDebugScopeId.push(debugId[funcId]);
+        Id debugFuncId = getDebugFunction(funcId);
+        currentDebugScopeId.push(debugFuncId);
         // Create DebugFunctionDefinition
         spv::Id resultId = getUniqueId();
         Instruction* defInst = new Instruction(resultId, makeVoidType(), Op::OpExtInst);
         defInst->reserveOperands(4);
         defInst->addIdOperand(nonSemanticShaderDebugInfo);
         defInst->addImmediateOperand(NonSemanticShaderDebugInfo100DebugFunctionDefinition);
-        defInst->addIdOperand(debugId[funcId]);
+        defInst->addIdOperand(debugFuncId);
         defInst->addIdOperand(funcId);
         addInstruction(std::unique_ptr<Instruction>(defInst));
     }
@@ -2855,14 +2855,11 @@ Id Builder::createVariable(Decoration precision, StorageClass storageClass, Id t
         // We may emulate some local variables as global variable with private storage in SPIR-V, but we still want to
         // treat them as local variables in debug info.
         if (storageClass == StorageClass::Function || (currentFunction && storageClass == StorageClass::Private)) {
-            auto const debugLocalVariableId = createDebugLocalVariable(debugId[type], name);
-            debugId[inst->getResultId()] = debugLocalVariableId;
-
+            auto const debugLocalVariableId = createDebugLocalVariable(getDebugType(type), name);
             makeDebugDeclare(debugLocalVariableId, inst->getResultId());
         }
         else {
-            auto const debugResultId = createDebugGlobalVariable(debugId[type], name, inst->getResultId());
-            debugId[inst->getResultId()] = debugResultId;
+            createDebugGlobalVariable(getDebugType(type), name, inst->getResultId());
         }
     }
 

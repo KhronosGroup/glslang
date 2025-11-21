@@ -208,10 +208,20 @@ public:
 
     // Maps the given OpType Id to a Non-Semantic DebugType Id.
     Id getDebugType(Id type) {
-        if (emitNonSemanticShaderDebugInfo) {
-            return debugId[type];
+        if (auto it = debugTypeIdLookup.find(type); it != debugTypeIdLookup.end()) {
+            return it->second;
         }
-        return 0;
+        
+        return NoType;
+    }
+
+    // Maps the given OpFunction Id to a Non-Semantic DebugFunction Id.
+    Id getDebugFunction(Id func) {
+        if (auto it = debugFuncIdLookup.find(func); it != debugFuncIdLookup.end()) {
+            return it->second;
+        }
+        
+        return NoResult;
     }
 
     // For creating new types (will return old type if the requested one was already made).
@@ -1058,8 +1068,11 @@ protected:
     // map from include file name ids to their contents
     std::map<spv::Id, const std::string*> includeFiles;
 
-    // map from core id to debug id
-    std::map <spv::Id, spv::Id> debugId;
+    // maps from OpTypeXXX id to DebugTypeXXX id
+    std::unordered_map<spv::Id, spv::Id> debugTypeIdLookup;
+
+    // maps from OpFunction id to DebugFunction id
+    std::unordered_map<spv::Id, spv::Id> debugFuncIdLookup;
 
     // map from file name string id to DebugSource id
     std::unordered_map<spv::Id, spv::Id> debugSourceId;
