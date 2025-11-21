@@ -1734,32 +1734,17 @@ bool Builder::containsPhysicalStorageBufferOrArray(Id typeId) const
 // can be reused rather than duplicated.  (Required by the specification).
 Id Builder::findScalarConstant(Op typeClass, Op opcode, Id typeId, unsigned value)
 {
-    Instruction* constant;
-    for (int i = 0; i < (int)groupedConstants[enumCast(typeClass)].size(); ++i) {
-        constant = groupedConstants[enumCast(typeClass)][i];
-        if (constant->getOpCode() == opcode &&
-            constant->getTypeId() == typeId &&
-            constant->getImmediateOperand(0) == value)
-            return constant->getResultId();
-    }
-
-    return 0;
+    ScalarConstantKey key{ enumCast(typeClass), enumCast(opcode), typeId, value, 0 };
+    auto it = groupedScalarConstantResultIDs.find(key);
+    return (it != groupedScalarConstantResultIDs.end()) ? it->second : 0;
 }
 
 // Version of findScalarConstant (see above) for scalars that take two operands (e.g. a 'double' or 'int64').
 Id Builder::findScalarConstant(Op typeClass, Op opcode, Id typeId, unsigned v1, unsigned v2)
 {
-    Instruction* constant;
-    for (int i = 0; i < (int)groupedConstants[enumCast(typeClass)].size(); ++i) {
-        constant = groupedConstants[enumCast(typeClass)][i];
-        if (constant->getOpCode() == opcode &&
-            constant->getTypeId() == typeId &&
-            constant->getImmediateOperand(0) == v1 &&
-            constant->getImmediateOperand(1) == v2)
-            return constant->getResultId();
-    }
-
-    return 0;
+    ScalarConstantKey key{ enumCast(typeClass), enumCast(opcode), typeId, v1, v2 };
+    auto it = groupedScalarConstantResultIDs.find(key);
+    return (it != groupedScalarConstantResultIDs.end()) ? it->second : 0;
 }
 
 // Return true if consuming 'opcode' means consuming a constant.
@@ -1831,19 +1816,12 @@ Id Builder::makeNullConstant(Id typeId)
 Id Builder::makeBoolConstant(bool b, bool specConstant)
 {
     Id typeId = makeBoolType();
-    Instruction* constant;
     Op opcode = specConstant ? (b ? Op::OpSpecConstantTrue : Op::OpSpecConstantFalse) : (b ? Op::OpConstantTrue : Op::OpConstantFalse);
 
     // See if we already made it. Applies only to regular constants, because specialization constants
     // must remain distinct for the purpose of applying a SpecId decoration.
-    if (! specConstant) {
-        Id existing = 0;
-        for (int i = 0; i < (int)groupedConstants[enumCast(Op::OpTypeBool)].size(); ++i) {
-            constant = groupedConstants[enumCast(Op::OpTypeBool)][i];
-            if (constant->getTypeId() == typeId && constant->getOpCode() == opcode)
-                existing = constant->getResultId();
-        }
-
+    if (!specConstant) {
+        Id existing = findScalarConstant(Op::OpTypeBool, opcode, typeId, 0);
         if (existing)
             return existing;
     }
@@ -1851,10 +1829,14 @@ Id Builder::makeBoolConstant(bool b, bool specConstant)
     // Make it
     Instruction* c = new Instruction(getUniqueId(), typeId, opcode);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(c));
-    groupedConstants[enumCast(Op::OpTypeBool)].push_back(c);
     module.mapInstruction(c);
 
-    return c->getResultId();
+    Id resultId = c->getResultId();
+    if (!specConstant) {
+        ScalarConstantKey key{enumCast(Op::OpTypeBool), enumCast(opcode), typeId, 0, 0};
+        groupedScalarConstantResultIDs[key] = resultId;
+    }
+    return resultId;
 }
 
 Id Builder::makeIntConstant(Id typeId, unsigned value, bool specConstant)
@@ -1872,10 +1854,14 @@ Id Builder::makeIntConstant(Id typeId, unsigned value, bool specConstant)
     Instruction* c = new Instruction(getUniqueId(), typeId, opcode);
     c->addImmediateOperand(value);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(c));
-    groupedConstants[enumCast(Op::OpTypeInt)].push_back(c);
     module.mapInstruction(c);
 
-    return c->getResultId();
+    Id resultId = c->getResultId();
+    if (!specConstant) {
+        ScalarConstantKey key{ enumCast(Op::OpTypeInt), enumCast(opcode), typeId, value, 0 };
+        groupedScalarConstantResultIDs[key] = resultId;
+    }
+    return resultId;
 }
 
 Id Builder::makeInt64Constant(Id typeId, unsigned long long value, bool specConstant)
@@ -1898,10 +1884,14 @@ Id Builder::makeInt64Constant(Id typeId, unsigned long long value, bool specCons
     c->addImmediateOperand(op1);
     c->addImmediateOperand(op2);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(c));
-    groupedConstants[enumCast(Op::OpTypeInt)].push_back(c);
     module.mapInstruction(c);
 
-    return c->getResultId();
+    Id resultId = c->getResultId();
+    if (!specConstant) {
+        ScalarConstantKey key{ enumCast(Op::OpTypeInt), enumCast(opcode), typeId, op1, op2 };
+        groupedScalarConstantResultIDs[key] = resultId;
+    }
+    return resultId;
 }
 
 Id Builder::makeFloatConstant(float f, bool specConstant)
@@ -1923,10 +1913,14 @@ Id Builder::makeFloatConstant(float f, bool specConstant)
     Instruction* c = new Instruction(getUniqueId(), typeId, opcode);
     c->addImmediateOperand(value);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(c));
-    groupedConstants[enumCast(Op::OpTypeFloat)].push_back(c);
     module.mapInstruction(c);
 
-    return c->getResultId();
+    Id resultId = c->getResultId();
+    if (!specConstant) {
+        ScalarConstantKey key{ enumCast(Op::OpTypeFloat), enumCast(opcode), typeId, value, 0 };
+        groupedScalarConstantResultIDs[key] = resultId;
+    }
+    return resultId;
 }
 
 Id Builder::makeDoubleConstant(double d, bool specConstant)
@@ -1952,10 +1946,14 @@ Id Builder::makeDoubleConstant(double d, bool specConstant)
     c->addImmediateOperand(op1);
     c->addImmediateOperand(op2);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(c));
-    groupedConstants[enumCast(Op::OpTypeFloat)].push_back(c);
     module.mapInstruction(c);
 
-    return c->getResultId();
+    Id resultId = c->getResultId();
+    if (!specConstant) {
+        ScalarConstantKey key{ enumCast(Op::OpTypeFloat), enumCast(opcode), typeId, op1, op2 };
+        groupedScalarConstantResultIDs[key] = resultId;
+    }
+    return resultId;
 }
 
 Id Builder::makeFloat16Constant(float f16, bool specConstant)
@@ -1980,10 +1978,14 @@ Id Builder::makeFloat16Constant(float f16, bool specConstant)
     Instruction* c = new Instruction(getUniqueId(), typeId, opcode);
     c->addImmediateOperand(value);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(c));
-    groupedConstants[enumCast(Op::OpTypeFloat)].push_back(c);
     module.mapInstruction(c);
 
-    return c->getResultId();
+    Id resultId = c->getResultId();
+    if (!specConstant) {
+        ScalarConstantKey key{ enumCast(Op::OpTypeFloat), enumCast(opcode), typeId, value, 0 };
+        groupedScalarConstantResultIDs[key] = resultId;
+    }
+    return resultId;
 }
 
 Id Builder::makeBFloat16Constant(float bf16, bool specConstant)
@@ -2011,10 +2013,14 @@ Id Builder::makeBFloat16Constant(float bf16, bool specConstant)
     Instruction* c = new Instruction(getUniqueId(), typeId, opcode);
     c->addImmediateOperand(value);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(c));
-    groupedConstants[enumCast(Op::OpTypeFloat)].push_back(c);
     module.mapInstruction(c);
 
-    return c->getResultId();
+    Id resultId = c->getResultId();
+    if (!specConstant) {
+        ScalarConstantKey key{ enumCast(Op::OpTypeFloat), enumCast(opcode), typeId, value, 0 };
+        groupedScalarConstantResultIDs[key] = resultId;
+    }
+    return resultId;
 }
 
 Id Builder::makeFloatE5M2Constant(float fe5m2, bool specConstant)
@@ -2039,10 +2045,14 @@ Id Builder::makeFloatE5M2Constant(float fe5m2, bool specConstant)
     Instruction* c = new Instruction(getUniqueId(), typeId, opcode);
     c->addImmediateOperand(value);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(c));
-    groupedConstants[enumCast(Op::OpTypeFloat)].push_back(c);
     module.mapInstruction(c);
 
-    return c->getResultId();
+    Id resultId = c->getResultId();
+    if (!specConstant) {
+        ScalarConstantKey key{enumCast(Op::OpTypeFloat), enumCast(opcode), typeId, value, 0};
+        groupedScalarConstantResultIDs[key] = resultId;
+    }
+    return resultId;
 }
 
 Id Builder::makeFloatE4M3Constant(float fe4m3, bool specConstant)
@@ -2067,10 +2077,14 @@ Id Builder::makeFloatE4M3Constant(float fe4m3, bool specConstant)
     Instruction* c = new Instruction(getUniqueId(), typeId, opcode);
     c->addImmediateOperand(value);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(c));
-    groupedConstants[enumCast(Op::OpTypeFloat)].push_back(c);
     module.mapInstruction(c);
 
-    return c->getResultId();
+    Id resultId = c->getResultId();
+    if (!specConstant) {
+        ScalarConstantKey key{enumCast(Op::OpTypeFloat), enumCast(opcode), typeId, value, 0};
+        groupedScalarConstantResultIDs[key] = resultId;
+    }
+    return resultId;
 }
 
 Id Builder::makeFpConstant(Id type, double d, bool specConstant)
@@ -2111,8 +2125,8 @@ Id Builder::findCompositeConstant(Op typeClass, Op opcode, Id typeId, const std:
 {
     Instruction* constant = nullptr;
     bool found = false;
-    for (int i = 0; i < (int)groupedConstants[enumCast(typeClass)].size(); ++i) {
-        constant = groupedConstants[enumCast(typeClass)][i];
+    for (int i = 0; i < (int)groupedCompositeConstants[enumCast(typeClass)].size(); ++i) {
+        constant = groupedCompositeConstants[enumCast(typeClass)][i];
 
         if (constant->getTypeId() != typeId)
             continue;
@@ -2222,7 +2236,7 @@ Id Builder::makeCompositeConstant(Id typeId, const std::vector<Id>& members, boo
     if (typeClass == Op::OpTypeStruct)
         groupedStructConstants[typeId].push_back(c);
     else
-        groupedConstants[enumCast(typeClass)].push_back(c);
+        groupedCompositeConstants[enumCast(typeClass)].push_back(c);
     module.mapInstruction(c);
 
     return c->getResultId();
