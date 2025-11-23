@@ -1932,11 +1932,15 @@ void CompileFile(const char* fileName, ShHandle compiler)
     if (UserPreamble.isSet())
         Error("-D, -U and -P options require -l (linking)\n");
 
+    int defaultVersion = (GlslVersion == 0) ?
+        (Options & EOptionDefaultDesktop) ? 110 : 100
+        : GlslVersion;
+
     for (int i = 0; i < ((Options & EOptionMemoryLeakMode) ? 100 : 1); ++i) {
         for (int j = 0; j < ((Options & EOptionMemoryLeakMode) ? 100 : 1); ++j) {
             // ret = ShCompile(compiler, shaderStrings, NumShaderStrings, lengths, EShOptNone, &Resources, Options, (Options & EOptionDefaultDesktop) ? 110 : 100, false, messages);
             ret = ShCompile(compiler, &shaderString, 1, nullptr, EShOptNone, GetResources(), 0,
-                            (Options & EOptionDefaultDesktop) ? 110 : 100, false, messages, fileName);
+                        defaultVersion, false, messages, fileName);
             // const char* multi[12] = { "# ve", "rsion", " 300 e", "s", "\n#err",
             //                         "or should be l", "ine 1", "string 5\n", "float glo", "bal",
             //                         ";\n#error should be line 2\n void main() {", "global = 2.3;}" };
