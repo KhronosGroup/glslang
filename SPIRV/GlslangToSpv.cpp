@@ -5685,7 +5685,8 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
         if (type.isSizedArray())
             spvType = builder.makeArrayType(spvType, makeArraySizeId(*type.getArraySizes(), 0), stride);
         else {
-            if (!lastBufferBlockMember) {
+            // If we see an runtime array in a buffer_reference, it is not a descriptor
+            if (!lastBufferBlockMember && type.getBasicType() != glslang::EbtReference) {
                 builder.addIncorporatedExtension("SPV_EXT_descriptor_indexing", spv::Spv_1_5);
                 builder.addCapability(spv::Capability::RuntimeDescriptorArrayEXT);
             }

@@ -393,6 +393,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.bufferhandle23.frag",
         "spv.bufferhandle24.frag",
         "spv.bufferhandle25.frag",
+        "spv.bufferhandleRuntimeArray.frag",
         "spv.bufferhandleUvec2.frag",
         "spv.bufferhandle_Error.frag",
         "spv.builtInXFB.vert",
