@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## 16.1.0 2025-12-01
+* Avoid emitting OpCapability RuntimeDescriptorArray when unnecessary
+* Improve compilation speed when debug infomation is enabled
+* Fix Debug Info for Retargeted Builtins
+* Support GL_EXT_shader_invocation_reorder
+* Add checks to coopMatMulAdd
+* Implement stringify operator
+* Add ES support for depth layout qualifier
+* Add debug info for hitObjectNV
+* Emit a DebugGlobalVariable instead of DebugLocalVariable for rayQueryEXT
+* Add debug info for constant variable
+* Improve debug line to point declaration
+* Fix bugs in buffer reference alignment
+* Reject string operands in binary and select ops
+* Support GL_EXT_shader_64bit_indexing
+* Support GLSL_EXT_uniform_buffer_unsized_array
+* Add semantic check for cooperative vector loads/stores
+* Improve the debug info name of opaque (sampler) types
+* Support IO mapping of combined samplers and acceleration structures
+* Fix bug in debug info for bool types inside SSBO/UBO
+* Fix bug in debug info for struct member names
+* Add methods for entry point and invert-y to C interface
+
 ## 16.0.0 2025-09-25
 ### Breaking changes
 * Remove spirv-remapper (ported to SPIRV-Tools as canonicalize-ids optimization pass)
