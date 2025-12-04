@@ -1,5 +1,5 @@
 conservativeDepth.frag
-Shader version: 320
+Shader version: 300
 Requested GL_EXT_conservative_depth
 using depth_any
 0:? Sequence
@@ -17,7 +17,7 @@ using depth_any
 Linked fragment stage:
 
 
-Shader version: 320
+Shader version: 300
 Requested GL_EXT_conservative_depth
 using depth_any
 0:? Sequence
