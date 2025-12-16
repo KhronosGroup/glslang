@@ -39,11 +39,13 @@ void main()
     uint iid = gl_LocalInvocationID.x;
     uint gid = gl_WorkGroupID.x;
 
+    vec4 tmp = vec4(13.0, 14.0, 15.0, 16.0);
+
     blk[iid].f               = 11.0;
     blk[iid+1].fArr[gid]     = 11.0;
     blk[iid/2].pos.yzx       = vec3(14.0, 15.0, 13.0);
-    blk[iid*2].posArr[1].yzw = vec3(14.0, 15.0, 13.0);
-    blk[iid/4].m[2].wzyx     = vec4(13.0, 14.0, 15.0, 16.0);
+    blk[iid*2].posArr[1]     = tmp.yzww;
+    blk[iid/4].m[2]          = vec4(13.0, 14.0, 15.0, 16.0);
     blk[iid].mArr[0][1][1]   = 16.0;
     blk[iid*4].mArr[1][gid]  = vec3(17.0, 18.0, 19.0);
 
