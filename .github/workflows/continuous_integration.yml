@@ -18,7 +18,7 @@ jobs:
         cmake_build_type: [Debug, Release]
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
-      - uses: lukka/get-cmake@bb2faa721a800324b726fec00f7c1ff7641964d1 # v4.2.0
+      - uses: lukka/get-cmake@9e07ecdcee1b12e5037e42f410b67f03e2f626e1 # v4.2.1
       - name: Setup ccache
         uses: hendrikmuhs/ccache-action@5ebbd400eff9e74630f759d94ddd7b6c26299639 # v1.2.20
         with:
@@ -54,7 +54,7 @@ jobs:
         cmake_build_type: [Release]
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
-      - uses: lukka/get-cmake@bb2faa721a800324b726fec00f7c1ff7641964d1 # v4.2.0
+      - uses: lukka/get-cmake@9e07ecdcee1b12e5037e42f410b67f03e2f626e1 # v4.2.1
       - name: Setup ccache
         uses: hendrikmuhs/ccache-action@5ebbd400eff9e74630f759d94ddd7b6c26299639 # v1.2.20
         with:
@@ -89,7 +89,7 @@ jobs:
         flags: ['-fsanitize=address', '-fsanitize=thread', '-fsanitize=undefined']
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
-      - uses: lukka/get-cmake@bb2faa721a800324b726fec00f7c1ff7641964d1 # v4.2.0
+      - uses: lukka/get-cmake@9e07ecdcee1b12e5037e42f410b67f03e2f626e1 # v4.2.1
       - name: Setup ccache
         uses: hendrikmuhs/ccache-action@5ebbd400eff9e74630f759d94ddd7b6c26299639 # v1.2.20
         with:
@@ -127,7 +127,7 @@ jobs:
       - uses: actions/setup-python@83679a892e2d95755f2dac6acb0bfd1e9ac5d548 # v6.1.0
         with:
           python-version: '3.7'
-      - uses: lukka/get-cmake@bb2faa721a800324b726fec00f7c1ff7641964d1 # v4.2.0
+      - uses: lukka/get-cmake@9e07ecdcee1b12e5037e42f410b67f03e2f626e1 # v4.2.1
         with:
           cmakeVersion: 3.22.1
       - name: Setup ccache
@@ -161,7 +161,7 @@ jobs:
         cmake_build_type: [Debug, Release]
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
-      - uses: lukka/get-cmake@bb2faa721a800324b726fec00f7c1ff7641964d1 # v4.2.0
+      - uses: lukka/get-cmake@9e07ecdcee1b12e5037e42f410b67f03e2f626e1 # v4.2.1
       - run: ./update_glslang_sources.py
       - run: |
           cmake -S . -B build \
@@ -192,7 +192,7 @@ jobs:
         cmake_build_type: [Release]
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
-      - uses: lukka/get-cmake@bb2faa721a800324b726fec00f7c1ff7641964d1 # v4.2.0
+      - uses: lukka/get-cmake@9e07ecdcee1b12e5037e42f410b67f03e2f626e1 # v4.2.1
       - run: ./update_glslang_sources.py
       - run: |
           cmake -S . -B build \
@@ -225,7 +225,7 @@ jobs:
           cmake_build_type: [Debug, Release]
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
-      - uses: lukka/get-cmake@bb2faa721a800324b726fec00f7c1ff7641964d1 # v4.2.0
+      - uses: lukka/get-cmake@9e07ecdcee1b12e5037e42f410b67f03e2f626e1 # v4.2.1
       - run: python update_glslang_sources.py
       - name: Build
         run: |
@@ -249,7 +249,7 @@ jobs:
           cmake_build_type: [Debug, Release]
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
-      - uses: lukka/get-cmake@bb2faa721a800324b726fec00f7c1ff7641964d1 # v4.2.0
+      - uses: lukka/get-cmake@9e07ecdcee1b12e5037e42f410b67f03e2f626e1 # v4.2.1
       - run: python update_glslang_sources.py
       - name: Build
         run: |
@@ -266,7 +266,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
-      - uses: lukka/get-cmake@bb2faa721a800324b726fec00f7c1ff7641964d1 # v4.2.0
+      - uses: lukka/get-cmake@9e07ecdcee1b12e5037e42f410b67f03e2f626e1 # v4.2.1
       - name: Setup ccache
         uses: hendrikmuhs/ccache-action@5ebbd400eff9e74630f759d94ddd7b6c26299639 # v1.2.20
         with:
@@ -295,7 +295,7 @@ jobs:
         LEGACY: [ON, OFF]
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
-      - uses: lukka/get-cmake@bb2faa721a800324b726fec00f7c1ff7641964d1 # v4.2.0
+      - uses: lukka/get-cmake@9e07ecdcee1b12e5037e42f410b67f03e2f626e1 # v4.2.1
       - name: Setup ccache
         uses: hendrikmuhs/ccache-action@5ebbd400eff9e74630f759d94ddd7b6c26299639 # v1.2.20
         with:
@@ -318,7 +318,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
-      - uses: lukka/get-cmake@bb2faa721a800324b726fec00f7c1ff7641964d1 # v4.2.0
+      - uses: lukka/get-cmake@9e07ecdcee1b12e5037e42f410b67f03e2f626e1 # v4.2.1
       - name: Setup ccache
         uses: hendrikmuhs/ccache-action@5ebbd400eff9e74630f759d94ddd7b6c26299639 # v1.2.20
         with:
