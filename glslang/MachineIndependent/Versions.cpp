@@ -389,6 +389,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_EXT_uniform_buffer_unsized_array] = EBhDisable;
     extensionBehavior[E_GL_EXT_shader_64bit_indexing]       = EBhDisable;
     extensionBehavior[E_GL_EXT_conservative_depth]          = EBhDisable;
+    extensionBehavior[E_GL_EXT_long_vector]                 = EBhDisable;
 
     // OVR extensions
     extensionBehavior[E_GL_OVR_multiview]                = EBhDisable;
@@ -1515,6 +1516,14 @@ void TParseVersions::tensorCheckARM(const TSourceLoc& loc, const char* op, bool 
 {
     if (!builtIn) {
         const char* const extensions[] = {E_GL_ARM_tensors};
+        requireExtensions(loc, sizeof(extensions)/sizeof(extensions[0]), extensions, op);
+    }
+}
+
+void TParseVersions::longVectorCheck(const TSourceLoc& loc, const char* op, bool builtIn)
+{
+    if (!builtIn) {
+        const char* const extensions[] = {E_GL_EXT_long_vector};
         requireExtensions(loc, sizeof(extensions)/sizeof(extensions[0]), extensions, op);
     }
 }

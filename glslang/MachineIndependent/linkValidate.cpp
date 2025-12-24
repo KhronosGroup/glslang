@@ -2573,6 +2573,22 @@ int TIntermediate::getBaseAlignment(const TType& type, int& size, int& stride, T
         }
     }
 
+    // rules 2 and 3
+    if (type.isLongVector()) {
+        int scalarAlign = getBaseAlignmentScalar(type, size);
+        uint32_t vectorSize = type.getTypeParameters()->arraySizes->getDimSize(0);
+        switch (vectorSize) {
+        case 1: // HLSL has this, GLSL does not
+            return scalarAlign;
+        case 2:
+            size *= 2;
+            return 2 * scalarAlign;
+        default:
+            size *= vectorSize;
+            return 4 * scalarAlign;
+        }
+    }
+
     // rules 5 and 7
     if (type.isMatrix()) {
         // rule 5: deref to row, not to column, meaning the size of vector is num columns instead of num rows
@@ -2650,6 +2666,14 @@ int TIntermediate::getScalarAlignment(const TType& type, int& size, int& stride,
         int scalarAlign = getBaseAlignmentScalar(type, size);
 
         size *= type.getVectorSize();
+        return scalarAlign;
+    }
+
+    if (type.isLongVector()) {
+        int scalarAlign = getBaseAlignmentScalar(type, size);
+
+        uint32_t vectorSize = type.getTypeParameters()->arraySizes->getDimSize(0);
+        size *= vectorSize;
         return scalarAlign;
     }
 

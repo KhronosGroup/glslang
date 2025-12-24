@@ -366,6 +366,7 @@ const char* const E_GL_EXT_integer_dot_product                    = "GL_EXT_inte
 const char* const E_GL_EXT_bfloat16 = "GL_EXT_bfloat16";
 const char* const E_GL_EXT_float_e5m2 = "GL_EXT_float_e5m2";
 const char* const E_GL_EXT_float_e4m3 = "GL_EXT_float_e4m3";
+const char* const E_GL_EXT_long_vector = "GL_EXT_long_vector";
 
 const char* const E_GL_EXT_shader_64bit_indexing = "GL_EXT_shader_64bit_indexing";
 
