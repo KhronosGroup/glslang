@@ -565,7 +565,7 @@ TIntermTyped* TParseContext::handleBracketDereference(const TSourceLoc& loc, TIn
     variableCheck(base);
 
     if (! base->isArray() && ! base->isMatrix() && ! base->isVector() && ! base->getType().isCoopMat() &&
-        ! base->isReference() && ! base->getType().isCoopVecNV()) {
+        ! base->isReference() && ! base->getType().isCoopVecOrLongVector()) {
         if (base->getAsSymbolNode())
             error(loc, " left of '[' is not of type array, matrix, or vector ", base->getAsSymbolNode()->getName().c_str(), "");
         else
@@ -996,7 +996,7 @@ TIntermTyped* TParseContext::handleDotDereference(const TSourceLoc& loc, TInterm
             const char* feature = ".length() on vectors and matrices";
             requireProfile(loc, ~EEsProfile, feature);
             profileRequires(loc, ~EEsProfile, 420, E_GL_ARB_shading_language_420pack, feature);
-        } else if (!base->getType().isCoopMat() && !base->getType().isCoopVecNV()) {
+        } else if (!base->getType().isCoopMat() && !base->getType().isCoopVecOrLongVector()) {
             bool enhanced = intermediate.getEnhancedMsgs();
             error(loc, "does not operate on this type:", field.c_str(), base->getType().getCompleteString(enhanced).c_str());
             return base;
@@ -1421,6 +1421,7 @@ TIntermTyped* TParseContext::handleFunctionCall(const TSourceLoc& loc, TFunction
                 if ((*fnCandidate)[0].type->getSampler().isMultiSample() && version <= 140)
                     requireExtensions(loc, 1, &E_GL_ARB_texture_multisample, fnCandidate->getName().c_str());
             }
+            bool hasLongVectorArg = false;
             if (arguments != nullptr) {
                 // Make sure qualifications work for these arguments.
                 TIntermAggregate* aggregate = arguments->getAsAggregate();
@@ -1516,6 +1517,10 @@ TIntermTyped* TParseContext::handleFunctionCall(const TSourceLoc& loc, TFunction
                         }
                     }
 
+                    if (argType.isLongVector()) {
+                        hasLongVectorArg = true;
+                    }
+
                     // TODO 4.5 functionality:  A shader will fail to compile
                     // if the value passed to the memargument of an atomic memory function does not correspond to a buffer or
                     // shared variable. It is acceptable to pass an element of an array or a single component of a vector to the
@@ -1558,6 +1563,12 @@ TIntermTyped* TParseContext::handleFunctionCall(const TSourceLoc& loc, TFunction
                     userFunctionCallCheck(loc, *call);
             }
 
+            if (hasLongVectorArg && fnCandidate->getBuiltInOp() != EOpNull) {
+                TType longVectorResultType(EbtVoid);
+                handleLongVectorBuiltin(loc, fnCandidate, &longVectorResultType, arguments);
+                result->setType(longVectorResultType);
+            }
+
             // Convert 'out' arguments.  If it was a constant folded built-in, it won't be an aggregate anymore.
             // Built-ins with a single argument aren't called with an aggregate, but they also don't have an output.
             // Also, build the qualifier list for user function calls, which are always called with an aggregate.
@@ -1574,7 +1585,7 @@ TIntermTyped* TParseContext::handleFunctionCall(const TSourceLoc& loc, TFunction
 
             handleVector2CoopMatConversionCall(loc, fnCandidate, result, arguments);
 
-            if (result->getAsTyped()->getType().isCoopVecNV() &&
+            if (result->getAsTyped()->getType().isCoopVecOrLongVector() &&
                !result->getAsTyped()->getType().isParameterized()) {
                 if (auto unaryNode = result->getAsUnaryNode())
                     result->setType(unaryNode->getOperand()->getAsTyped()->getType());
@@ -2179,6 +2190,12 @@ void TParseContext::handleVector2CoopMatConversionCall(const TSourceLoc& loc, co
   }
 }
 
+void TParseContext::handleLongVectorBuiltin(const TSourceLoc& loc, const TFunction* fnCandidate, TType* resultType, TIntermNode* arguments)
+{
+    if (!IsSupportedLongVectorBuiltin(fnCandidate, resultType, arguments)) {
+        error(loc, "can't resolve types (ambiguous long vector overload)", fnCandidate->getName().c_str(), "");
+    }
+}
 
 TIntermTyped* TParseContext::handleBuiltInFunctionCall(TSourceLoc loc, TIntermNode* arguments,
                                                        const TFunction& function)
@@ -2475,7 +2492,7 @@ TIntermTyped* TParseContext::handleLengthMethod(const TSourceLoc& loc, TFunction
             length = type.getMatrixCols();
         else if (type.isVector())
             length = type.getVectorSize();
-        else if (type.isCoopMat() || type.isCoopVecNV())
+        else if (type.isCoopMat() || type.isCoopVecOrLongVector())
             return intermediate.addBuiltInFunctionCall(loc, EOpArrayLength, true, intermNode, TType(EbtInt));
         else {
             // we should not get here, because earlier semantic checking should have prevented this path
@@ -3600,10 +3617,10 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
             error(loc, "second parameter must not have floate5m2 or floate4m3 basic type", "", "");
         }
 
-        if (!(op0Type.isScalar() || op0Type.isVector() || op0Type.isCoopMatKHR())) {
+        if (!(op0Type.isScalar() || op0Type.isVector() || op0Type.isLongVector() || op0Type.isCoopMatKHR())) {
             error(loc, "first parameter must be scalar, vector, or cooperative matrix", "", "");
         }
-        if (!(op1Type.isScalar() || op1Type.isVector() || op1Type.isCoopMatKHR())) {
+        if (!(op1Type.isScalar() || op1Type.isVector() || op1Type.isLongVector() || op1Type.isCoopMatKHR())) {
             error(loc, "second parameter must be scalar, vector, or cooperative matrix", "", "");
         }
         if (!(op0Type.sameElementShape(op1Type) || op0Type.sameCoopMatShape(op1Type))) {
@@ -8303,12 +8320,16 @@ const TFunction* TParseContext::findFunction400(const TSourceLoc& loc, const TFu
             if (fromElementType == toElementType)
                 return true;
         }
+        if (TType::vectorAndLongVectorMatch(from, to))
+            return true;
         if (from.isArray() || to.isArray() || ! from.sameElementShape(to))
             return false;
         if (from.isCoopMat() && to.isCoopMat())
             return from.sameCoopMatBaseType(to);
         if (from.isCoopVecNV() && to.isCoopVecNV())
             return from.sameCoopVecBaseType(to);
+        if (from.isLongVector() && to.isLongVector())
+            return from.sameLongVectorBaseType(to);
         if (from.isTensorARM() && to.isTensorARM())
             return from.sameTensorBaseTypeARM(to);
         return intermediate.canImplicitlyPromote(from.getBasicType(), to.getBasicType());
@@ -8319,10 +8340,13 @@ const TFunction* TParseContext::findFunction400(const TSourceLoc& loc, const TFu
     // Assumes 'convertible' already said true.
     const auto better = [&](const TType& from, const TType& to1, const TType& to2) -> bool {
         // 1. exact match
-        if (from == to2)
-            return from != to1;
-        if (from == to1)
+        bool to2Matches = from == to2 || (from.isLongVector() && to2.getBasicType() == EbtLongVector);
+        bool to1Matches = from == to1 || (from.isLongVector() && to1.getBasicType() == EbtLongVector);
+        if (to2Matches)
+            return !to1Matches;
+        if (to1Matches)
             return false;
+
         if (extensionTurnedOn(E_GL_NV_gpu_shader5)) {
             // This map refers to the conversion table mentioned under the 
             // section "Modify Section 6.1, Function Definitions, p. 63" in NV_gpu_shader5 spec
@@ -8416,12 +8440,16 @@ const TFunction* TParseContext::findFunctionExplicitTypes(const TSourceLoc& loc,
             if (fromElementType == toElementType)
                 return true;
         }
+        if (TType::vectorAndLongVectorMatch(from, to))
+            return true;
         if (from.isArray() || to.isArray() || ! from.sameElementShape(to))
             return false;
         if (from.isCoopMat() && to.isCoopMat())
             return from.sameCoopMatBaseType(to);
         if (from.isCoopVecNV() && to.isCoopVecNV())
             return from.sameCoopVecBaseType(to);
+        if (from.isLongVector() && to.isLongVector())
+            return from.sameLongVectorBaseType(to);
         if (from.isTensorARM() && to.isTensorARM())
             return from.sameTensorBaseTypeARM(to);
         return intermediate.canImplicitlyPromote(from.getBasicType(), to.getBasicType());
@@ -8432,9 +8460,11 @@ const TFunction* TParseContext::findFunctionExplicitTypes(const TSourceLoc& loc,
     // Assumes 'convertible' already said true.
     const auto better = [this](const TType& from, const TType& to1, const TType& to2) -> bool {
         // 1. exact match
-        if (from == to2)
-            return from != to1;
-        if (from == to1)
+        bool to2Matches = from == to2 || (from.isLongVector() && to2.getBasicType() == EbtLongVector);
+        bool to1Matches = from == to1 || (from.isLongVector() && to1.getBasicType() == EbtLongVector);
+        if (to2Matches)
+            return !to1Matches;
+        if (to1Matches)
             return false;
 
         // 2. Promotion (integral, floating-point) is better
@@ -9077,7 +9107,15 @@ TIntermNode* TParseContext::declareVariable(const TSourceLoc& loc, TString& iden
 
         if (!publicType.typeParameters || !publicType.typeParameters->arraySizes || publicType.typeParameters->arraySizes->getNumDims() != 1) {
             error(loc, "expected two type parameters", identifier.c_str(), "");
-        } else if (publicType.typeParameters->arraySizes->getDimSize(0) <= 0) {
+        } else if (publicType.typeParameters->arraySizes->getDimNode(0) == nullptr && publicType.typeParameters->arraySizes->getDimSize(0) <= 0) {
+            error(loc, "expected positive number of components", identifier.c_str(), "");
+        }
+    } else if (type.isLongVector()) {
+        intermediate.setUseStorageBuffer();
+
+        if (!publicType.typeParameters || !publicType.typeParameters->arraySizes || publicType.typeParameters->arraySizes->getNumDims() != 1) {
+            error(loc, "expected two type parameters", identifier.c_str(), "");
+        } else if (publicType.typeParameters->arraySizes->getDimNode(0) == nullptr && publicType.typeParameters->arraySizes->getDimSize(0) <= 0) {
             error(loc, "expected positive number of components", identifier.c_str(), "");
         }
     } else if (type.isTensorARM()) {
