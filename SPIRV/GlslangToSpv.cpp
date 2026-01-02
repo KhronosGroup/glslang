@@ -2698,7 +2698,7 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
                 spec_constant_op_mode_setter.turnOnSpecConstantOpMode();
                 length = builder.createCooperativeMatrixLengthNV(typeId);
             }
-        } else if (node->getOperand()->getType().isCoopVecNV() || node->getOperand()->getType().isLongVector()) {
+        } else if (node->getOperand()->getType().isCoopVecOrLongVector()) {
             spv::Id typeId = convertGlslangToSpvType(node->getOperand()->getType());
             if (builder.isCooperativeVectorType(typeId)) {
                 length = builder.getCooperativeVectorNumComponents(typeId);
@@ -3355,7 +3355,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
             builder.addCapability(spv::Capability::CooperativeMatrixConversionsNV);
             builder.addExtension(spv::E_SPV_NV_cooperative_matrix2);
             constructed = builder.createCooperativeMatrixConversion(resultType(), arguments[0]);
-        } else if ((node->getType().isCoopVecNV() || node->getType().isLongVector()) &&
+        } else if (node->getType().isCoopVecOrLongVector() &&
                    arguments.size() == 1 &&
                    builder.getTypeId(arguments[0]) == resultType()) {
             constructed = arguments[0];
@@ -11175,8 +11175,8 @@ spv::Id TGlslangToSpvTraverser::createSpvConstantFromConstUnionArray(const glsla
         glslang::TVector<glslang::TTypeLoc>::const_iterator iter;
         for (iter = glslangType.getStruct()->begin(); iter != glslangType.getStruct()->end(); ++iter)
             spvConsts.push_back(createSpvConstantFromConstUnionArray(*iter->type, consts, nextConst, false));
-    } else if (glslangType.getVectorSize() > 1 || glslangType.isCoopVecNV() || glslangType.isLongVector()) {
-        unsigned int numComponents = glslangType.isCoopVecNV() || glslangType.isLongVector() ? glslangType.getTypeParameters()->arraySizes->getDimSize(0) : glslangType.getVectorSize();
+    } else if (glslangType.getVectorSize() > 1 || glslangType.isCoopVecOrLongVector()) {
+        unsigned int numComponents = glslangType.isCoopVecOrLongVector() ? glslangType.getTypeParameters()->arraySizes->getDimSize(0) : glslangType.getVectorSize();
         for (unsigned int i = 0; i < numComponents; ++i) {
             bool zero = nextConst >= consts.size();
             switch (glslangType.getBasicType()) {

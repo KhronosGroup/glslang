@@ -3344,6 +3344,7 @@ Id Builder::createLvalueSwizzle(Id typeId, Id target, Id source, const std::vect
 // Comments in header
 void Builder::promoteScalar(Decoration precision, Id& left, Id& right)
 {
+    // choose direction of promotion (+1 for left to right, -1 for right to left)
     int direction = !isScalar(right) - !isScalar(left);
 
     auto const &makeVec = [&](Id component, Id other) {

@@ -394,7 +394,9 @@ void AddTabledBuiltin(TString& decls, const BuiltInFunction& function)
     }
 }
 
-// Add long vector prototype for the builtin function
+// Add long vector prototype for the builtin function. This is similar to
+// AddTabledBuiltin, but only generates builtins where one type is an
+// arbitrary vector. See comments on "enum ArgClass" for more details.
 void AddLongVectorBuiltin(TString& decls, const BuiltInFunction& function)
 {
     const auto isScalarType = [](int type) { return (type & TypeStringColumnMask) == 0; };
@@ -421,7 +423,7 @@ void AddLongVectorBuiltin(TString& decls, const BuiltInFunction& function)
             if (function.classes & ClassV1)
                 continue;
 
-            // skip 3-vector, and should be, skip
+            // skip 3-vector
             if (function.classes & ClassV3)
                 continue;
 
@@ -11784,7 +11786,7 @@ bool IsSupportedLongVectorBuiltin(const TFunction* fnCandidate, TType* resultTyp
         }
     };
 
-    auto const &checkArgsMatch = [&](uint32_t argStart, uint32_t argEnd, uint32_t types) {
+    const auto &checkArgsMatch = [&](uint32_t argStart, uint32_t argEnd, uint32_t types) {
         for (uint32_t i = argStart; i < argEnd; ++i) {
             checkFnTypes(getArg(i), types);
             if (i != argStart) {
@@ -11900,7 +11902,7 @@ bool IsSupportedLongVectorBuiltin(const TFunction* fnCandidate, TType* resultTyp
 
     // Check the arg0 type and if this and other checks have passed, then set
     // the result type to the bitcasted result
-    auto const &checkBitCast = [&](TBasicType fromBasicType, TBasicType newBasicType) {
+    const auto &checkBitCast = [&](TBasicType fromBasicType, TBasicType newBasicType) {
         if (getArg(0)->getType().getBasicType() != fromBasicType) {
             valid = false;
         }

@@ -38,6 +38,12 @@ layout (push_constant, scalar) uniform PC {
     layout(offset = 28) vector<uint32_t, 7> v7;
 } pc;
 
+layout(scalar, buffer_reference) buffer BufScalarRef {
+    vector<uint32_t, 5> v5[2];
+    vector<uint32_t, 7> v7;
+    vector<uint32_t, 1> v1[2];
+};
+
 shared vector<uint32_t, 9> s9;
 shared vector<float, c0> s5;
 
@@ -51,22 +57,27 @@ void main()
     vector<uint32_t, 9> v9;
     vector<float, c0> vc;
 
+    BufScalarRef ref;
+
     v1 = buf140.v1[0];
     v1 = buf430.v1[1];
     v1 = bufScalar.v1[1];
     v1 = ubo.v1[1];
+    v1 = ref.v1[1];
 
     v5 = buf140.v5[1];
     v5 = buf430.v5[1];
     v5 = bufScalar.v5[1];
     v5 = ubo.v5[1];
     v5 = pc.v5;
+    v5 = ref.v5[1];
 
     v7 = buf140.v7;
     v7 = buf430.v7;
     v7 = bufScalar.v7;
     v7 = ubo.v7;
     v7 = pc.v7;
+    v7 = ref.v7;
 
     v9 = s9;
     vc = s5;

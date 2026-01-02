@@ -1530,6 +1530,7 @@ public:
     bool isCoopvecNV() const { return coopvecNV; }
     bool isCoopmatOrvec() const { return isCoopmat() || isCoopvecNV() || isLongVector(); }
     bool isLongVector() const { return longVector; }
+    bool isCoopvecOrLongVector() const { return isCoopvecNV() || isLongVector(); }
     bool isTensorARM() const { return tensorRankARM; }
     bool hasTypeParameter() const { return isCoopmat() || isCoopvecNV() || isLongVector() || isTensorARM(); }
 
@@ -1970,6 +1971,7 @@ public:
     bool isCoopVecNV() const { return coopvecNV; }
     bool isCoopMatOrVec() const { return isCoopMat() || isCoopVecNV() || isLongVector(); }
     bool isLongVector() const { return longVector; }
+    bool isCoopVecOrLongVector() const { return isCoopVecNV() || isLongVector(); }
     bool isTileAttachmentQCOM() const { return tileAttachmentQCOM; }
     bool isTensorARM() const { return tensorRankARM; }
     bool hasTypeParameter() const { return isCoopMat() || isCoopVecNV() || isLongVector() || isTensorARM(); }
@@ -2649,7 +2651,7 @@ public:
     {
         uint32_t components = 0;
 
-        if (isCoopVecNV() || isLongVector()) {
+        if (isCoopVecOrLongVector()) {
             components = typeParameters->arraySizes->getDimSize(0);
         } else if (getBasicType() == EbtStruct || getBasicType() == EbtBlock) {
             for (TTypeList::const_iterator tl = getStruct()->begin(); tl != getStruct()->end(); tl++)

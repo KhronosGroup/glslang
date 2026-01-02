@@ -565,7 +565,7 @@ TIntermTyped* TParseContext::handleBracketDereference(const TSourceLoc& loc, TIn
     variableCheck(base);
 
     if (! base->isArray() && ! base->isMatrix() && ! base->isVector() && ! base->getType().isCoopMat() &&
-        ! base->isReference() && ! base->getType().isCoopVecNV() && ! base->getType().isLongVector()) {
+        ! base->isReference() && ! base->getType().isCoopVecOrLongVector()) {
         if (base->getAsSymbolNode())
             error(loc, " left of '[' is not of type array, matrix, or vector ", base->getAsSymbolNode()->getName().c_str(), "");
         else
@@ -996,7 +996,7 @@ TIntermTyped* TParseContext::handleDotDereference(const TSourceLoc& loc, TInterm
             const char* feature = ".length() on vectors and matrices";
             requireProfile(loc, ~EEsProfile, feature);
             profileRequires(loc, ~EEsProfile, 420, E_GL_ARB_shading_language_420pack, feature);
-        } else if (!base->getType().isCoopMat() && !base->getType().isCoopVecNV() && !base->getType().isLongVector()) {
+        } else if (!base->getType().isCoopMat() && !base->getType().isCoopVecOrLongVector()) {
             bool enhanced = intermediate.getEnhancedMsgs();
             error(loc, "does not operate on this type:", field.c_str(), base->getType().getCompleteString(enhanced).c_str());
             return base;
@@ -1585,7 +1585,7 @@ TIntermTyped* TParseContext::handleFunctionCall(const TSourceLoc& loc, TFunction
 
             handleVector2CoopMatConversionCall(loc, fnCandidate, result, arguments);
 
-            if ((result->getAsTyped()->getType().isCoopVecNV() || result->getAsTyped()->getType().isLongVector()) &&
+            if (result->getAsTyped()->getType().isCoopVecOrLongVector() &&
                !result->getAsTyped()->getType().isParameterized()) {
                 if (auto unaryNode = result->getAsUnaryNode())
                     result->setType(unaryNode->getOperand()->getAsTyped()->getType());
@@ -2193,7 +2193,7 @@ void TParseContext::handleVector2CoopMatConversionCall(const TSourceLoc& loc, co
 void TParseContext::handleLongVectorBuiltin(const TSourceLoc& loc, const TFunction* fnCandidate, TType* resultType, TIntermNode* arguments)
 {
     if (!IsSupportedLongVectorBuiltin(fnCandidate, resultType, arguments)) {
-        error(loc, "can't resolve types", fnCandidate->getName().c_str(), "");
+        error(loc, "can't resolve types (ambiguous long vector overload)", fnCandidate->getName().c_str(), "");
     }
 }
 
@@ -2492,7 +2492,7 @@ TIntermTyped* TParseContext::handleLengthMethod(const TSourceLoc& loc, TFunction
             length = type.getMatrixCols();
         else if (type.isVector())
             length = type.getVectorSize();
-        else if (type.isCoopMat() || type.isCoopVecNV() || type.isLongVector())
+        else if (type.isCoopMat() || type.isCoopVecOrLongVector())
             return intermediate.addBuiltInFunctionCall(loc, EOpArrayLength, true, intermNode, TType(EbtInt));
         else {
             // we should not get here, because earlier semantic checking should have prevented this path

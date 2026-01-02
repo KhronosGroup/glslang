@@ -1869,7 +1869,7 @@ TOperator TIntermediate::mapTypeToConstructorOp(const TType& type) const
     if (type.isCoopMatKHR())
         return EOpConstructCooperativeMatrixKHR;
 
-    if (type.isCoopVecNV() || type.isLongVector())
+    if (type.isCoopVecOrLongVector())
         return EOpConstructCooperativeVectorNV;
 
     switch (type.getBasicType()) {
