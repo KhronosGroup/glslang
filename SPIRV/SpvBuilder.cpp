@@ -3344,12 +3344,21 @@ Id Builder::createLvalueSwizzle(Id typeId, Id target, Id source, const std::vect
 // Comments in header
 void Builder::promoteScalar(Decoration precision, Id& left, Id& right)
 {
-    int direction = getNumComponents(right) - getNumComponents(left);
+    // choose direction of promotion (+1 for left to right, -1 for right to left)
+    int direction = !isScalar(right) - !isScalar(left);
+
+    auto const &makeVec = [&](Id component, Id other) {
+        if (isCooperativeVector(other)) {
+            return makeCooperativeVectorTypeNV(getTypeId(component), getCooperativeVectorNumComponents(getTypeId(other)));
+        } else {
+            return makeVectorType(getTypeId(component), getNumComponents(other));
+        }
+    };
 
     if (direction > 0)
-        left = smearScalar(precision, left, makeVectorType(getTypeId(left), getNumComponents(right)));
+        left = smearScalar(precision, left, makeVec(left, right));
     else if (direction < 0)
-        right = smearScalar(precision, right, makeVectorType(getTypeId(right), getNumComponents(left)));
+        right = smearScalar(precision, right, makeVec(right, left));
 
     return;
 }
@@ -3361,7 +3370,7 @@ Id Builder::smearScalar(Decoration precision, Id scalar, Id vectorType)
     assert(getTypeId(scalar) == getScalarTypeId(vectorType));
 
     int numComponents = getNumTypeComponents(vectorType);
-    if (numComponents == 1 && !isCooperativeVectorType(vectorType))
+    if (numComponents == 1 && !isCooperativeVectorType(vectorType) && !isVectorType(vectorType))
         return scalar;
 
     Instruction* smear = nullptr;
@@ -3773,7 +3782,7 @@ Id Builder::createCompositeConstruct(Id typeId, const std::vector<Id>& constitue
 {
     assert(isAggregateType(typeId) || (getNumTypeConstituents(typeId) > 1 &&
            getNumTypeConstituents(typeId) == constituents.size()) ||
-           (isCooperativeVectorType(typeId) && constituents.size() == 1));
+           ((isCooperativeVectorType(typeId) || isVectorType(typeId)) && constituents.size() == 1));
 
     if (generatingOpCodeForSpecConst) {
         // Sometime, even in spec-constant-op mode, the constant composite to be
@@ -3862,9 +3871,16 @@ Id Builder::createConstructor(Decoration precision, const std::vector<Id>& sourc
         return smearScalar(precision, sources[0], resultTypeId);
 
     // Special case: 2 vectors of equal size
-    if (sources.size() == 1 && isVector(sources[0]) && numTargetComponents == getNumComponents(sources[0])) {
-        assert(resultTypeId == getTypeId(sources[0]));
-        return sources[0];
+    if (sources.size() == 1 &&
+        (isVector(sources[0]) || isCooperativeVector(sources[0])) &&
+        numTargetComponents == getNumComponents(sources[0])) {
+        if (isCooperativeVector(sources[0]) != isCooperativeVectorType(resultTypeId)) {
+            assert(isVector(sources[0]) != isVectorType(resultTypeId));
+            return createUnaryOp(spv::Op::OpBitcast, resultTypeId, sources[0]);
+        } else {
+            assert(resultTypeId == getTypeId(sources[0]));
+            return sources[0];
+        }
     }
 
     // accumulate the arguments for OpCompositeConstruct
@@ -3873,7 +3889,7 @@ Id Builder::createConstructor(Decoration precision, const std::vector<Id>& sourc
 
     // lambda to store the result of visiting an argument component
     const auto latchResult = [&](Id comp) {
-        if (numTargetComponents > 1)
+        if (numTargetComponents > 1 || isVectorType(resultTypeId))
             constituents.push_back(comp);
         else
             result = comp;
@@ -4372,7 +4388,7 @@ Id Builder::accessChainLoad(Decoration precision, Decoration l_nonUniform,
             if (constant) {
                 id = createCompositeExtract(accessChain.base, swizzleBase, indexes);
                 setPrecision(id, precision);
-            } else if (isCooperativeVector(accessChain.base)) {
+            } else if (isVector(accessChain.base) || isCooperativeVector(accessChain.base)) {
                 assert(accessChain.indexChain.size() == 1);
                 id = createVectorExtractDynamic(accessChain.base, resultType, accessChain.indexChain[0]);
             } else {

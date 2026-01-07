@@ -2698,9 +2698,13 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
                 spec_constant_op_mode_setter.turnOnSpecConstantOpMode();
                 length = builder.createCooperativeMatrixLengthNV(typeId);
             }
-        } else if (node->getOperand()->getType().isCoopVecNV()) {
+        } else if (node->getOperand()->getType().isCoopVecOrLongVector()) {
             spv::Id typeId = convertGlslangToSpvType(node->getOperand()->getType());
-            length = builder.getCooperativeVectorNumComponents(typeId);
+            if (builder.isCooperativeVectorType(typeId)) {
+                length = builder.getCooperativeVectorNumComponents(typeId);
+            } else {
+                length = builder.makeIntConstant(builder.getNumTypeConstituents(typeId));
+            }
         } else {
             glslang::TIntermTyped* block = node->getOperand()->getAsBinaryNode()->getLeft();
             block->traverse(this);
@@ -3351,7 +3355,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
             builder.addCapability(spv::Capability::CooperativeMatrixConversionsNV);
             builder.addExtension(spv::E_SPV_NV_cooperative_matrix2);
             constructed = builder.createCooperativeMatrixConversion(resultType(), arguments[0]);
-        } else if (node->getOp() == glslang::EOpConstructCooperativeVectorNV &&
+        } else if (node->getType().isCoopVecOrLongVector() &&
                    arguments.size() == 1 &&
                    builder.getTypeId(arguments[0]) == resultType()) {
             constructed = arguments[0];
@@ -3361,7 +3365,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
                  node->getType().isArray() ||
                  // Handle constructing coopvec from one component here, to avoid the component
                  // getting smeared
-                 (node->getOp() == glslang::EOpConstructCooperativeVectorNV && arguments.size() == 1 && builder.isScalar(arguments[0]))) {
+                 (node->getType().hasSpecConstantVectorComponents() && arguments.size() == 1 && builder.isScalar(arguments[0]))) {
             std::vector<spv::Id> constituents;
             for (int c = 0; c < (int)arguments.size(); ++c)
                 constituents.push_back(arguments[c]);
@@ -3423,7 +3427,8 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
     {
         // for scalar dot product, use multiply
         glslang::TIntermSequence& glslangOperands = node->getSequence();
-        if (glslangOperands[0]->getAsTyped()->getVectorSize() == 1)
+        if (!glslangOperands[0]->getAsTyped()->getType().isLongVector() &&
+            glslangOperands[0]->getAsTyped()->getVectorSize() == 1)
             binOp = glslang::EOpMul;
         break;
     }
@@ -5645,6 +5650,24 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
         spv::Id components = makeArraySizeId(*type.getTypeParameters()->arraySizes, 0);
 
         spvType = builder.makeCooperativeVectorTypeNV(spvType, components);
+    }
+
+    if (type.isLongVector()) {
+        builder.addCapability(spv::Capability::LongVectorEXT);
+        builder.addExtension(spv::E_SPV_EXT_long_vector);
+
+        if (type.getBasicType() == glslang::EbtFloat16)
+            builder.addCapability(spv::Capability::Float16);
+        if (type.getBasicType() == glslang::EbtUint8 || type.getBasicType() == glslang::EbtInt8) {
+            builder.addCapability(spv::Capability::Int8);
+        }
+
+        if (type.hasSpecConstantVectorComponents()) {
+            spv::Id components = makeArraySizeId(*type.getTypeParameters()->arraySizes, 0);
+            spvType = builder.makeCooperativeVectorTypeNV(spvType, components);
+        } else {
+            spvType = builder.makeVectorType(spvType, type.getTypeParameters()->arraySizes->getDimSize(0));
+        }
     }
 
     if (type.isArray()) {
@@ -9843,9 +9866,12 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
                 builder.addExtension(spv::E_SPV_AMD_gpu_shader_int16);
             if (builder.getNumComponents(operands[0]) == 1)
                 frexpIntType = builder.makeIntegerType(width, true);
+            else if (builder.isCooperativeVector(operands[0]))
+                frexpIntType = builder.makeCooperativeVectorTypeNV(builder.makeIntegerType(width, true),
+                                                                   builder.getCooperativeVectorNumComponents(builder.getTypeId(operands[0])));
             else
                 frexpIntType = builder.makeVectorType(builder.makeIntegerType(width, true),
-                    builder.getNumComponents(operands[0]));
+                                                      builder.getNumComponents(operands[0]));
             typeId = builder.makeStructResultType(typeId0, frexpIntType);
             consumedOperands = 1;
         }
@@ -11149,8 +11175,8 @@ spv::Id TGlslangToSpvTraverser::createSpvConstantFromConstUnionArray(const glsla
         glslang::TVector<glslang::TTypeLoc>::const_iterator iter;
         for (iter = glslangType.getStruct()->begin(); iter != glslangType.getStruct()->end(); ++iter)
             spvConsts.push_back(createSpvConstantFromConstUnionArray(*iter->type, consts, nextConst, false));
-    } else if (glslangType.getVectorSize() > 1 || glslangType.isCoopVecNV()) {
-        unsigned int numComponents = glslangType.isCoopVecNV() ? glslangType.getTypeParameters()->arraySizes->getDimSize(0) : glslangType.getVectorSize();
+    } else if (glslangType.getVectorSize() > 1 || glslangType.isCoopVecOrLongVector()) {
+        unsigned int numComponents = glslangType.isCoopVecOrLongVector() ? glslangType.getTypeParameters()->arraySizes->getDimSize(0) : glslangType.getVectorSize();
         for (unsigned int i = 0; i < numComponents; ++i) {
             bool zero = nextConst >= consts.size();
             switch (glslangType.getBasicType()) {
