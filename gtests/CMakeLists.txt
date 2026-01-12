@@ -32,7 +32,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 if(GLSLANG_TESTS)
-    if(TARGET gmock)
+    if(TARGET ${GMOCK_TARGET})
         message(STATUS "Google Mock found - building tests")
 
         set(TEST_SOURCES
@@ -76,9 +76,7 @@ if(GLSLANG_TESTS)
                                    PRIVATE GLSLANG_TEST_BUILD=1)
         target_include_directories(glslangtests PRIVATE
                                    ${CMAKE_CURRENT_SOURCE_DIR}
-                                   ${PROJECT_SOURCE_DIR}
-                                   ${gmock_SOURCE_DIR}/include
-                                   ${gtest_SOURCE_DIR}/include)
+                                   ${PROJECT_SOURCE_DIR})
 
         if(ENABLE_OPT)
             target_link_libraries(glslangtests
@@ -90,7 +88,7 @@ if(GLSLANG_TESTS)
             glslang glslang-default-resource-limits
             $<$<AND:$<CXX_COMPILER_ID:GNU>,$<VERSION_LESS:$<CXX_COMPILER_VERSION>,9.0>>:stdc++fs>)
 
-        target_link_libraries(glslangtests PRIVATE ${LIBRARIES} gmock)
+        target_link_libraries(glslangtests PRIVATE ${LIBRARIES} ${GMOCK_TARGET})
 
         # The TARGET_RUNTIME_DLL_DIRS feature requires CMake 3.27 or greater.
         if(WIN32 AND BUILD_SHARED_LIBS AND CMAKE_VERSION VERSION_LESS "3.27")
