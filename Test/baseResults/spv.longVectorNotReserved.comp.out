@@ -1,0 +1,7 @@
+spv.longVectorNotReserved.comp
+ERROR: 0:8: 'vector' : undeclared identifier 
+ERROR: 0:8: 'y' : vector swizzle selection out of range 
+ERROR: 2 compilation errors.  No code generated.
+
+
+SPIR-V is not generated for failed compile or link
