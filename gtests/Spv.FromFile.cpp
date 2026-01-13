@@ -717,6 +717,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.intrinsicsInteractWithCoopMat.comp",
         "spv.longVector.comp",
         "spv.longVectorMatMul.comp",
+        "spv.longVectorNotReserved.comp",
         "spv.longVectorSpecConst.comp",
         "spv.longVectorOperators.comp",
         "spv.longVectorBuiltins.comp",
