@@ -173,6 +173,14 @@ elseif(${CMAKE_CXX_COMPILER_ID} MATCHES "Clang" AND NOT MSVC)
         endif()
     endif()
 elseif(MSVC)
+    # A unary minus operator was applied to an unsigned type, resulting in an unsigned result.
+    add_compile_options(/w14146)
+    # A negative integral constant converted to unsigned type, resulting in a possibly meaningless result.
+    add_compile_options(/w14308)
+    # Use of an uninitialized local variable.
+    add_compile_options(/w14700)
+    # Use of a potentially uninitialized local pointer variable.
+    add_compile_options(/w14703)
     if(NOT ENABLE_RTTI)
         add_compile_options(/GR-) # Disable RTTI
     endif()
