@@ -663,6 +663,11 @@ void TParseVersions::getPreamble(std::string& preamble)
         }
     }
 
+    if ((!isEsProfile() && version >= 460) ||
+        (isEsProfile() && version >= 320)) {
+        preamble += "#define GL_EXT_nontemporal_keyword 1\n";
+    }
+
     if ((!isEsProfile() && version >= 140) ||
         (isEsProfile() && version >= 310)) {
         preamble +=
