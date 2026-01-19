@@ -1352,7 +1352,7 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
 
     DirStackFileIncluder includer;
     std::for_each(IncludeDirectoryList.rbegin(), IncludeDirectoryList.rend(), [&includer](const std::string& dir) {
-        includer.pushExternalLocalDirectory(dir); });
+        includer.pushExternalDirectory(dir); });
 
     std::vector<std::string> sources;
 

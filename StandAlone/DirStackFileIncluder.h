@@ -49,7 +49,7 @@
 // Can be overridden to customize.
 class DirStackFileIncluder : public glslang::TShader::Includer {
 public:
-    DirStackFileIncluder() : externalLocalDirectoryCount(0) { }
+    DirStackFileIncluder() { }
 
     virtual IncludeResult* includeLocal(const char* headerName,
                                         const char* includerName,
@@ -71,10 +71,9 @@ public:
     //    is checked.
     //  - This only applies to the "local" form of #include.
     //  - Makes its own copy of the path.
-    virtual void pushExternalLocalDirectory(const std::string& dir)
+    virtual void pushExternalDirectory(const std::string& dir)
     {
-        directoryStack.push_back(dir);
-        externalLocalDirectoryCount = (int)directoryStack.size();
+        externalDirectoryList.push_back(dir);
     }
 
     virtual void releaseInclude(IncludeResult* result) override
@@ -94,8 +93,8 @@ public:
 
 protected:
     typedef char tUserDataElement;
-    std::vector<std::string> directoryStack;
-    int externalLocalDirectoryCount;
+    std::vector<std::string> localDirectoryStack;
+    std::vector<std::string> externalDirectoryList;
     std::set<std::string> includedFiles;
 
     // Search for a valid "local" path based on combining the stack of include
@@ -104,17 +103,17 @@ protected:
     {
         // Discard popped include directories, and
         // initialize when at parse-time first level.
-        directoryStack.resize(depth + externalLocalDirectoryCount);
+        localDirectoryStack.resize(depth);
         if (depth == 1)
-            directoryStack.back() = getDirectory(includerName);
+            localDirectoryStack.back() = getDirectory(includerName);
 
         // Find a directory that works, using a reverse search of the include stack.
-        for (auto it = directoryStack.rbegin(); it != directoryStack.rend(); ++it) {
+        for (auto it = localDirectoryStack.rbegin(); it != localDirectoryStack.rend(); ++it) {
             std::string path = *it + '/' + headerName;
             std::replace(path.begin(), path.end(), '\\', '/');
             std::ifstream file(path, std::ios_base::binary | std::ios_base::ate);
             if (file) {
-                directoryStack.push_back(getDirectory(path));
+                localDirectoryStack.push_back(getDirectory(path));
                 includedFiles.insert(path);
                 return newIncludeResult(path, file, (int)file.tellg());
             }
@@ -124,9 +123,18 @@ protected:
     }
 
     // Search for a valid <system> path.
-    // Not implemented yet; returning nullptr signals failure to find.
-    virtual IncludeResult* readSystemPath(const char* /*headerName*/) const
+    virtual IncludeResult* readSystemPath(const char* headerName)
     {
+        // Search for external diectories only.
+        for (auto it = externalDirectoryList.begin(); it != externalDirectoryList.end(); ++it) {
+            std::string path = *it + '/' + headerName;
+            std::replace(path.begin(), path.end(), '\\', '/');
+            std::ifstream file(path, std::ios_base::binary | std::ios_base::ate);
+            if (file) {
+                includedFiles.insert(path);
+                return newIncludeResult(path, file, (int)file.tellg());
+            }
+        }
         return nullptr;
     }
 
