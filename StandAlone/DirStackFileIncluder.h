@@ -69,8 +69,10 @@ public:
     //  - Most-recently pushed are checked first.
     //  - All these are checked after the parse-time stack of local directories
     //    is checked.
-    //  - This only applies to the "local" form of #include.
     //  - Makes its own copy of the path.
+    //  - Search paths are processed similar to GCC: "local" inclusions will
+    //    search in the current directory and external directories, while 
+    //    <system> inclusions will search external directories only.
     virtual void pushExternalDirectory(const std::string& dir)
     {
         externalDirectoryList.push_back(dir);
