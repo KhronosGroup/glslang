@@ -952,6 +952,18 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.floate5m2.const.comp",
         "spv.floate5m2_error.comp",
         "spv.promote_uint32_indices.comp",
+        "spv.floate2m1.comp",
+        "spv.floate2m1.const.comp",
+        "spv.floate3m2.comp",
+        "spv.floate3m2.const.comp",
+        "spv.floate2m3.comp",
+        "spv.floate2m3.const.comp",
+        "spv.floatue8m0.comp",
+        "spv.floatue8m0.const.comp",
+        "spv.floatmxint8.comp",
+        "spv.floatmxint8.const.comp",
+        "spv.floatocperrors.comp",
+        "spv.floatocperrors.vert",
     })),
     FileNameAsCustomTestSuffix
 );

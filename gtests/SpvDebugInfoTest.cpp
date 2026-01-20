@@ -317,6 +317,44 @@ void main() {
         << "Expected \"floate5m2_t\" string in debug type.\nSPIR-V:\n" << spirv;
 }
 
+// DebugTypeBasic for OCP microscaling types must carry their source-level type
+// names, which are emitted only when the FPEncoding operand is present.
+TEST_F(SpvDebugInfoTest, OcpMicroscalingTypesEmitDebugTypeBasicWithFPEncoding)
+{
+    const std::string source = R"(
+#version 450 core
+#extension GL_EXT_float_e2m1 : require
+#extension GL_EXT_float_e3m2 : require
+#extension GL_EXT_float_e2m3 : require
+#extension GL_EXT_float_ue8m0 : require
+#extension GL_EXT_float_mxint8 : require
+#extension GL_EXT_shader_explicit_arithmetic_types : enable
+layout(local_size_x = 64) in;
+layout(set = 0, binding = 0) buffer B { float data[]; } buf;
+void main() {
+    floate2m1_t e2m1 = floate2m1_t(1.0fe2m1);
+    floate3m2_t e3m2 = floate3m2_t(1.0fe3m2);
+    floate2m3_t e2m3 = floate2m3_t(1.0fe2m3);
+    floatue8m0_t ue8m0 = floatue8m0_t(1.0fue8m0);
+    floatmxint8_t mxint8 = floatmxint8_t(1.0fmxint8);
+    buf.data[gl_GlobalInvocationID.x] =
+        float(e2m1) + float(e3m2) + float(e2m3) + float(ue8m0) + float(mxint8);
+}
+)";
+    std::string spirv = compileWithDebugInfo(source);
+    const char* expectedTypeNames[] = {
+        "floate2m1_t",
+        "floate3m2_t",
+        "floate2m3_t",
+        "floatue8m0_t",
+        "floatmxint8_t",
+    };
+    for (const char* typeName : expectedTypeNames) {
+        EXPECT_NE(spirv.find(std::string("\"") + typeName + "\""), std::string::npos)
+            << "Expected \"" << typeName << "\" string in debug type.\nSPIR-V:\n" << spirv;
+    }
+}
+
 // When a version-101 opcode is emitted the import string must be promoted to
 // NonSemantic.Shader.DebugInfo.101.
 TEST_F(SpvDebugInfoTest, Version101OpcodePromotesImportStringTo101)

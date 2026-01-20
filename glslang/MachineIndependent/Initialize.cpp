@@ -4166,6 +4166,88 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "fe4m3vec4   uintBitsToFloate4m3EXT(u8vec4 value);"
 
             "void saturatedConvertEXT();"
+
+            "int8_t  floatue8m0BitsToIntEXT(floatue8m0_t value);"
+            "i8vec2  floatue8m0BitsToIntEXT(fue8m0vec2 value);"
+            "i8vec3  floatue8m0BitsToIntEXT(fue8m0vec3 value);"
+            "i8vec4  floatue8m0BitsToIntEXT(fue8m0vec4 value);"
+
+            "uint8_t floatue8m0BitsToUintEXT(floatue8m0_t value);"
+            "u8vec2  floatue8m0BitsToUintEXT(fue8m0vec2 value);"
+            "u8vec3  floatue8m0BitsToUintEXT(fue8m0vec3 value);"
+            "u8vec4  floatue8m0BitsToUintEXT(fue8m0vec4 value);"
+
+            "floatue8m0_t intBitsToFloatue8m0EXT(int8_t value);"
+            "fue8m0vec2   intBitsToFloatue8m0EXT(i8vec2 value);"
+            "fue8m0vec3   intBitsToFloatue8m0EXT(i8vec3 value);"
+            "fue8m0vec4   intBitsToFloatue8m0EXT(i8vec4 value);"
+
+            "floatue8m0_t uintBitsToFloatue8m0EXT(uint8_t value);"
+            "fue8m0vec2   uintBitsToFloatue8m0EXT(u8vec2 value);"
+            "fue8m0vec3   uintBitsToFloatue8m0EXT(u8vec3 value);"
+            "fue8m0vec4   uintBitsToFloatue8m0EXT(u8vec4 value);"
+
+            "int8_t  floatmxint8BitsToIntEXT(floatmxint8_t value);"
+            "i8vec2  floatmxint8BitsToIntEXT(fmxint8vec2 value);"
+            "i8vec3  floatmxint8BitsToIntEXT(fmxint8vec3 value);"
+            "i8vec4  floatmxint8BitsToIntEXT(fmxint8vec4 value);"
+
+            "uint8_t floatmxint8BitsToUintEXT(floatmxint8_t value);"
+            "u8vec2  floatmxint8BitsToUintEXT(fmxint8vec2 value);"
+            "u8vec3  floatmxint8BitsToUintEXT(fmxint8vec3 value);"
+            "u8vec4  floatmxint8BitsToUintEXT(fmxint8vec4 value);"
+
+            "floatmxint8_t intBitsToFloatmxint8EXT(int8_t value);"
+            "fmxint8vec2   intBitsToFloatmxint8EXT(i8vec2 value);"
+            "fmxint8vec3   intBitsToFloatmxint8EXT(i8vec3 value);"
+            "fmxint8vec4   intBitsToFloatmxint8EXT(i8vec4 value);"
+
+            "floatmxint8_t uintBitsToFloatmxint8EXT(uint8_t value);"
+            "fmxint8vec2   uintBitsToFloatmxint8EXT(u8vec2 value);"
+            "fmxint8vec3   uintBitsToFloatmxint8EXT(u8vec3 value);"
+            "fmxint8vec4   uintBitsToFloatmxint8EXT(u8vec4 value);"
+
+            "fe2m1vec2               unpackFloat2xfe2m1EXT(uint8_t value);"
+            "fe2m1vec4               unpackFloat4xfe2m1EXT(uint16_t value);"
+            "vector<floate2m1_t, 8>  unpackFloat8xfe2m1EXT(uint32_t value);"
+            "vector<floate2m1_t, 16> unpackFloat16xfe2m1EXT(u32vec2 value);"
+
+            "uint8_t                 packFloat2xfe2m1EXT(fe2m1vec2 value);"
+            "uint16_t                packFloat4xfe2m1EXT(fe2m1vec4 value);"
+            "uint32_t                packFloat8xfe2m1EXT(vector<floate2m1_t, 8> value);"
+            "u32vec2                 packFloat16xfe2m1EXT(vector<floate2m1_t, 16> value);"
+
+            "fe3m2vec4               unpackFloat4xfe3m2EXT(u8vec3 value);"
+            "vector<floate3m2_t, 8>  unpackFloat8xfe3m2EXT(u16vec3 value);"
+            "vector<floate3m2_t, 16> unpackFloat16xfe3m2EXT(u32vec3 value);"
+
+            "u8vec3                  packFloat4xfe3m2EXT(fe3m2vec4 value);"
+            "u16vec3                 packFloat8xfe3m2EXT(vector<floate3m2_t, 8> value);"
+            "u32vec3                 packFloat16xfe3m2EXT(vector<floate3m2_t, 16> value);"
+
+            "fe2m3vec4               unpackFloat4xfe2m3EXT(u8vec3 value);"
+            "vector<floate2m3_t, 8>  unpackFloat8xfe2m3EXT(u16vec3 value);"
+            "vector<floate2m3_t, 16> unpackFloat16xfe2m3EXT(u32vec3 value);"
+
+            "u8vec3                  packFloat4xfe2m3EXT(fe2m3vec4 value);"
+            "u16vec3                 packFloat8xfe2m3EXT(vector<floate2m3_t, 8> value);"
+            "u32vec3                 packFloat16xfe2m3EXT(vector<floate2m3_t, 16> value);"
+
+            "floate2m1_t             bitcastExtractfe2m1EXT(uint8_t, uint);"
+            "fe2m1vec2               bitcastExtractfe2m1EXT(u8vec2, uint);"
+            "fe2m1vec3               bitcastExtractfe2m1EXT(u8vec3, uint);"
+            "fe2m1vec4               bitcastExtractfe2m1EXT(u8vec4, uint);"
+
+            "floate3m2_t             bitcastExtractfe3m2EXT(uint8_t, uint);"
+            "fe3m2vec2               bitcastExtractfe3m2EXT(u8vec2, uint);"
+            "fe3m2vec3               bitcastExtractfe3m2EXT(u8vec3, uint);"
+            "fe3m2vec4               bitcastExtractfe3m2EXT(u8vec4, uint);"
+
+            "floate2m3_t             bitcastExtractfe2m3EXT(uint8_t, uint);"
+            "fe2m3vec2               bitcastExtractfe2m3EXT(u8vec2, uint);"
+            "fe2m3vec3               bitcastExtractfe2m3EXT(u8vec3, uint);"
+            "fe2m3vec4               bitcastExtractfe2m3EXT(u8vec4, uint);"
+
             "\n");
     }
 
@@ -5226,6 +5308,15 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "vector intBitsToFloate4m3EXT(vector);"
                 "vector uintBitsToFloate4m3EXT(vector);"
 
+                "vector floatue8m0BitsToIntEXT(vector);"
+                "vector floatue8m0BitsToUintEXT(vector);"
+                "vector intBitsToFloatue8m0EXT(vector);"
+                "vector uintBitsToFloatue8m0EXT(vector);"
+                "vector floatmxint8BitsToIntEXT(vector);"
+                "vector floatmxint8BitsToUintEXT(vector);"
+                "vector intBitsToFloatmxint8EXT(vector);"
+                "vector uintBitsToFloatmxint8EXT(vector);"
+
                 "vector uaddCarry(highp vector, highp vector, out lowp vector carry);"
                 "vector usubBorrow(highp vector, highp vector, out lowp vector borrow);"
                 "void umulExtended(highp vector, highp vector, out highp vector, out highp vector);"
@@ -5287,6 +5378,10 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "vector mix(vector, vector,  int8_t);"
 
                 "vector expectEXT(vector, vector);"
+
+                "vector bitcastExtractfe2m1EXT(vector, uint);"
+                "vector bitcastExtractfe3m2EXT(vector, uint);"
+                "vector bitcastExtractfe2m3EXT(vector, uint);"
                 ;
 
             std::string longVectorDerivativeFuncs =
@@ -10313,6 +10408,43 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
 
             const char *float8exts[] = {E_GL_EXT_float_e5m2, E_GL_EXT_float_e4m3};
             symbolTable.setFunctionExtensions("saturatedConvertEXT", 2, float8exts);
+
+            symbolTable.setFunctionExtensions("floatue8m0BitsToIntEXT", 1, &E_GL_EXT_float_ue8m0);
+            symbolTable.setFunctionExtensions("floatue8m0BitsToUintEXT", 1, &E_GL_EXT_float_ue8m0);
+            symbolTable.setFunctionExtensions("intBitsToFloatue8m0EXT", 1, &E_GL_EXT_float_ue8m0);
+            symbolTable.setFunctionExtensions("uintBitsToFloatue8m0EXT", 1, &E_GL_EXT_float_ue8m0);
+
+            symbolTable.setFunctionExtensions("floatmxint8BitsToIntEXT", 1, &E_GL_EXT_float_mxint8);
+            symbolTable.setFunctionExtensions("floatmxint8BitsToUintEXT", 1, &E_GL_EXT_float_mxint8);
+            symbolTable.setFunctionExtensions("intBitsToFloatmxint8EXT", 1, &E_GL_EXT_float_mxint8);
+            symbolTable.setFunctionExtensions("uintBitsToFloatmxint8EXT", 1, &E_GL_EXT_float_mxint8);
+
+            symbolTable.setFunctionExtensions("unpackFloat2xfe2m1EXT", 1, &E_GL_EXT_float_e2m1);
+            symbolTable.setFunctionExtensions("unpackFloat4xfe2m1EXT", 1, &E_GL_EXT_float_e2m1);
+            symbolTable.setFunctionExtensions("unpackFloat8xfe2m1EXT", 1, &E_GL_EXT_float_e2m1);
+            symbolTable.setFunctionExtensions("unpackFloat16xfe2m1EXT", 1, &E_GL_EXT_float_e2m1);
+            symbolTable.setFunctionExtensions("packFloat2xfe2m1EXT", 1, &E_GL_EXT_float_e2m1);
+            symbolTable.setFunctionExtensions("packFloat4xfe2m1EXT", 1, &E_GL_EXT_float_e2m1);
+            symbolTable.setFunctionExtensions("packFloat8xfe2m1EXT", 1, &E_GL_EXT_float_e2m1);
+            symbolTable.setFunctionExtensions("packFloat16xfe2m1EXT", 1, &E_GL_EXT_float_e2m1);
+
+            symbolTable.setFunctionExtensions("unpackFloat4xfe3m2EXT", 1, &E_GL_EXT_float_e3m2);
+            symbolTable.setFunctionExtensions("unpackFloat8xfe3m2EXT", 1, &E_GL_EXT_float_e3m2);
+            symbolTable.setFunctionExtensions("unpackFloat16xfe3m2EXT", 1, &E_GL_EXT_float_e3m2);
+            symbolTable.setFunctionExtensions("packFloat4xfe3m2EXT", 1, &E_GL_EXT_float_e3m2);
+            symbolTable.setFunctionExtensions("packFloat8xfe3m2EXT", 1, &E_GL_EXT_float_e3m2);
+            symbolTable.setFunctionExtensions("packFloat16xfe3m2EXT", 1, &E_GL_EXT_float_e3m2);
+
+            symbolTable.setFunctionExtensions("unpackFloat4xfe2m3EXT", 1, &E_GL_EXT_float_e2m3);
+            symbolTable.setFunctionExtensions("unpackFloat8xfe2m3EXT", 1, &E_GL_EXT_float_e2m3);
+            symbolTable.setFunctionExtensions("unpackFloat16xfe2m3EXT", 1, &E_GL_EXT_float_e2m3);
+            symbolTable.setFunctionExtensions("packFloat4xfe2m3EXT", 1, &E_GL_EXT_float_e2m3);
+            symbolTable.setFunctionExtensions("packFloat8xfe2m3EXT", 1, &E_GL_EXT_float_e2m3);
+            symbolTable.setFunctionExtensions("packFloat16xfe2m3EXT", 1, &E_GL_EXT_float_e2m3);
+
+            symbolTable.setFunctionExtensions("bitcastExtractfe2m1EXT", 1, &E_GL_EXT_float_e2m1);
+            symbolTable.setFunctionExtensions("bitcastExtractfe3m2EXT", 1, &E_GL_EXT_float_e3m2);
+            symbolTable.setFunctionExtensions("bitcastExtractfe2m3EXT", 1, &E_GL_EXT_float_e2m3);
         }
 
         // E_SPV_QCOM_tile_shading
@@ -11358,6 +11490,43 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.relateToOperator("uintBitsToFloate4m3EXT", EOpUintBitsToFloat);
 
             symbolTable.relateToOperator("saturatedConvertEXT", EOpConstructSaturated);
+
+            symbolTable.relateToOperator("floatue8m0BitsToIntEXT",  EOpFloatBitsToInt);
+            symbolTable.relateToOperator("floatue8m0BitsToUintEXT", EOpFloatBitsToUint);
+            symbolTable.relateToOperator("intBitsToFloatue8m0EXT",  EOpIntBitsToFloat);
+            symbolTable.relateToOperator("uintBitsToFloatue8m0EXT", EOpUintBitsToFloat);
+
+            symbolTable.relateToOperator("floatmxint8BitsToIntEXT",  EOpFloatBitsToInt);
+            symbolTable.relateToOperator("floatmxint8BitsToUintEXT", EOpFloatBitsToUint);
+            symbolTable.relateToOperator("intBitsToFloatmxint8EXT",  EOpIntBitsToFloat);
+            symbolTable.relateToOperator("uintBitsToFloatmxint8EXT", EOpUintBitsToFloat);
+
+            symbolTable.relateToOperator("unpackFloat2xfe2m1EXT", EOpUnpackFloat2xE2M1);
+            symbolTable.relateToOperator("unpackFloat4xfe2m1EXT", EOpUnpackFloat4xE2M1);
+            symbolTable.relateToOperator("unpackFloat8xfe2m1EXT", EOpUnpackFloat8xE2M1);
+            symbolTable.relateToOperator("unpackFloat16xfe2m1EXT", EOpUnpackFloat16xE2M1);
+            symbolTable.relateToOperator("packFloat2xfe2m1EXT", EOpPackFloat2xE2M1);
+            symbolTable.relateToOperator("packFloat4xfe2m1EXT", EOpPackFloat4xE2M1);
+            symbolTable.relateToOperator("packFloat8xfe2m1EXT", EOpPackFloat8xE2M1);
+            symbolTable.relateToOperator("packFloat16xfe2m1EXT", EOpPackFloat16xE2M1);
+
+            symbolTable.relateToOperator("unpackFloat4xfe3m2EXT", EOpUnpackFloat4xE3M2);
+            symbolTable.relateToOperator("unpackFloat8xfe3m2EXT", EOpUnpackFloat8xE3M2);
+            symbolTable.relateToOperator("unpackFloat16xfe3m2EXT", EOpUnpackFloat16xE3M2);
+            symbolTable.relateToOperator("packFloat4xfe3m2EXT", EOpPackFloat4xE3M2);
+            symbolTable.relateToOperator("packFloat8xfe3m2EXT", EOpPackFloat8xE3M2);
+            symbolTable.relateToOperator("packFloat16xfe3m2EXT", EOpPackFloat16xE3M2);
+
+            symbolTable.relateToOperator("unpackFloat4xfe2m3EXT", EOpUnpackFloat4xE2M3);
+            symbolTable.relateToOperator("unpackFloat8xfe2m3EXT", EOpUnpackFloat8xE2M3);
+            symbolTable.relateToOperator("unpackFloat16xfe2m3EXT", EOpUnpackFloat16xE2M3);
+            symbolTable.relateToOperator("packFloat4xfe2m3EXT", EOpPackFloat4xE2M3);
+            symbolTable.relateToOperator("packFloat8xfe2m3EXT", EOpPackFloat8xE2M3);
+            symbolTable.relateToOperator("packFloat16xfe2m3EXT", EOpPackFloat16xE2M3);
+
+            symbolTable.relateToOperator("bitcastExtractfe2m1EXT", EOpBitcastExtractE2M1);
+            symbolTable.relateToOperator("bitcastExtractfe3m2EXT", EOpBitcastExtractE3M2);
+            symbolTable.relateToOperator("bitcastExtractfe2m3EXT", EOpBitcastExtractE2M3);
         }
 
         // GL_KHR_shader_subgroup
@@ -12032,6 +12201,10 @@ bool IsSupportedLongVectorBuiltin(const TFunction* fnCandidate, TType* resultTyp
             checkBitCast(EbtFloatE5M2, EbtInt8);
         } else if (fnCandidate->getName() == "floate4m3BitsToIntEXT") {
             checkBitCast(EbtFloatE4M3, EbtInt8);
+        } else if (fnCandidate->getName() == "floatue8m0BitsToIntEXT") {
+            checkBitCast(EbtFloatUE8M0, EbtInt8);
+        } else if (fnCandidate->getName() == "floatmxint8BitsToIntEXT") {
+            checkBitCast(EbtFloatMXINT8, EbtInt8);
         } else {
             checkBitCast(EbtFloat, EbtInt);
         }
@@ -12043,6 +12216,10 @@ bool IsSupportedLongVectorBuiltin(const TFunction* fnCandidate, TType* resultTyp
             checkBitCast(EbtFloatE5M2, EbtUint8);
         } else if (fnCandidate->getName() == "floate4m3BitsToUintEXT") {
             checkBitCast(EbtFloatE4M3, EbtUint8);
+        } else if (fnCandidate->getName() == "floatue8m0BitsToUintEXT") {
+            checkBitCast(EbtFloatUE8M0, EbtUint8);
+        } else if (fnCandidate->getName() == "floatmxint8BitsToUintEXT") {
+            checkBitCast(EbtFloatMXINT8, EbtUint8);
         } else {
             checkBitCast(EbtFloat, EbtUint);
         }
@@ -12054,6 +12231,10 @@ bool IsSupportedLongVectorBuiltin(const TFunction* fnCandidate, TType* resultTyp
             checkBitCast(EbtInt8, EbtFloatE5M2);
         } else if (fnCandidate->getName() == "intBitsToFloate4m3EXT") {
             checkBitCast(EbtInt8, EbtFloatE4M3);
+        } else if (fnCandidate->getName() == "intBitsToFloatue8m0EXT") {
+            checkBitCast(EbtInt8, EbtFloatUE8M0);
+        } else if (fnCandidate->getName() == "intBitsToFloatmxint8EXT") {
+            checkBitCast(EbtInt8, EbtFloatMXINT8);
         } else {
             checkBitCast(EbtInt, EbtFloat);
         }
@@ -12065,6 +12246,10 @@ bool IsSupportedLongVectorBuiltin(const TFunction* fnCandidate, TType* resultTyp
             checkBitCast(EbtUint8, EbtFloatE5M2);
         } else if (fnCandidate->getName() == "uintBitsToFloate4m3EXT") {
             checkBitCast(EbtUint8, EbtFloatE4M3);
+        } else if (fnCandidate->getName() == "uintBitsToFloatue8m0EXT") {
+            checkBitCast(EbtUint8, EbtFloatUE8M0);
+        } else if (fnCandidate->getName() == "uintBitsToFloatmxint8EXT") {
+            checkBitCast(EbtUint8, EbtFloatMXINT8);
         } else {
             checkBitCast(EbtUint, EbtFloat);
         }
@@ -12241,6 +12426,29 @@ bool IsSupportedLongVectorBuiltin(const TFunction* fnCandidate, TType* resultTyp
         if (valid) {
             resultType->deepCopy(getArg(0)->getType());
         }
+        return valid;
+    case EOpPackFloat8xE2M1:
+        resultType->deepCopy(TType(EbtUint));
+        return valid;
+    case EOpPackFloat16xE2M1:
+        resultType->deepCopy(TType(EbtUint, EvqTemporary, 2));
+        return valid;
+    case EOpPackFloat8xE3M2:
+    case EOpPackFloat8xE2M3:
+        resultType->deepCopy(TType(EbtUint16, EvqTemporary, 3));
+        return valid;
+    case EOpPackFloat16xE3M2:
+    case EOpPackFloat16xE2M3:
+        resultType->deepCopy(TType(EbtUint, EvqTemporary, 3));
+        return valid;
+    case EOpBitcastExtractE2M1:
+        checkBitCast(EbtUint8, EbtFloatE2M1);
+        return valid;
+    case EOpBitcastExtractE3M2:
+        checkBitCast(EbtUint8, EbtFloatE3M2);
+        return valid;
+    case EOpBitcastExtractE2M3:
+        checkBitCast(EbtUint8, EbtFloatE2M3);
         return valid;
     default:
         break;

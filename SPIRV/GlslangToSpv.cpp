@@ -3206,6 +3206,16 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
                 one = builder.makeFloatE5M2Constant(1.0F);
             else if (node->getBasicType() == glslang::EbtFloatE4M3)
                 one = builder.makeFloatE4M3Constant(1.0F);
+            else if (node->getBasicType() == glslang::EbtFloatE2M1)
+                one = builder.makeFloatE2M1Constant(1.0F);
+            else if (node->getBasicType() == glslang::EbtFloatE3M2)
+                one = builder.makeFloatE3M2Constant(1.0F);
+            else if (node->getBasicType() == glslang::EbtFloatE2M3)
+                one = builder.makeFloatE2M3Constant(1.0F);
+            else if (node->getBasicType() == glslang::EbtFloatUE8M0)
+                one = builder.makeFloatUE8M0Constant(1.0F);
+            else if (node->getBasicType() == glslang::EbtFloatMXINT8)
+                one = builder.makeFloatMXINT8Constant(1.0F);
             else if (node->getBasicType() == glslang::EbtInt8  || node->getBasicType() == glslang::EbtUint8)
                 one = builder.makeInt8Constant(1);
             else if (node->getBasicType() == glslang::EbtInt16 || node->getBasicType() == glslang::EbtUint16)
@@ -3653,6 +3663,26 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
     case glslang::EOpConstructFloatE4M3Vec2:
     case glslang::EOpConstructFloatE4M3Vec3:
     case glslang::EOpConstructFloatE4M3Vec4:
+    case glslang::EOpConstructFloatE2M1:
+    case glslang::EOpConstructFloatE2M1Vec2:
+    case glslang::EOpConstructFloatE2M1Vec3:
+    case glslang::EOpConstructFloatE2M1Vec4:
+    case glslang::EOpConstructFloatE3M2:
+    case glslang::EOpConstructFloatE3M2Vec2:
+    case glslang::EOpConstructFloatE3M2Vec3:
+    case glslang::EOpConstructFloatE3M2Vec4:
+    case glslang::EOpConstructFloatE2M3:
+    case glslang::EOpConstructFloatE2M3Vec2:
+    case glslang::EOpConstructFloatE2M3Vec3:
+    case glslang::EOpConstructFloatE2M3Vec4:
+    case glslang::EOpConstructFloatUE8M0:
+    case glslang::EOpConstructFloatUE8M0Vec2:
+    case glslang::EOpConstructFloatUE8M0Vec3:
+    case glslang::EOpConstructFloatUE8M0Vec4:
+    case glslang::EOpConstructFloatMXINT8:
+    case glslang::EOpConstructFloatMXINT8Vec2:
+    case glslang::EOpConstructFloatMXINT8Vec3:
+    case glslang::EOpConstructFloatMXINT8Vec4:
     case glslang::EOpConstructBool:
     case glslang::EOpConstructBVec2:
     case glslang::EOpConstructBVec3:
@@ -5718,6 +5748,21 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
         break;
     case glslang::EbtFloatE4M3:
         spvType = builder.makeFloatE4M3Type();
+        break;
+    case glslang::EbtFloatE2M1:
+        spvType = builder.makeFloatE2M1Type();
+        break;
+    case glslang::EbtFloatE3M2:
+        spvType = builder.makeFloatE3M2Type();
+        break;
+    case glslang::EbtFloatE2M3:
+        spvType = builder.makeFloatE2M3Type();
+        break;
+    case glslang::EbtFloatUE8M0:
+        spvType = builder.makeFloatUE8M0Type();
+        break;
+    case glslang::EbtFloatMXINT8:
+        spvType = builder.makeFloatMXINT8Type();
         break;
     case glslang::EbtInt8:
         spvType = builder.makeIntType(8);
@@ -9032,6 +9077,27 @@ spv::Id TGlslangToSpvTraverser::createUnaryOperation(glslang::TOperator op, OpDe
     case glslang::EOpUnpackUint4x16:
     case glslang::EOpPackFloat2x16:
     case glslang::EOpUnpackFloat2x16:
+    case glslang::EOpUnpackFloat2xE2M1:
+    case glslang::EOpUnpackFloat4xE2M1:
+    case glslang::EOpUnpackFloat8xE2M1:
+    case glslang::EOpUnpackFloat16xE2M1:
+    case glslang::EOpPackFloat2xE2M1:
+    case glslang::EOpPackFloat4xE2M1:
+    case glslang::EOpPackFloat8xE2M1:
+    case glslang::EOpPackFloat16xE2M1:
+    case glslang::EOpUnpackFloat4xE3M2:
+    case glslang::EOpUnpackFloat8xE3M2:
+    case glslang::EOpUnpackFloat16xE3M2:
+    case glslang::EOpPackFloat4xE3M2:
+    case glslang::EOpPackFloat8xE3M2:
+    case glslang::EOpPackFloat16xE3M2:
+    case glslang::EOpUnpackFloat4xE2M3:
+    case glslang::EOpUnpackFloat8xE2M3:
+    case glslang::EOpUnpackFloat16xE2M3:
+    case glslang::EOpPackFloat4xE2M3:
+    case glslang::EOpPackFloat8xE2M3:
+    case glslang::EOpPackFloat16xE2M3:
+
         unaryOp = spv::Op::OpBitcast;
         break;
 
@@ -11446,6 +11512,22 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
     case glslang::EOpTensorViewSetClipNV:
         opCode = spv::Op::OpTensorViewSetClipNV;
         break;
+    case glslang::EOpBitcastExtractE2M1:
+    case glslang::EOpBitcastExtractE3M2:
+    case glslang::EOpBitcastExtractE2M3:
+        {
+            spv::Id scalarTypeId = op == glslang::EOpBitcastExtractE2M1 ? builder.makeFloatE2M1Type() :
+                                   op == glslang::EOpBitcastExtractE3M2 ? builder.makeFloatE3M2Type() : builder.makeFloatE2M3Type();
+            opCode = spv::Op::OpBitcastExtractEXT;
+            typeId = scalarTypeId;
+            if (builder.isVectorType(builder.getTypeId(operands[0]))) {
+                int vecSize = builder.getNumTypeComponents(builder.getTypeId(operands[0]));
+                typeId = builder.makeVectorType(typeId, vecSize);
+            }
+            builder.addExtension(spv::E_SPV_EXT_ocp_microscaling_types);
+            builder.addCapability(spv::Capability::BitcastExtractEXT);
+            break;
+        }
     default:
         return 0;
     }
@@ -12206,6 +12288,21 @@ spv::Id TGlslangToSpvTraverser::createSpvConstantFromConstUnionArray(const glsla
             case glslang::EbtFloatE4M3:
                 spvConsts.push_back(builder.makeFloatE4M3Constant(zero ? 0.0F : (float)consts[nextConst].getDConst()));
                 break;
+            case glslang::EbtFloatE2M1:
+                spvConsts.push_back(builder.makeFloatE2M1Constant(zero ? 0.0F : (float)consts[nextConst].getDConst()));
+                break;
+            case glslang::EbtFloatE3M2:
+                spvConsts.push_back(builder.makeFloatE3M2Constant(zero ? 0.0F : (float)consts[nextConst].getDConst()));
+                break;
+            case glslang::EbtFloatE2M3:
+                spvConsts.push_back(builder.makeFloatE2M3Constant(zero ? 0.0F : (float)consts[nextConst].getDConst()));
+                break;
+            case glslang::EbtFloatUE8M0:
+                spvConsts.push_back(builder.makeFloatUE8M0Constant(zero ? 0.0F : (float)consts[nextConst].getDConst()));
+                break;
+            case glslang::EbtFloatMXINT8:
+                spvConsts.push_back(builder.makeFloatMXINT8Constant(zero ? 0.0F : (float)consts[nextConst].getDConst()));
+                break;
             default:
                 assert(0);
                 break;
@@ -12266,6 +12363,21 @@ spv::Id TGlslangToSpvTraverser::createSpvConstantFromConstUnionArray(const glsla
             break;
         case glslang::EbtFloatE4M3:
             scalar = builder.makeFloatE4M3Constant(zero ? 0.0F : (float)consts[nextConst].getDConst(), specConstant);
+            break;
+        case glslang::EbtFloatE2M1:
+            scalar = builder.makeFloatE2M1Constant(zero ? 0.0F : (float)consts[nextConst].getDConst(), specConstant);
+            break;
+        case glslang::EbtFloatE3M2:
+            scalar = builder.makeFloatE3M2Constant(zero ? 0.0F : (float)consts[nextConst].getDConst(), specConstant);
+            break;
+        case glslang::EbtFloatE2M3:
+            scalar = builder.makeFloatE2M3Constant(zero ? 0.0F : (float)consts[nextConst].getDConst(), specConstant);
+            break;
+        case glslang::EbtFloatUE8M0:
+            scalar = builder.makeFloatUE8M0Constant(zero ? 0.0F : (float)consts[nextConst].getDConst(), specConstant);
+            break;
+        case glslang::EbtFloatMXINT8:
+            scalar = builder.makeFloatMXINT8Constant(zero ? 0.0F : (float)consts[nextConst].getDConst(), specConstant);
             break;
         case glslang::EbtReference:
             scalar = builder.makeUint64Constant(zero ? 0 : consts[nextConst].getU64Const(), specConstant);

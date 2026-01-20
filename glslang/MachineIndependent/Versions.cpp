@@ -402,6 +402,11 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_EXT_shader_64bit_indexing]       = EBhDisable;
     extensionBehavior[E_GL_EXT_conservative_depth]          = EBhDisable;
     extensionBehavior[E_GL_EXT_long_vector]                 = EBhDisable;
+    extensionBehavior[E_GL_EXT_float_e2m1]                  = EBhDisable;
+    extensionBehavior[E_GL_EXT_float_e3m2]                  = EBhDisable;
+    extensionBehavior[E_GL_EXT_float_e2m3]                  = EBhDisable;
+    extensionBehavior[E_GL_EXT_float_ue8m0]                 = EBhDisable;
+    extensionBehavior[E_GL_EXT_float_mxint8]                = EBhDisable;
 
     // OVR extensions
     extensionBehavior[E_GL_OVR_multiview]                = EBhDisable;
@@ -657,6 +662,11 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_EXT_float_e4m3 1\n"
             "#define GL_EXT_uniform_buffer_unsized_array 1\n"
             "#define GL_EXT_shader_64bit_indexing 1\n"
+            "#define GL_EXT_float_e2m1 1\n"
+            "#define GL_EXT_float_e3m2 1\n"
+            "#define GL_EXT_float_e2m3 1\n"
+            "#define GL_EXT_float_ue8m0 1\n"
+            "#define GL_EXT_float_mxint8 1\n"
 
             "#define GL_EXT_shader_invocation_reorder 1\n"
             "#define GL_EXT_descriptor_heap 1\n"
@@ -1374,6 +1384,56 @@ void TParseVersions::floate4m3ScalarVectorCheck(const TSourceLoc& loc, const cha
     if (!builtIn) {
         const char* const extensions[] = {
                                            E_GL_EXT_float_e4m3,
+                                         };
+        requireExtensions(loc, sizeof(extensions)/sizeof(extensions[0]), extensions, op);
+    }
+}
+
+void TParseVersions::floate2m1ScalarVectorCheck(const TSourceLoc& loc, const char* op, bool builtIn)
+{
+    if (!builtIn) {
+        const char* const extensions[] = {
+                                           E_GL_EXT_float_e2m1,
+                                         };
+        requireExtensions(loc, sizeof(extensions)/sizeof(extensions[0]), extensions, op);
+    }
+}
+
+void TParseVersions::floate3m2ScalarVectorCheck(const TSourceLoc& loc, const char* op, bool builtIn)
+{
+    if (!builtIn) {
+        const char* const extensions[] = {
+                                           E_GL_EXT_float_e3m2,
+                                         };
+        requireExtensions(loc, sizeof(extensions)/sizeof(extensions[0]), extensions, op);
+    }
+}
+
+void TParseVersions::floate2m3ScalarVectorCheck(const TSourceLoc& loc, const char* op, bool builtIn)
+{
+    if (!builtIn) {
+        const char* const extensions[] = {
+                                           E_GL_EXT_float_e2m3,
+                                         };
+        requireExtensions(loc, sizeof(extensions)/sizeof(extensions[0]), extensions, op);
+    }
+}
+
+void TParseVersions::floatue8m0ScalarVectorCheck(const TSourceLoc& loc, const char* op, bool builtIn)
+{
+    if (!builtIn) {
+        const char* const extensions[] = {
+                                           E_GL_EXT_float_ue8m0,
+                                         };
+        requireExtensions(loc, sizeof(extensions)/sizeof(extensions[0]), extensions, op);
+    }
+}
+
+void TParseVersions::floatmxint8ScalarVectorCheck(const TSourceLoc& loc, const char* op, bool builtIn)
+{
+    if (!builtIn) {
+        const char* const extensions[] = {
+                                           E_GL_EXT_float_mxint8,
                                          };
         requireExtensions(loc, sizeof(extensions)/sizeof(extensions[0]), extensions, op);
     }

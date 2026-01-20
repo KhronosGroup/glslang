@@ -298,6 +298,11 @@ public:
                     case PpAtomConstFloat:
                     case PpAtomConstDouble:
                     case PpAtomConstFloat16:
+                    case PpAtomConstFloatE2M1:
+                    case PpAtomConstFloatE3M2:
+                    case PpAtomConstFloatE2M3:
+                    case PpAtomConstFloatUE8M0:
+                    case PpAtomConstFloatMXINT8:
                     case PpAtomConstString:
                     case PpAtomIdentifier:
                         return true;
