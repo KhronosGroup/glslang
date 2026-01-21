@@ -138,7 +138,7 @@ public:
         if (trackDebugInfo) {
             dirtyLineTracker = true;
             if (line != 0) {
-                // TODO: This is special handling of some AST nodes having (untracked) line 0. 
+                // TODO: This is special handling of some AST nodes having (untracked) line 0.
                 //       But they should have a valid line number.
                 currentLine = line;
                 if (filename) {
@@ -208,10 +208,20 @@ public:
 
     // Maps the given OpType Id to a Non-Semantic DebugType Id.
     Id getDebugType(Id type) {
-        if (emitNonSemanticShaderDebugInfo) {
-            return debugId[type];
+        if (auto it = debugTypeIdLookup.find(type); it != debugTypeIdLookup.end()) {
+            return it->second;
         }
-        return 0;
+        
+        return NoType;
+    }
+
+    // Maps the given OpFunction Id to a Non-Semantic DebugFunction Id.
+    Id getDebugFunction(Id func) {
+        if (auto it = debugFuncIdLookup.find(func); it != debugFuncIdLookup.end()) {
+            return it->second;
+        }
+        
+        return NoResult;
     }
 
     // For creating new types (will return old type if the requested one was already made).
@@ -284,6 +294,8 @@ public:
     Id makeRayQueryType();
     // hitObjectNV type
     Id makeHitObjectNVType();
+    // hitObjectEXT type
+    Id makeHitObjectEXTType();
 
     // For querying about types.
     Id getTypeId(Id resultId) const { return module.getTypeId(resultId); }
@@ -511,6 +523,10 @@ public:
     // such as OpEmitMeshTasksEXT
     void makeStatementTerminator(spv::Op opcode, const std::vector<Id>& operands, const char* name);
 
+    // Create a global/local constant. Because OpConstant is automatically emitted by getting the constant
+    // ids, this function only handles debug info.
+    void createConstVariable(Id type, const char* name, Id constant, bool isGlobal);
+
     // Create a global or function local or IO variable.
     Id createVariable(Decoration precision, StorageClass storageClass, Id type, const char* name = nullptr,
         Id initializer = NoResult, bool const compilerGenerated = true);
@@ -531,7 +547,7 @@ public:
     Id createAccessChain(StorageClass, Id base, const std::vector<Id>& offsets);
 
     // Create an OpArrayLength instruction
-    Id createArrayLength(Id base, unsigned int member);
+    Id createArrayLength(Id base, unsigned int member, unsigned int bits);
 
     // Create an OpCooperativeMatrixLengthKHR instruction
     Id createCooperativeMatrixLengthKHR(Id type);
@@ -936,7 +952,11 @@ public:
 
     void setUseReplicatedComposites(bool use) { useReplicatedComposites = use; }
 
- protected:
+private:
+    // Helper to get size of a scalar (in bytes)
+    unsigned int postProcessGetLargestScalarSize(const Instruction& type);
+
+protected:
     Id findScalarConstant(Op typeClass, Op opcode, Id typeId, unsigned value);
     Id findScalarConstant(Op typeClass, Op opcode, Id typeId, unsigned v1, unsigned v2);
     Id findCompositeConstant(Op typeClass, Op opcode, Id typeId, const std::vector<Id>& comps, size_t numMembers);
@@ -1002,6 +1022,8 @@ public:
     Block* buildPoint;
     Id uniqueId;
     Function* entryPointFunction;
+    // This tracks the current function being built, or nullptr if not in a function.
+    Function const* currentFunction { nullptr };
     bool generatingOpCodeForSpecConst;
     bool useReplicatedComposites { false };
     AccessChain accessChain;
@@ -1019,8 +1041,58 @@ public:
 
     // not output, internally used for quick & dirty canonical (unique) creation
 
+    // Key for scalar constants (handles both 32-bit and 64-bit)
+    struct ScalarConstantKey {
+        unsigned int typeClass;  // OpTypeInt, OpTypeFloat, OpTypeBool
+        unsigned int opcode;     // OpConstant, OpSpecConstant, OpConstantTrue, etc.
+        Id typeId;               // The specific type
+        unsigned value1;         // First operand (or only operand)
+        unsigned value2;         // Second operand (0 for single-operand constants)
+
+        bool operator==(const ScalarConstantKey& other) const {
+            return typeClass == other.typeClass &&
+                   opcode == other.opcode &&
+                   typeId == other.typeId &&
+                   value1 == other.value1 &&
+                   value2 == other.value2;
+        }
+    };
+
+    struct ScalarConstantKeyHash {
+        // 64/32 bit mix function from MurmurHash3
+        inline std::size_t hash_mix(std::size_t h) const {
+            if constexpr (sizeof(std::size_t) == 8) {
+                h ^= h >> 33;
+                h *= UINT64_C(0xff51afd7ed558ccd);
+                h ^= h >> 33;
+                h *= UINT64_C(0xc4ceb9fe1a85ec53);
+                h ^= h >> 33;
+                return h;
+            } else {
+                h ^= h >> 16;
+                h *= UINT32_C(0x85ebca6b);
+                h ^= h >> 13;
+                h *= UINT32_C(0xc2b2ae35);
+                h ^= h >> 16;
+                return h;
+            }
+        }
+
+        // Hash combine from boost
+        inline std::size_t hash_combine(std::size_t seed, std::size_t v) const {
+            return hash_mix(seed + 0x9e3779b9 + v);
+        }
+        
+        std::size_t operator()(const ScalarConstantKey& k) const {
+            size_t hash1 = hash_combine(std::hash<unsigned>{}(k.typeClass), std::hash<unsigned>{}(k.opcode));
+            size_t hash2 = hash_combine(std::hash<Id>{}(k.value1), std::hash<unsigned>{}(k.value2));
+            size_t hash3 = hash_combine(hash1, hash2);
+            return hash_combine(hash3, std::hash<unsigned>{}(k.typeId));
+        }
+    };
+
     // map type opcodes to constant inst.
-    std::unordered_map<unsigned int, std::vector<Instruction*>> groupedConstants;
+    std::unordered_map<unsigned int, std::vector<Instruction*>> groupedCompositeConstants;
     // map struct-id to constant instructions
     std::unordered_map<unsigned int, std::vector<Instruction*>> groupedStructConstants;
     // map type opcodes to type instructions
@@ -1029,6 +1101,8 @@ public:
     std::unordered_map<unsigned int, std::vector<Instruction*>> groupedDebugTypes;
     // list of OpConstantNull instructions
     std::vector<Instruction*> nullConstants;
+    // map scalar constants to result IDs
+    std::unordered_map<ScalarConstantKey, Id, ScalarConstantKeyHash> groupedScalarConstantResultIDs;
 
     // Track which types have explicit layouts, to avoid reusing in storage classes without layout.
     // Currently only tracks array types.
@@ -1046,8 +1120,11 @@ public:
     // map from include file name ids to their contents
     std::map<spv::Id, const std::string*> includeFiles;
 
-    // map from core id to debug id
-    std::map <spv::Id, spv::Id> debugId;
+    // maps from OpTypeXXX id to DebugTypeXXX id
+    std::unordered_map<spv::Id, spv::Id> debugTypeIdLookup;
+
+    // maps from OpFunction id to DebugFunction id
+    std::unordered_map<spv::Id, spv::Id> debugFuncIdLookup;
 
     // map from file name string id to DebugSource id
     std::unordered_map<spv::Id, spv::Id> debugSourceId;

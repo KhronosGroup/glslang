@@ -173,6 +173,14 @@ elseif(${CMAKE_CXX_COMPILER_ID} MATCHES "Clang" AND NOT MSVC)
         endif()
     endif()
 elseif(MSVC)
+    # A unary minus operator was applied to an unsigned type, resulting in an unsigned result.
+    add_compile_options(/w14146)
+    # A negative integral constant converted to unsigned type, resulting in a possibly meaningless result.
+    add_compile_options(/w14308)
+    # Use of an uninitialized local variable.
+    add_compile_options(/w14700)
+    # Use of a potentially uninitialized local pointer variable.
+    add_compile_options(/w14703)
     if(NOT ENABLE_RTTI)
         add_compile_options(/GR-) # Disable RTTI
     endif()
@@ -182,6 +190,12 @@ elseif(MSVC)
         string(REGEX REPLACE "/EHsc" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}") # Try to remove default /EHsc cxx_flag
         add_compile_options(/D_HAS_EXCEPTIONS=0)
     endif()
+endif()
+
+if (PROJECT_IS_TOP_LEVEL)
+    # enable parallel builds for msbuild
+    list(APPEND CMAKE_VS_GLOBALS UseMultiToolTask=true)
+    list(APPEND CMAKE_VS_GLOBALS EnforceProcessCountAcrossBuilds=true)
 endif()
 
 # NOTE we could potentially replace this logic with COMPILE_WARNING_AS_ERROR if cmake minimum is bumped to >= 3.24
