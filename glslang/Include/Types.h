@@ -2368,6 +2368,8 @@ public:
                 appendStr(" quad_derivatives");
               if (qualifier.layoutHitObjectShaderRecordNV)
                 appendStr(" hitobjectshaderrecordnv");
+              if (qualifier.layoutHitObjectShaderRecordEXT)
+                  appendStr(" hitobjectshaderrecordext");
 
               if (qualifier.hasBank()) {
                 appendStr(" bank=");

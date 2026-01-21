@@ -7488,6 +7488,8 @@ void TParseContext::mergeObjectLayoutQualifiers(TQualifier& dst, const TQualifie
         if (src.layoutHitObjectShaderRecordNV)
             dst.layoutHitObjectShaderRecordNV = true;
         dst.layoutTileAttachmentQCOM |= src.layoutTileAttachmentQCOM;
+        if (src.layoutHitObjectShaderRecordEXT)
+            dst.layoutHitObjectShaderRecordEXT = true;
         if (src.hasBank())
             dst.layoutBank = src.layoutBank;
         if (src.hasMemberOffset())
