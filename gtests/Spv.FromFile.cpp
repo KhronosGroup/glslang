@@ -851,6 +851,18 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.nv.lss-spheregeomcap.rgen",
         "spv.nv.lss-lssgeomcap.rgen",
 
+        // SPV_EXT_descriptor_heap
+
+        "spv.descriptorHeap.AtomicImage.comp",
+        "spv.descriptorHeap.AtomicImage.error.comp",
+        "spv.descriptorHeap.Buffer.comp",
+        "spv.descriptorHeap.DebugPrintf.comp",
+        "spv.descriptorHeap.HeapNotArray.error.comp",
+        "spv.descriptorHeap.HeapStrideNotHeap.error.comp",
+        "spv.descriptorHeap.HeapStrideNotPow2.error.comp",
+        "spv.descriptorHeap.PushConstant.comp",
+        "spv.descriptorHeap.valid.frag",
+
     })),
     FileNameAsCustomTestSuffix
 );

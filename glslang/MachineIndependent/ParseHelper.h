@@ -416,7 +416,7 @@ public:
     void redeclareBuiltinBlock(const TSourceLoc&, TTypeList& typeList, const TString& blockName, const TString* instanceName, TArraySizes* arraySizes);
     void paramCheckFixStorage(const TSourceLoc&, const TStorageQualifier&, TType& type);
     void paramCheckFix(const TSourceLoc&, const TQualifier&, TType& type);
-    void nestedBlockCheck(const TSourceLoc&);
+    void nestedBlockCheck(const TSourceLoc&, const bool allowedInnerStruct = false);
     void nestedStructCheck(const TSourceLoc&);
     void arrayObjectCheck(const TSourceLoc&, const TType&, const char* op);
     void opaqueCheck(const TSourceLoc&, const TType&, const char* op);
@@ -456,6 +456,8 @@ public:
     TParameter getParamWithDefault(const TPublicType& ty, TString* identifier, TIntermTyped* initializer,
                                    const TSourceLoc& loc);
     void inheritMemoryQualifiers(const TQualifier& from, TQualifier& to);
+    void descHeapBuiltinRemap(TType* type, bool isInnerBlock);
+    bool untypedHeapCheck(TSymbol* symbol, const TType& type, const TSourceLoc& loc, const char* name);
     TIntermNode* declareBlock(const TSourceLoc&, TTypeList& typeList, const TString* instanceName = nullptr, TArraySizes* arraySizes = nullptr);
     void blockStorageRemap(const TSourceLoc&, const TString*, TQualifier&);
     void blockStageIoCheck(const TSourceLoc&, const TQualifier&);

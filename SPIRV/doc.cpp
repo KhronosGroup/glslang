@@ -353,6 +353,9 @@ const char* DecorationString(int decoration)
 
     case (int)Decoration::BankNV:                        return "BankNV";
     case (int)Decoration::MemberOffsetNV:                return "MemberOffsetNV";
+
+    case (int)Decoration::ArrayStrideIdEXT:        return "DecorationArrayStrideIdEXT";
+    case (int)Decoration::OffsetIdEXT:             return "DecorationOffsetIdEXT";
     }
 }
 
@@ -494,6 +497,8 @@ const char* BuiltInString(int builtIn)
     case (int)BuiltIn::CoreMaxIDARM:           return "CoreMaxIDARM";
     case (int)BuiltIn::WarpIDARM:              return "WarpIDARM";
     case (int)BuiltIn::WarpMaxIDARM:           return "BuiltInWarpMaxIDARM";
+    case (int)BuiltIn::SamplerHeapEXT:         return "SamplerHeapEXT";
+    case (int)BuiltIn::ResourceHeapEXT:        return "ResourceHeapEXT";
 
     default: return "Bad";
     }
@@ -1096,6 +1101,8 @@ const char* CapabilityString(int info)
     case (int)Capability::ShaderClockKHR:                          return "ShaderClockKHR";
     case (int)Capability::QuadControlKHR:                          return "QuadControlKHR";
     case (int)Capability::Int64ImageEXT:                           return "Int64ImageEXT";
+    case (int)Capability::DescriptorHeapEXT:                       return "DescriptorHeapEXT";
+    case (int)Capability::UntypedPointersKHR:                      return "UntypedPointersKHR";
 
     case (int)Capability::IntegerFunctions2INTEL:              return "IntegerFunctions2INTEL";
 
@@ -1529,6 +1536,14 @@ const char* OpcodeString(int op)
 
     case (int)Op::OpGroupNonUniformQuadAllKHR: return "OpGroupNonUniformQuadAllKHR";
     case (int)Op::OpGroupNonUniformQuadAnyKHR: return "OpGroupNonUniformQuadAnyKHR";
+    case (int)Op::OpBufferPointerEXT:          return "OpBufferPointerEXT";
+    case (int)Op::OpConstantSizeOfEXT:         return "OpConstantSizeOfEXT";
+    case (int)Op::OpTypeBufferEXT:             return "OpTypeBufferEXT";
+    case (int)Op::OpUntypedAccessChainKHR:     return "OpUntypedAccessChainKHR";
+    case (int)Op::OpUntypedVariableKHR:        return "OpUntypedVariableKHR";
+    case (int)Op::OpTypeUntypedPointerKHR:     return "OpTypeUntypedPointerKHR";
+    case (int)Op::OpMemberDecorateIdEXT:       return "OpMemberDecorateIdEXT";
+    case (int)Op::OpUntypedImageTexelPointerEXT:     return "OpUntypedImageTexelPointerEXT";
 
     case (int)Op::OpAtomicFAddEXT: return "OpAtomicFAddEXT";
     case (int)Op::OpAtomicFMinEXT: return "OpAtomicFMinEXT";
@@ -1825,6 +1840,7 @@ void Parameterize()
         InstructionDesc[enumCast(Op::OpTypeStruct)].setResultAndType(true, false);
         InstructionDesc[enumCast(Op::OpTypeOpaque)].setResultAndType(true, false);
         InstructionDesc[enumCast(Op::OpTypePointer)].setResultAndType(true, false);
+        InstructionDesc[enumCast(Op::OpTypeUntypedPointerKHR)].setResultAndType(true, false);
         InstructionDesc[enumCast(Op::OpTypeForwardPointer)].setResultAndType(false, false);
         InstructionDesc[enumCast(Op::OpTypeFunction)].setResultAndType(true, false);
         InstructionDesc[enumCast(Op::OpTypeEvent)].setResultAndType(true, false);
@@ -1895,6 +1911,7 @@ void Parameterize()
         InstructionDesc[enumCast(Op::OpCooperativeVectorStoreNV)].setResultAndType(false, false);
         InstructionDesc[enumCast(Op::OpCooperativeVectorOuterProductAccumulateNV)].setResultAndType(false, false);
         InstructionDesc[enumCast(Op::OpCooperativeVectorReduceSumAccumulateNV)].setResultAndType(false, false);
+        InstructionDesc[enumCast(Op::OpMemberDecorateIdEXT)].setResultAndType(false, false);
 
         InstructionDesc[enumCast(Op::OpTypeTensorARM)].setResultAndType(true, false);
         InstructionDesc[enumCast(Op::OpTensorReadARM)].setResultAndType(true, true);
@@ -2049,6 +2066,7 @@ void Parameterize()
         InstructionDesc[enumCast(Op::OpTypeStruct)].operands.push(OperandVariableIds, "'Member 0 type', +\n'member 1 type', +\n...");
 
         InstructionDesc[enumCast(Op::OpTypeOpaque)].operands.push(OperandLiteralString, "The name of the opaque type.");
+        InstructionDesc[enumCast(Op::OpTypeUntypedPointerKHR)].operands.push(OperandStorage, "");
 
         InstructionDesc[enumCast(Op::OpTypePointer)].operands.push(OperandStorage, "");
         InstructionDesc[enumCast(Op::OpTypePointer)].operands.push(OperandId, "'Type'");
@@ -2076,6 +2094,9 @@ void Parameterize()
         InstructionDesc[enumCast(Op::OpSpecConstantOp)].operands.push(OperandLiteralNumber, "'Opcode'");
         InstructionDesc[enumCast(Op::OpSpecConstantOp)].operands.push(OperandVariableIds, "'Operands'");
 
+        InstructionDesc[enumCast(Op::OpUntypedVariableKHR)].operands.push(OperandStorage, "");
+        InstructionDesc[enumCast(Op::OpUntypedVariableKHR)].operands.push(OperandId, "'Type'", true);
+        InstructionDesc[enumCast(Op::OpUntypedVariableKHR)].operands.push(OperandId, "'Initializer'", true);
         InstructionDesc[enumCast(Op::OpVariable)].operands.push(OperandStorage, "");
         InstructionDesc[enumCast(Op::OpVariable)].operands.push(OperandId, "'Initializer'", true);
 
@@ -2122,6 +2143,11 @@ void Parameterize()
         InstructionDesc[enumCast(Op::OpMemberDecorate)].operands.push(OperandLiteralNumber, "'Member'");
         InstructionDesc[enumCast(Op::OpMemberDecorate)].operands.push(OperandDecoration, "");
         InstructionDesc[enumCast(Op::OpMemberDecorate)].operands.push(OperandVariableLiterals, "See <<Decoration,'Decoration'>>.");
+
+        InstructionDesc[enumCast(Op::OpMemberDecorateIdEXT)].operands.push(OperandId, "'Structure Type'");
+        InstructionDesc[enumCast(Op::OpMemberDecorateIdEXT)].operands.push(OperandLiteralNumber, "'Member'");
+        InstructionDesc[enumCast(Op::OpMemberDecorateIdEXT)].operands.push(OperandDecoration, "");
+        InstructionDesc[enumCast(Op::OpMemberDecorateIdEXT)].operands.push(OperandVariableIds, "See <<Decoration,'Decoration'>>.");
 
         InstructionDesc[enumCast(Op::OpMemberDecorateStringGOOGLE)].operands.push(OperandId, "'Structure Type'");
         InstructionDesc[enumCast(Op::OpMemberDecorateStringGOOGLE)].operands.push(OperandLiteralNumber, "'Member'");
@@ -2329,6 +2355,9 @@ void Parameterize()
         InstructionDesc[enumCast(Op::OpAccessChain)].operands.push(OperandId, "'Base'");
         InstructionDesc[enumCast(Op::OpAccessChain)].operands.push(OperandVariableIds, "'Indexes'");
 
+        InstructionDesc[enumCast(Op::OpUntypedAccessChainKHR)].operands.push(OperandId, "'Base Type'");
+        InstructionDesc[enumCast(Op::OpUntypedAccessChainKHR)].operands.push(OperandId, "'Base'");
+        InstructionDesc[enumCast(Op::OpUntypedAccessChainKHR)].operands.push(OperandVariableIds, "'Indexes'");
         InstructionDesc[enumCast(Op::OpInBoundsAccessChain)].operands.push(OperandId, "'Base'");
         InstructionDesc[enumCast(Op::OpInBoundsAccessChain)].operands.push(OperandVariableIds, "'Indexes'");
 
@@ -3165,6 +3194,19 @@ void Parameterize()
         InstructionDesc[enumCast(Op::OpFragmentFetchAMD)].operands.push(OperandId, "'Image'");
         InstructionDesc[enumCast(Op::OpFragmentFetchAMD)].operands.push(OperandId, "'Coordinate'");
         InstructionDesc[enumCast(Op::OpFragmentFetchAMD)].operands.push(OperandId, "'Fragment Index'");
+
+
+        InstructionDesc[enumCast(Op::OpTypeBufferEXT)].operands.push(OperandStorage, "");
+        InstructionDesc[enumCast(Op::OpTypeBufferEXT)].setResultAndType(true, false);
+
+        InstructionDesc[enumCast(Op::OpConstantSizeOfEXT)].operands.push(OperandId, "'Type'");
+
+        InstructionDesc[enumCast(Op::OpBufferPointerEXT)].operands.push(OperandId, "'Buffer'");
+
+        InstructionDesc[enumCast(Op::OpUntypedImageTexelPointerEXT)].operands.push(OperandId, "'ImageType'");
+        InstructionDesc[enumCast(Op::OpUntypedImageTexelPointerEXT)].operands.push(OperandId, "'Image'");
+        InstructionDesc[enumCast(Op::OpUntypedImageTexelPointerEXT)].operands.push(OperandId, "'Coordinate'");
+        InstructionDesc[enumCast(Op::OpUntypedImageTexelPointerEXT)].operands.push(OperandId, "'Sample'");
 
         InstructionDesc[enumCast(Op::OpGroupNonUniformPartitionNV)].operands.push(OperandId, "X");
 

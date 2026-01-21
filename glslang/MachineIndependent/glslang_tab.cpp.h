@@ -515,28 +515,30 @@ extern int yydebug;
     PATCH = 716,                   /* PATCH  */
     SAMPLE = 717,                  /* SAMPLE  */
     NONUNIFORM = 718,              /* NONUNIFORM  */
-    COHERENT = 719,                /* COHERENT  */
-    VOLATILE = 720,                /* VOLATILE  */
-    RESTRICT = 721,                /* RESTRICT  */
-    READONLY = 722,                /* READONLY  */
-    WRITEONLY = 723,               /* WRITEONLY  */
-    NONTEMPORAL = 724,             /* NONTEMPORAL  */
-    DEVICECOHERENT = 725,          /* DEVICECOHERENT  */
-    QUEUEFAMILYCOHERENT = 726,     /* QUEUEFAMILYCOHERENT  */
-    WORKGROUPCOHERENT = 727,       /* WORKGROUPCOHERENT  */
-    SUBGROUPCOHERENT = 728,        /* SUBGROUPCOHERENT  */
-    NONPRIVATE = 729,              /* NONPRIVATE  */
-    SHADERCALLCOHERENT = 730,      /* SHADERCALLCOHERENT  */
-    NOPERSPECTIVE = 731,           /* NOPERSPECTIVE  */
-    EXPLICITINTERPAMD = 732,       /* EXPLICITINTERPAMD  */
-    PERVERTEXEXT = 733,            /* PERVERTEXEXT  */
-    PERVERTEXNV = 734,             /* PERVERTEXNV  */
-    PERPRIMITIVENV = 735,          /* PERPRIMITIVENV  */
-    PERVIEWNV = 736,               /* PERVIEWNV  */
-    PERTASKNV = 737,               /* PERTASKNV  */
-    PERPRIMITIVEEXT = 738,         /* PERPRIMITIVEEXT  */
-    TASKPAYLOADWORKGROUPEXT = 739, /* TASKPAYLOADWORKGROUPEXT  */
-    PRECISE = 740                  /* PRECISE  */
+    RESOURCEHEAP = 719,            /* RESOURCEHEAP  */
+    SAMPLERHEAP = 720,             /* SAMPLERHEAP  */
+    COHERENT = 721,                /* COHERENT  */
+    VOLATILE = 722,                /* VOLATILE  */
+    RESTRICT = 723,                /* RESTRICT  */
+    READONLY = 724,                /* READONLY  */
+    WRITEONLY = 725,               /* WRITEONLY  */
+    NONTEMPORAL = 726,             /* NONTEMPORAL  */
+    DEVICECOHERENT = 727,          /* DEVICECOHERENT  */
+    QUEUEFAMILYCOHERENT = 728,     /* QUEUEFAMILYCOHERENT  */
+    WORKGROUPCOHERENT = 729,       /* WORKGROUPCOHERENT  */
+    SUBGROUPCOHERENT = 730,        /* SUBGROUPCOHERENT  */
+    NONPRIVATE = 731,              /* NONPRIVATE  */
+    SHADERCALLCOHERENT = 732,      /* SHADERCALLCOHERENT  */
+    NOPERSPECTIVE = 733,           /* NOPERSPECTIVE  */
+    EXPLICITINTERPAMD = 734,       /* EXPLICITINTERPAMD  */
+    PERVERTEXEXT = 735,            /* PERVERTEXEXT  */
+    PERVERTEXNV = 736,             /* PERVERTEXNV  */
+    PERPRIMITIVENV = 737,          /* PERPRIMITIVENV  */
+    PERVIEWNV = 738,               /* PERVIEWNV  */
+    PERTASKNV = 739,               /* PERTASKNV  */
+    PERPRIMITIVEEXT = 740,         /* PERPRIMITIVEEXT  */
+    TASKPAYLOADWORKGROUPEXT = 741, /* TASKPAYLOADWORKGROUPEXT  */
+    PRECISE = 742                  /* PRECISE  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -584,7 +586,7 @@ union YYSTYPE
         glslang::TTypeParameters* typeParameters;
     } interm;
 
-#line 588 "MachineIndependent/glslang_tab.cpp.h"
+#line 590 "MachineIndependent/glslang_tab.cpp.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
