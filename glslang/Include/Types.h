@@ -871,6 +871,7 @@ public:
         clearInterstageLayout();
 
         layoutSpecConstantId = layoutSpecConstantIdEnd;
+        layoutBank = layoutBankEnd;
     }
     void clearInterstageLayout()
     {
@@ -912,6 +913,7 @@ public:
     TLayoutPacking layoutPacking : 4;
     int layoutOffset;
     int layoutAlign;
+    int layoutMemberOffset;
 
                  unsigned int layoutLocation             : 12;
     static const unsigned int layoutLocationEnd      =  0xFFF;
@@ -945,6 +947,9 @@ public:
 
                  unsigned int layoutSpecConstantId       : 11;
     static const unsigned int layoutSpecConstantIdEnd = 0x7FF;
+
+                 unsigned int layoutBank                 : 4;
+    static const unsigned int layoutBankEnd            = 0xF;
 
     // stored as log2 of the actual alignment value
                  unsigned int layoutBufferReferenceAlign :  6;
@@ -986,6 +991,7 @@ public:
         layoutPacking = ElpNone;
         layoutOffset = layoutNotSet;
         layoutAlign = layoutNotSet;
+        layoutMemberOffset = layoutNotSet;
 
         layoutSet = layoutSetEnd;
         layoutBinding = layoutBindingEnd;
@@ -1108,6 +1114,14 @@ public:
         // Not the same thing as being a specialization constant, this
         // is just whether or not it was declared with an ID.
         return layoutSpecConstantId != layoutSpecConstantIdEnd;
+    }
+    bool hasBank() const
+    {
+        return layoutBank != layoutBankEnd;
+    }
+    bool hasMemberOffset() const
+    {
+        return layoutMemberOffset != layoutNotSet;
     }
     bool isSpecConstant() const
     {
@@ -2333,6 +2347,14 @@ public:
                 appendStr(" quad_derivatives");
               if (qualifier.layoutHitObjectShaderRecordNV)
                 appendStr(" hitobjectshaderrecordnv");
+              if (qualifier.hasBank()) {
+                appendStr(" bank=");
+                appendUint(qualifier.layoutBank);
+              }
+              if (qualifier.hasMemberOffset()) {
+                appendStr(" member_offset=");
+                appendInt(qualifier.layoutMemberOffset);
+              }
 
               if (qualifier.layoutBindlessSampler)
                   appendStr(" layoutBindlessSampler");

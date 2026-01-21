@@ -578,7 +578,9 @@ enum class Decoration : unsigned {
     RestrictPointerEXT = 5355,
     AliasedPointer = 5356,
     AliasedPointerEXT = 5356,
+    MemberOffsetNV = 5358,
     HitObjectShaderRecordBufferNV = 5386,
+    BankNV = 5397,
     BindlessSamplerNV = 5398,
     BindlessImageNV = 5399,
     BoundSamplerNV = 5400,
@@ -1196,6 +1198,7 @@ enum class Capability : unsigned {
     RawAccessChainsNV = 5414,
     RayTracingSpheresGeometryNV = 5418,
     RayTracingLinearSweptSpheresGeometryNV = 5419,
+    PushConstantBanksNV = 5423,
     CooperativeMatrixReductionsNV = 5430,
     CooperativeMatrixConversionsNV = 5431,
     CooperativeMatrixPerElementOperationsNV = 5432,
@@ -3657,7 +3660,9 @@ inline const char* DecorationToString(Decoration value) {
     case Decoration::NonUniform: return "NonUniform";
     case Decoration::RestrictPointer: return "RestrictPointer";
     case Decoration::AliasedPointer: return "AliasedPointer";
+    case Decoration::MemberOffsetNV: return "MemberOffsetNV";
     case Decoration::HitObjectShaderRecordBufferNV: return "HitObjectShaderRecordBufferNV";
+    case Decoration::BankNV: return "BankNV";
     case Decoration::BindlessSamplerNV: return "BindlessSamplerNV";
     case Decoration::BindlessImageNV: return "BindlessImageNV";
     case Decoration::BoundSamplerNV: return "BoundSamplerNV";
@@ -4077,6 +4082,7 @@ inline const char* CapabilityToString(Capability value) {
     case Capability::RawAccessChainsNV: return "RawAccessChainsNV";
     case Capability::RayTracingSpheresGeometryNV: return "RayTracingSpheresGeometryNV";
     case Capability::RayTracingLinearSweptSpheresGeometryNV: return "RayTracingLinearSweptSpheresGeometryNV";
+    case Capability::PushConstantBanksNV: return "PushConstantBanksNV";
     case Capability::CooperativeMatrixReductionsNV: return "CooperativeMatrixReductionsNV";
     case Capability::CooperativeMatrixConversionsNV: return "CooperativeMatrixConversionsNV";
     case Capability::CooperativeMatrixPerElementOperationsNV: return "CooperativeMatrixPerElementOperationsNV";

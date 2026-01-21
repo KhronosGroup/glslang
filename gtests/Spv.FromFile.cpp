@@ -1030,6 +1030,7 @@ INSTANTIATE_TEST_SUITE_P(
     "spv.meshTaskShader.task",
     "spv.perprimitiveNV.frag",
     "spv.nvgpushader5.frag"
+    "spv.pushConstantBank.vert",
 })),
 FileNameAsCustomTestSuffix
 );

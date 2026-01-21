@@ -524,7 +524,8 @@ void TIntermediate::mergeModes(TInfoSink& infoSink, TIntermediate& unit)
     numErrors += unit.getNumErrors();
     // Only one push_constant is allowed, mergeLinkerObjects() will ensure the push_constant
     // is the same for all units.
-    if (numPushConstants > 1 || unit.numPushConstants > 1)
+    if (!IsRequestedExtension(glslang::E_GL_NV_push_constant_bank) &&
+        (numPushConstants > 1 || unit.numPushConstants > 1))
         error(infoSink, "Only one push_constant block is allowed per stage");
     numPushConstants = std::min(numPushConstants + unit.numPushConstants, 1);
 
@@ -1125,7 +1126,8 @@ void TIntermediate::mergeLinkerObjects(TInfoSink& infoSink, TIntermSequence& lin
                 mergeErrorCheck(infoSink, *symbol, *unitSymbol);
             }
             // If different symbols, verify they arn't push_constant since there can only be one per stage
-            else if (symbol->getQualifier().isPushConstant() && unitSymbol->getQualifier().isPushConstant() && getStage() == unitStage)
+            else if (!IsRequestedExtension(glslang::E_GL_NV_push_constant_bank) &&
+                (symbol->getQualifier().isPushConstant() && unitSymbol->getQualifier().isPushConstant() && getStage() == unitStage))
                 error(infoSink, "Only one push_constant block is allowed per stage");
         }
 
@@ -1590,7 +1592,7 @@ void TIntermediate::finalCheck(TInfoSink& infoSink, bool keepUncalled)
     // overlap/alias/missing I/O, etc.
     inOutLocationCheck(infoSink);
 
-    if (getNumPushConstants() > 1)
+    if (!IsRequestedExtension(glslang::E_GL_NV_push_constant_bank) && (getNumPushConstants() > 1))
         error(infoSink, "Only one push_constant block is allowed per stage");
 
     // invocations
