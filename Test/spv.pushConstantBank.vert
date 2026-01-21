@@ -5,7 +5,7 @@ layout(std430, binding = 0) buffer ResultData {
     uint bank[8];
 } resultData;
 
-layout(push_constant, bank = 0) uniform PushConstantBank0 {
+layout(push_constant) uniform PushConstantBank0 {
     uint data;
 } bank0;
 

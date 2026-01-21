@@ -49,9 +49,7 @@ Validation failed
                               Decorate 11(resultData) Binding 0
                               Decorate 11(resultData) DescriptorSet 0
                               Decorate 14(PushConstantBank0) Block
-                              Decorate 14(PushConstantBank0) BankNV 0
                               MemberDecorate 14(PushConstantBank0) 0 Offset 0
-                              Decorate 16(bank0) BankNV 0
                               Decorate 23(PushConstantBank1) Block
                               Decorate 23(PushConstantBank1) BankNV 1
                               MemberDecorate 23(PushConstantBank1) 0 Offset 0

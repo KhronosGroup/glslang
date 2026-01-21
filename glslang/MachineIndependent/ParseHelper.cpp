@@ -8786,8 +8786,8 @@ bool TParseContext::vkRelaxedRemapUniformVariable(const TSourceLoc& loc, TString
     mergeObjectLayoutQualifiers(updatedBlock->getWritableType().getQualifier(), type.getQualifier(), true);
 
     // set default value for bank when no decoration is present. 
-    if (currentBlockQualifier.isPushConstant() && !currentBlockQualifier.hasBank()) {
-        currentBlockQualifier.layoutBank = 0;
+    if (updatedBlock->getWritableType().getQualifier().isPushConstant() && !updatedBlock->getWritableType().getQualifier().hasBank()) {
+        updatedBlock->getWritableType().getQualifier().layoutBank = 0;
     }
 
     return true;
