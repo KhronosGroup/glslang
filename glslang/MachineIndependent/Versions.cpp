@@ -346,6 +346,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_EXT_texture_buffer]                       = EBhDisable;
     extensionBehavior[E_GL_EXT_texture_cube_map_array]               = EBhDisable;
     extensionBehavior[E_GL_EXT_null_initializer]                     = EBhDisable;
+    extensionBehavior[E_GL_EXT_descriptor_heap]                      = EBhDisable;
 
     // OES matching AEP
     extensionBehavior[E_GL_OES_geometry_shader]          = EBhDisable;
@@ -459,6 +460,7 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_EXT_shader_implicit_conversions 1\n"
             "#define GL_EXT_shader_integer_mix 1\n"
             "#define GL_EXT_blend_func_extended 1\n"
+            "#define GL_EXT_descriptor_heap 1\n"
 
             // OES matching AEP
             "#define GL_OES_geometry_shader 1\n"
@@ -641,6 +643,7 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_EXT_shader_64bit_indexing 1\n"
 
             "#define GL_EXT_shader_invocation_reorder 1\n"
+            "#define GL_EXT_descriptor_heap 1\n"
             ;
 
         if (spvVersion.spv == 0) {

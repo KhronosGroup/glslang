@@ -229,6 +229,8 @@ const char* const E_GL_EXT_texture_offset_non_const         = "GL_EXT_texture_of
 const char* const E_GL_EXT_nontemporal_keyword              = "GL_EXT_nontemporal_keyword";
 const char* const E_GL_EXT_uniform_buffer_unsized_array     = "GL_EXT_uniform_buffer_unsized_array";
 const char* const E_GL_EXT_conservative_depth               = "GL_EXT_conservative_depth";
+const char* const E_GL_EXT_descriptor_heap                  = "GL_EXT_descriptor_heap";
+const char* const E_GL_EXT_structured_descriptor_heap       = "GL_EXT_structured_descriptor_heap";
 
 // Arrays of extensions for the above viewportEXTs duplications
 

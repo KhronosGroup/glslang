@@ -2204,6 +2204,26 @@ TIntermTyped* TParseContext::handleBuiltInFunctionCall(TSourceLoc loc, TIntermNo
     TIntermTyped *result = intermediate.addBuiltInFunctionCall(loc, function.getBuiltInOp(),
                                                                function.getParamCount() == 1,
                                                                arguments, function.getType());
+
+    // EXT_descriptor_heap
+    // All the image atomic ops' first param is image variable.
+    if (extensionTurnedOn(E_GL_EXT_descriptor_heap) && function.getBuiltInOp() <= EOpImageAtomicStore &&
+        function.getBuiltInOp() >= EOpImageAtomicAdd) {
+        TIntermNode* imageNode = nullptr;
+        if (arguments->getAsAggregate() && arguments->getAsAggregate()->getSequence().size() > 0)
+            imageNode = arguments->getAsAggregate()->getSequence()[0];
+        else if (arguments->getAsUnaryNode())
+            imageNode = arguments->getAsUnaryNode();
+
+        if (imageNode && imageNode->getAsBinaryNode()) {
+            auto imageSymbol = imageNode->getAsBinaryNode()->getLeft();
+            if (imageSymbol && imageSymbol->getType().isImage()) {
+                imageSymbol->getQualifier().setUsedByAtomic();
+                result->getQualifier().setUsedByAtomic();
+            }
+        }
+    }
+
     if (result != nullptr && obeyPrecisionQualifiers())
         computeBuiltinPrecisions(*result, function);
 
@@ -6306,9 +6326,11 @@ void TParseContext::paramCheckFix(const TSourceLoc& loc, const TQualifier& quali
     paramCheckFixStorage(loc, qualifier.storage, type);
 }
 
-void TParseContext::nestedBlockCheck(const TSourceLoc& loc)
+void TParseContext::nestedBlockCheck(const TSourceLoc& loc, const bool allowedInnerStruct)
 {
-    if (structNestingLevel > 0 || blockNestingLevel > 0)
+    if ((!allowedInnerStruct && structNestingLevel > 0) ||
+        (allowedInnerStruct && structNestingLevel <= 0) ||
+        blockNestingLevel > 0)
         error(loc, "cannot nest a block definition inside a structure or block", "", "");
     ++blockNestingLevel;
 }
@@ -6390,7 +6412,8 @@ void TParseContext::structTypeCheck(const TSourceLoc& /*loc*/, TPublicType& publ
         const TSourceLoc& memberLoc = typeList[member].loc;
         if (memberQualifier.isAuxiliary() ||
             memberQualifier.isInterpolation() ||
-            (memberQualifier.storage != EvqTemporary && memberQualifier.storage != EvqGlobal))
+            (memberQualifier.storage != EvqTemporary && memberQualifier.storage != EvqGlobal &&
+             !memberQualifier.layoutDescriptorHeap && !memberQualifier.layoutDescriptorInnerBlock))
             error(memberLoc, "cannot use storage or interpolation qualifiers on structure members", typeList[member].type->getFieldName().c_str(), "");
         if (memberQualifier.isMemory())
             error(memberLoc, "cannot use memory qualifiers on structure members", typeList[member].type->getFieldName().c_str(), "");
@@ -6683,6 +6706,12 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
             publicType.qualifier.layoutFormat = format;
             return;
         }
+    }
+    if (id == "descriptor_heap") {
+        requireExtensions(loc, 1, &E_GL_EXT_descriptor_heap, "descriptor_stride");
+        requireVulkan(loc, "descriptor_heap");
+        publicType.qualifier.layoutDescriptorHeap = true;
+        return;
     }
     if (id == "push_constant") {
         requireVulkan(loc, "push_constant");
@@ -7225,6 +7254,24 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
         return;
     }
 
+    if (id == "descriptor_stride") {
+        requireExtensions(loc, 1, &E_GL_EXT_descriptor_heap, "descriptor_stride");
+        requireVulkan(loc, "descriptor_stride");
+        if (!IsPow2(value))
+            error(loc, "must be a power of 2", "descriptor_stride", "");
+        else
+            publicType.qualifier.layoutDescriptorStride = uint32_t(value);
+        return;
+    }
+
+    if (id == "heap_offset") {
+        requireExtensions(loc, 1, &E_GL_EXT_descriptor_heap, "heap_offset");
+        requireExtensions(loc, 1, &E_GL_EXT_structured_descriptor_heap, "heap_offset");
+        requireVulkan(loc, "heap_offset");
+        publicType.qualifier.layoutHeapOffset = uint32_t(value);
+        return;
+    }
+
     switch (language) {
     case EShLangTessControl:
         if (id == "vertices") {
@@ -7465,6 +7512,14 @@ void TParseContext::mergeObjectLayoutQualifiers(TQualifier& dst, const TQualifie
             dst.layoutXfbOffset = src.layoutXfbOffset;
         if (src.hasAttachment())
             dst.layoutAttachment = src.layoutAttachment;
+        if (src.layoutDescriptorHeap)
+            dst.layoutDescriptorHeap = true;
+        if (src.layoutDescriptorInnerBlock)
+            dst.layoutDescriptorInnerBlock = true;
+        if (src.layoutDescriptorStride != TQualifier::layoutDescriptorStrideEnd)
+            dst.layoutDescriptorStride = src.layoutDescriptorStride;
+        if (src.layoutHeapOffset != 0)
+            dst.layoutHeapOffset = src.layoutHeapOffset;
         if (src.layoutPushConstant)
             dst.layoutPushConstant = true;
 
@@ -7755,7 +7810,7 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
 
         // SPIR-V
         if (spvVersion.spv > 0) {
-            if (qualifier.isUniformOrBuffer()) {
+            if (qualifier.isUniformOrBuffer() && !intermediate.IsRequestedExtension(E_GL_EXT_descriptor_heap)) {
                 if (type.getBasicType() == EbtBlock && !qualifier.isPushConstant() &&
                        !qualifier.isShaderRecord() &&
                        !qualifier.hasAttachment() &&
@@ -7879,6 +7934,8 @@ static bool storageCanHaveLayoutInBlock(const enum TStorageQualifier storage)
     case EvqUniform:
     case EvqBuffer:
     case EvqShared:
+    case EvqSamplerHeap:
+    case EvqResourceHeap:
         return true;
     default:
         return false;
@@ -8022,6 +8079,13 @@ void TParseContext::layoutQualifierCheck(const TSourceLoc& loc, const TQualifier
         if (!qualifier.isPushConstant())
             error(loc, "can only be used with push_constant", "member_offset", "");
     }
+
+    if (qualifier.layoutDescriptorStride != TQualifier::layoutDescriptorStrideEnd &&
+        !qualifier.layoutDescriptorHeap)
+        error(loc, "must specify 'descriptor_heap' to use 'descriptor_stride'", "descriptor_stride", "");
+    if (qualifier.layoutHeapOffset != 0 && !qualifier.layoutDescriptorHeap &&
+        qualifier.storage != EvqSamplerHeap && qualifier.storage != EvqResourceHeap)
+        error(loc, "must specify 'descriptor_heap' to use 'heap_offset'", "heap_offset", "");
 }
 
 // For places that can't have shader-level layout qualifiers
@@ -9297,6 +9361,11 @@ TIntermNode* TParseContext::declareVariable(const TSourceLoc& loc, TString& iden
         initNode = executeInitializer(loc, initializer, variable);
     }
 
+    // EXT_descriptor_heap
+    if (!untypedHeapCheck(symbol, type, loc, identifier.c_str())) {
+        return nullptr;
+    }
+
     // look for errors in layout qualifier use
     layoutObjectCheck(loc, *symbol);
 
@@ -10238,6 +10307,60 @@ void TParseContext::updateBindlessQualifier(TType& memberType)
     }
 }
 
+void TParseContext::descHeapBuiltinRemap(TType* type, bool isInnerBlock)
+{
+    if (type->isStruct()) {
+        TTypeList* types = type->getWritableStruct();
+        for (auto typeLoc : *types) {
+            descHeapBuiltinRemap(typeLoc.type, isInnerBlock);
+        }
+    }
+
+    auto* qualifier = &type->getQualifier();
+    if (type->getBasicType() == EbtSampler) {
+        if (type->isImage() || type->isTexture())
+            qualifier->builtIn = EbvResourceHeapEXT;
+        else
+            qualifier->builtIn = EbvSamplerHeapEXT;
+        qualifier->layoutDescriptorHeap = true;
+    } else if (qualifier->isUniformOrBuffer() || type->getBasicType() == EbtAccStruct) {
+        qualifier->builtIn = EbvResourceHeapEXT;
+        qualifier->layoutDescriptorHeap = true;
+        qualifier->layoutDescriptorInnerBlock = isInnerBlock;
+    }
+ }
+
+bool TParseContext::untypedHeapCheck(TSymbol* symbol, const TType& type, const TSourceLoc& loc, const char* name)
+{
+    // EXT_descriptor_heap
+    bool isHeapStruct =
+        (type.getQualifier().storage == EvqSamplerHeap || type.getQualifier().storage == EvqResourceHeap);
+
+    if (intermediate.IsRequestedExtension(E_GL_EXT_descriptor_heap) && spvVersion.vulkan > 0 &&
+        !type.getQualifier().hasSet() && !type.getQualifier().hasBinding()) {
+        if (type.getQualifier().layoutDescriptorHeap || isHeapStruct) {
+            if ((intermediate.isEsProfile() && intermediate.getVersion() < 310) ||
+                (!intermediate.isEsProfile() && intermediate.getVersion() < 420)) {
+                TString warnMsg = "layout(descriptor_heap) is turned on beyond version/profile limits.";
+                infoSink.info.message(EPrefixWarning, warnMsg.c_str());
+            }
+            if (IsAnonymous(symbol->getName()) &&
+                (type.getQualifier().isUniformOrBuffer() || type.getBasicType() == EbtBlock)) {
+                error(loc, "layout(descriptor_heap) decorated block should be explicitly "
+                    "declared with a run-time sized array type.", name, "");
+                return false;
+            }
+            if (!type.containsHeapArray()) {
+                error(loc, "layout(descriptor_heap) decorated variable could only be declared as an array.",
+                      name, "");
+                return false;
+            }
+            descHeapBuiltinRemap(&symbol->getWritableType(), isHeapStruct);
+        }
+    }
+    return true;
+}
+
 //
 // Do everything needed to add an interface block. Returns the declarator node if there's an instance declaration.
 //
@@ -10289,12 +10412,12 @@ TIntermNode* TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeL
         }
 
         // For bindless texture, sampler can be declared as uniform/storage block member,
-        if (memberType.containsOpaque()) {
+        if (memberType.containsOpaque() && !extensionTurnedOn(E_GL_EXT_structured_descriptor_heap)) {
             if (memberType.containsSampler() && extensionTurnedOn(E_GL_ARB_bindless_texture))
                 updateBindlessQualifier(memberType);
             else
                 error(memberLoc, "member of block cannot be or contain a sampler, image, or atomic_uint type", typeList[member].type->getFieldName().c_str(), "");
-            }
+        }
 
         if (memberType.containsCoopMat())
             error(memberLoc, "member of block cannot be or contain a cooperative matrix type", typeList[member].type->getFieldName().c_str(), "");
@@ -10520,6 +10643,11 @@ TIntermNode* TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeL
         return nullptr;
     }
 
+    // EXT_descriptor_heap
+    if (!untypedHeapCheck(&variable, blockType, loc, blockName->c_str())) {
+        return nullptr;
+    }
+
     // Check for general layout qualifier errors
     layoutObjectCheck(loc, variable);
 
@@ -10634,6 +10762,14 @@ void TParseContext::blockStageIoCheck(const TSourceLoc& loc, const TQualifier& q
     case EvqHitObjectAttrEXT:
         profileRequires(loc, ~EEsProfile, 460, E_GL_EXT_shader_invocation_reorder, "hitObjectAttributeEXT block");
         requireStage(loc, (EShLanguageMask)(EShLangRayGenMask | EShLangClosestHitMask | EShLangMissMask), "hitObjectAttributeEXT block");
+        break;
+    case EvqResourceHeap:
+        profileRequires(loc, ~EEsProfile, 460, E_GL_EXT_structured_descriptor_heap, "resourceheap block");
+        profileRequires(loc, ~EEsProfile, 460, E_GL_EXT_descriptor_heap, "resourceheap block");
+        break;
+    case EvqSamplerHeap:
+        profileRequires(loc, ~EEsProfile, 460, E_GL_EXT_structured_descriptor_heap, "samplerheap block");
+        profileRequires(loc, ~EEsProfile, 460, E_GL_EXT_descriptor_heap, "samplerheap block");
         break;
     default:
         error(loc, "only uniform, buffer, in, or out blocks are supported", blockName->c_str(), "");

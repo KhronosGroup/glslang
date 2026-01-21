@@ -144,6 +144,10 @@ enum TStorageQualifier {
 
     EvqTileImageEXT,
 
+    // EXT_structured_descriptor_heap
+    EvqSamplerHeap,
+    EvqResourceHeap,
+
     // end of list
     EvqLast
 };
@@ -354,6 +358,9 @@ enum TBuiltInVariable {
     EbvTileOffsetQCOM,
     EbvTileDimensionQCOM,
     EbvTileApronSizeQCOM,
+    // GL_EXT_descriptor_heap
+    EbvSamplerHeapEXT,
+    EbvResourceHeapEXT,
 
     EbvLast
 };

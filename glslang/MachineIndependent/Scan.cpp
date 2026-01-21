@@ -780,6 +780,8 @@ const std::unordered_map<const char*, int, str_hash, str_eq> KeywordMap {
 
     {"coopvecNV",COOPVECNV},
     {"vector",VECTOR},
+    {"resourceheap",RESOURCEHEAP},
+    {"samplerheap",SAMPLERHEAP},
 };
 const std::unordered_set<const char*, str_hash, str_eq> ReservedSet {
     "common",
@@ -1976,6 +1978,13 @@ int TScanContext::tokenizeIdentifier()
             afterType = true;
             return keyword;
         }
+        return identifierOrType();
+
+    case RESOURCEHEAP:
+    case SAMPLERHEAP:
+        if (parseContext.extensionTurnedOn(E_GL_EXT_structured_descriptor_heap) &&
+            parseContext.extensionTurnedOn(E_GL_EXT_descriptor_heap))
+            return keyword;
         return identifierOrType();
 
     default:
