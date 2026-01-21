@@ -2369,7 +2369,7 @@ public:
               if (qualifier.layoutHitObjectShaderRecordNV)
                 appendStr(" hitobjectshaderrecordnv");
               if (qualifier.layoutHitObjectShaderRecordEXT)
-                  appendStr(" hitobjectshaderrecordext");
+                appendStr(" hitobjectshaderrecordext");
 
               if (qualifier.hasBank()) {
                 appendStr(" bank=");
