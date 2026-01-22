@@ -7208,7 +7208,7 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
         requireExtensions(loc, 1, &E_GL_NV_push_constant_bank, "bank");
         if (nonLiteral)
             error(loc, "needs a literal integer", id.c_str(), "");
-        else if (value < 0 || value >= TQualifier::layoutBankEnd)
+        else if (value < 0 || (unsigned int)value >= TQualifier::layoutBankEnd)
             error(loc, "bank out of range", id.c_str(), "");
         else
             publicType.qualifier.layoutBank = value;
