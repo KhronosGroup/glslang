@@ -317,6 +317,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_NV_cooperative_matrix2]                   = EBhDisable;
     extensionBehavior[E_GL_NV_cluster_acceleration_structure]        = EBhDisable;
     extensionBehavior[E_GL_NV_linear_swept_spheres]                  = EBhDisable;
+    extensionBehavior[E_GL_NV_push_constant_bank]                    = EBhDisable;
 
     // ARM
     extensionBehavior[E_GL_ARM_shader_core_builtins]                 = EBhDisable;

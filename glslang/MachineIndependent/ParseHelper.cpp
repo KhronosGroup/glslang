@@ -7204,6 +7204,27 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
         return;
     }
 
+    if (id == "bank") {
+        requireExtensions(loc, 1, &E_GL_NV_push_constant_bank, "bank");
+        if (nonLiteral)
+            error(loc, "needs a literal integer", id.c_str(), "");
+        else if (value < 0 || (unsigned int)value >= TQualifier::layoutBankEnd)
+            error(loc, "bank out of range", id.c_str(), "");
+        else
+            publicType.qualifier.layoutBank = value;
+        return;
+    }
+    if (id == "member_offset") {
+        requireExtensions(loc, 1, &E_GL_NV_push_constant_bank, "member_offset");
+        if (nonLiteral)
+            error(loc, "needs a literal integer", id.c_str(), "");
+        else if (value < 0)
+            error(loc, "must be equal or greater than 0", id.c_str(), "");
+        else
+            publicType.qualifier.layoutMemberOffset = value;
+        return;
+    }
+
     switch (language) {
     case EShLangTessControl:
         if (id == "vertices") {
@@ -7475,6 +7496,10 @@ void TParseContext::mergeObjectLayoutQualifiers(TQualifier& dst, const TQualifie
         dst.layoutTileAttachmentQCOM |= src.layoutTileAttachmentQCOM;
         if (src.layoutHitObjectShaderRecordEXT)
             dst.layoutHitObjectShaderRecordEXT = true;
+        if (src.hasBank())
+            dst.layoutBank = src.layoutBank;
+        if (src.hasMemberOffset())
+            dst.layoutMemberOffset = src.layoutMemberOffset;
     }
 }
 
@@ -7988,6 +8013,14 @@ void TParseContext::layoutQualifierCheck(const TSourceLoc& loc, const TQualifier
 
     if (qualifier.storage == EvqHitAttr && qualifier.hasLayout()) {
         error(loc, "cannot apply layout qualifiers to hitAttributeNV variable", "hitAttributeNV", "");
+    }
+    if (qualifier.hasBank()) {
+        if (!qualifier.isPushConstant())
+            error(loc, "can only be used with push_constant", "bank", "");
+    }
+    if (qualifier.hasMemberOffset()) {
+        if (!qualifier.isPushConstant())
+            error(loc, "can only be used with push_constant", "member_offset", "");
     }
 }
 
@@ -8757,6 +8790,11 @@ bool TParseContext::vkRelaxedRemapUniformVariable(const TSourceLoc& loc, TString
 
     // merge qualifiers
     mergeObjectLayoutQualifiers(updatedBlock->getWritableType().getQualifier(), type.getQualifier(), true);
+
+    // set default value for bank when no decoration is present. 
+    if (updatedBlock->getWritableType().getQualifier().isPushConstant() && !updatedBlock->getWritableType().getQualifier().hasBank()) {
+        updatedBlock->getWritableType().getQualifier().layoutBank = 0;
+    }
 
     return true;
 }

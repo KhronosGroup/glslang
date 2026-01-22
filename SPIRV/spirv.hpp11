@@ -580,8 +580,10 @@ enum class Decoration : unsigned {
     RestrictPointerEXT = 5355,
     AliasedPointer = 5356,
     AliasedPointerEXT = 5356,
+    MemberOffsetNV = 5358,
     HitObjectShaderRecordBufferNV = 5386,
     HitObjectShaderRecordBufferEXT = 5389,
+    BankNV = 5397,
     BindlessSamplerNV = 5398,
     BindlessImageNV = 5399,
     BoundSamplerNV = 5400,
@@ -1200,6 +1202,7 @@ enum class Capability : unsigned {
     RawAccessChainsNV = 5414,
     RayTracingSpheresGeometryNV = 5418,
     RayTracingLinearSweptSpheresGeometryNV = 5419,
+    PushConstantBanksNV = 5423,
     LongVectorEXT = 5425,
     Shader64BitIndexingEXT = 5426,
     CooperativeMatrixReductionsNV = 5430,
@@ -3738,7 +3741,9 @@ inline const char* DecorationToString(Decoration value) {
     case Decoration::NonUniform: return "NonUniform";
     case Decoration::RestrictPointer: return "RestrictPointer";
     case Decoration::AliasedPointer: return "AliasedPointer";
+    case Decoration::MemberOffsetNV: return "MemberOffsetNV";
     case Decoration::HitObjectShaderRecordBufferNV: return "HitObjectShaderRecordBufferNV";
+    case Decoration::BankNV: return "BankNV";
     case Decoration::HitObjectShaderRecordBufferEXT: return "HitObjectShaderRecordBufferEXT";
     case Decoration::BindlessSamplerNV: return "BindlessSamplerNV";
     case Decoration::BindlessImageNV: return "BindlessImageNV";
@@ -4160,6 +4165,7 @@ inline const char* CapabilityToString(Capability value) {
     case Capability::RawAccessChainsNV: return "RawAccessChainsNV";
     case Capability::RayTracingSpheresGeometryNV: return "RayTracingSpheresGeometryNV";
     case Capability::RayTracingLinearSweptSpheresGeometryNV: return "RayTracingLinearSweptSpheresGeometryNV";
+    case Capability::PushConstantBanksNV: return "PushConstantBanksNV";
     case Capability::LongVectorEXT: return "LongVectorEXT";
     case Capability::Shader64BitIndexingEXT: return "Shader64BitIndexingEXT";
     case Capability::CooperativeMatrixReductionsNV: return "CooperativeMatrixReductionsNV";

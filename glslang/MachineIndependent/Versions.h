@@ -293,6 +293,7 @@ const char* const E_GL_NV_cooperative_vector                    = "GL_NV_coopera
 const char* const E_GL_NV_cluster_acceleration_structure        = "GL_NV_cluster_acceleration_structure";
 const char* const E_GL_NV_linear_swept_spheres                  = "GL_NV_linear_swept_spheres";
 const char* const E_GL_NV_gpu_shader5                           = "GL_NV_gpu_shader5";
+const char* const E_GL_NV_push_constant_bank                    = "GL_NV_push_constant_bank";
 
 // ARM
 const char* const E_GL_ARM_shader_core_builtins                 = "GL_ARM_shader_core_builtins";

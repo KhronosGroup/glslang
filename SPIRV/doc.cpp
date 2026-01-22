@@ -350,6 +350,9 @@ const char* DecorationString(int decoration)
     case (int)Decoration::HitObjectShaderRecordBufferEXT:  return "DecorationHitObjectShaderRecordBufferEXT";
 
     case (int)Decoration::SaturatedToLargestFloat8NormalConversionEXT: return "DecorationSaturatedToLargestFloat8NormalConversionEXT";
+
+    case (int)Decoration::BankNV:                        return "BankNV";
+    case (int)Decoration::MemberOffsetNV:                return "MemberOffsetNV";
     }
 }
 
@@ -1140,6 +1143,8 @@ const char* CapabilityString(int info)
     case (int)Capability::Float8EXT:                           return "Float8EXT";
     case (int)Capability::Float8CooperativeMatrixEXT:          return "Float8CooperativeMatrixEXT";
 
+    case (int)Capability::PushConstantBanksNV:                 return "PushConstantBanksNV";
+        
     case (int)Capability::Shader64BitIndexingEXT:              return "CapabilityShader64BitIndexingEXT";
     case (int)Capability::LongVectorEXT:                       return "LongVectorEXT";
 

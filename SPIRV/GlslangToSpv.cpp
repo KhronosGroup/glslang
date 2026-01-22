@@ -5995,7 +5995,12 @@ void TGlslangToSpvTraverser::decorateStructType(const glslang::TType& type,
         if (glslangMember.getQualifier().hasXfbOffset())
             builder.addMemberDecoration(spvType, member, spv::Decoration::Offset,
                                         glslangMember.getQualifier().layoutXfbOffset);
-        else if (explicitLayout != glslang::ElpNone) {
+        else if (glslangMember.getQualifier().hasMemberOffset()) {
+            builder.addExtension(spv::E_SPV_NV_push_constant_bank);
+            builder.addCapability(spv::Capability::PushConstantBanksNV);
+            builder.addMemberDecoration(spvType, member, spv::Decoration::MemberOffsetNV,
+                                        glslangMember.getQualifier().layoutMemberOffset);
+        } else if (explicitLayout != glslang::ElpNone) {
             // figure out what to do with offset, which is accumulating
             int nextOffset;
             updateMemberOffset(type, glslangMember, offset, nextOffset, explicitLayout, memberQualifier.layoutMatrix);
@@ -6063,6 +6068,13 @@ void TGlslangToSpvTraverser::decorateStructType(const glslang::TType& type,
 
     if (qualifier.hasHitObjectShaderRecordNV())
         builder.addDecoration(spvType, spv::Decoration::HitObjectShaderRecordBufferNV);
+
+    if (qualifier.hasBank()) {
+        builder.addExtension(spv::E_SPV_NV_push_constant_bank);
+        builder.addCapability(spv::Capability::PushConstantBanksNV);
+        builder.addDecoration(spvType, spv::Decoration::BankNV, qualifier.layoutBank);
+    }
+  
     if (qualifier.hasHitObjectShaderRecordEXT())
         builder.addDecoration(spvType, spv::Decoration::HitObjectShaderRecordBufferEXT);
 }
@@ -10954,6 +10966,18 @@ spv::Id TGlslangToSpvTraverser::getSymbolId(const glslang::TIntermSymbol* symbol
     // Add SPIR-V decorations (GL_EXT_spirv_intrinsics)
     if (symbol->getType().getQualifier().hasSpirvDecorate())
         applySpirvDecorate(symbol->getType(), id, {});
+
+    if (symbol->getQualifier().hasBank()) {
+        builder.addExtension(spv::E_SPV_NV_push_constant_bank);
+        builder.addCapability(spv::Capability::PushConstantBanksNV);
+        builder.addDecoration(id, spv::Decoration::BankNV, symbol->getQualifier().layoutBank);
+    }
+
+    if (symbol->getQualifier().hasMemberOffset()) {
+        builder.addExtension(spv::E_SPV_NV_push_constant_bank);
+        builder.addCapability(spv::Capability::PushConstantBanksNV);
+        builder.addDecoration(id, spv::Decoration::MemberOffsetNV, symbol->getQualifier().layoutMemberOffset);
+    }
 
     return id;
 }
