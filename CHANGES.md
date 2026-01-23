@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## 16.2.0 2026-01-22
+* Allow gl_FragDepth identifier to be redeclared
+* Replace 'GL_TASK(MESH)_SHADER_NV' with 'GL_TASK(MESH)_SHADER_EXT'
+* Scalarize swizzled MeshEXT stores
+* Support GL_EXT_long_vector
+* Add missing preamble #define for GL_EXT_nontemporal_keyword
+* Support GL_NV_push_constant_bank
+* Support GL_EXT_descriptor_heap
+
 ## 16.1.0 2025-12-01
 * Avoid emitting OpCapability RuntimeDescriptorArray when unnecessary
 * Improve compilation speed when debug infomation is enabled
