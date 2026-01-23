@@ -55,13 +55,15 @@ public:
                                         const char* includerName,
                                         size_t inclusionDepth) override
     {
-        return readLocalPath(headerName, includerName, (int)inclusionDepth);
+        RecordLocalPath(includerName, inclusionDepth);
+        return readLocalPath(headerName);
     }
 
     virtual IncludeResult* includeSystem(const char* headerName,
-                                         const char* /*includerName*/,
-                                         size_t /*inclusionDepth*/) override
+                                         const char* includerName,
+                                         size_t inclusionDepth) override
     {
+        RecordLocalPath(includerName, inclusionDepth);
         return readSystemPath(headerName);
     }
 
@@ -99,16 +101,20 @@ protected:
     std::vector<std::string> externalDirectoryList;
     std::set<std::string> includedFiles;
 
-    // Search for a valid "local" path based on combining the stack of include
-    // directories and the nominal name of the header.
-    virtual IncludeResult* readLocalPath(const char* headerName, const char* includerName, int depth)
+    // Record local path for future local inclusion.
+    // Discard popped include directories, and
+    // initialize when at parse-time first level.
+    void RecordLocalPath(const char * includerName, size_t depth)
     {
-        // Discard popped include directories, and
-        // initialize when at parse-time first level.
         localDirectoryStack.resize(depth);
         if (depth == 1)
             localDirectoryStack.back() = getDirectory(includerName);
+    }
 
+    // Search for a valid "local" path based on combining the stack of include
+    // directories and the nominal name of the header.
+    virtual IncludeResult* readLocalPath(const char* headerName)
+    {
         // Find a directory that works, using a reverse search of the include stack.
         for (auto it = localDirectoryStack.rbegin(); it != localDirectoryStack.rend(); ++it) {
             std::string path = *it + '/' + headerName;
@@ -133,6 +139,7 @@ protected:
             std::replace(path.begin(), path.end(), '\\', '/');
             std::ifstream file(path, std::ios_base::binary | std::ios_base::ate);
             if (file) {
+                localDirectoryStack.push_back(getDirectory(path));
                 includedFiles.insert(path);
                 return newIncludeResult(path, file, (int)file.tellg());
             }
