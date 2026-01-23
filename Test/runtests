@@ -187,6 +187,8 @@ run -D -Od -e main -H -Od ../Test/hlsl.include.vert > "$TARGETDIR/hlsl.include.v
 diff -b $BASEDIR/hlsl.include.vert.out "$TARGETDIR/hlsl.include.vert.out" || HASERROR=1
 run -D -Od -e main -H -Od hlsl.includeNegative.vert > "$TARGETDIR/hlsl.includeNegative.vert.out"
 diff -b $BASEDIR/hlsl.includeNegative.vert.out "$TARGETDIR/hlsl.includeNegative.vert.out" || HASERROR=1
+run -D -Od -e main -H -Od hlsl.include.system.vert -Iinc1 -Iinc1/path1 -Iinc1/path2 > "$TARGETDIR/hlsl.include.system.vert.out"
+diff -b $BASEDIR/hlsl.include.system.vert.out "$TARGETDIR/hlsl.include.system.vert.out" || HASERROR=1
 run -l -i include.vert > "$TARGETDIR/include.vert.out"
 diff -b $BASEDIR/include.vert.out "$TARGETDIR/include.vert.out" || HASERROR=1
 run -D -Od -e main -H -Od -Iinc1/path1 -Iinc1/path2 hlsl.dashI.vert > "$TARGETDIR/hlsl.dashI.vert.out"
