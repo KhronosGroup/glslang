@@ -40,7 +40,7 @@ jobs:
                 compiler: [{cc: clang, cxx: clang++}, {cc: gcc, cxx: g++}]
                 cmake_build_type: [Debug, Release]
         steps:
-            - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+            - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
             - run: ./update_glslang_sources.py
             - name: Build
               env:
@@ -94,7 +94,7 @@ jobs:
                 compiler: [{cc: clang, cxx: clang++}]
                 cmake_build_type: [Debug, Release]
         steps:
-            - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+            - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
             - run: ./update_glslang_sources.py
             - name: Build
               env:
@@ -146,7 +146,7 @@ jobs:
                 os: [{genus: windows-2022, family: windows}]
                 cmake_build_type: [Debug, Release]
         steps:
-            - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+            - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
             - run: python update_glslang_sources.py
             - name: Build
               run: |
