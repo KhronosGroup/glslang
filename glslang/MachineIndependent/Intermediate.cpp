@@ -546,6 +546,9 @@ TIntermTyped* TIntermediate::setAggregateOperator(TIntermNode* node, TOperator o
 
 bool TIntermediate::isConversionAllowed(TOperator op, TIntermTyped* node) const
 {
+    if (node == nullptr)
+        return false;
+
     //
     // Does the base type even allow the operation?
     //
