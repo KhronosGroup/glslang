@@ -489,6 +489,8 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.nonuniform5.frag",
         "spv.noWorkgroup.comp",
         "spv.nvAtomicFp16Vec.frag",
+        "spv.nv.explicittypecast.frag",
+        "spv.nv.explicittypecast.error.vert",
         "spv.nullInit.comp",
         "spv.offsets.frag",
         "spv.Operations.frag",
