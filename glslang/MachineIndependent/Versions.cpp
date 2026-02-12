@@ -323,6 +323,9 @@ void TParseVersions::initializeExtensionBehavior()
     // ARM
     extensionBehavior[E_GL_ARM_shader_core_builtins]                 = EBhDisable;
     extensionBehavior[E_GL_ARM_tensors]                              = EBhDisable;
+    extensionBehavior[E_GL_ARM_tensors_bfloat16]                     = EBhDisable;
+    extensionBehavior[E_GL_ARM_tensors_float_e5m2]                   = EBhDisable;
+    extensionBehavior[E_GL_ARM_tensors_float_e4m3]                   = EBhDisable;
 
     // QCOM
     extensionBehavior[E_GL_QCOM_image_processing]                    = EBhDisable;

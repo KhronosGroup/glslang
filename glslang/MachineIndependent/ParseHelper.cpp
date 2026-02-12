@@ -9255,10 +9255,24 @@ TIntermNode* TParseContext::declareVariable(const TSourceLoc& loc, TString& iden
                 publicType.typeParameters->basicType != EbtUint64 &&
                 publicType.typeParameters->basicType != EbtFloat16 &&
                 publicType.typeParameters->basicType != EbtFloat &&
-                publicType.typeParameters->basicType != EbtDouble) {
+                publicType.typeParameters->basicType != EbtDouble &&
+                publicType.typeParameters->basicType != EbtBFloat16 &&
+                publicType.typeParameters->basicType != EbtFloatE5M2 &&
+                publicType.typeParameters->basicType != EbtFloatE4M3) {
                 error(loc, "expected bool, integer or floating point type parameter", identifier.c_str(), "");
             }
 
+            if (publicType.typeParameters->basicType == EbtBFloat16) {
+                requireExtensions(loc, 1, &E_GL_ARM_tensors_bfloat16, "tensor with bfloat16_t type");
+            }
+
+            if (publicType.typeParameters->basicType == EbtFloatE5M2) {
+                requireExtensions(loc, 1, &E_GL_ARM_tensors_float_e5m2, "tensor with floate5m2_t type");
+            }
+
+            if (publicType.typeParameters->basicType == EbtFloatE4M3) {
+                requireExtensions(loc, 1, &E_GL_ARM_tensors_float_e4m3, "tensor with floate4m3_t type");
+            }
         }
     } else {
         if (publicType.typeParameters && publicType.typeParameters->arraySizes->getNumDims() != 0) {

@@ -5074,6 +5074,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "int8_t", "int16_t", "int32_t", "int64_t",
             "uint8_t", "uint16_t", "uint32_t", "uint64_t",
             "float16_t", "float32_t", "float64_t",
+            "bfloat16_t", "floate5m2_t", "floate4m3_t",
         };
         std::ostringstream ostream;
         for (auto t : tensorDataTypesARM) {
