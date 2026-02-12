@@ -7417,17 +7417,21 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
                 return;
             }
             if (spvVersion.spv != 0) {
-                if (id == "local_size_x_id") {
-                    publicType.shaderQualifiers.localSizeSpecId[0] = value;
-                    return;
-                }
-                if (id == "local_size_y_id") {
-                    publicType.shaderQualifiers.localSizeSpecId[1] = value;
-                    return;
-                }
-                if (id == "local_size_z_id") {
-                    publicType.shaderQualifiers.localSizeSpecId[2] = value;
-                    return;
+                static const char * const specIds[] = {
+                    "local_size_x_id",
+                    "local_size_y_id",
+                    "local_size_z_id",
+                };
+
+                for (std::size_t i = 0; i < std::size(specIds); i++) {
+                    if (id == specIds[i]) {
+                        if (spvVersion.spv >= glslang::EShTargetSpv_1_2)
+                            publicType.shaderQualifiers.localSizeSpecId[i] = value;
+                        else
+                            error(loc, "requires SPIR-V 1.2", id.c_str(), "");
+
+                        return;
+                    }
                 }
             }
         }
