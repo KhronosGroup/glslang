@@ -10,6 +10,7 @@ permissions: read-all
 
 jobs:
   linux:
+    needs: linux-shared # fastest job to do sanity check
     runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
@@ -78,6 +79,7 @@ jobs:
         run: ctest --output-on-failure --test-dir build
 
   linux-asan:
+    needs: linux-shared # fastest job to do sanity check
     runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
@@ -117,6 +119,7 @@ jobs:
 
   # Ensure we can compile/run on an older distro, with older tools (cmake, python, etc)
   linux_min:
+    needs: linux-shared # fastest job to do sanity check
     name: Linux Backcompat
     runs-on: ubuntu-22.04
     steps:
@@ -149,6 +152,8 @@ jobs:
         run: ctest --output-on-failure --test-dir build
 
   macos:
+    # iOS is 10x expensive to run on GitHub machines, so only run if we know something else passed as well
+    needs: windows-shared
     runs-on: ${{matrix.os}}
     strategy:
       fail-fast: false
@@ -179,6 +184,8 @@ jobs:
       - run: ctest --output-on-failure --test-dir build
 
   macos-shared:
+    # iOS is 10x expensive to run on GitHub machines, so only run if we know something else passed as well
+    needs: windows-shared
     runs-on: ${{matrix.os}}
     strategy:
       fail-fast: false
@@ -210,6 +217,7 @@ jobs:
       - run: ctest --output-on-failure --test-dir build
 
   windows:
+    needs: linux-shared # fastest job to do sanity check
     runs-on: ${{matrix.os.genus}}
     permissions:
       contents: write
@@ -233,6 +241,7 @@ jobs:
         run: ctest -C ${{matrix.cmake_build_type}} --output-on-failure --test-dir build
 
   windows-shared:
+    needs: linux-shared # fastest job to do sanity check
     runs-on: ${{matrix.os.genus}}
     permissions:
       contents: write
@@ -256,6 +265,8 @@ jobs:
         run: ctest -C ${{matrix.cmake_build_type}} --output-on-failure --test-dir build
 
   iOS:
+    # iOS is 10x expensive to run on GitHub machines, so only run if we know something else passed as well
+    needs: windows-shared
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -279,6 +290,7 @@ jobs:
       - run: cmake --install build --prefix /tmp
 
   android:
+    needs: linux-shared # fastest job to do sanity check
     runs-on: ubuntu-22.04
     strategy:
       matrix:
@@ -306,6 +318,7 @@ jobs:
       - run: cmake --install build/ --prefix /tmp
 
   emscripten:
+    needs: linux-shared # fastest job to do sanity check
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
