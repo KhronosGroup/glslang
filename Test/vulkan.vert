@@ -11,7 +11,7 @@ out vec4 color;
 
 layout(constant_id = 17) const ivec2 arraySizes = ivec2(12,13);    // ERROR, not a scalar
 layout(constant_id = 17) uniform sampler2D s2D;                    // ERROR, not the right type or qualifier
-layout(constant_id = 4000) const int c1 = 12;                      // ERROR, too big
+layout(constant_id = 4294967295) const int c1 = 12;                      // ERROR, too big
 layout(constant_id = 4) const float c2[2] = float[2](1.0, 2.0);    // ERROR, not a scalar
 layout(constant_id = 4) in;
 

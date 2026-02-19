@@ -47,6 +47,7 @@
 #include "SpirvIntrinsics.h"
 
 #include <algorithm>
+#include <climits>
 
 namespace glslang {
 
@@ -958,8 +959,8 @@ public:
                  unsigned int layoutAttachment           :  8;  // for input_attachment_index
     static const unsigned int layoutAttachmentEnd      = 0XFF;
 
-                 unsigned int layoutSpecConstantId       : 11;
-    static const unsigned int layoutSpecConstantIdEnd = 0x7FF;
+                 unsigned int layoutSpecConstantId;
+    static const unsigned int layoutSpecConstantIdEnd = UINT_MAX;
 
                  unsigned int layoutBank                 : 4;
     static const unsigned int layoutBankEnd            = 0xF;

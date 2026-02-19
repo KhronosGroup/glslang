@@ -1977,7 +1977,7 @@ void HlslParseContext::transferTypeAttributes(const TSourceLoc& loc, const TAttr
             if (it->getInt(value)) {
                 TSourceLoc loc;
                 loc.init();
-                setSpecConstantId(loc, type.getQualifier(), value);
+                setSpecConstantId(loc, type.getQualifier(), (unsigned)value);
             }
             break;
 
@@ -7363,7 +7363,7 @@ void HlslParseContext::setLayoutQualifier(const TSourceLoc& loc, TQualifier& qua
         return;
     }
     if (id == "constant_id") {
-        setSpecConstantId(loc, qualifier, value);
+        setSpecConstantId(loc, qualifier, (unsigned)value);
         return;
     }
 
@@ -7458,9 +7458,9 @@ void HlslParseContext::setLayoutQualifier(const TSourceLoc& loc, TQualifier& qua
     error(loc, "there is no such layout identifier for this stage taking an assigned value", id.c_str(), "");
 }
 
-void HlslParseContext::setSpecConstantId(const TSourceLoc& loc, TQualifier& qualifier, int value)
+void HlslParseContext::setSpecConstantId(const TSourceLoc& loc, TQualifier& qualifier, unsigned value)
 {
-    if (value >= (int)TQualifier::layoutSpecConstantIdEnd) {
+    if (value >= TQualifier::layoutSpecConstantIdEnd) {
         error(loc, "specialization-constant id is too large", "constant_id", "");
     } else {
         qualifier.layoutSpecConstantId = value;

@@ -7139,7 +7139,7 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
     }
     if (id == "constant_id") {
         requireSpv(loc, "constant_id");
-        if (value >= (int)TQualifier::layoutSpecConstantIdEnd) {
+        if ((unsigned)value >= TQualifier::layoutSpecConstantIdEnd) {
             error(loc, "specialization-constant id is too large", id.c_str(), "");
         } else {
             publicType.qualifier.layoutSpecConstantId = value;
