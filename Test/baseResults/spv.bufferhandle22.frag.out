@@ -470,7 +470,7 @@ spv.bufferhandle22.frag
              279:    278(ptr) AccessChain 273 274
              280:      6(ptr) CompositeExtract 277 0
              282:    281(ptr) AccessChain 279 35
-                              Store 282 280 Aligned 16
+                              Store 282 280 Aligned 8
              283:      6(ptr) Load 32(payload)
              286:    285(ptr) AccessChain 52(InBuffer) 284
              287:      49(S7) Load 286
