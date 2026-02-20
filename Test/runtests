@@ -16,7 +16,7 @@ if [ -d "${LIBPATH}" ]; then
 fi
 
 function run {
-    "$EXE" "$@"
+    "$EXE" "$@" 2>&1
     result=$?
     case "$result" in
     [0-6]) # Valid success and error codes
