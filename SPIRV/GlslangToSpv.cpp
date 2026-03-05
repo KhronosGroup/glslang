@@ -2841,7 +2841,11 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
                 spec_constant_op_mode_setter.turnOnSpecConstantOpMode();
                 length = builder.createCooperativeMatrixLengthNV(typeId);
             }
-        } else if (node->getOperand()->getType().isCoopVecOrLongVector()) {
+        } else if (node->getOperand()->getType().isCoopVecOrLongVector() &&
+                   !node->getOperand()->getType().isArray()) {
+            // Long/cooperative vectors support v.length() as a compile-time
+            // component count. For arrays of such vectors, .length() must use
+            // OpArrayLength and not the vector-component path.
             spv::Id typeId = convertGlslangToSpvType(node->getOperand()->getType());
             if (builder.isCooperativeVectorType(typeId)) {
                 length = builder.getCooperativeVectorNumComponents(typeId);
