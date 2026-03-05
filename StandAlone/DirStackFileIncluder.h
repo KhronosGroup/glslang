@@ -55,7 +55,7 @@ public:
                                         const char* includerName,
                                         size_t inclusionDepth) override
     {
-        RecordLocalPath(includerName, inclusionDepth);
+        recordLocalPath(includerName, inclusionDepth);
         return readLocalPath(headerName);
     }
 
@@ -63,7 +63,7 @@ public:
                                          const char* includerName,
                                          size_t inclusionDepth) override
     {
-        RecordLocalPath(includerName, inclusionDepth);
+        recordLocalPath(includerName, inclusionDepth);
         return readSystemPath(headerName);
     }
 
@@ -104,7 +104,7 @@ protected:
     // Record local path for future local inclusion.
     // Discard popped include directories, and
     // initialize when at parse-time first level.
-    void RecordLocalPath(const char * includerName, size_t depth)
+    void recordLocalPath(const char * includerName, size_t depth)
     {
         localDirectoryStack.resize(depth);
         if (depth == 1)
@@ -133,7 +133,7 @@ protected:
     // Search for a valid <system> path.
     virtual IncludeResult* readSystemPath(const char* headerName)
     {
-        // Search for external diectories only.
+        // Search for external directories only.
         for (auto it = externalDirectoryList.begin(); it != externalDirectoryList.end(); ++it) {
             std::string path = *it + '/' + headerName;
             std::replace(path.begin(), path.end(), '\\', '/');
