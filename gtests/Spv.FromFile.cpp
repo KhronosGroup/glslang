@@ -645,6 +645,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.int8.frag",
         "spv.vulkan110.int16.frag",
         "spv.int32.frag",
+	"spv.bitops.int8int16.frag",
         "spv.explicittypes.frag",
         "spv.float16NoRelaxed.vert",
         "spv.float32.frag",
