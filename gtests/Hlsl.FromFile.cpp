@@ -203,6 +203,7 @@ INSTANTIATE_TEST_SUITE_P(
         {"hlsl.color.hull.tesc", "main"},
         {"hlsl.comparison.vec.frag", "main"},
         {"hlsl.conditional.frag", "PixelShaderFunction"},
+        {"hlsl.cve-2025-3010.frag", "main"},
         {"hlsl.constantbuffer.frag", "main"},
         {"hlsl.constructArray.vert", "main"},
         {"hlsl.constructexpr.frag", "main"},
