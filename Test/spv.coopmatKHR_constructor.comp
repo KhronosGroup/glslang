@@ -46,4 +46,8 @@ void main()
     TESTVAR(int32_t, 150)
     TESTVAR(int16_t, 160)
     TESTVAR(int8_t, 170)
+
+    coopmat<float, gl_ScopeSubgroup, 8, 8, gl_MatrixUseA> mat = coopmat<float, gl_ScopeSubgroup, 8, 8, gl_MatrixUseA>(0.0);
+
+    coopmat<float, gl_ScopeSubgroup, 8, 8, gl_MatrixUseA> matArr[2] = { mat, mat };
 }
