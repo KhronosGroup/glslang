@@ -1,6 +1,6 @@
 #version 450
 
-
+layout(local_size_z = 1) in;
 
 layout(binding = 0) uniform atomic_uint counter;
 
