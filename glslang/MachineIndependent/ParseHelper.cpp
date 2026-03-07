@@ -10022,12 +10022,21 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
             TType tempType(EbtInt, EvqTemporary, type.getVectorSize());
             newNode = node;
             if (tempType != newNode->getType()) {
-                TOperator aggregateOp;
-                if (op == EOpConstructInt8)
-                    aggregateOp = EOpConstructInt;
-                else
-                    aggregateOp = (TOperator)(EOpConstructIVec2 + op - EOpConstructI8Vec2);
-                newNode = intermediate.setAggregateOperator(newNode, aggregateOp, tempType, node->getLoc());
+                // if the source and target size matches then we need to emit OpSConvert instruction
+                // which would convert 8-bit or 16-bit integer types to 32-bit sized integer type (including vector composites)
+                if (type.getVectorSize() == node->getType().getVectorSize()) {
+                    newNode = intermediate.addConversion(EbtInt, newNode);
+                }
+                // otherwise create aggregate operator
+                // which internally emits OpCompositeExtract followed by OpCompositeConstruct instruction.
+                else {
+                    TOperator aggregateOp;
+                    if (op == EOpConstructInt8)
+                        aggregateOp = EOpConstructInt;
+                    else
+                        aggregateOp = (TOperator)(EOpConstructIVec2 + op - EOpConstructI8Vec2);
+                    newNode = intermediate.setAggregateOperator(newNode, aggregateOp, tempType, node->getLoc());
+                }
             }
             newNode = intermediate.addConversion(EbtInt8, newNode);
             return newNode;
@@ -10046,12 +10055,21 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
             TType tempType(EbtUint, EvqTemporary, type.getVectorSize());
             newNode = node;
             if (tempType != newNode->getType()) {
-                TOperator aggregateOp;
-                if (op == EOpConstructUint8)
-                    aggregateOp = EOpConstructUint;
-                else
-                    aggregateOp = (TOperator)(EOpConstructUVec2 + op - EOpConstructU8Vec2);
-                newNode = intermediate.setAggregateOperator(newNode, aggregateOp, tempType, node->getLoc());
+                // if the source and target size matches then we need to emit OpUConvert instruction
+                // which would convert 8-bit or 16-bit integer types to 32-bit sized integer type (including vector composites)
+                if (type.getVectorSize() == node->getType().getVectorSize()) {
+                    newNode = intermediate.addConversion(EbtUint, newNode);
+                }
+                // otherwise create aggregate operator
+                // which internally emits OpCompositeExtract followed by OpCompositeConstruct instruction.
+                else {
+                    TOperator aggregateOp;
+                    if (op == EOpConstructUint8)
+                        aggregateOp = EOpConstructUint;
+                    else
+                        aggregateOp = (TOperator)(EOpConstructUVec2 + op - EOpConstructU8Vec2);
+                    newNode = intermediate.setAggregateOperator(newNode, aggregateOp, tempType, node->getLoc());
+                }
             }
             newNode = intermediate.addConversion(EbtUint8, newNode);
             return newNode;
@@ -10070,12 +10088,21 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
             TType tempType(EbtInt, EvqTemporary, type.getVectorSize());
             newNode = node;
             if (tempType != newNode->getType()) {
-                TOperator aggregateOp;
-                if (op == EOpConstructInt16)
-                    aggregateOp = EOpConstructInt;
-                else
-                    aggregateOp = (TOperator)(EOpConstructIVec2 + op - EOpConstructI16Vec2);
-                newNode = intermediate.setAggregateOperator(newNode, aggregateOp, tempType, node->getLoc());
+                // if the source and target size matches then we need to emit OpSConvert instruction
+                // which would convert 8-bit or 16-bit integer types to 32-bit sized integer type (including vector composites)
+                if (type.getVectorSize() == node->getType().getVectorSize()) {
+                    newNode = intermediate.addConversion(EbtInt, newNode);
+                }
+                // otherwise create aggregate operator
+                // which internally emits OpCompositeExtract followed by OpCompositeConstruct instruction.
+                else {
+                    TOperator aggregateOp;
+                    if (op == EOpConstructInt16)
+                        aggregateOp = EOpConstructInt;
+                    else
+                        aggregateOp = (TOperator)(EOpConstructIVec2 + op - EOpConstructI16Vec2);
+                    newNode = intermediate.setAggregateOperator(newNode, aggregateOp, tempType, node->getLoc());
+                }
             }
             newNode = intermediate.addConversion(EbtInt16, newNode);
             return newNode;
@@ -10094,12 +10121,21 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
             TType tempType(EbtUint, EvqTemporary, type.getVectorSize());
             newNode = node;
             if (tempType != newNode->getType()) {
-                TOperator aggregateOp;
-                if (op == EOpConstructUint16)
-                    aggregateOp = EOpConstructUint;
-                else
-                    aggregateOp = (TOperator)(EOpConstructUVec2 + op - EOpConstructU16Vec2);
-                newNode = intermediate.setAggregateOperator(newNode, aggregateOp, tempType, node->getLoc());
+                // if the source and target size matches then we need to emit OpUConvert instruction
+                // which would convert 8-bit or 16-bit integer types to 32-bit sized integer type (including vector composites)
+                if (type.getVectorSize() == node->getType().getVectorSize()) {
+                    newNode = intermediate.addConversion(EbtUint, newNode);
+                }
+                // otherwise create aggregate operator
+                // which internally emits OpCompositeExtract followed by OpCompositeConstruct instruction.
+                else {
+                    TOperator aggregateOp;
+                    if (op == EOpConstructUint16)
+                        aggregateOp = EOpConstructUint;
+                    else
+                        aggregateOp = (TOperator)(EOpConstructUVec2 + op - EOpConstructU16Vec2);
+                    newNode = intermediate.setAggregateOperator(newNode, aggregateOp, tempType, node->getLoc());
+                }
             }
             newNode = intermediate.addConversion(EbtUint16, newNode);
             return newNode;
