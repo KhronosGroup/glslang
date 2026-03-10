@@ -54,12 +54,14 @@ echo "Fetching external projects..."
 
 echo "Fetching depot_tools..."
 [ -d /tmp ] || mkdir -p /tmp
-cd /tmp
+pushd /tmp
 git clone --depth 1 https://chromium.googlesource.com/chromium/tools/depot_tools.git depot_tools
 export PATH="/tmp/depot_tools:$PATH"
+popd
 
 echo "Syncing client..."
-gclient sync --gclientfile=standalone.gclient
+cp standalone.gclient .gclient
+gclient sync -D
 gn gen out/Default
 
 echo "Building..."

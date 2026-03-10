@@ -43,17 +43,17 @@ vars = {
 deps = {
 
   './build': {
-    'url': '{chromium_git}/chromium/src/build.git@85ee3b7692e5284f08bd3c9459fb5685eed7b838',
+    'url': '{chromium_git}/chromium/src/build.git@98d6658ed11a1b5abc2d29feec55c51d03861692',
     'condition': 'not build_with_chromium',
   },
 
   './buildtools': {
-    'url': '{chromium_git}/chromium/src/buildtools.git@4be464e050b3d05060471788f926b34c641db9fd',
+    'url': '{chromium_git}/chromium/src/buildtools.git@fef8d6947fa54202e8a00c58d5ac8fd15780bc33',
     'condition': 'not build_with_chromium',
   },
 
   './tools/clang': {
-    'url': '{chromium_git}/chromium/src/tools/clang.git@3a982adabb720aa8f3e3885d40bf3fe506990157',
+    'url': '{chromium_git}/chromium/src/tools/clang.git@ef29ced9b02bcb9586894a7632873baa5c67c660',
     'condition': 'not build_with_chromium',
   },
 
