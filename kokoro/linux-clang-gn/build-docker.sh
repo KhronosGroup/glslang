@@ -40,6 +40,10 @@ set -e # Fail on any error.
 set -x # Display commands being run.
 
 using ninja-1.10.0
+using python-3.12
+
+# The gclient sync command needs the "python" executable, not just "python2" or "python3".
+pyenv local 3.12.4
 
 # Disable git's "detected dubious ownership" error - kokoro checks out the repo
 # with a different user, and we don't care about this warning.
@@ -49,10 +53,9 @@ echo "Fetching external projects..."
 ./update_glslang_sources.py
 
 echo "Fetching depot_tools..."
-mkdir -p /tmp/depot_tools
-curl https://storage.googleapis.com/chrome-infra/depot_tools.zip -o /tmp/depot_tools.zip
-unzip /tmp/depot_tools.zip -d /tmp/depot_tools
-rm /tmp/depot_tools.zip
+[ -d /tmp ] || mkdir -p /tmp
+cd /tmp
+git clone --depth 1 https://chromium.googlesource.com/chromium/tools/depot_tools.git depot_tools
 export PATH="/tmp/depot_tools:$PATH"
 
 echo "Syncing client..."
