@@ -965,7 +965,7 @@ public:
                  unsigned int layoutBank                 : 4;
     static const unsigned int layoutBankEnd            = 0xF;
 
-                 unsigned int layoutDescriptorStride     : 4;
+                 unsigned int layoutDescriptorStride;
     static const unsigned int layoutDescriptorStrideEnd = 0x0;
 
     // stored as log2 of the actual alignment value
