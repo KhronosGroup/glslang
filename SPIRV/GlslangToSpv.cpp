@@ -5753,8 +5753,14 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
     }
 
     if (type.isLongVector()) {
-        builder.addCapability(spv::Capability::LongVectorEXT);
-        builder.addExtension(spv::E_SPV_EXT_long_vector);
+        // SPIR-V LongVectorEXT not needed when component count is literal 2–4.
+        const bool needLongVectorCap = type.hasSpecConstantVectorComponents() ||
+            (type.getTypeParameters()->arraySizes->getDimSize(0) < 2 ||
+             type.getTypeParameters()->arraySizes->getDimSize(0) > 4);
+        if (needLongVectorCap) {
+            builder.addCapability(spv::Capability::LongVectorEXT);
+            builder.addExtension(spv::E_SPV_EXT_long_vector);
+        }
 
         if (type.getBasicType() == glslang::EbtFloat16)
             builder.addCapability(spv::Capability::Float16);
