@@ -127,9 +127,13 @@ private:
 #   ifdef GUARD_BLOCKS
     inline static constexpr size_t headerSize() { return sizeof(TAllocation); }
     inline static constexpr size_t guardBlockSize() {
-        constexpr size_t kMinGuard = 16;
-        constexpr size_t kAlignment = 16;
-        return ((kMinGuard + sizeof(TAllocation) + kAlignment - 1) & ~(kAlignment - 1)) - sizeof(TAllocation);
+        constexpr size_t minGuardSize = 16;
+        constexpr size_t alignmentSize = 16;
+        constexpr size_t guardLayoutSize =
+            (minGuardSize + sizeof(TAllocation) + alignmentSize - 1) & ~(alignmentSize - 1);
+        static_assert((guardLayoutSize % alignmentSize) == 0,
+                      "Guard block layout is not 16-byte aligned.");
+        return guardLayoutSize - sizeof(TAllocation);
     }
 #   else
     inline static constexpr size_t headerSize() { return 0; }
