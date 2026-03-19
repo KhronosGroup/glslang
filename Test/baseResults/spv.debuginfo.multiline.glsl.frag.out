@@ -14,14 +14,7 @@ spv.debuginfo.multiline.glsl.frag
                8:             String  "uint"
               17:             String  "float"
               29:             String  "add"
-              32:             String  "// OpModuleProcessed auto-map-locations
-// OpModuleProcessed auto-map-bindings
-// OpModuleProcessed client vulkan100
-// OpModuleProcessed target-env vulkan1.0
-// OpModuleProcessed keep-uncalled
-// OpModuleProcessed entry-point main
-#line 1
-#version 460
+              32:             String  "#version 460
 
 in float inx;
 out float outx;

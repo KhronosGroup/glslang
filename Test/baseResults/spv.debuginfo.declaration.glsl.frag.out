@@ -13,14 +13,7 @@ spv.debuginfo.declaration.glsl.frag
                2:             String  "spv.debuginfo.declaration.glsl.frag"
                8:             String  "uint"
               16:             String  "main"
-              19:             String  "// OpModuleProcessed auto-map-locations
-// OpModuleProcessed auto-map-bindings
-// OpModuleProcessed client vulkan100
-// OpModuleProcessed target-env vulkan1.0
-// OpModuleProcessed keep-uncalled
-// OpModuleProcessed entry-point main
-#line 1
-#version 460
+              19:             String  "#version 460
 
 uniform UBO {
     int x;

@@ -17,14 +17,7 @@ spv.debuginfo.bufferref.glsl.frag
                2:             String  "spv.debuginfo.bufferref.glsl.frag"
                8:             String  "uint"
               16:             String  "main"
-              19:             String  "// OpModuleProcessed auto-map-locations
-// OpModuleProcessed auto-map-bindings
-// OpModuleProcessed client vulkan100
-// OpModuleProcessed target-env vulkan1.0
-// OpModuleProcessed keep-uncalled
-// OpModuleProcessed entry-point main
-#line 1
-#version 450 core
+              19:             String  "#version 450 core
 #extension GL_EXT_buffer_reference : enable
 
 layout(buffer_reference, std430) buffer MeshVertexPositions {
