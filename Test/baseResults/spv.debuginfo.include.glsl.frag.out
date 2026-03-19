@@ -25,14 +25,7 @@ uniform UBO {
 vec4 headerFunction(vec4 a) {
 	return -a;
 }"
-              39:             String  "// OpModuleProcessed auto-map-locations
-// OpModuleProcessed auto-map-bindings
-// OpModuleProcessed client vulkan100
-// OpModuleProcessed target-env vulkan1.0
-// OpModuleProcessed keep-uncalled
-// OpModuleProcessed entry-point main
-#line 1
-#version 450
+              39:             String  "#version 450
 
 #extension GL_GOOGLE_include_directive : require
 #include "spv.debuginfo.include.glsl.h"

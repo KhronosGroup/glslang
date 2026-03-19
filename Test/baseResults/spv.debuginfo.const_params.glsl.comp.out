@@ -14,14 +14,7 @@ spv.debuginfo.const_params.glsl.comp
                8:             String  "uint"
               17:             String  "float"
               35:             String  "function"
-              38:             String  "// OpModuleProcessed auto-map-locations
-// OpModuleProcessed auto-map-bindings
-// OpModuleProcessed client vulkan100
-// OpModuleProcessed target-env vulkan1.0
-// OpModuleProcessed keep-uncalled
-// OpModuleProcessed entry-point main
-#line 1
-#version 450
+              38:             String  "#version 450
 
 void function(
     const float f,

@@ -18,14 +18,7 @@ spv.debuginfo.scalar_types.glsl.frag
                2:             String  "spv.debuginfo.scalar_types.glsl.frag"
                8:             String  "uint"
               16:             String  "main"
-              19:             String  "// OpModuleProcessed auto-map-locations
-// OpModuleProcessed auto-map-bindings
-// OpModuleProcessed client vulkan100
-// OpModuleProcessed target-env vulkan1.0
-// OpModuleProcessed keep-uncalled
-// OpModuleProcessed entry-point main
-#line 1
-/*
+              19:             String  "/*
 The MIT License (MIT)
 
 Copyright (c) 2023 NVIDIA CORPORATION.

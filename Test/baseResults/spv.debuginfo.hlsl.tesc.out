@@ -19,15 +19,7 @@ WARNING: spv.debuginfo.hlsl.tesc:158: '' : attribute does not apply to entry poi
                9:             String  "float"
               12:             String  "uint"
               30:             String  "screenSpaceTessFactor"
-              33:             String  "// OpModuleProcessed auto-map-locations
-// OpModuleProcessed auto-map-bindings
-// OpModuleProcessed entry-point main
-// OpModuleProcessed client vulkan100
-// OpModuleProcessed target-env vulkan1.0
-// OpModuleProcessed keep-uncalled
-// OpModuleProcessed hlsl-offsets
-#line 1
-/*
+              33:             String  "/*
 The MIT License (MIT)
 
 Copyright (c) 2022 Google LLC
