@@ -9,6 +9,7 @@ Test/baseResults/hlsl.emptystructreturn.tesc.out
 Test/baseResults/hlsl.emptystructreturn.vert.out
 Test/baseResults/hlsl.gatherRGBA.offsetarray.dx10.frag.out
 Test/baseResults/hlsl.gatherRGBA.offset.dx10.frag.out
+Test/baseResults/hlsl.format.rwtexture.frag.out
 Test/baseResults/hlsl.intrinsics.comp.out
 Test/baseResults/hlsl.intrinsics.frag.out
 Test/baseResults/hlsl.intrinsics.vert.out
