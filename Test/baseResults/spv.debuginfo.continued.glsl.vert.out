@@ -12,14 +12,7 @@ spv.debuginfo.continued.glsl.vert
                2:             String  "spv.debuginfo.continued.glsl.vert"
                8:             String  "uint"
               16:             String  "main"
-              19:             String  "// OpModuleProcessed auto-map-locations
-// OpModuleProcessed auto-map-bindings
-// OpModuleProcessed client vulkan100
-// OpModuleProcessed target-env vulkan1.0
-// OpModuleProcessed keep-uncalled
-// OpModuleProcessed entry-point main
-#line 1
-#version 460
+              19:             String  "#version 460
 
 // This is filler text to cause the source length to exceed the maximum length of DebugSource and require the use of DebugSourceContinued.
 // This is filler text to cause the source length to exceed the maximum length of DebugSource and require the use of DebugSourceContinued.
@@ -1904,10 +1897,10 @@ spv.debuginfo.continued.glsl.vert
 // This is filler text to cause the source length to exceed the maximum length of DebugSource and require the use of DebugSourceContinued.
 // This is filler text to cause the source length to exceed the maximum length of DebugSource and require the use of DebugSourceContinued.
 // This is filler text to cause the source length to exceed the maximum length of DebugSource and require the use of DebugSourceContinued.
-// This is filler text to cause the source length to exceed the maximum length of DebugSource and require the use of DebugSourceCont"
-              20:             String  "inued.
 // This is filler text to cause the source length to exceed the maximum length of DebugSource and require the use of DebugSourceContinued.
 // This is filler text to cause the source length to exceed the maximum length of DebugSource and require the use of DebugSourceContinued.
+// This is filler text to cause the source length to exceed the maximum length of DebugSource "
+              20:             String  "and require the use of DebugSourceContinued.
 // This is filler text to cause the source length to exceed the maximum length of DebugSource and require the use of DebugSourceContinued.
 // This is filler text to cause the source length to exceed the maximum length of DebugSource and require the use of DebugSourceContinued.
 // This is filler text to cause the source length to exceed the maximum length of DebugSource and require the use of DebugSourceContinued.
@@ -3791,8 +3784,10 @@ spv.debuginfo.continued.glsl.vert
 // This is filler text to cause the source length to exceed the maximum length of DebugSource and require the use of DebugSourceContinued.
 // This is filler text to cause the source length to exceed the maximum length of DebugSource and require the use of DebugSourceContinued.
 // This is filler text to cause the source length to exceed the maximum length of DebugSource and require the use of DebugSourceContinued.
-// This is filler text to cause the source length to exceed the maximum length of DebugSource and req"
-              22:             String  "uire the use of DebugSourceContinued.
+// This is filler text to cause the source length to exceed the maximum length of DebugSource and require the use of DebugSourceContinued.
+// This is filler text to cause the source length to exceed the maximum length of DebugSource and require the use of DebugSourceContinued.
+// This is filler text to cause the source length to exceed the"
+              22:             String  " maximum length of DebugSource and require the use of DebugSourceContinued.
 
 void main()
 {
@@ -3831,7 +3826,7 @@ void main()
               18:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 35(DebugSource) 2 19
               21:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 102(DebugSourceContinued) 20
               23:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 102(DebugSourceContinued) 22
-              24:      7(int) Constant 3774
+              24:      7(int) Constant 3776
               26:      7(int) Constant 1
               27:      7(int) Constant 4
               28:      7(int) Constant 2
@@ -3852,7 +3847,7 @@ void main()
               46:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 47 38 18 26 48 12 12 13
               51:      7(int) Constant 85
               49:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 50 38 18 26 51 12 12 13
-              54:      7(int) Constant 3776
+              54:      7(int) Constant 3778
               52:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 10(DebugTypeComposite) 53 26 18 54 12 25 53 12 13 40 43 46 49
               55:             TypePointer Output 39(gl_PerVertex)
               56:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 3(DebugTypePointer) 52 13 12
@@ -3866,7 +3861,7 @@ void main()
               66:   35(fvec4) ConstantComposite 65 65 65 65
               67:             TypePointer Output 35(fvec4)
               68:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 3(DebugTypePointer) 36 13 12
-              72:      7(int) Constant 3777
+              72:      7(int) Constant 3779
         14(main):           4 Function None 5
               15:             Label
               30:           4 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 23(DebugScope) 17

@@ -15,14 +15,7 @@ spv.debuginfo.glsl.frag
                8:             String  "uint"
               17:             String  "float"
               39:             String  "textureProj"
-              42:             String  "// OpModuleProcessed auto-map-locations
-// OpModuleProcessed auto-map-bindings
-// OpModuleProcessed client vulkan100
-// OpModuleProcessed target-env vulkan1.0
-// OpModuleProcessed keep-uncalled
-// OpModuleProcessed entry-point main
-#line 1
-/*
+              42:             String  "/*
 The MIT License (MIT)
 
 Copyright (c) 2022 Sascha Willems

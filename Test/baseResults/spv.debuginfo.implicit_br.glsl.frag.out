@@ -13,14 +13,7 @@ spv.debuginfo.implicit_br.glsl.frag
                2:             String  "spv.debuginfo.implicit_br.glsl.frag"
                8:             String  "uint"
               18:             String  "test_if"
-              21:             String  "// OpModuleProcessed auto-map-locations
-// OpModuleProcessed auto-map-bindings
-// OpModuleProcessed client vulkan100
-// OpModuleProcessed target-env vulkan1.0
-// OpModuleProcessed keep-uncalled
-// OpModuleProcessed entry-point main
-#line 1
-#version 460
+              21:             String  "#version 460
 
 out int outx;
 int counter = 0;

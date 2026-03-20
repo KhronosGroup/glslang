@@ -18,15 +18,7 @@ spv.debuginfo.hlsl.geom
                9:             String  "float"
               12:             String  "uint"
               25:             String  "Pos"
-              27:             String  "// OpModuleProcessed auto-map-locations
-// OpModuleProcessed auto-map-bindings
-// OpModuleProcessed entry-point main
-// OpModuleProcessed client vulkan100
-// OpModuleProcessed target-env vulkan1.0
-// OpModuleProcessed keep-uncalled
-// OpModuleProcessed hlsl-offsets
-#line 1
-/*
+              27:             String  "/*
 The MIT License (MIT)
 
 Copyright (c) 2022 Google LLC
