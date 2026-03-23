@@ -113,6 +113,7 @@ enum TOptions : uint64_t {
     EOptionDisplayErrorColumn = (1ull << 33),
     EOptionLinkTimeOptimization = (1ull << 34),
     EOptionValidateCrossStageIO = (1ull << 35),
+    EOptionBindingsPerResourceType = (1ull << 36),
 };
 bool targetHlslFunctionality1 = false;
 bool SpvToolsDisassembler = false;
@@ -815,6 +816,14 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                                lowerword == "shift-ssbo-binding"  ||
                                lowerword == "sbb") {
                         ProcessBindingBase(argc, argv, glslang::EResSsbo);
+                    } else if (lowerword == "shift-combined-sampler-bindings" ||
+                               lowerword == "shift-combined-sampler-binding" ||
+                               lowerword == "scsb") {
+                        ProcessBindingBase(argc, argv, glslang::EResCombinedSampler);
+                    } else if (lowerword == "shift-as-bindings" ||
+                               lowerword == "shift-as-binding" ||
+                               lowerword == "sab") {
+                        ProcessBindingBase(argc, argv, glslang::EResAs);
                     } else if (lowerword == "source-entrypoint" || // synonyms
                                lowerword == "sep") {
                         if (argc <= 1)
@@ -910,6 +919,8 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                         Options |= EOptionLinkTimeOptimization;
                     } else if (lowerword == "validate-io") {
                         Options |= EOptionValidateCrossStageIO;
+                    } else if (lowerword == "bindings-per-resource-type") {
+                        Options |= EOptionBindingsPerResourceType;
                     } else if (lowerword == "help") {
                         usage();
                         break;
@@ -1343,8 +1354,8 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
     SetMessageOptions(messages);
 
     DirStackFileIncluder includer;
-    std::for_each(IncludeDirectoryList.rbegin(), IncludeDirectoryList.rend(), [&includer](const std::string& dir) {
-        includer.pushExternalLocalDirectory(dir); });
+    std::for_each(IncludeDirectoryList.begin(), IncludeDirectoryList.end(), [&includer](const std::string& dir) {
+        includer.pushExternalDirectory(dir); });
 
     std::vector<std::string> sources;
 
@@ -1456,6 +1467,9 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
 
         if (emitNonSemanticShaderDebugInfo)
             shader->setDebugInfo(true);
+
+        if (Options & EOptionBindingsPerResourceType)
+            shader->setBindingsPerResourceType();
 
         // Set up the environment, some subsettings take precedence over earlier
         // ways of setting things.
@@ -2147,6 +2161,18 @@ void usage()
            "  --shift-ubo-bindings | --sub |\n"
            "  --shift-cbuffer-binding | --shift-cbuffer-bindings | --scb\n"
            "                                    synonyms for --shift-ubo-binding\n"
+           "  --shift-combined-sampler-binding [stage] <num>\n"
+           "                                    base binding number for combined samplers\n"
+           "  --shift-combined-sampler-binding [stage] <num> <set>...\n"
+           "                                    per-descriptor-set shift values\n"
+           "  --shift-combined-sampler-bindings | --scsb\n"
+           "                                    synonyms for --shift-combined-sampler-binding\n"
+           "  --shift-as-binding [stage] <num>\n"
+           "                                    base binding number for acceleration structures\n"
+           "  --shift-as-binding [stage] <num> <set>...\n"
+           "                                    per-descriptor-set shift values\n"
+           "  --shift-as-bindings | --sab\n"
+           "                                    synonyms for --shift-as-binding\n"
            "  --spirv-dis                       output standard-form disassembly; works only\n"
            "                                    when a SPIR-V generation option is also used\n"
            "  --spirv-val                       execute the SPIRV-Tools validator\n"
@@ -2174,7 +2200,8 @@ void usage()
            "                                    creates a C header file that contains a\n"
            "                                    uint32_t array named <name> initialized with\n"
            "                                    the shader binary code\n"
-           "  --validate-io                     validate cross stage IO\n");
+           "  --validate-io                     validate cross stage IO\n"
+           "  --bindings-per-resource-type\n");
 
     exit(EFailUsage);
 }

@@ -434,6 +434,9 @@ enum TResourceType {
     EResUbo,
     EResSsbo,
     EResUav,
+    EResCombinedSampler,
+    EResAs,
+    EResTensor,
     EResCount
 };
 
@@ -493,6 +496,7 @@ public:
     void setResourceSetBinding(const std::vector<std::string>& base);
     void setAutoMapBindings(bool map);
     void setAutoMapLocations(bool map);
+    void setBindingsPerResourceType();
     void addUniformLocationOverride(const char* name, int loc);
     void setUniformLocationBase(int base);
     void setInvertY(bool invert);

@@ -231,6 +231,8 @@ const char* ExecutionModeString(int mode)
     case (int)ExecutionMode::NonCoherentDepthAttachmentReadEXT:        return "NonCoherentDepthAttachmentReadEXT";
     case (int)ExecutionMode::NonCoherentStencilAttachmentReadEXT:      return "NonCoherentStencilAttachmentReadEXT";
 
+    case (int)ExecutionMode::Shader64BitIndexingEXT:                   return "Shader64BitIndexingEXT";
+
     case ExecutionModeCeiling:
     default: return "Bad";
     }
@@ -265,6 +267,7 @@ const char* StorageClassString(int StorageClass)
     case (int)StorageClass::TaskPayloadWorkgroupEXT:  return "TaskPayloadWorkgroupEXT";
     case (int)StorageClass::HitObjectAttributeNV:     return "HitObjectAttributeNV";
     case (int)StorageClass::TileImageEXT:             return "TileImageEXT";
+    case (int)StorageClass::HitObjectAttributeEXT:    return "HitObjectAttributeEXT";
     default: return "Bad";
     }
 }
@@ -344,8 +347,15 @@ const char* DecorationString(int decoration)
     case (int)Decoration::AliasedPointerEXT:       return "DecorationAliasedPointerEXT";
 
     case (int)Decoration::HitObjectShaderRecordBufferNV:  return "DecorationHitObjectShaderRecordBufferNV";
+    case (int)Decoration::HitObjectShaderRecordBufferEXT:  return "DecorationHitObjectShaderRecordBufferEXT";
 
     case (int)Decoration::SaturatedToLargestFloat8NormalConversionEXT: return "DecorationSaturatedToLargestFloat8NormalConversionEXT";
+
+    case (int)Decoration::BankNV:                        return "BankNV";
+    case (int)Decoration::MemberOffsetNV:                return "MemberOffsetNV";
+
+    case (int)Decoration::ArrayStrideIdEXT:        return "DecorationArrayStrideIdEXT";
+    case (int)Decoration::OffsetIdEXT:             return "DecorationOffsetIdEXT";
     }
 }
 
@@ -487,6 +497,8 @@ const char* BuiltInString(int builtIn)
     case (int)BuiltIn::CoreMaxIDARM:           return "CoreMaxIDARM";
     case (int)BuiltIn::WarpIDARM:              return "WarpIDARM";
     case (int)BuiltIn::WarpMaxIDARM:           return "BuiltInWarpMaxIDARM";
+    case (int)BuiltIn::SamplerHeapEXT:         return "SamplerHeapEXT";
+    case (int)BuiltIn::ResourceHeapEXT:        return "ResourceHeapEXT";
 
     default: return "Bad";
     }
@@ -1089,6 +1101,8 @@ const char* CapabilityString(int info)
     case (int)Capability::ShaderClockKHR:                          return "ShaderClockKHR";
     case (int)Capability::QuadControlKHR:                          return "QuadControlKHR";
     case (int)Capability::Int64ImageEXT:                           return "Int64ImageEXT";
+    case (int)Capability::DescriptorHeapEXT:                       return "DescriptorHeapEXT";
+    case (int)Capability::UntypedPointersKHR:                      return "UntypedPointersKHR";
 
     case (int)Capability::IntegerFunctions2INTEL:              return "IntegerFunctions2INTEL";
 
@@ -1110,6 +1124,7 @@ const char* CapabilityString(int info)
     case (int)Capability::CoreBuiltinsARM:                             return "CoreBuiltinsARM";
 
     case (int)Capability::ShaderInvocationReorderNV:                return "ShaderInvocationReorderNV";
+    case (int)Capability::ShaderInvocationReorderEXT:               return "ShaderInvocationReorderEXT";
 
     case (int)Capability::TextureSampleWeightedQCOM:           return "TextureSampleWeightedQCOM";
     case (int)Capability::TextureBoxFilterQCOM:                return "TextureBoxFilterQCOM";
@@ -1137,6 +1152,11 @@ const char* CapabilityString(int info)
 
     case (int)Capability::Float8EXT:                           return "Float8EXT";
     case (int)Capability::Float8CooperativeMatrixEXT:          return "Float8CooperativeMatrixEXT";
+
+    case (int)Capability::PushConstantBanksNV:                 return "PushConstantBanksNV";
+        
+    case (int)Capability::Shader64BitIndexingEXT:              return "CapabilityShader64BitIndexingEXT";
+    case (int)Capability::LongVectorEXT:                       return "LongVectorEXT";
 
     default: return "Bad";
     }
@@ -1519,6 +1539,14 @@ const char* OpcodeString(int op)
 
     case (int)Op::OpGroupNonUniformQuadAllKHR: return "OpGroupNonUniformQuadAllKHR";
     case (int)Op::OpGroupNonUniformQuadAnyKHR: return "OpGroupNonUniformQuadAnyKHR";
+    case (int)Op::OpBufferPointerEXT:          return "OpBufferPointerEXT";
+    case (int)Op::OpConstantSizeOfEXT:         return "OpConstantSizeOfEXT";
+    case (int)Op::OpTypeBufferEXT:             return "OpTypeBufferEXT";
+    case (int)Op::OpUntypedAccessChainKHR:     return "OpUntypedAccessChainKHR";
+    case (int)Op::OpUntypedVariableKHR:        return "OpUntypedVariableKHR";
+    case (int)Op::OpTypeUntypedPointerKHR:     return "OpTypeUntypedPointerKHR";
+    case (int)Op::OpMemberDecorateIdEXT:       return "OpMemberDecorateIdEXT";
+    case (int)Op::OpUntypedImageTexelPointerEXT:     return "OpUntypedImageTexelPointerEXT";
 
     case (int)Op::OpAbortKHR:            return "OpAbortKHR";
     case (int)Op::OpConstantDataKHR:     return "OpConstantDataKHR";
@@ -1725,6 +1753,43 @@ const char* OpcodeString(int op)
     case (int)Op::OpUDotAccSatKHR: return "OpUDotAccSatKHR";
     case (int)Op::OpSUDotAccSatKHR: return "OpSUDotAccSatKHR";
 
+    case (int)Op::OpTypeHitObjectEXT:                     return "OpTypeHitObjectEXT";
+    case (int)Op::OpHitObjectTraceRayEXT:                 return "OpHitObjectTraceRayEXT";
+    case (int)Op::OpHitObjectTraceRayMotionEXT:           return "OpHitObjectTraceRayMotionEXT";
+    case (int)Op::OpHitObjectRecordMissEXT:               return "OpHitObjectRecordMissEXT";
+    case (int)Op::OpHitObjectRecordMissMotionEXT:         return "OpHitObjectRecordMissMotionEXT";
+    case (int)Op::OpHitObjectRecordEmptyEXT:              return "OpHitObjectRecordEmptyEXT";
+    case (int)Op::OpHitObjectExecuteShaderEXT:            return "OpHitObjectExecuteShaderEXT";
+    case (int)Op::OpReorderThreadWithHintEXT:             return "OpReorderThreadWithHintEXT";
+    case (int)Op::OpReorderThreadWithHitObjectEXT:        return "OpReorderThreadWithHitObjectEXT";
+    case (int)Op::OpHitObjectGetCurrentTimeEXT:           return "OpHitObjectGetCurrentTimeEXT";
+    case (int)Op::OpHitObjectGetAttributesEXT:            return "OpHitObjectGetAttributesEXT";
+    case (int)Op::OpHitObjectGetHitKindEXT:               return "OpHitObjectGetHitKindEXT";
+    case (int)Op::OpHitObjectGetPrimitiveIndexEXT:        return "OpHitObjectGetPrimitiveIndexEXT";
+    case (int)Op::OpHitObjectGetGeometryIndexEXT:         return "OpHitObjectGetGeometryIndexEXT";
+    case (int)Op::OpHitObjectGetInstanceIdEXT:            return "OpHitObjectGetInstanceIdEXT";
+    case (int)Op::OpHitObjectGetInstanceCustomIndexEXT:   return "OpHitObjectGetInstanceCustomIndexEXT";
+    case (int)Op::OpHitObjectGetObjectRayDirectionEXT:    return "OpHitObjectGetObjectRayDirectionEXT";
+    case (int)Op::OpHitObjectGetObjectRayOriginEXT:       return "OpHitObjectGetObjectRayOriginEXT";
+    case (int)Op::OpHitObjectGetWorldRayDirectionEXT:     return "OpHitObjectGetWorldRayDirectionEXT";
+    case (int)Op::OpHitObjectGetWorldRayOriginEXT:        return "OpHitObjectGetWorldRayOriginEXT";
+    case (int)Op::OpHitObjectGetWorldToObjectEXT:         return "OpHitObjectGetWorldToObjectEXT";
+    case (int)Op::OpHitObjectGetObjectToWorldEXT:         return "OpHitObjectGetObjectToWorldEXT";
+    case (int)Op::OpHitObjectGetRayTMaxEXT:               return "OpHitObjectGetRayTMaxEXT";
+    case (int)Op::OpHitObjectGetRayTMinEXT:               return "OpHitObjectGetRayTMinEXT";
+    case (int)Op::OpHitObjectGetRayFlagsEXT:              return "OpHitObjectGetRayFlagsEXT";
+    case (int)Op::OpHitObjectIsEmptyEXT:                  return "OpHitObjectIsEmptyEXT";
+    case (int)Op::OpHitObjectIsHitEXT:                    return "OpHitObjectIsHitEXT";
+    case (int)Op::OpHitObjectIsMissEXT:                   return "OpHitObjectIsMissEXT";
+    case (int)Op::OpHitObjectGetShaderBindingTableRecordIndexEXT: return "OpHitObjectGetShaderBindingTableRecordIndexEXT";
+    case (int)Op::OpHitObjectGetShaderRecordBufferHandleEXT:   return "OpHitObjectGetShaderRecordBufferHandleEXT";
+    case (int)Op::OpHitObjectSetShaderBindingTableRecordIndexEXT: return "OpHitObjectSetShaderBindingTableRecordIndexEXT";
+    case (int)Op::OpHitObjectReorderExecuteShaderEXT:     return "OpHitObjectReorderExecuteEXT";
+    case (int)Op::OpHitObjectTraceReorderExecuteEXT:      return "OpHitObjectTraceReorderExecuteEXT";
+    case (int)Op::OpHitObjectTraceMotionReorderExecuteEXT: return "OpHitObjectTraceMotionReorderExecuteEXT";
+    case (int)Op::OpHitObjectRecordFromQueryEXT:          return "OpHitObjectRecordFromQueryEXT";
+    case (int)Op::OpHitObjectGetIntersectionTriangleVertexPositionsEXT: return "OpHitObjectGetIntersectionTriangleVertexPositionsEXT";
+
     default:
         return "Bad";
     }
@@ -1782,6 +1847,7 @@ void Parameterize()
         InstructionDesc[enumCast(Op::OpTypeStruct)].setResultAndType(true, false);
         InstructionDesc[enumCast(Op::OpTypeOpaque)].setResultAndType(true, false);
         InstructionDesc[enumCast(Op::OpTypePointer)].setResultAndType(true, false);
+        InstructionDesc[enumCast(Op::OpTypeUntypedPointerKHR)].setResultAndType(true, false);
         InstructionDesc[enumCast(Op::OpTypeForwardPointer)].setResultAndType(false, false);
         InstructionDesc[enumCast(Op::OpTypeFunction)].setResultAndType(true, false);
         InstructionDesc[enumCast(Op::OpTypeEvent)].setResultAndType(true, false);
@@ -1852,6 +1918,7 @@ void Parameterize()
         InstructionDesc[enumCast(Op::OpCooperativeVectorStoreNV)].setResultAndType(false, false);
         InstructionDesc[enumCast(Op::OpCooperativeVectorOuterProductAccumulateNV)].setResultAndType(false, false);
         InstructionDesc[enumCast(Op::OpCooperativeVectorReduceSumAccumulateNV)].setResultAndType(false, false);
+        InstructionDesc[enumCast(Op::OpMemberDecorateIdEXT)].setResultAndType(false, false);
 
         InstructionDesc[enumCast(Op::OpTypeTensorARM)].setResultAndType(true, false);
         InstructionDesc[enumCast(Op::OpTensorReadARM)].setResultAndType(true, true);
@@ -2006,6 +2073,7 @@ void Parameterize()
         InstructionDesc[enumCast(Op::OpTypeStruct)].operands.push(OperandVariableIds, "'Member 0 type', +\n'member 1 type', +\n...");
 
         InstructionDesc[enumCast(Op::OpTypeOpaque)].operands.push(OperandLiteralString, "The name of the opaque type.");
+        InstructionDesc[enumCast(Op::OpTypeUntypedPointerKHR)].operands.push(OperandStorage, "");
 
         InstructionDesc[enumCast(Op::OpTypePointer)].operands.push(OperandStorage, "");
         InstructionDesc[enumCast(Op::OpTypePointer)].operands.push(OperandId, "'Type'");
@@ -2033,6 +2101,9 @@ void Parameterize()
         InstructionDesc[enumCast(Op::OpSpecConstantOp)].operands.push(OperandLiteralNumber, "'Opcode'");
         InstructionDesc[enumCast(Op::OpSpecConstantOp)].operands.push(OperandVariableIds, "'Operands'");
 
+        InstructionDesc[enumCast(Op::OpUntypedVariableKHR)].operands.push(OperandStorage, "");
+        InstructionDesc[enumCast(Op::OpUntypedVariableKHR)].operands.push(OperandId, "'Type'", true);
+        InstructionDesc[enumCast(Op::OpUntypedVariableKHR)].operands.push(OperandId, "'Initializer'", true);
         InstructionDesc[enumCast(Op::OpVariable)].operands.push(OperandStorage, "");
         InstructionDesc[enumCast(Op::OpVariable)].operands.push(OperandId, "'Initializer'", true);
 
@@ -2079,6 +2150,11 @@ void Parameterize()
         InstructionDesc[enumCast(Op::OpMemberDecorate)].operands.push(OperandLiteralNumber, "'Member'");
         InstructionDesc[enumCast(Op::OpMemberDecorate)].operands.push(OperandDecoration, "");
         InstructionDesc[enumCast(Op::OpMemberDecorate)].operands.push(OperandVariableLiterals, "See <<Decoration,'Decoration'>>.");
+
+        InstructionDesc[enumCast(Op::OpMemberDecorateIdEXT)].operands.push(OperandId, "'Structure Type'");
+        InstructionDesc[enumCast(Op::OpMemberDecorateIdEXT)].operands.push(OperandLiteralNumber, "'Member'");
+        InstructionDesc[enumCast(Op::OpMemberDecorateIdEXT)].operands.push(OperandDecoration, "");
+        InstructionDesc[enumCast(Op::OpMemberDecorateIdEXT)].operands.push(OperandVariableIds, "See <<Decoration,'Decoration'>>.");
 
         InstructionDesc[enumCast(Op::OpMemberDecorateStringGOOGLE)].operands.push(OperandId, "'Structure Type'");
         InstructionDesc[enumCast(Op::OpMemberDecorateStringGOOGLE)].operands.push(OperandLiteralNumber, "'Member'");
@@ -2286,6 +2362,9 @@ void Parameterize()
         InstructionDesc[enumCast(Op::OpAccessChain)].operands.push(OperandId, "'Base'");
         InstructionDesc[enumCast(Op::OpAccessChain)].operands.push(OperandVariableIds, "'Indexes'");
 
+        InstructionDesc[enumCast(Op::OpUntypedAccessChainKHR)].operands.push(OperandId, "'Base Type'");
+        InstructionDesc[enumCast(Op::OpUntypedAccessChainKHR)].operands.push(OperandId, "'Base'");
+        InstructionDesc[enumCast(Op::OpUntypedAccessChainKHR)].operands.push(OperandVariableIds, "'Indexes'");
         InstructionDesc[enumCast(Op::OpInBoundsAccessChain)].operands.push(OperandId, "'Base'");
         InstructionDesc[enumCast(Op::OpInBoundsAccessChain)].operands.push(OperandVariableIds, "'Indexes'");
 
@@ -3123,6 +3202,19 @@ void Parameterize()
         InstructionDesc[enumCast(Op::OpFragmentFetchAMD)].operands.push(OperandId, "'Coordinate'");
         InstructionDesc[enumCast(Op::OpFragmentFetchAMD)].operands.push(OperandId, "'Fragment Index'");
 
+
+        InstructionDesc[enumCast(Op::OpTypeBufferEXT)].operands.push(OperandStorage, "");
+        InstructionDesc[enumCast(Op::OpTypeBufferEXT)].setResultAndType(true, false);
+
+        InstructionDesc[enumCast(Op::OpConstantSizeOfEXT)].operands.push(OperandId, "'Type'");
+
+        InstructionDesc[enumCast(Op::OpBufferPointerEXT)].operands.push(OperandId, "'Buffer'");
+
+        InstructionDesc[enumCast(Op::OpUntypedImageTexelPointerEXT)].operands.push(OperandId, "'ImageType'");
+        InstructionDesc[enumCast(Op::OpUntypedImageTexelPointerEXT)].operands.push(OperandId, "'Image'");
+        InstructionDesc[enumCast(Op::OpUntypedImageTexelPointerEXT)].operands.push(OperandId, "'Coordinate'");
+        InstructionDesc[enumCast(Op::OpUntypedImageTexelPointerEXT)].operands.push(OperandId, "'Sample'");
+
         InstructionDesc[enumCast(Op::OpGroupNonUniformPartitionNV)].operands.push(OperandId, "X");
 
         InstructionDesc[enumCast(Op::OpGroupNonUniformQuadAllKHR)].operands.push(OperandId, "'Predicate'");
@@ -3865,6 +3957,191 @@ void Parameterize()
 
         InstructionDesc[enumCast(Op::OpTensorQuerySizeARM)].operands.push(OperandId, "'Tensor'");
         InstructionDesc[enumCast(Op::OpTensorQuerySizeARM)].operands.push(OperandId, "'Dimension'", true);
+
+        InstructionDesc[enumCast(Op::OpTypeHitObjectEXT)].setResultAndType(true, false);
+
+        InstructionDesc[enumCast(Op::OpHitObjectGetShaderRecordBufferHandleNV)].operands.push(OperandId, "'HitObject'");
+        InstructionDesc[enumCast(Op::OpHitObjectGetShaderRecordBufferHandleNV)].setResultAndType(true, true);
+
+        InstructionDesc[enumCast(Op::OpHitObjectGetShaderRecordBufferHandleEXT)].operands.push(OperandId, "'HitObject'");
+        InstructionDesc[enumCast(Op::OpHitObjectGetShaderRecordBufferHandleEXT)].setResultAndType(true, true);
+
+        InstructionDesc[enumCast(Op::OpReorderThreadWithHintEXT)].operands.push(OperandId, "'Hint'");
+        InstructionDesc[enumCast(Op::OpReorderThreadWithHintEXT)].operands.push(OperandId, "'Bits'");
+        InstructionDesc[enumCast(Op::OpReorderThreadWithHintEXT)].setResultAndType(false, false);
+
+        InstructionDesc[enumCast(Op::OpReorderThreadWithHitObjectEXT)].operands.push(OperandId, "'HitObject'");
+        InstructionDesc[enumCast(Op::OpReorderThreadWithHitObjectEXT)].operands.push(OperandId, "'Hint'");
+        InstructionDesc[enumCast(Op::OpReorderThreadWithHitObjectEXT)].operands.push(OperandId, "'Bits'");
+        InstructionDesc[enumCast(Op::OpReorderThreadWithHitObjectEXT)].setResultAndType(false, false);
+
+        InstructionDesc[enumCast(Op::OpHitObjectGetCurrentTimeEXT)].operands.push(OperandId, "'HitObject'");
+        InstructionDesc[enumCast(Op::OpHitObjectGetCurrentTimeEXT)].setResultAndType(true, true);
+
+        InstructionDesc[enumCast(Op::OpHitObjectGetHitKindEXT)].operands.push(OperandId, "'HitObject'");
+        InstructionDesc[enumCast(Op::OpHitObjectGetHitKindEXT)].setResultAndType(true, true);
+
+        InstructionDesc[enumCast(Op::OpHitObjectGetPrimitiveIndexEXT)].operands.push(OperandId, "'HitObject'");
+        InstructionDesc[enumCast(Op::OpHitObjectGetPrimitiveIndexEXT)].setResultAndType(true, true);
+
+        InstructionDesc[enumCast(Op::OpHitObjectGetGeometryIndexEXT)].operands.push(OperandId, "'HitObject'");
+        InstructionDesc[enumCast(Op::OpHitObjectGetGeometryIndexEXT)].setResultAndType(true, true);
+
+        InstructionDesc[enumCast(Op::OpHitObjectGetInstanceIdEXT)].operands.push(OperandId, "'HitObject'");
+        InstructionDesc[enumCast(Op::OpHitObjectGetInstanceIdEXT)].setResultAndType(true, true);
+
+        InstructionDesc[enumCast(Op::OpHitObjectGetInstanceCustomIndexEXT)].operands.push(OperandId, "'HitObject'");
+        InstructionDesc[enumCast(Op::OpHitObjectGetInstanceCustomIndexEXT)].setResultAndType(true, true);
+
+        InstructionDesc[enumCast(Op::OpHitObjectGetObjectRayDirectionEXT)].operands.push(OperandId, "'HitObject'");
+        InstructionDesc[enumCast(Op::OpHitObjectGetObjectRayDirectionEXT)].setResultAndType(true, true);
+
+        InstructionDesc[enumCast(Op::OpHitObjectGetObjectRayOriginEXT)].operands.push(OperandId, "'HitObject'");
+        InstructionDesc[enumCast(Op::OpHitObjectGetObjectRayOriginEXT)].setResultAndType(true, true);
+
+        InstructionDesc[enumCast(Op::OpHitObjectGetWorldRayDirectionEXT)].operands.push(OperandId, "'HitObject'");
+        InstructionDesc[enumCast(Op::OpHitObjectGetWorldRayDirectionEXT)].setResultAndType(true, true);
+
+        InstructionDesc[enumCast(Op::OpHitObjectGetWorldRayOriginEXT)].operands.push(OperandId, "'HitObject'");
+        InstructionDesc[enumCast(Op::OpHitObjectGetWorldRayOriginEXT)].setResultAndType(true, true);
+
+        InstructionDesc[enumCast(Op::OpHitObjectGetWorldToObjectEXT)].operands.push(OperandId, "'HitObject'");
+        InstructionDesc[enumCast(Op::OpHitObjectGetWorldToObjectEXT)].setResultAndType(true, true);
+
+        InstructionDesc[enumCast(Op::OpHitObjectGetObjectToWorldEXT)].operands.push(OperandId, "'HitObject'");
+        InstructionDesc[enumCast(Op::OpHitObjectGetObjectToWorldEXT)].setResultAndType(true, true);
+
+        InstructionDesc[enumCast(Op::OpHitObjectGetRayTMaxEXT)].operands.push(OperandId, "'HitObject'");
+        InstructionDesc[enumCast(Op::OpHitObjectGetRayTMaxEXT)].setResultAndType(true, true);
+
+        InstructionDesc[enumCast(Op::OpHitObjectGetRayTMinEXT)].operands.push(OperandId, "'HitObject'");
+        InstructionDesc[enumCast(Op::OpHitObjectGetRayTMinEXT)].setResultAndType(true, true);
+
+        InstructionDesc[enumCast(Op::OpHitObjectGetRayFlagsEXT)].operands.push(OperandId, "'HitObject'");
+        InstructionDesc[enumCast(Op::OpHitObjectGetRayFlagsEXT)].setResultAndType(true, true);
+
+        InstructionDesc[enumCast(Op::OpHitObjectGetShaderBindingTableRecordIndexEXT)].operands.push(OperandId, "'HitObject'");
+        InstructionDesc[enumCast(Op::OpHitObjectGetShaderBindingTableRecordIndexEXT)].setResultAndType(true, true);
+
+        InstructionDesc[enumCast(Op::OpHitObjectIsEmptyEXT)].operands.push(OperandId, "'HitObject'");
+        InstructionDesc[enumCast(Op::OpHitObjectIsEmptyEXT)].setResultAndType(true, true);
+
+        InstructionDesc[enumCast(Op::OpHitObjectIsHitEXT)].operands.push(OperandId, "'HitObject'");
+        InstructionDesc[enumCast(Op::OpHitObjectIsHitEXT)].setResultAndType(true, true);
+
+        InstructionDesc[enumCast(Op::OpHitObjectIsMissEXT)].operands.push(OperandId, "'HitObject'");
+        InstructionDesc[enumCast(Op::OpHitObjectIsMissEXT)].setResultAndType(true, true);
+
+        InstructionDesc[enumCast(Op::OpHitObjectGetAttributesEXT)].operands.push(OperandId, "'HitObject'");
+        InstructionDesc[enumCast(Op::OpHitObjectGetAttributesEXT)].operands.push(OperandId, "'HitObjectAttribute'");
+        InstructionDesc[enumCast(Op::OpHitObjectGetAttributesEXT)].setResultAndType(false, false);
+
+        InstructionDesc[enumCast(Op::OpHitObjectExecuteShaderEXT)].operands.push(OperandId, "'HitObject'");
+        InstructionDesc[enumCast(Op::OpHitObjectExecuteShaderEXT)].operands.push(OperandId, "'Payload'");
+        InstructionDesc[enumCast(Op::OpHitObjectExecuteShaderEXT)].setResultAndType(false, false);
+
+        InstructionDesc[enumCast(Op::OpHitObjectRecordMissEXT)].operands.push(OperandId, "'HitObject'");
+        InstructionDesc[enumCast(Op::OpHitObjectRecordMissEXT)].operands.push(OperandId, "'RayFlags'");
+        InstructionDesc[enumCast(Op::OpHitObjectRecordMissEXT)].operands.push(OperandId, "'SBT Index'");
+        InstructionDesc[enumCast(Op::OpHitObjectRecordMissEXT)].operands.push(OperandId, "'Origin'");
+        InstructionDesc[enumCast(Op::OpHitObjectRecordMissEXT)].operands.push(OperandId, "'TMin'");
+        InstructionDesc[enumCast(Op::OpHitObjectRecordMissEXT)].operands.push(OperandId, "'Direction'");
+        InstructionDesc[enumCast(Op::OpHitObjectRecordMissEXT)].operands.push(OperandId, "'TMax'");
+        InstructionDesc[enumCast(Op::OpHitObjectRecordMissEXT)].setResultAndType(false, false);
+
+        InstructionDesc[enumCast(Op::OpHitObjectRecordMissMotionEXT)].operands.push(OperandId, "'HitObject'");
+        InstructionDesc[enumCast(Op::OpHitObjectRecordMissMotionEXT)].operands.push(OperandId, "'RayFlags'");
+        InstructionDesc[enumCast(Op::OpHitObjectRecordMissMotionEXT)].operands.push(OperandId, "'SBT Index'");
+        InstructionDesc[enumCast(Op::OpHitObjectRecordMissMotionEXT)].operands.push(OperandId, "'Origin'");
+        InstructionDesc[enumCast(Op::OpHitObjectRecordMissMotionEXT)].operands.push(OperandId, "'TMin'");
+        InstructionDesc[enumCast(Op::OpHitObjectRecordMissMotionEXT)].operands.push(OperandId, "'Direction'");
+        InstructionDesc[enumCast(Op::OpHitObjectRecordMissMotionEXT)].operands.push(OperandId, "'TMax'");
+        InstructionDesc[enumCast(Op::OpHitObjectRecordMissMotionEXT)].operands.push(OperandId, "'Current Time'");
+        InstructionDesc[enumCast(Op::OpHitObjectRecordMissMotionEXT)].setResultAndType(false, false);
+
+        InstructionDesc[enumCast(Op::OpHitObjectRecordEmptyEXT)].operands.push(OperandId, "'HitObject'");
+        InstructionDesc[enumCast(Op::OpHitObjectRecordEmptyEXT)].setResultAndType(false, false);
+
+        InstructionDesc[enumCast(Op::OpHitObjectTraceRayEXT)].operands.push(OperandId, "'HitObject'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceRayEXT)].operands.push(OperandId, "'Acceleration Structure'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceRayEXT)].operands.push(OperandId, "'RayFlags'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceRayEXT)].operands.push(OperandId, "'Cullmask'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceRayEXT)].operands.push(OperandId, "'SBT Record Offset'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceRayEXT)].operands.push(OperandId, "'SBT Record Stride'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceRayEXT)].operands.push(OperandId, "'Miss Index'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceRayEXT)].operands.push(OperandId, "'Origin'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceRayEXT)].operands.push(OperandId, "'TMin'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceRayEXT)].operands.push(OperandId, "'Direction'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceRayEXT)].operands.push(OperandId, "'TMax'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceRayEXT)].operands.push(OperandId, "'Payload'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceRayEXT)].setResultAndType(false, false);
+
+        InstructionDesc[enumCast(Op::OpHitObjectTraceRayMotionEXT)].operands.push(OperandId, "'HitObject'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceRayMotionEXT)].operands.push(OperandId, "'Acceleration Structure'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceRayMotionEXT)].operands.push(OperandId, "'RayFlags'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceRayMotionEXT)].operands.push(OperandId, "'Cullmask'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceRayMotionEXT)].operands.push(OperandId, "'SBT Record Offset'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceRayMotionEXT)].operands.push(OperandId, "'SBT Record Stride'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceRayMotionEXT)].operands.push(OperandId, "'Miss Index'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceRayMotionEXT)].operands.push(OperandId, "'Origin'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceRayMotionEXT)].operands.push(OperandId, "'TMin'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceRayMotionEXT)].operands.push(OperandId, "'Direction'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceRayMotionEXT)].operands.push(OperandId, "'TMax'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceRayMotionEXT)].operands.push(OperandId, "'Time'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceRayMotionEXT)].operands.push(OperandId, "'Payload'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceRayMotionEXT)].setResultAndType(false, false);
+
+        InstructionDesc[enumCast(Op::OpHitObjectSetShaderBindingTableRecordIndexEXT)].operands.push(OperandId, "'HitObject'");
+        InstructionDesc[enumCast(Op::OpHitObjectSetShaderBindingTableRecordIndexEXT)].operands.push(OperandId, "'SBT Record Index'");
+        InstructionDesc[enumCast(Op::OpHitObjectSetShaderBindingTableRecordIndexEXT)].setResultAndType(false, false);
+
+        InstructionDesc[enumCast(Op::OpHitObjectReorderExecuteShaderEXT)].operands.push(OperandId, "'HitObject'");
+        InstructionDesc[enumCast(Op::OpHitObjectReorderExecuteShaderEXT)].operands.push(OperandId, "'Payload'");
+        InstructionDesc[enumCast(Op::OpHitObjectReorderExecuteShaderEXT)].operands.push(OperandId, "'Hint'");
+        InstructionDesc[enumCast(Op::OpHitObjectReorderExecuteShaderEXT)].operands.push(OperandId, "'Bits'");
+        InstructionDesc[enumCast(Op::OpHitObjectReorderExecuteShaderEXT)].setResultAndType(false, false);
+
+        InstructionDesc[enumCast(Op::OpHitObjectTraceReorderExecuteEXT)].operands.push(OperandId, "'HitObject'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceReorderExecuteEXT)].operands.push(OperandId, "'Acceleration Structure'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceReorderExecuteEXT)].operands.push(OperandId, "'RayFlags'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceReorderExecuteEXT)].operands.push(OperandId, "'Cullmask'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceReorderExecuteEXT)].operands.push(OperandId, "'SBT Record Offset'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceReorderExecuteEXT)].operands.push(OperandId, "'SBT Record Stride'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceReorderExecuteEXT)].operands.push(OperandId, "'Miss Index'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceReorderExecuteEXT)].operands.push(OperandId, "'Origin'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceReorderExecuteEXT)].operands.push(OperandId, "'TMin'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceReorderExecuteEXT)].operands.push(OperandId, "'Direction'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceReorderExecuteEXT)].operands.push(OperandId, "'TMax'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceReorderExecuteEXT)].operands.push(OperandId, "'Payload'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceReorderExecuteEXT)].operands.push(OperandId, "'Hint'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceReorderExecuteEXT)].operands.push(OperandId, "'Bits'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceReorderExecuteEXT)].setResultAndType(false, false);
+
+        InstructionDesc[enumCast(Op::OpHitObjectTraceMotionReorderExecuteEXT)].operands.push(OperandId, "'HitObject'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceMotionReorderExecuteEXT)].operands.push(OperandId, "'Acceleration Structure'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceMotionReorderExecuteEXT)].operands.push(OperandId, "'RayFlags'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceMotionReorderExecuteEXT)].operands.push(OperandId, "'Cullmask'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceMotionReorderExecuteEXT)].operands.push(OperandId, "'SBT Record Offset'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceMotionReorderExecuteEXT)].operands.push(OperandId, "'SBT Record Stride'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceMotionReorderExecuteEXT)].operands.push(OperandId, "'Miss Index'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceMotionReorderExecuteEXT)].operands.push(OperandId, "'Origin'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceMotionReorderExecuteEXT)].operands.push(OperandId, "'TMin'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceMotionReorderExecuteEXT)].operands.push(OperandId, "'Direction'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceMotionReorderExecuteEXT)].operands.push(OperandId, "'TMax'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceMotionReorderExecuteEXT)].operands.push(OperandId, "'Time'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceMotionReorderExecuteEXT)].operands.push(OperandId, "'Payload'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceMotionReorderExecuteEXT)].operands.push(OperandId, "'Hint'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceMotionReorderExecuteEXT)].operands.push(OperandId, "'Bits'");
+        InstructionDesc[enumCast(Op::OpHitObjectTraceMotionReorderExecuteEXT)].setResultAndType(false, false);
+
+        InstructionDesc[enumCast(Op::OpHitObjectRecordFromQueryEXT)].operands.push(OperandId, "'HitObject'");
+        InstructionDesc[enumCast(Op::OpHitObjectRecordFromQueryEXT)].operands.push(OperandId, "'RayQuery'");
+        InstructionDesc[enumCast(Op::OpHitObjectRecordFromQueryEXT)].operands.push(OperandId, "'SBT Record Index'");
+        InstructionDesc[enumCast(Op::OpHitObjectRecordFromQueryEXT)].operands.push(OperandId, "'HitObjectAttribute'");
+        InstructionDesc[enumCast(Op::OpHitObjectRecordFromQueryEXT)].setResultAndType(false, false);
+
+        InstructionDesc[enumCast(Op::OpHitObjectGetIntersectionTriangleVertexPositionsEXT)].operands.push(OperandId, "'HitObject'");
+        InstructionDesc[enumCast(Op::OpHitObjectGetIntersectionTriangleVertexPositionsEXT)].setResultAndType(true, true);
 
     });
 }

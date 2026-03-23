@@ -390,7 +390,7 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& nodeList)
     case EvqIn:
     case EvqOut:
     case EvqInOut:
-        parseContext.error(token.loc, "in/out qualifiers are only valid on parameters", token.string->c_str(), "");
+        parseContext.error(token.loc, "in/out qualifiers are only valid on parameters", token.getCStrOrEmpty(), "");
         break;
     default:
         break;
@@ -2947,7 +2947,7 @@ bool HlslGrammar::acceptParameterDeclaration(TFunction& function)
 
     // If any prior parameters have default values, all the parameters after that must as well.
     if (defaultValue == nullptr && function.getDefaultParamCount() > 0) {
-        parseContext.error(idToken.loc, "invalid parameter after default value parameters", idToken.string->c_str(), "");
+        parseContext.error(idToken.loc, "invalid parameter after default value parameters", idToken.getCStrOrEmpty(), "");
         return false;
     }
 
@@ -3911,7 +3911,7 @@ void HlslGrammar::acceptAttributes(TAttributes& attributes)
         if (attributeToken.string != nullptr) {
             TAttributeType attributeType = parseContext.attributeFromName(nameSpace, *attributeToken.string);
             if (attributeType == EatNone)
-                parseContext.warn(attributeToken.loc, "unrecognized attribute", attributeToken.string->c_str(), "");
+                parseContext.warn(attributeToken.loc, "unrecognized attribute", attributeToken.getCStrOrEmpty(), "");
             else {
                 TAttributeArgs attributeArgs = { attributeType, expressions };
                 attributes.push_back(attributeArgs);
