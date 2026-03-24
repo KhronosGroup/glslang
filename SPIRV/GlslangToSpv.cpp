@@ -3159,6 +3159,8 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
     std::vector<spv::Builder::AccessChain> complexLvalues;  // for holding swizzling l-values too complex for
                                                             // SPIR-V, for an out parameter
     std::vector<spv::Id> temporaryLvalues;                  // temporaries to pass, as proxies for complexLValues
+    spv::Builder::AccessChain tensorReadResultLValue = {};
+    tensorReadResultLValue.base = spv::NoResult;            // deferred tensorReadARM out-arg store target
 
     auto resultType = [&invertedType, &node, this](){
         if (invertedType != spv::NoType) {
@@ -4170,7 +4172,17 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
                     builder.accessChainGetInferredType(), "swizzleTemp"));
                 operands.push_back(temporaryLvalues.back());
             } else {
-                operands.push_back(builder.accessChainGetLValue());
+                if (node->getOp() == glslang::EOpTensorReadARM && arg == 2) {
+                    // tensorReadARM stores the result after emitting the op, so keep the
+                    // original l-value access chain and avoid materializing a transient
+                    // pointer that may not preserve descriptor-heap indexing.
+                    tensorReadResultLValue = builder.getAccessChain();
+                    // Keep the operand slot so optional tensor operands keep their
+                    // existing indices in the later lowering logic.
+                    operands.push_back(spv::NoResult);
+                } else {
+                    operands.push_back(builder.accessChainGetLValue());
+                }
             }
             lvalueCoherentFlags = builder.getAccessChain().coherentFlags;
             lvalueCoherentFlags |= TranslateCoherent(glslangOperands[arg]->getAsTyped()->getType());
@@ -4669,7 +4681,9 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
             spv::Id retType = convertGlslangToSpvType(resArgType);
             result = builder.createOp(spv::Op::OpTensorReadARM, retType, idImmOps);
             // Store the result to the result argument.
-            builder.createStore(result, operands[2]);
+            assert(tensorReadResultLValue.base != spv::NoResult);
+            builder.setAccessChain(tensorReadResultLValue);
+            accessChainStore(resArgType, result);
         }
     } else if (node->getOp() == glslang::EOpTensorSizeARM) {
         // Expected operands are (tensor, dimension)
