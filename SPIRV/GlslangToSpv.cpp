@@ -3241,7 +3241,7 @@ void TGlslangToSpvTraverser::createAbortEXT(const glslang::TIntermSequence glsla
     }
     structMemberOffsets.pop_back();
     // 3. Add extra following arguments/variables' types in member structure.
-    for (int i = 1; i < glslangOperands.size(); i++) {
+    for (unsigned int i = 1; i < glslangOperands.size(); i++) {
         spv::Builder::AccessChain save = builder.getAccessChain();
         builder.clearAccessChain();
         auto width = GetNumBits(glslangOperands[i]->getAsTyped()->getBasicType());
@@ -3255,8 +3255,8 @@ void TGlslangToSpvTraverser::createAbortEXT(const glslang::TIntermSequence glsla
         builder.setAccessChain(save);
     }
     // 4. Construct struct message variable, add abortExt instruction.
-    auto structLoadType = builder.makeStructType(structLoadMemberType, "abortMessageLoadType");
-    for (int i = 0; i < structMemberOffsets.size(); i++)
+    auto structLoadType = builder.makeStructType(structLoadMemberType, {}, "abortMessageLoadType");
+    for (unsigned int i = 0; i < structMemberOffsets.size(); i++)
         builder.addMemberDecoration(structLoadType, i, spv::Decoration::Offset, structMemberOffsets[i]);
     auto structType = builder.makeStructType(structMemberType, "abortMessage");
     auto messageVar = builder.createCompositeConstruct(structType, structMemberData);
