@@ -6028,6 +6028,19 @@ spv::Id TGlslangToSpvTraverser::convertGlslangStructToSpvType(const glslang::TTy
                         }
                     }
                     debugInfo.debugTypeOverride = builder.getDebugType(typeId);
+                } else if (glslangMember.type->getQualifier().builtIn != glslang::EbvNone) {
+                    // TODO - The built-in currently are not provide the correct line/column and spirv-val will validate these when using shaderDebugInfo
+                    //
+                    // There is a larger issue because even defining the builtIn such as
+                    //
+                    //      out gl_PerVertex {
+                    //         vec4 gl_Position;
+                    //     };
+                    //
+                    // in the shader also doesn't produce the correct line/column
+                    // So for now, provide zero, as that is a valid value here
+                    debugInfo.line = 0;
+                    debugInfo.column = 0;
                 }
 
                 memberDebugInfo.push_back(debugInfo);
