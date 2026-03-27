@@ -325,6 +325,7 @@ INSTANTIATE_TEST_SUITE_P(
         {"hlsl.multiReturn.frag", "main"},
         {"hlsl.multiView.frag", "main"},
         {"hlsl.matrixindex.frag", "main"},
+        {"hlsl.nested.name.error.frag", "main"},
         {"hlsl.nonstaticMemberFunction.frag", "main"},
         {"hlsl.numericsuffixes.frag", "main"},
         {"hlsl.numericsuffixes.negative.frag", "main"},
