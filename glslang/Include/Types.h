@@ -1567,6 +1567,9 @@ public:
     bool isTensorLayoutNV() const { return basicType == EbtTensorLayoutNV; }
     bool isTensorViewNV() const { return basicType == EbtTensorViewNV; }
 
+    const TTypeParameters* getTypeParameters() const { return typeParameters; }
+    const TArraySizes* getArraySizes() const { return arraySizes; }
+
     void initType(const TSourceLoc& l)
     {
         basicType = EbtVoid;

@@ -4668,6 +4668,10 @@ bool TParseContext::constructorError(const TSourceLoc& loc, TIntermNode* node, T
         return true;
     }
 
+    if (type.isLongVector() && !isValidLongVectorElseError(loc, type)) {
+        return true;
+    }
+
     if ((op != EOpConstructStruct && size != 1 && size < type.computeNumComponents()) ||
         (op == EOpConstructStruct && size < type.computeNumComponents())) {
         error(loc, "not enough data provided for construction", constructorString.c_str(), "");
@@ -8791,6 +8795,9 @@ void TParseContext::typeParametersCheck(const TSourceLoc& loc, const TPublicType
             error(loc, "tensor rank must be greater than or equal to 1", "", "");
             return;
         }
+    }
+    if (publicType.isLongVector() && !isValidLongVectorElseError(loc, publicType)) {
+        return;
     }
 }
 
