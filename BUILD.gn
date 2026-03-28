@@ -157,6 +157,7 @@ template("glslang_sources_common") {
       "glslang/Include/SpirvIntrinsics.h",
       "glslang/Include/Types.h",
       "glslang/Include/arrays.h",
+      "glslang/Include/defer.h",
       "glslang/Include/intermediate.h",
       "glslang/Include/visibility.h",
       "glslang/MachineIndependent/Constant.cpp",
