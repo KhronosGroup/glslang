@@ -52,6 +52,7 @@
 // in the rule will have been consumed, and none left in 'token'.
 //
 
+#include "../Include/defer.h"
 #include "hlslTokens.h"
 #include "hlslGrammar.h"
 #include "hlslAttributes.h"
@@ -2985,8 +2986,10 @@ bool HlslGrammar::acceptFunctionBody(TFunctionDeclarator& declarator, TIntermNod
 
     // compound_statement
     TIntermNode* functionBody = nullptr;
-    if (! acceptCompoundStatement(functionBody))
+    if (! acceptCompoundStatement(functionBody)) {
+        parseContext.popScope();
         return false;
+    }
 
     // this does a popScope()
     parseContext.handleFunctionBody(declarator.loc, *declarator.function, functionBody, functionNode);
@@ -3935,6 +3938,7 @@ bool HlslGrammar::acceptSelectionStatement(TIntermNode*& statement, const TAttri
     // so that something declared in the condition is scoped to the lifetimes
     // of the then-else statements
     parseContext.pushScope();
+    Defer d([this]{parseContext.popScope();});
 
     // LEFT_PAREN expression RIGHT_PAREN
     TIntermTyped* condition;
@@ -3968,7 +3972,6 @@ bool HlslGrammar::acceptSelectionStatement(TIntermNode*& statement, const TAttri
     statement = intermediate.addSelection(condition, thenElse, loc);
     parseContext.handleSelectionAttributes(loc, statement->getAsSelectionNode(), attributes);
 
-    parseContext.popScope();
     --parseContext.controlFlowNestingLevel;
 
     return true;
