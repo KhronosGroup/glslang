@@ -247,6 +247,7 @@ INSTANTIATE_TEST_SUITE_P(
         {"hlsl.getsampleposition.dx10.frag", "main"},
         {"hlsl.global-const-init.frag", "main"},
         {"hlsl.gs-hs-mix.tesc", "HSMain"},
+        {"hlsl.do.nested.error.frag", "main"},
         {"hlsl.domain.1.tese", "main"},
         {"hlsl.domain.2.tese", "main"},
         {"hlsl.domain.3.tese", "main"},
@@ -260,6 +261,7 @@ INSTANTIATE_TEST_SUITE_P(
         {"hlsl.hull.void.tesc", "main"},
         {"hlsl.hull.ctrlpt-1.tesc", "main"},
         {"hlsl.hull.ctrlpt-2.tesc", "main"},
+        {"hlsl.for.nested.error.frag", "main"},
         {"hlsl.format.rwtexture.frag", "main"},
         {"hlsl.groupid.comp", "main"},
         {"hlsl.identifier.sample.frag", "main"},
@@ -465,7 +467,8 @@ INSTANTIATE_TEST_SUITE_P(
         {"hlsl.whileLoop.frag", "PixelShaderFunction"},
         {"hlsl.void.frag", "PixelShaderFunction"},
         {"hlsl.type.type.conversion.all.frag", "main"},
-        {"hlsl.instance.geom", "GeometryShader"}
+        {"hlsl.instance.geom", "GeometryShader"},
+        {"hlsl.while.nested.error.frag", "main"},
     }),
     FileNameAsCustomTestSuffix
 );
