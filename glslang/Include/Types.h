@@ -2719,7 +2719,13 @@ public:
         uint32_t components = 0;
 
         if (isCoopVecOrLongVector()) {
-            components = typeParameters->arraySizes->getDimSize(0);
+            auto* arraySizes = typeParameters->arraySizes;
+            if (!arraySizes || arraySizes->getNumDims() < 1) {
+                // This is a malformed vector type. A later step will
+                // catch the error and emit a diagnostic.
+                return 0;
+            }
+            components = arraySizes->getDimSize(0);
         } else if (getBasicType() == EbtStruct || getBasicType() == EbtBlock) {
             for (TTypeList::const_iterator tl = getStruct()->begin(); tl != getStruct()->end(); tl++)
                 components += ((*tl).type)->computeNumComponents();
