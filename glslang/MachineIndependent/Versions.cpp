@@ -670,6 +670,15 @@ void TParseVersions::getPreamble(std::string& preamble)
         if (version >= 130) {
             preamble +="#define GL_FRAGMENT_PRECISION_HIGH 1\n";
         }
+
+        if (version >= 460) {
+            preamble +=
+                "#define GL_ARM_tensors 1\n"
+                "#define GL_ARM_tensors_bfloat16 1\n"
+                "#define GL_ARM_tensors_float_e5m2 1\n"
+                "#define GL_ARM_tensors_float_e4m3 1\n"
+                ;
+        }
     }
 
     if ((!isEsProfile() && version >= 460) ||
