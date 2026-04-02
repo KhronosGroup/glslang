@@ -381,6 +381,7 @@ public:
         case Op::OpReturn:
         case Op::OpReturnValue:
         case Op::OpUnreachable:
+        case Op::OpAbortKHR:
             return true;
         default:
             return false;
