@@ -3383,6 +3383,12 @@ void Builder::createNoResultOp(Op opCode, const std::vector<Id>& operands)
     addInstruction(std::unique_ptr<Instruction>(op));
 }
 
+void Builder::makeAbortKHR(const std::vector<Id>& operands)
+{
+    createNoResultOp(spv::Op::OpAbortKHR, operands);
+    createAndSetNoPredecessorBlock("post-return");
+}
+
 // An opcode that has multiple operands, no result id, and no type
 void Builder::createNoResultOp(Op opCode, const std::vector<IdImmediate>& operands)
 {

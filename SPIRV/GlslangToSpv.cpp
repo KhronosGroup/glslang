@@ -3241,7 +3241,7 @@ void TGlslangToSpvTraverser::createAbortEXT(const glslang::TIntermSequence glsla
         builder.addMemberDecoration(structLoadType, i, spv::Decoration::Offset, structMemberOffsets[i]);
     auto structType = builder.makeStructType(structMemberType, "abortMessage");
     auto messageVar = builder.createCompositeConstruct(structType, structMemberData);
-    builder.createNoResultOp(spv::Op::OpAbortKHR, {structLoadType, messageVar});
+    builder.makeAbortKHR({structLoadType, messageVar});
 }
 
 bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TIntermAggregate* node)
