@@ -3522,6 +3522,10 @@ void HlslParseContext::decomposeStructBufferMethods(const TSourceLoc& loc, TInte
     case EOpMethodLoad:
         {
             TIntermTyped* argIndex = makeIntegerIndex(argAggregate->getSequence()[1]->getAsTyped());  // index
+            if (argIndex == nullptr) {
+                error(loc, "invalid index for Load", "", "");
+                return;
+            }
 
             const TType& bufferType = bufferObj->getType();
 
@@ -3554,6 +3558,10 @@ void HlslParseContext::decomposeStructBufferMethods(const TSourceLoc& loc, TInte
     case EOpMethodLoad4:
         {
             TIntermTyped* argIndex = makeIntegerIndex(argAggregate->getSequence()[1]->getAsTyped());  // index
+            if (argIndex == nullptr) {
+                error(loc, "invalid index for vector Load", "", "");
+                return;
+            }
 
             TOperator constructOp = EOpNull;
             int size = 0;
@@ -3621,6 +3629,10 @@ void HlslParseContext::decomposeStructBufferMethods(const TSourceLoc& loc, TInte
     case EOpMethodStore4:
         {
             TIntermTyped* argIndex = makeIntegerIndex(argAggregate->getSequence()[1]->getAsTyped());  // index
+            if (argIndex == nullptr) {
+                error(loc, "invalid index for Store", "", "");
+                return;
+            }
             TIntermTyped* argValue = argAggregate->getSequence()[2]->getAsTyped();  // value
 
             // Index into the array to find the item being loaded.
@@ -3740,6 +3752,10 @@ void HlslParseContext::decomposeStructBufferMethods(const TSourceLoc& loc, TInte
             TIntermSequence& sequence = argAggregate->getSequence();
 
             TIntermTyped* argIndex     = makeIntegerIndex(sequence[1]->getAsTyped());  // index
+            if (argIndex == nullptr) {
+                error(loc, "invalid destination address for interlocked operation", "", "");
+                return;
+            }
             argIndex = intermediate.addBinaryNode(EOpRightShift, argIndex, intermediate.addConstantUnion(2, loc, true),
                                                   loc, TType(EbtInt));
 
