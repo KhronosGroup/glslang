@@ -1778,6 +1778,7 @@ bool Builder::isConstantOpCode(Op opcode) const
     case Op::OpConstantTrue:
     case Op::OpConstantFalse:
     case Op::OpConstant:
+    case Op::OpConstantDataKHR:
     case Op::OpConstantComposite:
     case Op::OpConstantCompositeReplicateEXT:
     case Op::OpConstantSampler:
@@ -1787,6 +1788,7 @@ bool Builder::isConstantOpCode(Op opcode) const
     case Op::OpSpecConstant:
     case Op::OpSpecConstantComposite:
     case Op::OpSpecConstantCompositeReplicateEXT:
+    case Op::OpSpecConstantDataKHR:
     case Op::OpSpecConstantOp:
     case Op::OpConstantSizeOfEXT:
         return true;
@@ -1803,6 +1805,7 @@ bool Builder::isSpecConstantOpCode(Op opcode) const
     case Op::OpSpecConstantFalse:
     case Op::OpSpecConstant:
     case Op::OpSpecConstantComposite:
+    case Op::OpSpecConstantDataKHR:
     case Op::OpSpecConstantOp:
     case Op::OpSpecConstantCompositeReplicateEXT:
         return true;
@@ -3464,6 +3467,29 @@ Id Builder::createTriOp(Op opCode, Id typeId, Id op1, Id op2, Id op3)
     op->addIdOperand(op2);
     op->addIdOperand(op3);
     addInstruction(std::unique_ptr<Instruction>(op));
+
+    return op->getResultId();
+}
+
+Id Builder::createConstData(Op opCode, Id typeId, const std::vector<const char*> operands)
+{
+    Instruction* op = new Instruction(getUniqueId(), typeId, opCode);
+    op->reserveOperands(operands.size());
+    for (auto id : operands)
+        op->addStringOperand(id);
+    module.mapInstruction(op);
+    constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(op));
+
+    return op->getResultId();
+}
+
+Id Builder::createSpecConst(Op opCode, Id typeId, const unsigned int literalOp)
+{
+    Instruction* op = new Instruction(getUniqueId(), typeId, opCode);
+    op->reserveOperands(1);
+    op->addImmediateOperand(literalOp);
+    module.mapInstruction(op);
+    constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(op));
 
     return op->getResultId();
 }
