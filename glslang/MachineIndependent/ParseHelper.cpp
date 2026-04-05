@@ -2350,6 +2350,7 @@ void TParseContext::computeBuiltinPrecisions(TIntermTyped& node, const TFunction
             numArgs = 1;
             break;
         case EOpDebugPrintf:
+        case EOpAbortEXT:
         case EOpCooperativeMatrixPerElementOpNV:
         case EOpCooperativeMatrixReduceNV:
         case EOpConstructSaturated:
@@ -8293,6 +8294,12 @@ const TFunction* TParseContext::findFunction(const TSourceLoc& loc, const TFunct
     // mangled to "debugPrintfEXT("
     if (call.getName() == "debugPrintfEXT") {
         TSymbol* symbol = symbolTable.find("debugPrintfEXT(", &builtIn);
+        if (symbol)
+            return symbol->getAsFunction();
+    }
+    // abortEXT has usage (var args) as similar as debugPrintfEXT.
+    if (call.getName() == "abortEXT") {
+        TSymbol* symbol = symbolTable.find("abortEXT(", &builtIn);
         if (symbol)
             return symbol->getAsFunction();
     }

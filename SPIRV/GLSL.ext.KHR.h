@@ -69,4 +69,6 @@ static const char* const E_SPV_NV_cooperative_vector            = "SPV_NV_cooper
 static const char* const E_SPV_KHR_bfloat16                     = "SPV_KHR_bfloat16";
 static const char* const E_SPV_EXT_descriptor_heap              = "SPV_EXT_descriptor_heap";
 static const char* const E_SPV_KHR_untyped_pointers             = "SPV_KHR_untyped_pointers";
+static const char* const E_SPV_KHR_abort                        = "SPV_KHR_abort";
+static const char* const E_SPV_KHR_constant_data                = "SPV_KHR_constant_data";
 #endif  // #ifndef GLSLextKHR_H
