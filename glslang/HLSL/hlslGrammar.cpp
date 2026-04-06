@@ -3234,6 +3234,10 @@ bool HlslGrammar::acceptConditionalExpression(TIntermTyped*& node)
     --parseContext.controlFlowNestingLevel;
 
     node = intermediate.addSelection(node, trueNode, falseNode, loc);
+    if (!node) {
+        parseContext.binaryOpError(loc, ":", trueNode->getCompleteString(), falseNode->getCompleteString());
+        return false;
+    }
 
     return true;
 }
