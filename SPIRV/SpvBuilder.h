@@ -514,10 +514,6 @@ public:
     // code.  In the case of an implicit return, no post-return block is inserted.
     void makeReturn(bool implicit, Id retVal = 0);
 
-    // Create an Abort. An Abort must be the last instruction in a block, so
-    // a no-post-return block is always inserted.
-    void makeAbortKHR(const std::vector<Id>& operands);
-
     // Initialize state and generate instructions for new lexical scope
     void enterLexicalBlock(uint32_t line, uint32_t column);
 
