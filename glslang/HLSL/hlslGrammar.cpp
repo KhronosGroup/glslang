@@ -52,6 +52,7 @@
 // in the rule will have been consumed, and none left in 'token'.
 //
 
+#include "../Include/defer.h"
 #include "hlslTokens.h"
 #include "hlslGrammar.h"
 #include "hlslAttributes.h"
@@ -2985,8 +2986,10 @@ bool HlslGrammar::acceptFunctionBody(TFunctionDeclarator& declarator, TIntermNod
 
     // compound_statement
     TIntermNode* functionBody = nullptr;
-    if (! acceptCompoundStatement(functionBody))
+    if (! acceptCompoundStatement(functionBody)) {
+        parseContext.popScope();
         return false;
+    }
 
     // this does a popScope()
     parseContext.handleFunctionBody(declarator.loc, *declarator.function, functionBody, functionNode);
@@ -3939,6 +3942,7 @@ bool HlslGrammar::acceptSelectionStatement(TIntermNode*& statement, const TAttri
     // so that something declared in the condition is scoped to the lifetimes
     // of the then-else statements
     parseContext.pushScope();
+    Defer d([this]{ parseContext.popScope(); });
 
     // LEFT_PAREN expression RIGHT_PAREN
     TIntermTyped* condition;
@@ -3972,7 +3976,6 @@ bool HlslGrammar::acceptSelectionStatement(TIntermNode*& statement, const TAttri
     statement = intermediate.addSelection(condition, thenElse, loc);
     parseContext.handleSelectionAttributes(loc, statement->getAsSelectionNode(), attributes);
 
-    parseContext.popScope();
     --parseContext.controlFlowNestingLevel;
 
     return true;
@@ -4034,61 +4037,67 @@ bool HlslGrammar::acceptIterationStatement(TIntermNode*& statement, const TAttri
     TIntermLoop* loopNode = nullptr;
     switch (loop) {
     case EHTokWhile:
-        // so that something declared in the condition is scoped to the lifetime
-        // of the while sub-statement
-        parseContext.pushScope();  // this only needs to work right if no errors
-        parseContext.nestLooping();
-        ++parseContext.controlFlowNestingLevel;
+        {
+            // so that something declared in the condition is scoped to the lifetime
+            // of the while sub-statement
+            parseContext.pushScope();
+            parseContext.nestLooping();
+            ++parseContext.controlFlowNestingLevel;
+            Defer d([this]{
+                parseContext.unnestLooping();
+                parseContext.popScope();
+                --parseContext.controlFlowNestingLevel;
+            });
 
-        // LEFT_PAREN condition RIGHT_PAREN
-        if (! acceptParenExpression(condition))
-            return false;
-        condition = parseContext.convertConditionalExpression(loc, condition);
-        if (condition == nullptr)
-            return false;
+            // LEFT_PAREN condition RIGHT_PAREN
+            if (! acceptParenExpression(condition))
+                return false;
+            condition = parseContext.convertConditionalExpression(loc, condition);
+            if (condition == nullptr)
+                return false;
 
-        // statement
-        if (! acceptScopedStatement(statement)) {
-            expected("while sub-statement");
-            return false;
+            // statement
+            if (! acceptScopedStatement(statement)) {
+                expected("while sub-statement");
+                return false;
+            }
         }
-
-        parseContext.unnestLooping();
-        parseContext.popScope();
-        --parseContext.controlFlowNestingLevel;
 
         loopNode = intermediate.addLoop(statement, condition, nullptr, true, loc);
         statement = loopNode;
         break;
 
     case EHTokDo:
-        parseContext.nestLooping();  // this only needs to work right if no errors
-        ++parseContext.controlFlowNestingLevel;
+        {
+            parseContext.nestLooping();  // this only needs to work right if no errors
+            ++parseContext.controlFlowNestingLevel;
+            Defer d([this]{
+              parseContext.unnestLooping();
+              --parseContext.controlFlowNestingLevel;
+            });
 
-        // statement
-        if (! acceptScopedStatement(statement)) {
-            expected("do sub-statement");
-            return false;
+            // statement
+            if (! acceptScopedStatement(statement)) {
+                expected("do sub-statement");
+                return false;
+            }
+
+            // WHILE
+            if (! acceptTokenClass(EHTokWhile)) {
+                expected("while");
+                return false;
+            }
+
+            // LEFT_PAREN condition RIGHT_PAREN
+            if (! acceptParenExpression(condition))
+                return false;
+            condition = parseContext.convertConditionalExpression(loc, condition);
+            if (condition == nullptr)
+                return false;
+
+            if (! acceptTokenClass(EHTokSemicolon))
+                expected(";");
         }
-
-        // WHILE
-        if (! acceptTokenClass(EHTokWhile)) {
-            expected("while");
-            return false;
-        }
-
-        // LEFT_PAREN condition RIGHT_PAREN
-        if (! acceptParenExpression(condition))
-            return false;
-        condition = parseContext.convertConditionalExpression(loc, condition);
-        if (condition == nullptr)
-            return false;
-
-        if (! acceptTokenClass(EHTokSemicolon))
-            expected(";");
-
-        parseContext.unnestLooping();
-        --parseContext.controlFlowNestingLevel;
 
         loopNode = intermediate.addLoop(statement, condition, nullptr, false, loc);
         statement = loopNode;
@@ -4103,6 +4112,7 @@ bool HlslGrammar::acceptIterationStatement(TIntermNode*& statement, const TAttri
         // so that something declared in the condition is scoped to the lifetime
         // of the for sub-statement
         parseContext.pushScope();
+        Defer d([this]{ parseContext.popScope(); });
 
         // initializer
         TIntermNode* initNode = nullptr;
@@ -4111,6 +4121,10 @@ bool HlslGrammar::acceptIterationStatement(TIntermNode*& statement, const TAttri
 
         parseContext.nestLooping();  // this only needs to work right if no errors
         ++parseContext.controlFlowNestingLevel;
+        Defer d2([this]{
+            parseContext.unnestLooping();
+            --parseContext.controlFlowNestingLevel;
+        });
 
         // condition SEMI_COLON
         acceptExpression(condition);
@@ -4135,10 +4149,6 @@ bool HlslGrammar::acceptIterationStatement(TIntermNode*& statement, const TAttri
         }
 
         statement = intermediate.addForLoop(statement, initNode, condition, iterator, true, loc, loopNode);
-
-        parseContext.popScope();
-        parseContext.unnestLooping();
-        --parseContext.controlFlowNestingLevel;
 
         break;
     }

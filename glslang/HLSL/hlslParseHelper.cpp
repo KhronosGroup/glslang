@@ -5582,6 +5582,7 @@ TIntermTyped* HlslParseContext::handleFunctionCall(const TSourceLoc& loc, TFunct
                 callerName = fnCandidate->getMangledName();
             else {
                 // get the explicit (full) name of the function
+                assert(currentTypePrefix.size() >= size_t(thisDepth));
                 callerName = currentTypePrefix[currentTypePrefix.size() - thisDepth];
                 callerName += fnCandidate->getMangledName();
                 // insert the implicit calling argument
