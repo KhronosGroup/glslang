@@ -24,10 +24,11 @@ An OpenGL GLSL and OpenGL|ES GLSL (ESSL) front-end for reference validation and 
 
 An HLSL front-end for translation of an approximation of HLSL to glslang's AST form.
 
-**Status**: Partially complete. Semantics are not reference quality and input is not validated.
-This is in contrast to the [DXC project](https://github.com/Microsoft/DirectXShaderCompiler), which receives a much larger investment and attempts to have definitive/reference-level semantics.
+**Status**: Deprecated as of April 2026. The HLSL front-end will be removed at the next major version of glslang, with at least 18 months of notice from this announcement.
 
-See [issue 362](https://github.com/KhronosGroup/glslang/issues/362) and [issue 701](https://github.com/KhronosGroup/glslang/issues/701) for current status.
+Bug reports for the HLSL front-end will no longer be accepted. Security issues will be assessed on a case-by-case basis. Projects that require continued HLSL support should maintain a fork of glslang at the tag corresponding to the deprecation announcement.
+
+See [issue #4210](https://github.com/KhronosGroup/glslang/issues/4210) for the rationale and migration guidance.
 
 ### AST -> SPIR-V Back End
 
