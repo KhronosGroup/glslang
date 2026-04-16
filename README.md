@@ -4,11 +4,13 @@
 
 # News
 
-1. The --shift-texture-binding\[s\] option no longer affects combined samplers. The new --shift-combined-sampler-binding\[s\] option should be used to control combined sampler bindings independently from separate textures. The old behavior can be achieved by setting both options to the same value.
+1. The HLSL front-end is deprecated as of April 2026 and will be removed at the next major version of glslang. See [issue #4210](https://github.com/KhronosGroup/glslang/issues/4210) for rationale and migration guidance.
 
-2. The spirv-remap utility from glslang has been ported to the SPIRV-Tools repository as a new optimization pass called canonicalize-ids, available in spirv-opt. See spirv-opt --help for usage details.
+2. The --shift-texture-binding\[s\] option no longer affects combined samplers. The new --shift-combined-sampler-binding\[s\] option should be used to control combined sampler bindings independently from separate textures. The old behavior can be achieved by setting both options to the same value.
 
-3. Building glslang as a DLL or shared library is now possible and supported.
+3. The spirv-remap utility from glslang has been ported to the SPIRV-Tools repository as a new optimization pass called canonicalize-ids, available in spirv-opt. See spirv-opt --help for usage details.
+
+4. Building glslang as a DLL or shared library is now possible and supported.
 
 # Glslang Components and Status
 
