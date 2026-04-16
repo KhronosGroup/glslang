@@ -107,6 +107,12 @@ cmake_dependent_option(ENABLE_EMSCRIPTEN_ENVIRONMENT_NODE
     OFF)
 
 option(ENABLE_HLSL "Enables HLSL input support" ON)
+if(ENABLE_HLSL)
+    message(DEPRECATION
+        "ENABLE_HLSL is deprecated. The HLSL front-end will be removed in "
+        "a future major release of glslang. "
+        "See https://github.com/KhronosGroup/glslang/issues/4210 for details.")
+endif()
 option(ENABLE_RTTI "Enables RTTI")
 option(ENABLE_EXCEPTIONS "Enables Exceptions")
 cmake_dependent_option(ENABLE_OPT "Enables spirv-opt capability if present" ON "ENABLE_SPIRV" OFF)

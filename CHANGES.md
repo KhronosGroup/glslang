@@ -3,6 +3,11 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## NEXT
+
+* Deprecate the HLSL front-end. It will be removed at the next major version.
+  See issue #4210 for details.
+
 ## 16.2.0 2026-01-22
 * Allow gl_FragDepth identifier to be redeclared
 * Replace 'GL_TASK(MESH)_SHADER_NV' with 'GL_TASK(MESH)_SHADER_EXT'
