@@ -3566,17 +3566,6 @@ Id Builder::createConstData(Op opCode, Id typeId, const std::vector<const char*>
     return op->getResultId();
 }
 
-Id Builder::createSpecConst(Op opCode, Id typeId, const unsigned int literalOp)
-{
-    Instruction* op = new Instruction(getUniqueId(), typeId, opCode);
-    op->reserveOperands(1);
-    op->addImmediateOperand(literalOp);
-    module.mapInstruction(op);
-    constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(op));
-
-    return op->getResultId();
-}
-
 Id Builder::createOp(Op opCode, Id typeId, const std::vector<Id>& operands)
 {
     Instruction* op = new Instruction(getUniqueId(), typeId, opCode);
