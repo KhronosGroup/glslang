@@ -246,7 +246,7 @@ protected:
     spv::Id translateForcedType(spv::Id object);
     spv::Id createCompositeConstruct(spv::Id typeId, std::vector<spv::Id> constituents);
     void recordDescHeapAccessChainInfo(glslang::TIntermBinary* node);
-    void createAbortEXT(const glslang::TIntermSequence glslangOperands);
+    void createAbortEXT(const glslang::TIntermSequence &glslangOperands);
 
     glslang::SpvOptions& options;
     spv::Function* shaderEntry;
@@ -3149,45 +3149,48 @@ spv::Id TGlslangToSpvTraverser::createCompositeConstruct(spv::Id resultTypeId, s
     return builder.createCompositeConstruct(resultTypeId, constituents);
 }
 
-void TGlslangToSpvTraverser::createAbortEXT(const glslang::TIntermSequence glslangOperands)
+void TGlslangToSpvTraverser::createAbortEXT(const glslang::TIntermSequence &glslangOperands)
 {
-    bool isEmptyMsg = glslangOperands.size() == 0;
+    bool isEmptyMsg =
+        glslangOperands.empty() ||
+        strcmp(glslangOperands[0]->getAsConstantUnion()->getConstArray()[0].getSConst()->c_str(), "") == 0;
     // Add Capability and extensions.
     builder.addCapability(spv::Capability::AbortKHR);
     builder.addCapability(spv::Capability::ConstantDataKHR);
     builder.addExtension(spv::E_SPV_KHR_constant_data);
     builder.addExtension(spv::E_SPV_KHR_abort);
 
-    typedef struct constStrInfo {
+    struct strInfo {
         glslang::TString string;
         int specifierIndex; // -1 if not a specifier.
-        constStrInfo(glslang::TString str, int spec) : string(str), specifierIndex(spec){};
-    } strInfo;
+        strInfo(glslang::TString str, int spec) : string(str), specifierIndex(spec) {};
+    };
 
-    std::vector<strInfo> splitedStr, tempSplitedStr;
+    std::vector<strInfo> splitStr, tempSplitStr;
     const uint32_t formatSpecifiersSize = 4;
     const char* formatSpecifiers[formatSpecifiersSize] = {"%d", "%i", "%f", "%u"};
     // 1. Split original message string with format specifiers.
-    const glslang::TString* msg = !isEmptyMsg ? glslangOperands[0]->getAsConstantUnion()->getConstArray()[0].getSConst()
-                                             : new glslang::TString("\0");
-    splitedStr.push_back(strInfo(*const_cast<glslang::TString*>(msg), -1));
+    const auto emptyMsg = glslang::TString("\0");
+    const glslang::TString* msg =
+        isEmptyMsg ? &emptyMsg : glslangOperands[0]->getAsConstantUnion()->getConstArray()[0].getSConst();
+    splitStr.push_back(strInfo(*msg, -1));
     for (uint32_t i = 0; i < formatSpecifiersSize; i++) {
-        for (uint32_t j = 0; j < splitedStr.size(); j++) {
-            auto str = splitedStr[j].string;
-            int specifierIndex = splitedStr[j].specifierIndex;
+        for (uint32_t j = 0; j < splitStr.size(); j++) {
+            auto str = splitStr[j].string;
+            int specifierIndex = splitStr[j].specifierIndex;
             auto pos = str.find(formatSpecifiers[i]);
             while (pos != std::string::npos) {
-                tempSplitedStr.push_back(strInfo(str.substr(0, pos), specifierIndex));
-                tempSplitedStr.push_back(strInfo(glslang::TString(formatSpecifiers[i]), i));
+                tempSplitStr.push_back(strInfo(str.substr(0, pos), specifierIndex));
+                tempSplitStr.push_back(strInfo(glslang::TString(formatSpecifiers[i]), i));
                 str = str.substr(pos + strlen(formatSpecifiers[i]));
                 pos = str.find(formatSpecifiers[i]);
             }
-            if (str.size() > 0 || isEmptyMsg)
-                tempSplitedStr.push_back(strInfo(str, specifierIndex));
+            if (!str.empty() || isEmptyMsg)
+                tempSplitStr.push_back(strInfo(str, specifierIndex));
         }
-        splitedStr.clear();
-        splitedStr = tempSplitedStr;
-        tempSplitedStr.clear();
+        splitStr.clear();
+        splitStr = tempSplitStr;
+        tempSplitStr.clear();
     }
     // 2. Prepare to construct message struct variable, record members' types, data and offsets.
     std::vector<int> structMemberOffsets;
@@ -3196,13 +3199,14 @@ void TGlslangToSpvTraverser::createAbortEXT(const glslang::TIntermSequence glsla
     std::vector<spv::Id> structMemberData;
     structMemberOffsets.push_back(0);
     auto charType = builder.makeIntType(8);
-    for (auto elem : splitedStr) {
+    for (auto elem : splitStr) {
         // 2.1 get sub string's length (if specifier, be spec const).
-        unsigned int strElemLen = isEmptyMsg ? 1 : elem.string.size();
+        //     If not an empty string, \0 is the final character.
+        unsigned int strElemLen = isEmptyMsg ? 1 : elem.string.size() + 1;
         spv::Id constLen = builder.makeUintConstant(strElemLen);
         spv::Op constDataOp = spv::Op::OpConstantDataKHR;
         if (elem.specifierIndex >= 0) {
-            constLen = builder.createSpecConst(spv::Op::OpSpecConstant, builder.makeUintType(32), strElemLen);
+            constLen = builder.makeUintConstant(strElemLen, true);
             constDataOp = spv::Op::OpSpecConstantDataKHR;
         }
         // 2.2 get sub string's array type (if specifier, be spec const).
@@ -3239,7 +3243,7 @@ void TGlslangToSpvTraverser::createAbortEXT(const glslang::TIntermSequence glsla
     auto structLoadType = builder.makeStructType(structLoadMemberType, {}, "abortMessageLoadType");
     for (unsigned int i = 0; i < structMemberOffsets.size(); i++)
         builder.addMemberDecoration(structLoadType, i, spv::Decoration::Offset, structMemberOffsets[i]);
-    auto structType = builder.makeStructType(structMemberType, "abortMessage");
+    auto structType = builder.makeStructType(structMemberType, {}, "abortMessage");
     auto messageVar = builder.createCompositeConstruct(structType, structMemberData);
     builder.makeStatementTerminator(spv::Op::OpAbortKHR, {structLoadType, messageVar}, "post-abort");
 }

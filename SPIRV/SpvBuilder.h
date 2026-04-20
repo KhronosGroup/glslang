@@ -593,7 +593,6 @@ public:
     Id createOp(Op, Id typeId, const std::vector<Id>& operands);
     Id createOp(Op, Id typeId, const std::vector<IdImmediate>& operands);
     Id createConstData(Op opCode, Id typeId, const std::vector<const char*> operands);
-    Id createSpecConst(Op opCode, Id typeId, const unsigned int literalOp);
     Id createFunctionCall(spv::Function*, const std::vector<spv::Id>&);
     Id createSpecConstantOp(Op, Id typeId, const std::vector<spv::Id>& operands, const std::vector<unsigned>& literals);
 
