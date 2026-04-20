@@ -4,11 +4,13 @@
 
 # News
 
-1. The --shift-texture-binding\[s\] option no longer affects combined samplers. The new --shift-combined-sampler-binding\[s\] option should be used to control combined sampler bindings independently from separate textures. The old behavior can be achieved by setting both options to the same value.
+1. The HLSL front-end is deprecated as of April 2026 and will be removed at the next major version of glslang. See [issue #4210](https://github.com/KhronosGroup/glslang/issues/4210) for rationale and migration guidance.
 
-2. The spirv-remap utility from glslang has been ported to the SPIRV-Tools repository as a new optimization pass called canonicalize-ids, available in spirv-opt. See spirv-opt --help for usage details.
+2. The --shift-texture-binding\[s\] option no longer affects combined samplers. The new --shift-combined-sampler-binding\[s\] option should be used to control combined sampler bindings independently from separate textures. The old behavior can be achieved by setting both options to the same value.
 
-3. Building glslang as a DLL or shared library is now possible and supported.
+3. The spirv-remap utility from glslang has been ported to the SPIRV-Tools repository as a new optimization pass called canonicalize-ids, available in spirv-opt. See spirv-opt --help for usage details.
+
+4. Building glslang as a DLL or shared library is now possible and supported.
 
 # Glslang Components and Status
 
@@ -24,10 +26,11 @@ An OpenGL GLSL and OpenGL|ES GLSL (ESSL) front-end for reference validation and 
 
 An HLSL front-end for translation of an approximation of HLSL to glslang's AST form.
 
-**Status**: Partially complete. Semantics are not reference quality and input is not validated.
-This is in contrast to the [DXC project](https://github.com/Microsoft/DirectXShaderCompiler), which receives a much larger investment and attempts to have definitive/reference-level semantics.
+**Status**: Deprecated as of April 2026. The HLSL front-end will be removed at the next major version of glslang, with at least 18 months of notice from this announcement.
 
-See [issue 362](https://github.com/KhronosGroup/glslang/issues/362) and [issue 701](https://github.com/KhronosGroup/glslang/issues/701) for current status.
+Bug reports for the HLSL front-end will no longer be accepted. Security issues will be assessed on a case-by-case basis. Projects that require continued HLSL support should maintain a fork of glslang at the tag corresponding to the deprecation announcement.
+
+See [issue #4210](https://github.com/KhronosGroup/glslang/issues/4210) for the rationale and migration guidance.
 
 ### AST -> SPIR-V Back End
 
