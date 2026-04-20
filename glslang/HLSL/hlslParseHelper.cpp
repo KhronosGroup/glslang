@@ -10308,4 +10308,14 @@ void HlslParseContext::finish()
     TParseContextBase::finish();
 }
 
+
+const char* HlslParseContext::getGlobalUniformBlockName() const
+{
+    const char* name = intermediate.getGlobalUniformBlockName();
+    if (std::string(name) == "")
+        return "$Global";
+    else
+        return name;
+}
+
 } // end namespace glslang
