@@ -12187,8 +12187,8 @@ yyreduce:
   case 638: /* iteration_statement: attribute iteration_statement_nonattributed  */
 #line 4160 "MachineIndependent/glslang.y"
                                                   {
-        const char * extensions[2] = { E_GL_EXT_control_flow_attributes, E_GL_EXT_control_flow_attributes2 };
-        parseContext.requireExtensions((yyvsp[0].interm.intermNode)->getLoc(), 2, extensions, "attribute");
+        const char * extensions[3] = { E_GL_EXT_control_flow_attributes, E_GL_EXT_control_flow_attributes2, E_GL_QCOM_multiple_wait_queues };
+        parseContext.requireExtensions((yyvsp[0].interm.intermNode)->getLoc(), 3, extensions, "attribute");
         parseContext.handleLoopAttributes(*(yyvsp[-1].interm.attributes), (yyvsp[0].interm.intermNode));
         (yyval.interm.intermNode) = (yyvsp[0].interm.intermNode);
     }

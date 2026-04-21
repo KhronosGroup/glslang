@@ -127,6 +127,8 @@ TAttributeType TParseContext::attributeFromName(const TString& name) const
         return EatExport;
     else if (name == "maximally_reconverges")
         return EatMaximallyReconverges;
+    else if (name == "multiple_wait_queuesQCOM")
+        return EatMultipleWaitQueuesQCOM;
     else
         return EatNone;
 }
@@ -337,6 +339,14 @@ void TParseContext::handleLoopAttributes(const TAttributes& attributes, TIntermN
             spirv14("partial_count");
             if (unsignedArgument("partial_count", uiValue))
                 loop->setPartialCount(uiValue);
+            break;
+        case EatMultipleWaitQueuesQCOM:
+            value = -1u;
+            if (it->size() == 0)
+                loop->setMultipleWaitQueuesQCOM(0);
+            else
+                if (positiveSignedArgument("multiple_wait_queuesQCOM", value))
+                    loop->setMultipleWaitQueuesQCOM(value);
             break;
         default:
             warn(node->getLoc(), "attribute does not apply to a loop", "", "");

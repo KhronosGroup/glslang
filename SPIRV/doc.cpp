@@ -782,6 +782,7 @@ const char* LoopControlString(int cont)
     case (int)LoopControlShift::IterationMultiple:  return "IterationMultiple";
     case (int)LoopControlShift::PeelCount:          return "PeelCount";
     case (int)LoopControlShift::PartialCount:       return "PartialCount";
+    case (int)LoopControlShift::MultipleWaitQueuesQCOM: return "MultipeWaitQueuesQCOM";
 
     case LoopControlCeiling:
     default: return "Bad";

@@ -1393,6 +1393,10 @@ spv::LoopControlMask TGlslangToSpvTraverser::TranslateLoopControl(const glslang:
             operands.push_back(loopNode.getPartialCount());
         }
     }
+    if (loopNode.getMultipleWaitQueuesQCOM() != loopNode./*TIntermLoop::*/noMultipleQaitQueues) {
+        control = control | spv::LoopControlMask::MultipleWaitQueuesQCOM;
+        operands.push_back(loopNode.getMultipleWaitQueuesQCOM());
+    }
 
     return control;
 }
