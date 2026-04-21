@@ -124,6 +124,7 @@ namespace glslang {
         EatMaximallyReconverges,
         EatInline,
         EatNoInline,
+        EatMultipleWaitQueuesQCOM,
     };
 
     class TIntermAggregate;
