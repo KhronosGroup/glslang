@@ -61,7 +61,8 @@ TParseContext::TParseContext(TSymbolTable& symbolTable, TIntermediate& interm, b
             inMain(false),
             blockName(nullptr),
             limits(resources.limits),
-            atomicUintOffsets(nullptr), anyIndexLimits(false)
+            atomicUintOffsets(nullptr), anyIndexLimits(false),
+            khrDerivativeLayoutQualifierSpecified(false)
 {
     // decide whether precision qualifiers should be ignored or respected
     if (isEsProfile() || spvVersion.vulkan > 0) {
@@ -6680,6 +6681,12 @@ void TParseContext::finish()
         break;
     }
 
+    if (intermediate.IsRequestedExtension(E_GL_KHR_compute_shader_derivatives) &&
+        !khrDerivativeLayoutQualifierSpecified) {
+        error(getCurrentLoc(), "requires one of derivative_group_quadsKHR or derivative_group_linearKHR layout qualifiers",
+              E_GL_KHR_compute_shader_derivatives, "");
+    }
+
     // Set default outputs for GL_NV_geometry_shader_passthrough
     if (language == EShLangGeometry && extensionTurnedOn(E_SPV_NV_geometry_shader_passthrough)) {
         if (intermediate.getOutputPrimitive() == ElgNone) {
@@ -7063,6 +7070,7 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
                 }
             } else if (id == "derivative_group_quadskhr" || id == "derivative_group_linearkhr") {
                 requireExtensions(loc, 1, &E_GL_KHR_compute_shader_derivatives, "compute shader derivatives");
+                khrDerivativeLayoutQualifierSpecified = true;
             }
             if (id == "derivative_group_quadsnv" || id == "derivative_group_quadskhr") {
                 publicType.shaderQualifiers.layoutDerivativeGroupQuads = true;

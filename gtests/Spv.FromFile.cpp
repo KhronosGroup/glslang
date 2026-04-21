@@ -974,6 +974,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.intrinsicsFakeEnable.vert",
         "spv.specConstArrayCheck.vert",
         "spv.khrComputeShaderDerivativesMissingLayout.comp",
+        "spv.khrComputeShaderDerivativesNoLayout.comp",
         "spv.khrComputeShaderDerivativesBoth.comp",
         "spv.khrComputeShaderDerivativesBadSize.comp",
     })),
