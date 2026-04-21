@@ -1,0 +1,6 @@
+spv.khrComputeShaderDerivativesMissingLayout.comp
+ERROR: 0:8: 'dFdx' : requires a derivative_group_quads* or derivative_group_linear* layout qualifier 
+ERROR: 1 compilation errors.  No code generated.
+
+
+SPIR-V is not generated for failed compile or link

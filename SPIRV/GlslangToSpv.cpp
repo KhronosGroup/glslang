@@ -110,9 +110,35 @@ struct OpDecorations {
         void addNoContraction(spv::Builder& builder, spv::Id t) { builder.addDecoration(t, noContraction); }
         void addNonUniform(spv::Builder& builder, spv::Id t)  { builder.addDecoration(t, nonUniform); }
     protected:
-        spv::Decoration noContraction;
-        spv::Decoration nonUniform;
+    spv::Decoration noContraction;
+    spv::Decoration nonUniform;
 };
+
+void addDerivativeGroupExecutionMode(spv::Builder& builder, const glslang::TIntermediate& intermediate,
+                                     spv::Function* shaderEntry)
+{
+    if (intermediate.getLayoutDerivativeModeNone() == glslang::LayoutDerivativeGroupQuads) {
+        if (intermediate.getLayoutDerivativeExtension() == glslang::EdgKHR) {
+            builder.addCapability(spv::Capability::ComputeDerivativeGroupQuadsKHR);
+            builder.addExecutionMode(shaderEntry, spv::ExecutionMode::DerivativeGroupQuadsKHR);
+            builder.addExtension(spv::E_SPV_KHR_compute_shader_derivatives);
+        } else {
+            builder.addCapability(spv::Capability::ComputeDerivativeGroupQuadsNV);
+            builder.addExecutionMode(shaderEntry, spv::ExecutionMode::DerivativeGroupQuadsNV);
+            builder.addExtension(spv::E_SPV_NV_compute_shader_derivatives);
+        }
+    } else if (intermediate.getLayoutDerivativeModeNone() == glslang::LayoutDerivativeGroupLinear) {
+        if (intermediate.getLayoutDerivativeExtension() == glslang::EdgKHR) {
+            builder.addCapability(spv::Capability::ComputeDerivativeGroupLinearKHR);
+            builder.addExecutionMode(shaderEntry, spv::ExecutionMode::DerivativeGroupLinearKHR);
+            builder.addExtension(spv::E_SPV_KHR_compute_shader_derivatives);
+        } else {
+            builder.addCapability(spv::Capability::ComputeDerivativeGroupLinearNV);
+            builder.addExecutionMode(shaderEntry, spv::ExecutionMode::DerivativeGroupLinearNV);
+            builder.addExtension(spv::E_SPV_NV_compute_shader_derivatives);
+        }
+    }
+}
 
 } // namespace
 
@@ -1940,15 +1966,7 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion,
                                                                                    glslangIntermediate->getLocalSize(2));
             }
         }
-        if (glslangIntermediate->getLayoutDerivativeModeNone() == glslang::LayoutDerivativeGroupQuads) {
-            builder.addCapability(spv::Capability::ComputeDerivativeGroupQuadsNV);
-            builder.addExecutionMode(shaderEntry, spv::ExecutionMode::DerivativeGroupQuadsNV);
-            builder.addExtension(spv::E_SPV_NV_compute_shader_derivatives);
-        } else if (glslangIntermediate->getLayoutDerivativeModeNone() == glslang::LayoutDerivativeGroupLinear) {
-            builder.addCapability(spv::Capability::ComputeDerivativeGroupLinearNV);
-            builder.addExecutionMode(shaderEntry, spv::ExecutionMode::DerivativeGroupLinearNV);
-            builder.addExtension(spv::E_SPV_NV_compute_shader_derivatives);
-        }
+        addDerivativeGroupExecutionMode(builder, *glslangIntermediate, shaderEntry);
 
         if (glslangIntermediate->getNonCoherentTileAttachmentReadQCOM()) {
             builder.addCapability(spv::Capability::TileShadingQCOM);
@@ -2085,6 +2103,7 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion,
                                                                                glslangIntermediate->getLocalSize(1),
                                                                                glslangIntermediate->getLocalSize(2));
         }
+        addDerivativeGroupExecutionMode(builder, *glslangIntermediate, shaderEntry);
         if (glslangIntermediate->getStage() == EShLangMesh) {
             builder.addExecutionMode(shaderEntry, spv::ExecutionMode::OutputVertices,
                 glslangIntermediate->getVertices());

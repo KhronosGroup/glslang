@@ -801,6 +801,8 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.WorkgroupMemoryExplicitLayout.std140.comp",
         "spv.WorkgroupMemoryExplicitLayout.std430.comp",
         "spv.WorkgroupMemoryExplicitLayout.scalar.comp",
+        "spv.khrComputeShaderDerivatives.comp",
+        "spv.khrComputeShaderDerivatives2.comp",
 
         // SPV_EXT_mesh_shader
         "spv.ext.meshShaderBuiltins.mesh",
@@ -813,6 +815,8 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.atomiAddEXT.task",
         "spv.460.subgroupEXT.task",
         "spv.460.subgroupEXT.mesh",
+        "spv.khrComputeShaderDerivatives.task",
+        "spv.khrComputeShaderDerivatives.mesh",
 
         // SPV_NV_shader_execution_reorder
 
@@ -964,6 +968,9 @@ INSTANTIATE_TEST_SUITE_P(
         "samplerlessTextureFunctions.frag",
         "spv.intrinsicsFakeEnable.vert",
         "spv.specConstArrayCheck.vert",
+        "spv.khrComputeShaderDerivativesMissingLayout.comp",
+        "spv.khrComputeShaderDerivativesBoth.comp",
+        "spv.khrComputeShaderDerivativesBadSize.comp",
     })),
     FileNameAsCustomTestSuffix
 );

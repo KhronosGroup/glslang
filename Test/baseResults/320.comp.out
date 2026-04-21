@@ -1,14 +1,68 @@
 320.comp
-ERROR: 0:8: 'dFdx' : required extension not requested: GL_NV_compute_shader_derivatives
-ERROR: 0:9: 'dFdy' : required extension not requested: GL_NV_compute_shader_derivatives
-ERROR: 0:10: 'fwidth' : required extension not requested: GL_NV_compute_shader_derivatives
-ERROR: 0:11: 'dFdxCoarse' : required extension not requested: GL_NV_compute_shader_derivatives
-ERROR: 0:12: 'dFdyCoarse' : required extension not requested: GL_NV_compute_shader_derivatives
-ERROR: 0:13: 'fwidthCoarse' : required extension not requested: GL_NV_compute_shader_derivatives
-ERROR: 0:14: 'dFdxFine' : required extension not requested: GL_NV_compute_shader_derivatives
-ERROR: 0:15: 'dFdyFine' : required extension not requested: GL_NV_compute_shader_derivatives
-ERROR: 0:16: 'fwidthFine' : required extension not requested: GL_NV_compute_shader_derivatives
-ERROR: 9 compilation errors.  No code generated.
+ERROR: 0:8: 'dFdx' : required extension not requested: Possible extensions include:
+GL_NV_compute_shader_derivatives
+GL_KHR_compute_shader_derivatives
+ERROR: 0:8: 'dFdx' : required extension not requested: Possible extensions include:
+GL_NV_compute_shader_derivatives
+GL_KHR_compute_shader_derivatives
+ERROR: 0:8: 'dFdx' : requires a derivative_group_quads* or derivative_group_linear* layout qualifier 
+ERROR: 0:9: 'dFdy' : required extension not requested: Possible extensions include:
+GL_NV_compute_shader_derivatives
+GL_KHR_compute_shader_derivatives
+ERROR: 0:9: 'dFdy' : required extension not requested: Possible extensions include:
+GL_NV_compute_shader_derivatives
+GL_KHR_compute_shader_derivatives
+ERROR: 0:9: 'dFdy' : requires a derivative_group_quads* or derivative_group_linear* layout qualifier 
+ERROR: 0:10: 'fwidth' : required extension not requested: Possible extensions include:
+GL_NV_compute_shader_derivatives
+GL_KHR_compute_shader_derivatives
+ERROR: 0:10: 'fwidth' : required extension not requested: Possible extensions include:
+GL_NV_compute_shader_derivatives
+GL_KHR_compute_shader_derivatives
+ERROR: 0:10: 'fwidth' : requires a derivative_group_quads* or derivative_group_linear* layout qualifier 
+ERROR: 0:11: 'dFdxCoarse' : required extension not requested: Possible extensions include:
+GL_NV_compute_shader_derivatives
+GL_KHR_compute_shader_derivatives
+ERROR: 0:11: 'dFdxCoarse' : required extension not requested: Possible extensions include:
+GL_NV_compute_shader_derivatives
+GL_KHR_compute_shader_derivatives
+ERROR: 0:11: 'dFdxCoarse' : requires a derivative_group_quads* or derivative_group_linear* layout qualifier 
+ERROR: 0:12: 'dFdyCoarse' : required extension not requested: Possible extensions include:
+GL_NV_compute_shader_derivatives
+GL_KHR_compute_shader_derivatives
+ERROR: 0:12: 'dFdyCoarse' : required extension not requested: Possible extensions include:
+GL_NV_compute_shader_derivatives
+GL_KHR_compute_shader_derivatives
+ERROR: 0:12: 'dFdyCoarse' : requires a derivative_group_quads* or derivative_group_linear* layout qualifier 
+ERROR: 0:13: 'fwidthCoarse' : required extension not requested: Possible extensions include:
+GL_NV_compute_shader_derivatives
+GL_KHR_compute_shader_derivatives
+ERROR: 0:13: 'fwidthCoarse' : required extension not requested: Possible extensions include:
+GL_NV_compute_shader_derivatives
+GL_KHR_compute_shader_derivatives
+ERROR: 0:13: 'fwidthCoarse' : requires a derivative_group_quads* or derivative_group_linear* layout qualifier 
+ERROR: 0:14: 'dFdxFine' : required extension not requested: Possible extensions include:
+GL_NV_compute_shader_derivatives
+GL_KHR_compute_shader_derivatives
+ERROR: 0:14: 'dFdxFine' : required extension not requested: Possible extensions include:
+GL_NV_compute_shader_derivatives
+GL_KHR_compute_shader_derivatives
+ERROR: 0:14: 'dFdxFine' : requires a derivative_group_quads* or derivative_group_linear* layout qualifier 
+ERROR: 0:15: 'dFdyFine' : required extension not requested: Possible extensions include:
+GL_NV_compute_shader_derivatives
+GL_KHR_compute_shader_derivatives
+ERROR: 0:15: 'dFdyFine' : required extension not requested: Possible extensions include:
+GL_NV_compute_shader_derivatives
+GL_KHR_compute_shader_derivatives
+ERROR: 0:15: 'dFdyFine' : requires a derivative_group_quads* or derivative_group_linear* layout qualifier 
+ERROR: 0:16: 'fwidthFine' : required extension not requested: Possible extensions include:
+GL_NV_compute_shader_derivatives
+GL_KHR_compute_shader_derivatives
+ERROR: 0:16: 'fwidthFine' : required extension not requested: Possible extensions include:
+GL_NV_compute_shader_derivatives
+GL_KHR_compute_shader_derivatives
+ERROR: 0:16: 'fwidthFine' : requires a derivative_group_quads* or derivative_group_linear* layout qualifier 
+ERROR: 27 compilation errors.  No code generated.
 
 
 Shader version: 320
