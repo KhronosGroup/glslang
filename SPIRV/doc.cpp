@@ -209,8 +209,11 @@ const char* ExecutionModeString(int mode)
     case (int)ExecutionMode::OutputLinesNV:                 return "OutputLinesNV";
     case (int)ExecutionMode::OutputPrimitivesNV:            return "OutputPrimitivesNV";
     case (int)ExecutionMode::OutputTrianglesNV:             return "OutputTrianglesNV";
-    case (int)ExecutionMode::DerivativeGroupQuadsNV:        return "DerivativeGroupQuadsNV";
-    case (int)ExecutionMode::DerivativeGroupLinearNV:       return "DerivativeGroupLinearNV";
+
+    // DerivativeGroupQuadsKHR is an alias of DerivativeGroupQuadsNV
+    case (int)ExecutionMode::DerivativeGroupQuadsKHR:       return "DerivativeGroupQuadsKHR";
+    // DerivativeGroupLinearKHR is an alias of DerivativeGroupLinearNV
+    case (int)ExecutionMode::DerivativeGroupLinearKHR:      return "DerivativeGroupLinearKHR";
 
     case (int)ExecutionMode::PixelInterlockOrderedEXT:         return "PixelInterlockOrderedEXT";
     case (int)ExecutionMode::PixelInterlockUnorderedEXT:       return "PixelInterlockUnorderedEXT";
@@ -1037,8 +1040,10 @@ const char* CapabilityString(int info)
     case (int)Capability::RayTracingOpacityMicromapEXT:    return "RayTracingOpacityMicromapEXT";
     case (int)Capability::RayTracingDisplacementMicromapNV: return "RayTracingDisplacementMicromapNV";
     case (int)Capability::RayQueryPositionFetchKHR:        return "RayQueryPositionFetchKHR";
-    case (int)Capability::ComputeDerivativeGroupQuadsNV:   return "ComputeDerivativeGroupQuadsNV";
-    case (int)Capability::ComputeDerivativeGroupLinearNV:  return "ComputeDerivativeGroupLinearNV";
+    // ComputeDerivativeGroupQuadsKHR is an alias of ComputeDerivativeGroupQuadsNV
+    case (int)Capability::ComputeDerivativeGroupQuadsKHR:   return "ComputeDerivativeGroupQuadsKHR";
+   // ComputeDerivativeGroupLinearKHR is an alias of ComputeDerivativeGroupLinearNV
+    case (int)Capability::ComputeDerivativeGroupLinearKHR:  return "ComputeDerivativeGroupLinearKHR";
     case (int)Capability::FragmentBarycentricKHR:          return "FragmentBarycentricKHR";
     case (int)Capability::MeshShadingNV:                   return "MeshShadingNV";
     case (int)Capability::ImageFootprintNV:                return "ImageFootprintNV";

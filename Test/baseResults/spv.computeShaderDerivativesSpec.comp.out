@@ -4,13 +4,13 @@ spv.computeShaderDerivativesSpec.comp
 // Id's are bound by 12
 
                               Capability Shader
-                              Capability ComputeDerivativeGroupQuadsNV
+                              Capability ComputeDerivativeGroupQuadsKHR
                               Extension  "SPV_NV_compute_shader_derivatives"
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
                               EntryPoint GLCompute 4  "main"
                               ExecutionMode 4 LocalSize 1 1 1
-                              ExecutionMode 4 DerivativeGroupQuadsNV
+                              ExecutionMode 4 DerivativeGroupQuadsKHR
                               Source GLSL 450
                               SourceExtension  "GL_NV_compute_shader_derivatives"
                               Name 4  "main"
