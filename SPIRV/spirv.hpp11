@@ -847,6 +847,7 @@ enum class LoopControlShift : unsigned {
     NoFusionINTEL = 23,
     LoopCountINTEL = 24,
     MaxReinvocationDelayINTEL = 25,
+    MultipleWaitQueuesQCOM = 28,
     Max = 0x7fffffff,
 };
 
@@ -871,6 +872,7 @@ enum class LoopControlMask : unsigned {
     NoFusionINTEL = 0x00800000,
     LoopCountINTEL = 0x01000000,
     MaxReinvocationDelayINTEL = 0x02000000,
+    MultipleWaitQueuesQCOM = 0x10000000,
 };
 
 enum class FunctionControlShift : unsigned {
@@ -1122,6 +1124,7 @@ enum class Capability : unsigned {
     TileShadingQCOM = 4495,
     CooperativeMatrixConversionQCOM = 4496,
     TextureBlockMatch2QCOM = 4498,
+    MultipleWaitQueuesQCOM = 4539,
     Float16ImageAMD = 5008,
     ImageGatherBiasLodAMD = 5009,
     FragmentMaskAMD = 5010,
@@ -4126,6 +4129,7 @@ inline const char* CapabilityToString(Capability value) {
     case Capability::TileShadingQCOM: return "TileShadingQCOM";
     case Capability::CooperativeMatrixConversionQCOM: return "CooperativeMatrixConversionQCOM";
     case Capability::TextureBlockMatch2QCOM: return "TextureBlockMatch2QCOM";
+    case Capability::MultipleWaitQueuesQCOM: return "MultipleWaitQueuesQCOM";
     case Capability::Float16ImageAMD: return "Float16ImageAMD";
     case Capability::ImageGatherBiasLodAMD: return "ImageGatherBiasLodAMD";
     case Capability::FragmentMaskAMD: return "FragmentMaskAMD";

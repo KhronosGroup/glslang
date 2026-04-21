@@ -744,6 +744,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.atomicAdd.bufferReference.comp",
         "spv.nontemporalbuffer.frag",
         "spv.atomicFloat.comp",
+        "spv.qcom.multiple_wait_queues.comp",
     })),
     FileNameAsCustomTestSuffix
 );
