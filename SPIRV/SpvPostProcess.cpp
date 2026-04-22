@@ -175,6 +175,15 @@ void Builder::postProcessType(const Instruction& inst, Id typeId)
         default:
             break;
         }
+        if (basicTypeOp == Op::OpTypeInt) {
+            if (width == 16)
+                addCapability(Capability::Int16);
+            else if (width == 8)
+                addCapability(Capability::Int8);
+        } else if (basicTypeOp == Op::OpTypeFloat) {
+            if (width == 16)
+                addCapability(Capability::Float16);
+        }
         break;
     case Op::OpAccessChain:
     case Op::OpPtrAccessChain:
