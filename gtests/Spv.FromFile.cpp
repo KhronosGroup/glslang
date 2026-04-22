@@ -583,6 +583,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.fragmentShaderBarycentric4.frag",
         "spv.ext.textureShadowLod.frag",
         "spv.ext.textureShadowLod.error.frag",
+        "spv.ext.small_types.comp",
         "spv.floatFetch.frag",
         "spv.atomicRvalue.error.vert",
         "spv.sampledImageBlock.frag",
