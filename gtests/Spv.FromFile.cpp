@@ -407,6 +407,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.depthUnchanged.frag",
         "spv.discard-dce.frag",
         "spv.doWhileLoop.frag",
+        "spv.derivative.float16.frag",
         "spv.earlyReturnDiscard.frag",
         "spv.expect_assume.assumeEXT.comp",
         "spv.expect_assume.expectEXT.comp",
