@@ -3,6 +3,30 @@
 #extension GL_ARM_tensors : enable
 #extension GL_EXT_shader_explicit_arithmetic_types : enable
 
+#if !defined GL_ARM_tensors
+#  error GL_ARM_tensors is not defined
+#elif GL_ARM_tensors != 1
+#  error GL_ARM_tensors is not equal to 1
+#endif
+
+#if !defined GL_ARM_tensors_bfloat16
+#  error GL_ARM_tensors_bfloat16 is not defined
+#elif GL_ARM_tensors_bfloat16 != 1
+#  error GL_ARM_tensors_bfloat16 is not equal to 1
+#endif
+
+#if !defined GL_ARM_tensors_float_e5m2
+#  error GL_ARM_tensors_float_e5m2 is not defined
+#elif GL_ARM_tensors_float_e5m2 != 1
+#  error GL_ARM_tensors_float_e5m2 is not equal to 1
+#endif
+
+#if !defined GL_ARM_tensors_float_e4m3
+#  error GL_ARM_tensors_float_e4m3 is not defined
+#elif GL_ARM_tensors_float_e4m3 != 1
+#  error GL_ARM_tensors_float_e4m3 is not equal to 1
+#endif
+
 layout(binding = 0) uniform tensorARM<int32_t, 4> t;
 layout(set = 0, binding = 1) uniform tensorARM<bool, 2> tb;
 
