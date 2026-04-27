@@ -547,7 +547,7 @@ void SpirvStream::disassembleInstruction(Id resultId, Id /*typeId*/, Op opCode, 
                     extInstSet = NonSemanticDebugPrintfExtInst;
                 } else if (strcmp("NonSemantic.DebugBreak", name) == 0) {
                     extInstSet = NonSemanticDebugBreakExtInst;
-                } else if (strcmp("NonSemantic.Shader.DebugInfo.100", name) == 0) {
+                } else if (strncmp("NonSemantic.Shader.DebugInfo.", name, 29) == 0) {
                     extInstSet = NonSemanticShaderDebugInfo;
                 } else if (strcmp(spv::E_SPV_AMD_shader_ballot, name) == 0 ||
                            strcmp(spv::E_SPV_AMD_shader_trinary_minmax, name) == 0 ||
@@ -871,6 +871,8 @@ static const char* NonSemanticShaderDebugInfoGetDebugNames(unsigned entrypoint)
         case NonSemanticShaderDebugInfoDebugStoragePath:                     return "DebugStoragePath";
         case NonSemanticShaderDebugInfoDebugEntryPoint:                      return "DebugEntryPoint";
         case NonSemanticShaderDebugInfoDebugTypeMatrix:                      return "DebugTypeMatrix";
+        case NonSemanticShaderDebugInfoDebugTypeVectorIdEXT:                 return "DebugTypeVectorIdEXT";
+        case NonSemanticShaderDebugInfoDebugTypeCooperativeMatrixKHR:        return "DebugTypeCooperativeMatrixKHR";
         default:                                                                return "Bad";
     }
 

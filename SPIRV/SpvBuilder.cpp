@@ -350,14 +350,10 @@ Id Builder::makeBFloat16Type()
     addExtension(spv::E_SPV_KHR_bfloat16);
     addCapability(Capability::BFloat16TypeKHR);
 
-#if 0
-    // XXX not supported
-    if (emitNonSemanticShaderDebugInfo)
-    {
-        auto const debugResultId = makeFloatDebugType(width);
+    if (emitNonSemanticShaderDebugInfo) {
+        auto const debugResultId = makeFloatDebugType(16, makeUintConstant((unsigned)FPEncoding::BFloat16KHR));
         debugTypeIdLookup[type->getResultId()] = debugResultId;
     }
-#endif
 
     return type->getResultId();
 }
@@ -387,14 +383,10 @@ Id Builder::makeFloatE5M2Type()
     addExtension(spv::E_SPV_EXT_float8);
     addCapability(Capability::Float8EXT);
 
-#if 0
-    // XXX not supported
-    if (emitNonSemanticShaderDebugInfo)
-    {
-        auto const debugResultId = makeFloatDebugType(width);
+    if (emitNonSemanticShaderDebugInfo) {
+        auto const debugResultId = makeFloatDebugType(8, makeUintConstant((unsigned)FPEncoding::Float8E5M2EXT));
         debugTypeIdLookup[type->getResultId()] = debugResultId;
     }
-#endif
 
     return type->getResultId();
 }
@@ -424,14 +416,10 @@ Id Builder::makeFloatE4M3Type()
     addExtension(spv::E_SPV_EXT_float8);
     addCapability(Capability::Float8EXT);
 
-#if 0
-    // XXX not supported
-    if (emitNonSemanticShaderDebugInfo)
-    {
-        auto const debugResultId = makeFloatDebugType(width);
+    if (emitNonSemanticShaderDebugInfo) {
+        auto const debugResultId = makeFloatDebugType(8, makeUintConstant((unsigned)FPEncoding::Float8E4M3EXT));
         debugTypeIdLookup[type->getResultId()] = debugResultId;
     }
-#endif
 
     return type->getResultId();
 }
@@ -578,40 +566,8 @@ Id Builder::makeCooperativeMatrixTypeKHR(Id component, Id scope, Id rows, Id col
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
 
-    if (emitNonSemanticShaderDebugInfo)
-    {
-        // Find a name for one of the parameters. It can either come from debuginfo for another
-        // type, or an OpName from a constant.
-        auto const findName = [&](Id id) {
-            Id id2 = getDebugType(id);
-            for (auto &t : groupedDebugTypes[NonSemanticShaderDebugInfoDebugTypeBasic]) {
-                if (t->getResultId() == id2) {
-                    for (auto &s : strings) {
-                        if (s->getResultId() == t->getIdOperand(2)) {
-                            return s->getNameString();
-                        }
-                    }
-                }
-            }
-            for (auto &t : names) {
-                if (t->getIdOperand(0) == id) {
-                    return t->getNameString();
-                }
-            }
-            return "unknown";
-        };
-        std::string debugName = "coopmat<";
-        debugName += std::string(findName(component)) + ", ";
-        if (isConstantScalar(scope)) {
-            debugName += std::string("gl_Scope") + std::string(spv::ScopeToString((spv::Scope)getConstantScalar(scope))) + ", ";
-        } else {
-            debugName += std::string(findName(scope)) + ", ";
-        }
-        debugName += std::string(findName(rows)) + ", ";
-        debugName += std::string(findName(cols)) + ">";
-        // There's no nonsemantic debug info instruction for cooperative matrix types,
-        // use opaque composite instead.
-        auto const debugResultId = makeOpaqueDebugType(debugName.c_str());
+    if (emitNonSemanticShaderDebugInfo) {
+        auto const debugResultId = makeCooperativeMatrixDebugTypeKHR(component, scope, rows, cols, use);
         debugTypeIdLookup[type->getResultId()] = debugResultId;
     }
 
@@ -672,6 +628,11 @@ Id Builder::makeCooperativeVectorTypeNV(Id componentType, Id components)
     groupedTypes[enumCast(Op::OpTypeCooperativeVectorNV)].push_back(type);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
+
+    if (emitNonSemanticShaderDebugInfo) {
+        auto const debugResultId = makeVectorIdDebugType(componentType, components);
+        debugTypeIdLookup[type->getResultId()] = debugResultId;
+    }
 
     return type->getResultId();
 }
@@ -1065,13 +1026,29 @@ Id Builder::makeIntegerDebugType(int const width, bool const hasSign)
     return type->getResultId();
 }
 
-Id Builder::makeFloatDebugType(int const width)
+Id Builder::makeFloatDebugType(int const width, Id const fpEncoding)
 {
+    if (fpEncoding != NoType)
+        requireNonSemanticShaderDebugInfoVersion(101);
+    // Determine the debug type name. FP-encoded variants have distinct names.
+    // Id comparison works here because makeUintConstant deduplicates: two calls
+    // with the same value return the same Id.
     const char* typeName = nullptr;
-    switch (width) {
-        case 16: typeName = "float16_t"; break;
-        case 64: typeName = "double"; break;
-        default: typeName = "float"; break;
+    if (fpEncoding != NoType) {
+        if (fpEncoding == makeUintConstant((unsigned)FPEncoding::BFloat16KHR))
+            typeName = "bfloat16_t";
+        else if (fpEncoding == makeUintConstant((unsigned)FPEncoding::Float8E4M3EXT))
+            typeName = "floate4m3_t";
+        else if (fpEncoding == makeUintConstant((unsigned)FPEncoding::Float8E5M2EXT))
+            typeName = "floate5m2_t";
+        else
+            typeName = "float";
+    } else {
+        switch (width) {
+            case 16: typeName = "float16_t"; break;
+            case 64: typeName = "double"; break;
+            default: typeName = "float"; break;
+        }
     }
     auto nameId = getStringId(typeName);
     // try to find it
@@ -1080,19 +1057,28 @@ Id Builder::makeFloatDebugType(int const width)
         type = groupedDebugTypes[NonSemanticShaderDebugInfoDebugTypeBasic][t];
         if (type->getIdOperand(0) == nameId &&
             type->getIdOperand(1) == static_cast<unsigned int>(width) &&
-            type->getIdOperand(2) == NonSemanticShaderDebugInfoFloat)
-            return type->getResultId();
+            type->getIdOperand(2) == NonSemanticShaderDebugInfoFloat) {
+            if (fpEncoding == NoType) {
+                if (type->getNumOperands() == 6)
+                    return type->getResultId();
+            } else {
+                if (type->getNumOperands() == 7 && type->getIdOperand(6) == fpEncoding)
+                    return type->getResultId();
+            }
+        }
     }
 
     // not found, make it
     type = new Instruction(getUniqueId(), makeVoidType(), Op::OpExtInst);
-    type->reserveOperands(6);
+    type->reserveOperands(fpEncoding == NoType ? 6 : 7);
     type->addIdOperand(nonSemanticShaderDebugInfo);
     type->addImmediateOperand(NonSemanticShaderDebugInfoDebugTypeBasic);
     type->addIdOperand(nameId); // name id
     type->addIdOperand(makeUintConstant(width)); // size id
     type->addIdOperand(makeUintConstant(NonSemanticShaderDebugInfoFloat)); // encoding id
     type->addIdOperand(makeUintConstant(NonSemanticShaderDebugInfoNone)); // flags id
+    if (fpEncoding != NoType)
+        type->addIdOperand(fpEncoding); // optional FPEncoding id (NSDI.101)
 
     groupedDebugTypes[NonSemanticShaderDebugInfoDebugTypeBasic].push_back(type);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
@@ -1161,6 +1147,72 @@ Id Builder::makeMatrixDebugType(Id const vectorType, int const vectorCount, bool
     type->addIdOperand(makeBoolConstant(columnMajor)); // column-major id
 
     groupedDebugTypes[NonSemanticShaderDebugInfoDebugTypeMatrix].push_back(type);
+    constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
+    module.mapInstruction(type);
+
+    return type->getResultId();
+}
+
+// DebugTypeVectorIdEXT (NSDI.101 opcode 109): describes OpTypeVectorIdEXT and
+// OpTypeCooperativeVectorNV types whose component count is a SPIR-V Id (not a
+// literal), including specialization-constant component counts.
+Id Builder::makeVectorIdDebugType(Id const componentType, Id const componentCount)
+{
+    requireNonSemanticShaderDebugInfoVersion(101);
+    // try to find it
+    Instruction* type;
+    for (int t = 0; t < (int)groupedDebugTypes[NonSemanticShaderDebugInfoDebugTypeVectorIdEXT].size(); ++t) {
+        type = groupedDebugTypes[NonSemanticShaderDebugInfoDebugTypeVectorIdEXT][t];
+        if (type->getIdOperand(2) == getDebugType(componentType) &&
+            type->getIdOperand(3) == componentCount)
+            return type->getResultId();
+    }
+
+    // not found, make it
+    type = new Instruction(getUniqueId(), makeVoidType(), Op::OpExtInst);
+    type->reserveOperands(4);
+    type->addIdOperand(nonSemanticShaderDebugInfo);
+    type->addImmediateOperand(NonSemanticShaderDebugInfoDebugTypeVectorIdEXT);
+    type->addIdOperand(getDebugType(componentType)); // component debug type
+    type->addIdOperand(componentCount); // component count (constant instruction Id)
+
+    groupedDebugTypes[NonSemanticShaderDebugInfoDebugTypeVectorIdEXT].push_back(type);
+    constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
+    module.mapInstruction(type);
+
+    return type->getResultId();
+}
+
+// DebugTypeCooperativeMatrixKHR (NSDI.101 opcode 110): describes
+// OpTypeCooperativeMatrixKHR types.
+Id Builder::makeCooperativeMatrixDebugTypeKHR(Id const componentType, Id const scope,
+                                              Id const rows, Id const cols, Id const use)
+{
+    requireNonSemanticShaderDebugInfoVersion(101);
+    // try to find it
+    Instruction* type;
+    for (int t = 0; t < (int)groupedDebugTypes[NonSemanticShaderDebugInfoDebugTypeCooperativeMatrixKHR].size(); ++t) {
+        type = groupedDebugTypes[NonSemanticShaderDebugInfoDebugTypeCooperativeMatrixKHR][t];
+        if (type->getIdOperand(2) == getDebugType(componentType) &&
+            type->getIdOperand(3) == scope &&
+            type->getIdOperand(4) == rows &&
+            type->getIdOperand(5) == cols &&
+            type->getIdOperand(6) == use)
+            return type->getResultId();
+    }
+
+    // not found, make it
+    type = new Instruction(getUniqueId(), makeVoidType(), Op::OpExtInst);
+    type->reserveOperands(7);
+    type->addIdOperand(nonSemanticShaderDebugInfo);
+    type->addImmediateOperand(NonSemanticShaderDebugInfoDebugTypeCooperativeMatrixKHR);
+    type->addIdOperand(getDebugType(componentType)); // component debug type
+    type->addIdOperand(scope); // scope
+    type->addIdOperand(rows); // rows
+    type->addIdOperand(cols); // columns
+    type->addIdOperand(use); // use (MatrixA, MatrixB, Accumulator)
+
+    groupedDebugTypes[NonSemanticShaderDebugInfoDebugTypeCooperativeMatrixKHR].push_back(type);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
 
@@ -2145,10 +2197,33 @@ Id Builder::importNonSemanticShaderDebugInfoInstructions()
     if(nonSemanticShaderDebugInfo == 0)
     {
         this->addExtension(spv::E_SPV_KHR_non_semantic_info);
-        nonSemanticShaderDebugInfo = this->import("NonSemantic.Shader.DebugInfo.100");
+        // Create the import instruction directly so we can save a pointer for later
+        // patching by requireNonSemanticShaderDebugInfoVersion().
+        std::string importName = "NonSemantic.Shader.DebugInfo." + std::to_string(nonSemanticShaderDebugInfoVersion);
+        auto* importInst = new Instruction(getUniqueId(), NoType, Op::OpExtInstImport);
+        importInst->addStringOperand(importName.c_str());
+        module.mapInstruction(importInst);
+        imports.push_back(std::unique_ptr<Instruction>(importInst));
+        nonSemanticShaderDebugInfo = importInst->getResultId();
+        nonSemanticShaderDebugInfoImportInst = importInst;
     }
 
     return nonSemanticShaderDebugInfo;
+}
+
+void Builder::requireNonSemanticShaderDebugInfoVersion(unsigned version)
+{
+    if (nonSemanticShaderDebugInfoVersion >= version)
+        return;
+    nonSemanticShaderDebugInfoVersion = version;
+    if (nonSemanticShaderDebugInfoImportInst != nullptr) {
+        // The import instruction was already emitted with an older version string.
+        // Rebuild the string operands in place so all referencing OpExtInst instructions
+        // automatically pick up the new name without needing new IDs.
+        std::string importName = "NonSemantic.Shader.DebugInfo." + std::to_string(version);
+        nonSemanticShaderDebugInfoImportInst->clearOperands();
+        nonSemanticShaderDebugInfoImportInst->addStringOperand(importName.c_str());
+    }
 }
 
 Id Builder::findCompositeConstant(Op typeClass, Op opcode, Id typeId, const std::vector<Id>& comps, size_t numMembers)

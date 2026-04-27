@@ -30,7 +30,7 @@ extern "C" {
 #endif
 
 enum {
-    NonSemanticShaderDebugInfoVersion = 100,
+    NonSemanticShaderDebugInfoVersion = 101,
     NonSemanticShaderDebugInfoVersion_BitWidthPadding = 0x7fffffff
 };
 enum {
@@ -83,6 +83,8 @@ enum NonSemanticShaderDebugInfoInstructions {
     NonSemanticShaderDebugInfoDebugStoragePath = 106,
     NonSemanticShaderDebugInfoDebugEntryPoint = 107,
     NonSemanticShaderDebugInfoDebugTypeMatrix = 108,
+    NonSemanticShaderDebugInfoDebugTypeVectorIdEXT = 109,
+    NonSemanticShaderDebugInfoDebugTypeCooperativeMatrixKHR = 110,
     NonSemanticShaderDebugInfoInstructionsMax = 0x7fffffff
 };
 

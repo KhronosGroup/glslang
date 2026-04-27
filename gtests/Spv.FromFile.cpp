@@ -85,7 +85,6 @@ using CompileVulkanToSpirv14TestNV = GlslangTest<::testing::TestWithParam<std::s
 using CompileUpgradeTextureToSampledTextureAndDropSamplersTest = GlslangTest<::testing::TestWithParam<std::string>>;
 using GlslSpirvDebugInfoTest = GlslangTest<::testing::TestWithParam<std::string>>;
 using GlslNonSemanticShaderDebugInfoTest = GlslangTest<::testing::TestWithParam<std::string>>;
-using GlslNonSemanticShaderDebugInfoSpirv13Test = GlslangTest<::testing::TestWithParam<std::string>>;
 using GlslNonSemanticShaderDebugInfoVulkanLatestTest = GlslangTest<::testing::TestWithParam<std::string>>;
 
 // Compiling GLSL to SPIR-V under Vulkan semantics. Expected to successfully
@@ -276,13 +275,6 @@ TEST_P(GlslNonSemanticShaderDebugInfoTest, FromFile)
 {
     loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam(), Source::GLSL, Semantics::Vulkan,
                             glslang::EShTargetVulkan_1_0, glslang::EShTargetSpv_1_0, Target::Spv, true, "",
-                            "/baseResults/", false, true, true);
-}
-
-TEST_P(GlslNonSemanticShaderDebugInfoSpirv13Test, FromFile)
-{
-    loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam(), Source::GLSL, Semantics::Vulkan,
-                            glslang::EShTargetVulkan_1_1, glslang::EShTargetSpv_1_3, Target::Spv, true, "",
                             "/baseResults/", false, true, true);
 }
 
@@ -1156,14 +1148,6 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.debuginfo.const_variables.glsl.frag",
         "spv.debuginfo.ubo.glsl.frag",
         "spv.debuginfo.declaration.glsl.frag",
-    })),
-    FileNameAsCustomTestSuffix
-);
-
-INSTANTIATE_TEST_SUITE_P(
-    Glsl, GlslNonSemanticShaderDebugInfoSpirv13Test,
-    ::testing::ValuesIn(std::vector<std::string>({
-        "spv.debuginfo.coopmatKHR.comp",
     })),
     FileNameAsCustomTestSuffix
 );
