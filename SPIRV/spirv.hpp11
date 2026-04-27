@@ -566,7 +566,7 @@ enum class Decoration : unsigned {
     PayloadDispatchIndirectAMDX = 5105,
     ArrayStrideIdEXT = 5124,
     OffsetIdEXT = 5125,
-    UTFCodePointsKHR = 5145,
+    UTFEncodedKHR = 5145,
     OverrideCoverageNV = 5248,
     PassthroughNV = 5250,
     ViewportRelativeNV = 5252,
@@ -3754,7 +3754,7 @@ inline const char* DecorationToString(Decoration value) {
     case Decoration::PayloadNodeSparseArrayAMDX: return "PayloadNodeSparseArrayAMDX";
     case Decoration::PayloadNodeArraySizeAMDX: return "PayloadNodeArraySizeAMDX";
     case Decoration::PayloadDispatchIndirectAMDX: return "PayloadDispatchIndirectAMDX";
-    case Decoration::UTFCodePointsKHR: return "UTFCodePointsKHR";
+    case Decoration::UTFEncodedKHR: return "UTFEncodedKHR";
     case Decoration::OverrideCoverageNV: return "OverrideCoverageNV";
     case Decoration::PassthroughNV: return "PassthroughNV";
     case Decoration::ViewportRelativeNV: return "ViewportRelativeNV";

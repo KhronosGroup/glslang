@@ -3221,7 +3221,7 @@ void TGlslangToSpvTraverser::createAbortEXT(const glslang::TIntermSequence &glsl
     for (auto elem : splitStr) {
         // 2.1 get sub string's length (if specifier, be spec const).
         //     If not an empty string, \0 is the final character.
-        unsigned int strElemLen = isEmptyMsg ? 1 : elem.string.size() + 1;
+        unsigned int strElemLen = isEmptyMsg ? 1 : elem.string.size();
         spv::Id constLen = builder.makeUintConstant(strElemLen);
         spv::Op constDataOp = spv::Op::OpConstantDataKHR;
         if (elem.specifierIndex >= 0) {
@@ -3234,8 +3234,8 @@ void TGlslangToSpvTraverser::createAbortEXT(const glslang::TIntermSequence &glsl
         // 2.3 add sub string constant data
         auto strElemConstData = builder.createConstData(constDataOp, strElemArrType, {elem.string.c_str()});
         // 2.4 add decoration for those sub string.
-        builder.addDecoration(strElemArrType, spv::Decoration::UTFCodePointsKHR);
-        builder.addDecoration(strElemLoadArrType, spv::Decoration::UTFCodePointsKHR);
+        builder.addDecoration(strElemArrType, spv::Decoration::UTFEncodedKHR);
+        builder.addDecoration(strElemLoadArrType, spv::Decoration::UTFEncodedKHR);
         // 2.5 Collect data and type for construct an internal message structure member.
         structMemberType.push_back(strElemArrType);
         structLoadMemberType.push_back(strElemLoadArrType);
