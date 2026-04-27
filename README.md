@@ -221,6 +221,24 @@ bison --defines=MachineIndependent/glslang_tab.cpp.h
 The above command is also available in the bash script in `updateGrammar`,
 when executed from the glslang subdirectory of the glslang repository.
 
+### If you need to update the NonSemantic instruction headers
+
+`SPIRV/NonSemanticShaderDebugInfo.h` and `SPIRV/NonSemanticDebugPrintf.h` are
+local copies of the canonical headers from SPIRV-Headers.  They are kept here
+because the SPIRV-Headers include path is not unconditionally available in all
+glslang build configurations (it is only present when `ENABLE_OPT` is on).
+
+When SPIRV-Headers publishes a new version of either header, copy the updated
+file from
+
+```
+External/spirv-tools/external/spirv-headers/include/spirv/unified1/
+```
+
+over the corresponding file in `SPIRV/`.  After copying, verify that the build
+still compiles and update the golden test output if instruction names or opcode
+numbers changed.
+
 ### Building to WASM for the Web and Node
 ### Building a standalone JS/WASM library for the Web and Node
 

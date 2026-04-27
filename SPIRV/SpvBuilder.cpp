@@ -459,7 +459,7 @@ Id Builder::makeStructType(const std::vector<Id>& members, const std::vector<spv
     if (emitNonSemanticShaderDebugInfo && !compilerGenerated) {
         assert(members.size() == memberDebugInfo.size());
         auto const debugResultId =
-            makeCompositeDebugType(members, memberDebugInfo, name, NonSemanticShaderDebugInfo100Structure);
+            makeCompositeDebugType(members, memberDebugInfo, name, NonSemanticShaderDebugInfoStructure);
         debugTypeIdLookup[type->getResultId()] = debugResultId;
     }
 
@@ -584,7 +584,7 @@ Id Builder::makeCooperativeMatrixTypeKHR(Id component, Id scope, Id rows, Id col
         // type, or an OpName from a constant.
         auto const findName = [&](Id id) {
             Id id2 = getDebugType(id);
-            for (auto &t : groupedDebugTypes[NonSemanticShaderDebugInfo100DebugTypeBasic]) {
+            for (auto &t : groupedDebugTypes[NonSemanticShaderDebugInfoDebugTypeBasic]) {
                 if (t->getResultId() == id2) {
                     for (auto &s : strings) {
                         if (s->getResultId() == t->getIdOperand(2)) {
@@ -845,8 +845,8 @@ Id Builder::makeDebugFunctionType(Id returnType, const std::vector<Id>& paramTyp
     auto type = new Instruction(typeId, makeVoidType(), Op::OpExtInst);
     type->reserveOperands(paramTypes.size() + 4);
     type->addIdOperand(nonSemanticShaderDebugInfo);
-    type->addImmediateOperand(NonSemanticShaderDebugInfo100DebugTypeFunction);
-    type->addIdOperand(makeUintConstant(NonSemanticShaderDebugInfo100FlagIsPublic));
+    type->addImmediateOperand(NonSemanticShaderDebugInfoDebugTypeFunction);
+    type->addIdOperand(makeUintConstant(NonSemanticShaderDebugInfoFlagIsPublic));
     type->addIdOperand(getDebugType(returnType));
     for (auto const paramType : paramTypes) {
         if (isPointerType(paramType) || isArrayType(paramType)) {
@@ -985,7 +985,7 @@ Id Builder::makeDebugInfoNone()
     Instruction* inst = new Instruction(getUniqueId(), makeVoidType(), Op::OpExtInst);
     inst->reserveOperands(2);
     inst->addIdOperand(nonSemanticShaderDebugInfo);
-    inst->addImmediateOperand(NonSemanticShaderDebugInfo100DebugInfoNone);
+    inst->addImmediateOperand(NonSemanticShaderDebugInfoDebugInfoNone);
 
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(inst));
     module.mapInstruction(inst);
@@ -999,25 +999,25 @@ Id Builder::makeBoolDebugType(int const size)
 {
     // try to find it
     Instruction* type;
-    for (int t = 0; t < (int)groupedDebugTypes[NonSemanticShaderDebugInfo100DebugTypeBasic].size(); ++t) {
-        type = groupedDebugTypes[NonSemanticShaderDebugInfo100DebugTypeBasic][t];
+    for (int t = 0; t < (int)groupedDebugTypes[NonSemanticShaderDebugInfoDebugTypeBasic].size(); ++t) {
+        type = groupedDebugTypes[NonSemanticShaderDebugInfoDebugTypeBasic][t];
         if (type->getIdOperand(0) == getStringId("bool") &&
             type->getIdOperand(1) == static_cast<unsigned int>(size) &&
-            type->getIdOperand(2) == NonSemanticShaderDebugInfo100Boolean)
+            type->getIdOperand(2) == NonSemanticShaderDebugInfoBoolean)
             return type->getResultId();
     }
 
     type = new Instruction(getUniqueId(), makeVoidType(), Op::OpExtInst);
     type->reserveOperands(6);
     type->addIdOperand(nonSemanticShaderDebugInfo);
-    type->addImmediateOperand(NonSemanticShaderDebugInfo100DebugTypeBasic);
+    type->addImmediateOperand(NonSemanticShaderDebugInfoDebugTypeBasic);
 
     type->addIdOperand(getStringId("bool")); // name id
     type->addIdOperand(makeUintConstant(size)); // size id
-    type->addIdOperand(makeUintConstant(NonSemanticShaderDebugInfo100Boolean)); // encoding id
-    type->addIdOperand(makeUintConstant(NonSemanticShaderDebugInfo100None)); // flags id
+    type->addIdOperand(makeUintConstant(NonSemanticShaderDebugInfoBoolean)); // encoding id
+    type->addIdOperand(makeUintConstant(NonSemanticShaderDebugInfoNone)); // flags id
 
-    groupedDebugTypes[NonSemanticShaderDebugInfo100DebugTypeBasic].push_back(type);
+    groupedDebugTypes[NonSemanticShaderDebugInfoDebugTypeBasic].push_back(type);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
 
@@ -1036,11 +1036,11 @@ Id Builder::makeIntegerDebugType(int const width, bool const hasSign)
     auto nameId = getStringId(typeName);
     // try to find it
     Instruction* type;
-    for (int t = 0; t < (int)groupedDebugTypes[NonSemanticShaderDebugInfo100DebugTypeBasic].size(); ++t) {
-        type = groupedDebugTypes[NonSemanticShaderDebugInfo100DebugTypeBasic][t];
+    for (int t = 0; t < (int)groupedDebugTypes[NonSemanticShaderDebugInfoDebugTypeBasic].size(); ++t) {
+        type = groupedDebugTypes[NonSemanticShaderDebugInfoDebugTypeBasic][t];
         if (type->getIdOperand(0) == nameId &&
             type->getIdOperand(1) == static_cast<unsigned int>(width) &&
-            type->getIdOperand(2) == (hasSign ? NonSemanticShaderDebugInfo100Signed : NonSemanticShaderDebugInfo100Unsigned))
+            type->getIdOperand(2) == (hasSign ? NonSemanticShaderDebugInfoSigned : NonSemanticShaderDebugInfoUnsigned))
             return type->getResultId();
     }
 
@@ -1048,17 +1048,17 @@ Id Builder::makeIntegerDebugType(int const width, bool const hasSign)
     type = new Instruction(getUniqueId(), makeVoidType(), Op::OpExtInst);
     type->reserveOperands(6);
     type->addIdOperand(nonSemanticShaderDebugInfo);
-    type->addImmediateOperand(NonSemanticShaderDebugInfo100DebugTypeBasic);
+    type->addImmediateOperand(NonSemanticShaderDebugInfoDebugTypeBasic);
     type->addIdOperand(nameId); // name id
     type->addIdOperand(makeUintConstant(width)); // size id
     if(hasSign == true) {
-        type->addIdOperand(makeUintConstant(NonSemanticShaderDebugInfo100Signed)); // encoding id
+        type->addIdOperand(makeUintConstant(NonSemanticShaderDebugInfoSigned)); // encoding id
     } else {
-        type->addIdOperand(makeUintConstant(NonSemanticShaderDebugInfo100Unsigned)); // encoding id
+        type->addIdOperand(makeUintConstant(NonSemanticShaderDebugInfoUnsigned)); // encoding id
     }
-    type->addIdOperand(makeUintConstant(NonSemanticShaderDebugInfo100None)); // flags id
+    type->addIdOperand(makeUintConstant(NonSemanticShaderDebugInfoNone)); // flags id
 
-    groupedDebugTypes[NonSemanticShaderDebugInfo100DebugTypeBasic].push_back(type);
+    groupedDebugTypes[NonSemanticShaderDebugInfoDebugTypeBasic].push_back(type);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
 
@@ -1076,11 +1076,11 @@ Id Builder::makeFloatDebugType(int const width)
     auto nameId = getStringId(typeName);
     // try to find it
     Instruction* type;
-    for (int t = 0; t < (int)groupedDebugTypes[NonSemanticShaderDebugInfo100DebugTypeBasic].size(); ++t) {
-        type = groupedDebugTypes[NonSemanticShaderDebugInfo100DebugTypeBasic][t];
+    for (int t = 0; t < (int)groupedDebugTypes[NonSemanticShaderDebugInfoDebugTypeBasic].size(); ++t) {
+        type = groupedDebugTypes[NonSemanticShaderDebugInfoDebugTypeBasic][t];
         if (type->getIdOperand(0) == nameId &&
             type->getIdOperand(1) == static_cast<unsigned int>(width) &&
-            type->getIdOperand(2) == NonSemanticShaderDebugInfo100Float)
+            type->getIdOperand(2) == NonSemanticShaderDebugInfoFloat)
             return type->getResultId();
     }
 
@@ -1088,23 +1088,23 @@ Id Builder::makeFloatDebugType(int const width)
     type = new Instruction(getUniqueId(), makeVoidType(), Op::OpExtInst);
     type->reserveOperands(6);
     type->addIdOperand(nonSemanticShaderDebugInfo);
-    type->addImmediateOperand(NonSemanticShaderDebugInfo100DebugTypeBasic);
+    type->addImmediateOperand(NonSemanticShaderDebugInfoDebugTypeBasic);
     type->addIdOperand(nameId); // name id
     type->addIdOperand(makeUintConstant(width)); // size id
-    type->addIdOperand(makeUintConstant(NonSemanticShaderDebugInfo100Float)); // encoding id
-    type->addIdOperand(makeUintConstant(NonSemanticShaderDebugInfo100None)); // flags id
+    type->addIdOperand(makeUintConstant(NonSemanticShaderDebugInfoFloat)); // encoding id
+    type->addIdOperand(makeUintConstant(NonSemanticShaderDebugInfoNone)); // flags id
 
-    groupedDebugTypes[NonSemanticShaderDebugInfo100DebugTypeBasic].push_back(type);
+    groupedDebugTypes[NonSemanticShaderDebugInfoDebugTypeBasic].push_back(type);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
 
     return type->getResultId();
 }
 
-Id Builder::makeSequentialDebugType(Id const baseType, Id const componentCount, NonSemanticShaderDebugInfo100Instructions const sequenceType)
+Id Builder::makeSequentialDebugType(Id const baseType, Id const componentCount, NonSemanticShaderDebugInfoInstructions const sequenceType)
 {
-    assert(sequenceType == NonSemanticShaderDebugInfo100DebugTypeArray ||
-        sequenceType == NonSemanticShaderDebugInfo100DebugTypeVector);
+    assert(sequenceType == NonSemanticShaderDebugInfoDebugTypeArray ||
+        sequenceType == NonSemanticShaderDebugInfoDebugTypeVector);
 
     // try to find it
     Instruction* type;
@@ -1132,20 +1132,20 @@ Id Builder::makeSequentialDebugType(Id const baseType, Id const componentCount, 
 
 Id Builder::makeArrayDebugType(Id const baseType, Id const componentCount)
 {
-    return makeSequentialDebugType(baseType, componentCount, NonSemanticShaderDebugInfo100DebugTypeArray);
+    return makeSequentialDebugType(baseType, componentCount, NonSemanticShaderDebugInfoDebugTypeArray);
 }
 
 Id Builder::makeVectorDebugType(Id const baseType, int const componentCount)
 {
-    return makeSequentialDebugType(baseType, makeUintConstant(componentCount), NonSemanticShaderDebugInfo100DebugTypeVector);
+    return makeSequentialDebugType(baseType, makeUintConstant(componentCount), NonSemanticShaderDebugInfoDebugTypeVector);
 }
 
 Id Builder::makeMatrixDebugType(Id const vectorType, int const vectorCount, bool columnMajor)
 {
     // try to find it
     Instruction* type;
-    for (int t = 0; t < (int)groupedDebugTypes[NonSemanticShaderDebugInfo100DebugTypeMatrix].size(); ++t) {
-        type = groupedDebugTypes[NonSemanticShaderDebugInfo100DebugTypeMatrix][t];
+    for (int t = 0; t < (int)groupedDebugTypes[NonSemanticShaderDebugInfoDebugTypeMatrix].size(); ++t) {
+        type = groupedDebugTypes[NonSemanticShaderDebugInfoDebugTypeMatrix][t];
         if (type->getIdOperand(0) == vectorType &&
             type->getIdOperand(1) == makeUintConstant(vectorCount))
             return type->getResultId();
@@ -1155,12 +1155,12 @@ Id Builder::makeMatrixDebugType(Id const vectorType, int const vectorCount, bool
     type = new Instruction(getUniqueId(), makeVoidType(), Op::OpExtInst);
     type->reserveOperands(5);
     type->addIdOperand(nonSemanticShaderDebugInfo);
-    type->addImmediateOperand(NonSemanticShaderDebugInfo100DebugTypeMatrix);
+    type->addImmediateOperand(NonSemanticShaderDebugInfoDebugTypeMatrix);
     type->addIdOperand(getDebugType(vectorType)); // vector type id
     type->addIdOperand(makeUintConstant(vectorCount)); // component count id
     type->addIdOperand(makeBoolConstant(columnMajor)); // column-major id
 
-    groupedDebugTypes[NonSemanticShaderDebugInfo100DebugTypeMatrix].push_back(type);
+    groupedDebugTypes[NonSemanticShaderDebugInfoDebugTypeMatrix].push_back(type);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
 
@@ -1174,7 +1174,7 @@ Id Builder::makeMemberDebugType(Id const memberType, StructMemberDebugInfo const
     Instruction* type = new Instruction(getUniqueId(), makeVoidType(), Op::OpExtInst);
     type->reserveOperands(10);
     type->addIdOperand(nonSemanticShaderDebugInfo);
-    type->addImmediateOperand(NonSemanticShaderDebugInfo100DebugTypeMember);
+    type->addImmediateOperand(NonSemanticShaderDebugInfoDebugTypeMember);
     type->addIdOperand(getStringId(debugTypeLoc.name)); // name id
     type->addIdOperand(debugTypeLoc.debugTypeOverride != 0 ? debugTypeLoc.debugTypeOverride
                                                            : getDebugType(memberType)); // type id
@@ -1183,9 +1183,9 @@ Id Builder::makeMemberDebugType(Id const memberType, StructMemberDebugInfo const
     type->addIdOperand(makeUintConstant(debugTypeLoc.column)); // TODO: column id
     type->addIdOperand(makeUintConstant(0));                   // TODO: offset id
     type->addIdOperand(makeUintConstant(0));                   // TODO: size id
-    type->addIdOperand(makeUintConstant(NonSemanticShaderDebugInfo100FlagIsPublic)); // flags id
+    type->addIdOperand(makeUintConstant(NonSemanticShaderDebugInfoFlagIsPublic)); // flags id
 
-    groupedDebugTypes[NonSemanticShaderDebugInfo100DebugTypeMember].push_back(type);
+    groupedDebugTypes[NonSemanticShaderDebugInfoDebugTypeMember].push_back(type);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
 
@@ -1193,7 +1193,7 @@ Id Builder::makeMemberDebugType(Id const memberType, StructMemberDebugInfo const
 }
 
 Id Builder::makeCompositeDebugType(std::vector<Id> const& memberTypes, std::vector<StructMemberDebugInfo> const& memberDebugInfo,
-                                   char const* const name, NonSemanticShaderDebugInfo100DebugCompositeType const tag)
+                                   char const* const name, NonSemanticShaderDebugInfoDebugCompositeType const tag)
 {
     // Create the debug member types.
     std::vector<Id> memberDebugTypes;
@@ -1208,7 +1208,7 @@ Id Builder::makeCompositeDebugType(std::vector<Id> const& memberTypes, std::vect
     Instruction* type = new Instruction(getUniqueId(), makeVoidType(), Op::OpExtInst);
     type->reserveOperands(memberDebugTypes.size() + 11);
     type->addIdOperand(nonSemanticShaderDebugInfo);
-    type->addImmediateOperand(NonSemanticShaderDebugInfo100DebugTypeComposite);
+    type->addImmediateOperand(NonSemanticShaderDebugInfoDebugTypeComposite);
     type->addIdOperand(getStringId(name)); // name id
     type->addIdOperand(makeUintConstant(tag)); // tag id
     type->addIdOperand(makeDebugSource(currentFileId)); // source id
@@ -1217,12 +1217,12 @@ Id Builder::makeCompositeDebugType(std::vector<Id> const& memberTypes, std::vect
     type->addIdOperand(makeDebugCompilationUnit()); // scope id
     type->addIdOperand(getStringId(name)); // linkage name id
     type->addIdOperand(makeUintConstant(0)); // TODO: size id
-    type->addIdOperand(makeUintConstant(NonSemanticShaderDebugInfo100FlagIsPublic)); // flags id
+    type->addIdOperand(makeUintConstant(NonSemanticShaderDebugInfoFlagIsPublic)); // flags id
     for(auto const memberDebugType : memberDebugTypes) {
         type->addIdOperand(memberDebugType);
     }
 
-    groupedDebugTypes[NonSemanticShaderDebugInfo100DebugTypeComposite].push_back(type);
+    groupedDebugTypes[NonSemanticShaderDebugInfoDebugTypeComposite].push_back(type);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
 
@@ -1238,9 +1238,9 @@ Id Builder::makeOpaqueDebugType(char const* const name)
     Instruction* type = new Instruction(getUniqueId(), makeVoidType(), Op::OpExtInst);
     type->reserveOperands(11);
     type->addIdOperand(nonSemanticShaderDebugInfo);
-    type->addImmediateOperand(NonSemanticShaderDebugInfo100DebugTypeComposite);
+    type->addImmediateOperand(NonSemanticShaderDebugInfoDebugTypeComposite);
     type->addIdOperand(getStringId(name)); // name id
-    type->addIdOperand(makeUintConstant(NonSemanticShaderDebugInfo100Structure)); // tag id
+    type->addIdOperand(makeUintConstant(NonSemanticShaderDebugInfoStructure)); // tag id
     type->addIdOperand(makeDebugSource(currentFileId)); // source id
     type->addIdOperand(makeUintConstant(currentLine)); // line id TODO: currentLine always zero?
     type->addIdOperand(makeUintConstant(0)); // TODO: column id
@@ -1248,9 +1248,9 @@ Id Builder::makeOpaqueDebugType(char const* const name)
     // Prepend '@' to opaque types.
     type->addIdOperand(getStringId('@' + std::string(name))); // linkage name id
     type->addIdOperand(makeDebugInfoNone()); // size id
-    type->addIdOperand(makeUintConstant(NonSemanticShaderDebugInfo100FlagIsPublic)); // flags id
+    type->addIdOperand(makeUintConstant(NonSemanticShaderDebugInfoFlagIsPublic)); // flags id
 
-    groupedDebugTypes[NonSemanticShaderDebugInfo100DebugTypeComposite].push_back(type);
+    groupedDebugTypes[NonSemanticShaderDebugInfoDebugTypeComposite].push_back(type);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
 
@@ -1264,7 +1264,7 @@ Id Builder::makePointerDebugType(StorageClass storageClass, Id const baseType)
         return makeDebugInfoNone();
     }
     const Id scID = makeUintConstant(storageClass);
-    for (Instruction* otherType : groupedDebugTypes[NonSemanticShaderDebugInfo100DebugTypePointer]) {
+    for (Instruction* otherType : groupedDebugTypes[NonSemanticShaderDebugInfoDebugTypePointer]) {
         if (otherType->getIdOperand(2) == debugBaseType &&
             otherType->getIdOperand(3) == scID) {
             return otherType->getResultId();
@@ -1274,12 +1274,12 @@ Id Builder::makePointerDebugType(StorageClass storageClass, Id const baseType)
     Instruction* type = new Instruction(getUniqueId(), makeVoidType(), Op::OpExtInst);
     type->reserveOperands(5);
     type->addIdOperand(nonSemanticShaderDebugInfo);
-    type->addImmediateOperand(NonSemanticShaderDebugInfo100DebugTypePointer);
+    type->addImmediateOperand(NonSemanticShaderDebugInfoDebugTypePointer);
     type->addIdOperand(debugBaseType);
     type->addIdOperand(scID);
     type->addIdOperand(makeUintConstant(0));
 
-    groupedDebugTypes[NonSemanticShaderDebugInfo100DebugTypePointer].push_back(type);
+    groupedDebugTypes[NonSemanticShaderDebugInfoDebugTypePointer].push_back(type);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
 
@@ -1297,12 +1297,12 @@ Id Builder::makeForwardPointerDebugType(StorageClass storageClass)
 
     Instruction *type = new Instruction(getUniqueId(), makeVoidType(), Op::OpExtInstWithForwardRefsKHR);
     type->addIdOperand(nonSemanticShaderDebugInfo);
-    type->addImmediateOperand(NonSemanticShaderDebugInfo100DebugTypePointer);
+    type->addImmediateOperand(NonSemanticShaderDebugInfoDebugTypePointer);
     type->addIdOperand(type->getResultId());
     type->addIdOperand(scID);
     type->addIdOperand(makeUintConstant(0));
 
-    groupedDebugTypes[NonSemanticShaderDebugInfo100DebugTypePointer].push_back(type);
+    groupedDebugTypes[NonSemanticShaderDebugInfoDebugTypePointer].push_back(type);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
 
@@ -1316,7 +1316,7 @@ Id Builder::makeDebugSource(const Id fileName) {
     Instruction* sourceInst = new Instruction(resultId, makeVoidType(), Op::OpExtInst);
     sourceInst->reserveOperands(3);
     sourceInst->addIdOperand(nonSemanticShaderDebugInfo);
-    sourceInst->addImmediateOperand(NonSemanticShaderDebugInfo100DebugSource);
+    sourceInst->addImmediateOperand(NonSemanticShaderDebugInfoDebugSource);
     sourceInst->addIdOperand(fileName);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(sourceInst));
     module.mapInstruction(sourceInst);
@@ -1338,7 +1338,7 @@ Id Builder::makeDebugSource(const Id fileName) {
                         Instruction* sourceContinuedInst = new Instruction(getUniqueId(), makeVoidType(), Op::OpExtInst);
                         sourceContinuedInst->reserveOperands(2);
                         sourceContinuedInst->addIdOperand(nonSemanticShaderDebugInfo);
-                        sourceContinuedInst->addImmediateOperand(NonSemanticShaderDebugInfo100DebugSourceContinued);
+                        sourceContinuedInst->addImmediateOperand(NonSemanticShaderDebugInfoDebugSourceContinued);
                         sourceContinuedInst->addIdOperand(sourceId);
                         constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(sourceContinuedInst));
                         module.mapInstruction(sourceContinuedInst);
@@ -1372,7 +1372,7 @@ Id Builder::makeDebugCompilationUnit() {
     Instruction* sourceInst = new Instruction(resultId, makeVoidType(), Op::OpExtInst);
     sourceInst->reserveOperands(6);
     sourceInst->addIdOperand(nonSemanticShaderDebugInfo);
-    sourceInst->addImmediateOperand(NonSemanticShaderDebugInfo100DebugCompilationUnit);
+    sourceInst->addImmediateOperand(NonSemanticShaderDebugInfoDebugCompilationUnit);
     sourceInst->addIdOperand(makeUintConstant(1)); // TODO(greg-lunarg): Get rid of magic number
     sourceInst->addIdOperand(makeUintConstant(4)); // TODO(greg-lunarg): Get rid of magic number
     sourceInst->addIdOperand(makeDebugSource(mainFileId));
@@ -1404,7 +1404,7 @@ Id Builder::createDebugGlobalVariable(Id const type, char const*const name, Id c
     Instruction* inst = new Instruction(getUniqueId(), makeVoidType(), Op::OpExtInst);
     inst->reserveOperands(11);
     inst->addIdOperand(nonSemanticShaderDebugInfo);
-    inst->addImmediateOperand(NonSemanticShaderDebugInfo100DebugGlobalVariable);
+    inst->addImmediateOperand(NonSemanticShaderDebugInfoDebugGlobalVariable);
     inst->addIdOperand(getStringId(name)); // name id
     inst->addIdOperand(type); // type id
     inst->addIdOperand(makeDebugSource(currentFileId)); // source id
@@ -1413,7 +1413,7 @@ Id Builder::createDebugGlobalVariable(Id const type, char const*const name, Id c
     inst->addIdOperand(makeDebugCompilationUnit()); // scope id
     inst->addIdOperand(getStringId(name)); // linkage name id
     inst->addIdOperand(variable); // variable id
-    inst->addIdOperand(makeUintConstant(NonSemanticShaderDebugInfo100FlagIsDefinition)); // flags id
+    inst->addIdOperand(makeUintConstant(NonSemanticShaderDebugInfoFlagIsDefinition)); // flags id
 
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(inst));
     module.mapInstruction(inst);
@@ -1429,14 +1429,14 @@ Id Builder::createDebugLocalVariable(Id type, char const*const name, size_t cons
     Instruction* inst = new Instruction(getUniqueId(), makeVoidType(), Op::OpExtInst);
     inst->reserveOperands(9);
     inst->addIdOperand(nonSemanticShaderDebugInfo);
-    inst->addImmediateOperand(NonSemanticShaderDebugInfo100DebugLocalVariable);
+    inst->addImmediateOperand(NonSemanticShaderDebugInfoDebugLocalVariable);
     inst->addIdOperand(getStringId(name)); // name id
     inst->addIdOperand(type); // type id
     inst->addIdOperand(makeDebugSource(currentFileId)); // source id
     inst->addIdOperand(makeUintConstant(currentLine)); // line id
     inst->addIdOperand(makeUintConstant(0)); // TODO: column id
     inst->addIdOperand(currentDebugScopeId.top()); // scope id
-    inst->addIdOperand(makeUintConstant(NonSemanticShaderDebugInfo100FlagIsLocal)); // flags id
+    inst->addIdOperand(makeUintConstant(NonSemanticShaderDebugInfoFlagIsLocal)); // flags id
     if(argNumber != 0) {
         inst->addIdOperand(makeUintConstant(static_cast<unsigned int>(argNumber)));
     }
@@ -1455,7 +1455,7 @@ Id Builder::makeDebugExpression()
     Instruction* inst = new Instruction(getUniqueId(), makeVoidType(), Op::OpExtInst);
     inst->reserveOperands(2);
     inst->addIdOperand(nonSemanticShaderDebugInfo);
-    inst->addImmediateOperand(NonSemanticShaderDebugInfo100DebugExpression);
+    inst->addImmediateOperand(NonSemanticShaderDebugInfoDebugExpression);
 
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(inst));
     module.mapInstruction(inst);
@@ -1470,7 +1470,7 @@ Id Builder::makeDebugDeclare(Id const debugLocalVariable, Id const pointer)
     Instruction* inst = new Instruction(getUniqueId(), makeVoidType(), Op::OpExtInst);
     inst->reserveOperands(5);
     inst->addIdOperand(nonSemanticShaderDebugInfo);
-    inst->addImmediateOperand(NonSemanticShaderDebugInfo100DebugDeclare);
+    inst->addImmediateOperand(NonSemanticShaderDebugInfoDebugDeclare);
     inst->addIdOperand(debugLocalVariable); // debug local variable id
     inst->addIdOperand(pointer); // pointer to local variable id
     inst->addIdOperand(makeDebugExpression()); // expression id
@@ -1484,7 +1484,7 @@ Id Builder::makeDebugValue(Id const debugLocalVariable, Id const value)
     Instruction* inst = new Instruction(getUniqueId(), makeVoidType(), Op::OpExtInst);
     inst->reserveOperands(5);
     inst->addIdOperand(nonSemanticShaderDebugInfo);
-    inst->addImmediateOperand(NonSemanticShaderDebugInfo100DebugValue);
+    inst->addImmediateOperand(NonSemanticShaderDebugInfoDebugValue);
     inst->addIdOperand(debugLocalVariable); // debug local variable id
     inst->addIdOperand(value); // value of local variable id
     inst->addIdOperand(makeDebugExpression()); // expression id
@@ -2552,7 +2552,7 @@ void Builder::addInstruction(std::unique_ptr<Instruction> inst) {
             auto scopeInst = std::make_unique<Instruction>(getUniqueId(), makeVoidType(), Op::OpExtInst);
             scopeInst->reserveOperands(3);
             scopeInst->addIdOperand(nonSemanticShaderDebugInfo);
-            scopeInst->addImmediateOperand(NonSemanticShaderDebugInfo100DebugScope);
+            scopeInst->addImmediateOperand(NonSemanticShaderDebugInfoDebugScope);
             scopeInst->addIdOperand(currentDebugScopeId.top());
             buildPoint->addInstruction(std::move(scopeInst));
         }
@@ -2575,7 +2575,7 @@ void Builder::addInstruction(std::unique_ptr<Instruction> inst) {
                 auto lineInst = std::make_unique<Instruction>(getUniqueId(), makeVoidType(), Op::OpExtInst);
                 lineInst->reserveOperands(7);
                 lineInst->addIdOperand(nonSemanticShaderDebugInfo);
-                lineInst->addImmediateOperand(NonSemanticShaderDebugInfo100DebugLine);
+                lineInst->addImmediateOperand(NonSemanticShaderDebugInfoDebugLine);
                 lineInst->addIdOperand(makeDebugSource(currentFileId));
                 lineInst->addIdOperand(makeUintConstant(currentLine));
                 lineInst->addIdOperand(makeUintConstant(currentLine));
@@ -2717,7 +2717,7 @@ Id Builder::makeDebugFunction([[maybe_unused]] Function* function, Id nameId, Id
     auto type = new Instruction(funcId, makeVoidType(), Op::OpExtInst);
     type->reserveOperands(11);
     type->addIdOperand(nonSemanticShaderDebugInfo);
-    type->addImmediateOperand(NonSemanticShaderDebugInfo100DebugFunction);
+    type->addImmediateOperand(NonSemanticShaderDebugInfoDebugFunction);
     type->addIdOperand(nameId);
     type->addIdOperand(getDebugType(funcTypeId));
     type->addIdOperand(makeDebugSource(currentFileId)); // TODO: This points to file of definition instead of declaration
@@ -2725,7 +2725,7 @@ Id Builder::makeDebugFunction([[maybe_unused]] Function* function, Id nameId, Id
     type->addIdOperand(makeUintConstant(0)); // column
     type->addIdOperand(makeDebugCompilationUnit()); // scope
     type->addIdOperand(nameId); // linkage name
-    type->addIdOperand(makeUintConstant(NonSemanticShaderDebugInfo100FlagIsPublic));
+    type->addIdOperand(makeUintConstant(NonSemanticShaderDebugInfoFlagIsPublic));
     type->addIdOperand(makeUintConstant(currentLine));
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
@@ -2739,7 +2739,7 @@ Id Builder::makeDebugLexicalBlock(uint32_t line, uint32_t column) {
     auto lex = new Instruction(lexId, makeVoidType(), Op::OpExtInst);
     lex->reserveOperands(6);
     lex->addIdOperand(nonSemanticShaderDebugInfo);
-    lex->addImmediateOperand(NonSemanticShaderDebugInfo100DebugLexicalBlock);
+    lex->addImmediateOperand(NonSemanticShaderDebugInfoDebugLexicalBlock);
     lex->addIdOperand(makeDebugSource(currentFileId));
     lex->addIdOperand(makeUintConstant(line));
     lex->addIdOperand(makeUintConstant(column)); // column
@@ -2821,7 +2821,7 @@ void Builder::enterFunction(Function const* function)
         Instruction* defInst = new Instruction(resultId, makeVoidType(), Op::OpExtInst);
         defInst->reserveOperands(4);
         defInst->addIdOperand(nonSemanticShaderDebugInfo);
-        defInst->addImmediateOperand(NonSemanticShaderDebugInfo100DebugFunctionDefinition);
+        defInst->addImmediateOperand(NonSemanticShaderDebugInfoDebugFunctionDefinition);
         defInst->addIdOperand(debugFuncId);
         defInst->addIdOperand(funcId);
         addInstruction(std::unique_ptr<Instruction>(defInst));

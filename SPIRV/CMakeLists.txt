@@ -63,7 +63,7 @@ set(SPIRV_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/GLSL.ext.ARM.h
     ${CMAKE_CURRENT_SOURCE_DIR}/GLSL.ext.QCOM.h
     ${CMAKE_CURRENT_SOURCE_DIR}/NonSemanticDebugPrintf.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/NonSemanticShaderDebugInfo100.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/NonSemanticShaderDebugInfo.h
     PARENT_SCOPE)
 
 set(PUBLIC_HEADERS
