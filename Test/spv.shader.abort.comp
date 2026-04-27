@@ -8,11 +8,55 @@ layout(set = 0, binding = 0) buffer Output {
     uint value;
 } outputBuffer;
 
-void main() {
-    abortEXT();
+
+uint abortOne()
+{
     outputBuffer.value = 1;
-    abortEXT("%d", outputBuffer.value);
-    abortEXT("", outputBuffer.value);
+    abortEXT("abortOne:%d", outputBuffer.value);
+    return outputBuffer.value;
+}
+
+void abortTwo()
+{
+    outputBuffer.value = 2;
+    if (gl_GlobalInvocationID.x == 1)
+    {
+        abortEXT("abortTwo");
+        outputBuffer.value = 3;
+    }
+    return;
+}
+
+void abortThree()
+{
+    abortEXT();
+    outputBuffer.value = 4;
+    return;
+}
+
+void abortFour()
+{
     for (int i=0; i < 3; i++)
         abortEXT("Iteration exceeded limit: in invocation %i %u", i, gl_GlobalInvocationID.x);
+    return;
+}
+
+void abortFive()
+{
+    abortEXT("", outputBuffer.value);
+    return;
+}
+
+void main() {
+    outputBuffer.value = 0;
+
+    abortEXT();
+
+    abortOne();
+    abortTwo();
+    abortThree();
+    abortFour();
+    abortFive();
+
+    abortEXT();
 }
