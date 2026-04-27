@@ -547,7 +547,8 @@ void SpirvStream::disassembleInstruction(Id resultId, Id /*typeId*/, Op opCode, 
                     extInstSet = NonSemanticDebugPrintfExtInst;
                 } else if (strcmp("NonSemantic.DebugBreak", name) == 0) {
                     extInstSet = NonSemanticDebugBreakExtInst;
-                } else if (strncmp("NonSemantic.Shader.DebugInfo.", name, 29) == 0) {
+                } else if (strncmp("NonSemantic.Shader.DebugInfo.", name, strlen("NonSemantic.Shader.DebugInfo.")) ==
+                           0) {
                     extInstSet = NonSemanticShaderDebugInfo;
                 } else if (strcmp(spv::E_SPV_AMD_shader_ballot, name) == 0 ||
                            strcmp(spv::E_SPV_AMD_shader_trinary_minmax, name) == 0 ||
