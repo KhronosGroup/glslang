@@ -166,7 +166,8 @@ void TParseVersions::initializeExtensionBehavior()
     const extensionData exts[] = { {E_GL_EXT_ray_tracing, EShTargetSpv_1_4},
                                    {E_GL_NV_ray_tracing_motion_blur, EShTargetSpv_1_4},
                                    {E_GL_EXT_mesh_shader, EShTargetSpv_1_4},
-                                   {E_GL_NV_cooperative_matrix2, EShTargetSpv_1_6}
+                                   {E_GL_NV_cooperative_matrix2, EShTargetSpv_1_6},
+                                   {E_GL_NV_cooperative_matrix_decode_vector, EShTargetSpv_1_6}
                                  };
 
     for (size_t ii = 0; ii < sizeof(exts) / sizeof(exts[0]); ii++) {
@@ -317,6 +318,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_NV_displacement_micromap]                 = EBhDisable;
     extensionBehavior[E_GL_NV_shader_atomic_fp16_vector]             = EBhDisable;
     extensionBehavior[E_GL_NV_cooperative_matrix2]                   = EBhDisable;
+    extensionBehavior[E_GL_NV_cooperative_matrix_decode_vector]      = EBhDisable;
     extensionBehavior[E_GL_NV_cluster_acceleration_structure]        = EBhDisable;
     extensionBehavior[E_GL_NV_linear_swept_spheres]                  = EBhDisable;
     extensionBehavior[E_GL_NV_push_constant_bank]                    = EBhDisable;

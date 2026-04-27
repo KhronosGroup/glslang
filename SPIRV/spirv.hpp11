@@ -1218,6 +1218,7 @@ enum class Capability : unsigned {
     CooperativeMatrixPerElementOperationsNV = 5432,
     CooperativeMatrixTensorAddressingNV = 5433,
     CooperativeMatrixBlockLoadsNV = 5434,
+    CooperativeMatrixDecodeVectorNV = 5447,
     CooperativeVectorTrainingNV = 5435,
     RayTracingClusterAccelerationStructureNV = 5437,
     TensorAddressingNV = 5439,
@@ -1470,6 +1471,7 @@ enum class TensorClampMode : unsigned {
 enum class TensorAddressingOperandsShift : unsigned {
     TensorView = 0,
     DecodeFunc = 1,
+    DecodeVectorFunc = 2,
     Max = 0x7fffffff,
 };
 
@@ -1477,6 +1479,7 @@ enum class TensorAddressingOperandsMask : unsigned {
     MaskNone = 0,
     TensorView = 0x00000001,
     DecodeFunc = 0x00000002,
+    DecodeVectorFunc = 0x00000004,
 };
 
 enum class TensorOperandsShift : unsigned {
@@ -4200,6 +4203,7 @@ inline const char* CapabilityToString(Capability value) {
     case Capability::CooperativeMatrixPerElementOperationsNV: return "CooperativeMatrixPerElementOperationsNV";
     case Capability::CooperativeMatrixTensorAddressingNV: return "CooperativeMatrixTensorAddressingNV";
     case Capability::CooperativeMatrixBlockLoadsNV: return "CooperativeMatrixBlockLoadsNV";
+    case Capability::CooperativeMatrixDecodeVectorNV: return "CooperativeMatrixDecodeVectorNV";
     case Capability::CooperativeVectorTrainingNV: return "CooperativeVectorTrainingNV";
     case Capability::RayTracingClusterAccelerationStructureNV: return "RayTracingClusterAccelerationStructureNV";
     case Capability::TensorAddressingNV: return "TensorAddressingNV";
