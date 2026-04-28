@@ -3202,7 +3202,7 @@ void TGlslangToSpvTraverser::createAbortEXT(const glslang::TIntermSequence &glsl
     for (auto elem : splitStr) {
         // 2.1 get sub string's length (if specifier, be spec const).
         //     If not an empty string, \0 is the final character.
-        unsigned int strElemLen = isEmptyMsg ? 1 : elem.string.size();
+        unsigned int strElemLen = isEmptyMsg ? 1 : elem.string.size() + 1;
         spv::Id constLen = builder.makeUintConstant(strElemLen);
         spv::Op constDataOp = spv::Op::OpConstantDataKHR;
         if (elem.specifierIndex >= 0) {
