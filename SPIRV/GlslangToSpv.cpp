@@ -1373,7 +1373,7 @@ spv::LoopControlMask TGlslangToSpvTraverser::TranslateLoopControl(const glslang:
 // Translate glslang type to SPIR-V storage class.
 spv::StorageClass TGlslangToSpvTraverser::TranslateStorageClass(const glslang::TType& type)
 {
-    if (type.getBasicType() == glslang::EbtRayQuery || type.getBasicType() == glslang::EbtHitObjectNV 
+    if (type.getBasicType() == glslang::EbtRayQuery || type.getBasicType() == glslang::EbtHitObjectNV
         || type.getBasicType() == glslang::EbtHitObjectEXT)
         return spv::StorageClass::Private;
     if (type.getQualifier().isSpirvByReference()) {
@@ -6176,7 +6176,7 @@ spv::Id TGlslangToSpvTraverser::decorateDescHeapType(
     // Get single type and layout info.
     int elemCurrentOffset, elemAlignedSize;
     int memberSize, dummyStride, typeAlignment;
-    spv::Id spvType = 0; 
+    spv::Id spvType = 0;
     if (isArray) {
         glslang::TType elemTy(type, 0);
         elemTy.clearArraySizes();
@@ -8412,12 +8412,18 @@ spv::Id TGlslangToSpvTraverser::createUnaryOperation(glslang::TOperator op, OpDe
         break;
 
     case glslang::EOpDPdx:
+        if (typeProxy == glslang::EbtFloat16)
+            builder.addExtension(spv::E_SPV_AMD_gpu_shader_half_float);
         unaryOp = spv::Op::OpDPdx;
         break;
     case glslang::EOpDPdy:
+        if (typeProxy == glslang::EbtFloat16)
+            builder.addExtension(spv::E_SPV_AMD_gpu_shader_half_float);
         unaryOp = spv::Op::OpDPdy;
         break;
     case glslang::EOpFwidth:
+        if (typeProxy == glslang::EbtFloat16)
+            builder.addExtension(spv::E_SPV_AMD_gpu_shader_half_float);
         unaryOp = spv::Op::OpFwidth;
         break;
 
@@ -8442,21 +8448,33 @@ spv::Id TGlslangToSpvTraverser::createUnaryOperation(glslang::TOperator op, OpDe
         break;
 
     case glslang::EOpDPdxFine:
+        if (typeProxy == glslang::EbtFloat16)
+            builder.addExtension(spv::E_SPV_AMD_gpu_shader_half_float);
         unaryOp = spv::Op::OpDPdxFine;
         break;
     case glslang::EOpDPdyFine:
+        if (typeProxy == glslang::EbtFloat16)
+            builder.addExtension(spv::E_SPV_AMD_gpu_shader_half_float);
         unaryOp = spv::Op::OpDPdyFine;
         break;
     case glslang::EOpFwidthFine:
+        if (typeProxy == glslang::EbtFloat16)
+            builder.addExtension(spv::E_SPV_AMD_gpu_shader_half_float);
         unaryOp = spv::Op::OpFwidthFine;
         break;
     case glslang::EOpDPdxCoarse:
+        if (typeProxy == glslang::EbtFloat16)
+            builder.addExtension(spv::E_SPV_AMD_gpu_shader_half_float);
         unaryOp = spv::Op::OpDPdxCoarse;
         break;
     case glslang::EOpDPdyCoarse:
+        if (typeProxy == glslang::EbtFloat16)
+            builder.addExtension(spv::E_SPV_AMD_gpu_shader_half_float);
         unaryOp = spv::Op::OpDPdyCoarse;
         break;
     case glslang::EOpFwidthCoarse:
+        if (typeProxy == glslang::EbtFloat16)
+            builder.addExtension(spv::E_SPV_AMD_gpu_shader_half_float);
         unaryOp = spv::Op::OpFwidthCoarse;
         break;
     case glslang::EOpRayQueryProceed:
@@ -9178,7 +9196,7 @@ spv::Id TGlslangToSpvTraverser::createAtomicOperation(glslang::TOperator op, spv
     case glslang::EOpAtomicExchange:
     case glslang::EOpImageAtomicExchange:
     case glslang::EOpAtomicCounterExchange:
-        if ((typeProxy == glslang::EbtFloat16) && 
+        if ((typeProxy == glslang::EbtFloat16) &&
             (opType.getVectorSize() == 2 || opType.getVectorSize() == 4)) {
                 builder.addExtension(spv::E_SPV_NV_shader_atomic_fp16_vector);
                 builder.addCapability(spv::Capability::AtomicFloat16VectorNV);
