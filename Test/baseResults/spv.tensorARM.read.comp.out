@@ -52,7 +52,7 @@ spv.tensorARM.read.comp
               32:     31(ptr) Variable StorageBuffer
               33:      6(int) Constant 0
               34:      6(int) Constant 1
-              35:             TypePointer StorageBuffer 6(int)
+              36:             TypePointer StorageBuffer 6(int)
          4(main):           2 Function None 3
                5:             Label
          19(one):     18(ptr) Variable Function
@@ -64,8 +64,8 @@ spv.tensorARM.read.comp
               27:          23 TensorReadARM 22 17
                               Store 25(two) 27
               28:           9 Load 11(t)
-              36:     35(ptr) AccessChain 32 33 34
-              37:      6(int) TensorReadARM 28 17
-                              Store 36 37
+              35:      6(int) TensorReadARM 28 17
+              37:     36(ptr) AccessChain 32 33 34
+                              Store 37 35
                               Return
                               FunctionEnd
