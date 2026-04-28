@@ -4832,6 +4832,8 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
 
     commonBuiltins.append("void debugPrintfEXT();\n");
 
+    commonBuiltins.append("void abortEXT();\n");
+
     if (profile != EEsProfile && version >= 450) {
         // coopMatStoreNV perhaps ought to have "out" on the buf parameter, but
         // adding it introduces undesirable tempArgs on the stack. What we want
@@ -10016,6 +10018,7 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
 
         symbolTable.setFunctionExtensions("controlBarrier",                 1, &E_GL_KHR_memory_scope_semantics);
         symbolTable.setFunctionExtensions("debugPrintfEXT",                 1, &E_GL_EXT_debug_printf);
+        symbolTable.setFunctionExtensions("abortEXT",                       1, &E_GL_EXT_abort);
 
         // GL_ARB_shader_ballot
         if (profile != EEsProfile) {
@@ -11061,6 +11064,7 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
     symbolTable.relateToOperator("debugPrintfEXT",     EOpDebugPrintf);
     symbolTable.relateToOperator("assumeEXT",          EOpAssumeEXT);
     symbolTable.relateToOperator("expectEXT",          EOpExpectEXT);
+    symbolTable.relateToOperator("abortEXT",           EOpAbortEXT);
 
 
     if (PureOperatorBuiltins) {

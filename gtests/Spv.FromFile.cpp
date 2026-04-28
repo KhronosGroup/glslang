@@ -872,7 +872,9 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.descriptorHeap.HeapStrideNotPow2.error.comp",
         "spv.descriptorHeap.PushConstant.comp",
         "spv.descriptorHeap.valid.frag",
-
+        
+        // SPV_KHR_abort
+        "spv.shader.abort.comp",
     })),
     FileNameAsCustomTestSuffix
 );
