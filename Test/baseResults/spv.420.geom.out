@@ -93,14 +93,14 @@ spv.420.geom
               62:          52 ConstantComposite 53 55 57 59 61
               63:             TypePointer Private 15(int)
            64(i):     63(ptr) Variable Private
-              66:             TypePointer Function 52
-              68:             TypePointer Function 50(ivec2)
+              66:             TypePointer Private 52
+   67(indexable):     66(ptr) Variable Private 62
+              68:             TypePointer Private 50(ivec2)
          4(main):           2 Function None 3
                5:             Label
             8(p):      7(ptr) Variable Function
           31(id):     30(ptr) Variable Function
            37(v):     36(ptr) Variable Function
-   67(indexable):     66(ptr) Variable Function
               19:     18(ptr) AccessChain 14(gl_in) 16 17
               20:    6(float) Load 19
                               Store 8(p) 20
@@ -118,7 +118,6 @@ spv.420.geom
               48:     47(ptr) AccessChain 46(coord) 17
               49:   43(fvec2) Load 48
               65:     15(int) Load 64(i)
-                              Store 67(indexable) 62
               69:     68(ptr) AccessChain 67(indexable) 65
               70:   50(ivec2) Load 69
               71:   35(fvec4) ImageGather 42 49 17 Offset 70
