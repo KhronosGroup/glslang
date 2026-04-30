@@ -4751,17 +4751,13 @@ Id Builder::accessChainLoad(Decoration precision, Decoration l_nonUniform,
                             getTypeId(accessChain.base), "indexable", accessChain.base);
                         hoistedConstantPrivateVars[accessChain.base] = lValue;
                     }
-                } else if (spvVersion >= Spv_1_4 && isValidInitializer(accessChain.base)) {
-                    // make a new function variable for this r-value, using an initializer,
-                    // and mark it as NonWritable so that downstream it can be detected as a lookup
-                    // table
-                    lValue = createVariable(NoPrecision, StorageClass::Function, getTypeId(accessChain.base),
-                        "indexable", accessChain.base);
-                    addDecoration(lValue, Decoration::NonWritable);
                 } else {
+                    // Non-constant rvalue: copy into a Function-scope temp once at this
+                    // access site. (Constants are handled by the hoist above; the
+                    // traverser never feeds a global-variable pointer to this path,
+                    // so no other initializer-eligible cases exist.)
                     lValue = createVariable(NoPrecision, StorageClass::Function, getTypeId(accessChain.base),
                         "indexable");
-                    // store into it
                     createStore(accessChain.base, lValue);
                 }
                 // move base to the new variable
