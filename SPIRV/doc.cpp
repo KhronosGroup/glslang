@@ -4130,6 +4130,7 @@ void Parameterize()
         InstructionDesc[enumCast(Op::OpHitObjectRecordFromQueryEXT)].operands.push(OperandId, "'RayQuery'");
         InstructionDesc[enumCast(Op::OpHitObjectRecordFromQueryEXT)].operands.push(OperandId, "'SBT Record Index'");
         InstructionDesc[enumCast(Op::OpHitObjectRecordFromQueryEXT)].operands.push(OperandId, "'HitObjectAttribute'");
+        InstructionDesc[enumCast(Op::OpHitObjectRecordFromQueryEXT)].operands.push(OperandId, "'Hit Kind'");
         InstructionDesc[enumCast(Op::OpHitObjectRecordFromQueryEXT)].setResultAndType(false, false);
 
         InstructionDesc[enumCast(Op::OpHitObjectGetIntersectionTriangleVertexPositionsEXT)].operands.push(OperandId, "'HitObject'");
