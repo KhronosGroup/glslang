@@ -2,6 +2,12 @@
 
 #extension GL_ARM_tensors : enable
 #extension GL_EXT_shader_explicit_arithmetic_types : enable
+#extension GL_EXT_bfloat16 : enable
+#extension GL_EXT_float_e5m2 : enable
+#extension GL_EXT_float_e4m3 : enable
+#extension GL_ARM_tensors_bfloat16 : enable
+#extension GL_ARM_tensors_float_e5m2 : enable
+#extension GL_ARM_tensors_float_e4m3 : enable
 
 // Int types
 uniform tensorARM<int8_t, 1> it8;
@@ -19,6 +25,11 @@ uniform tensorARM<uint64_t, 1> ut64;
 uniform tensorARM<float16_t, 1> ft16;
 uniform tensorARM<float, 1> ft32;
 uniform tensorARM<float64_t, 1> ft64;
+
+// bfloat16, e5m2 and e4m3 types
+uniform tensorARM<bfloat16_t, 1> bft16;
+uniform tensorARM<floate5m2_t, 1> fte5m2;
+uniform tensorARM<floate4m3_t, 1> fte4m3;
 
 void main() {
     uint coords[] = {0};
@@ -87,4 +98,38 @@ void main() {
     tensorReadARM(ft64, coords, fr64);
     float frv[4];
     tensorReadARM(ft32, coords, frv);
+
+    // bfloat16, e5m2 and e4m3 types
+    bfloat16_t bf16w = bfloat16_t(1.0);
+    floate5m2_t fe5m2w = floate5m2_t(1.0);
+    floate4m3_t fe4m3w = floate4m3_t(1.0);
+    tensorWriteARM(bft16, coords, bf16w);
+    tensorWriteARM(fte5m2, coords, fe5m2w);
+    tensorWriteARM(fte4m3, coords, fe4m3w);
+
+    const bfloat16_t bf16one = bfloat16_t(1.0);
+    bfloat16_t bf16wv[4] = bfloat16_t[](bf16one, bf16one, bf16one, bf16one);
+    tensorWriteARM(bft16, coords, bf16wv);
+
+    const floate5m2_t fe5m2one = floate5m2_t(1.0);
+    floate5m2_t fe5m2wv[4] = floate5m2_t[](fe5m2one, fe5m2one, fe5m2one, fe5m2one);
+    tensorWriteARM(fte5m2, coords, fe5m2wv);
+
+    floate4m3_t fe4m3one = floate4m3_t(1.0);
+    floate4m3_t fe4m3wv[4] = floate4m3_t[](fe4m3one, fe4m3one, fe4m3one, fe4m3one);
+    tensorWriteARM(fte4m3, coords, fe4m3wv);
+
+    bfloat16_t bf16r;
+    floate5m2_t fe5m2r;
+    floate4m3_t fe4m3r;
+    tensorReadARM(bft16, coords, bf16r);
+    tensorReadARM(fte5m2, coords, fe5m2r);
+    tensorReadARM(fte4m3, coords, fe4m3r);
+
+    bfloat16_t bf16rv[4];
+    floate5m2_t fe5m2rv[4];
+    floate4m3_t fe4m3rv[4];
+    tensorReadARM(bft16, coords, bf16rv);
+    tensorReadARM(fte5m2, coords, fe5m2rv);
+    tensorReadARM(fte4m3, coords, fe4m3rv);
 }

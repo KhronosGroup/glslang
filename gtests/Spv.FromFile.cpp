@@ -85,7 +85,6 @@ using CompileVulkanToSpirv14TestNV = GlslangTest<::testing::TestWithParam<std::s
 using CompileUpgradeTextureToSampledTextureAndDropSamplersTest = GlslangTest<::testing::TestWithParam<std::string>>;
 using GlslSpirvDebugInfoTest = GlslangTest<::testing::TestWithParam<std::string>>;
 using GlslNonSemanticShaderDebugInfoTest = GlslangTest<::testing::TestWithParam<std::string>>;
-using GlslNonSemanticShaderDebugInfoSpirv13Test = GlslangTest<::testing::TestWithParam<std::string>>;
 using GlslNonSemanticShaderDebugInfoVulkanLatestTest = GlslangTest<::testing::TestWithParam<std::string>>;
 
 // Compiling GLSL to SPIR-V under Vulkan semantics. Expected to successfully
@@ -276,13 +275,6 @@ TEST_P(GlslNonSemanticShaderDebugInfoTest, FromFile)
 {
     loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam(), Source::GLSL, Semantics::Vulkan,
                             glslang::EShTargetVulkan_1_0, glslang::EShTargetSpv_1_0, Target::Spv, true, "",
-                            "/baseResults/", false, true, true);
-}
-
-TEST_P(GlslNonSemanticShaderDebugInfoSpirv13Test, FromFile)
-{
-    loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam(), Source::GLSL, Semantics::Vulkan,
-                            glslang::EShTargetVulkan_1_1, glslang::EShTargetSpv_1_3, Target::Spv, true, "",
                             "/baseResults/", false, true, true);
 }
 
@@ -583,6 +575,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.fragmentShaderBarycentric4.frag",
         "spv.ext.textureShadowLod.frag",
         "spv.ext.textureShadowLod.error.frag",
+        "spv.ext.small_types.comp",
         "spv.floatFetch.frag",
         "spv.atomicRvalue.error.vert",
         "spv.sampledImageBlock.frag",
@@ -604,6 +597,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.tensorARM.params.comp",
         "spv.tensorARM.read.comp",
         "spv.tensorARM.size.comp",
+        "spv.tensorARM.unrequested_extension_types.comp",
     })),
     FileNameAsCustomTestSuffix
 );
@@ -807,6 +801,8 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.WorkgroupMemoryExplicitLayout.std140.comp",
         "spv.WorkgroupMemoryExplicitLayout.std430.comp",
         "spv.WorkgroupMemoryExplicitLayout.scalar.comp",
+        "spv.khrComputeShaderDerivatives.comp",
+        "spv.khrComputeShaderDerivatives2.comp",
 
         // SPV_EXT_mesh_shader
         "spv.ext.meshShaderBuiltins.mesh",
@@ -819,6 +815,8 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.atomiAddEXT.task",
         "spv.460.subgroupEXT.task",
         "spv.460.subgroupEXT.mesh",
+        "spv.khrComputeShaderDerivatives.task",
+        "spv.khrComputeShaderDerivatives.mesh",
 
         // SPV_NV_shader_execution_reorder
 
@@ -869,6 +867,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.descriptorHeap.HeapStrideNotHeap.error.comp",
         "spv.descriptorHeap.HeapStrideNotPow2.error.comp",
         "spv.descriptorHeap.PushConstant.comp",
+        "spv.tensorARM.descriptorHeap.comp",
         "spv.descriptorHeap.valid.frag",
 
     })),
@@ -969,6 +968,10 @@ INSTANTIATE_TEST_SUITE_P(
         "samplerlessTextureFunctions.frag",
         "spv.intrinsicsFakeEnable.vert",
         "spv.specConstArrayCheck.vert",
+        "spv.khrComputeShaderDerivativesMissingLayout.comp",
+        "spv.khrComputeShaderDerivativesNoLayout.comp",
+        "spv.khrComputeShaderDerivativesBoth.comp",
+        "spv.khrComputeShaderDerivativesBadSize.comp",
     })),
     FileNameAsCustomTestSuffix
 );
@@ -1144,6 +1147,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.debuginfo.const_params.glsl.comp",
         "spv.debuginfo.scalar_types.glsl.frag",
         "spv.debuginfo.include.glsl.frag",
+        "spv.debuginfo.macro.include.glsl.frag",
         "spv.debuginfo.multiline.glsl.frag",
         "spv.debuginfo.implicit_br.glsl.frag",
         "spv.debuginfo.non_ascii.glsl.frag",
@@ -1153,14 +1157,6 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.debuginfo.const_variables.glsl.frag",
         "spv.debuginfo.ubo.glsl.frag",
         "spv.debuginfo.declaration.glsl.frag",
-    })),
-    FileNameAsCustomTestSuffix
-);
-
-INSTANTIATE_TEST_SUITE_P(
-    Glsl, GlslNonSemanticShaderDebugInfoSpirv13Test,
-    ::testing::ValuesIn(std::vector<std::string>({
-        "spv.debuginfo.coopmatKHR.comp",
     })),
     FileNameAsCustomTestSuffix
 );

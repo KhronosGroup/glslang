@@ -189,6 +189,11 @@ public:
         operands[idx] = immediate;
     }
 
+    void clearOperands() {
+        operands.clear();
+        idOperand.clear();
+    }
+
     void addStringOperand(const char* str)
     {
         unsigned int word = 0;
