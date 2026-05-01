@@ -8,6 +8,36 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 * Deprecate the HLSL front-end. It will be removed at the next major version.
   See issue #4210 for details.
 
+## 16.3.0 2026-05-01
+### Deprecation Notice
+* Deprecate the HLSL front-end. See issue #4210 for details.
+
+### Other changes
+* Support GL_NV_explicit_typecast
+* Raise the maximum limit for specialization constant IDs
+* Add explicit 8-bit and 16-bit type support for bitfieldReverse
+* Implement system include directives for the standalone wrapper
+* Check for invalid usage of gl_WorkGroupSize components
+* HLSL: Provide string error context only if token is a string
+* Fix layoutDescriptorStride bitfield truncation for large stride values
+* GL_EXT_long_vector with 2-4 components no longer require LongVector capability
+* Fix alignment of guard blocks
+* Fix ShaderDebugInfo having invalid line numbers when generating SPIRV 1.0
+* Replace ostringstream with string concat during #include preprocessing
+* Check for bad parameters on long vector type
+* HLSL: Check for bad integer argument on Load*, Store*, Interlocked*
+* HLSL: handle type error for ternary operator
+* HLSL: Ensure scope is popped even when method body fails to parse
+* Avoid unneccessary copies in SpirvIntrinsics.cpp
+* Unconditionally emit debug source for include files when using non-semantic debug info
+* Support bfloat16 and float8 tensors
+* Add small type capabilities for GLSL.STD.450
+* Add initial support for NonSemantic.Shader.DebugInfo 101
+* Fix access chains for GL_ARM_tensors with raw descriptor heap accesses
+* Support GL_KHR_compute_shader_derivatives
+* Require a quad or linear layout qualifier to be specified for GL_KHR_compute_shader_derivatives
+* Supportx SPV_KHR_constant_data and SPV_KHR_abort
+
 ## 16.2.0 2026-01-22
 * Allow gl_FragDepth identifier to be redeclared
 * Replace 'GL_TASK(MESH)_SHADER_NV' with 'GL_TASK(MESH)_SHADER_EXT'
