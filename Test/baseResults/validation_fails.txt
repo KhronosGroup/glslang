@@ -63,7 +63,6 @@ Test/baseResults/spv.controlFlowAttributes.frag.out
 Test/baseResults/spv.dataOut.frag.out
 Test/baseResults/spv.exportFunctions.comp.out
 Test/baseResults/spv.float16Fetch.frag.out
-Test/baseResults/spv.float16.frag.out
 Test/baseResults/spv.float64.frag.out
 Test/baseResults/spv.floatFetch.frag.out
 Test/baseResults/spv.functionNestedOpaque.vert.out
