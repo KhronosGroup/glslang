@@ -359,6 +359,7 @@ const char* DecorationString(int decoration)
 
     case (int)Decoration::ArrayStrideIdEXT:        return "DecorationArrayStrideIdEXT";
     case (int)Decoration::OffsetIdEXT:             return "DecorationOffsetIdEXT";
+    case (int)Decoration::UTFEncodedKHR:          return "UTF8EncodedKHR";
     }
 }
 
@@ -1112,6 +1113,8 @@ const char* CapabilityString(int info)
     case (int)Capability::IntegerFunctions2INTEL:              return "IntegerFunctions2INTEL";
 
     case (int)Capability::ExpectAssumeKHR:                         return "ExpectAssumeKHR";
+    case (int)Capability::AbortKHR:                                return "AbortKHR";
+    case (int)Capability::ConstantDataKHR:                         return "ConstantDataKHR";
 
     case (int)Capability::AtomicFloat16AddEXT:                     return "AtomicFloat16AddEXT";
     case (int)Capability::AtomicFloat32AddEXT:                     return "AtomicFloat32AddEXT";
@@ -1549,6 +1552,10 @@ const char* OpcodeString(int op)
     case (int)Op::OpTypeUntypedPointerKHR:     return "OpTypeUntypedPointerKHR";
     case (int)Op::OpMemberDecorateIdEXT:       return "OpMemberDecorateIdEXT";
     case (int)Op::OpUntypedImageTexelPointerEXT:     return "OpUntypedImageTexelPointerEXT";
+
+    case (int)Op::OpAbortKHR:            return "OpAbortKHR";
+    case (int)Op::OpConstantDataKHR:     return "OpConstantDataKHR";
+    case (int)Op::OpSpecConstantDataKHR: return "OpSpecConstantDataKHR";
 
     case (int)Op::OpAtomicFAddEXT: return "OpAtomicFAddEXT";
     case (int)Op::OpAtomicFMinEXT: return "OpAtomicFMinEXT";
@@ -3218,6 +3225,12 @@ void Parameterize()
         InstructionDesc[enumCast(Op::OpGroupNonUniformQuadAllKHR)].operands.push(OperandId, "'Predicate'");
         InstructionDesc[enumCast(Op::OpGroupNonUniformQuadAnyKHR)].operands.push(OperandId, "'Predicate'");
         InstructionDesc[enumCast(Op::OpTypeAccelerationStructureKHR)].setResultAndType(true, false);
+
+        InstructionDesc[enumCast(Op::OpConstantDataKHR)].operands.push(OperandLiteralString, "'Data'");
+        InstructionDesc[enumCast(Op::OpSpecConstantDataKHR)].operands.push(OperandLiteralString, "'Data'");
+        InstructionDesc[enumCast(Op::OpAbortKHR)].operands.push(OperandId, "'Message Type'");
+        InstructionDesc[enumCast(Op::OpAbortKHR)].operands.push(OperandId, "'Message'");
+        InstructionDesc[enumCast(Op::OpAbortKHR)].setResultAndType(false, false);
 
         InstructionDesc[enumCast(Op::OpTraceNV)].operands.push(OperandId, "'Acceleration Structure'");
         InstructionDesc[enumCast(Op::OpTraceNV)].operands.push(OperandId, "'Ray Flags'");

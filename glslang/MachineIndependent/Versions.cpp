@@ -269,6 +269,7 @@ void TParseVersions::initializeExtensionBehavior()
 
     extensionBehavior[E_GL_EXT_control_flow_attributes2]                = EBhDisable;
     extensionBehavior[E_GL_EXT_spec_constant_composites]                = EBhDisable;
+    extensionBehavior[E_GL_EXT_abort]                                   = EBhDisable;
 
     extensionBehavior[E_GL_KHR_cooperative_matrix]                      = EBhDisable;
     extensionBehavior[E_GL_NV_cooperative_vector]                       = EBhDisable;
@@ -557,6 +558,7 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_EXT_shared_memory_block 1\n"
             "#define GL_EXT_shader_integer_mix 1\n"
             "#define GL_EXT_spec_constant_composites 1\n"
+            "#define GL_EXT_abort 1\n"
 
             // GL_KHR_shader_subgroup
             "#define GL_KHR_shader_subgroup_basic 1\n"
