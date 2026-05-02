@@ -44,43 +44,43 @@ spv.shader.abort.comp
                               MemberDecorate 18(Output) 0 Offset 0
                               Decorate 20(outputBuffer) Binding 0
                               Decorate 20(outputBuffer) DescriptorSet 0
-                              Decorate 28 UTF8EncodedKHR
-                              Decorate 29 UTF8EncodedKHR
-                              Decorate 33 UTF8EncodedKHR
-                              Decorate 34 UTF8EncodedKHR
+                              Decorate 28 UTFEncodedKHR
+                              Decorate 29 UTFEncodedKHR
+                              Decorate 33 UTFEncodedKHR
+                              Decorate 34 UTFEncodedKHR
                               MemberDecorate 38(abortMessageLoadType) 0 Offset 0
                               MemberDecorate 38(abortMessageLoadType) 1 Offset 12
                               MemberDecorate 38(abortMessageLoadType) 2 Offset 16
                               Decorate 50(gl_GlobalInvocationID) BuiltIn GlobalInvocationId
-                              Decorate 59 UTF8EncodedKHR
-                              Decorate 60 UTF8EncodedKHR
+                              Decorate 59 UTFEncodedKHR
+                              Decorate 60 UTFEncodedKHR
                               MemberDecorate 62(abortMessageLoadType) 0 Offset 0
-                              Decorate 69 UTF8EncodedKHR
-                              Decorate 70 UTF8EncodedKHR
+                              Decorate 69 UTFEncodedKHR
+                              Decorate 70 UTFEncodedKHR
                               MemberDecorate 72(abortMessageLoadType) 0 Offset 0
-                              Decorate 89 UTF8EncodedKHR
-                              Decorate 90 UTF8EncodedKHR
-                              Decorate 93 UTF8EncodedKHR
-                              Decorate 94 UTF8EncodedKHR
-                              Decorate 96 UTF8EncodedKHR
-                              Decorate 97 UTF8EncodedKHR
-                              Decorate 100 UTF8EncodedKHR
-                              Decorate 101 UTF8EncodedKHR
+                              Decorate 89 UTFEncodedKHR
+                              Decorate 90 UTFEncodedKHR
+                              Decorate 93 UTFEncodedKHR
+                              Decorate 94 UTFEncodedKHR
+                              Decorate 96 UTFEncodedKHR
+                              Decorate 97 UTFEncodedKHR
+                              Decorate 100 UTFEncodedKHR
+                              Decorate 101 UTFEncodedKHR
                               MemberDecorate 106(abortMessageLoadType) 0 Offset 0
                               MemberDecorate 106(abortMessageLoadType) 1 Offset 44
                               MemberDecorate 106(abortMessageLoadType) 2 Offset 48
                               MemberDecorate 106(abortMessageLoadType) 3 Offset 52
                               MemberDecorate 106(abortMessageLoadType) 4 Offset 56
                               MemberDecorate 106(abortMessageLoadType) 5 Offset 60
-                              Decorate 114 UTF8EncodedKHR
-                              Decorate 115 UTF8EncodedKHR
+                              Decorate 114 UTFEncodedKHR
+                              Decorate 115 UTFEncodedKHR
                               MemberDecorate 119(abortMessageLoadType) 0 Offset 0
                               MemberDecorate 119(abortMessageLoadType) 1 Offset 4
-                              Decorate 125 UTF8EncodedKHR
-                              Decorate 126 UTF8EncodedKHR
+                              Decorate 125 UTFEncodedKHR
+                              Decorate 126 UTFEncodedKHR
                               MemberDecorate 128(abortMessageLoadType) 0 Offset 0
-                              Decorate 137 UTF8EncodedKHR
-                              Decorate 138 UTF8EncodedKHR
+                              Decorate 137 UTFEncodedKHR
+                              Decorate 138 UTFEncodedKHR
                               MemberDecorate 140(abortMessageLoadType) 0 Offset 0
                               Decorate 144 BuiltIn WorkgroupSize
                2:             TypeVoid
