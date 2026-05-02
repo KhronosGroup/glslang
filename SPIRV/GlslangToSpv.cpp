@@ -3172,7 +3172,7 @@ void TGlslangToSpvTraverser::createAbortEXT(const glslang::TIntermSequence &glsl
 {
     bool isEmptyMsg =
         glslangOperands.empty() ||
-        strcmp(glslangOperands[0]->getAsConstantUnion()->getConstArray()[0].getSConst()->c_str(), "") == 0;
+        glslangOperands[0]->getAsConstantUnion()->getConstArray()[0].getSConst()->empty();
     // Add Capability and extensions.
     builder.addCapability(spv::Capability::AbortKHR);
     builder.addCapability(spv::Capability::ConstantDataKHR);

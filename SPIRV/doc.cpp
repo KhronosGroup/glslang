@@ -359,7 +359,7 @@ const char* DecorationString(int decoration)
 
     case (int)Decoration::ArrayStrideIdEXT:        return "DecorationArrayStrideIdEXT";
     case (int)Decoration::OffsetIdEXT:             return "DecorationOffsetIdEXT";
-    case (int)Decoration::UTFEncodedKHR:          return "UTF8EncodedKHR";
+    case (int)Decoration::UTFEncodedKHR:           return "UTFEncodedKHR";
     }
 }
 
