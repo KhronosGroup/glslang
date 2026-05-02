@@ -2184,6 +2184,13 @@ void TGlslangToSpvTraverser::finishSpv(bool compileOnly)
         }
 
         // finish off the entry-point SPV instruction by adding the Input/Output <id>
+        // For SPIR-V 1.4+, all statically-used global variables must appear in the
+        // entry point interface. Pick up any Private variables the Builder hoisted
+        // out of constant indexable temps.
+        if (glslangIntermediate->getSpv().spv >= glslang::EShTargetSpv_1_4) {
+            for (auto& kv : builder.getHoistedConstantPrivateVars())
+                iOSet.insert(kv.second);
+        }
         entryPoint->reserveOperands(iOSet.size());
         for (auto id : iOSet)
             entryPoint->addIdOperand(id);

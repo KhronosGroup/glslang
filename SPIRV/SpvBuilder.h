@@ -384,6 +384,11 @@ public:
     // See if a resultId is valid for use as an initializer.
     bool isValidInitializer(Id resultId) const { return isConstant(resultId) || isGlobalVariable(resultId); }
 
+    // Globals created by accessChainLoad() to hoist constant indexable temps from
+    // Function to Private storage. The traverser needs these for the SPIR-V 1.4+
+    // OpEntryPoint interface list.
+    const std::unordered_map<Id, Id>& getHoistedConstantPrivateVars() const { return hoistedConstantPrivateVars; }
+
     int getScalarTypeWidth(Id typeId) const
     {
         Id scalarTypeId = getScalarTypeId(typeId);
@@ -1171,6 +1176,12 @@ protected:
     std::vector<Instruction*> nullConstants;
     // map scalar constants to result IDs
     std::unordered_map<ScalarConstantKey, Id, ScalarConstantKeyHash> groupedScalarConstantResultIDs;
+
+    // Map from a constant Id (OpConstantComposite / OpConstantNull / replicate) to a
+    // module-scope Private OpVariable that uses that constant as its Initializer.
+    // Hoisting the per-invocation Function-storage indexable-temp out of every
+    // access site avoids forcing drivers to memcpy the constant per invocation.
+    std::unordered_map<Id, Id> hoistedConstantPrivateVars;
 
     // Track which types have explicit layouts, to avoid reusing in storage classes without layout.
     // Currently only tracks array types.

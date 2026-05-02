@@ -4745,17 +4745,34 @@ Id Builder::accessChainLoad(Decoration precision, Decoration l_nonUniform,
                 id = createVectorExtractDynamic(accessChain.base, resultType, accessChain.indexChain[0]);
             } else {
                 Id lValue = NoResult;
-                if (spvVersion >= Spv_1_4 && isValidInitializer(accessChain.base)) {
-                    // make a new function variable for this r-value, using an initializer,
-                    // and mark it as NonWritable so that downstream it can be detected as a lookup
-                    // table
-                    lValue = createVariable(NoPrecision, StorageClass::Function, getTypeId(accessChain.base),
-                        "indexable", accessChain.base);
-                    addDecoration(lValue, Decoration::NonWritable);
+                // If the rvalue we are about to OpAccessChain is a (non-spec) constant
+                // composite, hoist it to a module-scope Private variable that uses the
+                // constant as its OpVariable Initializer. This avoids emitting an
+                // OpStore of the entire constant into a Function-scope temp at every
+                // access site -- a per-invocation memcpy that drivers (notably NVIDIA)
+                // do not recover from after the front-end emits it. Memoize so N
+                // access sites of the same constant share one variable.
+                spv::Op baseOp = getOpCode(accessChain.base);
+                bool hoistableConstant =
+                    baseOp == Op::OpConstantComposite ||
+                    baseOp == Op::OpConstantCompositeReplicateEXT ||
+                    baseOp == Op::OpConstantNull;
+                if (hoistableConstant) {
+                    auto it = hoistedConstantPrivateVars.find(accessChain.base);
+                    if (it != hoistedConstantPrivateVars.end()) {
+                        lValue = it->second;
+                    } else {
+                        lValue = createVariable(NoPrecision, StorageClass::Private,
+                            getTypeId(accessChain.base), "indexable", accessChain.base);
+                        hoistedConstantPrivateVars[accessChain.base] = lValue;
+                    }
                 } else {
+                    // Non-constant rvalue: copy into a Function-scope temp once at this
+                    // access site. (Constants are handled by the hoist above; the
+                    // traverser never feeds a global-variable pointer to this path,
+                    // so no other initializer-eligible cases exist.)
                     lValue = createVariable(NoPrecision, StorageClass::Function, getTypeId(accessChain.base),
                         "indexable");
-                    // store into it
                     createStore(accessChain.base, lValue);
                 }
                 // move base to the new variable
