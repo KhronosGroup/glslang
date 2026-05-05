@@ -39,7 +39,7 @@ set -e # Fail on any error.
 
 set -x # Display commands being run.
 
-using ndk-r27c
+using ndk-r29
 
 export NDK_PROJECT_PATH="${ROOT_DIR}/ndk_test"
 export APP_BUILD_SCRIPT="${ROOT_DIR}/ndk_test/Android.mk"
