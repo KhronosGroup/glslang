@@ -231,6 +231,7 @@ const char* const E_GL_EXT_uniform_buffer_unsized_array     = "GL_EXT_uniform_bu
 const char* const E_GL_EXT_conservative_depth               = "GL_EXT_conservative_depth";
 const char* const E_GL_EXT_descriptor_heap                  = "GL_EXT_descriptor_heap";
 const char* const E_GL_EXT_structured_descriptor_heap       = "GL_EXT_structured_descriptor_heap";
+const char* const E_GL_EXT_opacity_micromap_ray_query_mode  = "GL_EXT_opacity_micromap_ray_query_mode";
 
 // Arrays of extensions for the above viewportEXTs duplications
 

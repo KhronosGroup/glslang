@@ -2094,6 +2094,24 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion,
         break;
     }
 
+    bool hasOMMRayQueryModeExtensionEnabled =
+      (glslangIntermediate->getRequestedExtensions().find(glslang::E_GL_EXT_opacity_micromap_ray_query_mode) !=
+       glslangIntermediate->getRequestedExtensions().end());
+    if (hasOMMRayQueryModeExtensionEnabled) {
+        glslang::TIntermSymbol* execIdSymbol = 
+            glslangIntermediate->getEnableOpacityMicromapEXT()->getAsSymbolNode();
+        if (execIdSymbol->getType().getQualifier().isSpecConstant()) {
+            builder.addCapability(spv::Capability::RayQueryKHR);
+            builder.addCapability(spv::Capability::RayTracingOpacityMicromapKHR);
+            builder.addCapability(spv::Capability::RayTracingOpacityMicromapExecutionModeKHR);
+            builder.addExtension("SPV_KHR_ray_query");
+            builder.addExtension("SPV_KHR_opacity_micromap");
+            std::vector<spv::Id> constId;
+            constId.push_back(getSymbolId(execIdSymbol));
+            builder.addExecutionModeId(shaderEntry, spv::ExecutionMode::OpacityMicromapIdKHR, constId);
+        }
+    }
+
     //
     // Add SPIR-V requirements (GL_EXT_spirv_intrinsics)
     //

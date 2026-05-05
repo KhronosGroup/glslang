@@ -220,6 +220,7 @@ enum class ExecutionMode : unsigned {
     SchedulerTargetFmaxMhzINTEL = 5903,
     MaximallyReconvergesKHR = 6023,
     FPFastMathDefault = 6028,
+    OpacityMicromapIdKHR = 6031,
     StreamingInterfaceINTEL = 6154,
     RegisterMapInterfaceINTEL = 6160,
     NamedBarrierCountINTEL = 6417,
@@ -1197,6 +1198,7 @@ enum class Capability : unsigned {
     DemoteToHelperInvocationEXT = 5379,
     DisplacementMicromapNV = 5380,
     RayTracingOpacityMicromapEXT = 5381,
+    RayTracingOpacityMicromapKHR = 5381,
     ShaderInvocationReorderNV = 5383,
     ShaderInvocationReorderEXT = 5388,
     BindlessTextureNV = 5390,
@@ -1274,6 +1276,7 @@ enum class Capability : unsigned {
     BitInstructions = 6025,
     GroupNonUniformRotateKHR = 6026,
     FloatControls2 = 6029,
+    RayTracingOpacityMicromapExecutionModeKHR = 6032,
     AtomicFloat32AddEXT = 6033,
     AtomicFloat64AddEXT = 6034,
     LongCompositesINTEL = 6089,
@@ -1316,6 +1319,7 @@ enum class RayFlagsShift : unsigned {
     SkipTrianglesKHR = 8,
     SkipAABBsKHR = 9,
     ForceOpacityMicromap2StateEXT = 10,
+    ForceOpacityMicromap2StateKHR = 10,
     Max = 0x7fffffff,
 };
 
@@ -1333,6 +1337,7 @@ enum class RayFlagsMask : unsigned {
     SkipTrianglesKHR = 0x00000100,
     SkipAABBsKHR = 0x00000200,
     ForceOpacityMicromap2StateEXT = 0x00000400,
+    ForceOpacityMicromap2StateKHR = 0x00000400,
 };
 
 enum class RayQueryIntersection : unsigned {
@@ -3460,6 +3465,7 @@ inline const char* ExecutionModeToString(ExecutionMode value) {
     case ExecutionMode::SchedulerTargetFmaxMhzINTEL: return "SchedulerTargetFmaxMhzINTEL";
     case ExecutionMode::MaximallyReconvergesKHR: return "MaximallyReconvergesKHR";
     case ExecutionMode::FPFastMathDefault: return "FPFastMathDefault";
+    case ExecutionMode::OpacityMicromapIdKHR: return "OpacityMicromapIdKHR";
     case ExecutionMode::StreamingInterfaceINTEL: return "StreamingInterfaceINTEL";
     case ExecutionMode::RegisterMapInterfaceINTEL: return "RegisterMapInterfaceINTEL";
     case ExecutionMode::NamedBarrierCountINTEL: return "NamedBarrierCountINTEL";
@@ -4243,6 +4249,7 @@ inline const char* CapabilityToString(Capability value) {
     case Capability::BitInstructions: return "BitInstructions";
     case Capability::GroupNonUniformRotateKHR: return "GroupNonUniformRotateKHR";
     case Capability::FloatControls2: return "FloatControls2";
+    case Capability::RayTracingOpacityMicromapExecutionModeKHR: return "RayTracingOpacityMicromapExecutionModeKHR";
     case Capability::AtomicFloat32AddEXT: return "AtomicFloat32AddEXT";
     case Capability::AtomicFloat64AddEXT: return "AtomicFloat64AddEXT";
     case Capability::LongCompositesINTEL: return "LongCompositesINTEL";

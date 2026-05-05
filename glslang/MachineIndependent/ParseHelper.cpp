@@ -3208,6 +3208,12 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
         break;
     case EOpTraceKHR:
         checkConstantArgWithLocation(10, "payload number", "no rayPayloadEXT/rayPayloadInEXT declared", 0);
+        if ((*argp)[5]->getAsConstantUnion()) {
+            unsigned int flags = (*argp)[5]->getAsConstantUnion()->getAsConstantUnion()->getConstArray()[0].getUConst();
+            if ((flags & 1024) != 0) {
+                intermediate.setHasForceOpacityMicromap2State();
+            }
+        }
         break;
     case EOpExecuteCallableNV:
         checkConstantArgWithLocation(1, "callable data number", nullptr, -1);
@@ -6653,6 +6659,18 @@ void TParseContext::finish()
             default: break;
             }
         }
+    }
+
+    bool hasOMMRayQueryModeExtensionEnabled =
+      (intermediate.getRequestedExtensions().find(glslang::E_GL_EXT_opacity_micromap_ray_query_mode) !=
+       intermediate.getRequestedExtensions().end());
+    if (hasOMMRayQueryModeExtensionEnabled)
+        requireExtensions(TSourceLoc(), 1, &E_GL_EXT_ray_query, "ray query");
+
+    TSymbol* symbol = symbolTable.find("gl_EnableOpacityMicromapEXT");
+    if (symbol && symbol->getAsVariable()) {
+        TIntermSymbol* intermSymbol = intermediate.addSymbol(*symbol->getAsVariable());
+        intermediate.setEnableOpacityMicromapEXT(intermSymbol);
     }
 }
 

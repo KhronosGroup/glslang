@@ -793,6 +793,11 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.ext.World3x4.rahit",
         "spv.ext.AccelDecl.frag",
         "spv.ext.RayQueryDecl.frag",
+        "opacity_micromap_default.comp",
+        "opacity_micromap_default.frag",
+        "opacity_micromap_no_ray_query.comp",
+        "opacity_micromap_present.comp",
+        "opacity_micromap_present.frag",
 
         // SPV_KHR_workgroup_memory_explicit_layout depends on SPIR-V 1.4.
         "spv.WorkgroupMemoryExplicitLayout.SingleBlock.comp",

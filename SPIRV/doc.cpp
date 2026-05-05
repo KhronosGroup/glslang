@@ -232,6 +232,7 @@ const char* ExecutionModeString(int mode)
     case (int)ExecutionMode::NonCoherentStencilAttachmentReadEXT:      return "NonCoherentStencilAttachmentReadEXT";
 
     case (int)ExecutionMode::Shader64BitIndexingEXT:                   return "Shader64BitIndexingEXT";
+    case (int)ExecutionMode::OpacityMicromapIdKHR:     return "OpacityMicromapIdKHR";
 
     case ExecutionModeCeiling:
     default: return "Bad";
@@ -1033,9 +1034,10 @@ const char* CapabilityString(int info)
     case (int)Capability::RayTracingProvisionalKHR:        return "RayTracingProvisionalKHR";
     case (int)Capability::RayTraversalPrimitiveCullingKHR: return "RayTraversalPrimitiveCullingKHR";
     case (int)Capability::RayTracingPositionFetchKHR:      return "RayTracingPositionFetchKHR";
-    case (int)Capability::DisplacementMicromapNV:           return "DisplacementMicromapNV";
+    case (int)Capability::DisplacementMicromapNV:          return "DisplacementMicromapNV";
     case (int)Capability::RayTracingOpacityMicromapEXT:    return "RayTracingOpacityMicromapEXT";
-    case (int)Capability::RayTracingDisplacementMicromapNV: return "RayTracingDisplacementMicromapNV";
+    case (int)Capability::RayTracingOpacityMicromapExecutionModeKHR:    return "RayTracingOpacityMicromapExecutionModeKHR";
+    case (int)Capability::RayTracingDisplacementMicromapNV:return "RayTracingDisplacementMicromapNV";
     case (int)Capability::RayQueryPositionFetchKHR:        return "RayQueryPositionFetchKHR";
     case (int)Capability::ComputeDerivativeGroupQuadsNV:   return "ComputeDerivativeGroupQuadsNV";
     case (int)Capability::ComputeDerivativeGroupLinearNV:  return "ComputeDerivativeGroupLinearNV";

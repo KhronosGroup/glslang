@@ -166,7 +166,8 @@ void TParseVersions::initializeExtensionBehavior()
     const extensionData exts[] = { {E_GL_EXT_ray_tracing, EShTargetSpv_1_4},
                                    {E_GL_NV_ray_tracing_motion_blur, EShTargetSpv_1_4},
                                    {E_GL_EXT_mesh_shader, EShTargetSpv_1_4},
-                                   {E_GL_NV_cooperative_matrix2, EShTargetSpv_1_6}
+                                   {E_GL_NV_cooperative_matrix2, EShTargetSpv_1_6},
+                                   {E_GL_EXT_opacity_micromap_ray_query_mode, EShTargetSpv_1_4}
                                  };
 
     for (size_t ii = 0; ii < sizeof(exts) / sizeof(exts[0]); ii++) {
@@ -393,6 +394,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_EXT_shader_64bit_indexing]       = EBhDisable;
     extensionBehavior[E_GL_EXT_conservative_depth]          = EBhDisable;
     extensionBehavior[E_GL_EXT_long_vector]                 = EBhDisable;
+    extensionBehavior[E_GL_EXT_opacity_micromap_ray_query_mode] = EBhDisable;
 
     // OVR extensions
     extensionBehavior[E_GL_OVR_multiview]                = EBhDisable;
@@ -574,6 +576,7 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_EXT_ray_flags_primitive_culling 1\n"
             "#define GL_EXT_ray_cull_mask 1\n"
             "#define GL_EXT_ray_tracing_position_fetch 1\n"
+            "#define GL_EXT_opacity_micromap 1\n"
             "#define GL_EXT_spirv_intrinsics 1\n"
             "#define GL_EXT_mesh_shader 1\n"
 
@@ -646,6 +649,8 @@ void TParseVersions::getPreamble(std::string& preamble)
 
             "#define GL_EXT_shader_invocation_reorder 1\n"
             "#define GL_EXT_descriptor_heap 1\n"
+
+            "#define GL_EXT_opacity_micromap_ray_query_mode 1\n"
             ;
 
         if (spvVersion.spv == 0) {

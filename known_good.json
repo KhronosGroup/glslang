@@ -12,7 +12,7 @@
       "site" : "github",
       "subrepo" : "KhronosGroup/SPIRV-Headers",
       "subdir" : "External/spirv-tools/external/spirv-headers",
-      "commit" : "04f10f650d514df88b76d25e83db360142c7b174"
+      "commit" : "ce9030338362353ab0b56a43b6a5bccf9d5979f6"
     },
     {
       "name": "googletest",
