@@ -2891,7 +2891,8 @@ void TParseContext::requireDerivativeLayout(const TSourceLoc& loc, const char* f
         requireExtensions(loc, 1, &E_GL_KHR_compute_shader_derivatives, featureDesc);
     }
 
-    if (!intermediate.hasLayoutDerivativeModeNone())
+    if (extensionTurnedOn(E_GL_KHR_compute_shader_derivatives) &&
+        !intermediate.hasLayoutDerivativeModeNone())
         error(loc, "requires a derivative_group_quads* or derivative_group_linear* layout qualifier", featureDesc, "");
 }
 
@@ -6686,6 +6687,20 @@ void TParseContext::finish()
         !khrDerivativeLayoutQualifierSpecified) {
         error(getCurrentLoc(), "requires one of derivative_group_quadsKHR or derivative_group_linearKHR layout qualifiers",
               E_GL_KHR_compute_shader_derivatives, "");
+    }
+
+    if (intermediate.getLayoutDerivativeModeNone() == LayoutDerivativeGroupQuads) {
+        if ((intermediate.getLocalSizeSpecId(0) == TQualifier::layoutNotSet && (intermediate.getLocalSize(0) & 1)) ||
+            (intermediate.getLocalSizeSpecId(1) == TQualifier::layoutNotSet && (intermediate.getLocalSize(1) & 1)))
+            error(getCurrentLoc(), "requires local_size_x and local_size_y to be multiple of two", "derivative_group_quads", "");
+    } else if (intermediate.getLayoutDerivativeModeNone() == LayoutDerivativeGroupLinear) {
+        if (intermediate.getLocalSizeSpecId(0) == TQualifier::layoutNotSet &&
+            intermediate.getLocalSizeSpecId(1) == TQualifier::layoutNotSet &&
+            intermediate.getLocalSizeSpecId(2) == TQualifier::layoutNotSet &&
+            (intermediate.getLocalSize(0) *
+             intermediate.getLocalSize(1) *
+             intermediate.getLocalSize(2)) % 4 != 0)
+            error(getCurrentLoc(), "requires total group size to be multiple of four", "derivative_group_linear", "");
     }
 
     // Set default outputs for GL_NV_geometry_shader_passthrough
@@ -11505,35 +11520,25 @@ void TParseContext::updateStandaloneQualifierDefaults(const TSourceLoc& loc, con
     if (publicType.shaderQualifiers.layoutDerivativeGroupQuads &&
         publicType.shaderQualifiers.layoutDerivativeGroupLinear) {
         error(loc, "cannot be both specified", "derivative_group_quads* and derivative_group_linear*", "");
-    }
+    } else if (publicType.shaderQualifiers.layoutDerivativeGroupQuads ||
+               publicType.shaderQualifiers.layoutDerivativeGroupLinear) {
+        const auto derivativeMode = publicType.shaderQualifiers.layoutDerivativeGroupQuads ?
+            LayoutDerivativeGroupQuads :
+            LayoutDerivativeGroupLinear;
+        const char* derivativeModeName = publicType.shaderQualifiers.layoutDerivativeGroupQuads ?
+            "derivative_group_quads" :
+            "derivative_group_linear";
 
-    if (publicType.shaderQualifiers.layoutDerivativeGroupQuads) {
         if (publicType.qualifier.storage == EvqVaryingIn) {
-            if ((intermediate.getLocalSizeSpecId(0) == TQualifier::layoutNotSet && (intermediate.getLocalSize(0) & 1)) ||
-                (intermediate.getLocalSizeSpecId(1) == TQualifier::layoutNotSet && (intermediate.getLocalSize(1) & 1)))
-                error(loc, "requires local_size_x and local_size_y to be multiple of two", "derivative_group_quads", "");
+            if (intermediate.hasLayoutDerivativeModeNone() &&
+                intermediate.getLayoutDerivativeModeNone() != derivativeMode)
+                error(loc, "cannot be both specified", "derivative_group_quads* and derivative_group_linear*", "");
             else
-                intermediate.setLayoutDerivativeMode(LayoutDerivativeGroupQuads,
+                intermediate.setLayoutDerivativeMode(derivativeMode,
                                                      publicType.shaderQualifiers.derivativeGroupExtension);
+        } else {
+            error(loc, "can only apply to 'in'", derivativeModeName, "");
         }
-        else
-            error(loc, "can only apply to 'in'", "derivative_group_quads", "");
-    }
-    if (publicType.shaderQualifiers.layoutDerivativeGroupLinear) {
-        if (publicType.qualifier.storage == EvqVaryingIn) {
-            if (intermediate.getLocalSizeSpecId(0) == TQualifier::layoutNotSet &&
-                intermediate.getLocalSizeSpecId(1) == TQualifier::layoutNotSet &&
-                intermediate.getLocalSizeSpecId(2) == TQualifier::layoutNotSet &&
-                (intermediate.getLocalSize(0) *
-                intermediate.getLocalSize(1) *
-                intermediate.getLocalSize(2)) % 4 != 0)
-                error(loc, "requires total group size to be multiple of four", "derivative_group_linear", "");
-            else
-                intermediate.setLayoutDerivativeMode(LayoutDerivativeGroupLinear,
-                                                     publicType.shaderQualifiers.derivativeGroupExtension);
-        }
-        else
-            error(loc, "can only apply to 'in'", "derivative_group_linear", "");
     }
     // Check mesh out array sizes, once all the necessary out qualifiers are defined.
     if ((language == EShLangMesh) &&
