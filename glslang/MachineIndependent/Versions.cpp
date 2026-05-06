@@ -332,6 +332,7 @@ void TParseVersions::initializeExtensionBehavior()
     // QCOM
     extensionBehavior[E_GL_QCOM_image_processing]                    = EBhDisable;
     extensionBehavior[E_GL_QCOM_image_processing2]                   = EBhDisable;
+    extensionBehavior[E_GL_QCOM_image_processing3]                   = EBhDisable;
     extensionBehavior[E_GL_QCOM_tile_shading]                        = EBhDisable;
     extensionBehavior[E_GL_QCOM_cooperative_matrix_conversion]       = EBhDisable;
 
@@ -482,6 +483,7 @@ void TParseVersions::getPreamble(std::string& preamble)
 
             "#define GL_QCOM_image_processing 1\n"
             "#define GL_QCOM_image_processing2 1\n"
+            "#define GL_QCOM_image_processing3 1\n"
             "#define GL_QCOM_tile_shading 1\n"
             "#define GL_QCOM_cooperative_matrix_conversion 1\n"
             ;
@@ -618,6 +620,7 @@ void TParseVersions::getPreamble(std::string& preamble)
 
             "#define GL_QCOM_image_processing 1\n"
             "#define GL_QCOM_image_processing2 1\n"
+            "#define GL_QCOM_image_processing3 1\n"
             "#define GL_QCOM_tile_shading 1\n"
             "#define GL_QCOM_cooperative_matrix_conversion 1\n"
 

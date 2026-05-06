@@ -7825,6 +7825,40 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
         }
     }
 
+    if (cracked.gather) {
+        spv::GatherModes mode = spv::GatherModes::Max;
+        switch (node->getOp()) {
+        case glslang::EOpTextureGather4x1QCOM:
+        case glslang::EOpTextureGather4x1OffsetQCOM:
+            mode = spv::GatherModes::Gather4x1QCOM;
+            break;
+        case glslang::EOpTextureGatherDQCOM:
+        case glslang::EOpTextureGatherDOffsetQCOM:
+            mode = spv::GatherModes::GatherDQCOM;
+            break;
+        case glslang::EOpTextureGatherH2QCOM:
+        case glslang::EOpTextureGatherH2OffsetQCOM:
+            mode = spv::GatherModes::GatherH2QCOM;
+            break;
+        case glslang::EOpTextureGatherV2QCOM:
+        case glslang::EOpTextureGatherV2OffsetQCOM:
+            mode = spv::GatherModes::GatherV2QCOM;
+            break;
+        default:
+            break;
+        }
+
+        if (mode != spv::GatherModes::Max) {
+          if (mode == spv::GatherModes::Gather4x1QCOM) {
+            builder.addCapability(spv::Capability::ImageGatherLinearQCOM);
+          } else {
+            builder.addCapability(spv::Capability::ImageGatherExtendedModesQCOM);
+          }
+          builder.addExtension(spv::E_SPV_QCOM_image_processing3);
+          params.gatherMode = builder.makeIntConstant(unsigned(mode));
+        }
+    }
+
     // nonprivate
     if (imageType.getQualifier().nonprivate) {
         params.nonprivate = true;

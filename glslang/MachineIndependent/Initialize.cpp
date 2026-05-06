@@ -6949,6 +6949,11 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "\n");
     }
 
+    if ((profile == EEsProfile && version >= 310) ||
+        (profile != EEsProfile && version >= 130)) {
+        addGatherFunctionsQCOM();
+    }
+
     // GL_ARB_shader_ballot
     if (profile != EEsProfile && version >= 450) {
         const char* ballotDecls =
@@ -8351,6 +8356,57 @@ void TBuiltIns::addGatherFunctions(TSampler sampler, const TString& typeName, in
                                 stageBuiltins[EShLangMesh].append(s);
                             } else
                                 commonBuiltins.append(s);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+void TBuiltIns::addGatherFunctionsQCOM()
+{
+    const TBasicType bTypes[] = { EbtFloat, EbtInt, EbtUint };
+    const TSamplerDim sDims[] = { Esd2D };
+    const TString modes[] = { "4x1", "V2", "H2", "D" };
+    for (size_t arrayed = 0; arrayed <= 1; ++arrayed) { // loop over "bool" arrayed or not
+        for (size_t dimIdx = 0; dimIdx < sizeof(sDims)/sizeof(TSamplerDim); ++dimIdx) {
+            int dim = sDims[dimIdx];
+            // Loop over the bTypes
+            for (size_t bType = 0; bType < sizeof(bTypes)/sizeof(TBasicType); ++bType) {
+                for (size_t mode = 0; mode < sizeof(modes)/sizeof(TString); ++mode) {
+                    // loop over two forms of offset in the call name:  none, and Offset
+                    for (int offset = 0; offset < 2; ++offset) {
+                        for (int comp = 0; comp < 2; ++comp) {
+                            //
+                            // Now, make all the function prototypes for the type we just built...
+                            //
+                            TSampler sampler;
+                            sampler.set(bTypes[bType], (TSamplerDim)dim, arrayed ? true : false, false, false);
+                            TString typeName = sampler.getString().c_str();
+
+                            TString s;
+                            s.append(prefixes[sampler.type]);
+                            s.append("vec4 textureGather");
+                            s.append(modes[mode]);
+
+                            if (offset == 1)
+                                s.append("Offset");
+
+                            s.append("QCOM(");
+                            s.append(typeName);
+                            s.append(", vec");
+                            int totalDims = dimMap[sampler.dim] + (sampler.arrayed ? 1 : 0);
+                            s.append(postfixes[totalDims]);
+
+                            // offset argument
+                            if (offset == 1)
+                                s.append(", ivec2");
+
+                            if (comp)
+                                s.append(", int");
+                            s.append(");\n");
+                            commonBuiltins.append(s);
                         }
                     }
                 }
@@ -10035,6 +10091,19 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setVariableExtensions("gl_TileDimensionQCOM",     1, &E_GL_QCOM_tile_shading);
             symbolTable.setVariableExtensions("gl_TileApronSizeQCOM",     1, &E_GL_QCOM_tile_shading);
         }
+
+        if ((profile == EEsProfile && version >= 310) ||
+            (profile != EEsProfile && version >= 130)) {
+            symbolTable.setFunctionExtensions("textureGather4x1QCOM", 1, &E_GL_QCOM_image_processing3);
+            symbolTable.setFunctionExtensions("textureGatherV2QCOM", 1, &E_GL_QCOM_image_processing3);
+            symbolTable.setFunctionExtensions("textureGatherH2QCOM", 1, &E_GL_QCOM_image_processing3);
+            symbolTable.setFunctionExtensions("textureGatherDQCOM", 1, &E_GL_QCOM_image_processing3);
+            symbolTable.setFunctionExtensions("textureGather4x1OffsetQCOM", 1, &E_GL_QCOM_image_processing3);
+            symbolTable.setFunctionExtensions("textureGatherV2OffsetQCOM", 1, &E_GL_QCOM_image_processing3);
+            symbolTable.setFunctionExtensions("textureGatherH2OffsetQCOM", 1, &E_GL_QCOM_image_processing3);
+            symbolTable.setFunctionExtensions("textureGatherDOffsetQCOM", 1, &E_GL_QCOM_image_processing3);
+        }
+
         break;
 
     case EShLangCompute:
@@ -11465,6 +11534,18 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.relateToOperator("textureBlockMatchWindowSADQCOM", EOpImageBlockMatchWindowSADQCOM);
             symbolTable.relateToOperator("textureBlockMatchGatherSSDQCOM", EOpImageBlockMatchGatherSSDQCOM);
             symbolTable.relateToOperator("textureBlockMatchGatherSADQCOM", EOpImageBlockMatchGatherSADQCOM);
+        }
+
+        if ((profile == EEsProfile && version >= 310) ||
+            (profile != EEsProfile && version >= 130)) {
+            symbolTable.relateToOperator("textureGather4x1QCOM", EOpTextureGather4x1QCOM);
+            symbolTable.relateToOperator("textureGatherV2QCOM",  EOpTextureGatherV2QCOM);
+            symbolTable.relateToOperator("textureGatherH2QCOM",  EOpTextureGatherH2QCOM);
+            symbolTable.relateToOperator("textureGatherDQCOM",   EOpTextureGatherDQCOM);
+            symbolTable.relateToOperator("textureGather4x1OffsetQCOM", EOpTextureGather4x1OffsetQCOM);
+            symbolTable.relateToOperator("textureGatherV2OffsetQCOM",  EOpTextureGatherV2OffsetQCOM);
+            symbolTable.relateToOperator("textureGatherH2OffsetQCOM",  EOpTextureGatherH2OffsetQCOM);
+            symbolTable.relateToOperator("textureGatherDOffsetQCOM",   EOpTextureGatherDOffsetQCOM);
         }
 
         if (profile != EEsProfile && spvVersion.spv == 0) {
