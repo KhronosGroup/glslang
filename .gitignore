@@ -5,6 +5,7 @@
 .cache/
 .vscode/
 .vs/
+.jj/
 tags
 TAGS
 bazel-*
