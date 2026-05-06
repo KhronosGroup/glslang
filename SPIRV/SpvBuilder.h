@@ -680,6 +680,7 @@ public:
         Id lodClamp;
         Id granularity;
         Id coarse;
+        Id gatherMode;
         bool nonprivate;
         bool volatil;
         bool nontemporal;
