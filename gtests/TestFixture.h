@@ -442,6 +442,11 @@ public:
                                  const bool enableDebug = false,
                                  const bool enableNonSemanticShaderDebugInfo = false)
     {
+#ifndef ENABLE_HLSL
+        if (source == Source::HLSL) {
+            return;
+        }
+#endif
         const std::string inputFname = testDir + "/" + testName;
         const std::string expectedOutputFname =
             testDir + baseDir + testName + ".out";
@@ -477,6 +482,11 @@ public:
                                             const std::string &baseDir = "/baseResults/",
                                             const EShMessages additionalOptions = EShMessages::EShMsgDefault)
     {
+#ifndef ENABLE_HLSL
+        if (source == Source::HLSL) {
+            return;
+        }
+#endif
         const std::string inputFname = testDir + "/" + testName;
         const std::string expectedOutputFname = testDir + baseDir + testName + ".out";
         std::string input, expectedOutput;
@@ -503,6 +513,11 @@ public:
                                                 Target target,
                                                 const std::string& entryPointName="")
     {
+#ifndef ENABLE_HLSL
+        if (source == Source::HLSL) {
+            return;
+        }
+#endif
         const std::string inputFname = testDir + "/" + testName;
         const std::string expectedOutputFname =
             testDir + "/baseResults/" + testName + ".out";
@@ -537,6 +552,11 @@ public:
                                       bool autoMapBindings,
                                       bool flattenUniformArrays)
     {
+#ifndef ENABLE_HLSL
+        if (source == Source::HLSL) {
+            return;
+        }
+#endif
         const std::string inputFname = testDir + "/" + testName;
         const std::string expectedOutputFname =
             testDir + "/baseResults/" + testName + ".out";

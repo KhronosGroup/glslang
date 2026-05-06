@@ -370,8 +370,13 @@ if(GLSLANG_TESTS)
     if(WIN32 AND BUILD_SHARED_LIBS AND CMAKE_VERSION VERSION_LESS "3.27")
         message(WARNING "The Windows shared library test configuration requires CMake 3.27 or greater")
     else()
+	if (ENABLE_HLSL)
+	  set(HLSL_ARG 1)
+	else()
+	  set(HLSL_ARG 0)
+	endif()
         add_test(NAME glslang-testsuite
-            COMMAND bash ${IGNORE_CR_FLAG} runtests ${RESULTS_PATH} ${VALIDATOR_PATH}
+	    COMMAND bash ${IGNORE_CR_FLAG} runtests ${RESULTS_PATH} ${VALIDATOR_PATH} ${HLSL_ARG}
             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Test/)
 
         # Prepend paths to shared libraries.
