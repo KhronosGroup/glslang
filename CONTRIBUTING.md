@@ -1,6 +1,6 @@
 <!--
 Copyright 2026 The Khronos Group Inc.
-SPDX-License-Identifier: CC-BY-4.0
+SPDX-License-Identifier: Apache-2.0
 --> 
 
 # Contributing
