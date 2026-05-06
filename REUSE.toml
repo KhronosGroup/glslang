@@ -6,6 +6,7 @@ version = 1
 
 [[annotations]]
 path = [
+    "**.md",
     ".clang-format",
     ".gitattributes",
     ".gitignore",
@@ -27,13 +28,20 @@ SPDX-FileCopyrightText = "2026 The Khronos Group, Inc."
 SPDX-License-Identifier = "Apache-2.0"
 
 # ---------------------------------------------------------------------------
-# Markdown documentation — CC-BY-4.0
+# Required by Kokoro — CC0-1.0
 # ---------------------------------------------------------------------------
 
 [[annotations]]
-path = ["**.md"]
-SPDX-FileCopyrightText = "2026 The Khronos Group, Inc."
-SPDX-License-Identifier = "CC-BY-4.0"
+path = "LICENSES/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "NONE"
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = "REUSE.toml"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "NONE"
+SPDX-License-Identifier = "CC0-1.0"
 
 # ---------------------------------------------------------------------------
 # Apache-2.0 — Google-authored build/tool files
