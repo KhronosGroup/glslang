@@ -317,6 +317,7 @@ const char* const E_GL_QCOM_image_processing                    = "GL_QCOM_image
 const char* const E_GL_QCOM_image_processing2                   = "GL_QCOM_image_processing2";
 const char* const E_GL_QCOM_tile_shading                        = "GL_QCOM_tile_shading";
 const char* const E_GL_QCOM_cooperative_matrix_conversion       = "GL_QCOM_cooperative_matrix_conversion";
+const char* const E_GL_QCOM_multiple_wait_queues                = "GL_QCOM_multiple_wait_queues";
 
 // AEP
 const char* const E_GL_ANDROID_extension_pack_es31a             = "GL_ANDROID_extension_pack_es31a";
