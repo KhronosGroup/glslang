@@ -806,6 +806,14 @@ bool TOutputTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node
     case EOpSparseTextureGatherLodOffset:   out.debug << "sparseTextureGatherLodOffset";    break;
     case EOpSparseTextureGatherLodOffsets:  out.debug << "sparseTextureGatherLodOffsets";   break;
     case EOpSparseImageLoadLod:             out.debug << "sparseImageLoadLod";              break;
+    case EOpTextureGather4x1QCOM:           out.debug << "textureGather4x1QCOM";            break;
+    case EOpTextureGatherV2QCOM:            out.debug << "textureGatherV2QCOM";             break;
+    case EOpTextureGatherH2QCOM:            out.debug << "textureGatherH2QCOM";             break;
+    case EOpTextureGatherDQCOM:             out.debug << "textureGatherDQCOM";              break;
+    case EOpTextureGather4x1OffsetQCOM:     out.debug << "textureGather4x1OffsetQCOM";      break;
+    case EOpTextureGatherV2OffsetQCOM:      out.debug << "textureGatherV2OffsetQCOM";       break;
+    case EOpTextureGatherH2OffsetQCOM:      out.debug << "textureGatherH2OffsetQCOM";       break;
+    case EOpTextureGatherDOffsetQCOM:       out.debug << "textureGatherDOffsetQCOM";        break;
     case EOpImageSampleFootprintNV:             out.debug << "imageSampleFootprintNV";          break;
     case EOpImageSampleFootprintClampNV:        out.debug << "imageSampleFootprintClampNV";     break;
     case EOpImageSampleFootprintLodNV:          out.debug << "imageSampleFootprintLodNV";       break;
