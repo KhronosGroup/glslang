@@ -31,7 +31,13 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
+import("//build/config/gclient_args.gni")
+
 # These are variables that are overridable by projects that include glslang.
+
+# Whether we are building from the Glslang repository.
+# MUST be unset in other pojects (will default to false)
+glslang_standalone = true
 
 # The path to glslang dependencies.
 glslang_spirv_tools_dir = "//External/spirv-tools"
