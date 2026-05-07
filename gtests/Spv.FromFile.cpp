@@ -875,6 +875,8 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.descriptorHeap.PushConstant.comp",
         "spv.tensorARM.descriptorHeap.comp",
         "spv.descriptorHeap.valid.frag",
+        "spv.descriptorHeap.heaps.frag",
+        "spv.descriptorHeap.nonuniform.frag",
         
         // SPV_KHR_abort
         "spv.shader.abort.comp",

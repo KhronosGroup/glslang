@@ -4,10 +4,12 @@ spv.descriptorHeap.valid.frag
 // Id's are bound by 83
 
                               Capability Shader
+                              Capability DescriptorHeapEXT
                               Capability ShaderNonUniformEXT
                               Capability RuntimeDescriptorArrayEXT
                               Capability UniformBufferArrayNonUniformIndexingEXT
                               Capability StorageBufferArrayNonUniformIndexingEXT
+                              Extension  "SPV_EXT_descriptor_heap"
                               Extension  "SPV_EXT_descriptor_indexing"
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
@@ -44,10 +46,6 @@ spv.descriptorHeap.valid.frag
                               Decorate 40(heapUniformBuffer) DescriptorSet 0
                               Decorate 42(index) Flat
                               Decorate 42(index) Location 1
-                              Decorate 44 DecorationNonUniformEXT
-                              Decorate 46 DecorationNonUniformEXT
-                              Decorate 47 DecorationNonUniformEXT
-                              Decorate 49 DecorationNonUniformEXT
                               Decorate 50(StorageBufferA) Block
                               MemberDecorate 50(StorageBufferA) 0 Offset 0
                               Decorate 54(heapStorageBufferA) Binding 2
@@ -56,10 +54,6 @@ spv.descriptorHeap.valid.frag
                               MemberDecorate 64(StorageBufferB) 0 Offset 0
                               Decorate 67(heapStorageBufferB) Binding 3
                               Decorate 67(heapStorageBufferB) DescriptorSet 0
-                              Decorate 69 DecorationNonUniformEXT
-                              Decorate 72 DecorationNonUniformEXT
-                              Decorate 73 DecorationNonUniformEXT
-                              Decorate 77 DecorationNonUniformEXT
                               Decorate 82(heapTexture3D) Binding 0
                               Decorate 82(heapTexture3D) DescriptorSet 0
                2:             TypeVoid
