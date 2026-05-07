@@ -31,7 +31,10 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-import("//build_overrides/glslang.gni")
+# The GN build for Glslang.
+# See the DEPS for usage instructions.
+
+import("gn_scripts/glslang_overrides_with_defaults.gni")
 
 # Both Chromium and Fuchsia use by default a set of warning errors
 # that is far too strict to compile this project. These are also
@@ -289,12 +292,12 @@ template("glslang_sources_common") {
 
 glslang_sources_common("glslang_lib_sources") {
   enable_opt = true
-  enable_hlsl = true
+  enable_hlsl = glslang_enable_hlsl
 }
 
 glslang_sources_common("glslang_sources") {
   enable_opt = true
-  enable_hlsl = true
+  enable_hlsl = glslang_enable_hlsl
 }
 
 source_set("glslang_default_resource_limits_sources") {
@@ -328,7 +331,9 @@ executable("glslang_validator") {
     ":glslang_sources",
     ":glslang_extension_headers",
   ]
-  public_configs = [ ":glslang_hlsl" ]
+  if (glslang_enable_hlsl) {
+    public_configs = [ ":glslang_hlsl" ]
+  }
 
   include_dirs = [
     "${target_gen_dir}/include",

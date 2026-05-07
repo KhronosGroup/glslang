@@ -31,52 +31,125 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
+# This file defines Glslang's build infra dependencies for GN builds.
+# It assumes you have already have the source files for Glslang
+# *and* its dependencies (as downloaded by ./update_glslang_sources.py)
+
+# Usage:
+#   1. Get Chromium depot_tools, and put it in your path.
+#      See https://commondatastorage.googleapis.com/chrome-infra-docs/flat/depot_tools/docs/html/depot_tools_tutorial.html#_setting_up
+#
+#   2. From the Glslang source tree:
+#
+#      # Get additional build tooling, using the info in the DEPS file.
+#      gclient sync --gclientfile=standalone.gclient
+#
+#   3. One of the tools downloaded in the previous step is the binary for 'gn'.
+#      Put it on your path.
+#
+#      # This is for Linux amd64 environments:
+#      PATH=$(pwd)/build/linux64:$PATH
+#
+#   3. Create a build tree with Ninja build recipes.
+#
+#      gn gen out/Debug
+#
+#      # Or disable HLSL support:
+#      gn gen out/Debug-no-hlsl --args="glslang_enable_hlsl=false"
+#
+#      # Or make a release build without HLSL support:
+#      gn gen out/Release --args="glslang_enable_hlsl=false is_debug=false"
+#
+#   4. Use ninja to build the project
+#
+#      ninja -C out/Debug
+
 use_relative_paths = True
 
 gclient_gn_args_file = 'build/config/gclient_args.gni'
 
+# Emit this vars for use in .gn and .gni files
+gclient_gn_args = [
+  # Needed by //build/toolchain/linux/BUILD.gn
+  # which was needed by 'action' in ./BUILD.gn
+  'build_with_chromium',
+]
+
+git_dependencies = 'SYNC'
+
 vars = {
+  # Repo sources
   'chromium_git': 'https://chromium.googlesource.com',
+
+  # Building context
   'build_with_chromium': False,
+  'glslang_standalone': True,
+
+  # Commits
+  'glslang_gn_version': 'git_revision:ec56d4d935a0e2ab9d52b88dd00c93ec51233055',
+  'glslang_build_version': '2316930a88b15a036fa5f72e2b2c2ba08e2904a0',
 }
 
 deps = {
-
-  './build': {
-    'url': '{chromium_git}/chromium/src/build.git@85ee3b7692e5284f08bd3c9459fb5685eed7b838',
-    'condition': 'not build_with_chromium',
+  # Get buildtools.
+  # We need the 'gn' binary.
+  'buildtools': {
+    'url': '{chromium_git}/chromium/src/buildtools@11cc2bd83053cb790b7516aa3eb3f3935fb05a0e',
+    'condition': 'glslang_standalone',
+  },
+  'buildtools/linux64': {
+    'packages': [{
+      'package': 'gn/gn/linux-${{arch}}',
+      'version': Var('glslang_gn_version'),
+    }],
+    'dep_type': 'cipd',
+    'condition': 'glslang_standalone and host_os == "linux"',
+  },
+  'buildtools/mac': {
+    'packages': [{
+      'package': 'gn/gn/mac-${{arch}}',
+      'version': Var('glslang_gn_version'),
+    }],
+    'dep_type': 'cipd',
+    'condition': 'glslang_standalone and host_os == "mac"',
+  },
+  'buildtools/win': {
+    'packages': [{
+      'package': 'gn/gn/windows-amd64',
+      'version': Var('glslang_gn_version'),
+    }],
+    'dep_type': 'cipd',
+    'condition': 'glslang_standalone and host_os == "win"',
   },
 
-  './buildtools': {
-    'url': '{chromium_git}/chromium/src/buildtools.git@4be464e050b3d05060471788f926b34c641db9fd',
-    'condition': 'not build_with_chromium',
+  # Get //build from Chromium.
+  # It contains the generic //build/config/BUILDCONFIG.gn that sets up most rules
+  # for C++ compilation.
+  'build': {
+  'url': '{chromium_git}/chromium/src/build@{glslang_build_version}',
+    'condition': 'glslang_standalone',
   },
-
-  './tools/clang': {
-    'url': '{chromium_git}/chromium/src/tools/clang.git@3a982adabb720aa8f3e3885d40bf3fe506990157',
-    'condition': 'not build_with_chromium',
-  },
-
 }
 
 hooks = [
+  # The Chromium BUILDCONFIG.gn has a false dependency on the sysroots.
+  # Pull the compilers and system libraries for hermetic builds
+  {
+    'name': 'sysroot_x86',
+    'pattern': '.',
+    'condition': 'glslang_standalone and checkout_linux and checkout_x86',
+    'action': ['vpython3', 'build/linux/sysroot_scripts/install-sysroot.py',
+               '--arch=x86'],
+  },
   {
     'name': 'sysroot_x64',
     'pattern': '.',
-    'condition': 'checkout_linux and (checkout_x64 and not build_with_chromium)',
-    'action': ['python', './build/linux/sysroot_scripts/install-sysroot.py',
+    'condition': 'glslang_standalone and checkout_linux and checkout_x64',
+    'action': ['vpython3', 'build/linux/sysroot_scripts/install-sysroot.py',
                '--arch=x64'],
-  },
-  {
-    # Note: On Win, this should run after win_toolchain, as it may use it.
-    'name': 'clang',
-    'pattern': '.',
-    'action': ['python', './tools/clang/scripts/update.py'],
-    'condition': 'not build_with_chromium',
   },
 ]
 
 recursedeps = [
-  # buildtools provides clang_format, libc++, and libc++abi
   'buildtools',
 ]

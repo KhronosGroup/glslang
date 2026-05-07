@@ -1,4 +1,6 @@
-# Copyright (C) 2020 The Khronos Group Inc.
+#!/bin/bash
+
+# Copyright (C) 2020 Google, Inc.
 #
 # All rights reserved.
 #
@@ -14,7 +16,7 @@
 #    disclaimer in the documentation and/or other materials provided
 #    with the distribution.
 #
-#    Neither the name of The Khronos Group Inc. nor the names of its
+#    Neither the name of Google Inc. nor the names of its
 #    contributors may be used to endorse or promote products derived
 #    from this software without specific prior written permission.
 #
@@ -31,13 +33,18 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-# This file is imported from //build/BUILD.gn
+set -e # Fail on any error.
 
-# Get user-specfied settings. This path is specified in the top-level DEPS file.
-import("//build/config/gclient_args.gni")
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd )"
+ROOT_DIR="$( cd "${SCRIPT_DIR}/../.." >/dev/null 2>&1 && pwd )"
 
-glslang_standalone = true
+docker run --rm -i \
+  --volume "${ROOT_DIR}:${ROOT_DIR}" \
+  --workdir "${ROOT_DIR}" \
+  --env ROOT_DIR="${ROOT_DIR}" \
+  --env SCRIPT_DIR="${SCRIPT_DIR}" \
+  --env GLSLANG_ENABLE_HLSL="false" \
+  --entrypoint "${ROOT_DIR}/kokoro/scripts/linux/build-docker-gn.sh" \
+  us-east4-docker.pkg.dev/shaderc-build/radial-docker/ubuntu-24.04-amd64/cpp-builder
 
-declare_args() {
-   build_with_chromium = false
-}
+exit $?

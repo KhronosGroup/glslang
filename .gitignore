@@ -22,6 +22,9 @@ CMakeUserPresets.json
 third_party/
 buildtools/
 tools/
+.gclient_previous_sync_commits
+.gcs_entries
+.gclient_previous_custom_vars
 
 # Random OS stuff
 .DS_Store
