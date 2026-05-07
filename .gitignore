@@ -6,6 +6,7 @@
 .vscode/
 .vs/
 .jj/
+.gclient_previous_sync_commits
 tags
 TAGS
 bazel-*
@@ -22,6 +23,8 @@ CMakeUserPresets.json
 third_party/
 buildtools/
 tools/
+.gcs_entries
+.gclient_previous_custom_vars
 
 # Random OS stuff
 .DS_Store

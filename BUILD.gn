@@ -32,6 +32,9 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 import("//build_overrides/glslang.gni")
+declare_args () {
+ enable_hlsl=false
+}
 
 # Both Chromium and Fuchsia use by default a set of warning errors
 # that is far too strict to compile this project. These are also
@@ -116,6 +119,8 @@ template("glslang_sources_common") {
       public_configs += [ ":glslang_hlsl" ]
     }
 
+    inputs = [ "SPIRV/spirv.hpp11" ]
+
     sources = [
       "SPIRV/GLSL.ext.AMD.h",
       "SPIRV/GLSL.ext.EXT.h",
@@ -141,7 +146,6 @@ template("glslang_sources_common") {
       "SPIRV/doc.cpp",
       "SPIRV/doc.h",
       "SPIRV/hex_float.h",
-      "SPIRV/spirv.hpp11",
       "SPIRV/spvIR.h",
       "SPIRV/spvUtil.h",
       "glslang/GenericCodeGen/CodeGen.cpp",
@@ -328,7 +332,9 @@ executable("glslang_validator") {
     ":glslang_sources",
     ":glslang_extension_headers",
   ]
-  public_configs = [ ":glslang_hlsl" ]
+  if (enable_hlsl) {
+    public_configs = [ ":glslang_hlsl" ]
+  }
 
   include_dirs = [
     "${target_gen_dir}/include",
