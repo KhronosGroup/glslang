@@ -806,6 +806,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.WorkgroupMemoryExplicitLayout.scalar.comp",
         "spv.khrComputeShaderDerivatives.comp",
         "spv.khrComputeShaderDerivatives2.comp",
+        "spv.khrComputeShaderDerivativesLayoutOrder.comp",
 
         // SPV_EXT_mesh_shader
         "spv.ext.meshShaderBuiltins.mesh",
@@ -818,6 +819,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.atomiAddEXT.task",
         "spv.460.subgroupEXT.task",
         "spv.460.subgroupEXT.mesh",
+        "spv.computeShaderDerivatives.mesh",
         "spv.khrComputeShaderDerivatives.task",
         "spv.khrComputeShaderDerivatives.mesh",
 
@@ -1090,6 +1092,7 @@ INSTANTIATE_TEST_SUITE_P(
     "spv.fragmentShaderBarycentric2.frag",
     "spv.computeShaderDerivatives.comp",
     "spv.computeShaderDerivatives2.comp",
+    "spv.computeShaderDerivativesNoLayout.comp",
     "spv.computeShaderDerivativesSpec.comp",
     "spv.computeShaderDerivativesSpec2.comp",
     "spv.shaderImageFootprint.frag",
