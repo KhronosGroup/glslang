@@ -906,6 +906,9 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.descriptorHeap.valid.frag",
         "spv.descriptorHeap.heaps.frag",
         "spv.descriptorHeap.nonuniform.frag",
+
+        // SPV_EXT_structured_descriptor_heap
+        "spv.structuredDescriptorHeap.Buffer.comp",
         
         // SPV_KHR_abort
         "spv.shader.abort.comp",

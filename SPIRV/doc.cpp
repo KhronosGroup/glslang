@@ -357,8 +357,8 @@ const char* DecorationString(int decoration)
     case (int)Decoration::BankNV:                        return "BankNV";
     case (int)Decoration::MemberOffsetNV:                return "MemberOffsetNV";
 
-    case (int)Decoration::ArrayStrideIdEXT:        return "DecorationArrayStrideIdEXT";
-    case (int)Decoration::OffsetIdEXT:             return "DecorationOffsetIdEXT";
+    case (int)Decoration::ArrayStrideIdEXT:        return "ArrayStrideIdEXT";
+    case (int)Decoration::OffsetIdEXT:             return "OffsetIdEXT";
     case (int)Decoration::UTFEncodedKHR:           return "UTFEncodedKHR";
     }
 }

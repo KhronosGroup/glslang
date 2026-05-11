@@ -862,6 +862,7 @@ public:
 
         layoutPushConstant = false;
         layoutBufferReference = false;
+        layoutBufferType = false;
         layoutPassthrough = false;
         layoutViewportRelative = false;
         // -2048 as the default value indicating layoutSecondaryViewportRelative is not set
@@ -884,8 +885,9 @@ public:
         layoutBank = layoutBankEnd;
         layoutDescriptorHeap = false;
         layoutDescriptorStride = layoutDescriptorStrideEnd;
+        layoutDescriptorSize = layoutDescriptorSizeEnd;
         layoutHeapOffset = 0;
-        layoutDescriptorInnerBlock = false;
+        descriptorHeapDescriptorNode = false;
     }
     void clearInterstageLayout()
     {
@@ -915,6 +917,7 @@ public:
                hasFormat() ||
                isShaderRecord() ||
                isPushConstant() ||
+               isBufferType() ||
                hasBufferReference();
     }
     bool hasLayout() const
@@ -968,6 +971,9 @@ public:
                  unsigned int layoutDescriptorStride;
     static const unsigned int layoutDescriptorStrideEnd = 0x0;
 
+                 unsigned int layoutDescriptorSize;
+    static const unsigned int layoutDescriptorSizeEnd = 0x0;
+
     // stored as log2 of the actual alignment value
                  unsigned int layoutBufferReferenceAlign :  6;
     static const unsigned int layoutBufferReferenceAlignEnd = 0x3F;
@@ -976,6 +982,7 @@ public:
 
     bool layoutPushConstant;
     bool layoutBufferReference;
+    bool layoutBufferType;
     bool layoutPassthrough;
     bool layoutViewportRelative;
     int layoutSecondaryViewportRelativeOffset;
@@ -985,7 +992,7 @@ public:
     bool layoutHitObjectShaderRecordNV;
     bool layoutHitObjectShaderRecordEXT;
     bool layoutDescriptorHeap;
-    bool layoutDescriptorInnerBlock;
+    bool descriptorHeapDescriptorNode;
     int layoutHeapOffset;
 
     // GL_EXT_spirv_intrinsics
@@ -1096,6 +1103,7 @@ public:
     TLayoutFormat getFormat() const { return layoutFormat; }
     bool isPushConstant() const { return layoutPushConstant; }
     bool isShaderRecord() const { return layoutShaderRecord; }
+    bool isBufferType() const { return layoutBufferType; }
     bool isFullQuads() const { return layoutFullQuads; }
     bool isQuadDeriv() const { return layoutQuadDeriv; }
     bool hasHitObjectShaderRecordNV() const { return layoutHitObjectShaderRecordNV; }
@@ -2390,6 +2398,8 @@ public:
                 appendStr(" push_constant");
               if (qualifier.layoutBufferReference)
                 appendStr(" buffer_reference");
+              if (qualifier.layoutBufferType)
+                appendStr(" buffer_type");
               if (qualifier.hasBufferReferenceAlign()) {
                 appendStr(" buffer_reference_align=");
                 appendUint(1u << qualifier.layoutBufferReferenceAlign);
@@ -2435,8 +2445,14 @@ public:
                   appendStr(" descriptor_stride=");
                   appendInt(qualifier.layoutDescriptorStride);
               }
-              if (qualifier.layoutHeapOffset)
+              if (qualifier.layoutDescriptorSize != TQualifier::layoutDescriptorSizeEnd) {
+                  appendStr(" descriptor_size=");
+                  appendInt(qualifier.layoutDescriptorSize);
+              }
+              if (qualifier.layoutHeapOffset) {
                   appendStr(" heap_offset=");
+                  appendInt(qualifier.layoutHeapOffset);
+              }
 
               appendStr(")");
             }
