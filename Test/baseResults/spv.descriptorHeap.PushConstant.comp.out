@@ -10,7 +10,7 @@ spv.descriptorHeap.PushConstant.comp
                               Extension  "SPV_KHR_untyped_pointers"
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint GLCompute 4  "main" 20 28
+                              EntryPoint GLCompute 4  "main" 20 31
                               ExecutionMode 4 LocalSize 1 1 1
                               Source GLSL 450
                               SourceExtension  "GL_EXT_descriptor_heap"
@@ -18,20 +18,20 @@ spv.descriptorHeap.PushConstant.comp
                               Name 8  "i"
                               Name 16  "PUSH_LENGTH"
                               Name 20  "resource_heap"
-                              Name 23  "O"
-                              MemberName 23(O) 0  "outputBuffer"
-                              Name 26  "P"
-                              MemberName 26(P) 0  "pushData"
-                              Name 28  ""
+                              Name 26  "O"
+                              MemberName 26(O) 0  "outputBuffer"
+                              Name 29  "P"
+                              MemberName 29(P) 0  "pushData"
+                              Name 31  ""
                               Decorate 16(PUSH_LENGTH) SpecId 0
                               Decorate 20(resource_heap) BuiltIn ResourceHeapEXT
-                              Decorate 22 ArrayStride 4
-                              Decorate 23(O) Block
-                              MemberDecorate 23(O) 0 Offset 0
+                              DecorateId 24 ArrayStrideIdEXT 23
                               Decorate 25 ArrayStride 4
-                              Decorate 26(P) Block
-                              MemberDecorate 26(P) 0 Offset 0
-                              DecorateId 37 DecorationArrayStrideIdEXT 36
+                              Decorate 26(O) Block
+                              MemberDecorate 26(O) 0 Offset 0
+                              Decorate 28 ArrayStride 4
+                              Decorate 29(P) Block
+                              MemberDecorate 29(P) 0 Offset 0
                               Decorate 47 BuiltIn WorkgroupSize
                2:             TypeVoid
                3:             TypeFunction 2
@@ -42,22 +42,22 @@ spv.descriptorHeap.PushConstant.comp
               17:             TypeBool
               19:             TypeUntypedPointerKHR UniformConstant
 20(resource_heap):     19(ptr) UntypedVariableKHR UniformConstant
-              21:             TypeInt 32 0
-              22:             TypeRuntimeArray 21(int)
-           23(O):             TypeStruct 22
-              25:             TypeArray 6(int) 16(PUSH_LENGTH)
-           26(P):             TypeStruct 25
-              27:             TypePointer PushConstant 26(P)
-              28:     27(ptr) Variable PushConstant
-              30:             TypePointer PushConstant 6(int)
-              35:             TypeBufferEXT StorageBuffer
-              36:      6(int) ConstantSizeOfEXT 35
-              37:             TypeRuntimeArray 35
-              38:             TypePointer StorageBuffer 23(O)
-              40:             TypePointer StorageBuffer 21(int)
+              21:             TypeBufferEXT StorageBuffer
+              22:             TypeInt 32 0
+              23:     22(int) ConstantSizeOfEXT 21
+              24:             TypeRuntimeArray 21
+              25:             TypeRuntimeArray 22(int)
+           26(O):             TypeStruct 25
+              28:             TypeArray 6(int) 16(PUSH_LENGTH)
+           29(P):             TypeStruct 28
+              30:             TypePointer PushConstant 29(P)
+              31:     30(ptr) Variable PushConstant
+              33:             TypePointer PushConstant 6(int)
+              38:             TypePointer StorageBuffer 26(O)
+              40:             TypePointer StorageBuffer 22(int)
               43:      6(int) Constant 1
-              45:             TypeVector 21(int) 3
-              46:     21(int) Constant 1
+              45:             TypeVector 22(int) 3
+              46:     22(int) Constant 1
               47:   45(ivec3) ConstantComposite 46 46 46
          4(main):           2 Function None 3
                5:             Label
@@ -72,15 +72,15 @@ spv.descriptorHeap.PushConstant.comp
               18:    17(bool) SLessThan 15 16(PUSH_LENGTH)
                               BranchConditional 18 11 12
               11:               Label
-              24:      6(int)   Load 8(i)
-              29:      6(int)   Load 8(i)
-              31:     30(ptr)   AccessChain 28 9 29
-              32:      6(int)   Load 31
-              33:     21(int)   Bitcast 32
-              34:     19(ptr)   UntypedAccessChainKHR 37 20(resource_heap) 9
-              39:     38(ptr)   BufferPointerEXT 34
-              41:     40(ptr)   AccessChain 39 9 24
-                                Store 41 33
+              27:      6(int)   Load 8(i)
+              32:      6(int)   Load 8(i)
+              34:     33(ptr)   AccessChain 31 9 32
+              35:      6(int)   Load 34
+              36:     22(int)   Bitcast 35
+              37:     19(ptr)   UntypedAccessChainKHR 24 20(resource_heap) 9
+              39:     38(ptr)   BufferPointerEXT 37
+              41:     40(ptr)   AccessChain 39 9 27
+                                Store 41 36
                                 Branch 13
               13:               Label
               42:      6(int)   Load 8(i)

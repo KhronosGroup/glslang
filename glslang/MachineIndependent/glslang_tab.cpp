@@ -11454,6 +11454,8 @@ yyreduce:
             (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
             (yyval.interm.type).basicType = EbtStruct;
             (yyval.interm.type).userDef = &structure;
+            if (structure.getQualifier().isBufferType())
+                (yyval.interm.type).qualifier = structure.getQualifier();
         } else
             parseContext.error((yyvsp[0].lex).loc, "expected type name", (yyvsp[0].lex).string->c_str(), "");
     }
@@ -11618,7 +11620,6 @@ yyreduce:
         (yyval.interm.type).userDef = innerStructure;
         (yyval.interm.type).qualifier = (yyvsp[-4].interm.type).qualifier;
         (yyval.interm.type).qualifier.layoutDescriptorHeap = true;
-        (yyval.interm.type).qualifier.layoutDescriptorInnerBlock = true;
     }
 #line 11624 "MachineIndependent/glslang_tab.cpp"
     break;

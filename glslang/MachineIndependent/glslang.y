@@ -3702,6 +3702,8 @@ type_specifier_nonarray
             $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
             $$.basicType = EbtStruct;
             $$.userDef = &structure;
+            if (structure.getQualifier().isBufferType())
+                $$.qualifier = structure.getQualifier();
         } else
             parseContext.error($1.loc, "expected type name", $1.string->c_str(), "");
     }
@@ -3808,7 +3810,6 @@ block_heap_inner_structure
         $$.userDef = innerStructure;
         $$.qualifier = $1.qualifier;
         $$.qualifier.layoutDescriptorHeap = true;
-        $$.qualifier.layoutDescriptorInnerBlock = true;
     }
     ;
 

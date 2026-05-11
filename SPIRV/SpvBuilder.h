@@ -602,6 +602,8 @@ public:
     Id createConstData(Op opCode, Id typeId, const std::vector<const char*> operands);
     Id createFunctionCall(spv::Function*, const std::vector<spv::Id>&);
     Id createSpecConstantOp(Op, Id typeId, const std::vector<spv::Id>& operands, const std::vector<unsigned>& literals);
+    Id createSpecConstantAlignTo(Id value, Id alignment);
+    Id createSpecConstantSelectMax(Id lhs, Id rhs);
 
     // Take an rvalue (source) and a set of channels to extract from it to
     // make a new rvalue, which is returned.
@@ -818,13 +820,11 @@ public:
 
         struct DescHeapInfo {
             Id descHeapBaseTy;                  // for descriptor heap, record its base data type.
-            StorageClass descHeapStorageClass;  // for descriptor heap, record its basic storage class.
-            uint32_t descHeapBaseArrayStride;   // for descriptor heap, record its explicit array stride.
+            std::vector<Id> descHeapindexChain;
+            Id descTy;                          // for target resource type
+            StorageClass descStorageClass;      // for descriptor heap, record its basic storage class.
             std::vector<Instruction*> descHeapInstId;
                                                 // for descriptor heap, record its data type for loading/store results.
-            uint32_t structRsrcTyOffsetCount;
-            uint32_t structRsrcTyFirstArrIndex;
-            Id structRemappedBase;
         };
         DescHeapInfo descHeapInfo;
 
@@ -891,13 +891,28 @@ public:
     AccessChain getAccessChain() { return accessChain; }
     void setAccessChain(AccessChain newChain) { accessChain = newChain; }
 
+    // for EXT_descriptor_heap and EXT_structured_descriptor_heap
+    Id getAccessChainDescHeapBaseType() const { return accessChain.descHeapInfo.descHeapBaseTy; }
+    void setAccessChainDescHeapBaseType(Id baseType) { accessChain.descHeapInfo.descHeapBaseTy = baseType; }
+    const std::vector<Id>& getAccessChainDescHeapIndexChain() const { return accessChain.descHeapInfo.descHeapindexChain; }
+    bool hasAccessChainIndex() const { return !accessChain.indexChain.empty(); }
+    void moveAccessChainIndexToDescHeapIndexChain()
+    {
+        assert(accessChain.indexChain.size() == 1);
+        accessChain.descHeapInfo.descHeapindexChain.push_back(accessChain.indexChain.back());
+        accessChain.indexChain.pop_back();
+    }
+    void setAccessChainDescHeapDescriptorType(Id descTy, StorageClass storageClass)
+    {
+        accessChain.descHeapInfo.descTy = descTy;
+        accessChain.descHeapInfo.descStorageClass = storageClass;
+    }
+
     // clear accessChain
     void clearAccessChain();
 
     Id createDescHeapAccessChain();
     Id createConstantSizeOfEXT(Id typeId);
-    uint32_t isStructureHeapMember(Id id, std::vector<Id> indexChain, unsigned int idx, spv::BuiltIn* bt = nullptr,
-                                   uint32_t* firstArrIndex = nullptr);
 
     // set new base as an l-value base
     void setAccessChainLValue(Id lValue)
@@ -911,25 +926,6 @@ public:
     {
         accessChain.isRValue = true;
         accessChain.base = rValue;
-    }
-
-    // set access chain info for untyped descriptor heap variable
-    void setAccessChainDescHeapInfo(StorageClass storageClass = StorageClass::Max, Id baseTy = NoResult,
-                                    uint32_t explicitArrayStride = NoResult, uint32_t structRsrcTyOffsetCount = 0,
-                                    spv::Id structRemappedBase = NoResult, uint32_t firstArrIndex = NoResult)
-    {
-        if (accessChain.descHeapInfo.descHeapStorageClass == StorageClass::Max)
-            accessChain.descHeapInfo.descHeapStorageClass = storageClass;
-        if (accessChain.descHeapInfo.descHeapBaseTy == NoResult)
-            accessChain.descHeapInfo.descHeapBaseTy = baseTy;
-        if (accessChain.descHeapInfo.descHeapBaseArrayStride == NoResult)
-            accessChain.descHeapInfo.descHeapBaseArrayStride = explicitArrayStride;
-        if (accessChain.descHeapInfo.structRemappedBase == NoResult)
-            accessChain.descHeapInfo.structRemappedBase = structRemappedBase;
-        if (accessChain.descHeapInfo.structRsrcTyOffsetCount == 0)
-            accessChain.descHeapInfo.structRsrcTyOffsetCount = structRsrcTyOffsetCount;
-        if (accessChain.descHeapInfo.structRsrcTyFirstArrIndex == 0)
-            accessChain.descHeapInfo.structRsrcTyFirstArrIndex = firstArrIndex;
     }
 
     // push offset onto the end of the chain
@@ -1171,6 +1167,8 @@ protected:
     std::vector<Instruction*> nullConstants;
     // map scalar constants to result IDs
     std::unordered_map<ScalarConstantKey, Id, ScalarConstantKeyHash> groupedScalarConstantResultIDs;
+    // map type ids to OpConstantSizeOfEXT result IDs
+    std::unordered_map<Id, Id> constantSizeOfEXTIds;
 
     // Track which types have explicit layouts, to avoid reusing in storage classes without layout.
     // Currently only tracks array types.
