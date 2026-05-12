@@ -38,6 +38,7 @@ set -e # Fail on any error.
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd )"
 ROOT_DIR="$( cd "${SCRIPT_DIR}/../.." >/dev/null 2>&1 && pwd )"
 
+set +e # Allow build failure so we can get logs
 docker run --rm -i \
   --volume "${ROOT_DIR}:${ROOT_DIR}" \
   --workdir "${ROOT_DIR}" \
@@ -47,4 +48,12 @@ docker run --rm -i \
   --entrypoint "${ROOT_DIR}/kokoro/scripts/linux/build-docker-gn.sh" \
   us-east4-docker.pkg.dev/shaderc-build/radial-docker/ubuntu-24.04-amd64/cpp-builder
 
-exit $?
+# This is important. If the permissions are not fixed, kokoro will fail
+# to pull build artifacts, and put the build in tool-failure state, which
+# blocks the logs.
+RESULT=$?
+# Remove downloaded build tools
+sudo rm -rf "${ROOT_DIR}"/build "${ROOT_DIR}"/buildtools "${ROOT_DIR}"/tools
+# Change ownership
+sudo chown -R "$(id -u):$(id -g)" "${ROOT_DIR}"
+exit $RESULT
