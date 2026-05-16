@@ -3179,15 +3179,9 @@ void TGlslangToSpvTraverser::createAbortEXT(const glslang::TIntermSequence &glsl
     builder.addExtension(spv::E_SPV_KHR_constant_data);
     builder.addExtension(spv::E_SPV_KHR_abort);
 
-    struct strInfo {
-        glslang::TString string;
-        int specifierIndex; // -1 if not a specifier.
-        strInfo(glslang::TString str, int spec) : string(str), specifierIndex(spec) {};
-    };
-
     const uint32_t formatSpecifiersSize = 4;
     const char* formatSpecifiers[formatSpecifiersSize] = {"%d", "%i", "%f", "%u"};
-    // 1. Split original message string with format specifiers.
+    // 1. Check whether message is empty or has format specifiers.
     const auto emptyMsg = glslang::TString("\0");
     bool hasSpecifier = false;
     const glslang::TString* msg =
@@ -3207,8 +3201,8 @@ void TGlslangToSpvTraverser::createAbortEXT(const glslang::TIntermSequence &glsl
     std::vector<spv::Id> structMemberData;
     structMemberOffsets.push_back(0);
     auto charType = builder.makeIntType(8);
-    // 2.1 get sub string's length (if specifier, be spec const).
-    //     If not an empty string, \0 is the final character.
+    // 2.1 Get string's length (if has specifier, be spec const).
+    //     If not an empty string, \0 is the final character used for padding.
     unsigned int msgLen = isEmptyMsg ? 1 : msg->size() + 1;
     unsigned int paddingSize = (4 - msgLen % 4) % 4;
     msgLen = msgLen + paddingSize;
@@ -3218,12 +3212,12 @@ void TGlslangToSpvTraverser::createAbortEXT(const glslang::TIntermSequence &glsl
         constLen = builder.makeUintConstant(msgLen, true);
         constDataOp = spv::Op::OpSpecConstantDataKHR;
     }
-    // 2.2 get sub string's array type (if specifier, be spec const).
+    // 2.2 Get string's array type (if specifier, be spec const).
     auto msgArrType = builder.makeArrayType(charType, constLen, 1);
     auto msgLoadArrType = builder.makeArrayType(charType, constLen, 1);
-    // 2.3 add sub string constant data
+    // 2.3 Add string constant data
     auto msgConstData = builder.createConstData(constDataOp, msgArrType, {msg->c_str()});
-    // 2.4 add decoration for those sub string.
+    // 2.4 Add decoration for this string.
     builder.addDecoration(msgArrType, spv::Decoration::UTFEncodedKHR);
     builder.addDecoration(msgLoadArrType, spv::Decoration::UTFEncodedKHR);
     // 2.5 Collect data and type for construct an internal message structure member.
