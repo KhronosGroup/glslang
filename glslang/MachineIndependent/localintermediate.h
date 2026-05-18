@@ -503,6 +503,7 @@ public:
             processes.addProcess("invert-y");
     }
     bool getInvertY() const { return invertY; }
+    void invertPositions(TIntermNode* root);
 
     void setDxPositionW(bool dxPosW)
     {
