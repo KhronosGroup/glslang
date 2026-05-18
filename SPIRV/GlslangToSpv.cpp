@@ -159,7 +159,7 @@ public:
     spv::Id getOrCreateArrayAlignment(const glslang::TType& arrayType);
     std::vector<spv::Id> getOrCreateArrayStrides(const glslang::TType& arrayType);
 
-    // Returns offsets for OffsetIdEXT operands; root heap blocks include heap_offset.
+    // Returns OffsetIdEXT operands relative to the struct start.
     std::vector<spv::Id> getOrCreateStructMemberOffsets(const glslang::TType& structType);
 
 private:
@@ -168,7 +168,6 @@ private:
     spv::Id computeValueAlignment(const glslang::TType& type);
     spv::Id getOrCreateStructSize(const glslang::TType& structType);
     spv::Id getOrCreateStructAlignment(const glslang::TType& structType);
-    std::vector<spv::Id> getOrCreateRelativeStructMemberOffsets(const glslang::TType& structType);
 
     spv::Id makeUint(unsigned value);
     spv::Id makeSpecOp(spv::Op op, const std::vector<spv::Id>& operands);
@@ -256,6 +255,7 @@ protected:
     void decorateStructType(const glslang::TType&, const glslang::TTypeList* glslangStruct, glslang::TLayoutPacking,
                             const glslang::TQualifier&, spv::Id, const std::vector<spv::Id>& spvMembers);
     spv::Id makeArraySizeId(const glslang::TArraySizes&, int dim, bool allowZero = false, bool boolType = false);
+    spv::Id makeHeapOffsetId(const glslang::TType& type);
     spv::Id accessChainLoad(const glslang::TType& type);
     void    accessChainStore(const glslang::TType& type, spv::Id rvalue);
     void multiTypeStore(const glslang::TType&, spv::Id rValue);
@@ -2375,8 +2375,8 @@ void TGlslangToSpvTraverser::visitSymbol(glslang::TIntermSymbol* symbol)
 
         if (qualifier.builtIn == glslang::EbvResourceHeapEXT ||
             qualifier.builtIn == glslang::EbvSamplerHeapEXT) {
+            const glslang::TType& symbolType = symbol->getType();
             if (builder.getAccessChainDescHeapBaseType() == spv::NoResult) {
-                const glslang::TType& symbolType = symbol->getType();
                 const long long symbolId = symbol->getId();
                 auto cachedBaseType = heapDescHeapBaseType.find(symbolId);
                 if (cachedBaseType == heapDescHeapBaseType.end()) {
@@ -2384,6 +2384,9 @@ void TGlslangToSpvTraverser::visitSymbol(glslang::TIntermSymbol* symbol)
                 }
                 builder.setAccessChainDescHeapBaseType(cachedBaseType->second);
             }
+            spv::Id heapOffset = makeHeapOffsetId(symbolType);
+            if (heapOffset != spv::NoResult)
+                builder.setAccessChainDescHeapBaseOffset(heapOffset);
         }
     }
 
@@ -6530,29 +6533,6 @@ std::vector<spv::Id> DescHeapLayoutEmitter::getOrCreateArrayStrides(
     return arrayStridesCache.emplace(&arrayType, strides).first->second;
 }
 
-// Return OffsetIdEXT operand ids for the members of a descriptor heap struct.
-std::vector<spv::Id> DescHeapLayoutEmitter::getOrCreateStructMemberOffsets(
-    const glslang::TType& structType)
-{
-    assert(structType.isStruct());
-
-    std::vector<spv::Id> relativeOffsets = getOrCreateRelativeStructMemberOffsets(structType);
-
-    const bool isRootHeapStruct = structType.getQualifier().storage == glslang::EvqResourceHeap ||
-        structType.getQualifier().storage == glslang::EvqSamplerHeap;
-    if (!isRootHeapStruct || structType.getQualifier().layoutHeapOffset == 0)
-        return relativeOffsets;
-
-    // Cached offsets are relative to the struct start; root heaps add heap_offset.
-    spv::Id heapOffset = makeUint(structType.getQualifier().layoutHeapOffset);
-    std::vector<spv::Id> memberOffsets;
-    memberOffsets.reserve(relativeOffsets.size());
-    for (spv::Id relativeOffset : relativeOffsets)
-        memberOffsets.push_back(makeSpecOp(spv::Op::OpIAdd, {heapOffset, relativeOffset}));
-
-    return memberOffsets;
-}
-
 // Create a 32-bit unsigned constant id.
 spv::Id DescHeapLayoutEmitter::makeUint(unsigned value)
 {
@@ -6592,7 +6572,7 @@ spv::Id DescHeapLayoutEmitter::getMemberAlignment(const glslang::TType& memberTy
 }
 
 // Return member offset ids relative to the start of this struct.
-std::vector<spv::Id> DescHeapLayoutEmitter::getOrCreateRelativeStructMemberOffsets(
+std::vector<spv::Id> DescHeapLayoutEmitter::getOrCreateStructMemberOffsets(
     const glslang::TType& structType)
 {
     assert(structType.isStruct());
@@ -6663,7 +6643,7 @@ spv::Id DescHeapLayoutEmitter::getOrCreateStructSize(const glslang::TType& struc
     if (structTyList->empty()) {
         size = makeUint(0);
     } else {
-        std::vector<spv::Id> memberOffsets = getOrCreateRelativeStructMemberOffsets(structType);
+        std::vector<spv::Id> memberOffsets = getOrCreateStructMemberOffsets(structType);
         const glslang::TType& lastMemberTy = *structTyList->back().type;
         spv::Id rawSize = makeSpecOp(spv::Op::OpIAdd, {memberOffsets.back(), getMemberSize(lastMemberTy)});
         size = traverser.builder.createSpecConstantAlignTo(rawSize, getOrCreateStructAlignment(structType));
@@ -6943,6 +6923,27 @@ spv::Id TGlslangToSpvTraverser::makeArraySizeId(const glslang::TArraySizes& arra
     } else {
         return builder.makeUintConstant(size);
     }
+}
+
+// Turn a structured descriptor heap_offset into an id used to shift the heap base.
+spv::Id TGlslangToSpvTraverser::makeHeapOffsetId(const glslang::TType& type)
+{
+    const glslang::TQualifier& qualifier = type.getQualifier();
+    if (qualifier.layoutHeapOffsetNode != nullptr) {
+        spv::Builder::AccessChain savedAccessChain = builder.getAccessChain();
+        builder.clearAccessChain();
+
+        qualifier.layoutHeapOffsetNode->traverse(this);
+        spv::Id heapOffset = accessChainLoad(qualifier.layoutHeapOffsetNode->getType());
+
+        builder.setAccessChain(savedAccessChain);
+        return heapOffset;
+    }
+
+    if (qualifier.layoutHeapOffset != 0)
+        return builder.makeUintConstant(qualifier.layoutHeapOffset);
+
+    return spv::NoResult;
 }
 
 // Wrap the builder's accessChainLoad to:
