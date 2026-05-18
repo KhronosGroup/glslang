@@ -820,6 +820,7 @@ public:
 
         struct DescHeapInfo {
             Id descHeapBaseTy;                  // for descriptor heap, record its base data type.
+            Id descHeapBaseOffset;              // byte offset applied to the heap base before descriptor lookup.
             std::vector<Id> descHeapindexChain;
             Id descTy;                          // for target resource type
             StorageClass descStorageClass;      // for descriptor heap, record its basic storage class.
@@ -894,6 +895,7 @@ public:
     // for EXT_descriptor_heap and EXT_structured_descriptor_heap
     Id getAccessChainDescHeapBaseType() const { return accessChain.descHeapInfo.descHeapBaseTy; }
     void setAccessChainDescHeapBaseType(Id baseType) { accessChain.descHeapInfo.descHeapBaseTy = baseType; }
+    void setAccessChainDescHeapBaseOffset(Id baseOffset) { accessChain.descHeapInfo.descHeapBaseOffset = baseOffset; }
     const std::vector<Id>& getAccessChainDescHeapIndexChain() const { return accessChain.descHeapInfo.descHeapindexChain; }
     bool hasAccessChainIndex() const { return !accessChain.indexChain.empty(); }
     void moveAccessChainIndexToDescHeapIndexChain()
@@ -1020,6 +1022,7 @@ protected:
     Id findCompositeConstant(Op typeClass, Op opcode, Id typeId, const std::vector<Id>& comps, size_t numMembers);
     Id findStructConstant(Id typeId, const std::vector<Id>& comps);
     Id collapseAccessChain();
+    Id getOrCreateDescHeapByteArrayType();
     void remapDynamicSwizzle();
     void transferAccessChainSwizzle(bool dynamic);
     void simplifyAccessChainSwizzle();
@@ -1169,6 +1172,7 @@ protected:
     std::unordered_map<ScalarConstantKey, Id, ScalarConstantKeyHash> groupedScalarConstantResultIDs;
     // map type ids to OpConstantSizeOfEXT result IDs
     std::unordered_map<Id, Id> constantSizeOfEXTIds;
+    Id descHeapByteArrayType { NoResult };
 
     // Track which types have explicit layouts, to avoid reusing in storage classes without layout.
     // Currently only tracks array types.

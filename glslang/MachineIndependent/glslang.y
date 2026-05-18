@@ -1367,7 +1367,7 @@ layout_qualifier_id
         $$.init($1.loc);
         parseContext.setLayoutQualifier($1.loc, $$, *$1.string);
     }
-    | IDENTIFIER EQUAL constant_expression {
+    | IDENTIFIER EQUAL assignment_expression {
         $$.init($1.loc);
         parseContext.setLayoutQualifier($1.loc, $$, *$1.string, $3);
     }

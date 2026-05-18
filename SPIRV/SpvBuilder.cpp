@@ -3153,6 +3153,17 @@ Instruction* Builder::createDescHeapLoadStoreBaseRemap(Id baseId, Op op)
     return inst;
 }
 
+spv::Id Builder::getOrCreateDescHeapByteArrayType()
+{
+    if (descHeapByteArrayType != NoResult)
+        return descHeapByteArrayType;
+
+    addCapability(Capability::Int8);
+    descHeapByteArrayType = makeRuntimeArray(makeUintType(8));
+    addDecoration(descHeapByteArrayType, Decoration::ArrayStride, 1);
+    return descHeapByteArrayType;
+}
+
 // Comments in header
 Id Builder::createDescHeapAccessChain()
 {
@@ -3161,7 +3172,18 @@ Id Builder::createDescHeapAccessChain()
 
     Id heapBase = accessChain.base;
     Id heapBaseTy = accessChain.descHeapInfo.descHeapBaseTy;
+    Id heapBaseOffset = accessChain.descHeapInfo.descHeapBaseOffset;
     StorageClass storageClass = (StorageClass)accessChain.descHeapInfo.descStorageClass;
+
+    if (heapBaseOffset != NoResult) {
+        Instruction* shiftedBase = new Instruction(getUniqueId(), makeUntypedPointer(getStorageClass(heapBase)),
+            Op::OpUntypedAccessChainKHR);
+        shiftedBase->addIdOperand(getOrCreateDescHeapByteArrayType());
+        shiftedBase->addIdOperand(heapBase);
+        shiftedBase->addIdOperand(heapBaseOffset);
+        addInstruction(std::unique_ptr<Instruction>(shiftedBase));
+        heapBase = shiftedBase->getResultId();
+    }
 
     // First descriptor heap access chain
     // Make the untyped access chain instruction
@@ -4541,6 +4563,7 @@ void Builder::clearAccessChain()
     accessChain.coherentFlags.clear();
     accessChain.alignment = 0;
     accessChain.descHeapInfo.descHeapBaseTy = NoResult;
+    accessChain.descHeapInfo.descHeapBaseOffset = NoResult;
     accessChain.descHeapInfo.descHeapindexChain.clear();
     accessChain.descHeapInfo.descTy = NoResult;
     accessChain.descHeapInfo.descStorageClass = StorageClass::Max;

@@ -7142,6 +7142,10 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
     const char* feature = "layout-id value";
     const char* nonLiteralFeature = "non-literal layout-id value";
 
+    std::transform(id.begin(), id.end(), id.begin(), ::tolower);
+    if (id != "heap_offset" && !node->getQualifier().isConstant())
+        error(loc, "constant expression required", "", "");
+
     integerCheck(node, feature);
     const TIntermConstantUnion* constUnion = node->getAsConstantUnion();
     int value;
@@ -7162,8 +7166,6 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
         error(loc, "cannot be negative", feature, "");
         return;
     }
-
-    std::transform(id.begin(), id.end(), id.begin(), ::tolower);
 
     if (id == "offset") {
         // "offset" can be for either
@@ -7386,7 +7388,16 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
         requireExtensions(loc, 1, &E_GL_EXT_descriptor_heap, "heap_offset");
         requireExtensions(loc, 1, &E_GL_EXT_structured_descriptor_heap, "heap_offset");
         requireVulkan(loc, "heap_offset");
-        publicType.qualifier.layoutHeapOffset = uint32_t(value);
+        if (nonLiteral) {
+            if (!node->getQualifier().isConstant() && !node->getQualifier().isUniform() &&
+                !node->getQualifier().isReadOnly()) {
+                error(loc, "must be a literal or read-only variable value", "heap_offset", "");
+                return;
+            }
+            publicType.qualifier.layoutHeapOffsetNode = const_cast<TIntermTyped*>(node);
+        } else {
+            publicType.qualifier.layoutHeapOffset = uint32_t(value);
+        }
         return;
     }
 
@@ -7640,6 +7651,8 @@ void TParseContext::mergeObjectLayoutQualifiers(TQualifier& dst, const TQualifie
             dst.layoutDescriptorSize = src.layoutDescriptorSize;
         if (src.layoutHeapOffset != 0)
             dst.layoutHeapOffset = src.layoutHeapOffset;
+        if (src.layoutHeapOffsetNode != nullptr)
+            dst.layoutHeapOffsetNode = src.layoutHeapOffsetNode;
         if (src.layoutPushConstant)
             dst.layoutPushConstant = true;
 
@@ -8209,7 +8222,7 @@ void TParseContext::layoutQualifierCheck(const TSourceLoc& loc, const TQualifier
     if (qualifier.layoutDescriptorStride != TQualifier::layoutDescriptorStrideEnd &&
         !qualifier.layoutDescriptorHeap)
         error(loc, "must specify 'descriptor_heap' to use 'descriptor_stride'", "descriptor_stride", "");
-    if (qualifier.layoutHeapOffset != 0 && !qualifier.layoutDescriptorHeap &&
+    if ((qualifier.layoutHeapOffset != 0 || qualifier.layoutHeapOffsetNode != nullptr) && !qualifier.layoutDescriptorHeap &&
         qualifier.storage != EvqSamplerHeap && qualifier.storage != EvqResourceHeap)
         error(loc, "must specify 'descriptor_heap' to use 'heap_offset'", "heap_offset", "");
 }

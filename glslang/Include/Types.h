@@ -52,6 +52,7 @@
 namespace glslang {
 
 class TIntermAggregate;
+class TIntermTyped;
 
 const int GlslangMaxTypeLength = 200;  // TODO: need to print block/struct one member per line, so this can stay bounded
 
@@ -887,6 +888,7 @@ public:
         layoutDescriptorStride = layoutDescriptorStrideEnd;
         layoutDescriptorSize = layoutDescriptorSizeEnd;
         layoutHeapOffset = 0;
+        layoutHeapOffsetNode = nullptr;
         descriptorHeapDescriptorNode = false;
     }
     void clearInterstageLayout()
@@ -994,6 +996,7 @@ public:
     bool layoutDescriptorHeap;
     bool descriptorHeapDescriptorNode;
     int layoutHeapOffset;
+    TIntermTyped* layoutHeapOffsetNode;
 
     // GL_EXT_spirv_intrinsics
     int spirvStorageClass;
@@ -2449,9 +2452,12 @@ public:
                   appendStr(" descriptor_size=");
                   appendInt(qualifier.layoutDescriptorSize);
               }
-              if (qualifier.layoutHeapOffset) {
+              if (qualifier.layoutHeapOffset || qualifier.layoutHeapOffsetNode) {
                   appendStr(" heap_offset=");
-                  appendInt(qualifier.layoutHeapOffset);
+                  if (qualifier.layoutHeapOffsetNode)
+                      appendStr("<constant-expression>");
+                  else
+                      appendInt(qualifier.layoutHeapOffset);
               }
 
               appendStr(")");
