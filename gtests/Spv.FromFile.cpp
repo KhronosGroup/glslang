@@ -908,8 +908,11 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.descriptorHeap.nonuniform.frag",
 
         // SPV_EXT_structured_descriptor_heap
+        "spv.structuredDescriptorHeap.AccelerationStructure.comp",
         "spv.structuredDescriptorHeap.Buffer.comp",
         "spv.structuredDescriptorHeap.BufferReference.comp",
+        "spv.structuredDescriptorHeap.LayoutQualifiers.comp",
+        "spv.structuredDescriptorHeap.MatrixLayout.comp",
         "spv.structuredDescriptorHeap.Offset.comp",
         
         // SPV_KHR_abort
