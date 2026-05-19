@@ -2459,7 +2459,11 @@ void TGlslangToSpvTraverser::recordDescHeapAccessChainInfo(glslang::TIntermBinar
             descType = convertGlslangToSpvType(nodeTy);
         }
 
-        builder.setAccessChainDescHeapDescriptorType(descType, TranslateStorageClass(nodeTy));
+        spv::StorageClass storageClass = TranslateStorageClass(nodeTy);
+        if (nodeTy.getBasicType() == glslang::EbtAccStruct)
+            storageClass = spv::StorageClass::UniformConstant;
+
+        builder.setAccessChainDescHeapDescriptorType(descType, storageClass);
     }
 }
 
