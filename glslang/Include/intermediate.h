@@ -739,6 +739,18 @@ enum TOperator {
     EOpFragmentMaskFetch,
     EOpFragmentFetch,
 
+    // QCOM Image processing3
+    EOpTextureGatherExtendedGuardBegin,
+    EOpTextureGather4x1QCOM,
+    EOpTextureGatherV2QCOM,
+    EOpTextureGatherH2QCOM,
+    EOpTextureGatherDQCOM,
+    EOpTextureGather4x1OffsetQCOM,
+    EOpTextureGatherV2OffsetQCOM,
+    EOpTextureGatherH2OffsetQCOM,
+    EOpTextureGatherDOffsetQCOM,
+    EOpTextureGatherExtendedGuardEnd,
+
     EOpSparseTextureGuardBegin,
 
     EOpSparseTexture,
@@ -1432,7 +1444,10 @@ public:
     bool isImageFootprint() const { return op > EOpImageFootprintGuardBegin && op < EOpImageFootprintGuardEnd; }
     bool isSparseImage()   const { return op == EOpSparseImageLoad; }
     bool isSubgroup() const { return op > EOpSubgroupGuardStart && op < EOpSubgroupGuardStop; }
-
+    bool isTextureGatherExtended() const
+    {
+      return op > EOpTextureGatherExtendedGuardBegin && op < EOpTextureGatherExtendedGuardEnd;
+    }
     void setOperationPrecision(TPrecisionQualifier p) { operationPrecision = p; }
     TPrecisionQualifier getOperationPrecision() const { return operationPrecision != EpqNone ?
                                                                                      operationPrecision :
@@ -1559,6 +1574,17 @@ public:
             break;
         case EOpTextureGather:
         case EOpSparseTextureGather:
+        case EOpTextureGather4x1QCOM:
+        case EOpTextureGatherV2QCOM:
+        case EOpTextureGatherH2QCOM:
+        case EOpTextureGatherDQCOM:
+            cracked.gather = true;
+            break;
+        case EOpTextureGather4x1OffsetQCOM:
+        case EOpTextureGatherV2OffsetQCOM:
+        case EOpTextureGatherH2OffsetQCOM:
+        case EOpTextureGatherDOffsetQCOM:
+            cracked.offset = true;
             cracked.gather = true;
             break;
         case EOpTextureGatherOffset:

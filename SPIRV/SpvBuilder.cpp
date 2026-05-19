@@ -3782,6 +3782,8 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool sparse, 
         texArgs.push_back(parameters.Dref);
     if (parameters.component != NoResult)
         texArgs.push_back(parameters.component);
+    if (gather && parameters.gatherMode != NoResult)
+        texArgs.push_back(parameters.gatherMode);
 
     if (parameters.granularity != NoResult)
         texArgs.push_back(parameters.granularity);
@@ -3856,6 +3858,8 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool sparse, 
     if (mask != ImageOperandsMask::MaskNone)
         texArgs.insert(texArgs.begin() + optArgNum, (Id)mask);
 
+    bool isTextureGatherExtended = (gather && parameters.gatherMode != NoResult);
+
     //
     // Set up the instruction
     //
@@ -3876,6 +3880,8 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool sparse, 
         else
             if (sparse)
                 opCode = Op::OpImageSparseGather;
+            else if (isTextureGatherExtended)
+                opCode = Op::OpImageGatherQCOM;
             else
                 opCode = Op::OpImageGather;
     } else if (explicitLod) {
