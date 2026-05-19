@@ -909,6 +909,7 @@ INSTANTIATE_TEST_SUITE_P(
 
         // SPV_EXT_structured_descriptor_heap
         "spv.structuredDescriptorHeap.Buffer.comp",
+        "spv.structuredDescriptorHeap.BufferReference.comp",
         "spv.structuredDescriptorHeap.Offset.comp",
         
         // SPV_KHR_abort

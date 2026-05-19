@@ -66,6 +66,7 @@ Builder::Builder(unsigned int spvVersion, unsigned int magicNumber, SpvBuildLogg
     uniqueId(0),
     entryPointFunction(nullptr),
     generatingOpCodeForSpecConst(false),
+    descHeapByteArrayType(NoResult),
     logger(buildLogger)
 {
     clearAccessChain();
@@ -3176,13 +3177,20 @@ Id Builder::createDescHeapAccessChain()
     StorageClass storageClass = (StorageClass)accessChain.descHeapInfo.descStorageClass;
 
     if (heapBaseOffset != NoResult) {
-        Instruction* shiftedBase = new Instruction(getUniqueId(), makeUntypedPointer(getStorageClass(heapBase)),
-            Op::OpUntypedAccessChainKHR);
-        shiftedBase->addIdOperand(getOrCreateDescHeapByteArrayType());
-        shiftedBase->addIdOperand(heapBase);
-        shiftedBase->addIdOperand(heapBaseOffset);
-        addInstruction(std::unique_ptr<Instruction>(shiftedBase));
-        heapBase = shiftedBase->getResultId();
+        const std::pair<Id, Id> cacheKey(heapBase, heapBaseOffset);
+        auto cachedShiftedBase = descHeapShiftedBaseCache.find(cacheKey);
+        if (cachedShiftedBase != descHeapShiftedBaseCache.end()) {
+            heapBase = cachedShiftedBase->second;
+        } else {
+            Instruction* shiftedBase = new Instruction(getUniqueId(), makeUntypedPointer(getStorageClass(heapBase)),
+                Op::OpUntypedAccessChainKHR);
+            shiftedBase->addIdOperand(getOrCreateDescHeapByteArrayType());
+            shiftedBase->addIdOperand(heapBase);
+            shiftedBase->addIdOperand(heapBaseOffset);
+            addInstruction(std::unique_ptr<Instruction>(shiftedBase));
+            heapBase = shiftedBase->getResultId();
+            descHeapShiftedBaseCache.insert(std::make_pair(cacheKey, heapBase));
+        }
     }
 
     // First descriptor heap access chain

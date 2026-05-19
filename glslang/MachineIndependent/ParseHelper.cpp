@@ -6492,9 +6492,12 @@ void TParseContext::paramCheckFix(const TSourceLoc& loc, const TQualifier& quali
 
 void TParseContext::nestedBlockCheck(const TSourceLoc& loc, const bool allowedInnerStruct)
 {
-    if ((!allowedInnerStruct && structNestingLevel > 0) ||
-        (allowedInnerStruct && structNestingLevel <= 0) ||
-        blockNestingLevel > 0)
+    if (allowedInnerStruct) {
+        if ((structNestingLevel <= 0 && blockNestingLevel <= 0) ||
+            (structNestingLevel > 0 && blockNestingLevel > 0) ||
+            blockNestingLevel > 1)
+            error(loc, "cannot nest a block definition inside a structure or block", "", "");
+    } else if (structNestingLevel > 0 || blockNestingLevel > 0)
         error(loc, "cannot nest a block definition inside a structure or block", "", "");
     ++blockNestingLevel;
 }
@@ -10681,6 +10684,10 @@ TIntermNode* TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeL
         const TSourceLoc& memberLoc = typeList[member].loc;
         const bool heapBufferTypeMember =
             isResourceHeapBufferTypeMember(currentBlockQualifier, memberQualifier);
+        const bool heapBlockMember =
+            currentBlockQualifier.storage == EvqResourceHeap || currentBlockQualifier.storage == EvqSamplerHeap;
+        if (memberQualifier.layoutDescriptorHeap && !heapBlockMember)
+            error(memberLoc, "can only be used on resourceheap or samplerheap block members", "descriptor heap member", "");
         if (memberQualifier.storage != EvqTemporary && memberQualifier.storage != EvqGlobal &&
             memberQualifier.storage != currentBlockQualifier.storage && !heapBufferTypeMember)
             error(memberLoc, "member storage qualifier cannot contradict block storage qualifier", memberType.getFieldName().c_str(), "");
@@ -10711,8 +10718,7 @@ TIntermNode* TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeL
             }
         }
 
-        if (memberQualifier.layoutDescriptorSize != TQualifier::layoutDescriptorSizeEnd &&
-            currentBlockQualifier.storage != EvqResourceHeap && currentBlockQualifier.storage != EvqSamplerHeap)
+        if (memberQualifier.layoutDescriptorSize != TQualifier::layoutDescriptorSizeEnd && !heapBlockMember)
             error(memberLoc, "can only be used on resourceheap or samplerheap block members", "descriptor_size", "");
 
         // For bindless texture, sampler can be declared as uniform/storage block member,
