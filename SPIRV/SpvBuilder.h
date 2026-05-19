@@ -492,6 +492,7 @@ public:
     // Also reset current last DebugScope and current source line to unknown
     void setBuildPoint(Block* bp) {
         buildPoint = bp;
+        descHeapShiftedBaseCache.clear();
         dirtyLineTracker = true;
         dirtyScopeTracker = true;
     }
@@ -1172,7 +1173,12 @@ protected:
     std::unordered_map<ScalarConstantKey, Id, ScalarConstantKeyHash> groupedScalarConstantResultIDs;
     // map type ids to OpConstantSizeOfEXT result IDs
     std::unordered_map<Id, Id> constantSizeOfEXTIds;
-    Id descHeapByteArrayType { NoResult };
+
+    // Descriptor heap shifted base cache.
+    std::map<std::pair<Id, Id>, Id> descHeapShiftedBaseCache;
+
+    // Descriptor heap byte array type.
+    Id descHeapByteArrayType;
 
     // Track which types have explicit layouts, to avoid reusing in storage classes without layout.
     // Currently only tracks array types.
