@@ -119,7 +119,7 @@ extern int yylex(YYSTYPE*, TParseContext&);
 
 %parse-param {glslang::TParseContext* pParseContext}
 %lex-param {parseContext}
-%pure-parser  // enable thread safety
+%define api.pure  // enable thread safety
 %expect 1     // One shift reduce conflict because of if | else
 
 %token <lex> CONST BOOL INT UINT FLOAT
@@ -4158,8 +4158,8 @@ iteration_statement
         $$ = $1;
     }
     | attribute iteration_statement_nonattributed {
-        const char * extensions[2] = { E_GL_EXT_control_flow_attributes, E_GL_EXT_control_flow_attributes2 };
-        parseContext.requireExtensions($2->getLoc(), 2, extensions, "attribute");
+        const char * extensions[3] = { E_GL_EXT_control_flow_attributes, E_GL_EXT_control_flow_attributes2, E_GL_QCOM_multiple_wait_queues };
+        parseContext.requireExtensions($2->getLoc(), 3, extensions, "attribute");
         parseContext.handleLoopAttributes(*$1, $2);
         $$ = $2;
     }
