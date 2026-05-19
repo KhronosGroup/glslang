@@ -1725,6 +1725,7 @@ void TParseContext::handleCoopMat2FunctionCall(const TSourceLoc& loc, const TFun
                     funcArgs.push_back(sequence[i]);
                 }
             }
+            assert(funcArgs.size() <= 2);
 
             auto checkBaseShape = [&](const TFunction* fn, const char* name) {
                 if (fn->getParamCount() != 3) {
@@ -1743,11 +1744,6 @@ void TParseContext::handleCoopMat2FunctionCall(const TSourceLoc& loc, const TFun
             };
 
             const TType& matType = sequence[0]->getAsTyped()->getType();
-
-            if (funcArgs.size() > 2) {
-                error(loc, "too many function arguments (at most decodeFunc and decodeVectorFunc)",
-                      "coopMatLoadTensorNV", "");
-            }
 
             if (funcArgs.size() >= 1) {
                 const char* scalarName = funcArgs[0]->getAsSymbolNode()->getMangledName().c_str();
