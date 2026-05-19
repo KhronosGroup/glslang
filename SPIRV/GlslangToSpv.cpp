@@ -6318,8 +6318,25 @@ spv::Id TGlslangToSpvTraverser::convertGlslangStructToSpvType(const glslang::TTy
                                   glslangIntermediate->usingStorageBuffer()));
         }
 
-        for (unsigned int i = 0; i < descHeapMemberOffsets.size() && i < spvMembers.size(); i++)
-            builder.addMemberDecorationIdEXT(spvType, i, spv::Decoration::OffsetIdEXT, {descHeapMemberOffsets[i]});
+        assert(descHeapMemberOffsets.size() == glslangMembers->size());
+        for (int member = 0; member < (int)glslangMembers->size() && member < (int)spvMembers.size(); ++member) {
+            glslang::TType& glslangMember = *(*glslangMembers)[member].type;
+
+            // Decorate offset.
+            builder.addMemberDecorationIdEXT(spvType, member, spv::Decoration::OffsetIdEXT,
+                                             {descHeapMemberOffsets[member]});
+
+            // Decorate matrix layout.
+            glslang::TQualifier memberQualifier = glslangMember.getQualifier();
+            InheritQualifiers(memberQualifier, qualifier);
+            if (!glslangMember.isMatrix() || memberQualifier.layoutMatrix == glslang::ElmNone)
+                continue;
+
+            builder.addMemberDecoration(spvType, member,
+                                        TranslateLayoutDecoration(glslangMember, memberQualifier.layoutMatrix));
+            builder.addMemberDecoration(spvType, member, spv::Decoration::MatrixStride,
+                                        getMatrixStride(glslangMember, glslang::ElpScalar, memberQualifier.layoutMatrix));
+        }
     } else if (qualifier.layoutDescriptorHeap) {
         if (!type.getQualifier().descriptorHeapDescriptorNode)
             decorateStructType(type, glslangMembers, glslang::ElpScalar, qualifier, spvType, spvMembers);
