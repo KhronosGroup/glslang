@@ -70,5 +70,10 @@ void main()
 
     coopmat<bfloat16_t, gl_ScopeSubgroup, 16, 16, gl_MatrixUseA> cmA;
     cmA+cmA;
+    cmA*cmA;
+    b*cmA;
+    cmA*b;
+    cmA+=cmA;
+    cmA*=b;
 }
 
