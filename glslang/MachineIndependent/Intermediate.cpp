@@ -3247,6 +3247,16 @@ bool TIntermediate::promoteBinary(TIntermBinary& node)
         }
     }
 
+    const bool hasCoopMat = left->getType().isCoopMat() || right->getType().isCoopMat();
+    const bool hasLimitedFloatCoopMat =
+        (left->getType().isCoopMat() &&
+         (left->getType().containsBFloat16() || left->getType().contains8BitFloat())) ||
+        (right->getType().isCoopMat() &&
+         (right->getType().containsBFloat16() || right->getType().contains8BitFloat()));
+
+    if (hasLimitedFloatCoopMat && op != EOpAssign)
+        return false;
+
     // Do general type checks against individual operands (comparing left and right is coming up, checking mixed shapes after that)
     switch (op) {
     case EOpLessThan:
@@ -3387,7 +3397,7 @@ bool TIntermediate::promoteBinary(TIntermBinary& node)
         break;
     }
 
-    if (left->getType().isCoopMat() || right->getType().isCoopMat()) {
+    if (hasCoopMat) {
         // Operations on two cooperative matrices must have identical types
         if (left->getType().isCoopMat() && right->getType().isCoopMat() &&
             left->getType() != right->getType()) {
