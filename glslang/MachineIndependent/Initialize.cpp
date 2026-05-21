@@ -4962,6 +4962,8 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 cooperativeMatrixFuncs << "void coopMatLoadTensorNV(inout coopmat m, volatile coherent nontemporal uint8_t[] buf, " << elemTy << " element, tensorLayoutNV t, tensorViewNV v);\n";
                 cooperativeMatrixFuncs << "void coopMatLoadTensorNV(inout coopmat m, volatile coherent nontemporal uint8_t[] buf, " << elemTy << " element, tensorLayoutNV t, __function f);\n";
                 cooperativeMatrixFuncs << "void coopMatLoadTensorNV(inout coopmat m, volatile coherent nontemporal uint8_t[] buf, " << elemTy << " element, tensorLayoutNV t, tensorViewNV v, __function f);\n";
+                cooperativeMatrixFuncs << "void coopMatLoadTensorNV(inout coopmat m, volatile coherent nontemporal uint8_t[] buf, " << elemTy << " element, tensorLayoutNV t, __function f, __function g);\n";
+                cooperativeMatrixFuncs << "void coopMatLoadTensorNV(inout coopmat m, volatile coherent nontemporal uint8_t[] buf, " << elemTy << " element, tensorLayoutNV t, tensorViewNV v, __function f, __function g);\n";
                 cooperativeMatrixFuncs << "void coopMatStoreTensorNV(coopmat m, volatile coherent nontemporal uint8_t[] buf, " << elemTy << " element, tensorLayoutNV t);\n";
                 cooperativeMatrixFuncs << "void coopMatStoreTensorNV(coopmat m, volatile coherent nontemporal uint8_t[] buf, " << elemTy << " element, tensorLayoutNV t, tensorViewNV v);\n";
             }

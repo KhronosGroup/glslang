@@ -855,13 +855,14 @@ const char* CooperativeMatrixOperandsString(int op)
     }
 }
 
-const int TensorAddressingOperandsCeiling = 3;
+const int TensorAddressingOperandsCeiling = 4;
 
 const char* TensorAddressingOperandsString(int op)
 {
     switch (op) {
-    case (int)TensorAddressingOperandsShift::TensorView:  return "TensorView";
-    case (int)TensorAddressingOperandsShift::DecodeFunc:  return "DecodeFunc";
+    case (int)TensorAddressingOperandsShift::TensorView:        return "TensorView";
+    case (int)TensorAddressingOperandsShift::DecodeFunc:        return "DecodeFunc";
+    case (int)TensorAddressingOperandsShift::DecodeVectorFunc:  return "DecodeVectorFunc";
 
     default: return "Bad";
     }
@@ -1082,6 +1083,7 @@ const char* CapabilityString(int info)
     case (int)Capability::CooperativeMatrixPerElementOperationsNV: return "CooperativeMatrixPerElementOperationsNV";
     case (int)Capability::CooperativeMatrixTensorAddressingNV:     return "CooperativeMatrixTensorAddressingNV";
     case (int)Capability::CooperativeMatrixBlockLoadsNV:           return "CooperativeMatrixBlockLoadsNV";
+    case (int)Capability::CooperativeMatrixDecodeVectorNV:         return "CooperativeMatrixDecodeVectorNV";
     case (int)Capability::TensorAddressingNV:                      return "TensorAddressingNV";
 
     case (int)Capability::ShaderSMBuiltinsNV:      return "ShaderSMBuiltinsNV";

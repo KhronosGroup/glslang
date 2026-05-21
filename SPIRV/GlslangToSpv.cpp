@@ -4411,15 +4411,37 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         size_t tensorOpIdx = idImmOps.size();
         idImmOps.push_back(spv::IdImmediate(false, 0));
 
-        for (uint32_t i = 3; i < operands.size(); ++i) {
-            if (builder.isTensorView(operands[i])) {
-                addMask(idImmOps[tensorOpIdx].word, spv::TensorAddressingOperandsMask::TensorView);
-            } else {
-                // must be the decode func
-                addMask(idImmOps[tensorOpIdx].word, spv::TensorAddressingOperandsMask::DecodeFunc);
-                builder.addCapability(spv::Capability::CooperativeMatrixBlockLoadsNV);
-            }
-            idImmOps.push_back(spv::IdImmediate(true, operands[i])); // tensorView or decodeFunc
+        // Order in `operands` follows GLSL argument order:
+        //   [optional tensorView] [optional decodeFunc] [optional decodeVectorFunc]
+        // The emitted tensor-addressing operand order is the same (bit order:
+        // TensorView 0x1, DecodeFunc 0x2, DecodeVectorFunc 0x4), so we just
+        // bin operands by source position.
+        spv::Id viewId = 0;
+        spv::Id scalarFuncId = 0;
+        spv::Id vectorFuncId = 0;
+        uint32_t i = 3;
+        if (i < operands.size() && builder.isTensorView(operands[i]))
+            viewId = operands[i++];
+        if (i < operands.size())
+            scalarFuncId = operands[i++];
+        if (i < operands.size())
+            vectorFuncId = operands[i++];
+        assert(i == operands.size());
+
+        if (viewId != 0) {
+            addMask(idImmOps[tensorOpIdx].word, spv::TensorAddressingOperandsMask::TensorView);
+            idImmOps.push_back(spv::IdImmediate(true, viewId));
+        }
+        if (scalarFuncId != 0) {
+            addMask(idImmOps[tensorOpIdx].word, spv::TensorAddressingOperandsMask::DecodeFunc);
+            builder.addCapability(spv::Capability::CooperativeMatrixBlockLoadsNV);
+            idImmOps.push_back(spv::IdImmediate(true, scalarFuncId));
+        }
+        if (vectorFuncId != 0) {
+            addMask(idImmOps[tensorOpIdx].word, spv::TensorAddressingOperandsMask::DecodeVectorFunc);
+            builder.addCapability(spv::Capability::CooperativeMatrixDecodeVectorNV);
+            builder.addExtension(spv::E_SPV_NV_cooperative_matrix_decode_vector);
+            idImmOps.push_back(spv::IdImmediate(true, vectorFuncId));
         }
 
         // get the pointee type

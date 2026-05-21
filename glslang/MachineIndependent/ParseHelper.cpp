@@ -1650,24 +1650,6 @@ void TParseContext::handleCoopMat2FunctionCall(const TSourceLoc& loc, const TFun
                     }
                 }
 
-                // error checking decodeFunc parameters are (reference, uint32_t[], uint32_t[])
-                if (fnCandidate->getBuiltInOp() == EOpCooperativeMatrixLoadTensorNV) {
-                    const TFunction* decodeFunc = symbolTable.find(param->getAsSymbolNode()->getMangledName())->getAsFunction();
-
-                    if (decodeFunc->getParamCount() != 3) {
-                        error(loc, "must have three parameters", param->getAsSymbolNode()->getMangledName().c_str(), "");
-                    }
-
-                    if ((*decodeFunc)[0].type->getBasicType() != EbtReference) {
-                        error(loc, "first parameter must be buffer reference type", param->getAsSymbolNode()->getMangledName().c_str(), "");
-                    }
-                    if ((*decodeFunc)[1].type->getBasicType() != EbtUint || (*decodeFunc)[2].type->getBasicType() != EbtUint) {
-                        error(loc, "coordinate parameters must be uint32_t", param->getAsSymbolNode()->getMangledName().c_str(), "");
-                    }
-                    if (!(*decodeFunc)[1].type->isArray() || !(*decodeFunc)[2].type->isArray()) {
-                        error(loc, "coordinate parameters must be uint32_t", param->getAsSymbolNode()->getMangledName().c_str(), "");
-                    }
-                }
 
                 // error checking reduce function has matching parameters
                 if (fnCandidate->getBuiltInOp() == EOpCooperativeMatrixReduceNV) {
@@ -1718,6 +1700,91 @@ void TParseContext::handleCoopMat2FunctionCall(const TSourceLoc& loc, const TFun
                         }
                         if (sequence[1]->getAsTyped()->getType().getBasicType() != elemOp->getType().getBasicType()) {
                             error(loc, "return type must match cooperative matrix component type", param->getAsSymbolNode()->getMangledName().c_str(), "");
+                        }
+                    }
+                }
+            }
+        }
+
+        // Validate the decode function(s) for coopMatLoadTensorNV.
+        //
+        //   coopMatLoadTensorNV(mat, buf, off, t [, view] [, decodeFunc [, decodeVectorFunc]])
+        //
+        // The decode function rules are:
+        //   * decodeFunc:        scalar return matching the matrix component type.
+        //   * decodeVectorFunc:  optional, requires GL_NV_cooperative_matrix_decode_vector.
+        //                        Vector return of the matrix component type with V in {2,4,8}.
+        // Each function is validated independently; their parameter lists do
+        // not need to match (the buffer_reference type may differ between the
+        // two so the shader can type-view the same byte address differently).
+        // The non-decode load form (no function args) is allowed and skipped here.
+        if (fnCandidate->getBuiltInOp() == EOpCooperativeMatrixLoadTensorNV) {
+            std::vector<TIntermNode*> funcArgs;
+            for (uint32_t i = 0; i < sequence.size(); ++i) {
+                if (sequence[i]->getAsTyped()->getBasicType() == EbtFunction) {
+                    funcArgs.push_back(sequence[i]);
+                }
+            }
+            assert(funcArgs.size() <= 2);
+
+            auto checkBaseShape = [&](const TFunction* fn, const char* name) {
+                if (fn->getParamCount() != 3) {
+                    error(loc, "must have three parameters", name, "");
+                    return;
+                }
+                if ((*fn)[0].type->getBasicType() != EbtReference) {
+                    error(loc, "first parameter must be buffer reference type", name, "");
+                }
+                if ((*fn)[1].type->getBasicType() != EbtUint || (*fn)[2].type->getBasicType() != EbtUint) {
+                    error(loc, "coordinate parameters must be uint32_t", name, "");
+                }
+                if (!(*fn)[1].type->isArray() || !(*fn)[2].type->isArray()) {
+                    error(loc, "coordinate parameters must be uint32_t", name, "");
+                }
+            };
+
+            const TType& matType = sequence[0]->getAsTyped()->getType();
+
+            if (funcArgs.size() >= 1) {
+                const char* scalarName = funcArgs[0]->getAsSymbolNode()->getMangledName().c_str();
+                const TFunction* scalarFn =
+                    symbolTable.find(funcArgs[0]->getAsSymbolNode()->getMangledName())->getAsFunction();
+                checkBaseShape(scalarFn, scalarName);
+                const TType& retType = scalarFn->getType();
+                if (retType.getBasicType() != matType.getBasicType() ||
+                    retType.isVector() || retType.isLongVector() ||
+                    retType.isArray() || retType.isStruct() || retType.isMatrix()) {
+                    error(loc, "decodeFunc return type must be the cooperative matrix component type (scalar)",
+                          scalarName, "");
+                }
+            }
+
+            if (funcArgs.size() == 2) {
+                requireExtensions(loc, 1, &E_GL_NV_cooperative_matrix_decode_vector,
+                                  "coopMatLoadTensorNV decodeVectorFunc argument");
+
+                const char* vectorName = funcArgs[1]->getAsSymbolNode()->getMangledName().c_str();
+                const TFunction* vectorFn =
+                    symbolTable.find(funcArgs[1]->getAsSymbolNode()->getMangledName())->getAsFunction();
+                checkBaseShape(vectorFn, vectorName);
+
+                const TType& retType = vectorFn->getType();
+                const bool retIsVector = retType.isVector() || retType.isLongVector();
+                if (!retIsVector) {
+                    error(loc, "decodeVectorFunc return type must be a vector of the matrix component type",
+                          vectorName, "");
+                } else {
+                    if (retType.getBasicType() != matType.getBasicType()) {
+                        error(loc, "decodeVectorFunc return type component must match cooperative matrix component type",
+                              vectorName, "");
+                    }
+                    if (!retType.hasSpecConstantVectorComponents()) {
+                        const uint32_t V = retType.isLongVector()
+                            ? static_cast<uint32_t>(retType.getTypeParameters()->arraySizes->getDimSize(0))
+                            : static_cast<uint32_t>(retType.getVectorSize());
+                        if (V != 2 && V != 4 && V != 8) {
+                            error(loc, "decodeVectorFunc return vector length must be 2, 4, or 8",
+                                  vectorName, "");
                         }
                     }
                 }
