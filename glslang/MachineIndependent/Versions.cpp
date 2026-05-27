@@ -321,6 +321,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_NV_cooperative_matrix_decode_vector]      = EBhDisable;
     extensionBehavior[E_GL_NV_cluster_acceleration_structure]        = EBhDisable;
     extensionBehavior[E_GL_NV_linear_swept_spheres]                  = EBhDisable;
+    extensionBehavior[E_GL_NV_desktop_lowp_mediump]                  = EBhDisable;
     extensionBehavior[E_GL_NV_push_constant_bank]                    = EBhDisable;
     extensionBehavior[E_GL_NV_explicit_typecast]                     = EBhDisable;
 
@@ -617,6 +618,7 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_NV_shader_invocation_reorder 1\n"
             "#define GL_NV_cooperative_matrix2 1\n"
             "#define GL_NV_cooperative_matrix_decode_vector 1\n"
+            "#define GL_NV_desktop_lowp_mediump 1\n"
             "#define GL_NV_explicit_typecast 1\n"
 
             "#define GL_QCOM_image_processing 1\n"
