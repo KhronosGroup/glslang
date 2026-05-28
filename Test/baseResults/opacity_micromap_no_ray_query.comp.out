@@ -1,0 +1,6 @@
+opacity_micromap_no_ray_query.comp
+ERROR: 0:0: 'ray query' : required extension not requested: GL_EXT_ray_query
+ERROR: 1 compilation errors.  No code generated.
+
+
+SPIR-V is not generated for failed compile or link

@@ -1,0 +1,29 @@
+#version 460
+#extension GL_EXT_ray_query : enable
+#extension GL_EXT_opacity_micromap_ray_query_mode : enable
+
+layout(constant_id = 2) gl_EnableOpacityMicromapEXT;
+
+layout(std430, set = 0, binding = 0) buffer Log
+{
+    uint x;
+    uint y;
+};
+
+void doSomething()
+{
+    x = 0;
+    y = 0;
+}
+
+void main()
+{
+    doSomething();
+
+    if (gl_EnableOpacityMicromapEXT) {
+        doSomething();
+    }
+    if (gl_MaxAtomicCounterBufferSize == 32) {
+        doSomething();
+    }
+}

@@ -71,4 +71,6 @@ static const char* const E_SPV_EXT_descriptor_heap              = "SPV_EXT_descr
 static const char* const E_SPV_KHR_untyped_pointers             = "SPV_KHR_untyped_pointers";
 static const char* const E_SPV_KHR_abort                        = "SPV_KHR_abort";
 static const char* const E_SPV_KHR_constant_data                = "SPV_KHR_constant_data";
+static const char* const E_SPV_KHR_opacity_micromap             = "SPV_KHR_opacity_micromap";
+
 #endif  // #ifndef GLSLextKHR_H
