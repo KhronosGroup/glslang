@@ -65,6 +65,7 @@ std::string FileNameAsCustomTestSuffixIoMap(
 }
 
 using CompileVulkanToSpirvTest = GlslangTest<::testing::TestWithParam<std::string>>;
+using CompileVulkanToSpirvRelaxSetBindingLimitsTest = GlslangTest<::testing::TestWithParam<std::string>>;
 using CompileVulkanToSpirvTestNoLink = GlslangTest<::testing::TestWithParam<std::string>>;
 using CompileVulkanToSpirvDeadCodeElimTest = GlslangTest<::testing::TestWithParam<std::string>>;
 using CompileVulkan1_1ToSpirvTest = GlslangTest<::testing::TestWithParam<std::string>>;
@@ -94,6 +95,15 @@ TEST_P(CompileVulkanToSpirvTest, FromFile)
     loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam(),
                             Source::GLSL, Semantics::Vulkan, glslang::EShTargetVulkan_1_0, glslang::EShTargetSpv_1_0,
                             Target::Spv);
+}
+
+TEST_P(CompileVulkanToSpirvRelaxSetBindingLimitsTest, FromFile)
+{
+    loadFileCompileAndCheckWithOptions(GlobalTestSettings.testRoot, GetParam(),
+                                       Source::GLSL, Semantics::Vulkan,
+                                       glslang::EShTargetVulkan_1_0, glslang::EShTargetSpv_1_0,
+                                       Target::Spv, true, "", "/baseResults/",
+                                       EShMsgRelaxSetBindingLimits);
 }
 
 // Compiling GLSL to SPIR-V under Vulkan semantics without linking. Expected to successfully generate SPIR-V.
@@ -602,6 +612,14 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.tensorARM.read.comp",
         "spv.tensorARM.size.comp",
         "spv.tensorARM.unrequested_extension_types.comp",
+    })),
+    FileNameAsCustomTestSuffix
+);
+
+INSTANTIATE_TEST_SUITE_P(
+    Glsl, CompileVulkanToSpirvRelaxSetBindingLimitsTest,
+    ::testing::ValuesIn(std::vector<std::string>({
+        "spv.relaxSetBindingLimits.frag",
     })),
     FileNameAsCustomTestSuffix
 );

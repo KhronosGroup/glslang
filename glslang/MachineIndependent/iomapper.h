@@ -228,6 +228,7 @@ public:
     bool doMap(TIoMapResolver*, TInfoSink&) override;
     TIntermediate* intermediates[EShLangCount];
     bool hadError = false;
+    bool relaxSetBindingLimits = false;
     EProfile profile;
     int version;
 

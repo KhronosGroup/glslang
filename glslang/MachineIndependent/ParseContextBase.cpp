@@ -701,7 +701,7 @@ void TParseContextBase::growAtomicCounterBlock(int binding, const TSourceLoc& lo
         blockQualifier.storage = EvqBuffer;
         
         char charBuffer[512];
-        if (binding != TQualifier::layoutBindingEnd) {
+        if (binding != TQualifier::layoutNotSet) {
             snprintf(charBuffer, 512, "%s_%d", getAtomicCounterBlockName(), binding);
         } else {
             snprintf(charBuffer, 512, "%s_0", getAtomicCounterBlockName());
