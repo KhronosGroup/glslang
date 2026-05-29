@@ -274,6 +274,7 @@ enum EShMessages : unsigned {
     EShMsgDisplayErrorColumn   = (1 << 17), // Display error message column aswell as line
     EShMsgLinkTimeOptimization = (1 << 18), // perform cross-stage optimizations during linking
     EShMsgValidateCrossStageIO = (1 << 19), // validate shader inputs have matching outputs in previous stage
+    EShMsgRelaxSetBindingLimits = (1 << 20), // relax layout(set/binding) limits
     LAST_ELEMENT_MARKER(EShMsgCount),
 };
 

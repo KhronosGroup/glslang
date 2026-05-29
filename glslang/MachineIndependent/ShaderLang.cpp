@@ -777,6 +777,8 @@ void RecordProcesses(TIntermediate& intermediate, EShMessages messages, const st
         intermediate.addProcess("suppress-warnings");
     if ((messages & EShMsgKeepUncalled) != 0)
         intermediate.addProcess("keep-uncalled");
+    if ((messages & EShMsgRelaxSetBindingLimits) != 0)
+        intermediate.setRelaxSetBindingLimits(true);
     if (sourceEntryPointName.size() > 0) {
         intermediate.addProcess("source-entrypoint");
         intermediate.addProcessArgument(sourceEntryPointName);
