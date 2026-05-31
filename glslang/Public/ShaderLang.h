@@ -509,6 +509,7 @@ public:
 #endif
     void setNoStorageFormat(bool useUnknownFormat);
     void setNanMinMaxClamp(bool nanMinMaxClamp);
+    void setDiscardIsTerminate(bool discardIsTerminate);
     void setTextureSamplerTransformMode(EShTextureSamplerTransformMode mode);
     void addBlockStorageOverride(const char* nameStr, glslang::TBlockStorageClass backing);
 
