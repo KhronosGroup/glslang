@@ -114,6 +114,7 @@ enum TOptions : uint64_t {
     EOptionLinkTimeOptimization = (1ull << 34),
     EOptionValidateCrossStageIO = (1ull << 35),
     EOptionBindingsPerResourceType = (1ull << 36),
+    EOptionDiscardIsTerminate = (1ull << 37),
 };
 bool targetHlslFunctionality1 = false;
 bool SpvToolsDisassembler = false;
@@ -736,6 +737,8 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                         AbsolutePath = true;
                     } else if (lowerword == "auto-sampled-textures") {
                         autoSampledTextures = true;
+                    } else if (lowerword == "discard-is-terminate") {
+                        Options |= EOptionDiscardIsTerminate;
                     } else if (lowerword == "invert-y" ||  // synonyms
                                lowerword == "iy") {
                         Options |= EOptionInvertY;
@@ -1471,6 +1474,9 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
         if (Options & EOptionBindingsPerResourceType)
             shader->setBindingsPerResourceType();
 
+        if (Options & EOptionDiscardIsTerminate)
+            shader->setDiscardIsTerminate(true);
+
         // Set up the environment, some subsettings take precedence over earlier
         // ways of setting things.
         if (Options & EOptionSpv) {
@@ -2064,6 +2070,8 @@ void usage()
            "  --client {vulkan<ver> | opengl<ver>}\n"
            "                                    see -V and -G\n"
            "  --depfile <file>                  writes depfile for build systems\n"
+           "  --discard-is-terminate            map GLSL discard to OpTerminateInvocation\n"
+           "                                    instead of OpDemoteToHelperInvocation\n"
            "  --dump-builtin-symbols            prints builtin symbol table prior each\n"
            "                                    compile\n"
            "  -dumpfullversion | -dumpversion   print bare major.minor.patchlevel\n"

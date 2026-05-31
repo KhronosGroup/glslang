@@ -313,6 +313,7 @@ public:
         useStorageBuffer(false),
         invariantAll(false),
         nanMinMaxClamp(false),
+        discardIsTerminate(false),
         depthReplacing(false),
         stencilReplacing(false),
         uniqueId(0),
@@ -518,6 +519,14 @@ public:
         enhancedMsgs = true;
     }
     bool getEnhancedMsgs() const { return enhancedMsgs && getSource() == EShSourceGlsl; }
+
+    void setDiscardIsTerminate(bool discardIsTerminateP)
+    {
+        discardIsTerminate = discardIsTerminateP;
+        if (discardIsTerminate)
+            processes.addProcess("discard-is-terminate");
+    }
+    bool getDiscardIsTerminate() const { return discardIsTerminate; }
 
 #ifdef ENABLE_HLSL
     void setSource(EShSource s) { source = s; }
@@ -1247,6 +1256,7 @@ protected:
     bool useStorageBuffer;
     bool invariantAll;
     bool nanMinMaxClamp;            // true if desiring min/max/clamp to favor non-NaN over NaN
+    bool discardIsTerminate; // true if discard should be emitted as OpTerminateInvocation instead of OpDemoteToHelperInvocation
     bool depthReplacing;
     bool stencilReplacing;
     int localSize[3];

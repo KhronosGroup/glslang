@@ -1816,6 +1816,7 @@ void TShader::setInvertY(bool invert)                   { intermediate->setInver
 void TShader::setDxPositionW(bool invert)               { intermediate->setDxPositionW(invert); }
 void TShader::setEnhancedMsgs()                         { intermediate->setEnhancedMsgs(); }
 void TShader::setNanMinMaxClamp(bool useNonNan)         { intermediate->setNanMinMaxClamp(useNonNan); }
+void TShader::setDiscardIsTerminate(bool discardIsTerminate) { intermediate->setDiscardIsTerminate(discardIsTerminate); }
 
 // Set binding base for given resource type
 void TShader::setShiftBinding(TResourceType res, unsigned int base) {
