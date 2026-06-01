@@ -3801,13 +3801,6 @@ block_heap_inner_structure
         TType* referenceType = new TType(EbtReference, *innerStructure, TString(""));
         $$.basicType = EbtReference;
         $$.userDef = referenceType;
-        $$.qualifier = $1.qualifier;
-        $$.qualifier.storage = EvqTemporary;
-        $$.qualifier.layoutMatrix = ElmNone;
-        $$.qualifier.layoutPacking = ElpNone;
-        $$.qualifier.layoutAlign = TQualifier::layoutNotSet;
-        $$.qualifier.layoutBufferReference = false;
-        $$.qualifier.layoutBufferReferenceAlign = TQualifier::layoutBufferReferenceAlignEnd;
         $$.qualifier.layoutDescriptorHeap = true;
     }
     ;

@@ -6818,7 +6818,7 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
     if (id == "buffer_type") {
         requireVulkan(loc, "buffer_type");
         requireExtensions(loc, 1, &E_GL_EXT_structured_descriptor_heap, "buffer_type");
-        publicType.qualifier.layoutBufferType = true;
+        publicType.qualifier.layoutDescriptorBufferType = true;
         return;
     }
     if (id == "bindless_sampler") {
@@ -7145,7 +7145,6 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
     const char* feature = "layout-id value";
     const char* nonLiteralFeature = "non-literal layout-id value";
 
-    std::transform(id.begin(), id.end(), id.begin(), ::tolower);
     if (id != "heap_offset" && !node->getQualifier().isConstant())
         error(loc, "constant expression required", "", "");
 
@@ -7169,6 +7168,8 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
         error(loc, "cannot be negative", feature, "");
         return;
     }
+
+    std::transform(id.begin(), id.end(), id.begin(), ::tolower);
 
     if (id == "offset") {
         // "offset" can be for either
@@ -7661,8 +7662,8 @@ void TParseContext::mergeObjectLayoutQualifiers(TQualifier& dst, const TQualifie
 
         if (src.layoutBufferReference)
             dst.layoutBufferReference = true;
-        if (src.layoutBufferType)
-            dst.layoutBufferType = true;
+        if (src.layoutDescriptorBufferType)
+            dst.layoutDescriptorBufferType = true;
 
         if (src.layoutPassthrough)
             dst.layoutPassthrough = true;

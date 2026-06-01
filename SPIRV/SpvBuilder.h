@@ -572,6 +572,9 @@ public:
     // Create an OpAccessChain instruction
     Id createAccessChain(StorageClass, Id base, const std::vector<Id>& offsets);
 
+    // Create an OpUntypedAccessChainKHR instruction
+    Id createUntypedAccessChain(Id resultType, Id base, const std::vector<Id>& offsets, Id resultId = NoResult);
+
     // Create an OpArrayLength instruction
     Id createArrayLength(Id base, unsigned int member, unsigned int bits);
 
