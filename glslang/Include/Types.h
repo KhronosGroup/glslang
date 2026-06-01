@@ -863,7 +863,7 @@ public:
 
         layoutPushConstant = false;
         layoutBufferReference = false;
-        layoutBufferType = false;
+        layoutDescriptorBufferType = false;
         layoutPassthrough = false;
         layoutViewportRelative = false;
         // -2048 as the default value indicating layoutSecondaryViewportRelative is not set
@@ -984,7 +984,7 @@ public:
 
     bool layoutPushConstant;
     bool layoutBufferReference;
-    bool layoutBufferType;
+    bool layoutDescriptorBufferType;
     bool layoutPassthrough;
     bool layoutViewportRelative;
     int layoutSecondaryViewportRelativeOffset;
@@ -1106,7 +1106,7 @@ public:
     TLayoutFormat getFormat() const { return layoutFormat; }
     bool isPushConstant() const { return layoutPushConstant; }
     bool isShaderRecord() const { return layoutShaderRecord; }
-    bool isBufferType() const { return layoutBufferType; }
+    bool isBufferType() const { return layoutDescriptorBufferType; }
     bool isFullQuads() const { return layoutFullQuads; }
     bool isQuadDeriv() const { return layoutQuadDeriv; }
     bool hasHitObjectShaderRecordNV() const { return layoutHitObjectShaderRecordNV; }
@@ -2401,7 +2401,7 @@ public:
                 appendStr(" push_constant");
               if (qualifier.layoutBufferReference)
                 appendStr(" buffer_reference");
-              if (qualifier.layoutBufferType)
+              if (qualifier.layoutDescriptorBufferType)
                 appendStr(" buffer_type");
               if (qualifier.hasBufferReferenceAlign()) {
                 appendStr(" buffer_reference_align=");

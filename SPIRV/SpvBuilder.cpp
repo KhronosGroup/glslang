@@ -3182,25 +3182,16 @@ Id Builder::createDescHeapAccessChain()
         if (cachedShiftedBase != descHeapShiftedBaseCache.end()) {
             heapBase = cachedShiftedBase->second;
         } else {
-            Instruction* shiftedBase = new Instruction(getUniqueId(), makeUntypedPointer(getStorageClass(heapBase)),
-                Op::OpUntypedAccessChainKHR);
-            shiftedBase->addIdOperand(getOrCreateDescHeapByteArrayType());
-            shiftedBase->addIdOperand(heapBase);
-            shiftedBase->addIdOperand(heapBaseOffset);
-            addInstruction(std::unique_ptr<Instruction>(shiftedBase));
-            heapBase = shiftedBase->getResultId();
+            Id shiftedBaseId = getUniqueId();
+            const std::vector<Id> shiftedBaseOffsets(1, heapBaseOffset);
+            heapBase = createUntypedAccessChain(getOrCreateDescHeapByteArrayType(), heapBase,
+                shiftedBaseOffsets, shiftedBaseId);
             descHeapShiftedBaseCache.insert(std::make_pair(cacheKey, heapBase));
         }
     }
 
     // First descriptor heap access chain
-    // Make the untyped access chain instruction
-    Instruction* chain = new Instruction(getUniqueId(), makeUntypedPointer(getStorageClass(heapBase)), Op::OpUntypedAccessChainKHR);
-    chain->addIdOperand(heapBaseTy);
-    chain->addIdOperand(heapBase);
-    for (int i = 0; i < (int)heapOffsets.size(); ++i)
-        chain->addIdOperand(heapOffsets[i]);
-    addInstruction(std::unique_ptr<Instruction>(chain));
+    Id chain = createUntypedAccessChain(heapBaseTy, heapBase, heapOffsets);
 
     // Create OpBufferPointer for loading target buffer descriptor
     if (storageClass == spv::StorageClass::Uniform || storageClass == spv::StorageClass::StorageBuffer) {
@@ -3208,7 +3199,7 @@ Id Builder::createDescHeapAccessChain()
         Id descriptorTy = accessChain.descHeapInfo.descTy;
         Id bufferPtrTy = makePointer(storageClass, descriptorTy);
         Instruction* bufferDataPtr = new Instruction(getUniqueId(), bufferPtrTy, Op::OpBufferPointerEXT);
-        bufferDataPtr->addIdOperand(chain->getResultId());
+        bufferDataPtr->addIdOperand(chain);
         addInstruction(std::unique_ptr<Instruction>(bufferDataPtr));
 
         std::vector<Id>& offsets = accessChain.indexChain;
@@ -3235,7 +3226,7 @@ Id Builder::createDescHeapAccessChain()
         return bufferChain->getResultId();
     }
 
-    return chain->getResultId();
+    return chain;
 }
 
 // Comments in header
@@ -3248,6 +3239,24 @@ Id Builder::createAccessChain(StorageClass storageClass, Id base, const std::vec
     // Make the instruction
     Instruction* chain = new Instruction(getUniqueId(), typeId, Op::OpAccessChain);
     chain->reserveOperands(offsets.size() + 1);
+    chain->addIdOperand(base);
+    for (int i = 0; i < (int)offsets.size(); ++i)
+        chain->addIdOperand(offsets[i]);
+    addInstruction(std::unique_ptr<Instruction>(chain));
+
+    return chain->getResultId();
+}
+
+// Comments in header
+Id Builder::createUntypedAccessChain(Id resultType, Id base, const std::vector<Id>& offsets, Id resultId)
+{
+    if (resultId == NoResult)
+        resultId = getUniqueId();
+
+    Instruction* chain = new Instruction(resultId, makeUntypedPointer(getStorageClass(base)),
+        Op::OpUntypedAccessChainKHR);
+    chain->reserveOperands(offsets.size() + 2);
+    chain->addIdOperand(resultType);
     chain->addIdOperand(base);
     for (int i = 0; i < (int)offsets.size(); ++i)
         chain->addIdOperand(offsets[i]);
