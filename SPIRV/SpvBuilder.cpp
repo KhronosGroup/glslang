@@ -3201,6 +3201,10 @@ Id Builder::createDescHeapAccessChain()
         Instruction* bufferDataPtr = new Instruction(getUniqueId(), bufferPtrTy, Op::OpBufferPointerEXT);
         bufferDataPtr->addIdOperand(chain);
         addInstruction(std::unique_ptr<Instruction>(bufferDataPtr));
+        if (accessChain.descHeapInfo.descWriteonly)
+            addDecoration(bufferDataPtr->getResultId(), Decoration::NonReadable);
+        if (accessChain.descHeapInfo.descReadonly && storageClass == StorageClass::StorageBuffer)
+            addDecoration(bufferDataPtr->getResultId(), Decoration::NonWritable);
 
         std::vector<Id>& offsets = accessChain.indexChain;
         if (offsets.empty())
@@ -4584,6 +4588,8 @@ void Builder::clearAccessChain()
     accessChain.descHeapInfo.descHeapindexChain.clear();
     accessChain.descHeapInfo.descTy = NoResult;
     accessChain.descHeapInfo.descStorageClass = StorageClass::Max;
+    accessChain.descHeapInfo.descReadonly = false;
+    accessChain.descHeapInfo.descWriteonly = false;
     accessChain.descHeapInfo.descHeapInstId.clear();
 }
 

@@ -896,6 +896,8 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.descriptorHeap.AtomicImage.error.comp",
         "spv.descriptorHeap.Buffer.comp",
         "spv.descriptorHeap.BufferStruct.comp",
+        "spv.descriptorHeap.BufferQualifiers.frag",
+        "spv.descriptorHeap.ImageQualifiers.frag",
         "spv.descriptorHeap.Stride.comp",
         "spv.descriptorHeap.DebugPrintf.comp",
         "spv.descriptorHeap.HeapNotArray.error.comp",

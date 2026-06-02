@@ -828,6 +828,8 @@ public:
             std::vector<Id> descHeapindexChain;
             Id descTy;                          // for target resource type
             StorageClass descStorageClass;      // for descriptor heap, record its basic storage class.
+            bool descReadonly;                  // for decorating OpBufferPointerEXT results.
+            bool descWriteonly;                 // for decorating OpBufferPointerEXT results.
             std::vector<Instruction*> descHeapInstId;
                                                 // for descriptor heap, record its data type for loading/store results.
         };
@@ -901,17 +903,20 @@ public:
     void setAccessChainDescHeapBaseType(Id baseType) { accessChain.descHeapInfo.descHeapBaseTy = baseType; }
     void setAccessChainDescHeapBaseOffset(Id baseOffset) { accessChain.descHeapInfo.descHeapBaseOffset = baseOffset; }
     const std::vector<Id>& getAccessChainDescHeapIndexChain() const { return accessChain.descHeapInfo.descHeapindexChain; }
+    void accessChainPushDescHeapIndex(Id index) { accessChain.descHeapInfo.descHeapindexChain.push_back(index); }
     bool hasAccessChainIndex() const { return !accessChain.indexChain.empty(); }
     void moveAccessChainIndexToDescHeapIndexChain()
     {
         assert(accessChain.indexChain.size() == 1);
-        accessChain.descHeapInfo.descHeapindexChain.push_back(accessChain.indexChain.back());
+        accessChainPushDescHeapIndex(accessChain.indexChain.back());
         accessChain.indexChain.pop_back();
     }
-    void setAccessChainDescHeapDescriptorType(Id descTy, StorageClass storageClass)
+    void setAccessChainDescHeapDescriptorType(Id descTy, StorageClass storageClass, bool readonly, bool writeonly)
     {
         accessChain.descHeapInfo.descTy = descTy;
         accessChain.descHeapInfo.descStorageClass = storageClass;
+        accessChain.descHeapInfo.descReadonly = readonly;
+        accessChain.descHeapInfo.descWriteonly = writeonly;
     }
 
     // clear accessChain
