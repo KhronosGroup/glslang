@@ -251,6 +251,7 @@ protected:
     spv::LinkageType convertGlslangLinkageToSpv(glslang::TLinkType glslangLinkType);
     bool isDescHeapDescriptorType(const glslang::TType& type) const;
     bool containsDescHeapDescriptorType(const glslang::TType& type) const;
+    spv::Id makeDescHeapImageArrayWrapperType(const glslang::TIntermSymbol& symbol, spv::Id arrayType);
 
     void decorateStructType(const glslang::TType&, const glslang::TTypeList* glslangStruct, glslang::TLayoutPacking,
                             const glslang::TQualifier&, spv::Id, const std::vector<spv::Id>& spvMembers);
@@ -2371,14 +2372,27 @@ void TGlslangToSpvTraverser::visitSymbol(glslang::TIntermSymbol* symbol)
         if (qualifier.builtIn == glslang::EbvResourceHeapEXT ||
             qualifier.builtIn == glslang::EbvSamplerHeapEXT) {
             const glslang::TType& symbolType = symbol->getType();
+            // Direct descriptor-heap image arrays have no variable or member to
+            // carry NonReadable/NonWritable, so wrap them in a one-member block.
+            const bool wrapDescHeapImageArray =
+                symbolType.getQualifier().layoutDescriptorHeap &&
+                symbolType.isArray() &&
+                symbolType.isImage() &&
+                (symbolType.getQualifier().isReadOnly() || symbolType.getQualifier().isWriteOnly());
+
             if (builder.getAccessChainDescHeapBaseType() == spv::NoResult) {
                 const long long symbolId = symbol->getId();
                 auto cachedBaseType = heapDescHeapBaseType.find(symbolId);
                 if (cachedBaseType == heapDescHeapBaseType.end()) {
-                    cachedBaseType = heapDescHeapBaseType.emplace(symbolId, convertGlslangToSpvType(symbolType)).first;
+                    spv::Id baseType = convertGlslangToSpvType(symbolType);
+                    if (wrapDescHeapImageArray)
+                        baseType = makeDescHeapImageArrayWrapperType(*symbol, baseType);
+                    cachedBaseType = heapDescHeapBaseType.emplace(symbolId, baseType).first;
                 }
                 builder.setAccessChainDescHeapBaseType(cachedBaseType->second);
             }
+            if (wrapDescHeapImageArray)
+                builder.accessChainPushDescHeapIndex(builder.makeIntConstant(0));
             spv::Id heapOffset = makeHeapOffsetId(symbolType);
             if (heapOffset != spv::NoResult)
                 builder.setAccessChainDescHeapBaseOffset(heapOffset);
@@ -2418,6 +2432,29 @@ void TGlslangToSpvTraverser::visitSymbol(glslang::TIntermSymbol* symbol)
         }
     }
 #endif
+}
+
+// Create a one-member heap block so image memory qualifiers can be expressed as
+// legal member decorations instead of decorating an OpLoad result.
+spv::Id TGlslangToSpvTraverser::makeDescHeapImageArrayWrapperType(const glslang::TIntermSymbol& symbol,
+                                                                  spv::Id arrayType)
+{
+    const glslang::TQualifier& qualifier = symbol.getType().getQualifier();
+    spv::Id memberOffset = builder.makeUintConstant(0);
+    const std::vector<spv::Id> members = { arrayType };
+    const std::string wrapperName = std::string(symbol.getName().c_str()) + "_heap";
+    spv::Id wrapperType = builder.makeStructType(members, {}, wrapperName.c_str(), false);
+
+    builder.addMemberName(wrapperType, 0, symbol.getName().c_str());
+    builder.addDecoration(wrapperType, spv::Decoration::Block);
+    builder.addMemberDecorationIdEXT(wrapperType, 0, spv::Decoration::OffsetIdEXT, {memberOffset});
+
+    if (qualifier.isReadOnly())
+        builder.addMemberDecoration(wrapperType, 0, spv::Decoration::NonWritable);
+    if (qualifier.isWriteOnly())
+        builder.addMemberDecoration(wrapperType, 0, spv::Decoration::NonReadable);
+
+    return wrapperType;
 }
 
 // Create new untyped access chain instruction to descriptor heap, based on EXT_descriptor_heap extension.
@@ -2463,7 +2500,8 @@ void TGlslangToSpvTraverser::recordDescHeapAccessChainInfo(glslang::TIntermBinar
         if (nodeTy.getBasicType() == glslang::EbtAccStruct)
             storageClass = spv::StorageClass::UniformConstant;
 
-        builder.setAccessChainDescHeapDescriptorType(descType, storageClass);
+        builder.setAccessChainDescHeapDescriptorType(descType, storageClass, nodeTy.getQualifier().isReadOnly(),
+                                                     nodeTy.getQualifier().isWriteOnly());
     }
 }
 
