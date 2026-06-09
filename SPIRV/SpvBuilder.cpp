@@ -3168,7 +3168,7 @@ spv::Id Builder::getOrCreateDescHeapByteArrayType()
 // Comments in header
 Id Builder::createDescHeapAccessChain()
 {
-    std::vector<Id>& heapOffsets = accessChain.descHeapInfo.descHeapindexChain;
+    std::vector<Id>& heapOffsets = accessChain.descHeapInfo.descHeapIndexChain;
     assert(heapOffsets.size() != 0);
 
     Id heapBase = accessChain.base;
@@ -4585,7 +4585,7 @@ void Builder::clearAccessChain()
     accessChain.alignment = 0;
     accessChain.descHeapInfo.descHeapBaseTy = NoResult;
     accessChain.descHeapInfo.descHeapBaseOffset = NoResult;
-    accessChain.descHeapInfo.descHeapindexChain.clear();
+    accessChain.descHeapInfo.descHeapIndexChain.clear();
     accessChain.descHeapInfo.descTy = NoResult;
     accessChain.descHeapInfo.descStorageClass = StorageClass::Max;
     accessChain.descHeapInfo.descReadonly = false;
@@ -4805,7 +4805,7 @@ Id Builder::accessChainGetInferredType()
     // for descriptor heap, its base data type will be determined later,
     // according to load/store results' types.
     if (accessChain.base == NoResult || isUntypedPointer(accessChain.base) ||
-    !accessChain.descHeapInfo.descHeapindexChain.empty())
+    !accessChain.descHeapInfo.descHeapIndexChain.empty())
         return NoType;
     Id type = getTypeId(accessChain.base);
     // do initial dereference
@@ -4920,13 +4920,13 @@ Id Builder::collapseAccessChain()
     // note that non-trivial swizzling is left pending
 
     // do we have an access chain?
-    if (accessChain.indexChain.size() == 0 && accessChain.descHeapInfo.descHeapindexChain.empty())
+    if (accessChain.indexChain.size() == 0 && accessChain.descHeapInfo.descHeapIndexChain.empty())
         return accessChain.base;
 
     // emit the access chain
     StorageClass storageClass = (StorageClass)module.getStorageClass(getTypeId(accessChain.base));
     // when descHeap info is set, use another access chain process.
-    if (isUntypedPointer(accessChain.base) || !accessChain.descHeapInfo.descHeapindexChain.empty()) {
+    if (isUntypedPointer(accessChain.base) || !accessChain.descHeapInfo.descHeapIndexChain.empty()) {
         accessChain.instr = createDescHeapAccessChain();
     } else {
         accessChain.instr = createAccessChain(storageClass, accessChain.base, accessChain.indexChain);

@@ -461,6 +461,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.invariantAll.vert",
         "spv.layer.tese",
         "spv.layoutNested.vert",
+        "spv.layoutQualifierExpression.error.comp",
         "spv.length.frag",
         "spv.localAggregates.frag",
         "spv.loops.frag",
