@@ -1806,6 +1806,15 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion,
         builder.addCapability(spv::Capability::RayTraversalPrimitiveCullingKHR);
     }
 
+    // gl_RayFlagsForceOpacityMicromap2StateEXT was referenced. The SPIR-V RayFlags
+    // bit ForceOpacityMicromap2StateKHR requires the RayTracingOpacityMicromapEXT
+    // capability. Emit it here so it applies uniformly to ray-tracing-pipeline
+    // stages and any stage running ray queries.
+    if (glslangIntermediate->getUsesOpacityMicromap2StateFlag()) {
+        builder.addCapability(spv::Capability::RayTracingOpacityMicromapEXT);
+        builder.addExtension("SPV_EXT_opacity_micromap");
+    }
+
     if (glslangIntermediate->getSubgroupUniformControlFlow()) {
         builder.addExtension(spv::E_SPV_KHR_subgroup_uniform_control_flow);
         builder.addExecutionMode(shaderEntry, spv::ExecutionMode::SubgroupUniformControlFlowKHR);
@@ -2074,10 +2083,6 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion,
     case EShLangCallable:
     {
         auto& extensions = glslangIntermediate->getRequestedExtensions();
-        if (extensions.find("GL_EXT_opacity_micromap") != extensions.end()) {
-            builder.addCapability(spv::Capability::RayTracingOpacityMicromapEXT);
-            builder.addExtension("SPV_EXT_opacity_micromap");
-        }
         if (extensions.find("GL_NV_ray_tracing") == extensions.end()) {
             builder.addCapability(spv::Capability::RayTracingKHR);
             builder.addExtension("SPV_KHR_ray_tracing");
