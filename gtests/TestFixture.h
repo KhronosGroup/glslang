@@ -550,7 +550,8 @@ public:
                                       int baseUboBinding,
                                       int baseSsboBinding,
                                       bool autoMapBindings,
-                                      bool flattenUniformArrays)
+                                      bool flattenUniformArrays,
+                                      bool relaxSetBindingLimits)
     {
 #ifndef ENABLE_HLSL
         if (source == Source::HLSL) {
@@ -565,7 +566,9 @@ public:
         tryLoadFile(inputFname, "input", &input);
         tryLoadFile(expectedOutputFname, "expected output", &expectedOutput);
 
-        const EShMessages controls = DeriveOptions(source, semantics, target);
+        EShMessages controls = DeriveOptions(source, semantics, target);
+        if (relaxSetBindingLimits)
+            controls = static_cast<EShMessages>(controls | EShMsgRelaxSetBindingLimits);
         GlslangResult result = compileLinkIoMap(testName, input, entryPointName, controls,
                                                 baseSamplerBinding, baseTextureBinding, baseImageBinding,
                                                 baseUboBinding, baseSsboBinding,
