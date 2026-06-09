@@ -530,6 +530,14 @@ TIntermTyped* TParseContext::handleVariable(const TSourceLoc& loc, TSymbol* symb
             }
         }
 
+        // Track use of gl_RayFlagsForceOpacityMicromap2StateEXT before the front-end
+        // constant fold loses the name. Referencing this built-in is the GLSL-level
+        // signal that the SPIR-V RayFlags bit ForceOpacityMicromap2StateKHR (0x400)
+        // will reach a trace / ray-query call, which requires the
+        // RayTracingOpacityMicromapEXT capability.
+        if (variable->getName() == "gl_RayFlagsForceOpacityMicromap2StateEXT")
+            intermediate.setUsesOpacityMicromap2StateFlag();
+
         if (variable->getType().getQualifier().isFrontEndConstant())
             node = intermediate.addConstantUnion(variable->getConstArray(), variable->getType(), loc);
         else

@@ -344,6 +344,7 @@ public:
         primitives(TQualifier::layoutNotSet),
         numTaskNVBlocks(0),
         layoutPrimitiveCulling(false),
+        usesOpacityMicromap2StateFlag(false),
         numTaskEXTPayloads(0),
         nonCoherentTileAttachmentReadQCOM(false),
         autoMapBindings(false),
@@ -996,6 +997,8 @@ public:
     TDerivativeGroupExtension getLayoutDerivativeExtension() const { return computeDerivativeExtension; }
     void setLayoutPrimitiveCulling() { layoutPrimitiveCulling = true; }
     bool getLayoutPrimitiveCulling() const { return layoutPrimitiveCulling; }
+    void setUsesOpacityMicromap2StateFlag() { usesOpacityMicromap2StateFlag = true; }
+    bool getUsesOpacityMicromap2StateFlag() const { return usesOpacityMicromap2StateFlag; }
     bool setPrimitives(int m)
     {
         if (primitives != TQualifier::layoutNotSet)
@@ -1298,6 +1301,7 @@ protected:
     int primitives;
     int numTaskNVBlocks;
     bool layoutPrimitiveCulling;
+    bool usesOpacityMicromap2StateFlag;
     int numTaskEXTPayloads;
 
     bool nonCoherentTileAttachmentReadQCOM;
