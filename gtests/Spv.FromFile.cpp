@@ -315,6 +315,7 @@ INSTANTIATE_TEST_SUITE_P(
         "rayQuery-global.rgen",
         "rayQuery-types.comp",
         "rayQuery-OpConvertUToAccelerationStructureKHR.comp",
+        "rayQuery-opacityMicromap.comp",
         "spv.set.vert",
         "spv.double.comp",
         "spv.100ops.frag",

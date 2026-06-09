@@ -3765,6 +3765,14 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
     case glslang::EOpRayQueryConfirmIntersection:
         builder.addExtension("SPV_KHR_ray_query");
         builder.addCapability(spv::Capability::RayQueryKHR);
+        // gl_RayFlagsForceOpacityMicromap2StateEXT may be passed to rayQueryInitializeEXT from any
+        // stage. The flag requires the RayTracingOpacityMicromap capability, which is otherwise only
+        // declared for the ray-tracing-pipeline stages, so emit it here too when the extension is used.
+        if (glslangIntermediate->getRequestedExtensions().find("GL_EXT_opacity_micromap") !=
+            glslangIntermediate->getRequestedExtensions().end()) {
+            builder.addCapability(spv::Capability::RayTracingOpacityMicromapEXT);
+            builder.addExtension("SPV_EXT_opacity_micromap");
+        }
         noReturnValue = true;
         break;
     case glslang::EOpRayQueryProceed:
