@@ -2466,7 +2466,7 @@ spv::Id TGlslangToSpvTraverser::makeDescHeapImageArrayWrapperType(const glslang:
 void TGlslangToSpvTraverser::recordDescHeapAccessChainInfo(glslang::TIntermBinary* node)
 {
     // Descriptor heap indexing is represented separately from the normal access chain.
-    // Move the just-pushed heap index out of indexChain and into descHeapindexChain.
+    // Move the just-pushed heap index out of indexChain and into descHeapIndexChain.
     if (node->getQualifier().layoutDescriptorHeap) {
         if (builder.hasAccessChainIndex())
             builder.moveAccessChainIndexToDescHeapIndexChain();
