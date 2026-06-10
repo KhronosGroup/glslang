@@ -49,27 +49,40 @@ if (defined(is_fuchsia_tree) && is_fuchsia_tree) {
   _configs_to_add = [ "//build/config/compiler:no_chromium_code" ]
 }
 
-action("glslang_build_info") {
-  script = "build_info.py"
+if (current_toolchain == default_toolchain) {
+  if (defined(is_fuchsia_tree) && is_fuchsia_tree) {
+    import("//build/git/git_revisions.gni")
+  }
 
-  src_dir = "."
-  changes_file = "CHANGES.md"
-  template_file = "build_info.h.tmpl"
-  out_file = "${target_gen_dir}/include/glslang/build_info.h"
+  action("glslang_build_info") {
+    script = "build_info.py"
 
-  inputs = [
-    changes_file,
-    script,
-    template_file,
-  ]
-  outputs = [ out_file ]
-  args = [
-    rebase_path(src_dir, root_build_dir),
-    "-i",
-    rebase_path(template_file, root_build_dir),
-    "-o",
-    rebase_path(out_file, root_build_dir),
-  ]
+    src_dir = "."
+    changes_file = "CHANGES.md"
+    template_file = "build_info.h.tmpl"
+    out_file = "${target_gen_dir}/include/glslang/build_info.h"
+
+    inputs = [
+      changes_file,
+      script,
+      template_file,
+    ]
+    if (defined(is_fuchsia_tree) && is_fuchsia_tree) {
+      inputs += [ git_paths.glslang_head ]
+    }
+    outputs = [ out_file ]
+    args = [
+      rebase_path(src_dir, root_build_dir),
+      "-i",
+      rebase_path(template_file, root_build_dir),
+      "-o",
+      rebase_path(out_file, root_build_dir),
+    ]
+  }
+} else {
+  group("glslang_build_info") {
+    public_deps = [ ":glslang_build_info($default_toolchain)" ]
+  }
 }
 
 action("glslang_extension_headers") {
@@ -273,7 +286,8 @@ template("glslang_sources_common") {
       ]
     }
 
-    include_dirs = [ "${target_gen_dir}/include" ]
+    include_dirs = [ get_label_info(":glslang_build_info($default_toolchain)",
+                                    "target_gen_dir") + "/include" ]
 
     deps = [ ":glslang_build_info" ]
 
@@ -336,7 +350,8 @@ executable("glslang_validator") {
   }
 
   include_dirs = [
-    "${target_gen_dir}/include",
+    get_label_info(":glslang_build_info($default_toolchain)",
+                   "target_gen_dir") + "/include",
     "${spirv_tools_dir}/include",
   ]
 
