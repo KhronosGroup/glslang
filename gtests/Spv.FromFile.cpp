@@ -461,6 +461,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.invariantAll.vert",
         "spv.layer.tese",
         "spv.layoutNested.vert",
+        "spv.layoutQualifierExpression.error.comp",
         "spv.length.frag",
         "spv.localAggregates.frag",
         "spv.loops.frag",
@@ -870,6 +871,8 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.descriptorHeap.AtomicImage.error.comp",
         "spv.descriptorHeap.Buffer.comp",
         "spv.descriptorHeap.BufferStruct.comp",
+        "spv.descriptorHeap.BufferQualifiers.frag",
+        "spv.descriptorHeap.ImageQualifiers.frag",
         "spv.descriptorHeap.Stride.comp",
         "spv.descriptorHeap.DebugPrintf.comp",
         "spv.descriptorHeap.HeapNotArray.error.comp",
@@ -880,6 +883,14 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.descriptorHeap.valid.frag",
         "spv.descriptorHeap.heaps.frag",
         "spv.descriptorHeap.nonuniform.frag",
+
+        // SPV_EXT_structured_descriptor_heap
+        "spv.structuredDescriptorHeap.AccelerationStructure.comp",
+        "spv.structuredDescriptorHeap.Buffer.comp",
+        "spv.structuredDescriptorHeap.BufferReference.comp",
+        "spv.structuredDescriptorHeap.LayoutQualifiers.comp",
+        "spv.structuredDescriptorHeap.MatrixLayout.comp",
+        "spv.structuredDescriptorHeap.Offset.comp",
         
         // SPV_KHR_abort
         "spv.shader.abort.comp",

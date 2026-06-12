@@ -5169,7 +5169,8 @@ void TParseContext::globalQualifierTypeCheck(const TSourceLoc& loc, const TQuali
 
     if (qualifier.storage == EvqBuffer &&
         publicType.basicType != EbtBlock &&
-        !qualifier.hasBufferReference())
+        !qualifier.hasBufferReference() &&
+        !qualifier.isBufferType())
         error(loc, "buffers can be declared only as blocks", "buffer", "");
 
     if (qualifier.storage != EvqVaryingIn && publicType.basicType == EbtDouble &&
@@ -6460,9 +6461,12 @@ void TParseContext::paramCheckFix(const TSourceLoc& loc, const TQualifier& quali
 
 void TParseContext::nestedBlockCheck(const TSourceLoc& loc, const bool allowedInnerStruct)
 {
-    if ((!allowedInnerStruct && structNestingLevel > 0) ||
-        (allowedInnerStruct && structNestingLevel <= 0) ||
-        blockNestingLevel > 0)
+    if (allowedInnerStruct) {
+        if ((structNestingLevel <= 0 && blockNestingLevel <= 0) ||
+            (structNestingLevel > 0 && blockNestingLevel > 0) ||
+            blockNestingLevel > 1)
+            error(loc, "cannot nest a block definition inside a structure or block", "", "");
+    } else if (structNestingLevel > 0 || blockNestingLevel > 0)
         error(loc, "cannot nest a block definition inside a structure or block", "", "");
     ++blockNestingLevel;
 }
@@ -6545,11 +6549,11 @@ void TParseContext::structTypeCheck(const TSourceLoc& /*loc*/, TPublicType& publ
         if (memberQualifier.isAuxiliary() ||
             memberQualifier.isInterpolation() ||
             (memberQualifier.storage != EvqTemporary && memberQualifier.storage != EvqGlobal &&
-             !memberQualifier.layoutDescriptorHeap && !memberQualifier.layoutDescriptorInnerBlock))
+             !memberQualifier.layoutDescriptorHeap && !memberQualifier.isBufferType()))
             error(memberLoc, "cannot use storage or interpolation qualifiers on structure members", typeList[member].type->getFieldName().c_str(), "");
         if (memberQualifier.isMemory())
             error(memberLoc, "cannot use memory qualifiers on structure members", typeList[member].type->getFieldName().c_str(), "");
-        if (memberQualifier.hasLayout()) {
+        if (memberQualifier.hasLayout() && !memberQualifier.isBufferType()) {
             error(memberLoc, "cannot use layout qualifiers on structure members", typeList[member].type->getFieldName().c_str(), "");
             memberQualifier.clearLayout();
         }
@@ -6878,6 +6882,12 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
         intermediate.setUsePhysicalStorageBuffer();
         return;
     }
+    if (id == "buffer_type") {
+        requireVulkan(loc, "buffer_type");
+        requireExtensions(loc, 1, &E_GL_EXT_structured_descriptor_heap, "buffer_type");
+        publicType.qualifier.layoutDescriptorBufferType = true;
+        return;
+    }
     if (id == "bindless_sampler") {
         requireExtensions(loc, 1, &E_GL_ARB_bindless_texture, "bindless_sampler");
         publicType.qualifier.layoutBindlessSampler = true;
@@ -7202,6 +7212,9 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
     const char* feature = "layout-id value";
     const char* nonLiteralFeature = "non-literal layout-id value";
 
+    if (id != "heap_offset" && !node->getQualifier().isConstant())
+        error(loc, "constant expression required", "", "");
+
     integerCheck(node, feature);
     const TIntermConstantUnion* constUnion = node->getAsConstantUnion();
     int value;
@@ -7431,11 +7444,31 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
         return;
     }
 
+    if (id == "descriptor_size") {
+        requireExtensions(loc, 1, &E_GL_EXT_descriptor_heap, "descriptor_size");
+        requireExtensions(loc, 1, &E_GL_EXT_structured_descriptor_heap, "descriptor_size");
+        requireVulkan(loc, "descriptor_size");
+        if (nonLiteral)
+            error(loc, "needs a literal integer", "descriptor_size", "");
+        else
+            publicType.qualifier.layoutDescriptorSize = uint32_t(value);
+        return;
+    }
+
     if (id == "heap_offset") {
         requireExtensions(loc, 1, &E_GL_EXT_descriptor_heap, "heap_offset");
         requireExtensions(loc, 1, &E_GL_EXT_structured_descriptor_heap, "heap_offset");
         requireVulkan(loc, "heap_offset");
-        publicType.qualifier.layoutHeapOffset = uint32_t(value);
+        if (nonLiteral) {
+            if (!node->getQualifier().isConstant() && !node->getQualifier().isUniform() &&
+                !node->getQualifier().isReadOnly()) {
+                error(loc, "must be a literal or read-only variable value", "heap_offset", "");
+                return;
+            }
+            publicType.qualifier.layoutHeapOffsetNode = const_cast<TIntermTyped*>(node);
+        } else {
+            publicType.qualifier.layoutHeapOffset = uint32_t(value);
+        }
         return;
     }
 
@@ -7681,17 +7714,23 @@ void TParseContext::mergeObjectLayoutQualifiers(TQualifier& dst, const TQualifie
             dst.layoutAttachment = src.layoutAttachment;
         if (src.layoutDescriptorHeap)
             dst.layoutDescriptorHeap = true;
-        if (src.layoutDescriptorInnerBlock)
-            dst.layoutDescriptorInnerBlock = true;
+        if (src.descriptorHeapDescriptorNode)
+            dst.descriptorHeapDescriptorNode = true;
         if (src.layoutDescriptorStride != TQualifier::layoutDescriptorStrideEnd)
             dst.layoutDescriptorStride = src.layoutDescriptorStride;
+        if (src.layoutDescriptorSize != TQualifier::layoutDescriptorSizeEnd)
+            dst.layoutDescriptorSize = src.layoutDescriptorSize;
         if (src.layoutHeapOffset != 0)
             dst.layoutHeapOffset = src.layoutHeapOffset;
+        if (src.layoutHeapOffsetNode != nullptr)
+            dst.layoutHeapOffsetNode = src.layoutHeapOffsetNode;
         if (src.layoutPushConstant)
             dst.layoutPushConstant = true;
 
         if (src.layoutBufferReference)
             dst.layoutBufferReference = true;
+        if (src.layoutDescriptorBufferType)
+            dst.layoutDescriptorBufferType = true;
 
         if (src.layoutPassthrough)
             dst.layoutPassthrough = true;
@@ -8218,6 +8257,10 @@ void TParseContext::layoutQualifierCheck(const TSourceLoc& loc, const TQualifier
         if (qualifier.storage != EvqBuffer)
             error(loc, "can only be used with buffer", "buffer_reference", "");
     }
+    if (qualifier.isBufferType()) {
+        if (qualifier.storage != EvqUniform && qualifier.storage != EvqBuffer)
+            error(loc, "can only be used with uniform or buffer", "buffer_type", "");
+    }
     if (qualifier.isShaderRecord()) {
         if (qualifier.storage != EvqBuffer)
             error(loc, "can only be used with a buffer", "shaderRecordNV", "");
@@ -8250,7 +8293,7 @@ void TParseContext::layoutQualifierCheck(const TSourceLoc& loc, const TQualifier
     if (qualifier.layoutDescriptorStride != TQualifier::layoutDescriptorStrideEnd &&
         !qualifier.layoutDescriptorHeap)
         error(loc, "must specify 'descriptor_heap' to use 'descriptor_stride'", "descriptor_stride", "");
-    if (qualifier.layoutHeapOffset != 0 && !qualifier.layoutDescriptorHeap &&
+    if ((qualifier.layoutHeapOffset != 0 || qualifier.layoutHeapOffsetNode != nullptr) && !qualifier.layoutDescriptorHeap &&
         qualifier.storage != EvqSamplerHeap && qualifier.storage != EvqResourceHeap)
         error(loc, "must specify 'descriptor_heap' to use 'heap_offset'", "heap_offset", "");
 }
@@ -10497,28 +10540,53 @@ void TParseContext::updateBindlessQualifier(TType& memberType)
     }
 }
 
-void TParseContext::descHeapBuiltinRemap(TType* type, bool isInnerBlock)
+static TBuiltInVariable getDescriptorHeapBuiltIn(const TType& type)
 {
-    if (type->isStruct()) {
-        TTypeList* types = type->getWritableStruct();
-        for (auto typeLoc : *types) {
-            descHeapBuiltinRemap(typeLoc.type, isInnerBlock);
-        }
+    const TQualifier& qualifier = type.getQualifier();
+
+    if (qualifier.storage == EvqSamplerHeap)
+        return EbvSamplerHeapEXT;
+
+    if (qualifier.storage == EvqResourceHeap)
+        return EbvResourceHeapEXT;
+
+    if (type.getBasicType() == EbtSampler) {
+        if (type.isImage() || type.isTexture())
+            return EbvResourceHeapEXT;
+        return EbvSamplerHeapEXT;
     }
 
+    if (qualifier.isUniformOrBuffer() || type.getBasicType() == EbtAccStruct)
+        return EbvResourceHeapEXT;
+
+    return EbvNone;
+}
+
+void TParseContext::descHeapBuiltinRemap(TType* type, bool rootNode)
+{
     auto* qualifier = &type->getQualifier();
-    if (type->getBasicType() == EbtSampler) {
-        if (type->isImage() || type->isTexture())
-            qualifier->builtIn = EbvResourceHeapEXT;
-        else
-            qualifier->builtIn = EbvSamplerHeapEXT;
-        qualifier->layoutDescriptorHeap = true;
-    } else if (qualifier->isUniformOrBuffer() || type->getBasicType() == EbtAccStruct) {
-        qualifier->builtIn = EbvResourceHeapEXT;
-        qualifier->layoutDescriptorHeap = true;
-        qualifier->layoutDescriptorInnerBlock = isInnerBlock;
+    qualifier->layoutDescriptorHeap = true;
+    const TBuiltInVariable heapBuiltIn = getDescriptorHeapBuiltIn(*type);
+
+    if (rootNode)
+        qualifier->builtIn = heapBuiltIn;
+
+    if (type->isStruct() && !qualifier->isUniformOrBuffer()) {
+        TTypeList* types = type->getWritableStruct();
+        for (auto typeLoc : *types) {
+            descHeapBuiltinRemap(typeLoc.type, false);
+        }
+
+        return;
     }
- }
+
+    // Only actual descriptor payload leaves get descriptorHeapDescriptorNode;
+    // POD heap leaves remain layoutDescriptorHeap-only.
+    if (type->getBasicType() == EbtSampler ||
+        qualifier->isUniformOrBuffer() ||
+        type->getBasicType() == EbtAccStruct)
+        qualifier->descriptorHeapDescriptorNode = true;
+}
 
 bool TParseContext::untypedHeapCheck(TSymbol* symbol, const TType& type, const TSourceLoc& loc, const char* name)
 {
@@ -10540,15 +10608,26 @@ bool TParseContext::untypedHeapCheck(TSymbol* symbol, const TType& type, const T
                     "declared with a run-time sized array type.", name, "");
                 return false;
             }
-            if (!type.containsHeapArray()) {
+            if (!type.containsHeapArray() && !isHeapStruct) {
                 error(loc, "layout(descriptor_heap) decorated variable could only be declared as an array.",
                       name, "");
                 return false;
             }
-            descHeapBuiltinRemap(&symbol->getWritableType(), isHeapStruct);
+
+            if (isHeapStruct && type.isArray()) {
+                error(loc, "resourceheap / samplerheap block cannot itself be an array.", name, "");
+                return false;
+            }
+
+            descHeapBuiltinRemap(&symbol->getWritableType(), true);
         }
     }
     return true;
+}
+
+static bool isResourceHeapBufferTypeMember(const TQualifier& blockQualifier, const TQualifier& memberQualifier)
+{
+    return blockQualifier.storage == EvqResourceHeap && memberQualifier.isBufferType();
 }
 
 //
@@ -10573,9 +10652,17 @@ TIntermNode* TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeL
         TType& memberType = *typeList[member].type;
         TQualifier& memberQualifier = memberType.getQualifier();
         const TSourceLoc& memberLoc = typeList[member].loc;
-        if (memberQualifier.storage != EvqTemporary && memberQualifier.storage != EvqGlobal && memberQualifier.storage != currentBlockQualifier.storage)
+        const bool heapBufferTypeMember =
+            isResourceHeapBufferTypeMember(currentBlockQualifier, memberQualifier);
+        const bool heapBlockMember =
+            currentBlockQualifier.storage == EvqResourceHeap || currentBlockQualifier.storage == EvqSamplerHeap;
+        if (memberQualifier.layoutDescriptorHeap && !heapBlockMember)
+            error(memberLoc, "can only be used on resourceheap or samplerheap block members", "descriptor heap member", "");
+        if (memberQualifier.storage != EvqTemporary && memberQualifier.storage != EvqGlobal &&
+            memberQualifier.storage != currentBlockQualifier.storage && !heapBufferTypeMember)
             error(memberLoc, "member storage qualifier cannot contradict block storage qualifier", memberType.getFieldName().c_str(), "");
-        memberQualifier.storage = currentBlockQualifier.storage;
+        if (!heapBufferTypeMember)
+            memberQualifier.storage = currentBlockQualifier.storage;
         globalQualifierFixCheck(memberLoc, memberQualifier);
         inheritMemoryQualifiers(currentBlockQualifier, memberQualifier);
         if (currentBlockQualifier.perPrimitiveNV)
@@ -10600,6 +10687,9 @@ TIntermNode* TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeL
                 profileRequires(memberLoc, EEsProfile, 300, E_GL_ARB_enhanced_layouts, "\"offset\" on block member");
             }
         }
+
+        if (memberQualifier.layoutDescriptorSize != TQualifier::layoutDescriptorSizeEnd && !heapBlockMember)
+            error(memberLoc, "can only be used on resourceheap or samplerheap block members", "descriptor_size", "");
 
         // For bindless texture, sampler can be declared as uniform/storage block member,
         if (memberType.containsOpaque() && !extensionTurnedOn(E_GL_EXT_structured_descriptor_heap)) {
@@ -10672,6 +10762,8 @@ TIntermNode* TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeL
     for (unsigned int member = 0; member < typeList.size(); ++member) {
         TQualifier& memberQualifier = typeList[member].type->getQualifier();
         const TSourceLoc& memberLoc = typeList[member].loc;
+        const bool heapBufferTypeMember =
+            isResourceHeapBufferTypeMember(currentBlockQualifier, memberQualifier);
         if (memberQualifier.hasStream()) {
             if (defaultQualification.layoutStream != memberQualifier.layoutStream)
                 error(memberLoc, "member cannot contradict block", "stream", "");
@@ -10686,7 +10778,7 @@ TIntermNode* TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeL
                 error(memberLoc, "member cannot contradict block (or what block inherited from global)", "xfb_buffer", "");
         }
 
-        if (memberQualifier.hasPacking())
+        if (memberQualifier.hasPacking() && !heapBufferTypeMember)
             error(memberLoc, "member of block cannot have a packing layout qualifier", typeList[member].type->getFieldName().c_str(), "");
         if (memberQualifier.hasLocation()) {
             const char* feature = "location on block member";
@@ -10788,6 +10880,15 @@ TIntermNode* TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeL
         if (!instanceName) {
             return nullptr;
         }
+    } else if (currentBlockQualifier.isBufferType()) {
+        // buffer_type creates an opaque type named by the block, not a global block instance.
+        TVariable* blockNameVar = new TVariable(blockName, blockType, true);
+        if (! symbolTable.insert(*blockNameVar)) {
+            error(loc, "block name cannot be redefined", blockName->c_str(), "");
+            return nullptr;
+        }
+        if (!instanceName)
+            return nullptr;
     } else {
         //
         // Don't make a user-defined type out of block name; that will cause an error
@@ -10968,7 +11069,7 @@ void TParseContext::blockStageIoCheck(const TSourceLoc& loc, const TQualifier& q
 }
 
 // Do all block-declaration checking regarding its qualifiers.
-void TParseContext::blockQualifierCheck(const TSourceLoc& loc, const TQualifier& qualifier, bool /*instanceName*/)
+void TParseContext::blockQualifierCheck(const TSourceLoc& loc, const TQualifier& qualifier, bool instanceName)
 {
     // The 4.5 specification says:
     //
@@ -11001,6 +11102,16 @@ void TParseContext::blockQualifierCheck(const TSourceLoc& loc, const TQualifier&
         intermediate.addShaderRecordCount();
     if (qualifier.isTaskMemory())
         intermediate.addTaskNVCount();
+    if (qualifier.isBufferType()) {
+        if (qualifier.storage != EvqUniform && qualifier.storage != EvqBuffer)
+            error(loc, "can only be used with uniform or buffer", "buffer_type", "");
+        if (instanceName)
+            error(loc, "cannot have an instance name", "buffer_type", "");
+        if (qualifier.hasSet())
+            error(loc, "cannot be used with buffer_type", "set", "");
+        if (qualifier.hasBinding())
+            error(loc, "cannot be used with buffer_type", "binding", "");
+    }
 }
 
 //
@@ -11698,6 +11809,8 @@ void TParseContext::updateStandaloneQualifierDefaults(const TSourceLoc& loc, con
         error(loc, "cannot declare a default, can only be used on a block", "push_constant", "");
     if (qualifier.hasBufferReference())
         error(loc, "cannot declare a default, can only be used on a block", "buffer_reference", "");
+    if (qualifier.isBufferType())
+        error(loc, "cannot declare a default, can only be used on a block", "buffer_type", "");
     if (qualifier.hasSpecConstantId())
         error(loc, "cannot declare a default, can only be used on a scalar", "constant_id", "");
     if (qualifier.isShaderRecord())

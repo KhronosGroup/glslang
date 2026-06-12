@@ -66,6 +66,7 @@ Builder::Builder(unsigned int spvVersion, unsigned int magicNumber, SpvBuildLogg
     uniqueId(0),
     entryPointFunction(nullptr),
     generatingOpCodeForSpecConst(false),
+    descHeapByteArrayType(NoResult),
     logger(buildLogger)
 {
     clearAccessChain();
@@ -3136,7 +3137,7 @@ Instruction* Builder::createDescHeapLoadStoreBaseRemap(Id baseId, Op op)
     // base type (from run time array)
     spv::Id resultTy = getIdOperand(baseId, 0);
     // Descriptor heap using run time array.
-    if (accessChain.descHeapInfo.descHeapStorageClass != StorageClass::Max)
+    if (accessChain.descHeapInfo.descStorageClass != StorageClass::Max)
         resultTy = getIdOperand(resultTy, 0);
     if (instOp != Op::OpUntypedAccessChainKHR) {
         assert(false && "Not a untyped load type");
@@ -3153,110 +3154,64 @@ Instruction* Builder::createDescHeapLoadStoreBaseRemap(Id baseId, Op op)
     return inst;
 }
 
-uint32_t Builder::isStructureHeapMember(Id id, std::vector<Id> indexChain,
-    unsigned int idx, spv::BuiltIn* bt, uint32_t* firstArrIndex)
+spv::Id Builder::getOrCreateDescHeapByteArrayType()
 {
-    unsigned currentIdx = idx;
-    // Process types, only array types could contain no constant id operands.
-    Id baseId = id;
-    if (baseId == NoType)
-        return 0;
-    if (isPointerType(baseId))
-        baseId = getContainedTypeId(baseId);
-    auto baseInst = module.getInstruction(baseId);
-    if (baseInst->getOpCode() == spv::Op::OpTypeArray ||
-        baseInst->getOpCode() == spv::Op::OpTypeRuntimeArray) {
-        if (firstArrIndex)
-            *firstArrIndex = currentIdx;
-        baseId = getContainedTypeId(baseId);
-        baseInst = module.getInstruction(baseId);
-        currentIdx++;
-    }
-    if (currentIdx >= indexChain.size())
-        return 0;
-    // Process index op.
-    auto indexInst = module.getInstruction(indexChain[currentIdx]);
-    if (indexInst->getOpCode() != spv::Op::OpConstant)
-        return 0;
-    auto index = indexInst->getImmediateOperand(0);
-    for (auto dec = decorations.begin(); dec != decorations.end(); dec++) {
-        if (dec->get()->getOpCode() == spv::Op::OpMemberDecorate && dec->get()->getIdOperand(0) == baseId &&
-            dec->get()->getImmediateOperand(1) == index &&
-            dec->get()->getImmediateOperand(2) == spv::Decoration::BuiltIn &&
-            (dec->get()->getImmediateOperand(3) == (unsigned)spv::BuiltIn::ResourceHeapEXT ||
-             dec->get()->getImmediateOperand(3) == (unsigned)spv::BuiltIn::SamplerHeapEXT)) {
-            if (bt)
-                *bt = (spv::BuiltIn)dec->get()->getImmediateOperand(3);
-            return currentIdx;
-        }
-    }
-    // New base.
-    if (baseInst->getOpCode() == spv::Op::OpTypeStruct) {
-        if (!baseInst->isIdOperand(index) || idx == indexChain.size() - 1)
-            return 0;
-        return isStructureHeapMember(baseInst->getIdOperand(index), indexChain, currentIdx + 1, bt, firstArrIndex);
-    }
+    if (descHeapByteArrayType != NoResult)
+        return descHeapByteArrayType;
 
-    return 0;
+    addCapability(Capability::Int8);
+    descHeapByteArrayType = makeRuntimeArray(makeUintType(8));
+    addDecoration(descHeapByteArrayType, Decoration::ArrayStride, 1);
+    return descHeapByteArrayType;
 }
 
 // Comments in header
 Id Builder::createDescHeapAccessChain()
 {
-    uint32_t rsrcOffsetIdx = accessChain.descHeapInfo.structRsrcTyOffsetCount;
-    if (rsrcOffsetIdx != 0)
-        accessChain.base = accessChain.descHeapInfo.structRemappedBase;
-    Id base = accessChain.base;
-    Id baseTy = accessChain.descHeapInfo.descHeapBaseTy;
-    uint32_t explicitArrayStride = accessChain.descHeapInfo.descHeapBaseArrayStride;
-    std::vector<Id>& offsets = accessChain.indexChain;
-    uint32_t firstArrIndex = accessChain.descHeapInfo.structRsrcTyFirstArrIndex;
-    // both typeBufferEXT and UntypedPointer only contains storage class info.
-    StorageClass storageClass = (StorageClass)accessChain.descHeapInfo.descHeapStorageClass;
-    // Make the untyped access chain instruction
-    Instruction* chain = new Instruction(getUniqueId(), makeUntypedPointer(getStorageClass(base)), Op::OpUntypedAccessChainKHR);
+    std::vector<Id>& heapOffsets = accessChain.descHeapInfo.descHeapIndexChain;
+    assert(heapOffsets.size() != 0);
 
+    Id heapBase = accessChain.base;
+    Id heapBaseTy = accessChain.descHeapInfo.descHeapBaseTy;
+    Id heapBaseOffset = accessChain.descHeapInfo.descHeapBaseOffset;
+    StorageClass storageClass = (StorageClass)accessChain.descHeapInfo.descStorageClass;
+
+    if (heapBaseOffset != NoResult) {
+        const std::pair<Id, Id> cacheKey(heapBase, heapBaseOffset);
+        auto cachedShiftedBase = descHeapShiftedBaseCache.find(cacheKey);
+        if (cachedShiftedBase != descHeapShiftedBaseCache.end()) {
+            heapBase = cachedShiftedBase->second;
+        } else {
+            Id shiftedBaseId = getUniqueId();
+            const std::vector<Id> shiftedBaseOffsets(1, heapBaseOffset);
+            heapBase = createUntypedAccessChain(getOrCreateDescHeapByteArrayType(), heapBase,
+                shiftedBaseOffsets, shiftedBaseId);
+            descHeapShiftedBaseCache.insert(std::make_pair(cacheKey, heapBase));
+        }
+    }
+
+    // First descriptor heap access chain
+    Id chain = createUntypedAccessChain(heapBaseTy, heapBase, heapOffsets);
+
+    // Create OpBufferPointer for loading target buffer descriptor
     if (storageClass == spv::StorageClass::Uniform || storageClass == spv::StorageClass::StorageBuffer) {
-        // For buffer and uniform heap, split first index as heap array index
-        // Insert BufferPointer op and construct another access chain with following indexes.
-        Id bufferTy = makeUntypedPointer(storageClass, true);
-        Id strideId = NoResult;
-        if (explicitArrayStride == 0) {
-            strideId = createConstantSizeOfEXT(bufferTy);
-        } else {
-            strideId = makeUintConstant(explicitArrayStride);
-        }
-        Id runtimeArrTy = makeRuntimeArray(bufferTy);
-        addDecorationId(runtimeArrTy, spv::Decoration::ArrayStrideIdEXT, strideId);
-        chain->addIdOperand(runtimeArrTy);
-        chain->addIdOperand(base);
-        // We would only re-target current member resource directly to resource/sampler heap base.
-        // So the previous access chain index towards final resource type is not needed?
-        // In current draft, only keep the first 'array index' into last access chain index.
-        // As those resource can't be declared as an array, in current first draft, array index will
-        // be the second index. This will be refined later.
-        chain->addIdOperand(offsets[firstArrIndex]);
-        if (rsrcOffsetIdx != 0) {
-            for (uint32_t i = 0; i < rsrcOffsetIdx + 1; i++) {
-                if (rsrcOffsetIdx + i + 1 < offsets.size())
-                    offsets[i] = offsets[i + rsrcOffsetIdx + 1];
-            }
-        } else {
-            for (uint32_t i = 0; i < offsets.size() - 1; i++) {
-                offsets[i] = offsets[i + 1];
-            }
-        }
-        for (uint32_t i = 0; i < rsrcOffsetIdx + 1; i++)
-            offsets.pop_back();
-        addInstruction(std::unique_ptr<Instruction>(chain));
-        // Create OpBufferPointer for loading target buffer descriptor.
-        Id bufferPtrTy = makePointer(storageClass, baseTy);
+        // Create OpBufferPointer for the descriptor, then use a typed access chain for buffer data.
+        Id descriptorTy = accessChain.descHeapInfo.descTy;
+        Id bufferPtrTy = makePointer(storageClass, descriptorTy);
         Instruction* bufferDataPtr = new Instruction(getUniqueId(), bufferPtrTy, Op::OpBufferPointerEXT);
-        bufferDataPtr->addIdOperand(chain->getResultId());
+        bufferDataPtr->addIdOperand(chain);
         addInstruction(std::unique_ptr<Instruction>(bufferDataPtr));
+        if (accessChain.descHeapInfo.descWriteonly)
+            addDecoration(bufferDataPtr->getResultId(), Decoration::NonReadable);
+        if (accessChain.descHeapInfo.descReadonly && storageClass == StorageClass::StorageBuffer)
+            addDecoration(bufferDataPtr->getResultId(), Decoration::NonWritable);
+
+        std::vector<Id>& offsets = accessChain.indexChain;
+        if (offsets.empty())
+            return bufferDataPtr->getResultId();
 
         // Form a second, typed access chain for accessing buffer data.
-        Id resultTy = baseTy;
+        Id resultTy = descriptorTy;
         for (int i = 0; i < (int)offsets.size(); ++i) {
             if (isStructType(resultTy)) {
                 assert(isConstantScalar(offsets[i]));
@@ -3273,23 +3228,9 @@ Id Builder::createDescHeapAccessChain()
             bufferChain->addIdOperand(offsets[i]);
         addInstruction(std::unique_ptr<Instruction>(bufferChain));
         return bufferChain->getResultId();
-    } else {
-        // image/sampler heap
-        Id strideId = NoResult;
-        if (explicitArrayStride == 0) {
-            strideId = createConstantSizeOfEXT(baseTy);
-        } else {
-            strideId = makeUintConstant(explicitArrayStride);
-        }
-        Id runtimeArrTy = makeRuntimeArray(baseTy);
-        addDecorationId(runtimeArrTy, spv::Decoration::ArrayStrideIdEXT, strideId);
-        chain->addIdOperand(runtimeArrTy);
-        chain->addIdOperand(base);
-        for (int i = 0; i < (int)offsets.size(); ++i)
-            chain->addIdOperand(offsets[i]);
-        addInstruction(std::unique_ptr<Instruction>(chain));
-        return chain->getResultId();
     }
+
+    return chain;
 }
 
 // Comments in header
@@ -3302,6 +3243,24 @@ Id Builder::createAccessChain(StorageClass storageClass, Id base, const std::vec
     // Make the instruction
     Instruction* chain = new Instruction(getUniqueId(), typeId, Op::OpAccessChain);
     chain->reserveOperands(offsets.size() + 1);
+    chain->addIdOperand(base);
+    for (int i = 0; i < (int)offsets.size(); ++i)
+        chain->addIdOperand(offsets[i]);
+    addInstruction(std::unique_ptr<Instruction>(chain));
+
+    return chain->getResultId();
+}
+
+// Comments in header
+Id Builder::createUntypedAccessChain(Id resultType, Id base, const std::vector<Id>& offsets, Id resultId)
+{
+    if (resultId == NoResult)
+        resultId = getUniqueId();
+
+    Instruction* chain = new Instruction(resultId, makeUntypedPointer(getStorageClass(base)),
+        Op::OpUntypedAccessChainKHR);
+    chain->reserveOperands(offsets.size() + 2);
+    chain->addIdOperand(resultType);
     chain->addIdOperand(base);
     for (int i = 0; i < (int)offsets.size(); ++i)
         chain->addIdOperand(offsets[i]);
@@ -3612,6 +3571,20 @@ Id Builder::createSpecConstantOp(Op opCode, Id typeId, const std::vector<Id>& op
         addCapability(Capability::Float16);
 
     return op->getResultId();
+}
+
+Id Builder::createSpecConstantAlignTo(Id value, Id alignment)
+{
+    Id valueModAlignment = createSpecConstantOp(Op::OpUMod, makeUintType(32), {value, alignment}, {});
+    Id paddingToAlignment = createSpecConstantOp(Op::OpISub, makeUintType(32), {alignment, valueModAlignment}, {});
+    Id padding = createSpecConstantOp(Op::OpUMod, makeUintType(32), {paddingToAlignment, alignment}, {});
+    return createSpecConstantOp(Op::OpIAdd, makeUintType(32), {value, padding}, {});
+}
+
+Id Builder::createSpecConstantSelectMax(Id lhs, Id rhs)
+{
+    Id lhsGreater = createSpecConstantOp(Op::OpUGreaterThan, makeBoolType(), {lhs, rhs}, {});
+    return createSpecConstantOp(Op::OpSelect, makeUintType(32), {lhsGreater, lhs, rhs}, {});
 }
 
 Id Builder::createFunctionCall(spv::Function* function, const std::vector<spv::Id>& args)
@@ -4611,12 +4584,13 @@ void Builder::clearAccessChain()
     accessChain.coherentFlags.clear();
     accessChain.alignment = 0;
     accessChain.descHeapInfo.descHeapBaseTy = NoResult;
-    accessChain.descHeapInfo.descHeapStorageClass = StorageClass::Max;
+    accessChain.descHeapInfo.descHeapBaseOffset = NoResult;
+    accessChain.descHeapInfo.descHeapIndexChain.clear();
+    accessChain.descHeapInfo.descTy = NoResult;
+    accessChain.descHeapInfo.descStorageClass = StorageClass::Max;
+    accessChain.descHeapInfo.descReadonly = false;
+    accessChain.descHeapInfo.descWriteonly = false;
     accessChain.descHeapInfo.descHeapInstId.clear();
-    accessChain.descHeapInfo.descHeapBaseArrayStride = NoResult;
-    accessChain.descHeapInfo.structRemappedBase = NoResult;
-    accessChain.descHeapInfo.structRsrcTyOffsetCount = 0;
-    accessChain.descHeapInfo.structRsrcTyFirstArrIndex = 0;
 }
 
 // Comments in header
@@ -4831,7 +4805,7 @@ Id Builder::accessChainGetInferredType()
     // for descriptor heap, its base data type will be determined later,
     // according to load/store results' types.
     if (accessChain.base == NoResult || isUntypedPointer(accessChain.base) ||
-        isStructureHeapMember(getTypeId(accessChain.base), accessChain.indexChain, 0) != 0)
+    !accessChain.descHeapInfo.descHeapIndexChain.empty())
         return NoType;
     Id type = getTypeId(accessChain.base);
     // do initial dereference
@@ -4946,14 +4920,13 @@ Id Builder::collapseAccessChain()
     // note that non-trivial swizzling is left pending
 
     // do we have an access chain?
-    if (accessChain.indexChain.size() == 0)
+    if (accessChain.indexChain.size() == 0 && accessChain.descHeapInfo.descHeapIndexChain.empty())
         return accessChain.base;
 
     // emit the access chain
     StorageClass storageClass = (StorageClass)module.getStorageClass(getTypeId(accessChain.base));
     // when descHeap info is set, use another access chain process.
-    if ((isUntypedPointer(accessChain.base) || accessChain.descHeapInfo.structRsrcTyOffsetCount!= 0) &&
-        accessChain.descHeapInfo.descHeapStorageClass != StorageClass::Max) {
+    if (isUntypedPointer(accessChain.base) || !accessChain.descHeapInfo.descHeapIndexChain.empty()) {
         accessChain.instr = createDescHeapAccessChain();
     } else {
         accessChain.instr = createAccessChain(storageClass, accessChain.base, accessChain.indexChain);
@@ -5069,10 +5042,16 @@ void Builder::createBranch(bool implicit, Block* block)
 // Create OpConstantSizeOfEXT
 Id Builder::createConstantSizeOfEXT(Id typeId)
 {
-    Instruction* inst = new Instruction(getUniqueId(), makeIntType(32), Op::OpConstantSizeOfEXT);
+    auto constantSize = constantSizeOfEXTIds.find(typeId);
+    if (constantSize != constantSizeOfEXTIds.end())
+        return constantSize->second;
+
+    Id resultType = makeUintType(32);
+    Instruction* inst = new Instruction(getUniqueId(), resultType, Op::OpConstantSizeOfEXT);
     inst->addIdOperand(typeId);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(inst));
     module.mapInstruction(inst);
+    constantSizeOfEXTIds[typeId] = inst->getResultId();
     return inst->getResultId();
 }
 
