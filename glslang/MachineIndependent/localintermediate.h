@@ -315,6 +315,7 @@ public:
         nanMinMaxClamp(false),
         depthReplacing(false),
         stencilReplacing(false),
+        enableOpacityMicromapEXT(nullptr),
         uniqueId(0),
         globalUniformBlockName(""),
         atomicCounterBlockName(""),
@@ -344,6 +345,7 @@ public:
         primitives(TQualifier::layoutNotSet),
         numTaskNVBlocks(0),
         layoutPrimitiveCulling(false),
+        forceOpacityMicromap2StateUsed(false),
         numTaskEXTPayloads(0),
         nonCoherentTileAttachmentReadQCOM(false),
         autoMapBindings(false),
@@ -658,6 +660,9 @@ public:
                localSizeSpecId[1] != TQualifier::layoutNotSet ||
                localSizeSpecId[2] != TQualifier::layoutNotSet;
     }
+    void setEnableOpacityMicromapEXT(TIntermSymbol* n) { enableOpacityMicromapEXT = n; }
+    TIntermSymbol* getEnableOpacityMicromapEXT() const { return enableOpacityMicromapEXT; }
+
     void output(TInfoSink&, bool tree);
 
     bool isEsProfile() const { return profile == EEsProfile; }
@@ -996,6 +1001,8 @@ public:
     TDerivativeGroupExtension getLayoutDerivativeExtension() const { return computeDerivativeExtension; }
     void setLayoutPrimitiveCulling() { layoutPrimitiveCulling = true; }
     bool getLayoutPrimitiveCulling() const { return layoutPrimitiveCulling; }
+    void setHasForceOpacityMicromap2State() { forceOpacityMicromap2StateUsed = true; }
+    bool hasForceOpacityMicromap2State() const { return forceOpacityMicromap2StateUsed; }
     bool setPrimitives(int m)
     {
         if (primitives != TQualifier::layoutNotSet)
@@ -1252,6 +1259,7 @@ protected:
     int localSize[3];
     bool localSizeNotDefault[3];
     int localSizeSpecId[3];
+    TIntermSymbol* enableOpacityMicromapEXT;
     unsigned long long uniqueId;
 
     std::string globalUniformBlockName;
@@ -1298,6 +1306,7 @@ protected:
     int primitives;
     int numTaskNVBlocks;
     bool layoutPrimitiveCulling;
+    bool forceOpacityMicromap2StateUsed;
     int numTaskEXTPayloads;
 
     bool nonCoherentTileAttachmentReadQCOM;
