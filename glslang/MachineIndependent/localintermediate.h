@@ -318,9 +318,9 @@ public:
         uniqueId(0),
         globalUniformBlockName(""),
         atomicCounterBlockName(""),
-        globalUniformBlockSet(TQualifier::layoutSetEnd),
-        globalUniformBlockBinding(TQualifier::layoutBindingEnd),
-        atomicCounterBlockSet(TQualifier::layoutSetEnd),
+        globalUniformBlockSet(TQualifier::layoutNotSet),
+        globalUniformBlockBinding(TQualifier::layoutNotSet),
+        atomicCounterBlockSet(TQualifier::layoutNotSet),
         implicitThisName("@this"), implicitCounterName("@count"),
         source(EShSourceNone),
         useVulkanMemoryModel(false),
@@ -348,6 +348,7 @@ public:
         nonCoherentTileAttachmentReadQCOM(false),
         autoMapBindings(false),
         autoMapLocations(false),
+        relaxSetBindingLimits(false),
         flattenUniformArrays(false),
         useUnknownFormat(false),
         hlslOffsets(false),
@@ -610,15 +611,15 @@ public:
 
     void setGlobalUniformBlockName(const char* name) { globalUniformBlockName = std::string(name); }
     const char* getGlobalUniformBlockName() const { return globalUniformBlockName.c_str(); }
-    void setGlobalUniformSet(unsigned int set) { globalUniformBlockSet = set; }
-    unsigned int getGlobalUniformSet() const { return globalUniformBlockSet; }
-    void setGlobalUniformBinding(unsigned int binding) { globalUniformBlockBinding = binding; }
-    unsigned int getGlobalUniformBinding() const { return globalUniformBlockBinding; }
+    void setGlobalUniformSet(unsigned int set) { globalUniformBlockSet = static_cast<int>(set); }
+    int getGlobalUniformSet() const { return globalUniformBlockSet; }
+    void setGlobalUniformBinding(unsigned int binding) { globalUniformBlockBinding = static_cast<int>(binding); }
+    int getGlobalUniformBinding() const { return globalUniformBlockBinding; }
 
     void setAtomicCounterBlockName(const char* name) { atomicCounterBlockName = std::string(name); }
     const char* getAtomicCounterBlockName() const { return atomicCounterBlockName.c_str(); }
-    void setAtomicCounterBlockSet(unsigned int set) { atomicCounterBlockSet = set; }
-    unsigned int getAtomicCounterBlockSet() const { return atomicCounterBlockSet; }
+    void setAtomicCounterBlockSet(unsigned int set) { atomicCounterBlockSet = static_cast<int>(set); }
+    int getAtomicCounterBlockSet() const { return atomicCounterBlockSet; }
 
 
     void setUseStorageBuffer() { useStorageBuffer = true; }
@@ -734,6 +735,13 @@ public:
             processes.addProcess("auto-map-locations");
     }
     bool getAutoMapLocations() const { return autoMapLocations; }
+    void setRelaxSetBindingLimits(bool relax)
+    {
+        relaxSetBindingLimits = relax;
+        if (relaxSetBindingLimits)
+            processes.addProcess("relax-set-binding-limits");
+    }
+    bool getRelaxSetBindingLimits() const { return relaxSetBindingLimits; }
 
 #ifdef ENABLE_HLSL
     void setFlattenUniformArrays(bool flatten)
@@ -1256,9 +1264,9 @@ protected:
 
     std::string globalUniformBlockName;
     std::string atomicCounterBlockName;
-    unsigned int globalUniformBlockSet;
-    unsigned int globalUniformBlockBinding;
-    unsigned int atomicCounterBlockSet;
+    int globalUniformBlockSet;
+    int globalUniformBlockBinding;
+    int atomicCounterBlockSet;
 
 public:
     const char* const implicitThisName;
@@ -1313,6 +1321,7 @@ protected:
     std::vector<std::string> resourceSetBinding;
     bool autoMapBindings;
     bool autoMapLocations;
+    bool relaxSetBindingLimits;
     bool flattenUniformArrays;
     bool useUnknownFormat;
     bool hlslOffsets;

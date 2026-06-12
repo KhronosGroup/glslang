@@ -114,6 +114,7 @@ enum TOptions : uint64_t {
     EOptionLinkTimeOptimization = (1ull << 34),
     EOptionValidateCrossStageIO = (1ull << 35),
     EOptionBindingsPerResourceType = (1ull << 36),
+    EOptionRelaxSetBindingLimits = (1ull << 37),
 };
 bool targetHlslFunctionality1 = false;
 bool SpvToolsDisassembler = false;
@@ -638,6 +639,8 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                         lowerword == "auto-map-binding"  ||
                         lowerword == "amb") {
                         Options |= EOptionAutoMapBindings;
+                    } else if (lowerword == "relax-set-binding-limits") {
+                        Options |= EOptionRelaxSetBindingLimits;
                     } else if (lowerword == "auto-map-locations" || // synonyms
                                lowerword == "aml") {
                         Options |= EOptionAutoMapLocations;
@@ -1205,6 +1208,8 @@ void SetMessageOptions(EShMessages& messages)
         messages = (EShMessages)(messages | EShMsgLinkTimeOptimization);
     if (Options & EOptionValidateCrossStageIO)
         messages = (EShMessages)(messages | EShMsgValidateCrossStageIO);
+    if (Options & EOptionRelaxSetBindingLimits)
+        messages = (EShMessages)(messages | EShMsgRelaxSetBindingLimits);
 }
 
 //
@@ -2054,6 +2059,8 @@ void usage()
            "              suppress GLSL warnings, except as required by '#extension : warn'\n"
            "  -x          save binary output as text-based 32-bit hexadecimal numbers\n"
            "  --absolute-path                   prints absolute path for messages\n"
+           "  --relax-set-binding-limits        allow larger layout(set) and\n"
+           "                                    layout(binding) values\n"
            "  --auto-map-binding | --auto-map-bindings | --amb\n"
            "                                    automatically bind uniform variables without\n"
            "                                    explicit bindings\n"

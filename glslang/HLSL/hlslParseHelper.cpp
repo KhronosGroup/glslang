@@ -51,6 +51,16 @@
 
 namespace glslang {
 
+static bool isLayoutSetOutOfRange(int value, bool relaxSetBindingLimits)
+{
+    return value < 0 || (!relaxSetBindingLimits && value >= static_cast<int>(TQualifier::layoutSetEnd));
+}
+
+static bool isLayoutBindingOutOfRange(int value, bool relaxSetBindingLimits)
+{
+    return value < 0 || (!relaxSetBindingLimits && value >= static_cast<int>(TQualifier::layoutBindingEnd));
+}
+
 HlslParseContext::HlslParseContext(TSymbolTable& symbolTable, TIntermediate& interm, bool parsingBuiltins,
                                    int version, EProfile profile, const SpvVersion& spvVersion, EShLanguage language,
                                    TInfoSink& infoSink,
@@ -1253,7 +1263,7 @@ int HlslParseContext::addFlattenedMember(const TVariable& variable, const TType&
         TVariable* memberVariable = makeInternalVariable(memberName, type);
         mergeQualifiers(memberVariable->getWritableType().getQualifier(), variable.getType().getQualifier());
 
-        if (flattenData.nextBinding != TQualifier::layoutBindingEnd)
+        if (flattenData.nextBinding != TQualifier::layoutNotSet)
             memberVariable->getWritableType().getQualifier().layoutBinding = flattenData.nextBinding++;
 
         if (memberVariable->getType().isBuiltIn()) {
@@ -7317,14 +7327,14 @@ void HlslParseContext::setLayoutQualifier(const TSourceLoc& loc, TQualifier& qua
             qualifier.layoutLocation = value;
         return;
     } else if (id == "set") {
-        if ((unsigned int)value >= TQualifier::layoutSetEnd)
-            error(loc, "set is too large", id.c_str(), "");
+        if (isLayoutSetOutOfRange(value, relaxSetBindingLimits()))
+            error(loc, "set is out of range", id.c_str(), "");
         else
             qualifier.layoutSet = value;
         return;
     } else if (id == "binding") {
-        if ((unsigned int)value >= TQualifier::layoutBindingEnd)
-            error(loc, "binding is too large", id.c_str(), "");
+        if (isLayoutBindingOutOfRange(value, relaxSetBindingLimits()))
+            error(loc, "binding is out of range", id.c_str(), "");
         else
             qualifier.layoutBinding = value;
         return;
@@ -7535,7 +7545,7 @@ void HlslParseContext::mergeObjectLayoutQualifiers(TQualifier& dst, const TQuali
 
         if (src.hasSet())
             dst.layoutSet = src.layoutSet;
-        if (src.layoutBinding != TQualifier::layoutBindingEnd)
+        if (src.hasBinding())
             dst.layoutBinding = src.layoutBinding;
 
         if (src.hasXfbStride())

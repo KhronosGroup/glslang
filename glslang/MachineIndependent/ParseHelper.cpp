@@ -7268,7 +7268,7 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
             error(loc, "needs a literal integer", "location", "");
         return;
     } else if (id == "set") {
-        if ((unsigned int)value >= TQualifier::layoutSetEnd)
+        if (!relaxSetBindingLimits() && value >= static_cast<int>(TQualifier::layoutSetEnd))
             error(loc, "set is too large", id.c_str(), "");
         else
             publicType.qualifier.layoutSet = value;
@@ -7280,7 +7280,7 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
     } else if (id == "binding") {
         profileRequires(loc, ~EEsProfile, 420, E_GL_ARB_shading_language_420pack, "binding");
         profileRequires(loc, EEsProfile, 310, nullptr, "binding");
-        if ((unsigned int)value >= TQualifier::layoutBindingEnd)
+        if (!relaxSetBindingLimits() && value >= static_cast<int>(TQualifier::layoutBindingEnd))
             error(loc, "binding is too large", id.c_str(), "");
         else
             publicType.qualifier.layoutBinding = value;
@@ -7663,7 +7663,7 @@ void TParseContext::mergeObjectLayoutQualifiers(TQualifier& dst, const TQualifie
             dst.layoutOffset = src.layoutOffset;
         if (src.hasSet())
             dst.layoutSet = src.layoutSet;
-        if (src.layoutBinding != TQualifier::layoutBindingEnd)
+        if (src.hasBinding())
             dst.layoutBinding = src.layoutBinding;
 
         if (src.hasSpecConstantId())
@@ -7963,7 +7963,7 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
                 error(loc, "sampler binding not less than gl_MaxCombinedTextureImageUnits", "binding", type.isArray() ? "(using array)" : "");
         }
         if (type.isAtomic() && !spvVersion.vulkanRelaxed) {
-            if (qualifier.layoutBinding >= (unsigned int)resources.maxAtomicCounterBindings) {
+            if (qualifier.layoutBinding >= resources.maxAtomicCounterBindings) {
                 error(loc, "atomic_uint binding is too large; see gl_MaxAtomicCounterBindings", "binding", "");
                 return;
             }
@@ -8842,7 +8842,7 @@ TIntermTyped* TParseContext::vkRelaxedRemapFunctionCall(const TSourceLoc& loc, T
 void TParseContext::declareTypeDefaults(const TSourceLoc& loc, const TPublicType& publicType)
 {
     if (publicType.basicType == EbtAtomicUint && publicType.qualifier.hasBinding()) {
-        if (publicType.qualifier.layoutBinding >= (unsigned int)resources.maxAtomicCounterBindings) {
+        if (publicType.qualifier.layoutBinding >= resources.maxAtomicCounterBindings) {
             error(loc, "atomic_uint binding is too large", "binding", "");
             return;
         }
@@ -8986,7 +8986,7 @@ bool TParseContext::vkRelaxedRemapUniformVariable(const TSourceLoc& loc, TString
     // do some checking on the type as it was declared
     layoutTypeCheck(loc, type);
 
-    int bufferBinding = TQualifier::layoutBindingEnd;
+    int bufferBinding = TQualifier::layoutNotSet;
     TVariable* updatedBlock = nullptr;
 
     // Convert atomic_uint into members of a buffer block
@@ -8999,7 +8999,7 @@ bool TParseContext::vkRelaxedRemapUniformVariable(const TSourceLoc& loc, TString
 
         // xxTODO: use logic from fixOffset() to apply explicit member offset
         bufferBinding = type.getQualifier().layoutBinding;
-        type.getQualifier().layoutBinding = TQualifier::layoutBindingEnd;
+        type.getQualifier().layoutBinding = TQualifier::layoutNotSet;
         type.getQualifier().explicitOffset = false;
         growAtomicCounterBlock(bufferBinding, loc, type, identifier, nullptr);
         updatedBlock = atomicCounterBuffers[bufferBinding];

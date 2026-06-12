@@ -132,6 +132,7 @@ public:
     virtual void tensorCheckARM(const TSourceLoc&, const char *op, bool builtIn = false);
     bool relaxedErrors()    const { return (messages & EShMsgRelaxedErrors) != 0; }
     bool suppressWarnings() const { return (messages & EShMsgSuppressWarnings) != 0; }
+    bool relaxSetBindingLimits() const { return (messages & EShMsgRelaxSetBindingLimits) != 0; }
     bool isForwardCompatible() const { return forwardCompatible; }
 
     virtual void spvRemoved(const TSourceLoc&, const char* op);

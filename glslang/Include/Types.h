@@ -810,8 +810,8 @@ public:
             break;
         case EbsPushConstant :
             storage = EvqUniform;
-            layoutSet = TQualifier::layoutSetEnd;
-            layoutBinding = TQualifier::layoutBindingEnd;
+            layoutSet = TQualifier::layoutNotSet;
+            layoutBinding = TQualifier::layoutNotSet;
             break;
         default:
             break;
@@ -935,10 +935,10 @@ public:
                  unsigned int layoutComponent            :  3;
     static const unsigned int layoutComponentEnd      =     4;
 
-                 unsigned int layoutSet                  :  7;
+                 int layoutSet;
     static const unsigned int layoutSetEnd           =   0x3F;
 
-                 unsigned int layoutBinding              : 16;
+                 int layoutBinding;
     static const unsigned int layoutBindingEnd      =  0xFFFF;
 
                  unsigned int layoutIndex                :  8;
@@ -1014,8 +1014,8 @@ public:
         layoutAlign = layoutNotSet;
         layoutMemberOffset = layoutNotSet;
 
-        layoutSet = layoutSetEnd;
-        layoutBinding = layoutBindingEnd;
+        layoutSet = layoutNotSet;
+        layoutBinding = layoutNotSet;
         layoutAttachment = layoutAttachmentEnd;
     }
 
@@ -1043,11 +1043,11 @@ public:
     }
     bool hasSet() const
     {
-        return layoutSet != layoutSetEnd;
+        return layoutSet != layoutNotSet;
     }
     bool hasBinding() const
     {
-        return layoutBinding != layoutBindingEnd;
+        return layoutBinding != layoutNotSet;
     }
     bool hasOffset() const
     {

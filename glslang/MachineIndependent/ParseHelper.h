@@ -91,9 +91,9 @@ public:
             parsingBuiltins(parsingBuiltins), scanContext(nullptr), ppContext(nullptr),
             limits(resources.limits),
             globalUniformBlock(nullptr),
-            globalUniformBinding(TQualifier::layoutBindingEnd),
-            globalUniformSet(TQualifier::layoutSetEnd),
-            atomicCounterBlockSet(TQualifier::layoutSetEnd)
+            globalUniformBinding(TQualifier::layoutNotSet),
+            globalUniformSet(TQualifier::layoutNotSet),
+            atomicCounterBlockSet(TQualifier::layoutNotSet)
     {
         // use storage buffer on SPIR-V 1.3 and up
         if (spvVersion.spv >= EShTargetSpv_1_3)
@@ -230,8 +230,8 @@ protected:
 
     // Manage the global uniform block (default uniforms in GLSL, $Global in HLSL)
     TVariable* globalUniformBlock;     // the actual block, inserted into the symbol table
-    unsigned int globalUniformBinding; // the block's binding number
-    unsigned int globalUniformSet;     // the block's set number
+    int globalUniformBinding;          // the block's binding number
+    int globalUniformSet;              // the block's set number
     int firstNewMember;                // the index of the first member not yet inserted into the symbol table
     // override this to set the language-specific name
     virtual const char* getGlobalUniformBlockName() const { return ""; }
@@ -240,7 +240,7 @@ protected:
 
     // Manage the atomic counter block (used for atomic_uints with Vulkan-Relaxed)
     TMap<int, TVariable*> atomicCounterBuffers;
-    unsigned int atomicCounterBlockSet;
+    int atomicCounterBlockSet;
     TMap<int, int> atomicCounterBlockFirstNewMember;
     // override this to set the language-specific name
     virtual const char* getAtomicCounterBlockName() const { return ""; }
