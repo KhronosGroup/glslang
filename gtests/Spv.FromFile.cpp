@@ -496,6 +496,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.precisionTexture.frag",
         "spv.prepost.frag",
         "spv.privateVariableTypes.frag",
+        "spv.privateHoist.frag",
         "spv.qualifiers.vert",
         "spv.sample.frag",
         "spv.sampleId.frag",
