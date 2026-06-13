@@ -7270,7 +7270,8 @@ void TGlslangToSpvTraverser::translateArguments(const glslang::TIntermAggregate&
                 glslangArguments[i]->getAsSymbolNode() && glslangArguments[i-1]->getAsSymbolNode() &&
                 glslangArguments[i]->getAsSymbolNode()->getId() == glslangArguments[i-1]->getAsSymbolNode()->getId()) {
                 // Reuse the id if possible
-                arguments.push_back(arguments[i-1]);
+                spv::Id id = arguments[i-1];
+                arguments.push_back(id);
             } else {
                 arguments.push_back(accessChainLoad(glslangArguments[i]->getAsTyped()->getType()));
             }
