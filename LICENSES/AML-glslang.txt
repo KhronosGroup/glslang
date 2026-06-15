@@ -1,3 +1,5 @@
+Copyright (c) 2002, NVIDIA Corporation.
+
 NVIDIA Corporation("NVIDIA") supplies this software to you in
 consideration of your agreement to the following terms, and your use,
 installation, modification or redistribution of this NVIDIA software
