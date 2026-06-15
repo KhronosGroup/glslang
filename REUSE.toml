@@ -61,6 +61,7 @@ path = [
     "Test/find_package/CMakeLists.txt",
     "Test/find_package/example.c",
     "Test/find_package/stub.cpp",
+    "gtests/InvertY.cpp",
 ]
 SPDX-FileCopyrightText = "The Khronos Group Inc."
 SPDX-License-Identifier = "BSD-3-Clause"
@@ -151,6 +152,7 @@ path = [
     "glslang/HLSL/hlslScanContext.h",
     "glslang/HLSL/hlslTokenStream.cpp",
     "glslang/HLSL/hlslTokenStream.h",
+    "gn_scripts/glslang_overrides_with_defaults.gni",
     "gtests/AST.FromFile.cpp",
     "gtests/BuiltInResource.FromFile.cpp",
     "gtests/Config.FromFile.cpp",
