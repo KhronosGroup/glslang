@@ -581,8 +581,8 @@ bool HlslParseContext::parseMatrixSwizzleSelector(const TSourceLoc& loc, const T
                 error(loc, "matrix component swizzle has too many components", compString.c_str(), "");
                 return false;
             }
-            if (c > compString.size() - 3 ||
-                    ((compString[c+1] == 'm' || compString[c+1] == 'M') && c > compString.size() - 4)) {
+            if (c + 3 > compString.size() ||
+                    ((compString[c+1] == 'm' || compString[c+1] == 'M') && c + 4 > compString.size())) {
                 error(loc, "matrix component swizzle missing", compString.c_str(), "");
                 return false;
             }
