@@ -2954,18 +2954,37 @@ void TParseContext::memorySemanticsCheck(const TSourceLoc& loc, const TFunction&
 //
 // Assumes there has been a semantically correct match to a built-in function prototype.
 //
-void TParseContext::requireDerivativeLayout(const TSourceLoc& loc, const char* featureDesc)
+void TParseContext::requireDerivativeLayout(const TSourceLoc& loc, const char* featureDesc, bool isDerivativeOp)
 {
     if (language != EShLangCompute && language != EShLangTask && language != EShLangMesh)
         return;
 
-    if (language == EShLangCompute) {
-        const char* const derivativeExts[] = { E_GL_NV_compute_shader_derivatives, E_GL_KHR_compute_shader_derivatives };
-        requireExtensions(loc, 2, derivativeExts, featureDesc);
-    } else {
-        requireExtensions(loc, 1, &E_GL_KHR_compute_shader_derivatives, featureDesc);
+    // Prior to the compute shader derivatives extensions:
+    //  - texture operations using implicit derivatives could be treated as if
+    //    the base level of detail was zero. If neither of the compute shader
+    //    derivative extensions are enabled, we preserve that behavior to
+    //    avoid breaking existing shaders that may rely on that
+    //  - derivative operations (such as dFdx()) were only allowed in fragment
+    //    shaders, and can only be used in other stages if one of the
+    //    extensions are enabled.
+
+    if (isDerivativeOp) {
+        // GL_NV_compute_shader_derivative added support for derivative operations
+        // in compute shaders (only).
+        //  GL_KHR_compute_shader_derivatives extended this to
+        // task and mesh shaders.
+
+        if (language == EShLangCompute) {
+            const char* const derivativeExts[] = {E_GL_NV_compute_shader_derivatives,
+                                                  E_GL_KHR_compute_shader_derivatives};
+            requireExtensions(loc, 2, derivativeExts, featureDesc);
+        } else {
+            requireExtensions(loc, 1, &E_GL_KHR_compute_shader_derivatives, featureDesc);
+        }
     }
 
+    // GL_KHR_compute_shader_derivatives requires a derivative group mode to
+    // be specified. GL_NV_compute_shader_derivative does not.
     if (extensionTurnedOn(E_GL_KHR_compute_shader_derivatives) &&
         !intermediate.hasLayoutDerivativeModeNone())
         error(loc, "requires a derivative_group_quads* or derivative_group_linear* layout qualifier", featureDesc, "");
@@ -3014,7 +3033,7 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
     case EOpFwidth:
     case EOpFwidthFine:
     case EOpFwidthCoarse:
-        requireDerivativeLayout(loc, fnCandidate.getName().c_str());
+        requireDerivativeLayout(loc, fnCandidate.getName().c_str(), true);
         break;
 
     case EOpTextureGather:
@@ -3100,7 +3119,7 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
     case EOpTextureLod:
     {
         if (callNode.getOp() == EOpTexture && fnCandidate.getParamCount() > 2)
-            requireDerivativeLayout(loc, (fnCandidate.getName() + " with bias argument").c_str());
+            requireDerivativeLayout(loc, (fnCandidate.getName() + " with bias argument").c_str(), false);
 
         if ((fnCandidate.getParamCount() > 2) && ((*argp)[1]->getAsTyped()->getType().getBasicType() == EbtFloat) &&
             ((*argp)[1]->getAsTyped()->getType().getVectorSize() == 4) && fnCandidate[0].type->getSampler().shadow) {
@@ -3132,7 +3151,7 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
     case EOpTextureProj:
     case EOpSparseTexture:
     case EOpTextureQueryLod:
-        requireDerivativeLayout(loc, fnCandidate.getName().c_str());
+        requireDerivativeLayout(loc, fnCandidate.getName().c_str(), false);
         break;
 
     case EOpSparseTextureGather:
@@ -3218,7 +3237,7 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
     {
         if (callNode.getOp() == EOpTextureOffset || callNode.getOp() == EOpTextureProjOffset ||
             callNode.getOp() == EOpSparseTextureOffset)
-            requireDerivativeLayout(loc, fnCandidate.getName().c_str());
+            requireDerivativeLayout(loc, fnCandidate.getName().c_str(), false);
 
         // Handle texture-offset limits checking
         // Pick which argument has to hold constant offsets

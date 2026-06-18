@@ -643,7 +643,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.int8.frag",
         "spv.vulkan110.int16.frag",
         "spv.int32.frag",
-	"spv.bitops.int8int16.frag",
+        "spv.bitops.int8int16.frag",
         "spv.explicittypes.frag",
         "spv.float16NoRelaxed.vert",
         "spv.float32.frag",
@@ -689,6 +689,8 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.subgroupExtendedTypesVote.comp",
         "spv.subgroupExtendedTypesVoteNeg.comp",
         "spv.vulkan110.storageBuffer.vert",
+        "spv.texture_implicit.comp",
+        "spv.es320.texture.comp",
 
         // These tests use the Vulkan memory model.
         "spv.bfloat16.comp",
@@ -841,7 +843,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.ext.hitobject-allops.rchit",
         "spv.ext.hitobject-allops.rmiss",
 
-        // SPV_NV_displacment_micromap
+        // SPV_NV_displacement_micromap
 
         "spv.nv.dmm-allops.rgen",
         "spv.nv.dmm-allops.rchit",
