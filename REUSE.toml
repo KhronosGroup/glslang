@@ -62,6 +62,7 @@ path = [
     "Test/find_package/example.c",
     "Test/find_package/stub.cpp",
     "gtests/InvertY.cpp",
+    "gtests/Discard.cpp",
 ]
 SPDX-FileCopyrightText = "The Khronos Group Inc."
 SPDX-License-Identifier = "BSD-3-Clause"
