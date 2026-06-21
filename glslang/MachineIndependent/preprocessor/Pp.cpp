@@ -634,7 +634,7 @@ int TPpContext::CPPif(TPpToken* ppToken)
 int TPpContext::CPPifdef(int defined, TPpToken* ppToken)
 {
     int token = scanToken(ppToken);
-    if (ifdepth > maxIfNesting || elsetracker > maxIfNesting) {
+    if (ifdepth >= maxIfNesting || elsetracker >= maxIfNesting) {
         parseContext.ppError(ppToken->loc, "maximum nesting depth exceeded", "#ifdef", "");
         return EndOfInput;
     } else {
