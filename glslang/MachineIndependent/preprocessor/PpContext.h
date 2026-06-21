@@ -393,9 +393,9 @@ protected:
 
     static const int maxIfNesting = 65;
 
-    int ifdepth;                  // current #if-#else-#endif nesting in the cpp.c file (pre-processor)
-    bool elseSeen[maxIfNesting];  // Keep a track of whether an else has been seen at a particular depth
-    int elsetracker;              // #if-#else and #endif constructs...Counter.
+    int ifdepth;                      // current #if-#else-#endif nesting in the cpp.c file (pre-processor)
+    bool elseSeen[maxIfNesting + 1];  // Keep a track of whether an else has been seen at a particular depth
+    int elsetracker;                  // #if-#else and #endif constructs...Counter.
 
     class tMacroInput : public tInput {
     public:
