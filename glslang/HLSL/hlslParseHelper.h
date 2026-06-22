@@ -57,7 +57,7 @@ public:
 
     void setLimits(const TBuiltInResource&) override;
     bool parseShaderStrings(TPpContext&, TInputScanner& input, bool versionWillBeError = false) override;
-    virtual const char* getGlobalUniformBlockName() const override { return "$Global"; }
+    virtual const char* getGlobalUniformBlockName() const override;
     virtual void setUniformBlockDefaults(TType& block) const override
     {
         block.getQualifier().layoutPacking = globalUniformDefaults.layoutPacking;
