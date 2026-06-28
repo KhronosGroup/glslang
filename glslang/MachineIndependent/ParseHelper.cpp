@@ -1230,6 +1230,12 @@ TFunction* TParseContext::handleFunctionDeclarator(const TSourceLoc& loc, TFunct
             error(loc, "'spirv_literal' can only be used on functions defined with 'spirv_instruction' for argument",
                   function.getName().c_str(), "%d", i + 1);
     }
+    // A variadic tail ('...') in a non-builtin declaration is only meaningful
+    // for a built-in function or for a 'spirv_instruction' function (as enabled
+    // by GL_EXT_spirv_intrinsics_variadic)
+    if (!parsingBuiltins && function.isVariadic() && function.getBuiltInOp() != EOpSpirvInst)
+        error(loc, "variadic '...' can only be used on functions defined with 'spirv_instruction'",
+              function.getName().c_str(), "");
 
     // For function declaration with SPIR-V instruction qualifier, always ignore the built-in function and
     // respect this redeclared one.
@@ -1253,6 +1259,14 @@ TFunction* TParseContext::handleFunctionDeclarator(const TSourceLoc& loc, TFunct
 
             if (*(*prevDec)[i].type != *function[i].type)
                 parameterTypesDiffer = true;
+        }
+        // The qualifier on a variadic tail is not part of the signature, so two
+        // declarations must agree on it.
+        if (function.isVariadic() &&
+            (prevDec->isVariadicSpirvLiteral() != function.isVariadicSpirvLiteral() ||
+             prevDec->isVariadicSpirvByReference() != function.isVariadicSpirvByReference())) {
+            error(loc, "overloaded functions must have the same qualifier on the variadic tail",
+                  function.getName().c_str(), "");
         }
         if (!parameterTypesDiffer && prevDec->getType() != function.getType())
             error(loc, "overloaded functions must have the same return type", function.getName().c_str(), "");
@@ -2294,8 +2308,18 @@ TIntermTyped* TParseContext::handleBuiltInFunctionCall(TSourceLoc loc, TIntermNo
                                                        const TFunction& function)
 {
     checkLocation(loc, function.getBuiltInOp());
+    // A variadic call may not necessarily be able to be lowered to a unary node,
+    // so we look at the number of arguments actually passed in.
+    bool unary = function.getParamCount() == 1;
+    if (function.isVariadic()) {
+        TIntermAggregate* argList = arguments ? arguments->getAsAggregate() : nullptr;
+        if (argList != nullptr && argList->getOp() == EOpNull)
+            unary = argList->getSequence().size() == 1;
+        else
+            unary = arguments != nullptr;
+    }
     TIntermTyped *result = intermediate.addBuiltInFunctionCall(loc, function.getBuiltInOp(),
-                                                               function.getParamCount() == 1,
+                                                               unary,
                                                                arguments, function.getType());
 
     // EXT_descriptor_heap
@@ -2333,24 +2357,58 @@ TIntermTyped* TParseContext::handleBuiltInFunctionCall(TSourceLoc loc, TIntermNo
 
     // Special handling for function call with SPIR-V instruction qualifier specified
     if (function.getBuiltInOp() == EOpSpirvInst) {
+        // Propagate spirv_by_reference/spirv_literal from parameters to arguments.
+        // For a variadic declaration, trailing arguments beyond the fixed parameters
+        // take the qualifier declared on the '...' tail, if any.
+        const int fixedParamCount = function.getParamCount();
+        const bool tailByReference = function.isVariadicSpirvByReference();
+        const bool tailLiteral = function.isVariadicSpirvLiteral();
         if (auto agg = result->getAsAggregate()) {
-            // Propogate spirv_by_reference/spirv_literal from parameters to arguments
             auto& sequence = agg->getSequence();
             for (unsigned i = 0; i < sequence.size(); ++i) {
-                if (function[i].type->getQualifier().isSpirvByReference())
+                const bool byReference = static_cast<int>(i) < fixedParamCount
+                    ? function[i].type->getQualifier().isSpirvByReference() : tailByReference;
+                const bool literal = static_cast<int>(i) < fixedParamCount
+                    ? function[i].type->getQualifier().isSpirvLiteral() : tailLiteral;
+                if (static_cast<int>(i) >= fixedParamCount &&
+                    sequence[i]->getAsTyped()->getBasicType() == EbtString)
+                    error(loc, "literal string cannot be passed as a variadic SPIR-V instruction argument",
+                          "spirv_instruction", "");
+                if (byReference)
                     sequence[i]->getAsTyped()->getQualifier().setSpirvByReference();
-                if (function[i].type->getQualifier().isSpirvLiteral())
+                if (literal) {
                     sequence[i]->getAsTyped()->getQualifier().setSpirvLiteral();
+                    // Trailing 'spirv_literal' arguments must reduce to a front-end
+                    // constant (fixed parameters are checked in handleFunctionCall).
+                    if (static_cast<int>(i) >= fixedParamCount &&
+                        !sequence[i]->getAsTyped()->getQualifier().isFrontEndConstant())
+                        error(loc, "Non front-end constant expressions cannot be passed for a 'spirv_literal' "
+                              "variadic argument.", "spirv_literal", "");
+                }
             }
 
             // Attach the function call to SPIR-V intruction
             agg->setSpirvInstruction(function.getSpirvInstruction());
         } else if (auto unaryNode = result->getAsUnaryNode()) {
-            // Propogate spirv_by_reference/spirv_literal from parameters to arguments
-            if (function[0].type->getQualifier().isSpirvByReference())
+            // A single-argument call: the argument is either the sole fixed
+            // parameter or, for a zero-fixed-parameter variadic, a trailing argument.
+            const bool byReference = fixedParamCount > 0
+                ? function[0].type->getQualifier().isSpirvByReference() : tailByReference;
+            const bool literal = fixedParamCount > 0
+                ? function[0].type->getQualifier().isSpirvLiteral() : tailLiteral;
+            if (fixedParamCount == 0 && unaryNode->getOperand()->getBasicType() == EbtString)
+                error(loc, "literal string cannot be passed as a variadic SPIR-V instruction argument",
+                      "spirv_instruction", "");
+            if (byReference)
                 unaryNode->getOperand()->getQualifier().setSpirvByReference();
-            if (function[0].type->getQualifier().isSpirvLiteral())
+            if (literal) {
                 unaryNode->getOperand()->getQualifier().setSpirvLiteral();
+                // A lone trailing 'spirv_literal' argument (no fixed parameters)
+                // must reduce to a front-end constant.
+                if (fixedParamCount == 0 && !unaryNode->getOperand()->getQualifier().isFrontEndConstant())
+                    error(loc, "Non front-end constant expressions cannot be passed for a 'spirv_literal' "
+                          "variadic argument.", "spirv_literal", "");
+            }
 
             // Attach the function call to SPIR-V intruction
             unaryNode->setSpirvInstruction(function.getSpirvInstruction());
@@ -2403,7 +2461,12 @@ void TParseContext::computeBuiltinPrecisions(TIntermTyped& node, const TFunction
         return;
 
     if (TIntermUnary* unaryNode = node.getAsUnaryNode()) {
-        operationPrecision = std::max(function[0].type->getQualifier().precision,
+        // NB. A single-argument call to a variadic declaration with no fixed
+        // parameters produces a unary node even though there is no formal
+        // parameter to read a precision from.
+        TPrecisionQualifier paramPrecision = function.getParamCount() > 0
+            ? function[0].type->getQualifier().precision : EpqNone;
+        operationPrecision = std::max(paramPrecision,
                                       unaryNode->getOperand()->getType().getQualifier().precision);
         if (function.getType().getBasicType() != EbtBool)
             resultPrecision = function.getType().getQualifier().precision == EpqNone ?
@@ -2626,13 +2689,17 @@ TIntermTyped* TParseContext::handleLengthMethod(const TSourceLoc& loc, TFunction
 void TParseContext::addInputArgumentConversions(const TFunction& function, TIntermNode*& arguments) const
 {
     TIntermAggregate* aggregate = arguments->getAsAggregate();
+    const bool multiArgumentList = aggregate != nullptr && aggregate->getOp() == EOpNull &&
+                                   aggregate->getSequence().size() > 1;
 
     // Process each argument's conversion
     for (int i = 0; i < function.getParamCount(); ++i) {
         // At this early point there is a slight ambiguity between whether an aggregate 'arguments'
         // is the single argument itself or its children are the arguments.  Only one argument
         // means take 'arguments' itself as the one argument.
-        TIntermTyped* arg = function.getParamCount() == 1 ? arguments->getAsTyped() : (aggregate ? aggregate->getSequence()[i]->getAsTyped() : arguments->getAsTyped());
+        TIntermTyped* arg = function.getParamCount() == 1 && !multiArgumentList
+            ? arguments->getAsTyped()
+            : (aggregate ? aggregate->getSequence()[i]->getAsTyped() : arguments->getAsTyped());
         if (*function[i].type != arg->getType()) {
             if (function[i].type->getQualifier().isParamInput() &&
                !function[i].type->isCoopMat() && !function[i].type->isTensorARM() &&
@@ -2643,7 +2710,7 @@ void TParseContext::addInputArgumentConversions(const TFunction& function, TInte
                 // convert to the correct type.
                 arg = intermediate.addConversion(EOpFunctionCall, *function[i].type, arg);
                 if (arg) {
-                    if (function.getParamCount() == 1)
+                    if (function.getParamCount() == 1 && !multiArgumentList)
                         arguments = arg;
                     else {
                         if (aggregate)
@@ -8488,10 +8555,45 @@ const TFunction* TParseContext::findFunction120(const TSourceLoc& loc, const TFu
     // a match, it is a semantic error if there are multiple ways to apply these conversions to make the call match
     // more than one function."
 
-    const TFunction* candidate = nullptr;
     TVector<const TFunction*> candidateList;
     symbolTable.findFunctionNameList(call.getMangledName(), candidateList, builtIn);
 
+    // Check whether we have a variadic function, if so, we will defer to the
+    // logic in selectFunction, which probably handles variadics.
+    bool hasVariadicCandidate = false;
+    for (auto it = candidateList.begin(); it != candidateList.end(); ++it) {
+        if ((*it)->isVariadic()) {
+            hasVariadicCandidate = true;
+            break;
+        }
+    }
+
+    if (hasVariadicCandidate) {
+        const auto convertible = [this](const TType& from, const TType& to, TOperator, int) -> bool {
+            if (from == to)
+                return true;
+            if (from.isArray() || to.isArray() || !from.sameElementShape(to))
+                return false;
+            return intermediate.canImplicitlyPromote(from.getBasicType(), to.getBasicType());
+        };
+
+        // For desktop 120 through 330, the only better conversion rank this
+        // resolver has is exact match. Other valid implicit conversions tie.
+        const auto better = [](const TType& from, const TType& to1, const TType& to2) -> bool {
+            return from == to2 && !(from == to1);
+        };
+
+        bool tie = false;
+        const TFunction* candidate = selectFunction(candidateList, call, convertible, better, tie);
+        if (candidate == nullptr)
+            error(loc, "no matching overloaded function found", call.getName().c_str(), "");
+        else if (tie)
+            error(loc, "ambiguous function signature match: multiple signatures match under implicit type conversion", call.getName().c_str(), "");
+
+        return candidate;
+    }
+
+    const TFunction* candidate = nullptr;
     for (auto it = candidateList.begin(); it != candidateList.end(); ++it) {
         const TFunction& function = *(*it);
 
@@ -10436,12 +10538,15 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
     return intermediate.setAggregateOperator(newNode, op, type, loc);
 }
 
-void TParseContext::makeVariadic(TFunction *F, const TSourceLoc &loc) {
-    if (parsingBuiltins) {
-        F->setVariadic();
-    } else {
-        error(loc, "variadic argument specifier is only available for builtins", "...", "");
+void TParseContext::makeVariadic(TFunction *F, const TSourceLoc &loc, bool spirvLiteral, bool spirvByReference) {
+    if (!parsingBuiltins) {
+        requireExtensions(loc, 1, &E_GL_EXT_spirv_intrinsics_variadic, "variadic SPIR-V instruction");
     }
+    F->setVariadic();
+    if (spirvLiteral)
+        F->setVariadicSpirvLiteral();
+    if (spirvByReference)
+        F->setVariadicSpirvByReference();
 }
 
 TParameter TParseContext::getParamWithDefault(const TPublicType& ty, TString* identifier, TIntermTyped* initializer,

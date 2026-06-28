@@ -454,7 +454,7 @@ public:
     TIntermTyped* addConstructor(const TSourceLoc&, TIntermNode*, const TType&);
     TIntermTyped* constructAggregate(TIntermNode*, const TType&, int, const TSourceLoc&);
     TIntermTyped* constructBuiltIn(const TType&, TOperator, TIntermTyped*, const TSourceLoc&, bool subset);
-    void makeVariadic(TFunction *F, const TSourceLoc &loc);
+    void makeVariadic(TFunction *F, const TSourceLoc &loc, bool spirvLiteral = false, bool spirvByReference = false);
     TParameter getParamWithDefault(const TPublicType& ty, TString* identifier, TIntermTyped* initializer,
                                    const TSourceLoc& loc);
     void inheritMemoryQualifiers(const TQualifier& from, TQualifier& to);

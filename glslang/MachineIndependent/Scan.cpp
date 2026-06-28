@@ -910,6 +910,7 @@ int TScanContext::tokenize(TPpContext* pp, TParserToken& token)
         case PpAtomColonColon:
             parseContext.error(loc, "not supported", "::", "");
             break;
+        case PpAtomEllipsis:           return ELLIPSIS;
 
         case PpAtomConstString:        parserToken->sType.lex.string = NewPoolTString(tokenText);     return STRING_LITERAL;
         case PpAtomConstInt:           parserToken->sType.lex.i    = ppToken.ival;       return INTCONSTANT;

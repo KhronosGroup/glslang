@@ -445,6 +445,8 @@ TFunction::TFunction(const TFunction& copyOf) : TSymbol(copyOf)
     prototyped = copyOf.prototyped;
     implicitThis = copyOf.implicitThis;
     variadic = copyOf.variadic;
+    variadicSpirvByReference = copyOf.variadicSpirvByReference;
+    variadicSpirvLiteral = copyOf.variadicSpirvLiteral;
     illegalImplicitThis = copyOf.illegalImplicitThis;
     defaultParamCount = copyOf.defaultParamCount;
     spirvInst = copyOf.spirvInst;

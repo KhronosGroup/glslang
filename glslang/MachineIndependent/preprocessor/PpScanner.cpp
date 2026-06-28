@@ -1072,7 +1072,14 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
             }
         case '.':
             ch = getch();
-            if (ch >= '0' && ch <= '9') {
+            if (ch == '.') {
+                ch = getch();
+                if (ch == '.')
+                    return PpAtomEllipsis;
+                ungetch();
+                ungetch();
+                return '.';
+            } else if (ch >= '0' && ch <= '9') {
                 ungetch();
                 return pp->lFloatConst(0, '.', ppToken);
             } else {
