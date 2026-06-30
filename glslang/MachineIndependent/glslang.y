@@ -252,7 +252,7 @@ extern int yylex(YYSTYPE*, TParseContext&);
 // spirv intrinsics
 %token <lex> SPIRV_INSTRUCTION SPIRV_EXECUTION_MODE SPIRV_EXECUTION_MODE_ID
 %token <lex> SPIRV_DECORATE SPIRV_DECORATE_ID SPIRV_DECORATE_STRING
-%token <lex> SPIRV_TYPE SPIRV_STORAGE_CLASS SPIRV_BY_REFERENCE SPIRV_LITERAL
+%token <lex> SPIRV_TYPE SPIRV_STORAGE_CLASS SPIRV_BY_REFERENCE SPIRV_LITERAL SPIRV_STRING
 %token <lex> ATTACHMENTEXT IATTACHMENTEXT UATTACHMENTEXT
 
 %token <lex> LEFT_OP RIGHT_OP
@@ -262,7 +262,7 @@ extern int yylex(YYSTYPE*, TParseContext&);
 %token <lex> SUB_ASSIGN
 %token <lex> STRING_LITERAL
 
-%token <lex> LEFT_PAREN RIGHT_PAREN LEFT_BRACKET RIGHT_BRACKET LEFT_BRACE RIGHT_BRACE DOT
+%token <lex> LEFT_PAREN RIGHT_PAREN LEFT_BRACKET RIGHT_BRACKET LEFT_BRACE RIGHT_BRACE DOT ELLIPSIS
 %token <lex> COMMA COLON EQUAL SEMICOLON BANG DASH TILDE PLUS STAR SLASH PERCENT
 %token <lex> LEFT_ANGLE RIGHT_ANGLE VERTICAL_BAR CARET AMPERSAND QUESTION
 
@@ -334,6 +334,7 @@ extern int yylex(YYSTYPE*, TParseContext&);
 %type <interm> block_structure
 %type <interm.function> function_header function_declarator
 %type <interm.function> function_header_with_parameters
+%type <interm> function_prototype_with_spirv_variadic_tail
 %type <interm> function_call_header_with_parameters function_call_header_no_parameters function_call_generic function_prototype
 %type <interm> function_call_or_method function_identifier function_call_header
 
@@ -901,6 +902,13 @@ declaration
         $$ = 0;
         // TODO: 4.0 functionality: subroutines: make the identifier a user type for this signature
     }
+    | spirv_instruction_qualifier function_prototype_with_spirv_variadic_tail SEMICOLON {
+        parseContext.requireExtensions($2.loc, 1, &E_GL_EXT_spirv_intrinsics, "SPIR-V instruction qualifier");
+        $2.function->setSpirvInstruction(*$1); // Attach SPIR-V intruction qualifier
+        parseContext.handleFunctionDeclarator($2.loc, *$2.function, true /* prototype */);
+        $$ = 0;
+        // TODO: 4.0 functionality: subroutines: make the identifier a user type for this signature
+    }
     | spirv_execution_mode_qualifier SEMICOLON {
         parseContext.globalCheck($2.loc, "SPIR-V execution mode qualifier");
         parseContext.requireExtensions($2.loc, 1, &E_GL_EXT_spirv_intrinsics, "SPIR-V execution mode qualifier");
@@ -993,6 +1001,45 @@ function_prototype
         parseContext.handleFunctionAttributes($3.loc, *$1);
         parseContext.handleFunctionAttributes($3.loc, *$4);
     }
+    | function_header ELLIPSIS RIGHT_PAREN {
+        parseContext.makeVariadic($1, $2.loc);
+        $$.function = $1;
+        if (parseContext.compileOnly) $$.function->setExport();
+        $$.loc = $3.loc;
+    }
+    | function_header_with_parameters COMMA ELLIPSIS RIGHT_PAREN {
+        parseContext.makeVariadic($1, $3.loc);
+        $$.function = $1;
+        if (parseContext.compileOnly) $$.function->setExport();
+        $$.loc = $4.loc;
+    }
+    ;
+
+function_prototype_with_spirv_variadic_tail
+    : function_header SPIRV_LITERAL ELLIPSIS RIGHT_PAREN {
+        parseContext.makeVariadic($1, $2.loc, true /* spirvLiteral */, false /* spirvByReference */);
+        $$.function = $1;
+        if (parseContext.compileOnly) $$.function->setExport();
+        $$.loc = $4.loc;
+    }
+    | function_header SPIRV_BY_REFERENCE ELLIPSIS RIGHT_PAREN {
+        parseContext.makeVariadic($1, $2.loc, false /* spirvLiteral */, true /* spirvByReference */);
+        $$.function = $1;
+        if (parseContext.compileOnly) $$.function->setExport();
+        $$.loc = $4.loc;
+    }
+    | function_header_with_parameters COMMA SPIRV_LITERAL ELLIPSIS RIGHT_PAREN {
+        parseContext.makeVariadic($1, $3.loc, true /* spirvLiteral */, false /* spirvByReference */);
+        $$.function = $1;
+        if (parseContext.compileOnly) $$.function->setExport();
+        $$.loc = $5.loc;
+    }
+    | function_header_with_parameters COMMA SPIRV_BY_REFERENCE ELLIPSIS RIGHT_PAREN {
+        parseContext.makeVariadic($1, $3.loc, false /* spirvLiteral */, true /* spirvByReference */);
+        $$.function = $1;
+        if (parseContext.compileOnly) $$.function->setExport();
+        $$.loc = $5.loc;
+    }
     ;
 
 function_declarator
@@ -1038,10 +1085,6 @@ function_header_with_parameters
             else
                 parseContext.vkRelaxedRemapFunctionParameter($1, $3.param);
         }
-    }
-    | function_header_with_parameters COMMA DOT DOT DOT {
-        $$ = $1;
-        parseContext.makeVariadic($1, $3.loc);
     }
     ;
 
@@ -3678,6 +3721,11 @@ type_specifier_nonarray
     | spirv_type_specifier {
         parseContext.requireExtensions($1.loc, 1, &E_GL_EXT_spirv_intrinsics, "SPIR-V type specifier");
         $$ = $1;
+    }
+    | SPIRV_STRING {
+        parseContext.requireExtensions($1.loc, 1, &E_GL_EXT_spirv_intrinsics_string, "spirv_string type specifier");
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtString;
     }
     | HITOBJECTNV {
        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());

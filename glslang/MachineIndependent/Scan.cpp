@@ -596,6 +596,7 @@ const std::unordered_map<const char*, int, str_hash, str_eq> KeywordMap {
     {"spirv_storage_class",SPIRV_STORAGE_CLASS},
     {"spirv_by_reference",SPIRV_BY_REFERENCE},
     {"spirv_literal",SPIRV_LITERAL},
+    {"spirv_string",SPIRV_STRING},
 
     {"sampler2D",SAMPLER2D},
     {"samplerCube",SAMPLERCUBE},
@@ -910,6 +911,7 @@ int TScanContext::tokenize(TPpContext* pp, TParserToken& token)
         case PpAtomColonColon:
             parseContext.error(loc, "not supported", "::", "");
             break;
+        case PpAtomEllipsis:           return ELLIPSIS;
 
         case PpAtomConstString:        parserToken->sType.lex.string = NewPoolTString(tokenText);     return STRING_LITERAL;
         case PpAtomConstInt:           parserToken->sType.lex.i    = ppToken.ival;       return INTCONSTANT;
@@ -1939,6 +1941,13 @@ int TScanContext::tokenizeIdentifier()
     case SPIRV_LITERAL:
         if (parseContext.symbolTable.atBuiltInLevel() ||
             parseContext.extensionTurnedOn(E_GL_EXT_spirv_intrinsics))
+            return keyword;
+        return identifierOrType();
+
+    case SPIRV_STRING:
+        // GL_EXT_spirv_intrinsics_string adds the 'spirv_string' pseudo-type
+        if (parseContext.symbolTable.atBuiltInLevel() ||
+            parseContext.extensionTurnedOn(E_GL_EXT_spirv_intrinsics_string))
             return keyword;
         return identifierOrType();
 

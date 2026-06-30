@@ -255,12 +255,14 @@ public:
     explicit TFunction(TOperator o) :
         TSymbol(nullptr),
         op(o),
-        defined(false), prototyped(false), implicitThis(false), illegalImplicitThis(false), variadic(false), defaultParamCount(0) { }
+        defined(false), prototyped(false), implicitThis(false), illegalImplicitThis(false), variadic(false),
+        variadicSpirvByReference(false), variadicSpirvLiteral(false), defaultParamCount(0) { }
     TFunction(const TString *name, const TType& retType, TOperator tOp = EOpNull) :
         TSymbol(name),
         mangledName(*name + '('),
         op(tOp),
-        defined(false), prototyped(false), implicitThis(false), illegalImplicitThis(false), variadic(false), defaultParamCount(0),
+        defined(false), prototyped(false), implicitThis(false), illegalImplicitThis(false), variadic(false),
+        variadicSpirvByReference(false), variadicSpirvLiteral(false), defaultParamCount(0),
         linkType(ELinkNone)
     {
         returnType.shallowCopy(retType);
@@ -328,6 +330,10 @@ public:
         mangledName += 'z';
     }
     virtual bool isVariadic() const { return variadic; }
+    virtual void setVariadicSpirvByReference() { assert(writable); variadicSpirvByReference = true; }
+    virtual bool isVariadicSpirvByReference() const { return variadicSpirvByReference; }
+    virtual void setVariadicSpirvLiteral() { assert(writable); variadicSpirvLiteral = true; }
+    virtual bool isVariadicSpirvLiteral() const { return variadicSpirvLiteral; }
 
     // Return total number of parameters
     virtual int getParamCount() const { return static_cast<int>(parameters.size()); }
@@ -371,6 +377,8 @@ protected:
                                // This is important for a static member function that has member variables in scope,
                                // but is not allowed to use them, or see hidden symbols instead.
     bool variadic;
+    bool variadicSpirvByReference; // trailing variadic args passed by SPIR-V pointer
+    bool variadicSpirvLiteral;     // trailing variadic args encoded as literals
     int  defaultParamCount;
 
     TSpirvInstruction spirvInst; // SPIR-V instruction qualifiers

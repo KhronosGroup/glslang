@@ -497,10 +497,19 @@ const TFunction* TParseContextBase::selectFunction(
         return enabled;
     };
 
+    // The variadic tail (GL_EXT_spirv_intrinsics_variadic) does not participate in
+    // overload resolution: it is the lowest-priority discriminator. When 'can1' and
+    // 'can2' are otherwise equally ranked on their fixed parameters, a variadic
+    // candidate loses to a non-variadic one.
+    const auto variadicallyWorse = [&equivalentParams](const TFunction& can1, const TFunction& can2) -> bool {
+        return equivalentParams(can1, can2) && can1.isVariadic() && !can2.isVariadic();
+    };
+
     const TFunction* incumbent = viableCandidates.front();
     for (auto it = viableCandidates.begin() + 1; it != viableCandidates.end(); ++it) {
         const TFunction& candidate = *(*it);
-        if (betterParam(*incumbent, candidate) && ! betterParam(candidate, *incumbent))
+        if ((betterParam(*incumbent, candidate) && ! betterParam(candidate, *incumbent)) ||
+            variadicallyWorse(*incumbent, candidate))
             incumbent = &candidate;
     }
 
@@ -509,6 +518,11 @@ const TFunction* TParseContextBase::selectFunction(
         if (incumbent == *it)
             continue;
         const TFunction& candidate = *(*it);
+
+        // A variadic candidate that ties with the non-variadic incumbent is resolved
+        // in favor of the incumbent above, so it is not an ambiguity.
+        if (variadicallyWorse(candidate, *incumbent))
+            continue;
 
         // In the case of default parameters, it may have an identical initial set, which is
         // also ambiguous

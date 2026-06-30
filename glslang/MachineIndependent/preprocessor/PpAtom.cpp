@@ -123,6 +123,7 @@ const struct {
     { PpAtomIncrement,      "++" },
 
     { PpAtomColonColon,     "::" },
+    { PpAtomEllipsis,       "..." },
 
     { PpAtomDefine,         "define" },
     { PpAtomUndef,          "undef" },

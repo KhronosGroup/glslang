@@ -85,6 +85,7 @@ void TType::buildMangledName(TString& mangledName) const
     case EbtAccStruct:          mangledName += "as";     break;
     case EbtRayQuery:           mangledName += "rq";     break;
     case EbtSpirvType:          mangledName += "spv-t";  break;
+    case EbtString:             mangledName += "str";    break;
     case EbtHitObjectNV:        mangledName += "ho";     break;
     case EbtHitObjectEXT:       mangledName += "ho";     break;
     case EbtTensorLayoutNV:     mangledName += "tl";     break;
@@ -445,6 +446,8 @@ TFunction::TFunction(const TFunction& copyOf) : TSymbol(copyOf)
     prototyped = copyOf.prototyped;
     implicitThis = copyOf.implicitThis;
     variadic = copyOf.variadic;
+    variadicSpirvByReference = copyOf.variadicSpirvByReference;
+    variadicSpirvLiteral = copyOf.variadicSpirvLiteral;
     illegalImplicitThis = copyOf.illegalImplicitThis;
     defaultParamCount = copyOf.defaultParamCount;
     spirvInst = copyOf.spirvInst;

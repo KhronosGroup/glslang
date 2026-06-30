@@ -1,0 +1,13 @@
+spv.intrinsicsSpirvInstructionString.error.vert
+ERROR: 0:9: 'userFunc' : 'spirv_string' can only be used as a parameter of a function defined with 'spirv_instruction' for argument 1
+ERROR: 0:12: 'makeString' : 'spirv_string' cannot be used as a function return type 
+ERROR: 0:15: 'outParam' : 'spirv_string' parameter cannot have a qualifier other than 'in' for argument 1
+ERROR: 0:18: 'arrParam' : 'spirv_string' cannot be formed into an array for argument 1
+ERROR: 0:21: 'byRefParam' : 'spirv_string' parameter cannot have a qualifier other than 'in' for argument 1
+ERROR: 0:31: 'spirv_string' : a literal string cannot be matched to a 'spirv_by_reference' or 'spirv_literal' variadic tail 
+ERROR: 0:34: 'spirv_string' : a literal string cannot be matched to a 'spirv_by_reference' or 'spirv_literal' variadic tail 
+ERROR: 0:37: 'string' : embedded NUL character not allowed in string literal 
+ERROR: 8 compilation errors.  No code generated.
+
+
+SPIR-V is not generated for failed compile or link

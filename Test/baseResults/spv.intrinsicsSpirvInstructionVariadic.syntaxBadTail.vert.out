@@ -1,0 +1,8 @@
+spv.intrinsicsSpirvInstructionVariadic.syntaxBadTail.vert
+ERROR: 0:6: '' :  syntax error, unexpected COMMA, expecting RIGHT_PAREN
+ERROR: 1 compilation errors.  No code generated.
+
+
+ERROR: Linking vertex stage: Missing entry point: Each stage requires one entry point
+
+SPIR-V is not generated for failed compile or link

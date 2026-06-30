@@ -1,0 +1,10 @@
+spv.intrinsicsSpirvInstructionVariadic.error.vert
+ERROR: 0:10: 'userFunc' : variadic '...' can only be used on functions defined with 'spirv_instruction' 
+ERROR: 0:19: 'requal' : overloaded functions must have the same qualifier on the variadic tail 
+ERROR: 0:29: 'spirv_literal' : Non front-end constant expressions cannot be passed for a 'spirv_literal' variadic argument. 
+ERROR: 0:35: 'amb' : ambiguous best function under implicit type conversion 
+ERROR: 0:38: 'literal string as a variadic SPIR-V instruction argument' : required extension not requested: GL_EXT_spirv_intrinsics_string
+ERROR: 5 compilation errors.  No code generated.
+
+
+SPIR-V is not generated for failed compile or link
