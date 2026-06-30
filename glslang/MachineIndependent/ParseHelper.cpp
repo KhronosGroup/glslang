@@ -10640,6 +10640,11 @@ bool TParseContext::untypedHeapCheck(TSymbol* symbol, const TType& type, const T
                     "declared with a run-time sized array type.", name, "");
                 return false;
             }
+            if (type.getBasicType() == EbtSampler && type.getSampler().isCombined()) {
+                error(loc, "layout(descriptor_heap) cannot be used with combined image samplers.",
+                      name, "");
+                return false;
+            }
             if (!type.containsHeapArray() && !isHeapStruct) {
                 error(loc, "layout(descriptor_heap) decorated variable could only be declared as an array.",
                       name, "");
