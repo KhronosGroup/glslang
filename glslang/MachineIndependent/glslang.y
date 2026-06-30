@@ -252,7 +252,7 @@ extern int yylex(YYSTYPE*, TParseContext&);
 // spirv intrinsics
 %token <lex> SPIRV_INSTRUCTION SPIRV_EXECUTION_MODE SPIRV_EXECUTION_MODE_ID
 %token <lex> SPIRV_DECORATE SPIRV_DECORATE_ID SPIRV_DECORATE_STRING
-%token <lex> SPIRV_TYPE SPIRV_STORAGE_CLASS SPIRV_BY_REFERENCE SPIRV_LITERAL
+%token <lex> SPIRV_TYPE SPIRV_STORAGE_CLASS SPIRV_BY_REFERENCE SPIRV_LITERAL SPIRV_STRING
 %token <lex> ATTACHMENTEXT IATTACHMENTEXT UATTACHMENTEXT
 
 %token <lex> LEFT_OP RIGHT_OP
@@ -3721,6 +3721,11 @@ type_specifier_nonarray
     | spirv_type_specifier {
         parseContext.requireExtensions($1.loc, 1, &E_GL_EXT_spirv_intrinsics, "SPIR-V type specifier");
         $$ = $1;
+    }
+    | SPIRV_STRING {
+        parseContext.requireExtensions($1.loc, 1, &E_GL_EXT_spirv_intrinsics_string, "spirv_string type specifier");
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtString;
     }
     | HITOBJECTNV {
        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());

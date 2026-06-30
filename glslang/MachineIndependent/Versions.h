@@ -217,6 +217,7 @@ const char* const E_GL_EXT_shared_memory_block              = "GL_EXT_shared_mem
 const char* const E_GL_EXT_subgroup_uniform_control_flow    = "GL_EXT_subgroup_uniform_control_flow";
 const char* const E_GL_EXT_spirv_intrinsics                 = "GL_EXT_spirv_intrinsics";
 const char* const E_GL_EXT_spirv_intrinsics_variadic        = "GL_EXT_spirv_intrinsics_variadic";
+const char* const E_GL_EXT_spirv_intrinsics_string          = "GL_EXT_spirv_intrinsics_string";
 const char* const E_GL_EXT_fragment_shader_barycentric      = "GL_EXT_fragment_shader_barycentric";
 const char* const E_GL_EXT_mesh_shader                      = "GL_EXT_mesh_shader";
 const char* const E_GL_EXT_opacity_micromap                 = "GL_EXT_opacity_micromap";

@@ -385,6 +385,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_EXT_shared_memory_block]         = EBhDisable;
     extensionBehavior[E_GL_EXT_spirv_intrinsics]            = EBhDisable;
     extensionBehavior[E_GL_EXT_spirv_intrinsics_variadic]   = EBhDisable;
+    extensionBehavior[E_GL_EXT_spirv_intrinsics_string]     = EBhDisable;
     extensionBehavior[E_GL_EXT_mesh_shader]                 = EBhDisable;
     extensionBehavior[E_GL_EXT_opacity_micromap]            = EBhDisable;
     extensionBehavior[E_GL_EXT_shader_quad_control]         = EBhDisable;
@@ -586,6 +587,7 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_EXT_ray_tracing_position_fetch 1\n"
             "#define GL_EXT_spirv_intrinsics 1\n"
             "#define GL_EXT_spirv_intrinsics_variadic 1\n"
+            "#define GL_EXT_spirv_intrinsics_string 1\n"
             "#define GL_EXT_mesh_shader 1\n"
 
             "#define GL_AMD_shader_ballot 1\n"

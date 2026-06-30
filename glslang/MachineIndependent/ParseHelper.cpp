@@ -1237,6 +1237,28 @@ TFunction* TParseContext::handleFunctionDeclarator(const TSourceLoc& loc, TFunct
         error(loc, "variadic '...' can only be used on functions defined with 'spirv_instruction'",
               function.getName().c_str(), "");
 
+    // The 'spirv_string' pseudo-type (GL_EXT_spirv_intrinsics_string) may only
+    // appear as the type of a parameter of a 'spirv_instruction' function, with
+    // no qualifier other than 'in', and never as an array or as return type.
+    if (!parsingBuiltins) {
+        if (function.getType().getBasicType() == EbtString)
+            error(loc, "'spirv_string' cannot be used as a function return type", function.getName().c_str(), "");
+        for (int i = 0; i < function.getParamCount(); ++i) {
+            const TType& paramType = *function[i].type;
+            if (paramType.getBasicType() != EbtString)
+                continue;
+            if (function.getBuiltInOp() != EOpSpirvInst)
+                error(loc, "'spirv_string' can only be used as a parameter of a function defined with "
+                      "'spirv_instruction' for argument", function.getName().c_str(), "%d", i + 1);
+            if (paramType.isArray())
+                error(loc, "'spirv_string' cannot be formed into an array for argument",
+                      function.getName().c_str(), "%d", i + 1);
+            if (paramType.getQualifier().storage != EvqIn || paramType.getQualifier().isSpirvByReference())
+                error(loc, "'spirv_string' parameter cannot have a qualifier other than 'in' for argument",
+                      function.getName().c_str(), "%d", i + 1);
+        }
+    }
+
     // For function declaration with SPIR-V instruction qualifier, always ignore the built-in function and
     // respect this redeclared one.
     if (symbol && builtIn && function.getBuiltInOp() == EOpSpirvInst)
@@ -1552,7 +1574,7 @@ TIntermTyped* TParseContext::handleFunctionCall(const TSourceLoc& loc, TFunction
                         i == 1) {
                         TStorageQualifier storage = arg->getAsTyped()->getType().getQualifier().storage;
                         if (storage != EvqBuffer && storage != EvqShared) {
-                            error(arguments->getLoc(), "buffer argument must be in buffer or shared storage", 
+                            error(arguments->getLoc(), "buffer argument must be in buffer or shared storage",
                                   fnCandidate->getName().c_str(), "");
                         }
                     }
@@ -2370,10 +2392,15 @@ TIntermTyped* TParseContext::handleBuiltInFunctionCall(TSourceLoc loc, TIntermNo
                     ? function[i].type->getQualifier().isSpirvByReference() : tailByReference;
                 const bool literal = static_cast<int>(i) < fixedParamCount
                     ? function[i].type->getQualifier().isSpirvLiteral() : tailLiteral;
-                if (static_cast<int>(i) >= fixedParamCount &&
-                    sequence[i]->getAsTyped()->getBasicType() == EbtString)
-                    error(loc, "literal string cannot be passed as a variadic SPIR-V instruction argument",
-                          "spirv_instruction", "");
+                const bool stringArg = sequence[i]->getAsTyped()->getBasicType() == EbtString;
+                if (stringArg && static_cast<int>(i) >= fixedParamCount)
+                    requireExtensions(loc, 1, &E_GL_EXT_spirv_intrinsics_string,
+                                      "literal string as a variadic SPIR-V instruction argument");
+                // A literal string lowers to an OpString <id>; it cannot be encoded
+                // as an inline literal nor passed by SPIR-V pointer
+                if (stringArg && (byReference || literal))
+                    error(loc, "a literal string cannot be matched to a 'spirv_by_reference' or 'spirv_literal' "
+                          "variadic tail", "spirv_string", "");
                 if (byReference)
                     sequence[i]->getAsTyped()->getQualifier().setSpirvByReference();
                 if (literal) {
@@ -2396,9 +2423,15 @@ TIntermTyped* TParseContext::handleBuiltInFunctionCall(TSourceLoc loc, TIntermNo
                 ? function[0].type->getQualifier().isSpirvByReference() : tailByReference;
             const bool literal = fixedParamCount > 0
                 ? function[0].type->getQualifier().isSpirvLiteral() : tailLiteral;
-            if (fixedParamCount == 0 && unaryNode->getOperand()->getBasicType() == EbtString)
-                error(loc, "literal string cannot be passed as a variadic SPIR-V instruction argument",
-                      "spirv_instruction", "");
+            const bool stringArg = unaryNode->getOperand()->getBasicType() == EbtString;
+            if (stringArg && fixedParamCount == 0)
+                requireExtensions(loc, 1, &E_GL_EXT_spirv_intrinsics_string,
+                                  "literal string as a variadic SPIR-V instruction argument");
+            // A literal string lowers to an OpString <id>; it cannot be encoded
+            // as an inline literal nor passed by SPIR-V pointer
+            if (stringArg && (byReference || literal))
+                error(loc, "a literal string cannot be matched to a 'spirv_by_reference' or 'spirv_literal' "
+                      "variadic tail", "spirv_string", "");
             if (byReference)
                 unaryNode->getOperand()->getQualifier().setSpirvByReference();
             if (literal) {
@@ -5007,7 +5040,8 @@ bool TParseContext::constructorTextureSamplerError(const TSourceLoc& loc, const 
     return false;
 }
 
-// Checks to see if a void variable has been declared and raise an error message for such a case
+// Checks to see if a variable or struct/block-member declaration has been declared
+// with a type that is invalid in that context, and raises an error for such a case.
 //
 // returns true in case of an error
 //
@@ -5015,6 +5049,12 @@ bool TParseContext::voidErrorCheck(const TSourceLoc& loc, const TString& identif
 {
     if (basicType == EbtVoid) {
         error(loc, "illegal use of type 'void'", identifier.c_str(), "");
+        return true;
+    }
+
+    if (basicType == EbtString) {
+        error(loc, "'spirv_string' can only be used as a 'spirv_instruction' function parameter",
+              identifier.c_str(), "");
         return true;
     }
 

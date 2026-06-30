@@ -1130,6 +1130,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
             ch = getch();
             while (ch != '"' && ch != '\n' && ch != EndOfInput) {
                 if (len < MaxTokenLength) {
+                    bool escapeError = false;
                     if (ch == '\\' && !pp->disableEscapeSequences) {
                         int nextCh = getch();
                         switch (nextCh) {
@@ -1167,6 +1168,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                                 }
                                 if (numDigits == 0) {
                                     pp->parseContext.ppError(ppToken->loc, "Expected hex value in escape sequence", "string", "");
+                                    escapeError = true;
                                 }
                                 break;
                             }
@@ -1197,9 +1199,13 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                             }
                         default:
                             pp->parseContext.ppError(ppToken->loc, "Invalid escape sequence", "string", "");
+                            escapeError = true;
                             break;
                         }
                     }
+                    if (ch == 0 && !escapeError)
+                        pp->parseContext.ppError(ppToken->loc,
+                            "embedded NUL character not allowed in string literal", "string", "");
                     ppToken->name[len] = (char)ch;
                     len++;
                     ch = getch();

@@ -80,7 +80,7 @@ enum TBasicType {
     // SPIR-V type defined by spirv_type
     EbtSpirvType,
 
-    // HLSL types that live only temporarily.
+    // Only temporary, or in SPIR-V instruction function parameters.
     EbtString,
 
     EbtNumTypes
