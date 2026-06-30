@@ -7790,7 +7790,8 @@ void TParseContext::layoutObjectCheck(const TSourceLoc& loc, const TSymbol& symb
         case EvqVaryingOut:
             if (!type.getQualifier().isTaskMemory() && !type.getQualifier().hasSpirvDecorate() &&
                 (type.getBasicType() != EbtBlock ||
-                 (!(*type.getStruct())[0].type->getQualifier().hasLocation() &&
+                 (type.getStruct()->size() > 0 &&
+                  !(*type.getStruct())[0].type->getQualifier().hasLocation() &&
                    (*type.getStruct())[0].type->getQualifier().builtIn == EbvNone)))
                 error(loc, "SPIR-V requires location for user input/output", "location", "");
             break;
