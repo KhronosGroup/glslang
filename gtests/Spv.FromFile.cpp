@@ -472,6 +472,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.intrinsicsSpirvType.rgen",
         "spv.intrinsicsSpirvTypeLocalVar.vert",
         "spv.intrinsicsSpirvTypeWithTypeSpecifier.vert",
+        "spv.intrinsicsStringConstructorError.vert",
         "spv.invariantAll.vert",
         "spv.layer.tese",
         "spv.layoutNested.vert",

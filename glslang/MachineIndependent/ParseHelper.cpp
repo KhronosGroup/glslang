@@ -4580,6 +4580,10 @@ bool TParseContext::constructorError(const TSourceLoc& loc, TIntermNode* node, T
             }
             arrayArg = true;
         }
+        if (function[arg].type->getBasicType() == EbtString) {
+            error(loc, "cannot convert a string", constructorString.c_str(), "");
+            return true;
+        }
         if (constructingMatrix && function[arg].type->isMatrix())
             matrixInMatrix = true;
 
