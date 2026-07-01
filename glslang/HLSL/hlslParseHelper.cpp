@@ -1755,6 +1755,12 @@ void HlslParseContext::handleEntryPointAttributes(const TSourceLoc& loc, const T
         case EatNumThreads:
         {
             const TIntermSequence& sequence = it->args->getSequence();
+            // numthreads has three dimensions (x, y, z); localSize is sized to match,
+            // so reject extra arguments rather than indexing past it.
+            if (sequence.size() > 3) {
+                error(loc, "expected at most three arguments", "numthreads", "");
+                break;
+            }
             for (int lid = 0; lid < int(sequence.size()); ++lid)
                 intermediate.setLocalSize(lid, sequence[lid]->getAsConstantUnion()->getConstArray()[0].getIConst());
             break;
