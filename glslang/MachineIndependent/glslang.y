@@ -330,7 +330,7 @@ extern int yylex(YYSTYPE*, TParseContext&);
 %type <interm.type> block_heap_inner_structure
 %type <interm.typeLine> struct_declarator
 %type <interm.typeList> struct_declarator_list struct_declaration struct_declaration_list
-%type <interm.typeList> struct_declaration_with_heap struct_declaration_without_heap
+%type <interm.typeList> struct_declaration_no_inline_block struct_declaration_no_inline_block_list
 %type <interm> block_structure
 %type <interm.function> function_header function_declarator
 %type <interm.function> function_header_with_parameters
@@ -940,7 +940,7 @@ declaration
     ;
 
 block_structure
-    : type_qualifier IDENTIFIER LEFT_BRACE { parseContext.nestedBlockCheck($1.loc); } struct_declaration_without_heap RIGHT_BRACE {
+    : type_qualifier IDENTIFIER LEFT_BRACE { parseContext.nestedBlockCheck($1.loc); } struct_declaration_list RIGHT_BRACE {
         --parseContext.blockNestingLevel;
         parseContext.blockName = $2.string;
         parseContext.globalQualifierFixCheck($1.loc, $1.qualifier);
@@ -1367,7 +1367,7 @@ layout_qualifier_id
         $$.init($1.loc);
         parseContext.setLayoutQualifier($1.loc, $$, *$1.string);
     }
-    | IDENTIFIER EQUAL constant_expression {
+    | IDENTIFIER EQUAL assignment_expression {
         $$.init($1.loc);
         parseContext.setLayoutQualifier($1.loc, $$, *$1.string, $3);
     }
@@ -3702,6 +3702,8 @@ type_specifier_nonarray
             $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
             $$.basicType = EbtStruct;
             $$.userDef = &structure;
+            if (structure.getQualifier().isBufferType())
+                $$.qualifier = structure.getQualifier();
         } else
             parseContext.error($1.loc, "expected type name", $1.string->c_str(), "");
     }
@@ -3752,23 +3754,10 @@ struct_specifier
     ;
 
 struct_declaration_list
-    : struct_declaration_without_heap {
+    : struct_declaration {
         $$ = $1;
     }
-    | struct_declaration_with_heap {
-        $$ = $1;
-    }
-    | struct_declaration_with_heap struct_declaration_without_heap {
-        $$ = $1;
-        for (unsigned int i = 0; i < $2->size(); ++i) {
-            for (unsigned int j = 0; j < $$->size(); ++j) {
-                if ((*$$)[j].type->getFieldName() == (*$2)[i].type->getFieldName())
-                    parseContext.error((*$2)[i].loc, "duplicate member name:", "", (*$2)[i].type->getFieldName().c_str());
-            }
-            $$->push_back((*$2)[i]);
-        }
-    }
-    | struct_declaration_without_heap struct_declaration_with_heap {
+    | struct_declaration_list struct_declaration {
         $$ = $1;
         for (unsigned int i = 0; i < $2->size(); ++i) {
             for (unsigned int j = 0; j < $$->size(); ++j) {
@@ -3780,8 +3769,11 @@ struct_declaration_list
     }
     ;
 
-struct_declaration_with_heap
-    : block_heap_inner_structure struct_declarator_list SEMICOLON {
+struct_declaration
+    : struct_declaration_no_inline_block {
+        $$ = $1;
+    }
+    | block_heap_inner_structure struct_declarator_list SEMICOLON {
         $$ = $2;
         parseContext.voidErrorCheck($1.loc, (*$2)[0].type->getFieldName(), $1.basicType);
         parseContext.precisionQualifierCheck($1.loc, $1.basicType, $1.qualifier, $1.hasTypeParameter());
@@ -3798,25 +3790,26 @@ struct_declaration_with_heap
     ;
 
 block_heap_inner_structure
-    : type_qualifier LEFT_BRACE { parseContext.nestedBlockCheck($1.loc, true); } struct_declaration_without_heap RIGHT_BRACE {
+    : type_qualifier LEFT_BRACE { parseContext.nestedBlockCheck($1.loc, true); } struct_declaration_no_inline_block_list RIGHT_BRACE {
         --parseContext.blockNestingLevel;
         parseContext.globalQualifierFixCheck($1.loc, $1.qualifier);
         parseContext.checkNoShaderLayouts($1.loc, $1.shaderQualifiers);
         $$.init($1.loc);
-        TType* innerStructure = new TType($4, TString(""));
-        $$.basicType = EbtBlock;
-        $$.userDef = innerStructure;
-        $$.qualifier = $1.qualifier;
+        TType* innerStructure = new TType($4, TString(""), $1.qualifier);
+        if (! $1.qualifier.hasBufferReference())
+            parseContext.error($1.loc, "only buffer_reference blocks can be declared inline inside a heap block", "", "");
+        TType* referenceType = new TType(EbtReference, *innerStructure, TString(""));
+        $$.basicType = EbtReference;
+        $$.userDef = referenceType;
         $$.qualifier.layoutDescriptorHeap = true;
-        $$.qualifier.layoutDescriptorInnerBlock = true;
     }
     ;
 
-struct_declaration_without_heap
-    : struct_declaration {
+struct_declaration_no_inline_block_list
+    : struct_declaration_no_inline_block {
         $$ = $1;
     }
-    | struct_declaration_without_heap struct_declaration {
+    | struct_declaration_no_inline_block_list struct_declaration_no_inline_block {
         $$ = $1;
         for (unsigned int i = 0; i < $2->size(); ++i) {
             for (unsigned int j = 0; j < $$->size(); ++j) {
@@ -3828,7 +3821,7 @@ struct_declaration_without_heap
     }
     ;
 
-struct_declaration
+struct_declaration_no_inline_block
     : type_specifier struct_declarator_list SEMICOLON {
         if ($1.arraySizes) {
             parseContext.profileRequires($1.loc, ENoProfile, 120, E_GL_3DL_array_objects, "arrayed type");
