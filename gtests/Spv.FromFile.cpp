@@ -403,6 +403,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.bufferhandleRuntimeArray.frag",
         "spv.bufferhandleUvec2.frag",
         "spv.bufferhandle_Error.frag",
+        "spv.bufferReferenceNestedStruct.comp",
         "spv.builtInXFB.vert",
         "spv.conditionalDemote.frag",
         "spv.conditionalDiscard.frag",
