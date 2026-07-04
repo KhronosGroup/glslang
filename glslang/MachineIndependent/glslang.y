@@ -274,6 +274,7 @@ extern int yylex(YYSTYPE*, TParseContext&);
 %token <lex> INVARIANT
 %token <lex> HIGH_PRECISION MEDIUM_PRECISION LOW_PRECISION PRECISION
 %token <lex> PACKED RESOURCE SUPERP
+%token <lex> INLINE NOINLINE
 
 %token <lex> FLOATCONSTANT INTCONSTANT UINTCONSTANT BOOLCONSTANT
 %token <lex> IDENTIFIER TYPE_NAME
@@ -997,26 +998,26 @@ function_prototype
         $$.function = $1;
         if (parseContext.compileOnly) $$.function->setExport();
         $$.loc = $2.loc;
-        const char * extensions[2] = { E_GL_EXT_subgroup_uniform_control_flow, E_GL_EXT_maximal_reconvergence };
-        parseContext.requireExtensions($2.loc, 2, extensions, "attribute");
-        parseContext.handleFunctionAttributes($2.loc, *$3);
+        const char * extensions[3] = { E_GL_EXT_subgroup_uniform_control_flow, E_GL_EXT_maximal_reconvergence, E_GL_EXT_function_control_attributes };
+        parseContext.requireExtensions($2.loc, 3, extensions, "attribute");
+        parseContext.handleFunctionAttributes($2.loc, *$$.function, *$3);
     }
     | attribute function_declarator RIGHT_PAREN {
         $$.function = $2;
         if (parseContext.compileOnly) $$.function->setExport();
         $$.loc = $3.loc;
-        const char * extensions[2] = { E_GL_EXT_subgroup_uniform_control_flow, E_GL_EXT_maximal_reconvergence };
-        parseContext.requireExtensions($3.loc, 2, extensions, "attribute");
-        parseContext.handleFunctionAttributes($3.loc, *$1);
+        const char * extensions[3] = { E_GL_EXT_subgroup_uniform_control_flow, E_GL_EXT_maximal_reconvergence, E_GL_EXT_function_control_attributes };
+        parseContext.requireExtensions($3.loc, 3, extensions, "attribute");
+        parseContext.handleFunctionAttributes($3.loc, *$$.function, *$1);
     }
     | attribute function_declarator RIGHT_PAREN attribute {
         $$.function = $2;
         if (parseContext.compileOnly) $$.function->setExport();
         $$.loc = $3.loc;
-        const char * extensions[2] = { E_GL_EXT_subgroup_uniform_control_flow, E_GL_EXT_maximal_reconvergence };
-        parseContext.requireExtensions($3.loc, 2, extensions, "attribute");
-        parseContext.handleFunctionAttributes($3.loc, *$1);
-        parseContext.handleFunctionAttributes($3.loc, *$4);
+        const char * extensions[3] = { E_GL_EXT_subgroup_uniform_control_flow, E_GL_EXT_maximal_reconvergence, E_GL_EXT_function_control_attributes };
+        parseContext.requireExtensions($3.loc, 3, extensions, "attribute");
+        parseContext.handleFunctionAttributes($3.loc, *$$.function, *$1);
+        parseContext.handleFunctionAttributes($3.loc, *$$.function, *$4);
     }
     ;
 
@@ -4476,6 +4477,7 @@ function_definition
         parseContext.symbolTable.pop(&parseContext.defaultPrecision[0]);
         $$ = parseContext.intermediate.growAggregate($1.intermNode, $3);
         $$->getAsAggregate()->setLinkType($1.function->getLinkType());
+        $$->getAsAggregate()->setFunctionControl($1.function->getFunctionControl());
         parseContext.intermediate.setAggregateOperator($$, EOpFunction, $1.function->getType(), $1.loc);
         $$->getAsAggregate()->setName($1.function->getMangledName().c_str());
 
@@ -4517,6 +4519,12 @@ single_attribute
     }
     | IDENTIFIER LEFT_PAREN constant_expression RIGHT_PAREN {
         $$ = parseContext.makeAttributes(*$1.string, $3);
+    }
+    | INLINE {
+        $$ = parseContext.makeAttributes(TString("inline"));
+    }
+    | NOINLINE {
+        $$ = parseContext.makeAttributes(TString("noinline"));
     }
 
 spirv_requirements_list

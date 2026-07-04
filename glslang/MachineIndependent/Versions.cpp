@@ -271,6 +271,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_EXT_expect_assume]                           = EBhDisable;
 
     extensionBehavior[E_GL_EXT_control_flow_attributes2]                = EBhDisable;
+    extensionBehavior[E_GL_EXT_function_control_attributes]             = EBhDisable;
     extensionBehavior[E_GL_EXT_spec_constant_composites]                = EBhDisable;
     extensionBehavior[E_GL_EXT_abort]                                   = EBhDisable;
 
@@ -658,6 +659,7 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_EXT_texture_array 1\n"
 
             "#define GL_EXT_control_flow_attributes2 1\n"
+            "#define GL_EXT_function_control_attributes 1\n"
 
             "#define GL_EXT_integer_dot_product 1\n"
             "#define GL_EXT_bfloat16 1\n"

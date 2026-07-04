@@ -1104,6 +1104,12 @@ enum TLinkType {
     ELinkExport,
 };
 
+enum TFunctionControl {
+    EfcNone       = 0,
+    EfcInline     = 0x1,
+    EfcDontInline = 0x2,
+};
+
 class TIntermTraverser;
 class TIntermVariableDecl;
 class TIntermOperator;
@@ -1730,7 +1736,7 @@ typedef TVector<TStorageQualifier> TQualifierList;
 //
 class TIntermAggregate : public TIntermOperator {
 public:
-    TIntermAggregate() : TIntermOperator(EOpNull), userDefined(false), pragmaTable(nullptr) { 
+    TIntermAggregate() : TIntermOperator(EOpNull), userDefined(false), pragmaTable(nullptr) {
         endLoc.init();
     }
     TIntermAggregate(TOperator o) : TIntermOperator(o), pragmaTable(nullptr) {
@@ -1764,6 +1770,8 @@ public:
 
     void setLinkType(TLinkType l) { linkType = l; }
     TLinkType getLinkType() const { return linkType; }
+    void setFunctionControl(unsigned int fc) { functionControl = fc; }
+    unsigned int getFunctionControl() const { return functionControl; }
 protected:
     TIntermAggregate(const TIntermAggregate&); // disallow copy constructor
     TIntermAggregate& operator=(const TIntermAggregate&); // disallow assignment operator
@@ -1776,6 +1784,7 @@ protected:
     TPragmaTable* pragmaTable;
     TSpirvInstruction spirvInst;
     TLinkType linkType = ELinkNone;
+    unsigned int functionControl = EfcNone;
 
     // Marking the end source location of the aggregate.
     // This is currently only set for a compound statement or a function body, pointing to '}'.

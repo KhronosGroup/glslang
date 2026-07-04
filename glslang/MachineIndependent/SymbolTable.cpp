@@ -453,6 +453,7 @@ TFunction::TFunction(const TFunction& copyOf) : TSymbol(copyOf)
     illegalImplicitThis = copyOf.illegalImplicitThis;
     defaultParamCount = copyOf.defaultParamCount;
     spirvInst = copyOf.spirvInst;
+    functionControl = copyOf.functionControl;
 }
 
 TFunction* TFunction::clone() const
