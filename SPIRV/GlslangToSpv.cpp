@@ -233,6 +233,7 @@ protected:
     spv::SelectionControlMask TranslateSelectionControl(const glslang::TIntermSelection&) const;
     spv::SelectionControlMask TranslateSwitchControl(const glslang::TIntermSwitch&) const;
     spv::LoopControlMask TranslateLoopControl(const glslang::TIntermLoop&, std::vector<unsigned int>& operands) const;
+    spv::FunctionControlMask TranslateFunctionControl(unsigned int) const;
     spv::StorageClass TranslateStorageClass(const glslang::TType&);
     void TranslateLiterals(const glslang::TVector<const glslang::TIntermConstantUnion*>&, std::vector<unsigned>&) const;
     void addIndirectionIndexCapabilities(const glslang::TType& baseType, const glslang::TType& indexType);
@@ -1426,6 +1427,18 @@ spv::SelectionControlMask TGlslangToSpvTraverser::TranslateSwitchControl(const g
     if (switchNode.getDontFlatten())
         return spv::SelectionControlMask::DontFlatten;
     return spv::SelectionControlMask::MaskNone;
+}
+
+spv::FunctionControlMask TGlslangToSpvTraverser::TranslateFunctionControl(unsigned int functionControl) const
+{
+    spv::FunctionControlMask control = spv::FunctionControlMask::MaskNone;
+
+    if (functionControl & glslang::EfcInline)
+        control = control | spv::FunctionControlMask::Inline;
+    if (functionControl & glslang::EfcDontInline)
+        control = control | spv::FunctionControlMask::DontInline;
+
+    return control;
 }
 
 // return a non-0 dependency if the dependency argument must be set
@@ -7493,6 +7506,7 @@ void TGlslangToSpvTraverser::makeFunctions(const glslang::TIntermSequence& glslF
         builder.setDebugSourceLocation(glslFunction->getLoc().line, glslFunction->getLoc().getFilename());
 
         if (isShaderEntryPoint(glslFunction)) {
+            shaderEntry->setFunctionControl(TranslateFunctionControl(glslFunction->getFunctionControl()));
             // For HLSL, the entry function is actually a compiler generated function to resolve the difference of
             // entry function signature between HLSL and SPIR-V. So we don't emit debug information for that.
             if (glslangIntermediate->getSource() != glslang::EShSourceHlsl) {
@@ -7551,6 +7565,7 @@ void TGlslangToSpvTraverser::makeFunctions(const glslang::TIntermSequence& glslF
             TranslatePrecisionDecoration(glslFunction->getType()), convertGlslangToSpvType(glslFunction->getType()),
             glslFunction->getName().c_str(), convertGlslangLinkageToSpv(glslFunction->getLinkType()), paramTypes,
             paramDecorations, &functionBlock);
+        function->setFunctionControl(TranslateFunctionControl(glslFunction->getFunctionControl()));
         builder.setupFunctionDebugInfo(function, glslFunction->getName().c_str(), paramTypes, paramNames);
         if (implicitThis)
             function->setImplicitThis();

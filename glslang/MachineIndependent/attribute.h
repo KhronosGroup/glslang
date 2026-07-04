@@ -122,6 +122,8 @@ namespace glslang {
         EatSubgroupUniformControlFlow,
         EatExport,
         EatMaximallyReconverges,
+        EatInline,
+        EatNoInline,
     };
 
     class TIntermAggregate;

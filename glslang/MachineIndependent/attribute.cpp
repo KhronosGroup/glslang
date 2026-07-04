@@ -127,6 +127,10 @@ TAttributeType TParseContext::attributeFromName(const TString& name) const
         return EatExport;
     else if (name == "maximally_reconverges")
         return EatMaximallyReconverges;
+    else if (name == "inline")
+        return EatInline;
+    else if (name == "noinline")
+        return EatNoInline;
     else
         return EatNone;
 }
@@ -349,7 +353,7 @@ void TParseContext::handleLoopAttributes(const TAttributes& attributes, TIntermN
 //
 // Function attributes
 //
-void TParseContext::handleFunctionAttributes(const TSourceLoc& loc, const TAttributes& attributes)
+void TParseContext::handleFunctionAttributes(const TSourceLoc& loc, TFunction& function, const TAttributes& attributes)
 {
     for (auto it = attributes.begin(); it != attributes.end(); ++it) {
         if (it->size() > 0) {
@@ -366,11 +370,22 @@ void TParseContext::handleFunctionAttributes(const TSourceLoc& loc, const TAttri
             requireExtensions(loc, 1, &E_GL_EXT_maximal_reconvergence, "attribute");
             intermediate.setMaximallyReconverges();
             break;
+        case EatInline:
+            requireExtensions(loc, 1, &E_GL_EXT_function_control_attributes, "attribute");
+            function.addFunctionControl(EfcInline);
+            break;
+        case EatNoInline:
+            requireExtensions(loc, 1, &E_GL_EXT_function_control_attributes, "attribute");
+            function.addFunctionControl(EfcDontInline);
+            break;
         default:
             warn(loc, "attribute does not apply to a function", "", "");
             break;
         }
     }
+    
+    if (function.hasIncompatibleFunctionControl())
+        error(loc, "function attributes are incompatible", function.getName().c_str(), "");
 }
 
 } // end namespace glslang

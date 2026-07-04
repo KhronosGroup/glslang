@@ -226,6 +226,7 @@ const char* const E_GL_EXT_texture_array                    = "GL_EXT_texture_ar
 const char* const E_GL_EXT_maximal_reconvergence            = "GL_EXT_maximal_reconvergence";
 const char* const E_GL_EXT_expect_assume                    = "GL_EXT_expect_assume";
 const char* const E_GL_EXT_control_flow_attributes2         = "GL_EXT_control_flow_attributes2";
+const char* const E_GL_EXT_function_control_attributes      = "GL_EXT_function_control_attributes";
 const char* const E_GL_EXT_spec_constant_composites         = "GL_EXT_spec_constant_composites";
 const char* const E_GL_EXT_texture_offset_non_const         = "GL_EXT_texture_offset_non_const";
 const char* const E_GL_EXT_nontemporal_keyword              = "GL_EXT_nontemporal_keyword";

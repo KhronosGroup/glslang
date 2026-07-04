@@ -48,6 +48,7 @@
 #include "../Include/Types.h"
 #include "SymbolTable.h"
 #include "ParseHelper.h"
+#include "Versions.h"
 #include "attribute.h"
 #include "glslang_tab.cpp.h"
 #include "ScanContext.h"
@@ -807,6 +808,8 @@ const std::unordered_map<const char*, int, str_hash, str_eq> KeywordMap {
     {"vector",VECTOR},
     {"resourceheap",RESOURCEHEAP},
     {"samplerheap",SAMPLERHEAP},
+    {"inline", INLINE},
+    {"noinline", NOINLINE},
 };
 const std::unordered_set<const char*, str_hash, str_eq> ReservedSet {
     "common",
@@ -820,8 +823,6 @@ const std::unordered_set<const char*, str_hash, str_eq> ReservedSet {
     "template",
     "this",
     "goto",
-    "inline",
-    "noinline",
     "public",
     "static",
     "extern",
@@ -2076,6 +2077,12 @@ int TScanContext::tokenizeIdentifier()
             parseContext.extensionTurnedOn(E_GL_EXT_descriptor_heap))
             return keyword;
         return identifierOrType();
+
+    case INLINE:
+    case NOINLINE:
+        if (!parseContext.extensionTurnedOn(E_GL_EXT_function_control_attributes))
+            return reservedWord();
+        return keyword;
 
     default:
         parseContext.infoSink.info.message(EPrefixInternalError, "Unknown glslang keyword", loc);
