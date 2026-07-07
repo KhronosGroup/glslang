@@ -2451,7 +2451,6 @@ spv::Id TGlslangToSpvTraverser::makeDescHeapImageArrayWrapperType(const glslang:
     spv::Id wrapperType = builder.makeStructType(members, {}, wrapperName.c_str(), false);
 
     builder.addMemberName(wrapperType, 0, symbol.getName().c_str());
-    builder.addDecoration(wrapperType, spv::Decoration::Block);
     builder.addMemberDecorationIdEXT(wrapperType, 0, spv::Decoration::OffsetIdEXT, {memberOffset});
 
     if (qualifier.isReadOnly())
