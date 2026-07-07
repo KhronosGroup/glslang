@@ -34,20 +34,143 @@
 // Tests for NonSemantic.Shader.DebugInfo (NSDI) features.
 
 #include "TestFixture.h"
+#include "SPIRV/NonSemanticShaderDebugInfo.h"
 #include "glslang/Public/ResourceLimits.h"
 #include <gtest/gtest.h>
+#include <cstdint>
 #include <sstream>
 #include <string>
+#include <vector>
 
 namespace glslangtest {
 namespace {
 
+std::string decodeLiteralString(const uint32_t* words, size_t wordCount)
+{
+    std::string result;
+    for (size_t wordIndex = 0; wordIndex < wordCount; ++wordIndex) {
+        for (unsigned int byteIndex = 0; byteIndex < 4; ++byteIndex) {
+            const char character = static_cast<char>((words[wordIndex] >> (8 * byteIndex)) & 0xff);
+            if (character == '\0')
+                return result;
+            result.push_back(character);
+        }
+    }
+    return result;
+}
+
+bool containsDebugTypeBasic(const std::vector<uint32_t>& spirv, const char* expectedName,
+                            uint32_t expectedWidth, spv::FPEncoding expectedFPEncoding)
+{
+    if (spirv.size() < 5 || spirv[0] != spv::MagicNumber)
+        return false;
+
+    const uint32_t idBound = spirv[3];
+    std::vector<std::string> strings(idBound);
+    std::vector<uint32_t> constants(idBound);
+    std::vector<bool> isConstant(idBound);
+    uint32_t debugInfoImportId = 0;
+
+    size_t end = spirv.size();
+
+    // Resolve the IDs referenced by DebugTypeBasic before inspecting the instruction itself.
+    // OpExtInstImport gives the result ID used to select the .101 debug-info instruction set,
+    // OpString gives the source-level type name, and OpConstant gives the values of the width,
+    // base encoding, flags, and optional FPEncoding operands.
+    //
+    // For example, the relevant SPIR-V for floate2m1_t has this shape:
+    //   %debug = OpExtInstImport "NonSemantic.Shader.DebugInfo.101"
+    //   %name = OpString "floate2m1_t"
+    //   %width = OpConstant %uint 4
+    //   %encoding = OpConstant %uint 3       ; NonSemanticShaderDebugInfoFloat
+    //   %flags = OpConstant %uint 0          ; NonSemanticShaderDebugInfoNone
+    //   %fpEncoding = OpConstant %uint 4225  ; Float4E2M1EXT
+    //   %type = OpExtInst %void %debug DebugTypeBasic
+    //               %name %width %encoding %flags %fpEncoding
+    for (size_t offset = 5; offset < spirv.size();) {
+        const uint32_t wordCount = spirv[offset] >> spv::WordCountShift;
+        const spv::Op opcode = static_cast<spv::Op>(spirv[offset] & spv::OpCodeMask);
+        if (wordCount == 0 || offset + wordCount > spirv.size())
+            return false;
+
+        if (opcode == spv::Op::OpFunction) {
+            // SPIR-V's logical layout places imports, debug strings, constants, and global
+            // debug-type instructions before the first OpFunction. Record that boundary while
+            // resolving IDs so this pass can exit early and the subsequent DebugTypeBasic scan
+            // can stop there as well.
+            end = offset;
+            break;
+        }
+
+        if (opcode == spv::Op::OpExtInstImport && wordCount >= 3) {
+            const uint32_t resultId = spirv[offset + 1];
+            if (resultId < idBound &&
+                decodeLiteralString(&spirv[offset + 2], wordCount - 2) ==
+                    "NonSemantic.Shader.DebugInfo.101") {
+                debugInfoImportId = resultId;
+            }
+        } else if (opcode == spv::Op::OpString && wordCount >= 3) {
+            const uint32_t resultId = spirv[offset + 1];
+            if (resultId < idBound)
+                strings[resultId] = decodeLiteralString(&spirv[offset + 2], wordCount - 2);
+        } else if (opcode == spv::Op::OpConstant && wordCount == 4) {
+            const uint32_t resultId = spirv[offset + 2];
+            if (resultId < idBound) {
+                constants[resultId] = spirv[offset + 3];
+                isConstant[resultId] = true;
+            }
+        }
+
+        offset += wordCount;
+    }
+
+    if (debugInfoImportId == 0)
+        return false;
+
+    const auto hasConstantValue = [&](uint32_t id, uint32_t value) {
+        return id < idBound && isConstant[id] && constants[id] == value;
+    };
+
+    // A DebugTypeBasic with an FPEncoding has five operands after its instruction number:
+    // Name, Size, Encoding, Flags, and FPEncoding. Including the five-word OpExtInst prefix,
+    // that gives a word count of 10. Match the imported .101 instruction set and resolve each
+    // operand ID through the OpString and OpConstant tables populated above.
+    for (size_t offset = 5; offset < end;) {
+        const uint32_t wordCount = spirv[offset] >> spv::WordCountShift;
+        const spv::Op opcode = static_cast<spv::Op>(spirv[offset] & spv::OpCodeMask);
+        if (wordCount == 0 || offset + wordCount > spirv.size())
+            return false;
+
+        if (opcode == spv::Op::OpExtInst && wordCount == 10 &&
+            spirv[offset + 3] == debugInfoImportId &&
+            spirv[offset + 4] == NonSemanticShaderDebugInfoDebugTypeBasic) {
+            const uint32_t nameId = spirv[offset + 5];
+            const uint32_t widthId = spirv[offset + 6];
+            const uint32_t encodingId = spirv[offset + 7];
+            const uint32_t flagsId = spirv[offset + 8];
+            const uint32_t fpEncodingId = spirv[offset + 9];
+            if (nameId < idBound && strings[nameId] == expectedName &&
+                hasConstantValue(widthId, expectedWidth) &&
+                hasConstantValue(encodingId, NonSemanticShaderDebugInfoFloat) &&
+                hasConstantValue(flagsId, NonSemanticShaderDebugInfoNone) &&
+                hasConstantValue(fpEncodingId, static_cast<uint32_t>(expectedFPEncoding))) {
+                return true;
+            }
+        }
+
+        offset += wordCount;
+    }
+
+    return false;
+}
+
 class SpvDebugInfoTest : public ::testing::Test {
 protected:
-    // Compile a GLSL compute shader with NonSemantic debug info enabled, targeting
-    // Vulkan 1.1 / SPIR-V 1.3, and return the disassembly.
-    std::string compileWithDebugInfo(const std::string& source)
+    bool compileToSpirvWithDebugInfo(const std::string& source, std::vector<uint32_t>& spirv,
+                                     std::string& error)
     {
+        spirv.clear();
+        error.clear();
         glslang::TShader shader(EShLangCompute);
         const char* str = source.c_str();
         shader.setStrings(&str, 1);
@@ -57,21 +180,35 @@ protected:
         shader.setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_3);
 
         EShMessages messages = static_cast<EShMessages>(EShMsgDefault | EShMsgDebugInfo);
-        if (!shader.parse(GetDefaultResources(), 450, false, messages))
-            return "COMPILATION_FAILED: " + std::string(shader.getInfoLog());
+        if (!shader.parse(GetDefaultResources(), 450, false, messages)) {
+            error = "COMPILATION_FAILED: " + std::string(shader.getInfoLog());
+            return false;
+        }
 
         glslang::TProgram program;
         program.addShader(&shader);
-        if (!program.link(messages))
-            return "LINKING_FAILED: " + std::string(program.getInfoLog());
+        if (!program.link(messages)) {
+            error = "LINKING_FAILED: " + std::string(program.getInfoLog());
+            return false;
+        }
 
         glslang::SpvOptions opts;
         opts.generateDebugInfo = true;
         opts.emitNonSemanticShaderDebugInfo = true;
         opts.disableOptimizer = true;
 
-        std::vector<uint32_t> spirv;
         glslang::GlslangToSpv(*program.getIntermediate(EShLangCompute), spirv, &opts);
+        return true;
+    }
+
+    // Compile a GLSL compute shader with NonSemantic debug info enabled, targeting
+    // Vulkan 1.1 / SPIR-V 1.3, and return the disassembly.
+    std::string compileWithDebugInfo(const std::string& source)
+    {
+        std::vector<uint32_t> spirv;
+        std::string error;
+        if (!compileToSpirvWithDebugInfo(source, spirv, error))
+            return error;
 
         std::ostringstream out;
         spv::Disassemble(out, spirv);
@@ -341,17 +478,30 @@ void main() {
         float(e2m1) + float(e3m2) + float(e2m3) + float(ue8m0) + float(mxint8);
 }
 )";
-    std::string spirv = compileWithDebugInfo(source);
-    const char* expectedTypeNames[] = {
-        "floate2m1_t",
-        "floate3m2_t",
-        "floate2m3_t",
-        "floatue8m0_t",
-        "floatmxint8_t",
+    std::vector<uint32_t> spirv;
+    std::string error;
+    ASSERT_TRUE(compileToSpirvWithDebugInfo(source, spirv, error)) << error;
+
+    struct ExpectedDebugType {
+        const char* name;
+        uint32_t width;
+        spv::FPEncoding fpEncoding;
     };
-    for (const char* typeName : expectedTypeNames) {
-        EXPECT_NE(spirv.find(std::string("\"") + typeName + "\""), std::string::npos)
-            << "Expected \"" << typeName << "\" string in debug type.\nSPIR-V:\n" << spirv;
+    const ExpectedDebugType expectedTypes[] = {
+        {"floate2m1_t", 4, spv::FPEncoding::Float4E2M1EXT},
+        {"floate3m2_t", 6, spv::FPEncoding::Float6E3M2EXT},
+        {"floate2m3_t", 6, spv::FPEncoding::Float6E2M3EXT},
+        {"floatue8m0_t", 8, spv::FPEncoding::Float8UnsignedE8M0EXT},
+        {"floatmxint8_t", 8, spv::FPEncoding::MXInt8EXT},
+    };
+
+    std::ostringstream disassembly;
+    spv::Disassemble(disassembly, spirv);
+    for (const auto& expected : expectedTypes) {
+        EXPECT_TRUE(containsDebugTypeBasic(spirv, expected.name, expected.width, expected.fpEncoding))
+            << "Expected DebugTypeBasic for \"" << expected.name << "\" with width " << expected.width
+            << " and FPEncoding " << static_cast<uint32_t>(expected.fpEncoding)
+            << ".\nSPIR-V:\n" << disassembly.str();
     }
 }
 

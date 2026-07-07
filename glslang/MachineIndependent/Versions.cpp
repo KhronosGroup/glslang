@@ -149,6 +149,8 @@
 #include "parseVersions.h"
 #include "localintermediate.h"
 
+#include <iterator>
+
 namespace glslang {
 
 //
@@ -1269,7 +1271,7 @@ void TParseVersions::float16Check(const TSourceLoc& loc, const char* op, bool bu
                                            E_GL_AMD_gpu_shader_half_float,
                                            E_GL_EXT_shader_explicit_arithmetic_types,
                                            E_GL_EXT_shader_explicit_arithmetic_types_float16};
-        requireExtensions(loc, sizeof(extensions)/sizeof(extensions[0]), extensions, op);
+        requireExtensions(loc, std::size(extensions), extensions, op);
     }
 }
 
@@ -1280,7 +1282,7 @@ bool TParseVersions::float16Arithmetic()
                                        E_GL_EXT_shader_explicit_arithmetic_types,
                                        E_GL_NV_gpu_shader5,
                                        E_GL_EXT_shader_explicit_arithmetic_types_float16};
-    return extensionsTurnedOn(sizeof(extensions)/sizeof(extensions[0]), extensions);
+    return extensionsTurnedOn(std::size(extensions), extensions);
 }
 
 bool TParseVersions::int16Arithmetic()
@@ -1290,7 +1292,7 @@ bool TParseVersions::int16Arithmetic()
                                        E_GL_EXT_shader_explicit_arithmetic_types,
                                        E_GL_NV_gpu_shader5,
                                        E_GL_EXT_shader_explicit_arithmetic_types_int16};
-    return extensionsTurnedOn(sizeof(extensions)/sizeof(extensions[0]), extensions);
+    return extensionsTurnedOn(std::size(extensions), extensions);
 }
 
 bool TParseVersions::int8Arithmetic()
@@ -1299,7 +1301,7 @@ bool TParseVersions::int8Arithmetic()
                                        E_GL_EXT_shader_explicit_arithmetic_types,
                                        E_GL_NV_gpu_shader5,
                                        E_GL_EXT_shader_explicit_arithmetic_types_int8};
-    return extensionsTurnedOn(sizeof(extensions)/sizeof(extensions[0]), extensions);
+    return extensionsTurnedOn(std::size(extensions), extensions);
 }
 
 void TParseVersions::requireFloat16Arithmetic(const TSourceLoc& loc, const char* op, const char* featureDesc)
@@ -1314,7 +1316,7 @@ void TParseVersions::requireFloat16Arithmetic(const TSourceLoc& loc, const char*
                                        E_GL_EXT_shader_explicit_arithmetic_types,
                                        E_GL_NV_gpu_shader5,
                                        E_GL_EXT_shader_explicit_arithmetic_types_float16};
-    requireExtensions(loc, sizeof(extensions)/sizeof(extensions[0]), extensions, combined.c_str());
+    requireExtensions(loc, std::size(extensions), extensions, combined.c_str());
 }
 
 void TParseVersions::requireInt16Arithmetic(const TSourceLoc& loc, const char* op, const char* featureDesc)
@@ -1329,7 +1331,7 @@ void TParseVersions::requireInt16Arithmetic(const TSourceLoc& loc, const char* o
                                        E_GL_EXT_shader_explicit_arithmetic_types,
                                        E_GL_NV_gpu_shader5,
                                        E_GL_EXT_shader_explicit_arithmetic_types_int16};
-    requireExtensions(loc, sizeof(extensions)/sizeof(extensions[0]), extensions, combined.c_str());
+    requireExtensions(loc, std::size(extensions), extensions, combined.c_str());
 }
 
 void TParseVersions::requireInt8Arithmetic(const TSourceLoc& loc, const char* op, const char* featureDesc)
@@ -1343,7 +1345,7 @@ void TParseVersions::requireInt8Arithmetic(const TSourceLoc& loc, const char* op
                                        E_GL_EXT_shader_explicit_arithmetic_types,
                                        E_GL_NV_gpu_shader5,
                                        E_GL_EXT_shader_explicit_arithmetic_types_int8};
-    requireExtensions(loc, sizeof(extensions)/sizeof(extensions[0]), extensions, combined.c_str());
+    requireExtensions(loc, std::size(extensions), extensions, combined.c_str());
 }
 
 void TParseVersions::float16ScalarVectorCheck(const TSourceLoc& loc, const char* op, bool builtIn)
@@ -1355,7 +1357,7 @@ void TParseVersions::float16ScalarVectorCheck(const TSourceLoc& loc, const char*
                                            E_GL_EXT_shader_explicit_arithmetic_types,
                                            E_GL_NV_gpu_shader5,
                                            E_GL_EXT_shader_explicit_arithmetic_types_float16};
-        requireExtensions(loc, sizeof(extensions)/sizeof(extensions[0]), extensions, op);
+        requireExtensions(loc, std::size(extensions), extensions, op);
     }
 }
 
@@ -1365,7 +1367,7 @@ void TParseVersions::bfloat16ScalarVectorCheck(const TSourceLoc& loc, const char
         const char* const extensions[] = {
                                            E_GL_EXT_bfloat16,
                                          };
-        requireExtensions(loc, sizeof(extensions)/sizeof(extensions[0]), extensions, op);
+        requireExtensions(loc, std::size(extensions), extensions, op);
     }
 }
 
@@ -1375,7 +1377,7 @@ void TParseVersions::floate5m2ScalarVectorCheck(const TSourceLoc& loc, const cha
         const char* const extensions[] = {
                                            E_GL_EXT_float_e5m2,
                                          };
-        requireExtensions(loc, sizeof(extensions)/sizeof(extensions[0]), extensions, op);
+        requireExtensions(loc, std::size(extensions), extensions, op);
     }
 }
 
@@ -1385,7 +1387,7 @@ void TParseVersions::floate4m3ScalarVectorCheck(const TSourceLoc& loc, const cha
         const char* const extensions[] = {
                                            E_GL_EXT_float_e4m3,
                                          };
-        requireExtensions(loc, sizeof(extensions)/sizeof(extensions[0]), extensions, op);
+        requireExtensions(loc, std::size(extensions), extensions, op);
     }
 }
 
@@ -1395,7 +1397,7 @@ void TParseVersions::floate2m1ScalarVectorCheck(const TSourceLoc& loc, const cha
         const char* const extensions[] = {
                                            E_GL_EXT_float_e2m1,
                                          };
-        requireExtensions(loc, sizeof(extensions)/sizeof(extensions[0]), extensions, op);
+        requireExtensions(loc, std::size(extensions), extensions, op);
     }
 }
 
@@ -1405,7 +1407,7 @@ void TParseVersions::floate3m2ScalarVectorCheck(const TSourceLoc& loc, const cha
         const char* const extensions[] = {
                                            E_GL_EXT_float_e3m2,
                                          };
-        requireExtensions(loc, sizeof(extensions)/sizeof(extensions[0]), extensions, op);
+        requireExtensions(loc, std::size(extensions), extensions, op);
     }
 }
 
@@ -1415,7 +1417,7 @@ void TParseVersions::floate2m3ScalarVectorCheck(const TSourceLoc& loc, const cha
         const char* const extensions[] = {
                                            E_GL_EXT_float_e2m3,
                                          };
-        requireExtensions(loc, sizeof(extensions)/sizeof(extensions[0]), extensions, op);
+        requireExtensions(loc, std::size(extensions), extensions, op);
     }
 }
 
@@ -1425,7 +1427,7 @@ void TParseVersions::floatue8m0ScalarVectorCheck(const TSourceLoc& loc, const ch
         const char* const extensions[] = {
                                            E_GL_EXT_float_ue8m0,
                                          };
-        requireExtensions(loc, sizeof(extensions)/sizeof(extensions[0]), extensions, op);
+        requireExtensions(loc, std::size(extensions), extensions, op);
     }
 }
 
@@ -1435,7 +1437,7 @@ void TParseVersions::floatmxint8ScalarVectorCheck(const TSourceLoc& loc, const c
         const char* const extensions[] = {
                                            E_GL_EXT_float_mxint8,
                                          };
-        requireExtensions(loc, sizeof(extensions)/sizeof(extensions[0]), extensions, op);
+        requireExtensions(loc, std::size(extensions), extensions, op);
     }
 }
 
@@ -1446,7 +1448,7 @@ void TParseVersions::explicitFloat32Check(const TSourceLoc& loc, const char* op,
         const char* const extensions[] = {E_GL_EXT_shader_explicit_arithmetic_types,
                                           E_GL_NV_gpu_shader5,
                                            E_GL_EXT_shader_explicit_arithmetic_types_float32};
-        requireExtensions(loc, sizeof(extensions) / sizeof(extensions[0]), extensions, op);
+        requireExtensions(loc, std::size(extensions), extensions, op);
     }
 }
 
@@ -1457,7 +1459,7 @@ void TParseVersions::explicitFloat64Check(const TSourceLoc& loc, const char* op,
         const char* const extensions[] = {E_GL_EXT_shader_explicit_arithmetic_types,
                                            E_GL_NV_gpu_shader5,
                                            E_GL_EXT_shader_explicit_arithmetic_types_float64};
-        requireExtensions(loc, sizeof(extensions) / sizeof(extensions[0]), extensions, op);
+        requireExtensions(loc, std::size(extensions), extensions, op);
         requireProfile(loc, ECoreProfile | ECompatibilityProfile, op);
         if(extensionTurnedOn(E_GL_ARB_gpu_shader_fp64) && extensionTurnedOn(E_GL_NV_gpu_shader5))
             profileRequires(loc, ECoreProfile | ECompatibilityProfile, 150, nullptr, op);
@@ -1494,7 +1496,7 @@ void TParseVersions::explicitInt16Check(const TSourceLoc& loc, const char* op, b
                                            E_GL_AMD_gpu_shader_int16,
                                            E_GL_EXT_shader_explicit_arithmetic_types,
                                            E_GL_EXT_shader_explicit_arithmetic_types_int16};
-        requireExtensions(loc, sizeof(extensions)/sizeof(extensions[0]), extensions, op);
+        requireExtensions(loc, std::size(extensions), extensions, op);
     }
 }
 
@@ -1507,7 +1509,7 @@ void TParseVersions::int16ScalarVectorCheck(const TSourceLoc& loc, const char* o
                                            E_GL_EXT_shader_explicit_arithmetic_types,
                                            E_GL_NV_gpu_shader5,
                                            E_GL_EXT_shader_explicit_arithmetic_types_int16};
-        requireExtensions(loc, sizeof(extensions)/sizeof(extensions[0]), extensions, op);
+        requireExtensions(loc, std::size(extensions), extensions, op);
     }
 }
 
@@ -1519,7 +1521,7 @@ void TParseVersions::int8ScalarVectorCheck(const TSourceLoc& loc, const char* op
                                            E_GL_EXT_shader_explicit_arithmetic_types,
                                            E_GL_NV_gpu_shader5,
                                            E_GL_EXT_shader_explicit_arithmetic_types_int8};
-        requireExtensions(loc, sizeof(extensions)/sizeof(extensions[0]), extensions, op);
+        requireExtensions(loc, std::size(extensions), extensions, op);
     }
 }
 
@@ -1530,7 +1532,7 @@ void TParseVersions::explicitInt32Check(const TSourceLoc& loc, const char* op, b
         const char* const extensions[] = {E_GL_EXT_shader_explicit_arithmetic_types,
                                            E_GL_NV_gpu_shader5,
                                            E_GL_EXT_shader_explicit_arithmetic_types_int32};
-        requireExtensions(loc, sizeof(extensions) / sizeof(extensions[0]), extensions, op);
+        requireExtensions(loc, std::size(extensions), extensions, op);
     }
 }
 
@@ -1542,7 +1544,7 @@ void TParseVersions::int64Check(const TSourceLoc& loc, const char* op, bool buil
                                            E_GL_EXT_shader_explicit_arithmetic_types,
                                            E_GL_NV_gpu_shader5,
                                            E_GL_EXT_shader_explicit_arithmetic_types_int64};
-        requireExtensions(loc, sizeof(extensions) / sizeof(extensions[0]), extensions, op);
+        requireExtensions(loc, std::size(extensions), extensions, op);
         requireProfile(loc, ECoreProfile | ECompatibilityProfile, op);
         if (extensionTurnedOn(E_GL_NV_gpu_shader5))
             profileRequires(loc, ECoreProfile | ECompatibilityProfile, 150, nullptr, op);
@@ -1555,7 +1557,7 @@ void TParseVersions::fcoopmatCheckNV(const TSourceLoc& loc, const char* op, bool
 {
     if (!builtIn) {
         const char* const extensions[] = {E_GL_NV_cooperative_matrix};
-        requireExtensions(loc, sizeof(extensions)/sizeof(extensions[0]), extensions, op);
+        requireExtensions(loc, std::size(extensions), extensions, op);
     }
 }
 
@@ -1563,7 +1565,7 @@ void TParseVersions::intcoopmatCheckNV(const TSourceLoc& loc, const char* op, bo
 {
     if (!builtIn) {
         const char* const extensions[] = {E_GL_NV_integer_cooperative_matrix};
-        requireExtensions(loc, sizeof(extensions)/sizeof(extensions[0]), extensions, op);
+        requireExtensions(loc, std::size(extensions), extensions, op);
     }
 }
 
@@ -1571,7 +1573,7 @@ void TParseVersions::coopmatCheck(const TSourceLoc& loc, const char* op, bool bu
 {
     if (!builtIn) {
         const char* const extensions[] = {E_GL_KHR_cooperative_matrix};
-        requireExtensions(loc, sizeof(extensions)/sizeof(extensions[0]), extensions, op);
+        requireExtensions(loc, std::size(extensions), extensions, op);
     }
 }
 
@@ -1579,7 +1581,7 @@ void TParseVersions::coopmatConverisonCheckQCOM(const TSourceLoc& loc, const cha
 {
   if (!builtIn) {
     const char* const extensions[] = {E_GL_KHR_cooperative_matrix};
-    requireExtensions(loc, sizeof(extensions) / sizeof(extensions[0]), extensions, op);
+    requireExtensions(loc, std::size(extensions), extensions, op);
   }
 }
 
@@ -1587,7 +1589,7 @@ void TParseVersions::tensorLayoutViewCheck(const TSourceLoc& loc, const char* op
 {
     if (!builtIn) {
         const char* const extensions[] = {E_GL_NV_cooperative_matrix2};
-        requireExtensions(loc, sizeof(extensions)/sizeof(extensions[0]), extensions, op);
+        requireExtensions(loc, std::size(extensions), extensions, op);
     }
 }
 
@@ -1595,7 +1597,7 @@ void TParseVersions::coopvecCheck(const TSourceLoc& loc, const char* op, bool bu
 {
     if (!builtIn) {
         const char* const extensions[] = {E_GL_NV_cooperative_vector};
-        requireExtensions(loc, sizeof(extensions)/sizeof(extensions[0]), extensions, op);
+        requireExtensions(loc, std::size(extensions), extensions, op);
     }
 }
 
@@ -1603,7 +1605,7 @@ void TParseVersions::intattachmentCheck(const TSourceLoc& loc, const char* op, b
 {
     if (!builtIn) {
         const char* const extensions[] = {E_GL_QCOM_tile_shading};
-        requireExtensions(loc, sizeof(extensions)/sizeof(extensions[0]), extensions, op);
+        requireExtensions(loc, std::size(extensions), extensions, op);
     }
 }
 
@@ -1611,7 +1613,7 @@ void TParseVersions::tensorCheckARM(const TSourceLoc& loc, const char* op, bool 
 {
     if (!builtIn) {
         const char* const extensions[] = {E_GL_ARM_tensors};
-        requireExtensions(loc, sizeof(extensions)/sizeof(extensions[0]), extensions, op);
+        requireExtensions(loc, std::size(extensions), extensions, op);
     }
 }
 
@@ -1619,7 +1621,7 @@ void TParseVersions::longVectorCheck(const TSourceLoc& loc, const char* op, bool
 {
     if (!builtIn) {
         const char* const extensions[] = {E_GL_EXT_long_vector};
-        requireExtensions(loc, sizeof(extensions)/sizeof(extensions[0]), extensions, op);
+        requireExtensions(loc, std::size(extensions), extensions, op);
     }
 }
 
