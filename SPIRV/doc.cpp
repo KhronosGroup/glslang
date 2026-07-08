@@ -1165,6 +1165,12 @@ const char* CapabilityString(int info)
     case (int)Capability::Shader64BitIndexingEXT:              return "CapabilityShader64BitIndexingEXT";
     case (int)Capability::LongVectorEXT:                       return "LongVectorEXT";
 
+    case (int)Capability::Float4EXT:                           return "Float4EXT";
+    case (int)Capability::Float6EXT:                           return "Float6EXT";
+    case (int)Capability::Float8UnsignedE8M0EXT:               return "Float8UnsignedE8M0EXT";
+    case (int)Capability::MXInt8EXT:                           return "MXInt8EXT";
+    case (int)Capability::BitcastExtractEXT:                   return "BitcastExtractEXT";
+
     default: return "Bad";
     }
 }
@@ -1796,6 +1802,8 @@ const char* OpcodeString(int op)
     case (int)Op::OpHitObjectTraceMotionReorderExecuteEXT: return "OpHitObjectTraceMotionReorderExecuteEXT";
     case (int)Op::OpHitObjectRecordFromQueryEXT:          return "OpHitObjectRecordFromQueryEXT";
     case (int)Op::OpHitObjectGetIntersectionTriangleVertexPositionsEXT: return "OpHitObjectGetIntersectionTriangleVertexPositionsEXT";
+
+    case (int)Op::OpBitcastExtractEXT:                    return "OpBitcastExtractEXT";
 
     default:
         return "Bad";
@@ -4151,6 +4159,8 @@ void Parameterize()
         InstructionDesc[enumCast(Op::OpHitObjectGetIntersectionTriangleVertexPositionsEXT)].operands.push(OperandId, "'HitObject'");
         InstructionDesc[enumCast(Op::OpHitObjectGetIntersectionTriangleVertexPositionsEXT)].setResultAndType(true, true);
 
+        InstructionDesc[enumCast(Op::OpBitcastExtractEXT)].operands.push(OperandId, "'Base'");
+        InstructionDesc[enumCast(Op::OpBitcastExtractEXT)].operands.push(OperandId, "'Offset'");
     });
 }
 

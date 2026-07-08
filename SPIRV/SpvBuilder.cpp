@@ -425,6 +425,65 @@ Id Builder::makeFloatE4M3Type()
     return type->getResultId();
 }
 
+Id Builder::makeFloatOcpMicroscalingType(uint32_t width, FPEncoding encoding, Capability cap)
+{
+    // try to find it
+    Instruction* type;
+    for (int t = 0; t < (int)groupedTypes[enumCast(Op::OpTypeFloat)].size(); ++t) {
+        type = groupedTypes[enumCast(Op::OpTypeFloat)][t];
+        if (type->getNumOperands() != 2) {
+            continue;
+        }
+        if (type->getImmediateOperand(0) == (unsigned)width &&
+            type->getImmediateOperand(1) == encoding)
+            return type->getResultId();
+    }
+
+    // not found, make it
+    type = new Instruction(getUniqueId(), NoType, Op::OpTypeFloat);
+    type->addImmediateOperand(width);
+    type->addImmediateOperand(encoding);
+    groupedTypes[enumCast(Op::OpTypeFloat)].push_back(type);
+    constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
+    module.mapInstruction(type);
+
+    addExtension(spv::E_SPV_EXT_ocp_microscaling_types);
+    addCapability(cap);
+
+    if (emitNonSemanticShaderDebugInfo)
+    {
+        auto const debugResultId = makeFloatDebugType(width, makeUintConstant((unsigned)encoding));
+        debugTypeIdLookup[type->getResultId()] = debugResultId;
+    }
+
+    return type->getResultId();
+}
+
+Id Builder::makeFloatE2M1Type()
+{
+    return makeFloatOcpMicroscalingType(4, FPEncoding::Float4E2M1EXT, Capability::Float4EXT);
+}
+
+Id Builder::makeFloatE3M2Type()
+{
+    return makeFloatOcpMicroscalingType(6, FPEncoding::Float6E3M2EXT, Capability::Float6EXT);
+}
+
+Id Builder::makeFloatE2M3Type()
+{
+    return makeFloatOcpMicroscalingType(6, FPEncoding::Float6E2M3EXT, Capability::Float6EXT);
+}
+
+Id Builder::makeFloatUE8M0Type()
+{
+    return makeFloatOcpMicroscalingType(8, FPEncoding::Float8UnsignedE8M0EXT, Capability::Float8UnsignedE8M0EXT);
+}
+
+Id Builder::makeFloatMXINT8Type()
+{
+    return makeFloatOcpMicroscalingType(8, FPEncoding::MXInt8EXT, Capability::MXInt8EXT);
+}
+
 // Make a struct without checking for duplication.
 // See makeStructResultType() for non-decorated structs
 // needed as the result of some instructions, which does
@@ -1042,6 +1101,16 @@ Id Builder::makeFloatDebugType(int const width, Id const fpEncoding)
             typeName = "floate4m3_t";
         else if (fpEncoding == makeUintConstant((unsigned)FPEncoding::Float8E5M2EXT))
             typeName = "floate5m2_t";
+        else if (fpEncoding == makeUintConstant((unsigned)FPEncoding::Float4E2M1EXT))
+            typeName = "floate2m1_t";
+        else if (fpEncoding == makeUintConstant((unsigned)FPEncoding::Float6E3M2EXT))
+            typeName = "floate3m2_t";
+        else if (fpEncoding == makeUintConstant((unsigned)FPEncoding::Float6E2M3EXT))
+            typeName = "floate2m3_t";
+        else if (fpEncoding == makeUintConstant((unsigned)FPEncoding::Float8UnsignedE8M0EXT))
+            typeName = "floatue8m0_t";
+        else if (fpEncoding == makeUintConstant((unsigned)FPEncoding::MXInt8EXT))
+            typeName = "floatmxint8_t";
         else
             typeName = "float";
     } else {
@@ -2109,16 +2178,16 @@ Id Builder::makeBFloat16Constant(float bf16, bool specConstant)
     return resultId;
 }
 
-Id Builder::makeFloatE5M2Constant(float fe5m2, bool specConstant)
+template <typename SpvUtilsType>
+Id Builder::makeFloatConstantHelper(float f, Id typeId, bool specConstant)
 {
     Op opcode = specConstant ? Op::OpSpecConstant : Op::OpConstant;
-    Id typeId = makeFloatE5M2Type();
 
-    spvutils::HexFloat<spvutils::FloatProxy<float>> fVal(fe5m2);
-    spvutils::HexFloat<spvutils::FloatProxy<spvutils::FloatE5M2>> fe5m2Val(0);
-    fVal.castTo(fe5m2Val, spvutils::kRoundToZero);
+    spvutils::HexFloat<spvutils::FloatProxy<float>> fVal(f);
+    spvutils::HexFloat<spvutils::FloatProxy<SpvUtilsType>> smallFloatVal(0);
+    fVal.castTo(smallFloatVal, spvutils::kRoundToZero);
 
-    unsigned value = fe5m2Val.value().getAsFloat().get_value();
+    unsigned value = smallFloatVal.value().getAsFloat().get_value();
 
     // See if we already made it. Applies only to regular constants, because specialization constants
     // must remain distinct for the purpose of applying a SpecId decoration.
@@ -2141,16 +2210,44 @@ Id Builder::makeFloatE5M2Constant(float fe5m2, bool specConstant)
     return resultId;
 }
 
+Id Builder::makeFloatE5M2Constant(float fe5m2, bool specConstant)
+{
+    return makeFloatConstantHelper<spvutils::FloatE5M2>(fe5m2, makeFloatE5M2Type(), specConstant);
+}
+
 Id Builder::makeFloatE4M3Constant(float fe4m3, bool specConstant)
 {
+    return makeFloatConstantHelper<spvutils::FloatE4M3>(fe4m3, makeFloatE4M3Type(), specConstant);
+}
+
+Id Builder::makeFloatE2M1Constant(float fe2m1, bool specConstant)
+{
+    return makeFloatConstantHelper<spvutils::FloatE2M1>(fe2m1, makeFloatE2M1Type(), specConstant);
+}
+
+Id Builder::makeFloatE3M2Constant(float fe3m2, bool specConstant)
+{
+    return makeFloatConstantHelper<spvutils::FloatE3M2>(fe3m2, makeFloatE3M2Type(), specConstant);
+}
+
+Id Builder::makeFloatE2M3Constant(float fe2m3, bool specConstant)
+{
+    return makeFloatConstantHelper<spvutils::FloatE2M3>(fe2m3, makeFloatE2M3Type(), specConstant);
+}
+
+Id Builder::makeFloatUE8M0Constant(float fue8m0, bool specConstant)
+{
     Op opcode = specConstant ? Op::OpSpecConstant : Op::OpConstant;
-    Id typeId = makeFloatE4M3Type();
+    Id typeId = makeFloatUE8M0Type();
 
-    spvutils::HexFloat<spvutils::FloatProxy<float>> fVal(fe4m3);
-    spvutils::HexFloat<spvutils::FloatProxy<spvutils::FloatE4M3>> fe4m3Val(0);
-    fVal.castTo(fe4m3Val, spvutils::kRoundToZero);
-
-    unsigned value = fe4m3Val.value().getAsFloat().get_value();
+    fue8m0 = std::max(fue8m0, 0.f);
+    union {
+        float f;
+        uint32_t u;
+    } un;
+    un.f = fue8m0;
+    // extract the exponent, this effectively rounds to zero.
+    uint32_t value = un.u >> 23;
 
     // See if we already made it. Applies only to regular constants, because specialization constants
     // must remain distinct for the purpose of applying a SpecId decoration.
@@ -2167,7 +2264,40 @@ Id Builder::makeFloatE4M3Constant(float fe4m3, bool specConstant)
 
     Id resultId = c->getResultId();
     if (!specConstant) {
-        ScalarConstantKey key{enumCast(Op::OpTypeFloat), enumCast(opcode), typeId, value, 0};
+        ScalarConstantKey key{ enumCast(Op::OpTypeFloat), enumCast(opcode), typeId, value, 0 };
+        groupedScalarConstantResultIDs[key] = resultId;
+    }
+    return resultId;
+}
+
+Id Builder::makeFloatMXINT8Constant(float mxint8, bool specConstant)
+{
+    Op opcode = specConstant ? Op::OpSpecConstant : Op::OpConstant;
+    Id typeId = makeFloatMXINT8Type();
+
+    // clamp and convert to fixed point.
+    mxint8 = std::min(mxint8,  127.f/64.f);
+    mxint8 = std::max(mxint8, -127.f/64.f);
+    mxint8 *= 64;
+    mxint8 = roundf(mxint8);
+    uint32_t value = ((int32_t)mxint8) & 0xFF;
+
+    // See if we already made it. Applies only to regular constants, because specialization constants
+    // must remain distinct for the purpose of applying a SpecId decoration.
+    if (!specConstant) {
+        Id existing = findScalarConstant(Op::OpTypeFloat, opcode, typeId, value);
+        if (existing)
+            return existing;
+    }
+
+    Instruction* c = new Instruction(getUniqueId(), typeId, opcode);
+    c->addImmediateOperand(value);
+    constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(c));
+    module.mapInstruction(c);
+
+    Id resultId = c->getResultId();
+    if (!specConstant) {
+        ScalarConstantKey key{ enumCast(Op::OpTypeFloat), enumCast(opcode), typeId, value, 0 };
         groupedScalarConstantResultIDs[key] = resultId;
     }
     return resultId;

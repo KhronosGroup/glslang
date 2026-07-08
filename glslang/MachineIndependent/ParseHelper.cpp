@@ -938,7 +938,8 @@ TIntermTyped* TParseContext::handleBinaryMath(const TSourceLoc& loc, const char*
         ((left->getType().contains16BitInt() || right->getType().contains16BitInt()) && !int16Arithmetic()) ||
         ((left->getType().contains8BitInt() || right->getType().contains8BitInt()) && !int8Arithmetic()) ||
         (left->getType().containsBFloat16() || right->getType().containsBFloat16()) ||
-        (left->getType().contains8BitFloat() || right->getType().contains8BitFloat())) {
+        (left->getType().contains8BitFloat() || right->getType().contains8BitFloat()) ||
+        (left->getType().containsOcpMicroscalingFloat() || right->getType().containsOcpMicroscalingFloat())) {
         allowed = false;
     }
 
@@ -967,7 +968,8 @@ TIntermTyped* TParseContext::handleUnaryMath(const TSourceLoc& loc, const char* 
         (childNode->getType().contains16BitInt() && !int16Arithmetic()) ||
         (childNode->getType().contains8BitInt() && !int8Arithmetic()) ||
         (childNode->getType().containsBFloat16()) ||
-        (childNode->getType().contains8BitFloat())) {
+        (childNode->getType().contains8BitFloat()) ||
+        (childNode->getType().containsOcpMicroscalingFloat())) {
         allowed = false;
     }
 
@@ -4658,6 +4660,36 @@ bool TParseContext::constructorError(const TSourceLoc& loc, TIntermNode* node, T
         if (type.isVector() && function.getParamCount() != 1)
             requireInt8Arithmetic(loc, constructorString.c_str(), "8-bit vectors only take vector types");
         break;
+    case EOpConstructFloatE2M1:
+    case EOpConstructFloatE2M1Vec2:
+    case EOpConstructFloatE2M1Vec3:
+    case EOpConstructFloatE2M1Vec4:
+    case EOpConstructFloatE3M2:
+    case EOpConstructFloatE3M2Vec2:
+    case EOpConstructFloatE3M2Vec3:
+    case EOpConstructFloatE3M2Vec4:
+    case EOpConstructFloatE2M3:
+    case EOpConstructFloatE2M3Vec2:
+    case EOpConstructFloatE2M3Vec3:
+    case EOpConstructFloatE2M3Vec4:
+    case EOpConstructFloatUE8M0:
+    case EOpConstructFloatUE8M0Vec2:
+    case EOpConstructFloatUE8M0Vec3:
+    case EOpConstructFloatUE8M0Vec4:
+    case EOpConstructFloatMXINT8:
+    case EOpConstructFloatMXINT8Vec2:
+    case EOpConstructFloatMXINT8Vec3:
+    case EOpConstructFloatMXINT8Vec4:
+        if (!constType || specConstType) {
+            for (int i = 0; i < function.getParamCount(); ++i) {
+                TIntermNode* arg = function.getParamCount() == 1 ? node : node->getAsAggregate()->getSequence()[i];
+                if (arg->getAsTyped()->getBasicType() != type.getBasicType()) {
+                    error(loc, "constructor argument must be a non-spec constant", constructorString.c_str(), "");
+                    return true;
+                }
+            }
+        }
+        break;
     default:
         break;
     }
@@ -8158,6 +8190,11 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
         case EbtBFloat16:
         case EbtFloatE5M2:
         case EbtFloatE4M3:
+        case EbtFloatE2M1:
+        case EbtFloatE3M2:
+        case EbtFloatE2M3:
+        case EbtFloatUE8M0:
+        case EbtFloatMXINT8:
             break;
         default:
             error(loc, "cannot be applied to this type", "constant_id", "");
@@ -9549,6 +9586,14 @@ TIntermNode* TParseContext::declareVariable(const TSourceLoc& loc, TString& iden
         (type.getQualifier().storage == EvqVaryingIn || type.getQualifier().storage == EvqVaryingOut))
         error(loc, "qualifier", "fp8 types not allowed as input/output", "");
 
+    if (type.containsOcpMicroscalingFloat() &&
+        (type.getQualifier().storage == EvqVaryingIn || type.getQualifier().storage == EvqVaryingOut))
+        error(loc, "qualifier", "microscaling types not allowed as input/output", "");
+
+    if (type.containsOcpMicroscalingNonByteFloat() &&
+        (type.getQualifier().storage == EvqUniform || type.getQualifier().storage == EvqBuffer || type.getQualifier().storage == EvqShared))
+        error(loc, "qualifier", "sub-byte sized types not allowed in storage class", "");
+
     if (type.getQualifier().storage == EvqtaskPayloadSharedEXT)
         intermediate.addTaskPayloadEXTCount();
     if (type.getQualifier().storage == EvqShared && type.containsCoopMat())
@@ -10259,6 +10304,41 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
         basicOp = EOpConstructFloatE4M3;
         break;
 
+    case EOpConstructFloatE2M1Vec2:
+    case EOpConstructFloatE2M1Vec3:
+    case EOpConstructFloatE2M1Vec4:
+    case EOpConstructFloatE2M1:
+        basicOp = EOpConstructFloatE2M1;
+        break;
+
+    case EOpConstructFloatE3M2Vec2:
+    case EOpConstructFloatE3M2Vec3:
+    case EOpConstructFloatE3M2Vec4:
+    case EOpConstructFloatE3M2:
+        basicOp = EOpConstructFloatE3M2;
+        break;
+
+    case EOpConstructFloatE2M3Vec2:
+    case EOpConstructFloatE2M3Vec3:
+    case EOpConstructFloatE2M3Vec4:
+    case EOpConstructFloatE2M3:
+        basicOp = EOpConstructFloatE2M3;
+        break;
+
+    case EOpConstructFloatUE8M0Vec2:
+    case EOpConstructFloatUE8M0Vec3:
+    case EOpConstructFloatUE8M0Vec4:
+    case EOpConstructFloatUE8M0:
+        basicOp = EOpConstructFloatUE8M0;
+        break;
+
+    case EOpConstructFloatMXINT8Vec2:
+    case EOpConstructFloatMXINT8Vec3:
+    case EOpConstructFloatMXINT8Vec4:
+    case EOpConstructFloatMXINT8:
+        basicOp = EOpConstructFloatMXINT8;
+        break;
+
     case EOpConstructI8Vec2:
     case EOpConstructI8Vec3:
     case EOpConstructI8Vec4:
@@ -10736,6 +10816,9 @@ TIntermNode* TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeL
 
         if (memberType.containsCoopVec())
             error(memberLoc, "member of block cannot be or contain a cooperative vector type", typeList[member].type->getFieldName().c_str(), "");
+
+        if (memberType.containsOcpMicroscalingNonByteFloat())
+            error(memberLoc, "member of block cannot be or contain a sub-byte type", typeList[member].type->getFieldName().c_str(), "");
     }
 
     // This might be a redeclaration of a built-in block.  If so, redeclareBuiltinBlock() will

@@ -821,6 +821,11 @@ int TPpContext::CPPerror(TPpToken* ppToken)
             token == PpAtomConstInt   || token == PpAtomConstUint   ||
             token == PpAtomConstInt64 || token == PpAtomConstUint64 ||
             token == PpAtomConstFloat16 ||
+            token == PpAtomConstFloatE2M1 ||
+            token == PpAtomConstFloatE3M2 ||
+            token == PpAtomConstFloatE2M3 ||
+            token == PpAtomConstFloatUE8M0 ||
+            token == PpAtomConstFloatMXINT8 ||
             token == PpAtomConstFloat || token == PpAtomConstDouble) {
                 message.append(ppToken->name);
         } else if (token == PpAtomIdentifier || token == PpAtomConstString) {
@@ -858,6 +863,11 @@ int TPpContext::CPPpragma(TPpToken* ppToken)
         case PpAtomConstFloat:
         case PpAtomConstDouble:
         case PpAtomConstFloat16:
+        case PpAtomConstFloatE2M1:
+        case PpAtomConstFloatE3M2:
+        case PpAtomConstFloatE2M3:
+        case PpAtomConstFloatUE8M0:
+        case PpAtomConstFloatMXINT8:
             tokens.push_back(ppToken->name);
             break;
         default:
