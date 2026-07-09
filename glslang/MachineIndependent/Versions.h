@@ -219,6 +219,7 @@ const char* const E_GL_EXT_spirv_intrinsics                 = "GL_EXT_spirv_intr
 const char* const E_GL_EXT_fragment_shader_barycentric      = "GL_EXT_fragment_shader_barycentric";
 const char* const E_GL_EXT_mesh_shader                      = "GL_EXT_mesh_shader";
 const char* const E_GL_EXT_opacity_micromap                 = "GL_EXT_opacity_micromap";
+const char* const E_GL_EXT_opacity_micromap_ray_query_mode  = "GL_EXT_opacity_micromap_ray_query_mode";
 const char* const E_GL_EXT_shader_quad_control              = "GL_EXT_shader_quad_control";
 const char* const E_GL_EXT_draw_instanced                   = "GL_EXT_draw_instanced";
 const char* const E_GL_EXT_texture_array                    = "GL_EXT_texture_array";
