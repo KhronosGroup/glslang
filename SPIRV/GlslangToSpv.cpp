@@ -332,6 +332,11 @@ protected:
     spv::Instruction* entryPoint;
     int sequenceDepth;
 
+    // GL_EXT_opacity_micromap_ray_query_mode: the spec constant emitted for gl_EnableOpacityMicromapEXT,
+    // if it was materialized during traversal; spv::NoResult otherwise. finishSpv() references it (or
+    // synthesizes one) for the OpacityMicromapIdKHR execution mode.
+    spv::Id opacityMicromapEnableConstId;
+
     spv::SpvBuildLogger* logger;
 
     // There is a 1:1 mapping between a spv builder and a module; this is thread safe
@@ -1746,7 +1751,9 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion,
         TIntermTraverser(true, false, true),
         options(options),
         shaderEntry(nullptr), currentFunction(nullptr),
-        sequenceDepth(0), logger(buildLogger),
+        sequenceDepth(0),
+        opacityMicromapEnableConstId(spv::NoResult),
+        logger(buildLogger),
         builder(spvVersion, (glslang::GetKhronosToolId() << 16) | glslang::GetSpirvGeneratorVersion(), logger),
         inEntryPoint(false), entryPointTerminated(false), linkageOnly(false),
         glslangIntermediate(glslangIntermediate),
@@ -2263,6 +2270,30 @@ void TGlslangToSpvTraverser::finishSpv(bool compileOnly)
         entryPoint->reserveOperands(iOSet.size());
         for (auto id : iOSet)
             entryPoint->addIdOperand(id);
+
+        // GL_EXT_opacity_micromap_ray_query_mode: the OpacityMicromapIdKHR execution mode is emitted
+        // whenever the extension is enabled (enabling the extension is the declaration), referencing the
+        // <id> of gl_EnableOpacityMicromapEXT. The operand constant depends on how the built-in was
+        // (re)declared: a constant_id redeclaration -> OpSpecConstantFalse (decorated with the SpecId);
+        // 'const bool = true' -> OpConstantTrue; otherwise (default or '= false') -> OpConstantFalse. If
+        // the built-in was read in the shader its spec constant is reused (opacityMicromapEnableConstId)
+        // so only one SpecId is emitted. This path targets SPV_KHR_opacity_micromap; the
+        // ForceOpacityMicromap2State ray flag keeps using SPV_EXT_opacity_micromap for compatibility.
+        if (glslangIntermediate->IsRequestedExtension(glslang::E_GL_EXT_opacity_micromap_ray_query_mode)) {
+            spv::Id enableId = opacityMicromapEnableConstId;
+            if (enableId == spv::NoResult) {
+                int specId = glslangIntermediate->getEnableOpacityMicromapSpecId();
+                if (specId != glslang::TQualifier::layoutNotSet) {
+                    enableId = builder.makeBoolConstant(false, true);
+                    builder.addDecoration(enableId, spv::Decoration::SpecId, specId);
+                } else {
+                    enableId = builder.makeBoolConstant(glslangIntermediate->getEnableOpacityMicromapDefault(), false);
+                }
+            }
+            builder.addCapability(spv::Capability::RayTracingOpacityMicromapExecutionModeKHR);
+            builder.addExtension(spv::E_SPV_KHR_opacity_micromap);
+            builder.addExecutionModeId(shaderEntry, spv::ExecutionMode::OpacityMicromapIdKHR, { enableId });
+        }
     }
 
     // Add capabilities, extensions, remove unneeded decorations, etc.,
@@ -11861,8 +11892,15 @@ spv::Id TGlslangToSpvTraverser::getSymbolId(const glslang::TIntermSymbol* symbol
             builder.addDecoration(id, spv::Decoration::Component, symbol->getQualifier().layoutComponent);
         if (symbol->getQualifier().hasIndex())
             builder.addDecoration(id, spv::Decoration::Index, symbol->getQualifier().layoutIndex);
-        if (symbol->getType().getQualifier().hasSpecConstantId())
+        if (symbol->getType().getQualifier().hasSpecConstantId()) {
             builder.addDecoration(id, spv::Decoration::SpecId, symbol->getType().getQualifier().layoutSpecConstantId);
+            // GL_EXT_opacity_micromap_ray_query_mode: if gl_EnableOpacityMicromapEXT is materialized (i.e.
+            // it is read somewhere), remember its spec constant so finishSpv() references this same one for
+            // the OpacityMicromapIdKHR execution mode rather than synthesizing a duplicate SpecId.
+            if (glslangIntermediate->getEnableOpacityMicromapSpecId() != glslang::TQualifier::layoutNotSet &&
+                symbol->getName() == "gl_EnableOpacityMicromapEXT")
+                opacityMicromapEnableConstId = id;
+        }
         // atomic counters use this:
         if (symbol->getQualifier().hasOffset())
             builder.addDecoration(id, spv::Decoration::Offset, symbol->getQualifier().layoutOffset);

@@ -6100,6 +6100,7 @@ TSymbol* TParseContext::redeclareBuiltinVariable(const TSourceLoc& loc, const TS
         (identifier == "gl_FragStencilRefARB"   && (nonEsRedecls && version >= 140)
                                                 && language == EShLangFragment)                     ||
          identifier == "gl_SampleMask"                                                              ||
+         identifier == "gl_EnableOpacityMicromapEXT"                                                ||
          identifier == "gl_Layer"                                                                   ||
          identifier == "gl_PrimitiveIndicesNV"                                                      ||
          identifier == "gl_PrimitivePointIndicesEXT"                                                ||
@@ -6219,6 +6220,25 @@ TSymbol* TParseContext::redeclareBuiltinVariable(const TSourceLoc& loc, const TS
                 error(loc, "redeclaration only allowed for viewport_relative or secondary_view_offset layout", "redeclaration", symbol->getName().c_str());
             symbolQualifier.layoutViewportRelative = qualifier.layoutViewportRelative;
             symbolQualifier.layoutSecondaryViewportRelativeOffset = qualifier.layoutSecondaryViewportRelativeOffset;
+        }
+        else if (identifier == "gl_EnableOpacityMicromapEXT") {
+            // GL_EXT_opacity_micromap_ray_query_mode. This branch handles the full-redeclaration form
+            //   const bool gl_EnableOpacityMicromapEXT = <true|false>;
+            // which sets the built-in's value (emitted as OpConstantTrue/OpConstantFalse). The
+            // specialization-constant form is the bare "layout(constant_id = N) gl_EnableOpacityMicromapEXT;"
+            // (handled in addQualifierToExisting); per the extension it is not valid to restate the type
+            // or specify a value together with constant_id.
+            requireExtensions(loc, 1, &E_GL_EXT_opacity_micromap_ray_query_mode, "gl_EnableOpacityMicromapEXT redeclaration");
+            if (qualifier.hasSpecConstantId())
+                error(loc, "cannot restate the type or specify a value with constant_id; use "
+                           "'layout(constant_id = N) gl_EnableOpacityMicromapEXT;'", "redeclaration",
+                      symbol->getName().c_str());
+            else if (qualifier.storage != EvqConst)
+                error(loc, "can only be redeclared as 'const bool gl_EnableOpacityMicromapEXT = <true|false>;' "
+                           "or 'layout(constant_id = N) gl_EnableOpacityMicromapEXT;'", "redeclaration",
+                      symbol->getName().c_str());
+            // For the valid 'const bool = <true|false>;' form the value is captured from the initializer
+            // after it is processed (see declareVariable); nothing else to do to the symbol's qualifier here.
         }
 
         // TODO: semantics quality: separate smooth from nothing declared, then use IsInterpolation for several tests above
@@ -9669,6 +9689,16 @@ TIntermNode* TParseContext::declareVariable(const TSourceLoc& loc, TString& iden
             return nullptr;
         }
         initNode = executeInitializer(loc, initializer, variable);
+
+        // GL_EXT_opacity_micromap_ray_query_mode: capture the value of a
+        // 'const bool gl_EnableOpacityMicromapEXT = <true|false>;' redeclaration so the back end can emit
+        // the OpacityMicromapIdKHR execution mode operand as OpConstantTrue/OpConstantFalse. The
+        // specialization-constant form goes through addQualifierToExisting instead.
+        if (identifier == "gl_EnableOpacityMicromapEXT" && !variable->getType().getQualifier().hasSpecConstantId()) {
+            const TConstUnionArray& constArray = variable->getConstArray();
+            if (constArray.size() > 0)
+                intermediate.setEnableOpacityMicromapDefault(constArray[0].getBConst());
+        }
     }
 
     // EXT_descriptor_heap
@@ -11539,6 +11569,15 @@ void TParseContext::addQualifierToExisting(const TSourceLoc& loc, TQualifier qua
         symbol->getWritableType().getQualifier().makeSpecConstant();
         if (qualifier.hasSpecConstantId())
             symbol->getWritableType().getQualifier().layoutSpecConstantId = qualifier.layoutSpecConstantId;
+        // GL_EXT_opacity_micromap_ray_query_mode: gl_EnableOpacityMicromapEXT may be turned into a
+        // specialization constant with the bare form "layout(constant_id = N) gl_EnableOpacityMicromapEXT;".
+        // Record the SpecId so the back end emits the OpacityMicromapIdKHR execution mode.
+        if (identifier == "gl_EnableOpacityMicromapEXT" && qualifier.hasSpecConstantId()) {
+            requireExtensions(loc, 1, &E_GL_EXT_opacity_micromap_ray_query_mode, "gl_EnableOpacityMicromapEXT");
+            // Bare "layout(constant_id = N) gl_EnableOpacityMicromapEXT;": the default value of false is
+            // retained (OpSpecConstantFalse); the API may override it. Record the SpecId for the back end.
+            intermediate.setEnableOpacityMicromapSpecId(qualifier.layoutSpecConstantId);
+        }
     } else
         warn(loc, "unknown requalification", "", "");
 }
