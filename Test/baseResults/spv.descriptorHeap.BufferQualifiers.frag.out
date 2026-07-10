@@ -26,12 +26,9 @@ spv.descriptorHeap.BufferQualifiers.frag
                               MemberName 20(ReadSSBO) 0  "value"
                               Decorate 7(resource_heap) BuiltIn ResourceHeapEXT
                               DecorateId 11 ArrayStrideIdEXT 10
-                              Decorate 13(WriteHeap) Block
                               MemberDecorateIdEXT 13(WriteHeap) 0 OffsetIdEXT 12
-                              Decorate 17(WriteSSBO) Block
                               MemberDecorate 17(WriteSSBO) 0 Offset 0
                               DecorateId 19 ArrayStrideIdEXT 10
-                              Decorate 20(ReadSSBO) Block
                               MemberDecorate 20(ReadSSBO) 0 NonWritable
                               MemberDecorate 20(ReadSSBO) 0 Offset 0
                               Decorate 23 NonWritable
