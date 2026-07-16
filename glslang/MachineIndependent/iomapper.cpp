@@ -71,83 +71,43 @@ static int getLayoutBindingLimit(bool relaxSetBindingLimits)
     return relaxSetBindingLimits ? INT_MAX : int(TQualifier::layoutBindingEnd);
 }
 
-struct TVarEntryInfo {
-    long long id;
-    TIntermSymbol* symbol;
-    bool live;
-    TLayoutPacking upgradedToPushConstantPacking; // ElpNone means it hasn't been upgraded
-    int newBinding;
-    int newSet;
-    int newLocation;
-    int newComponent;
-    int newIndex;
-    EShLanguage stage;
+bool TVarEntryInfo::TOrderByPriority::operator()(const TVarEntryInfo& l, const TVarEntryInfo& r)
+{
+    const TQualifier& lq = l.symbol->getQualifier();
+    const TQualifier& rq = r.symbol->getQualifier();
 
-    void clearNewAssignments() {
-        upgradedToPushConstantPacking = ElpNone;
-        newBinding = -1;
-        newSet = -1;
-        newLocation = -1;
-        newComponent = -1;
-        newIndex = -1;
-    }
+    // simple rules:
+    // has binding gives 2 points
+    // has set gives 1 point
+    // who has the most points is more important.
+    int lPoints = (lq.hasBinding() ? 2 : 0) + (lq.hasSet() ? 1 : 0);
+    int rPoints = (rq.hasBinding() ? 2 : 0) + (rq.hasSet() ? 1 : 0);
 
-    struct TOrderById {
-        inline bool operator()(const TVarEntryInfo& l, const TVarEntryInfo& r) { return l.id < r.id; }
-    };
+    if (lPoints == rPoints)
+        return l.id < r.id;
+    return lPoints > rPoints;
+}
 
-    struct TOrderByPriority {
-        // ordering:
-        // 1) has both binding and set
-        // 2) has binding but no set
-        // 3) has no binding but set
-        // 4) has no binding and no set
-        inline bool operator()(const TVarEntryInfo& l, const TVarEntryInfo& r) {
-            const TQualifier& lq = l.symbol->getQualifier();
-            const TQualifier& rq = r.symbol->getQualifier();
+bool TVarEntryInfo::TOrderByPriorityAndLive::operator()(const TVarEntryInfo& l, const TVarEntryInfo& r)
+{
+    const TQualifier& lq = l.symbol->getQualifier();
+    const TQualifier& rq = r.symbol->getQualifier();
 
-            // simple rules:
-            // has binding gives 2 points
-            // has set gives 1 point
-            // who has the most points is more important.
-            int lPoints = (lq.hasBinding() ? 2 : 0) + (lq.hasSet() ? 1 : 0);
-            int rPoints = (rq.hasBinding() ? 2 : 0) + (rq.hasSet() ? 1 : 0);
+    // simple rules:
+    // has binding gives 2 points
+    // has set gives 1 point
+    // who has the most points is more important.
+    int lPoints = (lq.hasBinding() ? 2 : 0) + (lq.hasSet() ? 1 : 0);
+    int rPoints = (rq.hasBinding() ? 2 : 0) + (rq.hasSet() ? 1 : 0);
 
-            if (lPoints == rPoints)
-                return l.id < r.id;
-            return lPoints > rPoints;
-        }
-    };
+    if (l.live != r.live)
+        return l.live > r.live;
 
-    struct TOrderByPriorityAndLive {
-        // ordering:
-        // 1) do live variables first
-        // 2) has both binding and set
-        // 3) has binding but no set
-        // 4) has no binding but set
-        // 5) has no binding and no set
-        inline bool operator()(const TVarEntryInfo& l, const TVarEntryInfo& r) {
+    if (lPoints != rPoints)
+        return lPoints > rPoints;
 
-            const TQualifier& lq = l.symbol->getQualifier();
-            const TQualifier& rq = r.symbol->getQualifier();
-
-            // simple rules:
-            // has binding gives 2 points
-            // has set gives 1 point
-            // who has the most points is more important.
-            int lPoints = (lq.hasBinding() ? 2 : 0) + (lq.hasSet() ? 1 : 0);
-            int rPoints = (rq.hasBinding() ? 2 : 0) + (rq.hasSet() ? 1 : 0);
-
-            if (l.live != r.live)
-                return l.live > r.live;
-
-            if (lPoints != rPoints)
-                return lPoints > rPoints;
-
-            return l.id < r.id;
-        }
-    };
-};
+    return l.id < r.id;
+}
 
 // override function "operator=", if a vector<const _Kty, _Ty> being sort,
 // when use vc++, the sort function will call :
