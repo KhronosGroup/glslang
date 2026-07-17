@@ -1237,6 +1237,20 @@ MacroExpandResult TPpContext::MacroExpand(TPpToken* ppToken, bool expandUndef, b
 {
     ppToken->space = false;
     int macroAtom = atomStrings.getAtom(ppToken->name);
+
+    // Bound total MacroExpand nesting depth to prevent stack overflow
+    // via unbounded MacroExpand <-> PrescanMacroArg mutual recursion.
+    if (macroExpandDepth >= maxMacroExpandDepth) {
+        parseContext.ppError(ppToken->loc, "macro expansion depth limit exceeded",
+                             "macro expansion", ppToken->name);
+        return MacroExpandNotStarted;
+    }
+    struct DepthGuard {
+        int& d;
+        explicit DepthGuard(int& d_) : d(d_) { ++d; }
+        ~DepthGuard() { --d; }
+    } guard(macroExpandDepth);
+
     if (ppToken->fullyExpanded)
         return MacroExpandNotStarted;
 
