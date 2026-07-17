@@ -316,7 +316,8 @@ int TPpContext::CPPelse(int matchelse, TPpToken* ppToken)
             }
         } else if (nextAtom == PpAtomEndif) {
             token = extraTokenCheck(nextAtom, ppToken, scanToken(ppToken));
-            elseSeen[elsetracker] = false;
+            if (elsetracker >= 0)
+                elseSeen[elsetracker] = false;
             --elsetracker;
             if (depth == 0) {
                 // found the #endif we are looking for
@@ -325,7 +326,8 @@ int TPpContext::CPPelse(int matchelse, TPpToken* ppToken)
                 break;
             }
             --depth;
-            --ifdepth;
+            if (ifdepth > 0)
+                --ifdepth;
         } else if (matchelse && depth == 0) {
             if (nextAtom == PpAtomElse) {
                 elseSeen[elsetracker] = true;
@@ -1008,7 +1010,8 @@ int TPpContext::readCPPline(TPpToken* ppToken)
             if (ifdepth == 0)
                 parseContext.ppError(ppToken->loc, "mismatched statements", "#endif", "");
             else {
-                elseSeen[elsetracker] = false;
+                if (elsetracker >= 0)
+                    elseSeen[elsetracker] = false;
                 --elsetracker;
                 --ifdepth;
             }
