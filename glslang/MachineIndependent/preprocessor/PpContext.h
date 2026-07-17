@@ -466,6 +466,10 @@ protected:
     std::vector<tInput*> inputStack;
     bool errorOnVersion;
     bool versionSeen;
+    // Current nesting depth of MacroExpand() calls; bounded to prevent
+    // stack overflow via unbounded MacroExpand <-> PrescanMacroArg recursion.
+    int macroExpandDepth = 0;
+    static const int maxMacroExpandDepth = 200;
 
     //
     // from Pp.cpp
