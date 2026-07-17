@@ -454,5 +454,5 @@ if (GLSLANG_ENABLE_INSTALL)
         "${CMAKE_CURRENT_BINARY_DIR}/glslang.pc"
         @ONLY
     )
-    install(CODE "configure_file(\"${CMAKE_CURRENT_BINARY_DIR}/glslang.pc\" \"\${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/pkgconfig/glslang.pc\"  @ONLY) ")
+    install(CODE "cmake_path(ABSOLUTE_PATH CMAKE_INSTALL_PREFIX NORMALIZE OUTPUT_VARIABLE ABS_INSTALL_PREFIX)\nconfigure_file(\"${CMAKE_CURRENT_BINARY_DIR}/glslang.pc\" \"\${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/pkgconfig/glslang.pc\"  @ONLY) ")
 endif()
