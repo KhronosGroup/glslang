@@ -647,7 +647,7 @@ struct TSymbolValidater
         } else if (base->getQualifier().isUniformOrBuffer() && !base->getQualifier().isPushConstant()) {
             // validate uniform type;
             for (int i = 0; i < EShLangCount; i++) {
-                if (i != currentStage && outVarMaps[i] != nullptr) {
+                if (i != currentStage && uniformVarMap[i] != nullptr) {
                     auto ent2 = uniformVarMap[i]->find(name);
                     if (ent2 != uniformVarMap[i]->end()) {
                         ent2->second.symbol->getType().appendMangledName(mangleName2);
