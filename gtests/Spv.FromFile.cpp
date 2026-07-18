@@ -70,6 +70,8 @@ using CompileVulkanToSpirvRelaxSetBindingLimitsTest = GlslangTest<::testing::Tes
 using CompileVulkanToSpirvTestNoLink = GlslangTest<::testing::TestWithParam<std::string>>;
 using CompileVulkanToSpirvDeadCodeElimTest = GlslangTest<::testing::TestWithParam<std::string>>;
 using CompileVulkan1_1ToSpirvTest = GlslangTest<::testing::TestWithParam<std::string>>;
+using CompileToSpirv11Test = GlslangTest<::testing::TestWithParam<std::string>>;
+using CompileToSpirv12Test = GlslangTest<::testing::TestWithParam<std::string>>;
 using CompileToSpirv14Test = GlslangTest<::testing::TestWithParam<std::string>>;
 using CompileToSpirv16Test = GlslangTest<::testing::TestWithParam<std::string>>;
 using CompileOpenGLToSpirvTest = GlslangTest<::testing::TestWithParam<std::string>>;
@@ -129,6 +131,20 @@ TEST_P(CompileVulkan1_1ToSpirvTest, FromFile)
 {
     loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam(),
                             Source::GLSL, Semantics::Vulkan, glslang::EShTargetVulkan_1_1, glslang::EShTargetSpv_1_3,
+                            Target::Spv);
+}
+
+TEST_P(CompileToSpirv11Test, FromFile)
+{
+    loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam(),
+                            Source::GLSL, Semantics::Vulkan, glslang::EShTargetVulkan_1_0, glslang::EShTargetSpv_1_1,
+                            Target::Spv);
+}
+
+TEST_P(CompileToSpirv12Test, FromFile)
+{
+    loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam(),
+                            Source::GLSL, Semantics::Vulkan, glslang::EShTargetVulkan_1_0, glslang::EShTargetSpv_1_2,
                             Target::Spv);
 }
 
@@ -783,6 +799,22 @@ INSTANTIATE_TEST_SUITE_P(
 );
 
 // clang-format off
+INSTANTIATE_TEST_SUITE_P(
+    Glsl, CompileToSpirv11Test,
+    ::testing::ValuesIn(std::vector<std::string>({
+        "spv.OpExecutionModeId.11.comp",
+    })),
+    FileNameAsCustomTestSuffix
+);
+
+INSTANTIATE_TEST_SUITE_P(
+    Glsl, CompileToSpirv12Test,
+    ::testing::ValuesIn(std::vector<std::string>({
+        "spv.OpExecutionModeId.12.comp",
+    })),
+    FileNameAsCustomTestSuffix
+);
+
 INSTANTIATE_TEST_SUITE_P(
     Glsl, CompileToSpirv14Test,
     ::testing::ValuesIn(std::vector<std::string>({
