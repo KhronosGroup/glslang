@@ -1,0 +1,6 @@
+spv.OpExecutionModeId.11.comp
+ERROR: 0:3: 'local_size_x_id' : requires SPIR-V 1.2 
+ERROR: 1 compilation errors.  No code generated.
+
+
+SPIR-V is not generated for failed compile or link
