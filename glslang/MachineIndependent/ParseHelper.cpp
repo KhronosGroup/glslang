@@ -419,6 +419,7 @@ void TParseContext::handlePragma(const TSourceLoc& loc, const TVector<TString>& 
     } else if (tokens[0].compare("glslang_binary_double_output") == 0) {
         intermediate.setBinaryDoubleOutput();
     } else if (spvVersion.spv > 0 && tokens[0].compare("STDGL") == 0 &&
+               tokens.size() >= 4 &&
                tokens[1].compare("invariant") == 0 && tokens[3].compare("all") == 0) {
         intermediate.setInvariantAll();
         // Set all builtin out variables invariant if declared
