@@ -1178,7 +1178,8 @@ struct DoPreprocessing {
                 // Don't emit whitespace onto empty lines.
                 // Copy any whitespace characters at the start of a line
                 // from the input to the output.
-                outputBuffer += std::string(ppToken.loc.column - 1, ' ');
+                if (ppToken.loc.column > 0)
+                    outputBuffer += std::string(ppToken.loc.column - 1, ' ');
             }
 
             // Output a space in between tokens, but not at the start of a line,
