@@ -35,6 +35,7 @@ path = [
     "build_overrides/build.gni",
     "build_overrides/spirv_tools.gni",
     "glslang/CMakeLists.txt",
+    "glslang/glslang.pc.in",
     "glslang/OSDependent/Unix/CMakeLists.txt",
     "glslang/OSDependent/Web/CMakeLists.txt",
     "glslang/OSDependent/Windows/CMakeLists.txt",

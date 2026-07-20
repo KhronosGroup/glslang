@@ -1,3 +1,6 @@
+# Copyright 2026 The Khronos Group Inc.
+# SPDX-License-Identifier: BSD-3-Clause
+
 prefix=@AT@ABS_INSTALL_PREFIX@AT@
 exec_prefix=${prefix}
 libdir=@CMAKE_INSTALL_LIBDIR_PC@
