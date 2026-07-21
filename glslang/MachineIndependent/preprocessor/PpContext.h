@@ -446,36 +446,13 @@ protected:
         static const int marker = -3;
     };
 
-    class tStringifyLevelInput : public tInput {
-        int what;
-        tStringifyLevelInput(TPpContext* pp) : tInput(pp) { }
-    public:
-        static tStringifyLevelInput popMarker(TPpContext* pp)
-        {
-            tStringifyLevelInput sl(pp);
-            sl.what = POP;
-            return sl;
-        }
-
-        static tStringifyLevelInput pushMarker(TPpContext* pp)
-        {
-            tStringifyLevelInput sl(pp);
-            sl.what = PUSH;
-            return sl;
-        }
-
-        int scan(TPpToken*) override
-        {
-            if (done)
-                return EndOfInput;
-            done = true;
-
-            return what;
-        }
-        virtual int getch() override { assert(0); return EndOfInput; }
-        virtual void ungetch() override { assert(0); }
-        static const int PUSH = -4;
-        static const int POP = -5;
+    struct tStringifyLevelInput {
+      // PUSH is a token atom indicating a new stringizing (#) level
+      // during macro body expansion.
+      static constexpr int PUSH = -4;
+      // PUSH is a token atom indicating the end of a stringizing level
+      // during macro body expansion.
+      static constexpr int POP = -5;
     };
 
     class tZeroInput : public tInput {
