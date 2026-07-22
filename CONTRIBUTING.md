@@ -31,9 +31,11 @@ all files in this repository are appropriately licensed.
 
 ## Contributor License Agreement (CLA)
 
-When you propose a pull request on this repository you must execute a
-Contributor License Agreement, to confirm you own your work and are granting
-Khronos the necessary permissions to redistribute it under our licenses.
+When you propose a pull request on this repository you must execute the Khronos
+[Open Source Contributor License Agreement
+CLA](https://cla-assistant.io/KhronosGroup/glslang), to confirm you own your
+work and are granting Khronos the necessary permissions to redistribute it under
+our licenses.
 
 ## AI-Assisted Contributions
 
