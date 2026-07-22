@@ -9907,6 +9907,13 @@ TIntermTyped* TParseContext::convertInitializerList(const TSourceLoc& loc, const
         arrayType.shallowCopy(type);                     // sharing struct stuff is fine
         arrayType.copyArraySizes(*type.getArraySizes());  // but get a fresh copy of the array information, to edit below
 
+        // a nested empty initializer list ({}) has no elements to size the array or
+        // derive its element type from, so reject it before the getSequence()[0] read below
+        if (initList->getSequence().empty()) {
+            error(loc, "array initializer must be non-empty", "initializer list", "");
+            return nullptr;
+        }
+
         // edit array sizes to fill in unsized dimensions
         arrayType.changeOuterArraySize((int)initList->getSequence().size());
         TIntermTyped* firstInit = initList->getSequence()[0]->getAsTyped();
