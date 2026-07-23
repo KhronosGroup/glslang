@@ -966,8 +966,8 @@ public:
                  unsigned int layoutXfbOffset            : 13;
     static const unsigned int layoutXfbOffsetEnd     = 0x1FFF;
 
-                 unsigned int layoutAttachment           :  8;  // for input_attachment_index
-    static const unsigned int layoutAttachmentEnd      = 0XFF;
+                 unsigned int layoutAttachment;                 // for input_attachment_index
+    static const unsigned int layoutAttachmentEnd = INT_MAX;
 
                  unsigned int layoutSpecConstantId;
     static const unsigned int layoutSpecConstantIdEnd = UINT_MAX;
