@@ -1111,6 +1111,10 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.tpipBlockMatchGatherSSD.frag",
         "spv.tpipBlockMatchWindowSAD.frag",
         "spv.tpipBlockMatchWindowSSD.frag",
+        "spv.qcom.textureGather.vert",
+        "spv.qcom.textureGather.frag",
+        "spv.qcom.es.textureGather.vert",
+        "spv.qcom.es.textureGather.frag",
 })),
 FileNameAsCustomTestSuffix
 );
