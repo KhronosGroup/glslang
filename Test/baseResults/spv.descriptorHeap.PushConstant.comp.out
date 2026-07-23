@@ -27,7 +27,6 @@ spv.descriptorHeap.PushConstant.comp
                               Decorate 20(resource_heap) BuiltIn ResourceHeapEXT
                               DecorateId 24 ArrayStrideIdEXT 23
                               Decorate 25 ArrayStride 4
-                              Decorate 26(O) Block
                               MemberDecorate 26(O) 0 Offset 0
                               Decorate 28 ArrayStride 4
                               Decorate 29(P) Block

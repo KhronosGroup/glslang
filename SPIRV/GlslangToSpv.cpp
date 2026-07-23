@@ -2479,7 +2479,6 @@ spv::Id TGlslangToSpvTraverser::makeDescHeapImageArrayWrapperType(const glslang:
     spv::Id wrapperType = builder.makeStructType(members, {}, wrapperName.c_str(), false);
 
     builder.addMemberName(wrapperType, 0, symbol.getName().c_str());
-    builder.addDecoration(wrapperType, spv::Decoration::Block);
     builder.addMemberDecorationIdEXT(wrapperType, 0, spv::Decoration::OffsetIdEXT, {memberOffset});
 
     if (qualifier.isReadOnly())
@@ -6450,18 +6449,6 @@ spv::Id TGlslangToSpvTraverser::convertGlslangStructToSpvType(const glslang::TTy
 
     // Decorate it
     if (useDescHeapIdDecorations) {
-        // Only the top-level heap layout struct represents a resourceheap/samplerheap block.
-        // If its last member is a runtime array, Vulkan still requires the struct type to
-        // carry Block/BufferBlock; nested heap member structs should not get this decoration.
-        const bool isTopLevelHeapStruct =
-            qualifier.storage == glslang::EvqResourceHeap ||
-            qualifier.storage == glslang::EvqSamplerHeap;
-        if (isTopLevelHeapStruct && glslangIntermediate->getSpv().vulkan > 0 && !spvMembers.empty() &&
-            builder.getOpCode(spvMembers.back()) == spv::Op::OpTypeRuntimeArray) {
-            builder.addDecoration(spvType, TranslateBlockDecoration(qualifier.storage,
-                                  glslangIntermediate->usingStorageBuffer()));
-        }
-
         assert(descHeapMemberOffsets.size() == glslangMembers->size());
         for (int member = 0; member < (int)glslangMembers->size() && member < (int)spvMembers.size(); ++member) {
             glslang::TType& glslangMember = *(*glslangMembers)[member].type;
@@ -7000,9 +6987,12 @@ void TGlslangToSpvTraverser::decorateStructType(const glslang::TType& type,
     builder.addDecoration(spvType, TranslateLayoutDecoration(type, qualifier.layoutMatrix));
     const auto basicType = type.getBasicType();
     const auto typeStorageQualifier = type.getQualifier().storage;
-    if (basicType == glslang::EbtBlock || qualifier.isBufferType()) {
+    const bool skipBlockDecoration = type.getQualifier().descriptorHeapDescriptorNode ||
+        type.getQualifier().storage == glslang::EvqResourceHeap;
+
+    if ((basicType == glslang::EbtBlock || qualifier.isBufferType()) && !skipBlockDecoration) {
         builder.addDecoration(spvType, TranslateBlockDecoration(typeStorageQualifier, glslangIntermediate->usingStorageBuffer()));
-    } else if (basicType == glslang::EbtStruct && glslangIntermediate->getSpv().vulkan > 0) {
+    } else if ((basicType == glslang::EbtStruct && glslangIntermediate->getSpv().vulkan > 0) && !skipBlockDecoration) {
         const auto hasRuntimeArray = !spvMembers.empty() && builder.getOpCode(spvMembers.back()) == spv::Op::OpTypeRuntimeArray;
         if (hasRuntimeArray) {
             builder.addDecoration(spvType, TranslateBlockDecoration(typeStorageQualifier, glslangIntermediate->usingStorageBuffer()));
