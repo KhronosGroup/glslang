@@ -1170,6 +1170,7 @@ const char* CapabilityString(int info)
         
     case (int)Capability::Shader64BitIndexingEXT:              return "CapabilityShader64BitIndexingEXT";
     case (int)Capability::LongVectorEXT:                       return "LongVectorEXT";
+    case (int)Capability::SplitBarrierEXT:                     return "SplitBarrierEXT";
 
     case (int)Capability::Float4EXT:                           return "Float4EXT";
     case (int)Capability::Float6EXT:                           return "Float6EXT";
@@ -1811,6 +1812,8 @@ const char* OpcodeString(int op)
     case (int)Op::OpHitObjectGetIntersectionTriangleVertexPositionsEXT: return "OpHitObjectGetIntersectionTriangleVertexPositionsEXT";
 
     case (int)Op::OpBitcastExtractEXT:                    return "OpBitcastExtractEXT";
+    case (int)Op::OpControlBarrierArriveEXT: return "OpControlBarrierArriveEXT";
+    case (int)Op::OpControlBarrierWaitEXT: return "OpControlBarrierWaitEXT";
 
     default:
         return "Bad";
@@ -1900,6 +1903,8 @@ void Parameterize()
         InstructionDesc[enumCast(Op::OpEmitStreamVertex)].setResultAndType(false, false);
         InstructionDesc[enumCast(Op::OpEndStreamPrimitive)].setResultAndType(false, false);
         InstructionDesc[enumCast(Op::OpControlBarrier)].setResultAndType(false, false);
+        InstructionDesc[enumCast(Op::OpControlBarrierArriveEXT)].setResultAndType(false, false);
+        InstructionDesc[enumCast(Op::OpControlBarrierWaitEXT)].setResultAndType(false, false);
         InstructionDesc[enumCast(Op::OpMemoryBarrier)].setResultAndType(false, false);
         InstructionDesc[enumCast(Op::OpAtomicStore)].setResultAndType(false, false);
         InstructionDesc[enumCast(Op::OpLoopMerge)].setResultAndType(false, false);
@@ -4176,6 +4181,14 @@ void Parameterize()
 
         InstructionDesc[enumCast(Op::OpBitcastExtractEXT)].operands.push(OperandId, "'Base'");
         InstructionDesc[enumCast(Op::OpBitcastExtractEXT)].operands.push(OperandId, "'Offset'");
+
+        InstructionDesc[enumCast(Op::OpControlBarrierArriveEXT)].operands.push(OperandScope, "'Execution'");
+        InstructionDesc[enumCast(Op::OpControlBarrierArriveEXT)].operands.push(OperandScope, "'Memory'");
+        InstructionDesc[enumCast(Op::OpControlBarrierArriveEXT)].operands.push(OperandMemorySemantics, "'Semantics'");
+
+        InstructionDesc[enumCast(Op::OpControlBarrierWaitEXT)].operands.push(OperandScope, "'Execution'");
+        InstructionDesc[enumCast(Op::OpControlBarrierWaitEXT)].operands.push(OperandScope, "'Memory'");
+        InstructionDesc[enumCast(Op::OpControlBarrierWaitEXT)].operands.push(OperandMemorySemantics, "'Semantics'");
     });
 }
 

@@ -310,6 +310,8 @@ enum TOperator {
     EOpEndStreamPrimitive,   // geometry only
 
     EOpBarrier,
+    EOpControlBarrierArriveEXT,
+    EOpControlBarrierWaitEXT,
     EOpMemoryBarrier,
     EOpMemoryBarrierAtomicCounter,
     EOpMemoryBarrierBuffer,
