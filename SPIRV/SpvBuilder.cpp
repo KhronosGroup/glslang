@@ -3577,6 +3577,16 @@ void Builder::createControlBarrier(Scope execution, Scope memory, MemorySemantic
     addInstruction(std::unique_ptr<Instruction>(op));
 }
 
+void Builder::createSplitControlBarrier(Op opcode, Scope execution, Scope memory, MemorySemanticsMask semantics)
+{
+    Instruction* op = new Instruction(opcode);
+    op->reserveOperands(3);
+    op->addIdOperand(makeUintConstant(execution));
+    op->addIdOperand(makeUintConstant(memory));
+    op->addIdOperand(makeUintConstant(semantics));
+    addInstruction(std::unique_ptr<Instruction>(op));
+}
+
 void Builder::createMemoryBarrier(Scope executionScope, MemorySemanticsMask memorySemantics)
 {
     Instruction* op = new Instruction(Op::OpMemoryBarrier);

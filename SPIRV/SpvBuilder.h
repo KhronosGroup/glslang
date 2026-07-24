@@ -608,6 +608,7 @@ public:
     void createNoResultOp(Op, const std::vector<Id>& operands);
     void createNoResultOp(Op, const std::vector<IdImmediate>& operands);
     void createControlBarrier(Scope execution, Scope memory, MemorySemanticsMask);
+    void createSplitControlBarrier(Op op, Scope execution, Scope memory, MemorySemanticsMask memorySem);
     void createMemoryBarrier(Scope executionScope, MemorySemanticsMask memorySemantics);
     Id createUnaryOp(Op, Id typeId, Id operand);
     Id createBinOp(Op, Id typeId, Id operand1, Id operand2);

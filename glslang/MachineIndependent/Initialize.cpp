@@ -4896,6 +4896,11 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "void barrier();"
             );
     }
+    if ((profile != EEsProfile && version >= 420) || esBarrier)
+        stageBuiltins[EShLangCompute].append(
+            "void controlBarrierArrive();"
+            "void controlBarrierWait();"
+            );
     if ((profile != EEsProfile && version >= 130) || esBarrier)
         commonBuiltins.append(
             "void memoryBarrier();"
@@ -4928,6 +4933,9 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
 
     commonBuiltins.append("void controlBarrier(int, int, int, int);\n"
                           "void memoryBarrier(int, int, int);\n");
+
+    commonBuiltins.append("void controlBarrierArrive(int, int, int, int);\n"
+                          "void controlBarrierWait(int, int, int, int);\n");
 
     commonBuiltins.append("void debugPrintfEXT();\n");
 
@@ -10245,10 +10253,11 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setFunctionExtensions("groupMemoryBarrier",         1, &E_GL_ARB_compute_shader);
         }
 
-
         symbolTable.setFunctionExtensions("controlBarrier",                 1, &E_GL_KHR_memory_scope_semantics);
         symbolTable.setFunctionExtensions("debugPrintfEXT",                 1, &E_GL_EXT_debug_printf);
         symbolTable.setFunctionExtensions("abortEXT",                       1, &E_GL_EXT_abort);
+        symbolTable.setFunctionExtensions("controlBarrierArrive",           1, &E_GL_EXT_split_barrier);
+        symbolTable.setFunctionExtensions("controlBarrierWait",             1, &E_GL_EXT_split_barrier);
 
         // GL_ARB_shader_ballot
         if (profile != EEsProfile) {
@@ -11240,6 +11249,9 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
     symbolTable.relateToOperator("controlBarrier",             EOpBarrier);
     symbolTable.relateToOperator("memoryBarrierAtomicCounter", EOpMemoryBarrierAtomicCounter);
     symbolTable.relateToOperator("memoryBarrierImage",         EOpMemoryBarrierImage);
+
+    symbolTable.relateToOperator("controlBarrierArrive",  EOpControlBarrierArriveEXT);
+    symbolTable.relateToOperator("controlBarrierWait",    EOpControlBarrierWaitEXT);
 
     if (spvVersion.vulkanRelaxed) {
         //
