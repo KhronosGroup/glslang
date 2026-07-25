@@ -47,6 +47,7 @@ Test/baseResults/link.vk.crossStageIO.1.vert.out
 Test/baseResults/link.vk.differentPC.0.0.frag.out
 Test/baseResults/link.vk.differentPC.1.0.frag.out
 Test/baseResults/link.vk.missingCrossStageIO.0.vert.out
+Test/baseResults/link.vk.multiUnitLayout.0.comp.out
 Test/baseResults/link.vk.multiUnitLayout.2.comp.out
 Test/baseResults/link.vk.pcNamingInvalid.0.0.vert.out
 Test/baseResults/spv.130.frag.out
@@ -57,6 +58,7 @@ Test/baseResults/spv.430.vert.out
 Test/baseResults/spv.450.tesc.out
 Test/baseResults/spv.8bit-16bit-construction.frag.out
 Test/baseResults/spv.AofA.frag.out
+Test/baseResults/spv.atomicAdd.bufferReference.comp.out
 Test/baseResults/spv.atomicFloat.comp.out
 Test/baseResults/spv.bitops.int8int16.frag.out
 Test/baseResults/spv.controlFlowAttributes.frag.out
