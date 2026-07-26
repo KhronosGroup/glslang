@@ -233,6 +233,7 @@ typedef struct glslang_spv_options_s {
     bool strip_debug_info;
     bool disable_optimizer;
     bool optimize_size;
+    bool optimize_performance;
     bool disassemble;
     bool validate;
     bool emit_nonsemantic_shader_debug_info;
