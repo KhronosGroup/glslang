@@ -199,6 +199,9 @@ void SpirvStream::processInstructions()
             resultId = stream[word++];
             --numOperands;
 
+            if (resultId >= bound)
+                Kill(out, "Bad <id>");
+
             // save instruction for future reference
             idInstruction[resultId] = instructionStart;
         }
@@ -418,6 +421,8 @@ void SpirvStream::disassembleInstruction(Id resultId, Id /*typeId*/, Op opCode, 
                 idDescriptor[resultId] = "ptr";
                 break;
             case Op::OpTypeVector:
+                if (stream[word] >= bound)
+                    Kill(out, "Bad <id>");
                 if (idDescriptor[stream[word]].size() > 0) {
                     if (idDescriptor[stream[word]].substr(0,2) == "bf") {
                         idDescriptor[resultId].append(idDescriptor[stream[word]].begin(), idDescriptor[stream[word]].begin() + 2);
