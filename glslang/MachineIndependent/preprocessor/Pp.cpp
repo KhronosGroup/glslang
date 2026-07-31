@@ -414,11 +414,15 @@ namespace {
     int op_le(int a, int b) { return a <= b; }
     int op_gt(int a, int b) { return a > b; }
     int op_lt(int a, int b) { return a < b; }
-    int op_shl(int a, int b) { return a << b; }
-    int op_shr(int a, int b) { return a >> b; }
-    int op_add(int a, int b) { return a + b; }
-    int op_sub(int a, int b) { return a - b; }
-    int op_mul(int a, int b) { return a * b; }
+    // #if expressions are evaluated in 32-bit signed integers, so a shift count
+    // coming from the source can be out of range, and +, - and * can overflow.
+    // Both are undefined in C++, so give them a defined result here.
+    const int intBits = (int)(sizeof(int) * CHAR_BIT);
+    int op_shl(int a, int b) { return b < 0 || b >= intBits ? 0 : (int)((unsigned)a << b); }
+    int op_shr(int a, int b) { return b < 0 || b >= intBits ? (a < 0 ? -1 : 0) : a >> b; }
+    int op_add(int a, int b) { return (int)((unsigned)a + (unsigned)b); }
+    int op_sub(int a, int b) { return (int)((unsigned)a - (unsigned)b); }
+    int op_mul(int a, int b) { return (int)((unsigned)a * (unsigned)b); }
     int op_div(int a, int b) { return a == INT_MIN && b == -1 ? 0 : a / b; }
     int op_mod(int a, int b) { return a == INT_MIN && b == -1 ? 0 : a % b; }
     int op_pos(int a) { return a; }
