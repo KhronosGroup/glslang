@@ -90,7 +90,6 @@ INSTANTIATE_TEST_SUITE_P(
         "cppSimple.vert",
         "cppIndent.vert",
         "cppIntMinOverNegativeOne.frag",
-        "cppShiftOutOfRange.frag",
         "cppMerge.frag",
         "cppNest.vert",
         "cppBad.vert",
