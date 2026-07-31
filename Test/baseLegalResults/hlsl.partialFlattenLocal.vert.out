@@ -54,9 +54,11 @@ hlsl.partialFlattenLocal.vert
                               Store 142 38
                               Branch 104
              104:             Label
-             163:     21(int) Phi 25 5 123 108
+             163:     21(int) Phi 25 5 123 121
+                              LoopMerge 124 121 None
+                              Branch 105
+             105:             Label
              107:    54(bool) SLessThan 163 31
-                              LoopMerge 124 108 None
                               BranchConditional 107 108 124
              108:               Label
              143:     39(ptr)   AccessChain 138 163
@@ -71,6 +73,8 @@ hlsl.partialFlattenLocal.vert
              146:     42(ptr)   AccessChain 136 163 67
              120:    6(float)   CompositeExtract 116 1
                                 Store 146 120
+                                Branch 121
+             121:               Label
              123:     21(int)   IAdd 163 31
                                 Branch 104
              124:             Label
