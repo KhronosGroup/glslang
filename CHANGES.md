@@ -9,6 +9,38 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   See issue #4210 for details.
 * Add support for GL_EXT_opacity_micromap_ray_query_mode
 
+## 16.5.0 2026-07-31
+
+### New Extensions
+
+* Implement `GLSL_EXT_split_barrier` / `SPV_EXT_split_barrier`
+* Implement `GLSL_QCOM_multiple_wait_queues`
+* Implement `GLSL_QCOM_image_processing3`
+* Implement `GL_EXT_function_control_attributes`
+
+### API Changes
+
+* Expose `TVarEntryInfo` as part of the public API in `ShaderLang.h`
+
+### Bug Fixes
+
+* Fix undefined shifts and signed overflow in `#if` expression evaluation
+* Fix out-of-bounds read when indexing `idInstruction` and `idDescriptor`
+* Fix null dereference in iomapper when `uniformVarMap` is empty
+* Fix out-of-bounds read on empty array initializer in `convertInitializerList`
+* Fix stack overflow on deeply nested macro invocations, capping macro expansion depth at 200 and emitting an error
+* Fix out-of-bounds read in `handlePragma` when `#pragma STDGL` has fewer than 4 tokens
+* Fix crash in preprocessor output when a backslash-newline continuation appears at end of input due to column underflow
+* Fix crash on excess `#endif` directives when a malformed `#if` expression desynchronizes `elseSeen`/`ifdepth` preprocessor counters
+* Fix out-of-bounds write in `memberRemapper` for nested `buffer_reference` blocks
+* Fix out-of-bounds read on long vector index in `checkIndex`
+
+### Other
+
+* Update SPIR-V size optimization and HLSL legalization pass lists to match spirv-tools, and add performance optimization option
+* Increase `input_attachment_index` limit to `INT_MAX`
+* Print compile and link error logs to stderr instead of stdout
+
 ## 16.4.0 2026-07-14
 
 ### Descriptor Heap
