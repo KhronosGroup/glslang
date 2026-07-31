@@ -6155,7 +6155,7 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
     }
 
     if (type.isLongVector()) {
-        // SPIR-V LongVectorEXT not needed when component count is literal 2–4.
+        // SPIR-V LongVectorEXT not needed when component count is literal 2-4.
         const bool needLongVectorCap = type.hasSpecConstantVectorComponents() ||
             (type.getTypeParameters()->arraySizes->getDimSize(0) < 2 ||
              type.getTypeParameters()->arraySizes->getDimSize(0) > 4);
