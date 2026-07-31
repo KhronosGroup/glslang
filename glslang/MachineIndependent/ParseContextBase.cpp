@@ -313,6 +313,11 @@ void TParseContextBase::checkIndex(const TSourceLoc& loc, const TType& type, int
             error(loc, "", "[", "cooperative vector index out of range '%d'", index);
             index = type.computeNumComponents() - 1;
         }
+    } else if (type.isLongVector()) {
+        if (!type.hasSpecConstantVectorComponents() && index >= type.computeNumComponents()) {
+            error(loc, "", "[", "vector index out of range '%d'", index);
+            index = type.computeNumComponents() - 1;
+        }
     }
 }
 

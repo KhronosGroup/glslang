@@ -773,6 +773,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.longVectorBadParams.decls.comp",
         "spv.longVectorBadParams.constructors.comp",
         "spv.longVectorBadParams.constructors.as.type.comp",
+        "spv.longVectorBadParams.index.comp",
         "spv.longVectorBuiltins.comp",
         "spv.longVectorBuiltinsfp16.comp",
         "spv.longVectorBuiltinsfp64.comp",
