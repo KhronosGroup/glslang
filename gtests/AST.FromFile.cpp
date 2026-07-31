@@ -313,6 +313,7 @@ INSTANTIATE_TEST_SUITE_P(
         "coord_conventions.frag",
         "gl_FragCoord.frag",
         "glsl.interpOp.error.frag",
+        "glsl.nullInitializer.error.vert",
         "location_aliasing.tesc",
         "location_aliasing1.frag",
         "GL_EXT_draw_instanced.vert",

@@ -238,6 +238,12 @@ public:
     Id makeBFloat16Type();
     Id makeFloatE5M2Type();
     Id makeFloatE4M3Type();
+    Id makeFloatE2M1Type();
+    Id makeFloatE3M2Type();
+    Id makeFloatE2M3Type();
+    Id makeFloatUE8M0Type();
+    Id makeFloatMXINT8Type();
+    Id makeFloatOcpMicroscalingType(uint32_t width, FPEncoding encoding, Capability cap);
     Id makeStructType(const std::vector<Id>& members, const std::vector<spv::StructMemberDebugInfo>& memberDebugInfo,
                       const char* name, bool const compilerGenerated = true);
     Id makeStructResultType(Id type0, Id type1);
@@ -456,6 +462,11 @@ public:
     Id makeBFloat16Constant(float bf16, bool specConstant = false);
     Id makeFloatE5M2Constant(float fe5m2, bool specConstant = false);
     Id makeFloatE4M3Constant(float fe4m3, bool specConstant = false);
+    Id makeFloatE2M1Constant(float fe2m1, bool specConstant = false);
+    Id makeFloatE3M2Constant(float fe3m2, bool specConstant = false);
+    Id makeFloatE2M3Constant(float fe2m3, bool specConstant = false);
+    Id makeFloatUE8M0Constant(float fue8m0, bool specConstant = false);
+    Id makeFloatMXINT8Constant(float mxint8, bool specConstant = false);
     Id makeFpConstant(Id type, double d, bool specConstant = false);
 
     Id importNonSemanticShaderDebugInfoInstructions();
@@ -597,6 +608,7 @@ public:
     void createNoResultOp(Op, const std::vector<Id>& operands);
     void createNoResultOp(Op, const std::vector<IdImmediate>& operands);
     void createControlBarrier(Scope execution, Scope memory, MemorySemanticsMask);
+    void createSplitControlBarrier(Op op, Scope execution, Scope memory, MemorySemanticsMask memorySem);
     void createMemoryBarrier(Scope executionScope, MemorySemanticsMask memorySemantics);
     Id createUnaryOp(Op, Id typeId, Id operand);
     Id createBinOp(Op, Id typeId, Id operand1, Id operand2);
@@ -669,6 +681,7 @@ public:
         Id lodClamp;
         Id granularity;
         Id coarse;
+        Id gatherMode;
         bool nonprivate;
         bool volatil;
         bool nontemporal;
@@ -1046,6 +1059,8 @@ protected:
     struct DecorationInstructionLessThan {
         bool operator()(const std::unique_ptr<Instruction>& lhs, const std::unique_ptr<Instruction>& rhs) const;
     };
+    template <typename SpvUtilsType>
+    Id makeFloatConstantHelper(float f, Id typeId, bool specConstant);
 
     unsigned int spvVersion;     // the version of SPIR-V to emit in the header
     SourceLanguage sourceLang;

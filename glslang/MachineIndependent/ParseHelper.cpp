@@ -419,6 +419,7 @@ void TParseContext::handlePragma(const TSourceLoc& loc, const TVector<TString>& 
     } else if (tokens[0].compare("glslang_binary_double_output") == 0) {
         intermediate.setBinaryDoubleOutput();
     } else if (spvVersion.spv > 0 && tokens[0].compare("STDGL") == 0 &&
+               tokens.size() >= 4 &&
                tokens[1].compare("invariant") == 0 && tokens[3].compare("all") == 0) {
         intermediate.setInvariantAll();
         // Set all builtin out variables invariant if declared
@@ -938,7 +939,8 @@ TIntermTyped* TParseContext::handleBinaryMath(const TSourceLoc& loc, const char*
         ((left->getType().contains16BitInt() || right->getType().contains16BitInt()) && !int16Arithmetic()) ||
         ((left->getType().contains8BitInt() || right->getType().contains8BitInt()) && !int8Arithmetic()) ||
         (left->getType().containsBFloat16() || right->getType().containsBFloat16()) ||
-        (left->getType().contains8BitFloat() || right->getType().contains8BitFloat())) {
+        (left->getType().contains8BitFloat() || right->getType().contains8BitFloat()) ||
+        (left->getType().containsOcpMicroscalingFloat() || right->getType().containsOcpMicroscalingFloat())) {
         allowed = false;
     }
 
@@ -967,7 +969,8 @@ TIntermTyped* TParseContext::handleUnaryMath(const TSourceLoc& loc, const char* 
         (childNode->getType().contains16BitInt() && !int16Arithmetic()) ||
         (childNode->getType().contains8BitInt() && !int8Arithmetic()) ||
         (childNode->getType().containsBFloat16()) ||
-        (childNode->getType().contains8BitFloat())) {
+        (childNode->getType().contains8BitFloat()) ||
+        (childNode->getType().containsOcpMicroscalingFloat())) {
         allowed = false;
     }
 
@@ -1256,6 +1259,13 @@ TFunction* TParseContext::handleFunctionDeclarator(const TSourceLoc& loc, TFunct
         }
         if (!parameterTypesDiffer && prevDec->getType() != function.getType())
             error(loc, "overloaded functions must have the same return type", function.getName().c_str(), "");
+
+        function.addFunctionControl(prevDec->getFunctionControl());
+        unsigned functionControl = function.getFunctionControl();
+        if (function.hasIncompatibleFunctionControl())
+            error(loc, "function attributes are incompatible", function.getName().c_str(), "");
+        if (!builtIn)
+            symbol->getAsFunction()->setFunctionControl(functionControl);
     }
 
     arrayObjectCheck(loc, function.getType(), "array in function return type");
@@ -2823,6 +2833,8 @@ void TParseContext::memorySemanticsCheck(const TSourceLoc& loc, const TFunction&
         break;
 
     case EOpBarrier:
+    case EOpControlBarrierArriveEXT:
+    case EOpControlBarrierWaitEXT:
         storageClassSemantics = (*argp)[2]->getAsConstantUnion()->getConstArray()[0].getIConst();
         semantics = (*argp)[3]->getAsConstantUnion()->getConstArray()[0].getIConst();
         break;
@@ -2874,6 +2886,23 @@ void TParseContext::memorySemanticsCheck(const TSourceLoc& loc, const TFunction&
               fnCandidate.getName().c_str(), "");
     }
 
+    if (storageClassSemantics) {
+        if (callNode.getOp() == EOpControlBarrierArriveEXT &&
+            (semantics & ~gl_SemanticsMakeAvailable) != gl_SemanticsRelease) {
+            error(loc,
+                  "Semantics must be gl_SemanticsRelease (optionally with gl_SemanticsMakeAvailable) when used "
+                  "with non-zero storage class semantics",
+                  fnCandidate.getName().c_str(), "");
+        }
+        if (callNode.getOp() == EOpControlBarrierWaitEXT &&
+            (semantics & ~gl_SemanticsMakeVisible) != gl_SemanticsAcquire) {
+            error(loc,
+                  "Semantics must be gl_SemanticsAcquire (optionally with gl_SemanticsMakeVisible) when used "
+                  "with non-zero storage class semantics",
+                  fnCandidate.getName().c_str(), "");
+        }
+    }
+
     if (((semantics & gl_SemanticsMakeAvailable) &&
          !(semantics & (gl_SemanticsRelease | gl_SemanticsAcquireRelease))) ||
         ((semantics2 & gl_SemanticsMakeAvailable) &&
@@ -2918,6 +2947,16 @@ void TParseContext::memorySemanticsCheck(const TSourceLoc& loc, const TFunction&
         (semantics & gl_SemanticsVolatile)) {
         error(loc, "gl_SemanticsVolatile must not be used with memoryBarrier or controlBarrier",
               fnCandidate.getName().c_str(), "");
+    }
+
+    if ((callNode.getOp() == EOpControlBarrierArriveEXT) && ((semantics & gl_SemanticsVolatile) != 0)) {
+      error(loc, "gl_SemanticsVolatile must not be used with controlBarrierArrive",
+            fnCandidate.getName().c_str(), "");
+    }
+
+    if ((callNode.getOp() == EOpControlBarrierWaitEXT) && ((semantics & gl_SemanticsVolatile) != 0)) {
+      error(loc, "gl_SemanticsVolatile must not be used with controlBarrierWait",
+            fnCandidate.getName().c_str(), "");
     }
 
     if (callNode.getOp() == EOpAtomicCompSwap || callNode.getOp() == EOpImageAtomicCompSwap) {
@@ -3111,6 +3150,58 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
             feature = featureString.c_str();
             profileRequires(loc, ~EEsProfile, 450, nullptr, feature);
             requireExtensions(loc, 1, &E_GL_AMD_texture_gather_bias_lod, feature);
+        }
+        break;
+    }
+
+    case EOpTextureGather4x1QCOM:
+    case EOpTextureGatherV2QCOM:
+    case EOpTextureGatherH2QCOM:
+    case EOpTextureGatherDQCOM:
+    case EOpTextureGather4x1OffsetQCOM:
+    case EOpTextureGatherV2OffsetQCOM:
+    case EOpTextureGatherH2OffsetQCOM:
+    case EOpTextureGatherDOffsetQCOM:
+    {
+        featureString = fnCandidate.getName();
+        featureString += "(...)";
+        feature = featureString.c_str();
+        profileRequires(loc, EEsProfile, 310, nullptr, feature);
+        int compArg = -1;  // track which argument, if any, is the constant component argument
+        const int numTexGatherExts = 1;
+        const char* texGatherExts[numTexGatherExts] = { E_GL_QCOM_image_processing3 };
+        switch (callNode.getOp()) {
+        case EOpTextureGather4x1QCOM:
+        case EOpTextureGatherV2QCOM:
+        case EOpTextureGatherH2QCOM:
+        case EOpTextureGatherDQCOM:
+            profileRequires(loc, ~EEsProfile, 460, numTexGatherExts, texGatherExts, feature);
+            // More than two arguments needs gpu_shader5, and rectangular or shadow needs gpu_shader5,
+            // otherwise, need GL_ARB_texture_gather.
+            if (fnCandidate.getParamCount() > 2) {
+                compArg = 2;
+            }
+            break;
+        case EOpTextureGather4x1OffsetQCOM:
+        case EOpTextureGatherV2OffsetQCOM:
+        case EOpTextureGatherH2OffsetQCOM:
+        case EOpTextureGatherDOffsetQCOM:
+            profileRequires(loc, ~EEsProfile, 460, numTexGatherExts, texGatherExts, feature);
+            if (fnCandidate.getParamCount() > 3) {
+                compArg = 3;
+            }
+            break;
+        default:
+            break;
+        }
+
+        if (compArg > 0 && compArg < fnCandidate.getParamCount()) {
+            if ((*argp)[compArg]->getAsConstantUnion()) {
+                int value = (*argp)[compArg]->getAsConstantUnion()->getConstArray()[0].getIConst();
+                if (value < 0 || value > 3)
+                    error(loc, "must be 0, 1, 2, or 3:", feature, "component argument");
+            } else
+                error(loc, "must be a compile-time constant:", feature, "component argument");
         }
         break;
     }
@@ -3643,6 +3734,8 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
         break;
 
     case EOpBarrier:
+    case EOpControlBarrierArriveEXT:
+    case EOpControlBarrierWaitEXT:
     case EOpMemoryBarrier:
         if (argp->size() > 0) {
             requireExtensions(loc, 1, &E_GL_KHR_memory_scope_semantics, fnCandidate.getName().c_str());
@@ -4657,6 +4750,36 @@ bool TParseContext::constructorError(const TSourceLoc& loc, TIntermNode* node, T
             requireInt8Arithmetic(loc, constructorString.c_str(), "8-bit arrays not supported");
         if (type.isVector() && function.getParamCount() != 1)
             requireInt8Arithmetic(loc, constructorString.c_str(), "8-bit vectors only take vector types");
+        break;
+    case EOpConstructFloatE2M1:
+    case EOpConstructFloatE2M1Vec2:
+    case EOpConstructFloatE2M1Vec3:
+    case EOpConstructFloatE2M1Vec4:
+    case EOpConstructFloatE3M2:
+    case EOpConstructFloatE3M2Vec2:
+    case EOpConstructFloatE3M2Vec3:
+    case EOpConstructFloatE3M2Vec4:
+    case EOpConstructFloatE2M3:
+    case EOpConstructFloatE2M3Vec2:
+    case EOpConstructFloatE2M3Vec3:
+    case EOpConstructFloatE2M3Vec4:
+    case EOpConstructFloatUE8M0:
+    case EOpConstructFloatUE8M0Vec2:
+    case EOpConstructFloatUE8M0Vec3:
+    case EOpConstructFloatUE8M0Vec4:
+    case EOpConstructFloatMXINT8:
+    case EOpConstructFloatMXINT8Vec2:
+    case EOpConstructFloatMXINT8Vec3:
+    case EOpConstructFloatMXINT8Vec4:
+        if (!constType || specConstType) {
+            for (int i = 0; i < function.getParamCount(); ++i) {
+                TIntermNode* arg = function.getParamCount() == 1 ? node : node->getAsAggregate()->getSequence()[i];
+                if (arg->getAsTyped()->getBasicType() != type.getBasicType()) {
+                    error(loc, "constructor argument must be a non-spec constant", constructorString.c_str(), "");
+                    return true;
+                }
+            }
+        }
         break;
     default:
         break;
@@ -6068,6 +6191,7 @@ TSymbol* TParseContext::redeclareBuiltinVariable(const TSourceLoc& loc, const TS
         (identifier == "gl_FragStencilRefARB"   && (nonEsRedecls && version >= 140)
                                                 && language == EShLangFragment)                     ||
          identifier == "gl_SampleMask"                                                              ||
+         identifier == "gl_EnableOpacityMicromapEXT"                                                ||
          identifier == "gl_Layer"                                                                   ||
          identifier == "gl_PrimitiveIndicesNV"                                                      ||
          identifier == "gl_PrimitivePointIndicesEXT"                                                ||
@@ -6187,6 +6311,25 @@ TSymbol* TParseContext::redeclareBuiltinVariable(const TSourceLoc& loc, const TS
                 error(loc, "redeclaration only allowed for viewport_relative or secondary_view_offset layout", "redeclaration", symbol->getName().c_str());
             symbolQualifier.layoutViewportRelative = qualifier.layoutViewportRelative;
             symbolQualifier.layoutSecondaryViewportRelativeOffset = qualifier.layoutSecondaryViewportRelativeOffset;
+        }
+        else if (identifier == "gl_EnableOpacityMicromapEXT") {
+            // GL_EXT_opacity_micromap_ray_query_mode. This branch handles the full-redeclaration form
+            //   const bool gl_EnableOpacityMicromapEXT = <true|false>;
+            // which sets the built-in's value (emitted as OpConstantTrue/OpConstantFalse). The
+            // specialization-constant form is the bare "layout(constant_id = N) gl_EnableOpacityMicromapEXT;"
+            // (handled in addQualifierToExisting); per the extension it is not valid to restate the type
+            // or specify a value together with constant_id.
+            requireExtensions(loc, 1, &E_GL_EXT_opacity_micromap_ray_query_mode, "gl_EnableOpacityMicromapEXT redeclaration");
+            if (qualifier.hasSpecConstantId())
+                error(loc, "cannot restate the type or specify a value with constant_id; use "
+                           "'layout(constant_id = N) gl_EnableOpacityMicromapEXT;'", "redeclaration",
+                      symbol->getName().c_str());
+            else if (qualifier.storage != EvqConst)
+                error(loc, "can only be redeclared as 'const bool gl_EnableOpacityMicromapEXT = <true|false>;' "
+                           "or 'layout(constant_id = N) gl_EnableOpacityMicromapEXT;'", "redeclaration",
+                      symbol->getName().c_str());
+            // For the valid 'const bool = <true|false>;' form the value is captured from the initializer
+            // after it is processed (see declareVariable); nothing else to do to the symbol's qualifier here.
         }
 
         // TODO: semantics quality: separate smooth from nothing declared, then use IsInterpolation for several tests above
@@ -8158,6 +8301,11 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
         case EbtBFloat16:
         case EbtFloatE5M2:
         case EbtFloatE4M3:
+        case EbtFloatE2M1:
+        case EbtFloatE3M2:
+        case EbtFloatE2M3:
+        case EbtFloatUE8M0:
+        case EbtFloatMXINT8:
             break;
         default:
             error(loc, "cannot be applied to this type", "constant_id", "");
@@ -9549,6 +9697,14 @@ TIntermNode* TParseContext::declareVariable(const TSourceLoc& loc, TString& iden
         (type.getQualifier().storage == EvqVaryingIn || type.getQualifier().storage == EvqVaryingOut))
         error(loc, "qualifier", "fp8 types not allowed as input/output", "");
 
+    if (type.containsOcpMicroscalingFloat() &&
+        (type.getQualifier().storage == EvqVaryingIn || type.getQualifier().storage == EvqVaryingOut))
+        error(loc, "qualifier", "microscaling types not allowed as input/output", "");
+
+    if (type.containsOcpMicroscalingNonByteFloat() &&
+        (type.getQualifier().storage == EvqUniform || type.getQualifier().storage == EvqBuffer || type.getQualifier().storage == EvqShared))
+        error(loc, "qualifier", "sub-byte sized types not allowed in storage class", "");
+
     if (type.getQualifier().storage == EvqtaskPayloadSharedEXT)
         intermediate.addTaskPayloadEXTCount();
     if (type.getQualifier().storage == EvqShared && type.containsCoopMat())
@@ -9624,6 +9780,16 @@ TIntermNode* TParseContext::declareVariable(const TSourceLoc& loc, TString& iden
             return nullptr;
         }
         initNode = executeInitializer(loc, initializer, variable);
+
+        // GL_EXT_opacity_micromap_ray_query_mode: capture the value of a
+        // 'const bool gl_EnableOpacityMicromapEXT = <true|false>;' redeclaration so the back end can emit
+        // the OpacityMicromapIdKHR execution mode operand as OpConstantTrue/OpConstantFalse. The
+        // specialization-constant form goes through addQualifierToExisting instead.
+        if (identifier == "gl_EnableOpacityMicromapEXT" && !variable->getType().getQualifier().hasSpecConstantId()) {
+            const TConstUnionArray& constArray = variable->getConstArray();
+            if (constArray.size() > 0)
+                intermediate.setEnableOpacityMicromapDefault(constArray[0].getBConst());
+        }
     }
 
     // EXT_descriptor_heap
@@ -9906,6 +10072,13 @@ TIntermTyped* TParseContext::convertInitializerList(const TSourceLoc& loc, const
         TType arrayType;
         arrayType.shallowCopy(type);                     // sharing struct stuff is fine
         arrayType.copyArraySizes(*type.getArraySizes());  // but get a fresh copy of the array information, to edit below
+
+        // a nested empty initializer list ({}) has no elements to size the array or
+        // derive its element type from, so reject it before the getSequence()[0] read below
+        if (initList->getSequence().empty()) {
+            error(loc, "array initializer must be non-empty", "initializer list", "");
+            return nullptr;
+        }
 
         // edit array sizes to fill in unsized dimensions
         arrayType.changeOuterArraySize((int)initList->getSequence().size());
@@ -10257,6 +10430,41 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
     case EOpConstructFloatE4M3Vec4:
     case EOpConstructFloatE4M3:
         basicOp = EOpConstructFloatE4M3;
+        break;
+
+    case EOpConstructFloatE2M1Vec2:
+    case EOpConstructFloatE2M1Vec3:
+    case EOpConstructFloatE2M1Vec4:
+    case EOpConstructFloatE2M1:
+        basicOp = EOpConstructFloatE2M1;
+        break;
+
+    case EOpConstructFloatE3M2Vec2:
+    case EOpConstructFloatE3M2Vec3:
+    case EOpConstructFloatE3M2Vec4:
+    case EOpConstructFloatE3M2:
+        basicOp = EOpConstructFloatE3M2;
+        break;
+
+    case EOpConstructFloatE2M3Vec2:
+    case EOpConstructFloatE2M3Vec3:
+    case EOpConstructFloatE2M3Vec4:
+    case EOpConstructFloatE2M3:
+        basicOp = EOpConstructFloatE2M3;
+        break;
+
+    case EOpConstructFloatUE8M0Vec2:
+    case EOpConstructFloatUE8M0Vec3:
+    case EOpConstructFloatUE8M0Vec4:
+    case EOpConstructFloatUE8M0:
+        basicOp = EOpConstructFloatUE8M0;
+        break;
+
+    case EOpConstructFloatMXINT8Vec2:
+    case EOpConstructFloatMXINT8Vec3:
+    case EOpConstructFloatMXINT8Vec4:
+    case EOpConstructFloatMXINT8:
+        basicOp = EOpConstructFloatMXINT8;
         break;
 
     case EOpConstructI8Vec2:
@@ -10640,6 +10848,11 @@ bool TParseContext::untypedHeapCheck(TSymbol* symbol, const TType& type, const T
                     "declared with a run-time sized array type.", name, "");
                 return false;
             }
+            if (type.getBasicType() == EbtSampler && type.getSampler().isCombined()) {
+                error(loc, "layout(descriptor_heap) cannot be used with combined image samplers.",
+                      name, "");
+                return false;
+            }
             if (!type.containsHeapArray() && !isHeapStruct) {
                 error(loc, "layout(descriptor_heap) decorated variable could only be declared as an array.",
                       name, "");
@@ -10736,6 +10949,9 @@ TIntermNode* TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeL
 
         if (memberType.containsCoopVec())
             error(memberLoc, "member of block cannot be or contain a cooperative vector type", typeList[member].type->getFieldName().c_str(), "");
+
+        if (memberType.containsOcpMicroscalingNonByteFloat())
+            error(memberLoc, "member of block cannot be or contain a sub-byte type", typeList[member].type->getFieldName().c_str(), "");
     }
 
     // This might be a redeclaration of a built-in block.  If so, redeclareBuiltinBlock() will
@@ -11456,6 +11672,15 @@ void TParseContext::addQualifierToExisting(const TSourceLoc& loc, TQualifier qua
         symbol->getWritableType().getQualifier().makeSpecConstant();
         if (qualifier.hasSpecConstantId())
             symbol->getWritableType().getQualifier().layoutSpecConstantId = qualifier.layoutSpecConstantId;
+        // GL_EXT_opacity_micromap_ray_query_mode: gl_EnableOpacityMicromapEXT may be turned into a
+        // specialization constant with the bare form "layout(constant_id = N) gl_EnableOpacityMicromapEXT;".
+        // Record the SpecId so the back end emits the OpacityMicromapIdKHR execution mode.
+        if (identifier == "gl_EnableOpacityMicromapEXT" && qualifier.hasSpecConstantId()) {
+            requireExtensions(loc, 1, &E_GL_EXT_opacity_micromap_ray_query_mode, "gl_EnableOpacityMicromapEXT");
+            // Bare "layout(constant_id = N) gl_EnableOpacityMicromapEXT;": the default value of false is
+            // retained (OpSpecConstantFalse); the API may override it. Record the SpecId for the back end.
+            intermediate.setEnableOpacityMicromapSpecId(qualifier.layoutSpecConstantId);
+        }
     } else
         warn(loc, "unknown requalification", "", "");
 }

@@ -73,6 +73,8 @@ INSTANTIATE_TEST_SUITE_P(
         "preprocessor.paste_stringify.vert",
         "preprocessor.stringify_invalid.vert",
         "preprocessor.shift_out_of_range.vert",
+        "preprocessor.elseseen.oob.vert",
+        "preprocessor.macro.recursion.vert",
     })),
     FileNameAsCustomTestSuffix
 );

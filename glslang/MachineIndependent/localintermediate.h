@@ -346,6 +346,8 @@ public:
         numTaskNVBlocks(0),
         layoutPrimitiveCulling(false),
         usesOpacityMicromap2StateFlag(false),
+        enableOpacityMicromapSpecId(TQualifier::layoutNotSet),
+        enableOpacityMicromapDefault(false),
         numTaskEXTPayloads(0),
         nonCoherentTileAttachmentReadQCOM(false),
         autoMapBindings(false),
@@ -1016,6 +1018,16 @@ public:
     bool getLayoutPrimitiveCulling() const { return layoutPrimitiveCulling; }
     void setUsesOpacityMicromap2StateFlag() { usesOpacityMicromap2StateFlag = true; }
     bool getUsesOpacityMicromap2StateFlag() const { return usesOpacityMicromap2StateFlag; }
+    // GL_EXT_opacity_micromap_ray_query_mode: state for the gl_EnableOpacityMicromapEXT built-in. When
+    // the extension is enabled the SPIR-V generator emits the OpacityMicromapIdKHR execution mode; the
+    // operand id depends on how the built-in was (re)declared:
+    //  - redeclared with a constant_id -> OpSpecConstantFalse decorated with that SpecId
+    //  - redeclared 'const bool = true' -> OpConstantTrue   (enableOpacityMicromapDefault == true)
+    //  - otherwise (default or '= false') -> OpConstantFalse
+    void setEnableOpacityMicromapSpecId(int id) { enableOpacityMicromapSpecId = id; }
+    int getEnableOpacityMicromapSpecId() const { return enableOpacityMicromapSpecId; }
+    void setEnableOpacityMicromapDefault(bool v) { enableOpacityMicromapDefault = v; }
+    bool getEnableOpacityMicromapDefault() const { return enableOpacityMicromapDefault; }
     bool setPrimitives(int m)
     {
         if (primitives != TQualifier::layoutNotSet)
@@ -1320,6 +1332,8 @@ protected:
     int numTaskNVBlocks;
     bool layoutPrimitiveCulling;
     bool usesOpacityMicromap2StateFlag;
+    int enableOpacityMicromapSpecId;
+    bool enableOpacityMicromapDefault;
     int numTaskEXTPayloads;
 
     bool nonCoherentTileAttachmentReadQCOM;
