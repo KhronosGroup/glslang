@@ -91,6 +91,230 @@ struct StructMemberDebugInfo {
 };
 
 class Builder {
+    class CompositeConstantKey {
+    public:
+        enum Kind {
+            Key_Instruction,
+            Key_CompositeConstant,
+        };
+
+        CompositeConstantKey(
+            Op typeClass, Instruction* instruction)
+        : kind(Key_Instruction)
+        , instruction(instruction)
+        , typeClass(typeClass)
+        , opcode(Op::OpNop)
+        , typeId(NoType)
+        , numMembers(0)
+        , comps()
+        {}
+
+        CompositeConstantKey(
+            Op typeClass, Op opcode, Id typeId, const std::vector<Id>& comps, size_t numMembers)
+        : kind(Key_CompositeConstant)
+        , instruction(nullptr)
+        , typeClass(typeClass)
+        , opcode(opcode)
+        , typeId(typeId)
+        , numMembers(numMembers)
+        , comps(comps)
+        {}
+
+        Instruction* getInstruction() const {
+            return instruction;
+        }
+
+        // Functor to hash an instruction key.
+        struct Hash {
+            size_t operator()(CompositeConstantKey const &key) const {
+                switch (key.kind) {
+                case Key_Instruction:
+                    {
+                        Instruction* constant = key.instruction;
+                        size_t num_operands = constant->getNumOperands();
+                        size_t hash = std::hash<Op>()(key.typeClass) * 7 ^
+                            std::hash<Op>()(constant->getOpCode()) * 11 ^
+                            std::hash<Id>()(constant->getTypeId()) * 13 ^
+                            std::hash<size_t>()(num_operands) * 17;
+                        for (size_t i = 0; i < num_operands; ++i) {
+                            hash = hash * 19 ^ std::hash<Id>()(constant->getIdOperand(i));
+                        }
+                        return hash;
+                    }
+                case Key_CompositeConstant:
+                    {
+                        size_t hash = std::hash<Op>()(key.typeClass) * 7 ^
+                            std::hash<Op>()(key.opcode) * 11 ^
+                            std::hash<Id>()(key.typeId) * 13 ^
+                            std::hash<size_t>()(key.numMembers) * 17;
+                        for (size_t i = 0; i < key.numMembers; ++i) {
+                            hash = hash * 19 ^ std::hash<Id>()(key.comps[i]);
+                        }
+                        return hash;
+                    }
+                }
+                return 0;
+            }
+        };
+
+        // Functor to compare two instruction keys.
+        struct Equal {
+            bool operator() (CompositeConstantKey const &a, CompositeConstantKey const &b) const
+            {
+                if (a.typeClass != b.typeClass)
+                    return false;
+
+                if (a.kind == b.kind) {
+                    // we need only the Instruction case, as the other keys only used for searching
+                    return
+                        a.kind == Key_Instruction &&
+                        a.instruction == b.instruction;
+                }
+                const CompositeConstantKey* s = &a;
+                const CompositeConstantKey* o = &b;
+
+                if (s->kind == Key_CompositeConstant && o->kind == Key_Instruction) {
+                    s = o;
+                    o = &a;
+                }
+
+                // compare a composite constant with an instruction
+                if (s->kind == Key_Instruction && o->kind == Key_CompositeConstant) {
+                    Instruction* constant = s->instruction;
+                    if (constant->getTypeId() != o->typeId)
+                        return false;
+
+                    if (constant->getOpCode() != o->opcode) {
+                        return false;
+                    }
+
+                    if (constant->getNumOperands() != (int)o->numMembers)
+                        return false;
+
+                    // same contents?
+                    for (int op = 0; op < constant->getNumOperands(); ++op) {
+                        if (constant->getIdOperand(op) != o->comps[op]) {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+                return false;
+            }
+        };
+
+    private:
+        Kind kind;
+        Instruction* instruction;
+        Op typeClass;
+        Op opcode;
+        Id typeId;
+        size_t numMembers;
+        std::vector<Id> comps;
+    };
+
+    class StructConstantKey {
+    public:
+        enum Kind {
+            Key_Instruction,
+            Key_StructConstant,
+        };
+
+        StructConstantKey(
+            Instruction* instruction)
+        : kind(Key_Instruction)
+        , instruction(instruction)
+        , typeId(NoType)
+        , numMembers(0)
+        , comps()
+        {}
+
+        StructConstantKey(
+            Id typeId, const std::vector<Id>& comps, size_t numMembers)
+        : kind(Key_StructConstant)
+        , instruction(nullptr)
+        , typeId(typeId)
+        , numMembers(numMembers)
+        , comps(comps)
+        {}
+
+        Instruction* getInstruction() const {
+            return instruction;
+        }
+
+        // Functor to hash an instruction key.
+        struct Hash {
+            size_t operator()(StructConstantKey const &key) const {
+                switch (key.kind) {
+                case Key_Instruction:
+                    {
+                        Instruction* constant = key.instruction;
+                        size_t hash = std::hash<Id>()(constant->getTypeId()) * 13;
+                        for (size_t i = 0, n = constant->getNumOperands(); i < n; ++i) {
+                            hash = hash * 19 ^ std::hash<Id>()(constant->getIdOperand(i));
+                        }
+                        return hash;
+                    }
+                case Key_StructConstant:
+                    {
+                        size_t hash = std::hash<Id>()(key.typeId) * 13;
+                        for (size_t i = 0; i < key.numMembers; ++i) {
+                            hash = hash * 19 ^ std::hash<Id>()(key.comps[i]);
+                        }
+                        return hash;
+                    }
+                }
+                return 0;
+            }
+        };
+
+        // Functor to compare two instruction keys.
+        struct Equal {
+            bool operator() (StructConstantKey const &a, StructConstantKey const &b) const
+            {
+                if (a.kind == b.kind) {
+                    // we need only the Instruction case, as the other keys only used for searching
+                    return
+                        a.kind == Key_Instruction &&
+                        a.instruction == b.instruction;
+                }
+                const StructConstantKey* s = &a;
+                const StructConstantKey* o = &b;
+
+                if (s->kind == Key_StructConstant && o->kind == Key_Instruction) {
+                    s = o;
+                    o = &a;
+                }
+
+                // compare a composite constant with an instruction
+                if (s->kind == Key_Instruction && o->kind == Key_StructConstant) {
+                    Instruction* constant = s->instruction;
+                    if (constant->getTypeId() != o->typeId)
+                        return false;
+
+                    if (constant->getNumOperands() != (int)o->numMembers)
+                        return false;
+
+                    // same contents?
+                    for (int op = 0; op < constant->getNumOperands(); ++op) {
+                        if (constant->getIdOperand(op) != o->comps[op]) {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+                return false;
+            }
+        };
+
+    private:
+        Kind kind;
+        Instruction* instruction;
+        Id typeId;
+        size_t numMembers;
+        std::vector<Id> comps;
+    };
+
 public:
     Builder(unsigned int spvVersion, unsigned int userNumber, SpvBuildLogger* logger);
     virtual ~Builder();
@@ -1042,7 +1266,7 @@ protected:
     Id findScalarConstant(Op typeClass, Op opcode, Id typeId, unsigned value);
     Id findScalarConstant(Op typeClass, Op opcode, Id typeId, unsigned v1, unsigned v2);
     Id findCompositeConstant(Op typeClass, Op opcode, Id typeId, const std::vector<Id>& comps, size_t numMembers);
-    Id findStructConstant(Id typeId, const std::vector<Id>& comps);
+    Id findStructConstant(Id typeId, const std::vector<Id>& comps, size_t numMembers);
     Id collapseAccessChain();
     Id getOrCreateDescHeapByteArrayType();
     void remapDynamicSwizzle();
@@ -1182,10 +1406,20 @@ protected:
         }
     };
 
+    typedef std::unordered_set<
+        CompositeConstantKey,
+        CompositeConstantKey::Hash,
+        CompositeConstantKey::Equal> CompositeConstantCache;
+
+    typedef std::unordered_set<
+        StructConstantKey,
+        StructConstantKey::Hash,
+        StructConstantKey::Equal> StructConstantCache;
+
     // map type opcodes to constant inst.
-    std::unordered_map<unsigned int, std::vector<Instruction*>> groupedCompositeConstants;
+    CompositeConstantCache groupedCompositeConstants;
     // map struct-id to constant instructions
-    std::unordered_map<unsigned int, std::vector<Instruction*>> groupedStructConstants;
+    StructConstantCache groupedStructConstants;
     // map type opcodes to type instructions
     std::unordered_map<unsigned int, std::vector<Instruction*>> groupedTypes;
     // map type opcodes to debug type instructions
