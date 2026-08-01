@@ -2362,60 +2362,23 @@ void Builder::requireNonSemanticShaderDebugInfoVersion(unsigned version)
 
 Id Builder::findCompositeConstant(Op typeClass, Op opcode, Id typeId, const std::vector<Id>& comps, size_t numMembers)
 {
-    Instruction* constant = nullptr;
-    bool found = false;
-    for (int i = 0; i < (int)groupedCompositeConstants[enumCast(typeClass)].size(); ++i) {
-        constant = groupedCompositeConstants[enumCast(typeClass)][i];
-
-        if (constant->getTypeId() != typeId)
-            continue;
-
-        if (constant->getOpCode() != opcode) {
-            continue;
-        }
-
-        if (constant->getNumOperands() != (int)numMembers)
-            continue;
-
-        // same contents?
-        bool mismatch = false;
-        for (int op = 0; op < constant->getNumOperands(); ++op) {
-            if (constant->getIdOperand(op) != comps[op]) {
-                mismatch = true;
-                break;
-            }
-        }
-        if (! mismatch) {
-            found = true;
-            break;
-        }
+    auto it = groupedCompositeConstants.find(
+        CompositeConstantKey(typeClass, opcode, typeId, comps, numMembers));
+    if (it != groupedCompositeConstants.end()) {
+        const Instruction* constant = (*it).getInstruction();
+        return constant->getResultId();
     }
-
-    return found ? constant->getResultId() : NoResult;
+    return NoResult;
 }
 
-Id Builder::findStructConstant(Id typeId, const std::vector<Id>& comps)
+Id Builder::findStructConstant(Id typeId, const std::vector<Id>& comps, size_t numMembers)
 {
-    Instruction* constant = nullptr;
-    bool found = false;
-    for (int i = 0; i < (int)groupedStructConstants[typeId].size(); ++i) {
-        constant = groupedStructConstants[typeId][i];
-
-        // same contents?
-        bool mismatch = false;
-        for (int op = 0; op < constant->getNumOperands(); ++op) {
-            if (constant->getIdOperand(op) != comps[op]) {
-                mismatch = true;
-                break;
-            }
-        }
-        if (! mismatch) {
-            found = true;
-            break;
-        }
+    auto it = groupedStructConstants.find(StructConstantKey(typeId, comps, numMembers));
+    if (it != groupedStructConstants.end()) {
+        const Instruction* constant = (*it).getInstruction();
+        return constant->getResultId();
     }
-
-    return found ? constant->getResultId() : NoResult;
+    return NoResult;
 }
 
 // Comments in header
@@ -2457,7 +2420,7 @@ Id Builder::makeCompositeConstant(Id typeId, const std::vector<Id>& members, boo
         break;
     case Op::OpTypeStruct:
         if (! specConstant) {
-            Id existing = findStructConstant(typeId, members);
+            Id existing = findStructConstant(typeId, members, numMembers);
             if (existing)
                 return existing;
         }
@@ -2473,9 +2436,9 @@ Id Builder::makeCompositeConstant(Id typeId, const std::vector<Id>& members, boo
         c->addIdOperand(members[op]);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(c));
     if (typeClass == Op::OpTypeStruct)
-        groupedStructConstants[typeId].push_back(c);
+        groupedStructConstants.insert(StructConstantKey(c));
     else
-        groupedCompositeConstants[enumCast(typeClass)].push_back(c);
+        groupedCompositeConstants.insert(CompositeConstantKey(typeClass, c));
     module.mapInstruction(c);
 
     return c->getResultId();
