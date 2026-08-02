@@ -213,6 +213,9 @@ public:
 
     void finishSpv(bool compileOnly);
     void dumpSpv(std::vector<unsigned int>& out);
+    // Number of fatal SPIR-V build errors (e.g. an instruction that exceeds the
+    // per-instruction word-count limit). Non-zero means 'out' must be discarded.
+    unsigned int getErrorCount() const { return builder.getErrorCount(); }
 
 protected:
     friend class DescHeapLayoutEmitter;
@@ -12781,6 +12784,14 @@ void GlslangToSpv(const TIntermediate& intermediate, std::vector<unsigned int>& 
     root->traverse(&it);
     it.finishSpv(options->compileOnly);
     it.dumpSpv(spirv);
+    if (it.getErrorCount() > 0) {
+        // At least one instruction exceeded the SPIR-V per-instruction
+        // word-count limit; the error has been recorded (and logged, if a
+        // logger was supplied). Do not hand back a corrupt/invalid module.
+        spirv.clear();
+        GetThreadPoolAllocator().pop();
+        return;
+    }
 
 #if ENABLE_OPT
     // If from HLSL, run spirv-opt to "legalize" the SPIR-V for Vulkan
