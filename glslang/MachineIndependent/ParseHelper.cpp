@@ -418,31 +418,47 @@ void TParseContext::handlePragma(const TSourceLoc& loc, const TVector<TString>& 
         warn(loc, "not implemented", "#pragma once", "");
     } else if (tokens[0].compare("glslang_binary_double_output") == 0) {
         intermediate.setBinaryDoubleOutput();
-    } else if (spvVersion.spv > 0 && tokens[0].compare("STDGL") == 0 &&
-               tokens.size() >= 4 &&
-               tokens[1].compare("invariant") == 0 && tokens[3].compare("all") == 0) {
-        intermediate.setInvariantAll();
-        // Set all builtin out variables invariant if declared
-        setInvariant(loc, "gl_Position");
-        setInvariant(loc, "gl_PointSize");
-        setInvariant(loc, "gl_ClipDistance");
-        setInvariant(loc, "gl_CullDistance");
-        setInvariant(loc, "gl_TessLevelOuter");
-        setInvariant(loc, "gl_TessLevelInner");
-        setInvariant(loc, "gl_PrimitiveID");
-        setInvariant(loc, "gl_Layer");
-        setInvariant(loc, "gl_ViewportIndex");
-        setInvariant(loc, "gl_FragDepth");
-        setInvariant(loc, "gl_SampleMask");
-        setInvariant(loc, "gl_ClipVertex");
-        setInvariant(loc, "gl_FrontColor");
-        setInvariant(loc, "gl_BackColor");
-        setInvariant(loc, "gl_FrontSecondaryColor");
-        setInvariant(loc, "gl_BackSecondaryColor");
-        setInvariant(loc, "gl_TexCoord");
-        setInvariant(loc, "gl_FogFragCoord");
-        setInvariant(loc, "gl_FragColor");
-        setInvariant(loc, "gl_FragData");
+    } else if (spvVersion.spv > 0 && tokens[0].compare("STDGL") == 0) {
+        // The only valid STDGL pragma is #pragma STDGL invariant(all)
+        if (tokens.size() > 5)
+            error(loc, "extra tokens", "#pragma", "");
+
+        if (tokens.size() < 5) {
+            error(loc, "truncated STDGL declaration", "#pragma", "");
+            return;
+        }
+        if (tokens[2].compare("(") != 0
+            && tokens[4].compare(")") != 0) 
+            error(loc, "Invalid STDGL declaration", "#pragma", "");
+        if (tokens[1].compare("invariant") == 0) {
+            if(tokens[3].compare("all") != 0)
+                error(loc, "Invalid STDGL invariant declaration:", "#pragma", "'%s' (expected 'all')", tokens[3].c_str());
+        
+            intermediate.setInvariantAll();
+            // Set all builtin out variables invariant if declared
+            setInvariant(loc, "gl_Position");
+            setInvariant(loc, "gl_PointSize");
+            setInvariant(loc, "gl_ClipDistance");
+            setInvariant(loc, "gl_CullDistance");
+            setInvariant(loc, "gl_TessLevelOuter");
+            setInvariant(loc, "gl_TessLevelInner");
+            setInvariant(loc, "gl_PrimitiveID");
+            setInvariant(loc, "gl_Layer");
+            setInvariant(loc, "gl_ViewportIndex");
+            setInvariant(loc, "gl_FragDepth");
+            setInvariant(loc, "gl_SampleMask");
+            setInvariant(loc, "gl_ClipVertex");
+            setInvariant(loc, "gl_FrontColor");
+            setInvariant(loc, "gl_BackColor");
+            setInvariant(loc, "gl_FrontSecondaryColor");
+            setInvariant(loc, "gl_BackSecondaryColor");
+            setInvariant(loc, "gl_TexCoord");
+            setInvariant(loc, "gl_FogFragCoord");
+            setInvariant(loc, "gl_FragColor");
+            setInvariant(loc, "gl_FragData");
+        } else {
+            error(loc, "Unknown STDGL declaration:", "#pragma", "%s", tokens[1].c_str());
+        }
     }
 }
 

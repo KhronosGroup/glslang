@@ -5,4 +5,9 @@
 #pragma STDGL
 #pragma STDGL invariant
 #pragma STDGL invariant(
+#pragma STDGL something (all)
+#pragma STDGL invariant []
+#pragma STDGL invariant [all]
+#pragma STDGL invariant ( some )
+
 void main() {}
