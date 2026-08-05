@@ -484,6 +484,7 @@ enum TOperator {
     EOpCooperativeMatrixReduceNV,
     EOpCooperativeMatrixPerElementOpNV,
     EOpCooperativeMatrixTransposeNV,
+    EOpCooperativeMatrixGetCoordinateEXT,
 
     EOpCreateTensorLayoutNV,
     EOpTensorLayoutSetBlockSizeNV,

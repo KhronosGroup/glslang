@@ -170,7 +170,8 @@ void TParseVersions::initializeExtensionBehavior()
                                    {E_GL_NV_ray_tracing_motion_blur, EShTargetSpv_1_4},
                                    {E_GL_EXT_mesh_shader, EShTargetSpv_1_4},
                                    {E_GL_NV_cooperative_matrix2, EShTargetSpv_1_6},
-                                   {E_GL_NV_cooperative_matrix_decode_vector, EShTargetSpv_1_6}
+                                   {E_GL_NV_cooperative_matrix_decode_vector, EShTargetSpv_1_6},
+                                   {E_GL_EXT_cooperative_matrix_maintenance1, EShTargetSpv_1_3},
                                  };
 
     for (size_t ii = 0; ii < sizeof(exts) / sizeof(exts[0]); ii++) {
@@ -416,6 +417,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_EXT_float_ue8m0]                 = EBhDisable;
     extensionBehavior[E_GL_EXT_float_mxint8]                = EBhDisable;
     extensionBehavior[E_GL_EXT_optional_input_attachment_index] = EBhDisable;
+    extensionBehavior[E_GL_EXT_cooperative_matrix_maintenance1] = EBhDisable;
 
     // OVR extensions
     extensionBehavior[E_GL_OVR_multiview]                = EBhDisable;
