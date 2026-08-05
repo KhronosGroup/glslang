@@ -749,6 +749,24 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType) 
         case EOpAtan:
             newConstArray[i].setDConst(atan(unionArray[i].getDConst()));
             break;
+        case EOpSinh:
+            newConstArray[i].setDConst(sinh(unionArray[i].getDConst()));
+            break;
+        case EOpCosh:
+            newConstArray[i].setDConst(cosh(unionArray[i].getDConst()));
+            break;
+        case EOpTanh:
+            newConstArray[i].setDConst(tanh(unionArray[i].getDConst()));
+            break;
+        case EOpAsinh:
+            newConstArray[i].setDConst(asinh(unionArray[i].getDConst()));
+            break;
+        case EOpAcosh:
+            newConstArray[i].setDConst(acosh(unionArray[i].getDConst()));
+            break;
+        case EOpAtanh:
+            newConstArray[i].setDConst(atanh(unionArray[i].getDConst()));
+            break;
 
         case EOpDPdx:
         case EOpDPdy:
@@ -844,13 +862,6 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType) 
             newConstArray[i].setU64Const(unionArray[i].getU64Const()); break;
 
         // TODO: 3.0 Functionality: unary constant folding: the rest of the ops have to be fleshed out
-
-        case EOpSinh:
-        case EOpCosh:
-        case EOpTanh:
-        case EOpAsinh:
-        case EOpAcosh:
-        case EOpAtanh:
 
         case EOpFloatBitsToInt:
         case EOpFloatBitsToUint:
