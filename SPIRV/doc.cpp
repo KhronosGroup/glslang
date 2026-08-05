@@ -362,6 +362,8 @@ const char* DecorationString(int decoration)
     case (int)Decoration::ArrayStrideIdEXT:        return "ArrayStrideIdEXT";
     case (int)Decoration::OffsetIdEXT:             return "OffsetIdEXT";
     case (int)Decoration::UTFEncodedKHR:           return "UTFEncodedKHR";
+
+    case (int)Decoration::CooperativeMatrixTransposeEXT: return "DecorationCooperativeMatrixTransposeEXT";
     }
 }
 
@@ -1089,6 +1091,8 @@ const char* CapabilityString(int info)
     case (int)Capability::CooperativeMatrixBlockLoadsNV:           return "CooperativeMatrixBlockLoadsNV";
     case (int)Capability::CooperativeMatrixDecodeVectorNV:         return "CooperativeMatrixDecodeVectorNV";
     case (int)Capability::TensorAddressingNV:                      return "TensorAddressingNV";
+    case (int)Capability::CooperativeMatrixConversionsEXT:         return "CooperativeMatrixConversionsEXT";
+    case (int)Capability::CooperativeMatrixGetCoordinateEXT:       return "CooperativeMatrixGetCoordinateEXT";
 
     case (int)Capability::ShaderSMBuiltinsNV:      return "ShaderSMBuiltinsNV";
 
@@ -1683,6 +1687,7 @@ const char* OpcodeString(int op)
     case (int)Op::OpTensorViewSetDimensionNV:        return "OpTensorViewSetDimensionNV";
     case (int)Op::OpTensorViewSetStrideNV:           return "OpTensorViewSetStrideNV";
     case (int)Op::OpTensorViewSetClipNV:             return "OpTensorViewSetClipNV";
+    case (int)Op::OpCooperativeMatrixGetCoordinateEXT: return "OpCooperativeMatrixGetCoordinateEXT";
 
     case (int)Op::OpTypeTensorARM:                   return "OpTypeTensorARM";
     case (int)Op::OpTensorReadARM:                   return "OpTensorReadARM";
@@ -3899,6 +3904,9 @@ void Parameterize()
         InstructionDesc[enumCast(Op::OpCooperativeMatrixPerElementOpNV)].operands.push(OperandId, "'Matrix'");
         InstructionDesc[enumCast(Op::OpCooperativeMatrixPerElementOpNV)].operands.push(OperandId, "'Operation'");
         InstructionDesc[enumCast(Op::OpCooperativeMatrixPerElementOpNV)].operands.push(OperandVariableIds, "'Operands'");
+
+        InstructionDesc[enumCast(Op::OpCooperativeMatrixGetCoordinateEXT)].operands.push(OperandId, "'Matrix'");
+        InstructionDesc[enumCast(Op::OpCooperativeMatrixGetCoordinateEXT)].operands.push(OperandId, "'Index'");
 
         InstructionDesc[enumCast(Op::OpCooperativeMatrixLoadTensorNV)].operands.push(OperandId, "'Pointer'");
         InstructionDesc[enumCast(Op::OpCooperativeMatrixLoadTensorNV)].operands.push(OperandId, "'Object'");

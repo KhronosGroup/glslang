@@ -1125,6 +1125,10 @@ public:
         return IsRequestedExtension(E_GL_EXT_texture_offset_non_const);
     }
 
+    bool usingCoopMatMaint1() const {
+        return IsRequestedExtension(E_GL_EXT_cooperative_matrix_maintenance1);
+    }
+
     bool IsRequestedExtension(const char* extension) const
     {
         return (requestedExtensions.find(extension) != requestedExtensions.end());

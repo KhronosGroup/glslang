@@ -972,6 +972,8 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.1.6.quad.frag",
         "spv.64bit_indexing.comp",
         "spv.64bit_indexing_error.comp",
+        "spv.coopmatmaint1.comp",
+        "spv.coopmatmaint1_error.comp",
         "spv.coopmat2_constructor.comp",
         "spv.coopmat2_error.comp",
         "spv.coopmat2_tensor.comp",

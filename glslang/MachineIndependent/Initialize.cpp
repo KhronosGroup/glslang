@@ -5084,10 +5084,22 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
         );
 
         commonBuiltins.append(
+            "void coopMatTransposeEXT(out coopmat, coopmat);"
+            "void coopMatReduceEXT(out coopmat, coopmat, int, __function);"
+            "void coopMatPerElementEXT();"
+            "uvec2 coopMatGetCoordinateEXT(coopmat, uint index);"
+        );
+
+        commonBuiltins.append(
             "const int gl_CooperativeMatrixReduceRowNV = 0x1;\n"
             "const int gl_CooperativeMatrixReduceColumnNV = 0x2;\n"
             "const int gl_CooperativeMatrixReduceRowAndColumnNV = 0x3;\n"
             "const int gl_CooperativeMatrixReduce2x2NV = 0x4;\n"
+
+            "const int gl_CooperativeMatrixReduceRowEXT = 0x1;\n"
+            "const int gl_CooperativeMatrixReduceColumnEXT = 0x2;\n"
+            "const int gl_CooperativeMatrixReduceRowAndColumnEXT = 0x3;\n"
+            "const int gl_CooperativeMatrixReduce2x2EXT = 0x4;\n"
             "\n"
             );
 
@@ -10393,6 +10405,13 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         }
 
         {
+            symbolTable.setFunctionExtensions("coopMatReduceEXT",           1, &E_GL_EXT_cooperative_matrix_maintenance1);
+            symbolTable.setFunctionExtensions("coopMatPerElementEXT",       1, &E_GL_EXT_cooperative_matrix_maintenance1);
+            symbolTable.setFunctionExtensions("coopMatTransposeEXT",        1, &E_GL_EXT_cooperative_matrix_maintenance1);
+            symbolTable.setFunctionExtensions("coopMatGetCoordinateEXT",    1, &E_GL_EXT_cooperative_matrix_maintenance1);
+        }
+
+        {
             symbolTable.setFunctionExtensions("tensorReadARM",   1, &E_GL_ARM_tensors);
             symbolTable.setFunctionExtensions("tensorWriteARM",  1, &E_GL_ARM_tensors);
             symbolTable.setFunctionExtensions("tensorSizeARM",   1, &E_GL_ARM_tensors);
@@ -11856,6 +11875,11 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         symbolTable.relateToOperator("coopMatReduceNV",            EOpCooperativeMatrixReduceNV);
         symbolTable.relateToOperator("coopMatPerElementNV",        EOpCooperativeMatrixPerElementOpNV);
         symbolTable.relateToOperator("coopMatTransposeNV",         EOpCooperativeMatrixTransposeNV);
+
+        symbolTable.relateToOperator("coopMatReduceEXT",           EOpCooperativeMatrixReduceNV);
+        symbolTable.relateToOperator("coopMatPerElementEXT",       EOpCooperativeMatrixPerElementOpNV);
+        symbolTable.relateToOperator("coopMatTransposeEXT",        EOpCooperativeMatrixTransposeNV);
+        symbolTable.relateToOperator("coopMatGetCoordinateEXT",    EOpCooperativeMatrixGetCoordinateEXT);
 
         symbolTable.relateToOperator("createTensorLayoutNV",         EOpCreateTensorLayoutNV);
         symbolTable.relateToOperator("setTensorLayoutBlockSizeNV",   EOpTensorLayoutSetBlockSizeNV);

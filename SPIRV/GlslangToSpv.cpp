@@ -292,7 +292,12 @@ protected:
     spv::Id createUnaryMatrixOperation(spv::Op op, OpDecorations&, spv::Id typeId, spv::Id operand,
                                        glslang::TBasicType typeProxy);
     spv::Id createConversion(glslang::TOperator op, OpDecorations&, spv::Id destTypeId, spv::Id operand,
-                             glslang::TBasicType resultBasicType, glslang::TBasicType operandBasicType);
+                             glslang::TBasicType resultBasicType, glslang::TBasicType operandBasicType,
+                             bool sameCoopMatUse = true);
+    spv::Id createCoopMatConversion(spv::Id destType, spv::Id operand,
+                                    glslang::TBasicType resultBasicType, glslang::TBasicType operandBasicType,
+                                    bool sameUse, bool transpose);
+
     spv::Id createIntWidthConversion(spv::Id operand, int vectorSize, spv::Id destType,
                                      glslang::TBasicType resultBasicType, glslang::TBasicType operandBasicType);
     spv::Id makeSmearedConstant(spv::Id constant, int vectorSize);
@@ -326,6 +331,7 @@ protected:
     spv::Id createCompositeConstruct(spv::Id typeId, std::vector<spv::Id> constituents);
     void recordDescHeapAccessChainInfo(glslang::TIntermBinary* node);
     void createAbortEXT(const glslang::TIntermSequence &glslangOperands);
+    void enableCoopMatConversions();
 
     glslang::SpvOptions& options;
     spv::Function* shaderEntry;
@@ -3165,16 +3171,10 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
 
     // it could be a conversion
     if (! result) {
+        bool sameUse = !node->getType().isCoopMatKHR() || !node->getOperand()->getAsTyped()->getType().isCoopMatKHR() ||
+                       node->getAsTyped()->getType().sameCoopMatUse(node->getOperand()->getAsTyped()->getType());
         result = createConversion(node->getOp(), decorations, resultType(), operand,
-            node->getType().getBasicType(), node->getOperand()->getBasicType());
-        if (result) {
-            if (node->getType().isCoopMatKHR() && node->getOperand()->getAsTyped()->getType().isCoopMatKHR() &&
-                !node->getAsTyped()->getType().sameCoopMatUse(node->getOperand()->getAsTyped()->getType())) {
-                // Conversions that change use need CapabilityCooperativeMatrixConversionsNV
-                builder.addCapability(spv::Capability::CooperativeMatrixConversionsNV);
-                builder.addExtension(spv::E_SPV_NV_cooperative_matrix2);
-            }
-        }
+            node->getType().getBasicType(), node->getOperand()->getBasicType(), sameUse);
     }
 
     // if not, then possibly an operation
@@ -3450,6 +3450,47 @@ void TGlslangToSpvTraverser::createAbortEXT(const glslang::TIntermSequence &glsl
     auto structType = builder.makeStructType(structMemberType, {}, "abortMessage");
     auto messageVar = builder.createCompositeConstruct(structType, structMemberData);
     builder.makeStatementTerminator(spv::Op::OpAbortKHR, {structLoadType, messageVar}, "post-abort");
+}
+
+spv::Id TGlslangToSpvTraverser::createCoopMatConversion(spv::Id destType, spv::Id operand, glslang::TBasicType resultBasicType, glslang::TBasicType operandBasicType, bool sameUse, bool transpose)
+{
+    spv::Id result;
+    if (isTypeInt(operandBasicType) && isTypeInt(resultBasicType) &&
+        isTypeUnsignedInt(operandBasicType) != isTypeUnsignedInt(resultBasicType) &&
+        GetNumBits(operandBasicType) != GetNumBits(resultBasicType)) {
+
+        // OpSConvert/OpUConvert + OpBitCast
+        operand = createIntWidthConversion(operand, 0, destType, resultBasicType, operandBasicType);
+        operandBasicType = resultBasicType;
+        if (transpose) {
+            builder.addDecoration(operand, spv::Decoration::CooperativeMatrixTransposeEXT);
+        }
+        return builder.createUnaryOp(spv::Op::OpBitcast, destType, operand);
+    }
+    if (isTypeFloat(operandBasicType) && isTypeFloat(resultBasicType) &&
+        operandBasicType != resultBasicType) {
+        result = builder.createUnaryOp(spv::Op::OpFConvert, destType, operand);
+    } else if (isTypeSignedInt(operandBasicType) && isTypeFloat(resultBasicType)) {
+        result = builder.createUnaryOp(spv::Op::OpConvertSToF, destType, operand);
+    } else if (isTypeUnsignedInt(operandBasicType) && isTypeFloat(resultBasicType)) {
+        result = builder.createUnaryOp(spv::Op::OpConvertUToF, destType, operand);
+    } else if (isTypeFloat(operandBasicType) && isTypeSignedInt(resultBasicType)) {
+        result = builder.createUnaryOp(spv::Op::OpConvertFToS, destType, operand);
+    } else if (isTypeFloat(operandBasicType) && isTypeUnsignedInt(resultBasicType)) {
+        result = builder.createUnaryOp(spv::Op::OpConvertFToU, destType, operand);
+    } else if (isTypeSignedInt(resultBasicType) && GetNumBits(operandBasicType) != GetNumBits(resultBasicType)) {
+        result = builder.createUnaryOp(spv::Op::OpSConvert, destType, operand);
+    } else if (isTypeUnsignedInt(resultBasicType) && GetNumBits(operandBasicType) != GetNumBits(resultBasicType)) {
+        result = builder.createUnaryOp(spv::Op::OpUConvert, destType, operand);
+    } else if (!sameUse) {
+        result = builder.createUnaryOp(spv::Op::OpCooperativeMatrixConvertUseEXT, destType, operand);
+    } else {
+        result = builder.createUnaryOp(spv::Op::OpBitcast, destType, operand);
+    }
+    if (transpose) {
+        builder.addDecoration(result, spv::Decoration::CooperativeMatrixTransposeEXT);
+    }
+    return result;
 }
 
 bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TIntermAggregate* node)
@@ -3783,8 +3824,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         } else if (node->getOp() == glslang::EOpConstructCooperativeMatrixKHR &&
                    node->getType().isCoopMatKHR() && node->getSequence()[0]->getAsTyped()->getType().isCoopMatKHR() &&
                    !node->getAsTyped()->getType().sameCoopMatUse(node->getSequence()[0]->getAsTyped()->getType())) {
-            builder.addCapability(spv::Capability::CooperativeMatrixConversionsNV);
-            builder.addExtension(spv::E_SPV_NV_cooperative_matrix2);
+            enableCoopMatConversions();
             constructed = builder.createCooperativeMatrixConversion(resultType(), arguments[0]);
         } else if (node->getType().isCoopVecOrLongVector() &&
                    arguments.size() == 1 &&
@@ -3808,8 +3848,13 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
                                           TranslateNoContractionDecoration(node->getType().getQualifier()),
                                           TranslateNonUniformDecoration(lvalueCoherentFlags) };
 
+            auto operand = node->getSequence()[1]->getAsTyped();
+
+            bool sameUse = !node->getType().isCoopMatKHR() || !operand->getType().isCoopMatKHR() ||
+                           node->getAsTyped()->getType().sameCoopMatUse(operand->getType());
+
             constructed = createConversion(node->getOp(), decorations, resultType(), arguments[1],
-                                           node->getType().getBasicType(), node->getSequence()[1]->getAsTyped()->getBasicType());
+                                           node->getType().getBasicType(), operand->getBasicType(), sameUse);
             builder.addDecoration(constructed, spv::Decoration::SaturatedToLargestFloat8NormalConversionEXT);
             builder.createStore(constructed, arguments[0]);
         }
@@ -4171,6 +4216,11 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         builder.addExtension(spv::E_SPV_NV_cluster_acceleration_structure);
         builder.addCapability(spv::Capability::RayQueryKHR);
         builder.addCapability(spv::Capability::RayTracingClusterAccelerationStructureNV);
+        break;
+
+    case glslang::EOpCooperativeMatrixGetCoordinateEXT:
+        builder.addExtension(spv::E_SPV_EXT_cooperative_matrix_maintenance1);
+        builder.addCapability(spv::Capability::CooperativeMatrixGetCoordinateEXT);
         break;
 
     case glslang::EOpDebugPrintf:
@@ -4857,8 +4907,13 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
 
         result = builder.createOp(spv::Op::OpCooperativeMatrixMulAddKHR, resultType(), idImmOps);
     } else if (node->getOp() == glslang::EOpCooperativeMatrixReduceNV) {
-        builder.addCapability(spv::Capability::CooperativeMatrixReductionsNV);
-        builder.addExtension(spv::E_SPV_NV_cooperative_matrix2);
+        if (glslangIntermediate->usingCoopMatMaint1()) {
+            builder.addCapability(spv::Capability::CooperativeMatrixReductionsEXT);
+            builder.addExtension(spv::E_SPV_EXT_cooperative_matrix_maintenance1);
+        } else {
+            builder.addCapability(spv::Capability::CooperativeMatrixReductionsNV);
+            builder.addExtension(spv::E_SPV_NV_cooperative_matrix2);
+        }
 
         spv::Op opcode = spv::Op::OpCooperativeMatrixReduceNV;
         unsigned mask = glslangOperands[2]->getAsConstantUnion()->getConstArray()[0].getUConst();
@@ -4871,8 +4926,13 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         builder.createStore(result, operands[0]);
         result = 0;
     } else if (node->getOp() == glslang::EOpCooperativeMatrixPerElementOpNV) {
-        builder.addCapability(spv::Capability::CooperativeMatrixPerElementOperationsNV);
-        builder.addExtension(spv::E_SPV_NV_cooperative_matrix2);
+        if (glslangIntermediate->usingCoopMatMaint1()) {
+            builder.addCapability(spv::Capability::CooperativeMatrixPerElementOperationsEXT);
+            builder.addExtension(spv::E_SPV_EXT_cooperative_matrix_maintenance1);
+        } else {
+            builder.addCapability(spv::Capability::CooperativeMatrixPerElementOperationsNV);
+            builder.addExtension(spv::E_SPV_NV_cooperative_matrix2);
+        }
 
         spv::Id typeId = builder.getContainedTypeId(builder.getTypeId(operands[0]));
         assert(builder.isCooperativeMatrixType(typeId));
@@ -4882,14 +4942,20 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         builder.createStore(result, operands[0]);
         result = 0;
     } else if (node->getOp() == glslang::EOpCooperativeMatrixTransposeNV) {
-
-        builder.addCapability(spv::Capability::CooperativeMatrixConversionsNV);
-        builder.addExtension(spv::E_SPV_NV_cooperative_matrix2);
+        enableCoopMatConversions();
 
         spv::Id typeId = builder.getContainedTypeId(builder.getTypeId(operands[0]));
         assert(builder.isCooperativeMatrixType(typeId));
 
-        result = builder.createUnaryOp(spv::Op::OpCooperativeMatrixTransposeNV, typeId, operands[1]);
+        if (glslangIntermediate->usingCoopMatMaint1()) {
+            auto resultBasicType = glslangOperands[0]->getAsTyped()->getBasicType();
+            auto operandBasicType = glslangOperands[1]->getAsTyped()->getBasicType();
+            bool sameUse = glslangOperands[0]->getAsTyped()->getType().sameCoopMatUse(glslangOperands[1]->getAsTyped()->getType());
+
+            result = createCoopMatConversion(typeId, operands[1], resultBasicType, operandBasicType, sameUse, true);
+        } else {
+            result = builder.createUnaryOp(spv::Op::OpCooperativeMatrixTransposeNV, typeId, operands[1]);
+        }
         // store the result to the pointer
         builder.createStore(result, operands[0]);
         result = 0;
@@ -9714,7 +9780,8 @@ spv::Id TGlslangToSpvTraverser::createIntWidthConversion(spv::Id operand, int ve
 }
 
 spv::Id TGlslangToSpvTraverser::createConversion(glslang::TOperator op, OpDecorations& decorations, spv::Id destType,
-                                                 spv::Id operand, glslang::TBasicType resultBasicType, glslang::TBasicType operandBasicType)
+                                                 spv::Id operand, glslang::TBasicType resultBasicType, glslang::TBasicType operandBasicType,
+                                                 bool sameCoopMatUse)
 {
     spv::Op convOp = spv::Op::OpNop;
     spv::Id zero = 0;
@@ -9723,6 +9790,14 @@ spv::Id TGlslangToSpvTraverser::createConversion(glslang::TOperator op, OpDecora
     int vectorSize = builder.isVectorType(destType) ? builder.getNumTypeComponents(destType) : 0;
 
     if (IsOpNumericConv(op) || op == glslang::EOpConstructSaturated) {
+        if (builder.isCooperativeMatrixType(destType)) {
+            if (!sameCoopMatUse) {
+                enableCoopMatConversions();
+            }
+            auto result = createCoopMatConversion(destType, operand, resultBasicType, operandBasicType, sameCoopMatUse, false);
+            return result;
+        }
+
         if (isTypeSignedInt(operandBasicType) && isTypeFloat(resultBasicType)) {
             convOp = spv::Op::OpConvertSToF;
         }
@@ -11617,6 +11692,9 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
     case glslang::EOpTensorViewSetClipNV:
         opCode = spv::Op::OpTensorViewSetClipNV;
         break;
+    case glslang::EOpCooperativeMatrixGetCoordinateEXT:
+        opCode = spv::Op::OpCooperativeMatrixGetCoordinateEXT;
+        break;
     case glslang::EOpBitcastExtractE2M1:
     case glslang::EOpBitcastExtractE3M2:
     case glslang::EOpBitcastExtractE2M3:
@@ -12674,6 +12752,17 @@ spv::Id TGlslangToSpvTraverser::getExtBuiltins(const char* name)
         spv::Id extBuiltins = builder.import(name);
         extBuiltinMap[name] = extBuiltins;
         return extBuiltins;
+    }
+}
+
+void TGlslangToSpvTraverser::enableCoopMatConversions()
+{
+    if (glslangIntermediate->usingCoopMatMaint1()) {
+        builder.addCapability(spv::Capability::CooperativeMatrixConversionsEXT);
+        builder.addExtension(spv::E_SPV_EXT_cooperative_matrix_maintenance1);
+    } else {
+        builder.addCapability(spv::Capability::CooperativeMatrixConversionsNV);
+        builder.addExtension(spv::E_SPV_NV_cooperative_matrix2);
     }
 }
 

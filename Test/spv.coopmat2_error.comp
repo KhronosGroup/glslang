@@ -81,4 +81,7 @@ void main()
     coopMatLoadTensorNV(A, larr, 0, t);
     coopMatStoreTensorNV(A, larr, 0, t);
 
+    coopmat<float16_t, gl_ScopeWorkgroup, 64, 32, gl_MatrixUseB> Bf16;
+    coopmat<float16_t, gl_ScopeWorkgroup, 64, 32, gl_MatrixUseAccumulator> Accf16;
+    coopMatTransposeNV(Bf16, Accf16);
 }
