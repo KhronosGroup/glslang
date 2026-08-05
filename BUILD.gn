@@ -85,30 +85,36 @@ if (current_toolchain == default_toolchain) {
   }
 }
 
-action("glslang_extension_headers") {
-  script = "gen_extension_headers.py"
+if (current_toolchain == default_toolchain) {
+  action("glslang_extension_headers") {
+    script = "gen_extension_headers.py"
 
-  out_file = "${target_gen_dir}/include/glslang/glsl_intrinsic_header.h"
+    out_file = "${target_gen_dir}/include/glslang/glsl_intrinsic_header.h"
 
-  # Fuchsia GN build rules require all GN actions to be hermetic and they
-  # should correctly and fully state their inputs and outpus (see
-  # https://fuchsia.dev/fuchsia-src/development/build/hermetic_actions
-  # for details). All input files of the script should be added to the
-  # |sources| list.
-  sources = [
-    "glslang/ExtensionHeaders/GL_EXT_shader_realtime_clock.glsl",
-  ]
+    # Fuchsia GN build rules require all GN actions to be hermetic and they
+    # should correctly and fully state their inputs and outpus (see
+    # https://fuchsia.dev/fuchsia-src/development/build/hermetic_actions
+    # for details). All input files of the script should be added to the
+    # |sources| list.
+    sources = [
+      "glslang/ExtensionHeaders/GL_EXT_shader_realtime_clock.glsl",
+    ]
 
-  inputs = [
-    script
-  ]
-  outputs = [ out_file ]
-  args = [
-    "-i",
-    rebase_path("glslang/ExtensionHeaders", root_build_dir),
-    "-o",
-    rebase_path(out_file, root_build_dir),
-  ]
+    inputs = [
+      script
+    ]
+    outputs = [ out_file ]
+    args = [
+      "-i",
+      rebase_path("glslang/ExtensionHeaders", root_build_dir),
+      "-o",
+      rebase_path(out_file, root_build_dir),
+    ]
+  }
+} else {
+  group("glslang_extension_headers") {
+    public_deps = [ ":glslang_extension_headers($default_toolchain)" ]
+  }
 }
 
 spirv_tools_dir = glslang_spirv_tools_dir
