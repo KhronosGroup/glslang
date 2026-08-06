@@ -135,6 +135,7 @@ INSTANTIATE_TEST_SUITE_P(
         "330comp.frag",
         "constErrors.frag",
         "constFold.frag",
+        "constFoldBitCast64.frag",
         "constFoldIntMin.frag",
         "errors.frag",
         "forwardRef.frag",

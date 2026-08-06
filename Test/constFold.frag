@@ -69,6 +69,9 @@ void main()
     out11 = smoothstep(50.0, 60.0, vec4(40.0, 51.0, 55.0, 70.0)); // 0.0, 0.028, 0.5, 1.0
     out11 = vec4(sinh(1.0), cosh(1.0), tanh(1.0), sinh(0.0));     // 1.175201, 1.543081, 0.761594, 0.0
     out11 = vec4(asinh(1.0), acosh(1.0), atanh(0.5), acosh(2.0)); // 0.881374, 0.0, 0.549306, 1.316958
+    out12 = ivec2(floatBitsToInt(1.0), floatBitsToInt(-2.0));   // 1065353216, -1073741824
+    out13 = uvec3(floatBitsToUint(1.0), floatBitsToUint(0.0), floatBitsToUint(-0.0)); // 1065353216, 0, 2147483648
+    out2 = vec2(intBitsToFloat(1065353216), uintBitsToFloat(3221225472u)); // 1.0, -2.0
 }
 
 const struct S {
