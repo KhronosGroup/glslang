@@ -295,6 +295,13 @@ private:
     bool isSet = false;
 };
 
+// Round 'd' to the precision of 'baseType' and return it, still as a double.
+// TConstUnion stores every float type in a double, so without this a constant
+// keeps bits its declared type could not hold, and those bits then take part in
+// later constant folding.  Rounding matches what the SPIR-V back end does when
+// it emits the constant, so emitted values do not change.
+double RoundToDeclaredPrecision(double d, TBasicType baseType);
+
 //
 // Set of helper functions to help parse and build the tree.
 //

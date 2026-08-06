@@ -504,17 +504,17 @@ Requested GL_EXT_shader_explicit_arithmetic_types_float16
 0:113        move second child to first child ( temp double)
 0:113          'hfpi1' ( temp double)
 0:113          Constant:
-0:113            3.141593
+0:113            3.140625
 0:114      Sequence
 0:114        move second child to first child ( temp double)
 0:114          'hfpi2' ( temp double)
 0:114          Constant:
-0:114            3.141593
+0:114            3.140625
 0:115      Sequence
 0:115        move second child to first child ( temp double)
 0:115          'hfpi3' ( temp double)
 0:115          Constant:
-0:115            3.141593
+0:115            3.140625
 0:?   Linker Objects
 0:?     'gl_VertexID' ( gl_VertexId int VertexId)
 0:?     'gl_InstanceID' ( gl_InstanceId int InstanceId)
@@ -1028,17 +1028,17 @@ Requested GL_EXT_shader_explicit_arithmetic_types_float16
 0:113        move second child to first child ( temp double)
 0:113          'hfpi1' ( temp double)
 0:113          Constant:
-0:113            3.141593
+0:113            3.140625
 0:114      Sequence
 0:114        move second child to first child ( temp double)
 0:114          'hfpi2' ( temp double)
 0:114          Constant:
-0:114            3.141593
+0:114            3.140625
 0:115      Sequence
 0:115        move second child to first child ( temp double)
 0:115          'hfpi3' ( temp double)
 0:115          Constant:
-0:115            3.141593
+0:115            3.140625
 0:?   Linker Objects
 0:?     'gl_VertexID' ( gl_VertexId int VertexId)
 0:?     'gl_InstanceID' ( gl_InstanceId int InstanceId)
