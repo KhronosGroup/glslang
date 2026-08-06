@@ -629,6 +629,10 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.tensorARM.read.comp",
         "spv.tensorARM.size.comp",
         "spv.tensorARM.unrequested_extension_types.comp",
+        "spv.no_input_attachment_index.frag",
+        "spv.no_input_attachment_index_fail.frag",
+        "spv.no_input_attachment_index_fail_2.frag",
+        "spv.no_input_attachment_index_fail_3.frag",
     })),
     FileNameAsCustomTestSuffix
 );
