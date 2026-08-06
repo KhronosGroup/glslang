@@ -584,6 +584,7 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_EXT_spec_constant_composites 1\n"
             "#define GL_EXT_abort 1\n"
             "#define GL_EXT_split_barrier 1\n"
+            "#define GL_EXT_cooperative_matrix_maintenance1 1\n"
 
             // GL_KHR_shader_subgroup
             "#define GL_KHR_shader_subgroup_basic 1\n"
