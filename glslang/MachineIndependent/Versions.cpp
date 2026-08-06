@@ -4,6 +4,7 @@
 // Copyright (C) 2017, 2022-2024 Arm Limited.
 // Copyright (C) 2015-2020 Google, Inc.
 // Modifications Copyright (C) 2020 Advanced Micro Devices, Inc. All rights reserved.
+// Modifications Copyright (C) 2026 Valve Corporation.
 //
 // All rights reserved.
 //
@@ -414,6 +415,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_EXT_float_e2m3]                  = EBhDisable;
     extensionBehavior[E_GL_EXT_float_ue8m0]                 = EBhDisable;
     extensionBehavior[E_GL_EXT_float_mxint8]                = EBhDisable;
+    extensionBehavior[E_GL_EXT_optional_input_attachment_index] = EBhDisable;
 
     // OVR extensions
     extensionBehavior[E_GL_OVR_multiview]                = EBhDisable;
@@ -741,6 +743,11 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_OVR_multiview 1\n"
             "#define GL_OVR_multiview2 1\n"
             ;
+    }
+
+    if ((!isEsProfile() && version >= 140) ||
+        (isEsProfile() && version >= 300)) {
+        preamble += "#define GL_EXT_optional_input_attachment_index 1\n";
     }
 
     // #line and #include

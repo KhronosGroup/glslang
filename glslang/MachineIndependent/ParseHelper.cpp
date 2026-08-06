@@ -5,6 +5,7 @@
 // Copyright (C) 2017, 2019 ARM Limited.
 // Modifications Copyright (C) 2020 Advanced Micro Devices, Inc. All rights reserved.
 // Modifications Copyright (C) 2024 Ravi Prakash Singh.
+// Modifications Copyright (C) 2026 Valve Corporation.
 //
 // All rights reserved.
 //
@@ -8271,7 +8272,7 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
         if (extensionTurnedOn(E_GL_EXT_shader_tile_image))
             error(loc, "cannot be used with GL_EXT_shader_tile_image enabled", type.getSampler().getString().c_str(),
                   "");
-        if (! qualifier.hasAttachment())
+        if (!qualifier.hasAttachment() && (type.isArray() || !extensionTurnedOn(E_GL_EXT_optional_input_attachment_index)))
             error(loc, "requires an input_attachment_index layout qualifier", "subpass", "");
     } else {
         if (qualifier.hasAttachment())
