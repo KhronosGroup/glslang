@@ -90,7 +90,7 @@ struct StructMemberDebugInfo {
     spv::Id debugTypeOverride {0};
 };
 
-class Builder {
+class Builder : public SpvErrorReporter {
     class CompositeConstantKey {
     public:
         enum Kind {
@@ -318,6 +318,19 @@ class Builder {
 public:
     Builder(unsigned int spvVersion, unsigned int userNumber, SpvBuildLogger* logger);
     virtual ~Builder();
+
+    // Record a fatal build error. Always increments the error count (so it is
+    // observable even when no logger is attached) and, when a logger exists,
+    // forwards the human-readable message to it.
+    void error(const std::string& message);
+    // Number of fatal errors recorded so far. The top level checks this after
+    // serialization to decide whether the produced module must be discarded.
+    unsigned int getErrorCount() const { return errorCount; }
+
+    // SpvErrorReporter: called from serialization when an instruction is too
+    // long to encode. Builds the meaningful diagnostic and records it via
+    // error().
+    void instructionWordCountOverflow(const Instruction& inst) override;
 
     static const int maxMatrixSize = 4;
 
@@ -1240,7 +1253,11 @@ public:
     // move OpSampledImage instructions to be next to their users.
     void postProcessSamplers();
 
-    void dump(std::vector<unsigned int>&) const;
+    // Serialize the whole module into 'out'. If any instruction was too long
+    // to encode within the SPIR-V 16-bit per-instruction word-count limit, the
+    // error is recorded (see getErrorCount()); the caller must then discard
+    // 'out', as it does not contain a valid module.
+    void dump(std::vector<unsigned int>&);
 
     // Add a branch to the target block.
     // If set implicit, the branch instruction shouldn't have debug source location.
@@ -1274,10 +1291,13 @@ protected:
     void simplifyAccessChainSwizzle();
     void createAndSetNoPredecessorBlock(const char*);
     void createSelectionMerge(Block* mergeBlock, SelectionControlMask control);
-    void dumpSourceInstructions(std::vector<unsigned int>&) const;
-    void dumpSourceInstructions(const spv::Id fileId, const std::string& text, std::vector<unsigned int>&) const;
-    template <class Range> void dumpInstructions(std::vector<unsigned int>& out, const Range& instructions) const;
-    void dumpModuleProcesses(std::vector<unsigned int>&) const;
+    // The dump* helpers below are non-const because serialization can record
+    // an error (via the SpvErrorReporter that the Builder implements) when an
+    // instruction exceeds the SPIR-V per-instruction word-count limit.
+    void dumpSourceInstructions(std::vector<unsigned int>&);
+    void dumpSourceInstructions(const spv::Id fileId, const std::string& text, std::vector<unsigned int>&);
+    template <class Range> void dumpInstructions(std::vector<unsigned int>& out, const Range& instructions);
+    void dumpModuleProcesses(std::vector<unsigned int>&);
     spv::MemoryAccessMask sanitizeMemoryAccessForStorageClass(spv::MemoryAccessMask memoryAccess, StorageClass sc)
         const;
     struct DecorationInstructionLessThan {
@@ -1464,6 +1484,10 @@ protected:
 
     // The stream for outputting warnings and errors.
     SpvBuildLogger* logger;
+
+    // Count of fatal errors recorded via error(). Maintained independently of
+    // 'logger' so the build outcome is observable even without a message sink.
+    unsigned int errorCount;
 };  // end Builder class
 
 } // end spv namespace

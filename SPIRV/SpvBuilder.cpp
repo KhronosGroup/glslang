@@ -48,12 +48,19 @@
 #include "SpvBuilder.h"
 #include "spvUtil.h"
 #include "hex_float.h"
+#include "doc.h"
+
+#include <string>
 
 #ifndef _WIN32
     #include <cstdio>
 #endif
 
 namespace spv {
+
+SpvErrorReporter::~SpvErrorReporter()
+{
+}
 
 Builder::Builder(unsigned int spvVersion, unsigned int magicNumber, SpvBuildLogger* buildLogger) :
     spvVersion(spvVersion),
@@ -67,9 +74,17 @@ Builder::Builder(unsigned int spvVersion, unsigned int magicNumber, SpvBuildLogg
     entryPointFunction(nullptr),
     generatingOpCodeForSpecConst(false),
     descHeapByteArrayType(NoResult),
-    logger(buildLogger)
+    logger(buildLogger),
+    errorCount(0)
 {
     clearAccessChain();
+}
+
+void Builder::error(const std::string& message)
+{
+    ++errorCount;
+    if (logger != nullptr)
+        logger->error(message);
 }
 
 Builder::~Builder()
@@ -4942,7 +4957,7 @@ Id Builder::accessChainGetInferredType()
     return type;
 }
 
-void Builder::dump(std::vector<unsigned int>& out) const
+void Builder::dump(std::vector<unsigned int>& out)
 {
     // Header, before first instructions:
     out.push_back(MagicNumber);
@@ -4955,20 +4970,20 @@ void Builder::dump(std::vector<unsigned int>& out) const
     for (auto it = capabilities.cbegin(); it != capabilities.cend(); ++it) {
         Instruction capInst(0, 0, Op::OpCapability);
         capInst.addImmediateOperand(*it);
-        capInst.dump(out);
+        capInst.dump(out, *this);
     }
 
     for (auto it = extensions.cbegin(); it != extensions.cend(); ++it) {
         Instruction extInst(0, 0, Op::OpExtension);
         extInst.addStringOperand(it->c_str());
-        extInst.dump(out);
+        extInst.dump(out, *this);
     }
 
     dumpInstructions(out, imports);
     Instruction memInst(0, 0, Op::OpMemoryModel);
     memInst.addImmediateOperand(addressModel);
     memInst.addImmediateOperand(memoryModel);
-    memInst.dump(out);
+    memInst.dump(out, *this);
 
     // Instructions saved up while building:
     dumpInstructions(out, entryPoints);
@@ -4980,7 +4995,7 @@ void Builder::dump(std::vector<unsigned int>& out) const
     for (int e = 0; e < (int)sourceExtensions.size(); ++e) {
         Instruction sourceExtInst(0, 0, Op::OpSourceExtension);
         sourceExtInst.addStringOperand(sourceExtensions[e]);
-        sourceExtInst.dump(out);
+        sourceExtInst.dump(out, *this);
     }
     dumpInstructions(out, names);
     dumpModuleProcesses(out);
@@ -4992,7 +5007,7 @@ void Builder::dump(std::vector<unsigned int>& out) const
     dumpInstructions(out, externals);
 
     // The functions
-    module.dump(out);
+    module.dump(out, *this);
 }
 
 //
@@ -5205,7 +5220,7 @@ void Builder::createConditionalBranch(Id condition, Block* thenBlock, Block* els
 // [OpSourceContinued]
 // ...
 void Builder::dumpSourceInstructions(const spv::Id fileId, const std::string& text,
-                                     std::vector<unsigned int>& out) const
+                                     std::vector<unsigned int>& out)
 {
     const int maxWordCount = 0xFFFF;
     const int opSourceWordCount = 4;
@@ -5229,24 +5244,24 @@ void Builder::dumpSourceInstructions(const spv::Id fileId, const std::string& te
                     if (nextByte == 0) {
                         // OpSource
                         sourceInst.addStringOperand(subString.c_str());
-                        sourceInst.dump(out);
+                        sourceInst.dump(out, *this);
                     } else {
                         // OpSourcContinued
                         Instruction sourceContinuedInst(Op::OpSourceContinued);
                         sourceContinuedInst.addStringOperand(subString.c_str());
-                        sourceContinuedInst.dump(out);
+                        sourceContinuedInst.dump(out, *this);
                     }
                     nextByte += nonNullBytesPerInstruction;
                 }
             } else
-                sourceInst.dump(out);
+                sourceInst.dump(out, *this);
         } else
-            sourceInst.dump(out);
+            sourceInst.dump(out, *this);
     }
 }
 
 // Dump an OpSource[Continued] sequence for the source and every include file
-void Builder::dumpSourceInstructions(std::vector<unsigned int>& out) const
+void Builder::dumpSourceInstructions(std::vector<unsigned int>& out)
 {
     if (emitNonSemanticShaderDebugInfo) return;
     dumpSourceInstructions(mainFileId, sourceText, out);
@@ -5254,20 +5269,59 @@ void Builder::dumpSourceInstructions(std::vector<unsigned int>& out) const
         dumpSourceInstructions(iItr->first, *iItr->second, out);
 }
 
-template <class Range> void Builder::dumpInstructions(std::vector<unsigned int>& out, const Range& instructions) const
+template <class Range> void Builder::dumpInstructions(std::vector<unsigned int>& out, const Range& instructions)
 {
     for (const auto& inst : instructions) {
-        inst->dump(out);
+        inst->dump(out, *this);
     }
 }
 
-void Builder::dumpModuleProcesses(std::vector<unsigned int>& out) const
+void Builder::dumpModuleProcesses(std::vector<unsigned int>& out)
 {
     for (int i = 0; i < (int)moduleProcesses.size(); ++i) {
         Instruction moduleProcessed(Op::OpModuleProcessed);
         moduleProcessed.addStringOperand(moduleProcesses[i]);
-        moduleProcessed.dump(out);
+        moduleProcessed.dump(out, *this);
     }
+}
+
+// SpvErrorReporter: a single SPIR-V instruction cannot be encoded because its
+// total word count exceeds the 16-bit WordCount header field (WordCountMax).
+// Build a clear, actionable message and record it via error(); the top level
+// rejects the module because the error count is now non-zero.
+void Builder::instructionWordCountOverflow(const Instruction& inst)
+{
+    const Op opCode = inst.getOpCode();
+    const size_t wordCount = inst.getWordCount();
+    const int numOperands = inst.getNumOperands();
+
+    std::string message = "SPIR-V: instruction ";
+    message += OpcodeString((int)opCode);
+    message += " would require ";
+    message += std::to_string(wordCount);
+    message += " words, exceeding the ";
+    message += std::to_string(WordCountMax);
+    message += "-word per-instruction limit";
+
+    switch (opCode) {
+    case Op::OpConstantComposite:
+    case Op::OpSpecConstantComposite:
+    case Op::OpConstantCompositeReplicateEXT:
+    case Op::OpSpecConstantCompositeReplicateEXT:
+        message += "; the constant aggregate has ";
+        message += std::to_string(numOperands);
+        message += " constituents (max ";
+        message += std::to_string(WordCountMax - 3);
+        message += "). Reduce the constant size or move it into a (uniform/storage) buffer.";
+        break;
+    default:
+        message += "; the instruction has ";
+        message += std::to_string(numOperands);
+        message += " operands. Reduce the size of the construct.";
+        break;
+    }
+
+    error(message);
 }
 
 bool Builder::DecorationInstructionLessThan::operator()(const std::unique_ptr<Instruction>& lhs,
