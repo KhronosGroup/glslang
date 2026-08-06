@@ -11,6 +11,11 @@ const float     c1 = 1000000*(c0 - 1.0f);    // so this is 0.0, not 0.001
 const float16_t pi    = 3.14159265358979hf;  // 3.140625
 const float16_t tenth = 0.1hf;               // 0.0999755859375
 
+// Values the compiler computes have to be rounded too, not just literals.
+const float16_t third = 1.0hf/3.0hf;         // 0.333251953125, not 0.33333333
+const float16_t sum   = 0.1hf + 0.2hf;       // rounded at each step
+const float16_t root  = sqrt(2.0hf);         // 1.4140625
+
 // A double literal of the same value keeps full precision.
 const double    lfpi  = 3.14159265358979LF;  // unchanged
 

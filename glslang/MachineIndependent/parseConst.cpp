@@ -159,9 +159,9 @@ void TConstTraverser::visitConstantUnion(TIntermConstantUnion* node)
                             int srcOffset = c * node->getType().getMatrixRows() + r;
                             leftUnionArray[targetOffset] = rightUnionArray[srcOffset];
                         } else if (r == c)
-                            leftUnionArray[targetOffset].setDConst(1.0);
+                            leftUnionArray[targetOffset].setDConst(1.0, rightUnionArray[0].getType());
                         else
-                            leftUnionArray[targetOffset].setDConst(0.0);
+                            leftUnionArray[targetOffset].setDConst(0.0, rightUnionArray[0].getType());
                     }
                 }
             } else {
@@ -173,7 +173,7 @@ void TConstTraverser::visitConstantUnion(TIntermConstantUnion* node)
                             if (r == c)
                                 leftUnionArray[index] = rightUnionArray[0];
                             else
-                                leftUnionArray[index].setDConst(0.0);
+                                leftUnionArray[index].setDConst(0.0, rightUnionArray[0].getType());
                             index++;
                         }
                     }

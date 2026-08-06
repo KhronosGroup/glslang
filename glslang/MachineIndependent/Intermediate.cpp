@@ -45,8 +45,9 @@
 #include "SymbolTable.h"
 #include "propagateNoContraction.h"
 
+#include "SPIRV/hex_float.h"
+
 #include <cfloat>
-#include <cstring>
 #include <limits>
 #include <utility>
 #include <tuple>
@@ -2647,82 +2648,20 @@ TIntermConstantUnion* TIntermediate::addConstantUnion(bool b, const TSourceLoc& 
     return addConstantUnion(unionArray, TType(EbtBool, EvqConst), loc, literal);
 }
 
-namespace {
-
-// IEEE 754 binary16 <-> binary32, rounding toward zero on the way down.
-// Round-to-zero is what spvutils::kRoundToZero does in the SPIR-V back end
-// (Builder::makeFloat16Constant), so rounding here leaves emitted constants
-// unchanged and only affects values that go on to be folded.
-unsigned short FloatToFloat16RoundToZero(float f)
-{
-    unsigned int bits;
-    memcpy(&bits, &f, sizeof(bits));
-
-    const unsigned int sign = (bits >> 16) & 0x8000u;
-    const int rawExp = int((bits >> 23) & 0xFFu);
-    unsigned int mantissa = bits & 0x7FFFFFu;
-
-    if (rawExp == 0xFF) {
-        // Infinity stays infinity; NaN must stay NaN, so keep the mantissa non-zero.
-        return (unsigned short)(sign | 0x7C00u | (mantissa != 0 ? 0x200u : 0u));
-    }
-
-    const int exp = rawExp - 127;
-    if (exp > 15) {
-        // Toward zero, an overflow saturates to the largest finite half.
-        return (unsigned short)(sign | 0x7BFFu);
-    }
-    if (exp >= -14) {
-        // Normal: drop the low 13 mantissa bits.
-        return (unsigned short)(sign | ((unsigned int)(exp + 15) << 10) | (mantissa >> 13));
-    }
-    if (exp >= -25) {
-        // Subnormal: restore the implicit leading 1, then shift it down.
-        mantissa |= 0x800000u;
-        return (unsigned short)(sign | (mantissa >> (unsigned int)(-exp - 14 + 13)));
-    }
-    return (unsigned short)sign; // too small to represent at all
-}
-
-float Float16ToFloat(unsigned short h)
-{
-    const unsigned int sign = (unsigned int)(h & 0x8000u) << 16;
-    const unsigned int exp = (h >> 10) & 0x1Fu;
-    unsigned int mantissa = h & 0x3FFu;
-    unsigned int bits;
-
-    if (exp == 0) {
-        if (mantissa == 0) {
-            bits = sign; // +/- zero
-        } else {
-            // Subnormal half becomes a normal float: normalize the mantissa.
-            int shift = 0;
-            do {
-                mantissa <<= 1;
-                ++shift;
-            } while ((mantissa & 0x400u) == 0);
-            mantissa &= 0x3FFu;
-            bits = sign | ((unsigned int)(127 - 15 - shift + 1) << 23) | (mantissa << 13);
-        }
-    } else if (exp == 0x1F) {
-        bits = sign | 0x7F800000u | (mantissa << 13); // infinity or NaN
-    } else {
-        bits = sign | ((exp + 127 - 15) << 23) | (mantissa << 13);
-    }
-
-    float f;
-    memcpy(&f, &bits, sizeof(f));
-    return f;
-}
-
-} // anonymous namespace
-
 double RoundToDeclaredPrecision(double d, TBasicType baseType)
 {
     switch (baseType) {
-    case EbtFloat16:
-        // Same two steps the back end takes: double -> float, then float -> half.
-        return Float16ToFloat(FloatToFloat16RoundToZero((float)d));
+    case EbtFloat16: {
+        // The same two steps the back end takes in Builder::makeFloat16Constant:
+        // double -> float, then float -> half rounding toward zero.  Using the
+        // same rounding means emitted constants do not change.
+        spvutils::HexFloat<spvutils::FloatProxy<float>> f32(static_cast<float>(d));
+        spvutils::HexFloat<spvutils::FloatProxy<spvutils::Float16>> f16(0);
+        f32.castTo(f16, spvutils::kRoundToZero);
+        spvutils::HexFloat<spvutils::FloatProxy<float>> back(0.0f);
+        f16.castTo(back, spvutils::kRoundToZero);
+        return static_cast<double>(back.value().getAsFloat());
+    }
     default:
         // Only the types narrower than float need this.  EbtFloat and EbtDouble
         // are already held exactly by the double they are stored in.  bfloat16
@@ -2749,7 +2688,7 @@ TIntermConstantUnion* TIntermediate::addConstantUnion(double d, TBasicType baseT
     }
 
     TConstUnionArray unionArray(1);
-    unionArray[0].setDConst(RoundToDeclaredPrecision(d, baseType));
+    unionArray[0].setDConst(d, baseType);
 
     return addConstantUnion(unionArray, TType(baseType, EvqConst), loc, literal);
 }
@@ -4089,21 +4028,24 @@ TIntermTyped* TIntermediate::promoteConstantUnion(TBasicType promoteTo, TIntermC
     for (int i=0; i < size; i++) {
 
 #define PROMOTE(Set, CType, Get) leftUnionArray[i].Set(static_cast<CType>(rightUnionArray[i].Get()))
+// Float targets carry the type through so the value is rounded to the precision
+// it is being promoted to, and the union records which float type it holds.
+#define PROMOTE_FLOAT(Get) leftUnionArray[i].setDConst(static_cast<double>(rightUnionArray[i].Get()), promoteTo)
 #define PROMOTE_TO_BOOL(Get) leftUnionArray[i].setBConst(rightUnionArray[i].Get() != 0)
 
 #define TO_ALL(Get)   \
         switch (promoteTo) { \
-        case EbtBFloat16: PROMOTE(setDConst, double, Get); break; \
-        case EbtFloatE5M2: PROMOTE(setDConst, double, Get); break; \
-        case EbtFloatE4M3: PROMOTE(setDConst, double, Get); break; \
-        case EbtFloatE2M1: PROMOTE(setDConst, double, Get); break; \
-        case EbtFloatE3M2: PROMOTE(setDConst, double, Get); break; \
-        case EbtFloatE2M3: PROMOTE(setDConst, double, Get); break; \
-        case EbtFloatUE8M0: PROMOTE(setDConst, double, Get); break; \
-        case EbtFloatMXINT8: PROMOTE(setDConst, double, Get); break; \
-        case EbtFloat16: PROMOTE(setDConst, double, Get); break; \
-        case EbtFloat: PROMOTE(setDConst, double, Get); break; \
-        case EbtDouble: PROMOTE(setDConst, double, Get); break; \
+        case EbtBFloat16: PROMOTE_FLOAT(Get); break; \
+        case EbtFloatE5M2: PROMOTE_FLOAT(Get); break; \
+        case EbtFloatE4M3: PROMOTE_FLOAT(Get); break; \
+        case EbtFloatE2M1: PROMOTE_FLOAT(Get); break; \
+        case EbtFloatE3M2: PROMOTE_FLOAT(Get); break; \
+        case EbtFloatE2M3: PROMOTE_FLOAT(Get); break; \
+        case EbtFloatUE8M0: PROMOTE_FLOAT(Get); break; \
+        case EbtFloatMXINT8: PROMOTE_FLOAT(Get); break; \
+        case EbtFloat16: PROMOTE_FLOAT(Get); break; \
+        case EbtFloat: PROMOTE_FLOAT(Get); break; \
+        case EbtDouble: PROMOTE_FLOAT(Get); break; \
         case EbtInt8: PROMOTE(setI8Const, signed char, Get); break; \
         case EbtInt16: PROMOTE(setI16Const, short, Get); break; \
         case EbtInt: PROMOTE(setIConst, int, Get); break; \
