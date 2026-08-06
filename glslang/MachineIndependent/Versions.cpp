@@ -170,7 +170,8 @@ void TParseVersions::initializeExtensionBehavior()
                                    {E_GL_NV_ray_tracing_motion_blur, EShTargetSpv_1_4},
                                    {E_GL_EXT_mesh_shader, EShTargetSpv_1_4},
                                    {E_GL_NV_cooperative_matrix2, EShTargetSpv_1_6},
-                                   {E_GL_NV_cooperative_matrix_decode_vector, EShTargetSpv_1_6}
+                                   {E_GL_NV_cooperative_matrix_decode_vector, EShTargetSpv_1_6},
+                                   {E_GL_EXT_cooperative_matrix_maintenance1, EShTargetSpv_1_3},
                                  };
 
     for (size_t ii = 0; ii < sizeof(exts) / sizeof(exts[0]); ii++) {
@@ -416,6 +417,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_EXT_float_ue8m0]                 = EBhDisable;
     extensionBehavior[E_GL_EXT_float_mxint8]                = EBhDisable;
     extensionBehavior[E_GL_EXT_optional_input_attachment_index] = EBhDisable;
+    extensionBehavior[E_GL_EXT_cooperative_matrix_maintenance1] = EBhDisable;
 
     // OVR extensions
     extensionBehavior[E_GL_OVR_multiview]                = EBhDisable;
@@ -582,6 +584,7 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_EXT_spec_constant_composites 1\n"
             "#define GL_EXT_abort 1\n"
             "#define GL_EXT_split_barrier 1\n"
+            "#define GL_EXT_cooperative_matrix_maintenance1 1\n"
 
             // GL_KHR_shader_subgroup
             "#define GL_KHR_shader_subgroup_basic 1\n"

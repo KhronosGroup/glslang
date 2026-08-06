@@ -1649,6 +1649,71 @@ void TParseContext::handleCoopMat2FunctionCall(const TSourceLoc& loc, const TFun
 {
     if (arguments && arguments->getAsAggregate()) {
         auto &sequence = arguments->getAsAggregate()->getSequence();
+
+        if (fnCandidate->getBuiltInOp() == EOpCooperativeMatrixReduceNV && sequence.size() == 4) {
+            static constexpr int CM_UseAcc = 2; // == gl_MatrixUseAccumulator
+            static constexpr int CM_ReduceRow = 1;
+            static constexpr int CM_ReduceColumn = 2;
+            static constexpr int CM_ReduceRowAndColumn = 3;
+            static constexpr int CM_Reduce2x2 = 4;
+
+            const TType& resultType = sequence[0]->getAsTyped()->getType();
+            const TType& matrixType = sequence[1]->getAsTyped()->getType();
+
+            if (resultType.getBasicType() != matrixType.getBasicType()) {
+                error(loc, "input and result component types must match", fnCandidate->getName().c_str(), "");
+            }
+            if (resultType.getCoopMatKHRuse() != CM_UseAcc || matrixType.getCoopMatKHRuse() != CM_UseAcc) {
+                error(loc, "input and result Use must be Accumulator", fnCandidate->getName().c_str(), "");
+            }
+
+            const TTypeParameters* resultParameters = resultType.getTypeParameters();
+            const TTypeParameters* matrixParameters = matrixType.getTypeParameters();
+            const TArraySizes* resultSizes = resultParameters ? resultParameters->arraySizes : nullptr;
+            const TArraySizes* matrixSizes = matrixParameters ? matrixParameters->arraySizes : nullptr;
+            const bool completeTypes = resultSizes && resultSizes->getNumDims() == 4 &&
+                                       matrixSizes && matrixSizes->getNumDims() == 4;
+            const auto knownDimensionMismatch = [](const TArraySizes& result, int resultIndex,
+                                                   const TArraySizes& matrix, int matrixIndex) {
+                return !result.elementEqual(matrix, resultIndex, matrixIndex) &&
+                       result.getDimNode(resultIndex) == nullptr && matrix.getDimNode(matrixIndex) == nullptr;
+            };
+            if (!completeTypes) {
+                error(loc, "incomplete cooperative matrix type parameters", fnCandidate->getName().c_str(), "");
+            } else if (knownDimensionMismatch(*resultSizes, 0, *matrixSizes, 0)) {
+                error(loc, "input and result scopes must match", fnCandidate->getName().c_str(), "");
+            }
+
+            const TIntermConstantUnion* maskConstant = sequence[2]->getAsConstantUnion();
+            if (maskConstant == nullptr) {
+                error(loc, "reduceMask must be a constant expression", fnCandidate->getName().c_str(), "");
+            } else {
+                const int mask = maskConstant->getConstArray()[0].getIConst();
+                if (mask != CM_ReduceRow && mask != CM_ReduceColumn &&
+                    mask != CM_ReduceRowAndColumn && mask != CM_Reduce2x2) {
+                    error(loc, "reduceMask must be a valid cooperative matrix reduction value",
+                          fnCandidate->getName().c_str(), "");
+                } else if (completeTypes) {
+                    if (mask == CM_ReduceRow && knownDimensionMismatch(*resultSizes, 1, *matrixSizes, 1)) {
+                        error(loc, "result rows must match input rows for a row reduction",
+                              fnCandidate->getName().c_str(), "");
+                    } else if (mask == CM_ReduceColumn && knownDimensionMismatch(*resultSizes, 2, *matrixSizes, 2)) {
+                        error(loc, "result columns must match input columns for a column reduction",
+                              fnCandidate->getName().c_str(), "");
+                    } else if (mask == CM_Reduce2x2 &&
+                               resultSizes->getDimNode(1) == nullptr && resultSizes->getDimNode(2) == nullptr &&
+                               matrixSizes->getDimNode(1) == nullptr && matrixSizes->getDimNode(2) == nullptr &&
+                               (static_cast<uint64_t>(resultSizes->getDimSize(1)) * 2 !=
+                                    static_cast<uint64_t>(matrixSizes->getDimSize(1)) ||
+                                static_cast<uint64_t>(resultSizes->getDimSize(2)) * 2 !=
+                                    static_cast<uint64_t>(matrixSizes->getDimSize(2)))) {
+                        error(loc, "result rows and columns must be half the input rows and columns for a 2x2 reduction",
+                              fnCandidate->getName().c_str(), "");
+                    }
+                }
+            }
+        }
+
         for (uint32_t i = 0; i < sequence.size(); ++i) {
             auto param = sequence[i];
             if (param->getAsTyped()->getBasicType() == EbtFunction) {
@@ -1673,6 +1738,10 @@ void TParseContext::handleCoopMat2FunctionCall(const TSourceLoc& loc, const TFun
                 // error checking reduce function has matching parameters
                 if (fnCandidate->getBuiltInOp() == EOpCooperativeMatrixReduceNV) {
                     const TFunction* combineOp = symbolTable.find(param->getAsSymbolNode()->getMangledName())->getAsFunction();
+                    const TType& matrixType = sequence[1]->getAsTyped()->getType();
+                    const auto isMatrixComponentType = [&matrixType](const TType& type) {
+                        return type.getBasicType() == matrixType.getBasicType() && type.isScalar() && !type.isCoopMat();
+                    };
 
                     if (combineOp->getParamCount() != 2) {
                         error(loc, "must have two parameters", param->getAsSymbolNode()->getMangledName().c_str(), "");
@@ -1680,11 +1749,11 @@ void TParseContext::handleCoopMat2FunctionCall(const TSourceLoc& loc, const TFun
 
                     for (int i = 0; i < combineOp->getParamCount(); ++i) {
                         const TParameter& arg = (*combineOp)[i];
-                        if (sequence[1]->getAsTyped()->getType().getBasicType() != arg.type->getBasicType()) {
+                        if (!isMatrixComponentType(*arg.type)) {
                             error(loc, "parameter types must match cooperative matrix component type", param->getAsSymbolNode()->getMangledName().c_str(), "");
                         }
                     }
-                    if (sequence[1]->getAsTyped()->getType().getBasicType() != combineOp->getType().getBasicType()) {
+                    if (!isMatrixComponentType(combineOp->getType())) {
                         error(loc, "return type must match cooperative matrix component type", param->getAsSymbolNode()->getMangledName().c_str(), "");
                     }
                 }
@@ -1692,32 +1761,49 @@ void TParseContext::handleCoopMat2FunctionCall(const TSourceLoc& loc, const TFun
                 // error checking perelement op has correct parameters
                 if (fnCandidate->getBuiltInOp() == EOpCooperativeMatrixPerElementOpNV) {
                     const TFunction* elemOp = symbolTable.find(param->getAsSymbolNode()->getMangledName())->getAsFunction();
+                    const TType& matrixType = sequence[1]->getAsTyped()->getType();
+                    const auto isMatrixComponentType = [&matrixType](const TType& type) {
+                        return type.getBasicType() == matrixType.getBasicType() && type.isScalar() && !type.isCoopMat();
+                    };
 
-                    if (sequence[1]->getAsTyped()->getType() != sequence[0]->getAsTyped()->getType()) {
+                    if (matrixType != sequence[0]->getAsTyped()->getType()) {
                         error(loc, "cooperative matrix input and result types must match", "", "");
                     }
 
                     if (elemOp->getParamCount() < 3) {
                         error(loc, "not enough parameters", param->getAsSymbolNode()->getMangledName().c_str(), "");
                     } else if (elemOp->getParamCount() != (int)sequence.size()) {
-                        error(loc, "number of parameters must match call to coopMatPerElementNV", param->getAsSymbolNode()->getMangledName().c_str(), "");
+                        error(loc, "number of parameters must match call to cooperative matrix per-element operation", param->getAsSymbolNode()->getMangledName().c_str(), "");
                     } else {
-                        if ((*elemOp)[0].type->getBasicType() != EbtUint || (*elemOp)[1].type->getBasicType() != EbtUint) {
+                        if ((*elemOp)[0].type->getBasicType() != EbtUint || !(*elemOp)[0].type->isScalar() ||
+                            (*elemOp)[0].type->isCoopMat() ||
+                            (*elemOp)[1].type->getBasicType() != EbtUint || !(*elemOp)[1].type->isScalar() ||
+                            (*elemOp)[1].type->isCoopMat()) {
                             error(loc, "row/column parameters must be uint32_t", param->getAsSymbolNode()->getMangledName().c_str(), "");
                         }
 
                         const TParameter& matArg = (*elemOp)[2];
-                        if (sequence[1]->getAsTyped()->getType().getBasicType() != matArg.type->getBasicType()) {
+                        if (!isMatrixComponentType(*matArg.type)) {
                             error(loc, "third parameter must match cooperative matrix component type", param->getAsSymbolNode()->getMangledName().c_str(), "");
                         }
 
                         for (int i = 3; i < elemOp->getParamCount(); ++i) {
                             const TParameter& arg = (*elemOp)[i];
-                            if (sequence[i]->getAsTyped()->getType().getBasicType() != arg.type->getBasicType()) {
+                            const TType& operandType = sequence[i]->getAsTyped()->getType();
+                            if (operandType.isCoopMat()) {
+                                if (operandType != matrixType) {
+                                    error(loc, "optional cooperative matrix types must match the input matrix type",
+                                          param->getAsSymbolNode()->getMangledName().c_str(), "");
+                                }
+                                if (!isMatrixComponentType(*arg.type)) {
+                                    error(loc, "parameters corresponding to cooperative matrices must match the matrix component type",
+                                          param->getAsSymbolNode()->getMangledName().c_str(), "");
+                                }
+                            } else if (operandType != *arg.type) {
                                 error(loc, "parameter types must match or be cooperative matrix component type", param->getAsSymbolNode()->getMangledName().c_str(), "");
                             }
                         }
-                        if (sequence[1]->getAsTyped()->getType().getBasicType() != elemOp->getType().getBasicType()) {
+                        if (!isMatrixComponentType(elemOp->getType())) {
                             error(loc, "return type must match cooperative matrix component type", param->getAsSymbolNode()->getMangledName().c_str(), "");
                         }
                     }
@@ -1819,6 +1905,7 @@ void TParseContext::handleCoopMat2FunctionCall(const TSourceLoc& loc, const TFun
                fnCandidate->getBuiltInOp() == EOpCooperativeMatrixReduceNV ||
                fnCandidate->getBuiltInOp() == EOpCooperativeMatrixPerElementOpNV ||
                fnCandidate->getBuiltInOp() == EOpCooperativeMatrixTransposeNV ||
+               fnCandidate->getBuiltInOp() == EOpCooperativeMatrixGetCoordinateEXT ||
                fnCandidate->getBuiltInOp() == EOpCreateTensorLayoutNV ||
                fnCandidate->getBuiltInOp() == EOpTensorLayoutSetDimensionNV ||
                fnCandidate->getBuiltInOp() == EOpTensorLayoutSetBlockSizeNV ||
@@ -1913,6 +2000,7 @@ void TParseContext::handleCoopMat2FunctionCall(const TSourceLoc& loc, const TFun
         } else if (fnCandidate->getBuiltInOp() == EOpCooperativeMatrixReduceNV ||
                    fnCandidate->getBuiltInOp() == EOpCooperativeMatrixPerElementOpNV ||
                    fnCandidate->getBuiltInOp() == EOpCooperativeMatrixTransposeNV ||
+                   fnCandidate->getBuiltInOp() == EOpCooperativeMatrixGetCoordinateEXT ||
                    fnCandidate->getBuiltInOp() == EOpTensorLayoutSetDimensionNV ||
                    fnCandidate->getBuiltInOp() == EOpTensorLayoutSetBlockSizeNV ||
                    fnCandidate->getBuiltInOp() == EOpTensorLayoutSetStrideNV ||
@@ -3845,6 +3933,49 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
         }
     }
     break;
+    case EOpCooperativeMatrixTransposeNV:
+    {
+        static constexpr int CM_UseB = 1;   // == gl_MatrixUseB
+        static constexpr int CM_UseAcc = 2; // == gl_MatrixUseAccumulator
+
+        auto &dstType = (*argp)[0]->getAsTyped()->getType();
+        auto &srcType = (*argp)[1]->getAsTyped()->getType();
+        int dstUse = dstType.getCoopMatKHRuse();
+        int srcUse = srcType.getCoopMatKHRuse();
+
+        const TTypeParameters* dstTypeParameters = dstType.getTypeParameters();
+        const TTypeParameters* srcTypeParameters = srcType.getTypeParameters();
+        if (dstTypeParameters->arraySizes == nullptr || dstTypeParameters->arraySizes->getNumDims() != 4 ||
+            srcTypeParameters->arraySizes == nullptr || srcTypeParameters->arraySizes->getNumDims() != 4) {
+            error(loc, "incomplete type parameters", fnCandidate.getName().c_str(), "");
+        } else {
+            const auto knownDimensionMismatch = [](const TArraySizes& dst, int dstIndex,
+                                                   const TArraySizes& src, int srcIndex) {
+                return !dst.elementEqual(src, dstIndex, srcIndex) && dst.getDimNode(dstIndex) == nullptr &&
+                       src.getDimNode(srcIndex) == nullptr;
+            };
+            if (knownDimensionMismatch(*dstTypeParameters->arraySizes, 0, *srcTypeParameters->arraySizes, 0)) {
+                error(loc, "scope must match", fnCandidate.getName().c_str(), "");
+            }
+            if (knownDimensionMismatch(*dstTypeParameters->arraySizes, 1, *srcTypeParameters->arraySizes, 2) ||
+                knownDimensionMismatch(*dstTypeParameters->arraySizes, 2, *srcTypeParameters->arraySizes, 1)) {
+                error(loc, "rows/columns must be swapped", fnCandidate.getName().c_str(), "");
+            }
+        }
+        if (srcUse != CM_UseAcc) {
+            error(loc, "Cooperative matrix source Use must be Accumulator", fnCandidate.getName().c_str(), "");
+        }
+        if (extensionTurnedOn(E_GL_EXT_cooperative_matrix_maintenance1)) {
+            if (dstUse == CM_UseAcc) {
+                error(loc, "Cooperative matrix result Use must not be Accumulator", fnCandidate.getName().c_str(), "");
+            }
+        } else {
+            if (dstUse != CM_UseB) {
+                error(loc, "Cooperative matrix result Use must be B", fnCandidate.getName().c_str(), "");
+            }
+        }
+    }
+    break;
 
     default:
         break;
@@ -4955,17 +5086,42 @@ bool TParseContext::constructorError(const TSourceLoc& loc, TIntermNode* node, T
     }
 
     TIntermTyped* typed = node->getAsTyped();
-    if (type.isCoopMat() && typed->getType().isCoopMat() &&
-        ((extensionTurnedOn(E_GL_NV_cooperative_matrix2) && !type.sameCoopMatShape(typed->getType())) ||
-         (!extensionTurnedOn(E_GL_NV_cooperative_matrix2) && !type.sameCoopMatShapeAndUse(typed->getType())))) {
-        error(loc, "Cooperative matrix type parameters mismatch", constructorString.c_str(), "");
-        return true;
-    }
-
     if (typed == nullptr) {
         error(loc, "constructor argument does not have a type", constructorString.c_str(), "");
         return true;
     }
+
+    if (type.isCoopMat() && typed->getType().isCoopMat()) {
+        static constexpr int CM_UseA = 0;   // == gl_MatrixUseA
+        static constexpr int CM_UseB = 1;   // == gl_MatrixUseB
+        static constexpr int CM_UseAcc = 2; // == gl_MatrixUseAccumulator
+
+        int dstUse = type.getCoopMatKHRuse();
+        int srcUse = typed->getType().getCoopMatKHRuse();
+
+        if (extensionTurnedOn(E_GL_EXT_cooperative_matrix_maintenance1)) {
+            bool allowedConversion = srcUse == dstUse ||
+                                    (srcUse == CM_UseAcc && (dstUse == CM_UseA || dstUse == CM_UseB)) ||
+                                    (dstUse == CM_UseAcc && (srcUse == CM_UseA || srcUse == CM_UseB));
+            if (!type.sameCoopMatShape(typed->getType()) || !allowedConversion) {
+                error(loc, "Cooperative matrix type parameters mismatch", constructorString.c_str(), "");
+                return true;
+            }
+        } else if (extensionTurnedOn(E_GL_NV_cooperative_matrix2)) {
+            bool allowedConversion = srcUse == dstUse ||
+                                    (srcUse == CM_UseAcc && (dstUse == CM_UseA || dstUse == CM_UseB));
+            if (!type.sameCoopMatShape(typed->getType()) || !allowedConversion) {
+                error(loc, "Cooperative matrix type parameters mismatch", constructorString.c_str(), "");
+                return true;
+            }
+        } else {
+            if (!type.sameCoopMatShapeAndUse(typed->getType())) {
+                error(loc, "Cooperative matrix type parameters mismatch", constructorString.c_str(), "");
+                return true;
+            }
+        }
+    }
+
     if (op != EOpConstructStruct && op != EOpConstructNonuniform && typed->getBasicType() == EbtSampler) {
         if (op == EOpConstructUVec2 && extensionTurnedOn(E_GL_ARB_bindless_texture)) {
             intermediate.setBindlessTextureMode(currentCaller, AstRefTypeFunc);
@@ -8617,7 +8773,11 @@ const TFunction* TParseContext::findFunction(const TSourceLoc& loc, const TFunct
         if (symbol)
             return symbol->getAsFunction();
     }
-
+    if (call.getName() == "coopMatPerElementEXT") {
+        TSymbol* symbol = symbolTable.find("coopMatPerElementEXT(", &builtIn);
+        if (symbol)
+            return symbol->getAsFunction();
+    }
     if (call.getName() == "saturatedConvertEXT") {
         TSymbol* symbol = symbolTable.find("saturatedConvertEXT(", &builtIn);
         if (symbol)
