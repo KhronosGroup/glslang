@@ -40,13 +40,26 @@ namespace glslangtest {
 namespace {
 
 using PreprocessingTest = GlslangTest<::testing::TestWithParam<std::string>>;
+using PreprocessingReturnLineTest = GlslangTest<::testing::TestWithParam<std::string>>;
 
 TEST_P(PreprocessingTest, FromFile)
 {
     loadFilePreprocessAndCheck(GlobalTestSettings.testRoot, GetParam());
 }
 
+TEST_P(PreprocessingReturnLineTest, FromFile)
+{
+    loadFilePreprocessFileReturn(GlobalTestSettings.testRoot, GetParam());
+}
+
 // clang-format off
+INSTANTIATE_TEST_SUITE_P(
+    Glsl, PreprocessingReturnLineTest,
+    ::testing::ValuesIn(std::vector<std::string>({
+        "preprocessor.line_return.glsl.comp",
+    })),
+    FileNameAsCustomTestSuffix
+);
 INSTANTIATE_TEST_SUITE_P(
     Glsl, PreprocessingTest,
     ::testing::ValuesIn(std::vector<std::string>({
