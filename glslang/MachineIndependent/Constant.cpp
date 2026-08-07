@@ -876,17 +876,30 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType) 
 
         // The constant is held as a double, so narrow it back to the declared
         // width before reinterpreting its bits.
+        //
+        // EOpFloatBitsTo*/EOp*BitsToFloat are shared with the bfloat16 and 8-bit
+        // float built-ins (see Initialize.cpp), which are not 32 bits wide.
+        // Folding those as float would produce the wrong bits, so decline them
+        // and let the operation be emitted instead.
         case EOpFloatBitsToInt:
+            if (getType().getBasicType() != EbtFloat)
+                return nullptr;
             newConstArray[i].setIConst(bitCast<int>(static_cast<float>(unionArray[i].getDConst())));
             break;
         case EOpFloatBitsToUint:
+            if (getType().getBasicType() != EbtFloat)
+                return nullptr;
             newConstArray[i].setUConst(bitCast<unsigned int>(static_cast<float>(unionArray[i].getDConst())));
             break;
         case EOpIntBitsToFloat:
-            newConstArray[i].setDConst(bitCast<float>(unionArray[i].getIConst()));
+            if (returnType.getBasicType() != EbtFloat)
+                return nullptr;
+            newConstArray[i].setDConst(bitCast<float>(unionArray[i].getIConst()), returnType.getBasicType());
             break;
         case EOpUintBitsToFloat:
-            newConstArray[i].setDConst(bitCast<float>(unionArray[i].getUConst()));
+            if (returnType.getBasicType() != EbtFloat)
+                return nullptr;
+            newConstArray[i].setDConst(bitCast<float>(unionArray[i].getUConst()), returnType.getBasicType());
             break;
         case EOpDoubleBitsToInt64:
             newConstArray[i].setI64Const(bitCast<long long>(unionArray[i].getDConst()));
@@ -895,10 +908,10 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType) 
             newConstArray[i].setU64Const(bitCast<unsigned long long>(unionArray[i].getDConst()));
             break;
         case EOpInt64BitsToDouble:
-            newConstArray[i].setDConst(bitCast<double>(unionArray[i].getI64Const()));
+            newConstArray[i].setDConst(bitCast<double>(unionArray[i].getI64Const()), returnType.getBasicType());
             break;
         case EOpUint64BitsToDouble:
-            newConstArray[i].setDConst(bitCast<double>(unionArray[i].getU64Const()));
+            newConstArray[i].setDConst(bitCast<double>(unionArray[i].getU64Const()), returnType.getBasicType());
             break;
 
         // TODO: 3.0 Functionality: unary constant folding: the rest of the ops have to be fleshed out
@@ -1122,7 +1135,8 @@ TIntermTyped* TIntermediate::fold(TIntermAggregate* aggrNode)
                 case EbtFloat:
                 case EbtDouble:
                     newConstArray[comp].setDConst(std::min(std::max(childConstUnions[0][arg0comp].getDConst(), childConstUnions[1][arg1comp].getDConst()),
-                                                                                                               childConstUnions[2][arg2comp].getDConst()));
+                                                                                                               childConstUnions[2][arg2comp].getDConst()),
+                                                  aggrNode->getType().getBasicType());
                     break;
                 case EbtUint:
                     newConstArray[comp].setUConst(std::min(std::max(childConstUnions[0][arg0comp].getUConst(), childConstUnions[1][arg1comp].getUConst()),
@@ -1183,11 +1197,13 @@ TIntermTyped* TIntermediate::fold(TIntermAggregate* aggrNode)
                 if (children[2]->getAsTyped()->getBasicType() == EbtBool) {
                     newConstArray[comp].setDConst(childConstUnions[2][arg2comp].getBConst()
                         ? childConstUnions[1][arg1comp].getDConst()
-                        : childConstUnions[0][arg0comp].getDConst());
+                        : childConstUnions[0][arg0comp].getDConst(),
+                        aggrNode->getType().getBasicType());
                 } else {
                     newConstArray[comp].setDConst(
                         childConstUnions[0][arg0comp].getDConst() * (1.0 - childConstUnions[2][arg2comp].getDConst()) +
-                        childConstUnions[1][arg1comp].getDConst() *        childConstUnions[2][arg2comp].getDConst());
+                        childConstUnions[1][arg1comp].getDConst() *        childConstUnions[2][arg2comp].getDConst(),
+                        aggrNode->getType().getBasicType());
                 }
                 break;
             case EOpStep:

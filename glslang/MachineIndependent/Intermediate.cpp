@@ -47,7 +47,10 @@
 
 #include "SPIRV/hex_float.h"
 
+#include <algorithm>
 #include <cfloat>
+#include <cmath>
+#include <cstring>
 #include <limits>
 #include <utility>
 #include <tuple>
@@ -2648,25 +2651,75 @@ TIntermConstantUnion* TIntermediate::addConstantUnion(bool b, const TSourceLoc& 
     return addConstantUnion(unionArray, TType(EbtBool, EvqConst), loc, literal);
 }
 
+namespace {
+
+// Round through the narrow format and back, which is the conversion
+// Builder::makeFloat16Constant and Builder::makeFloatConstantHelper apply when
+// they emit a constant of that type.
+template<typename Narrow>
+float RoundThroughNarrowFloat(float f)
+{
+    spvutils::HexFloat<spvutils::FloatProxy<float>> wide(f);
+    spvutils::HexFloat<spvutils::FloatProxy<Narrow>> narrow(0);
+    wide.castTo(narrow, spvutils::kRoundToZero);
+
+    spvutils::HexFloat<spvutils::FloatProxy<float>> back(0.0f);
+    narrow.castTo(back, spvutils::kRoundToZero);
+    return back.value().getAsFloat();
+}
+
+// Keep only the bits the given mask selects, dropping the mantissa bits the
+// narrow format does not have.
+float MaskFloatBits(float f, uint32_t mask)
+{
+    uint32_t bits;
+    memcpy(&bits, &f, sizeof(bits));
+    bits &= mask;
+
+    float result;
+    memcpy(&result, &bits, sizeof(result));
+    return result;
+}
+
+} // anonymous namespace
+
 double RoundToDeclaredPrecision(double d, TBasicType baseType)
 {
+    // Each case performs the same conversion as the matching
+    // Builder::make*Constant in SpvBuilder.cpp, so that folding a constant
+    // cannot change the value the back end would otherwise have emitted.
+    const float f = static_cast<float>(d);
+
     switch (baseType) {
-    case EbtFloat16: {
-        // The same two steps the back end takes in Builder::makeFloat16Constant:
-        // double -> float, then float -> half rounding toward zero.  Using the
-        // same rounding means emitted constants do not change.
-        spvutils::HexFloat<spvutils::FloatProxy<float>> f32(static_cast<float>(d));
-        spvutils::HexFloat<spvutils::FloatProxy<spvutils::Float16>> f16(0);
-        f32.castTo(f16, spvutils::kRoundToZero);
-        spvutils::HexFloat<spvutils::FloatProxy<float>> back(0.0f);
-        f16.castTo(back, spvutils::kRoundToZero);
-        return static_cast<double>(back.value().getAsFloat());
+    case EbtFloat16:
+        return RoundThroughNarrowFloat<spvutils::Float16>(f);
+    case EbtFloatE5M2:
+        return RoundThroughNarrowFloat<spvutils::FloatE5M2>(f);
+    case EbtFloatE4M3:
+        return RoundThroughNarrowFloat<spvutils::FloatE4M3>(f);
+    case EbtFloatE2M1:
+        return RoundThroughNarrowFloat<spvutils::FloatE2M1>(f);
+    case EbtFloatE3M2:
+        return RoundThroughNarrowFloat<spvutils::FloatE3M2>(f);
+    case EbtFloatE2M3:
+        return RoundThroughNarrowFloat<spvutils::FloatE2M3>(f);
+    case EbtBFloat16:
+        // makeBFloat16Constant keeps the high 16 bits of the float, which is
+        // round-toward-zero apart from certain NaNs.
+        return MaskFloatBits(f, 0xFFFF0000u);
+    case EbtFloatUE8M0:
+        // makeFloatUE8M0Constant clamps to non-negative and keeps only the
+        // exponent, which drops the whole mantissa.
+        return MaskFloatBits(std::max(f, 0.0f), 0x7F800000u);
+    case EbtFloatMXINT8: {
+        // makeFloatMXINT8Constant clamps and converts to 8-bit fixed point with
+        // six fractional bits.
+        const float clamped = std::max(std::min(f, 127.0f / 64.0f), -127.0f / 64.0f);
+        return static_cast<double>(roundf(clamped * 64.0f) / 64.0f);
     }
     default:
-        // Only the types narrower than float need this.  EbtFloat and EbtDouble
-        // are already held exactly by the double they are stored in.  bfloat16
-        // and the 8-bit formats each need their own conversion and are not
-        // handled yet.
+        // EbtFloat and EbtDouble are already held exactly by the double they
+        // are stored in.
         return d;
     }
 }

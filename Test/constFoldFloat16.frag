@@ -19,6 +19,18 @@ const float16_t root  = sqrt(2.0hf);         // 1.4140625
 // A double literal of the same value keeps full precision.
 const double    lfpi  = 3.14159265358979LF;  // unchanged
 
+// Now that a stored constant carries its declared type, every fold has to set
+// that type.  A fold that leaves the default behind produces a value that
+// compares unequal to a literal of the same number, so each of these is true.
+const float bitsToFloat = intBitsToFloat(1065353216);  // 1.0
+const bool  okBits      = bitsToFloat == 1.0;
+const float clamped     = clamp(2.0, 0.0, 1.0);        // 1.0
+const bool  okClamp     = clamped == 1.0;
+const float lerped      = mix(0.0, 2.0, 0.5);          // 1.0
+const bool  okMix       = lerped == 1.0;
+const float picked      = mix(3.0, 7.0, true);         // 7.0
+const bool  okPick      = picked == 7.0;
+
 void main()
 {
 }
