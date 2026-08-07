@@ -24,11 +24,9 @@ spv.descriptorHeap.ImageQualifiers.frag
                               MemberName 23(Reads_heap) 0  "Reads"
                               Decorate 7(resource_heap) BuiltIn ResourceHeapEXT
                               DecorateId 12 ArrayStrideIdEXT 11
-                              Decorate 14(Writes_heap) Block
                               MemberDecorate 14(Writes_heap) 0 NonReadable
                               MemberDecorateIdEXT 14(Writes_heap) 0 OffsetIdEXT 13
                               DecorateId 22 ArrayStrideIdEXT 11
-                              Decorate 23(Reads_heap) Block
                               MemberDecorate 23(Reads_heap) 0 NonWritable
                               MemberDecorateIdEXT 23(Reads_heap) 0 OffsetIdEXT 13
                2:             TypeVoid

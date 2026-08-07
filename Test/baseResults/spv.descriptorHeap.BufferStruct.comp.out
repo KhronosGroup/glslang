@@ -36,7 +36,6 @@ spv.descriptorHeap.BufferStruct.comp
                               MemberDecorate 20(Data) 0 MatrixStride 16
                               MemberDecorate 20(Data) 0 Offset 0
                               MemberDecorate 20(Data) 1 Offset 64
-                              Decorate 21(U) Block
                               MemberDecorate 21(U) 0 Offset 0
                               DecorateId 38 ArrayStrideIdEXT 37
                               MemberDecorate 40(Data) 0 ColMajor
@@ -44,7 +43,6 @@ spv.descriptorHeap.BufferStruct.comp
                               MemberDecorate 40(Data) 0 Offset 0
                               MemberDecorate 40(Data) 1 Offset 64
                               Decorate 41 ArrayStride 80
-                              Decorate 42(O) Block
                               MemberDecorate 42(O) 0 Offset 0
                2:             TypeVoid
                3:             TypeFunction 2

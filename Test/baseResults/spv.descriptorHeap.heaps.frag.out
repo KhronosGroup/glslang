@@ -41,13 +41,10 @@ spv.descriptorHeap.heaps.frag
                               DecorateId 38 ArrayStrideIdEXT 37
                               Decorate 40(index) Flat
                               Decorate 40(index) Location 1
-                              Decorate 43(UniformBuffer) Block
                               MemberDecorate 43(UniformBuffer) 0 Offset 0
                               DecorateId 54 ArrayStrideIdEXT 53
-                              Decorate 56(StorageBufferA) Block
                               MemberDecorate 56(StorageBufferA) 0 Offset 0
                               DecorateId 67 ArrayStrideIdEXT 53
-                              Decorate 71(StorageBufferB) Block
                               MemberDecorate 71(StorageBufferB) 0 Offset 0
                               Decorate 87(heapTexture3D) Binding 0
                               Decorate 87(heapTexture3D) DescriptorSet 0

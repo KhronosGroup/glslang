@@ -22,10 +22,8 @@ spv.descriptorHeap.Buffer.comp
                               MemberName 20(U) 0  "inputData"
                               Decorate 7(resource_heap) BuiltIn ResourceHeapEXT
                               DecorateId 11 ArrayStrideIdEXT 10
-                              Decorate 14(O) Block
                               MemberDecorate 14(O) 0 Offset 0
                               DecorateId 18 ArrayStrideIdEXT 17
-                              Decorate 20(U) Block
                               MemberDecorate 20(U) 0 Offset 0
                2:             TypeVoid
                3:             TypeFunction 2

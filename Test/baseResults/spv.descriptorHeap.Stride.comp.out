@@ -25,7 +25,6 @@ spv.descriptorHeap.Stride.comp
                               Decorate 12(resource_heap) BuiltIn ResourceHeapEXT
                               DecorateId 16 ArrayStrideIdEXT 15
                               Decorate 20 ArrayStride 64
-                              Decorate 21(UBO) Block
                               MemberDecorate 21(UBO) 0 ColMajor
                               MemberDecorate 21(UBO) 0 MatrixStride 16
                               MemberDecorate 21(UBO) 0 Offset 0
