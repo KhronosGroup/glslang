@@ -840,13 +840,16 @@ class HexFloat {
       }
     }
 
+    // A format without infinity has no reserved exponent, so its largest
+    // exponent is an ordinary value rather than Inf or NaN.
     bool is_nan =
+        Traits_T::supportsInfinity() &&
         (getBits() & exponent_mask) == exponent_mask && significand != 0;
     bool is_inf =
         !is_nan &&
         (((exponent + carried) > static_cast<int_type>(other_T::exponent_bias) && other_T::Traits_T::supportsInfinity()) ||
          ((exponent + carried) > static_cast<int_type>(other_T::exponent_bias + 1) && !other_T::Traits_T::supportsInfinity()) ||
-         (significand == 0 && (getBits() & exponent_mask) == exponent_mask));
+         (Traits_T::supportsInfinity() && significand == 0 && (getBits() & exponent_mask) == exponent_mask));
 
     // If we are Nan or Inf we should pass that through.
     if (is_inf) {
