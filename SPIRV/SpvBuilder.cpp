@@ -40,6 +40,7 @@
 //
 
 #include <cassert>
+#include <cmath>
 #include <cstdlib>
 
 #include <unordered_set>
@@ -2246,8 +2247,10 @@ Id Builder::makeFloatUE8M0Constant(float fue8m0, bool specConstant)
         uint32_t u;
     } un;
     un.f = fue8m0;
-    // extract the exponent, this effectively rounds to zero.
-    uint32_t value = un.u >> 23;
+    // extract the exponent, this effectively rounds to zero.  Mask to the
+    // format's 8 bits so a negative NaN, which passes through the clamp
+    // above, cannot leak its sign bit into the encoding.
+    uint32_t value = (un.u >> 23) & 0xFFu;
 
     // See if we already made it. Applies only to regular constants, because specialization constants
     // must remain distinct for the purpose of applying a SpecId decoration.
@@ -2275,6 +2278,10 @@ Id Builder::makeFloatMXINT8Constant(float mxint8, bool specConstant)
     Op opcode = specConstant ? Op::OpSpecConstant : Op::OpConstant;
     Id typeId = makeFloatMXINT8Type();
 
+    // The format is fixed point with no NaN encoding, and casting a NaN to
+    // int is undefined, so pin it to zero deterministically.
+    if (std::isnan(mxint8))
+        mxint8 = 0.f;
     // clamp and convert to fixed point.
     mxint8 = std::min(mxint8,  127.f/64.f);
     mxint8 = std::max(mxint8, -127.f/64.f);

@@ -72,6 +72,8 @@ void main()
     out12 = ivec2(floatBitsToInt(1.0), floatBitsToInt(-2.0));   // 1065353216, -1073741824
     out13 = uvec3(floatBitsToUint(1.0), floatBitsToUint(0.0), floatBitsToUint(-0.0)); // 1065353216, 0, 2147483648
     out2 = vec2(intBitsToFloat(1065353216), uintBitsToFloat(3221225472u)); // 1.0, -2.0
+    out2 = vec2(intBitsToFloat(0x7FC00000), uintBitsToFloat(0x7FA12345u)); // quiet NaN folds, signaling NaN stays unfolded
+    out12 = ivec2(floatBitsToInt(0.0 / 0.0), 0); // 2143289344, the quiet NaN's bits
 }
 
 const struct S {

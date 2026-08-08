@@ -996,6 +996,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.floatue8m0.const.comp",
         "spv.floatmxint8.comp",
         "spv.floatmxint8.const.comp",
+        "spv.constFoldLowPrecision.comp",
         "spv.floatocperrors.comp",
         "spv.floatocperrors.vert",
     })),

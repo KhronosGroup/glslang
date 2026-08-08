@@ -43,6 +43,12 @@
 
 namespace glslang {
 
+// Rounds 'd' to what 'baseType' can actually represent and returns it, still as
+// a double.  A TConstUnion holds every float type in a double, so without this a
+// constant keeps bits its declared type cannot hold, and those bits go on to
+// take part in constant folding.  Defined in Intermediate.cpp.
+double RoundToDeclaredPrecision(double d, TBasicType baseType);
+
 class TConstUnion {
 public:
     POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
@@ -97,10 +103,13 @@ public:
         type = EbtUint64;
     }
 
-    void setDConst(double d)
+    // 'baseType' is the float type the value was declared as.  It is rounded to
+    // that precision here rather than only when the constant is emitted, so that
+    // folding sees the same value the target would.
+    void setDConst(double d, TBasicType baseType = EbtDouble)
     {
-        dConst = d;
-        type = EbtDouble;
+        dConst = RoundToDeclaredPrecision(d, baseType);
+        type = baseType;
     }
 
     void setBConst(bool b)
@@ -228,6 +237,16 @@ public:
                 return true;
 
             break;
+        case EbtFloat:
+        case EbtFloat16:
+        case EbtBFloat16:
+        case EbtFloatE5M2:
+        case EbtFloatE4M3:
+        case EbtFloatE2M1:
+        case EbtFloatE3M2:
+        case EbtFloatE2M3:
+        case EbtFloatUE8M0:
+        case EbtFloatMXINT8:
         case EbtDouble:
             if (constant.dConst == dConst)
                 return true;
@@ -340,6 +359,16 @@ public:
                 return true;
 
             return false;
+        case EbtFloat:
+        case EbtFloat16:
+        case EbtBFloat16:
+        case EbtFloatE5M2:
+        case EbtFloatE4M3:
+        case EbtFloatE2M1:
+        case EbtFloatE3M2:
+        case EbtFloatE2M3:
+        case EbtFloatUE8M0:
+        case EbtFloatMXINT8:
         case EbtDouble:
             if (dConst > constant.dConst)
                 return true;
@@ -414,6 +443,16 @@ public:
                 return true;
 
             return false;
+        case EbtFloat:
+        case EbtFloat16:
+        case EbtBFloat16:
+        case EbtFloatE5M2:
+        case EbtFloatE4M3:
+        case EbtFloatE2M1:
+        case EbtFloatE3M2:
+        case EbtFloatE2M3:
+        case EbtFloatUE8M0:
+        case EbtFloatMXINT8:
         case EbtDouble:
             if (dConst < constant.dConst)
                 return true;
@@ -442,7 +481,17 @@ public:
         switch (type) {
         case EbtInt:    returnValue.setIConst(iConst + constant.iConst); break;
         case EbtUint:   returnValue.setUConst(uConst + constant.uConst); break;
-        case EbtDouble: returnValue.setDConst(dConst + constant.dConst); break;
+        case EbtFloat:
+        case EbtFloat16:
+        case EbtBFloat16:
+        case EbtFloatE5M2:
+        case EbtFloatE4M3:
+        case EbtFloatE2M1:
+        case EbtFloatE3M2:
+        case EbtFloatE2M3:
+        case EbtFloatUE8M0:
+        case EbtFloatMXINT8:
+        case EbtDouble: returnValue.setDConst(dConst + constant.dConst, type); break;
         case EbtInt8:   returnValue.setI8Const(i8Const + constant.i8Const); break;
         case EbtInt16:  returnValue.setI16Const(i16Const + constant.i16Const); break;
         case EbtInt64:  returnValue.setI64Const(i64Const + constant.i64Const); break;
@@ -462,7 +511,17 @@ public:
         switch (type) {
         case EbtInt:    returnValue.setIConst(iConst - constant.iConst); break;
         case EbtUint:   returnValue.setUConst(uConst - constant.uConst); break;
-        case EbtDouble: returnValue.setDConst(dConst - constant.dConst); break;
+        case EbtFloat:
+        case EbtFloat16:
+        case EbtBFloat16:
+        case EbtFloatE5M2:
+        case EbtFloatE4M3:
+        case EbtFloatE2M1:
+        case EbtFloatE3M2:
+        case EbtFloatE2M3:
+        case EbtFloatUE8M0:
+        case EbtFloatMXINT8:
+        case EbtDouble: returnValue.setDConst(dConst - constant.dConst, type); break;
         case EbtInt8:   returnValue.setI8Const(i8Const - constant.i8Const); break;
         case EbtInt16:  returnValue.setI16Const(i16Const - constant.i16Const); break;
         case EbtInt64:  returnValue.setI64Const(i64Const - constant.i64Const); break;
@@ -482,7 +541,17 @@ public:
         switch (type) {
         case EbtInt:    returnValue.setIConst(iConst * constant.iConst); break;
         case EbtUint:   returnValue.setUConst(uConst * constant.uConst); break;
-        case EbtDouble: returnValue.setDConst(dConst * constant.dConst); break;
+        case EbtFloat:
+        case EbtFloat16:
+        case EbtBFloat16:
+        case EbtFloatE5M2:
+        case EbtFloatE4M3:
+        case EbtFloatE2M1:
+        case EbtFloatE3M2:
+        case EbtFloatE2M3:
+        case EbtFloatUE8M0:
+        case EbtFloatMXINT8:
+        case EbtDouble: returnValue.setDConst(dConst * constant.dConst, type); break;
         case EbtInt8:   returnValue.setI8Const(i8Const * constant.i8Const); break;
         case EbtInt16:  returnValue.setI16Const(i16Const * constant.i16Const); break;
         case EbtInt64:  returnValue.setI64Const(i64Const * constant.i64Const); break;
