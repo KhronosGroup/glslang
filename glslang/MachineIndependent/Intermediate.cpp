@@ -2707,13 +2707,26 @@ double RoundToDeclaredPrecision(double d, TBasicType baseType)
         // makeBFloat16Constant keeps the high 16 bits of the float, which is
         // round-toward-zero apart from certain NaNs.
         return MaskFloatBits(f, 0xFFFF0000u);
-    case EbtFloatUE8M0:
+    case EbtFloatUE8M0: {
         // makeFloatUE8M0Constant clamps to non-negative and keeps only the
-        // exponent, which drops the whole mantissa.
-        return MaskFloatBits(std::max(f, 0.0f), 0x7F800000u);
+        // exponent field, so recover the value by decoding that encoding
+        // explicitly.  ue8m0 has no zero and no infinity: encoding 0x00 is
+        // 2^-127 and 0xFF is NaN, so masking the float bits instead would
+        // misread both of those.
+        const float clamped = std::max(f, 0.0f);
+        uint32_t bits;
+        memcpy(&bits, &clamped, sizeof(bits));
+        const uint32_t encoding = (bits >> 23) & 0xFFu;
+        if (encoding == 0xFFu)
+            return std::numeric_limits<double>::quiet_NaN();
+        return ldexp(1.0, static_cast<int>(encoding) - 127);
+    }
     case EbtFloatMXINT8: {
         // makeFloatMXINT8Constant clamps and converts to 8-bit fixed point with
-        // six fractional bits.
+        // six fractional bits.  The format has no NaN encoding, so a NaN pins
+        // to zero there, and the fold has to agree.
+        if (std::isnan(f))
+            return 0.0;
         const float clamped = std::max(std::min(f, 127.0f / 64.0f), -127.0f / 64.0f);
         return static_cast<double>(roundf(clamped * 64.0f) / 64.0f);
     }

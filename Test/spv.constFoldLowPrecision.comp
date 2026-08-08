@@ -17,26 +17,40 @@ layout(local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
 const bfloat16_t  bf     = bfloat16_t(1.1);
 const float       bfDiff = float(bf) - 1.0;             // 0.09375
 
-// The MX formats have no infinity or NaN, so their largest exponent is an
-// ordinary value and has to survive rounding.
+// e2m1 has no infinity and no NaN, so its largest exponent is an ordinary
+// value and has to survive rounding, and a NaN saturates to all ones.
 const floate2m1_t e2m1     = floate2m1_t(1.1);
 const float       e2m1Diff = float(e2m1) - 1.0;         // 0.0, one fraction bit
 const float       e2m1Max  = float(floate2m1_t(6.0));   // 6.0, the largest e2m1
+const floate2m1_t e2m1Sat  = floate2m1_t(0.0 / 0.0);    // all ones, 0x7
+const float       e2m1SatF = float(e2m1Sat);            // 6.0, not Inf or NaN
 
+// e4m3 has no infinity either, but all ones is still a NaN, so only the
+// exponents below that are ordinary values.
 const floate4m3_t e4m3     = floate4m3_t(1.1);
 const float       e4m3Diff = float(e4m3) - 1.0;         // 0.0
 const float       e4m3Max  = float(floate4m3_t(448.0)); // 448.0, the largest e4m3
+const floate4m3_t e4m3NanE = floate4m3_t(0.0 / 0.0);    // all ones, 0x7F, the only e4m3 NaN
+const float       e4m3Nan  = float(e4m3NanE);           // NaN, not 384.0
 
 const float       e5m2Max  = float(floate5m2_t(57344.0)); // largest e5m2
+const float       e5m2Nan  = float(floate5m2_t(0.0 / 0.0)); // 0x7FC00000, the quiet payload survives
 
-// ue8m0 stores only an exponent, so any mantissa is dropped.
+// ue8m0 stores only an exponent, so any mantissa is dropped.  It has no zero,
+// no sign and no infinity: encoding 0x00 is 2^-127 and 0xFF is NaN.
 const float       ue8m0     = float(floatue8m0_t(1.5));   // 1.0
 const float       ue8m0Diff = ue8m0 - 1.0;                // 0.0
+const float       ue8m0Min  = float(floatue8m0_t(0.0));   // 2^-127, there is no zero
+const float       ue8m0Neg  = float(floatue8m0_t(-3.0));  // clamps to 0.0, which is encoding 0x00 = 2^-127
+const float       ue8m0Inf  = float(floatue8m0_t(1.0 / 0.0)); // NaN, there is no infinity either
+const float       ue8m0Nan  = float(floatue8m0_t(0.0 / 0.0)); // NaN, not infinity
 
 // mxint8 is fixed point with six fractional bits, and clamps to +-127/64.
+// It has no NaN encoding at all, so a NaN pins to zero.
 const float       mxint8     = float(floatmxint8_t(1.1)); // 70/64 = 1.09375
 const float       mxint8Diff = mxint8 - 1.0;              // 0.09375
 const float       mxint8Max  = float(floatmxint8_t(5.0)); // clamped to 1.984375
+const float       mxint8Nan  = float(floatmxint8_t(0.0 / 0.0)); // 0.0, not NaN
 
 void main()
 {
@@ -49,4 +63,17 @@ void main()
     uint8_t  e5m2Bits = floate5m2BitsToUintEXT(floate5m2_t(1.0));
     uint16_t bfBits   = bfloat16BitsToUintEXT(bfloat16_t(1.0));
     sink += float(e5m2Bits) + float(bfBits) + ue8m0Diff + mxint8Diff + mxint8Max;
+
+    // A float constant is stored widened to a double.  A quiet NaN survives
+    // that round trip exactly, so its bit casts still fold, but the
+    // conversion quiets a signaling NaN, so that one has to stay a real bit
+    // cast for the instruction to produce the bits.
+    uint qnanBits = floatBitsToUint(uintBitsToFloat(0x7FC12345u));
+    uint snanBits = floatBitsToUint(uintBitsToFloat(0x7FA12345u));
+    sink += float(qnanBits) + float(snanBits) + e4m3Nan + ue8m0Min + ue8m0Nan;
+    sink += e5m2Nan;
+    sink += mxint8Nan;
+    sink += e2m1SatF;
+    sink += ue8m0Neg;
+    sink += ue8m0Inf;
 }

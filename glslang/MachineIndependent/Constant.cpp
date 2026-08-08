@@ -61,6 +61,15 @@ To bitCast(From from)
     return to;
 }
 
+// Returns true if the bits encode a float signaling NaN: all exponent bits
+// set, quiet bit clear, and a nonzero significand.  A quiet NaN survives the
+// float-to-double round trip of the constant store exactly, but converting a
+// signaling NaN sets its quiet bit.
+bool isFloatSignalingNanPattern(unsigned int bits)
+{
+    return (bits & 0x7FC00000u) == 0x7F800000u && (bits & 0x003FFFFFu) != 0;
+}
+
 } // end anonymous namespace
 
 
@@ -881,6 +890,12 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType) 
         // float built-ins (see Initialize.cpp), which are not 32 bits wide.
         // Folding those as float would produce the wrong bits, so decline them
         // and let the operation be emitted instead.
+        //
+        // Signaling NaN patterns are also declined: storing the float as a
+        // double would quiet them, so the bit pattern folded here would not
+        // be the one the instruction produces.  The FloatBitsTo* direction
+        // needs no such check, because it reads back the same narrowed float
+        // the back end emits, whatever that value is.
         case EOpFloatBitsToInt:
             if (getType().getBasicType() != EbtFloat)
                 return nullptr;
@@ -892,12 +907,13 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType) 
             newConstArray[i].setUConst(bitCast<unsigned int>(static_cast<float>(unionArray[i].getDConst())));
             break;
         case EOpIntBitsToFloat:
-            if (returnType.getBasicType() != EbtFloat)
+            if (returnType.getBasicType() != EbtFloat ||
+                isFloatSignalingNanPattern(static_cast<unsigned int>(unionArray[i].getIConst())))
                 return nullptr;
             newConstArray[i].setDConst(bitCast<float>(unionArray[i].getIConst()), returnType.getBasicType());
             break;
         case EOpUintBitsToFloat:
-            if (returnType.getBasicType() != EbtFloat)
+            if (returnType.getBasicType() != EbtFloat || isFloatSignalingNanPattern(unionArray[i].getUConst()))
                 return nullptr;
             newConstArray[i].setDConst(bitCast<float>(unionArray[i].getUConst()), returnType.getBasicType());
             break;
