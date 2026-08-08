@@ -1,0 +1,14 @@
+# Copyright 2026 The Khronos Group Inc.
+# SPDX-License-Identifier: BSD-3-Clause
+
+prefix=@AT@ABS_INSTALL_PREFIX@AT@
+exec_prefix=${prefix}
+libdir=@CMAKE_INSTALL_LIBDIR_PC@
+includedir=@CMAKE_INSTALL_INCLUDEDIR_PC@
+
+Name: glslang
+Description: Khronos-reference front end for GLSL/ESSL, partial front end for HLSL, and a SPIR-V generator.
+Version: @GLSLANG_VERSION@
+Cflags: -I${includedir}
+Libs.private: @GLSLANG_PRIVATE_LIBS@
+Libs: -L${libdir} -lglslang
