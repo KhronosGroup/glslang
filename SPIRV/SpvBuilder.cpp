@@ -4776,17 +4776,20 @@ void Builder::accessChainStore(Id rvalue, Decoration nonUniform, spv::MemoryAcce
         // dynamic component should be gone
         assert(accessChain.component == NoResult);
 
-        // If swizzle still exists, it may be out-of-order, we must load the target vector,
-        // extract and insert elements to perform writeMask and/or swizzle.
-        if (accessChain.swizzle.size() > 0) {
-            Id tempBaseId = createLoad(base, spv::NoPrecision);
-            source = createLvalueSwizzle(getTypeId(tempBaseId), tempBaseId, source, accessChain.swizzle);
-        }
-
         // take LSB of alignment
         alignment = alignment & ~(alignment & (alignment-1));
         if (getStorageClass(base) == StorageClass::PhysicalStorageBufferEXT) {
             memoryAccess = (spv::MemoryAccessMask)(memoryAccess | spv::MemoryAccessMask::Aligned);
+        }
+
+        // If swizzle still exists, it may be out-of-order, we must load the target vector,
+        // extract and insert elements to perform writeMask and/or swizzle.
+        if (accessChain.swizzle.size() > 0) {
+            // The read-modify-write load hits the same pointer as the store, so it needs the
+            // same memory operands. In particular a PhysicalStorageBuffer access must carry
+            // Aligned, and postProcess() expects the operand to be present to fix up.
+            Id tempBaseId = createLoad(base, spv::NoPrecision, memoryAccess, scope, alignment);
+            source = createLvalueSwizzle(getTypeId(tempBaseId), tempBaseId, source, accessChain.swizzle);
         }
 
         createStore(source, base, memoryAccess, scope, alignment);
