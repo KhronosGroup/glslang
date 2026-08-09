@@ -64,10 +64,10 @@ void main()
     uint16_t bfBits   = bfloat16BitsToUintEXT(bfloat16_t(1.0));
     sink += float(e5m2Bits) + float(bfBits) + ue8m0Diff + mxint8Diff + mxint8Max;
 
-    // A float constant is stored widened to a double.  A quiet NaN survives
-    // that round trip exactly, so its bit casts still fold, but the
-    // conversion quiets a signaling NaN, so that one has to stay a real bit
-    // cast for the instruction to produce the bits.
+    // Both quiet and signaling NaN bit patterns fold correctly.
+    // TConstUnion stores the exact 32-bit pattern via setRawFloatBits,
+    // so the round-trip through uintBitsToFloat → floatBitsToUint
+    // preserves even signaling NaN payloads.
     uint qnanBits = floatBitsToUint(uintBitsToFloat(0x7FC12345u));
     uint snanBits = floatBitsToUint(uintBitsToFloat(0x7FA12345u));
     sink += float(qnanBits) + float(snanBits) + e4m3Nan + ue8m0Min + ue8m0Nan;

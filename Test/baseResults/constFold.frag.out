@@ -1,10 +1,10 @@
 constFold.frag
-ERROR: 0:116: '[' :  index out of range '-1'
-ERROR: 0:117: '[' :  vector index out of range '4'
-ERROR: 0:118: '[' :  index out of range '-2'
-ERROR: 0:119: '[' :  index out of range '-1'
-ERROR: 0:120: '[' :  vector index out of range '3'
-ERROR: 0:121: '[' :  matrix index out of range '3'
+ERROR: 0:121: '[' :  index out of range '-1'
+ERROR: 0:122: '[' :  vector index out of range '4'
+ERROR: 0:123: '[' :  index out of range '-2'
+ERROR: 0:124: '[' :  index out of range '-1'
+ERROR: 0:125: '[' :  vector index out of range '3'
+ERROR: 0:126: '[' :  matrix index out of range '3'
 ERROR: 6 compilation errors.  No code generated.
 
 
@@ -195,135 +195,138 @@ ERROR: node is still EOpNull!
 0:74          -2.000000
 0:75      move second child to first child ( temp 2-component vector of float)
 0:75        'out2' ( out 2-component vector of float)
-0:75        Construct vec2 ( temp 2-component vector of float)
-0:75          Constant:
-0:75            1.#IND
-0:75          uintBitsToFloat ( global float)
-0:75            Constant:
-0:75              2141266757 (const uint)
+0:75        Constant:
+0:75          1.#IND
+0:75          1.#IND
 0:76      move second child to first child ( temp 2-component vector of int)
 0:76        'out12' ( out 2-component vector of int)
 0:76        Constant:
 0:76          2143289344 (const int)
 0:76          0 (const int)
-0:85  Function Definition: foo( ( global void)
-0:85    Function Parameters: 
+0:81      move second child to first child ( temp 3-component vector of uint)
+0:81        'out13' ( out 3-component vector of uint)
+0:81        Constant:
+0:81          2141266757 (const uint)
+0:81          2143363909 (const uint)
+0:81          2139095041 (const uint)
+0:90  Function Definition: foo( ( global void)
+0:90    Function Parameters: 
 0:?     Sequence
-0:88      move second child to first child ( temp float)
-0:88        direct index ( temp float)
-0:88          'a' ( temp 3-element array of float)
-0:88          Constant:
-0:88            0 (const int)
-0:88        Constant:
-0:88          7.000000
-0:89      Constant:
-0:89        2 (const int)
-0:90      Constant:
-0:90        2147483647 (const int)
-0:91      Constant:
-0:91        +1.#INF
-0:91      Constant:
-0:91        -1.#INF
-0:91      Constant:
-0:91        1.#IND
+0:93      move second child to first child ( temp float)
+0:93        direct index ( temp float)
+0:93          'a' ( temp 3-element array of float)
+0:93          Constant:
+0:93            0 (const int)
+0:93        Constant:
+0:93          7.000000
+0:94      Constant:
+0:94        2 (const int)
 0:95      Constant:
-0:95        2 (const uint)
-0:95        3 (const uint)
+0:95        2147483647 (const int)
 0:96      Constant:
-0:96        0 (const uint)
-0:97      Constant:
-0:97        6 (const uint)
-0:97        7 (const uint)
-0:110  Function Definition: foo2( ( global void)
-0:110    Function Parameters: 
-0:112    Sequence
-0:112      direct index ( temp float)
-0:112        'a1' ( global 1-element array of float)
-0:112        Constant:
-0:112          0 (const int)
-0:113      direct index ( temp float)
-0:113        'a2' ( global 2-element array of float)
-0:113        Constant:
-0:113          0 (const int)
-0:114      direct index ( temp float)
-0:114        'a3' ( global 4-element array of float)
-0:114        Constant:
-0:114          0 (const int)
-0:115      direct index ( temp float)
-0:115        'a4' ( global 2-element array of float)
-0:115        Constant:
-0:115          0 (const int)
-0:116      Constant:
-0:116        1.000000
-0:117      Constant:
-0:117        5.000000
-0:118      Constant:
-0:118        2.000000
-0:119      Constant:
-0:119        3.000000
-0:120      Constant:
-0:120        0.000000
+0:96        +1.#INF
+0:96      Constant:
+0:96        -1.#INF
+0:96      Constant:
+0:96        1.#IND
+0:100      Constant:
+0:100        2 (const uint)
+0:100        3 (const uint)
+0:101      Constant:
+0:101        0 (const uint)
+0:102      Constant:
+0:102        6 (const uint)
+0:102        7 (const uint)
+0:115  Function Definition: foo2( ( global void)
+0:115    Function Parameters: 
+0:117    Sequence
+0:117      direct index ( temp float)
+0:117        'a1' ( global 1-element array of float)
+0:117        Constant:
+0:117          0 (const int)
+0:118      direct index ( temp float)
+0:118        'a2' ( global 2-element array of float)
+0:118        Constant:
+0:118          0 (const int)
+0:119      direct index ( temp float)
+0:119        'a3' ( global 4-element array of float)
+0:119        Constant:
+0:119          0 (const int)
+0:120      direct index ( temp float)
+0:120        'a4' ( global 2-element array of float)
+0:120        Constant:
+0:120          0 (const int)
 0:121      Constant:
-0:121        0.000000
-0:123      move second child to first child ( temp int)
-0:123        'p' ( temp int)
-0:123        Constant:
-0:123          2147483647 (const int)
-0:124      move second child to first child ( temp int)
-0:124        'p' ( temp int)
-0:124        Constant:
-0:124          -2147483648 (const int)
-0:125      move second child to first child ( temp int)
-0:125        'p' ( temp int)
-0:125        Constant:
-0:125          -2147483647 (const int)
-0:126      Sequence
-0:126        move second child to first child ( temp float)
-0:126          'f' ( temp float)
-0:126          Constant:
-0:126            1.444000
-0:127      move second child to first child ( temp float)
-0:127        'f' ( temp float)
-0:127        direct index ( temp float)
-0:127          Construct vec4 ( temp 4-component vector of float)
-0:127            Test condition and select ( temp float)
-0:127              Condition
-0:127              Compare Less Than ( temp bool)
-0:127                direct index ( temp float)
-0:127                  'inv' ( smooth in 4-component vector of float)
-0:127                  Constant:
-0:127                    0 (const int)
-0:127                Constant:
-0:127                  2.400000
-0:127              true case
-0:127              Constant:
-0:127                -1.000000
-0:127              false case
-0:127              Constant:
-0:127                1.000000
-0:127          Constant:
-0:127            3 (const int)
-0:136  Function Definition: foo3( ( global void)
-0:136    Function Parameters: 
-0:138    Sequence
-0:138      Sequence
-0:138        move second child to first child ( temp 3X2 matrix of float)
-0:138          'r32' ( temp 3X2 matrix of float)
-0:138          Constant:
-0:138            43.000000
-0:138            64.000000
-0:138            51.000000
-0:138            76.000000
-0:138            59.000000
-0:138            88.000000
-0:148  Function Definition: foo4( ( global void)
-0:148    Function Parameters: 
-0:150    Sequence
-0:150      Sequence
-0:150        move second child to first child ( temp int)
-0:150          'a' ( temp int)
-0:150          Constant:
-0:150            9 (const int)
+0:121        1.000000
+0:122      Constant:
+0:122        5.000000
+0:123      Constant:
+0:123        2.000000
+0:124      Constant:
+0:124        3.000000
+0:125      Constant:
+0:125        0.000000
+0:126      Constant:
+0:126        0.000000
+0:128      move second child to first child ( temp int)
+0:128        'p' ( temp int)
+0:128        Constant:
+0:128          2147483647 (const int)
+0:129      move second child to first child ( temp int)
+0:129        'p' ( temp int)
+0:129        Constant:
+0:129          -2147483648 (const int)
+0:130      move second child to first child ( temp int)
+0:130        'p' ( temp int)
+0:130        Constant:
+0:130          -2147483647 (const int)
+0:131      Sequence
+0:131        move second child to first child ( temp float)
+0:131          'f' ( temp float)
+0:131          Constant:
+0:131            1.444000
+0:132      move second child to first child ( temp float)
+0:132        'f' ( temp float)
+0:132        direct index ( temp float)
+0:132          Construct vec4 ( temp 4-component vector of float)
+0:132            Test condition and select ( temp float)
+0:132              Condition
+0:132              Compare Less Than ( temp bool)
+0:132                direct index ( temp float)
+0:132                  'inv' ( smooth in 4-component vector of float)
+0:132                  Constant:
+0:132                    0 (const int)
+0:132                Constant:
+0:132                  2.400000
+0:132              true case
+0:132              Constant:
+0:132                -1.000000
+0:132              false case
+0:132              Constant:
+0:132                1.000000
+0:132          Constant:
+0:132            3 (const int)
+0:141  Function Definition: foo3( ( global void)
+0:141    Function Parameters: 
+0:143    Sequence
+0:143      Sequence
+0:143        move second child to first child ( temp 3X2 matrix of float)
+0:143          'r32' ( temp 3X2 matrix of float)
+0:143          Constant:
+0:143            43.000000
+0:143            64.000000
+0:143            51.000000
+0:143            76.000000
+0:143            59.000000
+0:143            88.000000
+0:153  Function Definition: foo4( ( global void)
+0:153    Function Parameters: 
+0:155    Sequence
+0:155      Sequence
+0:155        move second child to first child ( temp int)
+0:155          'a' ( temp int)
+0:155          Constant:
+0:155            9 (const int)
 0:?   Linker Objects
 0:?     'a' ( const int)
 0:?       1 (const int)
@@ -647,17 +650,20 @@ ERROR: node is still EOpNull!
 0:74          -2.000000
 0:75      move second child to first child ( temp 2-component vector of float)
 0:75        'out2' ( out 2-component vector of float)
-0:75        Construct vec2 ( temp 2-component vector of float)
-0:75          Constant:
-0:75            1.#IND
-0:75          uintBitsToFloat ( global float)
-0:75            Constant:
-0:75              2141266757 (const uint)
+0:75        Constant:
+0:75          1.#IND
+0:75          1.#IND
 0:76      move second child to first child ( temp 2-component vector of int)
 0:76        'out12' ( out 2-component vector of int)
 0:76        Constant:
 0:76          2143289344 (const int)
 0:76          0 (const int)
+0:81      move second child to first child ( temp 3-component vector of uint)
+0:81        'out13' ( out 3-component vector of uint)
+0:81        Constant:
+0:81          2141266757 (const uint)
+0:81          2143363909 (const uint)
+0:81          2139095041 (const uint)
 0:?   Linker Objects
 0:?     'a' ( const int)
 0:?       1 (const int)

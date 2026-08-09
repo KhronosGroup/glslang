@@ -61,15 +61,6 @@ To bitCast(From from)
     return to;
 }
 
-// Returns true if the bits encode a float signaling NaN: all exponent bits
-// set, quiet bit clear, and a nonzero significand.  A quiet NaN survives the
-// float-to-double round trip of the constant store exactly, but converting a
-// signaling NaN sets its quiet bit.
-bool isFloatSignalingNanPattern(unsigned int bits)
-{
-    return (bits & 0x7FC00000u) == 0x7F800000u && (bits & 0x003FFFFFu) != 0;
-}
-
 } // end anonymous namespace
 
 
@@ -891,31 +882,36 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType) 
         // Folding those as float would produce the wrong bits, so decline them
         // and let the operation be emitted instead.
         //
-        // Signaling NaN patterns are also declined: storing the float as a
-        // double would quiet them, so the bit pattern folded here would not
-        // be the one the instruction produces.  The FloatBitsTo* direction
-        // needs no such check, because it reads back the same narrowed float
-        // the back end emits, whatever that value is.
+        // The *BitsToFloat direction stores the exact 32-bit pattern via
+        // setRawFloatBits, which keeps the bits alongside dConst so that a
+        // signaling NaN survives storage.  The FloatBitsTo* direction reads
+        // back from raw bits when available, falling back to the narrowed
+        // dConst otherwise.
         case EOpFloatBitsToInt:
             if (getType().getBasicType() != EbtFloat)
                 return nullptr;
-            newConstArray[i].setIConst(bitCast<int>(static_cast<float>(unionArray[i].getDConst())));
+            if (unionArray[i].getHasRawFloatBits())
+                newConstArray[i].setIConst(bitCast<int>(unionArray[i].getRawFloatBits()));
+            else
+                newConstArray[i].setIConst(bitCast<int>(static_cast<float>(unionArray[i].getDConst())));
             break;
         case EOpFloatBitsToUint:
             if (getType().getBasicType() != EbtFloat)
                 return nullptr;
-            newConstArray[i].setUConst(bitCast<unsigned int>(static_cast<float>(unionArray[i].getDConst())));
+            if (unionArray[i].getHasRawFloatBits())
+                newConstArray[i].setUConst(unionArray[i].getRawFloatBits());
+            else
+                newConstArray[i].setUConst(bitCast<unsigned int>(static_cast<float>(unionArray[i].getDConst())));
             break;
         case EOpIntBitsToFloat:
-            if (returnType.getBasicType() != EbtFloat ||
-                isFloatSignalingNanPattern(static_cast<unsigned int>(unionArray[i].getIConst())))
+            if (returnType.getBasicType() != EbtFloat)
                 return nullptr;
-            newConstArray[i].setDConst(bitCast<float>(unionArray[i].getIConst()), returnType.getBasicType());
+            newConstArray[i].setRawFloatBits(static_cast<unsigned int>(unionArray[i].getIConst()));
             break;
         case EOpUintBitsToFloat:
-            if (returnType.getBasicType() != EbtFloat || isFloatSignalingNanPattern(unionArray[i].getUConst()))
+            if (returnType.getBasicType() != EbtFloat)
                 return nullptr;
-            newConstArray[i].setDConst(bitCast<float>(unionArray[i].getUConst()), returnType.getBasicType());
+            newConstArray[i].setRawFloatBits(unionArray[i].getUConst());
             break;
         case EOpDoubleBitsToInt64:
             newConstArray[i].setI64Const(bitCast<long long>(unionArray[i].getDConst()));

@@ -53,7 +53,7 @@ class TConstUnion {
 public:
     POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
 
-    TConstUnion() : iConst(0), type(EbtInt) { }
+    TConstUnion() : iConst(0), type(EbtInt), hasRawFloatBits_(false), rawFloatBits_(0) { }
 
     void setI8Const(signed char i)
     {
@@ -110,6 +110,29 @@ public:
     {
         dConst = RoundToDeclaredPrecision(d, baseType);
         type = baseType;
+        hasRawFloatBits_ = false;
+    }
+
+    // Store the exact 32-bit pattern for a float constant produced by
+    // intBitsToFloat / uintBitsToFloat.  A signaling NaN cannot survive the
+    // float-to-double widening that setDConst performs, so we keep the raw
+    // bits alongside dConst (which still gets a possibly-quieted value for
+    // any arithmetic that reads it).
+    void setRawFloatBits(unsigned int bits)
+    {
+        // Store the raw pattern.
+        rawFloatBits_ = bits;
+        hasRawFloatBits_ = true;
+
+        // Also populate dConst so that getDConst()-based consumers (e.g.
+        // arithmetic folding) see a float value.  The float-to-double
+        // conversion may quiet a signaling NaN, but that is acceptable for
+        // arithmetic — the raw bits are authoritative for bit-cast reads
+        // and SPIR-V emission.
+        union { unsigned int u; float f; } pun;
+        pun.u = bits;
+        dConst = static_cast<double>(pun.f);
+        type = EbtFloat;
     }
 
     void setBConst(bool b)
@@ -135,6 +158,8 @@ public:
     double             getDConst() const   { return dConst; }
     bool               getBConst() const   { return bConst; }
     const TString*     getSConst() const   { return sConst; }
+    unsigned int       getRawFloatBits() const  { return rawFloatBits_; }
+    bool               getHasRawFloatBits() const { return hasRawFloatBits_; }
 
     bool operator==(const signed char i) const
     {
@@ -238,6 +263,14 @@ public:
 
             break;
         case EbtFloat:
+            // When both sides carry raw float bits (from *BitsToFloat),
+            // compare the exact bit patterns so that distinct sNaN payloads
+            // are not conflated through their quieted dConst values.
+            if (hasRawFloatBits_ && constant.hasRawFloatBits_)
+                return rawFloatBits_ == constant.rawFloatBits_;
+            if (constant.dConst == dConst)
+                return true;
+            break;
         case EbtFloat16:
         case EbtBFloat16:
         case EbtFloatE5M2:
@@ -928,6 +961,12 @@ private:
     };
 
     TBasicType type;
+
+    // Supplementary storage for the exact 32-bit float pattern from
+    // intBitsToFloat / uintBitsToFloat.  Lives outside the union so it
+    // coexists with dConst rather than replacing it.
+    bool         hasRawFloatBits_;
+    unsigned int rawFloatBits_;
 };
 
 // Encapsulate having a pointer to an array of TConstUnion,

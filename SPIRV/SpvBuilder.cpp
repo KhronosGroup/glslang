@@ -2079,6 +2079,32 @@ Id Builder::makeFloatConstant(float f, bool specConstant)
     return resultId;
 }
 
+// Create a float constant from raw 32-bit pattern, bypassing float assignment
+// so that signaling NaN bits are never touched by the FPU.
+Id Builder::makeFloatConstantFromBits(unsigned int bits, bool specConstant)
+{
+    Op opcode = specConstant ? Op::OpSpecConstant : Op::OpConstant;
+    Id typeId = makeFloatType(32);
+
+    if (! specConstant) {
+        Id existing = findScalarConstant(Op::OpTypeFloat, opcode, typeId, bits);
+        if (existing)
+            return existing;
+    }
+
+    Instruction* c = new Instruction(getUniqueId(), typeId, opcode);
+    c->addImmediateOperand(bits);
+    constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(c));
+    module.mapInstruction(c);
+
+    Id resultId = c->getResultId();
+    if (!specConstant) {
+        ScalarConstantKey key{ enumCast(Op::OpTypeFloat), enumCast(opcode), typeId, bits, 0 };
+        groupedScalarConstantResultIDs[key] = resultId;
+    }
+    return resultId;
+}
+
 Id Builder::makeDoubleConstant(double d, bool specConstant)
 {
     Op opcode = specConstant ? Op::OpSpecConstant : Op::OpConstant;
