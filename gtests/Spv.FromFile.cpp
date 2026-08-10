@@ -1166,6 +1166,7 @@ INSTANTIATE_TEST_SUITE_P(
     Glsl, CompileVulkanToSpirv14TestNV,
     ::testing::ValuesIn(std::vector<std::string>({
     "spv.RayGenShaderMotion.rgen",
+    "spv.RayGenShaderMotion_Errors.rgen",
     "spv.IntersectShaderMotion.rint",
     "spv.AnyHitShaderMotion.rahit",
     "spv.ClosestHitShaderMotion.rchit",

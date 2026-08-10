@@ -4498,6 +4498,10 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
                  const int set = glslangOp == glslang::EOpExecuteCallableKHR ? 1 : 0;
                  const int location = glslangOperands[arg]->getAsConstantUnion()->getConstArray()[0].getUConst();
                  auto itNode = locationToSymbol[set].find(location);
+                 if (itNode == locationToSymbol[set].end()) {
+                     logger->missingFunctionality("ray tracing location with no matching payload/callable data declaration");
+                     break;
+                 }
                  visitSymbol(itNode->second);
                  spv::Id symId = getSymbolId(itNode->second);
                  operands.push_back(symId);
@@ -4511,6 +4515,10 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
                  const int location = glslangOperands[arg]->getAsConstantUnion()->getConstArray()[0].getUConst();
                  const int set = 2;
                  auto itNode = locationToSymbol[set].find(location);
+                 if (itNode == locationToSymbol[set].end()) {
+                     logger->missingFunctionality("ray tracing location with no matching hit object attribute declaration");
+                     break;
+                 }
                  visitSymbol(itNode->second);
                  spv::Id symId = getSymbolId(itNode->second);
                  operands.push_back(symId);

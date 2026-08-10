@@ -3342,7 +3342,7 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
         checkConstantArgWithLocation(10, "payload number", nullptr, -1);
         break;
     case EOpTraceRayMotionNV:
-        checkConstantArgWithLocation(11, "payload number", nullptr, -1);
+        checkConstantArgWithLocation(11, "payload number", "no rayPayloadEXT/rayPayloadInEXT declared", 0);
         break;
     case EOpTraceKHR:
         checkConstantArgWithLocation(10, "payload number", "no rayPayloadEXT/rayPayloadInEXT declared", 0);
