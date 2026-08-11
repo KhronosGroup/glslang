@@ -161,3 +161,16 @@ const bool cval3 = all(bvec4(true, true, false, true));
 const bool cval4 = any(bvec4(true, true, true, true));
 const bool cval5 = any(bvec4(false, false, false, false));
 const bool cval6 = any(bvec4(false, true, false, false));
+
+// Bit-cast float constants compare by value, not by encoding: the raw bits are
+// for bit-cast reads and SPIR-V emission, not for numeric comparison.
+const bool cvalZeroEq = uintBitsToFloat(0x00000000u) == uintBitsToFloat(0x80000000u); // true, +0.0 equals -0.0
+const bool cvalNanEq  = uintBitsToFloat(0x7FC12345u) == uintBitsToFloat(0x7FC12345u); // false, a NaN equals nothing
+const bool cvalSnanEq = uintBitsToFloat(0x7FA12345u) == uintBitsToFloat(0x7FA12345u); // false, a signaling NaN too
+const bool cvalZeroNe = uintBitsToFloat(0x00000000u) != uintBitsToFloat(0x80000000u); // false
+const bool cvalNanNe  = uintBitsToFloat(0x7FC12345u) != uintBitsToFloat(0x7FC12345u); // true
+
+// abs() and unary minus are sign-bit operations, so they must not quiet a
+// signaling NaN the way a fold through the double would.
+const uint snanNegBits = floatBitsToUint(-uintBitsToFloat(0x7FA12345u));     // 0xFFA12345, not 0xFFE12345
+const uint snanAbsBits = floatBitsToUint(abs(uintBitsToFloat(0xFFA12345u))); // 0x7FA12345, not 0x7FE12345

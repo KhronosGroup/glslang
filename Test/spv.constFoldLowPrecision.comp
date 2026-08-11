@@ -52,6 +52,11 @@ const float       mxint8Diff = mxint8 - 1.0;              // 0.09375
 const float       mxint8Max  = float(floatmxint8_t(5.0)); // clamped to 1.984375
 const float       mxint8Nan  = float(floatmxint8_t(0.0 / 0.0)); // 0.0, not NaN
 
+// abs() and unary minus are sign-bit operations, so the payload has to reach
+// the emitted OpConstant intact rather than being quieted on the way.
+const float       snanNeg    = -uintBitsToFloat(0x7FA12345u);     // 0xFFA12345, not 0xFFE12345
+const float       snanAbs    = abs(uintBitsToFloat(0xFFA12345u)); // 0x7FA12345, not 0x7FE12345
+
 void main()
 {
     float sink = bfDiff + e2m1Diff + e2m1Max + e4m3Diff + e4m3Max + e5m2Max;
@@ -66,7 +71,7 @@ void main()
 
     // Both quiet and signaling NaN bit patterns fold correctly.
     // TConstUnion stores the exact 32-bit pattern via setRawFloatBits,
-    // so the round-trip through uintBitsToFloat → floatBitsToUint
+    // so the round-trip through uintBitsToFloat -> floatBitsToUint
     // preserves even signaling NaN payloads.
     uint qnanBits = floatBitsToUint(uintBitsToFloat(0x7FC12345u));
     uint snanBits = floatBitsToUint(uintBitsToFloat(0x7FA12345u));
@@ -76,4 +81,6 @@ void main()
     sink += e2m1SatF;
     sink += ue8m0Neg;
     sink += ue8m0Inf;
+    sink += snanNeg;
+    sink += snanAbs;
 }

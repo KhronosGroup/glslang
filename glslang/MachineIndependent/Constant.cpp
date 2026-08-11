@@ -695,6 +695,17 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType) 
         switch (op) {
         case EOpNegative:
             switch (getType().getBasicType()) {
+            case EbtFloat:
+                // IEEE 754 makes negate a sign-bit operation: it never signals
+                // and never quiets.  Flip the sign in the raw bits when the
+                // constant has them, since negating through the double would
+                // set the quiet bit of a signaling NaN.
+                if (unionArray[i].getHasRawFloatBits() && returnType.getBasicType() == EbtFloat) {
+                    newConstArray[i].setRawFloatBits(unionArray[i].getRawFloatBits() ^ 0x80000000u);
+                    break;
+                }
+                newConstArray[i].setDConst(-unionArray[i].getDConst(), returnType.getBasicType());
+                break;
             case EbtDouble:
             case EbtFloat16:
             case EbtBFloat16:
@@ -704,8 +715,7 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType) 
             case EbtFloatE3M2:
             case EbtFloatE2M3:
             case EbtFloatUE8M0:
-            case EbtFloatMXINT8:
-            case EbtFloat: newConstArray[i].setDConst(-unionArray[i].getDConst(), returnType.getBasicType()); break;
+            case EbtFloatMXINT8: newConstArray[i].setDConst(-unionArray[i].getDConst(), returnType.getBasicType()); break;
             // Note: avoid UBSAN error regarding negating 0x80000000
             case EbtInt:   newConstArray[i].setIConst(
                                 static_cast<unsigned int>(unionArray[i].getIConst()) == 0x80000000
@@ -814,7 +824,13 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType) 
             break;
 
         case EOpAbs:
-            if (isTypeFloat(unionArray[i].getType()))
+            // A sign-bit operation as well, so clear the sign in the raw bits
+            // rather than quieting a signaling NaN through the double.  The
+            // flag is only ever set for EbtFloat, which is the type this fold
+            // keeps anyway.
+            if (unionArray[i].getHasRawFloatBits())
+                newConstArray[i].setRawFloatBits(unionArray[i].getRawFloatBits() & 0x7FFFFFFFu);
+            else if (isTypeFloat(unionArray[i].getType()))
                 newConstArray[i].setDConst(fabs(unionArray[i].getDConst()), unionArray[i].getType());
             else if (unionArray[i].getType() == EbtInt)
                 newConstArray[i].setIConst(abs(unionArray[i].getIConst()));

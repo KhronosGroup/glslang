@@ -118,6 +118,14 @@ public:
     // float-to-double widening that setDConst performs, so we keep the raw
     // bits alongside dConst (which still gets a possibly-quieted value for
     // any arithmetic that reads it).
+    //
+    // Only three things may read the raw bits: the bit-cast folds, SPIR-V
+    // constant emission, and the sign-bit operations (negate and abs), which
+    // IEEE 754 defines as pure sign manipulation that does not quiet.
+    // Everything else, numeric comparison included, goes through dConst, so
+    // that == and != keep their value semantics: +0.0 equals -0.0 even though
+    // the encodings differ, and a NaN equals nothing even though it encodes
+    // identically to itself.
     void setRawFloatBits(unsigned int bits)
     {
         // Store the raw pattern.
@@ -126,9 +134,8 @@ public:
 
         // Also populate dConst so that getDConst()-based consumers (e.g.
         // arithmetic folding) see a float value.  The float-to-double
-        // conversion may quiet a signaling NaN, but that is acceptable for
-        // arithmetic — the raw bits are authoritative for bit-cast reads
-        // and SPIR-V emission.
+        // conversion may quiet a signaling NaN, but that is what an
+        // arithmetic operation on one does anyway.
         union { unsigned int u; float f; } pun;
         pun.u = bits;
         dConst = static_cast<double>(pun.f);
@@ -263,14 +270,6 @@ public:
 
             break;
         case EbtFloat:
-            // When both sides carry raw float bits (from *BitsToFloat),
-            // compare the exact bit patterns so that distinct sNaN payloads
-            // are not conflated through their quieted dConst values.
-            if (hasRawFloatBits_ && constant.hasRawFloatBits_)
-                return rawFloatBits_ == constant.rawFloatBits_;
-            if (constant.dConst == dConst)
-                return true;
-            break;
         case EbtFloat16:
         case EbtBFloat16:
         case EbtFloatE5M2:
