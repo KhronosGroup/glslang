@@ -60,6 +60,12 @@ const float       mxint8     = float(floatmxint8_t(1.1)); // 70/64 = 1.09375
 const float       mxint8Diff = mxint8 - 1.0;              // 0.09375
 const float       mxint8Max  = float(floatmxint8_t(5.0)); // clamped to 1.984375
 const float       mxint8Nan  = float(floatmxint8_t(0.0 / 0.0)); // 0.0, not NaN
+// Fixed point has no signed zero either.  makeFloatMXINT8Constant ends in a cast
+// to int, which drops the sign, so -0.0 is emitted as encoding 0 and the fold has
+// to hand back +0.0 rather than keeping the sign bit.  e5m2 is the control: it is
+// sign-magnitude and does represent -0.0, so that one must stay negative.
+const uint        mxint8NegZero = floatBitsToUint(float(floatmxint8_t(-0.0))); // 0
+const uint        e5m2NegZero   = floatBitsToUint(float(floate5m2_t(-0.0)));   // 0x80000000
 
 // abs() and unary minus are sign-bit operations, so the payload has to reach
 // the emitted OpConstant intact rather than being quieted on the way.
@@ -93,6 +99,7 @@ void main()
     sink += snanNeg;
     sink += snanAbs;
     sink += bfMinDiff + bfMaxDiff + bfClampDiff + bfMixDiff;
+    sink += float(mxint8NegZero) + float(e5m2NegZero);
 
     // Selection preserves a signaling NaN payload, since it copies the operand
     // instead of reading its value out as a double.

@@ -455,8 +455,8 @@ gl_FragCoord origin is upper left
 0:114          Compare Less Than ( temp 2-component vector of bool)
 0:114            'inU0' ( in 2-component vector of uint)
 0:114            Constant:
-0:114              0 (const int)
-0:114              0 (const int)
+0:114              0 (const uint)
+0:114              0 (const uint)
 0:114        true case
 0:114        Branch: Kill
 0:115      Sequence
@@ -847,9 +847,9 @@ gl_FragCoord origin is upper left
 0:197          Compare Less Than ( temp 3-component vector of bool)
 0:197            'inU0' ( in 3-component vector of uint)
 0:197            Constant:
-0:197              0 (const int)
-0:197              0 (const int)
-0:197              0 (const int)
+0:197              0 (const uint)
+0:197              0 (const uint)
+0:197              0 (const uint)
 0:197        true case
 0:197        Branch: Kill
 0:198      Sequence
@@ -1260,10 +1260,10 @@ gl_FragCoord origin is upper left
 0:279          Compare Less Than ( temp 4-component vector of bool)
 0:279            'inU0' ( in 4-component vector of uint)
 0:279            Constant:
-0:279              0 (const int)
-0:279              0 (const int)
-0:279              0 (const int)
-0:279              0 (const int)
+0:279              0 (const uint)
+0:279              0 (const uint)
+0:279              0 (const uint)
+0:279              0 (const uint)
 0:279        true case
 0:279        Branch: Kill
 0:280      Sequence
@@ -3286,8 +3286,8 @@ gl_FragCoord origin is upper left
 0:114          Compare Less Than ( temp 2-component vector of bool)
 0:114            'inU0' ( in 2-component vector of uint)
 0:114            Constant:
-0:114              0 (const int)
-0:114              0 (const int)
+0:114              0 (const uint)
+0:114              0 (const uint)
 0:114        true case
 0:114        Branch: Kill
 0:115      Sequence
@@ -3678,9 +3678,9 @@ gl_FragCoord origin is upper left
 0:197          Compare Less Than ( temp 3-component vector of bool)
 0:197            'inU0' ( in 3-component vector of uint)
 0:197            Constant:
-0:197              0 (const int)
-0:197              0 (const int)
-0:197              0 (const int)
+0:197              0 (const uint)
+0:197              0 (const uint)
+0:197              0 (const uint)
 0:197        true case
 0:197        Branch: Kill
 0:198      Sequence
@@ -4091,10 +4091,10 @@ gl_FragCoord origin is upper left
 0:279          Compare Less Than ( temp 4-component vector of bool)
 0:279            'inU0' ( in 4-component vector of uint)
 0:279            Constant:
-0:279              0 (const int)
-0:279              0 (const int)
-0:279              0 (const int)
-0:279              0 (const int)
+0:279              0 (const uint)
+0:279              0 (const uint)
+0:279              0 (const uint)
+0:279              0 (const uint)
 0:279        true case
 0:279        Branch: Kill
 0:280      Sequence

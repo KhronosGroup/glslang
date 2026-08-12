@@ -2728,7 +2728,13 @@ double RoundToDeclaredPrecision(double d, TBasicType baseType)
         if (std::isnan(f))
             return 0.0;
         const float clamped = std::max(std::min(f, 127.0f / 64.0f), -127.0f / 64.0f);
-        return static_cast<double>(roundf(clamped * 64.0f) / 64.0f);
+        const double rounded = static_cast<double>(roundf(clamped * 64.0f) / 64.0f);
+        // Fixed point has no signed zero.  makeFloatMXINT8Constant ends in
+        // '((int32_t)mxint8) & 0xFF', and that cast drops the sign, so -0.0 is
+        // emitted as encoding 0 -- a positive zero.  Dividing by 64 here would
+        // otherwise keep it negative and leave the fold holding 0x80000000 for a
+        // constant the back end emits as +0.0.
+        return rounded == 0.0 ? 0.0 : rounded;
     }
     case EbtFloat:
         // A double holds any float exactly, but that is not the question here:
