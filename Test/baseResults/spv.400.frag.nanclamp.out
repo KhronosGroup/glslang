@@ -101,10 +101,10 @@ spv.400.frag
               34:             TypePointer Output 10(float)
               39:             TypeFloat 64
               40:             TypePointer Function 39(float64_t)
-              42:39(float64_t) Constant 2507418074 1073430332
+              42:39(float64_t) Constant 2684354560 1073430332
               43:             TypeVector 39(float64_t) 2
               44:             TypePointer Function 43(f64vec2)
-              46:39(float64_t) Constant 796182188 1073367658
+              46:39(float64_t) Constant 861528034 1073367658
               47: 43(f64vec2) ConstantComposite 46 46
               48:             TypeVector 39(float64_t) 3
               49:             TypePointer Function 48(f64vec3)

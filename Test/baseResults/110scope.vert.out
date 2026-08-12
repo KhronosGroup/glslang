@@ -120,7 +120,7 @@ ERROR: node is still EOpNull!
 0:69          Constant:
 0:69            0 (const int)
 0:73      Constant:
-0:73        183.346494
+0:73        183.346497
 0:?       Sequence
 0:77        move second child to first child ( temp int)
 0:77          x: direct index for structure ( temp int)
@@ -251,7 +251,7 @@ ERROR: node is still EOpNull!
 0:69          Constant:
 0:69            0 (const int)
 0:73      Constant:
-0:73        183.346494
+0:73        183.346497
 0:?       Sequence
 0:77        move second child to first child ( temp int)
 0:77          x: direct index for structure ( temp int)

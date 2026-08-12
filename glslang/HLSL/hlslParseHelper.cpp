@@ -3885,8 +3885,8 @@ TIntermConstantUnion* HlslParseContext::getSamplePosArray(int count)
 
     for (int pos=0; pos<count; ++pos) {
         TConstUnion x, y;
-        x.setDConst(sampleLoc[pos].x);
-        y.setDConst(sampleLoc[pos].y);
+        x.setDConst(sampleLoc[pos].x, EbtFloat);
+        y.setDConst(sampleLoc[pos].y, EbtFloat);
 
         (*values)[pos*2+0] = x;
         (*values)[pos*2+1] = y;
@@ -5017,11 +5017,16 @@ void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& 
                     std::max(arg0->getType().getMatrixCols(), 1) *
                     std::max(arg0->getType().getMatrixRows(), 1);
 
+                // Mirrors the scalar path below: an integer domain gets an
+                // integer zero, and a float domain gets a zero of arg0's own
+                // float type.  Previously both went through setDConst()'s
+                // EbtDouble default, so the integer case built a double-typed
+                // union for an integer comparison.
                 TConstUnion zero;
                 if (arg0->getType().isIntegerDomain())
-                    zero.setDConst(0);
+                    zero.setIConst(0);
                 else
-                    zero.setDConst(0.0);
+                    zero.setDConst(0.0, type0);
                 TConstUnionArray zeros(constComponentCount, zero);
 
                 less->getSequence().push_back(intermediate.addConstantUnion(zeros, arg0->getType(), loc, true));

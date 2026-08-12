@@ -2730,9 +2730,16 @@ double RoundToDeclaredPrecision(double d, TBasicType baseType)
         const float clamped = std::max(std::min(f, 127.0f / 64.0f), -127.0f / 64.0f);
         return static_cast<double>(roundf(clamped * 64.0f) / 64.0f);
     }
+    case EbtFloat:
+        // A double holds any float exactly, but that is not the question here:
+        // the target computes in fp32 at every step, so folding has to round at
+        // every step too.  Rounding only when the constant is emitted gives a
+        // different answer whenever an intermediate would have overflowed or
+        // lost bits in fp32 -- (1e20 * 1e20) / 1e20 is inf on the target and a
+        // finite 1e20 if the multiply is folded in double.
+        return static_cast<double>(f);
     default:
-        // EbtFloat and EbtDouble are already held exactly by the double they
-        // are stored in.
+        // EbtDouble is already held exactly by the double it is stored in.
         return d;
     }
 }

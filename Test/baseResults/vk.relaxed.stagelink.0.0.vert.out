@@ -1918,7 +1918,7 @@ gl_FragCoord origin is upper left
 0:189              'normal' ( in highp 3-component vector of float)
 0:189              'half_vector' ( in highp 3-component vector of float)
 0:189            Constant:
-0:189              1.0000000000000e-06
+0:189              9.9999999747524e-07
 0:189            Constant:
 0:189              1.000000
 0:191      Sequence
@@ -1945,7 +1945,7 @@ gl_FragCoord origin is upper left
 0:194        'denom' ( temp highp float)
 0:194        max ( global highp float)
 0:194          Constant:
-0:194            1.0000000000000e-08
+0:194            9.9999999392253e-09
 0:194          'denom' ( temp highp float)
 0:195      Branch: Return with expression
 0:195        divide ( temp highp float)
@@ -5408,7 +5408,7 @@ gl_FragCoord origin is upper left
 0:189              'normal' ( in highp 3-component vector of float)
 0:189              'half_vector' ( in highp 3-component vector of float)
 0:189            Constant:
-0:189              1.0000000000000e-06
+0:189              9.9999999747524e-07
 0:189            Constant:
 0:189              1.000000
 0:191      Sequence
@@ -5435,7 +5435,7 @@ gl_FragCoord origin is upper left
 0:194        'denom' ( temp highp float)
 0:194        max ( global highp float)
 0:194          Constant:
-0:194            1.0000000000000e-08
+0:194            9.9999999392253e-09
 0:194          'denom' ( temp highp float)
 0:195      Branch: Return with expression
 0:195        divide ( temp highp float)

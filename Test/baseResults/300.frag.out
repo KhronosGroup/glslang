@@ -304,7 +304,7 @@ ERROR: node is still EOpNull!
 0:134        move second child to first child ( temp lowp float)
 0:134          'p' ( temp lowp float)
 0:134          Constant:
-0:134            210.712306
+0:134            210.712296
 0:135      add second child into first child ( temp lowp float)
 0:135        'p' ( temp lowp float)
 0:135        Constant:
@@ -351,7 +351,7 @@ ERROR: node is still EOpNull!
 0:143        'c2' ( temp lowp 2-component vector of float)
 0:143        Constant:
 0:143          3.000000
-0:143          -8.544004
+0:143          -8.544003
 0:144      add second child into first child ( temp lowp 2-component vector of float)
 0:144        'c2' ( temp lowp 2-component vector of float)
 0:144        Constant:

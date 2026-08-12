@@ -106,8 +106,13 @@ public:
     // 'baseType' is the float type the value was declared as.  It is rounded to
     // that precision here rather than only when the constant is emitted, so that
     // folding sees the same value the target would.
-    void setDConst(double d, TBasicType baseType = EbtDouble)
+    //
+    // There is deliberately no default: defaulting to EbtDouble silently gives a
+    // float constant double precision, which is the bug this rounding exists to
+    // prevent.  Callers must pass the type the value was declared as.
+    void setDConst(double d, TBasicType baseType)
     {
+        assert(isTypeFloat(baseType));
         dConst = RoundToDeclaredPrecision(d, baseType);
         type = baseType;
         hasRawFloatBits_ = false;

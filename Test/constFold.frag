@@ -214,3 +214,17 @@ const bool  cvalNanVecNe  = cvalNanVec2 != cvalNanVec2;  // true
 // An ordinary constant compared with itself is still equal.
 const vec2  cvalOrdVec2   = vec2(1.0, 2.0);
 const bool  cvalOrdVecEq  = cvalOrdVec2 == cvalOrdVec2;  // true
+
+// Folding has to round to fp32 at every step, not only when the constant is
+// emitted.  1e20 * 1e20 overflows fp32, so the product is infinite and stays
+// infinite through the divide; folding the multiply in double instead hands
+// back a finite 1e20.
+const float cvalFp32Overflow    = (1.0e20 * 1.0e20) / 1.0e20; // inf
+const bool  cvalFp32OverflowInf = isinf(cvalFp32Overflow);    // true
+// A literal fp32 cannot hold rounds at the fold, not only at emission.
+const float cvalFp32Nearest     = 5.0e-06;                    // 4.9999998736894e-06
+
+// An unsuffixed literal is a float even where it initialises a double, so it
+// rounds first; the lf suffix makes it a double and keeps full precision.
+const double cvalDblSuffixed    = 1234567890123456.0lf;       // 1.2345678901235e+15
+const double cvalDblUnsuffixed  = 1234567890123456.0;         // 1.2345679481405e+15

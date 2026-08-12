@@ -24,7 +24,7 @@ ERROR: node is still EOpNull!
 0:37          2.000000
 0:37          6.000000
 0:37          3.000000
-0:37          171.887339
+0:37          171.887344
 0:42      move second child to first child ( temp 4-component vector of float)
 0:42        'FragColor' ( out 4-component vector of float)
 0:42        Constant:
@@ -133,7 +133,7 @@ ERROR: node is still EOpNull!
 0:64      move second child to first child ( temp 2-component vector of float)
 0:64        'out2' ( out 2-component vector of float)
 0:64        Constant:
-0:64          871.421253
+0:64          871.421265
 0:64          4913.000000
 0:65      move second child to first child ( temp 3-component vector of uint)
 0:65        'out13' ( out 3-component vector of uint)
@@ -523,6 +523,16 @@ ERROR: node is still EOpNull!
 0:?       2.000000
 0:?     'cvalOrdVecEq' ( const bool)
 0:?       true (const bool)
+0:?     'cvalFp32Overflow' ( const float)
+0:?       +1.#INF
+0:?     'cvalFp32OverflowInf' ( const bool)
+0:?       true (const bool)
+0:?     'cvalFp32Nearest' ( const float)
+0:?       4.9999998736894e-06
+0:?     'cvalDblSuffixed' ( const double)
+0:?       1.2345678901235e+15
+0:?     'cvalDblUnsuffixed' ( const double)
+0:?       1.2345679481405e+15
 
 
 Linked fragment stage:
@@ -544,7 +554,7 @@ ERROR: node is still EOpNull!
 0:37          2.000000
 0:37          6.000000
 0:37          3.000000
-0:37          171.887339
+0:37          171.887344
 0:42      move second child to first child ( temp 4-component vector of float)
 0:42        'FragColor' ( out 4-component vector of float)
 0:42        Constant:
@@ -653,7 +663,7 @@ ERROR: node is still EOpNull!
 0:64      move second child to first child ( temp 2-component vector of float)
 0:64        'out2' ( out 2-component vector of float)
 0:64        Constant:
-0:64          871.421253
+0:64          871.421265
 0:64          4913.000000
 0:65      move second child to first child ( temp 3-component vector of uint)
 0:65        'out13' ( out 3-component vector of uint)
@@ -925,4 +935,14 @@ ERROR: node is still EOpNull!
 0:?       2.000000
 0:?     'cvalOrdVecEq' ( const bool)
 0:?       true (const bool)
+0:?     'cvalFp32Overflow' ( const float)
+0:?       +1.#INF
+0:?     'cvalFp32OverflowInf' ( const bool)
+0:?       true (const bool)
+0:?     'cvalFp32Nearest' ( const float)
+0:?       4.9999998736894e-06
+0:?     'cvalDblSuffixed' ( const double)
+0:?       1.2345678901235e+15
+0:?     'cvalDblUnsuffixed' ( const double)
+0:?       1.2345679481405e+15
 
