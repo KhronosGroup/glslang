@@ -119,13 +119,29 @@ public:
     // bits alongside dConst (which still gets a possibly-quieted value for
     // any arithmetic that reads it).
     //
-    // Only three things may read the raw bits: the bit-cast folds, SPIR-V
-    // constant emission, and the sign-bit operations (negate and abs), which
-    // IEEE 754 defines as pure sign manipulation that does not quiet.
-    // Everything else, numeric comparison included, goes through dConst, so
-    // that == and != keep their value semantics: +0.0 equals -0.0 even though
-    // the encodings differ, and a NaN equals nothing even though it encodes
-    // identically to itself.
+    // Every fold that touches a float constant falls into one of these, and
+    // getting the category wrong is silent -- it only shows up as a quieted
+    // signaling NaN in the emitted constant:
+    //
+    //   1. Arithmetic (sin, exp, +, step, smoothstep, reflect, ...): read
+    //      dConst and let the raw bits go.  A computed result inherits no
+    //      payload from its operands.
+    //   2. Bit casts (floatBitsToInt and friends): read and write raw bits.
+    //   3. Sign-bit operations (negate, abs): manipulate the raw bits
+    //      directly.  IEEE 754 defines these as pure sign manipulation, so
+    //      they must not quiet; see negateFloatConst in Constant.cpp.
+    //   4. SPIR-V constant emission: reads raw bits.
+    //   5. Selection -- an operation that *returns one of its operands*
+    //      unchanged rather than computing a new value: mix() with a bool
+    //      selector, min, max, clamp, faceforward, swizzles and dereferences.
+    //      These must copy the whole TConstUnion.  Round-tripping the value
+    //      through getDConst()/setDConst() silently drops the raw bits.
+    //   6. Comparison: goes through dConst, so == and != keep their value
+    //      semantics: +0.0 equals -0.0 even though the encodings differ, and
+    //      a NaN equals nothing even though it encodes identically to itself.
+    //      Note that <= and >= must be spelled as a disjunction rather than
+    //      the negation of the opposite comparison, or they report true for
+    //      unordered operands.
     void setRawFloatBits(unsigned int bits)
     {
         // Store the raw pattern.

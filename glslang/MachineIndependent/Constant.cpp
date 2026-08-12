@@ -61,6 +61,38 @@ To bitCast(From from)
     return to;
 }
 
+// Compare two constant aggregates the way GLSL's == does: component by
+// component, with each component using TConstUnion's value semantics.  This
+// deliberately does not use TConstUnionArray::operator==, which short-circuits
+// to true when both sides are the same allocation -- correct for asking "are
+// these the same constant", but wrong for ==, since a NaN is not equal to
+// itself even when both operands are the same declared constant.
+bool constArraysEqualByValue(const TConstUnionArray& lhs, const TConstUnionArray& rhs)
+{
+    if (lhs.size() != rhs.size())
+        return false;
+
+    for (int i = 0; i < lhs.size(); ++i) {
+        if (! (lhs[i] == rhs[i]))
+            return false;
+    }
+
+    return true;
+}
+
+// Negate a float constant.  IEEE 754 makes negation a sign-bit operation: it
+// never signals and never quiets, so when the source carries raw bits the sign
+// is flipped in those bits rather than through the double, which would set the
+// quiet bit of a signaling NaN.  Used by unary minus and by faceforward, which
+// negates one of its arguments.
+void negateFloatConst(TConstUnion& result, const TConstUnion& operand, TBasicType basicType)
+{
+    if (operand.getHasRawFloatBits() && basicType == EbtFloat)
+        result.setRawFloatBits(operand.getRawFloatBits() ^ 0x80000000u);
+    else
+        result.setDConst(-operand.getDConst(), basicType);
+}
+
 } // end anonymous namespace
 
 
@@ -353,20 +385,31 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TIntermTyped* right
         newConstArray[0].setBConst(leftUnionArray[0] > rightUnionArray[0]);
         returnType.shallowCopy(constBool);
         break;
+    // Spelled as a disjunction rather than the negation of the opposite
+    // comparison: for unordered operands every ordered comparison is false, so
+    // "not greater" would wrongly report NaN <= NaN as true.
     case EOpLessThanEqual:
-        newConstArray[0].setBConst(! (leftUnionArray[0] > rightUnionArray[0]));
+        newConstArray[0].setBConst((leftUnionArray[0] < rightUnionArray[0]) ||
+                                   (leftUnionArray[0] == rightUnionArray[0]));
         returnType.shallowCopy(constBool);
         break;
     case EOpGreaterThanEqual:
-        newConstArray[0].setBConst(! (leftUnionArray[0] < rightUnionArray[0]));
+        newConstArray[0].setBConst((leftUnionArray[0] > rightUnionArray[0]) ||
+                                   (leftUnionArray[0] == rightUnionArray[0]));
         returnType.shallowCopy(constBool);
         break;
+    // Compared component by component rather than with
+    // TConstUnionArray::operator==, which returns true early when both sides
+    // are the same allocation.  That shortcut is right for asking "are these
+    // the same constant", which is what link validation and the SPIR-V
+    // intrinsics use it for, but wrong for ==, where a NaN must not equal
+    // itself even when both operands name the same declared constant.
     case EOpEqual:
-        newConstArray[0].setBConst(rightNode->getConstArray() == leftUnionArray);
+        newConstArray[0].setBConst(constArraysEqualByValue(leftUnionArray, rightNode->getConstArray()));
         returnType.shallowCopy(constBool);
         break;
     case EOpNotEqual:
-        newConstArray[0].setBConst(rightNode->getConstArray() != leftUnionArray);
+        newConstArray[0].setBConst(! constArraysEqualByValue(leftUnionArray, rightNode->getConstArray()));
         returnType.shallowCopy(constBool);
         break;
 
@@ -696,15 +739,7 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType) 
         case EOpNegative:
             switch (getType().getBasicType()) {
             case EbtFloat:
-                // IEEE 754 makes negate a sign-bit operation: it never signals
-                // and never quiets.  Flip the sign in the raw bits when the
-                // constant has them, since negating through the double would
-                // set the quiet bit of a signaling NaN.
-                if (unionArray[i].getHasRawFloatBits() && returnType.getBasicType() == EbtFloat) {
-                    newConstArray[i].setRawFloatBits(unionArray[i].getRawFloatBits() ^ 0x80000000u);
-                    break;
-                }
-                newConstArray[i].setDConst(-unionArray[i].getDConst(), returnType.getBasicType());
+                negateFloatConst(newConstArray[i], unionArray[i], returnType.getBasicType());
                 break;
             case EbtDouble:
             case EbtFloat16:
@@ -1078,7 +1113,15 @@ TIntermTyped* TIntermediate::fold(TIntermAggregate* aggrNode)
                 case EbtFloatMXINT8:
                 case EbtFloat:
                 case EbtDouble:
-                    newConstArray[comp].setDConst(std::min(childConstUnions[0][arg0comp].getDConst(), childConstUnions[1][arg1comp].getDConst()), aggrNode->getType().getBasicType());
+                    // min() selects an operand rather than computing a value,
+                    // so copy the whole union: going through getDConst() would
+                    // drop the raw bits of a signaling NaN.  The comparison
+                    // order matches std::min, which returns the first argument
+                    // unless the second is strictly smaller.
+                    newConstArray[comp] = (childConstUnions[1][arg1comp].getDConst() <
+                                           childConstUnions[0][arg0comp].getDConst())
+                                              ? childConstUnions[1][arg1comp]
+                                              : childConstUnions[0][arg0comp];
                     break;
                 case EbtInt:
                     newConstArray[comp].setIConst(std::min(childConstUnions[0][arg0comp].getIConst(), childConstUnions[1][arg1comp].getIConst()));
@@ -1120,7 +1163,13 @@ TIntermTyped* TIntermediate::fold(TIntermAggregate* aggrNode)
                 case EbtFloatMXINT8:
                 case EbtFloat:
                 case EbtDouble:
-                    newConstArray[comp].setDConst(std::max(childConstUnions[0][arg0comp].getDConst(), childConstUnions[1][arg1comp].getDConst()), aggrNode->getType().getBasicType());
+                    // Selection, not arithmetic -- see min() above.  Matches
+                    // std::max, which returns the first argument unless the
+                    // second is strictly greater.
+                    newConstArray[comp] = (childConstUnions[0][arg0comp].getDConst() <
+                                           childConstUnions[1][arg1comp].getDConst())
+                                              ? childConstUnions[1][arg1comp]
+                                              : childConstUnions[0][arg0comp];
                     break;
                 case EbtInt:
                     newConstArray[comp].setIConst(std::max(childConstUnions[0][arg0comp].getIConst(), childConstUnions[1][arg1comp].getIConst()));
@@ -1162,9 +1211,19 @@ TIntermTyped* TIntermediate::fold(TIntermAggregate* aggrNode)
                 case EbtFloatMXINT8:
                 case EbtFloat:
                 case EbtDouble:
-                    newConstArray[comp].setDConst(std::min(std::max(childConstUnions[0][arg0comp].getDConst(), childConstUnions[1][arg1comp].getDConst()),
-                                                                                                               childConstUnions[2][arg2comp].getDConst()),
-                                                  aggrNode->getType().getBasicType());
+                    {
+                        // clamp() is min(max(x, minVal), maxVal), and both of
+                        // those select an operand rather than computing one, so
+                        // the chosen union is copied whole -- see min() above.
+                        const TConstUnion& maxed =
+                            (childConstUnions[0][arg0comp].getDConst() < childConstUnions[1][arg1comp].getDConst())
+                                ? childConstUnions[1][arg1comp]
+                                : childConstUnions[0][arg0comp];
+                        newConstArray[comp] =
+                            (childConstUnions[2][arg2comp].getDConst() < maxed.getDConst())
+                                ? childConstUnions[2][arg2comp]
+                                : maxed;
+                    }
                     break;
                 case EbtUint:
                     newConstArray[comp].setUConst(std::min(std::max(childConstUnions[0][arg0comp].getUConst(), childConstUnions[1][arg1comp].getUConst()),
@@ -1207,11 +1266,15 @@ TIntermTyped* TIntermediate::fold(TIntermAggregate* aggrNode)
             case EOpGreaterThan:
                 newConstArray[comp].setBConst(childConstUnions[0][arg0comp] > childConstUnions[1][arg1comp]);
                 break;
+            // See the scalar cases above: a negated comparison is wrong for
+            // unordered operands.
             case EOpLessThanEqual:
-                newConstArray[comp].setBConst(! (childConstUnions[0][arg0comp] > childConstUnions[1][arg1comp]));
+                newConstArray[comp].setBConst((childConstUnions[0][arg0comp] < childConstUnions[1][arg1comp]) ||
+                                              (childConstUnions[0][arg0comp] == childConstUnions[1][arg1comp]));
                 break;
             case EOpGreaterThanEqual:
-                newConstArray[comp].setBConst(! (childConstUnions[0][arg0comp] < childConstUnions[1][arg1comp]));
+                newConstArray[comp].setBConst((childConstUnions[0][arg0comp] > childConstUnions[1][arg1comp]) ||
+                                              (childConstUnions[0][arg0comp] == childConstUnions[1][arg1comp]));
                 break;
             case EOpVectorEqual:
                 newConstArray[comp].setBConst(childConstUnions[0][arg0comp] == childConstUnions[1][arg1comp]);
@@ -1223,10 +1286,14 @@ TIntermTyped* TIntermediate::fold(TIntermAggregate* aggrNode)
                 if (!children[0]->getAsTyped()->isFloatingDomain())
                     return aggrNode;
                 if (children[2]->getAsTyped()->getBasicType() == EbtBool) {
-                    newConstArray[comp].setDConst(childConstUnions[2][arg2comp].getBConst()
-                        ? childConstUnions[1][arg1comp].getDConst()
-                        : childConstUnions[0][arg0comp].getDConst(),
-                        aggrNode->getType().getBasicType());
+                    // The bool overload is arithmetic-free selection, so the
+                    // chosen union is copied whole rather than round-tripped
+                    // through getDConst(), which would quiet a signaling NaN.
+                    // A ?: with a vector condition lowers to this case as well
+                    // (see TIntermediate::addSelection).
+                    newConstArray[comp] = childConstUnions[2][arg2comp].getBConst()
+                        ? childConstUnions[1][arg1comp]
+                        : childConstUnions[0][arg0comp];
                 } else {
                     newConstArray[comp].setDConst(
                         childConstUnions[0][arg0comp].getDConst() * (1.0 - childConstUnions[2][arg2comp].getDConst()) +
@@ -1287,7 +1354,10 @@ TIntermTyped* TIntermediate::fold(TIntermAggregate* aggrNode)
                 if (dot < 0.0)
                     newConstArray[comp] = childConstUnions[0][comp];
                 else
-                    newConstArray[comp].setDConst(-childConstUnions[0][comp].getDConst(), aggrNode->getType().getBasicType());
+                    // Negation only, so use the sign-bit path -- the same rule
+                    // unary minus follows.
+                    negateFloatConst(newConstArray[comp], childConstUnions[0][comp],
+                                     aggrNode->getType().getBasicType());
             }
             break;
         case EOpReflect:

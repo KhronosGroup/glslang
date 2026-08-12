@@ -472,6 +472,57 @@ ERROR: node is still EOpNull!
 0:?       4288750405 (const uint)
 0:?     'snanAbsBits' ( const uint)
 0:?       2141266757 (const uint)
+0:?     'cvalNanLe' ( const bool)
+0:?       false (const bool)
+0:?     'cvalNanGe' ( const bool)
+0:?       false (const bool)
+0:?     'cvalNanLeV' ( const 2-component vector of bool)
+0:?       false (const bool)
+0:?       false (const bool)
+0:?     'cvalNanGeV' ( const 2-component vector of bool)
+0:?       false (const bool)
+0:?       false (const bool)
+0:?     'cvalOrdLe' ( const 3-component vector of bool)
+0:?       true (const bool)
+0:?       true (const bool)
+0:?       false (const bool)
+0:?     'cvalOrdGe' ( const 3-component vector of bool)
+0:?       true (const bool)
+0:?       true (const bool)
+0:?       false (const bool)
+0:?     'snanMixBits' ( const uint)
+0:?       2141266757 (const uint)
+0:?     'snanMinBits' ( const uint)
+0:?       2141266757 (const uint)
+0:?     'snanMaxBits' ( const uint)
+0:?       2141266757 (const uint)
+0:?     'snanClampBits' ( const uint)
+0:?       2141266757 (const uint)
+0:?     'snanFaceFwd' ( const uint)
+0:?       4288750405 (const uint)
+0:?     'cvalSelectOrd' ( const 4-component vector of float)
+0:?       2.000000
+0:?       3.000000
+0:?       1.000000
+0:?       0.000000
+0:?     'cvalNanSelf' ( const float)
+0:?       1.#IND
+0:?     'cvalNanSelfEq' ( const bool)
+0:?       false (const bool)
+0:?     'cvalNanSelfNe' ( const bool)
+0:?       true (const bool)
+0:?     'cvalNanVec2' ( const 2-component vector of float)
+0:?       1.#IND
+0:?       1.#IND
+0:?     'cvalNanVecEq' ( const bool)
+0:?       false (const bool)
+0:?     'cvalNanVecNe' ( const bool)
+0:?       true (const bool)
+0:?     'cvalOrdVec2' ( const 2-component vector of float)
+0:?       1.000000
+0:?       2.000000
+0:?     'cvalOrdVecEq' ( const bool)
+0:?       true (const bool)
 
 
 Linked fragment stage:
@@ -823,4 +874,55 @@ ERROR: node is still EOpNull!
 0:?       4288750405 (const uint)
 0:?     'snanAbsBits' ( const uint)
 0:?       2141266757 (const uint)
+0:?     'cvalNanLe' ( const bool)
+0:?       false (const bool)
+0:?     'cvalNanGe' ( const bool)
+0:?       false (const bool)
+0:?     'cvalNanLeV' ( const 2-component vector of bool)
+0:?       false (const bool)
+0:?       false (const bool)
+0:?     'cvalNanGeV' ( const 2-component vector of bool)
+0:?       false (const bool)
+0:?       false (const bool)
+0:?     'cvalOrdLe' ( const 3-component vector of bool)
+0:?       true (const bool)
+0:?       true (const bool)
+0:?       false (const bool)
+0:?     'cvalOrdGe' ( const 3-component vector of bool)
+0:?       true (const bool)
+0:?       true (const bool)
+0:?       false (const bool)
+0:?     'snanMixBits' ( const uint)
+0:?       2141266757 (const uint)
+0:?     'snanMinBits' ( const uint)
+0:?       2141266757 (const uint)
+0:?     'snanMaxBits' ( const uint)
+0:?       2141266757 (const uint)
+0:?     'snanClampBits' ( const uint)
+0:?       2141266757 (const uint)
+0:?     'snanFaceFwd' ( const uint)
+0:?       4288750405 (const uint)
+0:?     'cvalSelectOrd' ( const 4-component vector of float)
+0:?       2.000000
+0:?       3.000000
+0:?       1.000000
+0:?       0.000000
+0:?     'cvalNanSelf' ( const float)
+0:?       1.#IND
+0:?     'cvalNanSelfEq' ( const bool)
+0:?       false (const bool)
+0:?     'cvalNanSelfNe' ( const bool)
+0:?       true (const bool)
+0:?     'cvalNanVec2' ( const 2-component vector of float)
+0:?       1.#IND
+0:?       1.#IND
+0:?     'cvalNanVecEq' ( const bool)
+0:?       false (const bool)
+0:?     'cvalNanVecNe' ( const bool)
+0:?       true (const bool)
+0:?     'cvalOrdVec2' ( const 2-component vector of float)
+0:?       1.000000
+0:?       2.000000
+0:?     'cvalOrdVecEq' ( const bool)
+0:?       true (const bool)
 

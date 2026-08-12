@@ -174,3 +174,43 @@ const bool cvalNanNe  = uintBitsToFloat(0x7FC12345u) != uintBitsToFloat(0x7FC123
 // signaling NaN the way a fold through the double would.
 const uint snanNegBits = floatBitsToUint(-uintBitsToFloat(0x7FA12345u));     // 0xFFA12345, not 0xFFE12345
 const uint snanAbsBits = floatBitsToUint(abs(uintBitsToFloat(0xFFA12345u))); // 0x7FA12345, not 0x7FE12345
+
+// <= and >= must be false when an operand is NaN.  Folding them as the negation
+// of the opposite comparison reported true, because every ordered comparison
+// against a NaN is already false.
+const bool cvalNanLe = uintBitsToFloat(0x7FC00000u) <= uintBitsToFloat(0x7FC00000u); // false
+const bool cvalNanGe = uintBitsToFloat(0x7FC00000u) >= uintBitsToFloat(0x7FC00000u); // false
+const bvec2 cvalNanLeV = lessThanEqual(vec2(uintBitsToFloat(0x7FC00000u)), vec2(uintBitsToFloat(0x7FC00000u)));    // false, false
+const bvec2 cvalNanGeV = greaterThanEqual(vec2(uintBitsToFloat(0x7FC00000u)), vec2(uintBitsToFloat(0x7FC00000u))); // false, false
+
+// Ordered operands keep their existing results.
+const bvec3 cvalOrdLe = bvec3(1.0 <= 2.0, 1.0 <= 1.0, 2.0 <= 1.0); // true, true, false
+const bvec3 cvalOrdGe = bvec3(2.0 >= 1.0, 1.0 >= 1.0, 1.0 >= 2.0); // true, true, false
+
+// mix() with a bool selector, min, max and clamp return one of their operands
+// rather than computing a value, so the operand's exact bits have to come
+// through; reading the value out with getDConst() would quiet a signaling NaN.
+const uint snanMixBits   = floatBitsToUint(mix(uintBitsToFloat(0x7FA12345u), 1.0, false)); // 0x7FA12345
+const uint snanMinBits   = floatBitsToUint(min(uintBitsToFloat(0x7FA12345u), 1.0));        // 0x7FA12345
+const uint snanMaxBits   = floatBitsToUint(max(uintBitsToFloat(0x7FA12345u), 1.0));        // 0x7FA12345
+const uint snanClampBits = floatBitsToUint(clamp(uintBitsToFloat(0x7FA12345u), 0.0, 1.0)); // 0x7FA12345
+// faceforward negates N in this case, and negation is a sign-bit operation.
+const uint snanFaceFwd   = floatBitsToUint(faceforward(vec2(uintBitsToFloat(0x7FA12345u), 0.0),
+                                                       vec2(1.0, 0.0), vec2(1.0, 0.0)).x); // 0xFFA12345
+
+// Selection on ordinary values still picks the right operand.
+const vec4 cvalSelectOrd = vec4(min(2.0, 3.0), max(2.0, 3.0), clamp(5.0, 0.0, 1.0), clamp(-5.0, 0.0, 1.0)); // 2.0, 3.0, 1.0, 0.0
+
+// Comparing a named constant with itself still has to obey NaN semantics.  The
+// aggregate comparison returns true as soon as both sides are the same
+// allocation, which is what "are these the same constant" wants but not what ==
+// means, so == and != compare component by component instead.
+const float cvalNanSelf   = uintBitsToFloat(0x7FC00000u);
+const bool  cvalNanSelfEq = cvalNanSelf == cvalNanSelf;  // false, a NaN equals nothing
+const bool  cvalNanSelfNe = cvalNanSelf != cvalNanSelf;  // true
+const vec2  cvalNanVec2   = vec2(cvalNanSelf);
+const bool  cvalNanVecEq  = cvalNanVec2 == cvalNanVec2;  // false
+const bool  cvalNanVecNe  = cvalNanVec2 != cvalNanVec2;  // true
+// An ordinary constant compared with itself is still equal.
+const vec2  cvalOrdVec2   = vec2(1.0, 2.0);
+const bool  cvalOrdVecEq  = cvalOrdVec2 == cvalOrdVec2;  // true

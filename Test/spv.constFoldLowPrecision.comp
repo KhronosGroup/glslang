@@ -17,6 +17,15 @@ layout(local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
 const bfloat16_t  bf     = bfloat16_t(1.1);
 const float       bfDiff = float(bf) - 1.0;             // 0.09375
 
+// min, max, clamp and mix return one of their operands rather than computing a
+// value, so they are folded by copying the chosen constant.  That copy has to
+// carry the value already rounded to the declared format: each of these is the
+// same 0.09375 as bfDiff, not the 0.1 an unrounded double would give.
+const float bfMinDiff   = float(min(bfloat16_t(1.1), bfloat16_t(2.0))) - 1.0;                    // 0.09375
+const float bfMaxDiff   = float(max(bfloat16_t(1.1), bfloat16_t(0.5))) - 1.0;                    // 0.09375
+const float bfClampDiff = float(clamp(bfloat16_t(1.1), bfloat16_t(0.0), bfloat16_t(2.0))) - 1.0; // 0.09375
+const float bfMixDiff   = float(mix(bfloat16_t(1.1), bfloat16_t(2.0), false)) - 1.0;             // 0.09375
+
 // e2m1 has no infinity and no NaN, so its largest exponent is an ordinary
 // value and has to survive rounding, and a NaN saturates to all ones.
 const floate2m1_t e2m1     = floate2m1_t(1.1);
@@ -83,4 +92,16 @@ void main()
     sink += ue8m0Inf;
     sink += snanNeg;
     sink += snanAbs;
+    sink += bfMinDiff + bfMaxDiff + bfClampDiff + bfMixDiff;
+
+    // Selection preserves a signaling NaN payload, since it copies the operand
+    // instead of reading its value out as a double.
+    uint snanMin   = floatBitsToUint(min(uintBitsToFloat(0x7FA12345u), 1.0));
+    uint snanMix   = floatBitsToUint(mix(uintBitsToFloat(0x7FA12345u), 1.0, false));
+    uint snanClamp = floatBitsToUint(clamp(uintBitsToFloat(0x7FA12345u), 0.0, 1.0));
+    sink += float(snanMin) + float(snanMix) + float(snanClamp);
+
+    // <= and >= are false when an operand is NaN.
+    sink += (uintBitsToFloat(0x7FC00000u) <= uintBitsToFloat(0x7FC00000u)) ? 1.0 : 0.0;
+    sink += (uintBitsToFloat(0x7FC00000u) >= uintBitsToFloat(0x7FC00000u)) ? 1.0 : 0.0;
 }
