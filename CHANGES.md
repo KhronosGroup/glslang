@@ -7,6 +7,85 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 * Deprecate the HLSL front-end. It will be removed at the next major version.
   See issue #4210 for details.
+* Add support for GL_EXT_opacity_micromap_ray_query_mode
+
+## 16.5.0 2026-07-31
+
+### New Extensions
+
+* Implement `GLSL_EXT_split_barrier` / `SPV_EXT_split_barrier`
+* Implement `GLSL_QCOM_multiple_wait_queues`
+* Implement `GLSL_QCOM_image_processing3`
+* Implement `GL_EXT_function_control_attributes`
+
+### API Changes
+
+* Expose `TVarEntryInfo` as part of the public API in `ShaderLang.h`
+
+### Bug Fixes
+
+* Fix undefined shifts and signed overflow in `#if` expression evaluation
+* Fix out-of-bounds read when indexing `idInstruction` and `idDescriptor`
+* Fix null dereference in iomapper when `uniformVarMap` is empty
+* Fix out-of-bounds read on empty array initializer in `convertInitializerList`
+* Fix stack overflow on deeply nested macro invocations, capping macro expansion depth at 200 and emitting an error
+* Fix out-of-bounds read in `handlePragma` when `#pragma STDGL` has fewer than 4 tokens
+* Fix crash in preprocessor output when a backslash-newline continuation appears at end of input due to column underflow
+* Fix crash on excess `#endif` directives when a malformed `#if` expression desynchronizes `elseSeen`/`ifdepth` preprocessor counters
+* Fix out-of-bounds write in `memberRemapper` for nested `buffer_reference` blocks
+* Fix out-of-bounds read on long vector index in `checkIndex`
+
+### Other
+
+* Update SPIR-V size optimization and HLSL legalization pass lists to match spirv-tools, and add performance optimization option
+* Increase `input_attachment_index` limit to `INT_MAX`
+* Print compile and link error logs to stderr instead of stdout
+
+## 16.4.0 2026-07-14
+
+### Descriptor Heap
+
+* Implement `GLSL_EXT_structured_descriptor_heap` with SPIR-V layout generation, heap offset access, buffer references, matrix layout decorations, and correct `readonly`/`writeonly` qualifier propagation for buffer and image descriptors
+* Fix descriptor heap-bound buffer access to use typed pointers
+* Omit `NonUniform` decoration when using descriptor heaps, as the SPIR-V spec does not require it
+* Add `--relax-set-binding-limits` option to allow large `layout(set)` and `layout(binding)` values for descriptor heap-style workflows with sparse set spaces
+* Reject combined image samplers with `descriptor_heap`
+
+### Compute Shader Derivatives
+
+* Fix `GL_KHR_compute_shader_derivatives` regressions on shaders using the `GL_NV` variant
+* Update compute shader derivative rules to allow texture operations with implicit derivatives without extensions, falling back to LoD 0
+
+### New Extensions
+
+* Implement `GL_EXT_ocp_microscaling_types`
+* Implement `GL_NV_cooperative_matrix_decode_vector`
+* Add basic support for `GL_NV_desktop_lowp_mediump`
+* Implement `GL_EXT_opacity_micromap_ray_query_mode`
+
+### Bug Fixes
+
+* Fix generated decoration string from `UTF8EncodingKHR` to `UTFEncodingKHR`
+* Fix missing SPIR-V extension emission for `float16` derivative functions with `SPV_AMD_gpu_shader_half_float`
+* Apply `NoContraction` decoration to `dot()` when `noContraction` is set
+* Fix `OpStore` of buffer device address pointer to use 8-byte alignment, consistent with loads
+* Fix `RayTracingOpacityMicromapKHR` capability emission to only occur when `gl_RayFlagsForceOpacityMicromap2StateEXT` is actually used, fixing SPIR-V validation failures in ray query shaders outside ray-tracing pipeline stages
+* Fix `setInvertY()` to apply Y-inversion to GLSL vertex, geometry, and tessellation-evaluation shaders (previously only affected HLSL)
+* Fix `.length()` on arrays of long/cooperative vectors to use `OpArrayLength` instead of a constant component count
+* Fix unnecessary cooperative matrix conversions when creating arrays of KHR cooperative matrices
+* Add error for cooperative matrix `*=` with bf16/fp8 scalar operands
+* Fix out-of-bounds access in `elseSeen` at maximum `#if`/`#ifdef` nesting depth
+* Fix out-of-bounds read on empty struct texture template types
+* Fix crash in `layoutObjectCheck` when accessing members of an empty block
+* Emit an error when HLSL [numthreads] is given more than three arguments instead of crashing the compiler.
+* Emit error when attempting to convert a literal string to an incompatible type
+* Fix `abortKHR` to preserve the original user-defined string without modification
+* Fix out-of-bounds indexing in `TDefaultIoResolverBase::addStage` when a negative `EShLanguage` value is passed
+
+### Other
+
+* Add `--discard-is-terminate` option to emit `OpTerminateInvocation` instead of `OpDemoteToHelperInvocation` for GLSL `discard` when targeting SPIR-V 1.6+
+* Add REUSE license compliance infrastructure
 
 ## 16.3.0 2026-05-01
 ### Deprecation Notice

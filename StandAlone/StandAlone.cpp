@@ -116,6 +116,7 @@ enum TOptions : uint64_t {
     EOptionBindingsPerResourceType = (1ull << 36),
     EOptionRelaxSetBindingLimits = (1ull << 37),
     EOptionDiscardIsTerminate = (1ull << 38),
+    EOptionOptimizePerformance = (1ull << 39),
 };
 bool targetHlslFunctionality1 = false;
 bool SpvToolsDisassembler = false;
@@ -977,6 +978,12 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
 #else
                     Error("-Os not available; optimizer not linked");
 #endif
+                else if (argv[0][2] == '\0')
+#if ENABLE_OPT
+                    Options |= EOptionOptimizePerformance;
+#else
+                    Error("-O not available; optimizer not linked");
+#endif
                 else
                     Error("unknown -O option");
                 break;
@@ -1523,9 +1530,9 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
         if (! (Options & EOptionSuppressInfolog) &&
             ! (Options & EOptionMemoryLeakMode)) {
             if (!beQuiet)
-                PutsIfNonEmpty(compUnit.fileName[0].c_str());
-            PutsIfNonEmpty(shader->getInfoLog());
-            PutsIfNonEmpty(shader->getInfoDebugLog());
+                StderrIfNonEmpty(compUnit.fileName[0].c_str());
+            StderrIfNonEmpty(shader->getInfoLog());
+            StderrIfNonEmpty(shader->getInfoDebugLog());
         }
     }
 
@@ -1546,8 +1553,8 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
 
         // Report
         if (!(Options & EOptionSuppressInfolog) && !(Options & EOptionMemoryLeakMode)) {
-            PutsIfNonEmpty(program.getInfoLog());
-            PutsIfNonEmpty(program.getInfoDebugLog());
+            StderrIfNonEmpty(program.getInfoLog());
+            StderrIfNonEmpty(program.getInfoDebugLog());
         }
 
         // Reflect
@@ -1597,6 +1604,7 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
                     spvOptions.stripDebugInfo = true;
                 spvOptions.disableOptimizer = (Options & EOptionOptimizeDisable) != 0;
                 spvOptions.optimizeSize = (Options & EOptionOptimizeSize) != 0;
+                spvOptions.optimizePerformance = (Options & EOptionOptimizePerformance) != 0;
                 spvOptions.disassemble = SpvToolsDisassembler;
                 spvOptions.validate = SpvToolsValidate;
                 spvOptions.compileOnly = compileOnly;
@@ -2016,8 +2024,9 @@ void usage()
            "  -H          print human readable form of SPIR-V; turns on -V\n"
            "  -I<dir>     add <dir> to the include search path; includer's directory is\n"
            "              searched first, followed by left-to-right order of -I\n"
-           "  -Od         disables optimization; may cause illegal SPIR-V for HLSL\n"
+           "  -O          optimizes SPIR-V for performance\n"
            "  -Os         optimizes SPIR-V to minimize size\n"
+           "  -Od         disables optimization; may cause illegal SPIR-V for HLSL\n"
            "  -P<text> | --P <text> | --preamble-text <text>\n"
            "              inject custom preamble text which is treated as if it appeared\n"
            "              immediately after the version declaration (if any)\n"

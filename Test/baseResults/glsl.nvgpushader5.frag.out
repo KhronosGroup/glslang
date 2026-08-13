@@ -7666,123 +7666,107 @@ Requested GL_NV_gpu_shader5
 0:1911      Sequence
 0:1911        move second child to first child ( temp int64_t)
 0:1911          'v7' ( temp int64_t)
-0:1911          doubleBitsToInt64 ( global int64_t)
-0:1911            Constant:
-0:1911              0.000000
+0:1911          Constant:
+0:1911            0 (const int64_t)
 0:1912      Sequence
 0:1912        move second child to first child ( temp 2-component vector of int64_t)
 0:1912          'v8' ( temp 2-component vector of int64_t)
-0:1912          doubleBitsToInt64 ( global 2-component vector of int64_t)
-0:1912            Constant:
-0:1912              0.000000
-0:1912              0.000000
+0:1912          Constant:
+0:1912            0 (const int64_t)
+0:1912            0 (const int64_t)
 0:1913      Sequence
 0:1913        move second child to first child ( temp 3-component vector of int64_t)
 0:1913          'v9' ( temp 3-component vector of int64_t)
-0:1913          doubleBitsToInt64 ( global 3-component vector of int64_t)
-0:1913            Constant:
-0:1913              0.000000
-0:1913              0.000000
-0:1913              0.000000
+0:1913          Constant:
+0:1913            0 (const int64_t)
+0:1913            0 (const int64_t)
+0:1913            0 (const int64_t)
 0:1914      Sequence
 0:1914        move second child to first child ( temp 4-component vector of int64_t)
 0:1914          'v10' ( temp 4-component vector of int64_t)
-0:1914          doubleBitsToInt64 ( global 4-component vector of int64_t)
-0:1914            Constant:
-0:1914              0.000000
-0:1914              0.000000
-0:1914              0.000000
-0:1914              0.000000
+0:1914          Constant:
+0:1914            0 (const int64_t)
+0:1914            0 (const int64_t)
+0:1914            0 (const int64_t)
+0:1914            0 (const int64_t)
 0:1916      Sequence
 0:1916        move second child to first child ( temp uint64_t)
 0:1916          'v11' ( temp uint64_t)
-0:1916          doubleBitsToUint64 ( global uint64_t)
-0:1916            Constant:
-0:1916              0.000000
+0:1916          Constant:
+0:1916            0 (const uint64_t)
 0:1917      Sequence
 0:1917        move second child to first child ( temp 2-component vector of uint64_t)
 0:1917          'v12' ( temp 2-component vector of uint64_t)
-0:1917          doubleBitsToUint64 ( global 2-component vector of uint64_t)
-0:1917            Constant:
-0:1917              0.000000
-0:1917              0.000000
+0:1917          Constant:
+0:1917            0 (const uint64_t)
+0:1917            0 (const uint64_t)
 0:1918      Sequence
 0:1918        move second child to first child ( temp 3-component vector of uint64_t)
 0:1918          'v13' ( temp 3-component vector of uint64_t)
-0:1918          doubleBitsToUint64 ( global 3-component vector of uint64_t)
-0:1918            Constant:
-0:1918              0.000000
-0:1918              0.000000
-0:1918              0.000000
+0:1918          Constant:
+0:1918            0 (const uint64_t)
+0:1918            0 (const uint64_t)
+0:1918            0 (const uint64_t)
 0:1919      Sequence
 0:1919        move second child to first child ( temp 4-component vector of uint64_t)
 0:1919          'v14' ( temp 4-component vector of uint64_t)
-0:1919          doubleBitsToUint64 ( global 4-component vector of uint64_t)
-0:1919            Constant:
-0:1919              0.000000
-0:1919              0.000000
-0:1919              0.000000
-0:1919              0.000000
+0:1919          Constant:
+0:1919            0 (const uint64_t)
+0:1919            0 (const uint64_t)
+0:1919            0 (const uint64_t)
+0:1919            0 (const uint64_t)
 0:1921      Sequence
 0:1921        move second child to first child ( temp double)
 0:1921          'v15' ( temp double)
-0:1921          int64BitsToDouble ( global double)
-0:1921            Constant:
-0:1921              0 (const int64_t)
+0:1921          Constant:
+0:1921            0.000000
 0:1922      Sequence
 0:1922        move second child to first child ( temp 2-component vector of double)
 0:1922          'v16' ( temp 2-component vector of double)
-0:1922          int64BitsToDouble ( global 2-component vector of double)
-0:1922            Constant:
-0:1922              0 (const int64_t)
-0:1922              0 (const int64_t)
+0:1922          Constant:
+0:1922            0.000000
+0:1922            0.000000
 0:1923      Sequence
 0:1923        move second child to first child ( temp 3-component vector of double)
 0:1923          'v17' ( temp 3-component vector of double)
-0:1923          int64BitsToDouble ( global 3-component vector of double)
-0:1923            Constant:
-0:1923              0 (const int64_t)
-0:1923              0 (const int64_t)
-0:1923              0 (const int64_t)
+0:1923          Constant:
+0:1923            0.000000
+0:1923            0.000000
+0:1923            0.000000
 0:1924      Sequence
 0:1924        move second child to first child ( temp 4-component vector of double)
 0:1924          'v18' ( temp 4-component vector of double)
-0:1924          int64BitsToDouble ( global 4-component vector of double)
-0:1924            Constant:
-0:1924              0 (const int64_t)
-0:1924              0 (const int64_t)
-0:1924              0 (const int64_t)
-0:1924              0 (const int64_t)
+0:1924          Constant:
+0:1924            0.000000
+0:1924            0.000000
+0:1924            0.000000
+0:1924            0.000000
 0:1926      Sequence
 0:1926        move second child to first child ( temp double)
 0:1926          'v19' ( temp double)
-0:1926          uint64BitsToDouble ( global double)
-0:1926            Constant:
-0:1926              0 (const uint64_t)
+0:1926          Constant:
+0:1926            0.000000
 0:1927      Sequence
 0:1927        move second child to first child ( temp 2-component vector of double)
 0:1927          'v20' ( temp 2-component vector of double)
-0:1927          uint64BitsToDouble ( global 2-component vector of double)
-0:1927            Constant:
-0:1927              0 (const uint64_t)
-0:1927              0 (const uint64_t)
+0:1927          Constant:
+0:1927            0.000000
+0:1927            0.000000
 0:1928      Sequence
 0:1928        move second child to first child ( temp 3-component vector of double)
 0:1928          'v21' ( temp 3-component vector of double)
-0:1928          uint64BitsToDouble ( global 3-component vector of double)
-0:1928            Constant:
-0:1928              0 (const uint64_t)
-0:1928              0 (const uint64_t)
-0:1928              0 (const uint64_t)
+0:1928          Constant:
+0:1928            0.000000
+0:1928            0.000000
+0:1928            0.000000
 0:1929      Sequence
 0:1929        move second child to first child ( temp 4-component vector of double)
 0:1929          'v22' ( temp 4-component vector of double)
-0:1929          uint64BitsToDouble ( global 4-component vector of double)
-0:1929            Constant:
-0:1929              0 (const uint64_t)
-0:1929              0 (const uint64_t)
-0:1929              0 (const uint64_t)
-0:1929              0 (const uint64_t)
+0:1929          Constant:
+0:1929            0.000000
+0:1929            0.000000
+0:1929            0.000000
+0:1929            0.000000
 0:1931      Sequence
 0:1931        move second child to first child ( temp bool)
 0:1931          'b1' ( temp bool)

@@ -490,7 +490,7 @@ public:
     // Determine loop control from attributes
     void handleLoopAttributes(const TAttributes& attributes, TIntermNode*);
     // Function attributes
-    void handleFunctionAttributes(const TSourceLoc&, const TAttributes&);
+    void handleFunctionAttributes(const TSourceLoc&, TFunction&, const TAttributes&);
 
     // GL_EXT_spirv_intrinsics
     TSpirvRequirement* makeSpirvRequirement(const TSourceLoc& loc, const TString& name,
