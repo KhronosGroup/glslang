@@ -75,6 +75,7 @@ INSTANTIATE_TEST_SUITE_P(
         "preprocessor.shift_out_of_range.vert",
         "preprocessor.elseseen.oob.vert",
         "preprocessor.macro.recursion.vert",
+        "preprocessor.string_escaping.frag",
     })),
     FileNameAsCustomTestSuffix
 );

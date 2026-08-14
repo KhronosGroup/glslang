@@ -1078,6 +1078,28 @@ private:
     int lastLine;
 };
 
+// Re-escape characters that would otherwise be emitted literally 
+// so the preprocessed output remains valid GLSL source.
+static void appendEscapedString(std::string& output, const char* string) {
+
+    for (const char* p = string; *p != '\0'; ++p) {
+        switch (*p) {
+        case '"': output += "\\\""; break;
+        case '\\': output += "\\\\"; break;
+        case '\a': output += "\\a"; break;
+        case '\b': output += "\\b"; break;
+        case '\f': output += "\\f"; break;
+        case '\n': output += "\\n"; break;
+        case '\r': output += "\\r"; break;
+        case '\t': output += "\\t"; break;
+        case '\v': output += "\\v"; break;
+        default:
+            output += *p;
+            break;
+        }
+    }
+}
+
 // DoPreprocessing is a valid ProcessingContext template argument,
 // which only performs the preprocessing step of compilation.
 // It places the result in the "string" argument to its constructor.
@@ -1203,11 +1225,13 @@ struct DoPreprocessing {
             if (token == PpAtomIdentifier)
                 lastTokenName = ppToken.name;
             lastToken = token;
-            if (token == PpAtomConstString)
+            if (token == PpAtomConstString) {
                 outputBuffer += "\"";
-            outputBuffer += ppToken.name;
-            if (token == PpAtomConstString)
+                appendEscapedString(outputBuffer, ppToken.name);
                 outputBuffer += "\"";
+            } else {
+                outputBuffer += ppToken.name;
+            } 
         } while (true);
         outputBuffer += '\n';
         *outputString = std::move(outputBuffer);
