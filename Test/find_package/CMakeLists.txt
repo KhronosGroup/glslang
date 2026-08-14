@@ -38,7 +38,7 @@ project(FP_TEST LANGUAGES C CXX)
 
 # Assume the user install here to simplify CI
 # It also makes local testing easier.
-list(APPEND CMAKE_PREFIX_PATH "${PROJECT_SOURCE_DIR}/../../build/install")
+set(CMAKE_PREFIX_PATH "${PROJECT_SOURCE_DIR}/../../build/install")
 find_package(glslang REQUIRED CONFIG)
 
 if (NOT DEFINED glslang_VERSION)
@@ -113,8 +113,13 @@ endif()
 # Additional sanity check the glslang.pc is correct.
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(glslang REQUIRED IMPORTED_TARGET glslang)
+pkg_check_modules(SPIRV-Tools REQUIRED IMPORTED_TARGET SPIRV-Tools)
 
-add_library(stub_pc STATIC stub.cpp)
-target_link_libraries(example PRIVATE
+add_executable(example_pc example.c)
+set_target_properties(example_pc PROPERTIES LINKER_LANGUAGE CXX)
+
+target_link_libraries(example_pc PRIVATE
+    PkgConfig::SPIRV-Tools
     PkgConfig::glslang
+    glslang::glslang-default-resource-limits
 )
