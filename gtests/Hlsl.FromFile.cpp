@@ -214,6 +214,7 @@ INSTANTIATE_TEST_SUITE_P(
         {"hlsl.comparison.vec.frag", "main"},
         {"hlsl.conditional.frag", "PixelShaderFunction"},
         {"hlsl.constantbuffer.frag", "main"},
+        {"hlsl.constantfold.matrix.frag", "main"},
         {"hlsl.constructArray.vert", "main"},
         {"hlsl.constructexpr.frag", "main"},
         {"hlsl.constructimat.frag", "main"},

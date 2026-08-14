@@ -974,13 +974,13 @@ TIntermTyped* TIntermediate::fold(TIntermAggregate* aggrNode)
         break;
     case EOpStep:
         componentwise = true;
-        objectSize = std::max(children[0]->getAsTyped()->getType().getVectorSize(),
-                              children[1]->getAsTyped()->getType().getVectorSize());
+        objectSize = std::max(children[0]->getAsTyped()->getType().computeNumComponents(),
+                              children[1]->getAsTyped()->getType().computeNumComponents());
         break;
     case EOpSmoothStep:
         componentwise = true;
-        objectSize = std::max(children[0]->getAsTyped()->getType().getVectorSize(),
-                              children[2]->getAsTyped()->getType().getVectorSize());
+        objectSize = std::max(children[0]->getAsTyped()->getType().computeNumComponents(),
+                              children[2]->getAsTyped()->getType().computeNumComponents());
         break;
     case EOpMul:
         {
@@ -1001,13 +1001,13 @@ TIntermTyped* TIntermediate::fold(TIntermAggregate* aggrNode)
         for (int comp = 0; comp < objectSize; comp++) {
 
             // some arguments are scalars instead of matching vectors; simulate a smear
-            int arg0comp = std::min(comp, children[0]->getAsTyped()->getType().getVectorSize() - 1);
+            int arg0comp = std::min(comp, children[0]->getAsTyped()->getType().computeNumComponents() - 1);
             int arg1comp = 0;
             if (children.size() > 1)
-                arg1comp = std::min(comp, children[1]->getAsTyped()->getType().getVectorSize() - 1);
+                arg1comp = std::min(comp, children[1]->getAsTyped()->getType().computeNumComponents() - 1);
             int arg2comp = 0;
             if (children.size() > 2)
-                arg2comp = std::min(comp, children[2]->getAsTyped()->getType().getVectorSize() - 1);
+                arg2comp = std::min(comp, children[2]->getAsTyped()->getType().computeNumComponents() - 1);
 
             switch (aggrNode->getOp()) {
             case EOpAtan:
