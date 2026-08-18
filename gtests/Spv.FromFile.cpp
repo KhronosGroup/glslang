@@ -68,6 +68,7 @@ std::string FileNameAsCustomTestSuffixIoMap(
 using CompileVulkanToSpirvTest = GlslangTest<::testing::TestWithParam<std::string>>;
 using CompileVulkanToSpirvRelaxSetBindingLimitsTest = GlslangTest<::testing::TestWithParam<std::string>>;
 using CompileVulkanToSpirvTestNoLink = GlslangTest<::testing::TestWithParam<std::string>>;
+using CompileToSpirv14TestNoLink = GlslangTest<::testing::TestWithParam<std::string>>;
 using CompileVulkanToSpirvDeadCodeElimTest = GlslangTest<::testing::TestWithParam<std::string>>;
 using CompileVulkan1_1ToSpirvTest = GlslangTest<::testing::TestWithParam<std::string>>;
 using CompileToSpirv14Test = GlslangTest<::testing::TestWithParam<std::string>>;
@@ -116,6 +117,14 @@ TEST_P(CompileVulkanToSpirvTestNoLink, FromFile)
     // TODO(ncesario) make sure this is actually necessary
     loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam(), Source::GLSL, Semantics::Vulkan,
                             glslang::EShTargetVulkan_1_3, glslang::EShTargetSpv_1_0, Target::Spv);
+}
+
+// Compiling GLSL to SPIR-V 1.4 without linking, for features that require SPIR-V 1.4.
+TEST_P(CompileToSpirv14TestNoLink, FromFile)
+{
+    options().compileOnly = true;
+    loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam(), Source::GLSL, Semantics::Vulkan,
+                            glslang::EShTargetVulkan_1_3, glslang::EShTargetSpv_1_4, Target::Spv);
 }
 
 TEST_P(CompileVulkanToSpirvDeadCodeElimTest, FromFile)
@@ -652,6 +661,14 @@ INSTANTIATE_TEST_SUITE_P(
     Glsl, CompileVulkanToSpirvTestNoLink,
     ::testing::ValuesIn(std::vector<std::string>({
         "spv.exportFunctions.comp",
+    })),
+    FileNameAsCustomTestSuffix
+);
+
+INSTANTIATE_TEST_SUITE_P(
+    Glsl, CompileToSpirv14TestNoLink,
+    ::testing::ValuesIn(std::vector<std::string>({
+        "spv.WorkgroupMemoryExplicitLayout.NoLink.comp",
     })),
     FileNameAsCustomTestSuffix
 );
