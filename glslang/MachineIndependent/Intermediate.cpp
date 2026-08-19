@@ -45,7 +45,7 @@
 #include "SymbolTable.h"
 #include "propagateNoContraction.h"
 
-#include "SPIRV/hex_float.h"
+#include "glslang/Include/hex_float.h"
 
 #include <algorithm>
 #include <cfloat>
