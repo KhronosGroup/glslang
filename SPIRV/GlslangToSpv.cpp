@@ -251,7 +251,7 @@ protected:
     spv::LinkageType convertGlslangLinkageToSpv(glslang::TLinkType glslangLinkType);
     bool isDescHeapDescriptorType(const glslang::TType& type) const;
     bool containsDescHeapDescriptorType(const glslang::TType& type) const;
-    spv::Id makeDescHeapImageArrayWrapperType(const glslang::TIntermSymbol& symbol, spv::Id arrayType);
+    spv::Id getDescHeapAccessChainBaseType(const glslang::TIntermSymbol& symbol, bool& imageArrayWrapped);
 
     void decorateStructType(const glslang::TType&, const glslang::TTypeList* glslangStruct, glslang::TLayoutPacking,
                             const glslang::TQualifier&, spv::Id, const std::vector<spv::Id>& spvMembers);
@@ -2377,27 +2377,11 @@ void TGlslangToSpvTraverser::visitSymbol(glslang::TIntermSymbol* symbol)
         if (qualifier.builtIn == glslang::EbvResourceHeapEXT ||
             qualifier.builtIn == glslang::EbvSamplerHeapEXT) {
             const glslang::TType& symbolType = symbol->getType();
-            // Direct descriptor-heap image arrays have no variable or member to
-            // carry NonReadable/NonWritable, so wrap them in a one-member block.
-            const bool wrapDescHeapImageArray =
-                symbolType.getQualifier().layoutDescriptorHeap &&
-                symbolType.isArray() &&
-                symbolType.isImage() &&
-                (symbolType.getQualifier().isReadOnly() || symbolType.getQualifier().isWriteOnly());
-
             if (builder.getAccessChainDescHeapBaseType() == spv::NoResult) {
-                const long long symbolId = symbol->getId();
-                auto cachedBaseType = heapDescHeapBaseType.find(symbolId);
-                if (cachedBaseType == heapDescHeapBaseType.end()) {
-                    spv::Id baseType = convertGlslangToSpvType(symbolType);
-                    if (wrapDescHeapImageArray)
-                        baseType = makeDescHeapImageArrayWrapperType(*symbol, baseType);
-                    cachedBaseType = heapDescHeapBaseType.emplace(symbolId, baseType).first;
-                }
-                builder.setAccessChainDescHeapBaseType(cachedBaseType->second);
+                bool imageArrayWrapped = false;
+                spv::Id baseType = getDescHeapAccessChainBaseType(*symbol, imageArrayWrapped);
+                builder.setAccessChainDescHeapBaseType(baseType, imageArrayWrapped);
             }
-            if (wrapDescHeapImageArray)
-                builder.accessChainPushDescHeapIndex(builder.makeIntConstant(0));
             spv::Id heapOffset = makeHeapOffsetId(symbolType);
             if (heapOffset != spv::NoResult)
                 builder.setAccessChainDescHeapBaseOffset(heapOffset);
@@ -2439,26 +2423,30 @@ void TGlslangToSpvTraverser::visitSymbol(glslang::TIntermSymbol* symbol)
 #endif
 }
 
-// Create a one-member heap block so image memory qualifiers can be expressed as
-// legal member decorations instead of decorating an OpLoad result.
-spv::Id TGlslangToSpvTraverser::makeDescHeapImageArrayWrapperType(const glslang::TIntermSymbol& symbol,
-                                                                  spv::Id arrayType)
+// Return the type used as the base type of a descriptor-heap access chain.
+// Also report whether each element of a direct image array is wrapped in a struct,
+// so access-chain construction can select member 0 of that struct.
+spv::Id TGlslangToSpvTraverser::getDescHeapAccessChainBaseType(
+    const glslang::TIntermSymbol& symbol, bool& imageArrayWrapped)
 {
-    const glslang::TQualifier& qualifier = symbol.getType().getQualifier();
-    spv::Id memberOffset = builder.makeUintConstant(0);
-    const std::vector<spv::Id> members = { arrayType };
-    const std::string wrapperName = std::string(symbol.getName().c_str()) + "_heap";
-    spv::Id wrapperType = builder.makeStructType(members, {}, wrapperName.c_str(), false);
+    const glslang::TType& symbolType = symbol.getType();
+    imageArrayWrapped =
+        symbolType.getQualifier().layoutDescriptorHeap &&
+        symbolType.isArray() &&
+        symbolType.isImage() &&
+        (symbolType.getQualifier().isReadOnly() || symbolType.getQualifier().isWriteOnly());
 
-    builder.addMemberName(wrapperType, 0, symbol.getName().c_str());
-    builder.addMemberDecorationIdEXT(wrapperType, 0, spv::Decoration::OffsetIdEXT, {memberOffset});
+    const long long symbolId = symbol.getId();
+    auto cachedBaseType = heapDescHeapBaseType.find(symbolId);
+    if (cachedBaseType == heapDescHeapBaseType.end()) {
+        spv::Id baseType = convertGlslangToSpvType(symbolType);
+        if (symbolType.isArray())
+            builder.addName(baseType, symbol.getName().c_str());
 
-    if (qualifier.isReadOnly())
-        builder.addMemberDecoration(wrapperType, 0, spv::Decoration::NonWritable);
-    if (qualifier.isWriteOnly())
-        builder.addMemberDecoration(wrapperType, 0, spv::Decoration::NonReadable);
+        cachedBaseType = heapDescHeapBaseType.emplace(symbolId, baseType).first;
+    }
 
-    return wrapperType;
+    return cachedBaseType->second;
 }
 
 // Create new untyped access chain instruction to descriptor heap, based on EXT_descriptor_heap extension.
@@ -2469,6 +2457,10 @@ void TGlslangToSpvTraverser::recordDescHeapAccessChainInfo(glslang::TIntermBinar
     if (node->getQualifier().layoutDescriptorHeap) {
         if (builder.hasAccessChainIndex())
             builder.moveAccessChainIndexToDescHeapIndexChain();
+
+        // If the final image is wrapped in a struct, append index 0 to select the image member.
+        if (builder.isAccessChainDescHeapImageArrayWrapped() && !node->getType().isArray())
+            builder.accessChainPushDescHeapIndex(builder.makeIntConstant(0));
     }
 
     // Descriptor leaf nodes need the real resource type for later untyped loads.
@@ -6095,6 +6087,27 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
         if (type.getQualifier().layoutDescriptorHeap && containsDescHeapDescriptorType(type)) {
             std::vector<spv::Id> arrayStrides = descHeapLayout.getOrCreateArrayStrides(type);
             assert((int)arrayStrides.size() == type.getArraySizes()->getNumDims());
+
+            const glslang::TQualifier& descHeapQualifier = type.getQualifier();
+            const bool wrapDescHeapImageArray = type.isImage() &&
+                (descHeapQualifier.isReadOnly() || descHeapQualifier.isWriteOnly());
+            if (wrapDescHeapImageArray) {
+                // Descriptor-heap images have no memory object declaration on which to place
+                // NonReadable or NonWritable. Wrap each image in a struct so the restriction
+                // can be expressed as a member decoration.
+                const spv::Id zero = builder.makeUintConstant(0);
+                const std::vector<spv::Id> members = { spvType };
+                const char* wrapperName =
+                    descHeapQualifier.isReadOnly() ? "readonly_image_wrapper" : "writeonly_image_wrapper";
+                spvType = builder.makeStructType(members, {}, wrapperName, true);
+                builder.addMemberDecorationIdEXT(
+                    spvType, 0, spv::Decoration::OffsetIdEXT, {zero});
+                if (descHeapQualifier.isReadOnly())
+                    builder.addMemberDecoration(spvType, 0, spv::Decoration::NonWritable);
+                if (descHeapQualifier.isWriteOnly())
+                    builder.addMemberDecoration(spvType, 0, spv::Decoration::NonReadable);
+            }
+
             int strideIndex = 0;
 
             for (int dim = type.getArraySizes()->getNumDims() - 1; dim > 0; --dim) {

@@ -826,6 +826,7 @@ public:
             Id descHeapBaseTy;                  // for descriptor heap, record its base data type.
             Id descHeapBaseOffset;              // byte offset applied to the heap base before descriptor lookup.
             std::vector<Id> descHeapIndexChain;
+            bool descHeapImageArrayWrapped;     // the base type wraps each image array element in a struct.
             Id descTy;                          // for target resource type
             StorageClass descStorageClass;      // for descriptor heap, record its basic storage class.
             bool descReadonly;                  // for decorating OpBufferPointerEXT results.
@@ -900,7 +901,15 @@ public:
 
     // for EXT_descriptor_heap and EXT_structured_descriptor_heap
     Id getAccessChainDescHeapBaseType() const { return accessChain.descHeapInfo.descHeapBaseTy; }
-    void setAccessChainDescHeapBaseType(Id baseType) { accessChain.descHeapInfo.descHeapBaseTy = baseType; }
+    void setAccessChainDescHeapBaseType(Id baseType, bool imageArrayWrapped = false)
+    {
+        accessChain.descHeapInfo.descHeapBaseTy = baseType;
+        accessChain.descHeapInfo.descHeapImageArrayWrapped = imageArrayWrapped;
+    }
+    bool isAccessChainDescHeapImageArrayWrapped() const
+    {
+        return accessChain.descHeapInfo.descHeapImageArrayWrapped;
+    }
     void setAccessChainDescHeapBaseOffset(Id baseOffset) { accessChain.descHeapInfo.descHeapBaseOffset = baseOffset; }
     const std::vector<Id>& getAccessChainDescHeapIndexChain() const { return accessChain.descHeapInfo.descHeapIndexChain; }
     void accessChainPushDescHeapIndex(Id index) { accessChain.descHeapInfo.descHeapIndexChain.push_back(index); }

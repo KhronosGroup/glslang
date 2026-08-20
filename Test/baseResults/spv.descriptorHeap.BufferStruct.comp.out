@@ -20,24 +20,26 @@ spv.descriptorHeap.BufferStruct.comp
                               MemberName 9(Data) 1  "f"
                               Name 11  "data"
                               Name 13  "resource_heap"
+                              Name 17  "ubo"
                               Name 20  "Data"
                               MemberName 20(Data) 0  "m"
                               MemberName 20(Data) 1  "f"
                               Name 21  "U"
                               MemberName 21(U) 0  "inputData"
+                              Name 38  "ssbo"
                               Name 40  "Data"
                               MemberName 40(Data) 0  "m"
                               MemberName 40(Data) 1  "f"
                               Name 42  "O"
                               MemberName 42(O) 0  "outputData"
                               Decorate 13(resource_heap) BuiltIn ResourceHeapEXT
-                              DecorateId 17 ArrayStrideIdEXT 16
+                              DecorateId 17(ubo) ArrayStrideIdEXT 16
                               MemberDecorate 20(Data) 0 ColMajor
                               MemberDecorate 20(Data) 0 MatrixStride 16
                               MemberDecorate 20(Data) 0 Offset 0
                               MemberDecorate 20(Data) 1 Offset 64
                               MemberDecorate 21(U) 0 Offset 0
-                              DecorateId 38 ArrayStrideIdEXT 37
+                              DecorateId 38(ssbo) ArrayStrideIdEXT 37
                               MemberDecorate 40(Data) 0 ColMajor
                               MemberDecorate 40(Data) 0 MatrixStride 16
                               MemberDecorate 40(Data) 0 Offset 0
@@ -56,7 +58,7 @@ spv.descriptorHeap.BufferStruct.comp
               14:             TypeBufferEXT Uniform
               15:             TypeInt 32 0
               16:     15(int) ConstantSizeOfEXT 14
-              17:             TypeRuntimeArray 14
+         17(ubo):             TypeRuntimeArray 14
               18:             TypeInt 32 1
               19:     18(int) Constant 1
         20(Data):             TypeStruct 8 6(float)
@@ -68,7 +70,7 @@ spv.descriptorHeap.BufferStruct.comp
               31:             TypePointer Function 6(float)
               36:             TypeBufferEXT StorageBuffer
               37:     15(int) ConstantSizeOfEXT 36
-              38:             TypeRuntimeArray 36
+        38(ssbo):             TypeRuntimeArray 36
               39:     18(int) Constant 2
         40(Data):             TypeStruct 8 6(float)
               41:             TypeRuntimeArray 40(Data)
@@ -79,7 +81,7 @@ spv.descriptorHeap.BufferStruct.comp
          4(main):           2 Function None 3
                5:             Label
         11(data):     10(ptr) Variable Function
-              23:     12(ptr) UntypedAccessChainKHR 17 13(resource_heap) 19
+              23:     12(ptr) UntypedAccessChainKHR 17(ubo) 13(resource_heap) 19
               25:     24(ptr) BufferPointerEXT 23
               27:     26(ptr) AccessChain 25 22
               28:    20(Data) Load 27
@@ -91,7 +93,7 @@ spv.descriptorHeap.BufferStruct.comp
               35:     31(ptr) AccessChain 11(data) 19
                               Store 35 34
               44:     9(Data) Load 11(data)
-              45:     12(ptr) UntypedAccessChainKHR 38 13(resource_heap) 39
+              45:     12(ptr) UntypedAccessChainKHR 38(ssbo) 13(resource_heap) 39
               47:     46(ptr) BufferPointerEXT 45
               49:     48(ptr) AccessChain 47 22 43
               50:    40(Data) CopyLogical 44
