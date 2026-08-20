@@ -429,6 +429,7 @@ INSTANTIATE_TEST_SUITE_P(
         {"hlsl.structbuffer.coherent.frag", "main"},
         {"hlsl.structbuffer.floatidx.comp", "main"},
         {"hlsl.structbuffer.incdec.frag", "main"},
+        {"hlsl.structbuffer.store.args.error.frag", "main"},
         {"hlsl.structbuffer.fn.frag", "main"},
         {"hlsl.structbuffer.fn2.comp", "main"},
         {"hlsl.structbuffer.rw.frag", "main"},

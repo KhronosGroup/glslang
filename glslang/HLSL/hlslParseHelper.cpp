@@ -3534,6 +3534,45 @@ void HlslParseContext::decomposeStructBufferMethods(const TSourceLoc& loc, TInte
     if (argArray == nullptr)
         return;  // It might not be a struct buffer method.
 
+    // These builtins resolve by name against a zero-parameter prototype, so normal
+    // overload resolution never checks the argument count. Validate it here before
+    // indexing the argument sequence, otherwise a call with too few arguments reads
+    // past the end of the aggregate (or dereferences a null aggregate for a bare
+    // buffer object with no arguments).
+    const int argCount = argAggregate ? (int)argAggregate->getSequence().size() : 1;
+    int minArgCount = 1; // the buffer object at index 0
+    switch (op) {
+    case EOpMethodLoad:
+    case EOpMethodLoad2:
+    case EOpMethodLoad3:
+    case EOpMethodLoad4:
+    case EOpMethodGetDimensions:
+    case EOpMethodAppend:
+    case EOpInterlockedAdd:
+    case EOpInterlockedAnd:
+    case EOpInterlockedExchange:
+    case EOpInterlockedMax:
+    case EOpInterlockedMin:
+    case EOpInterlockedOr:
+    case EOpInterlockedXor:
+    case EOpInterlockedCompareExchange:
+    case EOpInterlockedCompareStore:
+        minArgCount = 2;
+        break;
+    case EOpMethodStore:
+    case EOpMethodStore2:
+    case EOpMethodStore3:
+    case EOpMethodStore4:
+        minArgCount = 3;
+        break;
+    default:
+        break;
+    }
+    if (argCount < minArgCount) {
+        error(loc, "too few arguments to buffer method", "", "");
+        return;
+    }
+
     switch (op) {
     case EOpMethodLoad:
         {
