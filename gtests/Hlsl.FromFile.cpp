@@ -168,8 +168,6 @@ INSTANTIATE_TEST_SUITE_P(
         {"hlsl.attributeC11.frag", "main"},
         {"hlsl.attributeGlobalBuffer.frag", "main"},
         {"hlsl.basic.comp", "main"},
-        {"hlsl.entry.anon-struct-return.error.mesh", "main"},
-        {"hlsl.entry.buffer-return.error.frag", "main"},
         {"hlsl.entry.unnamed-param.error.vert", "main"},
         {"hlsl.basic.geom", "main"},
         {"hlsl.buffer.interlocked.error.frag", "main"},
