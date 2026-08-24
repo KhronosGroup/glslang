@@ -1322,6 +1322,12 @@ void TDefaultGlslIoResolver::reserverResourceSlot(TVarEntryInfo& ent, TInfoSink&
     const TType& type = ent.symbol->getType();
     const TString& name = ent.symbol->getAccessName();
     TResourceType resource = getResourceType(type);
+    // getResourceType() returns EResCount for types that are not a binding-based
+    // resource (e.g. atomic_uint). Those don't own a resourceSlotMap/slots row, so
+    // indexing by EResCount would run off the end of those arrays. resolveBinding()
+    // guards the same way.
+    if (resource >= EResCount)
+        return;
     int set = referenceIntermediate.getSpv().openGl != 0 ? 0 : resolveSet(ent.stage, ent);
     int resourceKey = referenceIntermediate.getSpv().openGl != 0 || referenceIntermediate.getBindingsPerResourceType() ? resource : 0;
 
