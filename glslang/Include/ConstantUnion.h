@@ -45,8 +45,9 @@ namespace glslang {
 
 // Rounds 'd' to what 'baseType' can actually represent and returns it, still as
 // a double.  A TConstUnion holds every float type in a double, so without this a
-// constant keeps bits its declared type cannot hold, and those bits go on to
-// take part in constant folding.  Defined in Intermediate.cpp.
+// sub-32-bit constant keeps bits its declared type cannot hold, and those bits go
+// on to take part in constant folding.  float and double are returned unchanged
+// (see the definition for why).  Defined in Intermediate.cpp.
 double RoundToDeclaredPrecision(double d, TBasicType baseType);
 
 class TConstUnion {
@@ -108,8 +109,9 @@ public:
     // folding sees the same value the target would.
     //
     // There is deliberately no default: defaulting to EbtDouble silently gives a
-    // float constant double precision, which is the bug this rounding exists to
-    // prevent.  Callers must pass the type the value was declared as.
+    // float16 (or narrower) constant double precision, which is the bug this
+    // rounding exists to prevent.  Callers must pass the type the value was
+    // declared as.
     void setDConst(double d, TBasicType baseType)
     {
         assert(isTypeFloat(baseType));

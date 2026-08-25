@@ -29,32 +29,32 @@ Requested GL_EXT_shader_explicit_arithmetic_types_float16
 0:9        move second child to first child ( temp float)
 0:9          'w5' ( temp float)
 0:9          Constant:
-0:9            123456792.000000
+0:9            123456789.000000
 0:10      Sequence
 0:10        move second child to first child ( temp double)
 0:10          'w6' ( temp double)
 0:10          Constant:
-0:10            1.2345679481405e+15
+0:10            1.2345678901235e+15
 0:11      Sequence
 0:11        move second child to first child ( temp double)
 0:11          'w7' ( temp double)
 0:11          Constant:
-0:11            1.2345678407664e+16
+0:11            1.2345678901235e+16
 0:12      Sequence
 0:12        move second child to first child ( temp double)
 0:12          'w8' ( temp double)
 0:12          Constant:
-0:12            1.2345679051909e+17
+0:12            1.2345678901235e+17
 0:13      Sequence
 0:13        move second child to first child ( temp double)
 0:13          'w9' ( temp double)
 0:13          Constant:
-0:13            1.2345679395506e+19
+0:13            1.2345678901235e+19
 0:14      Sequence
 0:14        move second child to first child ( temp double)
 0:14          'w10' ( temp double)
 0:14          Constant:
-0:14            1.2345679467986e+24
+0:14            1.2345678901235e+24
 0:16      Sequence
 0:16        move second child to first child ( temp float)
 0:16          'e1' ( temp float)
@@ -74,12 +74,12 @@ Requested GL_EXT_shader_explicit_arithmetic_types_float16
 0:19        move second child to first child ( temp float)
 0:19          'e4' ( temp float)
 0:19          Constant:
-0:19            9.9999998699110e+14
+0:19            1.0000000000000e+15
 0:20      Sequence
 0:20        move second child to first child ( temp float)
 0:20          'e5' ( temp float)
 0:20          Constant:
-0:20            1.0000000272564e+16
+0:20            1.0000000000000e+16
 0:21      Sequence
 0:21        move second child to first child ( temp float)
 0:21          'e6' ( temp float)
@@ -89,27 +89,27 @@ Requested GL_EXT_shader_explicit_arithmetic_types_float16
 0:22        move second child to first child ( temp float)
 0:22          'e7' ( temp float)
 0:22          Constant:
-0:22            1.0000000036275e-15
+0:22            1.0000000000000e-15
 0:23      Sequence
 0:23        move second child to first child ( temp float)
 0:23          'e8' ( temp float)
 0:23          Constant:
-0:23            1.0000000168624e-16
+0:23            1.0000000000000e-16
 0:24      Sequence
 0:24        move second child to first child ( temp double)
 0:24          'e9' ( temp double)
 0:24          Constant:
-0:24            +1.#INF
+0:24            1.0000000000000e+100
 0:25      Sequence
 0:25        move second child to first child ( temp double)
 0:25          'e10' ( temp double)
 0:25          Constant:
-0:25            +1.#INF
+0:25            1.0000000000000e+308
 0:26      Sequence
 0:26        move second child to first child ( temp double)
 0:26          'e11' ( temp double)
 0:26          Constant:
-0:26            0.000000
+0:26            1.0000000000000e-307
 0:27      Sequence
 0:27        move second child to first child ( temp double)
 0:27          'e12' ( temp double)
@@ -194,22 +194,22 @@ Requested GL_EXT_shader_explicit_arithmetic_types_float16
 0:44        move second child to first child ( temp double)
 0:44          'f51' ( temp double)
 0:44          Constant:
-0:44            7.8347498455573e-37
+0:44            7.8347500000000e-37
 0:45      Sequence
 0:45        move second child to first child ( temp double)
 0:45          'f52' ( temp double)
 0:45          Constant:
-0:45            7.8347498455573e-37
+0:45            7.8347500000000e-37
 0:46      Sequence
 0:46        move second child to first child ( temp double)
 0:46          'f53' ( temp double)
 0:46          Constant:
-0:46            7.8347498455573e-37
+0:46            7.8347500000000e-37
 0:47      Sequence
 0:47        move second child to first child ( temp double)
 0:47          'f54' ( temp double)
 0:47          Constant:
-0:47            7.8347498455573e-37
+0:47            7.8347500000000e-37
 0:48      Sequence
 0:48        move second child to first child ( temp double)
 0:48          'f61' ( temp double)
@@ -294,22 +294,22 @@ Requested GL_EXT_shader_explicit_arithmetic_types_float16
 0:65        move second child to first child ( temp double)
 0:65          'c9' ( temp double)
 0:65          Constant:
-0:65            1.2345679395506e+18
+0:65            1.2345678901235e+18
 0:66      Sequence
 0:66        move second child to first child ( temp double)
 0:66          'c10' ( temp double)
 0:66          Constant:
-0:66            1.0000000200409e+21
+0:66            1.0000000000000e+21
 0:67      Sequence
 0:67        move second child to first child ( temp double)
 0:67          'c11' ( temp double)
 0:67          Constant:
-0:67            1230000.000000
+0:67            1230000.004560
 0:68      Sequence
 0:68        move second child to first child ( temp double)
 0:68          'c12' ( temp double)
 0:68          Constant:
-0:68            1230.000000
+0:68            1230.000004
 0:69      Sequence
 0:69        move second child to first child ( temp double)
 0:69          'c13' ( temp double)
@@ -319,27 +319,27 @@ Requested GL_EXT_shader_explicit_arithmetic_types_float16
 0:70        move second child to first child ( temp double)
 0:70          'c14' ( temp double)
 0:70          Constant:
-0:70            102.300003
+0:70            102.300000
 0:71      Sequence
 0:71        move second child to first child ( temp double)
 0:71          'c15' ( temp double)
 0:71          Constant:
-0:71            1.2002999664640e+12
+0:71            1.2003000000456e+12
 0:72      Sequence
 0:72        move second child to first child ( temp double)
 0:72          'c16' ( temp double)
 0:72          Constant:
-0:72            122999996416.000000
+0:72            123000000456.000000
 0:73      Sequence
 0:73        move second child to first child ( temp double)
 0:73          'c17' ( temp double)
 0:73          Constant:
-0:73            1.2299999641600e+12
+0:73            1.2300000045600e+12
 0:74      Sequence
 0:74        move second child to first child ( temp double)
 0:74          'c18' ( temp double)
 0:74          Constant:
-0:74            1.2299999641600e+12
+0:74            1.2300000045601e+12
 0:76      Sequence
 0:76        move second child to first child ( temp double)
 0:76          'b11' ( temp double)
@@ -419,27 +419,27 @@ Requested GL_EXT_shader_explicit_arithmetic_types_float16
 0:91        move second child to first child ( temp double)
 0:91          'b41' ( temp double)
 0:91          Constant:
-0:91            +1.#INF
+0:91            5.7089907708238e+45
 0:92      Sequence
 0:92        move second child to first child ( temp double)
 0:92          'b42' ( temp double)
 0:92          Constant:
-0:92            +1.#INF
+0:92            5.7089907708238e+45
 0:93      Sequence
 0:93        move second child to first child ( temp double)
 0:93          'b43' ( temp double)
 0:93          Constant:
-0:93            +1.#INF
+0:93            5.7089907708238e+45
 0:94      Sequence
 0:94        move second child to first child ( temp double)
 0:94          'b44' ( temp double)
 0:94          Constant:
-0:94            +1.#INF
+0:94            5.7089907708238e+45
 0:95      Sequence
 0:95        move second child to first child ( temp double)
 0:95          'b45' ( temp double)
 0:95          Constant:
-0:95            +1.#INF
+0:95            5.7089907708238e+45
 0:97      Sequence
 0:97        move second child to first child ( temp float)
 0:97          'pi1' ( temp float)
@@ -553,32 +553,32 @@ Requested GL_EXT_shader_explicit_arithmetic_types_float16
 0:9        move second child to first child ( temp float)
 0:9          'w5' ( temp float)
 0:9          Constant:
-0:9            123456792.000000
+0:9            123456789.000000
 0:10      Sequence
 0:10        move second child to first child ( temp double)
 0:10          'w6' ( temp double)
 0:10          Constant:
-0:10            1.2345679481405e+15
+0:10            1.2345678901235e+15
 0:11      Sequence
 0:11        move second child to first child ( temp double)
 0:11          'w7' ( temp double)
 0:11          Constant:
-0:11            1.2345678407664e+16
+0:11            1.2345678901235e+16
 0:12      Sequence
 0:12        move second child to first child ( temp double)
 0:12          'w8' ( temp double)
 0:12          Constant:
-0:12            1.2345679051909e+17
+0:12            1.2345678901235e+17
 0:13      Sequence
 0:13        move second child to first child ( temp double)
 0:13          'w9' ( temp double)
 0:13          Constant:
-0:13            1.2345679395506e+19
+0:13            1.2345678901235e+19
 0:14      Sequence
 0:14        move second child to first child ( temp double)
 0:14          'w10' ( temp double)
 0:14          Constant:
-0:14            1.2345679467986e+24
+0:14            1.2345678901235e+24
 0:16      Sequence
 0:16        move second child to first child ( temp float)
 0:16          'e1' ( temp float)
@@ -598,12 +598,12 @@ Requested GL_EXT_shader_explicit_arithmetic_types_float16
 0:19        move second child to first child ( temp float)
 0:19          'e4' ( temp float)
 0:19          Constant:
-0:19            9.9999998699110e+14
+0:19            1.0000000000000e+15
 0:20      Sequence
 0:20        move second child to first child ( temp float)
 0:20          'e5' ( temp float)
 0:20          Constant:
-0:20            1.0000000272564e+16
+0:20            1.0000000000000e+16
 0:21      Sequence
 0:21        move second child to first child ( temp float)
 0:21          'e6' ( temp float)
@@ -613,27 +613,27 @@ Requested GL_EXT_shader_explicit_arithmetic_types_float16
 0:22        move second child to first child ( temp float)
 0:22          'e7' ( temp float)
 0:22          Constant:
-0:22            1.0000000036275e-15
+0:22            1.0000000000000e-15
 0:23      Sequence
 0:23        move second child to first child ( temp float)
 0:23          'e8' ( temp float)
 0:23          Constant:
-0:23            1.0000000168624e-16
+0:23            1.0000000000000e-16
 0:24      Sequence
 0:24        move second child to first child ( temp double)
 0:24          'e9' ( temp double)
 0:24          Constant:
-0:24            +1.#INF
+0:24            1.0000000000000e+100
 0:25      Sequence
 0:25        move second child to first child ( temp double)
 0:25          'e10' ( temp double)
 0:25          Constant:
-0:25            +1.#INF
+0:25            1.0000000000000e+308
 0:26      Sequence
 0:26        move second child to first child ( temp double)
 0:26          'e11' ( temp double)
 0:26          Constant:
-0:26            0.000000
+0:26            1.0000000000000e-307
 0:27      Sequence
 0:27        move second child to first child ( temp double)
 0:27          'e12' ( temp double)
@@ -718,22 +718,22 @@ Requested GL_EXT_shader_explicit_arithmetic_types_float16
 0:44        move second child to first child ( temp double)
 0:44          'f51' ( temp double)
 0:44          Constant:
-0:44            7.8347498455573e-37
+0:44            7.8347500000000e-37
 0:45      Sequence
 0:45        move second child to first child ( temp double)
 0:45          'f52' ( temp double)
 0:45          Constant:
-0:45            7.8347498455573e-37
+0:45            7.8347500000000e-37
 0:46      Sequence
 0:46        move second child to first child ( temp double)
 0:46          'f53' ( temp double)
 0:46          Constant:
-0:46            7.8347498455573e-37
+0:46            7.8347500000000e-37
 0:47      Sequence
 0:47        move second child to first child ( temp double)
 0:47          'f54' ( temp double)
 0:47          Constant:
-0:47            7.8347498455573e-37
+0:47            7.8347500000000e-37
 0:48      Sequence
 0:48        move second child to first child ( temp double)
 0:48          'f61' ( temp double)
@@ -818,22 +818,22 @@ Requested GL_EXT_shader_explicit_arithmetic_types_float16
 0:65        move second child to first child ( temp double)
 0:65          'c9' ( temp double)
 0:65          Constant:
-0:65            1.2345679395506e+18
+0:65            1.2345678901235e+18
 0:66      Sequence
 0:66        move second child to first child ( temp double)
 0:66          'c10' ( temp double)
 0:66          Constant:
-0:66            1.0000000200409e+21
+0:66            1.0000000000000e+21
 0:67      Sequence
 0:67        move second child to first child ( temp double)
 0:67          'c11' ( temp double)
 0:67          Constant:
-0:67            1230000.000000
+0:67            1230000.004560
 0:68      Sequence
 0:68        move second child to first child ( temp double)
 0:68          'c12' ( temp double)
 0:68          Constant:
-0:68            1230.000000
+0:68            1230.000004
 0:69      Sequence
 0:69        move second child to first child ( temp double)
 0:69          'c13' ( temp double)
@@ -843,27 +843,27 @@ Requested GL_EXT_shader_explicit_arithmetic_types_float16
 0:70        move second child to first child ( temp double)
 0:70          'c14' ( temp double)
 0:70          Constant:
-0:70            102.300003
+0:70            102.300000
 0:71      Sequence
 0:71        move second child to first child ( temp double)
 0:71          'c15' ( temp double)
 0:71          Constant:
-0:71            1.2002999664640e+12
+0:71            1.2003000000456e+12
 0:72      Sequence
 0:72        move second child to first child ( temp double)
 0:72          'c16' ( temp double)
 0:72          Constant:
-0:72            122999996416.000000
+0:72            123000000456.000000
 0:73      Sequence
 0:73        move second child to first child ( temp double)
 0:73          'c17' ( temp double)
 0:73          Constant:
-0:73            1.2299999641600e+12
+0:73            1.2300000045600e+12
 0:74      Sequence
 0:74        move second child to first child ( temp double)
 0:74          'c18' ( temp double)
 0:74          Constant:
-0:74            1.2299999641600e+12
+0:74            1.2300000045601e+12
 0:76      Sequence
 0:76        move second child to first child ( temp double)
 0:76          'b11' ( temp double)
@@ -943,27 +943,27 @@ Requested GL_EXT_shader_explicit_arithmetic_types_float16
 0:91        move second child to first child ( temp double)
 0:91          'b41' ( temp double)
 0:91          Constant:
-0:91            +1.#INF
+0:91            5.7089907708238e+45
 0:92      Sequence
 0:92        move second child to first child ( temp double)
 0:92          'b42' ( temp double)
 0:92          Constant:
-0:92            +1.#INF
+0:92            5.7089907708238e+45
 0:93      Sequence
 0:93        move second child to first child ( temp double)
 0:93          'b43' ( temp double)
 0:93          Constant:
-0:93            +1.#INF
+0:93            5.7089907708238e+45
 0:94      Sequence
 0:94        move second child to first child ( temp double)
 0:94          'b44' ( temp double)
 0:94          Constant:
-0:94            +1.#INF
+0:94            5.7089907708238e+45
 0:95      Sequence
 0:95        move second child to first child ( temp double)
 0:95          'b45' ( temp double)
 0:95          Constant:
-0:95            +1.#INF
+0:95            5.7089907708238e+45
 0:97      Sequence
 0:97        move second child to first child ( temp float)
 0:97          'pi1' ( temp float)

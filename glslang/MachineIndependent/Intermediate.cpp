@@ -2686,8 +2686,8 @@ float MaskFloatBits(float f, uint32_t mask)
 double RoundToDeclaredPrecision(double d, TBasicType baseType)
 {
     // Each case performs the same conversion as the matching
-    // Builder::make*Constant in SpvBuilder.cpp, so that folding a constant
-    // cannot change the value the back end would otherwise have emitted.
+    // Builder::make*Constant in SpvBuilder.cpp, so that folding a sub-32-bit
+    // constant cannot change the value the back end would otherwise have emitted.
     const float f = static_cast<float>(d);
 
     switch (baseType) {
@@ -2736,16 +2736,16 @@ double RoundToDeclaredPrecision(double d, TBasicType baseType)
         // constant the back end emits as +0.0.
         return rounded == 0.0 ? 0.0 : rounded;
     }
-    case EbtFloat:
-        // A double holds any float exactly, but that is not the question here:
-        // the target computes in fp32 at every step, so folding has to round at
-        // every step too.  Rounding only when the constant is emitted gives a
-        // different answer whenever an intermediate would have overflowed or
-        // lost bits in fp32 -- (1e20 * 1e20) / 1e20 is inf on the target and a
-        // finite 1e20 if the multiply is folded in double.
-        return static_cast<double>(f);
     default:
-        // EbtDouble is already held exactly by the double it is stored in.
+        // float and double are deliberately left alone.  Rounding float
+        // constants to fp32 is permitted by the spec (constant expressions need
+        // not match runtime results) but it changes existing shaders: an
+        // unsuffixed literal is a float literal, so `double d = 1e100;` would
+        // fold to +inf and `double d = 3.14159265358979;` would lose its extra
+        // digits, where glslang has always kept them.  Only the types narrower
+        // than fp32 -- the ones a double-holding union misrepresented badly
+        // enough to change folded results the back end could never emit -- are
+        // rounded here.
         return d;
     }
 }

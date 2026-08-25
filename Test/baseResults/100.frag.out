@@ -301,7 +301,7 @@ ERROR: node is still EOpNull!
 0:152    move second child to first child ( temp mediump float)
 0:152      'f124' ( global mediump float)
 0:152      Constant:
-0:152        49999998976.000000
+0:152        50000000000.000000
 0:158  Function Definition: foo323433( ( global void)
 0:158    Function Parameters: 
 0:160    Sequence
@@ -564,7 +564,7 @@ ERROR: node is still EOpNull!
 0:152    move second child to first child ( temp mediump float)
 0:152      'f124' ( global mediump float)
 0:152      Constant:
-0:152        49999998976.000000
+0:152        50000000000.000000
 0:227  Sequence
 0:227    move second child to first child ( temp mediump int)
 0:227      'init1' ( global mediump int)

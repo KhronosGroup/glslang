@@ -68,7 +68,7 @@ spv.specConstant.vert
               33:             TypeInt 32 0
        34(scale):     33(int) SpecConstant 2
               38:             TypeFloat 64
-    39(spDouble):38(float64_t) SpecConstant 1610612736 1074340347
+    39(spDouble):38(float64_t) SpecConstant 1413754136 1074340347
      40(spFloat):    6(float) SpecConstant 1078523331
               41:38(float64_t) SpecConstantOp 115 40(spFloat)
 50(dupArraySize):      8(int) SpecConstant 12
@@ -77,7 +77,7 @@ spv.specConstant.vert
      53(dupUcol):     52(ptr) Variable Input
    60(spDupBool):    29(bool) SpecConstantTrue
     63(dupScale):     33(int) SpecConstant 2
- 67(spDupDouble):38(float64_t) SpecConstant 1610612736 1074340347
+ 67(spDupDouble):38(float64_t) SpecConstant 1413754136 1074340347
   68(spDupFloat):    6(float) SpecConstant 1078523331
               69:38(float64_t) SpecConstantOp 115 68(spDupFloat)
               75:             TypePointer Function 8(int)
