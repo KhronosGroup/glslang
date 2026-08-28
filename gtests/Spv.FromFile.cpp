@@ -1026,6 +1026,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.coopmatmaint1_error.comp",
         "spv.coopmat2_constructor.comp",
         "spv.coopmat2_error.comp",
+        "spv.coopmat2_perelement_error.comp",
         "spv.coopmat2_tensor.comp",
         "spv.coopmat2_decode_vector.comp",
         "spv.coopmat2_decode_vector_b.comp",

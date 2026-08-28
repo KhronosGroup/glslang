@@ -1663,6 +1663,20 @@ TIntermTyped* TParseContext::handleFunctionCall(const TSourceLoc& loc, TFunction
 
 void TParseContext::handleCoopMat2FunctionCall(const TSourceLoc& loc, const TFunction* fnCandidate, TIntermTyped* result, TIntermNode* arguments)
 {
+    // coopMatPerElementNV/EXT are declared with an empty prototype, so overload
+    // resolution accepts any argument list. Fewer than the required (result matrix,
+    // input matrix, per-element function) arguments is not passed as an aggregate,
+    // skips the validation below, and reaches SPIR-V generation, which dereferences
+    // operands[0] as the result matrix.
+    if (fnCandidate->getBuiltInOp() == EOpCooperativeMatrixPerElementOpNV) {
+        const TIntermAggregate* aggregate = arguments ? arguments->getAsAggregate() : nullptr;
+        if (aggregate == nullptr || aggregate->getSequence().size() < 3) {
+            error(loc, "expected a result matrix, an input matrix, and a per-element function",
+                  fnCandidate->getName().c_str(), "");
+            return;
+        }
+    }
+
     if (arguments && arguments->getAsAggregate()) {
         auto &sequence = arguments->getAsAggregate()->getSequence();
 
