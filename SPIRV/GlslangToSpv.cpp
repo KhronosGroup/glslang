@@ -3429,6 +3429,7 @@ void TGlslangToSpvTraverser::createAbortEXT(const glslang::TIntermSequence &glsl
     // 2.4 Add decoration for this string.
     builder.addDecoration(msgArrType, spv::Decoration::UTFEncodedKHR);
     builder.addDecoration(msgLoadArrType, spv::Decoration::UTFEncodedKHR);
+    builder.addDecoration(msgLoadArrType, spv::Decoration::ArrayStride, 1);
     // 2.5 Collect data and type for construct an internal message structure member.
     structMemberType.push_back(msgArrType);
     structLoadMemberType.push_back(msgLoadArrType);
