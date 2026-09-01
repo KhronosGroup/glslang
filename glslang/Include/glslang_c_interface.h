@@ -238,6 +238,7 @@ typedef struct glslang_spv_options_s {
     bool validate;
     bool emit_nonsemantic_shader_debug_info;
     bool emit_nonsemantic_shader_debug_source;
+    bool emit_source_file_name;
     bool compile_only;
     bool optimize_allow_expanded_id_bound;
     /* Optional metadata overrides for reproducing compilation */

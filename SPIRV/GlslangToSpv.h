@@ -54,6 +54,7 @@ struct SpvOptions {
     bool validate {false};
     bool emitNonSemanticShaderDebugInfo {false};
     bool emitNonSemanticShaderDebugSource{ false };
+    bool emitSourceFileName{false};
     bool compileOnly{false};
     bool optimizerAllowExpandedIDBound{false};
     // Optional metadata overrides for NonSemantic.Shader.DebugInfo DebugEntryPoint.
