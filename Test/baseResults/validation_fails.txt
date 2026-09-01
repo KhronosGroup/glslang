@@ -47,7 +47,6 @@ Test/baseResults/link.vk.crossStageIO.1.vert.out
 Test/baseResults/link.vk.differentPC.0.0.frag.out
 Test/baseResults/link.vk.differentPC.1.0.frag.out
 Test/baseResults/link.vk.missingCrossStageIO.0.vert.out
-Test/baseResults/link.vk.multiUnitLayout.0.comp.out
 Test/baseResults/link.vk.multiUnitLayout.2.comp.out
 Test/baseResults/link.vk.pcNamingInvalid.0.0.vert.out
 Test/baseResults/spv.130.frag.out
@@ -58,7 +57,6 @@ Test/baseResults/spv.430.vert.out
 Test/baseResults/spv.450.tesc.out
 Test/baseResults/spv.8bit-16bit-construction.frag.out
 Test/baseResults/spv.AofA.frag.out
-Test/baseResults/spv.atomicAdd.bufferReference.comp.out
 Test/baseResults/spv.atomicFloat.comp.out
 Test/baseResults/spv.bitops.int8int16.frag.out
 Test/baseResults/spv.controlFlowAttributes.frag.out
@@ -74,7 +72,6 @@ Test/baseResults/spv.int64.frag.out
 Test/baseResults/spv.memoryQualifier.frag.out
 Test/baseResults/spv.newTexture.frag.out
 Test/baseResults/spv.nvgpushader5.frag.out
-Test/baseResults/spv.OpExecutionModeId.12.comp.out
 Test/baseResults/spv.paramMemory.420.frag.out
 Test/baseResults/spv.paramMemory.frag.out
 Test/baseResults/spv.queryL.frag.out

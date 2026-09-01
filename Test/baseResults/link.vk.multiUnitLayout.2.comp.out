@@ -1,11 +1,8 @@
 link.vk.multiUnitLayout.2.comp
-ERROR: 0:4: 'local_size_x_id' : requires SPIR-V 1.2 
-ERROR: 1 compilation errors.  No code generated.
-
-
 Shader version: 450
 local_size = (1, 1, 1)
-ERROR: node is still EOpNull!
+local_size ids = (1, -1, -1)
+0:? Sequence
 0:10  Function Definition: do_compute(u1; ( global void)
 0:10    Function Parameters: 
 0:10      'index' ( in highp uint)
@@ -23,20 +20,17 @@ ERROR: node is still EOpNull!
 0:12          1.000000
 0:12          1.000000
 0:?   Linker Objects
-0:?     'gl_WorkGroupSize' ( const highp 3-component vector of uint WorkGroupSize)
+0:?     'gl_WorkGroupSize' ( specialization-constant const highp 3-component vector of uint WorkGroupSize)
 0:?       1 (const uint)
 0:?       1 (const uint)
 0:?       1 (const uint)
 0:?     'dataBuf' (layout( set=0 binding=0 column_major std430) buffer block{layout( column_major std430) buffer runtime-sized array of highp 4-component vector of float data})
 
 link.vk.multiUnitLayout.0.comp
-ERROR: 0:3: 'local_size_x_id' : requires SPIR-V 1.2 
-ERROR: 1 compilation errors.  No code generated.
-
-
 Shader version: 450
 local_size = (1, 1, 1)
-ERROR: node is still EOpNull!
+local_size ids = (0, -1, -1)
+0:? Sequence
 0:7  Function Definition: main( ( global void)
 0:7    Function Parameters: 
 0:9    Sequence
@@ -46,7 +40,7 @@ ERROR: node is still EOpNull!
 0:9          Constant:
 0:9            0 (const int)
 0:?   Linker Objects
-0:?     'gl_WorkGroupSize' ( const highp 3-component vector of uint WorkGroupSize)
+0:?     'gl_WorkGroupSize' ( specialization-constant const highp 3-component vector of uint WorkGroupSize)
 0:?       1 (const uint)
 0:?       1 (const uint)
 0:?       1 (const uint)
@@ -54,10 +48,12 @@ ERROR: node is still EOpNull!
 
 Linked compute stage:
 
+ERROR: Linking compute stage: Contradictory local size specialization ids
 
 Shader version: 450
 local_size = (1, 1, 1)
-ERROR: node is still EOpNull!
+local_size ids = (1, -1, -1)
+0:? Sequence
 0:10  Function Definition: do_compute(u1; ( global void)
 0:10    Function Parameters: 
 0:10      'index' ( in highp uint)
@@ -83,7 +79,7 @@ ERROR: node is still EOpNull!
 0:9          Constant:
 0:9            0 (const int)
 0:?   Linker Objects
-0:?     'gl_WorkGroupSize' ( const highp 3-component vector of uint WorkGroupSize)
+0:?     'gl_WorkGroupSize' ( specialization-constant const highp 3-component vector of uint WorkGroupSize)
 0:?       1 (const uint)
 0:?       1 (const uint)
 0:?       1 (const uint)
