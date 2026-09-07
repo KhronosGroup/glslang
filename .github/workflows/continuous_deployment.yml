@@ -115,7 +115,7 @@ jobs:
                       })
             - name: Upload assets
               if: ${{ matrix.compiler.cc == 'clang' }}
-              uses: softprops/action-gh-release@3d0d9888cb7fd7b750713d6e236d1fcb99157228 # v3.0.2
+              uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
               with:
                   tag_name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'main-tot' }}
                   fail_on_unmatched_files: true
@@ -211,7 +211,7 @@ jobs:
                           sha: context.sha
                       })
             - name: Upload assets
-              uses: softprops/action-gh-release@3d0d9888cb7fd7b750713d6e236d1fcb99157228 # v3.0.2
+              uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
               with:
                   tag_name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'main-tot' }}
                   fail_on_unmatched_files: true
@@ -295,7 +295,7 @@ jobs:
                           sha: context.sha
                       })
             - name: Upload assets
-              uses: softprops/action-gh-release@3d0d9888cb7fd7b750713d6e236d1fcb99157228 # v3.0.2
+              uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
               with:
                   tag_name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'main-tot' }}
                   fail_on_unmatched_files: true
