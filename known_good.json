@@ -3,7 +3,7 @@
     {
       "name" : "spirv-tools",
       "site" : "github",
-      "subrepo" : "r-potter/SPIRV-Tools",
+      "subrepo" : "KhronosGroup/SPIRV-Tools",
       "subdir" : "External/spirv-tools",
       "commit": "91d091ae272b08cfa9d56a06bef0096a2bf93e6a"
     },
