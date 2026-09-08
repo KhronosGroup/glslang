@@ -29,31 +29,33 @@ spv.shader.abort.type.struct.comp
                               MemberName 30(Outer) 1  "arr"
                               MemberName 30(Outer) 2  "m"
                               Name 32  "outer"
-                              Name 48  "Inner"
-                              MemberName 48(Inner) 0  "i"
-                              MemberName 48(Inner) 1  "v"
-                              Name 51  "Outer"
-                              MemberName 51(Outer) 0  "inner"
-                              MemberName 51(Outer) 1  "arr"
-                              MemberName 51(Outer) 2  "m"
-                              Name 52  "abortMessageLoadType"
+                              Name 49  "Inner"
+                              MemberName 49(Inner) 0  "i"
+                              MemberName 49(Inner) 1  "v"
+                              Name 52  "Outer"
+                              MemberName 52(Outer) 0  "inner"
+                              MemberName 52(Outer) 1  "arr"
+                              MemberName 52(Outer) 2  "m"
+                              Name 53  "abortMessageValueType"
+                              Name 54  "abortMessageLoadType"
                               Decorate 9(Data) Block
                               MemberDecorate 9(Data) 0 Offset 0
                               Decorate 11(data) Binding 0
                               Decorate 11(data) DescriptorSet 0
-                              Decorate 45 ArrayStride 1
                               Decorate 45 UTFEncodedKHR
-                              MemberDecorate 48(Inner) 0 Offset 0
-                              MemberDecorate 48(Inner) 1 Offset 4
-                              Decorate 50 ArrayStride 4
-                              MemberDecorate 51(Outer) 0 Offset 0
-                              MemberDecorate 51(Outer) 1 Offset 12
-                              MemberDecorate 51(Outer) 2 ColMajor
-                              MemberDecorate 51(Outer) 2 MatrixStride 8
-                              MemberDecorate 51(Outer) 2 Offset 24
-                              MemberDecorate 52(abortMessageLoadType) 0 Offset 0
-                              MemberDecorate 52(abortMessageLoadType) 1 Offset 4
-                              MemberDecorate 52(abortMessageLoadType) 2 Offset 16
+                              Decorate 46 ArrayStride 1
+                              Decorate 46 UTFEncodedKHR
+                              MemberDecorate 49(Inner) 0 Offset 0
+                              MemberDecorate 49(Inner) 1 Offset 4
+                              Decorate 51 ArrayStride 4
+                              MemberDecorate 52(Outer) 0 Offset 0
+                              MemberDecorate 52(Outer) 1 Offset 12
+                              MemberDecorate 52(Outer) 2 ColMajor
+                              MemberDecorate 52(Outer) 2 MatrixStride 8
+                              MemberDecorate 52(Outer) 2 Offset 24
+                              MemberDecorate 54(abortMessageLoadType) 0 Offset 0
+                              MemberDecorate 54(abortMessageLoadType) 1 Offset 4
+                              MemberDecorate 54(abortMessageLoadType) 2 Offset 16
                               Decorate 59 BuiltIn WorkgroupSize
                2:             TypeVoid
                3:             TypeFunction 2
@@ -79,11 +81,13 @@ spv.shader.abort.type.struct.comp
               43:             TypeInt 8 1
               44:     26(int) Constant 4
               45:             TypeArray 43(int8_t) 44
-              46:          45 ConstantDataKHR  ""
-       48(Inner):             TypeStruct 12(int) 17(fvec2)
-              50:             TypeArray 6(float) 27
-       51(Outer):             TypeStruct 48(Inner) 50 29
-52(abortMessageLoadType):             TypeStruct 45 48(Inner) 51(Outer)
+              46:             TypeArray 43(int8_t) 44
+              47:          45 ConstantDataKHR  ""
+       49(Inner):             TypeStruct 12(int) 17(fvec2)
+              51:             TypeArray 6(float) 27
+       52(Outer):             TypeStruct 49(Inner) 51 29
+53(abortMessageValueType):             TypeStruct 45 18(Inner) 30(Outer)
+54(abortMessageLoadType):             TypeStruct 46 49(Inner) 52(Outer)
               57:             TypeVector 26(int) 3
               58:     26(int) Constant 1
               59:   57(ivec3) ConstantComposite 58 58 58
@@ -110,10 +114,8 @@ spv.shader.abort.type.struct.comp
               41:          29 CompositeConstruct 39 40
               42:   30(Outer) CompositeConstruct 33 35 41
                               Store 32(outer) 42
-              47:   18(Inner) Load 20(inner)
-              49:   30(Outer) Load 32(outer)
-              53:   48(Inner) CopyLogical 47
-              54:   51(Outer) CopyLogical 49
-              55:52(abortMessageLoadType) CompositeConstruct 46 53 54
-                              AbortKHR 52(abortMessageLoadType) 55
+              48:   18(Inner) Load 20(inner)
+              50:   30(Outer) Load 32(outer)
+              55:53(abortMessageValueType) CompositeConstruct 47 48 50
+                              AbortKHR 54(abortMessageLoadType) 55
                               FunctionEnd

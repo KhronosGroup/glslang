@@ -3399,20 +3399,29 @@ void TGlslangToSpvTraverser::createAbortEXT(const glslang::TIntermSequence &glsl
     unsigned int paddingSize = (4 - msgLen % 4) % 4;
     msgLen = msgLen + paddingSize;
     spv::Id constLen = builder.makeUintConstant(msgLen);
-    // 2.2 Get string's array type.
+    // 2.2 Get string's array types. The string needs one type per role: the constant data is
+    //     tightly packed, so its result type must not carry ArrayStride, while the message
+    //     struct member it feeds does need an explicit layout. One type cannot do both, so
+    //     make a tightly packed type for the constant and a laid out type for the member.
+    //     Asking makeArrayType for a stride is what keeps the laid out one a distinct type.
+    auto msgConstDataType = builder.makeArrayType(charType, constLen, 0);
     auto msgArrType = builder.makeArrayType(charType, constLen, 1);
     // 2.3 Add string constant data.
     //     SPV_KHR_abort does not mandate a form for the message; it is emitted as plain
     //     constant data. Its example uses a specialization constant so that an application
     //     can swap a format modifier at specialization time, but that needs a SpecId the
     //     shader author controls, so it is not something to apply automatically here.
-    auto msgConstData = builder.createConstData(spv::Op::OpConstantDataKHR, msgArrType, {msg->c_str()});
-    // 2.4 Add decoration for this string.
+    auto msgConstData = builder.createConstData(spv::Op::OpConstantDataKHR, msgConstDataType, {msg->c_str()});
+    // 2.4 Add decorations for this string. Both types describe the same UTF encoded
+    //     characters, so both are marked as such; only the laid out one takes the stride.
+    builder.addDecoration(msgConstDataType, spv::Decoration::UTFEncodedKHR);
     builder.addDecoration(msgArrType, spv::Decoration::UTFEncodedKHR);
     // Array stride for char is 1 byte per element for explicit layout
     builder.addDecoration(msgArrType, spv::Decoration::ArrayStride, 1);
     // 2.5 Collect data and type for construct an internal message structure member.
-    structMemberType.push_back(msgArrType);
+    //     The message value is built from the tightly packed type the constant already has;
+    //     the laid out type only appears in the message type operand of OpAbortKHR.
+    structMemberType.push_back(msgConstDataType);
     structLoadMemberType.push_back(msgArrType);
     structMemberOffsets.push_back(msgLen);
     structMemberData.push_back(msgConstData);
@@ -3442,21 +3451,27 @@ void TGlslangToSpvTraverser::createAbortEXT(const glslang::TIntermSequence &glsl
             argType.isMatrix() ? getMatrixStride(argType, glslang::ElpScalar, glslang::ElmColumnMajor) : 0);
         glslangOperands[i]->traverse(this);
         structMemberData.push_back(accessChainLoad(argType));
-        // Take the explicitly laid out form of the type, not the type of the loaded value.
-        // An aggregate argument carries layout inside itself - ArrayStride on an array, Offset
-        // and MatrixStride on the members of a nested struct - and only the laid out type has
-        // those. createCompositeConstruct below copies the loaded value into it.
+        // Collect both forms of the member's type. The value is built from the loaded types,
+        // and the message type operand describes the same members explicitly laid out. An
+        // aggregate argument carries layout inside itself - ArrayStride on an array, Offset
+        // and MatrixStride on the members of a nested struct - so only the laid out form has
+        // those. OpAbortKHR only requires the two to match logically, which disregards
+        // decorations, so the value never has to be converted to the laid out form.
+        structMemberType.push_back(builder.getTypeId(structMemberData.back()));
         glslang::TQualifier memberQualifier = argType.getQualifier();
         memberQualifier.layoutPacking = glslang::ElpScalar;
         if (memberQualifier.layoutMatrix == glslang::ElmNone)
             memberQualifier.layoutMatrix = glslang::ElmColumnMajor;
-        structMemberType.push_back(convertGlslangToSpvType(argType, glslang::ElpScalar, memberQualifier, false));
-        structLoadMemberType.push_back(structMemberType.back());
+        structLoadMemberType.push_back(
+            convertGlslangToSpvType(argType, glslang::ElpScalar, memberQualifier, false));
 
         builder.setAccessChain(save);
     }
     structMemberOffsets.pop_back();
     // 4. Construct struct message variable, add abortExt instruction.
+    //    Two struct types: the value's own type, and the explicitly laid out type that tells a
+    //    consumer where each member sits. Only the latter carries the layout decorations.
+    auto structValueType = builder.makeStructType(structMemberType, {}, "abortMessageValueType");
     auto structLoadType = builder.makeStructType(structLoadMemberType, {}, "abortMessageLoadType");
     for (unsigned int i = 0; i < structMemberOffsets.size(); i++) {
         builder.addMemberDecoration(structLoadType, i, spv::Decoration::Offset, structMemberOffsets[i]);
@@ -3468,9 +3483,10 @@ void TGlslangToSpvTraverser::createAbortEXT(const glslang::TIntermSequence &glsl
                                         structMemberMatrixStrides[i]);
         }
     }
-    // Use the traverser's overload: where a loaded value's type differs from the laid out
-    // member type it copies the value across rather than failing to match.
-    auto messageVar = createCompositeConstruct(structLoadType, structMemberData);
+    // The members of structValueType were taken from these values, so they match exactly and
+    // the builder's plain construct is enough - the traverser's overload, which would convert
+    // a mismatched member, has nothing to do here.
+    auto messageVar = builder.createCompositeConstruct(structValueType, structMemberData);
     builder.makeStatementTerminator(spv::Op::OpAbortKHR, {structLoadType, messageVar}, "post-abort");
 }
 
