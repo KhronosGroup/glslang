@@ -2904,6 +2904,35 @@ Id Builder::makeDebugFunction([[maybe_unused]] Function* function, Id nameId, Id
     return funcId;
 }
 
+Id Builder::makeDebugEntryPoint(Function* function, const char* compilerSignature, const char* commandLineArguments,
+                                const char* currentWorkingDirectory)
+{
+    assert(function != nullptr);
+    assert(compilerSignature != nullptr);
+    assert(commandLineArguments != nullptr);
+
+    const Id debugFunction = getDebugFunction(function->getId());
+    assert(debugFunction != NoResult);
+
+    if (currentWorkingDirectory != nullptr)
+        requireNonSemanticShaderDebugInfoVersion(NonSemanticShaderDebugInfoVersion);
+
+    const Id entryPointId = getUniqueId();
+    auto entryPoint = new Instruction(entryPointId, makeVoidType(), Op::OpExtInst);
+    entryPoint->reserveOperands(currentWorkingDirectory == nullptr ? 6 : 7);
+    entryPoint->addIdOperand(nonSemanticShaderDebugInfo);
+    entryPoint->addImmediateOperand(NonSemanticShaderDebugInfoDebugEntryPoint);
+    entryPoint->addIdOperand(debugFunction);
+    entryPoint->addIdOperand(makeDebugCompilationUnit());
+    entryPoint->addIdOperand(getStringId(compilerSignature));
+    entryPoint->addIdOperand(getStringId(commandLineArguments));
+    if (currentWorkingDirectory != nullptr)
+        entryPoint->addIdOperand(getStringId(currentWorkingDirectory));
+    constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(entryPoint));
+    module.mapInstruction(entryPoint);
+    return entryPointId;
+}
+
 Id Builder::makeDebugLexicalBlock(uint32_t line, uint32_t column) {
     assert(!currentDebugScopeId.empty());
 

@@ -56,6 +56,7 @@
 #include <cmath>
 #include <cstdlib>
 #include <cstring>
+#include <filesystem>
 #include <iterator>
 #include <map>
 #include <memory>
@@ -207,6 +208,7 @@ glslang::EShTargetLanguageVersion TargetVersion;     // not valid until TargetLa
 int GlslVersion = 0; // GLSL version specified on CLI, overrides #version in shader source
 
 std::vector<std::string> Processes;                     // what should be recorded by OpModuleProcessed, or equivalent
+std::string CommandLineArguments;                       // original arguments passed to the standalone compiler
 
 // Per descriptor-set binding base data
 typedef std::map<unsigned int, unsigned int> TPerSetBaseBinding;
@@ -564,6 +566,13 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
 
     ExecutableName = argv[0];
     workItems.reserve(argc);
+
+    CommandLineArguments.clear();
+    for (int arg = 1; arg < argc; ++arg) {
+        if (arg > 1)
+            CommandLineArguments += ' ';
+        CommandLineArguments += argv[arg];
+    }
 
     const auto bumpArg = [&]() {
         if (argc > 0) {
@@ -1608,6 +1617,12 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
                 spvOptions.disassemble = SpvToolsDisassembler;
                 spvOptions.validate = SpvToolsValidate;
                 spvOptions.compileOnly = compileOnly;
+                spvOptions.compilerSignature = "glslang";
+                spvOptions.commandLineArguments = CommandLineArguments.c_str();
+                std::error_code currentPathError;
+                const std::string currentWorkingDirectory = std::filesystem::current_path(currentPathError).string();
+                if (!currentPathError)
+                    spvOptions.currentWorkingDirectory = currentWorkingDirectory.c_str();
                 glslang::GlslangToSpv(*intermediate, spirv, &logger, &spvOptions);
 
                 // Dump the spv to a file or stdout, etc., but only if not doing

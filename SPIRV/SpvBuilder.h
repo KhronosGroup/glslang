@@ -512,6 +512,8 @@ public:
     Id makeDebugValue(Id const debugLocalVariable, Id const value);
     Id makeDebugFunctionType(Id returnType, const std::vector<Id>& paramTypes);
     Id makeDebugFunction(Function* function, Id nameId, Id funcTypeId);
+    Id makeDebugEntryPoint(Function* function, const char* compilerSignature, const char* commandLineArguments,
+                           const char* currentWorkingDirectory = nullptr);
     Id makeDebugLexicalBlock(uint32_t line, uint32_t column);
     std::string unmangleFunctionName(std::string const& name) const;
 

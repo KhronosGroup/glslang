@@ -7599,6 +7599,11 @@ void TGlslangToSpvTraverser::makeFunctions(const glslang::TIntermSequence& glslF
                 builder.setupFunctionDebugInfo(shaderEntry, glslangIntermediate->getEntryPointMangledName().c_str(),
                                                std::vector<spv::Id>(), // main function has no param
                                                std::vector<char const*>());
+                if (options.emitNonSemanticShaderDebugInfo &&
+                    options.compilerSignature != nullptr && options.commandLineArguments != nullptr) {
+                    builder.makeDebugEntryPoint(shaderEntry, options.compilerSignature, options.commandLineArguments,
+                                                options.currentWorkingDirectory);
+                }
             }
             continue;
         }
