@@ -642,7 +642,7 @@ spv::Decoration TGlslangToSpvTraverser::TranslateNonUniformDecoration(const glsl
     if (qualifier.isNonUniform()) {
         builder.addIncorporatedExtension("SPV_EXT_descriptor_indexing", spv::Spv_1_5);
         builder.addCapability(spv::Capability::ShaderNonUniformEXT);
-        
+
         auto& extensions = glslangIntermediate->getRequestedExtensions();
         if (extensions.find("GL_EXT_descriptor_heap") != extensions.end()) {
             builder.addExtension("SPV_EXT_descriptor_heap");
@@ -652,7 +652,7 @@ spv::Decoration TGlslangToSpvTraverser::TranslateNonUniformDecoration(const glsl
             return spv::Decoration::NonUniformEXT;
         }
     }
-    
+
     return spv::Decoration::Max;
 }
 
@@ -663,7 +663,7 @@ spv::Decoration TGlslangToSpvTraverser::TranslateNonUniformDecoration(
     if (coherentFlags.isNonUniform()) {
         builder.addIncorporatedExtension("SPV_EXT_descriptor_indexing", spv::Spv_1_5);
         builder.addCapability(spv::Capability::ShaderNonUniformEXT);
-        
+
         auto& extensions = glslangIntermediate->getRequestedExtensions();
         if (extensions.find("GL_EXT_descriptor_heap") != extensions.end()) {
             builder.addExtension("SPV_EXT_descriptor_heap");
@@ -673,7 +673,7 @@ spv::Decoration TGlslangToSpvTraverser::TranslateNonUniformDecoration(
             return spv::Decoration::NonUniformEXT;
         }
     }
-    
+
     return spv::Decoration::Max;
 }
 
@@ -686,7 +686,7 @@ spv::MemoryAccessMask TGlslangToSpvTraverser::TranslateMemoryAccess(
         return mask;
 
     if (coherentFlags.isVolatile() || coherentFlags.anyCoherent()) {
-        mask = mask | spv::MemoryAccessMask::MakePointerAvailableKHR | 
+        mask = mask | spv::MemoryAccessMask::MakePointerAvailableKHR |
                       spv::MemoryAccessMask::MakePointerVisibleKHR;
     }
 
@@ -1630,9 +1630,9 @@ void TGlslangToSpvTraverser::TranslateLiterals(const glslang::TVector<const glsl
 // Add capabilities pertaining to how an array is indexed.
 void TGlslangToSpvTraverser::addIndirectionIndexCapabilities(const glslang::TType& baseType,
                                                              const glslang::TType& indexType)
-{    
+{
     if (indexType.getQualifier().isNonUniform()) {
-        
+
         // deal with an asserted non-uniform index
         // SPV_EXT_descriptor_indexing already added in TranslateNonUniformDecoration
         if (baseType.getBasicType() == glslang::EbtSampler) {
@@ -3450,7 +3450,20 @@ void TGlslangToSpvTraverser::createAbortEXT(const glslang::TIntermSequence &glsl
         structMemberMatrixStrides.push_back(
             argType.isMatrix() ? getMatrixStride(argType, glslang::ElpScalar, glslang::ElmColumnMajor) : 0);
         glslangOperands[i]->traverse(this);
-        structMemberData.push_back(accessChainLoad(argType));
+        spv::Id memberValue = accessChainLoad(argType);
+        // A bool has no in-memory representation, so lay a bool member out as a 32-bit integer
+        if (argType.getBasicType() == glslang::EbtBool) {
+            spv::Id uintType = builder.makeUintType(32);
+            spv::Id one = builder.makeUintConstant(1);
+            spv::Id zero = builder.makeUintConstant(0);
+            if (argType.isVector()) {
+                uintType = builder.makeVectorType(uintType, argType.getVectorSize());
+                one = builder.smearScalar(spv::NoPrecision, one, uintType);
+                zero = builder.smearScalar(spv::NoPrecision, zero, uintType);
+            }
+            memberValue = builder.createTriOp(spv::Op::OpSelect, uintType, memberValue, one, zero);
+        }
+        structMemberData.push_back(memberValue);
         // Collect both forms of the member's type. The value is built from the loaded types,
         // and the message type operand describes the same members explicitly laid out. An
         // aggregate argument carries layout inside itself - ArrayStride on an array, Offset
@@ -7148,7 +7161,7 @@ void TGlslangToSpvTraverser::decorateStructType(const glslang::TType& type,
         builder.addCapability(spv::Capability::PushConstantBanksNV);
         builder.addDecoration(spvType, spv::Decoration::BankNV, qualifier.layoutBank);
     }
-  
+
     if (qualifier.hasHitObjectShaderRecordEXT())
         builder.addDecoration(spvType, spv::Decoration::HitObjectShaderRecordBufferEXT);
 }
@@ -8238,7 +8251,7 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
             }
 
             spv::Id pointer = builder.createOp(imgTexelOp, resultTypeId, operands);
-            if (imageType.getQualifier().nonUniform) { 
+            if (imageType.getQualifier().nonUniform) {
                 auto& extensions = glslangIntermediate->getRequestedExtensions();
                 if (extensions.find("GL_EXT_descriptor_heap") == extensions.end()) {
                     builder.addDecoration(pointer, spv::Decoration::NonUniformEXT);
