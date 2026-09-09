@@ -164,10 +164,57 @@ bool containsDebugTypeBasic(const std::vector<uint32_t>& spirv, const char* expe
     return false;
 }
 
+bool containsDebugEntryPoint(const std::vector<uint32_t>& spirv, const char* expectedCompilerSignature,
+                             const char* expectedCommandLineArguments, const char* expectedCurrentWorkingDirectory)
+{
+    if (spirv.size() < 5 || spirv[0] != spv::MagicNumber)
+        return false;
+
+    const uint32_t idBound = spirv[3];
+    std::vector<std::string> strings(idBound);
+    uint32_t debugInfoImportId = 0;
+    uint32_t compilerSignatureId = 0;
+    uint32_t commandLineArgumentsId = 0;
+    uint32_t currentWorkingDirectoryId = 0;
+
+    for (size_t offset = 5; offset < spirv.size();) {
+        const uint32_t wordCount = spirv[offset] >> spv::WordCountShift;
+        const spv::Op opcode = static_cast<spv::Op>(spirv[offset] & spv::OpCodeMask);
+        if (wordCount == 0 || offset + wordCount > spirv.size())
+            return false;
+
+        if (opcode == spv::Op::OpExtInstImport && wordCount >= 3) {
+            if (decodeLiteralString(&spirv[offset + 2], wordCount - 2) ==
+                "NonSemantic.Shader.DebugInfo.102") {
+                debugInfoImportId = spirv[offset + 1];
+            }
+        } else if (opcode == spv::Op::OpString && wordCount >= 3) {
+            const uint32_t resultId = spirv[offset + 1];
+            if (resultId < idBound)
+                strings[resultId] = decodeLiteralString(&spirv[offset + 2], wordCount - 2);
+        } else if (opcode == spv::Op::OpExtInst && wordCount == 10 &&
+                   spirv[offset + 3] == debugInfoImportId &&
+                   spirv[offset + 4] == NonSemanticShaderDebugInfoDebugEntryPoint) {
+            compilerSignatureId = spirv[offset + 7];
+            commandLineArgumentsId = spirv[offset + 8];
+            currentWorkingDirectoryId = spirv[offset + 9];
+        }
+
+        offset += wordCount;
+    }
+
+    return debugInfoImportId != 0 && compilerSignatureId < idBound &&
+           strings[compilerSignatureId] == expectedCompilerSignature && commandLineArgumentsId < idBound &&
+           strings[commandLineArgumentsId] == expectedCommandLineArguments && currentWorkingDirectoryId < idBound &&
+           strings[currentWorkingDirectoryId] == expectedCurrentWorkingDirectory;
+}
+
 class SpvDebugInfoTest : public ::testing::Test {
 protected:
-    bool compileToSpirvWithDebugInfo(const std::string& source, std::vector<uint32_t>& spirv,
-                                     std::string& error)
+    bool compileToSpirvWithDebugInfo(const std::string& source, std::vector<uint32_t>& spirv, std::string& error,
+                                     const char* compilerSignature = nullptr,
+                                     const char* commandLineArguments = nullptr,
+                                     const char* currentWorkingDirectory = nullptr)
     {
         spirv.clear();
         error.clear();
@@ -196,6 +243,9 @@ protected:
         opts.generateDebugInfo = true;
         opts.emitNonSemanticShaderDebugInfo = true;
         opts.disableOptimizer = true;
+        opts.compilerSignature = compilerSignature;
+        opts.commandLineArguments = commandLineArguments;
+        opts.currentWorkingDirectory = currentWorkingDirectory;
 
         glslang::GlslangToSpv(*program.getIntermediate(EShLangCompute), spirv, &opts);
         return true;
@@ -215,6 +265,25 @@ protected:
         return out.str();
     }
 };
+
+TEST_F(SpvDebugInfoTest, DebugEntryPointUsesSuppliedCompilationMetadata)
+{
+    const std::string source = R"(
+#version 450 core
+layout(local_size_x = 1) in;
+void main() {}
+)";
+    constexpr char compilerSignature[] = "test compiler signature";
+    constexpr char commandLineArguments[] = "-V -gVS shader.comp";
+    constexpr char currentWorkingDirectory[] = "test/current/working/directory";
+    std::vector<uint32_t> spirv;
+    std::string error;
+    ASSERT_TRUE(compileToSpirvWithDebugInfo(source, spirv, error, compilerSignature, commandLineArguments,
+                                           currentWorkingDirectory))
+        << error;
+
+    EXPECT_TRUE(containsDebugEntryPoint(spirv, compilerSignature, commandLineArguments, currentWorkingDirectory));
+}
 
 // DebugTypeVectorIdEXT (opcode 109) must be emitted for OpTypeCooperativeVectorNV
 // when NonSemantic debug info is enabled.
