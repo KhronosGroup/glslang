@@ -4137,6 +4137,27 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
             if (message == nullptr || message->getBasicType() != EbtString || ! message->isLiteral())
                 error(loc, "first argument must be a string literal", fnCandidate.getName().c_str(), "");
         }
+        // The message string and the remaining arguments are packed into an explicitly laid
+        // out structure type, so every argument has to be something that can be laid out in memory.
+        if (argp != nullptr) {
+            for (int arg = 1; arg < (int)argp->size(); ++arg) {
+                const TIntermTyped* argNode = (*argp)[arg]->getAsTyped();
+                if (argNode == nullptr)
+                    continue;
+                const TType& argType = argNode->getType();
+                if (argType.getBasicType() == EbtString) {
+                    error(loc, "argument cannot be a string, only the message may be a string",
+                          fnCandidate.getName().c_str(), "");
+                } else if (argType.containsOpaque()) {
+                    error(loc, "argument cannot be an opaque type", fnCandidate.getName().c_str(), "");
+                } else if (argType.containsUnsizedArray()) {
+                    error(loc, "argument cannot be a run-time sized array", fnCandidate.getName().c_str(), "");
+                } else if (argType.containsBasicType(EbtBool) && ! argType.isScalar() && ! argType.isVector()) {
+                    error(loc, "argument cannot be an aggregate containing a bool",
+                          fnCandidate.getName().c_str(), "");
+                }
+            }
+        }
         break;
     case EOpDebugPrintf:
     {

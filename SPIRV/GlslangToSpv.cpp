@@ -3450,7 +3450,20 @@ void TGlslangToSpvTraverser::createAbortEXT(const glslang::TIntermSequence &glsl
         structMemberMatrixStrides.push_back(
             argType.isMatrix() ? getMatrixStride(argType, glslang::ElpScalar, glslang::ElmColumnMajor) : 0);
         glslangOperands[i]->traverse(this);
-        structMemberData.push_back(accessChainLoad(argType));
+        spv::Id memberValue = accessChainLoad(argType);
+        // A bool has no in-memory representation, so lay a bool member out as a 32-bit integer
+        if (argType.getBasicType() == glslang::EbtBool) {
+            spv::Id uintType = builder.makeUintType(32);
+            spv::Id one = builder.makeUintConstant(1);
+            spv::Id zero = builder.makeUintConstant(0);
+            if (argType.isVector()) {
+                uintType = builder.makeVectorType(uintType, argType.getVectorSize());
+                one = builder.smearScalar(spv::NoPrecision, one, uintType);
+                zero = builder.smearScalar(spv::NoPrecision, zero, uintType);
+            }
+            memberValue = builder.createTriOp(spv::Op::OpSelect, uintType, memberValue, one, zero);
+        }
+        structMemberData.push_back(memberValue);
         // Collect both forms of the member's type. The value is built from the loaded types,
         // and the message type operand describes the same members explicitly laid out. An
         // aggregate argument carries layout inside itself - ArrayStride on an array, Offset
