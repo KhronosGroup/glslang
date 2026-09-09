@@ -927,7 +927,7 @@ void TParseVersions::checkDeprecated(const TSourceLoc& loc, int profileMask, int
                 error(loc, "deprecated, may be removed in future release", featureDesc, "");
             else if (! suppressWarnings())
                 infoSink.info.message(EPrefixWarning, (TString(featureDesc) + " deprecated in version " +
-                                                       String(depVersion) + "; may be removed in future release").c_str(), 
+                                                       String(depVersion) + "; may be removed in future release").c_str(),
                                                        loc, messages & EShMsgAbsolutePath, messages & EShMsgDisplayErrorColumn);
         }
     }

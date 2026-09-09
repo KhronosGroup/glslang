@@ -60,9 +60,9 @@ public:
         :
         forwardCompatible(forwardCompatible),
         profile(profile),
-        infoSink(infoSink), version(version), 
+        infoSink(infoSink), version(version),
         language(language),
-        spvVersion(spvVersion), 
+        spvVersion(spvVersion),
         intermediate(interm), messages(messages), numErrors(0), currentScanner(nullptr) { }
     virtual ~TParseVersions() { }
     void requireStage(const TSourceLoc&, EShLanguageMask, const char* featureDesc);

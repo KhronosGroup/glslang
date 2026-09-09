@@ -95,7 +95,7 @@ std::string to_string(const T& val) {
 #endif
 
 // Allow compilation to WASI which does not support threads yet.
-#ifdef __wasi__ 
+#ifdef __wasi__
 #define DISABLE_THREAD_SUPPORT
 #endif
 

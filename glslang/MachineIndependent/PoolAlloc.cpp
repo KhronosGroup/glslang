@@ -37,7 +37,7 @@
 
 // Mostly here for target that do not support threads such as WASI.
 #ifdef DISABLE_THREAD_SUPPORT
-#define THREAD_LOCAL 
+#define THREAD_LOCAL
 #else
 #define THREAD_LOCAL thread_local
 #endif

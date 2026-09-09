@@ -412,7 +412,7 @@ enum TOperator {
     EOpSubgroupPartitionedExclusiveXor,
 
     EOpSubgroupGuardStop,
-    
+
     // Integer dot product
     EOpDotPackedEXT,
     EOpDotAccSatEXT,
@@ -895,7 +895,7 @@ enum TOperator {
     EOpRayQueryGetIntersectionObjectToWorld,
     EOpRayQueryGetIntersectionWorldToObject,
 
-    // 
+    //
     // GL_NV_shader_invocation_reorder
     //
 
@@ -933,7 +933,7 @@ enum TOperator {
     EOpFetchMicroTriangleVertexPositionNV,
     EOpFetchMicroTriangleVertexBarycentricNV,
 
-    // 
+    //
     // GL_EXT_shader_invocation_reorder
     //
 
@@ -1411,7 +1411,7 @@ public:
     // per process threadPoolAllocator, then it causes increased memory usage per compile
     // it is essential to use "symbol = sym" to assign to symbol
     TIntermSymbol(long long i, const TString& n, EShLanguage s, const TType& t, const TString* mn = nullptr)
-        : TIntermTyped(t), id(i), flattenSubset(-1), stage(s), constSubtree(nullptr) { 
+        : TIntermTyped(t), id(i), flattenSubset(-1), stage(s), constSubtree(nullptr) {
         name = n;
         if (mn) {
             mangledName = *mn;
@@ -1974,7 +1974,7 @@ public:
     const bool rightToLeft;
 
     // Whether to traverse declaration symbols in the traversal.
-    // By default, declaration symbols are not visited in the traversal to avoid 
+    // By default, declaration symbols are not visited in the traversal to avoid
     // visiting them in SPIR-V generation where they are not needed.
     const bool includeDeclSymbol;
 

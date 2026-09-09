@@ -195,7 +195,7 @@ public:
             (*memberExtensions)[member].push_back(exts[e]);
     }
     virtual bool hasMemberExtensions() const { return memberExtensions != nullptr; }
-    virtual int getNumMemberExtensions(int member) const 
+    virtual int getNumMemberExtensions(int member) const
     {
         return memberExtensions == nullptr ? 0 : (int)(*memberExtensions)[member].size();
     }

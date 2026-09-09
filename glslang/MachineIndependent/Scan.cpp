@@ -1190,7 +1190,7 @@ int TScanContext::tokenizeIdentifier()
 
         return es30ReservedFromGLSL(400);
 
-    case SAMPLE: 
+    case SAMPLE:
     {
         const int numLayoutExts = 3;
         const char* layoutExts[numLayoutExts] = {E_GL_OES_shader_multisample_interpolation, E_GL_ARB_gpu_shader5,
@@ -1284,10 +1284,10 @@ int TScanContext::tokenizeIdentifier()
             parseContext.extensionsTurnedOn(Num_AEP_texture_buffer, AEP_texture_buffer))
             return keyword;
         return firstGenerationImage(false);
-        
+
     case I64IMAGEBUFFER:
     case U64IMAGEBUFFER:
-        afterType = true;        
+        afterType = true;
         if (parseContext.symbolTable.atBuiltInLevel() ||
             parseContext.extensionTurnedOn(E_GL_EXT_shader_image_int64)) {
             if ((parseContext.isEsProfile() && parseContext.version >= 320) ||
@@ -1325,7 +1325,7 @@ int TScanContext::tokenizeIdentifier()
             parseContext.extensionTurnedOn(E_GL_EXT_shader_image_int64))
             return firstGenerationImage(true);
         return identifierOrType();
-        
+
     case IMAGECUBEARRAY:
     case IIMAGECUBEARRAY:
     case UIMAGECUBEARRAY:
@@ -1334,7 +1334,7 @@ int TScanContext::tokenizeIdentifier()
             parseContext.extensionsTurnedOn(Num_AEP_texture_cube_map_array, AEP_texture_cube_map_array))
             return keyword;
         return secondGenerationImage();
-        
+
     case I64IMAGECUBEARRAY:
     case U64IMAGECUBEARRAY:
         afterType = true;
@@ -1355,7 +1355,7 @@ int TScanContext::tokenizeIdentifier()
     case UIMAGE2DMSARRAY:
         afterType = true;
         return secondGenerationImage();
-        
+
     case I64IMAGE2DMS:
     case U64IMAGE2DMS:
     case I64IMAGE2DMSARRAY:
@@ -1487,7 +1487,7 @@ int TScanContext::tokenizeIdentifier()
     case F64VEC4:
         if (parseContext.symbolTable.atBuiltInLevel() ||
             parseContext.extensionTurnedOn(E_GL_EXT_shader_explicit_arithmetic_types) ||
-            (parseContext.extensionTurnedOn(E_GL_NV_gpu_shader5) && 
+            (parseContext.extensionTurnedOn(E_GL_NV_gpu_shader5) &&
              parseContext.extensionTurnedOn(E_GL_ARB_gpu_shader_fp64)) ||
              parseContext.extensionTurnedOn(E_GL_EXT_shader_explicit_arithmetic_types_float64)) {
             afterType = true;
@@ -1940,7 +1940,7 @@ int TScanContext::tokenizeIdentifier()
         if ((parseContext.isEsProfile() &&
              (parseContext.version >= 320 || parseContext.extensionsTurnedOn(Num_AEP_gpu_shader5, AEP_gpu_shader5))) ||
             (!parseContext.isEsProfile() &&
-             (parseContext.version >= 400 
+             (parseContext.version >= 400
              || parseContext.extensionsTurnedOn(Num_AEP_core_gpu_shader5, AEP_core_gpu_shader5))))
             return keyword;
         if (parseContext.isEsProfile() && parseContext.version == 310) {
@@ -2117,7 +2117,7 @@ int TScanContext::identifierOrType()
                 if (inDeclaratorList) {
                     return IDENTIFIER;
                 }
-                
+
                 afterType = true;
                 return TYPE_NAME;
             }

@@ -87,7 +87,7 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
     bool      image : 1;  // image, combined should be false
     bool   combined : 1;  // true means texture is combined with a sampler, false means texture with no sampler
     bool    sampler : 1;  // true means a pure sampler, other fields should be clear()
-    bool   tileQCOM : 1;  // is tile shading attachment 
+    bool   tileQCOM : 1;  // is tile shading attachment
 
     unsigned int vectorSize : 3;  // vector return type size.
     // Some languages support structures as sample results.  Storing the whole structure in the
