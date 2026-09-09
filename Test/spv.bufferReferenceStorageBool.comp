@@ -1,0 +1,29 @@
+#version 460
+#extension GL_EXT_buffer_reference2 : require
+
+// Copying a struct whose member is a bool between two buffers. In storage a bool
+// is a uint, so a member-wise copy extracts the source member ALREADY in that
+// form -- accessChainStore() used to feed it to OpSelect as the condition
+// anyway, emitting `OpSelect %uint %uint ...` and an invalid module (#4086).
+//
+// Targets SPIR-V 1.0 on purpose: from 1.4 the copy goes through OpCopyLogical
+// instead and never reaches the conversion, which is why this only reproduces
+// below Vulkan 1.2.
+struct WithBool { bool b; };
+struct WithBvec { bvec3 v; };
+
+layout(set = 0, binding = 0) restrict readonly buffer SSBO {
+    WithBool a;
+    WithBvec b;
+} inBuffer;
+
+layout(buffer_reference) buffer Target {
+    WithBool a;
+    WithBvec b;
+};
+
+void main() {
+    Target payload;
+    payload.a = inBuffer.a;
+    payload.b = inBuffer.b;
+}

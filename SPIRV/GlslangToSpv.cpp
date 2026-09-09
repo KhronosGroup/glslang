@@ -7264,10 +7264,14 @@ void TGlslangToSpvTraverser::accessChainStore(const glslang::TType& type, spv::I
             // Conversion for bool
             spv::Id boolType = builder.makeBoolType();
             if (nominalTypeId != boolType) {
-                // keep these outside arguments, for determinant order-of-evaluation
-                spv::Id one = builder.makeUintConstant(1);
-                spv::Id zero = builder.makeUintConstant(0);
-                rvalue = builder.createTriOp(spv::Op::OpSelect, nominalTypeId, rvalue, one, zero);
+                // Only a real bool needs encoding; a copied struct member already
+                // arrives in the nominal type (#4086).
+                if (builder.getTypeId(rvalue) == boolType) {
+                    // keep these outside arguments, for determinant order-of-evaluation
+                    spv::Id one = builder.makeUintConstant(1);
+                    spv::Id zero = builder.makeUintConstant(0);
+                    rvalue = builder.createTriOp(spv::Op::OpSelect, nominalTypeId, rvalue, one, zero);
+                }
             } else if (builder.getTypeId(rvalue) != boolType)
                 rvalue = builder.createBinOp(spv::Op::OpINotEqual, boolType, rvalue, builder.makeUintConstant(0));
         } else if (builder.isVectorType(nominalTypeId)) {
@@ -7275,10 +7279,13 @@ void TGlslangToSpvTraverser::accessChainStore(const glslang::TType& type, spv::I
             int vecSize = builder.getNumTypeComponents(nominalTypeId);
             spv::Id bvecType = builder.makeVectorType(builder.makeBoolType(), vecSize);
             if (nominalTypeId != bvecType) {
-                // keep these outside arguments, for determinant order-of-evaluation
-                spv::Id one = makeSmearedConstant(builder.makeUintConstant(1), vecSize);
-                spv::Id zero = makeSmearedConstant(builder.makeUintConstant(0), vecSize);
-                rvalue = builder.createTriOp(spv::Op::OpSelect, nominalTypeId, rvalue, one, zero);
+                // Same as the scalar branch above.
+                if (builder.getTypeId(rvalue) == bvecType) {
+                    // keep these outside arguments, for determinant order-of-evaluation
+                    spv::Id one = makeSmearedConstant(builder.makeUintConstant(1), vecSize);
+                    spv::Id zero = makeSmearedConstant(builder.makeUintConstant(0), vecSize);
+                    rvalue = builder.createTriOp(spv::Op::OpSelect, nominalTypeId, rvalue, one, zero);
+                }
             } else if (builder.getTypeId(rvalue) != bvecType)
                 rvalue = builder.createBinOp(spv::Op::OpINotEqual, bvecType, rvalue,
                                              makeSmearedConstant(builder.makeUintConstant(0), vecSize));
