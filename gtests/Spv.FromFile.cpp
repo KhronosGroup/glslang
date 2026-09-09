@@ -725,6 +725,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.float64.frag",
         "spv.memoryScopeSemantics.comp",
         "spv.memoryScopeSemantics_Error.comp",
+        "spv.memoryScopeSemantics.nonConstArg.comp",
         "spv.splitBarrierMemoryScopeSemantics.comp",
         "spv.splitBarrierArriveMemoryScopeSemantics_Error1.comp",
         "spv.splitBarrierArriveMemoryScopeSemantics_Error2.comp",

@@ -2890,6 +2890,63 @@ void TParseContext::memorySemanticsCheck(const TSourceLoc& loc, const TFunction&
     const TIntermTyped* arg0 = (*argp)[0]->getAsTyped();
     const bool isMS = arg0->getBasicType() == EbtSampler && arg0->getType().getSampler().isMultiSample();
 
+    // The Scope, storage-class-semantics and semantics operands must be
+    // compile-time constants. The extraction below reads them as constants, and
+    // SPIR-V generation folds the Scope to a literal, so a non-constant operand
+    // would otherwise deref a null TIntermConstantUnion here and trip an
+    // id/immediate assert in the back end. Locate the first constant operand and
+    // reject anything from there on that is not a compile-time constant.
+    int firstConstArg = -1;
+    switch (callNode.getOp()) {
+    case EOpAtomicAdd:
+    case EOpAtomicSubtract:
+    case EOpAtomicMin:
+    case EOpAtomicMax:
+    case EOpAtomicAnd:
+    case EOpAtomicOr:
+    case EOpAtomicXor:
+    case EOpAtomicExchange:
+    case EOpAtomicStore:
+        firstConstArg = 2;
+        break;
+    case EOpAtomicLoad:
+        firstConstArg = 1;
+        break;
+    case EOpAtomicCompSwap:
+        firstConstArg = 3;
+        break;
+    case EOpImageAtomicAdd:
+    case EOpImageAtomicMin:
+    case EOpImageAtomicMax:
+    case EOpImageAtomicAnd:
+    case EOpImageAtomicOr:
+    case EOpImageAtomicXor:
+    case EOpImageAtomicExchange:
+    case EOpImageAtomicStore:
+        firstConstArg = isMS ? 4 : 3;
+        break;
+    case EOpImageAtomicLoad:
+        firstConstArg = isMS ? 3 : 2;
+        break;
+    case EOpImageAtomicCompSwap:
+        firstConstArg = isMS ? 5 : 4;
+        break;
+    case EOpBarrier:
+    case EOpControlBarrierArriveEXT:
+    case EOpControlBarrierWaitEXT:
+    case EOpMemoryBarrier:
+        firstConstArg = 0;
+        break;
+    default:
+        break;
+    }
+    for (int i = firstConstArg; i >= 0 && i < (int)argp->size(); ++i) {
+        if ((*argp)[i]->getAsConstantUnion() == nullptr) {
+            error(loc, "argument must be a compile-time constant", fnCandidate.getName().c_str(), "");
+            return;
+        }
+    }
+
     // Grab the semantics and storage class semantics from the operands, based on opcode
     switch (callNode.getOp()) {
     case EOpAtomicAdd:
