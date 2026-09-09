@@ -704,14 +704,14 @@ void TParseContextBase::growAtomicCounterBlock(int binding, const TSourceLoc& lo
         TQualifier blockQualifier;
         blockQualifier.clear();
         blockQualifier.storage = EvqBuffer;
-        
+
         char charBuffer[512];
         if (binding != TQualifier::layoutNotSet) {
             snprintf(charBuffer, 512, "%s_%d", getAtomicCounterBlockName(), binding);
         } else {
             snprintf(charBuffer, 512, "%s_0", getAtomicCounterBlockName());
         }
-        
+
         TType blockType(new TTypeList, *NewPoolTString(charBuffer), blockQualifier);
         setUniformBlockDefaults(blockType);
         blockType.getQualifier().layoutPacking = ElpStd430;

@@ -57,7 +57,7 @@ class TReflection {
 public:
     TReflection(EShReflectionOptions opts, EShLanguage first, EShLanguage last)
         : options(opts), firstStage(first), lastStage(last), badReflection(TObjectReflection::badReflection())
-    { 
+    {
         for (int dim=0; dim<3; ++dim) {
             localSize[dim] = 0;
             tileShadingRateQCOM[dim] = 0;
@@ -129,7 +129,7 @@ public:
         else
             return badReflection;
     }
-    
+
     // for mapping a storage block index to the storage block's description
     int getNumStorageBuffers() const { return (int)indexToBufferBlock.size(); }
     const TObjectReflection&  getStorageBufferBlock(int i) const

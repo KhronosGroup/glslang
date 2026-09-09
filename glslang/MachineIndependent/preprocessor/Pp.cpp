@@ -358,7 +358,7 @@ int TPpContext::CPPelse(int matchelse, TPpToken* ppToken)
                 parseContext.ppError(ppToken->loc, "#elif after #else", "#elif", "");
         }
     }
-    
+
     inElseSkip = false;
     return token;
 }

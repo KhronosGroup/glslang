@@ -1078,7 +1078,7 @@ private:
     int lastLine;
 };
 
-// Re-escape characters that would otherwise be emitted literally 
+// Re-escape characters that would otherwise be emitted literally
 // so the preprocessed output remains valid GLSL source.
 static void appendEscapedString(std::string& output, const char* string) {
 
@@ -1231,7 +1231,7 @@ struct DoPreprocessing {
                 outputBuffer += "\"";
             } else {
                 outputBuffer += ppToken.name;
-            } 
+            }
         } while (true);
         outputBuffer += '\n';
         *outputString = std::move(outputBuffer);
@@ -1553,7 +1553,7 @@ int ShLinkExt(
 
     if (linker == nullptr)
         return 0;
-    
+
     SetThreadPoolAllocator(linker->getPool());
     linker->infoSink.info.erase();
 

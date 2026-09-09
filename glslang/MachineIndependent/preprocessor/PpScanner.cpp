@@ -851,7 +851,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                         ungetch();
 
                     nextCh = getch();
-                    if ((nextCh == 's' || nextCh == 'S') && 
+                    if ((nextCh == 's' || nextCh == 'S') &&
                                 pp->parseContext.intermediate.getSource() == EShSourceGlsl) {
                         if (len < MaxTokenLength)
                             ppToken->name[len++] = (char)nextCh;
@@ -862,7 +862,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                     if (len < MaxTokenLength)
                         ppToken->name[len++] = (char)ch;
                     isInt64 = true;
-                } else if ((ch == 's' || ch == 'S') && 
+                } else if ((ch == 's' || ch == 'S') &&
                                 pp->parseContext.intermediate.getSource() == EShSourceGlsl) {
                     if (len < MaxTokenLength)
                         ppToken->name[len++] = (char)ch;
@@ -1190,7 +1190,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                         case 'r':  ch = 0x0d; break;
                         case 't':  ch = 0x09; break;
                         case 'v':  ch = 0x0b; break;
-                        case 'x': 
+                        case 'x':
                             // Hex value, arbitrary number of characters. Terminated by the first
                             // non-hex digit
                             {

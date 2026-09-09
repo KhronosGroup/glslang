@@ -251,7 +251,7 @@ public:
         // of a TPpToken, plus its atom.
         class Token {
         public:
-            Token(int atom, const TPpToken& ppToken) : 
+            Token(int atom, const TPpToken& ppToken) :
                 atom(atom),
                 space(ppToken.space),
                 i64val(ppToken.i64val),

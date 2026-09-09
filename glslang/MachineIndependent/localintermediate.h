@@ -278,7 +278,7 @@ private:
     unsigned int features;
 };
 
-// MustBeAssigned wraps a T, asserting that it has been assigned with 
+// MustBeAssigned wraps a T, asserting that it has been assigned with
 // operator =() before attempting to read with operator T() or operator ->().
 // Used to catch cases where fields are read before they have been assigned.
 template<typename T>
@@ -289,7 +289,7 @@ public:
     MustBeAssigned(const T& v) : value(v) {}
     operator const T&() const { assert(isSet); return value; }
     const T* operator ->() const { assert(isSet); return &value; }
-    MustBeAssigned& operator = (const T& v) { value = v; isSet = true; return *this; } 
+    MustBeAssigned& operator = (const T& v) { value = v; isSet = true; return *this; }
 private:
     T value;
     bool isSet = false;

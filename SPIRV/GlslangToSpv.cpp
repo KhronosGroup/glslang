@@ -642,7 +642,7 @@ spv::Decoration TGlslangToSpvTraverser::TranslateNonUniformDecoration(const glsl
     if (qualifier.isNonUniform()) {
         builder.addIncorporatedExtension("SPV_EXT_descriptor_indexing", spv::Spv_1_5);
         builder.addCapability(spv::Capability::ShaderNonUniformEXT);
-        
+
         auto& extensions = glslangIntermediate->getRequestedExtensions();
         if (extensions.find("GL_EXT_descriptor_heap") != extensions.end()) {
             builder.addExtension("SPV_EXT_descriptor_heap");
@@ -652,7 +652,7 @@ spv::Decoration TGlslangToSpvTraverser::TranslateNonUniformDecoration(const glsl
             return spv::Decoration::NonUniformEXT;
         }
     }
-    
+
     return spv::Decoration::Max;
 }
 
@@ -663,7 +663,7 @@ spv::Decoration TGlslangToSpvTraverser::TranslateNonUniformDecoration(
     if (coherentFlags.isNonUniform()) {
         builder.addIncorporatedExtension("SPV_EXT_descriptor_indexing", spv::Spv_1_5);
         builder.addCapability(spv::Capability::ShaderNonUniformEXT);
-        
+
         auto& extensions = glslangIntermediate->getRequestedExtensions();
         if (extensions.find("GL_EXT_descriptor_heap") != extensions.end()) {
             builder.addExtension("SPV_EXT_descriptor_heap");
@@ -673,7 +673,7 @@ spv::Decoration TGlslangToSpvTraverser::TranslateNonUniformDecoration(
             return spv::Decoration::NonUniformEXT;
         }
     }
-    
+
     return spv::Decoration::Max;
 }
 
@@ -686,7 +686,7 @@ spv::MemoryAccessMask TGlslangToSpvTraverser::TranslateMemoryAccess(
         return mask;
 
     if (coherentFlags.isVolatile() || coherentFlags.anyCoherent()) {
-        mask = mask | spv::MemoryAccessMask::MakePointerAvailableKHR | 
+        mask = mask | spv::MemoryAccessMask::MakePointerAvailableKHR |
                       spv::MemoryAccessMask::MakePointerVisibleKHR;
     }
 
@@ -1630,9 +1630,9 @@ void TGlslangToSpvTraverser::TranslateLiterals(const glslang::TVector<const glsl
 // Add capabilities pertaining to how an array is indexed.
 void TGlslangToSpvTraverser::addIndirectionIndexCapabilities(const glslang::TType& baseType,
                                                              const glslang::TType& indexType)
-{    
+{
     if (indexType.getQualifier().isNonUniform()) {
-        
+
         // deal with an asserted non-uniform index
         // SPV_EXT_descriptor_indexing already added in TranslateNonUniformDecoration
         if (baseType.getBasicType() == glslang::EbtSampler) {
@@ -7148,7 +7148,7 @@ void TGlslangToSpvTraverser::decorateStructType(const glslang::TType& type,
         builder.addCapability(spv::Capability::PushConstantBanksNV);
         builder.addDecoration(spvType, spv::Decoration::BankNV, qualifier.layoutBank);
     }
-  
+
     if (qualifier.hasHitObjectShaderRecordEXT())
         builder.addDecoration(spvType, spv::Decoration::HitObjectShaderRecordBufferEXT);
 }
@@ -8238,7 +8238,7 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
             }
 
             spv::Id pointer = builder.createOp(imgTexelOp, resultTypeId, operands);
-            if (imageType.getQualifier().nonUniform) { 
+            if (imageType.getQualifier().nonUniform) {
                 auto& extensions = glslangIntermediate->getRequestedExtensions();
                 if (extensions.find("GL_EXT_descriptor_heap") == extensions.end()) {
                     builder.addDecoration(pointer, spv::Decoration::NonUniformEXT);

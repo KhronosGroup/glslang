@@ -1775,7 +1775,7 @@ void HlslParseContext::handleEntryPointAttributes(const TSourceLoc& loc, const T
                 intermediate.setLocalSize(lid, sequence[lid]->getAsConstantUnion()->getConstArray()[0].getIConst());
             break;
         }
-        case EatInstance: 
+        case EatInstance:
         {
             int invocations;
 

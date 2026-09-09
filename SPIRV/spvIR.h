@@ -79,7 +79,7 @@ POTENTIALLY_UNUSED
 const MemorySemanticsMask MemorySemanticsAllMemory =
                 (MemorySemanticsMask)(MemorySemanticsMask::UniformMemory |
                                       MemorySemanticsMask::WorkgroupMemory |
-                                      MemorySemanticsMask::AtomicCounterMemory | 
+                                      MemorySemanticsMask::AtomicCounterMemory |
                                       MemorySemanticsMask::ImageMemory);
 
 struct IdImmediate {

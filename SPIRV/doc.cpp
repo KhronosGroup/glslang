@@ -1171,7 +1171,7 @@ const char* CapabilityString(int info)
     case (int)Capability::Float8CooperativeMatrixEXT:          return "Float8CooperativeMatrixEXT";
 
     case (int)Capability::PushConstantBanksNV:                 return "PushConstantBanksNV";
-        
+
     case (int)Capability::Shader64BitIndexingEXT:              return "CapabilityShader64BitIndexingEXT";
     case (int)Capability::LongVectorEXT:                       return "LongVectorEXT";
     case (int)Capability::SplitBarrierEXT:                     return "SplitBarrierEXT";

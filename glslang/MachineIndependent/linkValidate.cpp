@@ -451,7 +451,7 @@ void TIntermediate::optimizeStageIO(TInfoSink&, TIntermediate& unit)
 
         // determine if the input/output pair should be demoted
         // do the faster (and more likely) loose-loose check first
-        if (std::none_of(unitLiveInputs.begin(), unitLiveInputs.end(), isMatchingInput) && 
+        if (std::none_of(unitLiveInputs.begin(), unitLiveInputs.end(), isMatchingInput) &&
             std::none_of(unitAllInputs.begin(), unitAllInputs.end(), isMatchingInputBlockMember)) {
             // demote any input matching the output
             auto demoteMatchingInputs = [output](TIntermNode* input) {

@@ -296,7 +296,7 @@ public:
 
     template<class Other>
         pool_allocator(const pool_allocator<Other>& p) : allocator(p.getAllocator()) { }
-    
+
     pointer allocate(size_type n) {
         return reinterpret_cast<pointer>(getAllocator().allocate(n * sizeof(T))); }
     pointer allocate(size_type n, const void*) {
