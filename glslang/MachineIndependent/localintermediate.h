@@ -1135,6 +1135,7 @@ public:
     }
 
     void addToCallGraph(TInfoSink&, const TString& caller, const TString& callee);
+    void findUndefinedCallees(TVector<TString>& callees) const;
     void merge(TInfoSink&, TIntermediate&);
     void finalCheck(TInfoSink&, bool keepUncalled);
 

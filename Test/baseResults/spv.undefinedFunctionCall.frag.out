@@ -1,0 +1,6 @@
+spv.undefinedFunctionCall.frag
+ERROR: 0:16: 'do_some_math(vf4;' : no function definition (body) found: 
+ERROR: 1 compilation errors.  No code generated.
+
+
+SPIR-V is not generated for failed compile or link
