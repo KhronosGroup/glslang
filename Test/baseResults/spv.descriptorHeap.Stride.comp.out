@@ -17,15 +17,16 @@ spv.descriptorHeap.Stride.comp
                               Name 4  "main"
                               Name 10  "mvp"
                               Name 12  "resource_heap"
+                              Name 16  "ubo"
                               Name 21  "UBO"
                               MemberName 21(UBO) 0  "projection"
                               MemberName 21(UBO) 1  "view"
                               MemberName 21(UBO) 2  "model"
                               Name 46  "texel"
+                              Name 49  "img"
                               Decorate 12(resource_heap) BuiltIn ResourceHeapEXT
-                              DecorateId 16 ArrayStrideIdEXT 15
+                              DecorateId 16(ubo) ArrayStrideIdEXT 15
                               Decorate 20 ArrayStride 64
-                              Decorate 21(UBO) Block
                               MemberDecorate 21(UBO) 0 ColMajor
                               MemberDecorate 21(UBO) 0 MatrixStride 16
                               MemberDecorate 21(UBO) 0 Offset 0
@@ -35,7 +36,7 @@ spv.descriptorHeap.Stride.comp
                               MemberDecorate 21(UBO) 2 ColMajor
                               MemberDecorate 21(UBO) 2 MatrixStride 16
                               MemberDecorate 21(UBO) 2 Offset 128
-                              DecorateId 49 ArrayStrideIdEXT 48
+                              DecorateId 49(img) ArrayStrideIdEXT 48
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32
@@ -47,7 +48,7 @@ spv.descriptorHeap.Stride.comp
               13:             TypeBufferEXT StorageBuffer
               14:             TypeInt 32 0
               15:     14(int) Constant 512
-              16:             TypeRuntimeArray 13
+         16(ubo):             TypeRuntimeArray 13
               17:             TypeInt 32 1
               18:     17(int) Constant 1
               19:     14(int) Constant 2
@@ -61,7 +62,7 @@ spv.descriptorHeap.Stride.comp
               45:             TypePointer Function 7(fvec4)
               47:             TypeImage 6(float) 2D nonsampled format:Rgba32f
               48:     14(int) Constant 1024
-              49:             TypeRuntimeArray 47
+         49(img):             TypeRuntimeArray 47
               52:             TypeVector 17(int) 2
               53:   52(ivec2) ConstantComposite 22 22
               55:     17(int) Constant 3
@@ -69,31 +70,31 @@ spv.descriptorHeap.Stride.comp
                5:             Label
          10(mvp):      9(ptr) Variable Function
        46(texel):     45(ptr) Variable Function
-              23:     11(ptr) UntypedAccessChainKHR 16 12(resource_heap) 18
+              23:     11(ptr) UntypedAccessChainKHR 16(ubo) 12(resource_heap) 18
               25:     24(ptr) BufferPointerEXT 23
               27:     26(ptr) AccessChain 25 22
               28:           8 Load 27
-              29:     11(ptr) UntypedAccessChainKHR 16 12(resource_heap) 18
+              29:     11(ptr) UntypedAccessChainKHR 16(ubo) 12(resource_heap) 18
               30:     24(ptr) BufferPointerEXT 29
               31:     26(ptr) AccessChain 30 18
               32:           8 Load 31
               33:           8 MatrixTimesMatrix 28 32
-              35:     11(ptr) UntypedAccessChainKHR 16 12(resource_heap) 18
+              35:     11(ptr) UntypedAccessChainKHR 16(ubo) 12(resource_heap) 18
               36:     24(ptr) BufferPointerEXT 35
               37:     26(ptr) AccessChain 36 34 22
               38:           8 Load 37
               39:           8 MatrixTimesMatrix 33 38
                               Store 10(mvp) 39
               41:           8 Load 10(mvp)
-              42:     11(ptr) UntypedAccessChainKHR 16 12(resource_heap) 40
+              42:     11(ptr) UntypedAccessChainKHR 16(ubo) 12(resource_heap) 40
               43:     24(ptr) BufferPointerEXT 42
               44:     26(ptr) AccessChain 43 34 18
                               Store 44 41
-              50:     11(ptr) UntypedAccessChainKHR 49 12(resource_heap) 34
+              50:     11(ptr) UntypedAccessChainKHR 49(img) 12(resource_heap) 34
               51:          47 Load 50
               54:    7(fvec4) ImageRead 51 53
                               Store 46(texel) 54
-              56:     11(ptr) UntypedAccessChainKHR 49 12(resource_heap) 55
+              56:     11(ptr) UntypedAccessChainKHR 49(img) 12(resource_heap) 55
               57:          47 Load 56
               58:    7(fvec4) Load 46(texel)
                               ImageWrite 57 53 58

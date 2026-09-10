@@ -28,11 +28,9 @@ spv.structuredDescriptorHeap.Buffer.comp
                               MemberDecorateIdEXT 20(Material) 0 OffsetIdEXT 12
                               MemberDecorateIdEXT 20(Material) 1 OffsetIdEXT 19
                               DecorateId 30 ArrayStrideIdEXT 29
-                              Decorate 41(BufferHeap) Block
                               MemberDecorateIdEXT 41(BufferHeap) 0 OffsetIdEXT 12
                               MemberDecorateIdEXT 41(BufferHeap) 1 OffsetIdEXT 35
                               MemberDecorateIdEXT 41(BufferHeap) 2 OffsetIdEXT 40
-                              Decorate 45(DataBuffer) Block
                               MemberDecorate 45(DataBuffer) 0 Offset 0
                               MemberDecorate 45(DataBuffer) 1 Offset 4
                               Decorate 50 ArrayStride 1
