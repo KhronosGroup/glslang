@@ -9,6 +9,51 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   See issue #4210 for details.
 * Add support for GL_EXT_opacity_micromap_ray_query_mode
 
+## 16.6.0 2026-09-10
+
+### New Extensions
+
+* Implement `GL_EXT_cooperative_matrix_maintenance1`
+* Implement `GL_EXT_optional_input_attachment_index`
+* Implement `DebugEntryPoint` for `NonSemantic.Shader.DebugInfo` 102
+
+### `SPV_KHR_abort` / `abortEXT`
+
+* Require the first parameter of `abortEXT` to be a string literal, emit an error if it is not
+* Require the first parameter of `printf` to be a string literal, emit an error if it is not
+* Fix abort message struct layout for matrix, vector, and aggregate arguments
+* Pack the abort message with scalar layout when the shader requests `GL_EXT_scalar_block_layout`
+* Pack the abort message with scalar layout unconditionally so that consumers use one fixed set of rules
+* Fix abort message type to use separate value and laid out types, removing invalid `ArrayStride` on constant types
+* Fix `abort` to handle boolean and opaque types correctly
+
+### API Changes
+
+* Add access to the source entry point in the C API
+
+### Bug Fixes
+
+* Fix relaxed Vulkan access chain traversal for buffer references
+* Fix 32-bit identity fillers used in 16-bit matrix constructors
+* Fix out-of-bounds slot access for `atomic_uint` in `reserveResourceSlot`
+* Fix out-of-bounds read when folding component-wise intrinsics on matrices
+* Fix out-of-bounds dereference on undeclared ray tracing location
+* Fix out-of-bounds read on empty `entryPoints` in `postProcessFeatures`
+* Fix out-of-bounds read on short `coopMatPerElementNV` argument list
+* Fix crash on empty struct initializers in cascading error mode
+* Guard empty block member list in `getBlockSize`
+* Validate argument count in `decomposeStructBufferMethods`
+* Require constant scope and semantics operands in `memorySemanticsCheck`
+* Fix string escaping in preprocessed output
+* Fix `Aligned` decoration on `buffer_reference` swizzle-store read-modify-write load
+* Fold bit-cast conversions as constant expressions
+* Fold hyperbolic functions (`sinh`, `cosh`, `tanh`, `asinh`, `acosh`, `atanh`) as constant expressions
+* Improve parsing of `#pragma STDGL`
+
+### Performance
+
+* Replace linear search with a hash table for composite and struct constant creation in the SPIR-V builder
+
 ## 16.5.0 2026-07-31
 
 ### New Extensions
