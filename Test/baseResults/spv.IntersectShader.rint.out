@@ -49,6 +49,8 @@ spv.IntersectShader.rint
                               Decorate 42(gl_ObjectRayDirectionNV) BuiltIn ObjectRayDirectionKHR
                               Decorate 47(gl_RayTminNV) BuiltIn RayTminKHR
                               Decorate 50(gl_RayTmaxNV) BuiltIn RayTmaxKHR
+                              Decorate 50(gl_RayTmaxNV) Volatile
+                              Decorate 50(gl_RayTmaxNV) Coherent
                               Decorate 56(gl_ObjectToWorldNV) BuiltIn ObjectToWorldKHR
                               Decorate 59(gl_WorldToObjectNV) BuiltIn WorldToObjectKHR
                2:             TypeVoid
