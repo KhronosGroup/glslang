@@ -608,6 +608,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.xfb.vert",
         "spv.xfb2.vert",
         "spv.xfb3.vert",
+        "spv.xfbArrayStrideImplicit.vert",
         "spv.samplerlessTextureFunctions.frag",
         "spv.smBuiltins.vert",
         "spv.smBuiltins.frag",

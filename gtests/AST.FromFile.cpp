@@ -246,6 +246,7 @@ INSTANTIATE_TEST_SUITE_P(
         "constantUnaryConversion.comp",
         "xfbUnsizedArray.error.vert",
         "xfbUnsizedArray.error.tese",
+        "xfbArrayStride.error.vert",
         "glsl.140.layoutOffset.error.vert",
         "glsl.430.layoutOffset.error.vert",
         "glsl.450.subgroup.frag",
