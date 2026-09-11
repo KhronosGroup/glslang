@@ -1119,7 +1119,7 @@ public:
                 shadercallcoherent |= other.shadercallcoherent;
                 nonprivate |= other.nonprivate;
                 volatil |= other.volatil;
-                nontemporal = other.nontemporal;
+                nontemporal |= other.nontemporal;
                 isImage |= other.isImage;
                 nonUniform |= other.nonUniform;
                 return *this;

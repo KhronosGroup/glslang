@@ -822,6 +822,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.replicatespec.comp",
         "spv.atomicAdd.bufferReference.comp",
         "spv.nontemporalbuffer.frag",
+        "spv.nontemporalswizzle.frag",
         "spv.atomicFloat.comp",
         "spv.qcom.multiple_wait_queues.comp",
     })),
