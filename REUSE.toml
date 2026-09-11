@@ -588,8 +588,8 @@ SPDX-License-Identifier = "MIT"
 
 [[annotations]]
 path = [
-    "SPIRV/bitutils.h",
-    "SPIRV/hex_float.h",
+    "glslang/Include/bitutils.h",
+    "glslang/Include/hex_float.h",
 ]
 SPDX-FileCopyrightText = "The Khronos Group Inc."
 SPDX-License-Identifier = "Apache-2.0"
