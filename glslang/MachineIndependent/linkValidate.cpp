@@ -2335,7 +2335,7 @@ unsigned int TIntermediate::computeTypeXfbSize(const TType& type, bool& contains
         // TODO: perf: this can be flattened by using getCumulativeArraySize(), and a deref that discards all arrayness
         // Unsized array use to xfb should be a compile error.
         TType elementType(type, 0);
-        return type.getOuterArraySize() * computeTypeXfbSize(elementType, contains64BitType, contains16BitType, contains16BitType);
+        return type.getOuterArraySize() * computeTypeXfbSize(elementType, contains64BitType, contains32BitType, contains16BitType);
     }
 
     if (type.isStruct()) {

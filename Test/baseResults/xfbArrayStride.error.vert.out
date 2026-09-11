@@ -1,0 +1,67 @@
+xfbArrayStride.error.vert
+Shader version: 450
+in xfb mode
+0:? Sequence
+0:13  Function Definition: main( ( global void)
+0:13    Function Parameters: 
+0:15    Sequence
+0:15      move second child to first child ( temp float)
+0:15        direct index (layout( location=0 xfb_buffer=0 xfb_offset=0) smooth temp float)
+0:15          'arr' (layout( location=0 xfb_buffer=0 xfb_offset=0) smooth out 1-element array of float)
+0:15          Constant:
+0:15            0 (const int)
+0:15        Constant:
+0:15          1.000000
+0:16      move second child to first child ( temp float)
+0:16        direct index (layout( location=1 xfb_buffer=1 xfb_offset=0) smooth temp float)
+0:16          direct index (layout( location=1 xfb_buffer=1 xfb_offset=0) smooth temp 2-element array of float)
+0:16            'nested' (layout( location=1 xfb_buffer=1 xfb_offset=0) smooth out 2-element array of 2-element array of float)
+0:16            Constant:
+0:16              0 (const int)
+0:16          Constant:
+0:16            0 (const int)
+0:16        Constant:
+0:16          2.000000
+0:?   Linker Objects
+0:?     'arr' (layout( location=0 xfb_buffer=0 xfb_offset=0) smooth out 1-element array of float)
+0:?     'nested' (layout( location=1 xfb_buffer=1 xfb_offset=0) smooth out 2-element array of 2-element array of float)
+0:?     'gl_VertexID' ( gl_VertexId int VertexId)
+0:?     'gl_InstanceID' ( gl_InstanceId int InstanceId)
+
+
+Linked vertex stage:
+
+ERROR: Linking vertex stage: xfb_stride must be multiple of 4:
+ERROR:     xfb_buffer 0, xfb_stride 6
+ERROR: Linking vertex stage: xfb_stride must be multiple of 4:
+ERROR:     xfb_buffer 1, xfb_stride 18
+
+Shader version: 450
+in xfb mode
+0:? Sequence
+0:13  Function Definition: main( ( global void)
+0:13    Function Parameters: 
+0:15    Sequence
+0:15      move second child to first child ( temp float)
+0:15        direct index (layout( location=0 xfb_buffer=0 xfb_offset=0) smooth temp float)
+0:15          'arr' (layout( location=0 xfb_buffer=0 xfb_offset=0) smooth out 1-element array of float)
+0:15          Constant:
+0:15            0 (const int)
+0:15        Constant:
+0:15          1.000000
+0:16      move second child to first child ( temp float)
+0:16        direct index (layout( location=1 xfb_buffer=1 xfb_offset=0) smooth temp float)
+0:16          direct index (layout( location=1 xfb_buffer=1 xfb_offset=0) smooth temp 2-element array of float)
+0:16            'nested' (layout( location=1 xfb_buffer=1 xfb_offset=0) smooth out 2-element array of 2-element array of float)
+0:16            Constant:
+0:16              0 (const int)
+0:16          Constant:
+0:16            0 (const int)
+0:16        Constant:
+0:16          2.000000
+0:?   Linker Objects
+0:?     'arr' (layout( location=0 xfb_buffer=0 xfb_offset=0) smooth out 1-element array of float)
+0:?     'nested' (layout( location=1 xfb_buffer=1 xfb_offset=0) smooth out 2-element array of 2-element array of float)
+0:?     'gl_VertexID' ( gl_VertexId int VertexId)
+0:?     'gl_InstanceID' ( gl_InstanceId int InstanceId)
+
