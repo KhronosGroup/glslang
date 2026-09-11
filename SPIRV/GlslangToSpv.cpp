@@ -327,7 +327,7 @@ protected:
     spv::Id createShortCircuit(glslang::TOperator, glslang::TIntermTyped& left, glslang::TIntermTyped& right);
     spv::Id getExtBuiltins(const char* name);
     std::pair<spv::Id, spv::Id> getForcedType(glslang::TBuiltInVariable builtIn, const glslang::TType&);
-    spv::Id translateForcedType(spv::Id object);
+    spv::Id translateForcedType(spv::Id object, const glslang::TType& type);
     spv::Id createCompositeConstruct(spv::Id typeId, std::vector<spv::Id> constituents);
     void recordDescHeapAccessChainInfo(glslang::TIntermBinary* node);
     void createAbortEXT(const glslang::TIntermSequence &glslangOperands);
@@ -2399,7 +2399,7 @@ void TGlslangToSpvTraverser::visitSymbol(glslang::TIntermSymbol* symbol)
         // Note this turns it from an l-value to an r-value.
         // Currently, all symbols needing this are inputs; avoid the map lookup when non-input.
         if (symbol->getType().getQualifier().storage == glslang::EvqVaryingIn)
-            id = translateForcedType(id);
+            id = translateForcedType(id, symbol->getType());
     }
 
     // Only process non-linkage-only nodes for generating actual static uses
@@ -2929,7 +2929,7 @@ std::pair<spv::Id, spv::Id> TGlslangToSpvTraverser::getForcedType(glslang::TBuil
 // For an object previously identified (see getForcedType() and forceType)
 // as needing type translations, do the translation needed for a load, turning
 // an L-value into in R-value.
-spv::Id TGlslangToSpvTraverser::translateForcedType(spv::Id object)
+spv::Id TGlslangToSpvTraverser::translateForcedType(spv::Id object, const glslang::TType& type)
 {
     const auto forceIt = forceType.find(object);
     if (forceIt == forceType.end())
@@ -2939,13 +2939,22 @@ spv::Id TGlslangToSpvTraverser::translateForcedType(spv::Id object)
     spv::Id objectTypeId = builder.getTypeId(object);
     assert(builder.isPointerType(objectTypeId));
     objectTypeId = builder.getContainedTypeId(objectTypeId);
+
+    // The load performed below needs to preserve the same Volatile/Coherent memory access
+    // that TGlslangToSpvTraverser::accessChainLoad() would apply
+    spv::Builder::AccessChain::CoherentFlags coherentFlags = TranslateCoherent(type);
+    spv::MemoryAccessMask accessMask =
+        spv::MemoryAccessMask(TranslateMemoryAccess(coherentFlags) & ~spv::MemoryAccessMask::MakePointerAvailableKHR);
+    spv::Scope memoryScope = TranslateMemoryScope(coherentFlags);
+
     if (builder.isVectorType(objectTypeId) &&
         builder.getScalarTypeWidth(builder.getContainedTypeId(objectTypeId)) == 32) {
         if (builder.getScalarTypeWidth(desiredTypeId) == 64) {
             // handle 32-bit v.xy* -> 64-bit
             builder.clearAccessChain();
             builder.setAccessChainLValue(object);
-            object = builder.accessChainLoad(spv::NoPrecision, spv::Decoration::Max, spv::Decoration::Max, objectTypeId);
+            object = builder.accessChainLoad(spv::NoPrecision, spv::Decoration::Max, spv::Decoration::Max, objectTypeId,
+                                             accessMask, memoryScope);
             std::vector<spv::Id> components;
             components.push_back(builder.createCompositeExtract(object, builder.getContainedTypeId(objectTypeId), 0));
             components.push_back(builder.createCompositeExtract(object, builder.getContainedTypeId(objectTypeId), 1));
@@ -2961,7 +2970,8 @@ spv::Id TGlslangToSpvTraverser::translateForcedType(spv::Id object)
             // and we insert a transpose after loading the original non-transposed builtins
             builder.clearAccessChain();
             builder.setAccessChainLValue(object);
-            object = builder.accessChainLoad(spv::NoPrecision, spv::Decoration::Max, spv::Decoration::Max, objectTypeId);
+            object = builder.accessChainLoad(spv::NoPrecision, spv::Decoration::Max, spv::Decoration::Max, objectTypeId,
+                                             accessMask, memoryScope);
             return builder.createUnaryOp(spv::Op::OpTranspose, desiredTypeId, object);
 
     } else  {

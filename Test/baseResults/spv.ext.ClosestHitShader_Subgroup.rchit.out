@@ -91,7 +91,7 @@ spv.ext.ClosestHitShader_Subgroup.rchit
                               TraceRayKHR 9 11 12 13 14 11 18 17 20 21 26(incomingPayload)
               29:     10(int) Load 28(gl_SubgroupInvocationID) Volatile 
               30:   15(float) ConvertUToF 29
-              35:   31(ivec4) Load 34(gl_SubGroupGeMaskARB)
+              35:   31(ivec4) Load 34(gl_SubGroupGeMaskARB) Volatile 
               36:     10(int) CompositeExtract 35 0
               37:     10(int) CompositeExtract 35 1
               39:   38(ivec2) CompositeConstruct 36 37
@@ -106,7 +106,7 @@ spv.ext.ClosestHitShader_Subgroup.rchit
               50:   24(fvec4) ConvertUToF 49
               51:   15(float) CompositeExtract 50 0
               52:   15(float) FAdd 47 51
-              54:   31(ivec4) Load 53(gl_SubGroupLtMaskARB)
+              54:   31(ivec4) Load 53(gl_SubGroupLtMaskARB) Volatile 
               55:     10(int) CompositeExtract 54 0
               56:     10(int) CompositeExtract 54 1
               57:   38(ivec2) CompositeConstruct 55 56
