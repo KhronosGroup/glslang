@@ -1035,6 +1035,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.floate4m3.comp",
         "spv.floate4m3.const.comp",
         "spv.floate4m3_error.comp",
+        "spv.floate4m3.saturatedConvert.error.comp",
         "spv.floate5m2.comp",
         "spv.floate5m2.const.comp",
         "spv.floate5m2_error.comp",
