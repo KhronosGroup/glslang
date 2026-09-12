@@ -28,7 +28,7 @@ spv.coopmat2_tensor.comp
                               Name 4  "main"
                               Name 8  "fp16Buf"
                               MemberName 8(fp16Buf) 0  "f"
-                              Name 16  "decode(1;u1[2];u1[2];"
+                              Name 16  "decode(bref-fp16Buf1;u1[2];u1[2];"
                               Name 13  "b"
                               Name 14  "blockCoords"
                               Name 15  "coordInBlock"
@@ -213,19 +213,19 @@ spv.coopmat2_tensor.comp
              108:     91(ptr) AccessChain 90(Buf) 37 25
              109:          26 Load 28(t)
              110:          82 Load 84(A)
-             111:          82 CooperativeMatrixLoadTensorNV 108 110 109 None  DecodeFunc 16(decode(1;u1[2];u1[2];)
+             111:          82 CooperativeMatrixLoadTensorNV 108 110 109 None  DecodeFunc 16(decode(bref-fp16Buf1;u1[2];u1[2];)
                               Store 84(A) 111
              112:     91(ptr) AccessChain 90(Buf) 37 25
              113:          26 Load 28(t)
              114:          54 Load 56(v)
              115:          82 Load 84(A)
-             116:          82 CooperativeMatrixLoadTensorNV 112 115 113 None  TensorView DecodeFunc 114 16(decode(1;u1[2];u1[2];)
+             116:          82 CooperativeMatrixLoadTensorNV 112 115 113 None  TensorView DecodeFunc 114 16(decode(bref-fp16Buf1;u1[2];u1[2];)
                               Store 84(A) 116
              124:    123(ptr) AccessChain 122(sbuf) 19 32
              125:          26 Load 28(t)
              126:          54 Load 56(v)
              127:          82 Load 84(A)
-             128:          82 CooperativeMatrixLoadTensorNV 124 127 125 None  TensorView DecodeFunc 126 16(decode(1;u1[2];u1[2];)
+             128:          82 CooperativeMatrixLoadTensorNV 124 127 125 None  TensorView DecodeFunc 126 16(decode(bref-fp16Buf1;u1[2];u1[2];)
                               Store 84(A) 128
              133:         130 CreateTensorLayoutNV
                               Store 132(tc) 133
@@ -250,7 +250,7 @@ spv.coopmat2_tensor.comp
                               Store 158(v4) 159
                               Return
                               FunctionEnd
-16(decode(1;u1[2];u1[2];):7(float16_t) Function None 12
+16(decode(bref-fp16Buf1;u1[2];u1[2];):7(float16_t) Function None 12
            13(b):      6(ptr) FunctionParameter
  14(blockCoords):          11 FunctionParameter
 15(coordInBlock):          11 FunctionParameter
