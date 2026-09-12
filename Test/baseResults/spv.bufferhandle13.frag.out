@@ -16,13 +16,13 @@ spv.bufferhandle13.frag
                               Name 4  "main"
                               Name 8  "t4"
                               MemberName 8(t4) 0  "j"
-                              Name 11  "f1(1;"
+                              Name 11  "f1(bref-t41;"
                               Name 10  "y"
-                              Name 16  "f2(1;"
+                              Name 16  "f2(bref-t41;"
                               Name 15  "y"
-                              Name 19  "f3(1;"
+                              Name 19  "f3(bref-t41;"
                               Name 18  "y"
-                              Name 22  "f4(1;"
+                              Name 22  "f4(bref-t41;"
                               Name 21  "y"
                               Name 34  "a"
                               Name 35  "t5"
@@ -82,34 +82,34 @@ spv.bufferhandle13.frag
               44:      6(ptr) Load 43
                               Store 42(b) 44
               45:      6(ptr) Load 34(a)
-              46:      6(ptr) FunctionCall 11(f1(1;) 45
+              46:      6(ptr) FunctionCall 11(f1(bref-t41;) 45
               48:      6(ptr) Load 34(a)
                               Store 47(param) 48
-              49:      6(ptr) FunctionCall 16(f2(1;) 47(param)
+              49:      6(ptr) FunctionCall 16(f2(bref-t41;) 47(param)
               50:      6(ptr) Load 34(a)
-              51:      6(ptr) FunctionCall 19(f3(1;) 50
+              51:      6(ptr) FunctionCall 19(f3(bref-t41;) 50
               53:      6(ptr) Load 34(a)
                               Store 52(param) 53
-              54:      6(ptr) FunctionCall 22(f4(1;) 52(param)
+              54:      6(ptr) FunctionCall 22(f4(bref-t41;) 52(param)
                               Return
                               FunctionEnd
-       11(f1(1;):      6(ptr) Function None 9
+11(f1(bref-t41;):      6(ptr) Function None 9
            10(y):      6(ptr) FunctionParameter
               12:             Label
                               ReturnValue 10(y)
                               FunctionEnd
-       16(f2(1;):      6(ptr) Function None 14
+16(f2(bref-t41;):      6(ptr) Function None 14
            15(y):     13(ptr) FunctionParameter
               17:             Label
               26:      6(ptr) Load 15(y)
                               ReturnValue 26
                               FunctionEnd
-       19(f3(1;):      6(ptr) Function None 9
+19(f3(bref-t41;):      6(ptr) Function None 9
            18(y):      6(ptr) FunctionParameter
               20:             Label
                               ReturnValue 18(y)
                               FunctionEnd
-       22(f4(1;):      6(ptr) Function None 14
+22(f4(bref-t41;):      6(ptr) Function None 14
            21(y):     13(ptr) FunctionParameter
               23:             Label
               31:      6(ptr) Load 21(y)

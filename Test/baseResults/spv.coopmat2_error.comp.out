@@ -1,13 +1,13 @@
 spv.coopmat2_error.comp
-ERROR: 0:53: 'decode2(1;u1[2];u1[2];' : function parameters must all be qualified 'const in' 
-ERROR: 0:54: 'decode3(1;u1[2];u1[2];' : function parameters must all be qualified 'const in' 
-ERROR: 0:56: 'decode5(1;u1[2];u1[2];' : function parameters must all be qualified 'const in' 
-ERROR: 0:57: 'decode6(1;u1[2];u1[2];' : function parameters must all be qualified 'const in' 
-ERROR: 0:59: 'decode8(1;u1[2];u1[2];' : function parameters must all be qualified 'const in' 
-ERROR: 0:60: 'decode9(1;u1[2];u1[2];' : function parameters must all be qualified 'const in' 
+ERROR: 0:53: 'decode2(bref-fp16Buf1;u1[2];u1[2];' : function parameters must all be qualified 'const in' 
+ERROR: 0:54: 'decode3(bref-fp16Buf1;u1[2];u1[2];' : function parameters must all be qualified 'const in' 
+ERROR: 0:56: 'decode5(bref-fp16Buf1;u1[2];u1[2];' : function parameters must all be qualified 'const in' 
+ERROR: 0:57: 'decode6(bref-fp16Buf1;u1[2];u1[2];' : function parameters must all be qualified 'const in' 
+ERROR: 0:59: 'decode8(bref-fp16Buf1;u1[2];u1[2];' : function parameters must all be qualified 'const in' 
+ERROR: 0:60: 'decode9(bref-fp16Buf1;u1[2];u1[2];' : function parameters must all be qualified 'const in' 
 ERROR: 0:61: 'decode10(u1;u161[2];u161[2];' : first parameter must be buffer reference type 
 ERROR: 0:61: 'decode10(u1;u161[2];u161[2];' : coordinate parameters must be uint32_t 
-ERROR: 0:62: 'decode11(1;u1;u1;' : coordinate parameters must be uint32_t 
+ERROR: 0:62: 'decode11(bref-fp16Buf1;u1;u1;' : coordinate parameters must be uint32_t 
 ERROR: 0:67: 'combineSum2(f161;f161;' : function parameters must all be qualified 'const in' 
 ERROR: 0:67: 'combineSum2(f161;f161;' : function parameters must all be qualified 'const in' 
 ERROR: 0:68: 'combineSum(f161;f161;' : parameter types must match cooperative matrix component type 

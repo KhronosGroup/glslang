@@ -1,0 +1,6 @@
+spv.bufferhandle28_Errors.frag
+ERROR: 0:21: 'f' : no matching overloaded function found 
+ERROR: 1 compilation errors.  No code generated.
+
+
+SPIR-V is not generated for failed compile or link
