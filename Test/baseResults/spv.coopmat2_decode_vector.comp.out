@@ -36,27 +36,27 @@ spv.coopmat2_decode_vector.comp
                               Name 4  "main"
                               Name 8  "dwordBuf"
                               MemberName 8(dwordBuf) 0  "d"
-                              Name 16  "decodeF16Scalar(1;u1[2];u1[2];"
+                              Name 16  "decodeF16Scalar(bref-dwordBuf1;u1[2];u1[2];"
                               Name 13  "b"
                               Name 14  "blockCoords"
                               Name 15  "coordInBlock"
-                              Name 23  "decodeF16x2(1;u1[2];u1[2];"
+                              Name 23  "decodeF16x2(bref-dwordBuf1;u1[2];u1[2];"
                               Name 20  "b"
                               Name 21  "blockCoords"
                               Name 22  "coordInBlock"
-                              Name 30  "decodeF16x4(1;u1[2];u1[2];"
+                              Name 30  "decodeF16x4(bref-dwordBuf1;u1[2];u1[2];"
                               Name 27  "b"
                               Name 28  "blockCoords"
                               Name 29  "coordInBlock"
-                              Name 37  "decodeU8Scalar(1;u1[2];u1[2];"
+                              Name 37  "decodeU8Scalar(bref-dwordBuf1;u1[2];u1[2];"
                               Name 34  "b"
                               Name 35  "blockCoords"
                               Name 36  "coordInBlock"
-                              Name 44  "decodeU8x4(1;u1[2];u1[2];"
+                              Name 44  "decodeU8x4(bref-dwordBuf1;u1[2];u1[2];"
                               Name 41  "b"
                               Name 42  "blockCoords"
                               Name 43  "coordInBlock"
-                              Name 51  "decodeU8x8(1;u1[2];u1[2];"
+                              Name 51  "decodeU8x8(bref-dwordBuf1;u1[2];u1[2];"
                               Name 48  "b"
                               Name 49  "blockCoords"
                               Name 50  "coordInBlock"
@@ -156,36 +156,36 @@ spv.coopmat2_decode_vector.comp
              162:    161(ptr) AccessChain 160(Buf) 54 138
              163:         139 Load 141(t)
              164:         154 Load 156(A)
-             165:         154 CooperativeMatrixLoadTensorNV 162 164 163 None  DecodeFunc 16(decodeF16Scalar(1;u1[2];u1[2];)
+             165:         154 CooperativeMatrixLoadTensorNV 162 164 163 None  DecodeFunc 16(decodeF16Scalar(bref-dwordBuf1;u1[2];u1[2];)
                               Store 156(A) 165
              174:    173(ptr) AccessChain 172(Buf8) 54 138
              175:         139 Load 141(t)
              176:         166 Load 168(Au8)
-             177:         166 CooperativeMatrixLoadTensorNV 174 176 175 None  DecodeFunc 37(decodeU8Scalar(1;u1[2];u1[2];)
+             177:         166 CooperativeMatrixLoadTensorNV 174 176 175 None  DecodeFunc 37(decodeU8Scalar(bref-dwordBuf1;u1[2];u1[2];)
                               Store 168(Au8) 177
              178:    161(ptr) AccessChain 160(Buf) 54 138
              179:         139 Load 141(t)
              180:         154 Load 156(A)
-             181:         154 CooperativeMatrixLoadTensorNV 178 180 179 None  DecodeFunc DecodeVectorFunc 16(decodeF16Scalar(1;u1[2];u1[2];) 23(decodeF16x2(1;u1[2];u1[2];)
+             181:         154 CooperativeMatrixLoadTensorNV 178 180 179 None  DecodeFunc DecodeVectorFunc 16(decodeF16Scalar(bref-dwordBuf1;u1[2];u1[2];) 23(decodeF16x2(bref-dwordBuf1;u1[2];u1[2];)
                               Store 156(A) 181
              182:    161(ptr) AccessChain 160(Buf) 54 138
              183:         139 Load 141(t)
              184:         154 Load 156(A)
-             185:         154 CooperativeMatrixLoadTensorNV 182 184 183 None  DecodeFunc DecodeVectorFunc 16(decodeF16Scalar(1;u1[2];u1[2];) 30(decodeF16x4(1;u1[2];u1[2];)
+             185:         154 CooperativeMatrixLoadTensorNV 182 184 183 None  DecodeFunc DecodeVectorFunc 16(decodeF16Scalar(bref-dwordBuf1;u1[2];u1[2];) 30(decodeF16x4(bref-dwordBuf1;u1[2];u1[2];)
                               Store 156(A) 185
              186:    173(ptr) AccessChain 172(Buf8) 54 138
              187:         139 Load 141(t)
              188:         166 Load 168(Au8)
-             189:         166 CooperativeMatrixLoadTensorNV 186 188 187 None  DecodeFunc DecodeVectorFunc 37(decodeU8Scalar(1;u1[2];u1[2];) 44(decodeU8x4(1;u1[2];u1[2];)
+             189:         166 CooperativeMatrixLoadTensorNV 186 188 187 None  DecodeFunc DecodeVectorFunc 37(decodeU8Scalar(bref-dwordBuf1;u1[2];u1[2];) 44(decodeU8x4(bref-dwordBuf1;u1[2];u1[2];)
                               Store 168(Au8) 189
              190:    173(ptr) AccessChain 172(Buf8) 54 138
              191:         139 Load 141(t)
              192:         166 Load 168(Au8)
-             193:         166 CooperativeMatrixLoadTensorNV 190 192 191 None  DecodeFunc DecodeVectorFunc 37(decodeU8Scalar(1;u1[2];u1[2];) 51(decodeU8x8(1;u1[2];u1[2];)
+             193:         166 CooperativeMatrixLoadTensorNV 190 192 191 None  DecodeFunc DecodeVectorFunc 37(decodeU8Scalar(bref-dwordBuf1;u1[2];u1[2];) 51(decodeU8x8(bref-dwordBuf1;u1[2];u1[2];)
                               Store 168(Au8) 193
                               Return
                               FunctionEnd
-16(decodeF16Scalar(1;u1[2];u1[2];):11(float16_t) Function None 12
+16(decodeF16Scalar(bref-dwordBuf1;u1[2];u1[2];):11(float16_t) Function None 12
            13(b):      6(ptr) FunctionParameter
  14(blockCoords):          10 FunctionParameter
 15(coordInBlock):          10 FunctionParameter
@@ -195,7 +195,7 @@ spv.coopmat2_decode_vector.comp
               58:11(float16_t) ConvertUToF 57
                               ReturnValue 58
                               FunctionEnd
-23(decodeF16x2(1;u1[2];u1[2];): 18(f16vec2) Function None 19
+23(decodeF16x2(bref-dwordBuf1;u1[2];u1[2];): 18(f16vec2) Function None 19
            20(b):      6(ptr) FunctionParameter
  21(blockCoords):          10 FunctionParameter
 22(coordInBlock):          10 FunctionParameter
@@ -205,7 +205,7 @@ spv.coopmat2_decode_vector.comp
               63: 18(f16vec2) Bitcast 62
                               ReturnValue 63
                               FunctionEnd
-30(decodeF16x4(1;u1[2];u1[2];): 25(f16vec4) Function None 26
+30(decodeF16x4(bref-dwordBuf1;u1[2];u1[2];): 25(f16vec4) Function None 26
            27(b):      6(ptr) FunctionParameter
  28(blockCoords):          10 FunctionParameter
 29(coordInBlock):          10 FunctionParameter
@@ -223,7 +223,7 @@ spv.coopmat2_decode_vector.comp
               76: 25(f16vec4) CompositeConstruct 72 73 74 75
                               ReturnValue 76
                               FunctionEnd
-37(decodeU8Scalar(1;u1[2];u1[2];):  32(int8_t) Function None 33
+37(decodeU8Scalar(bref-dwordBuf1;u1[2];u1[2];):  32(int8_t) Function None 33
            34(b):      6(ptr) FunctionParameter
  35(blockCoords):          10 FunctionParameter
 36(coordInBlock):          10 FunctionParameter
@@ -233,7 +233,7 @@ spv.coopmat2_decode_vector.comp
               81:  32(int8_t) UConvert 80
                               ReturnValue 81
                               FunctionEnd
-44(decodeU8x4(1;u1[2];u1[2];):  39(i8vec4) Function None 40
+44(decodeU8x4(bref-dwordBuf1;u1[2];u1[2];):  39(i8vec4) Function None 40
            41(b):      6(ptr) FunctionParameter
  42(blockCoords):          10 FunctionParameter
 43(coordInBlock):          10 FunctionParameter
@@ -256,7 +256,7 @@ spv.coopmat2_decode_vector.comp
              102:  39(i8vec4) CompositeConstruct 86 91 96 101
                               ReturnValue 102
                               FunctionEnd
-51(decodeU8x8(1;u1[2];u1[2];):  46(i8vec8) Function None 47
+51(decodeU8x8(bref-dwordBuf1;u1[2];u1[2];):  46(i8vec8) Function None 47
            48(b):      6(ptr) FunctionParameter
  49(blockCoords):          10 FunctionParameter
 50(coordInBlock):          10 FunctionParameter

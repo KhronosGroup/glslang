@@ -151,6 +151,16 @@ void TType::buildMangledName(TString& mangledName) const
         if (sampler.isMultiSample())
             mangledName += "M";
         break;
+    case EbtReference:
+        // Mangle by the block name alone, not by the referent's members. The parser rejects a
+        // second block with the same name, so the name already identifies the type. Recursing
+        // into the referent the way the struct case does would not terminate: a buffer reference
+        // block may legally name itself or another block that refers back to it, which a struct
+        // cannot do.
+        mangledName += "bref-";
+        if (typeName)
+            mangledName += *typeName;
+        break;
     case EbtStruct:
     case EbtBlock:
         if (basicType == EbtStruct)
