@@ -1648,7 +1648,13 @@ TIntermTyped* TParseContext::handleFunctionCall(const TSourceLoc& loc, TFunction
 
             if (fnCandidate->getBuiltInOp() == EOpConstructSaturated) {
                 // result type is taken from the first parameter
-                result->setType(result->getAsAggregate()->getSequence()[0]->getAsTyped()->getType());
+                TIntermAggregate* aggregate = result->getAsAggregate();
+                if (aggregate != nullptr && aggregate->getSequence().size() == 2)
+                    result->setType(aggregate->getSequence()[0]->getAsTyped()->getType());
+                else if (aggregate == nullptr)
+                    // a call with the wrong argument count folds away from an aggregate and
+                    // never reaches builtInOpCheck; reject it here before SPIR-V generation
+                    error(loc, "requires exactly two parameters", "", "");
             }
         }
     }
@@ -4091,10 +4097,12 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
 
     case EOpConstructSaturated:
     {
-        auto &sequence = callNode.getAsAggregate()->getSequence();
-        if (sequence.size() != 2) {
+        const TIntermAggregate* aggregate = callNode.getAsAggregate();
+        if (aggregate == nullptr || aggregate->getSequence().size() != 2) {
             error(loc, "requires exactly two parameters", "", "");
+            break;
         }
+        auto &sequence = aggregate->getSequence();
         auto &op0Type = sequence[0]->getAsTyped()->getType();
         auto &op1Type = sequence[1]->getAsTyped()->getType();
         if (op0Type.getBasicType() != EbtFloatE5M2 && op0Type.getBasicType() != EbtFloatE4M3) {

@@ -1,0 +1,8 @@
+spv.floate4m3.saturatedConvert.error.comp
+ERROR: 0:16: '' : requires exactly two parameters 
+ERROR: 0:17: '' : requires exactly two parameters 
+ERROR: 0:18: '' : requires exactly two parameters 
+ERROR: 3 compilation errors.  No code generated.
+
+
+SPIR-V is not generated for failed compile or link
