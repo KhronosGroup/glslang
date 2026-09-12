@@ -63,11 +63,32 @@ namespace spv {
 class Block;
 class Function;
 class Module;
+class Instruction;
 
 const Id NoResult = 0;
 const Id NoType = 0;
 
 const Decoration NoPrecision = Decoration::Max;
+
+// A SPIR-V instruction stores its total word count (including the opcode
+// header word) in the high 16 bits of its first word. That field cannot hold
+// a value larger than this, so no single instruction may be longer than this
+// many words. This is a hard physical-encoding limit from the SPIR-V spec's
+// "Physical Layout"; it is not a target/driver option and cannot be raised.
+const unsigned int WordCountMax = 0xFFFFu;
+
+//
+// Receives fatal errors discovered while serializing SPIR-V.
+//
+class SpvErrorReporter {
+public:
+    virtual ~SpvErrorReporter();
+
+    // Report that 'inst' cannot be encoded because its total word count would
+    // overflow the 16-bit per-instruction WordCount field (WordCountMax).
+    // Implementations must count the error and produce a meaningful message.
+    virtual void instructionWordCountOverflow(const Instruction& inst) = 0;
+};
 
 #ifdef __GNUC__
 #   define POTENTIALLY_UNUSED __attribute__((unused))
@@ -237,19 +258,41 @@ public:
         return operands[op];
     }
 
-    // Write out the binary form.
-    void dump(std::vector<unsigned int>& out) const
+    // Total number of words this instruction occupies when serialized,
+    // including the leading opcode/word-count header word. Computed as a
+    // wide (non-truncating) type so callers can detect an over-limit
+    // instruction before it is packed into the 16-bit WordCount field.
+    size_t getWordCount() const
     {
-        // Compute the wordCount
-        unsigned int wordCount = 1;
+        size_t wordCount = 1;
         if (typeId)
             ++wordCount;
         if (resultId)
             ++wordCount;
-        wordCount += (unsigned int)operands.size();
+        wordCount += operands.size();
+        return wordCount;
+    }
+
+    // Write out the binary form.
+    // If this instruction is too long to encode (its word count would overflow
+    // the 16-bit WordCount header field), nothing is written to 'out'; instead
+    // the problem is reported to 'errorReporter' (which counts it) so the build can
+    // be rejected at the top level. This never writes a silently truncated (and
+    // therefore corrupt) instruction header.
+    void dump(std::vector<unsigned int>& out, SpvErrorReporter& errorReporter) const
+    {
+        const size_t wordCount = getWordCount();
+
+        // The WordCount header field is only 16 bits wide. A larger value
+        // would be truncated by the shift below, desynchronizing any parser
+        // that reads the resulting stream. Report it rather than corrupt.
+        if (wordCount > WordCountMax) {
+            errorReporter.instructionWordCountOverflow(*this);
+            return;
+        }
 
         // Write out the beginning of the instruction
-        out.push_back(((wordCount) << WordCountShift) | (unsigned)opCode);
+        out.push_back(((unsigned int)wordCount << WordCountShift) | (unsigned)opCode);
         if (typeId)
             out.push_back(typeId);
         if (resultId)
@@ -393,13 +436,13 @@ public:
         }
     }
 
-    void dump(std::vector<unsigned int>& out) const
+    void dump(std::vector<unsigned int>& out, SpvErrorReporter& errorReporter) const
     {
-        instructions[0]->dump(out);
+        instructions[0]->dump(out, errorReporter);
         for (int i = 0; i < (int)localVariables.size(); ++i)
-            localVariables[i]->dump(out);
+            localVariables[i]->dump(out, errorReporter);
         for (int i = 1; i < (int)instructions.size(); ++i)
-            instructions[i]->dump(out);
+            instructions[i]->dump(out, errorReporter);
     }
 
 protected:
@@ -516,24 +559,26 @@ public:
             Decoration::RelaxedPrecision : NoPrecision;
     }
 
-    void dump(std::vector<unsigned int>& out) const
+    void dump(std::vector<unsigned int>& out, SpvErrorReporter& errorReporter) const
     {
         // OpLine
         if (lineInstruction != nullptr) {
-            lineInstruction->dump(out);
+            lineInstruction->dump(out, errorReporter);
         }
 
         // OpFunction
-        functionInstruction.dump(out);
+        functionInstruction.dump(out, errorReporter);
 
         // OpFunctionParameter
         for (int p = 0; p < (int)parameterInstructions.size(); ++p)
-            parameterInstructions[p]->dump(out);
+            parameterInstructions[p]->dump(out, errorReporter);
 
         // Blocks
-        inReadableOrder(blocks[0], [&out](const Block* b, ReachReason, Block*) { b->dump(out); });
+        inReadableOrder(blocks[0], [&out, &errorReporter](const Block* b, ReachReason, Block*) {
+            b->dump(out, errorReporter);
+        });
         Instruction end(0, 0, Op::OpFunctionEnd);
-        end.dump(out);
+        end.dump(out, errorReporter);
     }
 
     LinkageType getLinkType() const { return linkType; }
@@ -590,10 +635,10 @@ public:
         return (StorageClass)idToInstruction[typeId]->getImmediateOperand(0);
     }
 
-    void dump(std::vector<unsigned int>& out) const
+    void dump(std::vector<unsigned int>& out, SpvErrorReporter& errorReporter) const
     {
         for (int f = 0; f < (int)functions.size(); ++f)
-            functions[f]->dump(out);
+            functions[f]->dump(out, errorReporter);
     }
 
 protected:
