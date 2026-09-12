@@ -1,0 +1,34 @@
+hlsl.entry.unnamed-param.error.vert
+ERROR: 0:1: 'main' : no matching overloaded function found 
+ERROR: 1 compilation errors.  No code generated.
+
+
+Shader version: 500
+ERROR: node is still EOpNull!
+0:1  Function Definition: @main(i1; ( temp void)
+0:1    Function Parameters: 
+0:1      '' ( in int)
+0:1  Function Definition: main( ( temp void)
+0:1    Function Parameters: 
+0:?     Sequence
+0:1      Constant:
+0:1        0.000000
+0:?   Linker Objects
+
+
+Linked vertex stage:
+
+
+Shader version: 500
+ERROR: node is still EOpNull!
+0:1  Function Definition: @main(i1; ( temp void)
+0:1    Function Parameters: 
+0:1      '' ( in int)
+0:1  Function Definition: main( ( temp void)
+0:1    Function Parameters: 
+0:?     Sequence
+0:1      Constant:
+0:1        0.000000
+0:?   Linker Objects
+
+SPIR-V is not generated for failed compile or link
