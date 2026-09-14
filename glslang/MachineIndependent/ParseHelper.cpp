@@ -7178,6 +7178,17 @@ void TParseContext::finish()
     // Forward builtin alias to AST for later use
     intermediate.setBuiltinAliasLookup(symbolTable.collectBuiltinAlias());
 
+    // A compile-only unit is never linked, so nothing downstream reports a call
+    // to a function this unit only declared. GLSL has no import linkage either,
+    // so such a call cannot name its callee in the SPIR-V that would come out:
+    // it is an error here, not something spirv-link could resolve later.
+    if (compileOnly) {
+        TVector<TString> undefined;
+        intermediate.findUndefinedCallees(undefined);
+        for (const TString& callee : undefined)
+            error(getCurrentLoc(), "no function definition (body) found:", callee.c_str(), "");
+    }
+
     // Check on array indexes for ES 2.0 (version 100) limitations.
     for (size_t i = 0; i < needsIndexLimitationChecking.size(); ++i)
         constantIndexExpressionCheck(needsIndexLimitationChecking[i]);
