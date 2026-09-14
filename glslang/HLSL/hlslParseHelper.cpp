@@ -2152,6 +2152,8 @@ TIntermNode* HlslParseContext::transformEntryPoint(const TSourceLoc& loc, TFunct
     TVector<TVariable*> opaque_uniforms;
     for (int i = 0; i < userFunction.getParamCount(); i++) {
         TType& paramType = *userFunction[i].type;
+        if (userFunction[i].name == nullptr)
+            continue;
         TString& paramName = *userFunction[i].name;
         if (paramType.getQualifier().storage == EvqUniform) {
             if (!paramType.containsOpaque()) {
@@ -2190,6 +2192,8 @@ TIntermNode* HlslParseContext::transformEntryPoint(const TSourceLoc& loc, TFunct
 
     for (int i = 0; i < userFunction.getParamCount(); i++) {
         TParameter& param = userFunction[i];
+        if (param.name == nullptr)
+            continue;
         argVars.push_back(makeInternalVariable(*param.name, *param.type));
         argVars.back()->getWritableType().getQualifier().makeTemporary();
 
@@ -2436,6 +2440,9 @@ void HlslParseContext::remapEntryPointIO(TFunction& function, TVariable*& return
     // parameters are actually shader-scoped inputs and outputs (in or out)
     for (int i = 0; i < function.getParamCount(); i++) {
         TType& paramType = *function[i].type;
+        // Unnamed parameters have no name to synthesize entry-point IO from.
+        if (function[i].name == nullptr)
+            continue;
         if (paramType.getQualifier().isParamInput()) {
             synthesizeEditedInput(paramType);
             TVariable* argAsGlobal = makeIoVariable(function[i].name->c_str(), paramType, EvqVaryingIn);
@@ -2553,7 +2560,11 @@ TIntermTyped* HlslParseContext::assignFromFragCoord(const TSourceLoc& loc, TOper
         assignList = intermediate.growAggregate(assignList, intermediate.addAssign(op, left, rhsTempSym, loc));
     }
 
-    assert(assignList != nullptr);
+    if (assignList == nullptr) {
+        // No assignments were generated (e.g. malformed entry-point IO shapes).
+        error(loc, "no assignments generated for entry-point IO", "entry point", "");
+        return nullptr;
+    }
     assignList->setOperator(EOpSequence);
 
     return assignList;
@@ -2610,7 +2621,11 @@ TIntermTyped* HlslParseContext::assignPosition(const TSourceLoc& loc, TOperator 
         assignList = intermediate.growAggregate(assignList, intermediate.addAssign(op, left, rhsTempSym, loc));
     }
 
-    assert(assignList != nullptr);
+    if (assignList == nullptr) {
+        // No assignments were generated (e.g. malformed entry-point IO shapes).
+        error(loc, "no assignments generated for entry-point IO", "entry point", "");
+        return nullptr;
+    }
     assignList->setOperator(EOpSequence);
 
     return assignList;
@@ -2845,7 +2860,11 @@ TIntermAggregate* HlslParseContext::assignClipCullDistance(const TSourceLoc& loc
         }
     }
 
-    assert(assignList != nullptr);
+    if (assignList == nullptr) {
+        // No assignments were generated (e.g. malformed entry-point IO shapes).
+        error(loc, "no assignments generated for entry-point IO", "entry point", "");
+        return nullptr;
+    }
     assignList->setOperator(EOpSequence);
 
     return assignList;
@@ -2954,11 +2973,16 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
     if (left->getType().isArray())
         memberCount = left->getType().getCumulativeArraySize();
 
-    if (isFlattenLeft)
-        leftVariables = &flattenMap.find(leftSymbol->getId())->second.members;
+    if (isFlattenLeft) {
+        auto it = flattenMap.find(leftSymbol->getId());
+        if (it != flattenMap.end())
+            leftVariables = &it->second.members;
+    }
 
     if (isFlattenRight) {
-        rightVariables = &flattenMap.find(rightSymbol->getId())->second.members;
+        auto it = flattenMap.find(rightSymbol->getId());
+        if (it != flattenMap.end())
+            rightVariables = &it->second.members;
     } else {
         // The RHS is not flattened.  There are several cases:
         // 1. 1 item to copy:  Use the RHS directly.
@@ -3035,16 +3059,32 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
                 }
             }
         } else if (flattened && !shouldFlatten(derefType, isLeft ? leftStorage : rightStorage, false)) {
-            if (isLeft) {
-                // offset will cycle through variables for arrayed io
-                if (leftOffset >= static_cast<int>(leftVariables->size()))
-                    leftOffset = leftOffsetStart;
-                subTree = intermediate.addSymbol(*(*leftVariables)[leftOffset++]);
+            // Pick the next concrete flattened variable for this member, skipping
+            // any null entries (which can occur for malformed entry-point IO).
+            // If no variable exists (e.g. the symbol was never flattened), fall
+            // back to indexing the split/original node so traversal can continue
+            // without dereferencing a null pointer.
+            const TVector<TVariable*>* ioVars = isLeft ? leftVariables : rightVariables;
+            TVariable* ioVar = nullptr;
+            if (ioVars != nullptr) {
+                int& offset = isLeft ? leftOffset : rightOffset;
+                const int offsetStart = isLeft ? leftOffsetStart : rightOffsetStart;
+                const int count = static_cast<int>(ioVars->size());
+                if (count > 0) {
+                    for (int step = 0; step < count; ++step) {
+                        const int idx = offsetStart + ((offset - offsetStart + step) % count);
+                        if ((*ioVars)[idx] != nullptr) {
+                            ioVar = (*ioVars)[idx];
+                            offset = idx + 1;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (ioVar != nullptr) {
+                subTree = intermediate.addSymbol(*ioVar);
             } else {
-                // offset will cycle through variables for arrayed io
-                if (rightOffset >= static_cast<int>(rightVariables->size()))
-                    rightOffset = rightOffsetStart;
-                subTree = intermediate.addSymbol(*(*rightVariables)[rightOffset++]);
+                subTree = splitNode;
             }
 
             // arrayed io
@@ -3134,8 +3174,14 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
         } else if (left->getType().isStruct() && (shouldFlattenSubsetLeft  || isSplitLeft ||
                                                   shouldFlattenSubsetRight || isSplitRight)) {
             // struct case
-            const auto& membersL = *left->getType().getStruct();
-            const auto& membersR = *right->getType().getStruct();
+            const TTypeList* leftStruct  = left->getType().getStruct();
+            const TTypeList* rightStruct = right->getType().getStruct();
+            // Malformed types (e.g. anonymous structs without a member list)
+            // have nothing meaningful to copy.
+            if (leftStruct == nullptr || rightStruct == nullptr)
+                return;
+            const auto& membersL = *leftStruct;
+            const auto& membersR = *rightStruct;
 
             // These track the members in the split structures corresponding to the same in the unsplit structures,
             // which we traverse in parallel.
@@ -3147,6 +3193,10 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
                 assignList = intermediate.growAggregate(assignList, intermediate.addAssign(op, left, right, loc), loc);
 
             for (int member = 0; member < int(membersL.size()); ++member) {
+                // Malformed anonymous structs can carry null member types; there is
+                // nothing to copy for such members.
+                if (membersL[member].type == nullptr || membersR[member].type == nullptr)
+                    continue;
                 const TType& typeL = *membersL[member].type;
                 const TType& typeR = *membersR[member].type;
 
@@ -3244,7 +3294,11 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
     // This makes the whole assignment, recursing through subtypes as needed.
     traverse(left, right, splitLeft, splitRight, true);
 
-    assert(assignList != nullptr);
+    if (assignList == nullptr) {
+        // No assignments were generated (e.g. malformed entry-point IO shapes).
+        error(loc, "no assignments generated for entry-point IO", "entry point", "");
+        return nullptr;
+    }
     assignList->setOperator(EOpSequence);
 
     return assignList;
