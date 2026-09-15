@@ -683,6 +683,7 @@ public:
     Id makeUint64Constant(unsigned long long u, bool specConstant = false)
         { return makeInt64Constant(makeUintType(64),                     u, specConstant); }
     Id makeFloatConstant(float f, bool specConstant = false);
+    Id makeFloatConstantFromBits(unsigned int bits, bool specConstant = false);
     Id makeDoubleConstant(double d, bool specConstant = false);
     Id makeFloat16Constant(float f16, bool specConstant = false);
     Id makeBFloat16Constant(float bf16, bool specConstant = false);

@@ -61,6 +61,38 @@ To bitCast(From from)
     return to;
 }
 
+// Compare two constant aggregates the way GLSL's == does: component by
+// component, with each component using TConstUnion's value semantics.  This
+// deliberately does not use TConstUnionArray::operator==, which short-circuits
+// to true when both sides are the same allocation -- correct for asking "are
+// these the same constant", but wrong for ==, since a NaN is not equal to
+// itself even when both operands are the same declared constant.
+bool constArraysEqualByValue(const TConstUnionArray& lhs, const TConstUnionArray& rhs)
+{
+    if (lhs.size() != rhs.size())
+        return false;
+
+    for (int i = 0; i < lhs.size(); ++i) {
+        if (! (lhs[i] == rhs[i]))
+            return false;
+    }
+
+    return true;
+}
+
+// Negate a float constant.  IEEE 754 makes negation a sign-bit operation: it
+// never signals and never quiets, so when the source carries raw bits the sign
+// is flipped in those bits rather than through the double, which would set the
+// quiet bit of a signaling NaN.  Used by unary minus and by faceforward, which
+// negates one of its arguments.
+void negateFloatConst(TConstUnion& result, const TConstUnion& operand, TBasicType basicType)
+{
+    if (operand.getHasRawFloatBits() && basicType == EbtFloat)
+        result.setRawFloatBits(operand.getRawFloatBits() ^ 0x80000000u);
+    else
+        result.setDConst(-operand.getDConst(), basicType);
+}
+
 } // end anonymous namespace
 
 
@@ -153,7 +185,7 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TIntermTyped* right
                 double sum = 0.0f;
                 for (int i = 0; i < rightNode->getMatrixRows(); i++)
                     sum += leftUnionArray[i * getMatrixRows() + row].getDConst() * rightUnionArray[column * rightNode->getMatrixRows() + i].getDConst();
-                newConstArray[column * getMatrixRows() + row].setDConst(sum);
+                newConstArray[column * getMatrixRows() + row].setDConst(sum, returnType.getBasicType());
             }
         }
         returnType.shallowCopy(TType(getType().getBasicType(), EvqConst, 0, rightNode->getMatrixCols(), getMatrixRows()));
@@ -173,13 +205,13 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TIntermTyped* right
             case EbtFloatUE8M0:
             case EbtFloatMXINT8:
                 if (rightUnionArray[i].getDConst() != 0.0)
-                    newConstArray[i].setDConst(leftUnionArray[i].getDConst() / rightUnionArray[i].getDConst());
+                    newConstArray[i].setDConst(leftUnionArray[i].getDConst() / rightUnionArray[i].getDConst(), returnType.getBasicType());
                 else if (leftUnionArray[i].getDConst() > 0.0)
-                    newConstArray[i].setDConst((double)INFINITY);
+                    newConstArray[i].setDConst((double)INFINITY, returnType.getBasicType());
                 else if (leftUnionArray[i].getDConst() < 0.0)
-                    newConstArray[i].setDConst(-(double)INFINITY);
+                    newConstArray[i].setDConst(-(double)INFINITY, returnType.getBasicType());
                 else
-                    newConstArray[i].setDConst((double)NAN);
+                    newConstArray[i].setDConst((double)NAN, returnType.getBasicType());
                 break;
 
             case EbtInt:
@@ -257,7 +289,7 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TIntermTyped* right
             for (int j = 0; j < rightNode->getVectorSize(); j++) {
                 sum += leftUnionArray[j*getMatrixRows() + i].getDConst() * rightUnionArray[j].getDConst();
             }
-            newConstArray[i].setDConst(sum);
+            newConstArray[i].setDConst(sum, returnType.getBasicType());
         }
 
         returnType.shallowCopy(TType(getBasicType(), EvqConst, getMatrixRows()));
@@ -268,7 +300,7 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TIntermTyped* right
             double sum = 0.0f;
             for (int j = 0; j < getVectorSize(); j++)
                 sum += leftUnionArray[j].getDConst() * rightUnionArray[i*rightNode->getMatrixRows() + j].getDConst();
-            newConstArray[i].setDConst(sum);
+            newConstArray[i].setDConst(sum, returnType.getBasicType());
         }
 
         returnType.shallowCopy(TType(getBasicType(), EvqConst, rightNode->getMatrixCols()));
@@ -353,20 +385,31 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TIntermTyped* right
         newConstArray[0].setBConst(leftUnionArray[0] > rightUnionArray[0]);
         returnType.shallowCopy(constBool);
         break;
+    // Spelled as a disjunction rather than the negation of the opposite
+    // comparison: for unordered operands every ordered comparison is false, so
+    // "not greater" would wrongly report NaN <= NaN as true.
     case EOpLessThanEqual:
-        newConstArray[0].setBConst(! (leftUnionArray[0] > rightUnionArray[0]));
+        newConstArray[0].setBConst((leftUnionArray[0] < rightUnionArray[0]) ||
+                                   (leftUnionArray[0] == rightUnionArray[0]));
         returnType.shallowCopy(constBool);
         break;
     case EOpGreaterThanEqual:
-        newConstArray[0].setBConst(! (leftUnionArray[0] < rightUnionArray[0]));
+        newConstArray[0].setBConst((leftUnionArray[0] > rightUnionArray[0]) ||
+                                   (leftUnionArray[0] == rightUnionArray[0]));
         returnType.shallowCopy(constBool);
         break;
+    // Compared component by component rather than with
+    // TConstUnionArray::operator==, which returns true early when both sides
+    // are the same allocation.  That shortcut is right for asking "are these
+    // the same constant", which is what link validation and the SPIR-V
+    // intrinsics use it for, but wrong for ==, where a NaN must not equal
+    // itself even when both operands name the same declared constant.
     case EOpEqual:
-        newConstArray[0].setBConst(rightNode->getConstArray() == leftUnionArray);
+        newConstArray[0].setBConst(constArraysEqualByValue(leftUnionArray, rightNode->getConstArray()));
         returnType.shallowCopy(constBool);
         break;
     case EOpNotEqual:
-        newConstArray[0].setBConst(rightNode->getConstArray() != leftUnionArray);
+        newConstArray[0].setBConst(! constArraysEqualByValue(leftUnionArray, rightNode->getConstArray()));
         returnType.shallowCopy(constBool);
         break;
 
@@ -452,10 +495,10 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType) 
             sum += unionArray[i].getDConst() * unionArray[i].getDConst();
         double length = sqrt(sum);
         if (op == EOpLength)
-            newConstArray[0].setDConst(length);
+            newConstArray[0].setDConst(length, returnType.getBasicType());
         else {
             for (int i = 0; i < objectSize; i++)
-                newConstArray[i].setDConst(unionArray[i].getDConst() / length);
+                newConstArray[i].setDConst(unionArray[i].getDConst() / length, returnType.getBasicType());
         }
         break;
     }
@@ -667,7 +710,7 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType) 
             case EbtFloatUE8M0:
             case EbtFloatMXINT8:
             case EbtFloat:
-                newConstArray[i].setDConst(valf); break;
+                newConstArray[i].setDConst(valf, returnType.getBasicType()); break;
             case EbtInt8:
                 newConstArray[i].setI8Const(static_cast<int8_t>(vali)); break;
             case EbtInt16:
@@ -695,6 +738,9 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType) 
         switch (op) {
         case EOpNegative:
             switch (getType().getBasicType()) {
+            case EbtFloat:
+                negateFloatConst(newConstArray[i], unionArray[i], returnType.getBasicType());
+                break;
             case EbtDouble:
             case EbtFloat16:
             case EbtBFloat16:
@@ -704,8 +750,7 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType) 
             case EbtFloatE3M2:
             case EbtFloatE2M3:
             case EbtFloatUE8M0:
-            case EbtFloatMXINT8:
-            case EbtFloat: newConstArray[i].setDConst(-unionArray[i].getDConst()); break;
+            case EbtFloatMXINT8: newConstArray[i].setDConst(-unionArray[i].getDConst(), returnType.getBasicType()); break;
             // Note: avoid UBSAN error regarding negating 0x80000000
             case EbtInt:   newConstArray[i].setIConst(
                                 static_cast<unsigned int>(unionArray[i].getIConst()) == 0x80000000
@@ -739,46 +784,46 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType) 
             newConstArray[i] = ~unionArray[i];
             break;
         case EOpRadians:
-            newConstArray[i].setDConst(unionArray[i].getDConst() * pi / 180.0);
+            newConstArray[i].setDConst(unionArray[i].getDConst() * pi / 180.0, returnType.getBasicType());
             break;
         case EOpDegrees:
-            newConstArray[i].setDConst(unionArray[i].getDConst() * 180.0 / pi);
+            newConstArray[i].setDConst(unionArray[i].getDConst() * 180.0 / pi, returnType.getBasicType());
             break;
         case EOpSin:
-            newConstArray[i].setDConst(sin(unionArray[i].getDConst()));
+            newConstArray[i].setDConst(sin(unionArray[i].getDConst()), returnType.getBasicType());
             break;
         case EOpCos:
-            newConstArray[i].setDConst(cos(unionArray[i].getDConst()));
+            newConstArray[i].setDConst(cos(unionArray[i].getDConst()), returnType.getBasicType());
             break;
         case EOpTan:
-            newConstArray[i].setDConst(tan(unionArray[i].getDConst()));
+            newConstArray[i].setDConst(tan(unionArray[i].getDConst()), returnType.getBasicType());
             break;
         case EOpAsin:
-            newConstArray[i].setDConst(asin(unionArray[i].getDConst()));
+            newConstArray[i].setDConst(asin(unionArray[i].getDConst()), returnType.getBasicType());
             break;
         case EOpAcos:
-            newConstArray[i].setDConst(acos(unionArray[i].getDConst()));
+            newConstArray[i].setDConst(acos(unionArray[i].getDConst()), returnType.getBasicType());
             break;
         case EOpAtan:
-            newConstArray[i].setDConst(atan(unionArray[i].getDConst()));
+            newConstArray[i].setDConst(atan(unionArray[i].getDConst()), returnType.getBasicType());
             break;
         case EOpSinh:
-            newConstArray[i].setDConst(sinh(unionArray[i].getDConst()));
+            newConstArray[i].setDConst(sinh(unionArray[i].getDConst()), returnType.getBasicType());
             break;
         case EOpCosh:
-            newConstArray[i].setDConst(cosh(unionArray[i].getDConst()));
+            newConstArray[i].setDConst(cosh(unionArray[i].getDConst()), returnType.getBasicType());
             break;
         case EOpTanh:
-            newConstArray[i].setDConst(tanh(unionArray[i].getDConst()));
+            newConstArray[i].setDConst(tanh(unionArray[i].getDConst()), returnType.getBasicType());
             break;
         case EOpAsinh:
-            newConstArray[i].setDConst(asinh(unionArray[i].getDConst()));
+            newConstArray[i].setDConst(asinh(unionArray[i].getDConst()), returnType.getBasicType());
             break;
         case EOpAcosh:
-            newConstArray[i].setDConst(acosh(unionArray[i].getDConst()));
+            newConstArray[i].setDConst(acosh(unionArray[i].getDConst()), returnType.getBasicType());
             break;
         case EOpAtanh:
-            newConstArray[i].setDConst(atanh(unionArray[i].getDConst()));
+            newConstArray[i].setDConst(atanh(unionArray[i].getDConst()), returnType.getBasicType());
             break;
 
         case EOpDPdx:
@@ -791,31 +836,37 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType) 
         case EOpDPdyCoarse:
         case EOpFwidthCoarse:
             // The derivatives are all mandated to create a constant 0.
-            newConstArray[i].setDConst(0.0);
+            newConstArray[i].setDConst(0.0, returnType.getBasicType());
             break;
 
         case EOpExp:
-            newConstArray[i].setDConst(exp(unionArray[i].getDConst()));
+            newConstArray[i].setDConst(exp(unionArray[i].getDConst()), returnType.getBasicType());
             break;
         case EOpLog:
-            newConstArray[i].setDConst(log(unionArray[i].getDConst()));
+            newConstArray[i].setDConst(log(unionArray[i].getDConst()), returnType.getBasicType());
             break;
         case EOpExp2:
-            newConstArray[i].setDConst(exp2(unionArray[i].getDConst()));
+            newConstArray[i].setDConst(exp2(unionArray[i].getDConst()), returnType.getBasicType());
             break;
         case EOpLog2:
-            newConstArray[i].setDConst(log2(unionArray[i].getDConst()));
+            newConstArray[i].setDConst(log2(unionArray[i].getDConst()), returnType.getBasicType());
             break;
         case EOpSqrt:
-            newConstArray[i].setDConst(sqrt(unionArray[i].getDConst()));
+            newConstArray[i].setDConst(sqrt(unionArray[i].getDConst()), returnType.getBasicType());
             break;
         case EOpInverseSqrt:
-            newConstArray[i].setDConst(1.0 / sqrt(unionArray[i].getDConst()));
+            newConstArray[i].setDConst(1.0 / sqrt(unionArray[i].getDConst()), returnType.getBasicType());
             break;
 
         case EOpAbs:
-            if (unionArray[i].getType() == EbtDouble)
-                newConstArray[i].setDConst(fabs(unionArray[i].getDConst()));
+            // A sign-bit operation as well, so clear the sign in the raw bits
+            // rather than quieting a signaling NaN through the double.  The
+            // flag is only ever set for EbtFloat, which is the type this fold
+            // keeps anyway.
+            if (unionArray[i].getHasRawFloatBits())
+                newConstArray[i].setRawFloatBits(unionArray[i].getRawFloatBits() & 0x7FFFFFFFu);
+            else if (isTypeFloat(unionArray[i].getType()))
+                newConstArray[i].setDConst(fabs(unionArray[i].getDConst()), unionArray[i].getType());
             else if (unionArray[i].getType() == EbtInt)
                 newConstArray[i].setIConst(abs(unionArray[i].getIConst()));
             else
@@ -823,38 +874,38 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType) 
             break;
         case EOpSign:
             #define SIGN(X) (X == 0 ? 0 : (X < 0 ? -1 : 1))
-            if (unionArray[i].getType() == EbtDouble)
-                newConstArray[i].setDConst(SIGN(unionArray[i].getDConst()));
+            if (isTypeFloat(unionArray[i].getType()))
+                newConstArray[i].setDConst(SIGN(unionArray[i].getDConst()), unionArray[i].getType());
             else
                 newConstArray[i].setIConst(SIGN(unionArray[i].getIConst()));
             break;
         case EOpFloor:
-            newConstArray[i].setDConst(floor(unionArray[i].getDConst()));
+            newConstArray[i].setDConst(floor(unionArray[i].getDConst()), returnType.getBasicType());
             break;
         case EOpTrunc:
             if (unionArray[i].getDConst() > 0)
-                newConstArray[i].setDConst(floor(unionArray[i].getDConst()));
+                newConstArray[i].setDConst(floor(unionArray[i].getDConst()), returnType.getBasicType());
             else
-                newConstArray[i].setDConst(ceil(unionArray[i].getDConst()));
+                newConstArray[i].setDConst(ceil(unionArray[i].getDConst()), returnType.getBasicType());
             break;
         case EOpRound:
-            newConstArray[i].setDConst(floor(0.5 + unionArray[i].getDConst()));
+            newConstArray[i].setDConst(floor(0.5 + unionArray[i].getDConst()), returnType.getBasicType());
             break;
         case EOpRoundEven:
         {
             double flr = floor(unionArray[i].getDConst());
             bool even = flr / 2.0 == floor(flr / 2.0);
             double rounded = even ? ceil(unionArray[i].getDConst() - 0.5) : floor(unionArray[i].getDConst() + 0.5);
-            newConstArray[i].setDConst(rounded);
+            newConstArray[i].setDConst(rounded, returnType.getBasicType());
             break;
         }
         case EOpCeil:
-            newConstArray[i].setDConst(ceil(unionArray[i].getDConst()));
+            newConstArray[i].setDConst(ceil(unionArray[i].getDConst()), returnType.getBasicType());
             break;
         case EOpFract:
         {
             double x = unionArray[i].getDConst();
-            newConstArray[i].setDConst(x - floor(x));
+            newConstArray[i].setDConst(x - floor(x), returnType.getBasicType());
             break;
         }
 
@@ -876,17 +927,42 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType) 
 
         // The constant is held as a double, so narrow it back to the declared
         // width before reinterpreting its bits.
+        //
+        // EOpFloatBitsTo*/EOp*BitsToFloat are shared with the bfloat16 and 8-bit
+        // float built-ins (see Initialize.cpp), which are not 32 bits wide.
+        // Folding those as float would produce the wrong bits, so decline them
+        // and let the operation be emitted instead.
+        //
+        // The *BitsToFloat direction stores the exact 32-bit pattern via
+        // setRawFloatBits, which keeps the bits alongside dConst so that a
+        // signaling NaN survives storage.  The FloatBitsTo* direction reads
+        // back from raw bits when available, falling back to the narrowed
+        // dConst otherwise.
         case EOpFloatBitsToInt:
-            newConstArray[i].setIConst(bitCast<int>(static_cast<float>(unionArray[i].getDConst())));
+            if (getType().getBasicType() != EbtFloat)
+                return nullptr;
+            if (unionArray[i].getHasRawFloatBits())
+                newConstArray[i].setIConst(bitCast<int>(unionArray[i].getRawFloatBits()));
+            else
+                newConstArray[i].setIConst(bitCast<int>(static_cast<float>(unionArray[i].getDConst())));
             break;
         case EOpFloatBitsToUint:
-            newConstArray[i].setUConst(bitCast<unsigned int>(static_cast<float>(unionArray[i].getDConst())));
+            if (getType().getBasicType() != EbtFloat)
+                return nullptr;
+            if (unionArray[i].getHasRawFloatBits())
+                newConstArray[i].setUConst(unionArray[i].getRawFloatBits());
+            else
+                newConstArray[i].setUConst(bitCast<unsigned int>(static_cast<float>(unionArray[i].getDConst())));
             break;
         case EOpIntBitsToFloat:
-            newConstArray[i].setDConst(bitCast<float>(unionArray[i].getIConst()));
+            if (returnType.getBasicType() != EbtFloat)
+                return nullptr;
+            newConstArray[i].setRawFloatBits(static_cast<unsigned int>(unionArray[i].getIConst()));
             break;
         case EOpUintBitsToFloat:
-            newConstArray[i].setDConst(bitCast<float>(unionArray[i].getUConst()));
+            if (returnType.getBasicType() != EbtFloat)
+                return nullptr;
+            newConstArray[i].setRawFloatBits(unionArray[i].getUConst());
             break;
         case EOpDoubleBitsToInt64:
             newConstArray[i].setI64Const(bitCast<long long>(unionArray[i].getDConst()));
@@ -895,10 +971,10 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType) 
             newConstArray[i].setU64Const(bitCast<unsigned long long>(unionArray[i].getDConst()));
             break;
         case EOpInt64BitsToDouble:
-            newConstArray[i].setDConst(bitCast<double>(unionArray[i].getI64Const()));
+            newConstArray[i].setDConst(bitCast<double>(unionArray[i].getI64Const()), returnType.getBasicType());
             break;
         case EOpUint64BitsToDouble:
-            newConstArray[i].setDConst(bitCast<double>(unionArray[i].getU64Const()));
+            newConstArray[i].setDConst(bitCast<double>(unionArray[i].getU64Const()), returnType.getBasicType());
             break;
 
         // TODO: 3.0 Functionality: unary constant folding: the rest of the ops have to be fleshed out
@@ -1011,17 +1087,17 @@ TIntermTyped* TIntermediate::fold(TIntermAggregate* aggrNode)
 
             switch (aggrNode->getOp()) {
             case EOpAtan:
-                newConstArray[comp].setDConst(atan2(childConstUnions[0][arg0comp].getDConst(), childConstUnions[1][arg1comp].getDConst()));
+                newConstArray[comp].setDConst(atan2(childConstUnions[0][arg0comp].getDConst(), childConstUnions[1][arg1comp].getDConst()), aggrNode->getType().getBasicType());
                 break;
             case EOpPow:
-                newConstArray[comp].setDConst(pow(childConstUnions[0][arg0comp].getDConst(), childConstUnions[1][arg1comp].getDConst()));
+                newConstArray[comp].setDConst(pow(childConstUnions[0][arg0comp].getDConst(), childConstUnions[1][arg1comp].getDConst()), aggrNode->getType().getBasicType());
                 break;
             case EOpMod:
             {
                 double arg0 = childConstUnions[0][arg0comp].getDConst();
                 double arg1 = childConstUnions[1][arg1comp].getDConst();
                 double result = arg0 - arg1 * floor(arg0 / arg1);
-                newConstArray[comp].setDConst(result);
+                newConstArray[comp].setDConst(result, aggrNode->getType().getBasicType());
                 break;
             }
             case EOpMin:
@@ -1037,7 +1113,15 @@ TIntermTyped* TIntermediate::fold(TIntermAggregate* aggrNode)
                 case EbtFloatMXINT8:
                 case EbtFloat:
                 case EbtDouble:
-                    newConstArray[comp].setDConst(std::min(childConstUnions[0][arg0comp].getDConst(), childConstUnions[1][arg1comp].getDConst()));
+                    // min() selects an operand rather than computing a value,
+                    // so copy the whole union: going through getDConst() would
+                    // drop the raw bits of a signaling NaN.  The comparison
+                    // order matches std::min, which returns the first argument
+                    // unless the second is strictly smaller.
+                    newConstArray[comp] = (childConstUnions[1][arg1comp].getDConst() <
+                                           childConstUnions[0][arg0comp].getDConst())
+                                              ? childConstUnions[1][arg1comp]
+                                              : childConstUnions[0][arg0comp];
                     break;
                 case EbtInt:
                     newConstArray[comp].setIConst(std::min(childConstUnions[0][arg0comp].getIConst(), childConstUnions[1][arg1comp].getIConst()));
@@ -1079,7 +1163,13 @@ TIntermTyped* TIntermediate::fold(TIntermAggregate* aggrNode)
                 case EbtFloatMXINT8:
                 case EbtFloat:
                 case EbtDouble:
-                    newConstArray[comp].setDConst(std::max(childConstUnions[0][arg0comp].getDConst(), childConstUnions[1][arg1comp].getDConst()));
+                    // Selection, not arithmetic -- see min() above.  Matches
+                    // std::max, which returns the first argument unless the
+                    // second is strictly greater.
+                    newConstArray[comp] = (childConstUnions[0][arg0comp].getDConst() <
+                                           childConstUnions[1][arg1comp].getDConst())
+                                              ? childConstUnions[1][arg1comp]
+                                              : childConstUnions[0][arg0comp];
                     break;
                 case EbtInt:
                     newConstArray[comp].setIConst(std::max(childConstUnions[0][arg0comp].getIConst(), childConstUnions[1][arg1comp].getIConst()));
@@ -1121,8 +1211,19 @@ TIntermTyped* TIntermediate::fold(TIntermAggregate* aggrNode)
                 case EbtFloatMXINT8:
                 case EbtFloat:
                 case EbtDouble:
-                    newConstArray[comp].setDConst(std::min(std::max(childConstUnions[0][arg0comp].getDConst(), childConstUnions[1][arg1comp].getDConst()),
-                                                                                                               childConstUnions[2][arg2comp].getDConst()));
+                    {
+                        // clamp() is min(max(x, minVal), maxVal), and both of
+                        // those select an operand rather than computing one, so
+                        // the chosen union is copied whole -- see min() above.
+                        const TConstUnion& maxed =
+                            (childConstUnions[0][arg0comp].getDConst() < childConstUnions[1][arg1comp].getDConst())
+                                ? childConstUnions[1][arg1comp]
+                                : childConstUnions[0][arg0comp];
+                        newConstArray[comp] =
+                            (childConstUnions[2][arg2comp].getDConst() < maxed.getDConst())
+                                ? childConstUnions[2][arg2comp]
+                                : maxed;
+                    }
                     break;
                 case EbtUint:
                     newConstArray[comp].setUConst(std::min(std::max(childConstUnions[0][arg0comp].getUConst(), childConstUnions[1][arg1comp].getUConst()),
@@ -1165,11 +1266,15 @@ TIntermTyped* TIntermediate::fold(TIntermAggregate* aggrNode)
             case EOpGreaterThan:
                 newConstArray[comp].setBConst(childConstUnions[0][arg0comp] > childConstUnions[1][arg1comp]);
                 break;
+            // See the scalar cases above: a negated comparison is wrong for
+            // unordered operands.
             case EOpLessThanEqual:
-                newConstArray[comp].setBConst(! (childConstUnions[0][arg0comp] > childConstUnions[1][arg1comp]));
+                newConstArray[comp].setBConst((childConstUnions[0][arg0comp] < childConstUnions[1][arg1comp]) ||
+                                              (childConstUnions[0][arg0comp] == childConstUnions[1][arg1comp]));
                 break;
             case EOpGreaterThanEqual:
-                newConstArray[comp].setBConst(! (childConstUnions[0][arg0comp] < childConstUnions[1][arg1comp]));
+                newConstArray[comp].setBConst((childConstUnions[0][arg0comp] > childConstUnions[1][arg1comp]) ||
+                                              (childConstUnions[0][arg0comp] == childConstUnions[1][arg1comp]));
                 break;
             case EOpVectorEqual:
                 newConstArray[comp].setBConst(childConstUnions[0][arg0comp] == childConstUnions[1][arg1comp]);
@@ -1181,17 +1286,23 @@ TIntermTyped* TIntermediate::fold(TIntermAggregate* aggrNode)
                 if (!children[0]->getAsTyped()->isFloatingDomain())
                     return aggrNode;
                 if (children[2]->getAsTyped()->getBasicType() == EbtBool) {
-                    newConstArray[comp].setDConst(childConstUnions[2][arg2comp].getBConst()
-                        ? childConstUnions[1][arg1comp].getDConst()
-                        : childConstUnions[0][arg0comp].getDConst());
+                    // The bool overload is arithmetic-free selection, so the
+                    // chosen union is copied whole rather than round-tripped
+                    // through getDConst(), which would quiet a signaling NaN.
+                    // A ?: with a vector condition lowers to this case as well
+                    // (see TIntermediate::addSelection).
+                    newConstArray[comp] = childConstUnions[2][arg2comp].getBConst()
+                        ? childConstUnions[1][arg1comp]
+                        : childConstUnions[0][arg0comp];
                 } else {
                     newConstArray[comp].setDConst(
                         childConstUnions[0][arg0comp].getDConst() * (1.0 - childConstUnions[2][arg2comp].getDConst()) +
-                        childConstUnions[1][arg1comp].getDConst() *        childConstUnions[2][arg2comp].getDConst());
+                        childConstUnions[1][arg1comp].getDConst() *        childConstUnions[2][arg2comp].getDConst(),
+                        aggrNode->getType().getBasicType());
                 }
                 break;
             case EOpStep:
-                newConstArray[comp].setDConst(childConstUnions[1][arg1comp].getDConst() < childConstUnions[0][arg0comp].getDConst() ? 0.0 : 1.0);
+                newConstArray[comp].setDConst(childConstUnions[1][arg1comp].getDConst() < childConstUnions[0][arg0comp].getDConst() ? 0.0 : 1.0, aggrNode->getType().getBasicType());
                 break;
             case EOpSmoothStep:
             {
@@ -1201,7 +1312,7 @@ TIntermTyped* TIntermediate::fold(TIntermAggregate* aggrNode)
                     t = 0.0;
                 if (t > 1.0)
                     t = 1.0;
-                newConstArray[comp].setDConst(t * t * (3.0 - 2.0 * t));
+                newConstArray[comp].setDConst(t * t * (3.0 - 2.0 * t), aggrNode->getType().getBasicType());
                 break;
             }
             default:
@@ -1222,14 +1333,14 @@ TIntermTyped* TIntermediate::fold(TIntermAggregate* aggrNode)
                 double diff = childConstUnions[1][comp].getDConst() - childConstUnions[0][comp].getDConst();
                 sum += diff * diff;
             }
-            newConstArray[0].setDConst(sqrt(sum));
+            newConstArray[0].setDConst(sqrt(sum), aggrNode->getType().getBasicType());
             break;
         }
         case EOpDot:
             if (!children[0]->getAsTyped()->isFloatingDomain()) {
                 return aggrNode;
             }
-            newConstArray[0].setDConst(childConstUnions[0].dot(childConstUnions[1]));
+            newConstArray[0].setDConst(childConstUnions[0].dot(childConstUnions[1]), aggrNode->getType().getBasicType());
             break;
         case EOpCross:
             newConstArray[0] = childConstUnions[0][1] * childConstUnions[1][2] - childConstUnions[0][2] * childConstUnions[1][1];
@@ -1243,7 +1354,10 @@ TIntermTyped* TIntermediate::fold(TIntermAggregate* aggrNode)
                 if (dot < 0.0)
                     newConstArray[comp] = childConstUnions[0][comp];
                 else
-                    newConstArray[comp].setDConst(-childConstUnions[0][comp].getDConst());
+                    // Negation only, so use the sign-bit path -- the same rule
+                    // unary minus follows.
+                    negateFloatConst(newConstArray[comp], childConstUnions[0][comp],
+                                     aggrNode->getType().getBasicType());
             }
             break;
         case EOpReflect:
@@ -1251,7 +1365,7 @@ TIntermTyped* TIntermediate::fold(TIntermAggregate* aggrNode)
             dot = childConstUnions[0].dot(childConstUnions[1]);
             dot *= 2.0;
             for (int comp = 0; comp < numComps; ++comp)
-                newConstArray[comp].setDConst(childConstUnions[0][comp].getDConst() - dot * childConstUnions[1][comp].getDConst());
+                newConstArray[comp].setDConst(childConstUnions[0][comp].getDConst() - dot * childConstUnions[1][comp].getDConst(), aggrNode->getType().getBasicType());
             break;
         case EOpRefract:
         {
@@ -1266,10 +1380,10 @@ TIntermTyped* TIntermediate::fold(TIntermAggregate* aggrNode)
             double k = 1.0 - eta * eta * (1.0 - dot * dot);
             if (k < 0.0) {
                 for (int comp = 0; comp < numComps; ++comp)
-                    newConstArray[comp].setDConst(0.0);
+                    newConstArray[comp].setDConst(0.0, aggrNode->getType().getBasicType());
             } else {
                 for (int comp = 0; comp < numComps; ++comp)
-                    newConstArray[comp].setDConst(eta * childConstUnions[0][comp].getDConst() - (eta * dot + sqrt(k)) * childConstUnions[1][comp].getDConst());
+                    newConstArray[comp].setDConst(eta * childConstUnions[0][comp].getDConst() - (eta * dot + sqrt(k)) * childConstUnions[1][comp].getDConst(), aggrNode->getType().getBasicType());
             }
             break;
         }
