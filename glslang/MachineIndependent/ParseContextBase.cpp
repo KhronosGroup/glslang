@@ -290,32 +290,32 @@ void TParseContextBase::checkIndex(const TSourceLoc& loc, const TType& type, int
                type.getArraySizes()->getOuterNode()->getAsSymbolNode() == nullptr; };
 
     if (index < 0) {
-        error(loc, "", "[", "index out of range '%d'", index);
+        error(loc, "", "[", "index out of range '%lld'", (long long)index);
         index = 0;
     } else if (type.isArray()) {
         if (type.isSizedArray() && !sizeIsSpecializationExpression() &&
             index >= type.getOuterArraySize()) {
-            error(loc, "", "[", "array index out of range '%d'", index);
+            error(loc, "", "[", "array index out of range '%lld'", (long long)index);
             index = type.getOuterArraySize() - 1;
         }
     } else if (type.isVector()) {
         if (index >= type.getVectorSize()) {
-            error(loc, "", "[", "vector index out of range '%d'", index);
+            error(loc, "", "[", "vector index out of range '%lld'", (long long)index);
             index = type.getVectorSize() - 1;
         }
     } else if (type.isMatrix()) {
         if (index >= type.getMatrixCols()) {
-            error(loc, "", "[", "matrix index out of range '%d'", index);
+            error(loc, "", "[", "matrix index out of range '%lld'", (long long)index);
             index = type.getMatrixCols() - 1;
         }
     } else if (type.isCoopVecNV()) {
         if (index >= type.computeNumComponents()) {
-            error(loc, "", "[", "cooperative vector index out of range '%d'", index);
+            error(loc, "", "[", "cooperative vector index out of range '%lld'", (long long)index);
             index = type.computeNumComponents() - 1;
         }
     } else if (type.isLongVector()) {
         if (!type.hasSpecConstantVectorComponents() && index >= type.computeNumComponents()) {
-            error(loc, "", "[", "vector index out of range '%d'", index);
+            error(loc, "", "[", "vector index out of range '%lld'", (long long)index);
             index = type.computeNumComponents() - 1;
         }
     }
