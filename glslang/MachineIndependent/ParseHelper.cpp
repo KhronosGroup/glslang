@@ -649,15 +649,15 @@ TIntermTyped* TParseContext::handleBracketDereference(const TSourceLoc& loc, TIn
             base->getWritableType().setImplicitlySized(true);
             if (base->getQualifier().builtIn == EbvClipDistance &&
                 indexValue >= resources.maxClipDistances) {
-                error(loc, "gl_ClipDistance", "[", "array index out of range '%d'", indexValue);
+                error(loc, "gl_ClipDistance", "[", "array index out of range '%lld'", (long long)indexValue);
             }
             else if (base->getQualifier().builtIn == EbvCullDistance &&
                 indexValue >= resources.maxCullDistances) {
-                error(loc, "gl_CullDistance", "[", "array index out of range '%d'", indexValue);
+                error(loc, "gl_CullDistance", "[", "array index out of range '%lld'", (long long)indexValue);
             }
             else if (base->getQualifier().builtIn == EbvSampleMask &&
                 indexValue >= (resources.maxSamples + 31) / 32) {
-                error(loc, "gl_SampleMask", "[", "array index out of range '%d'", indexValue);
+                error(loc, "gl_SampleMask", "[", "array index out of range '%lld'", (long long)indexValue);
             }
             // For 2D per-view builtin arrays, update the inner dimension size in parent type
             if (base->getQualifier().isPerView() && base->getQualifier().builtIn != EbvNone) {
