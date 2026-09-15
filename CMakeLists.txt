@@ -146,6 +146,8 @@ endif()
 if(${CMAKE_CXX_COMPILER_ID} MATCHES "GNU")
     add_compile_options(-Wall -Wmaybe-uninitialized -Wuninitialized -Wunused -Wunused-local-typedefs -Wimplicit-fallthrough
                         -Wunused-parameter -Wunused-value  -Wunused-variable -Wunused-but-set-parameter -Wunused-but-set-variable)
+    # error() and friends take "" as the format when there is no extra info.
+    add_compile_options(-Wno-format-zero-length)
     if(NOT ENABLE_RTTI)
         add_compile_options(-fno-rtti)
     endif()

@@ -105,13 +105,13 @@ public:
     virtual ~TParseContextBase() { }
 
     virtual void C_DECL   error(const TSourceLoc&, const char* szReason, const char* szToken,
-                                const char* szExtraInfoFormat, ...);
+                                const char* szExtraInfoFormat, ...) GLSLANG_PRINTF_FORMAT(5, 6);
     virtual void C_DECL    warn(const TSourceLoc&, const char* szReason, const char* szToken,
-                                const char* szExtraInfoFormat, ...);
+                                const char* szExtraInfoFormat, ...) GLSLANG_PRINTF_FORMAT(5, 6);
     virtual void C_DECL ppError(const TSourceLoc&, const char* szReason, const char* szToken,
-                                const char* szExtraInfoFormat, ...);
+                                const char* szExtraInfoFormat, ...) GLSLANG_PRINTF_FORMAT(5, 6);
     virtual void C_DECL  ppWarn(const TSourceLoc&, const char* szReason, const char* szToken,
-                                const char* szExtraInfoFormat, ...);
+                                const char* szExtraInfoFormat, ...) GLSLANG_PRINTF_FORMAT(5, 6);
 
     virtual void setLimits(const TBuiltInResource&) = 0;
 
@@ -257,7 +257,7 @@ protected:
 
     virtual void outputMessage(const TSourceLoc&, const char* szReason, const char* szToken,
                                const char* szExtraInfoFormat, TPrefixType prefix,
-                               va_list args);
+                               va_list args) GLSLANG_PRINTF_FORMAT(5, 0);
     virtual void trackLinkage(TSymbol& symbol);
     virtual void makeEditable(TSymbol*&);
     virtual TVariable* getEditableVariable(const char* name);
