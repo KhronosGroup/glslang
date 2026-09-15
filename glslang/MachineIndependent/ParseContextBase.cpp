@@ -240,14 +240,14 @@ void TParseContextBase::rValueErrorCheck(const TSourceLoc& loc, const char* op, 
         const TIntermTyped* leftMostTypeNode = TIntermediate::traverseLValueBase(node, true);
 
         if (symNode != nullptr)
-            error(loc, "can't read from writeonly object: ", op, symNode->getName().c_str());
+            error(loc, "can't read from writeonly object: ", op, "%s", symNode->getName().c_str());
         else if (binaryNode &&
                 (binaryNode->getAsOperator()->getOp() == EOpIndexDirectStruct ||
                  binaryNode->getAsOperator()->getOp() == EOpIndexDirect))
             if(IsAnonymous(leftMostTypeNode->getAsSymbolNode()->getName()))
-                error(loc, "can't read from writeonly object: ", op, leftMostTypeNode->getAsSymbolNode()->getAccessName().c_str());
+                error(loc, "can't read from writeonly object: ", op, "%s", leftMostTypeNode->getAsSymbolNode()->getAccessName().c_str());
             else
-                error(loc, "can't read from writeonly object: ", op, leftMostTypeNode->getAsSymbolNode()->getName().c_str());
+                error(loc, "can't read from writeonly object: ", op, "%s", leftMostTypeNode->getAsSymbolNode()->getName().c_str());
         else
             error(loc, "can't read from writeonly object: ", op, "");
 
@@ -660,7 +660,7 @@ void TParseContextBase::growGlobalUniformBlock(const TSourceLoc& loc, TType& mem
         if (memberType != symbol->getType()) {
             TString err;
             err += "Redeclaration: already declared as \"" + symbol->getType().getCompleteString() + "\"";
-            error(loc, "", memberName.c_str(), err.c_str());
+            error(loc, "", memberName.c_str(), "%s", err.c_str());
         }
         return;
     }

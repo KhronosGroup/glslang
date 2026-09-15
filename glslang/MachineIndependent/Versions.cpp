@@ -839,7 +839,7 @@ const char* StageName(EShLanguage stage)
 void TParseVersions::requireStage(const TSourceLoc& loc, EShLanguageMask languageMask, const char* featureDesc)
 {
     if (((1 << language) & languageMask) == 0)
-        error(loc, "not supported in this stage:", featureDesc, StageName(language));
+        error(loc, "not supported in this stage:", featureDesc, "%s", StageName(language));
 }
 
 // If only one stage supports a feature, this can be called.  But, all supporting stages
@@ -861,7 +861,7 @@ void TParseVersions::requireStage(const TSourceLoc& loc, EShLanguage stage, cons
 void TParseVersions::requireProfile(const TSourceLoc& loc, int profileMask, const char* featureDesc)
 {
     if (! (profile & profileMask))
-        error(loc, "not supported with this profile:", featureDesc, ProfileName(profile));
+        error(loc, "not supported with this profile:", featureDesc, "%s", ProfileName(profile));
 }
 
 //
@@ -940,12 +940,9 @@ void TParseVersions::checkDeprecated(const TSourceLoc& loc, int profileMask, int
 void TParseVersions::requireNotRemoved(const TSourceLoc& loc, int profileMask, int removedVersion, const char* featureDesc)
 {
     if (profile & profileMask) {
-        if (version >= removedVersion) {
-            const int maxSize = 60;
-            char buf[maxSize];
-            snprintf(buf, maxSize, "%s profile; removed in version %d", ProfileName(profile), removedVersion);
-            error(loc, "no longer supported in", featureDesc, buf);
-        }
+        if (version >= removedVersion)
+            error(loc, "no longer supported in", featureDesc, "%s profile; removed in version %d",
+                  ProfileName(profile), removedVersion);
     }
 }
 
@@ -993,7 +990,7 @@ void TParseVersions::requireExtensions(const TSourceLoc& loc, int numExtensions,
 
     // If we get this far, give errors explaining what extensions are needed
     if (numExtensions == 1)
-        error(loc, "required extension not requested:", featureDesc, extensions[0]);
+        error(loc, "required extension not requested:", featureDesc, "%s", extensions[0]);
     else {
         error(loc, "required extension not requested:", featureDesc, "Possible extensions include:");
         for (int i = 0; i < numExtensions; ++i)
@@ -1013,7 +1010,7 @@ void TParseVersions::ppRequireExtensions(const TSourceLoc& loc, int numExtension
 
     // If we get this far, give errors explaining what extensions are needed
     if (numExtensions == 1)
-        ppError(loc, "required extension not requested:", featureDesc, extensions[0]);
+        ppError(loc, "required extension not requested:", featureDesc, "%s", extensions[0]);
     else {
         ppError(loc, "required extension not requested:", featureDesc, "Possible extensions include:");
         for (int i = 0; i < numExtensions; ++i)
@@ -1069,7 +1066,7 @@ void TParseVersions::updateExtensionBehavior(int line, const char* extension, co
     else if (! strcmp("warn", behaviorString))
         behavior = EBhWarn;
     else {
-        error(getCurrentLoc(), "behavior not supported:", "#extension", behaviorString);
+        error(getCurrentLoc(), "behavior not supported:", "#extension", "%s", behaviorString);
         return;
     }
     bool on = behavior != EBhDisable;
@@ -1195,12 +1192,12 @@ void TParseVersions::updateExtensionBehavior(const char* extension, TExtensionBe
         if (iter == extensionBehavior.end()) {
             switch (behavior) {
             case EBhRequire:
-                error(getCurrentLoc(), "extension not supported:", "#extension", extension);
+                error(getCurrentLoc(), "extension not supported:", "#extension", "%s", extension);
                 break;
             case EBhEnable:
             case EBhWarn:
             case EBhDisable:
-                warn(getCurrentLoc(), "extension not supported:", "#extension", extension);
+                warn(getCurrentLoc(), "extension not supported:", "#extension", "%s", extension);
                 break;
             default:
                 assert(0 && "unexpected behavior");
@@ -1209,7 +1206,7 @@ void TParseVersions::updateExtensionBehavior(const char* extension, TExtensionBe
             return;
         } else {
             if (iter->second == EBhDisablePartial)
-                warn(getCurrentLoc(), "extension is only partially supported:", "#extension", extension);
+                warn(getCurrentLoc(), "extension is only partially supported:", "#extension", "%s", extension);
             if (behavior != EBhDisable)
                 intermediate.addRequestedExtension(extension);
             iter->second = behavior;
@@ -1227,7 +1224,7 @@ void TParseVersions::checkExtensionStage(const TSourceLoc& loc, const char * con
         profileRequires(loc, ECoreProfile, 450, nullptr, "#extension GL_NV_mesh_shader");
         profileRequires(loc, EEsProfile, 320, nullptr, "#extension GL_NV_mesh_shader");
         if (extensionTurnedOn(E_GL_EXT_mesh_shader)) {
-            error(loc, "GL_EXT_mesh_shader is already turned on, and not allowed with", "#extension", extension);
+            error(loc, "GL_EXT_mesh_shader is already turned on, and not allowed with", "#extension", "%s", extension);
         }
     }
     else if (strcmp(extension, "GL_EXT_mesh_shader") == 0) {
@@ -1236,7 +1233,7 @@ void TParseVersions::checkExtensionStage(const TSourceLoc& loc, const char * con
         profileRequires(loc, ECoreProfile, 450, nullptr, "#extension GL_EXT_mesh_shader");
         profileRequires(loc, EEsProfile, 320, nullptr, "#extension GL_EXT_mesh_shader");
         if (extensionTurnedOn(E_GL_NV_mesh_shader)) {
-            error(loc, "GL_NV_mesh_shader is already turned on, and not allowed with", "#extension", extension);
+            error(loc, "GL_NV_mesh_shader is already turned on, and not allowed with", "#extension", "%s", extension);
         }
     }
 }
