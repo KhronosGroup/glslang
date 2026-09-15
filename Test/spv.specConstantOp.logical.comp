@@ -1,0 +1,19 @@
+#version 450
+
+layout(constant_id = 0) const uint a = 0u;
+
+// Right operands that are not a single operation
+
+const bool andConst    = (a == 0u) && (a + 1u == 1u);
+const bool orConst     = (a != 0u) || (a + 1u == 1u);
+const bool nestedConst = (a == 0u) && ((a == 1u) || (a + 2u == 2u));
+const bool unusedConst = (a == 0u) && (a * 2u == 0u);
+
+layout(local_size_x = 1) in;
+
+void main()
+{
+    bool b = !andConst;
+    b = b || !orConst || !nestedConst;
+    bool inlineExpr = !((a == 0u) && (a + 1u == 1u));
+}
