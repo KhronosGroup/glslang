@@ -3340,7 +3340,7 @@ bool HlslGrammar::acceptUnaryExpression(TIntermTyped*& node)
                 // Note, there are no array constructors like
                 //   (float[2](...))
                 if (arraySizes != nullptr)
-                    parseContext.error(loc, "parenthesized array constructor not allowed", "([]())", "", "");
+                    parseContext.error(loc, "parenthesized array constructor not allowed", "([]())", "");
             }
         } else {
             // This isn't a type cast, but it still started "(", so if it is a

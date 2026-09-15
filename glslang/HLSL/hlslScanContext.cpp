@@ -1030,7 +1030,7 @@ EHlslTokenClass HlslScanContext::identifierOrType()
 EHlslTokenClass HlslScanContext::reservedWord()
 {
     if (! parseContext.symbolTable.atBuiltInLevel())
-        parseContext.error(loc, "Reserved word.", tokenText, "", "");
+        parseContext.error(loc, "Reserved word.", tokenText, "");
 
     return EHTokNone;
 }

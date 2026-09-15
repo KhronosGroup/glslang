@@ -944,7 +944,7 @@ TIntermTyped* HlslParseContext::handleDotDereference(const TSourceLoc& loc, TInt
     variableCheck(base);
 
     if (base->isArray()) {
-        error(loc, "cannot apply to an array:", ".", field.c_str());
+        error(loc, "cannot apply to an array:", ".", "%s", field.c_str());
         return base;
     }
 
@@ -963,7 +963,7 @@ TIntermTyped* HlslParseContext::handleDotDereference(const TSourceLoc& loc, TInt
                       base->getType().getCompleteString().c_str(), "");
             else
                 error(loc, "unexpected operator on texture type:", field.c_str(),
-                      base->getType().getCompleteString().c_str());
+                      "%s", base->getType().getCompleteString().c_str());
         }
     } else if (base->isVector() || base->isScalar()) {
         TSwizzleSelectors<TVectorSelector> selectors;
@@ -1065,7 +1065,7 @@ TIntermTyped* HlslParseContext::handleDotDereference(const TSourceLoc& loc, TInt
         } else
             error(loc, "no such field in structure", field.c_str(), "");
     } else
-        error(loc, "does not apply to this type:", field.c_str(), base->getType().getCompleteString().c_str());
+        error(loc, "does not apply to this type:", field.c_str(), "%s", base->getType().getCompleteString().c_str());
 
     return result;
 }
@@ -2319,7 +2319,7 @@ void HlslParseContext::handleFunctionBody(const TSourceLoc& loc, TFunction& func
         popImplicitThis();
 
     if (function.getType().getBasicType() != EbtVoid && ! functionReturnsValue)
-        error(loc, "function does not return a value:", "", function.getName().c_str());
+        error(loc, "function does not return a value:", "", "%s", function.getName().c_str());
 }
 
 // AST I/O is done through shader globals declared in the 'in' or 'out'
@@ -7916,7 +7916,7 @@ void HlslParseContext::declareTypedef(const TSourceLoc& loc, const TString& iden
 {
     TVariable* typeSymbol = new TVariable(&identifier, parseType, true);
     if (! symbolTable.insert(*typeSymbol))
-        error(loc, "name already defined", "typedef", identifier.c_str());
+        error(loc, "name already defined", "typedef", "%s", identifier.c_str());
 }
 
 // Do everything necessary to handle a struct declaration, including
@@ -8108,7 +8108,7 @@ TIntermNode* HlslParseContext::declareVariable(const TSourceLoc& loc, const TStr
         if (symbol == nullptr)
             symbol = declareNonArray(loc, identifier, type, !flattenVar);
         else if (type != symbol->getType())
-            error(loc, "cannot change the type of", "redeclaration", symbol->getName().c_str());
+            error(loc, "cannot change the type of", "redeclaration", "%s", symbol->getName().c_str());
     }
 
     if (symbol == nullptr)
@@ -8412,7 +8412,7 @@ TIntermTyped* HlslParseContext::convertInitializerList(const TSourceLoc& loc, co
             lengthenList(loc, initList->getSequence(), type.getMatrixCols(), scalarInit);
 
             if (type.getMatrixCols() != (int)initList->getSequence().size()) {
-                error(loc, "wrong number of matrix columns:", "initializer list", type.getCompleteString().c_str());
+                error(loc, "wrong number of matrix columns:", "initializer list", "%s", type.getCompleteString().c_str());
                 return nullptr;
             }
             TType vectorType(type, 0); // dereferenced type
@@ -8430,7 +8430,7 @@ TIntermTyped* HlslParseContext::convertInitializerList(const TSourceLoc& loc, co
         // error check; we're at bottom, so work is finished below
         if (type.getVectorSize() != (int)initList->getSequence().size()) {
             error(loc, "wrong vector size (or rows in a matrix column):", "initializer list",
-                  type.getCompleteString().c_str());
+                  "%s", type.getCompleteString().c_str());
             return nullptr;
         }
     } else if (type.isScalar()) {
@@ -8438,11 +8438,11 @@ TIntermTyped* HlslParseContext::convertInitializerList(const TSourceLoc& loc, co
         lengthenList(loc, initList->getSequence(), 1, scalarInit);
 
         if ((int)initList->getSequence().size() != 1) {
-            error(loc, "scalar expected one element:", "initializer list", type.getCompleteString().c_str());
+            error(loc, "scalar expected one element:", "initializer list", "%s", type.getCompleteString().c_str());
             return nullptr;
         }
     } else {
-        error(loc, "unexpected initializer-list type:", "initializer list", type.getCompleteString().c_str());
+        error(loc, "unexpected initializer-list type:", "initializer list", "%s", type.getCompleteString().c_str());
         return nullptr;
     }
 
@@ -9362,7 +9362,7 @@ void HlslParseContext::updateStandaloneQualifierDefaults(const TSourceLoc& loc, 
             handleOutputGeometry(loc, publicType.shaderQualifiers.geometry);
         } else
             error(loc, "cannot apply to:", TQualifier::getGeometryString(publicType.shaderQualifiers.geometry),
-                  GetStorageQualifierString(publicType.qualifier.storage));
+                  "%s", GetStorageQualifierString(publicType.qualifier.storage));
     }
     if (publicType.shaderQualifiers.spacing != EvsNone)
         intermediate.setVertexSpacing(publicType.shaderQualifiers.spacing);

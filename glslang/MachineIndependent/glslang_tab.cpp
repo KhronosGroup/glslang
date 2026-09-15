@@ -12220,7 +12220,7 @@ yyreduce:
         for (unsigned int i = 0; i < (yyvsp[0].interm.typeList)->size(); ++i) {
             for (unsigned int j = 0; j < (yyval.interm.typeList)->size(); ++j) {
                 if ((*(yyval.interm.typeList))[j].type->getFieldName() == (*(yyvsp[0].interm.typeList))[i].type->getFieldName())
-                    parseContext.error((*(yyvsp[0].interm.typeList))[i].loc, "duplicate member name:", "", (*(yyvsp[0].interm.typeList))[i].type->getFieldName().c_str());
+                    parseContext.error((*(yyvsp[0].interm.typeList))[i].loc, "duplicate member name:", "", "%s", (*(yyvsp[0].interm.typeList))[i].type->getFieldName().c_str());
             }
             (yyval.interm.typeList)->push_back((*(yyvsp[0].interm.typeList))[i]);
         }
@@ -12294,7 +12294,7 @@ yyreduce:
         for (unsigned int i = 0; i < (yyvsp[0].interm.typeList)->size(); ++i) {
             for (unsigned int j = 0; j < (yyval.interm.typeList)->size(); ++j) {
                 if ((*(yyval.interm.typeList))[j].type->getFieldName() == (*(yyvsp[0].interm.typeList))[i].type->getFieldName())
-                    parseContext.error((*(yyvsp[0].interm.typeList))[i].loc, "duplicate member name:", "", (*(yyvsp[0].interm.typeList))[i].type->getFieldName().c_str());
+                    parseContext.error((*(yyvsp[0].interm.typeList))[i].loc, "duplicate member name:", "", "%s", (*(yyvsp[0].interm.typeList))[i].type->getFieldName().c_str());
             }
             (yyval.interm.typeList)->push_back((*(yyvsp[0].interm.typeList))[i]);
         }
@@ -13134,7 +13134,7 @@ yyreduce:
                                     {
         //   May be best done as post process phase on intermediate code
         if (parseContext.currentFunctionType->getBasicType() != EbtVoid && ! parseContext.functionReturnsValue)
-            parseContext.error((yyvsp[-2].interm).loc, "function does not return a value:", "", (yyvsp[-2].interm).function->getName().c_str());
+            parseContext.error((yyvsp[-2].interm).loc, "function does not return a value:", "", "%s", (yyvsp[-2].interm).function->getName().c_str());
         parseContext.symbolTable.pop(&parseContext.defaultPrecision[0]);
         (yyval.interm.intermNode) = parseContext.intermediate.growAggregate((yyvsp[-2].interm).intermNode, (yyvsp[0].interm.intermNode));
         (yyval.interm.intermNode)->getAsAggregate()->setLinkType((yyvsp[-2].interm).function->getLinkType());

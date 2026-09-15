@@ -212,7 +212,7 @@ bool TParseContext::parseShaderStrings(TPpContext& ppContext, TInputScanner& inp
 void TParseContext::parserError(const char* s)
 {
     if (! getScanner()->atEndOfInput() || numErrors == 0)
-        error(getCurrentLoc(), "", "", s, "");
+        error(getCurrentLoc(), "", "", "%s", s);
     else
         error(getCurrentLoc(), "compilation terminated", "", "");
 }
@@ -323,7 +323,7 @@ void TParseContext::setInvariant(const TSourceLoc& loc, const char* builtin) {
     TSymbol* symbol = symbolTable.find(builtin);
     if (symbol && symbol->getType().getQualifier().isPipeOutput()) {
         if (intermediate.inIoAccessed(builtin))
-            warn(loc, "changing qualification after use", "invariant", builtin);
+            warn(loc, "changing qualification after use", "invariant", "%s", builtin);
         TSymbol* csymbol = symbolTable.copyUp(symbol);
         csymbol->getWritableType().getQualifier().invariant = true;
     }
@@ -808,7 +808,7 @@ void TParseContext::ioArrayCheck(const TSourceLoc& loc, const TType& type, const
 {
     if (! type.isArray() && ! symbolTable.atBuiltInLevel()) {
         if (type.getQualifier().isArrayedIo(language) && !type.getQualifier().layoutPassthrough)
-            error(loc, "type must be an array:", type.getStorageQualifierString(), identifier.c_str());
+            error(loc, "type must be an array:", type.getStorageQualifierString(), "%s", identifier.c_str());
     }
 }
 
@@ -916,15 +916,15 @@ void TParseContext::checkIoArrayConsistency(const TSourceLoc& loc, int requiredS
         type.changeOuterArraySize(requiredSize);
     else if (type.getOuterArraySize() != requiredSize) {
         if (language == EShLangGeometry)
-            error(loc, "inconsistent input primitive for array size of", feature, name.c_str());
+            error(loc, "inconsistent input primitive for array size of", feature, "%s", name.c_str());
         else if (language == EShLangTessControl)
-            error(loc, "inconsistent output number of vertices for array size of", feature, name.c_str());
+            error(loc, "inconsistent output number of vertices for array size of", feature, "%s", name.c_str());
         else if (language == EShLangFragment) {
             if (type.getOuterArraySize() > requiredSize)
-                error(loc, " cannot be greater than 3 for pervertexEXT", feature, name.c_str());
+                error(loc, " cannot be greater than 3 for pervertexEXT", feature, "%s", name.c_str());
         }
         else if (language == EShLangMesh)
-            error(loc, "inconsistent output array size of", feature, name.c_str());
+            error(loc, "inconsistent output array size of", feature, "%s", name.c_str());
         else
             assert(0);
     }
@@ -1027,7 +1027,7 @@ TIntermTyped* TParseContext::handleDotDereference(const TSourceLoc& loc, TInterm
             profileRequires(loc, ~EEsProfile, 420, E_GL_ARB_shading_language_420pack, feature);
         } else if (!base->getType().isCoopMat() && !base->getType().isCoopVecOrLongVector()) {
             bool enhanced = intermediate.getEnhancedMsgs();
-            error(loc, "does not operate on this type:", field.c_str(), base->getType().getCompleteString(enhanced).c_str());
+            error(loc, "does not operate on this type:", field.c_str(), "%s", base->getType().getCompleteString(enhanced).c_str());
             return base;
         }
 
@@ -1042,13 +1042,13 @@ TIntermTyped* TParseContext::handleDotDereference(const TSourceLoc& loc, TInterm
     // It's not .length() if we get to here.
 
     if (base->isArray()) {
-        error(loc, "cannot apply to an array:", ".", field.c_str());
+        error(loc, "cannot apply to an array:", ".", "%s", field.c_str());
 
         return base;
     }
 
     if (base->getType().isCoopMat()) {
-        error(loc, "cannot apply to a cooperative matrix type:", ".", field.c_str());
+        error(loc, "cannot apply to a cooperative matrix type:", ".", "%s", field.c_str());
         return base;
     }
 
@@ -1101,14 +1101,14 @@ TIntermTyped* TParseContext::handleDotDereference(const TSourceLoc& loc, TInterm
             if (baseSymbol->getAsSymbolNode() != nullptr) {
                 TString structName;
                 structName.append("\'").append(baseSymbol->getAsSymbolNode()->getName().c_str()).append("\'");
-                error(loc, "no such field in structure", field.c_str(), structName.c_str());
+                error(loc, "no such field in structure", field.c_str(), "%s", structName.c_str());
             } else {
                 error(loc, "no such field in structure", field.c_str(), "");
             }
         }
     } else
         error(loc, "does not apply to this type:", field.c_str(),
-          base->getType().getCompleteString(intermediate.getEnhancedMsgs()).c_str());
+          "%s", base->getType().getCompleteString(intermediate.getEnhancedMsgs()).c_str());
 
     // Propagate noContraction up the dereference chain
     if (base->getQualifier().isNoContraction())
@@ -4521,7 +4521,7 @@ void TParseContext::variableCheck(TIntermTyped*& nodePtr)
         } else if (spvVersion.vulkan != 0 && symbol->getName() == "gl_InstanceID") {
           extraInfoFormat = "(Did you mean gl_InstanceIndex?)";
         }
-        error(symbol->getLoc(), "undeclared identifier", symbol->getName().c_str(), extraInfoFormat);
+        error(symbol->getLoc(), "undeclared identifier", symbol->getName().c_str(), "%s", extraInfoFormat);
 
         // Add to symbol table to prevent future error messages on the same name
         if (symbol->getName().size() > 0) {
@@ -4584,7 +4584,7 @@ bool TParseContext::lValueErrorCheck(const TSourceLoc& loc, const char* op, TInt
                     int value = (*p)->getAsTyped()->getAsConstantUnion()->getConstArray()[0].getIConst();
                     offset[value]++;
                     if (offset[value] > 1) {
-                        error(loc, " l-value of swizzle cannot have duplicate components", op, "", "");
+                        error(loc, " l-value of swizzle cannot have duplicate components", op, "");
 
                         return true;
                     }
@@ -4597,7 +4597,7 @@ bool TParseContext::lValueErrorCheck(const TSourceLoc& loc, const char* op, TInt
         }
 
         if (errorReturn) {
-            error(loc, " l-value required", op, "", "");
+            error(loc, " l-value required", op, "");
             return true;
         }
     }
@@ -4644,7 +4644,7 @@ bool TParseContext::lValueErrorCheck(const TSourceLoc& loc, const char* op, TInt
     }
 
     if (message == nullptr && binaryNode == nullptr && symNode == nullptr) {
-        error(loc, " l-value required", op, "", "");
+        error(loc, " l-value required", op, "");
 
         return true;
     }
@@ -4675,7 +4675,7 @@ void TParseContext::rValueErrorCheck(const TSourceLoc& loc, const char* op, TInt
     TIntermSymbol* symNode = node->getAsSymbolNode();
     if (!(symNode && symNode->getQualifier().isWriteOnly())) // base class checks
         if (symNode && symNode->getQualifier().isExplicitInterpolation())
-            error(loc, "can't read from explicitly-interpolated object: ", op, symNode->getName().c_str());
+            error(loc, "can't read from explicitly-interpolated object: ", op, "%s", symNode->getName().c_str());
 
     // local_size_{xyz} must be assigned or specialized before gl_WorkGroupSize can be assigned.
     if(node->getQualifier().builtIn == EbvWorkGroupSize &&
@@ -4778,24 +4778,24 @@ void TParseContext::reservedPpErrorCheck(const TSourceLoc& loc, const char* iden
     // however, before that, ES tests required an error.
     if (strncmp(identifier, "GL_", 3) == 0 && !extensionTurnedOn(E_GL_EXT_spirv_intrinsics))
         // The extension GL_EXT_spirv_intrinsics allows us to declare macros prefixed with "GL_".
-        ppError(loc, "names beginning with \"GL_\" can't be (un)defined:", op,  identifier);
+        ppError(loc, "names beginning with \"GL_\" can't be (un)defined:", op,  "%s", identifier);
     else if (strncmp(identifier, "defined", 8) == 0)
         if (relaxedErrors())
-            ppWarn(loc, "\"defined\" is (un)defined:", op,  identifier);
+            ppWarn(loc, "\"defined\" is (un)defined:", op,  "%s", identifier);
         else
-            ppError(loc, "\"defined\" can't be (un)defined:", op,  identifier);
+            ppError(loc, "\"defined\" can't be (un)defined:", op,  "%s", identifier);
     else if (strstr(identifier, "__") != nullptr && !extensionTurnedOn(E_GL_EXT_spirv_intrinsics)) {
         // The extension GL_EXT_spirv_intrinsics allows us to declare macros prefixed with "__".
         if (isEsProfile() && version >= 300 &&
             (strcmp(identifier, "__LINE__") == 0 ||
              strcmp(identifier, "__FILE__") == 0 ||
              strcmp(identifier, "__VERSION__") == 0))
-            ppError(loc, "predefined names can't be (un)defined:", op,  identifier);
+            ppError(loc, "predefined names can't be (un)defined:", op,  "%s", identifier);
         else {
             if (isEsProfile() && version < 300 && !relaxedErrors())
-                ppError(loc, "names containing consecutive underscores are reserved, and an error if version < 300:", op, identifier);
+                ppError(loc, "names containing consecutive underscores are reserved, and an error if version < 300:", op, "%s", identifier);
             else
-                ppWarn(loc, "names containing consecutive underscores are reserved:", op, identifier);
+                ppWarn(loc, "names containing consecutive underscores are reserved:", op, "%s", identifier);
         }
     }
 }
@@ -5415,7 +5415,7 @@ void TParseContext::samplerCheck(const TSourceLoc& loc, const TType& type, const
                 intermediate.setBindlessTextureMode(currentCaller, AstRefTypeVar);
         }
         else {
-            error(loc, "non-uniform struct contains a sampler or image:", type.getBasicTypeString().c_str(), identifier.c_str());
+            error(loc, "non-uniform struct contains a sampler or image:", type.getBasicTypeString().c_str(), "%s", identifier.c_str());
         }
     }
     else if (type.getBasicType() == EbtSampler && type.getQualifier().storage != EvqUniform) {
@@ -5431,13 +5431,13 @@ void TParseContext::samplerCheck(const TSourceLoc& loc, const TType& type, const
             // not yet:  okay if it has an initializer
             // if (! initializer)
             if (type.getSampler().isAttachmentEXT() && type.getQualifier().storage != EvqTileImageEXT)
-                 error(loc, "can only be used in tileImageEXT variables or function parameters:", type.getBasicTypeString().c_str(), identifier.c_str());
+                 error(loc, "can only be used in tileImageEXT variables or function parameters:", type.getBasicTypeString().c_str(), "%s", identifier.c_str());
             else if (type.getQualifier().storage != EvqTileImageEXT)
-                 error(loc, "sampler/image types can only be used in uniform variables or function parameters:", type.getBasicTypeString().c_str(), identifier.c_str());
+                 error(loc, "sampler/image types can only be used in uniform variables or function parameters:", type.getBasicTypeString().c_str(), "%s", identifier.c_str());
         }
     }
     else if (type.isTensorARM() && type.getQualifier().storage != EvqUniform) {
-        error(loc, "tensorARM types can only be used in uniform variables or function parameters:", "tensorARM", identifier.c_str());
+        error(loc, "tensorARM types can only be used in uniform variables or function parameters:", "tensorARM", "%s", identifier.c_str());
     }
 }
 
@@ -5447,9 +5447,9 @@ void TParseContext::atomicUintCheck(const TSourceLoc& loc, const TType& type, co
         return;
 
     if (type.getBasicType() == EbtStruct && containsFieldWithBasicType(type, EbtAtomicUint))
-        error(loc, "non-uniform struct contains an atomic_uint:", type.getBasicTypeString().c_str(), identifier.c_str());
+        error(loc, "non-uniform struct contains an atomic_uint:", type.getBasicTypeString().c_str(), "%s", identifier.c_str());
     else if (type.getBasicType() == EbtAtomicUint && type.getQualifier().storage != EvqUniform)
-        error(loc, "atomic_uints can only be used in uniform variables or function parameters:", type.getBasicTypeString().c_str(), identifier.c_str());
+        error(loc, "atomic_uints can only be used in uniform variables or function parameters:", type.getBasicTypeString().c_str(), "%s", identifier.c_str());
 }
 
 void TParseContext::accStructCheck(const TSourceLoc& loc, const TType& type, const TString& identifier)
@@ -5458,32 +5458,32 @@ void TParseContext::accStructCheck(const TSourceLoc& loc, const TType& type, con
         return;
 
     if (type.getBasicType() == EbtStruct && containsFieldWithBasicType(type, EbtAccStruct))
-        error(loc, "non-uniform struct contains an accelerationStructureNV:", type.getBasicTypeString().c_str(), identifier.c_str());
+        error(loc, "non-uniform struct contains an accelerationStructureNV:", type.getBasicTypeString().c_str(), "%s", identifier.c_str());
     else if (type.getBasicType() == EbtAccStruct && type.getQualifier().storage != EvqUniform)
         error(loc, "accelerationStructureNV can only be used in uniform variables or function parameters:",
-            type.getBasicTypeString().c_str(), identifier.c_str());
+            type.getBasicTypeString().c_str(), "%s", identifier.c_str());
 
 }
 
 void TParseContext::hitObjectEXTCheck(const TSourceLoc & loc, const TType & type, const TString & identifier)
 {
     if (type.getBasicType() == EbtStruct && containsFieldWithBasicType(type, EbtHitObjectEXT)) {
-        error(loc, "struct is not allowed to contain hitObjectEXT:", type.getTypeName().c_str(), identifier.c_str());
+        error(loc, "struct is not allowed to contain hitObjectEXT:", type.getTypeName().c_str(), "%s", identifier.c_str());
     } else if (type.getBasicType() == EbtHitObjectEXT) {
         TStorageQualifier qualifier = type.getQualifier().storage;
         if (qualifier != EvqGlobal && qualifier != EvqTemporary) {
-            error(loc, "hitObjectEXT can only be declared in global or function scope with no storage qualifier:", "hitObjectEXT", identifier.c_str());
+            error(loc, "hitObjectEXT can only be declared in global or function scope with no storage qualifier:", "hitObjectEXT", "%s", identifier.c_str());
         }
     }
 }
 void TParseContext::hitObjectNVCheck(const TSourceLoc & loc, const TType & type, const TString & identifier)
 {
     if (type.getBasicType() == EbtStruct && ( containsFieldWithBasicType(type, EbtHitObjectNV))) {
-        error(loc, "struct is not allowed to contain hitObjectNV:", type.getTypeName().c_str(), identifier.c_str());
+        error(loc, "struct is not allowed to contain hitObjectNV:", type.getTypeName().c_str(), "%s", identifier.c_str());
     } else if ((type.getBasicType() == EbtHitObjectNV)) {
         TStorageQualifier qualifier = type.getQualifier().storage;
         if (qualifier != EvqGlobal && qualifier != EvqTemporary) {
-            error(loc, "hitObjectNV can only be declared in global or function scope with no storage qualifier:", "hitObjectNV", identifier.c_str());
+            error(loc, "hitObjectNV can only be declared in global or function scope with no storage qualifier:", "hitObjectNV", "%s", identifier.c_str());
         }
     }
 }
@@ -5648,9 +5648,9 @@ void TParseContext::globalQualifierTypeCheck(const TSourceLoc& loc, const TQuali
                                     || publicType.userDef->contains64BitInt()
                                     || publicType.userDef->containsDouble()))) {
             if (qualifier.storage == EvqVaryingIn && language == EShLangFragment)
-                error(loc, "must be qualified as flat", TType::getBasicString(publicType.basicType), GetStorageQualifierString(qualifier.storage));
+                error(loc, "must be qualified as flat", TType::getBasicString(publicType.basicType), "%s", GetStorageQualifierString(qualifier.storage));
             else if (qualifier.storage == EvqVaryingOut && language == EShLangVertex && version == 300)
-                error(loc, "must be qualified as flat", TType::getBasicString(publicType.basicType), GetStorageQualifierString(qualifier.storage));
+                error(loc, "must be qualified as flat", TType::getBasicString(publicType.basicType), "%s", GetStorageQualifierString(qualifier.storage));
         }
     }
 
@@ -6516,12 +6516,12 @@ TSymbol* TParseContext::redeclareBuiltinVariable(const TSourceLoc& loc, const TS
             if (intermediate.inIoAccessed(identifier))
                 error(loc, "cannot redeclare after use", identifier.c_str(), "");
             if (qualifier.hasLayout())
-                error(loc, "cannot apply layout qualifier to", "redeclaration", symbol->getName().c_str());
+                error(loc, "cannot apply layout qualifier to", "redeclaration", "%s", symbol->getName().c_str());
             if (qualifier.isMemory() || qualifier.isAuxiliary() || (language == EShLangVertex   && qualifier.storage != EvqVaryingOut) ||
                                                                    (language == EShLangFragment && qualifier.storage != EvqVaryingIn))
-                error(loc, "cannot change storage, memory, or auxiliary qualification of", "redeclaration", symbol->getName().c_str());
+                error(loc, "cannot change storage, memory, or auxiliary qualification of", "redeclaration", "%s", symbol->getName().c_str());
             if (! qualifier.smooth)
-                error(loc, "cannot change interpolation qualification of", "redeclaration", symbol->getName().c_str());
+                error(loc, "cannot change interpolation qualification of", "redeclaration", "%s", symbol->getName().c_str());
         } else if (identifier == "gl_FrontColor"          ||
                    identifier == "gl_BackColor"           ||
                    identifier == "gl_FrontSecondaryColor" ||
@@ -6532,27 +6532,27 @@ TSymbol* TParseContext::redeclareBuiltinVariable(const TSourceLoc& loc, const TS
             symbolQualifier.smooth = qualifier.smooth;
             symbolQualifier.nopersp = qualifier.nopersp;
             if (qualifier.hasLayout())
-                error(loc, "cannot apply layout qualifier to", "redeclaration", symbol->getName().c_str());
+                error(loc, "cannot apply layout qualifier to", "redeclaration", "%s", symbol->getName().c_str());
             if (qualifier.isMemory() || qualifier.isAuxiliary() || symbol->getType().getQualifier().storage != qualifier.storage)
-                error(loc, "cannot change storage, memory, or auxiliary qualification of", "redeclaration", symbol->getName().c_str());
+                error(loc, "cannot change storage, memory, or auxiliary qualification of", "redeclaration", "%s", symbol->getName().c_str());
         } else if (identifier == "gl_TexCoord"     ||
                    identifier == "gl_ClipDistance" ||
                    identifier == "gl_CullDistance") {
             if (qualifier.hasLayout() || qualifier.isMemory() || qualifier.isAuxiliary() ||
                 qualifier.nopersp != symbolQualifier.nopersp || qualifier.flat != symbolQualifier.flat ||
                 symbolQualifier.storage != qualifier.storage)
-                error(loc, "cannot change qualification of", "redeclaration", symbol->getName().c_str());
+                error(loc, "cannot change qualification of", "redeclaration", "%s", symbol->getName().c_str());
         } else if (identifier == "gl_FragCoord") {
             if (!intermediate.getTexCoordRedeclared() && intermediate.inIoAccessed("gl_FragCoord"))
                 error(loc, "cannot redeclare after use", "gl_FragCoord", "");
             if (qualifier.nopersp != symbolQualifier.nopersp || qualifier.flat != symbolQualifier.flat ||
                 qualifier.isMemory() || qualifier.isAuxiliary())
-                error(loc, "can only change layout qualification of", "redeclaration", symbol->getName().c_str());
+                error(loc, "can only change layout qualification of", "redeclaration", "%s", symbol->getName().c_str());
             if (qualifier.storage != EvqVaryingIn)
-                error(loc, "cannot change input storage qualification of", "redeclaration", symbol->getName().c_str());
+                error(loc, "cannot change input storage qualification of", "redeclaration", "%s", symbol->getName().c_str());
             if (! builtIn && (publicType.pixelCenterInteger != intermediate.getPixelCenterInteger() ||
                               publicType.originUpperLeft != intermediate.getOriginUpperLeft()))
-                error(loc, "cannot redeclare with different qualification:", "redeclaration", symbol->getName().c_str());
+                error(loc, "cannot redeclare with different qualification:", "redeclaration", "%s", symbol->getName().c_str());
 
 
             intermediate.setTexCoordRedeclared();
@@ -6563,45 +6563,45 @@ TSymbol* TParseContext::redeclareBuiltinVariable(const TSourceLoc& loc, const TS
         } else if (identifier == "gl_FragDepth") {
             if (qualifier.nopersp != symbolQualifier.nopersp || qualifier.flat != symbolQualifier.flat ||
                 qualifier.isMemory() || qualifier.isAuxiliary())
-                error(loc, "can only change layout qualification of", "redeclaration", symbol->getName().c_str());
+                error(loc, "can only change layout qualification of", "redeclaration", "%s", symbol->getName().c_str());
             if (qualifier.storage != EvqVaryingOut)
-                error(loc, "cannot change output storage qualification of", "redeclaration", symbol->getName().c_str());
+                error(loc, "cannot change output storage qualification of", "redeclaration", "%s", symbol->getName().c_str());
             if (publicType.layoutDepth != EldNone) {
                 if (intermediate.inIoAccessed("gl_FragDepth"))
                     error(loc, "cannot redeclare after use", "gl_FragDepth", "");
                 if (! intermediate.setDepth(publicType.layoutDepth))
-                    error(loc, "all redeclarations must use the same depth layout on", "redeclaration", symbol->getName().c_str());
+                    error(loc, "all redeclarations must use the same depth layout on", "redeclaration", "%s", symbol->getName().c_str());
             }
         } else if (identifier == "gl_FragStencilRefARB") {
             if (qualifier.nopersp != symbolQualifier.nopersp || qualifier.flat != symbolQualifier.flat ||
                 qualifier.isMemory() || qualifier.isAuxiliary())
-                error(loc, "can only change layout qualification of", "redeclaration", symbol->getName().c_str());
+                error(loc, "can only change layout qualification of", "redeclaration", "%s", symbol->getName().c_str());
             if (qualifier.storage != EvqVaryingOut)
-                error(loc, "cannot change output storage qualification of", "redeclaration", symbol->getName().c_str());
+                error(loc, "cannot change output storage qualification of", "redeclaration", "%s", symbol->getName().c_str());
             if (publicType.layoutStencil != ElsNone) {
                 if (intermediate.inIoAccessed("gl_FragStencilRefARB"))
                     error(loc, "cannot redeclare after use", "gl_FragStencilRefARB", "");
                 if (!intermediate.setStencil(publicType.layoutStencil))
                     error(loc, "all redeclarations must use the same stencil layout on", "redeclaration",
-                          symbol->getName().c_str());
+                          "%s", symbol->getName().c_str());
             }
         }
         else if (
             identifier == "gl_PrimitiveIndicesNV") {
             if (qualifier.hasLayout())
-                error(loc, "cannot apply layout qualifier to", "redeclaration", symbol->getName().c_str());
+                error(loc, "cannot apply layout qualifier to", "redeclaration", "%s", symbol->getName().c_str());
             if (qualifier.storage != EvqVaryingOut)
-                error(loc, "cannot change output storage qualification of", "redeclaration", symbol->getName().c_str());
+                error(loc, "cannot change output storage qualification of", "redeclaration", "%s", symbol->getName().c_str());
         }
         else if (identifier == "gl_SampleMask") {
             if (!publicType.layoutOverrideCoverage) {
-                error(loc, "redeclaration only allowed for override_coverage layout", "redeclaration", symbol->getName().c_str());
+                error(loc, "redeclaration only allowed for override_coverage layout", "redeclaration", "%s", symbol->getName().c_str());
             }
             intermediate.setLayoutOverrideCoverage();
         }
         else if (identifier == "gl_Layer") {
             if (!qualifier.layoutViewportRelative && qualifier.layoutSecondaryViewportRelativeOffset == -2048)
-                error(loc, "redeclaration only allowed for viewport_relative or secondary_view_offset layout", "redeclaration", symbol->getName().c_str());
+                error(loc, "redeclaration only allowed for viewport_relative or secondary_view_offset layout", "redeclaration", "%s", symbol->getName().c_str());
             symbolQualifier.layoutViewportRelative = qualifier.layoutViewportRelative;
             symbolQualifier.layoutSecondaryViewportRelativeOffset = qualifier.layoutSecondaryViewportRelativeOffset;
         }
@@ -6616,11 +6616,11 @@ TSymbol* TParseContext::redeclareBuiltinVariable(const TSourceLoc& loc, const TS
             if (qualifier.hasSpecConstantId())
                 error(loc, "cannot restate the type or specify a value with constant_id; use "
                            "'layout(constant_id = N) gl_EnableOpacityMicromapEXT;'", "redeclaration",
-                      symbol->getName().c_str());
+                      "%s", symbol->getName().c_str());
             else if (qualifier.storage != EvqConst)
                 error(loc, "can only be redeclared as 'const bool gl_EnableOpacityMicromapEXT = <true|false>;' "
                            "or 'layout(constant_id = N) gl_EnableOpacityMicromapEXT;'", "redeclaration",
-                      symbol->getName().c_str());
+                      "%s", symbol->getName().c_str());
             // For the valid 'const bool = <true|false>;' form the value is captured from the initializer
             // after it is processed (see declareVariable); nothing else to do to the symbol's qualifier here.
         }
@@ -6647,7 +6647,7 @@ void TParseContext::redeclareBuiltinBlock(const TSourceLoc& loc, TTypeList& newT
     if (blockName != "gl_PerVertex" && blockName != "gl_PerFragment" &&
         blockName != "gl_MeshPerVertexNV" && blockName != "gl_MeshPerPrimitiveNV" &&
         blockName != "gl_MeshPerVertexEXT" && blockName != "gl_MeshPerPrimitiveEXT") {
-        error(loc, "cannot redeclare block: ", "block declaration", blockName.c_str());
+        error(loc, "cannot redeclare block: ", "block declaration", "%s", blockName.c_str());
         return;
     }
 
@@ -9854,9 +9854,9 @@ TIntermNode* TParseContext::declareVariable(const TSourceLoc& loc, TString& iden
 
     if (initializer) {
         if (type.getBasicType() == EbtRayQuery) {
-            error(loc, "ray queries can only be initialized by using the rayQueryInitializeEXT intrinsic:", "=", identifier.c_str());
+            error(loc, "ray queries can only be initialized by using the rayQueryInitializeEXT intrinsic:", "=", "%s", identifier.c_str());
         } else if ((type.getBasicType() == EbtHitObjectNV) || (type.getBasicType() == EbtHitObjectEXT)) {
-            error(loc, "hit objects cannot be initialized using initializers", "=", identifier.c_str());
+            error(loc, "hit objects cannot be initialized using initializers", "=", "%s", identifier.c_str());
         }
 
     }
@@ -10067,7 +10067,7 @@ TIntermNode* TParseContext::declareVariable(const TSourceLoc& loc, TString& iden
         if (symbol == nullptr)
             symbol = declareNonArray(loc, identifier, type);
         else if (type != symbol->getType())
-            error(loc, "cannot change the type of", "redeclaration", symbol->getName().c_str());
+            error(loc, "cannot change the type of", "redeclaration", "%s", symbol->getName().c_str());
     }
 
     if (symbol == nullptr)
@@ -10413,7 +10413,7 @@ TIntermTyped* TParseContext::convertInitializerList(const TSourceLoc& loc, const
         }
     } else if (type.isMatrix()) {
         if (type.getMatrixCols() != (int)initList->getSequence().size()) {
-            error(loc, "wrong number of matrix columns:", "initializer list", type.getCompleteString(intermediate.getEnhancedMsgs()).c_str());
+            error(loc, "wrong number of matrix columns:", "initializer list", "%s", type.getCompleteString(intermediate.getEnhancedMsgs()).c_str());
             return nullptr;
         }
         TType vectorType(type, 0); // dereferenced type
@@ -10424,20 +10424,20 @@ TIntermTyped* TParseContext::convertInitializerList(const TSourceLoc& loc, const
         }
     } else if (type.isVector()) {
         if (type.getVectorSize() != (int)initList->getSequence().size()) {
-            error(loc, "wrong vector size (or rows in a matrix column):", "initializer list", type.getCompleteString(intermediate.getEnhancedMsgs()).c_str());
+            error(loc, "wrong vector size (or rows in a matrix column):", "initializer list", "%s", type.getCompleteString(intermediate.getEnhancedMsgs()).c_str());
             return nullptr;
         }
         TBasicType destType = type.getBasicType();
         for (int i = 0; i < type.getVectorSize(); ++i) {
             TBasicType initType = initList->getSequence()[i]->getAsTyped()->getBasicType();
             if (destType != initType && !intermediate.canImplicitlyPromote(initType, destType)) {
-                error(loc, "type mismatch in initializer list", "initializer list", type.getCompleteString(intermediate.getEnhancedMsgs()).c_str());
+                error(loc, "type mismatch in initializer list", "initializer list", "%s", type.getCompleteString(intermediate.getEnhancedMsgs()).c_str());
                 return nullptr;
             }
 
         }
     } else {
-        error(loc, "unexpected initializer-list type:", "initializer list", type.getCompleteString(intermediate.getEnhancedMsgs()).c_str());
+        error(loc, "unexpected initializer-list type:", "initializer list", "%s", type.getCompleteString(intermediate.getEnhancedMsgs()).c_str());
         return nullptr;
     }
 
@@ -11459,7 +11459,7 @@ TIntermNode* TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeL
             TSymbol* existingName = symbolTable.find(*blockName);
             if (existingName->getType().getBasicType() == EbtBlock) {
                 if (existingName->getType().getQualifier().storage == blockType.getQualifier().storage) {
-                    error(loc, "Cannot reuse block name within the same interface:", blockName->c_str(), blockType.getStorageQualifierString());
+                    error(loc, "Cannot reuse block name within the same interface:", blockName->c_str(), "%s", blockType.getStorageQualifierString());
                     return nullptr;
                 }
             } else {
@@ -12085,7 +12085,7 @@ void TParseContext::updateStandaloneQualifierDefaults(const TSourceLoc& loc, con
                 error(loc, "cannot apply to 'out'", TQualifier::getGeometryString(publicType.shaderQualifiers.geometry), "");
             }
         } else
-            error(loc, "cannot apply to:", TQualifier::getGeometryString(publicType.shaderQualifiers.geometry), GetStorageQualifierString(publicType.qualifier.storage));
+            error(loc, "cannot apply to:", TQualifier::getGeometryString(publicType.shaderQualifiers.geometry), "%s", GetStorageQualifierString(publicType.qualifier.storage));
     }
     if (publicType.shaderQualifiers.spacing != EvsNone) {
         if (publicType.qualifier.storage == EvqVaryingIn) {
@@ -12288,7 +12288,7 @@ void TParseContext::updateStandaloneQualifierDefaults(const TSourceLoc& loc, con
 
     if (publicType.shaderQualifiers.layoutPrimitiveCulling) {
         if (publicType.qualifier.storage != EvqTemporary)
-            error(loc, "layout qualifier cannot have storage qualifiers", "primitive_culling", "", "");
+            error(loc, "layout qualifier cannot have storage qualifiers", "primitive_culling", "");
         else {
             intermediate.setLayoutPrimitiveCulling();
         }
