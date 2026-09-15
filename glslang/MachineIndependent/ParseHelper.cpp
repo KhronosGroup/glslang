@@ -4584,7 +4584,7 @@ bool TParseContext::lValueErrorCheck(const TSourceLoc& loc, const char* op, TInt
                     int value = (*p)->getAsTyped()->getAsConstantUnion()->getConstArray()[0].getIConst();
                     offset[value]++;
                     if (offset[value] > 1) {
-                        error(loc, " l-value of swizzle cannot have duplicate components", op, "", "");
+                        error(loc, " l-value of swizzle cannot have duplicate components", op, "");
 
                         return true;
                     }
@@ -4597,7 +4597,7 @@ bool TParseContext::lValueErrorCheck(const TSourceLoc& loc, const char* op, TInt
         }
 
         if (errorReturn) {
-            error(loc, " l-value required", op, "", "");
+            error(loc, " l-value required", op, "");
             return true;
         }
     }
@@ -4644,7 +4644,7 @@ bool TParseContext::lValueErrorCheck(const TSourceLoc& loc, const char* op, TInt
     }
 
     if (message == nullptr && binaryNode == nullptr && symNode == nullptr) {
-        error(loc, " l-value required", op, "", "");
+        error(loc, " l-value required", op, "");
 
         return true;
     }
@@ -12288,7 +12288,7 @@ void TParseContext::updateStandaloneQualifierDefaults(const TSourceLoc& loc, con
 
     if (publicType.shaderQualifiers.layoutPrimitiveCulling) {
         if (publicType.qualifier.storage != EvqTemporary)
-            error(loc, "layout qualifier cannot have storage qualifiers", "primitive_culling", "", "");
+            error(loc, "layout qualifier cannot have storage qualifiers", "primitive_culling", "");
         else {
             intermediate.setLayoutPrimitiveCulling();
         }
