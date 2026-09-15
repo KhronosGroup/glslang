@@ -279,6 +279,10 @@ template("glslang_sources_common") {
         "-Wno-unused-variable",
       ]
     }
+    if (!is_win && !is_clang) {
+      # error() and friends take "" as the format when there is no extra info.
+      cflags = [ "-Wno-format-zero-length" ]
+    }
     if (is_win && !is_clang) {
       cflags = [
         "/wd4018",  # signed/unsigned mismatch

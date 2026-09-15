@@ -87,6 +87,12 @@ std::string to_string(const T& val) {
 #define strdup _strdup
 #endif
 
+#ifdef __GNUC__
+    #define GLSLANG_PRINTF_FORMAT(fmt, args) __attribute__((format(printf, fmt, args)))
+#else
+    #define GLSLANG_PRINTF_FORMAT(fmt, args)
+#endif
+
 /* windows only pragma */
 #ifdef _MSC_VER
     #pragma warning(disable : 4786) // Don't warn about too long identifiers
