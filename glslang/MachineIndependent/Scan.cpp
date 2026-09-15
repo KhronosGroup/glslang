@@ -2133,7 +2133,7 @@ int TScanContext::identifierOrType()
 int TScanContext::reservedWord()
 {
     if (! parseContext.symbolTable.atBuiltInLevel())
-        parseContext.error(loc, "Reserved word.", tokenText, "", "");
+        parseContext.error(loc, "Reserved word.", tokenText, "");
 
     return 0;
 }

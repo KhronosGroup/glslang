@@ -180,7 +180,7 @@ bool TParseContextBase::lValueErrorCheck(const TSourceLoc& loc, const char* op, 
     }
 
     if (message == nullptr && binaryNode == nullptr && symNode == nullptr) {
-        error(loc, " l-value required", op, "", "");
+        error(loc, " l-value required", op, "");
 
         return true;
     }
@@ -201,7 +201,7 @@ bool TParseContextBase::lValueErrorCheck(const TSourceLoc& loc, const char* op, 
             default:
                 break;
             }
-            error(loc, " l-value required", op, "", "");
+            error(loc, " l-value required", op, "");
 
             return true;
         }
