@@ -216,14 +216,14 @@ int TPpContext::CPPdefine(TPpToken* ppToken)
             // white-space separations are considered identical."
             if (existing->functionLike != mac.functionLike) {
                 parseContext.ppError(defineLoc, "Macro redefined; function-like versus object-like:", "#define",
-                    atomStrings.getString(defAtom));
+                    "%s", atomStrings.getString(defAtom));
             } else if (existing->args.size() != mac.args.size()) {
                 parseContext.ppError(defineLoc, "Macro redefined; different number of arguments:", "#define",
-                    atomStrings.getString(defAtom));
+                    "%s", atomStrings.getString(defAtom));
             } else {
                 if (existing->args != mac.args) {
                     parseContext.ppError(defineLoc, "Macro redefined; different argument names:", "#define",
-                       atomStrings.getString(defAtom));
+                       "%s", atomStrings.getString(defAtom));
                 }
                 // set up to compare the two
                 existing->body.reset();
@@ -243,7 +243,7 @@ int TPpContext::CPPdefine(TPpToken* ppToken)
                     }
                     if (oldToken != newToken || oldPpToken != newPpToken) {
                         parseContext.ppError(defineLoc, "Macro redefined; different substitutions:", "#define",
-                            atomStrings.getString(defAtom));
+                            "%s", atomStrings.getString(defAtom));
                         break;
                     }
                 } while (newToken != EndOfInput);
@@ -601,9 +601,9 @@ int TPpContext::evalToToken(int token, bool shortCircuit, int& res, bool& err, T
             if (! shortCircuit && parseContext.isEsProfile()) {
                 const char* message = "undefined macro in expression not allowed in es profile";
                 if (parseContext.relaxedErrors())
-                    parseContext.ppWarn(ppToken->loc, message, "preprocessor evaluation", ppToken->name);
+                    parseContext.ppWarn(ppToken->loc, message, "preprocessor evaluation", "%s", ppToken->name);
                 else
-                    parseContext.ppError(ppToken->loc, message, "preprocessor evaluation", ppToken->name);
+                    parseContext.ppError(ppToken->loc, message, "preprocessor evaluation", "%s", ppToken->name);
             }
             break;
         }
@@ -1056,7 +1056,7 @@ int TPpContext::readCPPline(TPpToken* ppToken)
             token = CPPextension(ppToken);
             break;
         default:
-            parseContext.ppError(ppToken->loc, "invalid directive:", "#", ppToken->name);
+            parseContext.ppError(ppToken->loc, "invalid directive:", "#", "%s", ppToken->name);
             break;
         }
     } else if (token != '\n' && token != EndOfInput)
@@ -1246,7 +1246,7 @@ MacroExpandResult TPpContext::MacroExpand(TPpToken* ppToken, bool expandUndef, b
     // via unbounded MacroExpand <-> PrescanMacroArg mutual recursion.
     if (macroExpandDepth >= maxMacroExpandDepth) {
         parseContext.ppError(ppToken->loc, "macro expansion depth limit exceeded",
-                             "macro expansion", ppToken->name);
+                             "macro expansion", "%s", ppToken->name);
         return MacroExpandNotStarted;
     }
     struct DepthGuard {
@@ -1338,20 +1338,20 @@ MacroExpandResult TPpContext::MacroExpand(TPpToken* ppToken, bool expandUndef, b
             while (true) {
                 token = scanToken(ppToken);
                 if (token == EndOfInput || token == tMarkerInput::marker) {
-                    parseContext.ppError(loc, "End of input in macro", "macro expansion", atomStrings.getString(macroAtom));
+                    parseContext.ppError(loc, "End of input in macro", "macro expansion", "%s", atomStrings.getString(macroAtom));
                     delete in;
                     return MacroExpandError;
                 }
                 if (token == '\n') {
                     if (! newLineOkay) {
-                        parseContext.ppError(loc, "End of line in macro substitution:", "macro expansion", atomStrings.getString(macroAtom));
+                        parseContext.ppError(loc, "End of line in macro substitution:", "macro expansion", "%s", atomStrings.getString(macroAtom));
                         delete in;
                         return MacroExpandError;
                     }
                     continue;
                 }
                 if (token == '#') {
-                    parseContext.ppError(ppToken->loc, "unexpected '#'", "macro expansion", atomStrings.getString(macroAtom));
+                    parseContext.ppError(ppToken->loc, "unexpected '#'", "macro expansion", "%s", atomStrings.getString(macroAtom));
                     delete in;
                     return MacroExpandError;
                 }
@@ -1387,7 +1387,7 @@ MacroExpandResult TPpContext::MacroExpand(TPpToken* ppToken, bool expandUndef, b
         // end of all arguments scan
 
         if (arg < in->mac->args.size())
-            parseContext.ppError(loc, "Too few args in Macro", "macro expansion", atomStrings.getString(macroAtom));
+            parseContext.ppError(loc, "Too few args in Macro", "macro expansion", "%s", atomStrings.getString(macroAtom));
         else if (token != ')') {
             // Error recover code; find end of call, if possible
             int depth = 0;
@@ -1400,11 +1400,11 @@ MacroExpandResult TPpContext::MacroExpand(TPpToken* ppToken, bool expandUndef, b
             }
 
             if (token == EndOfInput) {
-                parseContext.ppError(loc, "End of input in macro", "macro expansion", atomStrings.getString(macroAtom));
+                parseContext.ppError(loc, "End of input in macro", "macro expansion", "%s", atomStrings.getString(macroAtom));
                 delete in;
                 return MacroExpandError;
             }
-            parseContext.ppError(loc, "Too many args in macro", "macro expansion", atomStrings.getString(macroAtom));
+            parseContext.ppError(loc, "Too many args in macro", "macro expansion", "%s", atomStrings.getString(macroAtom));
         }
 
         // We need both expanded and non-expanded forms of the argument, for whether or
