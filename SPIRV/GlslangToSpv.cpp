@@ -2802,7 +2802,7 @@ bool TGlslangToSpvTraverser::visitBinary(glslang::TVisit /* visit */, glslang::T
             // These may require short circuiting, but can sometimes be done as straight
             // binary operations.  The right operand must be short circuited if it has
             // side effects, and should probably be if it is complex.
-            if (isTrivial(node->getRight()->getAsTyped()))
+            if (node->getType().getQualifier().isSpecConstant() || isTrivial(node->getRight()->getAsTyped()))
                 break; // handle below as a normal binary operation
             // otherwise, we need to do dynamic short circuiting on the right operand
             spv::Id result = createShortCircuit(node->getOp(), *node->getLeft()->getAsTyped(),

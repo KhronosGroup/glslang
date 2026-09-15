@@ -596,6 +596,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.specConstantOp.int16.comp",
         "spv.specConstantOp.int8.comp",
         "spv.specConstantOp.float16.comp",
+        "spv.specConstantOp.logical.comp",
         "spv.storageBuffer.vert",
         "spv.terminate.frag",
         "spv.subgroupUniformControlFlow.vert",
