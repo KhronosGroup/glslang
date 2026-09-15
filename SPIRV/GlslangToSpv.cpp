@@ -2793,8 +2793,14 @@ bool TGlslangToSpvTraverser::visitBinary(glslang::TVisit /* visit */, glslang::T
         }
         return false;
     case glslang::EOpMatrixSwizzle:
+        // Returning true would visit the index list and leave one of those integer
+        // constants as the result of the swizzle. Traverse only the operand, for its
+        // side effects, and hand back a value of the right type.
         logger->missingFunctionality("matrix swizzle");
-        return true;
+        node->getLeft()->traverse(this);
+        builder.clearAccessChain();
+        builder.setAccessChainRValue(builder.createUndefined(convertGlslangToSpvType(node->getType())));
+        return false;
     case glslang::EOpLogicalOr:
     case glslang::EOpLogicalAnd:
         {
