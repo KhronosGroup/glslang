@@ -8,6 +8,9 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 * Deprecate the HLSL front-end. It will be removed at the next major version.
   See issue #4210 for details.
 * Add support for GL_EXT_opacity_micromap_ray_query_mode
+* Add support for GL_EXT_clip_cull_distance and GL_ARB_cull_distance
+* Fix extension checks on the remaining members of a redeclared instance-named block
+* Fix an out-of-range block member index when a feature is used under `#extension all : warn`
 
 ## 16.6.0 2026-09-10
 

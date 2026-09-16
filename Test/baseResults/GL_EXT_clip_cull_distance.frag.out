@@ -1,0 +1,57 @@
+GL_EXT_clip_cull_distance.frag
+Shader version: 320
+Requested GL_EXT_clip_cull_distance
+0:? Sequence
+0:7  Function Definition: main( ( global void)
+0:7    Function Parameters: 
+0:9    Sequence
+0:9      move second child to first child ( temp highp 4-component vector of float)
+0:9        'color' ( out mediump 4-component vector of float)
+0:9        Construct vec4 ( temp highp 4-component vector of float)
+0:9          direct index ( smooth temp highp float ClipDistance)
+0:9            'gl_ClipDistance' ( smooth in unsized 1-element array of highp float ClipDistance)
+0:9            Constant:
+0:9              0 (const int)
+0:9          direct index ( smooth temp highp float CullDistance)
+0:9            'gl_CullDistance' ( smooth in unsized 1-element array of highp float CullDistance)
+0:9            Constant:
+0:9              0 (const int)
+0:9          Constant:
+0:9            0.000000
+0:9          Constant:
+0:9            1.000000
+0:?   Linker Objects
+0:?     'color' ( out mediump 4-component vector of float)
+0:?     'gl_ClipDistance' ( smooth in unsized 1-element array of highp float ClipDistance)
+0:?     'gl_CullDistance' ( smooth in unsized 1-element array of highp float CullDistance)
+
+
+Linked fragment stage:
+
+
+Shader version: 320
+Requested GL_EXT_clip_cull_distance
+0:? Sequence
+0:7  Function Definition: main( ( global void)
+0:7    Function Parameters: 
+0:9    Sequence
+0:9      move second child to first child ( temp highp 4-component vector of float)
+0:9        'color' ( out mediump 4-component vector of float)
+0:9        Construct vec4 ( temp highp 4-component vector of float)
+0:9          direct index ( smooth temp highp float ClipDistance)
+0:9            'gl_ClipDistance' ( smooth in 1-element array of highp float ClipDistance)
+0:9            Constant:
+0:9              0 (const int)
+0:9          direct index ( smooth temp highp float CullDistance)
+0:9            'gl_CullDistance' ( smooth in 1-element array of highp float CullDistance)
+0:9            Constant:
+0:9              0 (const int)
+0:9          Constant:
+0:9            0.000000
+0:9          Constant:
+0:9            1.000000
+0:?   Linker Objects
+0:?     'color' ( out mediump 4-component vector of float)
+0:?     'gl_ClipDistance' ( smooth in 1-element array of highp float ClipDistance)
+0:?     'gl_CullDistance' ( smooth in 1-element array of highp float CullDistance)
+

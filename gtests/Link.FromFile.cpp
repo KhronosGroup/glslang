@@ -92,6 +92,8 @@ INSTANTIATE_TEST_SUITE_P(
         {"mains1.frag", "mains2.frag", "noMain1.geom", "noMain2.geom"},
         {"implicitArraySize.vert", "implicitArraySize.frag"},
         {"implicitArraySizeBuiltin.vert", "implicitArraySizeBuiltin.geom"},
+        {"link.clipCullDistance.vert", "link.clipCullDistance.geom"},
+        {"link.esClipCullDistance.vert", "link.esClipCullDistance.geom"},
         {"implicitArraySize1.geom", "implicitArraySize2.geom"},
         {"implicitArraySizeUniform.vert", "implicitArraySizeUniform.frag"},
         {"implicitArraySizeUniformContradict.vert", "implicitArraySizeUniformContradict.frag"},

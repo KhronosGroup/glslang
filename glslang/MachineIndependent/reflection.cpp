@@ -501,6 +501,10 @@ public:
                 const TTypeList& typeList = *type.getStruct();
 
                 for (int i = 0; i < (int)typeList.size(); ++i) {
+                    // A member left out of a block redeclaration, or not available without an
+                    // extension, is not part of the interface.
+                    if (typeList[i].type->hiddenMember())
+                        continue;
                     TString newBaseName = name;
                     if (newBaseName.size() > 0)
                         newBaseName.append(".");

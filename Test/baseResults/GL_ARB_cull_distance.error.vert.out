@@ -1,0 +1,90 @@
+GL_ARB_cull_distance.error.vert
+ERROR: 0:6: 'gl_CullDistance' : required extension not requested: GL_ARB_cull_distance
+ERROR: 0:7: 'gl_MaxCullDistances' : required extension not requested: GL_ARB_cull_distance
+ERROR: 2 compilation errors.  No code generated.
+
+
+Shader version: 440
+ERROR: node is still EOpNull!
+0:3  Function Definition: main( ( global void)
+0:3    Function Parameters: 
+0:5    Sequence
+0:5      move second child to first child ( temp float)
+0:5        direct index ( temp float ClipDistance)
+0:5          gl_ClipDistance: direct index for structure ( out unsized 1-element array of float ClipDistance)
+0:5            'anon@0' ( out block{ gl_Position 4-component vector of float Position gl_Position,  gl_PointSize float PointSize gl_PointSize,  out unsized 1-element array of float ClipDistance gl_ClipDistance})
+0:5            Constant:
+0:5              2 (const uint)
+0:5          Constant:
+0:5            0 (const int)
+0:5        Constant:
+0:5          1.000000
+0:6      move second child to first child ( temp float)
+0:6        direct index ( temp float CullDistance)
+0:6          gl_CullDistance: direct index for structure ( out unsized 1-element array of float CullDistance)
+0:6            'anon@0' ( out block{ gl_Position 4-component vector of float Position gl_Position,  gl_PointSize float PointSize gl_PointSize,  out unsized 1-element array of float ClipDistance gl_ClipDistance})
+0:6            Constant:
+0:6              3 (const uint)
+0:6          Constant:
+0:6            0 (const int)
+0:6        Constant:
+0:6          2.000000
+0:7      move second child to first child ( temp 4-component vector of float)
+0:7        gl_Position: direct index for structure ( gl_Position 4-component vector of float Position)
+0:7          'anon@0' ( out block{ gl_Position 4-component vector of float Position gl_Position,  gl_PointSize float PointSize gl_PointSize,  out unsized 1-element array of float ClipDistance gl_ClipDistance})
+0:7          Constant:
+0:7            0 (const uint)
+0:7        Constant:
+0:7          8.000000
+0:7          8.000000
+0:7          8.000000
+0:7          8.000000
+0:?   Linker Objects
+0:?     'anon@0' ( out block{ gl_Position 4-component vector of float Position gl_Position,  gl_PointSize float PointSize gl_PointSize,  out unsized 1-element array of float ClipDistance gl_ClipDistance})
+0:?     'gl_VertexID' ( gl_VertexId int VertexId)
+0:?     'gl_InstanceID' ( gl_InstanceId int InstanceId)
+
+
+Linked vertex stage:
+
+
+Shader version: 440
+ERROR: node is still EOpNull!
+0:3  Function Definition: main( ( global void)
+0:3    Function Parameters: 
+0:5    Sequence
+0:5      move second child to first child ( temp float)
+0:5        direct index ( temp float ClipDistance)
+0:5          gl_ClipDistance: direct index for structure ( out 1-element array of float ClipDistance)
+0:5            'anon@0' ( out block{ gl_Position 4-component vector of float Position gl_Position,  gl_PointSize float PointSize gl_PointSize,  out 1-element array of float ClipDistance gl_ClipDistance})
+0:5            Constant:
+0:5              2 (const uint)
+0:5          Constant:
+0:5            0 (const int)
+0:5        Constant:
+0:5          1.000000
+0:6      move second child to first child ( temp float)
+0:6        direct index ( temp float CullDistance)
+0:6          gl_CullDistance: direct index for structure ( out 1-element array of float CullDistance)
+0:6            'anon@0' ( out block{ gl_Position 4-component vector of float Position gl_Position,  gl_PointSize float PointSize gl_PointSize,  out 1-element array of float ClipDistance gl_ClipDistance})
+0:6            Constant:
+0:6              3 (const uint)
+0:6          Constant:
+0:6            0 (const int)
+0:6        Constant:
+0:6          2.000000
+0:7      move second child to first child ( temp 4-component vector of float)
+0:7        gl_Position: direct index for structure ( gl_Position 4-component vector of float Position)
+0:7          'anon@0' ( out block{ gl_Position 4-component vector of float Position gl_Position,  gl_PointSize float PointSize gl_PointSize,  out 1-element array of float ClipDistance gl_ClipDistance})
+0:7          Constant:
+0:7            0 (const uint)
+0:7        Constant:
+0:7          8.000000
+0:7          8.000000
+0:7          8.000000
+0:7          8.000000
+0:?   Linker Objects
+0:?     'anon@0' ( out block{ gl_Position 4-component vector of float Position gl_Position,  gl_PointSize float PointSize gl_PointSize,  out 1-element array of float ClipDistance gl_ClipDistance})
+0:?     'gl_VertexID' ( gl_VertexId int VertexId)
+0:?     'gl_InstanceID' ( gl_InstanceId int InstanceId)
+

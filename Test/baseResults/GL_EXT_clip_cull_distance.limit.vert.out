@@ -1,0 +1,52 @@
+GL_EXT_clip_cull_distance.limit.vert
+ERROR: 0:6: 'gl_ClipDistance array size' : must be less than or equal to gl_MaxClipDistances (8)
+ERROR: 0:7: 'gl_CullDistance array size' : must be less than or equal to gl_MaxCullDistances (8)
+ERROR: 2 compilation errors.  No code generated.
+
+
+Shader version: 320
+Requested GL_EXT_clip_cull_distance
+ERROR: node is still EOpNull!
+0:10  Function Definition: main( ( global void)
+0:10    Function Parameters: 
+0:12    Sequence
+0:12      move second child to first child ( temp highp 4-component vector of float)
+0:12        gl_Position: direct index for structure ( gl_Position highp 4-component vector of float Position)
+0:12          'anon@0' ( out block{ gl_Position highp 4-component vector of float Position gl_Position,  out 9-element array of highp float ClipDistance gl_ClipDistance,  out 9-element array of highp float CullDistance gl_CullDistance})
+0:12          Constant:
+0:12            0 (const uint)
+0:12        Constant:
+0:12          1.000000
+0:12          1.000000
+0:12          1.000000
+0:12          1.000000
+0:?   Linker Objects
+0:?     'anon@0' ( out block{ gl_Position highp 4-component vector of float Position gl_Position,  out 9-element array of highp float ClipDistance gl_ClipDistance,  out 9-element array of highp float CullDistance gl_CullDistance})
+0:?     'gl_VertexID' ( gl_VertexId highp int VertexId)
+0:?     'gl_InstanceID' ( gl_InstanceId highp int InstanceId)
+
+
+Linked vertex stage:
+
+
+Shader version: 320
+Requested GL_EXT_clip_cull_distance
+ERROR: node is still EOpNull!
+0:10  Function Definition: main( ( global void)
+0:10    Function Parameters: 
+0:12    Sequence
+0:12      move second child to first child ( temp highp 4-component vector of float)
+0:12        gl_Position: direct index for structure ( gl_Position highp 4-component vector of float Position)
+0:12          'anon@0' ( out block{ gl_Position highp 4-component vector of float Position gl_Position,  out 9-element array of highp float ClipDistance gl_ClipDistance,  out 9-element array of highp float CullDistance gl_CullDistance})
+0:12          Constant:
+0:12            0 (const uint)
+0:12        Constant:
+0:12          1.000000
+0:12          1.000000
+0:12          1.000000
+0:12          1.000000
+0:?   Linker Objects
+0:?     'anon@0' ( out block{ gl_Position highp 4-component vector of float Position gl_Position,  out 9-element array of highp float ClipDistance gl_ClipDistance,  out 9-element array of highp float CullDistance gl_CullDistance})
+0:?     'gl_VertexID' ( gl_VertexId highp int VertexId)
+0:?     'gl_InstanceID' ( gl_InstanceId highp int InstanceId)
+
