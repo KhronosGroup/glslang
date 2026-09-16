@@ -973,6 +973,9 @@ bool TParseVersions::checkExtensionsRequested(const TSourceLoc& loc, int numExte
             infoSink.info.message(EPrefixWarning,
                                   ("extension " + TString(extensions[i]) + " is being used for " + featureDesc).c_str(),
                                   loc, messages & EShMsgAbsolutePath, messages & EShMsgDisplayErrorColumn);
+            // "#extension all : warn" sets the behavior without naming the extension, so the
+            // back end only learns the feature is in use here.
+            intermediate.addRequestedExtension(extensions[i]);
             warned = true;
         }
     }
