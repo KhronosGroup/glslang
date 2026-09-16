@@ -1,0 +1,57 @@
+GL_ARB_cull_distance.frag
+Shader version: 440
+Requested GL_ARB_cull_distance
+0:? Sequence
+0:6  Function Definition: main( ( global void)
+0:6    Function Parameters: 
+0:8    Sequence
+0:8      move second child to first child ( temp 4-component vector of float)
+0:8        'color' ( out 4-component vector of float)
+0:8        Construct vec4 ( temp 4-component vector of float)
+0:8          direct index ( smooth temp float ClipDistance)
+0:8            'gl_ClipDistance' ( smooth in unsized 1-element array of float ClipDistance)
+0:8            Constant:
+0:8              0 (const int)
+0:8          direct index ( smooth temp float CullDistance)
+0:8            'gl_CullDistance' ( smooth in unsized 1-element array of float CullDistance)
+0:8            Constant:
+0:8              0 (const int)
+0:8          Constant:
+0:8            0.000000
+0:8          Constant:
+0:8            1.000000
+0:?   Linker Objects
+0:?     'color' ( out 4-component vector of float)
+0:?     'gl_ClipDistance' ( smooth in unsized 1-element array of float ClipDistance)
+0:?     'gl_CullDistance' ( smooth in unsized 1-element array of float CullDistance)
+
+
+Linked fragment stage:
+
+
+Shader version: 440
+Requested GL_ARB_cull_distance
+0:? Sequence
+0:6  Function Definition: main( ( global void)
+0:6    Function Parameters: 
+0:8    Sequence
+0:8      move second child to first child ( temp 4-component vector of float)
+0:8        'color' ( out 4-component vector of float)
+0:8        Construct vec4 ( temp 4-component vector of float)
+0:8          direct index ( smooth temp float ClipDistance)
+0:8            'gl_ClipDistance' ( smooth in 1-element array of float ClipDistance)
+0:8            Constant:
+0:8              0 (const int)
+0:8          direct index ( smooth temp float CullDistance)
+0:8            'gl_CullDistance' ( smooth in 1-element array of float CullDistance)
+0:8            Constant:
+0:8              0 (const int)
+0:8          Constant:
+0:8            0.000000
+0:8          Constant:
+0:8            1.000000
+0:?   Linker Objects
+0:?     'color' ( out 4-component vector of float)
+0:?     'gl_ClipDistance' ( smooth in 1-element array of float ClipDistance)
+0:?     'gl_CullDistance' ( smooth in 1-element array of float CullDistance)
+

@@ -217,7 +217,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_ARB_sparse_texture2]              = EBhDisable;
     extensionBehavior[E_GL_ARB_sparse_texture_clamp]         = EBhDisable;
     extensionBehavior[E_GL_ARB_shader_stencil_export]        = EBhDisable;
-//    extensionBehavior[E_GL_ARB_cull_distance]                = EBhDisable;    // present for 4.5, but need extension control over block members
+    extensionBehavior[E_GL_ARB_cull_distance]                = EBhDisable;
     extensionBehavior[E_GL_ARB_post_depth_coverage]          = EBhDisable;
     extensionBehavior[E_GL_ARB_shader_viewport_layer_array]  = EBhDisable;
     extensionBehavior[E_GL_ARB_fragment_shader_interlock]    = EBhDisable;
@@ -353,6 +353,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_OES_shader_image_atomic]                  = EBhDisable;
     extensionBehavior[E_GL_OES_shader_multisample_interpolation]     = EBhDisable;
     extensionBehavior[E_GL_OES_texture_storage_multisample_2d_array] = EBhDisable;
+    extensionBehavior[E_GL_EXT_clip_cull_distance]                   = EBhDisable;
     extensionBehavior[E_GL_EXT_geometry_shader]                      = EBhDisable;
     extensionBehavior[E_GL_EXT_geometry_point_size]                  = EBhDisable;
     extensionBehavior[E_GL_EXT_gpu_shader5]                          = EBhDisable;
@@ -512,6 +513,7 @@ void TParseVersions::getPreamble(std::string& preamble)
 
             if (version >= 300) {
                 preamble += "#define GL_NV_shader_noperspective_interpolation 1\n";
+                preamble += "#define GL_EXT_clip_cull_distance 1\n";
             }
             if (version >= 310) {
                 preamble += "#define GL_EXT_null_initializer 1\n";
@@ -550,7 +552,7 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_ARB_sample_shading 1\n"
             "#define GL_ARB_shader_image_size 1\n"
             "#define GL_ARB_shading_language_packing 1\n"
-//            "#define GL_ARB_cull_distance 1\n"    // present for 4.5, but need extension control over block members
+            "#define GL_ARB_cull_distance 1\n"
             "#define GL_ARB_post_depth_coverage 1\n"
             "#define GL_ARB_fragment_shader_interlock 1\n"
             "#define GL_ARB_uniform_buffer_object 1\n"

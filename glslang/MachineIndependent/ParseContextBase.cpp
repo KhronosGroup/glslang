@@ -280,6 +280,42 @@ void TParseContextBase::trackLinkage(TSymbol& symbol)
         linkageSymbols.push_back(&symbol);
 }
 
+// These add a member to a block. Other member extensions, like GL_EXT_geometry_point_size,
+// only allow writing a member that is in the block either way, so they must be left alone.
+static bool extensionAddsMember(const char* extension)
+{
+    return strcmp(extension, E_GL_EXT_clip_cull_distance) == 0 ||
+           strcmp(extension, E_GL_ARB_cull_distance) == 0;
+}
+
+// Hide block members added by an extension this compile did not turn on. Downstream reads
+// the type, not the symbol table's per-member extension lists, so the type has to lose them.
+void TParseContextBase::hideUnavailableMembers(TSymbol& symbol)
+{
+    TVariable* block = symbol.getAsVariable();
+    if (block == nullptr) {
+        TAnonMember* anon = symbol.getAsAnonMember();
+        if (anon == nullptr)
+            return;
+        block = &anon->getAnonContainer();
+    }
+    if (block->isReadOnly() || ! block->hasMemberExtensions())
+        return;
+
+    TTypeList& members = *block->getWritableType().getWritableStruct();
+    for (int member = 0; member < (int)members.size(); ++member) {
+        const int numExtensions = block->getNumMemberExtensions(member);
+        if (numExtensions == 0)
+            continue;
+        const char* const* extensions = block->getMemberExtensions(member);
+        bool addsMember = true;
+        for (int e = 0; e < numExtensions; ++e)
+            addsMember = addsMember && extensionAddsMember(extensions[e]);
+        if (addsMember && ! extensionsTurnedOn(numExtensions, extensions))
+            members[member].type->hideMember();
+    }
+}
+
 // Ensure index is in bounds, correct if necessary.
 // Give an error if not.
 void TParseContextBase::checkIndex(const TSourceLoc& loc, const TType& type, int64_t& index)
@@ -775,8 +811,10 @@ void TParseContextBase::finish()
 
     // Transfer the linkage symbols to AST nodes, preserving order.
     TIntermAggregate* linkage = new TIntermAggregate;
-    for (auto i = linkageSymbols.begin(); i != linkageSymbols.end(); ++i)
+    for (auto i = linkageSymbols.begin(); i != linkageSymbols.end(); ++i) {
+        hideUnavailableMembers(**i);
         intermediate.addSymbolLinkageNode(linkage, **i);
+    }
     intermediate.addSymbolLinkageNodes(linkage, getLanguage(), symbolTable);
 }
 

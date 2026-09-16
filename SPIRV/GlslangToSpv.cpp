@@ -6477,6 +6477,17 @@ bool TGlslangToSpvTraverser::filterMember(const glslang::TType& member)
         if (member.getFieldName() == "gl_ViewportMaskPerViewNV" &&
             extensions.find("GL_NVX_multiview_per_view_attributes") == extensions.end())
             return true;
+        // The front end hides these where it owns a copy of the block. One it never had to
+        // copy up, like the sized tessellation gl_in, still has the shared type.
+        if (member.getFieldName() == "gl_ClipDistance" || member.getFieldName() == "gl_CullDistance") {
+            if (glslangIntermediate->getProfile() == EEsProfile &&
+                extensions.find("GL_EXT_clip_cull_distance") == extensions.end())
+                return true;
+            if (member.getFieldName() == "gl_CullDistance" &&
+                glslangIntermediate->getProfile() != EEsProfile && glslangIntermediate->getVersion() < 450 &&
+                extensions.find("GL_ARB_cull_distance") == extensions.end())
+                return true;
+        }
     }
 
     return false;

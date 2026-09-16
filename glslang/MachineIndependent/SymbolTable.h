@@ -105,6 +105,7 @@ public:
     virtual const TFunction* getAsFunction() const { return nullptr; }
     virtual TVariable* getAsVariable() { return nullptr; }
     virtual const TVariable* getAsVariable() const { return nullptr; }
+    virtual TAnonMember* getAsAnonMember() { return nullptr; }
     virtual const TAnonMember* getAsAnonMember() const { return nullptr; }
     virtual const TType& getType() const = 0;
     virtual TType& getWritableType() = 0;
@@ -404,7 +405,9 @@ public:
     virtual TAnonMember* clone() const override;
     virtual ~TAnonMember() { }
 
+    virtual TAnonMember* getAsAnonMember() override { return this; }
     virtual const TAnonMember* getAsAnonMember() const override { return this; }
+    virtual TVariable& getAnonContainer() { return anonContainer; }
     virtual const TVariable& getAnonContainer() const { return anonContainer; }
     virtual unsigned int getMemberNumber() const { return memberNumber; }
 

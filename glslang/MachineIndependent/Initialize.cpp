@@ -6403,6 +6403,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             if (version == 130 || version == 140)
                 stageBuiltins[EShLangVertex].append(
                     "out float gl_ClipDistance[];"
+                    "out float gl_CullDistance[];"  // GL_ARB_cull_distance
                     );
         } else {
             // version >= 150
@@ -6411,6 +6412,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                     "vec4 gl_Position;"     // needs qualifier fixed later
                     "float gl_PointSize;"   // needs qualifier fixed later
                     "float gl_ClipDistance[];"
+                    "float gl_CullDistance[];"  // GL_ARB_cull_distance, core in 450
                     );
             if (IncludeLegacy(version, profile, spvVersion))
                 stageBuiltins[EShLangVertex].append(
@@ -6421,10 +6423,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                     "vec4 gl_BackSecondaryColor;"
                     "vec4 gl_TexCoord[];"
                     "float gl_FogFragCoord;"
-                    );
-            if (version >= 450)
-                stageBuiltins[EShLangVertex].append(
-                    "float gl_CullDistance[];"
                     );
             stageBuiltins[EShLangVertex].append(
                 "};"
@@ -6506,12 +6504,16 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 stageBuiltins[EShLangVertex].append(
                     "highp vec4  gl_Position;"    // needs qualifier fixed later
                     "highp float gl_PointSize;"   // needs qualifier fixed later
+                    "out highp float gl_ClipDistance[];"  // GL_EXT_clip_cull_distance
+                    "out highp float gl_CullDistance[];"  // GL_EXT_clip_cull_distance
                     );
             else
                 stageBuiltins[EShLangVertex].append(
                     "out gl_PerVertex {"
                         "highp vec4  gl_Position;"    // needs qualifier fixed later
                         "highp float gl_PointSize;"   // needs qualifier fixed later
+                        "highp float gl_ClipDistance[];"  // GL_EXT_clip_cull_distance
+                        "highp float gl_CullDistance[];"  // GL_EXT_clip_cull_distance
                     "};"
                     );
         }
@@ -6549,6 +6551,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "vec4 gl_Position;"
                 "float gl_PointSize;"
                 "float gl_ClipDistance[];"
+                "float gl_CullDistance[];"  // GL_ARB_cull_distance, core in 450
                 );
         if (profile == ECompatibilityProfile)
             stageBuiltins[EShLangGeometry].append(
@@ -6562,7 +6565,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 );
         if (version >= 450)
             stageBuiltins[EShLangGeometry].append(
-                "float gl_CullDistance[];"
                 "vec4 gl_SecondaryPositionNV;"   // GL_NV_stereo_view_rendering
                 "vec4 gl_PositionPerViewNV[];"   // GL_NVX_multiview_per_view_attributes
                 );
@@ -6574,6 +6576,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "vec4 gl_Position;"
                 "float gl_PointSize;"
                 "float gl_ClipDistance[];"
+                "float gl_CullDistance[];"  // GL_ARB_cull_distance, core in 450
                 "\n");
         if (profile == ECompatibilityProfile && version >= 400)
             stageBuiltins[EShLangGeometry].append(
@@ -6584,10 +6587,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "vec4 gl_BackSecondaryColor;"
                 "vec4 gl_TexCoord[];"
                 "float gl_FogFragCoord;"
-                );
-        if (version >= 450)
-            stageBuiltins[EShLangGeometry].append(
-                "float gl_CullDistance[];"
                 );
         stageBuiltins[EShLangGeometry].append(
             "};"
@@ -6629,6 +6628,8 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "in gl_PerVertex {"
                 "highp vec4 gl_Position;"
                 "highp float gl_PointSize;"
+                "highp float gl_ClipDistance[];"  // GL_EXT_clip_cull_distance
+                "highp float gl_CullDistance[];"  // GL_EXT_clip_cull_distance
             "} gl_in[];"
             "\n"
             "in highp int gl_PrimitiveIDIn;"
@@ -6637,6 +6638,8 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "out gl_PerVertex {"
                 "highp vec4 gl_Position;"
                 "highp float gl_PointSize;"
+                "highp float gl_ClipDistance[];"  // GL_EXT_clip_cull_distance
+                "highp float gl_CullDistance[];"  // GL_EXT_clip_cull_distance
             "};"
             "\n"
             "out highp int gl_PrimitiveID;"
@@ -6678,6 +6681,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "vec4 gl_Position;"
                 "float gl_PointSize;"
                 "float gl_ClipDistance[];"
+                "float gl_CullDistance[];"  // GL_ARB_cull_distance, core in 450
                 );
         if (profile == ECompatibilityProfile)
             stageBuiltins[EShLangTessControl].append(
@@ -6689,10 +6693,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "vec4 gl_TexCoord[];"
                 "float gl_FogFragCoord;"
                 );
-        if (version >= 450)
-            stageBuiltins[EShLangTessControl].append(
-                "float gl_CullDistance[];"
-            );
         if (version >= 430)
             stageBuiltins[EShLangTessControl].append(
                 "int  gl_ViewportMask[];"             // GL_NV_viewport_array2
@@ -6729,6 +6729,11 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "out gl_PerVertex {"
                 "highp vec4 gl_Position;"
                 "highp float gl_PointSize;"
+                );
+        if (profile == EEsProfile)
+            stageBuiltins[EShLangTessControl].append(
+                "highp float gl_ClipDistance[];"  // GL_EXT_clip_cull_distance
+                "highp float gl_CullDistance[];"  // GL_EXT_clip_cull_distance
                 );
         stageBuiltins[EShLangTessControl].append(
             "} gl_out[];"
@@ -6776,6 +6781,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "vec4 gl_Position;"
                 "float gl_PointSize;"
                 "float gl_ClipDistance[];"
+                "float gl_CullDistance[];"  // GL_ARB_cull_distance, core in 450
             );
         if (version >= 400 && profile == ECompatibilityProfile)
             stageBuiltins[EShLangTessEvaluation].append(
@@ -6786,10 +6792,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "vec4 gl_BackSecondaryColor;"
                 "vec4 gl_TexCoord[];"
                 "float gl_FogFragCoord;"
-                );
-        if (version >= 450)
-            stageBuiltins[EShLangTessEvaluation].append(
-                "float gl_CullDistance[];"
                 );
         stageBuiltins[EShLangTessEvaluation].append(
             "};"
@@ -6829,6 +6831,8 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "out gl_PerVertex {"
                 "highp vec4 gl_Position;"
                 "highp float gl_PointSize;"
+                "highp float gl_ClipDistance[];"  // GL_EXT_clip_cull_distance
+                "highp float gl_CullDistance[];"  // GL_EXT_clip_cull_distance
             );
         stageBuiltins[EShLangTessEvaluation].append(
             "};"
@@ -6879,6 +6883,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
         } else {
             stageBuiltins[EShLangFragment].append(
                 "in float gl_ClipDistance[];"
+                "in float gl_CullDistance[];"  // GL_ARB_cull_distance, core in 450
                 );
 
             if (IncludeLegacy(version, profile, spvVersion)) {
@@ -6933,7 +6938,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
 
         if (version >= 450)
             stageBuiltins[EShLangFragment].append(
-                "in float gl_CullDistance[];"
                 "bool gl_HelperInvocation;"     // needs qualifier fixed later
                 );
 
@@ -6990,6 +6994,8 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "        bool  gl_FrontFacing;"  // needs qualifier fixed later
                 "mediump vec2  gl_PointCoord;"   // needs qualifier fixed later
                 "highp   float gl_FragDepth;"    // needs qualifier fixed later
+                "in highp float gl_ClipDistance[];"  // GL_EXT_clip_cull_distance
+                "in highp float gl_CullDistance[];"  // GL_EXT_clip_cull_distance
                 );
         }
         if (version >= 310) {
@@ -8656,6 +8662,8 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
                     "in gl_PerVertex {"
                         "highp vec4 gl_Position;"
                         "highp float gl_PointSize;"
+                        "highp float gl_ClipDistance[];"      // GL_EXT_clip_cull_distance
+                        "highp float gl_CullDistance[];"      // GL_EXT_clip_cull_distance
                         "highp vec4 gl_SecondaryPositionNV;"  // GL_NV_stereo_view_rendering
                         "highp vec4 gl_PositionPerViewNV[];"  // GL_NVX_multiview_per_view_attributes
                     "} gl_in[gl_MaxPatchVertices];"
@@ -8691,6 +8699,16 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
                     "mediump vec4 gl_SecondaryFragDataEXT[gl_MaxDualSourceDrawBuffersEXT];"
                     "\n");
             }
+        }
+
+        if (version >= 300) {
+            // GL_EXT_clip_cull_distance
+            snprintf(builtInConstant, maxSize, "const mediump int gl_MaxClipDistances = %d;", resources.maxClipDistances);
+            s.append(builtInConstant);
+            snprintf(builtInConstant, maxSize, "const mediump int gl_MaxCullDistances = %d;", resources.maxCullDistances);
+            s.append(builtInConstant);
+            snprintf(builtInConstant, maxSize, "const mediump int gl_MaxCombinedClipAndCullDistances = %d;", resources.maxCombinedClipAndCullDistances);
+            s.append(builtInConstant);
         }
     } else {
         // non-ES profile
@@ -8882,9 +8900,11 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
                         "vec4 gl_TexCoord[];"
                         "float gl_FogFragCoord;"
                         );
+                s.append(
+                    "float gl_CullDistance[];"  // GL_ARB_cull_distance, core in 450
+                    );
                 if (profile != EEsProfile && version >= 450)
                     s.append(
-                        "float gl_CullDistance[];"
                         "vec4 gl_SecondaryPositionNV;"  // GL_NV_stereo_view_rendering
                         "vec4 gl_PositionPerViewNV[];"  // GL_NVX_multiview_per_view_attributes
                        );
@@ -9011,8 +9031,8 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
         s.append("\n");
     }
 
-    // GL_ARB_cull_distance
-    if (profile != EEsProfile && version >= 450) {
+    // GL_ARB_cull_distance, core in 450
+    if (profile != EEsProfile && version >= 130) {
         snprintf(builtInConstant, maxSize, "const int gl_MaxCullDistances = %d;",                resources.maxCullDistances);
         s.append(builtInConstant);
         snprintf(builtInConstant, maxSize, "const int gl_MaxCombinedClipAndCullDistances = %d;", resources.maxCombinedClipAndCullDistances);
@@ -9383,6 +9403,22 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
 
         BuiltInVariable("gl_ClipDistance",    EbvClipDistance,   symbolTable);
         BuiltInVariable("gl_CullDistance",    EbvCullDistance,   symbolTable);
+
+        // GL_EXT_clip_cull_distance (ES) and GL_ARB_cull_distance (before 450); the
+        // tessellation gl_in members are tied in the resource-dependent path below.
+        if (profile == EEsProfile) {
+            symbolTable.setVariableExtensions("gl_ClipDistance", 1, &E_GL_EXT_clip_cull_distance);
+            symbolTable.setVariableExtensions("gl_CullDistance", 1, &E_GL_EXT_clip_cull_distance);
+            symbolTable.setVariableExtensions("gl_in",  "gl_ClipDistance", 1, &E_GL_EXT_clip_cull_distance);
+            symbolTable.setVariableExtensions("gl_in",  "gl_CullDistance", 1, &E_GL_EXT_clip_cull_distance);
+            symbolTable.setVariableExtensions("gl_out", "gl_ClipDistance", 1, &E_GL_EXT_clip_cull_distance);
+            symbolTable.setVariableExtensions("gl_out", "gl_CullDistance", 1, &E_GL_EXT_clip_cull_distance);
+        } else if (version < 450) {
+            symbolTable.setVariableExtensions("gl_CullDistance", 1, &E_GL_ARB_cull_distance);
+            symbolTable.setVariableExtensions("gl_in",  "gl_CullDistance", 1, &E_GL_ARB_cull_distance);
+            symbolTable.setVariableExtensions("gl_out", "gl_CullDistance", 1, &E_GL_ARB_cull_distance);
+        }
+
         BuiltInVariable("gl_PrimitiveIDIn",   EbvPrimitiveId,    symbolTable);
         BuiltInVariable("gl_PrimitiveID",     EbvPrimitiveId,    symbolTable);
         BuiltInVariable("gl_InvocationID",    EbvInvocationId,   symbolTable);
@@ -9582,6 +9618,11 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
 
         BuiltInVariable("gl_ClipDistance",    EbvClipDistance,   symbolTable);
         BuiltInVariable("gl_CullDistance",    EbvCullDistance,   symbolTable);
+        if (profile == EEsProfile) {
+            symbolTable.setVariableExtensions("gl_ClipDistance", 1, &E_GL_EXT_clip_cull_distance);
+            symbolTable.setVariableExtensions("gl_CullDistance", 1, &E_GL_EXT_clip_cull_distance);
+        } else if (version < 450)
+            symbolTable.setVariableExtensions("gl_CullDistance", 1, &E_GL_ARB_cull_distance);
         BuiltInVariable("gl_PrimitiveID",     EbvPrimitiveId,    symbolTable);
 
         if (profile != EEsProfile && version >= 140) {
@@ -12069,6 +12110,15 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
     }
     if (profile != EEsProfile && version >= 150 && version < 410)
         symbolTable.setVariableExtensions("gl_MaxViewports", 1, &E_GL_ARB_viewport_array);
+    if (profile == EEsProfile && version >= 300) {
+        symbolTable.setVariableExtensions("gl_MaxClipDistances", 1, &E_GL_EXT_clip_cull_distance);
+        symbolTable.setVariableExtensions("gl_MaxCullDistances", 1, &E_GL_EXT_clip_cull_distance);
+        symbolTable.setVariableExtensions("gl_MaxCombinedClipAndCullDistances", 1, &E_GL_EXT_clip_cull_distance);
+    }
+    if (profile != EEsProfile && version >= 130 && version < 450) {
+        symbolTable.setVariableExtensions("gl_MaxCullDistances", 1, &E_GL_ARB_cull_distance);
+        symbolTable.setVariableExtensions("gl_MaxCombinedClipAndCullDistances", 1, &E_GL_ARB_cull_distance);
+    }
 
     switch(language) {
     case EShLangFragment:
@@ -12123,7 +12173,10 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         // extension requirements
         if (profile == EEsProfile) {
             symbolTable.setVariableExtensions("gl_in", "gl_PointSize", Num_AEP_tessellation_point_size, AEP_tessellation_point_size);
-        }
+            symbolTable.setVariableExtensions("gl_in", "gl_ClipDistance", 1, &E_GL_EXT_clip_cull_distance);
+            symbolTable.setVariableExtensions("gl_in", "gl_CullDistance", 1, &E_GL_EXT_clip_cull_distance);
+        } else if (version < 450)
+            symbolTable.setVariableExtensions("gl_in", "gl_CullDistance", 1, &E_GL_ARB_cull_distance);
 
         break;
 

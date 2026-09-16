@@ -1,0 +1,161 @@
+GL_EXT_clip_cull_distance.geom
+Shader version: 320
+Requested GL_EXT_clip_cull_distance
+invocations = -1
+max_vertices = 3
+input primitive = triangles
+output primitive = triangle_strip
+0:? Sequence
+0:21  Function Definition: main( ( global void)
+0:21    Function Parameters: 
+0:23    Sequence
+0:23      Sequence
+0:23        Sequence
+0:23          move second child to first child ( temp highp int)
+0:23            'i' ( temp highp int)
+0:23            Constant:
+0:23              0 (const int)
+0:23        Loop with condition tested first
+0:23          Loop Condition
+0:23          Compare Less Than ( temp bool)
+0:23            'i' ( temp highp int)
+0:23            Constant:
+0:23              3 (const int)
+0:23          Loop Body
+0:24          Sequence
+0:24            move second child to first child ( temp highp 4-component vector of float)
+0:24              gl_Position: direct index for structure (layout( stream=0) gl_Position highp 4-component vector of float Position)
+0:24                'anon@0' (layout( stream=0) out block{layout( stream=0) gl_Position highp 4-component vector of float Position gl_Position, layout( stream=0) out 4-element array of highp float ClipDistance gl_ClipDistance, layout( stream=0) out 2-element array of highp float CullDistance gl_CullDistance})
+0:24                Constant:
+0:24                  0 (const uint)
+0:24              gl_Position: direct index for structure ( in highp 4-component vector of float Position)
+0:24                indirect index ( temp block{ in highp 4-component vector of float Position gl_Position,  in 4-element array of highp float ClipDistance gl_ClipDistance,  in 2-element array of highp float CullDistance gl_CullDistance})
+0:24                  'gl_in' ( in 3-element array of block{ in highp 4-component vector of float Position gl_Position,  in 4-element array of highp float ClipDistance gl_ClipDistance,  in 2-element array of highp float CullDistance gl_CullDistance})
+0:24                  'i' ( temp highp int)
+0:24                Constant:
+0:24                  0 (const int)
+0:25            move second child to first child ( temp highp float)
+0:25              direct index (layout( stream=0) temp highp float ClipDistance)
+0:25                gl_ClipDistance: direct index for structure (layout( stream=0) out 4-element array of highp float ClipDistance)
+0:25                  'anon@0' (layout( stream=0) out block{layout( stream=0) gl_Position highp 4-component vector of float Position gl_Position, layout( stream=0) out 4-element array of highp float ClipDistance gl_ClipDistance, layout( stream=0) out 2-element array of highp float CullDistance gl_CullDistance})
+0:25                  Constant:
+0:25                    2 (const uint)
+0:25                Constant:
+0:25                  0 (const int)
+0:25              direct index ( temp highp float ClipDistance)
+0:25                gl_ClipDistance: direct index for structure ( in 4-element array of highp float ClipDistance)
+0:25                  indirect index ( temp block{ in highp 4-component vector of float Position gl_Position,  in 4-element array of highp float ClipDistance gl_ClipDistance,  in 2-element array of highp float CullDistance gl_CullDistance})
+0:25                    'gl_in' ( in 3-element array of block{ in highp 4-component vector of float Position gl_Position,  in 4-element array of highp float ClipDistance gl_ClipDistance,  in 2-element array of highp float CullDistance gl_CullDistance})
+0:25                    'i' ( temp highp int)
+0:25                  Constant:
+0:25                    1 (const int)
+0:25                Constant:
+0:25                  0 (const int)
+0:26            move second child to first child ( temp highp float)
+0:26              direct index (layout( stream=0) temp highp float CullDistance)
+0:26                gl_CullDistance: direct index for structure (layout( stream=0) out 2-element array of highp float CullDistance)
+0:26                  'anon@0' (layout( stream=0) out block{layout( stream=0) gl_Position highp 4-component vector of float Position gl_Position, layout( stream=0) out 4-element array of highp float ClipDistance gl_ClipDistance, layout( stream=0) out 2-element array of highp float CullDistance gl_CullDistance})
+0:26                  Constant:
+0:26                    3 (const uint)
+0:26                Constant:
+0:26                  1 (const int)
+0:26              direct index ( temp highp float CullDistance)
+0:26                gl_CullDistance: direct index for structure ( in 2-element array of highp float CullDistance)
+0:26                  indirect index ( temp block{ in highp 4-component vector of float Position gl_Position,  in 4-element array of highp float ClipDistance gl_ClipDistance,  in 2-element array of highp float CullDistance gl_CullDistance})
+0:26                    'gl_in' ( in 3-element array of block{ in highp 4-component vector of float Position gl_Position,  in 4-element array of highp float ClipDistance gl_ClipDistance,  in 2-element array of highp float CullDistance gl_CullDistance})
+0:26                    'i' ( temp highp int)
+0:26                  Constant:
+0:26                    2 (const int)
+0:26                Constant:
+0:26                  1 (const int)
+0:27            EmitVertex ( global void)
+0:23          Loop Terminal Expression
+0:23          Pre-Increment ( temp highp int)
+0:23            'i' ( temp highp int)
+0:29      EndPrimitive ( global void)
+0:?   Linker Objects
+0:?     'gl_in' ( in 3-element array of block{ in highp 4-component vector of float Position gl_Position,  in 4-element array of highp float ClipDistance gl_ClipDistance,  in 2-element array of highp float CullDistance gl_CullDistance})
+0:?     'anon@0' (layout( stream=0) out block{layout( stream=0) gl_Position highp 4-component vector of float Position gl_Position, layout( stream=0) out 4-element array of highp float ClipDistance gl_ClipDistance, layout( stream=0) out 2-element array of highp float CullDistance gl_CullDistance})
+
+
+Linked geometry stage:
+
+
+Shader version: 320
+Requested GL_EXT_clip_cull_distance
+invocations = 1
+max_vertices = 3
+input primitive = triangles
+output primitive = triangle_strip
+0:? Sequence
+0:21  Function Definition: main( ( global void)
+0:21    Function Parameters: 
+0:23    Sequence
+0:23      Sequence
+0:23        Sequence
+0:23          move second child to first child ( temp highp int)
+0:23            'i' ( temp highp int)
+0:23            Constant:
+0:23              0 (const int)
+0:23        Loop with condition tested first
+0:23          Loop Condition
+0:23          Compare Less Than ( temp bool)
+0:23            'i' ( temp highp int)
+0:23            Constant:
+0:23              3 (const int)
+0:23          Loop Body
+0:24          Sequence
+0:24            move second child to first child ( temp highp 4-component vector of float)
+0:24              gl_Position: direct index for structure (layout( stream=0) gl_Position highp 4-component vector of float Position)
+0:24                'anon@0' (layout( stream=0) out block{layout( stream=0) gl_Position highp 4-component vector of float Position gl_Position, layout( stream=0) out 4-element array of highp float ClipDistance gl_ClipDistance, layout( stream=0) out 2-element array of highp float CullDistance gl_CullDistance})
+0:24                Constant:
+0:24                  0 (const uint)
+0:24              gl_Position: direct index for structure ( in highp 4-component vector of float Position)
+0:24                indirect index ( temp block{ in highp 4-component vector of float Position gl_Position,  in 4-element array of highp float ClipDistance gl_ClipDistance,  in 2-element array of highp float CullDistance gl_CullDistance})
+0:24                  'gl_in' ( in 3-element array of block{ in highp 4-component vector of float Position gl_Position,  in 4-element array of highp float ClipDistance gl_ClipDistance,  in 2-element array of highp float CullDistance gl_CullDistance})
+0:24                  'i' ( temp highp int)
+0:24                Constant:
+0:24                  0 (const int)
+0:25            move second child to first child ( temp highp float)
+0:25              direct index (layout( stream=0) temp highp float ClipDistance)
+0:25                gl_ClipDistance: direct index for structure (layout( stream=0) out 4-element array of highp float ClipDistance)
+0:25                  'anon@0' (layout( stream=0) out block{layout( stream=0) gl_Position highp 4-component vector of float Position gl_Position, layout( stream=0) out 4-element array of highp float ClipDistance gl_ClipDistance, layout( stream=0) out 2-element array of highp float CullDistance gl_CullDistance})
+0:25                  Constant:
+0:25                    2 (const uint)
+0:25                Constant:
+0:25                  0 (const int)
+0:25              direct index ( temp highp float ClipDistance)
+0:25                gl_ClipDistance: direct index for structure ( in 4-element array of highp float ClipDistance)
+0:25                  indirect index ( temp block{ in highp 4-component vector of float Position gl_Position,  in 4-element array of highp float ClipDistance gl_ClipDistance,  in 2-element array of highp float CullDistance gl_CullDistance})
+0:25                    'gl_in' ( in 3-element array of block{ in highp 4-component vector of float Position gl_Position,  in 4-element array of highp float ClipDistance gl_ClipDistance,  in 2-element array of highp float CullDistance gl_CullDistance})
+0:25                    'i' ( temp highp int)
+0:25                  Constant:
+0:25                    1 (const int)
+0:25                Constant:
+0:25                  0 (const int)
+0:26            move second child to first child ( temp highp float)
+0:26              direct index (layout( stream=0) temp highp float CullDistance)
+0:26                gl_CullDistance: direct index for structure (layout( stream=0) out 2-element array of highp float CullDistance)
+0:26                  'anon@0' (layout( stream=0) out block{layout( stream=0) gl_Position highp 4-component vector of float Position gl_Position, layout( stream=0) out 4-element array of highp float ClipDistance gl_ClipDistance, layout( stream=0) out 2-element array of highp float CullDistance gl_CullDistance})
+0:26                  Constant:
+0:26                    3 (const uint)
+0:26                Constant:
+0:26                  1 (const int)
+0:26              direct index ( temp highp float CullDistance)
+0:26                gl_CullDistance: direct index for structure ( in 2-element array of highp float CullDistance)
+0:26                  indirect index ( temp block{ in highp 4-component vector of float Position gl_Position,  in 4-element array of highp float ClipDistance gl_ClipDistance,  in 2-element array of highp float CullDistance gl_CullDistance})
+0:26                    'gl_in' ( in 3-element array of block{ in highp 4-component vector of float Position gl_Position,  in 4-element array of highp float ClipDistance gl_ClipDistance,  in 2-element array of highp float CullDistance gl_CullDistance})
+0:26                    'i' ( temp highp int)
+0:26                  Constant:
+0:26                    2 (const int)
+0:26                Constant:
+0:26                  1 (const int)
+0:27            EmitVertex ( global void)
+0:23          Loop Terminal Expression
+0:23          Pre-Increment ( temp highp int)
+0:23            'i' ( temp highp int)
+0:29      EndPrimitive ( global void)
+0:?   Linker Objects
+0:?     'gl_in' ( in 3-element array of block{ in highp 4-component vector of float Position gl_Position,  in 4-element array of highp float ClipDistance gl_ClipDistance,  in 2-element array of highp float CullDistance gl_CullDistance})
+0:?     'anon@0' (layout( stream=0) out block{layout( stream=0) gl_Position highp 4-component vector of float Position gl_Position, layout( stream=0) out 4-element array of highp float ClipDistance gl_ClipDistance, layout( stream=0) out 2-element array of highp float CullDistance gl_CullDistance})
+

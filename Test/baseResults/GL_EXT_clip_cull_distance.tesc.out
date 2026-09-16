@@ -1,0 +1,141 @@
+GL_EXT_clip_cull_distance.tesc
+Shader version: 320
+Requested GL_EXT_clip_cull_distance
+vertices = 3
+0:? Sequence
+0:14  Function Definition: main( ( global void)
+0:14    Function Parameters: 
+0:16    Sequence
+0:16      move second child to first child ( temp highp 4-component vector of float)
+0:16        gl_Position: direct index for structure ( out highp 4-component vector of float Position)
+0:16          indirect index ( temp block{ out highp 4-component vector of float Position gl_Position,  out 4-element array of highp float ClipDistance gl_ClipDistance,  out 2-element array of highp float CullDistance gl_CullDistance})
+0:16            'gl_out' ( out 3-element array of block{ out highp 4-component vector of float Position gl_Position,  out 4-element array of highp float ClipDistance gl_ClipDistance,  out 2-element array of highp float CullDistance gl_CullDistance})
+0:16            'gl_InvocationID' ( in highp int InvocationID)
+0:16          Constant:
+0:16            0 (const int)
+0:16        gl_Position: direct index for structure ( in highp 4-component vector of float Position)
+0:16          indirect index ( temp block{ in highp 4-component vector of float Position gl_Position,  in highp float PointSize gl_PointSize,  in unsized 3-element array of highp float ClipDistance gl_ClipDistance,  in unsized 2-element array of highp float CullDistance gl_CullDistance,  in highp 4-component vector of float SecondaryPositionNV gl_SecondaryPositionNV,  in unsized 1-element array of highp 4-component vector of float PositionPerViewNV gl_PositionPerViewNV})
+0:16            'gl_in' ( in 32-element array of block{ in highp 4-component vector of float Position gl_Position,  in highp float PointSize gl_PointSize,  in unsized 3-element array of highp float ClipDistance gl_ClipDistance,  in unsized 2-element array of highp float CullDistance gl_CullDistance,  in highp 4-component vector of float SecondaryPositionNV gl_SecondaryPositionNV,  in unsized 1-element array of highp 4-component vector of float PositionPerViewNV gl_PositionPerViewNV})
+0:16            'gl_InvocationID' ( in highp int InvocationID)
+0:16          Constant:
+0:16            0 (const int)
+0:17      move second child to first child ( temp highp float)
+0:17        direct index ( temp highp float ClipDistance)
+0:17          gl_ClipDistance: direct index for structure ( out 4-element array of highp float ClipDistance)
+0:17            indirect index ( temp block{ out highp 4-component vector of float Position gl_Position,  out 4-element array of highp float ClipDistance gl_ClipDistance,  out 2-element array of highp float CullDistance gl_CullDistance})
+0:17              'gl_out' ( out 3-element array of block{ out highp 4-component vector of float Position gl_Position,  out 4-element array of highp float ClipDistance gl_ClipDistance,  out 2-element array of highp float CullDistance gl_CullDistance})
+0:17              'gl_InvocationID' ( in highp int InvocationID)
+0:17            Constant:
+0:17              1 (const int)
+0:17          Constant:
+0:17            1 (const int)
+0:17        direct index ( temp highp float ClipDistance)
+0:17          gl_ClipDistance: direct index for structure ( in unsized 3-element array of highp float ClipDistance)
+0:17            indirect index ( temp block{ in highp 4-component vector of float Position gl_Position,  in highp float PointSize gl_PointSize,  in unsized 3-element array of highp float ClipDistance gl_ClipDistance,  in unsized 2-element array of highp float CullDistance gl_CullDistance,  in highp 4-component vector of float SecondaryPositionNV gl_SecondaryPositionNV,  in unsized 1-element array of highp 4-component vector of float PositionPerViewNV gl_PositionPerViewNV})
+0:17              'gl_in' ( in 32-element array of block{ in highp 4-component vector of float Position gl_Position,  in highp float PointSize gl_PointSize,  in unsized 3-element array of highp float ClipDistance gl_ClipDistance,  in unsized 2-element array of highp float CullDistance gl_CullDistance,  in highp 4-component vector of float SecondaryPositionNV gl_SecondaryPositionNV,  in unsized 1-element array of highp 4-component vector of float PositionPerViewNV gl_PositionPerViewNV})
+0:17              'gl_InvocationID' ( in highp int InvocationID)
+0:17            Constant:
+0:17              2 (const int)
+0:17          Constant:
+0:17            2 (const int)
+0:18      move second child to first child ( temp highp float)
+0:18        direct index ( temp highp float CullDistance)
+0:18          gl_CullDistance: direct index for structure ( out 2-element array of highp float CullDistance)
+0:18            indirect index ( temp block{ out highp 4-component vector of float Position gl_Position,  out 4-element array of highp float ClipDistance gl_ClipDistance,  out 2-element array of highp float CullDistance gl_CullDistance})
+0:18              'gl_out' ( out 3-element array of block{ out highp 4-component vector of float Position gl_Position,  out 4-element array of highp float ClipDistance gl_ClipDistance,  out 2-element array of highp float CullDistance gl_CullDistance})
+0:18              'gl_InvocationID' ( in highp int InvocationID)
+0:18            Constant:
+0:18              2 (const int)
+0:18          Constant:
+0:18            0 (const int)
+0:18        direct index ( temp highp float CullDistance)
+0:18          gl_CullDistance: direct index for structure ( in unsized 2-element array of highp float CullDistance)
+0:18            indirect index ( temp block{ in highp 4-component vector of float Position gl_Position,  in highp float PointSize gl_PointSize,  in unsized 3-element array of highp float ClipDistance gl_ClipDistance,  in unsized 2-element array of highp float CullDistance gl_CullDistance,  in highp 4-component vector of float SecondaryPositionNV gl_SecondaryPositionNV,  in unsized 1-element array of highp 4-component vector of float PositionPerViewNV gl_PositionPerViewNV})
+0:18              'gl_in' ( in 32-element array of block{ in highp 4-component vector of float Position gl_Position,  in highp float PointSize gl_PointSize,  in unsized 3-element array of highp float ClipDistance gl_ClipDistance,  in unsized 2-element array of highp float CullDistance gl_CullDistance,  in highp 4-component vector of float SecondaryPositionNV gl_SecondaryPositionNV,  in unsized 1-element array of highp 4-component vector of float PositionPerViewNV gl_PositionPerViewNV})
+0:18              'gl_InvocationID' ( in highp int InvocationID)
+0:18            Constant:
+0:18              3 (const int)
+0:18          Constant:
+0:18            1 (const int)
+0:19      move second child to first child ( temp highp float)
+0:19        direct index ( patch temp highp float TessLevelOuter)
+0:19          'gl_TessLevelOuter' ( patch out 4-element array of highp float TessLevelOuter)
+0:19          Constant:
+0:19            0 (const int)
+0:19        Constant:
+0:19          1.000000
+0:?   Linker Objects
+0:?     'gl_out' ( out 3-element array of block{ out highp 4-component vector of float Position gl_Position,  out 4-element array of highp float ClipDistance gl_ClipDistance,  out 2-element array of highp float CullDistance gl_CullDistance})
+
+
+Linked tessellation control stage:
+
+
+Shader version: 320
+Requested GL_EXT_clip_cull_distance
+vertices = 3
+0:? Sequence
+0:14  Function Definition: main( ( global void)
+0:14    Function Parameters: 
+0:16    Sequence
+0:16      move second child to first child ( temp highp 4-component vector of float)
+0:16        gl_Position: direct index for structure ( out highp 4-component vector of float Position)
+0:16          indirect index ( temp block{ out highp 4-component vector of float Position gl_Position,  out 4-element array of highp float ClipDistance gl_ClipDistance,  out 2-element array of highp float CullDistance gl_CullDistance})
+0:16            'gl_out' ( out 3-element array of block{ out highp 4-component vector of float Position gl_Position,  out 4-element array of highp float ClipDistance gl_ClipDistance,  out 2-element array of highp float CullDistance gl_CullDistance})
+0:16            'gl_InvocationID' ( in highp int InvocationID)
+0:16          Constant:
+0:16            0 (const int)
+0:16        gl_Position: direct index for structure ( in highp 4-component vector of float Position)
+0:16          indirect index ( temp block{ in highp 4-component vector of float Position gl_Position,  in highp float PointSize gl_PointSize,  in 3-element array of highp float ClipDistance gl_ClipDistance,  in 2-element array of highp float CullDistance gl_CullDistance,  in highp 4-component vector of float SecondaryPositionNV gl_SecondaryPositionNV,  in 1-element array of highp 4-component vector of float PositionPerViewNV gl_PositionPerViewNV})
+0:16            'gl_in' ( in 32-element array of block{ in highp 4-component vector of float Position gl_Position,  in highp float PointSize gl_PointSize,  in 3-element array of highp float ClipDistance gl_ClipDistance,  in 2-element array of highp float CullDistance gl_CullDistance,  in highp 4-component vector of float SecondaryPositionNV gl_SecondaryPositionNV,  in 1-element array of highp 4-component vector of float PositionPerViewNV gl_PositionPerViewNV})
+0:16            'gl_InvocationID' ( in highp int InvocationID)
+0:16          Constant:
+0:16            0 (const int)
+0:17      move second child to first child ( temp highp float)
+0:17        direct index ( temp highp float ClipDistance)
+0:17          gl_ClipDistance: direct index for structure ( out 4-element array of highp float ClipDistance)
+0:17            indirect index ( temp block{ out highp 4-component vector of float Position gl_Position,  out 4-element array of highp float ClipDistance gl_ClipDistance,  out 2-element array of highp float CullDistance gl_CullDistance})
+0:17              'gl_out' ( out 3-element array of block{ out highp 4-component vector of float Position gl_Position,  out 4-element array of highp float ClipDistance gl_ClipDistance,  out 2-element array of highp float CullDistance gl_CullDistance})
+0:17              'gl_InvocationID' ( in highp int InvocationID)
+0:17            Constant:
+0:17              1 (const int)
+0:17          Constant:
+0:17            1 (const int)
+0:17        direct index ( temp highp float ClipDistance)
+0:17          gl_ClipDistance: direct index for structure ( in 3-element array of highp float ClipDistance)
+0:17            indirect index ( temp block{ in highp 4-component vector of float Position gl_Position,  in highp float PointSize gl_PointSize,  in 3-element array of highp float ClipDistance gl_ClipDistance,  in 2-element array of highp float CullDistance gl_CullDistance,  in highp 4-component vector of float SecondaryPositionNV gl_SecondaryPositionNV,  in 1-element array of highp 4-component vector of float PositionPerViewNV gl_PositionPerViewNV})
+0:17              'gl_in' ( in 32-element array of block{ in highp 4-component vector of float Position gl_Position,  in highp float PointSize gl_PointSize,  in 3-element array of highp float ClipDistance gl_ClipDistance,  in 2-element array of highp float CullDistance gl_CullDistance,  in highp 4-component vector of float SecondaryPositionNV gl_SecondaryPositionNV,  in 1-element array of highp 4-component vector of float PositionPerViewNV gl_PositionPerViewNV})
+0:17              'gl_InvocationID' ( in highp int InvocationID)
+0:17            Constant:
+0:17              2 (const int)
+0:17          Constant:
+0:17            2 (const int)
+0:18      move second child to first child ( temp highp float)
+0:18        direct index ( temp highp float CullDistance)
+0:18          gl_CullDistance: direct index for structure ( out 2-element array of highp float CullDistance)
+0:18            indirect index ( temp block{ out highp 4-component vector of float Position gl_Position,  out 4-element array of highp float ClipDistance gl_ClipDistance,  out 2-element array of highp float CullDistance gl_CullDistance})
+0:18              'gl_out' ( out 3-element array of block{ out highp 4-component vector of float Position gl_Position,  out 4-element array of highp float ClipDistance gl_ClipDistance,  out 2-element array of highp float CullDistance gl_CullDistance})
+0:18              'gl_InvocationID' ( in highp int InvocationID)
+0:18            Constant:
+0:18              2 (const int)
+0:18          Constant:
+0:18            0 (const int)
+0:18        direct index ( temp highp float CullDistance)
+0:18          gl_CullDistance: direct index for structure ( in 2-element array of highp float CullDistance)
+0:18            indirect index ( temp block{ in highp 4-component vector of float Position gl_Position,  in highp float PointSize gl_PointSize,  in 3-element array of highp float ClipDistance gl_ClipDistance,  in 2-element array of highp float CullDistance gl_CullDistance,  in highp 4-component vector of float SecondaryPositionNV gl_SecondaryPositionNV,  in 1-element array of highp 4-component vector of float PositionPerViewNV gl_PositionPerViewNV})
+0:18              'gl_in' ( in 32-element array of block{ in highp 4-component vector of float Position gl_Position,  in highp float PointSize gl_PointSize,  in 3-element array of highp float ClipDistance gl_ClipDistance,  in 2-element array of highp float CullDistance gl_CullDistance,  in highp 4-component vector of float SecondaryPositionNV gl_SecondaryPositionNV,  in 1-element array of highp 4-component vector of float PositionPerViewNV gl_PositionPerViewNV})
+0:18              'gl_InvocationID' ( in highp int InvocationID)
+0:18            Constant:
+0:18              3 (const int)
+0:18          Constant:
+0:18            1 (const int)
+0:19      move second child to first child ( temp highp float)
+0:19        direct index ( patch temp highp float TessLevelOuter)
+0:19          'gl_TessLevelOuter' ( patch out 4-element array of highp float TessLevelOuter)
+0:19          Constant:
+0:19            0 (const int)
+0:19        Constant:
+0:19          1.000000
+0:?   Linker Objects
+0:?     'gl_out' ( out 3-element array of block{ out highp 4-component vector of float Position gl_Position,  out 4-element array of highp float ClipDistance gl_ClipDistance,  out 2-element array of highp float CullDistance gl_CullDistance})
+

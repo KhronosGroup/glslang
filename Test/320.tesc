@@ -22,7 +22,7 @@ void main()
 
     vec4 p = gl_in[1].gl_Position;
     float ps = gl_in[1].gl_PointSize;        // ERROR, need point_size extension
-    float cd = gl_in[1].gl_ClipDistance[2];  // ERROR, not in ES
+    float cd = gl_in[1].gl_ClipDistance[2];  // ERROR, requires GL_EXT_clip_cull_distance
 
     int pvi = gl_PatchVerticesIn;
     int pid = gl_PrimitiveID;
@@ -30,7 +30,7 @@ void main()
 
     gl_out[gl_InvocationID].gl_Position = p;
     gl_out[gl_InvocationID].gl_PointSize = ps;        // ERROR, need point_size extension
-    gl_out[gl_InvocationID].gl_ClipDistance[1] = cd;  // ERROR, not in ES
+    gl_out[gl_InvocationID].gl_ClipDistance[1] = cd;  // ERROR, requires GL_EXT_clip_cull_distance
 
     gl_TessLevelOuter[3] = 3.2;
     gl_TessLevelInner[1] = 1.3;
