@@ -200,6 +200,12 @@ public:
         return memberExtensions == nullptr ? 0 : (int)(*memberExtensions)[member].size();
     }
     virtual const char** getMemberExtensions(int member) const { return (*memberExtensions)[member].data(); }
+    // Keep the per-member lists aligned with the members when one is erased.
+    virtual void eraseMemberExtensions(int member)
+    {
+        if (memberExtensions != nullptr)
+            memberExtensions->erase(memberExtensions->begin() + member);
+    }
 
     virtual void dump(TInfoSink& infoSink, bool complete = false) const;
 

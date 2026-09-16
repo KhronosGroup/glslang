@@ -311,6 +311,7 @@ INSTANTIATE_TEST_SUITE_P(
         "GL_ARB_texture_multisample.vert",
         "BestMatchFunction.vert",
         "EndStreamPrimitive.geom",
+        "redeclareBlockMemberExtension.geom",
         "floatBitsToInt.vert",
         "coord_conventions.frag",
         "gl_FragCoord.frag",
