@@ -6804,10 +6804,13 @@ void TParseContext::redeclareBuiltinBlock(const TSourceLoc& loc, TTypeList& newT
         } else {
             // For missing members of anonymous blocks that have been redeclared,
             // hide the original (shared) declaration.
-            // Instance-named blocks can just have the member removed.
-            if (instanceName)
+            // Instance-named blocks can just have the member removed, along with its
+            // extension list, so later members keep their own extension checks.
+            if (instanceName) {
+                block->getAsVariable()->eraseMemberExtensions(
+                    static_cast<int>(member - type.getWritableStruct()->begin()));
                 member = type.getWritableStruct()->erase(member);
-            else {
+            } else {
                 member->type->hideMember();
                 ++member;
             }
