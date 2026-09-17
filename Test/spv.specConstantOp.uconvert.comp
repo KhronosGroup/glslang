@@ -1,0 +1,37 @@
+#version 450
+#extension GL_EXT_shader_explicit_arithmetic_types_int8 : require
+#extension GL_EXT_shader_explicit_arithmetic_types_int16 : require
+#extension GL_EXT_shader_explicit_arithmetic_types_int64 : require
+
+// Integer width conversions of specialization constants, with the source value
+// having its high bit set so that zero extension is distinguishable from sign
+// extension.
+
+layout(constant_id = 0) const uint su = 0x80000001u;
+layout(constant_id = 1) const uint16_t su16 = 0x8001us;
+layout(constant_id = 2) const uint64_t su64 = 0x8000000000000001ul;
+layout(constant_id = 3) const int si = -2;
+layout(constant_id = 4) const uint8_t su8 = uint8_t(0x81);
+
+const uint16_t u_to_u16 = uint16_t(su);
+const uint64_t u_to_u64 = uint64_t(su);
+const uint u16_to_u = uint(su16);
+const uint u64_to_u = uint(su64);
+const uint u8_to_u = uint(su8);
+const uint16_t i_to_u16 = uint16_t(si);
+const uint64_t i_to_u64 = uint64_t(si);
+
+layout(binding = 0) buffer S {
+    uint p_out[7];
+};
+
+void main()
+{
+    p_out[0] = uint(u_to_u16);
+    p_out[1] = uint(u_to_u64);
+    p_out[2] = u16_to_u;
+    p_out[3] = u64_to_u;
+    p_out[4] = uint(i_to_u16);
+    p_out[5] = uint(i_to_u64);
+    p_out[6] = u8_to_u;
+}
