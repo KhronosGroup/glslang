@@ -6,7 +6,7 @@ spv.1.4.NonWritable.frag
                               Capability Shader
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint Fragment 4  "main" 8 31
+                              EntryPoint Fragment 4  "main" 8 31 34
                               ExecutionMode 4 OriginUpperLeft
                               Source GLSL 450
                               Name 4  "main"
@@ -16,7 +16,6 @@ spv.1.4.NonWritable.frag
                               Decorate 8(color) Location 0
                               Decorate 31(index) Flat
                               Decorate 31(index) Location 0
-                              Decorate 34(indexable) NonWritable
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32
@@ -45,11 +44,11 @@ spv.1.4.NonWritable.frag
               29:             TypeInt 32 1
               30:             TypePointer Input 29(int)
        31(index):     30(ptr) Variable Input
-              33:             TypePointer Function 11
-              35:             TypePointer Function 6(float)
+              33:             TypePointer Private 11
+   34(indexable):     33(ptr) Variable Private 28
+              35:             TypePointer Private 6(float)
          4(main):           2 Function None 3
                5:             Label
-   34(indexable):     33(ptr) Variable Function 28
               32:     29(int) Load 31(index)
               36:     35(ptr) AccessChain 34(indexable) 32
               37:    6(float) Load 36
