@@ -300,6 +300,9 @@ protected:
 
     spv::Id createIntWidthConversion(spv::Id operand, int vectorSize, spv::Id destType,
                                      glslang::TBasicType resultBasicType, glslang::TBasicType operandBasicType);
+    bool specConstUConvertNeedsWorkaround();
+    spv::Id createSpecConstUConvert(spv::Id typeId, spv::Id operand, int vectorSize, int operandWidth,
+                                    int resultWidth);
     spv::Id makeSmearedConstant(spv::Id constant, int vectorSize);
     spv::Id createAtomicOperation(glslang::TOperator op, spv::Decoration precision, spv::Id typeId,
         std::vector<spv::Id>& operands, glslang::TBasicType typeProxy,
@@ -9842,7 +9845,35 @@ spv::Id TGlslangToSpvTraverser::createIntWidthConversion(spv::Id operand, int ve
         type = builder.makeCooperativeMatrixTypeWithSameShape(type, destType);
     }
 
+    if (convOp == spv::Op::OpUConvert && specConstUConvertNeedsWorkaround()) {
+        return createSpecConstUConvert(type, operand, vectorSize, GetNumBits(operandBasicType), width);
+    }
+
     return builder.createUnaryOp(convOp, type, operand);
+}
+
+// OpUConvert only became a valid specialization constant operation in SPIR-V 1.4.
+bool TGlslangToSpvTraverser::specConstUConvertNeedsWorkaround()
+{
+    return builder.isInSpecConstCodeGenMode() &&
+           glslangIntermediate->getSpv().spv < glslang::EShTargetSpv_1_4;
+}
+
+// OpSConvert is valid in every version, and only differs from OpUConvert when widening,
+// where it brings in copies of the sign bit that have to be masked off.
+spv::Id TGlslangToSpvTraverser::createSpecConstUConvert(spv::Id typeId, spv::Id operand, int vectorSize,
+                                                       int operandWidth, int resultWidth)
+{
+    spv::Id result = builder.createUnaryOp(spv::Op::OpSConvert, typeId, operand);
+    if (resultWidth <= operandWidth)
+        return result;
+
+    const spv::Id maskType = builder.makeUintType(resultWidth);
+    const unsigned long long maskValue = (1ull << operandWidth) - 1;
+    spv::Id mask = resultWidth == 64 ? builder.makeInt64Constant(maskType, maskValue, false)
+                                     : builder.makeIntConstant(maskType, static_cast<unsigned>(maskValue), false);
+    mask = makeSmearedConstant(mask, vectorSize);
+    return builder.createBinOp(spv::Op::OpBitwiseAnd, typeId, result, mask);
 }
 
 spv::Id TGlslangToSpvTraverser::createConversion(glslang::TOperator op, OpDecorations& decorations, spv::Id destType,
@@ -9991,6 +10022,9 @@ spv::Id TGlslangToSpvTraverser::createConversion(glslang::TOperator op, OpDecora
         zero = makeSmearedConstant(zero, vectorSize);
         one  = makeSmearedConstant(one, vectorSize);
         result = builder.createTriOp(convOp, destType, operand, one, zero);
+    } else if (convOp == spv::Op::OpUConvert && specConstUConvertNeedsWorkaround()) {
+        result = createSpecConstUConvert(destType, operand, vectorSize, GetNumBits(operandBasicType),
+                                         GetNumBits(resultBasicType));
     } else
         result = builder.createUnaryOp(convOp, destType, operand);
 
