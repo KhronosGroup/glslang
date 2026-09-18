@@ -1,8 +1,8 @@
 ## Contributions under MIT CLA
 
-Prior to the adoption of the Apache 2.0 with LLVM Exception CLA, this repository
+Prior to the adoption of the Apache 2.0 CLA, this repository
 used an MIT CLA. The following commits were contributed under the MIT CLA. All
-subsequent contributions are made under the Apache 2.0 with LLVM Exception CLA.
+subsequent contributions are made under the Apache 2.0 CLA.
 
 | Commit                                                                                                | GitHub ID                | Commit Date          | CLA Signed At            | Message                                                                                                                                                                                                                  |
 | ----------------------------------------------------------------------------------------------------- | ------------------------ | -------------------- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
