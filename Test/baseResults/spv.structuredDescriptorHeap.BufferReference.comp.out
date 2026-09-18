@@ -50,7 +50,6 @@ spv.structuredDescriptorHeap.BufferReference.comp
                               Decorate 11(outputBuffer) Binding 0
                               Decorate 11(outputBuffer) DescriptorSet 0
                               Decorate 15(resource_heap) BuiltIn ResourceHeapEXT
-                              Decorate 20(RefHeap) Block
                               MemberDecorate 20(RefHeap) 0 Offset 0
                               MemberDecorate 20(RefHeap) 1 Offset 8
                               MemberDecorate 20(RefHeap) 2 Offset 16

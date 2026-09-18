@@ -18,6 +18,7 @@ spv.descriptorHeap.PushConstant.comp
                               Name 8  "i"
                               Name 16  "PUSH_LENGTH"
                               Name 20  "resource_heap"
+                              Name 24  "buffers"
                               Name 26  "O"
                               MemberName 26(O) 0  "outputBuffer"
                               Name 29  "P"
@@ -25,9 +26,8 @@ spv.descriptorHeap.PushConstant.comp
                               Name 31  ""
                               Decorate 16(PUSH_LENGTH) SpecId 0
                               Decorate 20(resource_heap) BuiltIn ResourceHeapEXT
-                              DecorateId 24 ArrayStrideIdEXT 23
+                              DecorateId 24(buffers) ArrayStrideIdEXT 23
                               Decorate 25 ArrayStride 4
-                              Decorate 26(O) Block
                               MemberDecorate 26(O) 0 Offset 0
                               Decorate 28 ArrayStride 4
                               Decorate 29(P) Block
@@ -45,7 +45,7 @@ spv.descriptorHeap.PushConstant.comp
               21:             TypeBufferEXT StorageBuffer
               22:             TypeInt 32 0
               23:     22(int) ConstantSizeOfEXT 21
-              24:             TypeRuntimeArray 21
+     24(buffers):             TypeRuntimeArray 21
               25:             TypeRuntimeArray 22(int)
            26(O):             TypeStruct 25
               28:             TypeArray 6(int) 16(PUSH_LENGTH)
@@ -77,7 +77,7 @@ spv.descriptorHeap.PushConstant.comp
               34:     33(ptr)   AccessChain 31 9 32
               35:      6(int)   Load 34
               36:     22(int)   Bitcast 35
-              37:     19(ptr)   UntypedAccessChainKHR 24 20(resource_heap) 9
+              37:     19(ptr)   UntypedAccessChainKHR 24(buffers) 20(resource_heap) 9
               39:     38(ptr)   BufferPointerEXT 37
               41:     40(ptr)   AccessChain 39 9 27
                                 Store 41 36
