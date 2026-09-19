@@ -75,3 +75,6 @@ layout(binding = nonLit, set = nonLit) uniform nonLitBN {       // ERROR, non li
 } nonLitBI;
 layout(input_attachment_index = nonLit) vec4 nonLit3;           // ERROR, non literal
 layout(constant_id = nonLit) vec4 nonLit4;                      // ERROR, non literal
+
+layout(constant_id = 18) const int c3 = 12;
+layout(constant_id = 19) const int c4 = c3 + 1;                 // ERROR, computed from another spec constant
