@@ -6614,7 +6614,12 @@ spv::Id TGlslangToSpvTraverser::convertGlslangStructToSpvType(const glslang::TTy
         descHeapMemberOffsets = descHeapLayout.getOrCreateStructMemberOffsets(type);
 
     // Make the SPIR-V type
-    spv::Id spvType = builder.makeStructType(spvMembers, memberDebugInfo, type.getTypeName().c_str(), false);
+    const glslang::TSourceLoc& structLoc = type.getStructLoc();
+    spv::Id structFileNameId = 0;
+    if (const char* const fileName = structLoc.getFilename())
+        structFileNameId = builder.getStringId(fileName);
+    spv::Id spvType = builder.makeStructType(spvMembers, memberDebugInfo, type.getTypeName().c_str(), false,
+                                             structFileNameId, structLoc.line, structLoc.column);
     if (! HasNonLayoutQualifiers(type, qualifier))
         structMap[explicitLayout][qualifier.layoutMatrix][glslangMembers] = spvType;
 

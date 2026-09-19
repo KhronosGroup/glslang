@@ -490,7 +490,7 @@ Id Builder::makeFloatMXINT8Type()
 // check for duplicates.
 // For compiler-generated structs, debug info is ignored.
 Id Builder::makeStructType(const std::vector<Id>& members, const std::vector<spv::StructMemberDebugInfo>& memberDebugInfo,
-                           const char* name, bool const compilerGenerated)
+                           const char* name, bool const compilerGenerated, Id fileNameId, int line, int column)
 {
     // Don't look for previous one, because in the general case,
     // structs can be duplicated except for decorations.
@@ -507,7 +507,8 @@ Id Builder::makeStructType(const std::vector<Id>& members, const std::vector<spv
     if (emitNonSemanticShaderDebugInfo && !compilerGenerated) {
         assert(members.size() == memberDebugInfo.size());
         auto const debugResultId =
-            makeCompositeDebugType(members, memberDebugInfo, name, NonSemanticShaderDebugInfoStructure);
+            makeCompositeDebugType(members, memberDebugInfo, name, NonSemanticShaderDebugInfoStructure,
+                                   fileNameId, line, column);
         debugTypeIdLookup[type->getResultId()] = debugResultId;
     }
 
@@ -1316,7 +1317,8 @@ Id Builder::makeMemberDebugType(Id const memberType, StructMemberDebugInfo const
 }
 
 Id Builder::makeCompositeDebugType(std::vector<Id> const& memberTypes, std::vector<StructMemberDebugInfo> const& memberDebugInfo,
-                                   char const* const name, NonSemanticShaderDebugInfoDebugCompositeType const tag)
+                                   char const* const name, NonSemanticShaderDebugInfoDebugCompositeType const tag,
+                                   Id fileNameId, int line, int column)
 {
     // Create the debug member types.
     std::vector<Id> memberDebugTypes;
@@ -1334,9 +1336,9 @@ Id Builder::makeCompositeDebugType(std::vector<Id> const& memberTypes, std::vect
     type->addImmediateOperand(NonSemanticShaderDebugInfoDebugTypeComposite);
     type->addIdOperand(getStringId(name)); // name id
     type->addIdOperand(makeUintConstant(tag)); // tag id
-    type->addIdOperand(makeDebugSource(currentFileId)); // source id
-    type->addIdOperand(makeUintConstant(currentLine)); // line id TODO: currentLine always zero?
-    type->addIdOperand(makeUintConstant(0)); // TODO: column id
+    type->addIdOperand(makeDebugSource(fileNameId != 0 ? fileNameId : currentFileId)); // source id
+    type->addIdOperand(makeUintConstant(line != 0 ? line : currentLine)); // line id
+    type->addIdOperand(makeUintConstant(column)); // column id
     type->addIdOperand(makeDebugCompilationUnit()); // scope id
     type->addIdOperand(getStringId(name)); // linkage name id
     type->addIdOperand(makeUintConstant(0)); // TODO: size id

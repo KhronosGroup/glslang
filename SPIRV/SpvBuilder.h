@@ -470,8 +470,10 @@ public:
     Id makeFloatUE8M0Type();
     Id makeFloatMXINT8Type();
     Id makeFloatOcpMicroscalingType(uint32_t width, FPEncoding encoding, Capability cap);
+    // fileNameId, line and column are where the struct was declared; zero falls back to the current position.
     Id makeStructType(const std::vector<Id>& members, const std::vector<spv::StructMemberDebugInfo>& memberDebugInfo,
-                      const char* name, bool const compilerGenerated = true);
+                      const char* name, bool const compilerGenerated = true,
+                      Id fileNameId = 0, int line = 0, int column = 0);
     Id makeStructResultType(Id type0, Id type1);
     Id makeVectorType(Id component, int size);
     Id makeMatrixType(Id component, int cols, int rows);
@@ -499,7 +501,8 @@ public:
     Id makeMatrixDebugType(Id const vectorType, int const vectorCount, bool columnMajor = true);
     Id makeMemberDebugType(Id const memberType, StructMemberDebugInfo const& debugTypeLoc);
     Id makeCompositeDebugType(std::vector<Id> const& memberTypes, std::vector<StructMemberDebugInfo> const& memberDebugInfo,
-                              char const* const name, NonSemanticShaderDebugInfoDebugCompositeType const tag);
+                              char const* const name, NonSemanticShaderDebugInfoDebugCompositeType const tag,
+                              Id fileNameId = 0, int line = 0, int column = 0);
     Id makeOpaqueDebugType(char const* const name);
     Id makeVectorIdDebugType(Id componentType, Id componentCount);
     Id makeCooperativeMatrixDebugTypeKHR(Id componentType, Id scope, Id rows, Id cols, Id use);
