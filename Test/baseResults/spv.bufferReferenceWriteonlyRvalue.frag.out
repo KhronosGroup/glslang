@@ -1,0 +1,6 @@
+spv.bufferReferenceWriteonlyRvalue.frag
+ERROR: 0:19: 'initializer' : can't read from writeonly object:  
+ERROR: 1 compilation errors.  No code generated.
+
+
+SPIR-V is not generated for failed compile or link
