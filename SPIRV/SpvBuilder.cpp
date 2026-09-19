@@ -1300,7 +1300,8 @@ Id Builder::makeMemberDebugType(Id const memberType, StructMemberDebugInfo const
     type->addIdOperand(getStringId(debugTypeLoc.name)); // name id
     type->addIdOperand(debugTypeLoc.debugTypeOverride != 0 ? debugTypeLoc.debugTypeOverride
                                                            : getDebugType(memberType)); // type id
-    type->addIdOperand(makeDebugSource(currentFileId));                            // source id
+    type->addIdOperand(makeDebugSource(debugTypeLoc.fileNameId != 0 ? debugTypeLoc.fileNameId
+                                                                   : currentFileId));   // source id
     type->addIdOperand(makeUintConstant(debugTypeLoc.line));   // line id TODO: currentLine is always zero
     type->addIdOperand(makeUintConstant(debugTypeLoc.column)); // TODO: column id
     type->addIdOperand(makeUintConstant(0));                   // TODO: offset id

@@ -6561,6 +6561,8 @@ spv::Id TGlslangToSpvTraverser::convertGlslangStructToSpvType(const glslang::TTy
                 debugInfo.name = glslangMember.type->getFieldName();
                 debugInfo.line = glslangMember.loc.line;
                 debugInfo.column = glslangMember.loc.column;
+                if (const char* const fileName = glslangMember.loc.getFilename())
+                    debugInfo.fileNameId = builder.getStringId(fileName);
 
                 // Per the GLSL spec, bool variables inside of a uniform or buffer block are generated as uint.
                 // But for debug info, we want to represent them as bool because that is the original type in
