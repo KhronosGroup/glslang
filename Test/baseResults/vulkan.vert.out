@@ -53,7 +53,8 @@ ERROR: 0:76: 'input_attachment_index' : can only be used with a subpass
 ERROR: 0:77: 'constant_id' : needs a literal integer 
 ERROR: 0:77: 'constant_id' : can only be applied to 'const'-qualified scalar 
 ERROR: 0:77: 'constant_id' : can only be applied to a scalar 
-ERROR: 54 compilation errors.  No code generated.
+ERROR: 0:80: 'constant_id' : cannot be applied to a constant computed from other specialization constants 
+ERROR: 55 compilation errors.  No code generated.
 
 
 SPIR-V is not generated for failed compile or link

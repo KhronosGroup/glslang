@@ -10328,6 +10328,10 @@ TIntermNode* TParseContext::executeInitializer(const TSourceLoc& loc, TIntermTyp
             variable->setConstArray(initializer->getAsConstantUnion()->getConstArray());
         else {
             // It's a specialization constant.
+            // Computed from other spec constants, so it becomes an OpSpecConstantOp, which cannot carry SpecId.
+            if (variable->getType().getQualifier().hasSpecConstantId())
+                error(loc, "cannot be applied to a constant computed from other specialization constants",
+                      "constant_id", "");
             variable->getWritableType().getQualifier().makeSpecConstant();
 
             // Keep the subtree that computes the specialization constant with the variable.
