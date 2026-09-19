@@ -86,6 +86,8 @@ struct StructMemberDebugInfo {
     std::string name {};
     int line {0};
     int column {0};
+    // OpString id of the file the member was declared in; zero means the file being compiled.
+    spv::Id fileNameId {0};
     // Set if the caller knows a better debug type than what is associated with the functional SPIR-V type.
     spv::Id debugTypeOverride {0};
 };
