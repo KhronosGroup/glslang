@@ -1721,6 +1721,7 @@ public:
                                         structure = p.userDef->getWritableStruct();  // public type is short-lived; there are no sharing issues
                                     }
                                     typeName = NewPoolTString(p.userDef->getTypeName().c_str());
+                                    structLoc = p.userDef->structLoc;
                                 }
                                 if (p.isCoopmatNV() && p.typeParameters && p.typeParameters->arraySizes->getNumDims() > 0) {
                                     int numBits = p.typeParameters->arraySizes->getDimSize(0);
@@ -1873,6 +1874,7 @@ public:
         arraySizes = copyOf.arraySizes;  // copying the pointer only, not the contents
         fieldName = copyOf.fieldName;
         typeName = copyOf.typeName;
+        structLoc = copyOf.structLoc;
         if (isStruct()) {
             structure = copyOf.structure;
         } else {
@@ -1926,6 +1928,9 @@ public:
         assert(typeName);
         return *typeName;
     }
+
+    virtual const TSourceLoc& getStructLoc() const { return structLoc; }
+    virtual void setStructLoc(const TSourceLoc& loc) { structLoc = loc; }
 
     virtual bool hasFieldName() const { return (fieldName != nullptr); }
     virtual const TString& getFieldName() const
@@ -3280,6 +3285,7 @@ protected:
     };
     TString *fieldName;         // for structure field names
     TString *typeName;          // for structure type name
+    TSourceLoc structLoc {};    // for where a structure was declared; line is 0 when unknown
     TSampler sampler;
     TTypeParameters *typeParameters;// nullptr unless a parameterized type; can be shared across types
     TSpirvType* spirvType;  // SPIR-V type defined by spirv_type directive

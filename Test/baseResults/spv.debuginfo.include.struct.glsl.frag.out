@@ -41,11 +41,11 @@ void main() {
               29:             String  "float"
               33:             String  "headerMember"
               36:             String  "HeaderStruct"
-              40:             String  "mainMember"
-              43:             String  "MainStruct"
-              46:             String  "fromHeader"
-              50:             String  "fromMain"
-              54:             String  "UBO"
+              39:             String  "mainMember"
+              42:             String  "MainStruct"
+              45:             String  "fromHeader"
+              49:             String  "fromMain"
+              53:             String  "UBO"
               59:             String  ""
               66:             String  "outColor"
               71:             String  "int"
@@ -54,18 +54,18 @@ void main() {
                               Name 15  "main"
                               Name 31  "HeaderStruct"
                               MemberName 31(HeaderStruct) 0  "headerMember"
-                              Name 38  "MainStruct"
-                              MemberName 38(MainStruct) 0  "mainMember"
-                              Name 44  "UBO"
-                              MemberName 44(UBO) 0  "fromHeader"
-                              MemberName 44(UBO) 1  "fromMain"
+                              Name 37  "MainStruct"
+                              MemberName 37(MainStruct) 0  "mainMember"
+                              Name 43  "UBO"
+                              MemberName 43(UBO) 0  "fromHeader"
+                              MemberName 43(UBO) 1  "fromMain"
                               Name 57  ""
                               Name 64  "outColor"
                               MemberDecorate 31(HeaderStruct) 0 Offset 0
-                              MemberDecorate 38(MainStruct) 0 Offset 0
-                              Decorate 44(UBO) Block
-                              MemberDecorate 44(UBO) 0 Offset 0
-                              MemberDecorate 44(UBO) 1 Offset 16
+                              MemberDecorate 37(MainStruct) 0 Offset 0
+                              Decorate 43(UBO) Block
+                              MemberDecorate 43(UBO) 0 Offset 0
+                              MemberDecorate 43(UBO) 1 Offset 16
                               Decorate 57 Binding 0
                               Decorate 57 DescriptorSet 0
                               Decorate 64(outColor) Location 0
@@ -91,30 +91,30 @@ void main() {
 31(HeaderStruct):             TypeStruct 28(float)
               34:      8(int) Constant 8
               32:           5 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 33 30 26 25 34 13 13 14
-              37:      8(int) Constant 10
-              35:           5 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 10(DebugTypeComposite) 36 23 19 37 13 22 36 13 14 32
-  38(MainStruct):             TypeStruct 28(float)
-              41:      8(int) Constant 7
-              39:           5 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 40 30 19 41 34 13 13 14
-              42:           5 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 10(DebugTypeComposite) 43 23 19 37 13 22 43 13 14 39
-         44(UBO):             TypeStruct 31(HeaderStruct) 38(MainStruct)
-              47:      8(int) Constant 11
-              48:      8(int) Constant 15
-              45:           5 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 46 35 19 47 48 13 13 14
-              51:      8(int) Constant 12
-              52:      8(int) Constant 13
-              49:           5 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 50 42 19 51 52 13 13 14
-              53:           5 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 10(DebugTypeComposite) 54 23 19 37 13 22 54 13 14 45 49
-              55:             TypePointer Uniform 44(UBO)
-              56:           5 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 3(DebugTypePointer) 53 25 13
+              35:           5 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 10(DebugTypeComposite) 36 23 26 23 23 22 36 13 14 32
+  37(MainStruct):             TypeStruct 28(float)
+              40:      8(int) Constant 7
+              38:           5 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 39 30 19 40 34 13 13 14
+              41:           5 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 10(DebugTypeComposite) 42 23 19 12 23 22 42 13 14 38
+         43(UBO):             TypeStruct 31(HeaderStruct) 37(MainStruct)
+              46:      8(int) Constant 11
+              47:      8(int) Constant 15
+              44:           5 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 45 35 19 46 47 13 13 14
+              50:      8(int) Constant 12
+              51:      8(int) Constant 13
+              48:           5 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 11(DebugTypeMember) 49 41 19 50 51 13 13 14
+              54:      8(int) Constant 10
+              52:           5 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 10(DebugTypeComposite) 53 23 19 54 13 22 53 13 14 44 48
+              55:             TypePointer Uniform 43(UBO)
+              56:           5 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 3(DebugTypePointer) 52 25 13
               57:     55(ptr) Variable Uniform
-              58:           5 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 18(DebugGlobalVariable) 59 53 19 37 13 22 59 57 34
+              58:           5 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 18(DebugGlobalVariable) 59 52 19 54 13 22 59 57 34
               60:             TypeVector 28(float) 4
               61:           5 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 6(DebugTypeVector) 30 24
               62:             TypePointer Output 60(fvec4)
               63:           5 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 3(DebugTypePointer) 61 14 13
     64(outColor):     62(ptr) Variable Output
-              65:           5 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 18(DebugGlobalVariable) 66 61 19 48 13 22 66 64(outColor) 34
+              65:           5 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 18(DebugGlobalVariable) 66 61 19 47 13 22 66 64(outColor) 34
               70:             TypeInt 32 1
               72:           5 ExtInst 1(NonSemantic.Shader.DebugInfo.100) 2(DebugTypeBasic) 71 11 24 13
               73:     70(int) Constant 0
