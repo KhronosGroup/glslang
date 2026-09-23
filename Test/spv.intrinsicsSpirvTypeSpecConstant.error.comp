@@ -1,0 +1,10 @@
+#version 450
+#extension GL_EXT_spirv_intrinsics : enable
+
+layout(constant_id = 0) const int sc = 3;
+
+// A specialization constant is not a folded literal, so it must be rejected
+// as a spirv_type parameter rather than crashing the front end.
+spirv_type(id = 28, sc) T;
+
+void main() {}

@@ -1,0 +1,6 @@
+spv.intrinsicsSpirvTypeSpecConstant.error.comp
+ERROR: 0:8: 'spirv_type' : expected a non-specialization constant 
+ERROR: 1 compilation errors.  No code generated.
+
+
+SPIR-V is not generated for failed compile or link
