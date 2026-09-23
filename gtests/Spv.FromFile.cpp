@@ -501,6 +501,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.intrinsicsSpirvStorageClass.rchit",
         "spv.intrinsicsSpirvType.rgen",
         "spv.intrinsicsSpirvTypeLocalVar.vert",
+        "spv.intrinsicsSpirvTypeSpecConstant.error.comp",
         "spv.intrinsicsSpirvTypeWithTypeSpecifier.vert",
         "spv.intrinsicsStringConstructorError.vert",
         "spv.invariantAll.vert",

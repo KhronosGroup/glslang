@@ -284,6 +284,13 @@ void TPublicType::setSpirvType(const TSpirvInstruction& spirvInst, const TSpirvT
 TSpirvTypeParameters* TParseContext::makeSpirvTypeParameters(const TSourceLoc& loc, const TIntermConstantUnion* constant)
 {
     TSpirvTypeParameters* spirvTypeParams = new TSpirvTypeParameters;
+    if (constant == nullptr) {
+        // The grammar's constant_expression does not guarantee a folded literal:
+        // a non-constant expression (already flagged by constantValueCheck) or a
+        // specialization constant reaches here with a null constant-union node.
+        error(loc, "expected a non-specialization constant", "spirv_type", "");
+        return spirvTypeParams;
+    }
     if (constant->getBasicType() != EbtFloat &&
         constant->getBasicType() != EbtInt &&
         constant->getBasicType() != EbtUint &&
