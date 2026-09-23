@@ -1,0 +1,167 @@
+GL_ARB_bindless_texture.lvalue.frag
+Shader version: 460
+Requested GL_ARB_bindless_texture
+0:? Sequence
+0:7  Function Definition: setSampler(s21;vu2; ( global void)
+0:7    Function Parameters: 
+0:7      's' ( out sampler2D)
+0:7      'handle' ( in 2-component vector of uint)
+0:9    Sequence
+0:9      move second child to first child ( temp sampler2D)
+0:9        's' ( out sampler2D)
+0:9        packUint2x32 ( temp sampler2D)
+0:9          'handle' ( in 2-component vector of uint)
+0:12  Function Definition: copyBuffers(sB1[2];sB1; ( global void)
+0:12    Function Parameters: 
+0:12      'bufs' ( inout 2-element array of samplerBuffer)
+0:12      'src' ( in samplerBuffer)
+0:14    Sequence
+0:14      move second child to first child ( temp samplerBuffer)
+0:14        direct index ( temp samplerBuffer)
+0:14          'bufs' ( inout 2-element array of samplerBuffer)
+0:14          Constant:
+0:14            0 (const int)
+0:14        'src' ( in samplerBuffer)
+0:15      move second child to first child ( temp samplerBuffer)
+0:15        direct index ( temp samplerBuffer)
+0:15          'bufs' ( inout 2-element array of samplerBuffer)
+0:15          Constant:
+0:15            1 (const int)
+0:15        'src' ( in samplerBuffer)
+0:28  Function Definition: main( ( global void)
+0:28    Function Parameters: 
+0:30    Sequence
+0:30      Sequence
+0:30        move second child to first child ( temp sampler2D)
+0:30          'local' ( temp sampler2D)
+0:30          'tex' ( uniform sampler2D)
+0:31      Function Call: setSampler(s21;vu2; ( global void)
+0:31        'local' ( temp sampler2D)
+0:31        'handle' ( uniform 2-component vector of uint)
+0:32      move second child to first child ( temp 4-component vector of float)
+0:32        'color0' ( out 4-component vector of float)
+0:32        texture ( global 4-component vector of float)
+0:32          'local' ( temp sampler2D)
+0:32          'coord' ( uniform 2-component vector of float)
+0:35      Function Call: copyBuffers(sB1[2];sB1; ( global void)
+0:35        'bufs' ( temp 2-element array of samplerBuffer)
+0:35        'buf' ( uniform samplerBuffer)
+0:36      move second child to first child ( temp 4-component vector of float)
+0:36        'color1' ( out 4-component vector of float)
+0:36        textureFetch ( global 4-component vector of float)
+0:36          direct index ( temp samplerBuffer)
+0:36            'bufs' ( temp 2-element array of samplerBuffer)
+0:36            Constant:
+0:36              1 (const int)
+0:36          Constant:
+0:36            0 (const int)
+0:38      Sequence
+0:38        move second child to first child ( temp image2D)
+0:38          'localImage' ( temp image2D)
+0:38          'img' (layout( rgba8) uniform image2D)
+0:39      add second child into first child ( temp 4-component vector of float)
+0:39        'color1' ( out 4-component vector of float)
+0:39        imageLoad ( global 4-component vector of float)
+0:39          'localImage' ( temp image2D)
+0:39          Constant:
+0:39            0 (const int)
+0:39            0 (const int)
+0:41      move second child to first child ( temp 2-component vector of uint)
+0:41        'handleOut' ( out 2-component vector of uint)
+0:41        unpackUint2x32 ( temp 2-component vector of uint)
+0:41          'tex' ( uniform sampler2D)
+0:?   Linker Objects
+0:?     'tex' ( uniform sampler2D)
+0:?     'buf' ( uniform samplerBuffer)
+0:?     'handle' ( uniform 2-component vector of uint)
+0:?     'coord' ( uniform 2-component vector of float)
+0:?     'img' (layout( rgba8) uniform image2D)
+0:?     'color0' ( out 4-component vector of float)
+0:?     'color1' ( out 4-component vector of float)
+0:?     'handleOut' ( out 2-component vector of uint)
+
+
+Linked fragment stage:
+
+
+Shader version: 460
+Requested GL_ARB_bindless_texture
+0:? Sequence
+0:7  Function Definition: setSampler(s21;vu2; ( global void)
+0:7    Function Parameters: 
+0:7      's' ( out sampler2D)
+0:7      'handle' ( in 2-component vector of uint)
+0:9    Sequence
+0:9      move second child to first child ( temp sampler2D)
+0:9        's' ( out sampler2D)
+0:9        packUint2x32 ( temp sampler2D)
+0:9          'handle' ( in 2-component vector of uint)
+0:12  Function Definition: copyBuffers(sB1[2];sB1; ( global void)
+0:12    Function Parameters: 
+0:12      'bufs' ( inout 2-element array of samplerBuffer)
+0:12      'src' ( in samplerBuffer)
+0:14    Sequence
+0:14      move second child to first child ( temp samplerBuffer)
+0:14        direct index ( temp samplerBuffer)
+0:14          'bufs' ( inout 2-element array of samplerBuffer)
+0:14          Constant:
+0:14            0 (const int)
+0:14        'src' ( in samplerBuffer)
+0:15      move second child to first child ( temp samplerBuffer)
+0:15        direct index ( temp samplerBuffer)
+0:15          'bufs' ( inout 2-element array of samplerBuffer)
+0:15          Constant:
+0:15            1 (const int)
+0:15        'src' ( in samplerBuffer)
+0:28  Function Definition: main( ( global void)
+0:28    Function Parameters: 
+0:30    Sequence
+0:30      Sequence
+0:30        move second child to first child ( temp sampler2D)
+0:30          'local' ( temp sampler2D)
+0:30          'tex' ( uniform sampler2D)
+0:31      Function Call: setSampler(s21;vu2; ( global void)
+0:31        'local' ( temp sampler2D)
+0:31        'handle' ( uniform 2-component vector of uint)
+0:32      move second child to first child ( temp 4-component vector of float)
+0:32        'color0' ( out 4-component vector of float)
+0:32        texture ( global 4-component vector of float)
+0:32          'local' ( temp sampler2D)
+0:32          'coord' ( uniform 2-component vector of float)
+0:35      Function Call: copyBuffers(sB1[2];sB1; ( global void)
+0:35        'bufs' ( temp 2-element array of samplerBuffer)
+0:35        'buf' ( uniform samplerBuffer)
+0:36      move second child to first child ( temp 4-component vector of float)
+0:36        'color1' ( out 4-component vector of float)
+0:36        textureFetch ( global 4-component vector of float)
+0:36          direct index ( temp samplerBuffer)
+0:36            'bufs' ( temp 2-element array of samplerBuffer)
+0:36            Constant:
+0:36              1 (const int)
+0:36          Constant:
+0:36            0 (const int)
+0:38      Sequence
+0:38        move second child to first child ( temp image2D)
+0:38          'localImage' ( temp image2D)
+0:38          'img' (layout( rgba8) uniform image2D)
+0:39      add second child into first child ( temp 4-component vector of float)
+0:39        'color1' ( out 4-component vector of float)
+0:39        imageLoad ( global 4-component vector of float)
+0:39          'localImage' ( temp image2D)
+0:39          Constant:
+0:39            0 (const int)
+0:39            0 (const int)
+0:41      move second child to first child ( temp 2-component vector of uint)
+0:41        'handleOut' ( out 2-component vector of uint)
+0:41        unpackUint2x32 ( temp 2-component vector of uint)
+0:41          'tex' ( uniform sampler2D)
+0:?   Linker Objects
+0:?     'tex' ( uniform sampler2D)
+0:?     'buf' ( uniform samplerBuffer)
+0:?     'handle' ( uniform 2-component vector of uint)
+0:?     'coord' ( uniform 2-component vector of float)
+0:?     'img' (layout( rgba8) uniform image2D)
+0:?     'color0' ( out 4-component vector of float)
+0:?     'color1' ( out 4-component vector of float)
+0:?     'handleOut' ( out 2-component vector of uint)
+

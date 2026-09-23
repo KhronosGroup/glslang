@@ -579,6 +579,12 @@ bool TIntermediate::isConversionAllowed(TOperator op, TIntermTyped* node) const
             node->getAsOperator() != nullptr && node->getAsOperator()->getOp() == EOpConstructTextureSampler)
             break;
 
+        // ARB_bindless_texture makes samplers and images l-values, so they can be
+        // initialized and assigned, which is what carries them in and out of functions.
+        if (op == EOpAssign && node->getBasicType() == EbtSampler &&
+            IsRequestedExtension(E_GL_ARB_bindless_texture))
+            break;
+
         // otherwise, opaque types can't even be operated on, let alone converted
         return false;
     default:
@@ -861,6 +867,12 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
 
     // If one's an array, then no conversions.
     if (type.isArray() || node->getType().isArray())
+        return nullptr;
+
+    // A sampler or image converts to nothing but its own type, and identical types have
+    // already returned above. Only in bindless mode, so HLSL keeps its own rules.
+    if ((type.getBasicType() == EbtSampler || node->getBasicType() == EbtSampler) &&
+        IsRequestedExtension(E_GL_ARB_bindless_texture))
         return nullptr;
 
     // Reject implicit conversions to cooperative matrix types
