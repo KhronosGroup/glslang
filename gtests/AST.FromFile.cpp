@@ -321,6 +321,7 @@ INSTANTIATE_TEST_SUITE_P(
         "GL_ARB_cull_distance.error.vert",
         "GL_ARB_fragment_coord_conventions.vert",
         "GL_ARB_bindless_texture.frag",
+        "GL_ARB_bindless_texture.lvalue.frag",
         "GL_ARB_texture_multisample.vert",
         "BestMatchFunction.vert",
         "EndStreamPrimitive.geom",
