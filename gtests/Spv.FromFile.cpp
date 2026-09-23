@@ -1321,6 +1321,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.debuginfo.const_params.glsl.comp",
         "spv.debuginfo.scalar_types.glsl.frag",
         "spv.debuginfo.include.glsl.frag",
+        "spv.debuginfo.include.struct.glsl.frag",
         "spv.debuginfo.macro.include.glsl.frag",
         "spv.debuginfo.multiline.glsl.frag",
         "spv.debuginfo.implicit_br.glsl.frag",
