@@ -5981,7 +5981,11 @@ void TParseContext::precisionQualifierCheck(const TSourceLoc& loc, TBasicType ba
 
 void TParseContext::parameterTypeCheck(const TSourceLoc& loc, TStorageQualifier qualifier, const TType& type)
 {
-    if ((qualifier == EvqOut || qualifier == EvqInOut) && type.isOpaque() && !intermediate.getBindlessMode())
+    // getBindlessMode() is only set once a bindless construct has been parsed, so it is
+    // still false for a function declared above the first one. Ask the extension instead.
+    const bool bindlessHandle =
+        type.getBasicType() == EbtSampler && intermediate.IsRequestedExtension(E_GL_ARB_bindless_texture);
+    if ((qualifier == EvqOut || qualifier == EvqInOut) && type.isOpaque() && !bindlessHandle)
         error(loc, "samplers and atomic_uints cannot be output parameters", type.getBasicTypeString().c_str(), "");
     if (!parsingBuiltins && type.contains16BitFloat())
         requireFloat16Arithmetic(loc, type.getBasicTypeString().c_str(), "float16 types can only be in uniform block or buffer storage");
