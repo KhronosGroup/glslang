@@ -10637,13 +10637,10 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
             return newNode;
         } else if (node->getType().getBasicType() == EbtSampler) {
             requireExtensions(loc, 1, &E_GL_ARB_bindless_texture, "sampler conversion to uvec2");
-            // force the basic type of the constructor param to uvec2, otherwise spv builder will
-            // report some errors
-            TIntermTyped* newSrcNode = intermediate.createConversion(EbtUint, node);
-            newSrcNode->getAsTyped()->getWritableType().setVectorSize(2);
-
+            // createConversion has no sampler-to-uint op and returns null, so unpack the
+            // handle directly, mirroring the uvec2-to-handle direction below.
             TIntermTyped* newNode =
-                intermediate.addBuiltInFunctionCall(node->getLoc(), EOpConstructUVec2, false, newSrcNode, type);
+                intermediate.addBuiltInFunctionCall(node->getLoc(), EOpUnpackUint2x32, true, node, type);
             return newNode;
         }
         [[fallthrough]];
