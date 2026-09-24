@@ -330,6 +330,7 @@ INSTANTIATE_TEST_SUITE_P(
         {"hlsl.nonint-index.frag", "main"},
         {"hlsl.matNx1.frag", "main"},
         {"hlsl.matpack-1.frag", "main"},
+        {"hlsl.matrixSwizzle.frag", "main"},
         {"hlsl.matrixSwizzle.vert", "ShaderFunction"},
         {"hlsl.memberFunCall.frag", "main"},
         {"hlsl.mintypes.frag", "main"},
