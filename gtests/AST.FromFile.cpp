@@ -244,6 +244,7 @@ INSTANTIATE_TEST_SUITE_P(
         "findFunction.frag",
         "noMatchingFunction.frag",
         "constantUnaryConversion.comp",
+        "localSizeRepeated.comp",
         "xfbUnsizedArray.error.vert",
         "xfbUnsizedArray.error.tese",
         "xfbArrayStride.error.vert",

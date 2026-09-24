@@ -1384,6 +1384,7 @@ layout_qualifier_id_list
     }
     | layout_qualifier_id_list COMMA layout_qualifier_id {
         $$ = $1;
+        parseContext.checkRepeatedLocalSize($3.loc, $$.shaderQualifiers, $3.shaderQualifiers);
         $$.shaderQualifiers.merge($3.shaderQualifiers);
         parseContext.mergeObjectLayoutQualifiers($$.qualifier, $3.qualifier, false);
     }

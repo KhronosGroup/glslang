@@ -438,6 +438,7 @@ public:
     void setLayoutQualifier(const TSourceLoc&, TPublicType&, TString&);
     void setLayoutQualifier(const TSourceLoc&, TPublicType&, TString&, const TIntermTyped*);
     void mergeObjectLayoutQualifiers(TQualifier& dest, const TQualifier& src, bool inheritOnly);
+    void checkRepeatedLocalSize(const TSourceLoc&, const TShaderQualifiers& dst, const TShaderQualifiers& src);
     void layoutObjectCheck(const TSourceLoc&, const TSymbol&);
     void layoutMemberLocationArrayCheck(const TSourceLoc&, bool memberWithLocation, TArraySizes* arraySizes);
     void layoutTypeCheck(const TSourceLoc&, const TType&);

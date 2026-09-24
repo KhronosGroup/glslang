@@ -1,0 +1,7 @@
+#version 450
+
+layout(local_size_x=16, local_size_x=4, local_size_x=2) in;
+
+void main() {
+    uint x = gl_LocalInvocationID.x;
+}

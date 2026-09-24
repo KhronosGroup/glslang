@@ -8128,6 +8128,19 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
     error(loc, "there is no such layout identifier for this stage taking an assigned value", id.c_str(), "");
 }
 
+// https://github.com/KhronosGroup/glslang/issues/4444
+void TParseContext::checkRepeatedLocalSize(const TSourceLoc& loc, const TShaderQualifiers& dst, const TShaderQualifiers& src)
+{
+    static const char* const localSizeNames[3] = { "local_size_x", "local_size_y", "local_size_z" };
+    static const char* const localSizeIdNames[3] = { "local_size_x_id", "local_size_y_id", "local_size_z_id" };
+    for (int i = 0; i < 3; ++i) {
+        if (dst.localSizeNotDefault[i] && src.localSizeNotDefault[i])
+            warn(loc, "repeated layout qualifier, only the last occurrence is used", localSizeNames[i], "");
+        if (dst.localSizeSpecId[i] != TQualifier::layoutNotSet && src.localSizeSpecId[i] != TQualifier::layoutNotSet)
+            warn(loc, "repeated layout qualifier, only the last occurrence is used", localSizeIdNames[i], "");
+    }
+}
+
 // Merge any layout qualifier information from src into dst, leaving everything else in dst alone
 //
 // "More than one layout qualifier may appear in a single declaration.
