@@ -61,6 +61,7 @@
 #include <map>
 #include <memory>
 #include <set>
+#include <sstream>
 #include <thread>
 #include <type_traits>
 
@@ -123,6 +124,8 @@ bool targetHlslFunctionality1 = false;
 bool SpvToolsDisassembler = false;
 bool SpvToolsValidate = false;
 bool NaNClamp = false;
+bool RestrictExtensions = false;
+std::vector<std::string> AvailableExtensions;
 bool stripDebugInfo = false;
 bool emitNonSemanticShaderDebugInfo = false;
 bool emitNonSemanticShaderDebugSource = false;
@@ -794,6 +797,16 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                                lowerword == "resource-set-binding"  ||
                                lowerword == "rsb") {
                         ProcessResourceSetBindingBase(argc, argv, baseResourceSetBinding);
+                    } else if (lowerword == "restrict-extensions") {
+                        if (argc <= 1)
+                            Error("expects a comma-separated list of extensions", argv[0]);
+                        RestrictExtensions = true;
+                        std::istringstream names(argv[1]);
+                        for (std::string name; std::getline(names, name, ',');) {
+                            if (!name.empty())
+                                AvailableExtensions.push_back(name);
+                        }
+                        bumpArg();
                     } else if (lowerword == "set-block-storage" ||
                                lowerword == "sbs") {
                         ProcessBlockStorage(argc, argv, blockStorageOverrides);
@@ -1473,6 +1486,13 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
         }
 
         shader->setNanMinMaxClamp(NaNClamp);
+
+        if (RestrictExtensions) {
+            std::vector<const char*> names;
+            for (const auto& name : AvailableExtensions)
+                names.push_back(name.c_str());
+            shader->restrictAvailableExtensions(names.data(), static_cast<int>(names.size()));
+        }
 
 #ifdef ENABLE_HLSL
         shader->setFlattenUniformArrays((Options & EOptionFlattenUniformArrays) != 0);
@@ -2155,6 +2175,9 @@ void usage()
            "  --resource-set-binding [stage] <set>\n"
            "                                    set descriptor set for all resources\n"
            "  --resource-set-bindings | --rsb   synonyms for --resource-set-binding\n"
+           "  --restrict-extensions <list>      only the comma-separated extensions are\n"
+           "                                    available; the others are not predefined\n"
+           "                                    and #extension treats them as unknown\n"
            "  --set-atomic-counter-block <name> <set>\n"
            "                                    set name and descriptor set for atomic\n"
            "                                    counter blocks with -R opt\n"

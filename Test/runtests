@@ -363,6 +363,15 @@ run --enhanced-msgs -V --target-env vulkan1.2 --amb --aml spv.textureError.frag 
 diff -b $BASEDIR/spv.textureError.frag.out "$TARGETDIR/spv.textureError.frag.out" || HASERROR=1
 
 #
+# Test --restrict-extensions
+#
+echo "Testing restrict-extensions"
+run --restrict-extensions GL_KHR_shader_subgroup_basic,GL_KHR_shader_subgroup_ballot -E restrictExtensions.frag > "$TARGETDIR/restrictExtensions.frag.out"
+diff -b $BASEDIR/restrictExtensions.frag.out "$TARGETDIR/restrictExtensions.frag.out" || HASERROR=1
+run --restrict-extensions "" -E restrictExtensions.frag > "$TARGETDIR/restrictExtensions.none.frag.out"
+diff -b $BASEDIR/restrictExtensions.none.frag.out "$TARGETDIR/restrictExtensions.none.frag.out" || HASERROR=1
+
+#
 # Test error column
 #
 echo "Testing error-column"

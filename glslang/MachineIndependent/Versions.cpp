@@ -151,6 +151,7 @@
 #include "localintermediate.h"
 
 #include <iterator>
+#include <sstream>
 
 namespace glslang {
 
@@ -448,6 +449,16 @@ void TParseVersions::initializeExtensionBehavior()
 
     // Record extensions not for spv.
     spvUnsupportedExt.push_back(E_GL_ARB_bindless_texture);
+
+    // Treat extensions the caller did not make available as unknown.
+    for (auto it = extensionBehavior.begin(); it != extensionBehavior.end();) {
+        if (intermediate.isExtensionAvailable(it->first.c_str())) {
+            ++it;
+        } else {
+            unavailableExtensions.insert(it->first);
+            it = extensionBehavior.erase(it);
+        }
+    }
 }
 
 // Get code that is not part of a shared symbol table, is specific to this shader,
@@ -805,6 +816,22 @@ void TParseVersions::getPreamble(std::string& preamble)
         default:                                                                                    break;
         }
     }
+
+    // Drop the macros of unavailable extensions.
+    if (! unavailableExtensions.empty()) {
+        std::istringstream lines(preamble);
+        std::string line;
+        std::string available;
+        while (std::getline(lines, line)) {
+            std::istringstream words(line);
+            std::string directive;
+            std::string name;
+            words >> directive >> name;
+            if (directive != "#define" || unavailableExtensions.count(name.c_str()) == 0)
+                available += line + "\n";
+        }
+        preamble = available;
+    }
 }
 
 //
@@ -1074,6 +1101,13 @@ void TParseVersions::updateExtensionBehavior(int line, const char* extension, co
         error(getCurrentLoc(), "behavior not supported:", "#extension", "%s", behaviorString);
         return;
     }
+
+    // Like an unknown extension, an unavailable one turns nothing else on.
+    if (unavailableExtensions.count(extension) != 0) {
+        updateExtensionBehavior(extension, behavior);
+        return;
+    }
+
     bool on = behavior != EBhDisable;
 
     // check if extension is used with correct shader stage
