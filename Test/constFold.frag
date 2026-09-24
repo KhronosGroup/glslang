@@ -72,6 +72,13 @@ void main()
     out12 = ivec2(floatBitsToInt(1.0), floatBitsToInt(-2.0));   // 1065353216, -1073741824
     out13 = uvec3(floatBitsToUint(1.0), floatBitsToUint(0.0), floatBitsToUint(-0.0)); // 1065353216, 0, 2147483648
     out2 = vec2(intBitsToFloat(1065353216), uintBitsToFloat(3221225472u)); // 1.0, -2.0
+    out2 = vec2(intBitsToFloat(0x7FC00000), uintBitsToFloat(0x7FA12345u)); // quiet NaN and signaling NaN both fold
+    out12 = ivec2(floatBitsToInt(0.0 / 0.0), 0); // 2143289344, the quiet NaN's bits
+
+    // sNaN round-trip: the exact bit pattern must survive folding.
+    const uint snanRound = floatBitsToUint(uintBitsToFloat(0x7FA12345u)); // must fold to 0x7FA12345, not 0x7FE12345
+    const int  snanRoundI = floatBitsToInt(intBitsToFloat(0x7F800001)); // must fold to 0x7F800001
+    out13 = uvec3(snanRound, floatBitsToUint(uintBitsToFloat(0x7FC12345u)), uint(snanRoundI)); // 0x7FA12345, 0x7FC12345, 0x7F800001
 }
 
 const struct S {
@@ -154,3 +161,70 @@ const bool cval3 = all(bvec4(true, true, false, true));
 const bool cval4 = any(bvec4(true, true, true, true));
 const bool cval5 = any(bvec4(false, false, false, false));
 const bool cval6 = any(bvec4(false, true, false, false));
+
+// Bit-cast float constants compare by value, not by encoding: the raw bits are
+// for bit-cast reads and SPIR-V emission, not for numeric comparison.
+const bool cvalZeroEq = uintBitsToFloat(0x00000000u) == uintBitsToFloat(0x80000000u); // true, +0.0 equals -0.0
+const bool cvalNanEq  = uintBitsToFloat(0x7FC12345u) == uintBitsToFloat(0x7FC12345u); // false, a NaN equals nothing
+const bool cvalSnanEq = uintBitsToFloat(0x7FA12345u) == uintBitsToFloat(0x7FA12345u); // false, a signaling NaN too
+const bool cvalZeroNe = uintBitsToFloat(0x00000000u) != uintBitsToFloat(0x80000000u); // false
+const bool cvalNanNe  = uintBitsToFloat(0x7FC12345u) != uintBitsToFloat(0x7FC12345u); // true
+
+// abs() and unary minus are sign-bit operations, so they must not quiet a
+// signaling NaN the way a fold through the double would.
+const uint snanNegBits = floatBitsToUint(-uintBitsToFloat(0x7FA12345u));     // 0xFFA12345, not 0xFFE12345
+const uint snanAbsBits = floatBitsToUint(abs(uintBitsToFloat(0xFFA12345u))); // 0x7FA12345, not 0x7FE12345
+
+// <= and >= must be false when an operand is NaN.  Folding them as the negation
+// of the opposite comparison reported true, because every ordered comparison
+// against a NaN is already false.
+const bool cvalNanLe = uintBitsToFloat(0x7FC00000u) <= uintBitsToFloat(0x7FC00000u); // false
+const bool cvalNanGe = uintBitsToFloat(0x7FC00000u) >= uintBitsToFloat(0x7FC00000u); // false
+const bvec2 cvalNanLeV = lessThanEqual(vec2(uintBitsToFloat(0x7FC00000u)), vec2(uintBitsToFloat(0x7FC00000u)));    // false, false
+const bvec2 cvalNanGeV = greaterThanEqual(vec2(uintBitsToFloat(0x7FC00000u)), vec2(uintBitsToFloat(0x7FC00000u))); // false, false
+
+// Ordered operands keep their existing results.
+const bvec3 cvalOrdLe = bvec3(1.0 <= 2.0, 1.0 <= 1.0, 2.0 <= 1.0); // true, true, false
+const bvec3 cvalOrdGe = bvec3(2.0 >= 1.0, 1.0 >= 1.0, 1.0 >= 2.0); // true, true, false
+
+// mix() with a bool selector, min, max and clamp return one of their operands
+// rather than computing a value, so the operand's exact bits have to come
+// through; reading the value out with getDConst() would quiet a signaling NaN.
+const uint snanMixBits   = floatBitsToUint(mix(uintBitsToFloat(0x7FA12345u), 1.0, false)); // 0x7FA12345
+const uint snanMinBits   = floatBitsToUint(min(uintBitsToFloat(0x7FA12345u), 1.0));        // 0x7FA12345
+const uint snanMaxBits   = floatBitsToUint(max(uintBitsToFloat(0x7FA12345u), 1.0));        // 0x7FA12345
+const uint snanClampBits = floatBitsToUint(clamp(uintBitsToFloat(0x7FA12345u), 0.0, 1.0)); // 0x7FA12345
+// faceforward negates N in this case, and negation is a sign-bit operation.
+const uint snanFaceFwd   = floatBitsToUint(faceforward(vec2(uintBitsToFloat(0x7FA12345u), 0.0),
+                                                       vec2(1.0, 0.0), vec2(1.0, 0.0)).x); // 0xFFA12345
+
+// Selection on ordinary values still picks the right operand.
+const vec4 cvalSelectOrd = vec4(min(2.0, 3.0), max(2.0, 3.0), clamp(5.0, 0.0, 1.0), clamp(-5.0, 0.0, 1.0)); // 2.0, 3.0, 1.0, 0.0
+
+// Comparing a named constant with itself still has to obey NaN semantics.  The
+// aggregate comparison returns true as soon as both sides are the same
+// allocation, which is what "are these the same constant" wants but not what ==
+// means, so == and != compare component by component instead.
+const float cvalNanSelf   = uintBitsToFloat(0x7FC00000u);
+const bool  cvalNanSelfEq = cvalNanSelf == cvalNanSelf;  // false, a NaN equals nothing
+const bool  cvalNanSelfNe = cvalNanSelf != cvalNanSelf;  // true
+const vec2  cvalNanVec2   = vec2(cvalNanSelf);
+const bool  cvalNanVecEq  = cvalNanVec2 == cvalNanVec2;  // false
+const bool  cvalNanVecNe  = cvalNanVec2 != cvalNanVec2;  // true
+// An ordinary constant compared with itself is still equal.
+const vec2  cvalOrdVec2   = vec2(1.0, 2.0);
+const bool  cvalOrdVecEq  = cvalOrdVec2 == cvalOrdVec2;  // true
+
+// Folding has to round to fp32 at every step, not only when the constant is
+// emitted.  1e20 * 1e20 overflows fp32, so the product is infinite and stays
+// infinite through the divide; folding the multiply in double instead hands
+// back a finite 1e20.
+const float cvalFp32Overflow    = (1.0e20 * 1.0e20) / 1.0e20; // inf
+const bool  cvalFp32OverflowInf = isinf(cvalFp32Overflow);    // true
+// A literal fp32 cannot hold rounds at the fold, not only at emission.
+const float cvalFp32Nearest     = 5.0e-06;                    // 4.9999998736894e-06
+
+// An unsuffixed literal is a float even where it initialises a double, so it
+// rounds first; the lf suffix makes it a double and keeps full precision.
+const double cvalDblSuffixed    = 1234567890123456.0lf;       // 1.2345678901235e+15
+const double cvalDblUnsuffixed  = 1234567890123456.0;         // 1.2345679481405e+15

@@ -3924,8 +3924,8 @@ TIntermConstantUnion* HlslParseContext::getSamplePosArray(int count)
 
     for (int pos=0; pos<count; ++pos) {
         TConstUnion x, y;
-        x.setDConst(sampleLoc[pos].x);
-        y.setDConst(sampleLoc[pos].y);
+        x.setDConst(sampleLoc[pos].x, EbtFloat);
+        y.setDConst(sampleLoc[pos].y, EbtFloat);
 
         (*values)[pos*2+0] = x;
         (*values)[pos*2+1] = y;
@@ -5056,11 +5056,27 @@ void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& 
                     std::max(arg0->getType().getMatrixCols(), 1) *
                     std::max(arg0->getType().getMatrixRows(), 1);
 
+                // This constant is built with arg0's own TType, so the union has
+                // to hold a value of arg0's basic type -- there is no conversion
+                // step to fix a mismatch afterwards, and an EbtInt zero inside a
+                // uint constant prints as 'const int' beside a uint operand.
+                // (The scalar path below can hand addBinaryMath a plain int and
+                // let the usual promotion sort it out, so it does not need this.)
                 TConstUnion zero;
-                if (arg0->getType().isIntegerDomain())
-                    zero.setDConst(0);
-                else
-                    zero.setDConst(0.0);
+                if (arg0->getType().isIntegerDomain()) {
+                    switch (type0) {
+                    case EbtInt8:   zero.setI8Const(0);  break;
+                    case EbtUint8:  zero.setU8Const(0);  break;
+                    case EbtInt16:  zero.setI16Const(0); break;
+                    case EbtUint16: zero.setU16Const(0); break;
+                    case EbtUint:   zero.setUConst(0);   break;
+                    case EbtInt64:  zero.setI64Const(0); break;
+                    case EbtUint64: zero.setU64Const(0); break;
+                    default:        zero.setIConst(0);   break;
+                    }
+                } else {
+                    zero.setDConst(0.0, type0);
+                }
                 TConstUnionArray zeros(constComponentCount, zero);
 
                 less->getSequence().push_back(intermediate.addConstantUnion(zeros, arg0->getType(), loc, true));

@@ -43,11 +43,18 @@
 
 namespace glslang {
 
+// Rounds 'd' to what 'baseType' can actually represent and returns it, still as
+// a double.  A TConstUnion holds every float type in a double, so without this a
+// sub-32-bit constant keeps bits its declared type cannot hold, and those bits go
+// on to take part in constant folding.  float and double are returned unchanged
+// (see the definition for why).  Defined in Intermediate.cpp.
+double RoundToDeclaredPrecision(double d, TBasicType baseType);
+
 class TConstUnion {
 public:
     POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
 
-    TConstUnion() : iConst(0), type(EbtInt) { }
+    TConstUnion() : iConst(0), type(EbtInt), hasRawFloatBits_(false), rawFloatBits_(0) { }
 
     void setI8Const(signed char i)
     {
@@ -97,10 +104,65 @@ public:
         type = EbtUint64;
     }
 
-    void setDConst(double d)
+    // 'baseType' is the float type the value was declared as.  It is rounded to
+    // that precision here rather than only when the constant is emitted, so that
+    // folding sees the same value the target would.
+    //
+    // There is deliberately no default: defaulting to EbtDouble silently gives a
+    // float16 (or narrower) constant double precision, which is the bug this
+    // rounding exists to prevent.  Callers must pass the type the value was
+    // declared as.
+    void setDConst(double d, TBasicType baseType)
     {
-        dConst = d;
-        type = EbtDouble;
+        assert(isTypeFloat(baseType));
+        dConst = RoundToDeclaredPrecision(d, baseType);
+        type = baseType;
+        hasRawFloatBits_ = false;
+    }
+
+    // Store the exact 32-bit pattern for a float constant produced by
+    // intBitsToFloat / uintBitsToFloat.  A signaling NaN cannot survive the
+    // float-to-double widening that setDConst performs, so we keep the raw
+    // bits alongside dConst (which still gets a possibly-quieted value for
+    // any arithmetic that reads it).
+    //
+    // Every fold that touches a float constant falls into one of these, and
+    // getting the category wrong is silent -- it only shows up as a quieted
+    // signaling NaN in the emitted constant:
+    //
+    //   1. Arithmetic (sin, exp, +, step, smoothstep, reflect, ...): read
+    //      dConst and let the raw bits go.  A computed result inherits no
+    //      payload from its operands.
+    //   2. Bit casts (floatBitsToInt and friends): read and write raw bits.
+    //   3. Sign-bit operations (negate, abs): manipulate the raw bits
+    //      directly.  IEEE 754 defines these as pure sign manipulation, so
+    //      they must not quiet; see negateFloatConst in Constant.cpp.
+    //   4. SPIR-V constant emission: reads raw bits.
+    //   5. Selection -- an operation that *returns one of its operands*
+    //      unchanged rather than computing a new value: mix() with a bool
+    //      selector, min, max, clamp, faceforward, swizzles and dereferences.
+    //      These must copy the whole TConstUnion.  Round-tripping the value
+    //      through getDConst()/setDConst() silently drops the raw bits.
+    //   6. Comparison: goes through dConst, so == and != keep their value
+    //      semantics: +0.0 equals -0.0 even though the encodings differ, and
+    //      a NaN equals nothing even though it encodes identically to itself.
+    //      Note that <= and >= must be spelled as a disjunction rather than
+    //      the negation of the opposite comparison, or they report true for
+    //      unordered operands.
+    void setRawFloatBits(unsigned int bits)
+    {
+        // Store the raw pattern.
+        rawFloatBits_ = bits;
+        hasRawFloatBits_ = true;
+
+        // Also populate dConst so that getDConst()-based consumers (e.g.
+        // arithmetic folding) see a float value.  The float-to-double
+        // conversion may quiet a signaling NaN, but that is what an
+        // arithmetic operation on one does anyway.
+        union { unsigned int u; float f; } pun;
+        pun.u = bits;
+        dConst = static_cast<double>(pun.f);
+        type = EbtFloat;
     }
 
     void setBConst(bool b)
@@ -126,6 +188,8 @@ public:
     double             getDConst() const   { return dConst; }
     bool               getBConst() const   { return bConst; }
     const TString*     getSConst() const   { return sConst; }
+    unsigned int       getRawFloatBits() const  { return rawFloatBits_; }
+    bool               getHasRawFloatBits() const { return hasRawFloatBits_; }
 
     bool operator==(const signed char i) const
     {
@@ -228,6 +292,16 @@ public:
                 return true;
 
             break;
+        case EbtFloat:
+        case EbtFloat16:
+        case EbtBFloat16:
+        case EbtFloatE5M2:
+        case EbtFloatE4M3:
+        case EbtFloatE2M1:
+        case EbtFloatE3M2:
+        case EbtFloatE2M3:
+        case EbtFloatUE8M0:
+        case EbtFloatMXINT8:
         case EbtDouble:
             if (constant.dConst == dConst)
                 return true;
@@ -340,6 +414,16 @@ public:
                 return true;
 
             return false;
+        case EbtFloat:
+        case EbtFloat16:
+        case EbtBFloat16:
+        case EbtFloatE5M2:
+        case EbtFloatE4M3:
+        case EbtFloatE2M1:
+        case EbtFloatE3M2:
+        case EbtFloatE2M3:
+        case EbtFloatUE8M0:
+        case EbtFloatMXINT8:
         case EbtDouble:
             if (dConst > constant.dConst)
                 return true;
@@ -414,6 +498,16 @@ public:
                 return true;
 
             return false;
+        case EbtFloat:
+        case EbtFloat16:
+        case EbtBFloat16:
+        case EbtFloatE5M2:
+        case EbtFloatE4M3:
+        case EbtFloatE2M1:
+        case EbtFloatE3M2:
+        case EbtFloatE2M3:
+        case EbtFloatUE8M0:
+        case EbtFloatMXINT8:
         case EbtDouble:
             if (dConst < constant.dConst)
                 return true;
@@ -442,7 +536,17 @@ public:
         switch (type) {
         case EbtInt:    returnValue.setIConst(iConst + constant.iConst); break;
         case EbtUint:   returnValue.setUConst(uConst + constant.uConst); break;
-        case EbtDouble: returnValue.setDConst(dConst + constant.dConst); break;
+        case EbtFloat:
+        case EbtFloat16:
+        case EbtBFloat16:
+        case EbtFloatE5M2:
+        case EbtFloatE4M3:
+        case EbtFloatE2M1:
+        case EbtFloatE3M2:
+        case EbtFloatE2M3:
+        case EbtFloatUE8M0:
+        case EbtFloatMXINT8:
+        case EbtDouble: returnValue.setDConst(dConst + constant.dConst, type); break;
         case EbtInt8:   returnValue.setI8Const(i8Const + constant.i8Const); break;
         case EbtInt16:  returnValue.setI16Const(i16Const + constant.i16Const); break;
         case EbtInt64:  returnValue.setI64Const(i64Const + constant.i64Const); break;
@@ -462,7 +566,17 @@ public:
         switch (type) {
         case EbtInt:    returnValue.setIConst(iConst - constant.iConst); break;
         case EbtUint:   returnValue.setUConst(uConst - constant.uConst); break;
-        case EbtDouble: returnValue.setDConst(dConst - constant.dConst); break;
+        case EbtFloat:
+        case EbtFloat16:
+        case EbtBFloat16:
+        case EbtFloatE5M2:
+        case EbtFloatE4M3:
+        case EbtFloatE2M1:
+        case EbtFloatE3M2:
+        case EbtFloatE2M3:
+        case EbtFloatUE8M0:
+        case EbtFloatMXINT8:
+        case EbtDouble: returnValue.setDConst(dConst - constant.dConst, type); break;
         case EbtInt8:   returnValue.setI8Const(i8Const - constant.i8Const); break;
         case EbtInt16:  returnValue.setI16Const(i16Const - constant.i16Const); break;
         case EbtInt64:  returnValue.setI64Const(i64Const - constant.i64Const); break;
@@ -482,7 +596,17 @@ public:
         switch (type) {
         case EbtInt:    returnValue.setIConst(iConst * constant.iConst); break;
         case EbtUint:   returnValue.setUConst(uConst * constant.uConst); break;
-        case EbtDouble: returnValue.setDConst(dConst * constant.dConst); break;
+        case EbtFloat:
+        case EbtFloat16:
+        case EbtBFloat16:
+        case EbtFloatE5M2:
+        case EbtFloatE4M3:
+        case EbtFloatE2M1:
+        case EbtFloatE3M2:
+        case EbtFloatE2M3:
+        case EbtFloatUE8M0:
+        case EbtFloatMXINT8:
+        case EbtDouble: returnValue.setDConst(dConst * constant.dConst, type); break;
         case EbtInt8:   returnValue.setI8Const(i8Const * constant.i8Const); break;
         case EbtInt16:  returnValue.setI16Const(i16Const * constant.i16Const); break;
         case EbtInt64:  returnValue.setI64Const(i64Const * constant.i64Const); break;
@@ -859,6 +983,12 @@ private:
     };
 
     TBasicType type;
+
+    // Supplementary storage for the exact 32-bit float pattern from
+    // intBitsToFloat / uintBitsToFloat.  Lives outside the union so it
+    // coexists with dConst rather than replacing it.
+    bool         hasRawFloatBits_;
+    unsigned int rawFloatBits_;
 };
 
 // Encapsulate having a pointer to an array of TConstUnion,

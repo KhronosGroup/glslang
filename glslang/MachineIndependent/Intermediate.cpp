@@ -45,7 +45,12 @@
 #include "SymbolTable.h"
 #include "propagateNoContraction.h"
 
+#include "glslang/Include/hex_float.h"
+
+#include <algorithm>
 #include <cfloat>
+#include <cmath>
+#include <cstring>
 #include <limits>
 #include <utility>
 #include <tuple>
@@ -2646,6 +2651,105 @@ TIntermConstantUnion* TIntermediate::addConstantUnion(bool b, const TSourceLoc& 
     return addConstantUnion(unionArray, TType(EbtBool, EvqConst), loc, literal);
 }
 
+namespace {
+
+// Round through the narrow format and back, which is the conversion
+// Builder::makeFloat16Constant and Builder::makeFloatConstantHelper apply when
+// they emit a constant of that type.
+template<typename Narrow>
+float RoundThroughNarrowFloat(float f)
+{
+    spvutils::HexFloat<spvutils::FloatProxy<float>> wide(f);
+    spvutils::HexFloat<spvutils::FloatProxy<Narrow>> narrow(0);
+    wide.castTo(narrow, spvutils::kRoundToZero);
+
+    spvutils::HexFloat<spvutils::FloatProxy<float>> back(0.0f);
+    narrow.castTo(back, spvutils::kRoundToZero);
+    return back.value().getAsFloat();
+}
+
+// Keep only the bits the given mask selects, dropping the mantissa bits the
+// narrow format does not have.
+float MaskFloatBits(float f, uint32_t mask)
+{
+    uint32_t bits;
+    memcpy(&bits, &f, sizeof(bits));
+    bits &= mask;
+
+    float result;
+    memcpy(&result, &bits, sizeof(result));
+    return result;
+}
+
+} // anonymous namespace
+
+double RoundToDeclaredPrecision(double d, TBasicType baseType)
+{
+    // Each case performs the same conversion as the matching
+    // Builder::make*Constant in SpvBuilder.cpp, so that folding a sub-32-bit
+    // constant cannot change the value the back end would otherwise have emitted.
+    const float f = static_cast<float>(d);
+
+    switch (baseType) {
+    case EbtFloat16:
+        return RoundThroughNarrowFloat<spvutils::Float16>(f);
+    case EbtFloatE5M2:
+        return RoundThroughNarrowFloat<spvutils::FloatE5M2>(f);
+    case EbtFloatE4M3:
+        return RoundThroughNarrowFloat<spvutils::FloatE4M3>(f);
+    case EbtFloatE2M1:
+        return RoundThroughNarrowFloat<spvutils::FloatE2M1>(f);
+    case EbtFloatE3M2:
+        return RoundThroughNarrowFloat<spvutils::FloatE3M2>(f);
+    case EbtFloatE2M3:
+        return RoundThroughNarrowFloat<spvutils::FloatE2M3>(f);
+    case EbtBFloat16:
+        // makeBFloat16Constant keeps the high 16 bits of the float, which is
+        // round-toward-zero apart from certain NaNs.
+        return MaskFloatBits(f, 0xFFFF0000u);
+    case EbtFloatUE8M0: {
+        // makeFloatUE8M0Constant clamps to non-negative and keeps only the
+        // exponent field, so recover the value by decoding that encoding
+        // explicitly.  ue8m0 has no zero and no infinity: encoding 0x00 is
+        // 2^-127 and 0xFF is NaN, so masking the float bits instead would
+        // misread both of those.
+        const float clamped = std::max(f, 0.0f);
+        uint32_t bits;
+        memcpy(&bits, &clamped, sizeof(bits));
+        const uint32_t encoding = (bits >> 23) & 0xFFu;
+        if (encoding == 0xFFu)
+            return std::numeric_limits<double>::quiet_NaN();
+        return ldexp(1.0, static_cast<int>(encoding) - 127);
+    }
+    case EbtFloatMXINT8: {
+        // makeFloatMXINT8Constant clamps and converts to 8-bit fixed point with
+        // six fractional bits.  The format has no NaN encoding, so a NaN pins
+        // to zero there, and the fold has to agree.
+        if (std::isnan(f))
+            return 0.0;
+        const float clamped = std::max(std::min(f, 127.0f / 64.0f), -127.0f / 64.0f);
+        const double rounded = static_cast<double>(roundf(clamped * 64.0f) / 64.0f);
+        // Fixed point has no signed zero.  makeFloatMXINT8Constant ends in
+        // '((int32_t)mxint8) & 0xFF', and that cast drops the sign, so -0.0 is
+        // emitted as encoding 0 -- a positive zero.  Dividing by 64 here would
+        // otherwise keep it negative and leave the fold holding 0x80000000 for a
+        // constant the back end emits as +0.0.
+        return rounded == 0.0 ? 0.0 : rounded;
+    }
+    default:
+        // float and double are deliberately left alone.  Rounding float
+        // constants to fp32 is permitted by the spec (constant expressions need
+        // not match runtime results) but it changes existing shaders: an
+        // unsuffixed literal is a float literal, so `double d = 1e100;` would
+        // fold to +inf and `double d = 3.14159265358979;` would lose its extra
+        // digits, where glslang has always kept them.  Only the types narrower
+        // than fp32 -- the ones a double-holding union misrepresented badly
+        // enough to change folded results the back end could never emit -- are
+        // rounded here.
+        return d;
+    }
+}
+
 TIntermConstantUnion* TIntermediate::addConstantUnion(double d, TBasicType baseType, const TSourceLoc& loc, bool literal) const
 {
     assert(isTypeFloat(baseType));
@@ -2663,7 +2767,7 @@ TIntermConstantUnion* TIntermediate::addConstantUnion(double d, TBasicType baseT
     }
 
     TConstUnionArray unionArray(1);
-    unionArray[0].setDConst(d);
+    unionArray[0].setDConst(d, baseType);
 
     return addConstantUnion(unionArray, TType(baseType, EvqConst), loc, literal);
 }
@@ -4003,21 +4107,24 @@ TIntermTyped* TIntermediate::promoteConstantUnion(TBasicType promoteTo, TIntermC
     for (int i=0; i < size; i++) {
 
 #define PROMOTE(Set, CType, Get) leftUnionArray[i].Set(static_cast<CType>(rightUnionArray[i].Get()))
+// Float targets carry the type through so the value is rounded to the precision
+// it is being promoted to, and the union records which float type it holds.
+#define PROMOTE_FLOAT(Get) leftUnionArray[i].setDConst(static_cast<double>(rightUnionArray[i].Get()), promoteTo)
 #define PROMOTE_TO_BOOL(Get) leftUnionArray[i].setBConst(rightUnionArray[i].Get() != 0)
 
 #define TO_ALL(Get)   \
         switch (promoteTo) { \
-        case EbtBFloat16: PROMOTE(setDConst, double, Get); break; \
-        case EbtFloatE5M2: PROMOTE(setDConst, double, Get); break; \
-        case EbtFloatE4M3: PROMOTE(setDConst, double, Get); break; \
-        case EbtFloatE2M1: PROMOTE(setDConst, double, Get); break; \
-        case EbtFloatE3M2: PROMOTE(setDConst, double, Get); break; \
-        case EbtFloatE2M3: PROMOTE(setDConst, double, Get); break; \
-        case EbtFloatUE8M0: PROMOTE(setDConst, double, Get); break; \
-        case EbtFloatMXINT8: PROMOTE(setDConst, double, Get); break; \
-        case EbtFloat16: PROMOTE(setDConst, double, Get); break; \
-        case EbtFloat: PROMOTE(setDConst, double, Get); break; \
-        case EbtDouble: PROMOTE(setDConst, double, Get); break; \
+        case EbtBFloat16: PROMOTE_FLOAT(Get); break; \
+        case EbtFloatE5M2: PROMOTE_FLOAT(Get); break; \
+        case EbtFloatE4M3: PROMOTE_FLOAT(Get); break; \
+        case EbtFloatE2M1: PROMOTE_FLOAT(Get); break; \
+        case EbtFloatE3M2: PROMOTE_FLOAT(Get); break; \
+        case EbtFloatE2M3: PROMOTE_FLOAT(Get); break; \
+        case EbtFloatUE8M0: PROMOTE_FLOAT(Get); break; \
+        case EbtFloatMXINT8: PROMOTE_FLOAT(Get); break; \
+        case EbtFloat16: PROMOTE_FLOAT(Get); break; \
+        case EbtFloat: PROMOTE_FLOAT(Get); break; \
+        case EbtDouble: PROMOTE_FLOAT(Get); break; \
         case EbtInt8: PROMOTE(setI8Const, signed char, Get); break; \
         case EbtInt16: PROMOTE(setI16Const, short, Get); break; \
         case EbtInt: PROMOTE(setIConst, int, Get); break; \
