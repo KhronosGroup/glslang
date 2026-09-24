@@ -1,0 +1,46 @@
+localSizeRepeated.comp
+WARNING: 0:3: 'local_size_x' : repeated layout qualifier, only the last occurrence is used 
+WARNING: 0:3: 'local_size_x' : repeated layout qualifier, only the last occurrence is used 
+
+Shader version: 450
+local_size = (2, 1, 1)
+0:? Sequence
+0:5  Function Definition: main( ( global void)
+0:5    Function Parameters: 
+0:6    Sequence
+0:6      Sequence
+0:6        move second child to first child ( temp uint)
+0:6          'x' ( temp uint)
+0:6          direct index ( temp uint)
+0:6            'gl_LocalInvocationID' ( in 3-component vector of uint LocalInvocationID)
+0:6            Constant:
+0:6              0 (const int)
+0:?   Linker Objects
+0:?     'gl_WorkGroupSize' ( const 3-component vector of uint WorkGroupSize)
+0:?       2 (const uint)
+0:?       1 (const uint)
+0:?       1 (const uint)
+
+
+Linked compute stage:
+
+
+Shader version: 450
+local_size = (2, 1, 1)
+0:? Sequence
+0:5  Function Definition: main( ( global void)
+0:5    Function Parameters: 
+0:6    Sequence
+0:6      Sequence
+0:6        move second child to first child ( temp uint)
+0:6          'x' ( temp uint)
+0:6          direct index ( temp uint)
+0:6            'gl_LocalInvocationID' ( in 3-component vector of uint LocalInvocationID)
+0:6            Constant:
+0:6              0 (const int)
+0:?   Linker Objects
+0:?     'gl_WorkGroupSize' ( const 3-component vector of uint WorkGroupSize)
+0:?       2 (const uint)
+0:?       1 (const uint)
+0:?       1 (const uint)
+
