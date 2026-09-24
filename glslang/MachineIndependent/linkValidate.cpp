@@ -48,6 +48,8 @@
 
 #include "glslang/Public/ShaderLang.h"
 #include "localintermediate.h"
+
+#include <set>
 #include "../Include/InfoSink.h"
 #include "SymbolTable.h"
 #include "LiveTraverser.h"
@@ -1820,6 +1822,29 @@ void TIntermediate::checkCallGraphCycles(TInfoSink& infoSink)
 // Reachable ones with missing bodies are errors.
 // Unreachable bodies are dead code.
 //
+// Collect every callee this unit calls but never defines, in call order and
+// without repeats. checkCallGraphBodies() reports the same thing for a linked
+// unit, but it runs from finalCheck() during link, which a compile-only unit
+// never reaches.
+void TIntermediate::findUndefinedCallees(TVector<TString>& callees) const
+{
+    std::set<TString> defined;
+    const TIntermSequence& functionSequence = getTreeRoot()->getAsAggregate()->getSequence();
+    for (TIntermNode* entry : functionSequence) {
+        const TIntermAggregate* node = entry->getAsAggregate();
+        if (node != nullptr && node->getOp() == EOpFunction)
+            defined.insert(node->getName());
+    }
+
+    std::set<TString> reported;
+    for (const TCall& call : callGraph) {
+        if (defined.find(call.callee) != defined.end())
+            continue;
+        if (reported.insert(call.callee).second)
+            callees.push_back(call.callee);
+    }
+}
+
 void TIntermediate::checkCallGraphBodies(TInfoSink& infoSink, bool keepUncalled)
 {
     // Clear fields we'll use for this.
