@@ -168,6 +168,7 @@ INSTANTIATE_TEST_SUITE_P(
         {"hlsl.attributeC11.frag", "main"},
         {"hlsl.attributeGlobalBuffer.frag", "main"},
         {"hlsl.basic.comp", "main"},
+        {"hlsl.entry.unnamed-param.error.vert", "main"},
         {"hlsl.basic.geom", "main"},
         {"hlsl.buffer.interlocked.error.frag", "main"},
         {"hlsl.buffer.load.error.frag", "main"},
