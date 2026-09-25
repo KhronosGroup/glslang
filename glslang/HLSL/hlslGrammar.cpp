@@ -3509,7 +3509,11 @@ bool HlslGrammar::acceptPostfixExpression(TIntermTyped*& node)
         case EOpPostDecrement:
             // DEC_OP
             node = intermediate.addUnaryMath(postOp, node, loc);
+            if (node == nullptr)
+                return false;
             node = parseContext.handleLvalue(loc, "unary operator", node);
+            if (node == nullptr)
+                return false;
             break;
         default:
             assert(0);
