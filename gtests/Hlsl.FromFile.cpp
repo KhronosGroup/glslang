@@ -353,6 +353,7 @@ INSTANTIATE_TEST_SUITE_P(
         {"hlsl.partialFlattenLocal.vert", "main"},
         {"hlsl.PointSize.geom", "main"},
         {"hlsl.PointSize.vert", "main"},
+        {"hlsl.postfix.nonlvalue.negative.frag", "main"},
         {"hlsl.pp.vert", "main"},
         {"hlsl.pp.line.frag", "main"},
         {"hlsl.precise.frag", "main"},
