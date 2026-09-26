@@ -64,6 +64,7 @@ path = [
     "gtests/InvertY.cpp",
     "gtests/Discard.cpp",
     "gtests/RestrictExtensions.cpp",
+    "gtests/PredefinedMacros.cpp",
 ]
 SPDX-FileCopyrightText = "The Khronos Group Inc."
 SPDX-License-Identifier = "BSD-3-Clause"
