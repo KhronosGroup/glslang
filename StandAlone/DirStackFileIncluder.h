@@ -40,6 +40,7 @@
 #include <string>
 #include <fstream>
 #include <algorithm>
+#include <filesystem>
 #include <set>
 
 #include "./../glslang/Public/ShaderLang.h"
@@ -115,6 +116,18 @@ protected:
     // directories and the nominal name of the header.
     virtual IncludeResult* readLocalPath(const char* headerName)
     {
+        // Open absolute paths directly.
+        if (std::filesystem::path(headerName).is_absolute()) {
+            std::ifstream file(headerName, std::ios_base::binary | std::ios_base::ate);
+
+            if (file) {
+                includedFiles.insert(headerName);
+                return newIncludeResult(headerName, file, (int)file.tellg());
+            }
+
+            return nullptr;
+        }
+
         // Find a directory that works, using a reverse search of the include stack.
         for (auto it = localDirectoryStack.rbegin(); it != localDirectoryStack.rend(); ++it) {
             std::string path = *it + '/' + headerName;
