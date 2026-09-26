@@ -94,8 +94,15 @@ vulkan_defined
 #ifdef GL_KHR_shader_subgroup_ballot
 ballot_defined
 #endif
-#ifdef GL_EXT_ray_tracing
-ray_tracing_defined
+#ifdef GL_EXT_buffer_reference
+buffer_reference_defined
+#endif
+)glsl";
+
+static const char* kStageMacro = R"glsl(
+#version 450
+#ifdef GL_FRAGMENT_SHADER
+fragment_shader_defined
 #endif
 )glsl";
 
@@ -145,7 +152,7 @@ TEST_F(RestrictExtensionsTest, WithoutRestrictionExtensionsArePredefined)
     ASSERT_TRUE(r.success) << r.infoLog;
     EXPECT_TRUE(contains(r.output, "vulkan_defined"));
     EXPECT_TRUE(contains(r.output, "ballot_defined"));
-    EXPECT_TRUE(contains(r.output, "ray_tracing_defined"));
+    EXPECT_TRUE(contains(r.output, "buffer_reference_defined"));
 }
 
 TEST_F(RestrictExtensionsTest, OnlyListedExtensionsArePredefined)
@@ -155,7 +162,7 @@ TEST_F(RestrictExtensionsTest, OnlyListedExtensionsArePredefined)
     ASSERT_TRUE(r.success) << r.infoLog;
     EXPECT_TRUE(contains(r.output, "vulkan_defined"));
     EXPECT_TRUE(contains(r.output, "ballot_defined"));
-    EXPECT_FALSE(contains(r.output, "ray_tracing_defined"));
+    EXPECT_FALSE(contains(r.output, "buffer_reference_defined"));
 }
 
 TEST_F(RestrictExtensionsTest, EmptyListPredefinesNoExtension)
@@ -165,7 +172,7 @@ TEST_F(RestrictExtensionsTest, EmptyListPredefinesNoExtension)
     ASSERT_TRUE(r.success) << r.infoLog;
     EXPECT_TRUE(contains(r.output, "vulkan_defined"));
     EXPECT_FALSE(contains(r.output, "ballot_defined"));
-    EXPECT_FALSE(contains(r.output, "ray_tracing_defined"));
+    EXPECT_FALSE(contains(r.output, "buffer_reference_defined"));
 }
 
 TEST_F(RestrictExtensionsTest, UnknownNamesInTheListAreIgnored)
@@ -174,7 +181,15 @@ TEST_F(RestrictExtensionsTest, UnknownNamesInTheListAreIgnored)
     auto r = preprocess(kMacros, &available);
     ASSERT_TRUE(r.success) << r.infoLog;
     EXPECT_TRUE(contains(r.output, "ballot_defined"));
-    EXPECT_FALSE(contains(r.output, "ray_tracing_defined"));
+    EXPECT_FALSE(contains(r.output, "buffer_reference_defined"));
+}
+
+TEST_F(RestrictExtensionsTest, StageMacrosComeFromSpirvIntrinsics)
+{
+    const std::vector<const char*> available = {"GL_EXT_spirv_intrinsics"};
+    EXPECT_TRUE(contains(preprocess(kStageMacro, &available).output, "fragment_shader_defined"));
+    const std::vector<const char*> none;
+    EXPECT_FALSE(contains(preprocess(kStageMacro, &none).output, "fragment_shader_defined"));
 }
 
 TEST_F(RestrictExtensionsTest, RequiringAnUnavailableExtensionIsAnError)
@@ -261,7 +276,7 @@ TEST_F(RestrictExtensionsTest, CInterface)
     glslang_shader_delete(shader);
 
     EXPECT_TRUE(contains(output, "ballot_defined"));
-    EXPECT_FALSE(contains(output, "ray_tracing_defined"));
+    EXPECT_FALSE(contains(output, "buffer_reference_defined"));
 }
 
 } // namespace glslangtest

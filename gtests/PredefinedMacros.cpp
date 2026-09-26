@@ -66,4 +66,39 @@ TEST(PredefinedMacros, ExtensionThatHadNone)
     EXPECT_TRUE(isPredefined("450", "GL_ARB_shader_clock"));
 }
 
+TEST(PredefinedMacros, FirstVersion)
+{
+    EXPECT_FALSE(isPredefined("450", "GL_EXT_ray_query"));
+    EXPECT_TRUE(isPredefined("460", "GL_EXT_ray_query"));
+}
+
+TEST(PredefinedMacros, EveryProfileThatSupportsTheExtension)
+{
+    EXPECT_FALSE(isPredefined("300 es", "GL_KHR_shader_subgroup_basic"));
+    EXPECT_TRUE(isPredefined("310 es", "GL_KHR_shader_subgroup_basic"));
+}
+
+TEST(PredefinedMacros, LastVersion)
+{
+    EXPECT_TRUE(isPredefined("100", "GL_OES_texture_3D"));
+    EXPECT_FALSE(isPredefined("300 es", "GL_OES_texture_3D"));
+    EXPECT_TRUE(isPredefined("420 compatibility", "GL_ARB_texture_rectangle"));
+    EXPECT_FALSE(isPredefined("420 core", "GL_ARB_texture_rectangle"));
+}
+
+TEST(PredefinedMacros, Target)
+{
+    EXPECT_TRUE(isPredefined("450", "GL_ARB_bindless_texture"));
+    EXPECT_FALSE(isPredefined("450", "GL_ARB_bindless_texture", true));
+    EXPECT_FALSE(isPredefined("450", "GL_EXT_buffer_reference"));
+    EXPECT_TRUE(isPredefined("450", "GL_EXT_buffer_reference", true));
+}
+
+TEST(PredefinedMacros, MinimumSpirvVersion)
+{
+    EXPECT_TRUE(isPredefined("450", "GL_KHR_shader_subgroup_basic"));
+    EXPECT_FALSE(isPredefined("450", "GL_KHR_shader_subgroup_basic", true, glslang::EShTargetSpv_1_2));
+    EXPECT_TRUE(isPredefined("450", "GL_KHR_shader_subgroup_basic", true, glslang::EShTargetSpv_1_3));
+}
+
 } // namespace glslangtest

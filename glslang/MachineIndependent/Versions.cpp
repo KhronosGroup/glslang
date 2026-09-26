@@ -79,9 +79,10 @@
 //
 //     const char* const XXX_extension_X = "XXX_extension_X";
 //
-// 2) Add a row to extensionInfo below, with the lowest ES and desktop versions whose
-//    preamble predefines the extension's macro, or Never for a profile without it, and
-//    optionally a target and the minimum SPIR-V version:
+// 2) Add a row to extensionInfo below. The preamble predefines the extension's macro from the
+//    lowest ES and desktop versions that its spec allows and at which all of its features
+//    compile, or Never for a profile without it. Optionally add a target and a minimum SPIR-V
+//    version:
 //
 //     {XXX_extension_X, 310, 450},
 //
@@ -152,130 +153,149 @@ namespace glslang {
 
 namespace {
 
-// The version for a profile whose preamble never predefines the extension's macro.
+// The first version for a profile whose preamble never predefines the extension's macro.
 const int Never = std::numeric_limits<int>::max();
+// The last version for a profile whose preamble predefines the macro in every later version.
+const int Latest = std::numeric_limits<int>::max();
 
-enum class TExtensionTarget {
-    Any,
-    NotSpirv, // not allowed when generating SPIR-V
+// The versions of one profile whose preamble predefines an extension's macro.
+struct TVersions {
+    TVersions(int first, int last = Latest, int lastCore = Latest) : first(first), last(last), lastCore(lastCore) {}
+
+    int first;
+    int last;
+    int lastCore; // the last version in the core profile
 };
 
-// An extension glslang knows. Its macro is predefined from the given ES and desktop versions on.
+// Where the extension works.
+enum class TExtensionTarget {
+    Any,
+    Spirv,     // only when generating SPIR-V
+    Vulkan,    // only when generating SPIR-V for Vulkan
+    NotSpirv,  // only when not generating SPIR-V
+    NotVulkan, // only when not generating SPIR-V for Vulkan
+};
+
+// For an extension that #extension rejects below its minimum SPIR-V version.
+const bool EnableRequiresMinSpv = true;
+
+// An extension glslang knows, and where the preamble predefines its macro: the versions of
+// each profile, the target, and the minimum SPIR-V version when generating SPIR-V.
 struct TExtensionInfo {
-    TExtensionInfo(const char* name, int minEsVersion, int minDesktopVersion,
-                   TExtensionTarget target = TExtensionTarget::Any,
-                   EShTargetLanguageVersion minSpvVersion = EShTargetSpv_1_0)
-        : name(name), minEsVersion(minEsVersion), minDesktopVersion(minDesktopVersion), target(target),
-          minSpvVersion(minSpvVersion)
+    TExtensionInfo(const char* name, TVersions es, TVersions desktop, TExtensionTarget target = TExtensionTarget::Any,
+                   EShTargetLanguageVersion minSpvVersion = EShTargetSpv_1_0, bool enableRequiresMinSpv = false)
+        : name(name), es(es), desktop(desktop), target(target), minSpvVersion(minSpvVersion),
+          enableRequiresMinSpv(enableRequiresMinSpv)
     {
     }
 
     const char* name;
-    int minEsVersion;
-    int minDesktopVersion;
+    TVersions es;
+    TVersions desktop;
     TExtensionTarget target;
-    EShTargetLanguageVersion minSpvVersion; // required to enable the extension
+    EShTargetLanguageVersion minSpvVersion;
+    bool enableRequiresMinSpv;
 };
 
 const TExtensionInfo extensionInfo[] = {
     // Extension                                        ES     Desktop
-    {E_GL_OES_texture_3D,                               0,     Never},
+    {E_GL_OES_texture_3D,                               {0, 100}, Never, TExtensionTarget::NotSpirv},
     {E_GL_OES_standard_derivatives,                     0,     Never},
     {E_GL_EXT_frag_depth,                               0,     Never},
-    {E_GL_OES_EGL_image_external,                       0,     Never},
-    {E_GL_OES_EGL_image_external_essl3,                 0,     Never},
-    {E_GL_EXT_YUV_target,                               0,     Never},
-    {E_GL_EXT_shader_texture_lod,                       0,     Never},
-    {E_GL_EXT_shadow_samplers,                          0,     Never},
-    {E_GL_ARB_texture_rectangle,                        Never, 0},
+    {E_GL_OES_EGL_image_external,                       {0, 100}, Never, TExtensionTarget::NotSpirv},
+    {E_GL_OES_EGL_image_external_essl3,                 300,   Never, TExtensionTarget::NotSpirv},
+    {E_GL_EXT_YUV_target,                               Never, Never, TExtensionTarget::NotSpirv},
+    {E_GL_EXT_shader_texture_lod,                       0,     Never, TExtensionTarget::NotSpirv},
+    {E_GL_EXT_shadow_samplers,                          300,   Never, TExtensionTarget::NotSpirv},
+    {E_GL_ARB_texture_rectangle,                        Never, {0, Latest, 410}, TExtensionTarget::NotSpirv},
     {E_GL_3DL_array_objects,                            Never, 0},
-    {E_GL_ARB_shading_language_420pack,                 Never, 0},
-    {E_GL_ARB_texture_gather,                           Never, 0},
-    {E_GL_ARB_gpu_shader5,                              Never, 0},
-    {E_GL_ARB_separate_shader_objects,                  Never, 0},
-    {E_GL_ARB_compute_shader,                           Never, 0},
-    {E_GL_ARB_tessellation_shader,                      Never, 0},
-    {E_GL_ARB_enhanced_layouts,                         Never, 0},
-    {E_GL_ARB_texture_cube_map_array,                   Never, 0},
-    {E_GL_ARB_texture_multisample,                      Never, 0},
-    {E_GL_ARB_shader_texture_lod,                       Never, 0},
-    {E_GL_ARB_explicit_attrib_location,                 Never, 0},
+    {E_GL_ARB_shading_language_420pack,                 Never, 130},
+    {E_GL_ARB_texture_gather,                           Never, 130},
+    {E_GL_ARB_gpu_shader5,                              Never, 150},
+    {E_GL_ARB_separate_shader_objects,                  Never, 150},
+    {E_GL_ARB_compute_shader,                           Never, 420},
+    {E_GL_ARB_tessellation_shader,                      Never, 150},
+    {E_GL_ARB_enhanced_layouts,                         Never, 430},
+    {E_GL_ARB_texture_cube_map_array,                   Never, 130},
+    {E_GL_ARB_texture_multisample,                      Never, 140},
+    {E_GL_ARB_shader_texture_lod,                       Never, {0, Latest, 410}, TExtensionTarget::NotSpirv},
+    {E_GL_ARB_explicit_attrib_location,                 Never, 130},
     {E_GL_ARB_explicit_uniform_location,                Never, 0},
-    {E_GL_ARB_shader_image_load_store,                  Never, 0},
-    {E_GL_ARB_shader_atomic_counters,                   Never, 0},
-    {E_GL_ARB_shader_atomic_counter_ops,                Never, 450},
-    {E_GL_ARB_shader_draw_parameters,                   Never, 0},
-    {E_GL_ARB_shader_group_vote,                        Never, 0},
-    {E_GL_ARB_derivative_control,                       Never, 0},
-    {E_GL_ARB_shader_texture_image_samples,             Never, 0},
-    {E_GL_ARB_viewport_array,                           Never, 0},
-    {E_GL_ARB_gpu_shader_int64,                         Never, 0},
-    {E_GL_ARB_gpu_shader_fp64,                          Never, 0},
-    {E_GL_ARB_shader_ballot,                            Never, 0},
-    {E_GL_ARB_sparse_texture2,                          Never, 0},
-    {E_GL_ARB_sparse_texture_clamp,                     Never, 0},
-    {E_GL_ARB_shader_stencil_export,                    Never, 0},
-    {E_GL_ARB_cull_distance,                            Never, 0},
-    {E_GL_ARB_post_depth_coverage,                      Never, 0},
+    {E_GL_ARB_shader_image_load_store,                  Never, 140},
+    {E_GL_ARB_shader_atomic_counters,                   Never, 420, TExtensionTarget::NotVulkan},
+    {E_GL_ARB_shader_atomic_counter_ops,                Never, {450, 450}, TExtensionTarget::NotVulkan},
+    {E_GL_ARB_shader_draw_parameters,                   Never, 440},
+    {E_GL_ARB_shader_group_vote,                        Never, 430},
+    {E_GL_ARB_derivative_control,                       Never, 400},
+    {E_GL_ARB_shader_texture_image_samples,             Never, 430},
+    {E_GL_ARB_viewport_array,                           Never, 150},
+    {E_GL_ARB_gpu_shader_int64,                         Never, 450},
+    {E_GL_ARB_gpu_shader_fp64,                          Never, 150},
+    {E_GL_ARB_shader_ballot,                            Never, 450},
+    {E_GL_ARB_sparse_texture2,                          Never, 450},
+    {E_GL_ARB_sparse_texture_clamp,                     Never, 450},
+    {E_GL_ARB_shader_stencil_export,                    Never, 140},
+    {E_GL_ARB_cull_distance,                            Never, 130},
+    {E_GL_ARB_post_depth_coverage,                      Never, 140},
     {E_GL_ARB_shader_viewport_layer_array,              Never, 410},
-    {E_GL_ARB_fragment_shader_interlock,                Never, 0},
+    {E_GL_ARB_fragment_shader_interlock,                Never, 450},
     {E_GL_ARB_shader_clock,                             Never, 450},
-    {E_GL_ARB_uniform_buffer_object,                    Never, 0},
-    {E_GL_ARB_sample_shading,                           Never, 0},
-    {E_GL_ARB_shader_bit_encoding,                      Never, 0},
-    {E_GL_ARB_shader_image_size,                        Never, 0},
-    {E_GL_ARB_shader_storage_buffer_object,             Never, 0},
-    {E_GL_ARB_shading_language_packing,                 Never, 0},
-    {E_GL_ARB_texture_query_lod,                        Never, 0},
-    {E_GL_ARB_vertex_attrib_64bit,                      Never, 0},
-    {E_GL_NV_gpu_shader5,                               Never, 0},
-    {E_GL_ARB_draw_instanced,                           Never, 0},
-    {E_GL_ARB_bindless_texture,                         Never, 0, TExtensionTarget::NotSpirv},
-    {E_GL_ARB_fragment_coord_conventions,               Never, 0},
-    {E_GL_ARB_conservative_depth,                       Never, 0},
+    {E_GL_ARB_uniform_buffer_object,                    Never, 140},
+    {E_GL_ARB_sample_shading,                           Never, 130},
+    {E_GL_ARB_shader_bit_encoding,                      Never, 150},
+    {E_GL_ARB_shader_image_size,                        Never, 420},
+    {E_GL_ARB_shader_storage_buffer_object,             Never, 420},
+    {E_GL_ARB_shading_language_packing,                 Never, 150},
+    {E_GL_ARB_texture_query_lod,                        Never, 150},
+    {E_GL_ARB_vertex_attrib_64bit,                      Never, 150},
+    {E_GL_NV_gpu_shader5,                               Never, 400},
+    {E_GL_ARB_draw_instanced,                           Never, Never, TExtensionTarget::NotVulkan},
+    {E_GL_ARB_bindless_texture,                         Never, 400, TExtensionTarget::NotSpirv},
+    {E_GL_ARB_fragment_coord_conventions,               Never, 140},
+    {E_GL_ARB_conservative_depth,                       Never, 420},
 
-    {E_GL_KHR_shader_subgroup_basic,                    Never, 0},
-    {E_GL_KHR_shader_subgroup_vote,                     Never, 0},
-    {E_GL_KHR_shader_subgroup_arithmetic,               Never, 0},
-    {E_GL_KHR_shader_subgroup_ballot,                   Never, 0},
-    {E_GL_KHR_shader_subgroup_shuffle,                  Never, 0},
-    {E_GL_KHR_shader_subgroup_shuffle_relative,         Never, 0},
-    {E_GL_KHR_shader_subgroup_rotate,                   310,   140},
-    {E_GL_KHR_shader_subgroup_clustered,                Never, 0},
-    {E_GL_KHR_shader_subgroup_quad,                     Never, 0},
+    {E_GL_KHR_shader_subgroup_basic,                    310,   140, TExtensionTarget::Any, EShTargetSpv_1_3},
+    {E_GL_KHR_shader_subgroup_vote,                     310,   140, TExtensionTarget::Any, EShTargetSpv_1_3},
+    {E_GL_KHR_shader_subgroup_arithmetic,               310,   140, TExtensionTarget::Any, EShTargetSpv_1_3},
+    {E_GL_KHR_shader_subgroup_ballot,                   310,   140, TExtensionTarget::Any, EShTargetSpv_1_3},
+    {E_GL_KHR_shader_subgroup_shuffle,                  310,   140, TExtensionTarget::Any, EShTargetSpv_1_3},
+    {E_GL_KHR_shader_subgroup_shuffle_relative,         310,   140, TExtensionTarget::Any, EShTargetSpv_1_3},
+    {E_GL_KHR_shader_subgroup_rotate,                   310,   140, TExtensionTarget::Any, EShTargetSpv_1_3},
+    {E_GL_KHR_shader_subgroup_clustered,                310,   140, TExtensionTarget::Any, EShTargetSpv_1_3},
+    {E_GL_KHR_shader_subgroup_quad,                     310,   140, TExtensionTarget::Any, EShTargetSpv_1_3},
     {E_GL_KHR_memory_scope_semantics,                   Never, 420},
 
-    {E_GL_EXT_shader_atomic_int64,                      Never, 0},
+    {E_GL_EXT_shader_atomic_int64,                      Never, 440},
 
-    {E_GL_EXT_shader_non_constant_global_initializers,  0,     0},
-    {E_GL_EXT_shader_image_load_formatted,              Never, 0},
-    {E_GL_EXT_post_depth_coverage,                      Never, 0},
-    {E_GL_EXT_control_flow_attributes,                  Never, 0},
-    {E_GL_EXT_nonuniform_qualifier,                     Never, 0},
-    {E_GL_EXT_samplerless_texture_functions,            Never, 0},
-    {E_GL_EXT_scalar_block_layout,                      Never, 0},
-    {E_GL_EXT_fragment_invocation_density,              Never, 0},
-    {E_GL_EXT_buffer_reference,                         Never, 0},
-    {E_GL_EXT_buffer_reference2,                        Never, 0},
-    {E_GL_EXT_buffer_reference_uvec2,                   Never, 0},
-    {E_GL_EXT_demote_to_helper_invocation,              Never, 0},
-    {E_GL_EXT_debug_printf,                             Never, 0},
+    {E_GL_EXT_shader_non_constant_global_initializers,  0,     Never},
+    {E_GL_EXT_shader_image_load_formatted,              Never, 420},
+    {E_GL_EXT_post_depth_coverage,                      310,   420},
+    {E_GL_EXT_control_flow_attributes,                  310,   140},
+    {E_GL_EXT_nonuniform_qualifier,                     310,   140},
+    {E_GL_EXT_samplerless_texture_functions,            310,   140, TExtensionTarget::Vulkan},
+    {E_GL_EXT_scalar_block_layout,                      310,   140, TExtensionTarget::Vulkan},
+    {E_GL_EXT_fragment_invocation_density,              310,   450},
+    {E_GL_EXT_buffer_reference,                         320,   450, TExtensionTarget::Vulkan},
+    {E_GL_EXT_buffer_reference2,                        Never, 450, TExtensionTarget::Vulkan},
+    {E_GL_EXT_buffer_reference_uvec2,                   320,   450, TExtensionTarget::Vulkan},
+    {E_GL_EXT_demote_to_helper_invocation,              310,   140},
+    {E_GL_EXT_debug_printf,                             310,   140},
 
-    {E_GL_EXT_shader_16bit_storage,                     Never, 0},
-    {E_GL_EXT_shader_8bit_storage,                      Never, 0},
+    {E_GL_EXT_shader_16bit_storage,                     310,   140},
+    {E_GL_EXT_shader_8bit_storage,                      310,   140},
     {E_GL_EXT_subgroup_uniform_control_flow,            310,   140},
     {E_GL_EXT_maximal_reconvergence,                    310,   140},
 
-    {E_GL_EXT_fragment_shader_barycentric,              Never, 0},
+    {E_GL_EXT_fragment_shader_barycentric,              Never, 450},
     {E_GL_EXT_expect_assume,                            310,   140},
 
-    {E_GL_EXT_control_flow_attributes2,                 Never, 0},
-    {E_GL_EXT_function_control_attributes,              Never, 0},
-    {E_GL_EXT_spec_constant_composites,                 Never, 0},
-    {E_GL_EXT_abort,                                    Never, 0},
-    {E_GL_EXT_split_barrier,                            0,     0},
+    {E_GL_EXT_control_flow_attributes2,                 310,   140},
+    {E_GL_EXT_function_control_attributes,              310,   140},
+    {E_GL_EXT_spec_constant_composites,                 310,   140, TExtensionTarget::Spirv},
+    {E_GL_EXT_abort,                                    0,     0},
+    {E_GL_EXT_split_barrier,                            310,   460},
 
-    {E_GL_KHR_cooperative_matrix,                       Never, 0},
+    {E_GL_KHR_cooperative_matrix,                       Never, 450},
     {E_GL_NV_cooperative_vector,                        Never, 450},
 
     // #line and #include
@@ -283,50 +303,50 @@ const TExtensionInfo extensionInfo[] = {
     {E_GL_GOOGLE_include_directive,                     0,     0},
     {E_GL_ARB_shading_language_include,                 Never, 0},
 
-    {E_GL_AMD_shader_ballot,                            Never, 0},
-    {E_GL_AMD_shader_trinary_minmax,                    Never, 0},
-    {E_GL_AMD_shader_explicit_vertex_parameter,         Never, 0},
-    {E_GL_AMD_gcn_shader,                               Never, 0},
-    {E_GL_AMD_gpu_shader_half_float,                    Never, 0},
-    {E_GL_AMD_texture_gather_bias_lod,                  Never, 0},
-    {E_GL_AMD_gpu_shader_int16,                         Never, 0},
-    {E_GL_AMD_shader_image_load_store_lod,              Never, 0},
-    {E_GL_AMD_shader_fragment_mask,                     Never, 0},
-    {E_GL_AMD_gpu_shader_half_float_fetch,              Never, 0},
+    {E_GL_AMD_shader_ballot,                            Never, 450},
+    {E_GL_AMD_shader_trinary_minmax,                    Never, 430},
+    {E_GL_AMD_shader_explicit_vertex_parameter,         Never, 450},
+    {E_GL_AMD_gcn_shader,                               Never, 440},
+    {E_GL_AMD_gpu_shader_half_float,                    Never, 450},
+    {E_GL_AMD_texture_gather_bias_lod,                  Never, 450},
+    {E_GL_AMD_gpu_shader_int16,                         Never, 450},
+    {E_GL_AMD_shader_image_load_store_lod,              Never, 450},
+    {E_GL_AMD_shader_fragment_mask,                     Never, 450},
+    {E_GL_AMD_gpu_shader_half_float_fetch,              Never, 450},
     {E_GL_AMD_shader_early_and_late_fragment_tests,     310,   140},
 
-    {E_GL_INTEL_shader_integer_functions2,              Never, 0},
+    {E_GL_INTEL_shader_integer_functions2,              300,   130},
 
-    {E_GL_NV_sample_mask_override_coverage,             Never, 0},
-    {E_SPV_NV_geometry_shader_passthrough,              Never, 0},
-    {E_GL_NV_viewport_array2,                           Never, 0},
+    {E_GL_NV_sample_mask_override_coverage,             320,   400},
+    {E_SPV_NV_geometry_shader_passthrough,              310,   150},
+    {E_GL_NV_viewport_array2,                           Never, 430},
     {E_GL_NV_stereo_view_rendering,                     Never, 450},
     {E_GL_NVX_multiview_per_view_attributes,            Never, 450},
-    {E_GL_NV_shader_atomic_int64,                       Never, 0},
-    {E_GL_NV_conservative_raster_underestimation,       Never, 0},
+    {E_GL_NV_shader_atomic_int64,                       Never, 440},
+    {E_GL_NV_conservative_raster_underestimation,       Never, 430},
     {E_GL_NV_shader_noperspective_interpolation,        300,   Never},
-    {E_GL_NV_shader_subgroup_partitioned,               Never, 0},
-    {E_GL_NV_shading_rate_image,                        Never, 0},
-    {E_GL_NV_ray_tracing,                               Never, 0},
-    {E_GL_NV_ray_tracing_motion_blur,                   Never, 0, TExtensionTarget::Any, EShTargetSpv_1_4},
-    {E_GL_NV_fragment_shader_barycentric,               Never, 0},
-    {E_GL_KHR_compute_shader_derivatives,               Never, 0},
-    {E_GL_NV_compute_shader_derivatives,                Never, 0},
-    {E_GL_NV_shader_texture_footprint,                  Never, 0},
-    {E_GL_NV_mesh_shader,                               Never, 0},
-    {E_GL_NV_cooperative_matrix,                        Never, 0},
+    {E_GL_NV_shader_subgroup_partitioned,               310,   140, TExtensionTarget::Any, EShTargetSpv_1_3},
+    {E_GL_NV_shading_rate_image,                        320,   450},
+    {E_GL_NV_ray_tracing,                               Never, 460},
+    {E_GL_NV_ray_tracing_motion_blur,                   Never, 460, TExtensionTarget::Spirv, EShTargetSpv_1_4, EnableRequiresMinSpv},
+    {E_GL_NV_fragment_shader_barycentric,               320,   450},
+    {E_GL_KHR_compute_shader_derivatives,               320,   450},
+    {E_GL_NV_compute_shader_derivatives,                320,   450},
+    {E_GL_NV_shader_texture_footprint,                  320,   450},
+    {E_GL_NV_mesh_shader,                               320,   450},
+    {E_GL_NV_cooperative_matrix,                        Never, 450},
     {E_GL_NV_shader_sm_builtins,                        310,   140},
-    {E_GL_NV_integer_cooperative_matrix,                Never, 0},
-    {E_GL_NV_shader_invocation_reorder,                 Never, 0},
+    {E_GL_NV_integer_cooperative_matrix,                Never, 450},
+    {E_GL_NV_shader_invocation_reorder,                 Never, 460, TExtensionTarget::Vulkan},
     {E_GL_NV_displacement_micromap,                     Never, 460},
     {E_GL_NV_shader_atomic_fp16_vector,                 Never, 430},
-    {E_GL_NV_cooperative_matrix2,                       Never, 0, TExtensionTarget::Any, EShTargetSpv_1_6},
-    {E_GL_NV_cooperative_matrix_decode_vector,          Never, 0, TExtensionTarget::Any, EShTargetSpv_1_6},
+    {E_GL_NV_cooperative_matrix2,                       Never, 450, TExtensionTarget::Vulkan, EShTargetSpv_1_6, EnableRequiresMinSpv},
+    {E_GL_NV_cooperative_matrix_decode_vector,          Never, 450, TExtensionTarget::Vulkan, EShTargetSpv_1_6, EnableRequiresMinSpv},
     {E_GL_NV_cluster_acceleration_structure,            Never, 460},
     {E_GL_NV_linear_swept_spheres,                      Never, 460},
     {E_GL_NV_desktop_lowp_mediump,                      Never, 0},
-    {E_GL_NV_push_constant_bank,                        Never, 460},
-    {E_GL_NV_explicit_typecast,                         Never, 0},
+    {E_GL_NV_push_constant_bank,                        Never, 460, TExtensionTarget::Vulkan},
+    {E_GL_NV_explicit_typecast,                         320,   450},
 
     // ARM
     {E_GL_ARM_shader_core_builtins,                     310,   140},
@@ -336,113 +356,132 @@ const TExtensionInfo extensionInfo[] = {
     {E_GL_ARM_tensors_float_e4m3,                       Never, 460},
 
     // QCOM
-    {E_GL_QCOM_image_processing,                        0,     0},
-    {E_GL_QCOM_image_processing2,                       0,     0},
-    {E_GL_QCOM_image_processing3,                       0,     0},
-    {E_GL_QCOM_tile_shading,                            0,     0},
-    {E_GL_QCOM_cooperative_matrix_conversion,           0,     0},
+    {E_GL_QCOM_image_processing,                        310,   140},
+    {E_GL_QCOM_image_processing2,                       310,   140},
+    {E_GL_QCOM_image_processing3,                       310,   130},
+    {E_GL_QCOM_tile_shading,                            310,   460},
+    {E_GL_QCOM_cooperative_matrix_conversion,           Never, 460},
     {E_GL_QCOM_multiple_wait_queues,                    0,     0},
 
     // AEP
-    {E_GL_ANDROID_extension_pack_es31a,                 0,     Never},
-    {E_GL_KHR_blend_equation_advanced,                  0,     0},
-    {E_GL_OES_sample_variables,                         0,     Never},
-    {E_GL_OES_shader_image_atomic,                      0,     Never},
-    {E_GL_OES_shader_multisample_interpolation,         0,     Never},
-    {E_GL_OES_texture_storage_multisample_2d_array,     0,     Never},
+    {E_GL_ANDROID_extension_pack_es31a,                 310,   Never},
+    {E_GL_KHR_blend_equation_advanced,                  300,   140},
+    {E_GL_OES_sample_variables,                         310,   Never},
+    {E_GL_OES_shader_image_atomic,                      310,   Never},
+    {E_GL_OES_shader_multisample_interpolation,         310,   Never},
+    {E_GL_OES_texture_storage_multisample_2d_array,     310,   Never},
     {E_GL_EXT_clip_cull_distance,                       300,   Never},
-    {E_GL_EXT_geometry_shader,                          0,     Never},
-    {E_GL_EXT_geometry_point_size,                      0,     Never},
-    {E_GL_EXT_gpu_shader5,                              0,     Never},
-    {E_GL_EXT_primitive_bounding_box,                   0,     Never},
-    {E_GL_EXT_shader_io_blocks,                         0,     Never},
-    {E_GL_EXT_tessellation_shader,                      0,     Never},
-    {E_GL_EXT_tessellation_point_size,                  0,     Never},
-    {E_GL_EXT_texture_buffer,                           0,     Never},
-    {E_GL_EXT_texture_cube_map_array,                   0,     Never},
+    {E_GL_EXT_geometry_shader,                          310,   Never},
+    {E_GL_EXT_geometry_point_size,                      310,   Never},
+    {E_GL_EXT_gpu_shader5,                              310,   Never},
+    {E_GL_EXT_primitive_bounding_box,                   310,   Never},
+    {E_GL_EXT_shader_io_blocks,                         310,   Never},
+    {E_GL_EXT_tessellation_shader,                      310,   Never},
+    {E_GL_EXT_tessellation_point_size,                  310,   Never},
+    {E_GL_EXT_texture_buffer,                           310,   Never},
+    {E_GL_EXT_texture_cube_map_array,                   310,   Never},
     {E_GL_EXT_null_initializer,                         310,   140},
-    {E_GL_EXT_descriptor_heap,                          0,     0},
-    {E_GL_EXT_structured_descriptor_heap,               0,     0},
+    {E_GL_EXT_descriptor_heap,                          310,   420, TExtensionTarget::Vulkan},
+    {E_GL_EXT_structured_descriptor_heap,               310,   420, TExtensionTarget::Vulkan},
 
     // OES matching AEP
-    {E_GL_OES_geometry_shader,                          0,     Never},
-    {E_GL_OES_geometry_point_size,                      0,     Never},
-    {E_GL_OES_gpu_shader5,                              0,     Never},
-    {E_GL_OES_primitive_bounding_box,                   0,     Never},
-    {E_GL_OES_shader_io_blocks,                         0,     Never},
-    {E_GL_OES_tessellation_shader,                      0,     Never},
-    {E_GL_OES_tessellation_point_size,                  0,     Never},
-    {E_GL_OES_texture_buffer,                           0,     Never},
-    {E_GL_OES_texture_cube_map_array,                   0,     Never},
-    {E_GL_EXT_shader_integer_mix,                       0,     0},
+    {E_GL_OES_geometry_shader,                          310,   Never},
+    {E_GL_OES_geometry_point_size,                      310,   Never},
+    {E_GL_OES_gpu_shader5,                              310,   Never},
+    {E_GL_OES_primitive_bounding_box,                   310,   Never},
+    {E_GL_OES_shader_io_blocks,                         310,   Never},
+    {E_GL_OES_tessellation_shader,                      310,   Never},
+    {E_GL_OES_tessellation_point_size,                  310,   Never},
+    {E_GL_OES_texture_buffer,                           310,   Never},
+    {E_GL_OES_texture_cube_map_array,                   310,   Never},
+    {E_GL_EXT_shader_integer_mix,                       300,   150},
 
     // EXT extensions
     {E_GL_EXT_device_group,                             310,   140},
     {E_GL_EXT_multiview,                                310,   140},
-    {E_GL_EXT_shader_realtime_clock,                    Never, 0},
-    {E_GL_EXT_ray_tracing,                              Never, 0, TExtensionTarget::Any, EShTargetSpv_1_4},
-    {E_GL_EXT_ray_query,                                Never, 0},
-    {E_GL_EXT_ray_flags_primitive_culling,              Never, 0},
-    {E_GL_EXT_ray_cull_mask,                            Never, 0},
+    {E_GL_EXT_shader_realtime_clock,                    Never, 450},
+    {E_GL_EXT_ray_tracing,                              Never, 460, TExtensionTarget::Spirv, EShTargetSpv_1_4, EnableRequiresMinSpv},
+    {E_GL_EXT_ray_query,                                Never, 460},
+    {E_GL_EXT_ray_flags_primitive_culling,              Never, 460},
+    {E_GL_EXT_ray_cull_mask,                            Never, 460, TExtensionTarget::Spirv, EShTargetSpv_1_4},
     {E_GL_EXT_blend_func_extended,                      0,     Never},
-    {E_GL_EXT_shader_implicit_conversions,              0,     Never},
-    {E_GL_EXT_fragment_shading_rate,                    0,     0},
-    {E_GL_EXT_shader_image_int64,                       Never, 0},
-    {E_GL_EXT_terminate_invocation,                     0,     0},
-    {E_GL_EXT_shared_memory_block,                      Never, 0},
+    {E_GL_EXT_shader_implicit_conversions,              310,   Never},
+    {E_GL_EXT_fragment_shading_rate,                    310,   450},
+    {E_GL_EXT_shader_image_int64,                       Never, 420},
+    {E_GL_EXT_terminate_invocation,                     310,   140},
+    {E_GL_EXT_shared_memory_block,                      310,   140, TExtensionTarget::Any, EShTargetSpv_1_4},
     {E_GL_EXT_spirv_intrinsics,                         Never, 0},
-    {E_GL_EXT_mesh_shader,                              Never, 0, TExtensionTarget::Any, EShTargetSpv_1_4},
+    {E_GL_EXT_mesh_shader,                              Never, 450, TExtensionTarget::Spirv, EShTargetSpv_1_4, EnableRequiresMinSpv},
     {E_GL_EXT_opacity_micromap,                         Never, 460},
     {E_GL_EXT_opacity_micromap_ray_query_mode,          Never, 460},
-    {E_GL_EXT_shader_quad_control,                      Never, 0},
-    {E_GL_EXT_ray_tracing_position_fetch,               Never, 0},
-    {E_GL_EXT_shader_tile_image,                        Never, 460},
+    {E_GL_EXT_shader_quad_control,                      310,   150, TExtensionTarget::Any, EShTargetSpv_1_3},
+    {E_GL_EXT_ray_tracing_position_fetch,               Never, 460},
+    {E_GL_EXT_shader_tile_image,                        Never, 460, TExtensionTarget::Vulkan},
     {E_GL_EXT_texture_shadow_lod,                       Never, 130},
-    {E_GL_EXT_draw_instanced,                           Never, 0},
-    {E_GL_EXT_texture_array,                            Never, 0},
+    {E_GL_EXT_draw_instanced,                           Never, 0, TExtensionTarget::NotVulkan},
+    {E_GL_EXT_texture_array,                            Never, {0, Latest, 410}, TExtensionTarget::NotSpirv},
     {E_GL_EXT_texture_offset_non_const,                 300,   130},
     {E_GL_EXT_nontemporal_keyword,                      320,   460},
-    {E_GL_EXT_bfloat16,                                 Never, 0},
-    {E_GL_EXT_float_e4m3,                               Never, 0},
-    {E_GL_EXT_float_e5m2,                               Never, 0},
+    {E_GL_EXT_bfloat16,                                 320,   450},
+    {E_GL_EXT_float_e4m3,                               320,   450},
+    {E_GL_EXT_float_e5m2,                               320,   450},
     {E_GL_EXT_uniform_buffer_unsized_array,             Never, 0},
-    {E_GL_EXT_shader_64bit_indexing,                    Never, 0},
-    {E_GL_EXT_conservative_depth,                       0,     Never},
+    {E_GL_EXT_shader_64bit_indexing,                    320,   450},
+    {E_GL_EXT_conservative_depth,                       300,   Never},
     {E_GL_EXT_long_vector,                              Never, 450},
-    {E_GL_EXT_float_e2m1,                               Never, 0},
-    {E_GL_EXT_float_e3m2,                               Never, 0},
-    {E_GL_EXT_float_e2m3,                               Never, 0},
-    {E_GL_EXT_float_ue8m0,                              Never, 0},
-    {E_GL_EXT_float_mxint8,                             Never, 0},
-    {E_GL_EXT_optional_input_attachment_index,          300,   140},
-    {E_GL_EXT_cooperative_matrix_maintenance1,          Never, 0, TExtensionTarget::Any, EShTargetSpv_1_3},
+    {E_GL_EXT_float_e2m1,                               320,   450},
+    {E_GL_EXT_float_e3m2,                               320,   450},
+    {E_GL_EXT_float_e2m3,                               320,   450},
+    {E_GL_EXT_float_ue8m0,                              320,   450},
+    {E_GL_EXT_float_mxint8,                             320,   450},
+    {E_GL_EXT_optional_input_attachment_index,          310,   140, TExtensionTarget::Vulkan},
+    {E_GL_EXT_cooperative_matrix_maintenance1,          Never, 450, TExtensionTarget::Spirv, EShTargetSpv_1_3, EnableRequiresMinSpv},
 
     // OVR extensions
-    {E_GL_OVR_multiview,                                300,   300},
-    {E_GL_OVR_multiview2,                               300,   300},
+    {E_GL_OVR_multiview,                                300,   330},
+    {E_GL_OVR_multiview2,                               300,   330},
 
     // explicit types
-    {E_GL_EXT_shader_explicit_arithmetic_types,         Never, 0},
-    {E_GL_EXT_shader_explicit_arithmetic_types_int8,    Never, 0},
-    {E_GL_EXT_shader_explicit_arithmetic_types_int16,   Never, 0},
-    {E_GL_EXT_shader_explicit_arithmetic_types_int32,   Never, 0},
-    {E_GL_EXT_shader_explicit_arithmetic_types_int64,   Never, 0},
-    {E_GL_EXT_shader_explicit_arithmetic_types_float16, Never, 0},
-    {E_GL_EXT_shader_explicit_arithmetic_types_float32, Never, 0},
-    {E_GL_EXT_shader_explicit_arithmetic_types_float64, Never, 0},
+    {E_GL_EXT_shader_explicit_arithmetic_types,         Never, 450},
+    {E_GL_EXT_shader_explicit_arithmetic_types_int8,    310,   450},
+    {E_GL_EXT_shader_explicit_arithmetic_types_int16,   Never, 450},
+    {E_GL_EXT_shader_explicit_arithmetic_types_int32,   310,   140},
+    {E_GL_EXT_shader_explicit_arithmetic_types_int64,   Never, 450},
+    {E_GL_EXT_shader_explicit_arithmetic_types_float16, 310,   450},
+    {E_GL_EXT_shader_explicit_arithmetic_types_float32, 310,   140},
+    {E_GL_EXT_shader_explicit_arithmetic_types_float64, Never, 400},
 
     // subgroup extended types
-    {E_GL_EXT_shader_subgroup_extended_types_int8,      Never, 0},
-    {E_GL_EXT_shader_subgroup_extended_types_int16,     Never, 0},
-    {E_GL_EXT_shader_subgroup_extended_types_int64,     Never, 0},
-    {E_GL_EXT_shader_subgroup_extended_types_float16,   Never, 0},
-    {E_GL_EXT_shader_atomic_float,                      Never, 0},
-    {E_GL_EXT_shader_atomic_float2,                     Never, 0},
+    {E_GL_EXT_shader_subgroup_extended_types_int8,      310,   140, TExtensionTarget::Any, EShTargetSpv_1_3},
+    {E_GL_EXT_shader_subgroup_extended_types_int16,     310,   140, TExtensionTarget::Any, EShTargetSpv_1_3},
+    {E_GL_EXT_shader_subgroup_extended_types_int64,     Never, 400, TExtensionTarget::Any, EShTargetSpv_1_3},
+    {E_GL_EXT_shader_subgroup_extended_types_float16,   310,   140, TExtensionTarget::Any, EShTargetSpv_1_3},
+    {E_GL_EXT_shader_atomic_float,                      Never, 450},
+    {E_GL_EXT_shader_atomic_float2,                     Never, 450},
 
-    {E_GL_EXT_integer_dot_product,                      Never, 0},
+    {E_GL_EXT_integer_dot_product,                      300,   450},
 
-    {E_GL_EXT_shader_invocation_reorder,                Never, 0},
+    {E_GL_EXT_shader_invocation_reorder,                Never, 460, TExtensionTarget::Vulkan, EShTargetSpv_1_4},
 };
+
+// Returns true if the preamble predefines the extension's macro.
+bool isMacroPredefined(const TExtensionInfo& extension, EProfile profile, int version, const SpvVersion& spvVersion)
+{
+    const TVersions& versions = profile == EEsProfile ? extension.es : extension.desktop;
+    if (version < versions.first || version > versions.last)
+        return false;
+    if (profile == ECoreProfile && version > versions.lastCore)
+        return false;
+
+    switch (extension.target) {
+    case TExtensionTarget::Any:       break;
+    case TExtensionTarget::Spirv:     if (spvVersion.spv == 0) return false; break;
+    case TExtensionTarget::Vulkan:    if (spvVersion.vulkan == 0) return false; break;
+    case TExtensionTarget::NotSpirv:  if (spvVersion.spv != 0) return false; break;
+    case TExtensionTarget::NotVulkan: if (spvVersion.vulkan != 0) return false; break;
+    }
+    return spvVersion.spv == 0 || spvVersion.spv >= static_cast<unsigned int>(extension.minSpvVersion);
+}
 
 } // anonymous namespace
 
@@ -460,10 +499,8 @@ void TParseVersions::initializeExtensionBehavior()
             continue;
         }
         extensionBehavior[extension.name] = EBhDisable;
-        if (extension.minSpvVersion > EShTargetSpv_1_0)
+        if (extension.enableRequiresMinSpv)
             extensionMinSpv[extension.name] = extension.minSpvVersion;
-        if (extension.target == TExtensionTarget::NotSpirv)
-            spvUnsupportedExt.push_back(extension.name);
     }
 }
 
@@ -491,16 +528,16 @@ void TParseVersions::getPreamble(std::string& preamble)
         }
     }
 
+    bool spirvIntrinsics = false;
     for (const TExtensionInfo& extension : extensionInfo) {
-        if (version < (isEsProfile() ? extension.minEsVersion : extension.minDesktopVersion))
-            continue;
-        if (extension.target == TExtensionTarget::NotSpirv && spvVersion.spv != 0)
-            continue;
-        if (! intermediate.isExtensionAvailable(extension.name))
+        if (! isMacroPredefined(extension, profile, version, spvVersion) ||
+            ! intermediate.isExtensionAvailable(extension.name))
             continue;
         preamble += "#define ";
         preamble += extension.name;
         preamble += " 1\n";
+        if (strcmp(extension.name, E_GL_EXT_spirv_intrinsics) == 0)
+            spirvIntrinsics = true;
     }
 
     // #define VULKAN XXXX
@@ -522,7 +559,7 @@ void TParseVersions::getPreamble(std::string& preamble)
     }
 
     // GL_EXT_spirv_intrinsics
-    if (!isEsProfile()) {
+    if (spirvIntrinsics) {
         switch (language) {
         case EShLangVertex:         preamble += "#define GL_VERTEX_SHADER 1 \n";                    break;
         case EShLangTessControl:    preamble += "#define GL_TESSELLATION_CONTROL_SHADER 1 \n";      break;
@@ -1003,12 +1040,8 @@ void TParseVersions::extensionRequires(const TSourceLoc &loc, const char * const
         requireSpv(loc, extension, minSpvVersion);
     }
 
-    if (spvVersion.spv != 0){
-        for (auto ext : spvUnsupportedExt){
-            if (strcmp(extension, ext.c_str()) == 0)
-                error(loc, "not allowed when using generating SPIR-V codes", extension, "");
-        }
-    }
+    if (spvVersion.spv != 0 && strcmp(extension, E_GL_ARB_bindless_texture) == 0)
+        error(loc, "not allowed when using generating SPIR-V codes", extension, "");
 }
 
 // Call for any operation needing full GLSL integer data-type support.
