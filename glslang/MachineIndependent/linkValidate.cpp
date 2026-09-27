@@ -52,6 +52,8 @@
 #include "SymbolTable.h"
 #include "LiveTraverser.h"
 
+#include <limits>
+
 namespace glslang {
 
 //
@@ -2197,6 +2199,16 @@ bool TIntermediate::addUsedConstantId(int id)
     return true;
 }
 
+// Counting how many locations a type consumes recursively multiplies and sums its
+// declared array and matrix dimensions. For pathological declarations that arithmetic
+// overflows a 32-bit int (undefined behavior), and the wrapped value then feeds signed
+// location-range arithmetic in the callers. Do the arithmetic in 64-bit and clamp the
+// result to 'limit' so it stays representable and safe to add to a location.
+static int clampLocationCount(long long count, long long limit)
+{
+    return count > limit ? static_cast<int>(limit) : static_cast<int>(count);
+}
+
 // Recursively figure out how many locations are used up by an input or output type.
 // Return the size of type, as measured by "locations".
 int TIntermediate::computeTypeLocationSize(const TType& type, EShLanguage stage)
@@ -2208,7 +2220,8 @@ int TIntermediate::computeTypeLocationSize(const TType& type, EShLanguage stage)
         // TODO: are there valid cases of having an unsized array with a location?  If so, running this code too early.
         TType elementType(type, 0);
         if (type.isSizedArray() && !type.getQualifier().isPerView())
-            return type.getOuterArraySize() * computeTypeLocationSize(elementType, stage);
+            return clampLocationCount((long long)type.getOuterArraySize() * computeTypeLocationSize(elementType, stage),
+                                      TQualifier::layoutLocationEnd);
         else {
             // unset perViewNV attributes for arrayed per-view outputs: "perviewNV vec4 v[MAX_VIEWS][3];"
             elementType.getQualifier().perViewNV = false;
@@ -2219,12 +2232,12 @@ int TIntermediate::computeTypeLocationSize(const TType& type, EShLanguage stage)
     // "The locations consumed by block and structure members are determined by applying the rules above
     // recursively..."
     if (type.isStruct()) {
-        int size = 0;
+        long long size = 0;
         for (int member = 0; member < (int)type.getStruct()->size(); ++member) {
             TType memberType(type, member);
             size += computeTypeLocationSize(memberType, stage);
         }
-        return size;
+        return clampLocationCount(size, TQualifier::layoutLocationEnd);
     }
 
     // ES: "If a shader input is any scalar or vector type, it will consume a single location."
@@ -2249,7 +2262,8 @@ int TIntermediate::computeTypeLocationSize(const TType& type, EShLanguage stage)
     // for an n-element array of m-component vectors..."
     if (type.isMatrix()) {
         TType columnType(type, 0);
-        return type.getMatrixCols() * computeTypeLocationSize(columnType, stage);
+        return clampLocationCount((long long)type.getMatrixCols() * computeTypeLocationSize(columnType, stage),
+                                  TQualifier::layoutLocationEnd);
     }
 
     assert(0);
@@ -2266,7 +2280,10 @@ int TIntermediate::computeTypeUniformLocationSize(const TType& type)
         // TODO: perf: this can be flattened by using getCumulativeArraySize(), and a deref that discards all arrayness
         TType elementType(type, 0);
         if (type.isSizedArray()) {
-            return type.getOuterArraySize() * computeTypeUniformLocationSize(elementType);
+            // Uniform arrays may legitimately span more than the input/output location space,
+            // so clamp only to what an int can hold (see clampLocationCount).
+            return clampLocationCount((long long)type.getOuterArraySize() * computeTypeUniformLocationSize(elementType),
+                                      std::numeric_limits<int>::max());
         } else {
             // TODO: are there valid cases of having an implicitly-sized array with a location?  If so, running this code too early.
             return computeTypeUniformLocationSize(elementType);
@@ -2276,12 +2293,12 @@ int TIntermediate::computeTypeUniformLocationSize(const TType& type)
     // "Each subsequent inner-most member or element gets incremental
     // locations for the entire structure or array."
     if (type.isStruct()) {
-        int size = 0;
+        long long size = 0;
         for (int member = 0; member < (int)type.getStruct()->size(); ++member) {
             TType memberType(type, member);
             size += computeTypeUniformLocationSize(memberType);
         }
-        return size;
+        return clampLocationCount(size, std::numeric_limits<int>::max());
     }
 
     return 1;

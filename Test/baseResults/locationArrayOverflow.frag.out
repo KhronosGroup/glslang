@@ -1,0 +1,25 @@
+locationArrayOverflow.frag
+ERROR: 0:9: 'location' : overlapping use of location 1
+ERROR: 1 compilation errors.  No code generated.
+
+
+Shader version: 450
+ERROR: node is still EOpNull!
+0:11  Function Definition: main( ( global void)
+0:11    Function Parameters: 
+0:?   Linker Objects
+0:?     'bigArray' (layout( location=0) smooth in 65536-element array of 65536-element array of float)
+0:?     'other' (layout( location=1) smooth in float)
+
+
+Linked fragment stage:
+
+
+Shader version: 450
+ERROR: node is still EOpNull!
+0:11  Function Definition: main( ( global void)
+0:11    Function Parameters: 
+0:?   Linker Objects
+0:?     'bigArray' (layout( location=0) smooth in 65536-element array of 65536-element array of float)
+0:?     'other' (layout( location=1) smooth in float)
+
