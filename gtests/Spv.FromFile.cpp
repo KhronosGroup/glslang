@@ -913,6 +913,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.ext.meshShaderUserDefined.mesh",
         "spv.ext.meshTaskShader.task",
         "spv.atomiAddEXT.error.mesh",
+        "spv.ext.meshTaskPayloadNoVariable.error.task",
         "spv.atomiAddEXT.task",
         "spv.460.subgroupEXT.task",
         "spv.460.subgroupEXT.mesh",
