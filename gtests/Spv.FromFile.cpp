@@ -921,6 +921,7 @@ INSTANTIATE_TEST_SUITE_P(
         // SPV_EXT_mesh_shader
         "spv.ext.meshShaderBuiltins.mesh",
         "spv.ext.meshShaderBuiltinsShadingRate.mesh",
+        "spv.ext.meshShaderOutputRead.error.mesh",
         "spv.ext.meshShaderRedeclBuiltins.mesh",
         "spv.ext.meshShaderTaskMem.mesh",
         "spv.ext.meshShaderUserDefined.mesh",
