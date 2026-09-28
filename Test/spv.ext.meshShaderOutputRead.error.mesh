@@ -1,0 +1,36 @@
+#version 460
+#extension GL_EXT_mesh_shader : require
+
+layout(local_size_x = 1) in;
+layout(triangles, max_vertices = 3, max_primitives = 1) out;
+
+struct Vertex { vec3 worldPos; };
+layout(location = 0) out Vertex outVert[];
+layout(location = 1) perprimitiveEXT out vec4 outPrim[];
+
+void writeOut(out vec3 v) { v = vec3(1.0); }
+void readWrite(inout vec3 v) { v += vec3(1.0); }
+
+void main()
+{
+    SetMeshOutputsEXT(3, 1);
+    uint i = gl_LocalInvocationIndex;
+
+    // Writes: no errors.
+    outVert[i].worldPos = vec3(0.0);
+    outVert[i].worldPos.x = 1.0;
+    outVert[i].worldPos[i] = 1.0;
+    writeOut(outVert[i].worldPos);
+    gl_MeshVerticesEXT[i].gl_Position.xy = vec2(1.0);
+    gl_MeshPrimitivesEXT[0].gl_CullPrimitiveEXT = false;
+    gl_PrimitiveTriangleIndicesEXT[0] = uvec3(0, 1, 2);
+
+    // Reads: one error each.
+    gl_MeshVerticesEXT[i].gl_Position = vec4(outVert[i].worldPos, 1.0);
+    outPrim[0] += vec4(1.0);
+    outVert[i].worldPos.x++;
+    readWrite(outVert[i].worldPos);
+    outPrim[0].x = sin(gl_MeshVerticesEXT[i].gl_Position.x);
+    outVert[gl_PrimitiveTriangleIndicesEXT[0].x].worldPos = vec3(0.0);
+    bool culled = gl_MeshPrimitivesEXT[0].gl_CullPrimitiveEXT;
+}
