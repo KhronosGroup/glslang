@@ -74,4 +74,6 @@ void main()
 
     tensorLayoutNV<2, Clamp_signed> tc_s = createTensorLayoutNV(2, Clamp_signed);
     tensorViewNV<Clamp, true> v4 = createTensorViewNV(Clamp, true);
+    tensorLayoutNV<Clamp> tc2 = createTensorLayoutNV(Clamp);
+    tensorViewNV<Clamp> v5 = createTensorViewNV(Clamp);
 }
