@@ -1,0 +1,6 @@
+uniform int tgSize;
+
+[numthreads(tgSize, 1, 1)]
+void main()
+{
+}
