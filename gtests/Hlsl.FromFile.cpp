@@ -344,6 +344,7 @@ INSTANTIATE_TEST_SUITE_P(
         {"hlsl.numericsuffixes.negative.frag", "main"},
         {"hlsl.numthreads.comp", "main_aux2"},
         {"hlsl.numthreads.negative.comp", "main"},
+        {"hlsl.numthreads.nonconst.comp", "main"},
         {"hlsl.overload.frag", "PixelShaderFunction"},
         {"hlsl.opaque-type-bug.frag", "main"},
         {"hlsl.params.default.frag", "main"},

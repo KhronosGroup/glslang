@@ -1,0 +1,34 @@
+hlsl.numthreads.nonconst.comp
+ERROR: 0:5: 'numthreads' : argument must be a constant integer expression 
+ERROR: 1 compilation errors.  No code generated.
+
+
+Shader version: 500
+local_size = (1, 1, 1)
+ERROR: node is still EOpNull!
+0:5  Function Definition: @main( ( temp void)
+0:5    Function Parameters: 
+0:5  Function Definition: main( ( temp void)
+0:5    Function Parameters: 
+0:?     Sequence
+0:5      Function Call: @main( ( temp void)
+0:?   Linker Objects
+0:?     'anon@0' (layout( row_major std140) uniform block{ uniform int tgSize})
+
+
+Linked compute stage:
+
+
+Shader version: 500
+local_size = (1, 1, 1)
+ERROR: node is still EOpNull!
+0:5  Function Definition: @main( ( temp void)
+0:5    Function Parameters: 
+0:5  Function Definition: main( ( temp void)
+0:5    Function Parameters: 
+0:?     Sequence
+0:5      Function Call: @main( ( temp void)
+0:?   Linker Objects
+0:?     'anon@0' (layout( row_major std140) uniform block{ uniform int tgSize})
+
+SPIR-V is not generated for failed compile or link

@@ -1771,8 +1771,14 @@ void HlslParseContext::handleEntryPointAttributes(const TSourceLoc& loc, const T
                 error(loc, "expected at most three arguments", "numthreads", "");
                 break;
             }
-            for (int lid = 0; lid < int(sequence.size()); ++lid)
-                intermediate.setLocalSize(lid, sequence[lid]->getAsConstantUnion()->getConstArray()[0].getIConst());
+            for (int lid = 0; lid < int(sequence.size()); ++lid) {
+                int dim;
+                if (! it->getInt(dim, lid)) {
+                    error(loc, "argument must be a constant integer expression", "numthreads", "");
+                    break;
+                }
+                intermediate.setLocalSize(lid, dim);
+            }
             break;
         }
         case EatInstance: 
