@@ -1838,6 +1838,11 @@ void TShader::setOverrideVersion(int version)
     overrideVersion = version;
 }
 
+void TShader::restrictAvailableExtensions(const char* const* s, int n)
+{
+    intermediate->setAvailableExtensions(std::set<std::string>(s, s + n));
+}
+
 void TShader::setDebugInfo(bool debugInfo)              { intermediate->setDebugInfo(debugInfo); }
 void TShader::setInvertY(bool invert)                   { intermediate->setInvertY(invert); }
 void TShader::setDxPositionW(bool invert)               { intermediate->setDxPositionW(invert); }
