@@ -1,0 +1,17 @@
+#version 460
+#extension GL_EXT_mesh_shader : enable
+
+layout(local_size_x = 1) in;
+
+// taskPayloadSharedEXT on a declaration that declares no variable
+taskPayloadSharedEXT struct MyPayload {
+    float x;
+};
+taskPayloadSharedEXT float;
+
+MyPayload myPayloadData;
+
+void main() {
+    myPayloadData.x = 0.0;
+    EmitMeshTasksEXT(1, 1, 1);
+}
