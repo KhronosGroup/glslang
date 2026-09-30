@@ -840,13 +840,15 @@ class HexFloat {
       }
     }
 
-    bool is_nan =
-        (getBits() & exponent_mask) == exponent_mask && significand != 0;
+    // NaN and infinity encodings vary by format (e4m3 has a NaN but no
+    // infinity, and the smaller formats have neither), so let the format
+    // itself classify the value rather than assuming the IEEE pattern.
+    bool is_nan = value_.isNan();
     bool is_inf =
         !is_nan &&
-        (((exponent + carried) > static_cast<int_type>(other_T::exponent_bias) && other_T::Traits_T::supportsInfinity()) ||
-         ((exponent + carried) > static_cast<int_type>(other_T::exponent_bias + 1) && !other_T::Traits_T::supportsInfinity()) ||
-         (significand == 0 && (getBits() & exponent_mask) == exponent_mask));
+        (value_.isInfinity() ||
+         ((exponent + carried) > static_cast<int_type>(other_T::exponent_bias) && other_T::Traits_T::supportsInfinity()) ||
+         ((exponent + carried) > static_cast<int_type>(other_T::exponent_bias + 1) && !other_T::Traits_T::supportsInfinity()));
 
     // If we are Nan or Inf we should pass that through.
     if (is_inf) {
@@ -863,11 +865,27 @@ class HexFloat {
       return;
     }
     if (is_nan) {
-      typename other_T::uint_type shifted_significand;
-      shifted_significand = static_cast<typename other_T::uint_type>(
-          negatable_left_shift(
-              static_cast<int_type>(other_T::num_fraction_bits) -
-              static_cast<int_type>(num_fraction_bits), significand));
+      // A format without an infinity has no reserved exponent to put a NaN
+      // payload in: its only NaN encoding, if it has one at all, is all ones
+      // (e4m3), so encode that instead of an ordinary value.  For a format
+      // with no NaN either, all ones is its largest finite value, the same
+      // saturation an infinity receives above.
+      if (!other_T::Traits_T::supportsInfinity()) {
+        other.set_value(BitwiseCast<typename other_T::underlying_type>(
+             static_cast<typename other_T::uint_type>(other_T::used_bits_mask & (negate ? ~0 : ~other_T::sign_mask))));
+        return;
+      }
+      // Shift the payload in a type wide enough for either format, so a
+      // widening shift is not truncated by a narrow source type.  Split the
+      // shift so neither count is negative, since the count is a constant in
+      // each instantiation and MSVC warns on the branch not taken.
+      const int payload_shift = static_cast<int>(other_T::num_fraction_bits) -
+                                static_cast<int>(num_fraction_bits);
+      uint64_t payload = significand;
+      payload <<= payload_shift > 0 ? payload_shift : 0;
+      payload >>= payload_shift < 0 ? -payload_shift : 0;
+      typename other_T::uint_type shifted_significand =
+          static_cast<typename other_T::uint_type>(payload);
 
       // We are some sort of Nan. We try to keep the bit-pattern of the Nan
       // as close as possible. If we had to shift off bits so we are 0, then we
