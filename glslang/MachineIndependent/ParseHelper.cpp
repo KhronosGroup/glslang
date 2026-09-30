@@ -1959,7 +1959,8 @@ void TParseContext::handleCoopMat2FunctionCall(const TSourceLoc& loc, const TFun
             TArraySizes *arraySizes = new TArraySizes;
             for (uint32_t i = 0; i < 2; ++i) {
                 TIntermNode *param {};
-                if (arguments->getAsConstantUnion()) {
+                if (fnCandidate->getParamCount() == 1) {
+                    // a single argument is not wrapped in an aggregate
                     if (i == 0) {
                         param = arguments;
                     }
@@ -1971,13 +1972,11 @@ void TParseContext::handleCoopMat2FunctionCall(const TSourceLoc& loc, const TFun
                     }
                 }
                 if (param) {
-                    if (param->getAsTyped()->getType().getQualifier().isSpecConstant()) {
-                        uint32_t value = param->getAsSymbolNode()->getConstArray()[0].getIConst();
-                        arraySizes->addInnerSize(value, param->getAsTyped());
-                    } else {
-                        uint32_t value = param->getAsConstantUnion()->getConstArray()[0].getIConst();
-                        arraySizes->addInnerSize(value);
-                    }
+                    // the arguments become the type parameters of the result, so
+                    // they must be constants or specialization constants
+                    TArraySize size;
+                    arraySizeCheck(loc, param->getAsTyped(), size, "type parameter", true);
+                    arraySizes->addInnerSize(size);
                 } else {
                     // gl_CooperativeMatrixClampModeUndefined
                     arraySizes->addInnerSize(0);
@@ -1997,7 +1996,8 @@ void TParseContext::handleCoopMat2FunctionCall(const TSourceLoc& loc, const TFun
             TArraySizes *arraySizes = new TArraySizes;
             for (uint32_t i = 0; i < 7; ++i) {
                 TIntermNode *param {};
-                if (arguments->getAsConstantUnion()) {
+                if (fnCandidate->getParamCount() == 1) {
+                    // a single argument is not wrapped in an aggregate
                     if (i == 0) {
                         param = arguments;
                     }
@@ -2009,13 +2009,11 @@ void TParseContext::handleCoopMat2FunctionCall(const TSourceLoc& loc, const TFun
                     }
                 }
                 if (param) {
-                    if (param->getAsTyped()->getType().getQualifier().isSpecConstant()) {
-                        uint32_t value = param->getAsSymbolNode()->getConstArray()[0].getIConst();
-                        arraySizes->addInnerSize(value, param->getAsTyped());
-                    } else {
-                        uint32_t value = param->getAsConstantUnion()->getConstArray()[0].getIConst();
-                        arraySizes->addInnerSize(value);
-                    }
+                    // the arguments become the type parameters of the result, so
+                    // they must be constants or specialization constants
+                    TArraySize size;
+                    arraySizeCheck(loc, param->getAsTyped(), size, "type parameter", true);
+                    arraySizes->addInnerSize(size);
                 } else {
                     uint32_t value = 0;
                     if (i >= 2) {

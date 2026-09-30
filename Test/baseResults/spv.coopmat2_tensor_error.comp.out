@@ -1,0 +1,10 @@
+spv.coopmat2_tensor_error.comp
+ERROR: 0:17: '' : type parameter must be a constant integer or boolean expression
+ERROR: 0:18: '' : type parameter must be a constant integer or boolean expression
+ERROR: 0:19: '' : type parameter must be a constant integer or boolean expression
+ERROR: 0:20: '' : type parameter must be a constant integer or boolean expression
+ERROR: 0:21: '' : type parameter must be a constant integer or boolean expression
+ERROR: 5 compilation errors.  No code generated.
+
+
+SPIR-V is not generated for failed compile or link
