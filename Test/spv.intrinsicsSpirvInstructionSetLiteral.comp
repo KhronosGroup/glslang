@@ -1,0 +1,21 @@
+#version 450 core
+
+#extension GL_EXT_spirv_intrinsics: enable
+
+layout(local_size_x = 1) in;
+
+// OpenCL.std vloadn: the last operand (n) is a literal
+spirv_instruction(set = "OpenCL.std", id = 171)
+vec2 vloadn(uint offset, spirv_by_reference float p, spirv_literal int n);
+
+// OpenCL.DebugInfo.100 DebugOperation: the only operand (OpCode) is a literal
+spirv_instruction(set = "OpenCL.DebugInfo.100", id = 30)
+void debugOperation(spirv_literal int opCode);
+
+shared float data[16];
+
+void main()
+{
+    vec2 v = vloadn(0u, data[0], 2);
+    debugOperation(/*Swap=*/5);
+}

@@ -3870,6 +3870,25 @@ Id Builder::createBuiltinCall(Id resultType, Id builtins, int entryPoint, const 
     return inst->getResultId();
 }
 
+// Comments in header
+Id Builder::createBuiltinCall(Id resultType, Id builtins, int entryPoint, const std::vector<IdImmediate>& args)
+{
+    Instruction* inst = new Instruction(getUniqueId(), resultType, Op::OpExtInst);
+    inst->reserveOperands(args.size() + 2);
+    inst->addIdOperand(builtins);
+    inst->addImmediateOperand(entryPoint);
+    for (auto it = args.cbegin(); it != args.cend(); ++it) {
+        if (it->isId)
+            inst->addIdOperand(it->word);
+        else
+            inst->addImmediateOperand(it->word);
+    }
+
+    addInstruction(std::unique_ptr<Instruction>(inst));
+
+    return inst->getResultId();
+}
+
 // Accept all parameters needed to create a texture instruction.
 // Create the correct instruction based on the inputs, and make the call.
 Id Builder::createTextureCall(Decoration precision, Id resultType, bool sparse, bool fetch, bool proj, bool gather,

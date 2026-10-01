@@ -889,6 +889,7 @@ public:
 
     // Create a call to a built-in function.
     Id createBuiltinCall(Id resultType, Id builtins, int entryPoint, const std::vector<Id>& args);
+    Id createBuiltinCall(Id resultType, Id builtins, int entryPoint, const std::vector<IdImmediate>& args);
 
     // List of parameters used to create a texture operation
     struct TextureParameters {
