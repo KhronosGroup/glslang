@@ -322,12 +322,23 @@ public:
                         "",
                         ""};
             }
-        } else {
+        } else if (success) {
             options().disableOptimizer = !enableOptimizer;
             options().generateDebugInfo = enableDebug;
             options().emitNonSemanticShaderDebugInfo = enableNonSemanticShaderDebugInfo;
             options().emitNonSemanticShaderDebugSource = enableNonSemanticShaderDebugInfo;
             glslang::GlslangToSpv(*shader.getIntermediate(), spirv_binary, &logger, &options());
+        } else {
+            // Match the linked path above: a failed compile does not get handed
+            // to SPIR-V generation, which assumes a well-formed AST.
+            return {{
+                        {shaderName, shader.getInfoLog(), shader.getInfoDebugLog()},
+                    },
+                    program.getInfoLog(),
+                    program.getInfoDebugLog(),
+                    true,
+                    "",
+                    ""};
         }
 
         std::ostringstream disassembly_stream;
