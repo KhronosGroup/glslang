@@ -2931,7 +2931,7 @@ bool HlslGrammar::acceptParameterDeclaration(TFunction& function)
     TArraySizes* arraySizes = nullptr;
     acceptArraySpecifier(arraySizes);
     if (arraySizes) {
-        if (arraySizes->hasUnsized()) {
+        if (arraySizes->getNumDims() == 0 || arraySizes->hasUnsized()) {
             parseContext.error(token.loc, "function parameter requires array size", "[]", "");
             return false;
         }
@@ -4297,6 +4297,8 @@ void HlslGrammar::acceptArraySpecifier(TArraySizes*& arraySizes)
 
         if (! acceptTokenClass(EHTokRightBracket)) {
             expected("]");
+            delete arraySizes;
+            arraySizes = nullptr;
             return;
         }
 
