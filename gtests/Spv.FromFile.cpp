@@ -978,12 +978,16 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.descriptorHeap.valid.frag",
         "spv.descriptorHeap.heaps.frag",
         "spv.descriptorHeap.nonuniform.frag",
+        "spv.descriptorHeap.es.frag",
+        "spv.descriptorHeap.UnsizedES.error.frag",
 
         // SPV_EXT_structured_descriptor_heap
         "spv.structuredDescriptorHeap.AccelerationStructure.comp",
         "spv.structuredDescriptorHeap.Buffer.comp",
         "spv.structuredDescriptorHeap.BufferReference.comp",
         "spv.structuredDescriptorHeap.LayoutQualifiers.comp",
+        "spv.structuredDescriptorHeap.es.frag",
+        "spv.structuredDescriptorHeap.UnsizedES.error.frag",
         "spv.structuredDescriptorHeap.MatrixLayout.comp",
         "spv.structuredDescriptorHeap.Offset.comp",
         
