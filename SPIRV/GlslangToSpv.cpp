@@ -6468,7 +6468,8 @@ bool TGlslangToSpvTraverser::filterMember(const glslang::TType& member)
     }
 
     if (glslangIntermediate->getStage() != EShLangMesh) {
-        if (member.getFieldName() == "gl_ViewportMask" &&
+        if ((member.getFieldName() == "gl_ViewportMask" || member.getFieldName() == "gl_ViewportIndex" ||
+             member.getFieldName() == "gl_Layer") &&
             extensions.find("GL_NV_viewport_array2") == extensions.end())
             return true;
         if (member.getFieldName() == "gl_PositionPerViewNV" &&

@@ -1126,6 +1126,9 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.uniformInitializer.frag",
         "spv.uniformInitializerSpecConstant.frag",
         "spv.uniformInitializerStruct.frag",
+        "spv.viewportArray2.perVertex.tesc",
+        "spv.viewportArray2.perVertex.noext.tesc",
+        "spv.viewportArray2.perVertex.notRequested.tesc",
         "spv.xfbOffsetOnBlockMembersAssignment.vert",
         "spv.xfbOffsetOnStructMembersAssignment.vert",
         "spv.xfbOverlapOffsetCheckWithBlockAndMember.vert",
@@ -1147,6 +1150,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.khrComputeShaderDerivativesNoLayout.comp",
         "spv.khrComputeShaderDerivativesBoth.comp",
         "spv.khrComputeShaderDerivativesBadSize.comp",
+        "spv.viewportArray2.perVertex.vulkan.tesc",
     })),
     FileNameAsCustomTestSuffix
 );

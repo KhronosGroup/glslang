@@ -6729,6 +6729,12 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "vec4 gl_PositionPerViewNV[];"        // GL_NVX_multiview_per_view_attributes
                 "int  gl_ViewportMaskPerViewNV[];"    // GL_NVX_multiview_per_view_attributes
                 );
+        // Vulkan does not allow Layer or ViewportIndex in tessellation control shaders.
+        if (version >= 430 && spvVersion.vulkan == 0)
+            stageBuiltins[EShLangTessControl].append(
+                "int  gl_ViewportIndex;"              // GL_NV_viewport_array2
+                "int  gl_Layer;"                      // GL_NV_viewport_array2
+                );
         stageBuiltins[EShLangTessControl].append(
             "} gl_out[];"
 
@@ -9478,12 +9484,16 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             BuiltInVariable("gl_in", "gl_PositionPerViewNV",   EbvPositionPerViewNV,   symbolTable);
         }
         symbolTable.setVariableExtensions("gl_out", "gl_ViewportMask",            1, &E_GL_NV_viewport_array2);
+        symbolTable.setVariableExtensions("gl_out", "gl_ViewportIndex",           1, &E_GL_NV_viewport_array2);
+        symbolTable.setVariableExtensions("gl_out", "gl_Layer",                   1, &E_GL_NV_viewport_array2);
         symbolTable.setVariableExtensions("gl_out", "gl_SecondaryPositionNV",     1, &E_GL_NV_stereo_view_rendering);
         symbolTable.setVariableExtensions("gl_out", "gl_SecondaryViewportMaskNV", 1, &E_GL_NV_stereo_view_rendering);
         symbolTable.setVariableExtensions("gl_out", "gl_PositionPerViewNV",       1, &E_GL_NVX_multiview_per_view_attributes);
         symbolTable.setVariableExtensions("gl_out", "gl_ViewportMaskPerViewNV",   1, &E_GL_NVX_multiview_per_view_attributes);
 
         BuiltInVariable("gl_out", "gl_ViewportMask",            EbvViewportMaskNV,          symbolTable);
+        BuiltInVariable("gl_out", "gl_ViewportIndex",           EbvViewportIndex,           symbolTable);
+        BuiltInVariable("gl_out", "gl_Layer",                   EbvLayer,                   symbolTable);
         BuiltInVariable("gl_out", "gl_SecondaryPositionNV",     EbvSecondaryPositionNV,     symbolTable);
         BuiltInVariable("gl_out", "gl_SecondaryViewportMaskNV", EbvSecondaryViewportMaskNV, symbolTable);
         BuiltInVariable("gl_out", "gl_PositionPerViewNV",       EbvPositionPerViewNV,       symbolTable);
