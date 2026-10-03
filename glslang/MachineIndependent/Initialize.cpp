@@ -4502,7 +4502,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
 
             "int16_t halfBitsToInt16(float16_t);"
             "i16vec2 halfBitsToInt16(f16vec2);"
-            "i16vec3 halhBitsToInt16(f16vec3);"
+            "i16vec3 halfBitsToInt16(f16vec3);"
             "i16vec4 halfBitsToInt16(f16vec4);"
 
             "uint16_t halfBitsToUint16(float16_t);"
