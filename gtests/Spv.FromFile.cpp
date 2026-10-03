@@ -717,6 +717,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.int32.frag",
         "spv.bitops.int8int16.frag",
         "spv.explicittypes.frag",
+        "spv.halfBitsToInt16.frag",
         "spv.float16NoRelaxed.vert",
         "spv.float32.frag",
         "spv.float64.frag",
@@ -977,12 +978,16 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.descriptorHeap.valid.frag",
         "spv.descriptorHeap.heaps.frag",
         "spv.descriptorHeap.nonuniform.frag",
+        "spv.descriptorHeap.es.frag",
+        "spv.descriptorHeap.UnsizedES.error.frag",
 
         // SPV_EXT_structured_descriptor_heap
         "spv.structuredDescriptorHeap.AccelerationStructure.comp",
         "spv.structuredDescriptorHeap.Buffer.comp",
         "spv.structuredDescriptorHeap.BufferReference.comp",
         "spv.structuredDescriptorHeap.LayoutQualifiers.comp",
+        "spv.structuredDescriptorHeap.es.frag",
+        "spv.structuredDescriptorHeap.UnsizedES.error.frag",
         "spv.structuredDescriptorHeap.MatrixLayout.comp",
         "spv.structuredDescriptorHeap.Offset.comp",
         
@@ -1120,6 +1125,9 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.uniformInitializer.frag",
         "spv.uniformInitializerSpecConstant.frag",
         "spv.uniformInitializerStruct.frag",
+        "spv.viewportArray2.perVertex.tesc",
+        "spv.viewportArray2.perVertex.noext.tesc",
+        "spv.viewportArray2.perVertex.notRequested.tesc",
         "spv.xfbOffsetOnBlockMembersAssignment.vert",
         "spv.xfbOffsetOnStructMembersAssignment.vert",
         "spv.xfbOverlapOffsetCheckWithBlockAndMember.vert",
@@ -1141,6 +1149,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.khrComputeShaderDerivativesNoLayout.comp",
         "spv.khrComputeShaderDerivativesBoth.comp",
         "spv.khrComputeShaderDerivativesBadSize.comp",
+        "spv.viewportArray2.perVertex.vulkan.tesc",
     })),
     FileNameAsCustomTestSuffix
 );
@@ -1216,6 +1225,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.16bitxfb.vert",
         "spv.float16.frag",
         "spv.float16Fetch.frag",
+        "spv.gcnShaderBallotAMD.comp",
         "spv.imageLoadStoreLod.frag",
         "spv.int16.frag",
         "spv.int16.amd.frag",
@@ -1262,6 +1272,7 @@ INSTANTIATE_TEST_SUITE_P(
     "spv.computeShaderDerivativesSpec.comp",
     "spv.computeShaderDerivativesSpec2.comp",
     "spv.shaderImageFootprint.frag",
+    "spv.shaderImageFootprintIntSamplers.frag",
     "spv.meshShaderBuiltins.mesh",
     "spv.meshShaderUserDefined.mesh",
     "spv.meshShaderPerViewBuiltins.mesh",

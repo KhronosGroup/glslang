@@ -1,0 +1,15 @@
+#version 450
+
+#extension GL_AMD_gcn_shader : require
+#extension GL_ARB_gpu_shader_int64 : require
+
+layout(local_size_x = 64) in;
+
+layout(binding = 0) buffer Ballots {
+    uint64_t ballots[];
+};
+
+void main()
+{
+    ballots[gl_LocalInvocationIndex] = ballotAMD(gl_LocalInvocationIndex % 2u == 0u);
+}

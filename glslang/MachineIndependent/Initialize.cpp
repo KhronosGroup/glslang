@@ -3502,6 +3502,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "float cubeFaceIndexAMD(vec3);"
             "vec2  cubeFaceCoordAMD(vec3);"
             "uint64_t timeAMD();"
+            "uint64_t ballotAMD(bool);"
 
             "in int gl_SIMDGroupSizeAMD;"
             "\n");
@@ -3723,17 +3724,41 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "uint granularity;"
             "};"
             "bool textureFootprintNV(sampler2D, vec2, int, bool, out gl_TextureFootprint2DNV);"
+            "bool textureFootprintNV(isampler2D, vec2, int, bool, out gl_TextureFootprint2DNV);"
+            "bool textureFootprintNV(usampler2D, vec2, int, bool, out gl_TextureFootprint2DNV);"
             "bool textureFootprintNV(sampler3D, vec3, int, bool, out gl_TextureFootprint3DNV);"
+            "bool textureFootprintNV(isampler3D, vec3, int, bool, out gl_TextureFootprint3DNV);"
+            "bool textureFootprintNV(usampler3D, vec3, int, bool, out gl_TextureFootprint3DNV);"
             "bool textureFootprintNV(sampler2D, vec2, int, bool, out gl_TextureFootprint2DNV, float);"
+            "bool textureFootprintNV(isampler2D, vec2, int, bool, out gl_TextureFootprint2DNV, float);"
+            "bool textureFootprintNV(usampler2D, vec2, int, bool, out gl_TextureFootprint2DNV, float);"
             "bool textureFootprintNV(sampler3D, vec3, int, bool, out gl_TextureFootprint3DNV, float);"
+            "bool textureFootprintNV(isampler3D, vec3, int, bool, out gl_TextureFootprint3DNV, float);"
+            "bool textureFootprintNV(usampler3D, vec3, int, bool, out gl_TextureFootprint3DNV, float);"
             "bool textureFootprintClampNV(sampler2D, vec2, float, int, bool, out gl_TextureFootprint2DNV);"
+            "bool textureFootprintClampNV(isampler2D, vec2, float, int, bool, out gl_TextureFootprint2DNV);"
+            "bool textureFootprintClampNV(usampler2D, vec2, float, int, bool, out gl_TextureFootprint2DNV);"
             "bool textureFootprintClampNV(sampler3D, vec3, float, int, bool, out gl_TextureFootprint3DNV);"
+            "bool textureFootprintClampNV(isampler3D, vec3, float, int, bool, out gl_TextureFootprint3DNV);"
+            "bool textureFootprintClampNV(usampler3D, vec3, float, int, bool, out gl_TextureFootprint3DNV);"
             "bool textureFootprintClampNV(sampler2D, vec2, float, int, bool, out gl_TextureFootprint2DNV, float);"
+            "bool textureFootprintClampNV(isampler2D, vec2, float, int, bool, out gl_TextureFootprint2DNV, float);"
+            "bool textureFootprintClampNV(usampler2D, vec2, float, int, bool, out gl_TextureFootprint2DNV, float);"
             "bool textureFootprintClampNV(sampler3D, vec3, float, int, bool, out gl_TextureFootprint3DNV, float);"
+            "bool textureFootprintClampNV(isampler3D, vec3, float, int, bool, out gl_TextureFootprint3DNV, float);"
+            "bool textureFootprintClampNV(usampler3D, vec3, float, int, bool, out gl_TextureFootprint3DNV, float);"
             "bool textureFootprintLodNV(sampler2D, vec2, float, int, bool, out gl_TextureFootprint2DNV);"
+            "bool textureFootprintLodNV(isampler2D, vec2, float, int, bool, out gl_TextureFootprint2DNV);"
+            "bool textureFootprintLodNV(usampler2D, vec2, float, int, bool, out gl_TextureFootprint2DNV);"
             "bool textureFootprintLodNV(sampler3D, vec3, float, int, bool, out gl_TextureFootprint3DNV);"
+            "bool textureFootprintLodNV(isampler3D, vec3, float, int, bool, out gl_TextureFootprint3DNV);"
+            "bool textureFootprintLodNV(usampler3D, vec3, float, int, bool, out gl_TextureFootprint3DNV);"
             "bool textureFootprintGradNV(sampler2D, vec2, vec2, vec2, int, bool, out gl_TextureFootprint2DNV);"
+            "bool textureFootprintGradNV(isampler2D, vec2, vec2, vec2, int, bool, out gl_TextureFootprint2DNV);"
+            "bool textureFootprintGradNV(usampler2D, vec2, vec2, vec2, int, bool, out gl_TextureFootprint2DNV);"
             "bool textureFootprintGradClampNV(sampler2D, vec2, vec2, vec2, float, int, bool, out gl_TextureFootprint2DNV);"
+            "bool textureFootprintGradClampNV(isampler2D, vec2, vec2, vec2, float, int, bool, out gl_TextureFootprint2DNV);"
+            "bool textureFootprintGradClampNV(usampler2D, vec2, vec2, vec2, float, int, bool, out gl_TextureFootprint2DNV);"
             "\n");
     }
 
@@ -4502,7 +4527,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
 
             "int16_t halfBitsToInt16(float16_t);"
             "i16vec2 halfBitsToInt16(f16vec2);"
-            "i16vec3 halhBitsToInt16(f16vec3);"
+            "i16vec3 halfBitsToInt16(f16vec3);"
             "i16vec4 halfBitsToInt16(f16vec4);"
 
             "uint16_t halfBitsToUint16(float16_t);"
@@ -6703,6 +6728,12 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "int  gl_SecondaryViewportMaskNV[];"  // GL_NV_stereo_view_rendering
                 "vec4 gl_PositionPerViewNV[];"        // GL_NVX_multiview_per_view_attributes
                 "int  gl_ViewportMaskPerViewNV[];"    // GL_NVX_multiview_per_view_attributes
+                );
+        // Vulkan does not allow Layer or ViewportIndex in tessellation control shaders.
+        if (version >= 430 && spvVersion.vulkan == 0)
+            stageBuiltins[EShLangTessControl].append(
+                "int  gl_ViewportIndex;"              // GL_NV_viewport_array2
+                "int  gl_Layer;"                      // GL_NV_viewport_array2
                 );
         stageBuiltins[EShLangTessControl].append(
             "} gl_out[];"
@@ -9280,6 +9311,7 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setFunctionExtensions("cubeFaceIndexAMD", 1, &E_GL_AMD_gcn_shader);
             symbolTable.setFunctionExtensions("cubeFaceCoordAMD", 1, &E_GL_AMD_gcn_shader);
             symbolTable.setFunctionExtensions("timeAMD",          1, &E_GL_AMD_gcn_shader);
+            symbolTable.setFunctionExtensions("ballotAMD",        1, &E_GL_AMD_gcn_shader);
         }
 
         if (profile != EEsProfile) {
@@ -9452,12 +9484,16 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             BuiltInVariable("gl_in", "gl_PositionPerViewNV",   EbvPositionPerViewNV,   symbolTable);
         }
         symbolTable.setVariableExtensions("gl_out", "gl_ViewportMask",            1, &E_GL_NV_viewport_array2);
+        symbolTable.setVariableExtensions("gl_out", "gl_ViewportIndex",           1, &E_GL_NV_viewport_array2);
+        symbolTable.setVariableExtensions("gl_out", "gl_Layer",                   1, &E_GL_NV_viewport_array2);
         symbolTable.setVariableExtensions("gl_out", "gl_SecondaryPositionNV",     1, &E_GL_NV_stereo_view_rendering);
         symbolTable.setVariableExtensions("gl_out", "gl_SecondaryViewportMaskNV", 1, &E_GL_NV_stereo_view_rendering);
         symbolTable.setVariableExtensions("gl_out", "gl_PositionPerViewNV",       1, &E_GL_NVX_multiview_per_view_attributes);
         symbolTable.setVariableExtensions("gl_out", "gl_ViewportMaskPerViewNV",   1, &E_GL_NVX_multiview_per_view_attributes);
 
         BuiltInVariable("gl_out", "gl_ViewportMask",            EbvViewportMaskNV,          symbolTable);
+        BuiltInVariable("gl_out", "gl_ViewportIndex",           EbvViewportIndex,           symbolTable);
+        BuiltInVariable("gl_out", "gl_Layer",                   EbvLayer,                   symbolTable);
         BuiltInVariable("gl_out", "gl_SecondaryPositionNV",     EbvSecondaryPositionNV,     symbolTable);
         BuiltInVariable("gl_out", "gl_SecondaryViewportMaskNV", EbvSecondaryViewportMaskNV, symbolTable);
         BuiltInVariable("gl_out", "gl_PositionPerViewNV",       EbvPositionPerViewNV,       symbolTable);
@@ -11588,6 +11624,7 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.relateToOperator("cubeFaceIndexAMD",    EOpCubeFaceIndex);
             symbolTable.relateToOperator("cubeFaceCoordAMD",    EOpCubeFaceCoord);
             symbolTable.relateToOperator("timeAMD",             EOpTime);
+            symbolTable.relateToOperator("ballotAMD",           EOpBallot);
 
             symbolTable.relateToOperator("textureGatherLodAMD",                 EOpTextureGatherLod);
             symbolTable.relateToOperator("textureGatherLodOffsetAMD",           EOpTextureGatherLodOffset);

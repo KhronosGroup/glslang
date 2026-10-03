@@ -1,0 +1,6 @@
+spv.descriptorHeap.UnsizedES.error.frag
+ERROR: 0:8: '' : array size required 
+ERROR: 1 compilation errors.  No code generated.
+
+
+SPIR-V is not generated for failed compile or link
