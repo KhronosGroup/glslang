@@ -1265,6 +1265,7 @@ INSTANTIATE_TEST_SUITE_P(
     "spv.computeShaderDerivativesSpec.comp",
     "spv.computeShaderDerivativesSpec2.comp",
     "spv.shaderImageFootprint.frag",
+    "spv.shaderImageFootprintIntSamplers.frag",
     "spv.meshShaderBuiltins.mesh",
     "spv.meshShaderUserDefined.mesh",
     "spv.meshShaderPerViewBuiltins.mesh",
