@@ -1,0 +1,7 @@
+spv.viewportArray2.perVertex.vulkan.tesc
+ERROR: 0:10: 'gl_Layer' : no such field in structure 'gl_out'
+ERROR: 0:10: 'assign' :  cannot convert from ' const int' to ' temp block{ out 4-component vector of float Position gl_Position,  out float PointSize gl_PointSize,  out unsized 1-element array of float ClipDistance gl_ClipDistance,  out unsized 1-element array of float CullDistance gl_CullDistance,  out unsized 1-element array of int ViewportMaskNV gl_ViewportMask,  out 4-component vector of float SecondaryPositionNV gl_SecondaryPositionNV,  out unsized 1-element array of int SecondaryViewportMaskNV gl_SecondaryViewportMaskNV,  out unsized 1-element array of 4-component vector of float PositionPerViewNV gl_PositionPerViewNV,  out unsized 1-element array of int ViewportMaskPerViewNV gl_ViewportMaskPerViewNV}'
+ERROR: 2 compilation errors.  No code generated.
+
+
+SPIR-V is not generated for failed compile or link
