@@ -3502,6 +3502,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "float cubeFaceIndexAMD(vec3);"
             "vec2  cubeFaceCoordAMD(vec3);"
             "uint64_t timeAMD();"
+            "uint64_t ballotAMD(bool);"
 
             "in int gl_SIMDGroupSizeAMD;"
             "\n");
@@ -9280,6 +9281,7 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setFunctionExtensions("cubeFaceIndexAMD", 1, &E_GL_AMD_gcn_shader);
             symbolTable.setFunctionExtensions("cubeFaceCoordAMD", 1, &E_GL_AMD_gcn_shader);
             symbolTable.setFunctionExtensions("timeAMD",          1, &E_GL_AMD_gcn_shader);
+            symbolTable.setFunctionExtensions("ballotAMD",        1, &E_GL_AMD_gcn_shader);
         }
 
         if (profile != EEsProfile) {
@@ -11588,6 +11590,7 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.relateToOperator("cubeFaceIndexAMD",    EOpCubeFaceIndex);
             symbolTable.relateToOperator("cubeFaceCoordAMD",    EOpCubeFaceCoord);
             symbolTable.relateToOperator("timeAMD",             EOpTime);
+            symbolTable.relateToOperator("ballotAMD",           EOpBallot);
 
             symbolTable.relateToOperator("textureGatherLodAMD",                 EOpTextureGatherLod);
             symbolTable.relateToOperator("textureGatherLodOffsetAMD",           EOpTextureGatherLodOffset);

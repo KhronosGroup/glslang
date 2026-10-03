@@ -1217,6 +1217,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.16bitxfb.vert",
         "spv.float16.frag",
         "spv.float16Fetch.frag",
+        "spv.gcnShaderBallotAMD.comp",
         "spv.imageLoadStoreLod.frag",
         "spv.int16.frag",
         "spv.int16.amd.frag",
