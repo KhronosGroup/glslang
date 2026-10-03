@@ -6210,6 +6210,12 @@ void TParseContext::arraySizesCheck(const TSourceLoc& loc, const TQualifier& qua
     if (qualifier.storage == EvqBuffer && lastMember)
         return;
 
+    // GL_EXT_descriptor_heap arrays, and the last member of a GL_EXT_structured_descriptor_heap heap block
+    if (qualifier.layoutDescriptorHeap)
+        return;
+    if ((qualifier.storage == EvqResourceHeap || qualifier.storage == EvqSamplerHeap) && lastMember)
+        return;
+
     if (qualifier.storage == EvqUniform && lastMember && extensionTurnedOn(E_GL_EXT_uniform_buffer_unsized_array))
         return;
 
