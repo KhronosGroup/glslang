@@ -1,9 +1,10 @@
 hlsl.postfix.nonlvalue.negative.frag
-ERROR: 0:2: 'function call arguments' : Expected 
-ERROR: 0:2: 'initializer' : Expected 
-ERROR: 0:2: 'declaration' : Expected 
-(2): error at column 0, HLSL parsing failed.
-ERROR: 4 compilation errors.  No code generated.
+ERROR: 0:15: 'unary operator' :  l-value required 
+ERROR: 0:15: 'function call arguments' : Expected 
+ERROR: 0:15: ';' : Expected 
+ERROR: 0:15: 'declaration' : Expected 
+(15): error at column 37, HLSL parsing failed.
+ERROR: 5 compilation errors.  No code generated.
 
 
 Shader version: 500
