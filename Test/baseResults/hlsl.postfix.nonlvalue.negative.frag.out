@@ -1,0 +1,20 @@
+hlsl.postfix.nonlvalue.negative.frag
+ERROR: 0:15: 'unary operator' :  l-value required 
+ERROR: 0:15: 'function call arguments' : Expected 
+ERROR: 0:15: ';' : Expected 
+ERROR: 0:15: 'declaration' : Expected 
+(15): error at column 37, HLSL parsing failed.
+ERROR: 5 compilation errors.  No code generated.
+
+
+Shader version: 500
+gl_FragCoord origin is upper left
+
+
+Linked fragment stage:
+
+
+Shader version: 500
+gl_FragCoord origin is upper left
+
+SPIR-V is not generated for failed compile or link
