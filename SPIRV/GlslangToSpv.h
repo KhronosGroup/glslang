@@ -54,13 +54,13 @@ struct SpvOptions {
     bool validate {false};
     bool emitNonSemanticShaderDebugInfo {false};
     bool emitNonSemanticShaderDebugSource{ false };
-    bool emitSourceFileName{false};
     bool compileOnly{false};
     bool optimizerAllowExpandedIDBound{false};
     // Optional metadata overrides for NonSemantic.Shader.DebugInfo DebugEntryPoint.
     const char* compilerSignature{nullptr};
     const char* commandLineArguments{nullptr};
     const char* currentWorkingDirectory{nullptr};
+    bool emitSourceFileName{false};
 };
 
 GLSLANG_EXPORT void GetSpirvVersion(std::string&);
