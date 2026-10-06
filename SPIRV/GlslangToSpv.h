@@ -60,6 +60,7 @@ struct SpvOptions {
     const char* compilerSignature{nullptr};
     const char* commandLineArguments{nullptr};
     const char* currentWorkingDirectory{nullptr};
+    bool emitSourceFileName{false};
 };
 
 GLSLANG_EXPORT void GetSpirvVersion(std::string&);

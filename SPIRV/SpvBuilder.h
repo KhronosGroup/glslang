@@ -390,6 +390,13 @@ public:
             emitNonSemanticShaderDebugSource = emitSourceText;
         }
     }
+    // Emit only an OpString with the source file name and an OpSource referencing it.
+    // Unlike the full debug modes, this does not enable line tracking or emit source text.
+    void setEmitSourceFileName(const std::string& file)
+    {
+        mainFileId = getStringId(file);
+        currentFileId = mainFileId;
+    }
     void addExtension(const char* ext) { extensions.insert(ext); }
     void removeExtension(const char* ext)
     {

@@ -126,6 +126,7 @@ bool NaNClamp = false;
 bool stripDebugInfo = false;
 bool emitNonSemanticShaderDebugInfo = false;
 bool emitNonSemanticShaderDebugSource = false;
+bool emitSourceFileName = false;
 bool beQuiet = false;
 bool VulkanRulesRelaxed = false;
 bool autoSampledTextures = false;
@@ -1044,9 +1045,12 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                 // Override previous -g or -g0 argument
                 stripDebugInfo = false;
                 emitNonSemanticShaderDebugInfo = false;
+                emitSourceFileName = false;
                 Options &= ~EOptionDebug;
                 if (argv[0][2] == '0')
                     stripDebugInfo = true;
+                else if (argv[0][2] == 'N')
+                    emitSourceFileName = true;
                 else {
                     Options |= EOptionDebug;
                     if (argv[0][2] == 'V') {
@@ -1492,6 +1496,9 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
         if (emitNonSemanticShaderDebugInfo)
             shader->setDebugInfo(true);
 
+        if (emitSourceFileName && compUnit.count > 0)
+            shader->setSourceFile(compUnit.fileNameList[0]);
+
         if (Options & EOptionBindingsPerResourceType)
             shader->setBindingsPerResourceType();
 
@@ -1611,6 +1618,8 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
                     }
                 } else if (stripDebugInfo)
                     spvOptions.stripDebugInfo = true;
+                else if (emitSourceFileName)
+                    spvOptions.emitSourceFileName = true;
                 spvOptions.disableOptimizer = (Options & EOptionOptimizeDisable) != 0;
                 spvOptions.optimizeSize = (Options & EOptionOptimizeSize) != 0;
                 spvOptions.optimizePerformance = (Options & EOptionOptimizePerformance) != 0;
@@ -2071,6 +2080,7 @@ void usage()
            "  -g0         strip debug information\n"
            "  -gV         generate nonsemantic shader debug information\n"
            "  -gVS        generate nonsemantic shader debug information with source\n"
+           "  -gN         generate debug information for the source file name only\n"
            "  -h | --help print this usage message\n"
            "  -i          intermediate tree (glslang AST) is printed out\n"
            "  -l          link all input files together to form a single module\n"

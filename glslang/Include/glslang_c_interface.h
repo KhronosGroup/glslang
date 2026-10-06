@@ -244,6 +244,7 @@ typedef struct glslang_spv_options_s {
     const char* compiler_signature;
     const char* command_line_arguments;
     const char* current_working_directory;
+    bool emit_source_file_name;
 } glslang_spv_options_t;
 
 #ifdef __cplusplus
