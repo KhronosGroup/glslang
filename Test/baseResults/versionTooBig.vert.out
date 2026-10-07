@@ -1,0 +1,26 @@
+versionTooBig.vert
+ERROR: version not supported
+ERROR: 0:1: '' : numeric literal too big 
+ERROR: 2 compilation errors.  No code generated.
+
+
+Shader version: 450
+ERROR: node is still EOpNull!
+0:5  Function Definition: main( ( global void)
+0:5    Function Parameters: 
+0:?   Linker Objects
+0:?     'gl_VertexID' ( gl_VertexId int VertexId)
+0:?     'gl_InstanceID' ( gl_InstanceId int InstanceId)
+
+
+Linked vertex stage:
+
+
+Shader version: 450
+ERROR: node is still EOpNull!
+0:5  Function Definition: main( ( global void)
+0:5    Function Parameters: 
+0:?   Linker Objects
+0:?     'gl_VertexID' ( gl_VertexId int VertexId)
+0:?     'gl_InstanceID' ( gl_InstanceId int InstanceId)
+

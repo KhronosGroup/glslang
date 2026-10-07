@@ -72,6 +72,7 @@ INSTANTIATE_TEST_SUITE_P(
         "versionsClean.vert",
         "versionsErrors.frag",
         "versionsErrors.vert",
+        "versionTooBig.vert",
         "100.frag",
         "100samplerExternal.frag",
         "120.vert",

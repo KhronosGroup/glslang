@@ -41,6 +41,7 @@
 // GLSL scanning, leveraging the scanning done by the preprocessor.
 //
 
+#include <climits>
 #include <cstring>
 #include <unordered_map>
 #include <unordered_set>
@@ -237,10 +238,18 @@ bool TInputScanner::scanVersion(int& version, EProfile& profile, bool& notFirstT
         } while (c == ' ' || c == '\t');
 
         // version number
+        //
+        // A number too big for an int is not a version, but overflowing the int
+        // while reading it is undefined, so accumulate wider and saturate.
+        // DeduceVersionProfile() rejects the saturated value like any other
+        // unsupported version.
+        long long versionNumber = 0;
         while (c >= '0' && c <= '9') {
-            version = 10 * version + (c - '0');
+            if (versionNumber <= INT_MAX)
+                versionNumber = 10 * versionNumber + (c - '0');
             c = get();
         }
+        version = versionNumber > INT_MAX ? INT_MAX : (int)versionNumber;
         if (version == 0) {
             versionNotFirst = true;
             continue;
