@@ -7750,9 +7750,13 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
         return;
     } else if (id == "location") {
         profileRequires(loc, EEsProfile, 300, nullptr, "location");
-        const char* exts[2] = { E_GL_ARB_separate_shader_objects, E_GL_ARB_explicit_attrib_location };
-        // GL_ARB_explicit_uniform_location requires 330 or GL_ARB_explicit_attrib_location we do not need to add it here
-        profileRequires(loc, ~EEsProfile, 330, 2, exts, "location");
+        // Generating SPIR-V requires a location on every user input and output, so allow one at any desktop version
+        if (spvVersion.spv == 0) {
+            const char* exts[2] = { E_GL_ARB_separate_shader_objects, E_GL_ARB_explicit_attrib_location };
+            // GL_ARB_explicit_uniform_location requires 330 or GL_ARB_explicit_attrib_location,
+            // we do not need to add it here
+            profileRequires(loc, ~EEsProfile, 330, 2, exts, "location");
+        }
         if ((unsigned int)value >= TQualifier::layoutLocationEnd)
             error(loc, "location is too large", id.c_str(), "");
         else
@@ -8400,7 +8404,7 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
         switch (qualifier.storage) {
         case EvqVaryingIn:
         case EvqVaryingOut:
-            if (type.getBasicType() == EbtBlock)
+            if (type.getBasicType() == EbtBlock && spvVersion.spv == 0)
                 profileRequires(loc, ECoreProfile | ECompatibilityProfile, 440, E_GL_ARB_enhanced_layouts, "location qualifier on in/out block");
             if (type.getQualifier().isTaskMemory())
                 error(loc, "cannot apply to taskNV in/out blocks", "location", "");
@@ -8678,10 +8682,12 @@ void TParseContext::layoutQualifierCheck(const TSourceLoc& loc, const TQualifier
                 requireStage(loc, (EShLanguageMask)~EShLangComputeMask, feature);
             if (language == EShLangVertex) {
                 const char* exts[2] = { E_GL_ARB_separate_shader_objects, E_GL_ARB_explicit_attrib_location };
-                profileRequires(loc, ~EEsProfile, 330, 2, exts, feature);
+                if (spvVersion.spv == 0)
+                    profileRequires(loc, ~EEsProfile, 330, 2, exts, feature);
                 profileRequires(loc, EEsProfile, 300, nullptr, feature);
             } else {
-                profileRequires(loc, ~EEsProfile, 410, E_GL_ARB_separate_shader_objects, feature);
+                if (spvVersion.spv == 0)
+                    profileRequires(loc, ~EEsProfile, 410, E_GL_ARB_separate_shader_objects, feature);
                 profileRequires(loc, EEsProfile, 310, nullptr, feature);
             }
             break;
@@ -8695,10 +8701,12 @@ void TParseContext::layoutQualifierCheck(const TSourceLoc& loc, const TQualifier
                 requireStage(loc, (EShLanguageMask)~EShLangComputeMask, feature);
             if (language == EShLangFragment) {
                 const char* exts[2] = { E_GL_ARB_separate_shader_objects, E_GL_ARB_explicit_attrib_location };
-                profileRequires(loc, ~EEsProfile, 330, 2, exts, feature);
+                if (spvVersion.spv == 0)
+                    profileRequires(loc, ~EEsProfile, 330, 2, exts, feature);
                 profileRequires(loc, EEsProfile, 300, nullptr, feature);
             } else {
-                profileRequires(loc, ~EEsProfile, 410, E_GL_ARB_separate_shader_objects, feature);
+                if (spvVersion.spv == 0)
+                    profileRequires(loc, ~EEsProfile, 410, E_GL_ARB_separate_shader_objects, feature);
                 profileRequires(loc, EEsProfile, 310, nullptr, feature);
             }
             break;
@@ -11363,7 +11371,9 @@ TIntermNode* TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeL
             case EvqVaryingIn:
             case EvqVaryingOut:
                 requireProfile(memberLoc, ECoreProfile | ECompatibilityProfile | EEsProfile, feature);
-                profileRequires(memberLoc, ECoreProfile | ECompatibilityProfile, 440, E_GL_ARB_enhanced_layouts, feature);
+                if (spvVersion.spv == 0)
+                    profileRequires(memberLoc, ECoreProfile | ECompatibilityProfile, 440, E_GL_ARB_enhanced_layouts,
+                                    feature);
                 profileRequires(memberLoc, EEsProfile, 320, Num_AEP_shader_io_blocks, AEP_shader_io_blocks, feature);
                 memberWithLocation = true;
                 break;

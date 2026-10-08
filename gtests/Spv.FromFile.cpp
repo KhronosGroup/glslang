@@ -352,6 +352,8 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.100ops.frag",
         "spv.130.frag",
         "spv.140.frag",
+        "spv.140.location.frag",
+        "spv.140.location.vert",
         "spv.150.geom",
         "spv.150.vert",
         "spv.16bitstorage.frag",
@@ -370,6 +372,8 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.320.clipCullDistance.frag",
         "spv.320.clipCullDistanceWarn.vert",
         "spv.330.geom",
+        "spv.330.location.frag",
+        "spv.330.location.vert",
         "spv.400.frag",
         "spv.400.tesc",
         "spv.400.tese",
@@ -1113,6 +1117,7 @@ INSTANTIATE_TEST_SUITE_P(
 INSTANTIATE_TEST_SUITE_P(
     Glsl, CompileOpenGLToSpirvTest,
     ::testing::ValuesIn(std::vector<std::string>({
+        "spv.330.location.opengl.frag",
         "spv.460.frag",
         "spv.460.vert",
         "spv.460.comp",
