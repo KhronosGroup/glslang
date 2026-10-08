@@ -4733,6 +4733,7 @@ void Builder::clearAccessChain()
     accessChain.descHeapInfo.descHeapBaseTy = NoResult;
     accessChain.descHeapInfo.descHeapBaseOffset = NoResult;
     accessChain.descHeapInfo.descHeapIndexChain.clear();
+    accessChain.descHeapInfo.descHeapImageArrayWrapped = false;
     accessChain.descHeapInfo.descTy = NoResult;
     accessChain.descHeapInfo.descStorageClass = StorageClass::Max;
     accessChain.descHeapInfo.descReadonly = false;
