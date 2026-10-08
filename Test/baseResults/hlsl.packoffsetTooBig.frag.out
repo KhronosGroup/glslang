@@ -1,0 +1,52 @@
+hlsl.packoffsetTooBig.frag
+ERROR: 0:3: 'packoffset' : offset is out of range 
+ERROR: 1 compilation errors.  No code generated.
+
+
+Shader version: 500
+gl_FragCoord origin is upper left
+ERROR: node is still EOpNull!
+0:7  Function Definition: @main( ( temp 4-component vector of float)
+0:7    Function Parameters: 
+0:?     Sequence
+0:8      Branch: Return with expression
+0:8        m0: direct index for structure (layout( row_major std140) uniform 4-component vector of float)
+0:8          'anon@0' (layout( row_major std140) uniform block{layout( row_major std140) uniform 4-component vector of float m0})
+0:8          Constant:
+0:8            0 (const uint)
+0:7  Function Definition: main( ( temp void)
+0:7    Function Parameters: 
+0:?     Sequence
+0:7      move second child to first child ( temp 4-component vector of float)
+0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float)
+0:7        Function Call: @main( ( temp 4-component vector of float)
+0:?   Linker Objects
+0:?     'anon@0' (layout( row_major std140) uniform block{layout( row_major std140) uniform 4-component vector of float m0})
+0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float)
+
+
+Linked fragment stage:
+
+
+Shader version: 500
+gl_FragCoord origin is upper left
+ERROR: node is still EOpNull!
+0:7  Function Definition: @main( ( temp 4-component vector of float)
+0:7    Function Parameters: 
+0:?     Sequence
+0:8      Branch: Return with expression
+0:8        m0: direct index for structure (layout( row_major std140) uniform 4-component vector of float)
+0:8          'anon@0' (layout( row_major std140) uniform block{layout( row_major std140) uniform 4-component vector of float m0})
+0:8          Constant:
+0:8            0 (const uint)
+0:7  Function Definition: main( ( temp void)
+0:7    Function Parameters: 
+0:?     Sequence
+0:7      move second child to first child ( temp 4-component vector of float)
+0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float)
+0:7        Function Call: @main( ( temp 4-component vector of float)
+0:?   Linker Objects
+0:?     'anon@0' (layout( row_major std140) uniform block{layout( row_major std140) uniform 4-component vector of float m0})
+0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float)
+
+SPIR-V is not generated for failed compile or link
