@@ -9409,6 +9409,10 @@ void TParseContext::declareTypeDefaults(const TSourceLoc& loc, const TPublicType
         error(loc, "expect an array name", "", "");
     }
 
+    // A declaration without a variable name declares no payload, so the qualifier would be silently dropped
+    if (publicType.qualifier.storage == EvqtaskPayloadSharedEXT)
+        error(loc, "can only be used when declaring a variable", "taskPayloadSharedEXT", "");
+
     if (publicType.qualifier.hasLayout() && !publicType.qualifier.hasBufferReference())
         warn(loc, "useless application of layout qualifier", "layout", "");
 }

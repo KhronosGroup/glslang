@@ -1,0 +1,7 @@
+spv.ext.meshTaskPayloadNoVariable.error.task
+ERROR: 0:7: 'taskPayloadSharedEXT' : can only be used when declaring a variable 
+ERROR: 0:10: 'taskPayloadSharedEXT' : can only be used when declaring a variable 
+ERROR: 2 compilation errors.  No code generated.
+
+
+SPIR-V is not generated for failed compile or link
