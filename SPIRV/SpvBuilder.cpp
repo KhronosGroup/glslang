@@ -4824,9 +4824,12 @@ void Builder::accessChainStore(Id rvalue, Decoration nonUniform, spv::MemoryAcce
         // extract and insert elements to perform writeMask and/or swizzle.
         if (accessChain.swizzle.size() > 0) {
             // The read-modify-write load hits the same pointer as the store, so it needs the
-            // same memory operands. In particular a PhysicalStorageBuffer access must carry
-            // Aligned, and postProcess() expects the operand to be present to fix up.
-            Id tempBaseId = createLoad(base, spv::NoPrecision, memoryAccess, scope, alignment);
+            // same memory operands (while flipping MakePointerAvailable to Visible).
+            // In particular a PhysicalStorageBuffer access must carry Aligned.
+            auto loadAccess = memoryAccess & ~spv::MemoryAccessMask::MakePointerAvailableKHR;
+            if (anySet(memoryAccess, spv::MemoryAccessMask::MakePointerAvailableKHR))
+                loadAccess = loadAccess | spv::MemoryAccessMask::MakePointerVisibleKHR;
+            Id tempBaseId = createLoad(base, spv::NoPrecision, loadAccess, scope, alignment);
             source = createLvalueSwizzle(getTypeId(tempBaseId), tempBaseId, source, accessChain.swizzle);
         }
 

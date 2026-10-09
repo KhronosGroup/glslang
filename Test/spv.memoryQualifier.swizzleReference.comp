@@ -1,0 +1,18 @@
+#version 450
+#extension GL_EXT_buffer_reference : require
+
+layout(buffer_reference, std430) buffer Ref {
+    coherent uvec2 coherentValue;
+    volatile uvec2 volatileValue;
+    uvec2 plainValue;
+};
+layout(push_constant) uniform Push { Ref ref; } pc;
+
+// any memory accesses for swizzles should retain coherent/volatile
+
+void main()
+{
+    pc.ref.coherentValue.yx = uvec2(1u, 2u);
+    pc.ref.volatileValue.yx = uvec2(3u, 4u);
+    pc.ref.plainValue.yx = uvec2(5u, 6u);
+}

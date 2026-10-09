@@ -1,0 +1,14 @@
+#version 450
+#pragma use_vulkan_memory_model
+
+layout(binding = 0) buffer Data {
+    coherent volatile uint value;
+} data;
+
+// inc/dec should respect coherent/volatile semantics
+
+void main()
+{
+    data.value++;
+    --data.value;
+}

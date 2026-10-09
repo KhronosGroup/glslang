@@ -1,0 +1,26 @@
+#version 450
+#extension GL_EXT_buffer_reference : require
+
+struct Payload { uvec2 values; };
+
+layout(buffer_reference, std430) coherent volatile buffer BlockQualifiedRef { Payload data[]; };
+
+layout(buffer_reference, std430) buffer MemberQualifiedRef {
+    coherent uint coherentValue;
+    volatile uint volatileValue;
+};
+
+layout(push_constant) uniform Push { BlockQualifiedRef ref; MemberQualifiedRef members; } pc;
+layout(binding = 0) buffer Result { uvec2 value; } result;
+
+// Check that per-load/store memory semantics are generated when qualifiers
+// are used on whole buffer reference blocks as well as individual members
+
+void main()
+{
+    result.value = pc.ref.data[0].values;
+    pc.ref.data[1].values = result.value;
+    result.value.x = pc.members.coherentValue + pc.members.volatileValue;
+    pc.members.coherentValue = 5;
+    pc.members.volatileValue = 6;
+}

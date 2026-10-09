@@ -11448,6 +11448,13 @@ TIntermNode* TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeL
         if (currentBlockQualifier.storage != EvqBuffer)
             error(loc, "can only be used with buffer", "buffer_reference", "");
 
+        if (currentBlockQualifier.bufferReferenceNeedsVulkanMemoryModel())
+            intermediate.setUseVulkanMemoryModel();
+        for (const auto& member : typeList)
+            if (member.type->getQualifier().bufferReferenceNeedsVulkanMemoryModel())
+                intermediate.setUseVulkanMemoryModel();
+
+
         // Create the block reference type. If it was forward-declared, detect that
         // as a referent struct type with no members. Replace the referent type with
         // blockType.

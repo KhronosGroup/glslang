@@ -725,6 +725,12 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.float16NoRelaxed.vert",
         "spv.float32.frag",
         "spv.float64.frag",
+        "spv.bufferReference.memoryModel.block.comp",
+        "spv.bufferReference.memoryModel.unqualified.comp",
+        "spv.bufferReference.memoryModel.volatile.comp",
+        "spv.memoryQualifier.incdec.comp",
+        "spv.memoryQualifier.swizzleOut.comp",
+        "spv.memoryQualifier.swizzleReference.comp",
         "spv.memoryScopeSemantics.comp",
         "spv.memoryScopeSemantics_Error.comp",
         "spv.memoryScopeSemantics.nonConstArg.comp",
@@ -849,6 +855,7 @@ INSTANTIATE_TEST_SUITE_P(
 INSTANTIATE_TEST_SUITE_P(
     Glsl, CompileToSpirv14Test,
     ::testing::ValuesIn(std::vector<std::string>({
+        "spv.bufferReference.memoryModel.shadercall.rgen",
         "spv.1.4.LoopControl.frag",
         "spv.1.4.NonWritable.frag",
         "spv.1.4.OpEntryPoint.frag",
