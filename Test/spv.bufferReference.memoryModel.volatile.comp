@@ -1,0 +1,15 @@
+#version 450
+#extension GL_EXT_buffer_reference : require
+
+layout(buffer_reference, std430) buffer Ref { uint value; };
+layout(push_constant) uniform Push { Ref ref; } pc;
+layout(binding = 0) buffer Result { uint value; } result;
+
+// Using volatile on a buffer reference should require the vulkan memory model
+
+void main()
+{
+    volatile Ref ref = pc.ref;
+    result.value = ref.value;
+    ref.value = result.value;
+}

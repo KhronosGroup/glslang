@@ -3292,8 +3292,7 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
 
             // The result of operation is always stored, but conditionally the
             // consumed result.  The consumed result is always an r-value.
-            builder.accessChainStore(result,
-                                     TranslateNonUniformDecoration(builder.getAccessChain().coherentFlags));
+            accessChainStore(node->getOperand()->getType(), result);
             builder.clearAccessChain();
             if (node->getOp() == glslang::EOpPreIncrement ||
                 node->getOp() == glslang::EOpPreDecrement)
@@ -3570,6 +3569,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
     std::vector<spv::Builder::AccessChain> complexLvalues;  // for holding swizzling l-values too complex for
                                                             // SPIR-V, for an out parameter
     std::vector<spv::Id> temporaryLvalues;                  // temporaries to pass, as proxies for complexLValues
+    std::vector<const glslang::TType*> complexLvalueTypes;
     spv::Builder::AccessChain tensorReadResultLValue = {};
     tensorReadResultLValue.base = spv::NoResult;            // deferred tensorReadARM out-arg store target
 
@@ -4619,6 +4619,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
                 // receive the result, and must later swizzle that into the original
                 // l-value.
                 complexLvalues.push_back(builder.getAccessChain());
+                complexLvalueTypes.push_back(&glslangOperands[arg]->getAsTyped()->getType());
                 temporaryLvalues.push_back(builder.createVariable(
                     spv::NoPrecision, spv::StorageClass::Function,
                     builder.accessChainGetInferredType(), "swizzleTemp"));
@@ -5260,8 +5261,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
 
         for (unsigned int i = 0; i < temporaryLvalues.size(); ++i) {
             builder.setAccessChain(complexLvalues[i]);
-            builder.accessChainStore(builder.createLoad(temporaryLvalues[i], spv::NoPrecision),
-                TranslateNonUniformDecoration(complexLvalues[i].coherentFlags));
+            accessChainStore(*complexLvalueTypes[i], builder.createLoad(temporaryLvalues[i], spv::NoPrecision));
         }
     }
 

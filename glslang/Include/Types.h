@@ -645,7 +645,8 @@ public:
     bool bufferReferenceNeedsVulkanMemoryModel() const
     {
         // include qualifiers that map to load/store availability/visibility/nonprivate memory access operands
-        return subgroupcoherent || workgroupcoherent || queuefamilycoherent || devicecoherent || coherent || nonprivate;
+        return shadercallcoherent || subgroupcoherent || workgroupcoherent || queuefamilycoherent ||
+               devicecoherent || coherent || volatil || nonprivate;
     }
     bool isInterpolation() const
     {

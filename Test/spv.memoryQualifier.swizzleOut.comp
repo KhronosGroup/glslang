@@ -1,0 +1,14 @@
+#version 450
+#pragma use_vulkan_memory_model
+
+layout(binding = 0) buffer Data {
+    coherent volatile uvec4 value;
+} data;
+
+// ensure that any memory operation emitted for the last 'out'
+// parameter has coherent/volatile semantics
+
+void main()
+{
+    uaddCarry(uvec2(1u), uvec2(2u), data.value.yx);
+}

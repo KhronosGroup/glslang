@@ -1,0 +1,10 @@
+#version 450
+#extension GL_EXT_buffer_reference : require
+
+layout(buffer_reference, std430) buffer Ref { uint value; };
+layout(push_constant) uniform Push { Ref ref; } pc;
+layout(binding = 0) buffer Result { uint value; } result;
+
+// This should not require Vulkan memory model
+
+void main() { result.value = pc.ref.value; }
