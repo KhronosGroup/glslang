@@ -3201,17 +3201,17 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
     if (!result) {
         if (node->getOp() == glslang::EOpSpirvInst) {
             const auto& spirvInst = node->getSpirvInstruction();
-            if (spirvInst.set == "") {
-                spv::IdImmediate idImmOp = {true, operand};
-                if (operandNode->getAsTyped()->getQualifier().isSpirvLiteral()) {
-                    // Translate the constant to a literal value
-                    std::vector<unsigned> literals;
-                    glslang::TVector<const glslang::TIntermConstantUnion*> constants;
-                    constants.push_back(operandNode->getAsConstantUnion());
-                    TranslateLiterals(constants, literals);
-                    idImmOp = {false, literals[0]};
-                }
+            spv::IdImmediate idImmOp = {true, operand};
+            if (operandNode->getAsTyped()->getQualifier().isSpirvLiteral()) {
+                // Translate the constant to a literal value
+                std::vector<unsigned> literals;
+                glslang::TVector<const glslang::TIntermConstantUnion*> constants;
+                constants.push_back(operandNode->getAsConstantUnion());
+                TranslateLiterals(constants, literals);
+                idImmOp = {false, literals[0]};
+            }
 
+            if (spirvInst.set == "") {
                 if (node->getBasicType() == glslang::EbtVoid)
                     builder.createNoResultOp(static_cast<spv::Op>(spirvInst.id), {idImmOp});
                 else
@@ -3219,7 +3219,7 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
             } else {
                 result = builder.createBuiltinCall(
                     resultType(), spirvInst.set == "GLSL.std.450" ? stdBuiltins : getExtBuiltins(spirvInst.set.c_str()),
-                    spirvInst.id, {operand});
+                    spirvInst.id, {idImmOp});
             }
 
             if (node->getBasicType() == glslang::EbtVoid)
@@ -5204,20 +5204,20 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
             lvalueCoherentFlags, node->getType());
     } else if (node->getOp() == glslang::EOpSpirvInst) {
         const auto& spirvInst = node->getSpirvInstruction();
-        if (spirvInst.set == "") {
-            std::vector<spv::IdImmediate> idImmOps;
-            for (unsigned int i = 0; i < glslangOperands.size(); ++i) {
-                if (glslangOperands[i]->getAsTyped()->getQualifier().isSpirvLiteral()) {
-                    // Translate the constant to a literal value
-                    std::vector<unsigned> literals;
-                    glslang::TVector<const glslang::TIntermConstantUnion*> constants;
-                    constants.push_back(glslangOperands[i]->getAsConstantUnion());
-                    TranslateLiterals(constants, literals);
-                    idImmOps.push_back({false, literals[0]});
-                } else
-                    idImmOps.push_back({true, operands[i]});
-            }
+        std::vector<spv::IdImmediate> idImmOps;
+        for (unsigned int i = 0; i < glslangOperands.size(); ++i) {
+            if (glslangOperands[i]->getAsTyped()->getQualifier().isSpirvLiteral()) {
+                // Translate the constant to a literal value
+                std::vector<unsigned> literals;
+                glslang::TVector<const glslang::TIntermConstantUnion*> constants;
+                constants.push_back(glslangOperands[i]->getAsConstantUnion());
+                TranslateLiterals(constants, literals);
+                idImmOps.push_back({false, literals[0]});
+            } else
+                idImmOps.push_back({true, operands[i]});
+        }
 
+        if (spirvInst.set == "") {
             if (node->getBasicType() == glslang::EbtVoid)
                 builder.createNoResultOp(static_cast<spv::Op>(spirvInst.id), idImmOps);
             else
@@ -5225,7 +5225,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         } else {
             result = builder.createBuiltinCall(
                 resultType(), spirvInst.set == "GLSL.std.450" ? stdBuiltins : getExtBuiltins(spirvInst.set.c_str()),
-                spirvInst.id, operands);
+                spirvInst.id, idImmOps);
         }
         noReturnValue = node->getBasicType() == glslang::EbtVoid;
     } else if (node->getOp() == glslang::EOpDebugPrintf) {

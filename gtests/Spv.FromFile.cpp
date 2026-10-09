@@ -501,6 +501,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.intrinsicsSpirvDecorateString.comp",
         "spv.intrinsicsSpirvExecutionMode.frag",
         "spv.intrinsicsSpirvInstruction.vert",
+        "spv.intrinsicsSpirvInstructionSetLiteral.comp",
         "spv.intrinsicsSpirvLiteral.vert",
         "spv.intrinsicsSpirvStorageClass.rchit",
         "spv.intrinsicsSpirvType.rgen",
