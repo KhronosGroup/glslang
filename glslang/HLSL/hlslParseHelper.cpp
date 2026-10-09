@@ -47,6 +47,7 @@
 #include <functional>
 #include <cctype>
 #include <array>
+#include <limits>
 #include <set>
 
 namespace glslang {
@@ -6403,7 +6404,15 @@ void HlslParseContext::handlePackOffset(const TSourceLoc& loc, TQualifier& quali
         return;
     }
 
-    qualifier.layoutOffset = 16 * atoi(location.substr(1, location.size()).c_str());
+    // A subcomponent is 16 bytes, and the component below adds up to 12 more, so anything
+    // past that cannot be turned into an offset.
+    const long long subcomponent = strtoll(location.substr(1, location.size()).c_str(), nullptr, 10);
+    if (subcomponent > (std::numeric_limits<int>::max() - 12) / 16) {
+        error(loc, "offset is out of range", "packoffset", "");
+        return;
+    }
+
+    qualifier.layoutOffset = 16 * static_cast<int>(subcomponent);
     if (component != nullptr) {
         int componentOffset = 0;
         switch ((*component)[0]) {
@@ -6440,11 +6449,16 @@ void HlslParseContext::handleRegister(const TSourceLoc& loc, TQualifier& qualifi
         return;
     }
 
-    int regNumber = 0;
+    long long regNumber = 0;
     if (desc.size() > 1) {
-        if (isdigit(desc[1]))
-            regNumber = atoi(desc.substr(1, desc.size()).c_str());
-        else {
+        if (isdigit(desc[1])) {
+            regNumber = strtoll(desc.substr(1, desc.size()).c_str(), nullptr, 10);
+            // The 'b'/'t'/'s'/'u' cases below add the subcomponent to the number.
+            if (regNumber > std::numeric_limits<int>::max() - std::max(subComponent, 0)) {
+                error(loc, "register number is out of range", "register", "");
+                return;
+            }
+        } else {
             error(loc, "expected register number after register type", "register", "");
             return;
         }
@@ -6457,7 +6471,11 @@ void HlslParseContext::handleRegister(const TSourceLoc& loc, TQualifier& qualifi
     case 'c':
         // c register is the register slot in the global const buffer
         // each slot is a vector of 4 32 bit components
-        qualifier.layoutOffset = regNumber * 4 * 4;
+        if (regNumber > std::numeric_limits<int>::max() / (4 * 4)) {
+            error(loc, "register number is out of range", "register", "");
+            return;
+        }
+        qualifier.layoutOffset = static_cast<int>(regNumber) * 4 * 4;
         break;
         // const buffer register slot
     case 'b':
@@ -6470,7 +6488,7 @@ void HlslParseContext::handleRegister(const TSourceLoc& loc, TQualifier& qualifi
         // if nothing else has set the binding, do so now
         // (other mechanisms override this one)
         if (!qualifier.hasBinding())
-            qualifier.layoutBinding = regNumber + subComponent;
+            qualifier.layoutBinding = static_cast<int>(regNumber) + subComponent;
 
         // This handles per-register layout sets numbers.  For the global mode which sets
         // every symbol to the same value, see setLinkageLayoutSets().
