@@ -713,6 +713,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.1.3.8bitstorage-ubo.vert",
         "spv.1.3.8bitstorage-ssbo.vert",
         "spv.1.3.coopmat.comp",
+        "spv.intrinsicsSpirvExecutionModeId.comp",
         "spv.deviceGroup.frag",
         "spv.drawParams.vert",
         "spv.int8.frag",

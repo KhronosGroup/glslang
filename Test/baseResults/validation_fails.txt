@@ -71,6 +71,7 @@ Test/baseResults/spv.functionNestedOpaque.vert.out
 Test/baseResults/spv.imageAtomic64.frag.out
 Test/baseResults/spv.image.frag.out
 Test/baseResults/spv.int64.frag.out
+Test/baseResults/spv.intrinsicsSpirvExecutionModeId.comp.out
 Test/baseResults/spv.memoryQualifier.frag.out
 Test/baseResults/spv.newTexture.frag.out
 Test/baseResults/spv.nvgpushader5.frag.out

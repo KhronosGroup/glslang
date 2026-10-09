@@ -1,0 +1,13 @@
+#version 460 core
+#extension GL_EXT_spirv_intrinsics: enable
+
+layout(constant_id = 0) const int sx = 2;
+
+// LocalSizeId (38) takes <id> operands. The first is a specialization-constant
+// expression (sx + 1), which is emitted as a spec-constant-op rather than a symbol
+// reference; the others cover the spec-constant symbol and front-end constant paths.
+spirv_execution_mode_id(38, sx + 1, sx, 1);
+
+void main()
+{
+}
