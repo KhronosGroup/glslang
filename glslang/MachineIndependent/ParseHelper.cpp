@@ -11448,6 +11448,30 @@ TIntermNode* TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeL
         if (currentBlockQualifier.storage != EvqBuffer)
             error(loc, "can only be used with buffer", "buffer_reference", "");
 
+        // References count as 8 bytes, but SpvPostProcess always loads and stores them with Aligned 8,
+        // so a smaller alignment only breaks the rule for them, and the SPIR-V stays valid
+        if (currentBlockQualifier.hasBufferReferenceAlign()) {
+            const int align = 1 << currentBlockQualifier.layoutBufferReferenceAlign;
+            int largestScalar = 0;
+            bool hasReference = false;
+            const auto visit = [&](const TType* type) {
+                int size;
+                if (type->isReference())
+                    hasReference = true;
+                else if (!type->isStruct())
+                    largestScalar = std::max(largestScalar, TIntermediate::getBaseAlignmentScalar(*type, size));
+                return false;
+            };
+            for (const auto& member : typeList)
+                member.type->contains(visit);
+
+            if (align < largestScalar)
+                error(loc, "must be at least the size of the largest scalar or component type in the block",
+                      "buffer_reference_align", "");
+            else if (hasReference && align < 8)
+                warn(loc, "is less than 8, the size of a buffer reference member", "buffer_reference_align", "");
+        }
+
         // Create the block reference type. If it was forward-declared, detect that
         // as a referent struct type with no members. Replace the referent type with
         // blockType.
