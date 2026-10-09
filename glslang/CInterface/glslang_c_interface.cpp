@@ -419,6 +419,10 @@ GLSLANG_EXPORT void glslang_shader_set_resource_set_binding(glslang_shader_t* sh
     shader->shader->setResourceSetBinding(shader->baseResourceSetBinding);
 }
 
+GLSLANG_EXPORT void glslang_shader_restrict_available_extensions(glslang_shader_t* shader, const char* const* extensions, unsigned int num_extensions) {
+    shader->shader->restrictAvailableExtensions(extensions, static_cast<int>(num_extensions));
+}
+
 GLSLANG_EXPORT const char* glslang_shader_get_preprocessed_code(glslang_shader_t* shader)
 {
     return shader->preprocessedGLSL.c_str();
