@@ -2042,6 +2042,11 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion,
 
     case EShLangCompute: {
         builder.addCapability(spv::Capability::Shader);
+        bool explicitLocalSizeId = false;
+        if (glslangIntermediate->hasSpirvExecutionMode()) {
+            const auto& modeIds = glslangIntermediate->getSpirvExecutionMode().modeIds;
+            explicitLocalSizeId = modeIds.find(static_cast<int>(spv::ExecutionMode::LocalSizeId)) != modeIds.end();
+        }
         bool needSizeId = false;
         for (int dim = 0; dim < 3; ++dim) {
             if ((glslangIntermediate->getLocalSizeSpecId(dim) != glslang::TQualifier::layoutNotSet)) {
@@ -2049,7 +2054,10 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion,
                 break;
             }
         }
-        if (glslangIntermediate->getSpv().spv >= glslang::EShTargetSpv_1_2 && needSizeId) {
+        if (explicitLocalSizeId) {
+            // A LocalSizeId provided through spirv_execution_mode_id is emitted below;
+            // also emitting the implicit local size would make the module invalid.
+        } else if (glslangIntermediate->getSpv().spv >= glslang::EShTargetSpv_1_2 && needSizeId) {
             std::vector<spv::Id> dimConstId;
             for (int dim = 0; dim < 3; ++dim) {
                 bool specConst = (glslangIntermediate->getLocalSizeSpecId(dim) != glslang::TQualifier::layoutNotSet);
