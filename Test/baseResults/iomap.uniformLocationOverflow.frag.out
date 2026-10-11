@@ -1,0 +1,42 @@
+iomap.uniformLocationOverflow.frag
+Shader version: 450
+0:? Sequence
+0:14  Function Definition: main( ( global void)
+0:14    Function Parameters: 
+0:16    Sequence
+0:16      move second child to first child ( temp 4-component vector of float)
+0:16        'Output' (layout( location=0) out 4-component vector of float)
+0:16        Constant:
+0:16          1.000000
+0:16          1.000000
+0:16          1.000000
+0:16          1.000000
+0:?   Linker Objects
+0:?     'bigArray' (layout( location=1) uniform 65536-element array of 65536-element array of float)
+0:?     'other' (layout( location=2) uniform float)
+0:?     'Output' (layout( location=0) out 4-component vector of float)
+
+
+Linked fragment stage:
+
+INTERNAL ERROR: Uniform location overlaps across stages: 2
+
+Shader version: 450
+0:? Sequence
+0:14  Function Definition: main( ( global void)
+0:14    Function Parameters: 
+0:16    Sequence
+0:16      move second child to first child ( temp 4-component vector of float)
+0:16        'Output' (layout( location=0) out 4-component vector of float)
+0:16        Constant:
+0:16          1.000000
+0:16          1.000000
+0:16          1.000000
+0:16          1.000000
+0:?   Linker Objects
+0:?     'bigArray' (layout( location=1) uniform 65536-element array of 65536-element array of float)
+0:?     'other' (layout( location=2) uniform float)
+0:?     'Output' (layout( location=0) out 4-component vector of float)
+
+Validation failed
+SPIR-V is not generated for failed compile or link

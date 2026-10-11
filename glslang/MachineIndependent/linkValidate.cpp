@@ -2262,8 +2262,7 @@ int TIntermediate::computeTypeLocationSize(const TType& type, EShLanguage stage)
     // for an n-element array of m-component vectors..."
     if (type.isMatrix()) {
         TType columnType(type, 0);
-        return clampLocationCount((long long)type.getMatrixCols() * computeTypeLocationSize(columnType, stage),
-                                  TQualifier::layoutLocationEnd);
+        return type.getMatrixCols() * computeTypeLocationSize(columnType, stage);
     }
 
     assert(0);
@@ -2280,10 +2279,16 @@ int TIntermediate::computeTypeUniformLocationSize(const TType& type)
         // TODO: perf: this can be flattened by using getCumulativeArraySize(), and a deref that discards all arrayness
         TType elementType(type, 0);
         if (type.isSizedArray()) {
-            // Uniform arrays may legitimately span more than the input/output location space,
-            // so clamp only to what an int can hold (see clampLocationCount).
-            return clampLocationCount((long long)type.getOuterArraySize() * computeTypeUniformLocationSize(elementType),
-                                      std::numeric_limits<int>::max());
+            // Uniform arrays may legitimately span more locations than the input/output
+            // location space, so a count that fits in an int is returned exactly. A count
+            // that overflows an int is far beyond any usable location space, and the io
+            // mapper both reserves location slots one at a time and adds the count to an
+            // explicit location (bounded by layoutLocationEnd), so saturate it to the end
+            // of the location space to keep that arithmetic bounded and defined.
+            long long count = (long long)type.getOuterArraySize() * computeTypeUniformLocationSize(elementType);
+            if (count > std::numeric_limits<int>::max())
+                return TQualifier::layoutLocationEnd;
+            return static_cast<int>(count);
         } else {
             // TODO: are there valid cases of having an implicitly-sized array with a location?  If so, running this code too early.
             return computeTypeUniformLocationSize(elementType);
@@ -2298,7 +2303,11 @@ int TIntermediate::computeTypeUniformLocationSize(const TType& type)
             TType memberType(type, member);
             size += computeTypeUniformLocationSize(memberType);
         }
-        return clampLocationCount(size, std::numeric_limits<int>::max());
+        // See the array case above for why overflowed counts saturate to the
+        // end of the location space.
+        if (size > std::numeric_limits<int>::max())
+            return TQualifier::layoutLocationEnd;
+        return static_cast<int>(size);
     }
 
     return 1;
