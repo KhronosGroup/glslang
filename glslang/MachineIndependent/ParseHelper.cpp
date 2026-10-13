@@ -11458,6 +11458,22 @@ TIntermNode* TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeL
             if (member.type->getQualifier().bufferReferenceNeedsVulkanMemoryModel())
                 intermediate.setUseVulkanMemoryModel();
 
+        if (currentBlockQualifier.hasBufferReferenceAlign()) {
+            const int align = 1 << currentBlockQualifier.layoutBufferReferenceAlign;
+            int largestScalar = 0;
+            const auto visit = [&](const TType* type) {
+                int size;
+                if (!type->isStruct())
+                    largestScalar = std::max(largestScalar, TIntermediate::getBaseAlignmentScalar(*type, size));
+                return false;
+            };
+            for (const auto& member : typeList)
+                member.type->contains(visit);
+
+            if (align < largestScalar)
+                error(loc, "must be at least the size of the largest scalar or component type in the block",
+                      "buffer_reference_align", "");
+        }
 
         // Create the block reference type. If it was forward-declared, detect that
         // as a referent struct type with no members. Replace the referent type with
