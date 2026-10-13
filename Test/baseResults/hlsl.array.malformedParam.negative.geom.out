@@ -1,0 +1,26 @@
+hlsl.array.malformedParam.negative.geom
+ERROR: 0:4: ']' : Expected 
+ERROR: 0:4: ')' : Expected 
+ERROR: 0:4: 'function parameter list' : Expected 
+ERROR: 0:4: 'declaration' : Expected 
+(4): error at column 32, HLSL parsing failed.
+ERROR: 5 compilation errors.  No code generated.
+
+
+Shader version: 500
+invocations = -1
+max_vertices = -1
+input primitive = triangles
+output primitive = none
+
+
+Linked geometry stage:
+
+
+Shader version: 500
+invocations = -1
+max_vertices = -1
+input primitive = triangles
+output primitive = none
+
+SPIR-V is not generated for failed compile or link

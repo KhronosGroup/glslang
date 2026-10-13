@@ -4301,6 +4301,7 @@ void HlslGrammar::acceptArraySpecifier(TArraySizes*& arraySizes)
 
         if (! acceptTokenClass(EHTokRightBracket)) {
             expected("]");
+            arraySizes = nullptr;
             return;
         }
 

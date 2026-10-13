@@ -160,6 +160,7 @@ INSTANTIATE_TEST_SUITE_P(
         {"hlsl.aliasOpaque.frag", "main"},
         {"hlsl.array.frag", "PixelShaderFunction"},
         {"hlsl.array.implicit-size.frag", "PixelShaderFunction"},
+        {"hlsl.array.malformedParam.negative.geom", "main"},
         {"hlsl.array.multidim.frag", "main"},
         {"hlsl.assoc.frag", "PixelShaderFunction"},
         {"hlsl.attribute.frag", "PixelShaderFunction"},
