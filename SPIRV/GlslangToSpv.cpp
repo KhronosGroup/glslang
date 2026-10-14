@@ -1549,7 +1549,8 @@ spv::StorageClass TGlslangToSpvTraverser::TranslateStorageClass(const glslang::T
         if (type.getQualifier().isPushConstant())
             return spv::StorageClass::PushConstant;
         if (type.getBasicType() == glslang::EbtBlock ||
-            type.getQualifier().layoutDescriptorHeap)
+            type.getQualifier().layoutDescriptorHeap ||
+            type.getQualifier().isBufferType())
             return spv::StorageClass::Uniform;
         return spv::StorageClass::UniformConstant;
     }
