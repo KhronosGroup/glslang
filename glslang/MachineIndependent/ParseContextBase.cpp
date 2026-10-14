@@ -136,6 +136,8 @@ bool TParseContextBase::lValueErrorCheck(const TSourceLoc& loc, const char* op, 
     case EvqConst:          message = "can't modify a const";        break;
     case EvqConstReadOnly:  message = "can't modify a const";        break;
     case EvqUniform:        message = "can't modify a uniform";      break;
+    case EvqResourceHeap:
+    case EvqSamplerHeap:    message = "can't modify a descriptor heap"; break;
     case EvqBuffer:
         if (node->getQualifier().isReadOnly())
             message = "can't modify a readonly buffer";
@@ -191,6 +193,12 @@ bool TParseContextBase::lValueErrorCheck(const TSourceLoc& loc, const char* op, 
     if (message == nullptr)
     {
         if (binaryNode) {
+            // Buffer contents can be writable even when the descriptor is in a read-only heap.
+            // Check their qualifiers above, then stop before checking the descriptor itself.
+            if (binaryNode->getOp() == EOpIndexDirectStruct &&
+                binaryNode->getLeft()->getQualifier().isBufferType())
+                return false;
+
             switch (binaryNode->getOp()) {
             case EOpIndexDirect:
             case EOpIndexIndirect:     // fall through
