@@ -997,6 +997,7 @@ INSTANTIATE_TEST_SUITE_P(
         // SPV_EXT_structured_descriptor_heap
         "spv.structuredDescriptorHeap.AccelerationStructure.comp",
         "spv.structuredDescriptorHeap.Buffer.comp",
+        "spv.structuredDescriptorHeap.Uniform.comp",
         "spv.structuredDescriptorHeap.BufferReference.comp",
         "spv.structuredDescriptorHeap.LayoutQualifiers.comp",
         "spv.structuredDescriptorHeap.es.frag",
