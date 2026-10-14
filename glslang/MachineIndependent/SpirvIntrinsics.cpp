@@ -61,17 +61,26 @@ TSpirvRequirement* TParseContext::makeSpirvRequirement(const TSourceLoc& loc, co
 {
     TSpirvRequirement* spirvReq = new TSpirvRequirement;
 
+    // The requirement name and the bracketed list are parsed independently, so a
+    // name paired with the wrong kind of list (e.g. extensions with an integer list,
+    // or capabilities with a string list) leaves the matching argument null.
     if (name == "extensions") {
-        assert(extensions);
-        for (const auto& extension : extensions->getSequence()) {
-            assert(extension->getAsConstantUnion());
-            spirvReq->extensions.insert(*extension->getAsConstantUnion()->getConstArray()[0].getSConst());
+        if (extensions == nullptr)
+            error(loc, "requires a list of extension name strings", name.c_str(), "");
+        else {
+            for (const auto& extension : extensions->getSequence()) {
+                assert(extension->getAsConstantUnion());
+                spirvReq->extensions.insert(*extension->getAsConstantUnion()->getConstArray()[0].getSConst());
+            }
         }
     } else if (name == "capabilities") {
-        assert(capabilities);
-        for (const auto& capability : capabilities->getSequence()) {
-            assert(capability->getAsConstantUnion());
-            spirvReq->capabilities.insert(capability->getAsConstantUnion()->getConstArray()[0].getIConst());
+        if (capabilities == nullptr)
+            error(loc, "requires a list of integer capabilities", name.c_str(), "");
+        else {
+            for (const auto& capability : capabilities->getSequence()) {
+                assert(capability->getAsConstantUnion());
+                spirvReq->capabilities.insert(capability->getAsConstantUnion()->getConstArray()[0].getIConst());
+            }
         }
     } else
         error(loc, "unknown SPIR-V requirement", name.c_str(), "");
