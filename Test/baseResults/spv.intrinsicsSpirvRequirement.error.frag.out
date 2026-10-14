@@ -1,0 +1,7 @@
+spv.intrinsicsSpirvRequirement.error.frag
+ERROR: 0:9: 'capabilities' : requires a list of integer capabilities 
+ERROR: 0:10: 'extensions' : requires a list of extension name strings 
+ERROR: 2 compilation errors.  No code generated.
+
+
+SPIR-V is not generated for failed compile or link
