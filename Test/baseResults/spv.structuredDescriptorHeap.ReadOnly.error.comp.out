@@ -1,0 +1,21 @@
+spv.structuredDescriptorHeap.ReadOnly.error.comp
+ERROR: 0:54: 'assign' :  l-value required "bufferHeap0" (can't modify a descriptor heap)
+ERROR: 0:55: 'assign' :  l-value required "bufferHeap0" (can't modify a descriptor heap)
+ERROR: 0:56: '++' :  l-value required "bufferHeap0" (can't modify a descriptor heap)
+ERROR: 0:57: '--' :  l-value required "bufferHeap0" (can't modify a descriptor heap)
+ERROR: 0:58: 'assign' :  l-value required "bufferHeap0" (can't modify a descriptor heap)
+ERROR: 0:59: 'assign' :  l-value required "bufferHeap0" (can't modify a descriptor heap)
+ERROR: 0:60: 'assign' :  l-value required "bufferHeap0" (can't modify a descriptor heap)
+ERROR: 0:61: 'assign' :  l-value required "bufferHeap0" (can't modify a descriptor heap)
+ERROR: 0:61: 'out' : Non-L-value cannot be passed for 'out' or 'inout' parameters. 
+ERROR: 0:62: 'assign' :  l-value required "bufferHeap0" (can't modify a descriptor heap)
+ERROR: 0:62: 'out' : Non-L-value cannot be passed for 'out' or 'inout' parameters. 
+ERROR: 0:63: 'assign' :  l-value required "samplerHeap0" (can't modify a descriptor heap)
+ERROR: 0:64: 'assign' :  l-value required "bufferHeap0" (can't modify a descriptor heap)
+ERROR: 0:65: 'assign' :  l-value required "bufferHeap0" (can't modify a descriptor heap)
+ERROR: 0:66: 'assign' :  l-value required "bufferHeap0" (can't modify a readonly buffer)
+ERROR: 0:67: 'assign' :  l-value required "bufferHeap0" (can't modify a uniform)
+ERROR: 16 compilation errors.  No code generated.
+
+
+SPIR-V is not generated for failed compile or link

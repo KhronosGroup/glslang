@@ -1,0 +1,68 @@
+#version 460
+#extension GL_EXT_descriptor_heap : require
+#extension GL_EXT_structured_descriptor_heap : require
+#extension GL_EXT_scalar_block_layout : require
+#extension GL_EXT_buffer_reference : require
+
+layout(local_size_x = 1) in;
+
+layout(buffer_type, scalar) buffer DataBuffer {
+    uint data0;
+    uint data1;
+};
+
+layout(buffer_type, scalar) readonly buffer ReadOnlyBuffer {
+    uint value;
+};
+
+layout(buffer_type, scalar) uniform UniformBuffer {
+    uint value;
+};
+
+layout(buffer_reference, scalar, buffer_reference_align = 4) buffer BufferReference {
+    uint value;
+};
+
+struct HeapData {
+    uvec2 vector;
+    uint values[2];
+};
+
+layout(heap_offset = 0) resourceheap BufferHeap0 {
+    uint count;
+    DataBuffer dataBuffer;
+    ReadOnlyBuffer readOnlyBuffer;
+    UniformBuffer uniformBuffer;
+    BufferReference reference;
+    HeapData data;
+} bufferHeap0;
+
+layout(heap_offset = 0) samplerheap SamplerHeap0 {
+    uint count;
+} samplerHeap0;
+
+void writeValue(out uint value) {
+    value = 1;
+}
+
+void updateValue(inout uint value) {
+    value += 1;
+}
+
+void main() {
+    uint index = gl_GlobalInvocationID.x & 1u;
+    bufferHeap0.count = 3; // Issue #4399: the heap itself is read-only.
+    bufferHeap0.count += 1;
+    ++bufferHeap0.count;
+    bufferHeap0.count--;
+    bufferHeap0.data.vector.xy = uvec2(1);
+    bufferHeap0.data.values[0] = 1;
+    bufferHeap0.data.values[index] = 1;
+    writeValue(bufferHeap0.count);
+    updateValue(bufferHeap0.data.values[index]);
+    samplerHeap0.count = 3;
+    bufferHeap0.dataBuffer = bufferHeap0.dataBuffer;
+    bufferHeap0.reference = bufferHeap0.reference;
+    bufferHeap0.readOnlyBuffer.value = 1; // Buffer access must still honor readonly.
+    bufferHeap0.uniformBuffer.value = 1; // Uniform buffer contents are also read-only.
+}
