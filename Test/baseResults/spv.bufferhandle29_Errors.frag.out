@@ -1,7 +1,7 @@
 spv.bufferhandle29_Errors.frag
-ERROR: 0:6: 'buffer_reference_align' : must be at least the size of the largest scalar or component type in the block 
-ERROR: 0:7: 'buffer_reference_align' : must be at least the size of the largest scalar or component type in the block 
-ERROR: 0:9: 'buffer_reference_align' : must be at least the size of the largest scalar or component type in the block 
+ERROR: 0:6: 'buffer_reference_align' : must be at least the size of the largest scalar or component type in the block (requested 2, needs 4)
+ERROR: 0:7: 'buffer_reference_align' : must be at least the size of the largest scalar or component type in the block (requested 4, needs 8)
+ERROR: 0:9: 'buffer_reference_align' : must be at least the size of the largest scalar or component type in the block (requested 4, needs 8)
 ERROR: 3 compilation errors.  No code generated.
 
 
