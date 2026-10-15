@@ -147,6 +147,7 @@
 // 7) If the extension has additional requirements like minimum SPIR-V version required, add them
 //    to extensionRequires()
 
+#include "Versions.h"
 #include "parseVersions.h"
 #include "localintermediate.h"
 
@@ -419,6 +420,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_EXT_float_mxint8]                = EBhDisable;
     extensionBehavior[E_GL_EXT_optional_input_attachment_index] = EBhDisable;
     extensionBehavior[E_GL_EXT_cooperative_matrix_maintenance1] = EBhDisable;
+    extensionBehavior[E_GL_EXT_type_deduction]              = EBhDisable;
 
     // OVR extensions
     extensionBehavior[E_GL_OVR_multiview]                = EBhDisable;
@@ -765,6 +767,7 @@ void TParseVersions::getPreamble(std::string& preamble)
     // other general extensions
     preamble +=
             "#define GL_EXT_terminate_invocation 1\n"
+            "#define GL_EXT_type_deduction 1\n"
             ;
 
     // #define VULKAN XXXX

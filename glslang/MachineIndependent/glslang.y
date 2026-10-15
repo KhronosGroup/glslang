@@ -105,6 +105,7 @@ using namespace glslang;
             glslang::TIdentifierList* identifierList;
         };
         glslang::TTypeParameters* typeParameters;
+        glslang::TType* deducedType;
     } interm;
 }
 
@@ -191,6 +192,7 @@ extern int yylex(YYSTYPE*, TParseContext&);
 %token <lex> HITOBJECTNV HITOBJECTATTRNV HITOBJECTEXT HITOBJECTATTREXT
 %token <lex> TENSORLAYOUTNV TENSORVIEWNV
 %token <lex> TENSORARM
+%token <lex> AUTO
 
 // combined image/sampler
 %token <lex> SAMPLERCUBEARRAY SAMPLERCUBEARRAYSHADOW
@@ -363,6 +365,8 @@ extern int yylex(YYSTYPE*, TParseContext&);
 %type <interm.spirvTypeParams> spirv_type_parameter_list spirv_type_parameter
 %type <interm.spirvInst> spirv_instruction_qualifier
 %type <interm.spirvInst> spirv_instruction_qualifier_list spirv_instruction_qualifier_id
+
+%type <interm.type> auto_declaration_specifier
 
 %start translation_unit
 %%
@@ -965,6 +969,17 @@ declaration
     }
     ;
 
+auto_declaration_specifier
+    : AUTO {
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+    }
+    | type_qualifier AUTO {
+        $$.init($2.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.shaderQualifiers.merge($1.shaderQualifiers);
+        parseContext.mergeQualifiers($1.loc, $$.qualifier, $1.qualifier, true);
+    }
+    ;
+
 block_structure
     : type_qualifier IDENTIFIER LEFT_BRACE { parseContext.nestedBlockCheck($1.loc); } struct_declaration_list RIGHT_BRACE {
         --parseContext.blockNestingLevel;
@@ -1195,22 +1210,22 @@ init_declarator_list
     }
     | init_declarator_list COMMA IDENTIFIER {
         $$ = $1;
-        TIntermNode* declNode = parseContext.declareVariable($3.loc, *$3.string, $1.type);
+        TIntermNode* declNode = parseContext.declareVariable($3.loc, *$3.string, $1.type, nullptr, nullptr, $1.deducedType);
         $$.intermNode = parseContext.intermediate.growAggregate($1.intermNode, declNode, $3.loc);
     }
     | init_declarator_list COMMA IDENTIFIER array_specifier {
         $$ = $1;
-        TIntermNode* declNode = parseContext.declareVariable($3.loc, *$3.string, $1.type, $4.arraySizes);
+        TIntermNode* declNode = parseContext.declareVariable($3.loc, *$3.string, $1.type, $4.arraySizes, nullptr, $1.deducedType);
         $$.intermNode = parseContext.intermediate.growAggregate($1.intermNode, declNode, $3.loc);
     }
     | init_declarator_list COMMA IDENTIFIER array_specifier EQUAL initializer {
-        $$.type = $1.type;
-        TIntermNode* declNode = parseContext.declareVariable($3.loc, *$3.string, $1.type, $4.arraySizes, $6);
+        $$ = $1;
+        TIntermNode* declNode = parseContext.declareVariable($3.loc, *$3.string, $1.type, $4.arraySizes, $6, $1.deducedType);
         $$.intermNode = parseContext.intermediate.growAggregate($1.intermNode, declNode, $5.loc);
     }
     | init_declarator_list COMMA IDENTIFIER EQUAL initializer {
-        $$.type = $1.type;
-        TIntermNode* declNode = parseContext.declareVariable($3.loc, *$3.string, $1.type, 0, $5);
+        $$ = $1;
+        TIntermNode* declNode = parseContext.declareVariable($3.loc, *$3.string, $1.type, nullptr, $5, $1.deducedType);
         $$.intermNode = parseContext.intermediate.growAggregate($1.intermNode, declNode, $4.loc);
     }
     ;
@@ -1218,30 +1233,43 @@ init_declarator_list
 single_declaration
     : fully_specified_type {
         $$.type = $1;
+        $$.deducedType = nullptr;
         $$.intermNode = 0;
         parseContext.declareTypeDefaults($$.loc, $$.type);
     }
     | fully_specified_type IDENTIFIER {
         $$.type = $1;
+        $$.deducedType = nullptr;
         TIntermNode* declNode = parseContext.declareVariable($2.loc, *$2.string, $1);
         $$.intermNode = parseContext.intermediate.growAggregate(nullptr, declNode, $2.loc);
 
     }
     | fully_specified_type IDENTIFIER array_specifier {
         $$.type = $1;
+        $$.deducedType = nullptr;
         TIntermNode* declNode = parseContext.declareVariable($2.loc, *$2.string, $1, $3.arraySizes);
         $$.intermNode = parseContext.intermediate.growAggregate(nullptr, declNode, $2.loc);
     }
     | fully_specified_type IDENTIFIER array_specifier EQUAL initializer {
         $$.type = $1;
+        $$.deducedType = nullptr;
         TIntermNode* declNode = parseContext.declareVariable($2.loc, *$2.string, $1, $3.arraySizes, $5);
         $$.intermNode = parseContext.intermediate.growAggregate(nullptr, declNode, $2.loc);
     }
     | fully_specified_type IDENTIFIER EQUAL initializer {
         $$.type = $1;
+        $$.deducedType = nullptr;
         TIntermNode* declNode = parseContext.declareVariable($2.loc, *$2.string, $1, 0, $4);
         $$.intermNode = parseContext.intermediate.growAggregate(nullptr, declNode, $2.loc);
     }
+    | auto_declaration_specifier IDENTIFIER EQUAL assignment_expression {
+        $$.type = $1;
+        $$.deducedType = new TType;
+
+        TIntermNode* declNode = parseContext.declareVariable($2.loc, *$2.string, $1, nullptr, $4, $$.deducedType);
+        $$.intermNode = parseContext.intermediate.growAggregate(nullptr, declNode, $2.loc);
+    }
+    ;
 
 // Grammar Note:  No 'enum', or 'typedef'.
 
