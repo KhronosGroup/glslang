@@ -883,7 +883,7 @@ void TParseVersions::requireProfile(const TSourceLoc& loc, int profileMask, cons
 //
 
 // entry point that takes multiple extensions
-void TParseVersions::profileRequires(const TSourceLoc& loc, int profileMask, int minVersion, int numExtensions,
+void TParseVersions::profileRequires(const TSourceLoc& loc, int profileMask, int minVersion, size_t numExtensions,
     const char* const extensions[], const char* featureDesc)
 {
     if (profile & profileMask) {
@@ -950,7 +950,7 @@ void TParseVersions::requireNotRemoved(const TSourceLoc& loc, int profileMask, i
 
 // Returns true if at least one of the extensions in the extensions parameter is requested. Otherwise, returns false.
 // Warns appropriately if the requested behavior of an extension is "warn".
-bool TParseVersions::checkExtensionsRequested(const TSourceLoc& loc, int numExtensions, const char* const extensions[], const char* featureDesc)
+bool TParseVersions::checkExtensionsRequested(const TSourceLoc& loc, size_t numExtensions, const char* const extensions[], const char* featureDesc)
 {
     // First, see if any of the extensions are enabled
     for (int i = 0; i < numExtensions; ++i) {
@@ -987,7 +987,7 @@ bool TParseVersions::checkExtensionsRequested(const TSourceLoc& loc, int numExte
 // Use when there are no profile/version to check, it's just an error if one of the
 // extensions is not present.
 //
-void TParseVersions::requireExtensions(const TSourceLoc& loc, int numExtensions, const char* const extensions[],
+void TParseVersions::requireExtensions(const TSourceLoc& loc, size_t numExtensions, const char* const extensions[],
     const char* featureDesc)
 {
     if (checkExtensionsRequested(loc, numExtensions, extensions, featureDesc))
@@ -1007,7 +1007,7 @@ void TParseVersions::requireExtensions(const TSourceLoc& loc, int numExtensions,
 // Use by preprocessor when there are no profile/version to check, it's just an error if one of the
 // extensions is not present.
 //
-void TParseVersions::ppRequireExtensions(const TSourceLoc& loc, int numExtensions, const char* const extensions[],
+void TParseVersions::ppRequireExtensions(const TSourceLoc& loc, size_t numExtensions, const char* const extensions[],
     const char* featureDesc)
 {
     if (checkExtensionsRequested(loc, numExtensions, extensions, featureDesc))
@@ -1046,7 +1046,7 @@ bool TParseVersions::extensionTurnedOn(const char* const extension)
       return false;
 }
 // See if any of the extensions are set to enable, require, or warn.
-bool TParseVersions::extensionsTurnedOn(int numExtensions, const char* const extensions[])
+bool TParseVersions::extensionsTurnedOn(size_t numExtensions, const char* const extensions[])
 {
     for (int i = 0; i < numExtensions; ++i) {
         if (extensionTurnedOn(extensions[i]))

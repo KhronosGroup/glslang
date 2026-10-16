@@ -72,16 +72,16 @@ public:
     EProfile profile;            // the declared profile in the shader (core by default)
     bool isEsProfile() const { return profile == EEsProfile; }
     void requireProfile(const TSourceLoc& loc, int profileMask, const char* featureDesc);
-    void profileRequires(const TSourceLoc& loc, int profileMask, int minVersion, int numExtensions,
+    void profileRequires(const TSourceLoc& loc, int profileMask, int minVersion, size_t numExtensions,
         const char* const extensions[], const char* featureDesc);
     void profileRequires(const TSourceLoc& loc, int profileMask, int minVersion, const char* extension,
         const char* featureDesc);
     virtual void initializeExtensionBehavior();
     virtual void checkDeprecated(const TSourceLoc&, int queryProfiles, int depVersion, const char* featureDesc);
     virtual void requireNotRemoved(const TSourceLoc&, int queryProfiles, int removedVersion, const char* featureDesc);
-    virtual void requireExtensions(const TSourceLoc&, int numExtensions, const char* const extensions[],
+    virtual void requireExtensions(const TSourceLoc&, size_t numExtensions, const char* const extensions[],
         const char* featureDesc);
-    virtual void ppRequireExtensions(const TSourceLoc&, int numExtensions, const char* const extensions[],
+    virtual void ppRequireExtensions(const TSourceLoc&, size_t numExtensions, const char* const extensions[],
         const char* featureDesc);
     template<typename Container>
     constexpr void ppRequireExtensions(const TSourceLoc& loc, Container extensions, const char* featureDesc) {
@@ -90,10 +90,10 @@ public:
 
     virtual TExtensionBehavior getExtensionBehavior(const char*);
     virtual bool extensionTurnedOn(const char* const extension);
-    virtual bool extensionsTurnedOn(int numExtensions, const char* const extensions[]);
+    virtual bool extensionsTurnedOn(size_t numExtensions, const char* const extensions[]);
     virtual void updateExtensionBehavior(int line, const char* const extension, const char* behavior);
     virtual void updateExtensionBehavior(const char* const extension, TExtensionBehavior);
-    virtual bool checkExtensionsRequested(const TSourceLoc&, int numExtensions, const char* const extensions[],
+    virtual bool checkExtensionsRequested(const TSourceLoc&, size_t numExtensions, const char* const extensions[],
         const char* featureDesc);
     virtual void checkExtensionStage(const TSourceLoc&, const char* const extension);
     virtual void extensionRequires(const TSourceLoc&, const char* const extension, const char* behavior);
