@@ -883,12 +883,12 @@ void TParseVersions::requireProfile(const TSourceLoc& loc, int profileMask, cons
 //
 
 // entry point that takes multiple extensions
-void TParseVersions::profileRequires(const TSourceLoc& loc, int profileMask, int minVersion, int numExtensions,
+void TParseVersions::profileRequires(const TSourceLoc& loc, int profileMask, int minVersion, size_t numExtensions,
     const char* const extensions[], const char* featureDesc)
 {
     if (profile & profileMask) {
         bool okay = minVersion > 0 && version >= minVersion;
-        for (int i = 0; i < numExtensions; ++i) {
+        for (size_t i = 0; i < numExtensions; ++i) {
             switch (getExtensionBehavior(extensions[i])) {
             case EBhWarn:
                 infoSink.info.message(EPrefixWarning, ("extension " + TString(extensions[i]) + " is being used for " + featureDesc).c_str(), loc, messages & EShMsgAbsolutePath, messages & EShMsgDisplayErrorColumn);
@@ -950,10 +950,10 @@ void TParseVersions::requireNotRemoved(const TSourceLoc& loc, int profileMask, i
 
 // Returns true if at least one of the extensions in the extensions parameter is requested. Otherwise, returns false.
 // Warns appropriately if the requested behavior of an extension is "warn".
-bool TParseVersions::checkExtensionsRequested(const TSourceLoc& loc, int numExtensions, const char* const extensions[], const char* featureDesc)
+bool TParseVersions::checkExtensionsRequested(const TSourceLoc& loc, size_t numExtensions, const char* const extensions[], const char* featureDesc)
 {
     // First, see if any of the extensions are enabled
-    for (int i = 0; i < numExtensions; ++i) {
+    for (size_t i = 0; i < numExtensions; ++i) {
         TExtensionBehavior behavior = getExtensionBehavior(extensions[i]);
         if (behavior == EBhEnable || behavior == EBhRequire)
             return true;
@@ -961,7 +961,7 @@ bool TParseVersions::checkExtensionsRequested(const TSourceLoc& loc, int numExte
 
     // See if any extensions want to give a warning on use; give warnings for all such extensions
     bool warned = false;
-    for (int i = 0; i < numExtensions; ++i) {
+    for (size_t i = 0; i < numExtensions; ++i) {
         TExtensionBehavior behavior = getExtensionBehavior(extensions[i]);
         if (behavior == EBhDisable && relaxedErrors()) {
             infoSink.info.message(EPrefixWarning, "The following extension must be enabled to use this feature:", loc,
@@ -987,7 +987,7 @@ bool TParseVersions::checkExtensionsRequested(const TSourceLoc& loc, int numExte
 // Use when there are no profile/version to check, it's just an error if one of the
 // extensions is not present.
 //
-void TParseVersions::requireExtensions(const TSourceLoc& loc, int numExtensions, const char* const extensions[],
+void TParseVersions::requireExtensions(const TSourceLoc& loc, size_t numExtensions, const char* const extensions[],
     const char* featureDesc)
 {
     if (checkExtensionsRequested(loc, numExtensions, extensions, featureDesc))
@@ -998,7 +998,7 @@ void TParseVersions::requireExtensions(const TSourceLoc& loc, int numExtensions,
         error(loc, "required extension not requested:", featureDesc, "%s", extensions[0]);
     else {
         error(loc, "required extension not requested:", featureDesc, "Possible extensions include:");
-        for (int i = 0; i < numExtensions; ++i)
+        for (size_t i = 0; i < numExtensions; ++i)
             infoSink.info.message(EPrefixNone, extensions[i]);
     }
 }
@@ -1007,7 +1007,7 @@ void TParseVersions::requireExtensions(const TSourceLoc& loc, int numExtensions,
 // Use by preprocessor when there are no profile/version to check, it's just an error if one of the
 // extensions is not present.
 //
-void TParseVersions::ppRequireExtensions(const TSourceLoc& loc, int numExtensions, const char* const extensions[],
+void TParseVersions::ppRequireExtensions(const TSourceLoc& loc, size_t numExtensions, const char* const extensions[],
     const char* featureDesc)
 {
     if (checkExtensionsRequested(loc, numExtensions, extensions, featureDesc))
@@ -1018,7 +1018,7 @@ void TParseVersions::ppRequireExtensions(const TSourceLoc& loc, int numExtension
         ppError(loc, "required extension not requested:", featureDesc, "%s", extensions[0]);
     else {
         ppError(loc, "required extension not requested:", featureDesc, "Possible extensions include:");
-        for (int i = 0; i < numExtensions; ++i)
+        for (size_t i = 0; i < numExtensions; ++i)
             infoSink.info.message(EPrefixNone, extensions[i]);
     }
 }
@@ -1046,9 +1046,9 @@ bool TParseVersions::extensionTurnedOn(const char* const extension)
       return false;
 }
 // See if any of the extensions are set to enable, require, or warn.
-bool TParseVersions::extensionsTurnedOn(int numExtensions, const char* const extensions[])
+bool TParseVersions::extensionsTurnedOn(size_t numExtensions, const char* const extensions[])
 {
-    for (int i = 0; i < numExtensions; ++i) {
+    for (size_t i = 0; i < numExtensions; ++i) {
         if (extensionTurnedOn(extensions[i]))
             return true;
     }
