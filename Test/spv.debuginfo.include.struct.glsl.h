@@ -1,0 +1,3 @@
+struct HeaderStruct {
+	float headerMember;
+};
