@@ -1,0 +1,17 @@
+// Covers descriptor_size-based descriptor array strides and member placement.
+#version 460
+#extension GL_EXT_descriptor_heap : require
+#extension GL_EXT_structured_descriptor_heap : require
+
+layout(local_size_x = 1) in;
+
+layout(heap_offset = 0) resourceheap DescriptorSizeHeap {
+    layout(descriptor_size = 128, rgba32f) image2D sourceImages[2];
+    layout(descriptor_size = 64, rgba32f) image2D destinationImages[2];
+} descriptorSizeHeap;
+
+void main()
+{
+    vec4 texel = imageLoad(descriptorSizeHeap.sourceImages[0], ivec2(0));
+    imageStore(descriptorSizeHeap.destinationImages[1], ivec2(0), texel);
+}

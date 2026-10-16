@@ -1001,6 +1001,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.structuredDescriptorHeap.Buffer.comp",
         "spv.structuredDescriptorHeap.Uniform.comp",
         "spv.structuredDescriptorHeap.BufferReference.comp",
+        "spv.structuredDescriptorHeap.DescriptorSize.comp",
         "spv.structuredDescriptorHeap.LayoutQualifiers.comp",
         "spv.structuredDescriptorHeap.ReadOnly.comp",
         "spv.structuredDescriptorHeap.ReadOnly.error.comp",
