@@ -477,6 +477,8 @@ public:
     void setStringsWithLengthsAndNames(
         const char* const* s, const int* l, const char* const* names, int n);
     void setPreamble(const char* s) { preamble = s; }
+    // Only the named extensions are available: the others are not predefined, and #extension treats them as unknown.
+    void restrictAvailableExtensions(const char* const* s, int n);
     void setEntryPoint(const char* entryPoint);
     void setSourceEntryPoint(const char* sourceEntryPointName);
     void addProcesses(const std::vector<std::string>&);
