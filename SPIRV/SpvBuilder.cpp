@@ -827,7 +827,8 @@ Id Builder::makeFunctionType(Id returnType, const std::vector<Id>& paramTypes)
             // function type is created for the wrapper function. However, nonsemantic shader debug information is disabled
             // while creating the HLSL wrapper. Consequently, if we encounter another void(void) function, we need to create
             // the associated debug function type if it hasn't been created yet.
-            if(emitNonSemanticShaderDebugInfo && getDebugType(type->getResultId()) == NoType) {
+            if (emitNonSemanticShaderDebugInfo &&
+                debugTypeIdLookup.find(type->getResultId()) == debugTypeIdLookup.end()) {
                 assert(sourceLang == spv::SourceLanguage::HLSL);
                 assert(getTypeClass(returnType) == Op::OpTypeVoid && paramTypes.size() == 0);
 
