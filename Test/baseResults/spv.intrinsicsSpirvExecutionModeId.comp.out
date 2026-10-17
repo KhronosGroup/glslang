@@ -4,10 +4,13 @@ spv.intrinsicsSpirvExecutionModeId.comp
 // Id's are bound by 10
 
                               Capability Shader
+                              Capability Bad
+                              Extension  "SPV_AMDX_shader_enqueue"
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
                               EntryPoint GLCompute 4  "main"
-                              ExecutionModeId 4 LocalSizeId 9 7 8
+                              ExecutionMode 4 LocalSize 1 1 1
+                              ExecutionModeId 4 Bad 9 7 8
                               Source GLSL 460
                               SourceExtension  "GL_EXT_spirv_intrinsics"
                               Name 4  "main"
