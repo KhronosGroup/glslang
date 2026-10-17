@@ -680,6 +680,8 @@ INSTANTIATE_TEST_SUITE_P(
     Glsl, CompileVulkanToSpirvTestNoLink,
     ::testing::ValuesIn(std::vector<std::string>({
         "spv.exportFunctions.comp",
+        "spv.noLinkForwardDeclaration.frag",
+        "spv.undefinedFunctionCall.frag",
     })),
     FileNameAsCustomTestSuffix
 );
