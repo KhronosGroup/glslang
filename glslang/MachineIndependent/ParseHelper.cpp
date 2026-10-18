@@ -3947,6 +3947,9 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
         } else {
             error(loc, errMsg, fnCandidate.getName().c_str(), "");
         }
+        if ((callNode.getOp() == EOpCooperativeMatrixLoad || callNode.getOp() == EOpCooperativeMatrixStore) &&
+            !(*argp)[4]->getAsTyped()->getType().getQualifier().isConstant())
+            error(loc, "argument must be compile-time constant", "matrixLayout", "");
     }
     break;
     case EOpCooperativeMatrixTransposeNV:
