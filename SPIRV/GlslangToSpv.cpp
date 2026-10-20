@@ -2273,9 +2273,18 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion,
             std::vector<spv::Id> operandIds;
             assert(!modeId.second.empty());
             for (auto extraOperand : modeId.second) {
-                if (extraOperand->getType().getQualifier().isSpecConstant())
-                    operandIds.push_back(getSymbolId(extraOperand->getAsSymbolNode()));
-                else
+                if (extraOperand->getType().getQualifier().isSpecConstant()) {
+                    // A bare specialization constant is referenced by the <id> of its symbol.
+                    // A specialization-constant expression (e.g. sc + 1) is not a symbol node, so
+                    // emit it as a spec-constant-op and reference that result <id> instead of
+                    // dereferencing a null symbol.
+                    if (auto* specSymbol = extraOperand->getAsSymbolNode())
+                        operandIds.push_back(getSymbolId(specSymbol));
+                    else {
+                        const_cast<glslang::TIntermTyped*>(extraOperand)->traverse(this);
+                        operandIds.push_back(accessChainLoad(extraOperand->getType()));
+                    }
+                } else
                     operandIds.push_back(createSpvConstant(*extraOperand));
             }
             builder.addExecutionModeId(shaderEntry, static_cast<spv::ExecutionMode>(modeId.first), operandIds);
