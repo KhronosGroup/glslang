@@ -1,0 +1,23 @@
+#version 460
+#extension GL_EXT_descriptor_heap : require
+
+// Exercise runtime bool debug types in ordinary buffers alongside unused heap views.
+layout(local_size_x = 1) in;
+layout(descriptor_heap, std430) buffer Booleans {
+    bool values[];
+} booleanHeaps[];
+layout(descriptor_heap, std430) buffer Vectors {
+    bvec2 values[];
+} vectorHeaps[];
+layout(binding = 0, std430) buffer Bound {
+    bool values[];
+} boundBuffer;
+layout(binding = 1, std430) buffer BoundVectors {
+    bvec2 values[];
+} boundVectors;
+
+void main()
+{
+    boundBuffer.values[0] = true;
+    boundVectors.values[0] = bvec2(false, boundBuffer.values[0]);
+}
