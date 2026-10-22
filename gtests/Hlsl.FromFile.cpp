@@ -597,6 +597,7 @@ INSTANTIATE_TEST_SUITE_P(
         {"spv.debuginfo.hlsl.vert", "main"},
         {"spv.debuginfo.hlsl.frag", "main"},
         {"spv.debuginfo.hlsl.comp", "main"},
+        {"spv.debuginfo.hlsl.empty.comp", "main"},
         {"spv.debuginfo.hlsl.geom", "main"},
         {"spv.debuginfo.hlsl.tesc", "main"},
         {"spv.debuginfo.hlsl.tese", "main"},
