@@ -320,12 +320,18 @@ void TParseContext::setAtomicCounterBlockDefaults(TType& block) const
 }
 
 void TParseContext::setInvariant(const TSourceLoc& loc, const char* builtin) {
-    TSymbol* symbol = symbolTable.find(builtin);
+    bool builtIn;
+    TSymbol* symbol = symbolTable.find(builtin, &builtIn);
     if (symbol && symbol->getType().getQualifier().isPipeOutput()) {
         if (intermediate.inIoAccessed(builtin))
             warn(loc, "changing qualification after use", "invariant", "%s", builtin);
-        TSymbol* csymbol = symbolTable.copyUp(symbol);
-        csymbol->getWritableType().getQualifier().invariant = true;
+        // An earlier call may already have copied its block up.
+        TSymbol* csymbol = builtIn ? symbolTable.copyUp(symbol) : symbol;
+        if (csymbol)
+            csymbol->getWritableType().getQualifier().invariant = true;
+        else
+            warn(loc, "cannot make invariant after another member of its block was declared", "invariant",
+                 "%s", builtin);
     }
 }
 
@@ -489,8 +495,11 @@ TIntermTyped* TParseContext::handleVariable(const TSourceLoc& loc, TSymbol* symb
         if (!symbol->getType().isUnusableName()) {
             if (symbol->getType().containsUnsizedArray() ||
                 (symbol->getAsAnonMember() &&
-                 symbol->getAsAnonMember()->getAnonContainer().getType().containsUnsizedArray()))
+                 symbol->getAsAnonMember()->getAnonContainer().getType().containsUnsizedArray())) {
                 makeEditable(symbol);
+                if (symbol == nullptr)
+                    error(loc, "cannot use after another member of its block was declared", string->c_str(), "");
+            }
         }
     }
 
@@ -763,7 +772,7 @@ void TParseContext::makeEditable(TSymbol*& symbol)
     TParseContextBase::makeEditable(symbol);
 
     // See if it's tied to IO resizing
-    if (isIoResizeArray(symbol->getType()))
+    if (symbol && isIoResizeArray(symbol->getType()))
         ioArraySymbolResizeList.push_back(symbol);
 }
 
@@ -6519,6 +6528,13 @@ TSymbol* TParseContext::redeclareBuiltinVariable(const TSourceLoc& loc, const TS
         // redeclaration.  Otherwise, make the new one.
         if (builtIn) {
             makeEditable(symbol);
+            // The copy fails if a user variable already took the name of
+            // another member of the block.
+            if (! symbol) {
+                error(loc, "cannot redeclare after another member of its block was declared",
+                      identifier.c_str(), "");
+                return nullptr;
+            }
             symbolTable.amendSymbolIdLevel(*symbol);
         }
 
@@ -12085,8 +12101,14 @@ void TParseContext::addQualifierToExisting(const TSourceLoc& loc, TQualifier qua
 
     // For read-only built-ins, add a new symbol for holding the modified qualifier.
     // This will bring up an entire block, if a block type has to be modified (e.g., gl_Position inside a block)
-    if (symbol->isReadOnly())
+    if (symbol->isReadOnly()) {
         symbol = symbolTable.copyUp(symbol);
+        if (symbol == nullptr) {
+            error(loc, "cannot change qualification after another member of its block was declared",
+                  identifier.c_str(), "");
+            return;
+        }
+    }
 
     if (qualifier.invariant) {
         if (intermediate.inIoAccessed(identifier))

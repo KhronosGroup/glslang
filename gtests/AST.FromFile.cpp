@@ -327,6 +327,7 @@ INSTANTIATE_TEST_SUITE_P(
         "BestMatchFunction.vert",
         "EndStreamPrimitive.geom",
         "redeclareBlockMemberExtension.geom",
+        "redeclareBlockMemberAfterError.vert",
         "floatBitsToInt.vert",
         "coord_conventions.frag",
         "gl_FragCoord.frag",

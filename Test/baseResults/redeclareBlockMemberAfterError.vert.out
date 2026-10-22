@@ -1,0 +1,47 @@
+redeclareBlockMemberAfterError.vert
+ERROR: 0:7: 'gl_Position' : identifiers starting with "gl_" are reserved 
+ERROR: 0:8: 'gl_ClipDistance' : cannot redeclare after another member of its block was declared 
+ERROR: 0:8: 'gl_ClipDistance' : identifiers starting with "gl_" are reserved 
+ERROR: 0:9: 'gl_PointSize' : cannot change qualification after another member of its block was declared 
+ERROR: 0:10: 'gl_PointSize' : cannot change qualification after another member of its block was declared 
+ERROR: 0:14: 'gl_CullDistance' : cannot use after another member of its block was declared 
+ERROR: 0:14: 'gl_CullDistance' : undeclared identifier 
+ERROR: 0:14: 'gl_CullDistance' :  left of '[' is not of type array, matrix, or vector  
+ERROR: 0:14: 'assign' :  l-value required (can't modify a const)
+ERROR: 9 compilation errors.  No code generated.
+
+
+Shader version: 450
+ERROR: node is still EOpNull!
+0:12  Function Definition: main( ( global void)
+0:12    Function Parameters: 
+0:14    Sequence
+0:14      move second child to first child ( temp float)
+0:14        Constant:
+0:14          0.000000
+0:14        Constant:
+0:14          1.000000
+0:?   Linker Objects
+0:?     'gl_Position' ( smooth out 4-component vector of float)
+0:?     'gl_VertexID' ( gl_VertexId int VertexId)
+0:?     'gl_InstanceID' ( gl_InstanceId int InstanceId)
+
+
+Linked vertex stage:
+
+
+Shader version: 450
+ERROR: node is still EOpNull!
+0:12  Function Definition: main( ( global void)
+0:12    Function Parameters: 
+0:14    Sequence
+0:14      move second child to first child ( temp float)
+0:14        Constant:
+0:14          0.000000
+0:14        Constant:
+0:14          1.000000
+0:?   Linker Objects
+0:?     'gl_Position' ( smooth out 4-component vector of float)
+0:?     'gl_VertexID' ( gl_VertexId int VertexId)
+0:?     'gl_InstanceID' ( gl_InstanceId int InstanceId)
+

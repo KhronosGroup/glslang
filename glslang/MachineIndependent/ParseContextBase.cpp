@@ -398,7 +398,7 @@ TVariable* TParseContextBase::getEditableVariable(const char* name)
     if (builtIn)
         makeEditable(symbol);
 
-    return symbol->getAsVariable();
+    return symbol ? symbol->getAsVariable() : nullptr;
 }
 
 // Select the best matching function for 'call' from 'candidateList'.
