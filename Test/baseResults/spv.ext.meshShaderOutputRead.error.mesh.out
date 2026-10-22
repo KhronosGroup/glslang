@@ -1,0 +1,12 @@
+spv.ext.meshShaderOutputRead.error.mesh
+ERROR: 0:29: 'outVert' : mesh shader outputs can only be written, not read 
+ERROR: 0:30: 'outPrim' : mesh shader outputs can only be written, not read 
+ERROR: 0:31: 'outVert' : mesh shader outputs can only be written, not read 
+ERROR: 0:32: 'outVert' : mesh shader outputs can only be written, not read 
+ERROR: 0:33: 'gl_MeshVerticesEXT' : mesh shader outputs can only be written, not read 
+ERROR: 0:34: 'gl_PrimitiveTriangleIndicesEXT' : mesh shader outputs can only be written, not read 
+ERROR: 0:35: 'gl_MeshPrimitivesEXT' : mesh shader outputs can only be written, not read 
+ERROR: 7 compilation errors.  No code generated.
+
+
+SPIR-V is not generated for failed compile or link

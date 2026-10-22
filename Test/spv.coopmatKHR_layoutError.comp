@@ -1,0 +1,21 @@
+#version 450 core
+#extension GL_KHR_memory_scope_semantics : enable
+#extension GL_KHR_cooperative_matrix : enable
+#extension GL_EXT_shader_explicit_arithmetic_types : enable
+
+layout (local_size_x = 64, local_size_y = 1, local_size_z = 1) in;
+
+layout(set = 0, binding = 0) buffer Block {
+    float16_t x[];
+} block;
+
+int layoutVar = gl_CooperativeMatrixLayoutRowMajor;
+
+void main()
+{
+    coopmat<float16_t, gl_ScopeSubgroup, 16, 8, gl_MatrixUseAccumulator> m;
+
+    // matrixLayout must be a compile-time constant
+    coopMatLoad(m, block.x, 0, 8, layoutVar);
+    coopMatStore(m, block.x, 0, 8, layoutVar);
+}

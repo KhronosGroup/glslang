@@ -4022,6 +4022,9 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
         } else {
             error(loc, errMsg, fnCandidate.getName().c_str(), "");
         }
+        if ((callNode.getOp() == EOpCooperativeMatrixLoad || callNode.getOp() == EOpCooperativeMatrixStore) &&
+            !(*argp)[4]->getAsTyped()->getType().getQualifier().isConstant())
+            error(loc, "argument must be compile-time constant", "matrixLayout", "");
     }
     break;
     case EOpCooperativeMatrixTransposeNV:
@@ -7189,12 +7192,88 @@ void TParseContext::limitCheck(const TSourceLoc& loc, int value, const char* lim
 //
 // Do any additional error checking, etc., once we know the parsing is done.
 //
+// GL_EXT_mesh_shader: "mesh shaders do not permit read access on output variables".
+// Walks the tree tracking whether each output is being written (an l-value or an 'out'
+// argument) or read, and reports every read.
+class TMeshOutputReadTraverser : public TIntermTraverser {
+public:
+    explicit TMeshOutputReadTraverser(TParseContext& parseContext) : parseContext(parseContext) { }
+
+    void visitSymbol(TIntermSymbol* node) override
+    {
+        if (! writing && node->getQualifier().storage == EvqVaryingOut)
+            parseContext.error(node->getLoc(), "mesh shader outputs can only be written, not read",
+                               node->getName().c_str(), "");
+    }
+
+    bool visitBinary(TVisit, TIntermBinary* node) override
+    {
+        switch (node->getOp()) {
+        case EOpAssign:
+            traverseAs(node->getLeft(), true);
+            traverseAs(node->getRight(), false);
+            return false;
+        case EOpIndexDirect:
+        case EOpIndexIndirect:
+        case EOpIndexDirectStruct:
+        case EOpVectorSwizzle:
+        case EOpMatrixSwizzle:
+            // Keep the base in the current mode; the index itself is always read.
+            traverseAs(node->getLeft(), writing);
+            traverseAs(node->getRight(), false);
+            return false;
+        default:
+            // Compound assignments read their left operand too.
+            traverseAs(node->getLeft(), false);
+            traverseAs(node->getRight(), false);
+            return false;
+        }
+    }
+
+    bool visitUnary(TVisit, TIntermUnary* node) override
+    {
+        traverseAs(node->getOperand(), false);
+        return false;
+    }
+
+    bool visitAggregate(TVisit, TIntermAggregate* node) override
+    {
+        if (node->getOp() == EOpLinkerObjects)
+            return false;
+
+        const TIntermSequence& sequence = node->getSequence();
+        const TQualifierList& qualifiers = node->getQualifierList();
+        for (size_t i = 0; i < sequence.size(); ++i)
+            traverseAs(sequence[i], i < qualifiers.size() && qualifiers[i] == EvqOut);
+        return false;
+    }
+
+private:
+    void traverseAs(TIntermNode* node, bool write)
+    {
+        if (node == nullptr)
+            return;
+        bool saved = writing;
+        writing = write;
+        node->traverse(this);
+        writing = saved;
+    }
+
+    TParseContext& parseContext;
+    bool writing = false;
+};
+
 void TParseContext::finish()
 {
     TParseContextBase::finish();
 
     if (parsingBuiltins)
         return;
+
+    if (language == EShLangMesh && extensionTurnedOn(E_GL_EXT_mesh_shader) && intermediate.getTreeRoot() != nullptr) {
+        TMeshOutputReadTraverser meshOutputReads(*this);
+        intermediate.getTreeRoot()->traverse(&meshOutputReads);
+    }
 
     // Forward builtin alias to AST for later use
     intermediate.setBuiltinAliasLookup(symbolTable.collectBuiltinAlias());

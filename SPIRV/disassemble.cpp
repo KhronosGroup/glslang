@@ -312,6 +312,8 @@ std::pair<int, std::string> SpirvStream::decodeString()
     bool done = false;
 
     do {
+        if (wordPos >= size)
+            Kill(out, "string operand runs off the end of the stream");
         unsigned int content = stream[wordPos];
         for (int charCount = 0; charCount < 4; ++charCount) {
             c = content & 0xff;

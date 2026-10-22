@@ -1,0 +1,7 @@
+spv.coopmatKHR_layoutError.comp
+ERROR: 0:19: 'matrixLayout' : argument must be compile-time constant 
+ERROR: 0:20: 'matrixLayout' : argument must be compile-time constant 
+ERROR: 2 compilation errors.  No code generated.
+
+
+SPIR-V is not generated for failed compile or link
