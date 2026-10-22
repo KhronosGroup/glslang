@@ -446,6 +446,7 @@ INSTANTIATE_TEST_SUITE_P(
         {"hlsl.ternary.simple.frag", "main"},
         {"hlsl.ternary.error.frag", "main"},
         {"hlsl.texturebuffer.frag", "main"},
+        {"hlsl.texturebuffer.nonstruct.frag", "main"},
         {"hlsl.texture.struct.frag", "main"},
         {"hlsl.texture.subvec4.frag", "main"},
         {"hlsl.this.frag", "main"},

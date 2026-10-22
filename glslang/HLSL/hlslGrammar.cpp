@@ -2560,6 +2560,11 @@ bool HlslGrammar::acceptTextureBufferType(TType& type)
         return false;
     }
 
+    if (! templateType.isStruct()) {
+        parseContext.error(token.loc, "non-structure type in TextureBuffer", "", "");
+        return false;
+    }
+
     templateType.getQualifier().storage = EvqBuffer;
     templateType.getQualifier().readonly = true;
 
