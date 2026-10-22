@@ -231,6 +231,7 @@ INSTANTIATE_TEST_SUITE_P(
         {"hlsl.entry-in.frag", "PixelShaderFunction"},
         {"hlsl.entry-inout.vert", "main"},
         {"hlsl.entry-out.frag", "PixelShaderFunction"},
+        {"hlsl.entry.unnamedParam.frag", "main"},
         {"hlsl.fraggeom.frag", "main"},
         {"hlsl.float1.frag", "PixelShaderFunction"},
         {"hlsl.float4.frag", "PixelShaderFunction"},

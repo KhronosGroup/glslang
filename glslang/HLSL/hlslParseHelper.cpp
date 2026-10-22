@@ -2107,6 +2107,13 @@ TIntermNode* HlslParseContext::transformEntryPoint(const TSourceLoc& loc, TFunct
 
     // entry point logic...
 
+    // Unnamed parameters are legal, but the shader in/out variables and the synthesized
+    // call below are built from each parameter's name, so give unnamed ones an internal name.
+    for (int i = 0; i < userFunction.getParamCount(); i++) {
+        if (userFunction[i].name == nullptr)
+            userFunction[i].name = NewPoolTString(("@param" + String(i)).c_str());
+    }
+
     // Move parameters and return value to shader in/out
     TVariable* entryPointOutput; // gets created in remapEntryPointIO
     TVector<TVariable*> inputs;
