@@ -1,0 +1,18 @@
+hlsl.texturebuffer.nonstruct.frag
+ERROR: 0:1: '' : non-structure type in TextureBuffer 
+ERROR: 0:1: 'declaration' : Expected 
+(1): error at column 24, HLSL parsing failed.
+ERROR: 3 compilation errors.  No code generated.
+
+
+Shader version: 500
+gl_FragCoord origin is upper left
+
+
+Linked fragment stage:
+
+
+Shader version: 500
+gl_FragCoord origin is upper left
+
+SPIR-V is not generated for failed compile or link
