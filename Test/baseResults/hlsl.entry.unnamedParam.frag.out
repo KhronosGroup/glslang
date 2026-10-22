@@ -1,0 +1,190 @@
+hlsl.entry.unnamedParam.frag
+Shader version: 500
+gl_FragCoord origin is upper left
+0:? Sequence
+0:3  Function Definition: @main(vf4;vf2;vf4;vf4; ( temp 4-component vector of float)
+0:3    Function Parameters: 
+0:3      'pos' ( in 4-component vector of float)
+0:3      '@param1' ( in 2-component vector of float)
+0:3      '@param2' ( uniform 4-component vector of float)
+0:3      '@param3' ( out 4-component vector of float)
+0:?     Sequence
+0:4      Branch: Return with expression
+0:4        'pos' ( in 4-component vector of float)
+0:3  Function Definition: main( ( temp void)
+0:3    Function Parameters: 
+0:?     Sequence
+0:3      move second child to first child ( temp 4-component vector of float)
+0:?         'pos' ( temp 4-component vector of float)
+0:?         'pos' ( in 4-component vector of float FragCoord)
+0:3      move second child to first child ( temp 2-component vector of float)
+0:?         '@param1' ( temp 2-component vector of float)
+0:?         '@param1' (layout( location=0) in 2-component vector of float)
+0:3      move second child to first child ( temp 4-component vector of float)
+0:?         '@param2' ( temp 4-component vector of float)
+0:3        @param2: direct index for structure ( uniform 4-component vector of float)
+0:3          'anon@0' (layout( row_major std140) uniform block{ uniform 4-component vector of float @param2})
+0:3          Constant:
+0:3            0 (const uint)
+0:3      move second child to first child ( temp 4-component vector of float)
+0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float)
+0:3        Function Call: @main(vf4;vf2;vf4;vf4; ( temp 4-component vector of float)
+0:?           'pos' ( temp 4-component vector of float)
+0:?           '@param1' ( temp 2-component vector of float)
+0:?           '@param2' ( temp 4-component vector of float)
+0:?           '@param3' ( temp 4-component vector of float)
+0:3      move second child to first child ( temp 4-component vector of float)
+0:?         '@param3' (layout( location=1) out 4-component vector of float)
+0:?         '@param3' ( temp 4-component vector of float)
+0:?   Linker Objects
+0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float)
+0:?     'pos' ( in 4-component vector of float FragCoord)
+0:?     '@param1' (layout( location=0) in 2-component vector of float)
+0:?     '@param3' (layout( location=1) out 4-component vector of float)
+0:?     'anon@0' (layout( row_major std140) uniform block{ uniform 4-component vector of float @param2})
+
+
+Linked fragment stage:
+
+
+Shader version: 500
+gl_FragCoord origin is upper left
+0:? Sequence
+0:3  Function Definition: @main(vf4;vf2;vf4;vf4; ( temp 4-component vector of float)
+0:3    Function Parameters: 
+0:3      'pos' ( in 4-component vector of float)
+0:3      '@param1' ( in 2-component vector of float)
+0:3      '@param2' ( uniform 4-component vector of float)
+0:3      '@param3' ( out 4-component vector of float)
+0:?     Sequence
+0:4      Branch: Return with expression
+0:4        'pos' ( in 4-component vector of float)
+0:3  Function Definition: main( ( temp void)
+0:3    Function Parameters: 
+0:?     Sequence
+0:3      move second child to first child ( temp 4-component vector of float)
+0:?         'pos' ( temp 4-component vector of float)
+0:?         'pos' ( in 4-component vector of float FragCoord)
+0:3      move second child to first child ( temp 2-component vector of float)
+0:?         '@param1' ( temp 2-component vector of float)
+0:?         '@param1' (layout( location=0) in 2-component vector of float)
+0:3      move second child to first child ( temp 4-component vector of float)
+0:?         '@param2' ( temp 4-component vector of float)
+0:3        @param2: direct index for structure ( uniform 4-component vector of float)
+0:3          'anon@0' (layout( row_major std140) uniform block{ uniform 4-component vector of float @param2})
+0:3          Constant:
+0:3            0 (const uint)
+0:3      move second child to first child ( temp 4-component vector of float)
+0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float)
+0:3        Function Call: @main(vf4;vf2;vf4;vf4; ( temp 4-component vector of float)
+0:?           'pos' ( temp 4-component vector of float)
+0:?           '@param1' ( temp 2-component vector of float)
+0:?           '@param2' ( temp 4-component vector of float)
+0:?           '@param3' ( temp 4-component vector of float)
+0:3      move second child to first child ( temp 4-component vector of float)
+0:?         '@param3' (layout( location=1) out 4-component vector of float)
+0:?         '@param3' ( temp 4-component vector of float)
+0:?   Linker Objects
+0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float)
+0:?     'pos' ( in 4-component vector of float FragCoord)
+0:?     '@param1' (layout( location=0) in 2-component vector of float)
+0:?     '@param3' (layout( location=1) out 4-component vector of float)
+0:?     'anon@0' (layout( row_major std140) uniform block{ uniform 4-component vector of float @param2})
+
+// Module Version 10000
+// Generated by (magic number): 8000b
+// Id's are bound by 51
+
+                              Capability Shader
+               1:             ExtInstImport  "GLSL.std.450"
+                              MemoryModel Logical GLSL450
+                              EntryPoint Fragment 4  "main" 23 27 39 49
+                              ExecutionMode 4 OriginUpperLeft
+                              Source HLSL 500
+                              Name 4  "main"
+                              Name 16  "@main(vf4;vf2;vf4;vf4;"
+                              Name 12  "pos"
+                              Name 13  "@param1"
+                              Name 14  "@param2"
+                              Name 15  "@param3"
+                              Name 21  "pos"
+                              Name 23  "pos"
+                              Name 25  "@param1"
+                              Name 27  "@param1"
+                              Name 29  "@param2"
+                              Name 30  "$Global"
+                              MemberName 30($Global) 0  "@param2"
+                              Name 32  ""
+                              Name 39  "@entryPointOutput"
+                              Name 41  "@param3"
+                              Name 42  "param"
+                              Name 44  "param"
+                              Name 46  "param"
+                              Name 49  "@param3"
+                              Decorate 23(pos) BuiltIn FragCoord
+                              Decorate 27(@param1) Location 0
+                              Decorate 30($Global) Block
+                              MemberDecorate 30($Global) 0 Offset 0
+                              Decorate 32 Binding 0
+                              Decorate 32 DescriptorSet 0
+                              Decorate 39(@entryPointOutput) Location 0
+                              Decorate 49(@param3) Location 1
+               2:             TypeVoid
+               3:             TypeFunction 2
+               6:             TypeFloat 32
+               7:             TypeVector 6(float) 4
+               8:             TypePointer Function 7(fvec4)
+               9:             TypeVector 6(float) 2
+              10:             TypePointer Function 9(fvec2)
+              11:             TypeFunction 7(fvec4) 8(ptr) 10(ptr) 7(fvec4) 8(ptr)
+              22:             TypePointer Input 7(fvec4)
+         23(pos):     22(ptr) Variable Input
+              26:             TypePointer Input 9(fvec2)
+     27(@param1):     26(ptr) Variable Input
+     30($Global):             TypeStruct 7(fvec4)
+              31:             TypePointer Uniform 30($Global)
+              32:     31(ptr) Variable Uniform
+              33:             TypeInt 32 1
+              34:     33(int) Constant 0
+              35:             TypePointer Uniform 7(fvec4)
+              38:             TypePointer Output 7(fvec4)
+39(@entryPointOutput):     38(ptr) Variable Output
+     49(@param3):     38(ptr) Variable Output
+         4(main):           2 Function None 3
+               5:             Label
+         21(pos):      8(ptr) Variable Function
+     25(@param1):     10(ptr) Variable Function
+     29(@param2):      8(ptr) Variable Function
+     41(@param3):      8(ptr) Variable Function
+       42(param):      8(ptr) Variable Function
+       44(param):     10(ptr) Variable Function
+       46(param):      8(ptr) Variable Function
+              24:    7(fvec4) Load 23(pos)
+                              Store 21(pos) 24
+              28:    9(fvec2) Load 27(@param1)
+                              Store 25(@param1) 28
+              36:     35(ptr) AccessChain 32 34
+              37:    7(fvec4) Load 36
+                              Store 29(@param2) 37
+              40:    7(fvec4) Load 29(@param2)
+              43:    7(fvec4) Load 21(pos)
+                              Store 42(param) 43
+              45:    9(fvec2) Load 25(@param1)
+                              Store 44(param) 45
+              47:    7(fvec4) FunctionCall 16(@main(vf4;vf2;vf4;vf4;) 42(param) 44(param) 40 46(param)
+              48:    7(fvec4) Load 46(param)
+                              Store 41(@param3) 48
+                              Store 39(@entryPointOutput) 47
+              50:    7(fvec4) Load 41(@param3)
+                              Store 49(@param3) 50
+                              Return
+                              FunctionEnd
+16(@main(vf4;vf2;vf4;vf4;):    7(fvec4) Function None 11
+         12(pos):      8(ptr) FunctionParameter
+     13(@param1):     10(ptr) FunctionParameter
+     14(@param2):    7(fvec4) FunctionParameter
+     15(@param3):      8(ptr) FunctionParameter
+              17:             Label
+              18:    7(fvec4) Load 12(pos)
+                              ReturnValue 18
+                              FunctionEnd
