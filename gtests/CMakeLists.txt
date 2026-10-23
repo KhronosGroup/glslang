@@ -45,6 +45,7 @@ if(GLSLANG_TESTS)
             ${CMAKE_CURRENT_SOURCE_DIR}/TestFixture.h
 
             # Test related source files
+            ${CMAKE_CURRENT_SOURCE_DIR}/AutoTypeDeduction.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/AST.FromFile.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/BuiltInResource.FromFile.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/Common.cpp
@@ -99,10 +100,12 @@ if(GLSLANG_TESTS)
         else()
             add_test(NAME glslang-gtests
                      COMMAND glslangtests --test-root "${GLSLANG_TEST_DIRECTORY}")
+            add_test(NAME auto-type-deduction
+                     COMMAND glslangtests "--gtest_filter=*AutoTypeDeduction*")
 
             # Prepend paths to shared libraries.
             if (BUILD_SHARED_LIBS)
-                set_tests_properties(glslang-gtests PROPERTIES ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:$<JOIN:$<TARGET_RUNTIME_DLL_DIRS:glslangtests>,\;>")
+                set_tests_properties(glslang-gtests auto-type-deduction PROPERTIES ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:$<JOIN:$<TARGET_RUNTIME_DLL_DIRS:glslangtests>,\;>")
             endif()
         endif()
     endif()
