@@ -3222,9 +3222,10 @@ protected:
             typeParameters->arraySizes = new TArraySizes;
             *typeParameters->arraySizes = *copyOf.typeParameters->arraySizes;
             if (copyOf.typeParameters->spirvType) {
+                typeParameters->spirvType = new TSpirvType;
                 *typeParameters->spirvType = *copyOf.typeParameters->spirvType;
             }
-            typeParameters->basicType = copyOf.basicType;
+            typeParameters->basicType = copyOf.typeParameters->basicType;
         }
 
         if (copyOf.isStruct() && copyOf.structure) {
