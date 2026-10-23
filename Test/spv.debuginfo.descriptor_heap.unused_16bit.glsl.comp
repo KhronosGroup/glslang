@@ -1,0 +1,17 @@
+#version 460
+#extension GL_EXT_descriptor_heap : require
+#extension GL_EXT_shader_16bit_storage : require
+
+// Debug-only declarations must not introduce real 16-bit types or capabilities.
+layout(local_size_x = 1) in;
+layout(descriptor_heap, std430) buffer Floats {
+    float16_t value;
+} floats[];
+layout(descriptor_heap, std430) buffer Integers {
+    int16_t values[2];
+} integers[3];
+layout(descriptor_heap, std140) uniform Uniforms {
+    uint16_t value;
+} uniforms[];
+
+void main() {}

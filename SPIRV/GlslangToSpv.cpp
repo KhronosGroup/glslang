@@ -245,6 +245,7 @@ protected:
     spv::Id convertGlslangToSpvType(const glslang::TType& type, bool forwardReferenceOnly = false);
     spv::Id convertGlslangToSpvType(const glslang::TType& type, glslang::TLayoutPacking, const glslang::TQualifier&,
         bool lastBufferBlockMember, bool forwardReferenceOnly = false);
+    spv::Id convertGlslangToDebugType(const glslang::TType& type, bool forwardReferenceOnly = false);
     void applySpirvDecorate(const glslang::TType& type, spv::Id id, std::optional<int> member);
     bool filterMember(const glslang::TType& member);
     spv::Id convertGlslangStructToSpvType(const glslang::TType&, const glslang::TTypeList* glslangStruct,
@@ -368,6 +369,8 @@ protected:
                                                // rather than a pointer
     std::unordered_map<std::string, spv::Function*> functionMap;
     std::unordered_map<const glslang::TTypeList*, spv::Id> structMap[glslang::ElpCount][glslang::ElmCount];
+    std::unordered_map<const glslang::TTypeList*, spv::Id> debugStructMap;
+    std::unordered_map<const glslang::TType*, spv::Id> debugForwardPointers;
     // for mapping glslang block indices to spv indices (e.g., due to hidden members),
     // keyed by the block's member list so distinct block types never share a slot:
     std::unordered_map<const glslang::TTypeList*, std::vector<int>> memberRemapper;
@@ -2442,6 +2445,7 @@ void TGlslangToSpvTraverser::visitSymbol(glslang::TIntermSymbol* symbol)
 
         if (qualifier.builtIn == glslang::EbvResourceHeapEXT ||
             qualifier.builtIn == glslang::EbvSamplerHeapEXT) {
+            builder.setAccessChainDescHeapName(symbol->getName().c_str());
             const glslang::TType& symbolType = symbol->getType();
             // Direct descriptor-heap image arrays have no variable or member to
             // carry NonReadable/NonWritable, so wrap them in a one-member block.
@@ -2514,7 +2518,8 @@ spv::Id TGlslangToSpvTraverser::makeDescHeapImageArrayWrapperType(const glslang:
     spv::Id memberOffset = builder.makeUintConstant(0);
     const std::vector<spv::Id> members = { arrayType };
     const std::string wrapperName = std::string(symbol.getName().c_str()) + "_heap";
-    spv::Id wrapperType = builder.makeStructType(members, {}, wrapperName.c_str(), false);
+    // This wrapper has no source declaration or member debug information.
+    spv::Id wrapperType = builder.makeStructType(members, {}, wrapperName.c_str());
 
     builder.addMemberName(wrapperType, 0, symbol.getName().c_str());
     builder.addDecoration(wrapperType, spv::Decoration::Block);
@@ -5884,6 +5889,147 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
     return convertGlslangToSpvType(type, getExplicitLayout(type), type.getQualifier(), false, forwardReferenceOnly);
 }
 
+// Describe source types without creating functional SPIR-V types. In particular,
+// an unused heap declaration must not introduce storage or arithmetic capabilities
+// just because its source type is retained in non-semantic debug information.
+spv::Id TGlslangToSpvTraverser::convertGlslangToDebugType(const glslang::TType& type, bool forwardReferenceOnly)
+{
+    if (type.isArray()) {
+        glslang::TType elementType;
+        elementType.shallowCopy(type);
+        elementType.clearArraySizes();
+        spv::Id result = convertGlslangToDebugType(elementType, forwardReferenceOnly);
+        // A runtime array has a zero component count in debug info, but must not
+        // be represented by a zero-length OpTypeArray. Only the outer dimension
+        // can be implicitly sized; retain explicit sizes of the inner dimensions.
+        const auto savedAccessChain = builder.getAccessChain();
+        const auto& arraySizes = *type.getArraySizes();
+        for (int dim = arraySizes.getNumDims() - 1; dim >= 0; --dim) {
+            spv::Id size = dim == 0 && type.isImplicitlySizedArray()
+                ? builder.makeUintConstant(0) : makeArraySizeId(arraySizes, dim, true);
+            result = builder.makeSequentialDebugType(result, size, spv::NonSemanticShaderDebugInfoDebugTypeArray);
+        }
+        builder.setAccessChain(savedAccessChain);
+        return result;
+    }
+
+    if (type.isStruct()) {
+        const auto* members = type.getStruct();
+        if (members == nullptr)
+            return builder.makeOpaqueDebugType(type.getTypeName().c_str());
+        const auto found = debugStructMap.find(members);
+        if (found != debugStructMap.end())
+            return found->second;
+
+        std::vector<spv::Id> memberTypes;
+        std::vector<spv::StructMemberDebugInfo> memberDebugInfo;
+        std::vector<const glslang::TType*> deferredPointers;
+        for (const auto& member : *members) {
+            if (member.type->hiddenMember() || filterMember(*member.type))
+                continue;
+            if (member.type->isReference() &&
+                debugForwardPointers.find(member.type->getReferentType()) == debugForwardPointers.end())
+                deferredPointers.push_back(member.type);
+            memberTypes.push_back(convertGlslangToDebugType(*member.type, member.type->isReference()));
+            spv::StructMemberDebugInfo info{};
+            info.name = member.type->getFieldName();
+            info.line = member.loc.line;
+            info.column = member.loc.column;
+            memberDebugInfo.push_back(info);
+        }
+        spv::Id result = builder.makeCompositeDebugType(memberTypes, memberDebugInfo, type.getTypeName().c_str(),
+                                                        spv::NonSemanticShaderDebugInfoStructure);
+        debugStructMap[members] = result;
+        // Resolve recursive buffer references after recording the containing type.
+        for (const auto* reference : deferredPointers)
+            convertGlslangToDebugType(*reference);
+        return result;
+    }
+
+    if (type.isReference()) {
+        const auto* referent = type.getReferentType();
+        auto found = debugForwardPointers.find(referent);
+        if (found == debugForwardPointers.end()) {
+            spv::Id pointer = builder.makeForwardPointerDebugType(spv::StorageClass::PhysicalStorageBufferEXT);
+            found = debugForwardPointers.emplace(referent, pointer).first;
+        }
+        spv::Id pointer = found->second;
+        if (!forwardReferenceOnly)
+            builder.setDebugPointerPointee(pointer, convertGlslangToDebugType(*referent));
+        return pointer;
+    }
+
+    if (type.isTensorARM())
+        return builder.makeOpaqueDebugType("tensorARM");
+    if (type.isCoopMatNV())
+        return builder.makeOpaqueDebugType("coopmatNV");
+
+    spv::Id result;
+    switch (type.getBasicType()) {
+    case glslang::EbtBool:   result = builder.makeBoolDebugType(32); break;
+    case glslang::EbtInt8:   result = builder.makeIntegerDebugType(8, true); break;
+    case glslang::EbtUint8:  result = builder.makeIntegerDebugType(8, false); break;
+    case glslang::EbtInt16:  result = builder.makeIntegerDebugType(16, true); break;
+    case glslang::EbtUint16: result = builder.makeIntegerDebugType(16, false); break;
+    case glslang::EbtInt:    result = builder.makeIntegerDebugType(32, true); break;
+    case glslang::EbtUint:
+    case glslang::EbtAtomicUint:
+        result = builder.makeIntegerDebugType(32, false);
+        break;
+    case glslang::EbtInt64:   result = builder.makeIntegerDebugType(64, true); break;
+    case glslang::EbtUint64:  result = builder.makeIntegerDebugType(64, false); break;
+    case glslang::EbtFloat16: result = builder.makeFloatDebugType(16); break;
+    case glslang::EbtFloat:   result = builder.makeFloatDebugType(32); break;
+    case glslang::EbtDouble:  result = builder.makeFloatDebugType(64); break;
+    case glslang::EbtBFloat16:
+        result = builder.makeFloatDebugType(16, builder.makeUintConstant((unsigned)spv::FPEncoding::BFloat16KHR));
+        break;
+    case glslang::EbtFloatE5M2:
+        result = builder.makeFloatDebugType(8, builder.makeUintConstant((unsigned)spv::FPEncoding::Float8E5M2EXT));
+        break;
+    case glslang::EbtFloatE4M3:
+        result = builder.makeFloatDebugType(8, builder.makeUintConstant((unsigned)spv::FPEncoding::Float8E4M3EXT));
+        break;
+    case glslang::EbtFloatE2M1:
+        result = builder.makeFloatDebugType(4, builder.makeUintConstant((unsigned)spv::FPEncoding::Float4E2M1EXT));
+        break;
+    case glslang::EbtFloatE3M2:
+        result = builder.makeFloatDebugType(6, builder.makeUintConstant((unsigned)spv::FPEncoding::Float6E3M2EXT));
+        break;
+    case glslang::EbtFloatE2M3:
+        result = builder.makeFloatDebugType(6, builder.makeUintConstant((unsigned)spv::FPEncoding::Float6E2M3EXT));
+        break;
+    case glslang::EbtFloatUE8M0:
+        result = builder.makeFloatDebugType(8, builder.makeUintConstant((unsigned)spv::FPEncoding::Float8UnsignedE8M0EXT));
+        break;
+    case glslang::EbtFloatMXINT8:
+        result = builder.makeFloatDebugType(8, builder.makeUintConstant((unsigned)spv::FPEncoding::MXInt8EXT));
+        break;
+    default:
+        return builder.makeOpaqueDebugType(type.getBasicTypeString().c_str());
+    }
+
+    if (type.isMatrix()) {
+        spv::Id column = builder.makeSequentialDebugType(result, builder.makeUintConstant(type.getMatrixRows()),
+                                                        spv::NonSemanticShaderDebugInfoDebugTypeVector);
+        return builder.makeMatrixDebugType(column, type.getMatrixCols());
+    }
+    if (type.isVector())
+        return builder.makeSequentialDebugType(result, builder.makeUintConstant(type.getVectorSize()),
+                                               spv::NonSemanticShaderDebugInfoDebugTypeVector);
+    if (type.isCoopVecOrLongVector())
+        return builder.makeVectorIdDebugType(result, makeArraySizeId(*type.getTypeParameters()->arraySizes, 0));
+    if (type.isCoopMatKHR()) {
+        const auto& parameters = *type.getTypeParameters()->arraySizes;
+        spv::Id scope = makeArraySizeId(parameters, 0);
+        spv::Id rows = makeArraySizeId(parameters, 1);
+        spv::Id cols = makeArraySizeId(parameters, 2);
+        spv::Id use = makeArraySizeId(parameters, 3, true);
+        return builder.makeCooperativeMatrixDebugTypeKHR(result, scope, rows, cols, use);
+    }
+    return result;
+}
+
 spv::LinkageType TGlslangToSpvTraverser::convertGlslangLinkageToSpv(glslang::TLinkType linkType)
 {
     switch (linkType) {
@@ -6581,19 +6727,7 @@ spv::Id TGlslangToSpvTraverser::convertGlslangStructToSpvType(const glslang::TTy
                 // so we must construct the chain of types up from the scalar bool.
                 if (glslangIntermediate->getSource() == glslang::EShSourceGlsl && explicitLayout != glslang::ElpNone &&
                     glslangMember.type->getBasicType() == glslang::EbtBool) {
-                    auto typeId = builder.makeBoolType();
-                    if (glslangMember.type->isVector()) {
-                        typeId = builder.makeVectorType(typeId, glslangMember.type->getVectorSize());
-                    }
-                    if (glslangMember.type->isArray()) {
-                        const auto* arraySizes = glslangMember.type->getArraySizes();
-                        int dims = arraySizes->getNumDims();
-                        for (int i = dims - 1; i >= 0; --i) {
-                            spv::Id size = builder.makeIntConstant(arraySizes->getDimSize(i));
-                            typeId = builder.makeArrayType(typeId, size, 0);
-                        }
-                    }
-                    debugInfo.debugTypeOverride = builder.getDebugType(typeId);
+                    debugInfo.debugTypeOverride = convertGlslangToDebugType(*glslangMember.type);
                 } else if (glslangMember.type->getQualifier().builtIn != glslang::EbvNone) {
                     // TODO - The built-in currently are not provide the correct line/column and spirv-val will validate these when using shaderDebugInfo
                     //
@@ -12159,6 +12293,18 @@ spv::Id TGlslangToSpvTraverser::getSymbolId(const glslang::TIntermSymbol* symbol
         if (builtInVariableIds.end() != iter) {
             id = iter->second;
             symbolValues[symbol->getId()] = id;
+            if (needToRemapDescHeap && options.emitNonSemanticShaderDebugInfo) {
+                // Preserve each source declaration even though all views reuse
+                // one built-in. A heap view has no standalone OpVariable that
+                // can be used as a DebugGlobalVariable's location.
+                const auto savedAccessChain = builder.getAccessChain();
+                builder.setDebugSourceLocation(symbol->getLoc().line, symbol->getLoc().getFilename());
+                spv::Id debugTypeId = convertGlslangToDebugType(symbol->getType());
+                builder.setAccessChain(savedAccessChain);
+                builder.setDebugSourceLocation(symbol->getLoc().line, symbol->getLoc().getFilename());
+                builder.createDebugGlobalVariable(debugTypeId, symbol->getName().c_str(),
+                                                  builder.makeDebugInfoNone());
+            }
             if (forcedType.second != spv::NoType)
                 forceType[id] = forcedType.second;
             return id;

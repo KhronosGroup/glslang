@@ -25,8 +25,10 @@ spv.structuredDescriptorHeap.Uniform.comp
                               Name 19  "Heap"
                               Name 20  ""
                               MemberName 20 0  "data"
+                              Name 23  "heap"
                               Name 26  "UBO"
                               MemberName 26(UBO) 0  "x"
+                              Name 27  "heap"
                               Decorate 7(resource_heap) BuiltIn ResourceHeapEXT
                               MemberDecorateIdEXT 19(Heap) 0 OffsetIdEXT 11
                               MemberDecorateIdEXT 19(Heap) 1 OffsetIdEXT 18
@@ -65,10 +67,10 @@ spv.structuredDescriptorHeap.Uniform.comp
               37:   35(ivec3) ConstantComposite 36 36 36
          4(main):           2 Function None 3
                5:             Label
-              23:      6(ptr) UntypedAccessChainKHR 19(Heap) 7(resource_heap) 22
-              24:      9(ptr) Load 23
-              27:      6(ptr) UntypedAccessChainKHR 19(Heap) 7(resource_heap) 25
-              29:     28(ptr) BufferPointerEXT 27
+        23(heap):      6(ptr) UntypedAccessChainKHR 19(Heap) 7(resource_heap) 22
+              24:      9(ptr) Load 23(heap)
+        27(heap):      6(ptr) UntypedAccessChainKHR 19(Heap) 7(resource_heap) 25
+              29:     28(ptr) BufferPointerEXT 27(heap)
               31:     30(ptr) AccessChain 29 25
               32:     10(int) Load 31
               34:     33(ptr) AccessChain 24 25

@@ -1373,6 +1373,14 @@ INSTANTIATE_TEST_SUITE_P(
 INSTANTIATE_TEST_SUITE_P(
     Glsl, GlslNonSemanticShaderDebugInfoVulkanLatestTest,
     ::testing::ValuesIn(std::vector<std::string>({
+        "spv.debuginfo.descriptor_heap.glsl.comp",
+        "spv.debuginfo.descriptor_heap.unused_16bit.glsl.comp",
+        "spv.debuginfo.descriptor_heap.unused_8bit.glsl.comp",
+        "spv.debuginfo.descriptor_heap.unused_bool.glsl.comp",
+        "spv.debuginfo.descriptor_heap.unused_tensor.glsl.comp",
+        "spv.debuginfo.descriptor_heap.source_types.glsl.comp",
+        "spv.debuginfo.descriptor_heap.bool.glsl.comp",
+        "spv.debuginfo.structured_descriptor_heap.glsl.comp",
         "spv.debuginfo.rt_types.glsl.rgen",
         "spv.debuginfo.rt_nv_builtins.glsl.rahit",
         "spv.debuginfo.rt_ext_builtins.glsl.rahit",

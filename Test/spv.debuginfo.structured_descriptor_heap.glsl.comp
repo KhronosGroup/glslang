@@ -1,0 +1,25 @@
+// Keep distinct source names for structured views with the same heap offset.
+#version 460
+#extension GL_EXT_descriptor_heap : require
+#extension GL_EXT_structured_descriptor_heap : require
+
+layout(local_size_x = 1) in;
+
+layout(buffer_type, std430) buffer DataBuffer {
+    uint value;
+};
+
+layout(heap_offset = 64) resourceheap FirstHeap {
+    uint count;
+    DataBuffer dataBuffer;
+} firstHeap;
+
+layout(heap_offset = 64) resourceheap SecondHeap {
+    DataBuffer dataBuffer;
+    uint count;
+} secondHeap;
+
+void main()
+{
+    firstHeap.dataBuffer.value = secondHeap.dataBuffer.value + firstHeap.count + secondHeap.count;
+}
