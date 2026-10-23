@@ -1,0 +1,21 @@
+#version 450
+
+
+#extension GL_KHR_shader_subgroup_ballot : enable
+
+
+
+
+
+
+layout(location = 0) out vec4 color;
+
+void main()
+{
+
+    color = vec4(subgroupBallot(true));
+
+
+
+}
+
