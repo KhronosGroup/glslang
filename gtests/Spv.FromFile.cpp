@@ -495,6 +495,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.int64.frag",
         "spv.intOps.vert",
         "spv.intrinsicsDebugBreak.frag",
+        "spv.intrinsicsRedeclareBlockMember.error.vert",
         "spv.intrinsicsSpirvByReference.vert",
         "spv.intrinsicsSpirvDecorate.frag",
         "spv.intrinsicsSpirvDecorateId.comp",
