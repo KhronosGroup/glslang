@@ -325,7 +325,10 @@ void TParseContext::setInvariant(const TSourceLoc& loc, const char* builtin) {
         if (intermediate.inIoAccessed(builtin))
             warn(loc, "changing qualification after use", "invariant", "%s", builtin);
         TSymbol* csymbol = symbolTable.copyUp(symbol);
-        csymbol->getWritableType().getQualifier().invariant = true;
+        if (csymbol)
+            csymbol->getWritableType().getQualifier().invariant = true;
+        else
+            warn(loc, "cannot make invariant after another member of its block was declared", builtin, "");
     }
 }
 
@@ -763,7 +766,7 @@ void TParseContext::makeEditable(TSymbol*& symbol)
     TParseContextBase::makeEditable(symbol);
 
     // See if it's tied to IO resizing
-    if (isIoResizeArray(symbol->getType()))
+    if (symbol && isIoResizeArray(symbol->getType()))
         ioArraySymbolResizeList.push_back(symbol);
 }
 
@@ -6519,6 +6522,11 @@ TSymbol* TParseContext::redeclareBuiltinVariable(const TSourceLoc& loc, const TS
         // redeclaration.  Otherwise, make the new one.
         if (builtIn) {
             makeEditable(symbol);
+            if (! symbol) {
+                error(loc, "cannot redeclare after another member of its block was declared",
+                      identifier.c_str(), "");
+                return nullptr;
+            }
             symbolTable.amendSymbolIdLevel(*symbol);
         }
 
@@ -12085,8 +12093,14 @@ void TParseContext::addQualifierToExisting(const TSourceLoc& loc, TQualifier qua
 
     // For read-only built-ins, add a new symbol for holding the modified qualifier.
     // This will bring up an entire block, if a block type has to be modified (e.g., gl_Position inside a block)
-    if (symbol->isReadOnly())
+    if (symbol->isReadOnly()) {
         symbol = symbolTable.copyUp(symbol);
+        if (symbol == nullptr) {
+            error(loc, "cannot change qualification after another member of its block was declared",
+                  identifier.c_str(), "");
+            return;
+        }
+    }
 
     if (qualifier.invariant) {
         if (intermediate.inIoAccessed(identifier))
