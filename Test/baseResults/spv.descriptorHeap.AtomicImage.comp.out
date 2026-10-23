@@ -17,8 +17,9 @@ spv.descriptorHeap.AtomicImage.comp
                               SourceExtension  "GL_EXT_descriptor_heap"
                               Name 4  "main"
                               Name 7  "resource_heap"
+                              Name 12  "img"
                               Decorate 7(resource_heap) BuiltIn ResourceHeapEXT
-                              DecorateId 12 ArrayStrideIdEXT 11
+                              DecorateId 12(img) ArrayStrideIdEXT 11
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeUntypedPointerKHR UniformConstant
@@ -27,7 +28,7 @@ spv.descriptorHeap.AtomicImage.comp
                9:             TypeImage 8(int) 1D nonsampled format:R32i
               10:             TypeInt 32 0
               11:     10(int) ConstantSizeOfEXT 9
-              12:             TypeRuntimeArray 9
+         12(img):             TypeRuntimeArray 9
               13:      8(int) Constant 1
               15:     10(int) Constant 0
               16:             TypePointer Image 8(int)
@@ -35,7 +36,7 @@ spv.descriptorHeap.AtomicImage.comp
               19:     10(int) Constant 1
          4(main):           2 Function None 3
                5:             Label
-              14:      6(ptr) UntypedAccessChainKHR 12 7(resource_heap) 13
+              14:      6(ptr) UntypedAccessChainKHR 12(img) 7(resource_heap) 13
               18:     17(ptr) UntypedImageTexelPointerEXT 9 14 13 15
               20:      8(int) AtomicIAdd 18 19 15 13
                               Return
