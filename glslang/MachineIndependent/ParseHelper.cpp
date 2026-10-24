@@ -1647,9 +1647,9 @@ TIntermTyped* TParseContext::handleFunctionCall(const TSourceLoc& loc, TFunction
                 // Take the type parameters from the first argument. The result may already
                 // be a folded constant rather than an aggregate, and a const argument must
                 // not make an unfolded call look like a constant.
-                const TIntermTyped* firstArg = arguments->getAsAggregate()
-                                                   ? arguments->getAsAggregate()->getSequence()[0]->getAsTyped()
-                                                   : arguments->getAsTyped();
+                const TIntermTyped* firstArg = fnCandidate->getParamCount() == 1 || !arguments->getAsAggregate()
+                                                   ? arguments->getAsTyped()
+                                                   : arguments->getAsAggregate()->getSequence()[0]->getAsTyped();
                 result->setType(firstArg->getType());
                 if (result->getAsConstantUnion() == nullptr)
                     result->getWritableType().getQualifier().makeTemporary();
