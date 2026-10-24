@@ -3679,6 +3679,13 @@ bool TIntermediate::promoteBinary(TIntermBinary& node)
     if (left->getType().isLongVector() && right->getType().isLongVector() && !left->getType().sameLongVectorShape(right->getType()))
         return false;
 
+    // Finish handling the case, for all ops, where a long vector is mixed with a vector or matrix of a
+    // different shape. A long vector is not isVector(), so it would otherwise be treated as a scalar below.
+    if (((left->getType().isLongVector() && (right->isVector() || right->isMatrix())) ||
+         (right->getType().isLongVector() && (left->isVector() || left->isMatrix()))) &&
+        !vectorAndLongVectorMatch)
+        return false;
+
     //
     // We now have a mix of scalars, vectors, or matrices, for non-relational operations.
     //
@@ -3712,7 +3719,7 @@ bool TIntermediate::promoteBinary(TIntermBinary& node)
             node.setOp(op = EOpMatrixTimesMatrix);
             node.setType(TType(basicType, EvqTemporary, 0, right->getMatrixCols(), left->getMatrixRows()));
         } else if (! left->isMatrix() && ! right->isMatrix()) {
-            if (left->isVector() && right->isVector()) {
+            if ((left->isVector() && right->isVector()) || vectorAndLongVectorMatch) {
                 ; // leave as component product
             } else if (left->isVector() || right->isVector()) {
                 node.setOp(op = EOpVectorTimesScalar);
@@ -3743,7 +3750,7 @@ bool TIntermediate::promoteBinary(TIntermBinary& node)
                 return false;
             node.setOp(op = EOpMatrixTimesMatrixAssign);
         } else if (!left->isMatrix() && !right->isMatrix()) {
-            if (left->isVector() && right->isVector()) {
+            if ((left->isVector() && right->isVector()) || vectorAndLongVectorMatch) {
                 // leave as component product
             } else if (left->isVector() || right->isVector()) {
                 if (! left->isVector())

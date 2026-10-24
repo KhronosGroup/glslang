@@ -1,0 +1,16 @@
+spv.longVectorBadParams.mixedShape.comp
+ERROR: 0:21: '+' :  wrong operand types: no operation '+' exists that takes a left-hand operand of type ' const vector<8> float' and a right operand of type ' const 4-component vector of float' (or there is no acceptable conversion)
+ERROR: 0:22: '*' :  wrong operand types: no operation '*' exists that takes a left-hand operand of type ' const vector<8> float' and a right operand of type ' const 4-component vector of float' (or there is no acceptable conversion)
+ERROR: 0:23: '*' :  wrong operand types: no operation '*' exists that takes a left-hand operand of type ' const 4X4 matrix of float' and a right operand of type ' const vector<8> float' (or there is no acceptable conversion)
+ERROR: 0:24: '+' :  wrong operand types: no operation '+' exists that takes a left-hand operand of type ' temp vector<8> float' and a right operand of type ' temp highp 4-component vector of float' (or there is no acceptable conversion)
+ERROR: 0:25: '-' :  wrong operand types: no operation '-' exists that takes a left-hand operand of type ' temp vector<8> float' and a right operand of type ' const 2-component vector of float' (or there is no acceptable conversion)
+ERROR: 0:26: '+' :  wrong operand types: no operation '+' exists that takes a left-hand operand of type ' temp highp 4-component vector of float' and a right operand of type ' temp vector<8> float' (or there is no acceptable conversion)
+ERROR: 0:27: 'assign' :  cannot convert from ' temp vector<8> float' to ' temp highp 4-component vector of float'
+ERROR: 0:28: '<<' :  wrong operand types: no operation '<<' exists that takes a left-hand operand of type ' temp highp 4-component vector of int' and a right operand of type ' temp vector<8> int' (or there is no acceptable conversion)
+ERROR: 0:29: '*' :  wrong operand types: no operation '*' exists that takes a left-hand operand of type ' temp highp 4X4 matrix of float' and a right operand of type ' temp vector<8> float' (or there is no acceptable conversion)
+ERROR: 0:30: '*' :  wrong operand types: no operation '*' exists that takes a left-hand operand of type ' temp vector<8> float' and a right operand of type ' temp highp 4X4 matrix of float' (or there is no acceptable conversion)
+ERROR: 0:31: '*' :  wrong operand types: no operation '*' exists that takes a left-hand operand of type ' temp highp 4X4 matrix of float' and a right operand of type ' temp vector<4> float' (or there is no acceptable conversion)
+ERROR: 11 compilation errors.  No code generated.
+
+
+SPIR-V is not generated for failed compile or link
