@@ -10347,10 +10347,19 @@ void HlslParseContext::finalizeAppendMethods()
 
     // Patch append sequences, now that we know the stream output symbol.
     for (auto append = gsAppends.begin(); append != gsAppends.end(); ++append) {
-        append->node->getSequence()[0] =
-            handleAssign(append->loc, EOpAssign,
-                         intermediate.addSymbol(*gsStreamOutput, append->loc),
-                         append->node->getSequence()[0]->getAsTyped());
+        TIntermTyped* data = append->node->getSequence()[0]->getAsTyped();
+
+        // A struct output is copied member-wise, which requires the argument to have the same type.
+        TIntermTyped* assign = nullptr;
+        if (! gsStreamOutput->getType().isStruct() || gsStreamOutput->getType() == data->getType())
+            assign = handleAssign(append->loc, EOpAssign, intermediate.addSymbol(*gsStreamOutput, append->loc), data);
+
+        if (assign == nullptr) {
+            error(append->loc, "argument type does not match stream output type", "Append", "");
+            continue;
+        }
+
+        append->node->getSequence()[0] = assign;
     }
 }
 

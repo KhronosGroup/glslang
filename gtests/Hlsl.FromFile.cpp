@@ -158,6 +158,8 @@ INSTANTIATE_TEST_SUITE_P(
     ::testing::ValuesIn(std::vector<FileNameEntryPointPair>{
         {"hlsl.amend.frag", "f1"},
         {"hlsl.aliasOpaque.frag", "main"},
+        {"hlsl.append.typeMismatch.geom", "main"},
+        {"hlsl.append.typeMismatch.nonstruct.geom", "main"},
         {"hlsl.array.frag", "PixelShaderFunction"},
         {"hlsl.array.implicit-size.frag", "PixelShaderFunction"},
         {"hlsl.array.malformedParam.negative.geom", "main"},
