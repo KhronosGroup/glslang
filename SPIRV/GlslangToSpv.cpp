@@ -2288,9 +2288,11 @@ void TGlslangToSpvTraverser::finishSpv(bool compileOnly)
 {
     // If not linking, an entry point is not expected
     if (!compileOnly) {
-        // Finish the entry point function
+        // Finish the entry point function. It was never entered if the traversal
+        // did not visit it (e.g., HLSL with no function matching the entry point).
         if (!entryPointTerminated) {
             builder.setBuildPoint(shaderEntry->getLastBlock());
+            builder.enterFunction(shaderEntry);
             builder.leaveFunction();
         }
 
