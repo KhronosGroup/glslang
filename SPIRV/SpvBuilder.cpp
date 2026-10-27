@@ -1028,12 +1028,14 @@ Id Builder::makeDebugInfoNone()
 Id Builder::makeBoolDebugType(int const size)
 {
     // try to find it
+    // DebugTypeBasic operands follow the extended instruction set and opcode.
+    // Size and encoding are constant ids, not literal values.
     Instruction* type;
     for (int t = 0; t < (int)groupedDebugTypes[NonSemanticShaderDebugInfoDebugTypeBasic].size(); ++t) {
         type = groupedDebugTypes[NonSemanticShaderDebugInfoDebugTypeBasic][t];
-        if (type->getIdOperand(0) == getStringId("bool") &&
-            type->getIdOperand(1) == static_cast<unsigned int>(size) &&
-            type->getIdOperand(2) == NonSemanticShaderDebugInfoBoolean)
+        if (type->getIdOperand(2) == getStringId("bool") &&
+            type->getIdOperand(3) == makeUintConstant(size) &&
+            type->getIdOperand(4) == makeUintConstant(NonSemanticShaderDebugInfoBoolean))
             return type->getResultId();
     }
 
@@ -1068,9 +1070,10 @@ Id Builder::makeIntegerDebugType(int const width, bool const hasSign)
     Instruction* type;
     for (int t = 0; t < (int)groupedDebugTypes[NonSemanticShaderDebugInfoDebugTypeBasic].size(); ++t) {
         type = groupedDebugTypes[NonSemanticShaderDebugInfoDebugTypeBasic][t];
-        if (type->getIdOperand(0) == nameId &&
-            type->getIdOperand(1) == static_cast<unsigned int>(width) &&
-            type->getIdOperand(2) == (hasSign ? NonSemanticShaderDebugInfoSigned : NonSemanticShaderDebugInfoUnsigned))
+        if (type->getIdOperand(2) == nameId &&
+            type->getIdOperand(3) == makeUintConstant(width) &&
+            type->getIdOperand(4) ==
+                makeUintConstant(hasSign ? NonSemanticShaderDebugInfoSigned : NonSemanticShaderDebugInfoUnsigned))
             return type->getResultId();
     }
 
@@ -1134,9 +1137,9 @@ Id Builder::makeFloatDebugType(int const width, Id const fpEncoding)
     Instruction* type;
     for (int t = 0; t < (int)groupedDebugTypes[NonSemanticShaderDebugInfoDebugTypeBasic].size(); ++t) {
         type = groupedDebugTypes[NonSemanticShaderDebugInfoDebugTypeBasic][t];
-        if (type->getIdOperand(0) == nameId &&
-            type->getIdOperand(1) == static_cast<unsigned int>(width) &&
-            type->getIdOperand(2) == NonSemanticShaderDebugInfoFloat) {
+        if (type->getIdOperand(2) == nameId &&
+            type->getIdOperand(3) == makeUintConstant(width) &&
+            type->getIdOperand(4) == makeUintConstant(NonSemanticShaderDebugInfoFloat)) {
             if (fpEncoding == NoType) {
                 if (type->getNumOperands() == 6)
                     return type->getResultId();
@@ -1368,6 +1371,9 @@ Id Builder::makeCompositeDebugType(std::vector<Id> const& memberTypes, std::vect
 // DebugInfoNone, and Name must start with @ to avoid clashes with user defined names.
 Id Builder::makeOpaqueDebugType(char const* const name)
 {
+    if (auto it = opaqueDebugTypeIds.find(name); it != opaqueDebugTypeIds.end())
+        return it->second;
+
     // Create The structure debug type.
     Instruction* type = new Instruction(getUniqueId(), makeVoidType(), Op::OpExtInst);
     type->reserveOperands(11);
@@ -1387,6 +1393,7 @@ Id Builder::makeOpaqueDebugType(char const* const name)
     groupedDebugTypes[NonSemanticShaderDebugInfoDebugTypeComposite].push_back(type);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
+    opaqueDebugTypeIds.emplace(name, type->getResultId());
 
     return type->getResultId();
 }

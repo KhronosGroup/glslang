@@ -1440,6 +1440,8 @@ protected:
     std::unordered_map<unsigned int, std::vector<Instruction*>> groupedTypes;
     // map type opcodes to debug type instructions
     std::unordered_map<unsigned int, std::vector<Instruction*>> groupedDebugTypes;
+    // map source-language opaque type names to debug type ids
+    std::unordered_map<std::string, Id> opaqueDebugTypeIds;
     // list of OpConstantNull instructions
     std::vector<Instruction*> nullConstants;
     // map scalar constants to result IDs
