@@ -11,7 +11,7 @@ permissions: read-all
 jobs:
   linux:
     needs: linux-shared # fastest job to do sanity check
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-26.04
     strategy:
       fail-fast: false
       matrix:
@@ -22,7 +22,7 @@ jobs:
       - name: Setup ccache
         uses: hendrikmuhs/ccache-action@f09c25b45002a07be2955cbe52e8cee55643f89d # v1.2.24
         with:
-          key: ubuntu-22-${{ matrix.cmake_build_type }}-${{ matrix.compiler.cc }}-${{matrix.compiler.cxx}}
+          key: ubuntu-26-${{ matrix.cmake_build_type }}-${{ matrix.compiler.cc }}-${{matrix.compiler.cxx}}
       - run: ./update_glslang_sources.py
       - name: Configure
         run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{ matrix.cmake_build_type }} -DBUILD_WERROR=ON -D GLSLANG_TESTS=ON
@@ -46,7 +46,7 @@ jobs:
         run: grep -l 'Validation failed' Test/baseResults/* | sort -fd | diff -u Test/baseResults/validation_fails.txt -
 
   linux-shared:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-26.04
     strategy:
       fail-fast: false
       matrix:
@@ -57,7 +57,7 @@ jobs:
       - name: Setup ccache
         uses: hendrikmuhs/ccache-action@f09c25b45002a07be2955cbe52e8cee55643f89d # v1.2.24
         with:
-          key: ubuntu-22-${{ matrix.cmake_build_type }}-${{ matrix.compiler.cc }}-${{matrix.compiler.cxx}}
+          key: ubuntu-26-${{ matrix.cmake_build_type }}-${{ matrix.compiler.cc }}-${{matrix.compiler.cxx}}
       - run: ./update_glslang_sources.py
       - name: Configure
         run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{ matrix.cmake_build_type }} -DBUILD_WERROR=ON -D GLSLANG_TESTS=ON -DBUILD_SHARED_LIBS=ON
@@ -80,7 +80,7 @@ jobs:
 
   linux-asan:
     needs: linux-shared # fastest job to do sanity check
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-26.04
     strategy:
       fail-fast: false
       matrix:
@@ -92,7 +92,7 @@ jobs:
       - name: Setup ccache
         uses: hendrikmuhs/ccache-action@f09c25b45002a07be2955cbe52e8cee55643f89d # v1.2.24
         with:
-          key: ubuntu-22-${{ matrix.cmake_build_type }}-${{ matrix.compiler.cc }}-${{matrix.compiler.cxx}}-${{matrix.flags}}
+          key: ubuntu-26-${{ matrix.cmake_build_type }}-${{ matrix.compiler.cc }}-${{matrix.compiler.cxx}}-${{matrix.flags}}
       # This is to combat a bug when using 6.6 linux kernels with thread/address sanitizer
       # https://github.com/google/sanitizers/issues/1716
       - run: sudo sysctl vm.mmap_rnd_bits=28
@@ -291,7 +291,7 @@ jobs:
 
   android:
     needs: linux-shared # fastest job to do sanity check
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-26.04
     strategy:
       matrix:
         # Android NDK currently offers 2 different toolchains.
@@ -319,7 +319,7 @@ jobs:
 
   emscripten:
     needs: linux-shared # fastest job to do sanity check
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Setup ccache
