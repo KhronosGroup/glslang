@@ -2072,9 +2072,9 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion,
                 auto rate_x = glslangIntermediate->getTileShadingRateQCOM(0);
                 auto rate_y = glslangIntermediate->getTileShadingRateQCOM(1);
                 auto rate_z = glslangIntermediate->getTileShadingRateQCOM(2);
-                rate_x = ( rate_x == 0 ? 1 : rate_x );
-                rate_y = ( rate_y == 0 ? 1 : rate_y );
-                rate_z = ( rate_z == 0 ? 1 : rate_z );
+                rate_x = ( rate_x == 0 ? 1u : rate_x );
+                rate_y = ( rate_y == 0 ? 1u : rate_y );
+                rate_z = ( rate_z == 0 ? 1u : rate_z );
                 builder.addExecutionMode(shaderEntry, spv::ExecutionMode::TileShadingRateQCOM, rate_x, rate_y, rate_z);
             } else {
                 builder.addExecutionMode(shaderEntry, spv::ExecutionMode::LocalSize, glslangIntermediate->getLocalSize(0),
@@ -2710,7 +2710,7 @@ bool TGlslangToSpvTraverser::visitBinary(glslang::TVisit /* visit */, glslang::T
                      node->getRight()->getType().contains64BitInt()) {
                     int64_t idx = node->getRight()->getType().contains64BitInt() ?
                                     node->getRight()->getAsConstantUnion()->getConstArray()[0].getI64Const() :
-                                    node->getRight()->getAsConstantUnion()->getConstArray()[0].getUConst();
+                                    (int64_t)node->getRight()->getAsConstantUnion()->getConstArray()[0].getUConst();
                     builder.accessChainPush(builder.makeInt64Constant(idx),
                             coherentFlags,
                             node->getLeft()->getType().getBufferReferenceAlignment());
@@ -3419,7 +3419,7 @@ void TGlslangToSpvTraverser::createAbortEXT(const glslang::TIntermSequence &glsl
     auto charType = builder.makeIntType(8);
     // 2.1 Get string's length.
     //     If not an empty string, \0 is the final character used for padding.
-    unsigned int msgLen = isEmptyMsg ? 1 : msg->size() + 1;
+    unsigned int msgLen = isEmptyMsg ? glslang::TString::size_type(1) : msg->size() + 1;
     unsigned int paddingSize = (4 - msgLen % 4) % 4;
     msgLen = msgLen + paddingSize;
     spv::Id constLen = builder.makeUintConstant(msgLen);
@@ -9791,7 +9791,7 @@ spv::Id TGlslangToSpvTraverser::createUnaryOperation(glslang::TOperator op, OpDe
     if (libCall >= 0) {
         std::vector<spv::Id> args;
         args.push_back(operand);
-        id = builder.createBuiltinCall(typeId, extBuiltins >= 0 ? extBuiltins : stdBuiltins, libCall, args);
+        id = builder.createBuiltinCall(typeId, extBuiltins >= 0 ? (spv::Id)extBuiltins : stdBuiltins, libCall, args);
     } else {
         id = builder.createUnaryOp(unaryOp, typeId, operand);
     }
@@ -9908,7 +9908,7 @@ spv::Id TGlslangToSpvTraverser::createConversion(glslang::TOperator op, OpDecora
     spv::Id zero = 0;
     spv::Id one = 0;
 
-    int vectorSize = builder.isVectorType(destType) ? builder.getNumTypeComponents(destType) : 0;
+    int vectorSize = builder.isVectorType(destType) ? builder.getNumTypeComponents(destType) : 0u;
 
     if (IsOpNumericConv(op) || op == glslang::EOpConstructSaturated) {
         if (builder.isCooperativeMatrixType(destType)) {
@@ -11845,7 +11845,7 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
         // Construct the call arguments, without modifying the original operands vector.
         // We might need the remaining arguments, e.g. in the EOpFrexp case.
         std::vector<spv::Id> callArguments(operands.begin(), operands.begin() + consumedOperands);
-        id = builder.createBuiltinCall(typeId, extBuiltins >= 0 ? extBuiltins : stdBuiltins, libCall, callArguments);
+        id = builder.createBuiltinCall(typeId, extBuiltins >= 0 ? (spv::Id)extBuiltins : stdBuiltins, libCall, callArguments);
     } else if (opCode == spv::Op::OpDot && !isFloat) {
         // int dot(int, int)
         // NOTE: never called for scalar/vector1, this is turned into simple mul before this can be reached
@@ -12576,7 +12576,7 @@ spv::Id TGlslangToSpvTraverser::createSpvConstantFromConstUnionArray(const glsla
                 spvConsts.push_back(builder.makeIntConstant(zero ? 0 : consts[nextConst].getIConst()));
                 break;
             case glslang::EbtUint:
-                spvConsts.push_back(builder.makeUintConstant(zero ? 0 : consts[nextConst].getUConst()));
+                spvConsts.push_back(builder.makeUintConstant(zero ? 0u : consts[nextConst].getUConst()));
                 break;
             case glslang::EbtFloat:
                 spvConsts.push_back(builder.makeFloatConstant(zero ? 0.0F : (float)consts[nextConst].getDConst()));
@@ -12601,10 +12601,10 @@ spv::Id TGlslangToSpvTraverser::createSpvConstantFromConstUnionArray(const glsla
                 spvConsts.push_back(builder.makeUint16Constant(zero ? 0 : consts[nextConst].getU16Const()));
                 break;
             case glslang::EbtInt64:
-                spvConsts.push_back(builder.makeInt64Constant(zero ? 0 : consts[nextConst].getI64Const()));
+                spvConsts.push_back(builder.makeInt64Constant(zero ? 0LL : consts[nextConst].getI64Const()));
                 break;
             case glslang::EbtUint64:
-                spvConsts.push_back(builder.makeUint64Constant(zero ? 0 : consts[nextConst].getU64Const()));
+                spvConsts.push_back(builder.makeUint64Constant(zero ? 0ULL : consts[nextConst].getU64Const()));
                 break;
             case glslang::EbtDouble:
                 spvConsts.push_back(builder.makeDoubleConstant(zero ? 0.0 : consts[nextConst].getDConst()));
@@ -12652,7 +12652,7 @@ spv::Id TGlslangToSpvTraverser::createSpvConstantFromConstUnionArray(const glsla
             scalar = builder.makeIntConstant(zero ? 0 : consts[nextConst].getIConst(), specConstant);
             break;
         case glslang::EbtUint:
-            scalar = builder.makeUintConstant(zero ? 0 : consts[nextConst].getUConst(), specConstant);
+            scalar = builder.makeUintConstant(zero ? 0u : consts[nextConst].getUConst(), specConstant);
             break;
         case glslang::EbtFloat:
             scalar = builder.makeFloatConstant(zero ? 0.0F : (float)consts[nextConst].getDConst(), specConstant);
@@ -12677,10 +12677,10 @@ spv::Id TGlslangToSpvTraverser::createSpvConstantFromConstUnionArray(const glsla
             scalar = builder.makeUint16Constant(zero ? 0 : consts[nextConst].getU16Const(), specConstant);
             break;
         case glslang::EbtInt64:
-            scalar = builder.makeInt64Constant(zero ? 0 : consts[nextConst].getI64Const(), specConstant);
+            scalar = builder.makeInt64Constant(zero ? 0LL : consts[nextConst].getI64Const(), specConstant);
             break;
         case glslang::EbtUint64:
-            scalar = builder.makeUint64Constant(zero ? 0 : consts[nextConst].getU64Const(), specConstant);
+            scalar = builder.makeUint64Constant(zero ? 0ULL : consts[nextConst].getU64Const(), specConstant);
             break;
         case glslang::EbtDouble:
             scalar = builder.makeDoubleConstant(zero ? 0.0 : consts[nextConst].getDConst(), specConstant);
@@ -12714,7 +12714,7 @@ spv::Id TGlslangToSpvTraverser::createSpvConstantFromConstUnionArray(const glsla
             scalar = builder.makeFloatMXINT8Constant(zero ? 0.0F : (float)consts[nextConst].getDConst(), specConstant);
             break;
         case glslang::EbtReference:
-            scalar = builder.makeUint64Constant(zero ? 0 : consts[nextConst].getU64Const(), specConstant);
+            scalar = builder.makeUint64Constant(zero ? 0ULL : consts[nextConst].getU64Const(), specConstant);
             scalar = builder.createUnaryOp(spv::Op::OpBitcast, typeId, scalar);
             break;
         case glslang::EbtString:

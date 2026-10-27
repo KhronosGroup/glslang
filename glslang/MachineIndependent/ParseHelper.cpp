@@ -4160,7 +4160,7 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
             if (!opArg) {
                 error(loc, "tensor operands argument must be a constant integral expression", "tensorOps", "");
             }
-            const unsigned int ops = opArg ? opArg->getConstArray()[0].getUConst() : 0;
+            const unsigned int ops = opArg ? opArg->getConstArray()[0].getUConst() : 0u;
             const int gl_TensorOperandsOutOfBoundsValueARM = 0x2;
             if (ops & gl_TensorOperandsOutOfBoundsValueARM) {
                 // Out-of-bounds values can only be used with reads.
@@ -9570,7 +9570,7 @@ void TParseContext::typeParametersCheck(const TSourceLoc& loc, const TPublicType
         if (publicType.typeParameters && publicType.typeParameters->arraySizes->getNumDims() < 7) {
             uint32_t numDims = publicType.typeParameters->arraySizes->getNumDims();
             while (numDims < 7) {
-                uint32_t dim = (numDims == 1) ? 0 : (numDims - 2);
+                uint32_t dim = (numDims == 1) ? 0u : (numDims - 2);
                 publicType.typeParameters->arraySizes->addInnerSize(dim);
                 numDims++;
             }
