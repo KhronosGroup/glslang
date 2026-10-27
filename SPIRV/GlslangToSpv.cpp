@@ -2505,7 +2505,7 @@ spv::Id TGlslangToSpvTraverser::makeDescHeapImageArrayWrapperType(const glslang:
     spv::Id memberOffset = builder.makeUintConstant(0);
     const std::vector<spv::Id> members = { arrayType };
     const std::string wrapperName = std::string(symbol.getName().c_str()) + "_heap";
-    spv::Id wrapperType = builder.makeStructType(members, {}, wrapperName.c_str(), false);
+    spv::Id wrapperType = builder.makeStructType(members, {}, wrapperName.c_str());
 
     builder.addMemberName(wrapperType, 0, symbol.getName().c_str());
     builder.addDecoration(wrapperType, spv::Decoration::Block);
