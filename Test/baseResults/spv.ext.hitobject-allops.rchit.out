@@ -5,10 +5,12 @@ spv.ext.hitobject-allops.rchit
 
                               Capability RayQueryKHR
                               Capability RayTracingKHR
+                              Capability RayTracingMotionBlurNV
                               Capability ShaderInvocationReorderEXT
                               Extension  "SPV_EXT_shader_invocation_reorder"
                               Extension  "SPV_KHR_ray_query"
                               Extension  "SPV_KHR_ray_tracing"
+                              Extension  "SPV_NV_ray_tracing_motion_blur"
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
                               EntryPoint ClosestHitKHR 4  "main" 9 14 22 25 36 42 43 44 49 56 112

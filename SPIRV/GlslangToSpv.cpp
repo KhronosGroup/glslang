@@ -4945,6 +4945,8 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         builder.createStore(result, operands[1]);
         result = 0;
     } else if (node->getOp() == glslang::EOpHitObjectGetIntersectionTriangleVertexPositionsEXT) {
+        builder.addExtension(spv::E_SPV_KHR_ray_tracing_position_fetch);
+        builder.addCapability(spv::Capability::RayTracingPositionFetchKHR);
         std::vector<spv::IdImmediate> idImmOps;
 
         idImmOps.push_back(spv::IdImmediate(true, operands[0])); // hitObject
@@ -9700,10 +9702,14 @@ spv::Id TGlslangToSpvTraverser::createUnaryOperation(glslang::TOperator op, OpDe
         break;
 
     case glslang::EOpHitObjectGetCurrentTimeNV:
+        builder.addExtension(spv::E_SPV_NV_ray_tracing_motion_blur);
+        builder.addCapability(spv::Capability::RayTracingMotionBlurNV);
         unaryOp = spv::Op::OpHitObjectGetCurrentTimeNV;
         break;
 
     case glslang::EOpHitObjectGetCurrentTimeEXT:
+        builder.addExtension(spv::E_SPV_NV_ray_tracing_motion_blur);
+        builder.addCapability(spv::Capability::RayTracingMotionBlurNV);
         unaryOp = spv::Op::OpHitObjectGetCurrentTimeEXT;
         break;
 
@@ -11462,21 +11468,29 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
         builder.createNoResultOp(spv::Op::OpHitObjectTraceRayEXT, operands);
         return 0;
     case glslang::EOpHitObjectTraceRayMotionNV:
+        builder.addExtension(spv::E_SPV_NV_ray_tracing_motion_blur);
+        builder.addCapability(spv::Capability::RayTracingMotionBlurNV);
         builder.createNoResultOp(spv::Op::OpHitObjectTraceRayMotionNV, operands);
         return 0;
     case glslang::EOpHitObjectTraceRayMotionEXT:
+        builder.addExtension(spv::E_SPV_NV_ray_tracing_motion_blur);
+        builder.addCapability(spv::Capability::RayTracingMotionBlurNV);
         builder.createNoResultOp(spv::Op::OpHitObjectTraceRayMotionEXT, operands);
         return 0;
     case glslang::EOpHitObjectRecordHitNV:
         builder.createNoResultOp(spv::Op::OpHitObjectRecordHitNV, operands);
         return 0;
     case glslang::EOpHitObjectRecordHitMotionNV:
+        builder.addExtension(spv::E_SPV_NV_ray_tracing_motion_blur);
+        builder.addCapability(spv::Capability::RayTracingMotionBlurNV);
         builder.createNoResultOp(spv::Op::OpHitObjectRecordHitMotionNV, operands);
         return 0;
     case glslang::EOpHitObjectRecordHitWithIndexNV:
         builder.createNoResultOp(spv::Op::OpHitObjectRecordHitWithIndexNV, operands);
         return 0;
     case glslang::EOpHitObjectRecordHitWithIndexMotionNV:
+        builder.addExtension(spv::E_SPV_NV_ray_tracing_motion_blur);
+        builder.addCapability(spv::Capability::RayTracingMotionBlurNV);
         builder.createNoResultOp(spv::Op::OpHitObjectRecordHitWithIndexMotionNV, operands);
         return 0;
     case glslang::EOpHitObjectRecordMissNV:
@@ -11486,9 +11500,13 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
         builder.createNoResultOp(spv::Op::OpHitObjectRecordMissEXT, operands);
         return 0;
     case glslang::EOpHitObjectRecordMissMotionNV:
+        builder.addExtension(spv::E_SPV_NV_ray_tracing_motion_blur);
+        builder.addCapability(spv::Capability::RayTracingMotionBlurNV);
         builder.createNoResultOp(spv::Op::OpHitObjectRecordMissMotionNV, operands);
         return 0;
     case glslang::EOpHitObjectRecordMissMotionEXT:
+        builder.addExtension(spv::E_SPV_NV_ray_tracing_motion_blur);
+        builder.addCapability(spv::Capability::RayTracingMotionBlurNV);
         builder.createNoResultOp(spv::Op::OpHitObjectRecordMissMotionEXT, operands);
         return 0;
     case glslang::EOpHitObjectExecuteShaderNV:
@@ -11638,10 +11656,14 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
         opCode = spv::Op::OpHitObjectGetHitKindEXT;
         break;
     case glslang::EOpHitObjectGetCurrentTimeNV:
+        builder.addExtension(spv::E_SPV_NV_ray_tracing_motion_blur);
+        builder.addCapability(spv::Capability::RayTracingMotionBlurNV);
         typeId = builder.makeFloatType(32);
         opCode = spv::Op::OpHitObjectGetCurrentTimeNV;
         break;
     case glslang::EOpHitObjectGetCurrentTimeEXT:
+        builder.addExtension(spv::E_SPV_NV_ray_tracing_motion_blur);
+        builder.addCapability(spv::Capability::RayTracingMotionBlurNV);
         typeId = builder.makeFloatType(32);
         opCode = spv::Op::OpHitObjectGetCurrentTimeEXT;
         break;
@@ -11720,6 +11742,8 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
         return 0;
     }
     case glslang::EOpHitObjectTraceMotionReorderExecuteEXT: {
+        builder.addExtension(spv::E_SPV_NV_ray_tracing_motion_blur);
+        builder.addCapability(spv::Capability::RayTracingMotionBlurNV);
         if (operands.size() == 13) {
             builder.createNoResultOp(spv::Op::OpHitObjectTraceMotionReorderExecuteEXT, operands);
         } else {
