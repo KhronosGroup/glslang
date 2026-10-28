@@ -4,8 +4,10 @@ spv.nv.hitobject-allops.rchit
 // Id's are bound by 116
 
                               Capability RayTracingKHR
+                              Capability RayTracingMotionBlurNV
                               Capability ShaderInvocationReorderNV
                               Extension  "SPV_KHR_ray_tracing"
+                              Extension  "SPV_NV_ray_tracing_motion_blur"
                               Extension  "SPV_NV_shader_invocation_reorder"
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
