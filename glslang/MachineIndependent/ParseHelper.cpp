@@ -8614,12 +8614,11 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
         }
     }
 
-    // some things can't have arrays of arrays
-    if (type.isArrayOfArrays()) {
-        if (spvVersion.vulkan > 0) {
-            if (type.isOpaque() || (type.getQualifier().isUniformOrBuffer() && type.getBasicType() == EbtBlock))
-                warn(loc, "Generating SPIR-V array-of-arrays, but Vulkan only supports single array level for this resource", "[][]", "");
-        }
+    // Vulkan descriptor resources only support a single array dimension.
+    // Other opaque variables, such as ray queries, can be arrays of arrays.
+    if (spvVersion.vulkan > 0 && type.isArrayOfArrays() && qualifier.isUniformOrBuffer() &&
+        (type.isOpaque() || type.getBasicType() == EbtBlock)) {
+        error(loc, "Vulkan only supports a single array level for this resource", "[][]", "");
     }
 
     // "The offset qualifier can only be used on block members of blocks..."

@@ -1,0 +1,25 @@
+#version 450
+#extension GL_EXT_descriptor_heap : require
+
+layout(local_size_x = 1) in;
+
+layout(descriptor_heap) buffer Heap {
+    uint data;
+} heap[3][3];
+
+layout(descriptor_heap) buffer UnsizedHeap {
+    uint data;
+} unsizedHeap[][3];
+
+layout(descriptor_heap) uniform UniformHeap {
+    uint data;
+} uniformHeap[2][3];
+
+layout(descriptor_heap) uniform sampler samplers[2][3];
+layout(descriptor_heap) uniform texture2D textures[2][3];
+layout(descriptor_heap, rgba32f) uniform image2D images[2][3];
+
+void main()
+{
+    heap[1][2].data = 42;
+}

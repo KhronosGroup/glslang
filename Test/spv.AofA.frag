@@ -5,7 +5,7 @@ out float outfloat;
 
 uniform uAofA {
     float f[2][4];
-} nameAofA[3][5];
+} nameAofA[15];
 
 float[4][5][6] many[1][2][3];
 
@@ -39,5 +39,5 @@ void main()
 
     many[i][j][k][i][j][k] = infloat;
     outfloat += many[j][j][j][j][j][j];
-    outfloat += nameAofA[1][2].f[0][3];
+    outfloat += nameAofA[7].f[0][3];
 }
