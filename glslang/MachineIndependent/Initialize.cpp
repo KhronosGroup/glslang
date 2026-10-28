@@ -12368,7 +12368,12 @@ bool IsSupportedLongVectorBuiltin(const TFunction* fnCandidate, TType* resultTyp
                 resultType->deepCopy(TType(firstLongVector->getType().getBasicType()));
             }
             if (fn.classes & ClassLO) {
-                getArg(fnCandidate->getParamCount() - 1)->setType(getArg(0)->getType());
+                // The output argument takes the shape of the first argument, but keeps its own qualifier.
+                TIntermTyped* outArg = getArg(fnCandidate->getParamCount() - 1);
+                TType outType;
+                outType.shallowCopy(getArg(0)->getType());
+                outType.getQualifier() = outArg->getType().getQualifier();
+                outArg->setType(outType);
             }
             return true;
         }

@@ -1620,6 +1620,10 @@ TIntermTyped* TParseContext::handleFunctionCall(const TSourceLoc& loc, TFunction
                 TType longVectorResultType(EbtVoid);
                 handleLongVectorBuiltin(loc, fnCandidate, &longVectorResultType, arguments);
                 result->setType(longVectorResultType);
+                // The type was copied from an argument; a const argument must not make
+                // an unfolded call look like a constant.
+                if (result->getAsConstantUnion() == nullptr)
+                    result->getWritableType().getQualifier().makeTemporary();
             }
 
             // Convert 'out' arguments.  If it was a constant folded built-in, it won't be an aggregate anymore.
@@ -1640,10 +1644,15 @@ TIntermTyped* TParseContext::handleFunctionCall(const TSourceLoc& loc, TFunction
 
             if (result->getAsTyped()->getType().isCoopVecOrLongVector() &&
                !result->getAsTyped()->getType().isParameterized()) {
-                if (auto unaryNode = result->getAsUnaryNode())
-                    result->setType(unaryNode->getOperand()->getAsTyped()->getType());
-                else
-                    result->setType(result->getAsAggregate()->getSequence()[0]->getAsTyped()->getType());
+                // Take the type parameters from the first argument. The result may already
+                // be a folded constant rather than an aggregate, and a const argument must
+                // not make an unfolded call look like a constant.
+                const TIntermTyped* firstArg = fnCandidate->getParamCount() == 1 || !arguments->getAsAggregate()
+                                                   ? arguments->getAsTyped()
+                                                   : arguments->getAsAggregate()->getSequence()[0]->getAsTyped();
+                result->setType(firstArg->getType());
+                if (result->getAsConstantUnion() == nullptr)
+                    result->getWritableType().getQualifier().makeTemporary();
             }
 
             if (fnCandidate->getBuiltInOp() == EOpConstructSaturated) {
@@ -12601,10 +12610,10 @@ const TTypeList* TParseContext::recordStructCopy(TStructRecord& record, const TT
     size_t originHash = 0, tmpHash = 0;
     std::hash<size_t> hasher;
     for (size_t i = 0; i < memberCount; i++) {
-        size_t originMemberHash = hasher(originType->getStruct()->at(i).type->getQualifier().layoutPacking +
-                                         originType->getStruct()->at(i).type->getQualifier().layoutMatrix);
-        size_t tmpMemberHash = hasher(tmpType->getStruct()->at(i).type->getQualifier().layoutPacking +
-                                      tmpType->getStruct()->at(i).type->getQualifier().layoutMatrix);
+        size_t originMemberHash = hasher((size_t)originType->getStruct()->at(i).type->getQualifier().layoutPacking +
+                                         (size_t)originType->getStruct()->at(i).type->getQualifier().layoutMatrix);
+        size_t tmpMemberHash = hasher((size_t)tmpType->getStruct()->at(i).type->getQualifier().layoutPacking +
+                                     (size_t)tmpType->getStruct()->at(i).type->getQualifier().layoutMatrix);
         originHash = hasher((originHash ^ originMemberHash) << 1);
         tmpHash = hasher((tmpHash ^ tmpMemberHash) << 1);
     }
