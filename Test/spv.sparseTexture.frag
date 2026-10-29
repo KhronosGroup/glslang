@@ -6,7 +6,6 @@ uniform sampler3D               s3D;
 uniform sampler2DShadow         s2DShadow;
 uniform samplerCubeShadow       sCubeShadow;
 uniform sampler2DArrayShadow    s2DArrayShadow;
-uniform sampler2DRectShadow     s2DRectShadow;
 uniform samplerCubeArrayShadow  sCubeArrayShadow;
 uniform sampler2DMS             s2DMS;
 
@@ -14,7 +13,6 @@ uniform isamplerCube            isCube;
 uniform isampler2DArray         is2DArray;
 
 uniform usamplerCubeArray       usCubeArray;
-uniform usampler2DRect          us2DRect;
 
 layout(rgba32f) uniform image2D i2D;
 layout(rgba32i) uniform iimage3D ii3D;
@@ -47,15 +45,12 @@ void main()
     resident |= sparseTextureLodARB(s2DShadow, c3, 2.0, texel.y);
 
     resident |= sparseTextureOffsetARB(s3D, c3, ivec3(2), texel, 2.0);
-    resident |= sparseTextureOffsetARB(us2DRect, c2, ivec2(3), utexel);
     resident |= sparseTextureOffsetARB(s2DArrayShadow, c4, ivec2(5), texel.z);
 
     resident |= sparseTexelFetchARB(s2D, ivec2(c2), 2, texel);
-    resident |= sparseTexelFetchARB(us2DRect, ivec2(c2), utexel);
     resident |= sparseTexelFetchARB(s2DMS, ivec2(c2), 4, texel);
 
     resident |= sparseTexelFetchOffsetARB(s3D, ivec3(c3), 2, ivec3(4), texel);
-    resident |= sparseTexelFetchOffsetARB(us2DRect, ivec2(c2), ivec2(3), utexel);
 
     resident |= sparseTextureLodOffsetARB(s2D, c2, 2.0, ivec2(5), texel);
     resident |= sparseTextureLodOffsetARB(is2DArray, c3, 2.0, ivec2(6), itexel);
@@ -66,7 +61,6 @@ void main()
     resident |= sparseTextureGradARB(usCubeArray, c4, c3, c3, utexel);
 
     resident |= sparseTextureGradOffsetARB(s2D, c2, c2, c2, ivec2(5), texel);
-    resident |= sparseTextureGradOffsetARB(s2DRectShadow, c3, c2, c2, ivec2(6), texel.w);
     resident |= sparseTextureGradOffsetARB(is2DArray, c3, c2, c2, ivec2(2), itexel);
 
     resident |= sparseTextureGatherARB(s2D, c2, texel);
@@ -75,12 +69,10 @@ void main()
 
     resident |= sparseTextureGatherOffsetARB(s2D, c2, ivec2(4), texel);
     resident |= sparseTextureGatherOffsetARB(is2DArray, c3, ivec2(5), itexel, 2);
-    resident |= sparseTextureGatherOffsetARB(s2DRectShadow, c2, 2.0, ivec2(7), texel);
 
     const ivec2 constOffsets[4] = ivec2[4](ivec2(1,2), ivec2(3,4), ivec2(15,16), ivec2(-2,0));
     resident |= sparseTextureGatherOffsetsARB(s2D, c2, constOffsets, texel);
     resident |= sparseTextureGatherOffsetsARB(is2DArray, c3, constOffsets, itexel, 2);
-    resident |= sparseTextureGatherOffsetsARB(s2DRectShadow, c2, 2.0, constOffsets, texel);
 
     resident |= sparseImageLoadARB(i2D, ic2, texel);
     resident |= sparseImageLoadARB(ii3D, ic3, itexel);

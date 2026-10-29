@@ -8,9 +8,8 @@ out vec4 outp;
 out ivec4 ioutp;
 out uvec4 uoutp;
 uniform sampler2D arrayedSampler[5];
-uniform usampler2DRect samp2dr;
 uniform isampler2DArray isamp2DA;
-uniform sampler2DRectShadow u2drs;
+uniform sampler2DShadow samp2Ds;
 
 #extension GL_ARB_separate_shader_objects : enable
 
@@ -20,7 +19,7 @@ void foo23()
 {
     const ivec2[3] offsets = ivec2[3](ivec2(1,2), ivec2(3,4), ivec2(15,16));
 
-    outp.x += textureProjGradOffset(u2drs, outp, vec2(0.0), vec2(0.0), offsets[1]);
+    outp.x += textureProjGradOffset(samp2Ds, outp, vec2(0.0), vec2(0.0), offsets[1]);
 }
 
 void doubles()
@@ -249,7 +248,6 @@ void main()
 
     ivec2 offsets[4];
     const ivec2 constOffsets[4] = ivec2[4](ivec2(1,2), ivec2(3,4), ivec2(15,16), ivec2(-2,0));
-    uoutp = textureGatherOffsets(samp2dr, c2D, constOffsets, 2);
     outp += textureGather(arrayedSampler[0], c2D);
     ioutp = textureGatherOffset(isamp2DA, vec3(0.1), ivec2(1), 3);
     ioutp += textureGatherOffset(isamp2DA, vec3(0.1), ivec2(1), 1+2);

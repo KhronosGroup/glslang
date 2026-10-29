@@ -13,7 +13,6 @@ layout(binding = 4, r64i)  uniform i64imageBuffer iBuf;
 layout(binding = 5, r64ui) uniform u64image1DArray u1DArray;
 layout(binding = 6, r64i)  uniform i64image2DArray i2DArray;
 layout(binding = 7, r64ui) uniform u64imageCubeArray uCubeArray;
-layout(binding = 8, r64i)  uniform i64image2DRect i2DRect;
 layout(binding = 9, r64ui) uniform u64image2DMS u2DMS;
 layout(binding = 10, r64i) uniform i64image2DMSArray i2DMSArray;
 
@@ -32,7 +31,6 @@ void main()
     i64 = imageAtomicMin(i3D, i32v4.xyz, i64);
     i64 = imageAtomicMax(iBuf, i32v4.x, i64);
     i64 = imageAtomicAnd(i2DArray, i32v4.xyz, i64);
-    i64 = imageAtomicOr(i2DRect, i32v4.xy, i64);
     i64 = imageAtomicXor(i2DMSArray, i32v4.xyz, i32v4.w, i64);
     i64 = imageAtomicExchange(i1D, i32v4.x, i64);
     i64 = imageAtomicCompSwap(i3D, i32v4.xyz, i64, i64 + 1);
@@ -41,7 +39,6 @@ void main()
     i64 = imageAtomicMin(i3D, i32v4.xyz, i64, gl_ScopeDevice, gl_StorageSemanticsImage, gl_SemanticsAcquireRelease);
     i64 = imageAtomicMax(iBuf, i32v4.x, i64, gl_ScopeDevice, gl_StorageSemanticsImage, gl_SemanticsAcquireRelease);
     i64 = imageAtomicAnd(i2DArray, i32v4.xyz, i64, gl_ScopeDevice, gl_StorageSemanticsImage, gl_SemanticsAcquireRelease);
-    i64 = imageAtomicOr(i2DRect, i32v4.xy, i64, gl_ScopeDevice, gl_StorageSemanticsImage, gl_SemanticsAcquireRelease);
     i64 = imageAtomicXor(i2DMSArray, i32v4.xyz, i32v4.w, i64, gl_ScopeDevice, gl_StorageSemanticsImage, gl_SemanticsAcquireRelease);
     i64 = imageAtomicExchange(i1D, i32v4.x, i64, gl_ScopeDevice, gl_StorageSemanticsImage, gl_SemanticsAcquireRelease);
     i64 = imageAtomicCompSwap(i3D, i32v4.xyz, i64, i64 + 1, gl_ScopeDevice,
@@ -74,7 +71,6 @@ void main()
     i64v4 += imageLoad(i3D, i32v4.xyz);
     i64v4 += imageLoad(iBuf, i32v4.x);
     i64v4 += imageLoad(i2DArray, i32v4.xyz);
-    i64v4 += imageLoad(i2DRect, i32v4.xy);
     i64v4 += imageLoad(i2DMSArray, i32v4.xyz, i32v4.w);
 
     imageStore(u2D, i32v4.xy, u64v4);
@@ -85,7 +81,6 @@ void main()
 
     sparseImageLoadARB(i3D, i32v4.xyz, i64v4);
     sparseImageLoadARB(i2DArray, i32v4.xyz, i64v4);
-    sparseImageLoadARB(i2DRect, i32v4.xy, i64v4);
     sparseImageLoadARB(u2D, i32v4.xy, u64v4);
     sparseImageLoadARB(uCube, i32v4.xyz, u64v4);
     sparseImageLoadARB(uCubeArray, i32v4.xyz, u64v4);

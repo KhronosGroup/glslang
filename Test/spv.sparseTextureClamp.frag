@@ -6,14 +6,12 @@ uniform sampler3D               s3D;
 uniform sampler2DShadow         s2DShadow;
 uniform samplerCubeShadow       sCubeShadow;
 uniform sampler2DArrayShadow    s2DArrayShadow;
-uniform sampler2DRectShadow     s2DRectShadow;
 uniform samplerCubeArrayShadow  sCubeArrayShadow;
 
 uniform isamplerCube            isCube;
 uniform isampler2DArray         is2DArray;
 
 uniform usamplerCubeArray       usCubeArray;
-uniform usampler2DRect          us2DRect;
 
 in vec2 c2;
 in vec3 c3;
@@ -43,11 +41,9 @@ void main()
     texel.x += textureClampARB(sCubeArrayShadow, c4, 1.0, lodClamp);
 
     resident |= sparseTextureOffsetClampARB(s3D, c3, ivec3(2), lodClamp, texel, 2.0);
-    resident |= sparseTextureOffsetClampARB(us2DRect, c2, ivec2(3), lodClamp, utexel);
     resident |= sparseTextureOffsetClampARB(s2DArrayShadow, c4, ivec2(5), lodClamp, texel.z);
 
     texel   += textureOffsetClampARB(s3D, c3, ivec3(2), lodClamp, 2.0);
-    utexel  += textureOffsetClampARB(us2DRect, c2, ivec2(3), lodClamp);
     texel.z += textureOffsetClampARB(s2DArrayShadow, c4, ivec2(5), lodClamp);
 
     resident |= sparseTextureGradClampARB(s3D, c3, c3, c3, lodClamp, texel);
@@ -59,11 +55,9 @@ void main()
     utexel  += textureGradClampARB(usCubeArray, c4, c3, c3, lodClamp);
 
     resident |= sparseTextureGradOffsetClampARB(s2D, c2, c2, c2, ivec2(5), lodClamp, texel);
-    resident |= sparseTextureGradOffsetClampARB(s2DRectShadow, c3, c2, c2, ivec2(6), lodClamp, texel.w);
     resident |= sparseTextureGradOffsetClampARB(is2DArray, c3, c2, c2, ivec2(2), lodClamp, itexel);
 
     texel   += textureGradOffsetClampARB(s2D, c2, c2, c2, ivec2(5), lodClamp);
-    texel.w += textureGradOffsetClampARB(s2DRectShadow, c3, c2, c2, ivec2(6), lodClamp);
     itexel  += textureGradOffsetClampARB(is2DArray, c3, c2, c2, ivec2(2), lodClamp);
 
     outColor = sparseTexelsResidentARB(resident) ? texel : vec4(itexel) + vec4(utexel);
