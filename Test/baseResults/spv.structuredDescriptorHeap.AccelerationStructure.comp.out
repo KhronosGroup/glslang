@@ -23,6 +23,7 @@ spv.structuredDescriptorHeap.AccelerationStructure.comp
                               Name 8  "rayQuery"
                               Name 10  "resource_heap"
                               Name 14  "RayHeap"
+                              Name 21  "rayHeap"
                               Name 33  "Output"
                               MemberName 33(Output) 0  "values"
                               Name 35  "outputBuffer"
@@ -73,8 +74,8 @@ spv.structuredDescriptorHeap.AccelerationStructure.comp
          4(main):           2 Function None 3
                5:             Label
               18:      9(ptr) UntypedAccessChainKHR 20 10(resource_heap) 15
-              21:      9(ptr) UntypedAccessChainKHR 14(RayHeap) 18 17
-              22:          11 Load 21
+     21(rayHeap):      9(ptr) UntypedAccessChainKHR 14(RayHeap) 18 17
+              22:          11 Load 21(rayHeap)
                               RayQueryInitializeKHR 8(rayQuery) 22 13 23 27 26 29 30
               37:    36(bool) RayQueryProceedKHR 8(rayQuery)
               39:     12(int) Select 37 38 13

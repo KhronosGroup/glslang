@@ -30,14 +30,25 @@ spv.structuredDescriptorHeap.ReadOnly.comp
                               Name 58  "BufferHeap0"
                               Name 59  "BufferReference"
                               MemberName 59(BufferReference) 0  "value"
+                              Name 62  "bufferHeap0"
                               Name 64  "sampler_heap"
                               Name 65  "SamplerHeap0"
                               MemberName 65(SamplerHeap0) 0  "count"
+                              Name 66  "samplerHeap0"
                               Name 73  "DataBuffer"
                               MemberName 73(DataBuffer) 0  "vector"
                               MemberName 73(DataBuffer) 1  "values"
+                              Name 74  "bufferHeap0"
+                              Name 76  "bufferHeap0"
+                              Name 83  "samplerHeap0"
+                              Name 86  "bufferHeap0"
                               Name 91  "param"
+                              Name 94  "bufferHeap0"
                               Name 98  "param"
+                              Name 99  "bufferHeap0"
+                              Name 105  "bufferHeap0"
+                              Name 109  "bufferHeap0"
+                              Name 112  "bufferHeap0"
                               Decorate 20(resource_heap) BuiltIn ResourceHeapEXT
                               MemberDecorateIdEXT 31(Material) 0 OffsetIdEXT 23
                               MemberDecorateIdEXT 31(Material) 1 OffsetIdEXT 30
@@ -125,51 +136,51 @@ spv.structuredDescriptorHeap.ReadOnly.comp
        18(index):      7(ptr) Variable Function
        91(param):      7(ptr) Variable Function
        98(param):      7(ptr) Variable Function
-              62:     19(ptr) UntypedAccessChainKHR 58(BufferHeap0) 20(resource_heap) 61
-              63:      6(int) Load 62
-              66:     19(ptr) UntypedAccessChainKHR 65(SamplerHeap0) 64(sampler_heap) 61
-              67:      6(int) Load 66
+ 62(bufferHeap0):     19(ptr) UntypedAccessChainKHR 58(BufferHeap0) 20(resource_heap) 61
+              63:      6(int) Load 62(bufferHeap0)
+66(samplerHeap0):     19(ptr) UntypedAccessChainKHR 65(SamplerHeap0) 64(sampler_heap) 61
+              67:      6(int) Load 66(samplerHeap0)
               68:      6(int) IAdd 63 67
               69:      6(int) BitwiseAnd 68 15
                               Store 18(index) 69
-              74:     19(ptr) UntypedAccessChainKHR 58(BufferHeap0) 20(resource_heap) 61
-              75:      6(int) Load 74
-              76:     19(ptr) UntypedAccessChainKHR 58(BufferHeap0) 20(resource_heap) 70
-              78:     77(ptr) BufferPointerEXT 76
+ 74(bufferHeap0):     19(ptr) UntypedAccessChainKHR 58(BufferHeap0) 20(resource_heap) 61
+              75:      6(int) Load 74(bufferHeap0)
+ 76(bufferHeap0):     19(ptr) UntypedAccessChainKHR 58(BufferHeap0) 20(resource_heap) 70
+              78:     77(ptr) BufferPointerEXT 76(bufferHeap0)
               80:     79(ptr) AccessChain 78 70 61
                               Store 80 75
               82:      6(int) Load 18(index)
-              83:     19(ptr) UntypedAccessChainKHR 65(SamplerHeap0) 64(sampler_heap) 61
-              84:      6(int) Load 83
+83(samplerHeap0):     19(ptr) UntypedAccessChainKHR 65(SamplerHeap0) 64(sampler_heap) 61
+              84:      6(int) Load 83(samplerHeap0)
               85:   71(ivec2) CompositeConstruct 84 84
-              86:     19(ptr) UntypedAccessChainKHR 58(BufferHeap0) 20(resource_heap) 81 82 70
-              87:     77(ptr) BufferPointerEXT 86
+ 86(bufferHeap0):     19(ptr) UntypedAccessChainKHR 58(BufferHeap0) 20(resource_heap) 81 82 70
+              87:     77(ptr) BufferPointerEXT 86(bufferHeap0)
               89:     88(ptr) AccessChain 87 61
                               Store 89 85
               90:      6(int) Load 18(index)
               92:           2 FunctionCall 10(writeValue(u1;) 91(param)
               93:      6(int) Load 91(param)
-              94:     19(ptr) UntypedAccessChainKHR 58(BufferHeap0) 20(resource_heap) 70
-              95:     77(ptr) BufferPointerEXT 94
+ 94(bufferHeap0):     19(ptr) UntypedAccessChainKHR 58(BufferHeap0) 20(resource_heap) 70
+              95:     77(ptr) BufferPointerEXT 94(bufferHeap0)
               96:     79(ptr) AccessChain 95 70 90
                               Store 96 93
               97:      6(int) Load 18(index)
-              99:     19(ptr) UntypedAccessChainKHR 58(BufferHeap0) 20(resource_heap) 81 97 70
-             100:     77(ptr) BufferPointerEXT 99
+ 99(bufferHeap0):     19(ptr) UntypedAccessChainKHR 58(BufferHeap0) 20(resource_heap) 81 97 70
+             100:     77(ptr) BufferPointerEXT 99(bufferHeap0)
              101:     79(ptr) AccessChain 100 70 61
              102:      6(int) Load 101
                               Store 98(param) 102
              103:           2 FunctionCall 13(updateValue(u1;) 98(param)
              104:      6(int) Load 98(param)
-             105:     19(ptr) UntypedAccessChainKHR 58(BufferHeap0) 20(resource_heap) 81 97 70
-             106:     77(ptr) BufferPointerEXT 105
+105(bufferHeap0):     19(ptr) UntypedAccessChainKHR 58(BufferHeap0) 20(resource_heap) 81 97 70
+             106:     77(ptr) BufferPointerEXT 105(bufferHeap0)
              107:     79(ptr) AccessChain 106 70 61
                               Store 107 104
-             109:     19(ptr) UntypedAccessChainKHR 58(BufferHeap0) 20(resource_heap) 108
-             110:     22(ptr) Load 109
+109(bufferHeap0):     19(ptr) UntypedAccessChainKHR 58(BufferHeap0) 20(resource_heap) 108
+             110:     22(ptr) Load 109(bufferHeap0)
              111:      6(int) Load 18(index)
-             112:     19(ptr) UntypedAccessChainKHR 58(BufferHeap0) 20(resource_heap) 81 111 61
-             113:      6(int) Load 112
+112(bufferHeap0):     19(ptr) UntypedAccessChainKHR 58(BufferHeap0) 20(resource_heap) 81 111 61
+             113:      6(int) Load 112(bufferHeap0)
              115:    114(ptr) AccessChain 110 61
                               Store 115 113 Aligned 4
                               Return

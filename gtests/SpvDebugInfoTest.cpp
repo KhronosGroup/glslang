@@ -38,6 +38,7 @@
 #include "glslang/Public/ResourceLimits.h"
 #include <gtest/gtest.h>
 #include <cstdint>
+#include <map>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -57,6 +58,40 @@ std::string decodeLiteralString(const uint32_t* words, size_t wordCount)
         }
     }
     return result;
+}
+
+std::map<std::string, size_t> countDebugTypes(const std::vector<uint32_t>& spirv,
+                                            NonSemanticShaderDebugInfoInstructions instruction)
+{
+    if (spirv.size() < 5 || spirv[0] != spv::MagicNumber)
+        return {};
+
+    std::vector<std::string> strings(spirv[3]);
+    std::map<std::string, size_t> counts;
+    uint32_t debugInfoImportId = 0;
+    for (size_t offset = 5; offset < spirv.size();) {
+        const uint32_t wordCount = spirv[offset] >> spv::WordCountShift;
+        const spv::Op opcode = static_cast<spv::Op>(spirv[offset] & spv::OpCodeMask);
+        if (wordCount == 0 || offset + wordCount > spirv.size())
+            return {};
+
+        if (opcode == spv::Op::OpExtInstImport && wordCount >= 3) {
+            const std::string name = decodeLiteralString(&spirv[offset + 2], wordCount - 2);
+            if (name == "NonSemantic.Shader.DebugInfo.100" || name == "NonSemantic.Shader.DebugInfo.101")
+                debugInfoImportId = spirv[offset + 1];
+        } else if (opcode == spv::Op::OpString && wordCount >= 3) {
+            const uint32_t resultId = spirv[offset + 1];
+            if (resultId < strings.size())
+                strings[resultId] = decodeLiteralString(&spirv[offset + 2], wordCount - 2);
+        } else if (opcode == spv::Op::OpExtInst && wordCount >= 6 && debugInfoImportId != 0 &&
+                   spirv[offset + 3] == debugInfoImportId && spirv[offset + 4] == instruction) {
+            const uint32_t nameId = spirv[offset + 5];
+            if (nameId < strings.size())
+                ++counts[strings[nameId]];
+        }
+        offset += wordCount;
+    }
+    return counts;
 }
 
 bool containsDebugTypeBasic(const std::vector<uint32_t>& spirv, const char* expectedName,
@@ -211,6 +246,9 @@ bool containsDebugEntryPoint(const std::vector<uint32_t>& spirv, const char* exp
 
 class SpvDebugInfoTest : public ::testing::Test {
 protected:
+    glslang::EShTargetClientVersion vulkanVersion = glslang::EShTargetVulkan_1_1;
+    glslang::EShTargetLanguageVersion spirvVersion = glslang::EShTargetSpv_1_3;
+
     bool compileToSpirvWithDebugInfo(const std::string& source, std::vector<uint32_t>& spirv, std::string& error,
                                      const char* compilerSignature = nullptr,
                                      const char* commandLineArguments = nullptr,
@@ -223,8 +261,8 @@ protected:
         shader.setStrings(&str, 1);
         shader.setEnvInput(glslang::EShSourceGlsl, EShLangCompute,
                            glslang::EShClientVulkan, 110);
-        shader.setEnvClient(glslang::EShClientVulkan, glslang::EShTargetVulkan_1_1);
-        shader.setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_3);
+        shader.setEnvClient(glslang::EShClientVulkan, vulkanVersion);
+        shader.setEnvTarget(glslang::EShTargetSpv, spirvVersion);
 
         EShMessages messages = static_cast<EShMessages>(EShMsgDefault | EShMsgDebugInfo);
         if (!shader.parse(GetDefaultResources(), 450, false, messages)) {
@@ -265,6 +303,108 @@ protected:
         return out.str();
     }
 };
+
+TEST_F(SpvDebugInfoTest, BasicDebugTypesAreReused)
+{
+    const std::string source = R"(
+#version 460
+#extension GL_EXT_descriptor_heap : require
+#extension GL_EXT_shader_explicit_arithmetic_types : require
+#extension GL_EXT_shader_8bit_storage : require
+#extension GL_EXT_shader_16bit_storage : require
+layout(local_size_x = 1) in;
+#define MEMBERS bool b; int8_t i8; uint8_t u8; int16_t i16; uint16_t u16; \
+    int i; uint u; int64_t i64; uint64_t u64; float16_t f16; float f; double d;
+layout(descriptor_heap, std430) buffer A { MEMBERS } heaps_a[];
+layout(descriptor_heap, std430) buffer B { MEMBERS } heaps_b[];
+layout(binding = 0, std430) buffer Output { uint u; float f; bool b; } result;
+void main() {
+    result.u = 1u;
+    result.f = 1.0;
+    result.b = true;
+}
+)";
+    vulkanVersion = glslang::EShTargetVulkan_1_4;
+    spirvVersion = glslang::EShTargetSpv_1_6;
+    std::vector<uint32_t> spirv;
+    std::string error;
+    ASSERT_TRUE(compileToSpirvWithDebugInfo(source, spirv, error)) << error;
+
+    auto counts = countDebugTypes(spirv, NonSemanticShaderDebugInfoDebugTypeBasic);
+    for (const char* name : {"bool", "int8_t", "uint8_t", "int16_t", "uint16_t", "int", "uint",
+                             "int64_t", "uint64_t", "float16_t", "float", "double"})
+        EXPECT_EQ(counts[name], 1u) << name;
+}
+
+TEST_F(SpvDebugInfoTest, FloatDebugTypesAreReusedByEncoding)
+{
+    const std::string source = R"(
+#version 460
+#extension GL_EXT_descriptor_heap : require
+#extension GL_EXT_shader_explicit_arithmetic_types : require
+#extension GL_EXT_shader_16bit_storage : require
+#extension GL_EXT_bfloat16 : require
+#extension GL_EXT_float_e4m3 : require
+#extension GL_EXT_float_e5m2 : require
+#extension GL_EXT_float_ue8m0 : require
+#extension GL_EXT_float_mxint8 : require
+layout(local_size_x = 1) in;
+#define MEMBERS float16_t f16; bfloat16_t bf; floate4m3_t e4m3; floate5m2_t e5m2; \
+    floatue8m0_t ue8m0; floatmxint8_t mxint8;
+layout(descriptor_heap, std430) buffer A { MEMBERS } heaps_a[];
+layout(descriptor_heap, std430) buffer B { MEMBERS } heaps_b[];
+void main() {}
+)";
+    vulkanVersion = glslang::EShTargetVulkan_1_4;
+    spirvVersion = glslang::EShTargetSpv_1_6;
+    std::vector<uint32_t> spirv;
+    std::string error;
+    ASSERT_TRUE(compileToSpirvWithDebugInfo(source, spirv, error)) << error;
+
+    auto counts = countDebugTypes(spirv, NonSemanticShaderDebugInfoDebugTypeBasic);
+    EXPECT_EQ(counts["float16_t"], 1u);
+    const struct {
+        const char* name;
+        uint32_t width;
+        spv::FPEncoding encoding;
+    } cases[] = {
+        {"bfloat16_t", 16, spv::FPEncoding::BFloat16KHR},
+        {"floate4m3_t", 8, spv::FPEncoding::Float8E4M3EXT},
+        {"floate5m2_t", 8, spv::FPEncoding::Float8E5M2EXT},
+        {"floatue8m0_t", 8, spv::FPEncoding::Float8UnsignedE8M0EXT},
+        {"floatmxint8_t", 8, spv::FPEncoding::MXInt8EXT},
+    };
+    for (const auto& test : cases) {
+        EXPECT_EQ(counts[test.name], 1u) << test.name;
+        EXPECT_TRUE(containsDebugTypeBasic(spirv, test.name, test.width, test.encoding)) << test.name;
+    }
+}
+
+TEST_F(SpvDebugInfoTest, OpaqueDebugTypesAreReusedAcrossDeclarations)
+{
+    const std::string source = R"(
+#version 460
+#extension GL_EXT_descriptor_heap : require
+layout(local_size_x = 1) in;
+layout(descriptor_heap) uniform texture2D textures_a[];
+layout(descriptor_heap) uniform sampler samplers_a[];
+layout(descriptor_heap) uniform textureCube cubes_a[];
+layout(descriptor_heap) uniform texture2D textures_b[];
+layout(descriptor_heap) uniform sampler samplers_b[];
+layout(descriptor_heap) uniform textureCube cubes_b[];
+void main() {}
+)";
+    vulkanVersion = glslang::EShTargetVulkan_1_4;
+    spirvVersion = glslang::EShTargetSpv_1_6;
+    std::vector<uint32_t> spirv;
+    std::string error;
+    ASSERT_TRUE(compileToSpirvWithDebugInfo(source, spirv, error)) << error;
+
+    auto counts = countDebugTypes(spirv, NonSemanticShaderDebugInfoDebugTypeComposite);
+    EXPECT_EQ(counts["texture2D"], 1u);
+    EXPECT_EQ(counts["sampler"], 1u);
+    EXPECT_EQ(counts["textureCube"], 1u);
+}
 
 TEST_F(SpvDebugInfoTest, DebugEntryPointUsesSuppliedCompilationMetadata)
 {

@@ -1,0 +1,30 @@
+// Preserve source names and array sizes for views sharing the resource and sampler heaps.
+#version 460
+#extension GL_EXT_descriptor_heap : require
+#extension GL_EXT_nonuniform_qualifier : require
+
+layout(local_size_x = 1) in;
+
+layout(descriptor_heap) buffer A { uint a; } heap_a[];
+layout(descriptor_heap) buffer B { uint b; } heap_b[];
+layout(descriptor_heap) uniform U { uint value; } uniforms[4];
+layout(descriptor_heap) uniform texture2D textures_a[];
+layout(descriptor_heap) uniform texture2D textures_b[];
+layout(descriptor_heap) uniform sampler samplers_a[];
+layout(descriptor_heap) uniform sampler samplers_b[];
+layout(descriptor_heap, rgba32f) writeonly uniform image2D images[];
+
+void storeResult(uint index, uint value)
+{
+    heap_a[index].a = value;
+}
+
+void main()
+{
+    heap_a[0].a = 0;
+    heap_b[1].b = uniforms[2].value;
+    vec4 a = textureLod(sampler2D(textures_a[0], samplers_a[0]), vec2(0.5), 0.0);
+    vec4 b = textureLod(sampler2D(textures_b[1], samplers_b[1]), vec2(0.5), 0.0);
+    imageStore(images[0], ivec2(0), a + b);
+    storeResult(2, uint(a.x + b.x));
+}

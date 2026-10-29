@@ -498,18 +498,22 @@ public:
     Id makeBoolDebugType(int const size);
     Id makeIntegerDebugType(int const width, bool const hasSign);
     Id makeFloatDebugType(int const width, Id const fpEncoding = NoType);
-    Id makeSequentialDebugType(Id const baseType, Id const componentCount, NonSemanticShaderDebugInfoInstructions const sequenceType);
+    // These aggregate constructors take debug type ids directly, so source types
+    // can be described without materializing functional SPIR-V types.
+    Id makeSequentialDebugType(Id const baseDebugType, Id const componentCount, NonSemanticShaderDebugInfoInstructions const sequenceType);
+    Id makeMatrixDebugType(Id const vectorDebugType, int const vectorCount, bool columnMajor = true);
+    Id makeMemberDebugType(Id const memberDebugType, StructMemberDebugInfo const& debugTypeLoc);
+    Id makeCompositeDebugType(std::vector<Id> const& memberDebugTypes, std::vector<StructMemberDebugInfo> const& memberDebugInfo,
+                              char const* const name, NonSemanticShaderDebugInfoDebugCompositeType const tag);
+    Id makeVectorIdDebugType(Id componentDebugType, Id componentCount);
+    Id makeCooperativeMatrixDebugTypeKHR(Id componentDebugType, Id scope, Id rows, Id cols, Id use);
+    void setDebugPointerPointee(Id pointerDebugType, Id pointeeDebugType);
+    Id makeOpaqueDebugType(char const* const name);
+    Id makeForwardPointerDebugType(StorageClass storageClass);
+    // Convenience wrappers taking functional SPIR-V type ids.
     Id makeArrayDebugType(Id const baseType, Id const componentCount);
     Id makeVectorDebugType(Id const baseType, int const componentCount);
-    Id makeMatrixDebugType(Id const vectorType, int const vectorCount, bool columnMajor = true);
-    Id makeMemberDebugType(Id const memberType, StructMemberDebugInfo const& debugTypeLoc);
-    Id makeCompositeDebugType(std::vector<Id> const& memberTypes, std::vector<StructMemberDebugInfo> const& memberDebugInfo,
-                              char const* const name, NonSemanticShaderDebugInfoDebugCompositeType const tag);
-    Id makeOpaqueDebugType(char const* const name);
-    Id makeVectorIdDebugType(Id componentType, Id componentCount);
-    Id makeCooperativeMatrixDebugTypeKHR(Id componentType, Id scope, Id rows, Id cols, Id use);
     Id makePointerDebugType(StorageClass storageClass, Id const baseType);
-    Id makeForwardPointerDebugType(StorageClass storageClass);
     Id makeDebugSource(const Id fileName);
     Id makeDebugCompilationUnit();
     Id createDebugGlobalVariable(Id const type, char const*const name, Id const variable);
@@ -1071,6 +1075,7 @@ public:
 
         struct DescHeapInfo {
             Id descHeapBaseTy;                  // for descriptor heap, record its base data type.
+            std::string sourceName;             // distinguish source views of the same heap in diagnostics.
             Id descHeapBaseOffset;              // byte offset applied to the heap base before descriptor lookup.
             std::vector<Id> descHeapIndexChain;
             Id descTy;                          // for target resource type
@@ -1148,6 +1153,7 @@ public:
     // for EXT_descriptor_heap and EXT_structured_descriptor_heap
     Id getAccessChainDescHeapBaseType() const { return accessChain.descHeapInfo.descHeapBaseTy; }
     void setAccessChainDescHeapBaseType(Id baseType) { accessChain.descHeapInfo.descHeapBaseTy = baseType; }
+    void setAccessChainDescHeapName(const char* name) { accessChain.descHeapInfo.sourceName = name; }
     void setAccessChainDescHeapBaseOffset(Id baseOffset) { accessChain.descHeapInfo.descHeapBaseOffset = baseOffset; }
     const std::vector<Id>& getAccessChainDescHeapIndexChain() const { return accessChain.descHeapInfo.descHeapIndexChain; }
     void accessChainPushDescHeapIndex(Id index) { accessChain.descHeapInfo.descHeapIndexChain.push_back(index); }
@@ -1434,6 +1440,8 @@ protected:
     std::unordered_map<unsigned int, std::vector<Instruction*>> groupedTypes;
     // map type opcodes to debug type instructions
     std::unordered_map<unsigned int, std::vector<Instruction*>> groupedDebugTypes;
+    // map source-language opaque type names to debug type ids
+    std::unordered_map<std::string, Id> opaqueDebugTypeIds;
     // list of OpConstantNull instructions
     std::vector<Instruction*> nullConstants;
     // map scalar constants to result IDs

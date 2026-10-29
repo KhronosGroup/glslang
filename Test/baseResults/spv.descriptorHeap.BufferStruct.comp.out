@@ -25,11 +25,13 @@ spv.descriptorHeap.BufferStruct.comp
                               MemberName 20(Data) 1  "f"
                               Name 21  "U"
                               MemberName 21(U) 0  "inputData"
+                              Name 23  "ubo"
                               Name 40  "Data"
                               MemberName 40(Data) 0  "m"
                               MemberName 40(Data) 1  "f"
                               Name 42  "O"
                               MemberName 42(O) 0  "outputData"
+                              Name 45  "ssbo"
                               Decorate 13(resource_heap) BuiltIn ResourceHeapEXT
                               DecorateId 17 ArrayStrideIdEXT 16
                               MemberDecorate 20(Data) 0 ColMajor
@@ -81,8 +83,8 @@ spv.descriptorHeap.BufferStruct.comp
          4(main):           2 Function None 3
                5:             Label
         11(data):     10(ptr) Variable Function
-              23:     12(ptr) UntypedAccessChainKHR 17 13(resource_heap) 19
-              25:     24(ptr) BufferPointerEXT 23
+         23(ubo):     12(ptr) UntypedAccessChainKHR 17 13(resource_heap) 19
+              25:     24(ptr) BufferPointerEXT 23(ubo)
               27:     26(ptr) AccessChain 25 22
               28:    20(Data) Load 27
               29:     9(Data) CopyLogical 28
@@ -93,8 +95,8 @@ spv.descriptorHeap.BufferStruct.comp
               35:     31(ptr) AccessChain 11(data) 19
                               Store 35 34
               44:     9(Data) Load 11(data)
-              45:     12(ptr) UntypedAccessChainKHR 38 13(resource_heap) 39
-              47:     46(ptr) BufferPointerEXT 45
+        45(ssbo):     12(ptr) UntypedAccessChainKHR 38 13(resource_heap) 39
+              47:     46(ptr) BufferPointerEXT 45(ssbo)
               49:     48(ptr) AccessChain 47 22 43
               50:    40(Data) CopyLogical 44
                               Store 49 50
