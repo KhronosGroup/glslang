@@ -428,6 +428,8 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.bufferhandle26.frag",
         "spv.bufferhandle27.frag",
         "spv.bufferhandle28_Errors.frag",
+        "spv.bufferhandle29_Errors.frag",
+        "spv.bufferhandle30.frag",
         "spv.bufferhandleRuntimeArray.frag",
         "spv.bufferhandleUvec2.frag",
         "spv.bufferhandleSwizzle.frag",
