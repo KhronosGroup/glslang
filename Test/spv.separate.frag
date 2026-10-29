@@ -35,8 +35,6 @@ uniform utexture2D                utex2D;
 uniform utexture3D                utex3D;
 uniform utextureCube              utexCube;
 uniform utexture2DArray           utex2DArray;
-uniform itexture2DRect            itex2DRect;
-uniform utexture2DRect            utex2DRect;
 uniform itextureBuffer            itexBuffer;
 uniform utextureBuffer            utexBuffer;
 uniform texture2DMS               tex2DMS;
@@ -47,7 +45,6 @@ uniform itexture2DMSArray         itex2DMSArray;
 uniform utexture2DMSArray         utex2DMSArray;
 uniform texture1D                 tex1D;
 uniform texture3D                 tex3D;
-uniform texture2DRect             tex2DRect;
 uniform texture1DArray            tex1DArray;
 
 void foo()
@@ -75,8 +72,6 @@ void foo()
     usampler3D             (utex3D, s);
     usamplerCube           (utexCube, s);
     usampler2DArray        (utex2DArray, s);
-    isampler2DRect         (itex2DRect, s);
-    usampler2DRect         (utex2DRect, s);
     isamplerBuffer         (itexBuffer, s);
     usamplerBuffer         (utexBuffer, s);
     sampler2DMS            (tex2DMS, s);
@@ -89,7 +84,5 @@ void foo()
     sampler1DShadow        (tex1D, sShadow);
     sampler3D              (tex3D, s);
     sampler2DShadow        (tex2D, sShadow);
-    sampler2DRect          (tex2DRect, s);
-    sampler2DRectShadow    (tex2DRect, sShadow);
     sampler1DArray         (tex1DArray, s);
 }

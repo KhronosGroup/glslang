@@ -21,7 +21,6 @@ uniform sampler2DArrayShadow samp2DAs;
 uniform samplerCubeArrayShadow sampCubeAs;
 
 uniform samplerBuffer sampBuf;
-uniform sampler2DRect sampRect;
 
 void main()
 {
