@@ -7479,6 +7479,9 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                     if (dim != Esd2D && ms)
                         continue;
 
+                    if (dim == EsdRect && spvVersion.vulkan > 0)
+                        continue;
+
                     // Loop over the bTypes
                     for (size_t bType = 0; bType < sizeof(bTypes)/sizeof(TBasicType); ++bType) {
                         //
@@ -7564,6 +7567,8 @@ void TBuiltIns::add2ndGenerationSamplingImaging(int version, EProfile profile, c
                         if (dim == EsdCube && arrayed && skipCubeArrayed)
                             continue;
                         if ((dim == Esd3D || dim == EsdRect) && arrayed)
+                            continue;
+                        if (dim == EsdRect && spvVersion.vulkan > 0)
                             continue;
 
                         // Loop over the bTypes

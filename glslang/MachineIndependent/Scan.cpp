@@ -1260,24 +1260,30 @@ int TScanContext::tokenizeIdentifier()
     case DMAT4X4:
         return dMat();
 
+    case IMAGE2DRECT:
+    case IIMAGE2DRECT:
+    case UIMAGE2DRECT:
+        if (parseContext.spvVersion.vulkan > 0)
+            return reservedWord();
+        [[fallthrough]];
     case IMAGE1D:
     case IIMAGE1D:
     case UIMAGE1D:
     case IMAGE1DARRAY:
     case IIMAGE1DARRAY:
     case UIMAGE1DARRAY:
-    case IMAGE2DRECT:
-    case IIMAGE2DRECT:
-    case UIMAGE2DRECT:
         afterType = true;
         return firstGenerationImage(false);
 
+    case I64IMAGE2DRECT:
+    case U64IMAGE2DRECT:
+        if (parseContext.spvVersion.vulkan > 0)
+            return reservedWord();
+        [[fallthrough]];
     case I64IMAGE1D:
     case U64IMAGE1D:
     case I64IMAGE1DARRAY:
     case U64IMAGE1DARRAY:
-    case I64IMAGE2DRECT:
-    case U64IMAGE2DRECT:
         afterType = true;
         if (parseContext.symbolTable.atBuiltInLevel() ||
             parseContext.extensionTurnedOn(E_GL_EXT_shader_image_int64)) {
@@ -1753,6 +1759,8 @@ int TScanContext::tokenizeIdentifier()
     case ISAMPLER2DRECT:
     case USAMPLER2DRECT:
         afterType = true;
+        if (parseContext.spvVersion.vulkan > 0)
+            return reservedWord();
         return es30ReservedFromGLSL(140);
 
     case SAMPLERBUFFER:
@@ -1803,7 +1811,7 @@ int TScanContext::tokenizeIdentifier()
     case SAMPLER2DRECT:
     case SAMPLER2DRECTSHADOW:
         afterType = true;
-        if (parseContext.isEsProfile())
+        if (parseContext.isEsProfile() || parseContext.spvVersion.vulkan > 0)
             reservedWord();
         else if (parseContext.version < 140 && ! parseContext.symbolTable.atBuiltInLevel() && ! parseContext.extensionTurnedOn(E_GL_ARB_texture_rectangle)) {
             if (parseContext.relaxedErrors())
@@ -1839,13 +1847,16 @@ int TScanContext::tokenizeIdentifier()
             return keyword;
         return identifierOrType();
 
+    case ITEXTURE2DRECT:
+    case UTEXTURE2DRECT:
+    case TEXTURE2DRECT:
+        return identifierOrType();
+
     case ITEXTURE1DARRAY:
     case UTEXTURE1D:
     case ITEXTURE1D:
     case UTEXTURE1DARRAY:
     case TEXTUREBUFFER:
-    case ITEXTURE2DRECT:
-    case UTEXTURE2DRECT:
     case ITEXTUREBUFFER:
     case UTEXTUREBUFFER:
     case TEXTURE2DMS:
@@ -1855,7 +1866,6 @@ int TScanContext::tokenizeIdentifier()
     case ITEXTURE2DMSARRAY:
     case UTEXTURE2DMSARRAY:
     case TEXTURE1D:
-    case TEXTURE2DRECT:
     case TEXTURE1DARRAY:
         if (parseContext.spvVersion.vulkan > 0)
             return keyword;
@@ -1876,10 +1886,16 @@ int TScanContext::tokenizeIdentifier()
         else
             return identifierOrType();
 
+    case F16SAMPLER2DRECT:
+    case F16SAMPLER2DRECTSHADOW:
+    case F16IMAGE2DRECT:
+    case F16TEXTURE2DRECT:
+        if (parseContext.spvVersion.vulkan > 0)
+            return identifierOrType();
+        [[fallthrough]];
     case F16SAMPLER1D:
     case F16SAMPLER2D:
     case F16SAMPLER3D:
-    case F16SAMPLER2DRECT:
     case F16SAMPLERCUBE:
     case F16SAMPLER1DARRAY:
     case F16SAMPLER2DARRAY:
@@ -1891,14 +1907,12 @@ int TScanContext::tokenizeIdentifier()
     case F16SAMPLER2DSHADOW:
     case F16SAMPLER1DARRAYSHADOW:
     case F16SAMPLER2DARRAYSHADOW:
-    case F16SAMPLER2DRECTSHADOW:
     case F16SAMPLERCUBESHADOW:
     case F16SAMPLERCUBEARRAYSHADOW:
 
     case F16IMAGE1D:
     case F16IMAGE2D:
     case F16IMAGE3D:
-    case F16IMAGE2DRECT:
     case F16IMAGECUBE:
     case F16IMAGE1DARRAY:
     case F16IMAGE2DARRAY:
@@ -1910,7 +1924,6 @@ int TScanContext::tokenizeIdentifier()
     case F16TEXTURE1D:
     case F16TEXTURE2D:
     case F16TEXTURE3D:
-    case F16TEXTURE2DRECT:
     case F16TEXTURECUBE:
     case F16TEXTURE1DARRAY:
     case F16TEXTURE2DARRAY:
