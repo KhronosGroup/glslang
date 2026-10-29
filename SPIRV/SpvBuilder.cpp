@@ -1912,7 +1912,7 @@ Id Builder::findScalarConstant(Op typeClass, Op opcode, Id typeId, unsigned valu
 {
     ScalarConstantKey key{ enumCast(typeClass), enumCast(opcode), typeId, value, 0 };
     auto it = groupedScalarConstantResultIDs.find(key);
-    return (it != groupedScalarConstantResultIDs.end()) ? it->second : 0;
+    return (it != groupedScalarConstantResultIDs.end()) ? it->second : NoResult;
 }
 
 // Version of findScalarConstant (see above) for scalars that take two operands (e.g. a 'double' or 'int64').
@@ -1920,7 +1920,7 @@ Id Builder::findScalarConstant(Op typeClass, Op opcode, Id typeId, unsigned v1, 
 {
     ScalarConstantKey key{ enumCast(typeClass), enumCast(opcode), typeId, v1, v2 };
     auto it = groupedScalarConstantResultIDs.find(key);
-    return (it != groupedScalarConstantResultIDs.end()) ? it->second : 0;
+    return (it != groupedScalarConstantResultIDs.end()) ? it->second : NoResult;
 }
 
 // Return true if consuming 'opcode' means consuming a constant.
@@ -2819,7 +2819,7 @@ Function* Builder::makeFunctionEntry(Decoration precision, Id returnType, const 
 {
     // Make the function and initial instructions in it
     Id typeId = makeFunctionType(returnType, paramTypes);
-    Id firstParamId = paramTypes.size() == 0 ? 0 : getUniqueIds((int)paramTypes.size());
+    Id firstParamId = paramTypes.size() == 0 ? NoType : getUniqueIds((int)paramTypes.size());
     Id funcId = getUniqueId();
     Function* function = new Function(funcId, returnType, typeId, firstParamId, linkType, name, module);
 

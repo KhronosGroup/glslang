@@ -826,6 +826,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.longVectorBadParams.constructors.comp",
         "spv.longVectorBadParams.constructors.as.type.comp",
         "spv.longVectorBadParams.index.comp",
+        "spv.longVectorBadParams.mixedShape.comp",
         "spv.longVectorBuiltins.comp",
         "spv.longVectorBuiltinsfp16.comp",
         "spv.longVectorBuiltinsfp64.comp",
@@ -945,6 +946,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.nv.hitobject-allops.rgen",
         "spv.nv.hitobject-allops.rchit",
         "spv.nv.hitobject-allops.rmiss",
+        "spv.nv.hitobject-time.rgen",
 
         // SPV_EXT_shader_execution_reorder
 
@@ -952,6 +954,8 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.ext.hitobject-allops.rgen",
         "spv.ext.hitobject-allops.rchit",
         "spv.ext.hitobject-allops.rmiss",
+        "spv.ext.hitobject-time.rgen",
+        "spv.ext.hitobject-positions.rchit",
 
         // SPV_NV_displacement_micromap
 
@@ -1386,6 +1390,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.debuginfo.rt_types.glsl.rgen",
         "spv.debuginfo.rt_nv_builtins.glsl.rahit",
         "spv.debuginfo.rt_ext_builtins.glsl.rahit",
+        "spv.debuginfo.descriptorHeap.glsl.frag",
     })),
     FileNameAsCustomTestSuffix
 );

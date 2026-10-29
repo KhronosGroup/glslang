@@ -772,7 +772,7 @@ public:
     void amendSymbolIdLevel(TSymbol& symbol)
     {
         // clamp level to avoid overflow
-        uint64_t level = (uint32_t)currentLevel() > MaxLevelInUniqueID ? MaxLevelInUniqueID : currentLevel();
+        uint64_t level = (uint32_t)currentLevel() > MaxLevelInUniqueID ? (uint64_t)MaxLevelInUniqueID : (uint64_t)currentLevel();
         uint64_t symbolId = symbol.getUniqueId();
         symbolId &= uniqueIdMask;
         symbolId |= (level << LevelFlagBitOffset);
@@ -986,7 +986,7 @@ public:
     // Add current level in the high-bits of unique id
     void updateUniqueIdLevelFlag() {
         // clamp level to avoid overflow
-        uint64_t level = (uint32_t)currentLevel() > MaxLevelInUniqueID ? MaxLevelInUniqueID : currentLevel();
+        uint64_t level = (uint32_t)currentLevel() > MaxLevelInUniqueID ? (uint64_t)MaxLevelInUniqueID : (uint64_t)currentLevel();
         uniqueId &= uniqueIdMask;
         uniqueId |= (level << LevelFlagBitOffset);
     }
