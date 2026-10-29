@@ -263,6 +263,9 @@ GLSLANG_EXPORT void glslang_shader_set_preamble(glslang_shader_t* shader, const 
 GLSLANG_EXPORT void glslang_shader_set_source_entry_point(glslang_shader_t* shader, const char* s);
 // Set a different entry point than main in output target (SPIRV only).
 GLSLANG_EXPORT void glslang_shader_set_entry_point(glslang_shader_t* shader, const char* s);
+// Invert the Y component of the position output (pos.y = -pos.y).
+// Applies to GLSL and HLSL vertex, geometry, and tessellation evaluation shaders.
+// Disabled by default; call before glslang_shader_parse().
 GLSLANG_EXPORT void glslang_shader_set_invert_y(glslang_shader_t* shader, bool y);
 GLSLANG_EXPORT void glslang_shader_shift_binding(glslang_shader_t* shader, glslang_resource_type_t res, unsigned int base);
 GLSLANG_EXPORT void glslang_shader_shift_binding_for_set(glslang_shader_t* shader, glslang_resource_type_t res, unsigned int base, unsigned int set);
