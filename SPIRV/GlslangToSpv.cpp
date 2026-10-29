@@ -12603,7 +12603,10 @@ spv::Id TGlslangToSpvTraverser::createSpvConstantFromConstUnionArray(const glsla
                 spvConsts.push_back(builder.makeUintConstant(zero ? 0u : consts[nextConst].getUConst()));
                 break;
             case glslang::EbtFloat:
-                spvConsts.push_back(builder.makeFloatConstant(zero ? 0.0F : (float)consts[nextConst].getDConst()));
+                if (!zero && consts[nextConst].getHasRawFloatBits())
+                    spvConsts.push_back(builder.makeFloatConstantFromBits(consts[nextConst].getRawFloatBits()));
+                else
+                    spvConsts.push_back(builder.makeFloatConstant(zero ? 0.0F : (float)consts[nextConst].getDConst()));
                 break;
             case glslang::EbtBool:
                 spvConsts.push_back(builder.makeBoolConstant(zero ? false : consts[nextConst].getBConst()));
@@ -12679,7 +12682,10 @@ spv::Id TGlslangToSpvTraverser::createSpvConstantFromConstUnionArray(const glsla
             scalar = builder.makeUintConstant(zero ? 0u : consts[nextConst].getUConst(), specConstant);
             break;
         case glslang::EbtFloat:
-            scalar = builder.makeFloatConstant(zero ? 0.0F : (float)consts[nextConst].getDConst(), specConstant);
+            if (!zero && consts[nextConst].getHasRawFloatBits())
+                scalar = builder.makeFloatConstantFromBits(consts[nextConst].getRawFloatBits(), specConstant);
+            else
+                scalar = builder.makeFloatConstant(zero ? 0.0F : (float)consts[nextConst].getDConst(), specConstant);
             break;
         case glslang::EbtBool:
             scalar = builder.makeBoolConstant(zero ? false : consts[nextConst].getBConst(), specConstant);
