@@ -556,6 +556,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.sampleId.frag",
         "spv.samplePosition.frag",
         "spv.sampleMaskOverrideCoverage.frag",
+        "spv.samplerRect_Error.frag",
         "spv.scalarlayout.frag",
         "spv.scalarlayoutfloat16.frag",
         "spv.shaderBallot.comp",
