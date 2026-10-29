@@ -1140,6 +1140,13 @@ INSTANTIATE_TEST_SUITE_P(
 INSTANTIATE_TEST_SUITE_P(
     Glsl, CompileOpenGLToSpirvTest,
     ::testing::ValuesIn(std::vector<std::string>({
+        "glspv.400.frag",
+        "glspv.floatFetch.frag",
+        "glspv.image.frag",
+        "glspv.memoryQualifier.frag",
+        "glspv.newTexture.frag",
+        "glspv.sparseTexture.frag",
+        "glspv.sparseTextureClamp.frag",
         "spv.330.location.opengl.frag",
         "spv.460.frag",
         "spv.460.vert",
