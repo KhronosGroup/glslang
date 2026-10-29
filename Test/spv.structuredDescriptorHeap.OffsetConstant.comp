@@ -1,0 +1,20 @@
+#version 460
+#extension GL_EXT_descriptor_heap : require
+#extension GL_EXT_structured_descriptor_heap : require
+#extension GL_EXT_scalar_block_layout : require
+
+layout(local_size_x = 1) in;
+
+layout(buffer_type, scalar) buffer SSBO_B {
+    uint x_b;
+    uint y_b;
+};
+
+layout(heap_offset = 64) resourceheap BufferHeap {
+    SSBO_B buf_b;
+} bufferHeap;
+
+void main()
+{
+    bufferHeap.buf_b.x_b = 2;
+}

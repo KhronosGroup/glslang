@@ -610,6 +610,8 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.specConstantOp.float16.comp",
         "spv.specConstantOp.logical.comp",
         "spv.specConstantOp.uconvert.comp",
+        // Exercise heap offset promotion with SPIR-V 1.0.
+        "spv.structuredDescriptorHeap.Offset16Bit.comp",
         "spv.storageBuffer.vert",
         "spv.terminate.frag",
         "spv.subgroupUniformControlFlow.vert",
@@ -1016,6 +1018,8 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.structuredDescriptorHeap.UnsizedES.error.frag",
         "spv.structuredDescriptorHeap.MatrixLayout.comp",
         "spv.structuredDescriptorHeap.Offset.comp",
+        "spv.structuredDescriptorHeap.OffsetConstant.comp",
+        "spv.structuredDescriptorHeap.OffsetSpecConstant.comp",
         
         // SPV_KHR_abort
         "spv.shader.abort.comp",

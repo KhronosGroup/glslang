@@ -252,6 +252,7 @@ protected:
     spv::LinkageType convertGlslangLinkageToSpv(glslang::TLinkType glslangLinkType);
     bool isDescHeapDescriptorType(const glslang::TType& type) const;
     bool containsDescHeapDescriptorType(const glslang::TType& type) const;
+    bool useHeapOffsetDecoration(const glslang::TType& type) const;
     spv::Id makeDescHeapImageArrayWrapperType(const glslang::TIntermSymbol& symbol, spv::Id arrayType);
 
     void decorateStructType(const glslang::TType&, const glslang::TTypeList* glslangStruct, glslang::TLayoutPacking,
@@ -2464,9 +2465,11 @@ void TGlslangToSpvTraverser::visitSymbol(glslang::TIntermSymbol* symbol)
             }
             if (wrapDescHeapImageArray)
                 builder.accessChainPushDescHeapIndex(builder.makeIntConstant(0));
-            spv::Id heapOffset = makeHeapOffsetId(symbolType);
-            if (heapOffset != spv::NoResult)
-                builder.setAccessChainDescHeapBaseOffset(heapOffset);
+            if (!useHeapOffsetDecoration(symbolType)) {
+                spv::Id heapOffset = makeHeapOffsetId(symbolType);
+                if (heapOffset != spv::NoResult)
+                    builder.setAccessChainDescHeapBaseOffset(heapOffset);
+            }
         }
     }
 
@@ -6621,10 +6624,34 @@ spv::Id TGlslangToSpvTraverser::convertGlslangStructToSpvType(const glslang::TTy
     const bool useDescHeapIdDecorations = qualifier.layoutDescriptorHeap &&
         !type.getQualifier().descriptorHeapDescriptorNode && containsDescHeapDescriptorType(type);
 
-    // Prepare the layout ids for the descriptor heap struct.
+    // Prepare the layout ids before the struct, as required by OpMemberDecorateIdEXT.
     std::vector<spv::Id> descHeapMemberOffsets;
-    if (useDescHeapIdDecorations)
+    if (useDescHeapIdDecorations) {
         descHeapMemberOffsets = descHeapLayout.getOrCreateStructMemberOffsets(type);
+        if (useHeapOffsetDecoration(type)) {
+            spv::Id heapOffset = makeHeapOffsetId(type);
+            if (heapOffset != spv::NoResult) {
+                // Layout expressions allow narrow integers, but OffsetIdEXT requires 32 bits.
+                spv::Id offsetType = builder.getTypeId(heapOffset);
+                if (builder.getScalarTypeWidth(offsetType) < 32) {
+                    SpecConstantOpModeGuard specConstantMode(&builder);
+                    specConstantMode.turnOnSpecConstantOpMode();
+                    heapOffset = createIntWidthConversion(heapOffset, 0, builder.makeUintType(32), glslang::EbtUint,
+                                                          type.getQualifier().layoutHeapOffsetNode->getBasicType());
+                }
+
+                // Apply the heap offset only to this copy of the top-level member offsets.
+                // Nested layouts and array strides remain relative to their own base.
+                for (spv::Id& memberOffset : descHeapMemberOffsets) {
+                    if (builder.isConstantScalar(memberOffset) && builder.getConstantScalar(memberOffset) == 0)
+                        memberOffset = heapOffset;
+                    else
+                        memberOffset = builder.createSpecConstantOp(spv::Op::OpIAdd, builder.makeUintType(32),
+                                                                    {heapOffset, memberOffset}, {});
+                }
+            }
+        }
+    }
 
     // Make the SPIR-V type
     spv::Id spvType = builder.makeStructType(spvMembers, memberDebugInfo, type.getTypeName().c_str(), false);
@@ -7234,7 +7261,17 @@ spv::Id TGlslangToSpvTraverser::makeArraySizeId(const glslang::TArraySizes& arra
     }
 }
 
-// Turn a structured descriptor heap_offset into an id used to shift the heap base.
+// OffsetIdEXT requires a constant offset and a struct containing descriptors.
+// Runtime offsets and heaps without descriptors still need a shifted base pointer.
+bool TGlslangToSpvTraverser::useHeapOffsetDecoration(const glslang::TType& type) const
+{
+    const glslang::TQualifier& qualifier = type.getQualifier();
+    return (qualifier.storage == glslang::EvqResourceHeap || qualifier.storage == glslang::EvqSamplerHeap) &&
+           (qualifier.layoutHeapOffsetNode == nullptr || qualifier.layoutHeapOffsetNode->getQualifier().isConstant()) &&
+           containsDescHeapDescriptorType(type);
+}
+
+// Turn a structured descriptor heap_offset into an id.
 spv::Id TGlslangToSpvTraverser::makeHeapOffsetId(const glslang::TType& type)
 {
     const glslang::TQualifier& qualifier = type.getQualifier();
