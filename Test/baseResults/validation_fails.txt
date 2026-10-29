@@ -1,3 +1,4 @@
+Test/baseResults/glspv.sparseTextureClamp.frag.out
 Test/baseResults/hlsl.attributeC11.frag.out
 Test/baseResults/hlsl.buffer.frag.out
 Test/baseResults/hlsl.cbuffer-offsets.comp.out
