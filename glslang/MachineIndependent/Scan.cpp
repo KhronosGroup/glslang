@@ -333,6 +333,7 @@ struct str_hash
 
 // A single global usable by all threads, by all versions, by all languages.
 const std::unordered_map<const char*, int, str_hash, str_eq> KeywordMap {
+    {"auto",AUTO},
     {"const",CONST},
     {"uniform",UNIFORM},
     {"tileImageEXT",TILEIMAGEEXT},
@@ -993,6 +994,17 @@ int TScanContext::tokenizeIdentifier()
     keyword = it->second;
 
     switch (keyword) {
+    case AUTO:
+    {
+        if (!parseContext.extensionTurnedOn(E_GL_EXT_type_deduction))
+            return identifierOrType();
+
+        const char* const extensions[] = {E_GL_EXT_type_deduction};
+        parseContext.requireExtensions(loc, 1, extensions, "auto");
+        afterType = true;
+        return keyword;
+    }
+
     case CONST:
     case UNIFORM:
     case TILEIMAGEEXT:

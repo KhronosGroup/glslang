@@ -395,7 +395,9 @@ const char* const E_GL_EXT_shader_64bit_indexing = "GL_EXT_shader_64bit_indexing
 
 const char* const E_GL_EXT_shader_invocation_reorder = "GL_EXT_shader_invocation_reorder";
 
-const char* const E_GL_EXT_cooperative_matrix_maintenance1           = "GL_EXT_cooperative_matrix_maintenance1";
+const char* const E_GL_EXT_cooperative_matrix_maintenance1 = "GL_EXT_cooperative_matrix_maintenance1";
+
+const char* const E_GL_EXT_type_deduction = "GL_EXT_type_deduction";
 
 // Arrays of extensions for the above AEP duplications
 

@@ -44,9 +44,11 @@
 #include "Scan.h"
 
 #include <algorithm>
+#include <cstddef>
 #include <sys/types.h>
 
 #include "Versions.h"
+#include "glslang/Include/BaseTypes.h"
 #include "preprocessor/PpContext.h"
 
 extern int yyparse(glslang::TParseContext*);
@@ -9969,13 +9971,80 @@ TIntermTyped* TParseContext::vkRelaxedRemapDotDereference(const TSourceLoc&, TIn
 // 'arraySizes' is the arrayness tagged on the identifier (to the right)
 //
 TIntermNode* TParseContext::declareVariable(const TSourceLoc& loc, TString& identifier, const TPublicType& publicType,
-    TArraySizes* arraySizes, TIntermTyped* initializer)
+    TArraySizes* arraySizes, TIntermTyped* initializer, TType* deducedType)
 {
-    // Make a fresh type that combines the characteristics from the individual
-    // identifier syntax and the declaration-type syntax.
-    TType type(publicType);
-    type.transferArraySizes(arraySizes);
-    type.copyArrayInnerSizes(publicType.arraySizes);
+    const bool inferType = deducedType != nullptr;
+    TType type;
+
+    if (inferType) {
+        if (!initializer) {
+            error(loc, "initializer required", "auto", "%s", identifier.c_str());
+            return nullptr;
+        }
+
+        if (arraySizes) {
+            error(loc, "array specifier is not allowed with auto", identifier.c_str(), "");
+            return nullptr;
+        }
+
+        TIntermAggregate* initList = initializer->getAsAggregate();
+        if (initList && initList->getOp() == EOpNull) {
+            error(loc, "cannot deduce a variable type from a brace initializer", identifier.c_str(), "");
+            return nullptr;
+        }
+
+        variableCheck(initializer);
+
+        if (initializer->getBasicType() == EbtFunction) {
+            error(loc, "cannot deduce a variable type from a function name", "auto", "%s", identifier.c_str());
+            return nullptr;
+        }
+
+        type.deepCopy(initializer->getType());
+        if (deducedType->getBasicType() == EbtVoid) {
+            deducedType->shallowCopy(type);
+        } else if (*deducedType != type) {
+            error(loc, "inconsistent types deduced for auto", identifier.c_str(), "");
+            return nullptr;
+        }
+
+        type.getQualifier() = publicType.qualifier;
+
+        TPublicType resolved(publicType);
+
+        resolved.basicType = type.getBasicType();
+        if (type.isCoopMatKHR())
+            resolved.basicType = EbtCoopmat;
+        else if (type.isCoopVecNV())
+            resolved.basicType = EbtCoopvecNV;
+        else if (type.isLongVector())
+            resolved.basicType = EbtLongVector;
+        else if (type.isTensorARM())
+            resolved.basicType = EbtTensorARM;
+
+        resolved.vectorSize = type.getVectorSize();
+        resolved.matrixCols = type.getMatrixCols();
+        resolved.matrixRows = type.getMatrixRows();
+        resolved.sampler = type.getSampler();
+        resolved.tensorRankARM = type.getTensorRankARM();
+        resolved.userDef = (type.isStruct() || type.isReference()) ? &type : nullptr;
+
+        if (resolved.qualifier.precision == EpqNone)
+            resolved.qualifier.precision = getDefaultPrecision(resolved);
+
+        globalQualifierFixCheck(loc, resolved.qualifier, false, &resolved);
+        globalQualifierTypeCheck(loc, resolved.qualifier, resolved);
+        precisionQualifierCheck(loc, resolved.basicType, resolved.qualifier, type.hasTypeParameter());
+
+        type.getQualifier() = resolved.qualifier;
+    } else {
+        // Make a fresh type that combines the characteristics from the individual
+        // identifier syntax and the declaration-type syntax.
+        type.shallowCopy(TType(publicType));
+        type.transferArraySizes(arraySizes);
+        type.copyArrayInnerSizes(publicType.arraySizes);
+    }
+
     arrayOfArrayVersionCheck(loc, type.getArraySizes());
 
     if (initializer) {
@@ -9984,10 +10053,14 @@ TIntermNode* TParseContext::declareVariable(const TSourceLoc& loc, TString& iden
         } else if ((type.getBasicType() == EbtHitObjectNV) || (type.getBasicType() == EbtHitObjectEXT)) {
             error(loc, "hit objects cannot be initialized using initializers", "=", "%s", identifier.c_str());
         }
-
     }
 
-    if (type.isCoopMatKHR()) {
+    if (inferType) {
+        if (type.isCoopMat() || type.isCoopVecNV())
+            intermediate.setUseVulkanMemoryModel();
+        if (type.hasTypeParameter())
+            intermediate.setUseStorageBuffer();
+    } else if (type.isCoopMatKHR()) {
         intermediate.setUseVulkanMemoryModel();
         intermediate.setUseStorageBuffer();
 
@@ -10001,8 +10074,7 @@ TIntermNode* TParseContext::declareVariable(const TSourceLoc& loc, TString& iden
                 error(loc, "expected 8, 16, 32, or 64 bit signed or unsigned integer or 16, 32, or 64 bit float type", identifier.c_str(), "");
             }
         }
-    }
-    else if (type.isCoopMatNV()) {
+    } else if (type.isCoopMatNV()) {
         intermediate.setUseVulkanMemoryModel();
         intermediate.setUseStorageBuffer();
 
