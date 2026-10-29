@@ -266,16 +266,12 @@ uniform sampler2DShadow var16;
 uniform samplerCubeShadow var17;
 uniform sampler2DArrayShadow var18;
 uniform samplerCubeArrayShadow var19;
-uniform sampler2DRectShadow var20;
 uniform samplerCubeArray svar21;
 uniform usamplerCubeArray svar22;
 uniform isamplerCubeArray svar23;
 uniform sampler2D svar24;
 uniform usampler2D svar25;
 uniform isampler2D svar26;
-uniform sampler2DRect svar27;
-uniform usampler2DRect svar28;
-uniform isampler2DRect svar29;
 uniform samplerCube svar30;
 uniform usamplerCube svar31;
 uniform isamplerCube svar32;
@@ -459,16 +455,10 @@ var7 = textureGatherOffset(svar26, var1, var5);
 var3 = textureGatherOffset(svar33, var2, var5);
 var11 = textureGatherOffset(svar34, var2, var5);
 var7 = textureGatherOffset(svar35, var2, var5);
-// Function Signature : gvec4 textureGatherOffset(gsampler2DRect, vec2, ivec2)
-var3 = textureGatherOffset(svar27, var1, var5);
-var11 = textureGatherOffset(svar28, var1, var5);
-var7 = textureGatherOffset(svar29, var1, var5);
 // Function Signature : vec4 textureGatherOffset(sampler2DShadow, vec2, float, ivec2)
 var3 = textureGatherOffset(var16, var1, var0, var5);
 // Function Signature : vec4 textureGatherOffset(sampler2DArrayShadow, vec3, float, ivec2)
 var3 = textureGatherOffset(var18, var2, var0, var5);
-// Function Signature : vec4 textureGatherOffset(sampler2DRectShadow, vec2, float, ivec2)
-var3 = textureGatherOffset(var20, var1, var0, var5);
 
 // Function Signature : gvec4 textureGather(gsampler2D, vec2)
 var3 = textureGather(svar24, var1);
@@ -486,10 +476,6 @@ var7 = textureGather(svar32, var2);
 var3 = textureGather(svar21, var3);
 var11 = textureGather(svar22, var3);
 var7 = textureGather(svar23, var3);
-// Function Signature : gvec4 textureGather(gsampler2DRect, vec4)
-var3 = textureGather(svar27, var1);
-var11 = textureGather(svar28, var1);
-var7 = textureGather(svar29, var1);
 // Function Signature : vec4 textureGather(sampler2DShadow, vec2, float)
 var3 = textureGather(var16, var1, var0);
 // Function Signature : vec4 textureGather(sampler2DArrayShadow, vec3, float)
@@ -498,8 +484,6 @@ var3 = textureGather(var18, var2, var0);
 var3 = textureGather(var17, var2, var0);
 // Function Signature : vec4 textureGather(samplerCubeArrayShadow, vec4, float)
 var3 = textureGather(var19, var3, var0);
-// Function Signature : vec4 textureGather(sampler2DRectShadow, vec2, float)
-var3 = textureGather(var20, var1, var0);
 
 // Function Signature : gvec4 textureGatherOffsets(gsampler2D, vec2, ivec2[4])
 var3 = textureGatherOffsets(svar24, var1, Offsets);
@@ -509,16 +493,10 @@ var7 = textureGatherOffsets(svar26, var1, Offsets);
 var3 = textureGatherOffsets(svar33, var2, Offsets);
 var11 = textureGatherOffsets(svar34, var2, Offsets);
 var7 = textureGatherOffsets(svar35, var2, Offsets);
-// Function Signature : gvec4 textureGatherOffsets(gsampler2DRect, vec2, ivec2[4])
-var3 = textureGatherOffsets(svar27, var1, Offsets);
-var11 = textureGatherOffsets(svar28, var1, Offsets);
-var7 = textureGatherOffsets(svar29, var1, Offsets);
 // Function Signature : vec4 textureGatherOffsets(sampler2DShadow, vec2, float, ivec2[4])
 var3 = textureGatherOffsets(var16, var1, var0, Offsets);
 // Function Signature : vec4 textureGatherOffsets(sampler2DArrayShadow, vec3, float, ivec2[4])
 var3 = textureGatherOffsets(var18, var2, var0, Offsets);
-// Function Signature : vec4 textureGatherOffsets(sampler2DRectShadow, vec2, float, ivec2[4])
-var3 = textureGatherOffsets(var20, var1, var0, Offsets);
 }
 
 void testDataTypes()
@@ -2037,7 +2015,6 @@ void testVectorRelationBuiltins()
 
 
 // Testing texture builtins with non constant "offset"
-uniform sampler2DRectShadow tvar0;
 uniform samplerCubeShadow tvar1;
 uniform sampler1DArrayShadow tvar2;
 uniform sampler1DShadow tvar3;
@@ -2050,9 +2027,6 @@ uniform sampler2DArray tvar9;
 uniform usampler2D tvar10;
 uniform sampler2D tvar11;
 uniform isampler2D tvar12;
-uniform isampler2DRect tvar13;
-uniform sampler2DRect tvar14;
-uniform usampler2DRect tvar15;
 uniform usamplerCubeArray tvar16;
 uniform isamplerCubeArray tvar17;
 uniform samplerCubeArray tvar18;
@@ -2088,10 +2062,6 @@ uvec4 tvar40 =textureOffset( tvar10, tvar37, tvar38, tvar32);
 vec4 tvar41 =textureOffset( tvar20, tvar42, tvar43, tvar32);
 ivec4 tvar44 =textureOffset( tvar21, tvar42, tvar43, tvar32);
 uvec4 tvar45 =textureOffset( tvar19, tvar42, tvar43, tvar32);
-vec4 tvar46 =textureOffset( tvar14, tvar37, tvar38);
-ivec4 tvar47 =textureOffset( tvar13, tvar37, tvar38);
-uvec4 tvar48 =textureOffset( tvar15, tvar37, tvar38);
-float tvar49 =textureOffset( tvar0, tvar42, tvar38);
 float tvar50 =textureOffset( tvar3, tvar42, tvar33, tvar32);
 float tvar51 =textureOffset( tvar4, tvar42, tvar38, tvar32);
 vec4 tvar52 =textureOffset( tvar30, tvar37, tvar33, tvar32);
@@ -2110,9 +2080,6 @@ uvec4 tvar64 =texelFetchOffset( tvar10, tvar38, tvar33, tvar38);
 vec4 tvar65 =texelFetchOffset( tvar20, tvar43, tvar33, tvar43);
 ivec4 tvar66 =texelFetchOffset( tvar21, tvar43, tvar33, tvar43);
 uvec4 tvar67 =texelFetchOffset( tvar19, tvar43, tvar33, tvar43);
-vec4 tvar68 =texelFetchOffset( tvar14, tvar38, tvar38);
-ivec4 tvar69 =texelFetchOffset( tvar13, tvar38, tvar38);
-uvec4 tvar70 =texelFetchOffset( tvar15, tvar38, tvar38);
 vec4 tvar71 =texelFetchOffset( tvar30, tvar38, tvar33, tvar33);
 ivec4 tvar72 =texelFetchOffset( tvar28, tvar38, tvar33, tvar33);
 uvec4 tvar73 =texelFetchOffset( tvar29, tvar38, tvar33, tvar33);
@@ -2134,13 +2101,6 @@ uvec4 tvar89 =textureProjOffset( tvar10, tvar81, tvar38, tvar32);
 vec4 tvar90 =textureProjOffset( tvar20, tvar81, tvar43, tvar32);
 ivec4 tvar91 =textureProjOffset( tvar21, tvar81, tvar43, tvar32);
 uvec4 tvar92 =textureProjOffset( tvar19, tvar81, tvar43, tvar32);
-vec4 tvar93 =textureProjOffset( tvar14, tvar42, tvar38);
-ivec4 tvar94 =textureProjOffset( tvar13, tvar42, tvar38);
-uvec4 tvar95 =textureProjOffset( tvar15, tvar42, tvar38);
-vec4 tvar96 =textureProjOffset( tvar14, tvar81, tvar38);
-ivec4 tvar97 =textureProjOffset( tvar13, tvar81, tvar38);
-uvec4 tvar98 =textureProjOffset( tvar15, tvar81, tvar38);
-float tvar99 =textureProjOffset( tvar0, tvar81, tvar38);
 float tvar100 =textureProjOffset( tvar3, tvar81, tvar33, tvar32);
 float tvar101 =textureProjOffset( tvar4, tvar81, tvar38, tvar32);
 vec4 tvar102 =textureLodOffset( tvar22, tvar32, tvar32, tvar33);

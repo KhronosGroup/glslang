@@ -7,7 +7,6 @@
 layout(set = 0, binding =  0) uniform sampler1D            s1D;
 layout(set = 0, binding =  1) uniform sampler2D            s2D;
 layout(set = 0, binding =  2) uniform sampler3D            s3D;
-layout(set = 0, binding =  3) uniform sampler2DRect        s2DRect;
 layout(set = 0, binding =  4) uniform samplerCube          sCube;
 layout(set = 0, binding =  5) uniform samplerBuffer        sBuffer;
 layout(set = 0, binding =  6) uniform sampler2DMS          s2DMS;
@@ -18,7 +17,6 @@ layout(set = 0, binding = 10) uniform sampler2DMSArray     s2DMSArray;
 
 layout(set = 0, binding = 11) uniform sampler1DShadow          s1DShadow;
 layout(set = 0, binding = 12) uniform sampler2DShadow          s2DShadow;
-layout(set = 0, binding = 13) uniform sampler2DRectShadow      s2DRectShadow;
 layout(set = 0, binding = 14) uniform samplerCubeShadow        sCubeShadow;
 layout(set = 0, binding = 15) uniform sampler1DArrayShadow     s1DArrayShadow;
 layout(set = 0, binding = 16) uniform sampler2DArrayShadow     s2DArrayShadow;
@@ -27,7 +25,6 @@ layout(set = 0, binding = 17) uniform samplerCubeArrayShadow   sCubeArrayShadow;
 layout(set = 1, binding =  0) layout(rgba16f) uniform image1D          i1D;
 layout(set = 1, binding =  1) layout(rgba16f) uniform image2D          i2D;
 layout(set = 1, binding =  2) layout(rgba16f) uniform image3D          i3D;
-layout(set = 1, binding =  3) layout(rgba16f) uniform image2DRect      i2DRect;
 layout(set = 1, binding =  4) layout(rgba16f) uniform imageCube        iCube;
 layout(set = 1, binding =  5) layout(rgba16f) uniform image1DArray     i1DArray;
 layout(set = 1, binding =  6) layout(rgba16f) uniform image2DArray     i2DArray;
@@ -39,7 +36,6 @@ layout(set = 1, binding = 10) layout(rgba16f) uniform image2DMSArray   i2DMSArra
 layout(set = 2, binding =  0) uniform texture1D           t1D;
 layout(set = 2, binding =  1) uniform texture2D           t2D;
 layout(set = 2, binding =  2) uniform texture3D           t3D;
-layout(set = 2, binding =  3) uniform texture2DRect       t2DRect;
 layout(set = 2, binding =  4) uniform textureCube         tCube;
 layout(set = 2, binding =  5) uniform texture1DArray      t1DArray;
 layout(set = 2, binding =  6) uniform texture2DArray      t2DArray;
@@ -91,8 +87,6 @@ vec4 testTexture()
     texel   += texture(sCubeArray, c4);
     texel.x += texture(s1DArrayShadow, c3);
     texel.x += texture(s2DArrayShadow, c4);
-    texel   += texture(s2DRect, c2);
-    texel.x += texture(s2DRectShadow, c3);
     texel.x += texture(sCubeArrayShadow, c4, compare);
 
     return texel;
@@ -109,9 +103,6 @@ vec4 testTextureProj()
     texel   += textureProj(s3D, c4);
     texel.x += textureProj(s1DShadow, c4);
     texel.x += textureProj(s2DShadow, c4);
-    texel   += textureProj(s2DRect, c3);
-    texel   += textureProj(s2DRect, c4);
-    texel.x += textureProj(s2DRectShadow, c4);
 
     return texel;
 }
@@ -141,8 +132,6 @@ vec4 testTextureOffset()
     texel   += textureOffset(s1D, c1, offset1);
     texel   += textureOffset(s2D, c2, offset2);
     texel   += textureOffset(s3D, c3, offset3);
-    texel   += textureOffset(s2DRect, c2, offset2);
-    texel.x += textureOffset(s2DRectShadow, c3, offset2);
     texel.x += textureOffset(s1DShadow, c3, offset1);
     texel.x += textureOffset(s2DShadow, c3, offset2);
     texel   += textureOffset(s1DArray, c2, offset1);
@@ -162,9 +151,6 @@ vec4 testTextureProjOffset()
     texel   += textureProjOffset(s2D, c3, offset2);
     texel   += textureProjOffset(s2D, c4, offset2);
     texel   += textureProjOffset(s3D, c4, offset3);
-    texel   += textureProjOffset(s2DRect, c3, offset2);
-    texel   += textureProjOffset(s2DRect, c4, offset2);
-    texel.x += textureProjOffset(s2DRectShadow, c4, offset2);
     texel.x += textureProjOffset(s1DShadow, c4, offset1);
     texel.x += textureProjOffset(s2DShadow, c4, offset2);
 
@@ -209,7 +195,6 @@ vec4 testTexelFetch()
     texel   += texelFetch(s1D, int(c1), int(lod));
     texel   += texelFetch(s2D, ivec2(c2), int(lod));
     texel   += texelFetch(s3D, ivec3(c3), int(lod));
-    texel   += texelFetch(s2DRect, ivec2(c2));
     texel   += texelFetch(s1DArray, ivec2(c2), int(lod));
     texel   += texelFetch(s2DArray, ivec3(c3), int(lod));
     texel   += texelFetch(sBuffer, int(c1));
@@ -226,7 +211,6 @@ vec4 testTexelFetchOffset()
     texel   += texelFetchOffset(s1D, int(c1), int(lod), offset1);
     texel   += texelFetchOffset(s2D, ivec2(c2), int(lod), offset2);
     texel   += texelFetchOffset(s3D, ivec3(c3), int(lod), offset3);
-    texel   += texelFetchOffset(s2DRect, ivec2(c2), offset2);
     texel   += texelFetchOffset(s1DArray, ivec2(c2), int(lod), offset1);
     texel   += texelFetchOffset(s2DArray, ivec3(c3), int(lod), offset2);
 
@@ -241,8 +225,6 @@ vec4 testTextureGrad()
     texel   += textureGrad(s2D, c2, dPdxy2, dPdxy2);
     texel   += textureGrad(s3D, c3, dPdxy3, dPdxy3);
     texel   += textureGrad(sCube, c3, dPdxy3, dPdxy3);
-    texel   += textureGrad(s2DRect, c2, dPdxy2, dPdxy2);
-    texel.x += textureGrad(s2DRectShadow, c3, dPdxy2, dPdxy2);
     texel.x += textureGrad(s1DShadow, c3, dPdxy1, dPdxy1);
     texel.x += textureGrad(s2DShadow, c3, dPdxy2, dPdxy2);
     texel.x += textureGrad(sCubeShadow, c4, dPdxy3, dPdxy3);
@@ -262,8 +244,6 @@ vec4 testTextureGradOffset()
     texel   += textureGradOffset(s1D, c1, dPdxy1, dPdxy1, offset1);
     texel   += textureGradOffset(s2D, c2, dPdxy2, dPdxy2, offset2);
     texel   += textureGradOffset(s3D, c3, dPdxy3, dPdxy3, offset3);
-    texel   += textureGradOffset(s2DRect, c2, dPdxy2, dPdxy2, offset2);
-    texel.x += textureGradOffset(s2DRectShadow, c3, dPdxy2, dPdxy2, offset2);
     texel.x += textureGradOffset(s1DShadow, c3, dPdxy1, dPdxy1, offset1);
     texel.x += textureGradOffset(s2DShadow, c3, dPdxy2, dPdxy2, offset2);
     texel   += textureGradOffset(s1DArray, c2, dPdxy1, dPdxy1, offset1);
@@ -283,9 +263,6 @@ vec4 testTextureProjGrad()
     texel   += textureProjGrad(s2D, c3, dPdxy2, dPdxy2);
     texel   += textureProjGrad(s2D, c4, dPdxy2, dPdxy2);
     texel   += textureProjGrad(s3D, c4, dPdxy3, dPdxy3);
-    texel   += textureProjGrad(s2DRect, c3, dPdxy2, dPdxy2);
-    texel   += textureProjGrad(s2DRect, c4, dPdxy2, dPdxy2);
-    texel.x += textureProjGrad(s2DRectShadow, c4, dPdxy2, dPdxy2);
     texel.x += textureProjGrad(s1DShadow, c4, dPdxy1, dPdxy1);
     texel.x += textureProjGrad(s2DShadow, c4, dPdxy2, dPdxy2);
 
@@ -300,9 +277,6 @@ vec4 testTextureProjGradoffset()
     texel   += textureProjGradOffset(s1D, c4, dPdxy1, dPdxy1, offset1);
     texel   += textureProjGradOffset(s2D, c3, dPdxy2, dPdxy2, offset2);
     texel   += textureProjGradOffset(s2D, c4, dPdxy2, dPdxy2, offset2);
-    texel   += textureProjGradOffset(s2DRect, c3, dPdxy2, dPdxy2, offset2);
-    texel   += textureProjGradOffset(s2DRect, c4, dPdxy2, dPdxy2, offset2);
-    texel.x += textureProjGradOffset(s2DRectShadow, c4, dPdxy2, dPdxy2, offset2);
     texel   += textureProjGradOffset(s3D, c4, dPdxy3, dPdxy3, offset3);
     texel.x += textureProjGradOffset(s1DShadow, c4, dPdxy1, dPdxy1, offset1);
     texel.x += textureProjGradOffset(s2DShadow, c4, dPdxy2, dPdxy2, offset2);
@@ -318,12 +292,10 @@ vec4 testTextureGather()
     texel   += textureGather(s2DArray, c3, 0);
     texel   += textureGather(sCube, c3, 0);
     texel   += textureGather(sCubeArray, c4, 0);
-    texel   += textureGather(s2DRect, c2, 0);
     texel   += textureGather(s2DShadow, c2, compare);
     texel   += textureGather(s2DArrayShadow, c3, compare);
     texel   += textureGather(sCubeShadow, c3, compare);
     texel   += textureGather(sCubeArrayShadow, c4, compare);
-    texel   += textureGather(s2DRectShadow, c2, compare);
 
     return texel;
 }
@@ -334,10 +306,8 @@ vec4 testTextureGatherOffset()
 
     texel   += textureGatherOffset(s2D, c2, offset2, 0);
     texel   += textureGatherOffset(s2DArray, c3, offset2, 0);
-    texel   += textureGatherOffset(s2DRect, c2, offset2, 0);
     texel   += textureGatherOffset(s2DShadow, c2, compare, offset2);
     texel   += textureGatherOffset(s2DArrayShadow, c3, compare, offset2);
-    texel   += textureGatherOffset(s2DRectShadow, c2, compare, offset2);
 
     return texel;
 }
@@ -348,10 +318,8 @@ vec4 testTextureGatherOffsets()
 
     texel   += textureGatherOffsets(s2D, c2, offsets, 0);
     texel   += textureGatherOffsets(s2DArray, c3, offsets, 0);
-    texel   += textureGatherOffsets(s2DRect, c2, offsets, 0);
     texel   += textureGatherOffsets(s2DShadow, c2, compare, offsets);
     texel   += textureGatherOffsets(s2DArrayShadow, c3, compare, offsets);
-    texel   += textureGatherOffsets(s2DRectShadow, c2, compare, offsets);
 
     return texel;
 }
@@ -401,8 +369,6 @@ ivec4 testTextureSize()
     size.xy     += textureSize(sCubeShadow, int(lod));
     size.xyz    += textureSize(sCubeArray, int(lod));
     size.xyz    += textureSize(sCubeArrayShadow, int(lod));
-    size.xy     += textureSize(s2DRect);
-    size.xy     += textureSize(s2DRectShadow);
     size.xy     += textureSize(s1DArray, int(lod));
     size.xyz    += textureSize(s2DArray, int(lod));
     size.xy     += textureSize(s1DArrayShadow, int(lod));
@@ -473,7 +439,6 @@ vec4 testImageLoad()
     texel += imageLoad(i1D, int(c1));
     texel += imageLoad(i2D, ivec2(c2));
     texel += imageLoad(i3D, ivec3(c3));
-    texel += imageLoad(i2DRect, ivec2(c2));
     texel += imageLoad(iCube, ivec3(c3));
     texel += imageLoad(iBuffer, int(c1));
     texel += imageLoad(i1DArray, ivec2(c2));
@@ -490,7 +455,6 @@ void testImageStore(vec4 data)
     imageStore(i1D, int(c1), data);
     imageStore(i2D, ivec2(c2), data);
     imageStore(i3D, ivec3(c3), data);
-    imageStore(i2DRect, ivec2(c2), data);
     imageStore(iCube, ivec3(c3), data);
     imageStore(iBuffer, int(c1), data);
     imageStore(i1DArray, ivec2(c2), data);
@@ -512,8 +476,6 @@ vec4 testSparseTexture()
     sparseTextureARB(s2DArray, c3, texel);
     sparseTextureARB(sCubeArray, c4, texel);
     sparseTextureARB(s2DArrayShadow, c4, texel.x);
-    sparseTextureARB(s2DRect, c2, texel);
-    sparseTextureARB(s2DRectShadow, c3, texel.x);
     sparseTextureARB(sCubeArrayShadow, c4, compare, texel.x);
 
     return texel;
@@ -539,8 +501,6 @@ vec4 testSparseTextureOffset()
 
     sparseTextureOffsetARB(s2D, c2, offset2, texel);
     sparseTextureOffsetARB(s3D, c3, offset3, texel);
-    sparseTextureOffsetARB(s2DRect, c2, offset2, texel);
-    sparseTextureOffsetARB(s2DRectShadow, c3, offset2, texel.x);
     sparseTextureOffsetARB(s2DShadow, c3, offset2, texel.x);
     sparseTextureOffsetARB(s2DArray, c3, offset2, texel);
     sparseTextureOffsetARB(s2DArrayShadow, c4, offset2, texel.x);
@@ -567,8 +527,6 @@ vec4 testSparseTextureGrad()
     sparseTextureGradARB(s2D, c2, dPdxy2, dPdxy2, texel);
     sparseTextureGradARB(s3D, c3, dPdxy3, dPdxy3, texel);
     sparseTextureGradARB(sCube, c3, dPdxy3, dPdxy3, texel);
-    sparseTextureGradARB(s2DRect, c2, dPdxy2, dPdxy2, texel);
-    sparseTextureGradARB(s2DRectShadow, c3, dPdxy2, dPdxy2, texel.x);
     sparseTextureGradARB(s2DShadow, c3, dPdxy2, dPdxy2, texel.x);
     sparseTextureGradARB(sCubeShadow, c4, dPdxy3, dPdxy3, texel.x);
     sparseTextureGradARB(s2DArray, c3, dPdxy2, dPdxy2, texel);
@@ -584,8 +542,6 @@ vec4 testSparseTextureGradOffset()
 
     sparseTextureGradOffsetARB(s2D, c2, dPdxy2, dPdxy2, offset2, texel);
     sparseTextureGradOffsetARB(s3D, c3, dPdxy3, dPdxy3, offset3, texel);
-    sparseTextureGradOffsetARB(s2DRect, c2, dPdxy2, dPdxy2, offset2, texel);
-    sparseTextureGradOffsetARB(s2DRectShadow, c3, dPdxy2, dPdxy2, offset2, texel.x);
     sparseTextureGradOffsetARB(s2DShadow, c3, dPdxy2, dPdxy2, offset2, texel.x);
     sparseTextureGradOffsetARB(s2DArray, c3, dPdxy2, dPdxy2, offset2, texel);
     sparseTextureGradOffsetARB(s2DArrayShadow, c4, dPdxy2, dPdxy2, offset2, texel.x);
@@ -599,7 +555,6 @@ vec4 testSparseTexelFetch()
 
     sparseTexelFetchARB(s2D, ivec2(c2), int(lod), texel);
     sparseTexelFetchARB(s3D, ivec3(c3), int(lod), texel);
-    sparseTexelFetchARB(s2DRect, ivec2(c2), texel);
     sparseTexelFetchARB(s2DArray, ivec3(c3), int(lod), texel);
     sparseTexelFetchARB(s2DMS, ivec2(c2), 1, texel);
     sparseTexelFetchARB(s2DMSArray, ivec3(c3), 2, texel);
@@ -613,7 +568,6 @@ vec4 testSparseTexelFetchOffset()
 
     sparseTexelFetchOffsetARB(s2D, ivec2(c2), int(lod), offset2, texel);
     sparseTexelFetchOffsetARB(s3D, ivec3(c3), int(lod), offset3, texel);
-    sparseTexelFetchOffsetARB(s2DRect, ivec2(c2), offset2, texel);
     sparseTexelFetchOffsetARB(s2DArray, ivec3(c3), int(lod), offset2, texel);
 
     return texel;
@@ -627,12 +581,10 @@ vec4 testSparseTextureGather()
     sparseTextureGatherARB(s2DArray, c3, texel, 0);
     sparseTextureGatherARB(sCube, c3, texel, 0);
     sparseTextureGatherARB(sCubeArray, c4, texel, 0);
-    sparseTextureGatherARB(s2DRect, c2, texel, 0);
     sparseTextureGatherARB(s2DShadow, c2, compare, texel);
     sparseTextureGatherARB(s2DArrayShadow, c3, compare, texel);
     sparseTextureGatherARB(sCubeShadow, c3, compare, texel);
     sparseTextureGatherARB(sCubeArrayShadow, c4, compare, texel);
-    sparseTextureGatherARB(s2DRectShadow, c2, compare, texel);
 
     return texel;
 }
@@ -643,10 +595,8 @@ vec4 testSparseTextureGatherOffset()
 
     sparseTextureGatherOffsetARB(s2D, c2, offset2, texel, 0);
     sparseTextureGatherOffsetARB(s2DArray, c3, offset2, texel, 0);
-    sparseTextureGatherOffsetARB(s2DRect, c2, offset2, texel, 0);
     sparseTextureGatherOffsetARB(s2DShadow, c2, compare, offset2, texel);
     sparseTextureGatherOffsetARB(s2DArrayShadow, c3, compare, offset2, texel);
-    sparseTextureGatherOffsetARB(s2DRectShadow, c2, compare, offset2, texel);
 
     return texel;
 }
@@ -658,10 +608,8 @@ vec4 testSparseTextureGatherOffsets()
 
     sparseTextureGatherOffsetsARB(s2D, c2, constOffsets, texel, 0);
     sparseTextureGatherOffsetsARB(s2DArray, c3, constOffsets, texel, 0);
-    sparseTextureGatherOffsetsARB(s2DRect, c2, constOffsets, texel, 0);
     sparseTextureGatherOffsetsARB(s2DShadow, c2, compare, constOffsets, texel);
     sparseTextureGatherOffsetsARB(s2DArrayShadow, c3, compare, constOffsets, texel);
-    sparseTextureGatherOffsetsARB(s2DRectShadow, c2, compare, constOffsets, texel);
 
     return texel;
 }
@@ -704,7 +652,6 @@ vec4 testSparseImageLoad()
 
     sparseImageLoadARB(i2D, ivec2(c2), texel);
     sparseImageLoadARB(i3D, ivec3(c3), texel);
-    sparseImageLoadARB(i2DRect, ivec2(c2), texel);
     sparseImageLoadARB(iCube, ivec3(c3), texel);
     sparseImageLoadARB(i2DArray, ivec3(c3), texel);
     sparseImageLoadARB(iCubeArray, ivec3(c3), texel);
@@ -864,8 +811,6 @@ vec4 testCombinedTextureSampler()
     texel   += texture(samplerCubeArray(tCubeArray, s), c4);
     texel.x += texture(sampler1DArrayShadow(t1DArray, sShadow), c3);
     texel.x += texture(sampler2DArrayShadow(t2DArray, sShadow), c4);
-    texel   += texture(sampler2DRect(t2DRect, s), c2);
-    texel.x += texture(sampler2DRectShadow(t2DRect, sShadow), c3);
     texel.x += texture(samplerCubeArrayShadow(tCubeArray, sShadow), c4, compare);
 
     return texel;

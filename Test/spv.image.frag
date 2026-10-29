@@ -5,7 +5,6 @@ layout(rgba32f, binding = 1)    uniform image2D         i2D;
 layout(rgba32f, binding = 2)    uniform image3D         i3D;
 layout(rgba32f, binding = 3)    uniform imageCube       iCube;
 layout(rgba32f, binding = 4)    uniform imageCubeArray  iCubeArray;
-layout(rgba32f, binding = 5)    uniform image2DRect     i2DRect;
 layout(rgba32f, binding = 6)    uniform image1DArray    i1DArray;
 layout(rg16, binding = 7)       uniform image2DArray    i2DArray;
 layout(rgba32f, binding = 8)    uniform imageBuffer     iBuffer;
@@ -36,7 +35,6 @@ void main()
     iv.xyz  += imageSize(i3D);
     iv.xy   += imageSize(iCube);
     iv.xyz  += imageSize(iCubeArray);
-    iv.xy   += imageSize(i2DRect);
     iv.xy   += imageSize(i1DArray);
     iv.xyz  += imageSize(i2DArray);
     iv.x    += imageSize(iBuffer);
@@ -57,8 +55,6 @@ void main()
     imageStore(iCube, ic3D, v);
     v += imageLoad(iCubeArray, ic3D);
     imageStore(iCubeArray, ic3D, v);
-    v += imageLoad(i2DRect, ic2D);
-    imageStore(i2DRect, ic2D, v);
     v += imageLoad(i1DArray, ic2D);
     imageStore(i1DArray, ic2D, v);
     v += imageLoad(i2DArray, ic3D);
