@@ -304,6 +304,7 @@ public:
         language(l),
         profile(p), version(v),
         treeRoot(nullptr),
+        extensionsRestricted(false),
         resources(TBuiltInResource{}),
         numEntryPoints(0), numErrors(0), numPushConstants(0), recursive(false),
         invertY(false),
@@ -469,6 +470,15 @@ public:
     EShLanguage getStage() const { return language; }
     void addRequestedExtension(const char* extension) { requestedExtensions.insert(extension); }
     const std::set<std::string>& getRequestedExtensions() const { return requestedExtensions; }
+    void setAvailableExtensions(std::set<std::string> extensions)
+    {
+        availableExtensions = std::move(extensions);
+        extensionsRestricted = true;
+    }
+    bool isExtensionAvailable(const char* extension) const
+    {
+        return !extensionsRestricted || availableExtensions.count(extension) != 0;
+    }
     bool isRayTracingStage() const {
         return language >= EShLangRayGen && language <= EShLangCallableNV;
     }
@@ -1271,6 +1281,8 @@ protected:
     SpvVersion spvVersion;
     TIntermNode* treeRoot;
     std::set<std::string> requestedExtensions;  // cumulation of all enabled or required extensions; not connected to what subset of the shader used them
+    bool extensionsRestricted;
+    std::set<std::string> availableExtensions;
     MustBeAssigned<TBuiltInResource> resources;
     int numEntryPoints;
     int numErrors;
