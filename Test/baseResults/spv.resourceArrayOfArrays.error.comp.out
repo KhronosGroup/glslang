@@ -1,0 +1,11 @@
+spv.resourceArrayOfArrays.error.comp
+ERROR: 0:5: '[][]' : Vulkan only supports a single array level for this resource 
+ERROR: 0:9: '[][]' : Vulkan only supports a single array level for this resource 
+ERROR: 0:13: '[][]' : Vulkan only supports a single array level for this resource 
+ERROR: 0:14: '[][]' : Vulkan only supports a single array level for this resource 
+ERROR: 0:15: '[][]' : Vulkan only supports a single array level for this resource 
+ERROR: 0:16: '[][]' : Vulkan only supports a single array level for this resource 
+ERROR: 6 compilation errors.  No code generated.
+
+
+SPIR-V is not generated for failed compile or link

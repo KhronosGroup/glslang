@@ -1,0 +1,21 @@
+#version 450
+
+layout(local_size_x = 1) in;
+
+layout(set = 0, binding = 0) buffer Storage {
+    uint data;
+} storageBuffers[3][3];
+
+layout(set = 0, binding = 1) uniform Uniform {
+    uint data;
+} uniformBuffers[2][3];
+
+layout(set = 0, binding = 2) uniform sampler2D combinedSamplers[2][3];
+layout(set = 0, binding = 3) uniform sampler samplers[2][3];
+layout(set = 0, binding = 4) uniform texture2D textures[2][3];
+layout(set = 0, binding = 5, rgba32f) uniform image2D images[2][3];
+
+void main()
+{
+    storageBuffers[1][2].data = uniformBuffers[1][2].data;
+}
