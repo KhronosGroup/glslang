@@ -14,6 +14,7 @@ Test/baseResults/hlsl.intrinsics.frag.out
 Test/baseResults/hlsl.intrinsics.vert.out
 Test/baseResults/hlsl.layout.frag.out
 Test/baseResults/hlsl.matNx1.frag.out
+Test/baseResults/hlsl.matrixSwizzle.frag.out
 Test/baseResults/hlsl.matrixSwizzle.vert.out
 Test/baseResults/hlsl.matType.bool.frag.out
 Test/baseResults/hlsl.matType.frag.out
