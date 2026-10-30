@@ -59,6 +59,7 @@ if(GLSLANG_TESTS)
             ${CMAKE_CURRENT_SOURCE_DIR}/Spv.FromFile.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/StructName.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/SpvPatternTest.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/SpvBuilderTest.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/SpvDebugInfoTest.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/InvertY.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/VkRelaxed.FromFile.cpp
