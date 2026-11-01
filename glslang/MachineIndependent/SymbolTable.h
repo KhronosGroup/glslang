@@ -921,55 +921,18 @@ public:
         } while (level >= 0);
     }
 
-    void relateToOperator(const char* name, TOperator op)
-    {
-        for (unsigned int level = 0; level < table.size(); ++level)
-            table[level]->relateToOperator(name, op);
-    }
+    void relateToOperator(const char* name, TOperator op);
 
-    void setFunctionExtensions(const char* name, int num, const char* const extensions[])
-    {
-        for (unsigned int level = 0; level < table.size(); ++level)
-            table[level]->setFunctionExtensions(name, num, extensions);
-    }
+    void setFunctionExtensions(const char* name, int num, const char* const extensions[]);
 
-    void setFunctionExtensionsCallback(const char* name, std::function<std::vector<const char *>(const char *)> const &func)
-    {
-        for (unsigned int level = 0; level < table.size(); ++level)
-            table[level]->setFunctionExtensionsCallback(name, func);
-    }
+    void setFunctionExtensionsCallback(const char* name,
+                                       std::function<std::vector<const char*>(const char*)> const& func);
 
-    void setSingleFunctionExtensions(const char* name, int num, const char* const extensions[])
-    {
-        for (unsigned int level = 0; level < table.size(); ++level)
-            table[level]->setSingleFunctionExtensions(name, num, extensions);
-    }
+    void setSingleFunctionExtensions(const char* name, int num, const char* const extensions[]);
 
-    void setVariableExtensions(const char* name, int numExts, const char* const extensions[])
-    {
-        TSymbol* symbol = find(TString(name));
-        if (symbol == nullptr)
-            return;
+    void setVariableExtensions(const char* name, int numExts, const char* const extensions[]);
 
-        symbol->setExtensions(numExts, extensions);
-    }
-
-    void setVariableExtensions(const char* blockName, const char* name, int numExts, const char* const extensions[])
-    {
-        TSymbol* symbol = find(TString(blockName));
-        if (symbol == nullptr)
-            return;
-        TVariable* variable = symbol->getAsVariable();
-        assert(variable != nullptr);
-
-        const TTypeList& structure = *variable->getAsVariable()->getType().getStruct();
-        for (int member = 0; member < (int)structure.size(); ++member) {
-            if (structure[member].type->getFieldName().compare(name) == 0) {
-                variable->setMemberExtensions(member, numExts, extensions);
-                return;
-            }
-        }
-    }
+    void setVariableExtensions(const char* blockName, const char* name, int numExts, const char* const extensions[]);
 
     long long getMaxSymbolId() { return uniqueId; }
     void dump(TInfoSink& infoSink, bool complete = false) const;
