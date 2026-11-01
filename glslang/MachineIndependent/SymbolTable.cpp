@@ -635,6 +635,221 @@ TString TType::getCompleteString(bool syntactic, bool getQualifiers, bool getPre
     return typeString;
 }
 
+TType::TType(const TType& type, int derefIndex, bool rowMajor)
+{
+                            if (type.isArray()) {
+                                shallowCopy(type);
+                                if (type.getArraySizes()->getNumDims() == 1) {
+                                    arraySizes = nullptr;
+                                } else {
+                                    // want our own copy of the array, so we can edit it
+                                    arraySizes = new TArraySizes;
+                                    arraySizes->copyDereferenced(*type.arraySizes);
+                                }
+                            } else if (type.basicType == EbtStruct || type.basicType == EbtBlock) {
+                                // do a structure dereference
+                                const TTypeList& memberList = *type.getStruct();
+                                shallowCopy(*memberList[derefIndex].type);
+                                return;
+                            } else {
+                                // do a vector/matrix dereference
+                                shallowCopy(type);
+                                if (matrixCols > 0) {
+                                    // dereference from matrix to vector
+                                    if (rowMajor)
+                                        vectorSize = matrixCols;
+                                    else
+                                        vectorSize = matrixRows;
+                                    matrixCols = 0;
+                                    matrixRows = 0;
+                                    if (vectorSize == 1)
+                                        vector1 = true;
+                                } else if (isVector()) {
+                                    // dereference from vector to scalar
+                                    vectorSize = 1;
+                                    vector1 = false;
+                                } else if (isCoopMat() || isCoopVecNV() || isLongVector()) {
+                                    coopmatNV = false;
+                                    coopmatKHR = false;
+                                    coopmatKHRuse = 0;
+                                    coopmatKHRUseValid = false;
+                                    coopvecNV = false;
+                                    longVector = false;
+                                    typeParameters = nullptr;
+                                } else if (isTileAttachmentQCOM()) {
+                                    tileAttachmentQCOM = false;
+                                    typeParameters = nullptr;
+                                }
+                            }
+                        }
+
+void TType::shallowCopy(const TType& copyOf)
+{
+    basicType = copyOf.basicType;
+    sampler = copyOf.sampler;
+    qualifier = copyOf.qualifier;
+    vectorSize = copyOf.vectorSize;
+    matrixCols = copyOf.matrixCols;
+    matrixRows = copyOf.matrixRows;
+    vector1 = copyOf.vector1;
+    arraySizes = copyOf.arraySizes;  // copying the pointer only, not the contents
+    fieldName = copyOf.fieldName;
+    typeName = copyOf.typeName;
+    if (isStruct()) {
+        structure = copyOf.structure;
+    } else {
+        referentType = copyOf.referentType;
+    }
+    typeParameters = copyOf.typeParameters;
+    spirvType = copyOf.spirvType;
+    coopmatNV = copyOf.isCoopMatNV();
+    coopmatKHR = copyOf.isCoopMatKHR();
+    coopmatKHRuse = copyOf.coopmatKHRuse;
+    coopmatKHRUseValid = copyOf.coopmatKHRUseValid;
+    coopvecNV = copyOf.isCoopVecNV();
+    longVector = copyOf.isLongVector();
+    tileAttachmentQCOM = copyOf.tileAttachmentQCOM;
+    tensorRankARM = copyOf.tensorRankARM;
+}
+
+bool TType::sameStructType(const TType& right, int* lpidx, int* rpidx) const
+{
+    // Initialize error to general type mismatch.
+    if (lpidx != nullptr) {
+        *lpidx = -1;
+        *rpidx = -1;
+    }
+
+    // Most commonly, they are both nullptr, or the same pointer to the same actual structure
+    // TODO: Why return true when neither types are structures?
+    if ((!isStruct() && !right.isStruct()) ||
+        (isStruct() && right.isStruct() && structure == right.structure))
+        return true;
+
+    if (!isStruct() || !right.isStruct())
+        return false;
+
+    // Structure names have to match
+    if (*typeName != *right.typeName)
+        return false;
+
+    // There are inconsistencies with how gl_PerVertex is setup. For now ignore those as errors if they
+    // are known inconsistencies.
+    bool isGLPerVertex = *typeName == "gl_PerVertex";
+
+    // Both being nullptr was caught above, now they both have to be structures of the same number of elements
+    if (lpidx == nullptr &&
+        (structure->size() != right.structure->size() && !isGLPerVertex)) {
+        return false;
+    }
+
+    // Compare the names and types of all the members, which have to match
+    for (size_t li = 0, ri = 0; li < structure->size() || ri < right.structure->size(); ++li, ++ri) {
+        if (lpidx != nullptr) {
+            *lpidx = static_cast<int>(li);
+            *rpidx = static_cast<int>(ri);
+        }
+        if (li < structure->size() && ri < right.structure->size()) {
+            if ((*structure)[li].type->getFieldName() == (*right.structure)[ri].type->getFieldName()) {
+                if (*(*structure)[li].type != *(*right.structure)[ri].type)
+                    return false;
+            } else {
+                // Skip hidden members
+                if ((*structure)[li].type->hiddenMember()) {
+                    ri--;
+                    continue;
+                } else if ((*right.structure)[ri].type->hiddenMember()) {
+                    li--;
+                    continue;
+                }
+                // If one of the members is something that's inconsistently declared, skip over it
+                // for now.
+                if (isGLPerVertex) {
+                    if (isInconsistentGLPerVertexMember((*structure)[li].type->getFieldName())) {
+                        ri--;
+                        continue;
+                    } else if (isInconsistentGLPerVertexMember((*right.structure)[ri].type->getFieldName())) {
+                        li--;
+                        continue;
+                    }
+                } else {
+                    return false;
+                }
+            }
+        // If we get here, then there should only be inconsistently declared members left
+        } else if (li < structure->size()) {
+            if (!(*structure)[li].type->hiddenMember() && !isInconsistentGLPerVertexMember((*structure)[li].type->getFieldName())) {
+                if (lpidx != nullptr) {
+                    *rpidx = -1;
+                }
+                return false;
+            }
+        } else {
+            if (!(*right.structure)[ri].type->hiddenMember() && !isInconsistentGLPerVertexMember((*right.structure)[ri].type->getFieldName())) {
+                if (lpidx != nullptr) {
+                    *lpidx = -1;
+                }
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+void TType::deepCopy(const TType& copyOf, TMap<TTypeList*,TTypeList*>& copiedMap)
+{
+    shallowCopy(copyOf);
+
+    // GL_EXT_spirv_intrinsics
+    if (copyOf.qualifier.spirvDecorate) {
+        qualifier.spirvDecorate = new TSpirvDecorate;
+        *qualifier.spirvDecorate = *copyOf.qualifier.spirvDecorate;
+    }
+
+    if (copyOf.spirvType) {
+        spirvType = new TSpirvType;
+        *spirvType = *copyOf.spirvType;
+    }
+
+    if (copyOf.arraySizes) {
+        arraySizes = new TArraySizes;
+        *arraySizes = *copyOf.arraySizes;
+    }
+
+    if (copyOf.typeParameters) {
+        typeParameters = new TTypeParameters;
+        typeParameters->arraySizes = new TArraySizes;
+        *typeParameters->arraySizes = *copyOf.typeParameters->arraySizes;
+        if (copyOf.typeParameters->spirvType) {
+            *typeParameters->spirvType = *copyOf.typeParameters->spirvType;
+        }
+        typeParameters->basicType = copyOf.basicType;
+    }
+
+    if (copyOf.isStruct() && copyOf.structure) {
+        auto prevCopy = copiedMap.find(copyOf.structure);
+        if (prevCopy != copiedMap.end())
+            structure = prevCopy->second;
+        else {
+            structure = new TTypeList;
+            copiedMap[copyOf.structure] = structure;
+            for (unsigned int i = 0; i < copyOf.structure->size(); ++i) {
+                TTypeLoc typeLoc;
+                typeLoc.loc = (*copyOf.structure)[i].loc;
+                typeLoc.type = new TType();
+                typeLoc.type->deepCopy(*(*copyOf.structure)[i].type, copiedMap);
+                structure->push_back(typeLoc);
+            }
+        }
+    }
+
+    if (copyOf.fieldName)
+        fieldName = NewPoolTString(copyOf.fieldName->c_str());
+    if (copyOf.typeName)
+        typeName = NewPoolTString(copyOf.typeName->c_str());
+}
+
 //
 // Dump functions.
 //
