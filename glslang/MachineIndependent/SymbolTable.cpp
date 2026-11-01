@@ -50,6 +50,8 @@ namespace glslang {
 // TType helper function needs a place to live.
 //
 
+TType::~TType() {}
+
 //
 // Recursively generate mangled names.
 //
