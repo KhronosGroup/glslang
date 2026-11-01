@@ -949,4 +949,56 @@ void TSymbolTable::copyTable(const TSymbolTable& copyOf)
         table.push_back(copyOf.table[i]->clone());
 }
 
+void TSymbolTable::relateToOperator(const char* name, TOperator op)
+{
+    for (unsigned int level = 0; level < table.size(); ++level)
+        table[level]->relateToOperator(name, op);
+}
+
+void TSymbolTable::setFunctionExtensions(const char* name, int num, const char* const extensions[])
+{
+    for (unsigned int level = 0; level < table.size(); ++level)
+        table[level]->setFunctionExtensions(name, num, extensions);
+}
+
+void TSymbolTable::setFunctionExtensionsCallback(const char* name,
+                                                 std::function<std::vector<const char*>(const char*)> const& func)
+{
+    for (unsigned int level = 0; level < table.size(); ++level)
+        table[level]->setFunctionExtensionsCallback(name, func);
+}
+
+void TSymbolTable::setSingleFunctionExtensions(const char* name, int num, const char* const extensions[])
+{
+    for (unsigned int level = 0; level < table.size(); ++level)
+        table[level]->setSingleFunctionExtensions(name, num, extensions);
+}
+
+void TSymbolTable::setVariableExtensions(const char* name, int numExts, const char* const extensions[])
+{
+    TSymbol* symbol = find(TString(name));
+    if (symbol == nullptr)
+        return;
+
+    symbol->setExtensions(numExts, extensions);
+}
+
+void TSymbolTable::setVariableExtensions(const char* blockName, const char* name, int numExts,
+                                         const char* const extensions[])
+{
+    TSymbol* symbol = find(TString(blockName));
+    if (symbol == nullptr)
+        return;
+    TVariable* variable = symbol->getAsVariable();
+    assert(variable != nullptr);
+
+    const TTypeList& structure = *variable->getAsVariable()->getType().getStruct();
+    for (int member = 0; member < (int)structure.size(); ++member) {
+        if (structure[member].type->getFieldName().compare(name) == 0) {
+            variable->setMemberExtensions(member, numExts, extensions);
+            return;
+        }
+    }
+}
+
 } // end namespace glslang
