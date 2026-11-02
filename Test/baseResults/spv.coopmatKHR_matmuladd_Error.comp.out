@@ -6,7 +6,8 @@ ERROR: 0:50: 'f' : coop matrix A in MulAdd operation has incompatible usage prop
 ERROR: 0:55: 'g' : coop matrix B in MulAdd operation has incompatible usage property, found 2, but needed 1
 ERROR: 0:60: 'h' : coop matrix C in MulAdd operation has incompatible usage property, found 0, but needed 2
 ERROR: 0:60: 'assign' :  cannot convert from ' temp coopmat<3, 3, 3, 0> float16_t' to ' temp coopmat<3, 4, 4, 2> float16_t'
-ERROR: 7 compilation errors.  No code generated.
+ERROR: 0:67: '' : coop matrix A in MulAdd operation has incompatible usage property, found 2, but needed 0
+ERROR: 8 compilation errors.  No code generated.
 
 
 SPIR-V is not generated for failed compile or link

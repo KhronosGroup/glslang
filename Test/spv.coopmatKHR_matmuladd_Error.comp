@@ -58,4 +58,11 @@ void main() {
     coopmat<float16_t, gl_ScopeSubgroup, 3, 3, gl_MatrixUseA> h =
         coopmat<float16_t, gl_ScopeSubgroup, 3, 3, gl_MatrixUseA>(1.0);
     e = coopMatMulAdd(a, d, h);
+
+    // Non-symbol operand: the inner coopMatMulAdd result is an Accumulator matrix
+    // passed as the A operand (needs usage 0). The usage-mismatch diagnostic must
+    // not assume the offending operand is a symbol.
+    coopmat<float16_t, gl_ScopeSubgroup, 3, 3, gl_MatrixUseB> bb;
+    coopMatLoad(bb, block.x, 0, 3, gl_CooperativeMatrixLayoutRowMajor);
+    c = coopMatMulAdd(coopMatMulAdd(a, d, c), bb, c);
 }
