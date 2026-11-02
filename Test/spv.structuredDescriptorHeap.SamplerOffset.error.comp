@@ -1,0 +1,14 @@
+// Explicit sampler packing must preserve descriptor alignment checks.
+#version 460
+#extension GL_EXT_descriptor_heap : require
+#extension GL_EXT_structured_descriptor_heap : require
+
+layout(std430) samplerheap BadOffsets {
+    layout(offset = 2) uint count; // ERROR: alignment 4
+    layout(offset = 8, descriptor_size = 16) sampler descriptor; // ERROR: alignment 16
+    layout(offset = 8, descriptor_size = 16) sampler descriptors[2]; // ERROR: alignment 16
+} badOffsets;
+
+void main()
+{
+}

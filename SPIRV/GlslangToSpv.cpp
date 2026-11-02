@@ -6898,12 +6898,19 @@ std::vector<spv::Id> DescHeapLayoutEmitter::getOrCreateStructMemberOffsets(
     spv::Id currentOffset = makeUint(0);
     for (int i = 0; i < (int)structTyList->size(); ++i) {
         const glslang::TType& memberTy = *(*structTyList)[i].type;
+        const glslang::TQualifier& memberQualifier = memberTy.getQualifier();
 
-        if (memberTy.getQualifier().hasOffset()) {
-            currentOffset = makeUint(memberTy.getQualifier().layoutOffset);
-        } else if (previousMemberTy != nullptr) {
-            spv::Id offsetNotAligned = makeSpecOp(spv::Op::OpIAdd, {currentOffset, getMemberSize(*previousMemberTy)});
-            currentOffset = traverser.builder.createSpecConstantAlignTo(offsetNotAligned, getMemberAlignment(memberTy));
+        if (memberQualifier.hasOffset())
+            currentOffset = makeUint(memberQualifier.layoutOffset);
+        else if (previousMemberTy != nullptr)
+            currentOffset = makeSpecOp(spv::Op::OpIAdd, {currentOffset, getMemberSize(*previousMemberTy)});
+
+        if ((!memberQualifier.hasOffset() && previousMemberTy != nullptr) || memberQualifier.hasAlign()) {
+            spv::Id alignment = getMemberAlignment(memberTy);
+            if (memberQualifier.hasAlign())
+                alignment = traverser.builder.createSpecConstantSelectMax(alignment,
+                                                                          makeUint(memberQualifier.layoutAlign));
+            currentOffset = traverser.builder.createSpecConstantAlignTo(currentOffset, alignment);
         }
 
         memberOffsets.push_back(currentOffset);
@@ -7566,6 +7573,11 @@ void TGlslangToSpvTraverser::updateMemberOffset(const glslang::TType& structType
                 memberSize -= componentSize * (4 - memberType.getVectorSize());
         }
     }
+
+    // Heap offsets are computed here rather than by fixBlockUniformOffsets.
+    // Preserve explicit alignment for heap structs containing only data.
+    if (structType.getQualifier().layoutDescriptorHeap && memberType.getQualifier().hasAlign())
+        memberAlignment = std::max(memberAlignment, memberType.getQualifier().layoutAlign);
 
     // Bump up to member alignment
     glslang::RoundToPow2(currentOffset, memberAlignment);
