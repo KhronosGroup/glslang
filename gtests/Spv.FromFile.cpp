@@ -811,6 +811,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.coopvecTraining.comp",
         "spv.coopvecTraining_Error.comp",
         "spv.coopvecBuiltinsConst.comp",
+        "spv.typeParameterStruct_Error.comp",
         "spv.intcoopmat.comp",
         "spv.intrinsicsInteractWithCoopMat.comp",
         "spv.longVector.comp",

@@ -9509,6 +9509,13 @@ void TParseContext::typeParametersCheck(const TSourceLoc& loc, const TPublicType
 {
     if (parsingBuiltins)
         return;
+    // A structure type parameter only carries its basic type, not its member list, so the
+    // parameterized type would be a structure with no members. Report it and fall back to
+    // float so the rest of the declaration sees a well-formed type.
+    if (publicType.typeParameters && publicType.typeParameters->basicType == EbtStruct) {
+        error(loc, "structure type not allowed as type parameter", "", "");
+        publicType.typeParameters->basicType = EbtFloat;
+    }
     if (publicType.isCoopmatKHR()) {
         if (publicType.typeParameters == nullptr) {
             error(loc, "coopmat missing type parameters", "", "");
