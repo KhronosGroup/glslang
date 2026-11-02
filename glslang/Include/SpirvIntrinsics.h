@@ -62,9 +62,9 @@ struct TSpirvExecutionMode {
     POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
 
     // spirv_execution_mode
-    TMap<int, TVector<const TIntermConstantUnion*>> modes;
+    TMap<int, TVector<TVector<const TIntermConstantUnion*>>> modes;
     // spirv_execution_mode_id
-    TMap<int, TVector<const TIntermTyped*> > modeIds;
+    TMap<int, TVector<TVector<const TIntermTyped*>>> modeIds;
 };
 
 // SPIR-V decorations
