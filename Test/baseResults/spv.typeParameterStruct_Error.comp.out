@@ -1,0 +1,11 @@
+spv.typeParameterStruct_Error.comp
+ERROR: 0:10: '' : structure type not allowed as type parameter 
+ERROR: 0:12: '' : structure type not allowed as type parameter 
+ERROR: 0:13: '' : structure type not allowed as type parameter 
+ERROR: 0:17: '' : structure type not allowed as type parameter 
+ERROR: 0:18: '' : structure type not allowed as type parameter 
+ERROR: 0:19: '' : structure type not allowed as type parameter 
+ERROR: 6 compilation errors.  No code generated.
+
+
+SPIR-V is not generated for failed compile or link
