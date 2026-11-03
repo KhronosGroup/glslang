@@ -13,6 +13,8 @@ void main()
     v2 += v2;
     v3 = v3 * 2.0;
     v4 = v4 + vector<float, 4>(0.0);
+    v4 = v4 * vec4(2.0);
+    v4 *= vec4(0.5);
 
     int n2 = v2.length();
     int n3 = v3.length();

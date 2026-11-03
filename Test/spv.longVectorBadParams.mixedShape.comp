@@ -1,0 +1,40 @@
+#version 450 core
+#extension GL_EXT_long_vector : enable
+
+layout(local_size_x = 1) in;
+
+layout(set = 0, binding = 0) buffer Buf {
+    float o[4];
+} buf;
+
+void main()
+{
+    const vector<float, 8> c = vector<float, 8>(1.5);
+    vector<float, 8> v = vector<float, 8>(2.5);
+    vector<float, 4> v4 = vector<float, 4>(0.5);
+    vector<int, 8> i = vector<int, 8>(3);
+    vec4 f4 = vec4(3.5);
+    ivec4 i4 = ivec4(1);
+    mat4 m = mat4(1.0);
+
+    // a long vector and a vector or matrix of a different shape
+    const vector<float, 8> c0 = c + vec4(1.0);
+    const vector<float, 8> c1 = c * vec4(1.0);
+    const mat4 m0 = mat4(2.0) * c;
+    v = v + f4;
+    v = v - vec2(1.0);
+    f4 = f4 + v;
+    f4 += v;
+    i4 = i4 << i;
+    m = m * v;
+    v = v * m;
+    m = m * v4;
+
+    // a vector<T, N> with N <= 4 and a vector of the same size multiply component-wise
+    v4 = v4 * f4;
+    f4 = f4 * v4;
+    f4 *= v4;
+    v4 *= f4;
+
+    buf.o[0] = c0[0] + c1[1] + m0[0][0] + v[0] + f4[0] + float(i4[0]) + m[0][0] + v4[0];
+}

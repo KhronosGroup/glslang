@@ -2080,7 +2080,7 @@ int TIntermediate::addUsedLocation(const TQualifier& qualifier, const TType& typ
     TBasicType basicTy = type.getBasicType();
     if (basicTy == EbtSampler && type.getSampler().isAttachmentEXT())
         basicTy = type.getSampler().type;
-    TIoRange range(locationRange, componentRange, basicTy, qualifier.hasIndex() ? qualifier.getIndex() : 0, qualifier.centroid, qualifier.smooth, qualifier.flat, qualifier.sample, qualifier.patch);
+    TIoRange range(locationRange, componentRange, basicTy, qualifier.hasIndex() ? qualifier.getIndex() : 0u, qualifier.centroid, qualifier.smooth, qualifier.flat, qualifier.sample, qualifier.patch);
 
     // check for collisions, except for vertex inputs on desktop targeting OpenGL
     if (! (!isEsProfile() && language == EShLangVertex && qualifier.isPipeInput()) || spvVersion.vulkan > 0)
