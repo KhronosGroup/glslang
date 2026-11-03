@@ -593,6 +593,9 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.voidFunction.frag",
         "spv.whileLoop.frag",
         "spv.AofA.frag",
+        "spv.resourceArrayOfArrays.comp",
+        "spv.resourceArrayOfArrays.functions.comp",
+        "spv.resourceArrayOfArrays.specConstant.comp",
         "spv.queryL.frag",
         "spv.separate.frag",
         "spv.shortCircuit.frag",
@@ -980,7 +983,8 @@ INSTANTIATE_TEST_SUITE_P(
 
         // SPV_EXT_descriptor_heap
 
-        "spv.descriptorHeap.ArrayOfArrays.error.comp",
+        "spv.descriptorHeap.ArrayOfArrays.comp",
+        "spv.descriptorHeap.ArrayOfArrays.functions.comp",
         "spv.descriptorHeap.AtomicImage.comp",
         "spv.descriptorHeap.AtomicImage.error.comp",
         "spv.descriptorHeap.Buffer.comp",
@@ -1004,6 +1008,7 @@ INSTANTIATE_TEST_SUITE_P(
 
         // SPV_EXT_structured_descriptor_heap
         "spv.structuredDescriptorHeap.AccelerationStructure.comp",
+        "spv.structuredDescriptorHeap.ArrayOfArrays.comp",
         "spv.structuredDescriptorHeap.Buffer.comp",
         "spv.structuredDescriptorHeap.Uniform.comp",
         "spv.structuredDescriptorHeap.BufferReference.comp",
@@ -1167,7 +1172,6 @@ INSTANTIATE_TEST_SUITE_P(
 INSTANTIATE_TEST_SUITE_P(
     Glsl, VulkanSemantics,
     ::testing::ValuesIn(std::vector<std::string>({
-        "spv.resourceArrayOfArrays.error.comp",
         "vulkan.frag",
         "vulkan.vert",
         "vulkan.comp",
@@ -1379,6 +1383,7 @@ INSTANTIATE_TEST_SUITE_P(
 INSTANTIATE_TEST_SUITE_P(
     Glsl, GlslNonSemanticShaderDebugInfoVulkanLatestTest,
     ::testing::ValuesIn(std::vector<std::string>({
+        "spv.debuginfo.descriptor_heap.array_functions.glsl.comp",
         "spv.debuginfo.rt_types.glsl.rgen",
         "spv.debuginfo.rt_nv_builtins.glsl.rahit",
         "spv.debuginfo.rt_ext_builtins.glsl.rahit",

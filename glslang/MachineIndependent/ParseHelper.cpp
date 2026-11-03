@@ -8614,13 +8614,6 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
         }
     }
 
-    // Vulkan descriptor resources only support a single array dimension.
-    // Other opaque variables, such as ray queries, can be arrays of arrays.
-    if (spvVersion.vulkan > 0 && type.isArrayOfArrays() && qualifier.isUniformOrBuffer() &&
-        (type.isOpaque() || type.getBasicType() == EbtBlock)) {
-        error(loc, "Vulkan only supports a single array level for this resource", "[][]", "");
-    }
-
     // "The offset qualifier can only be used on block members of blocks..."
     if (qualifier.hasOffset()) {
         if (type.getBasicType() == EbtBlock)

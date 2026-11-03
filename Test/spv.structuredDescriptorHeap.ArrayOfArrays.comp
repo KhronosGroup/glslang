@@ -1,0 +1,34 @@
+#version 460
+#extension GL_EXT_descriptor_heap : require
+#extension GL_EXT_structured_descriptor_heap : require
+#extension GL_EXT_scalar_block_layout : require
+
+layout(local_size_x = 1) in;
+
+layout(buffer_type, scalar) buffer DataBuffer {
+    uint values[2][3];
+};
+
+layout(heap_offset = 0) resourceheap Resources {
+    uint values[2][3];
+    DataBuffer buffers[2][3];
+    texture2D textures[2][3];
+} resources;
+
+layout(heap_offset = 0) samplerheap Samplers {
+    sampler states[2][3];
+} samplers;
+
+vec4 sampleRow(texture2D inputs[3], sampler states[3], uint j)
+{
+    return textureLod(sampler2D(inputs[j], states[j]), vec2(0.0), 0.0);
+}
+
+void main()
+{
+    uint i = resources.values[0][0] & 1u;
+    uint j = resources.values[1][2] % 3u;
+    resources.buffers[i][j].values[1][2] = resources.buffers[1][2].values[0][0];
+    vec4 color = sampleRow(resources.textures[i], samplers.states[i], j);
+    resources.buffers[1][2].values[0][0] = uint(color.x);
+}
