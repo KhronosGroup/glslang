@@ -1,0 +1,10 @@
+spv.nv.hitobject-interaction-errors.rgen
+ERROR: 0:13: 'hitObjectTraceRayMotionNV' : required extension not requested: GL_NV_ray_tracing_motion_blur
+ERROR: 0:14: 'hitObjectRecordHitMotionNV' : required extension not requested: GL_NV_ray_tracing_motion_blur
+ERROR: 0:15: 'hitObjectRecordHitWithIndexMotionNV' : required extension not requested: GL_NV_ray_tracing_motion_blur
+ERROR: 0:16: 'hitObjectRecordMissMotionNV' : required extension not requested: GL_NV_ray_tracing_motion_blur
+ERROR: 0:17: 'hitObjectGetCurrentTimeNV' : required extension not requested: GL_NV_ray_tracing_motion_blur
+ERROR: 5 compilation errors.  No code generated.
+
+
+SPIR-V is not generated for failed compile or link

@@ -948,6 +948,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.nv.hitobject-allops.rchit",
         "spv.nv.hitobject-allops.rmiss",
         "spv.nv.hitobject-time.rgen",
+        "spv.nv.hitobject-interaction-errors.rgen",
 
         // SPV_EXT_shader_execution_reorder
 
@@ -957,6 +958,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.ext.hitobject-allops.rmiss",
         "spv.ext.hitobject-time.rgen",
         "spv.ext.hitobject-positions.rchit",
+        "spv.ext.hitobject-interaction-errors.rgen",
 
         // SPV_NV_displacement_micromap
 
