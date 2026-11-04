@@ -3258,6 +3258,26 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
         }
     };
 
+    // Hit object functions that also require an interacting extension to be enabled
+    switch (callNode.getOp()) {
+    case EOpHitObjectTraceRayMotionNV:
+    case EOpHitObjectRecordHitMotionNV:
+    case EOpHitObjectRecordHitWithIndexMotionNV:
+    case EOpHitObjectRecordMissMotionNV:
+    case EOpHitObjectGetCurrentTimeNV:
+    case EOpHitObjectTraceRayMotionEXT:
+    case EOpHitObjectRecordMissMotionEXT:
+    case EOpHitObjectGetCurrentTimeEXT:
+    case EOpHitObjectTraceMotionReorderExecuteEXT:
+        requireExtensions(loc, 1, &E_GL_NV_ray_tracing_motion_blur, fnCandidate.getName().c_str());
+        break;
+    case EOpHitObjectGetIntersectionTriangleVertexPositionsEXT:
+        requireExtensions(loc, 1, &E_GL_EXT_ray_tracing_position_fetch, fnCandidate.getName().c_str());
+        break;
+    default:
+        break;
+    }
+
     switch (callNode.getOp()) {
     case EOpDPdx:
     case EOpDPdxFine:
