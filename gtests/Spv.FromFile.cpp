@@ -990,6 +990,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.descriptorHeap.BufferQualifiers.frag",
         "spv.descriptorHeap.CombinedSampler.error.frag",
         "spv.descriptorHeap.ImageQualifiers.frag",
+        "spv.descriptorHeap.SpecArray.comp",
         "spv.descriptorHeap.Stride.comp",
         "spv.descriptorHeap.DebugPrintf.comp",
         "spv.descriptorHeap.HeapNotArray.error.comp",

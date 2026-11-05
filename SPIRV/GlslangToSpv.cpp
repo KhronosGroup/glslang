@@ -369,8 +369,9 @@ protected:
                                                // rather than a pointer
     std::unordered_map<std::string, spv::Function*> functionMap;
     std::unordered_map<const glslang::TTypeList*, spv::Id> structMap[glslang::ElpCount][glslang::ElmCount];
+    // Share source struct debug types between heap views and their physical layouts.
     std::unordered_map<const glslang::TTypeList*, spv::Id> debugStructMap;
-    std::unordered_map<const glslang::TType*, spv::Id> debugForwardPointers;
+    std::unordered_map<const glslang::TTypeList*, spv::Id> debugForwardPointers;
     // for mapping glslang block indices to spv indices (e.g., due to hidden members),
     // keyed by the block's member list so distinct block types never share a slot:
     std::unordered_map<const glslang::TTypeList*, std::vector<int>> memberRemapper;
@@ -5919,7 +5920,8 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToDebugType(const glslang::TType& 
         const auto* members = type.getStruct();
         if (members == nullptr)
             return builder.makeOpaqueDebugType(type.getTypeName().c_str());
-        const auto found = debugStructMap.find(members);
+        const auto* sourceMembers = glslangIntermediate->getStructSource(members);
+        const auto found = debugStructMap.find(sourceMembers);
         if (found != debugStructMap.end())
             return found->second;
 
@@ -5930,7 +5932,8 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToDebugType(const glslang::TType& 
             if (member.type->hiddenMember() || filterMember(*member.type))
                 continue;
             if (member.type->isReference() &&
-                debugForwardPointers.find(member.type->getReferentType()) == debugForwardPointers.end())
+                debugForwardPointers.find(glslangIntermediate->getStructSource(
+                    member.type->getReferentType()->getStruct())) == debugForwardPointers.end())
                 deferredPointers.push_back(member.type);
             memberTypes.push_back(convertGlslangToDebugType(*member.type, member.type->isReference()));
             spv::StructMemberDebugInfo info{};
@@ -5941,7 +5944,7 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToDebugType(const glslang::TType& 
         }
         spv::Id result = builder.makeCompositeDebugType(memberTypes, memberDebugInfo, type.getTypeName().c_str(),
                                                         spv::NonSemanticShaderDebugInfoStructure);
-        debugStructMap[members] = result;
+        debugStructMap[sourceMembers] = result;
         // Resolve recursive buffer references after recording the containing type.
         for (const auto* reference : deferredPointers)
             convertGlslangToDebugType(*reference);
@@ -5950,10 +5953,14 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToDebugType(const glslang::TType& 
 
     if (type.isReference()) {
         const auto* referent = type.getReferentType();
-        auto found = debugForwardPointers.find(referent);
+        const auto* sourceMembers = glslangIntermediate->getStructSource(referent->getStruct());
+        auto found = debugForwardPointers.find(sourceMembers);
         if (found == debugForwardPointers.end()) {
-            spv::Id pointer = builder.makeForwardPointerDebugType(spv::StorageClass::PhysicalStorageBufferEXT);
-            found = debugForwardPointers.emplace(referent, pointer).first;
+            const auto composite = debugStructMap.find(sourceMembers);
+            const spv::Id pointee = composite == debugStructMap.end() ? spv::NoType : composite->second;
+            spv::Id pointer = builder.makeForwardPointerDebugType(spv::StorageClass::PhysicalStorageBufferEXT,
+                                                                  pointee);
+            found = debugForwardPointers.emplace(sourceMembers, pointer).first;
         }
         spv::Id pointer = found->second;
         if (!forwardReferenceOnly)
@@ -6007,6 +6014,9 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToDebugType(const glslang::TType& 
     case glslang::EbtFloatMXINT8:
         result = builder.makeFloatDebugType(8, builder.makeUintConstant((unsigned)spv::FPEncoding::MXInt8EXT));
         break;
+    case glslang::EbtAccStruct:
+        // Match the name used by Builder::makeAccelerationStructureType.
+        return builder.makeOpaqueDebugType("accelerationStructure");
     default:
         return builder.makeOpaqueDebugType(type.getBasicTypeString().c_str());
     }
@@ -6162,7 +6172,17 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
             // Make the forward pointer, then recurse to convert the structure type, then
             // patch up the forward pointer with a real pointer type.
             if (forwardPointers.find(type.getReferentType()) == forwardPointers.end()) {
-                spv::Id forwardId = builder.makeForwardPointer(spv::StorageClass::PhysicalStorageBufferEXT);
+                spv::Id debugType = spv::NoType;
+                if (options.emitNonSemanticShaderDebugInfo &&
+                    glslangIntermediate->getSource() == glslang::EShSourceGlsl) {
+                    // Array wrapping happens below, after the element pointer is resolved.
+                    // Its debug type must also describe only that pointer.
+                    glslang::TType referenceType;
+                    referenceType.shallowCopy(type);
+                    referenceType.clearArraySizes();
+                    debugType = convertGlslangToDebugType(referenceType, true);
+                }
+                spv::Id forwardId = builder.makeForwardPointer(spv::StorageClass::PhysicalStorageBufferEXT, debugType);
                 forwardPointers[type.getReferentType()] = forwardId;
             }
             spvType = forwardPointers[type.getReferentType()];
@@ -6760,8 +6780,23 @@ spv::Id TGlslangToSpvTraverser::convertGlslangStructToSpvType(const glslang::TTy
     if (useDescHeapIdDecorations)
         descHeapMemberOffsets = descHeapLayout.getOrCreateStructMemberOffsets(type);
 
+    // A heap declaration may have already emitted this source struct's debug
+    // type without a physical SPIR-V type. Reuse it, and also cache types first
+    // encountered through the functional path for later heap declarations.
+    const bool cacheDebugType = options.emitNonSemanticShaderDebugInfo &&
+        glslangIntermediate->getSource() == glslang::EShSourceGlsl;
+    spv::Id debugType = spv::NoType;
+    const auto* sourceMembers = glslangIntermediate->getStructSource(glslangMembers);
+    if (cacheDebugType) {
+        const auto found = debugStructMap.find(sourceMembers);
+        if (found != debugStructMap.end())
+            debugType = found->second;
+    }
+
     // Make the SPIR-V type
-    spv::Id spvType = builder.makeStructType(spvMembers, memberDebugInfo, type.getTypeName().c_str(), false);
+    spv::Id spvType = builder.makeStructType(spvMembers, memberDebugInfo, type.getTypeName().c_str(), false, debugType);
+    if (cacheDebugType)
+        debugStructMap[sourceMembers] = builder.getDebugType(spvType);
     if (! HasNonLayoutQualifiers(type, qualifier))
         structMap[explicitLayout][qualifier.layoutMatrix][glslangMembers] = spvType;
 
@@ -7348,11 +7383,15 @@ spv::Id TGlslangToSpvTraverser::makeArraySizeId(const glslang::TArraySizes& arra
     // First, see if this is sized with a node, meaning a specialization constant:
     glslang::TIntermTyped* specNode = arraySizes.getDimNode(dim);
     if (specNode != nullptr) {
+        // Evaluating a type's size must not replace its caller's access chain.
+        const auto savedAccessChain = builder.getAccessChain();
         builder.clearAccessChain();
         SpecConstantOpModeGuard spec_constant_op_mode_setter(&builder);
         spec_constant_op_mode_setter.turnOnSpecConstantOpMode();
         specNode->traverse(this);
-        return accessChainLoad(specNode->getAsTyped()->getType());
+        const spv::Id size = accessChainLoad(specNode->getAsTyped()->getType());
+        builder.setAccessChain(savedAccessChain);
+        return size;
     }
 
     // Otherwise, need a compile-time (front end) size, get it:

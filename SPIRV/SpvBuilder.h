@@ -459,7 +459,7 @@ public:
     Id makeVoidType();
     Id makeBoolType();
     Id makePointer(StorageClass, Id pointee);
-    Id makeForwardPointer(StorageClass);
+    Id makeForwardPointer(StorageClass, Id debugType = NoType);
     Id makePointerFromForwardPointer(StorageClass, Id forwardPointerType, Id pointee);
     Id makeUntypedPointer(StorageClass storageClass, bool setBufferPointer = false);
     Id makeIntegerType(int width, bool hasSign);   // generic
@@ -475,8 +475,9 @@ public:
     Id makeFloatUE8M0Type();
     Id makeFloatMXINT8Type();
     Id makeFloatOcpMicroscalingType(uint32_t width, FPEncoding encoding, Capability cap);
+    // Different physical layouts can share an existing source-language debug type.
     Id makeStructType(const std::vector<Id>& members, const std::vector<spv::StructMemberDebugInfo>& memberDebugInfo,
-                      const char* name, bool const compilerGenerated = true);
+                      const char* name, bool const compilerGenerated = true, Id debugType = NoType);
     Id makeStructResultType(Id type0, Id type1);
     Id makeVectorType(Id component, int size);
     Id makeMatrixType(Id component, int cols, int rows);
@@ -509,7 +510,7 @@ public:
     Id makeCooperativeMatrixDebugTypeKHR(Id componentDebugType, Id scope, Id rows, Id cols, Id use);
     void setDebugPointerPointee(Id pointerDebugType, Id pointeeDebugType);
     Id makeOpaqueDebugType(char const* const name);
-    Id makeForwardPointerDebugType(StorageClass storageClass);
+    Id makeForwardPointerDebugType(StorageClass storageClass, Id pointeeDebugType = NoType);
     // Convenience wrappers taking functional SPIR-V type ids.
     Id makeArrayDebugType(Id const baseType, Id const componentCount);
     Id makeVectorDebugType(Id const baseType, int const componentCount);

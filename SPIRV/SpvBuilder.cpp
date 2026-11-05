@@ -174,7 +174,7 @@ Id Builder::makePointer(StorageClass storageClass, Id pointee)
     return type->getResultId();
 }
 
-Id Builder::makeForwardPointer(StorageClass storageClass)
+Id Builder::makeForwardPointer(StorageClass storageClass, Id debugType)
 {
     // Caching/uniquifying doesn't work here, because we don't know the
     // pointee type and there can be multiple forward pointers of the same
@@ -185,8 +185,9 @@ Id Builder::makeForwardPointer(StorageClass storageClass)
     module.mapInstruction(type);
 
     if (emitNonSemanticShaderDebugInfo) {
-        const Id debugResultId = makeForwardPointerDebugType(storageClass);
-        debugTypeIdLookup[type->getResultId()] = debugResultId;
+        if (debugType == NoType)
+            debugType = makeForwardPointerDebugType(storageClass);
+        debugTypeIdLookup[type->getResultId()] = debugType;
     }
     return type->getResultId();
 }
@@ -494,7 +495,7 @@ Id Builder::makeFloatMXINT8Type()
 // check for duplicates.
 // For compiler-generated structs, debug info is ignored.
 Id Builder::makeStructType(const std::vector<Id>& members, const std::vector<spv::StructMemberDebugInfo>& memberDebugInfo,
-                           const char* name, bool const compilerGenerated)
+                           const char* name, bool const compilerGenerated, Id debugType)
 {
     // Don't look for previous one, because in the general case,
     // structs can be duplicated except for decorations.
@@ -510,12 +511,14 @@ Id Builder::makeStructType(const std::vector<Id>& members, const std::vector<spv
 
     if (emitNonSemanticShaderDebugInfo && !compilerGenerated) {
         assert(members.size() == memberDebugInfo.size());
-        std::vector<Id> memberDebugTypes;
-        for (Id member : members)
-            memberDebugTypes.push_back(getDebugType(member));
-        auto const debugResultId =
-            makeCompositeDebugType(memberDebugTypes, memberDebugInfo, name, NonSemanticShaderDebugInfoStructure);
-        debugTypeIdLookup[type->getResultId()] = debugResultId;
+        if (debugType == NoType) {
+            std::vector<Id> memberDebugTypes;
+            for (Id member : members)
+                memberDebugTypes.push_back(getDebugType(member));
+            debugType =
+                makeCompositeDebugType(memberDebugTypes, memberDebugInfo, name, NonSemanticShaderDebugInfoStructure);
+        }
+        debugTypeIdLookup[type->getResultId()] = debugType;
     }
 
     return type->getResultId();
@@ -1427,19 +1430,20 @@ Id Builder::makePointerDebugType(StorageClass storageClass, Id const baseType)
     return type->getResultId();
 }
 
-// Emit a OpExtInstWithForwardRefsKHR nonsemantic instruction for a pointer debug type
-// where we don't have the pointee yet. Since we don't have the pointee yet, it just
-// points to itself and we rely on patching it later.
-Id Builder::makeForwardPointerDebugType(StorageClass storageClass)
+// Use a forward reference only while the pointee is unknown. A source composite
+// reused from an earlier declaration must instead use an ordinary OpExtInst.
+Id Builder::makeForwardPointerDebugType(StorageClass storageClass, Id pointeeDebugType)
 {
     const Id scID = makeUintConstant(storageClass);
 
-    this->addExtension(spv::E_SPV_KHR_relaxed_extended_instruction);
+    if (pointeeDebugType == NoType)
+        this->addExtension(spv::E_SPV_KHR_relaxed_extended_instruction);
 
-    Instruction *type = new Instruction(getUniqueId(), makeVoidType(), Op::OpExtInstWithForwardRefsKHR);
+    const Op opcode = pointeeDebugType == NoType ? Op::OpExtInstWithForwardRefsKHR : Op::OpExtInst;
+    Instruction *type = new Instruction(getUniqueId(), makeVoidType(), opcode);
     type->addIdOperand(nonSemanticShaderDebugInfo);
     type->addImmediateOperand(NonSemanticShaderDebugInfoDebugTypePointer);
-    type->addIdOperand(type->getResultId());
+    type->addIdOperand(pointeeDebugType == NoType ? type->getResultId() : pointeeDebugType);
     type->addIdOperand(scID);
     type->addIdOperand(makeUintConstant(0));
 

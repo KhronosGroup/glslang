@@ -11551,6 +11551,7 @@ TIntermNode* TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeL
         // as a referent struct type with no members. Replace the referent type with
         // blockType.
         TType blockNameType(EbtReference, blockType, *blockName);
+        intermediate.recordStructSource(blockNameType.getReferentType()->getStruct(), blockType.getStruct());
         TVariable* blockNameVar = new TVariable(blockName, blockNameType, true);
         if (! symbolTable.insert(*blockNameVar)) {
             TSymbol* existingName = symbolTable.find(*blockName);
@@ -11559,6 +11560,8 @@ TIntermNode* TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeL
                 existingName->getType().getReferentType()->getStruct()->size() == 0 &&
                 existingName->getType().getQualifier().storage == blockType.getQualifier().storage) {
                 existingName->getType().getReferentType()->deepCopy(blockType);
+                intermediate.recordStructSource(existingName->getType().getReferentType()->getStruct(),
+                                                blockType.getStruct());
             } else {
                 error(loc, "block name cannot be redefined", blockName->c_str(), "");
             }
@@ -12620,6 +12623,7 @@ const TTypeList* TParseContext::recordStructCopy(TStructRecord& record, const TT
     const TTypeList* originStruct = originType->getStruct();
     const TTypeList* tmpStruct = tmpType->getStruct();
     if (originHash != tmpHash) {
+        intermediate.recordStructSource(tmpStruct, originStruct);
         auto fixRecords = record.find(originStruct);
         if (fixRecords != record.end()) {
             auto fixRecord = fixRecords->second.find(tmpHash);
