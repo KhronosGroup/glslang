@@ -1,0 +1,39 @@
+#version 460
+#extension GL_EXT_descriptor_heap : require
+#extension GL_EXT_buffer_reference : require
+#extension GL_EXT_nonuniform_qualifier : require
+
+layout(local_size_x = 1) in;
+layout(constant_id = 0) const int NodeCount = 2;
+layout(constant_id = 1) const uint ValueCount = 3;
+
+layout(buffer_reference) buffer Node;
+layout(buffer_reference, std430) buffer Node {
+    Node next[2];
+    uint value;
+};
+
+layout(descriptor_heap, std430) buffer Refs {
+    Node nodes[NodeCount][3];
+} refs[];
+
+layout(descriptor_heap, std430) buffer Values {
+    uint values[ValueCount + 1][2];
+} values[];
+
+layout(push_constant) uniform Indices {
+    uint heap;
+    uint row;
+    uint column;
+} indices;
+
+void main()
+{
+    // The first accesses construct the descriptor payload types on demand.
+    refs[3].nodes[1][2].next[1].value = 7u;
+    values[2].values[1][0] = 11u;
+
+    // Later accesses reuse those types and must retain the dynamic indices.
+    values[indices.heap].values[indices.row][1] =
+        refs[indices.heap].nodes[indices.row][indices.column].value;
+}

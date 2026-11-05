@@ -1,0 +1,14 @@
+#version 460
+#extension GL_EXT_descriptor_heap : require
+
+// Runtime bool arrays must be described without zero-length OpTypeArray types.
+layout(local_size_x = 1) in;
+layout(descriptor_heap, std430) buffer Booleans {
+    bool fixedValues[2][3];
+    bool values[];
+} booleanHeaps[];
+layout(descriptor_heap, std430) buffer Vectors {
+    bvec2 values[];
+} vectorHeaps[];
+
+void main() {}

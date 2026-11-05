@@ -42,6 +42,11 @@ spv.structuredDescriptorHeap.BufferReference.comp
                               MemberName 24(ForwardRefType) 1  "count"
                               Name 25  ""
                               MemberName 25 0  "data"
+                              Name 30  "refHeap"
+                              Name 39  "refHeap"
+                              Name 44  "refHeap"
+                              Name 53  "refHeap"
+                              Name 59  "refHeap"
                               Decorate 9(Output) Block
                               MemberDecorate 9(Output) 0 Offset 0
                               MemberDecorate 9(Output) 1 Offset 16
@@ -110,32 +115,32 @@ spv.structuredDescriptorHeap.BufferReference.comp
          4(main):           2 Function None 3
                5:             Label
               27:     14(ptr) UntypedAccessChainKHR 29 15(resource_heap) 26
-              30:     14(ptr) UntypedAccessChainKHR 20(RefHeap) 27 13
-              31:     16(ptr) Load 30
+     30(refHeap):     14(ptr) UntypedAccessChainKHR 20(RefHeap) 27 13
+              31:     16(ptr) Load 30(refHeap)
               33:     32(ptr) AccessChain 31 13 13
               34:    7(fvec4) Load 33 Aligned 16
               36:     35(ptr) AccessChain 11(outputBuffer) 13
                               Store 36 34
-              39:     14(ptr) UntypedAccessChainKHR 20(RefHeap) 27 38
-              40:     18(ptr) Load 39
+     39(refHeap):     14(ptr) UntypedAccessChainKHR 20(RefHeap) 27 38
+              40:     18(ptr) Load 39(refHeap)
               42:     41(ptr) AccessChain 40 37
               43:      8(int) Load 42 Aligned 4
-              44:     14(ptr) UntypedAccessChainKHR 20(RefHeap) 27 38
-              45:     18(ptr) Load 44
+     44(refHeap):     14(ptr) UntypedAccessChainKHR 20(RefHeap) 27 38
+              45:     18(ptr) Load 44(refHeap)
               47:     46(ptr) AccessChain 45 13
               48:    6(float) Load 47 Aligned 16
               49:      8(int) ConvertFToU 48
               50:      8(int) IAdd 43 49
               52:     51(ptr) AccessChain 11(outputBuffer) 37
                               Store 52 50
-              53:     14(ptr) UntypedAccessChainKHR 20(RefHeap) 27 37
-              54:     17(ptr) Load 53
+     53(refHeap):     14(ptr) UntypedAccessChainKHR 20(RefHeap) 27 37
+              54:     17(ptr) Load 53(refHeap)
               55:     41(ptr) AccessChain 54 13
               56:      8(int) Load 55 Aligned 16
               57:     51(ptr) AccessChain 11(outputBuffer) 38
                               Store 57 56
-              59:     14(ptr) UntypedAccessChainKHR 20(RefHeap) 27 58
-              60:     19(ptr) Load 59
+     59(refHeap):     14(ptr) UntypedAccessChainKHR 20(RefHeap) 27 58
+              60:     19(ptr) Load 59(refHeap)
               61:     41(ptr) AccessChain 60 13
               62:      8(int) Load 61 Aligned 4
               63:     51(ptr) AccessChain 11(outputBuffer) 58

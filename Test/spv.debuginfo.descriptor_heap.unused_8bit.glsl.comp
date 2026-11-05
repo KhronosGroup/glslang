@@ -1,0 +1,14 @@
+#version 460
+#extension GL_EXT_descriptor_heap : require
+#extension GL_EXT_shader_8bit_storage : require
+
+// Keep this separate from shaders that use 8-bit storage or arithmetic.
+layout(local_size_x = 1) in;
+layout(descriptor_heap, std430) buffer Signed {
+    int8_t value;
+} signedHeaps[];
+layout(descriptor_heap, std430) buffer Unsigned {
+    u8vec2 values[2];
+} unsignedHeaps[3];
+
+void main() {}
