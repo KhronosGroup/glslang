@@ -1,0 +1,601 @@
+hlsl.constantbuffer.arrayOfArrays.frag
+Shader version: 500
+gl_FragCoord origin is upper left
+0:? Sequence
+0:15  Function Definition: readRow(block--vf41[3];u1; ( temp 4-component vector of float)
+0:15    Function Parameters: 
+0:15      'inputs' ( uniform 3-element array of block{layout( row_major std140) uniform 4-component vector of float value})
+0:15      'index' ( in uint)
+0:?     Sequence
+0:16      Branch: Return with expression
+0:16        value: direct index for structure (layout( row_major std140) uniform 4-component vector of float)
+0:16          indirect index ( temp block{layout( row_major std140) uniform 4-component vector of float value})
+0:16            'inputs' ( uniform 3-element array of block{layout( row_major std140) uniform 4-component vector of float value})
+0:16            'index' ( in uint)
+0:16          Constant:
+0:16            0 (const int)
+0:20  Function Definition: readMatrix(block--vf41[2][3];u1;u1; ( temp 4-component vector of float)
+0:20    Function Parameters: 
+0:20      'inputs' ( uniform 2-element array of 3-element array of block{layout( row_major std140) uniform 4-component vector of float value})
+0:20      'i' ( in uint)
+0:20      'j' ( in uint)
+0:?     Sequence
+0:21      Branch: Return with expression
+0:21        Function Call: readRow(block--vf41[3];u1; ( temp 4-component vector of float)
+0:21          indirect index ( temp 3-element array of block{layout( row_major std140) uniform 4-component vector of float value})
+0:21            'inputs' ( uniform 2-element array of 3-element array of block{layout( row_major std140) uniform 4-component vector of float value})
+0:21            'i' ( in uint)
+0:21          'j' ( in uint)
+0:28  Function Definition: Reader::read(block--vf41[3];u1; ( temp 4-component vector of float)
+0:28    Function Parameters: 
+0:28      '@this' ( temp structure{ temp float scale})
+0:28      'inputs' ( uniform 3-element array of block{layout( row_major std140) uniform 4-component vector of float value})
+0:28      'index' ( in uint)
+0:?     Sequence
+0:29      Branch: Return with expression
+0:29        vector-scale ( temp 4-component vector of float)
+0:29          Function Call: readRow(block--vf41[3];u1; ( temp 4-component vector of float)
+0:29            'inputs' ( uniform 3-element array of block{layout( row_major std140) uniform 4-component vector of float value})
+0:29            'index' ( in uint)
+0:29          scale: direct index for structure ( temp float)
+0:29            '@this' ( temp structure{ temp float scale})
+0:29            Constant:
+0:29              0 (const uint)
+0:34  Function Definition: @main( ( temp 4-component vector of float)
+0:34    Function Parameters: 
+0:?     Sequence
+0:36      Sequence
+0:36        move second child to first child ( temp 4-component vector of float)
+0:36          'fixedRow' ( temp 4-component vector of float)
+0:36          Function Call: readRow(block--vf41[3];u1; ( temp 4-component vector of float)
+0:36            direct index (layout( binding=0 row_major std140) temp 3-element array of block{layout( row_major std140) uniform 4-component vector of float value})
+0:36              'buffers' (layout( binding=0 row_major std140) uniform 2-element array of 3-element array of block{layout( row_major std140) uniform 4-component vector of float value})
+0:36              Constant:
+0:36                1 (const int)
+0:36            Constant:
+0:36              2 (const uint)
+0:37      Sequence
+0:37        move second child to first child ( temp 4-component vector of float)
+0:37          'dynamicRow' ( temp 4-component vector of float)
+0:37          Function Call: readRow(block--vf41[3];u1; ( temp 4-component vector of float)
+0:37            indirect index (layout( binding=0 row_major std140) temp 3-element array of block{layout( row_major std140) uniform 4-component vector of float value})
+0:37              'buffers' (layout( binding=0 row_major std140) uniform 2-element array of 3-element array of block{layout( row_major std140) uniform 4-component vector of float value})
+0:37              bitwise and ( temp uint)
+0:37                row: direct index for structure (layout( row_major std140) uniform uint)
+0:37                  'anon@0' (layout( binding=3 row_major std140) uniform block{layout( row_major std140) uniform uint row, layout( row_major std140) uniform uint column})
+0:37                  Constant:
+0:37                    0 (const uint)
+0:37                Constant:
+0:37                  1 (const uint)
+0:37            mod ( temp uint)
+0:37              column: direct index for structure (layout( row_major std140) uniform uint)
+0:37                'anon@0' (layout( binding=3 row_major std140) uniform block{layout( row_major std140) uniform uint row, layout( row_major std140) uniform uint column})
+0:37                Constant:
+0:37                  1 (const uint)
+0:37              Constant:
+0:37                3 (const uint)
+0:39      Sequence
+0:39        move second child to first child ( temp 4-component vector of float)
+0:39          'forwarded' ( temp 4-component vector of float)
+0:39          Function Call: readMatrix(block--vf41[2][3];u1;u1; ( temp 4-component vector of float)
+0:39            direct index (layout( binding=1 row_major std140) temp 2-element array of 3-element array of block{layout( row_major std140) uniform 4-component vector of float value})
+0:39              'cubeBuffers' (layout( binding=1 row_major std140) uniform 2-element array of 2-element array of 3-element array of block{layout( row_major std140) uniform 4-component vector of float value})
+0:39              Constant:
+0:39                1 (const int)
+0:39            Constant:
+0:39              1 (const uint)
+0:39            Constant:
+0:39              2 (const uint)
+0:40      Sequence
+0:40        move second child to first child ( temp 4-component vector of float)
+0:40          'wholeRow' ( temp 4-component vector of float)
+0:40          Function Call: readRow(block--vf41[3];u1; ( temp 4-component vector of float)
+0:40            'rowBuffers' (layout( binding=2 row_major std140) uniform 3-element array of block{layout( row_major std140) uniform 4-component vector of float value})
+0:40            Constant:
+0:40              2 (const uint)
+0:44      move second child to first child ( temp float)
+0:44        scale: direct index for structure ( temp float)
+0:44          'reader' ( temp structure{ temp float scale})
+0:44          Constant:
+0:44            0 (const int)
+0:44        Constant:
+0:44          2.000000
+0:45      Sequence
+0:45        move second child to first child ( temp 4-component vector of float)
+0:45          'methodRow' ( temp 4-component vector of float)
+0:45          Function Call: Reader::read(block--vf41[3];u1; ( temp 4-component vector of float)
+0:45            'reader' ( temp structure{ temp float scale})
+0:45            direct index (layout( binding=0 row_major std140) temp 3-element array of block{layout( row_major std140) uniform 4-component vector of float value})
+0:45              'buffers' (layout( binding=0 row_major std140) uniform 2-element array of 3-element array of block{layout( row_major std140) uniform 4-component vector of float value})
+0:45              Constant:
+0:45                1 (const int)
+0:45            Constant:
+0:45              2 (const uint)
+0:46      Branch: Return with expression
+0:46        Construct vec4 ( temp 4-component vector of float)
+0:46          add ( temp float)
+0:46            direct index ( temp float)
+0:46              'fixedRow' ( temp 4-component vector of float)
+0:46              Constant:
+0:46                0 (const int)
+0:46            direct index ( temp float)
+0:46              'methodRow' ( temp 4-component vector of float)
+0:46              Constant:
+0:46                0 (const int)
+0:46          direct index ( temp float)
+0:46            'dynamicRow' ( temp 4-component vector of float)
+0:46            Constant:
+0:46              1 (const int)
+0:46          direct index ( temp float)
+0:46            'forwarded' ( temp 4-component vector of float)
+0:46            Constant:
+0:46              2 (const int)
+0:46          direct index ( temp float)
+0:46            'wholeRow' ( temp 4-component vector of float)
+0:46            Constant:
+0:46              3 (const int)
+0:34  Function Definition: main( ( temp void)
+0:34    Function Parameters: 
+0:?     Sequence
+0:34      move second child to first child ( temp 4-component vector of float)
+0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float)
+0:34        Function Call: @main( ( temp 4-component vector of float)
+0:?   Linker Objects
+0:?     'buffers' (layout( binding=0 row_major std140) uniform 2-element array of 3-element array of block{layout( row_major std140) uniform 4-component vector of float value})
+0:?     'cubeBuffers' (layout( binding=1 row_major std140) uniform 2-element array of 2-element array of 3-element array of block{layout( row_major std140) uniform 4-component vector of float value})
+0:?     'rowBuffers' (layout( binding=2 row_major std140) uniform 3-element array of block{layout( row_major std140) uniform 4-component vector of float value})
+0:?     'anon@0' (layout( binding=3 row_major std140) uniform block{layout( row_major std140) uniform uint row, layout( row_major std140) uniform uint column})
+0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float)
+
+
+Linked fragment stage:
+
+
+Shader version: 500
+gl_FragCoord origin is upper left
+0:? Sequence
+0:15  Function Definition: readRow(block--vf41[3];u1; ( temp 4-component vector of float)
+0:15    Function Parameters: 
+0:15      'inputs' ( uniform 3-element array of block{layout( row_major std140) uniform 4-component vector of float value})
+0:15      'index' ( in uint)
+0:?     Sequence
+0:16      Branch: Return with expression
+0:16        value: direct index for structure (layout( row_major std140) uniform 4-component vector of float)
+0:16          indirect index ( temp block{layout( row_major std140) uniform 4-component vector of float value})
+0:16            'inputs' ( uniform 3-element array of block{layout( row_major std140) uniform 4-component vector of float value})
+0:16            'index' ( in uint)
+0:16          Constant:
+0:16            0 (const int)
+0:20  Function Definition: readMatrix(block--vf41[2][3];u1;u1; ( temp 4-component vector of float)
+0:20    Function Parameters: 
+0:20      'inputs' ( uniform 2-element array of 3-element array of block{layout( row_major std140) uniform 4-component vector of float value})
+0:20      'i' ( in uint)
+0:20      'j' ( in uint)
+0:?     Sequence
+0:21      Branch: Return with expression
+0:21        Function Call: readRow(block--vf41[3];u1; ( temp 4-component vector of float)
+0:21          indirect index ( temp 3-element array of block{layout( row_major std140) uniform 4-component vector of float value})
+0:21            'inputs' ( uniform 2-element array of 3-element array of block{layout( row_major std140) uniform 4-component vector of float value})
+0:21            'i' ( in uint)
+0:21          'j' ( in uint)
+0:28  Function Definition: Reader::read(block--vf41[3];u1; ( temp 4-component vector of float)
+0:28    Function Parameters: 
+0:28      '@this' ( temp structure{ temp float scale})
+0:28      'inputs' ( uniform 3-element array of block{layout( row_major std140) uniform 4-component vector of float value})
+0:28      'index' ( in uint)
+0:?     Sequence
+0:29      Branch: Return with expression
+0:29        vector-scale ( temp 4-component vector of float)
+0:29          Function Call: readRow(block--vf41[3];u1; ( temp 4-component vector of float)
+0:29            'inputs' ( uniform 3-element array of block{layout( row_major std140) uniform 4-component vector of float value})
+0:29            'index' ( in uint)
+0:29          scale: direct index for structure ( temp float)
+0:29            '@this' ( temp structure{ temp float scale})
+0:29            Constant:
+0:29              0 (const uint)
+0:34  Function Definition: @main( ( temp 4-component vector of float)
+0:34    Function Parameters: 
+0:?     Sequence
+0:36      Sequence
+0:36        move second child to first child ( temp 4-component vector of float)
+0:36          'fixedRow' ( temp 4-component vector of float)
+0:36          Function Call: readRow(block--vf41[3];u1; ( temp 4-component vector of float)
+0:36            direct index (layout( binding=0 row_major std140) temp 3-element array of block{layout( row_major std140) uniform 4-component vector of float value})
+0:36              'buffers' (layout( binding=0 row_major std140) uniform 2-element array of 3-element array of block{layout( row_major std140) uniform 4-component vector of float value})
+0:36              Constant:
+0:36                1 (const int)
+0:36            Constant:
+0:36              2 (const uint)
+0:37      Sequence
+0:37        move second child to first child ( temp 4-component vector of float)
+0:37          'dynamicRow' ( temp 4-component vector of float)
+0:37          Function Call: readRow(block--vf41[3];u1; ( temp 4-component vector of float)
+0:37            indirect index (layout( binding=0 row_major std140) temp 3-element array of block{layout( row_major std140) uniform 4-component vector of float value})
+0:37              'buffers' (layout( binding=0 row_major std140) uniform 2-element array of 3-element array of block{layout( row_major std140) uniform 4-component vector of float value})
+0:37              bitwise and ( temp uint)
+0:37                row: direct index for structure (layout( row_major std140) uniform uint)
+0:37                  'anon@0' (layout( binding=3 row_major std140) uniform block{layout( row_major std140) uniform uint row, layout( row_major std140) uniform uint column})
+0:37                  Constant:
+0:37                    0 (const uint)
+0:37                Constant:
+0:37                  1 (const uint)
+0:37            mod ( temp uint)
+0:37              column: direct index for structure (layout( row_major std140) uniform uint)
+0:37                'anon@0' (layout( binding=3 row_major std140) uniform block{layout( row_major std140) uniform uint row, layout( row_major std140) uniform uint column})
+0:37                Constant:
+0:37                  1 (const uint)
+0:37              Constant:
+0:37                3 (const uint)
+0:39      Sequence
+0:39        move second child to first child ( temp 4-component vector of float)
+0:39          'forwarded' ( temp 4-component vector of float)
+0:39          Function Call: readMatrix(block--vf41[2][3];u1;u1; ( temp 4-component vector of float)
+0:39            direct index (layout( binding=1 row_major std140) temp 2-element array of 3-element array of block{layout( row_major std140) uniform 4-component vector of float value})
+0:39              'cubeBuffers' (layout( binding=1 row_major std140) uniform 2-element array of 2-element array of 3-element array of block{layout( row_major std140) uniform 4-component vector of float value})
+0:39              Constant:
+0:39                1 (const int)
+0:39            Constant:
+0:39              1 (const uint)
+0:39            Constant:
+0:39              2 (const uint)
+0:40      Sequence
+0:40        move second child to first child ( temp 4-component vector of float)
+0:40          'wholeRow' ( temp 4-component vector of float)
+0:40          Function Call: readRow(block--vf41[3];u1; ( temp 4-component vector of float)
+0:40            'rowBuffers' (layout( binding=2 row_major std140) uniform 3-element array of block{layout( row_major std140) uniform 4-component vector of float value})
+0:40            Constant:
+0:40              2 (const uint)
+0:44      move second child to first child ( temp float)
+0:44        scale: direct index for structure ( temp float)
+0:44          'reader' ( temp structure{ temp float scale})
+0:44          Constant:
+0:44            0 (const int)
+0:44        Constant:
+0:44          2.000000
+0:45      Sequence
+0:45        move second child to first child ( temp 4-component vector of float)
+0:45          'methodRow' ( temp 4-component vector of float)
+0:45          Function Call: Reader::read(block--vf41[3];u1; ( temp 4-component vector of float)
+0:45            'reader' ( temp structure{ temp float scale})
+0:45            direct index (layout( binding=0 row_major std140) temp 3-element array of block{layout( row_major std140) uniform 4-component vector of float value})
+0:45              'buffers' (layout( binding=0 row_major std140) uniform 2-element array of 3-element array of block{layout( row_major std140) uniform 4-component vector of float value})
+0:45              Constant:
+0:45                1 (const int)
+0:45            Constant:
+0:45              2 (const uint)
+0:46      Branch: Return with expression
+0:46        Construct vec4 ( temp 4-component vector of float)
+0:46          add ( temp float)
+0:46            direct index ( temp float)
+0:46              'fixedRow' ( temp 4-component vector of float)
+0:46              Constant:
+0:46                0 (const int)
+0:46            direct index ( temp float)
+0:46              'methodRow' ( temp 4-component vector of float)
+0:46              Constant:
+0:46                0 (const int)
+0:46          direct index ( temp float)
+0:46            'dynamicRow' ( temp 4-component vector of float)
+0:46            Constant:
+0:46              1 (const int)
+0:46          direct index ( temp float)
+0:46            'forwarded' ( temp 4-component vector of float)
+0:46            Constant:
+0:46              2 (const int)
+0:46          direct index ( temp float)
+0:46            'wholeRow' ( temp 4-component vector of float)
+0:46            Constant:
+0:46              3 (const int)
+0:34  Function Definition: main( ( temp void)
+0:34    Function Parameters: 
+0:?     Sequence
+0:34      move second child to first child ( temp 4-component vector of float)
+0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float)
+0:34        Function Call: @main( ( temp 4-component vector of float)
+0:?   Linker Objects
+0:?     'buffers' (layout( binding=0 row_major std140) uniform 2-element array of 3-element array of block{layout( row_major std140) uniform 4-component vector of float value})
+0:?     'cubeBuffers' (layout( binding=1 row_major std140) uniform 2-element array of 2-element array of 3-element array of block{layout( row_major std140) uniform 4-component vector of float value})
+0:?     'rowBuffers' (layout( binding=2 row_major std140) uniform 3-element array of block{layout( row_major std140) uniform 4-component vector of float value})
+0:?     'anon@0' (layout( binding=3 row_major std140) uniform block{layout( row_major std140) uniform uint row, layout( row_major std140) uniform uint column})
+0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float)
+
+// Module Version 10000
+// Generated by (magic number): 8000b
+// Id's are bound by 193
+
+                              Capability Shader
+               1:             ExtInstImport  "GLSL.std.450"
+                              MemoryModel Logical GLSL450
+                              EntryPoint Fragment 4  "main" 151
+                              ExecutionMode 4 OriginUpperLeft
+                              Source HLSL 500
+                              Name 4  "main"
+                              Name 8  ""
+                              MemberName 8 0  "value"
+                              Name 17  "readRow(block--vf41[3];u1;"
+                              Name 15  "inputs"
+                              Name 16  "index"
+                              Name 27  "readMatrix(block--vf41[2][3];u1;u1;"
+                              Name 24  "inputs"
+                              Name 25  "i"
+                              Name 26  "j"
+                              Name 29  "Reader"
+                              MemberName 29(Reader) 0  "scale"
+                              Name 35  "Reader::read(block--vf41[3];u1;"
+                              Name 32  "@this"
+                              Name 33  "inputs"
+                              Name 34  "index"
+                              Name 38  "@main("
+                              Name 54  "readRow(block--vf41[3];u1;.descriptor_array.0"
+                              Name 51  "inputs"
+                              Name 52  "index"
+                              Name 53  "descriptor_offset"
+                              Name 56  "param"
+                              Name 61  "param"
+                              Name 71  "fixedRow"
+                              Name 72  "buffers"
+                              MemberName 72(buffers) 0  "value"
+                              Name 75  "buffers"
+                              Name 81  "readRow(block--vf41[3];u1;.descriptor_array.1"
+                              Name 78  "inputs"
+                              Name 79  "index"
+                              Name 80  "descriptor_offset"
+                              Name 83  "param"
+                              Name 85  "dynamicRow"
+                              Name 86  "Indices"
+                              MemberName 86(Indices) 0  "row"
+                              MemberName 86(Indices) 1  "column"
+                              Name 88  ""
+                              Name 98  "param"
+                              Name 100  "forwarded"
+                              Name 105  "cubeBuffers"
+                              Name 111  "readMatrix(block--vf41[2][3];u1;u1;.descriptor_array.2"
+                              Name 107  "inputs"
+                              Name 108  "i"
+                              Name 109  "j"
+                              Name 110  "descriptor_offset"
+                              Name 113  "param"
+                              Name 114  "param"
+                              Name 116  "wholeRow"
+                              Name 119  "rowBuffers"
+                              Name 120  "param"
+                              Name 122  "reader"
+                              Name 125  "methodRow"
+                              Name 131  "Reader::read(block--vf41[3];u1;.descriptor_array.3"
+                              Name 127  "@this"
+                              Name 128  "inputs"
+                              Name 129  "index"
+                              Name 130  "descriptor_offset"
+                              Name 133  "param"
+                              Name 151  "@entryPointOutput"
+                              Name 172  "readRow(block--vf41[3];u1;.descriptor_array.4"
+                              Name 169  "inputs"
+                              Name 170  "index"
+                              Name 171  "descriptor_offset"
+                              Name 174  "param"
+                              Name 179  "param"
+                              Decorate 8 Block
+                              Decorate 72(buffers) Block
+                              MemberDecorate 72(buffers) 0 Offset 0
+                              Decorate 75(buffers) Binding 0
+                              Decorate 75(buffers) DescriptorSet 0
+                              Decorate 86(Indices) Block
+                              MemberDecorate 86(Indices) 0 Offset 0
+                              MemberDecorate 86(Indices) 1 Offset 4
+                              Decorate 88 Binding 3
+                              Decorate 88 DescriptorSet 0
+                              Decorate 105(cubeBuffers) Binding 1
+                              Decorate 105(cubeBuffers) DescriptorSet 0
+                              Decorate 119(rowBuffers) Binding 2
+                              Decorate 119(rowBuffers) DescriptorSet 0
+                              Decorate 151(@entryPointOutput) Location 0
+               2:             TypeVoid
+               3:             TypeFunction 2
+               6:             TypeFloat 32
+               7:             TypeVector 6(float) 4
+               8:             TypeStruct 7(fvec4)
+               9:             TypeInt 32 0
+              10:      9(int) Constant 3
+              11:             TypeArray 8(struct) 10
+              12:             TypePointer Uniform 11
+              13:             TypePointer Function 9(int)
+              14:             TypeFunction 7(fvec4) 12(ptr) 13(ptr)
+              19:      9(int) Constant 2
+              20:      9(int) Constant 6
+              21:             TypeArray 8(struct) 20
+              22:             TypePointer Uniform 21
+              23:             TypeFunction 7(fvec4) 22(ptr) 13(ptr) 13(ptr)
+      29(Reader):             TypeStruct 6(float)
+              30:             TypePointer Function 29(Reader)
+              31:             TypeFunction 7(fvec4) 30(ptr) 12(ptr) 13(ptr)
+              37:             TypeFunction 7(fvec4)
+              41:             TypeInt 32 1
+              42:     41(int) Constant 0
+              43:             TypePointer Uniform 7(fvec4)
+              50:             TypeFunction 7(fvec4) 22(ptr) 13(ptr) 9(int)
+              64:             TypePointer Function 6(float)
+              70:             TypePointer Function 7(fvec4)
+     72(buffers):             TypeStruct 7(fvec4)
+              73:             TypeArray 72(buffers) 20
+              74:             TypePointer Uniform 73
+     75(buffers):     74(ptr) Variable Uniform
+              76:     41(int) Constant 1
+              77:             TypeFunction 7(fvec4) 74(ptr) 13(ptr) 9(int)
+     86(Indices):             TypeStruct 9(int) 9(int)
+              87:             TypePointer Uniform 86(Indices)
+              88:     87(ptr) Variable Uniform
+              89:             TypePointer Uniform 9(int)
+              92:      9(int) Constant 1
+             101:      9(int) Constant 4
+             102:      9(int) Constant 12
+             103:             TypeArray 72(buffers) 102
+             104:             TypePointer Uniform 103
+105(cubeBuffers):    104(ptr) Variable Uniform
+             106:             TypeFunction 7(fvec4) 104(ptr) 13(ptr) 13(ptr) 9(int)
+             117:             TypeArray 72(buffers) 10
+             118:             TypePointer Uniform 117
+ 119(rowBuffers):    118(ptr) Variable Uniform
+             123:    6(float) Constant 1073741824
+             126:             TypeFunction 7(fvec4) 30(ptr) 74(ptr) 13(ptr) 9(int)
+             135:      9(int) Constant 0
+             150:             TypePointer Output 7(fvec4)
+151(@entryPointOutput):    150(ptr) Variable Output
+             168:             TypeFunction 7(fvec4) 104(ptr) 13(ptr) 9(int)
+         4(main):           2 Function None 3
+               5:             Label
+             152:    7(fvec4) FunctionCall 38(@main()
+                              Store 151(@entryPointOutput) 152
+                              Return
+                              FunctionEnd
+17(readRow(block--vf41[3];u1;):    7(fvec4) Function None 14
+      15(inputs):     12(ptr) FunctionParameter
+       16(index):     13(ptr) FunctionParameter
+              18:             Label
+              40:      9(int) Load 16(index)
+              44:     43(ptr) AccessChain 15(inputs) 40 42
+              45:    7(fvec4) Load 44
+                              ReturnValue 45
+                              FunctionEnd
+27(readMatrix(block--vf41[2][3];u1;u1;):    7(fvec4) Function None 23
+      24(inputs):     22(ptr) FunctionParameter
+           25(i):     13(ptr) FunctionParameter
+           26(j):     13(ptr) FunctionParameter
+              28:             Label
+       56(param):     13(ptr) Variable Function
+              48:      9(int) Load 25(i)
+              49:      9(int) IMul 48 10
+              57:      9(int) Load 26(j)
+                              Store 56(param) 57
+              58:    7(fvec4) FunctionCall 54(readRow(block--vf41[3];u1;.descriptor_array.0) 24(inputs) 56(param) 49
+                              ReturnValue 58
+                              FunctionEnd
+35(Reader::read(block--vf41[3];u1;):    7(fvec4) Function None 31
+       32(@this):     30(ptr) FunctionParameter
+      33(inputs):     12(ptr) FunctionParameter
+       34(index):     13(ptr) FunctionParameter
+              36:             Label
+       61(param):     13(ptr) Variable Function
+              62:      9(int) Load 34(index)
+                              Store 61(param) 62
+              63:    7(fvec4) FunctionCall 17(readRow(block--vf41[3];u1;) 33(inputs) 61(param)
+              65:     64(ptr) AccessChain 32(@this) 42
+              66:    6(float) Load 65
+              67:    7(fvec4) VectorTimesScalar 63 66
+                              ReturnValue 67
+                              FunctionEnd
+      38(@main():    7(fvec4) Function None 37
+              39:             Label
+    71(fixedRow):     70(ptr) Variable Function
+       83(param):     13(ptr) Variable Function
+  85(dynamicRow):     70(ptr) Variable Function
+       98(param):     13(ptr) Variable Function
+  100(forwarded):     70(ptr) Variable Function
+      113(param):     13(ptr) Variable Function
+      114(param):     13(ptr) Variable Function
+   116(wholeRow):     70(ptr) Variable Function
+      120(param):     13(ptr) Variable Function
+     122(reader):     30(ptr) Variable Function
+  125(methodRow):     70(ptr) Variable Function
+      133(param):     13(ptr) Variable Function
+                              Store 83(param) 19
+              84:    7(fvec4) FunctionCall 81(readRow(block--vf41[3];u1;.descriptor_array.1) 75(buffers) 83(param) 10
+                              Store 71(fixedRow) 84
+              90:     89(ptr) AccessChain 88 42
+              91:      9(int) Load 90
+              93:      9(int) BitwiseAnd 91 92
+              94:      9(int) IMul 93 10
+              95:     89(ptr) AccessChain 88 76
+              96:      9(int) Load 95
+              97:      9(int) UMod 96 10
+                              Store 98(param) 97
+              99:    7(fvec4) FunctionCall 81(readRow(block--vf41[3];u1;.descriptor_array.1) 75(buffers) 98(param) 94
+                              Store 85(dynamicRow) 99
+                              Store 113(param) 92
+                              Store 114(param) 19
+             115:    7(fvec4) FunctionCall 111(readMatrix(block--vf41[2][3];u1;u1;.descriptor_array.2) 105(cubeBuffers) 113(param) 114(param) 20
+                              Store 100(forwarded) 115
+                              Store 120(param) 19
+             121:    7(fvec4) FunctionCall 17(readRow(block--vf41[3];u1;) 119(rowBuffers) 120(param)
+                              Store 116(wholeRow) 121
+             124:     64(ptr) AccessChain 122(reader) 42
+                              Store 124 123
+                              Store 133(param) 19
+             134:    7(fvec4) FunctionCall 131(Reader::read(block--vf41[3];u1;.descriptor_array.3) 122(reader) 75(buffers) 133(param) 10
+                              Store 125(methodRow) 134
+             136:     64(ptr) AccessChain 71(fixedRow) 135
+             137:    6(float) Load 136
+             138:     64(ptr) AccessChain 125(methodRow) 135
+             139:    6(float) Load 138
+             140:    6(float) FAdd 137 139
+             141:     64(ptr) AccessChain 85(dynamicRow) 92
+             142:    6(float) Load 141
+             143:     64(ptr) AccessChain 100(forwarded) 19
+             144:    6(float) Load 143
+             145:     64(ptr) AccessChain 116(wholeRow) 10
+             146:    6(float) Load 145
+             147:    7(fvec4) CompositeConstruct 140 142 144 146
+                              ReturnValue 147
+                              FunctionEnd
+54(readRow(block--vf41[3];u1;.descriptor_array.0):    7(fvec4) Function None 50
+      51(inputs):     22(ptr) FunctionParameter
+       52(index):     13(ptr) FunctionParameter
+53(descriptor_offset):      9(int) FunctionParameter
+              55:             Label
+             153:      9(int) Load 52(index)
+             154:      9(int) IAdd 53(descriptor_offset) 153
+             155:     43(ptr) AccessChain 51(inputs) 154 42
+             156:    7(fvec4) Load 155
+                              ReturnValue 156
+                              FunctionEnd
+81(readRow(block--vf41[3];u1;.descriptor_array.1):    7(fvec4) Function None 77
+      78(inputs):     74(ptr) FunctionParameter
+       79(index):     13(ptr) FunctionParameter
+80(descriptor_offset):      9(int) FunctionParameter
+              82:             Label
+             159:      9(int) Load 79(index)
+             160:      9(int) IAdd 80(descriptor_offset) 159
+             161:     43(ptr) AccessChain 78(inputs) 160 42
+             162:    7(fvec4) Load 161
+                              ReturnValue 162
+                              FunctionEnd
+111(readMatrix(block--vf41[2][3];u1;u1;.descriptor_array.2):    7(fvec4) Function None 106
+     107(inputs):    104(ptr) FunctionParameter
+          108(i):     13(ptr) FunctionParameter
+          109(j):     13(ptr) FunctionParameter
+110(descriptor_offset):      9(int) FunctionParameter
+             112:             Label
+      174(param):     13(ptr) Variable Function
+             165:      9(int) Load 108(i)
+             166:      9(int) IMul 165 10
+             167:      9(int) IAdd 110(descriptor_offset) 166
+             175:      9(int) Load 109(j)
+                              Store 174(param) 175
+             176:    7(fvec4) FunctionCall 172(readRow(block--vf41[3];u1;.descriptor_array.4) 107(inputs) 174(param) 167
+                              ReturnValue 176
+                              FunctionEnd
+131(Reader::read(block--vf41[3];u1;.descriptor_array.3):    7(fvec4) Function None 126
+      127(@this):     30(ptr) FunctionParameter
+     128(inputs):     74(ptr) FunctionParameter
+      129(index):     13(ptr) FunctionParameter
+130(descriptor_offset):      9(int) FunctionParameter
+             132:             Label
+      179(param):     13(ptr) Variable Function
+             180:      9(int) Load 129(index)
+                              Store 179(param) 180
+             181:    7(fvec4) FunctionCall 81(readRow(block--vf41[3];u1;.descriptor_array.1) 128(inputs) 179(param) 130(descriptor_offset)
+             182:     64(ptr) AccessChain 127(@this) 42
+             183:    6(float) Load 182
+             184:    7(fvec4) VectorTimesScalar 181 183
+                              ReturnValue 184
+                              FunctionEnd
+172(readRow(block--vf41[3];u1;.descriptor_array.4):    7(fvec4) Function None 168
+     169(inputs):    104(ptr) FunctionParameter
+      170(index):     13(ptr) FunctionParameter
+171(descriptor_offset):      9(int) FunctionParameter
+             173:             Label
+             187:      9(int) Load 170(index)
+             188:      9(int) IAdd 171(descriptor_offset) 187
+             189:     43(ptr) AccessChain 169(inputs) 188 42
+             190:    7(fvec4) Load 189
+                              ReturnValue 190
+                              FunctionEnd

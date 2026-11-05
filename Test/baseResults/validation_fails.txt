@@ -1,7 +1,6 @@
 Test/baseResults/hlsl.attributeC11.frag.out
 Test/baseResults/hlsl.buffer.frag.out
 Test/baseResults/hlsl.cbuffer-offsets.comp.out
-Test/baseResults/hlsl.constantbuffer.frag.out
 Test/baseResults/hlsl.constructimat.frag.out
 Test/baseResults/hlsl.coverage.frag.out
 Test/baseResults/hlsl.emptystructreturn.frag.out
@@ -56,7 +55,6 @@ Test/baseResults/spv.400.frag.out
 Test/baseResults/spv.430.vert.out
 Test/baseResults/spv.450.tesc.out
 Test/baseResults/spv.8bit-16bit-construction.frag.out
-Test/baseResults/spv.AofA.frag.out
 Test/baseResults/spv.atomicFloat.comp.out
 Test/baseResults/spv.bitops.int8int16.frag.out
 Test/baseResults/spv.controlFlowAttributes.frag.out

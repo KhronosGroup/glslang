@@ -1,0 +1,21 @@
+#version 460
+#extension GL_EXT_ray_query : require
+
+layout(local_size_x = 1) in;
+layout(set = 0, binding = 0) uniform accelerationStructureEXT scene;
+
+rayQueryEXT globalQueries[2][2];
+
+void main()
+{
+    rayQueryEXT localQueries[2][2];
+
+    rayQueryInitializeEXT(globalQueries[1][1], scene, 0u, 255u,
+                          vec3(0.0), 0.1, vec3(0.0, 0.0, 1.0), 100.0);
+    rayQueryInitializeEXT(localQueries[1][0], scene, 0u, 255u,
+                          vec3(0.0), 0.1, vec3(0.0, 0.0, 1.0), 100.0);
+    while (rayQueryProceedEXT(globalQueries[1][1])) {
+    }
+    while (rayQueryProceedEXT(localQueries[1][0])) {
+    }
+}

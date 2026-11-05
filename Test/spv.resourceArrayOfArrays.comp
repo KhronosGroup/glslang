@@ -1,0 +1,34 @@
+#version 460
+#extension GL_EXT_nonuniform_qualifier : require
+
+layout(local_size_x = 1) in;
+layout(push_constant) uniform Indices { int i; uint j; int k; } indices;
+
+layout(set = 0, binding = 0) buffer Storage {
+    uint data;
+    uint values[2][3];
+} storageBuffers[3][3];
+layout(set = 0, binding = 1) uniform Uniform { uint data; } uniformBuffers[2][3];
+layout(set = 0, binding = 2) uniform sampler2D combinedSamplers[2][3];
+layout(set = 0, binding = 3) uniform sampler samplers[2][3];
+layout(set = 0, binding = 4) uniform texture2D textures[2][3];
+layout(set = 0, binding = 5, rgba32f) uniform image2D images[2][3];
+layout(set = 0, binding = 6) uniform sampler2D textures3D[2][3][4];
+layout(set = 0, binding = 7) readonly buffer Runtime { uint data; } runtimeBuffers[][3];
+
+void main()
+{
+    int i = indices.i;
+    uint j = indices.j;
+    int k = indices.k;
+    // The descriptor index is 1 * 3 + 2, while the data indices stay separate.
+    storageBuffers[1][2].values[1][2] = uniformBuffers[1][2].data;
+    storageBuffers[i][j].data = runtimeBuffers[i][j].data;
+    storageBuffers[nonuniformEXT(i)][2].data = uniformBuffers[0][nonuniformEXT(j)].data;
+    vec4 color = textureLod(combinedSamplers[i][j], vec2(0.0), 0.0);
+    color += textureLod(sampler2D(textures[nonuniformEXT(i)][j], samplers[i][j]), vec2(0.0), 0.0);
+    color += textureLod(textures3D[i][j][k], vec2(0.0), 0.0);
+    color += imageLoad(images[1][nonuniformEXT(j)], ivec2(0));
+    imageStore(images[i][j], ivec2(0), color);
+    storageBuffers[0][0].data = combinedSamplers.length() + combinedSamplers[0].length();
+}

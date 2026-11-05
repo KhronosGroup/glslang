@@ -209,6 +209,13 @@ Id Builder::makeUntypedPointer(StorageClass storageClass, bool setBufferPointer)
     groupedTypes[enumCast(typeOp)].push_back(type);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
+
+    if (emitNonSemanticShaderDebugInfo && !setBufferPointer) {
+        // Heap function variants pass untyped base pointers as values. Their
+        // debug types must describe a pointer with an unknown pointee.
+        debugTypeIdLookup[type->getResultId()] = makePointerDebugType(storageClass, NoType);
+    }
+
     return type->getResultId();
 }
 
@@ -1381,7 +1388,9 @@ Id Builder::makeOpaqueDebugType(char const* const name)
 
 Id Builder::makePointerDebugType(StorageClass storageClass, Id const baseType)
 {
-    const Id debugBaseType = getDebugType(baseType);
+    // Untyped pointers have no SPIR-V pointee type. DebugInfoNone is the valid
+    // debug operand for that unknown type; NoType itself is not a valid ID.
+    const Id debugBaseType = baseType == NoType ? makeDebugInfoNone() : getDebugType(baseType);
     if (!debugBaseType) {
         return makeDebugInfoNone();
     }
@@ -4742,6 +4751,7 @@ void Builder::clearAccessChain()
 {
     accessChain.base = NoResult;
     accessChain.indexChain.clear();
+    accessChain.descriptorArrayOffset = NoResult;
     accessChain.instr = NoResult;
     accessChain.swizzle.clear();
     accessChain.component = NoResult;

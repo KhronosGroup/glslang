@@ -614,6 +614,11 @@ public:
     bool isSpecConstant(Id resultId) const { return isSpecConstantOpCode(getOpCode(resultId)); }
     unsigned int getConstantScalar(Id resultId) const
         { return module.getInstruction(resultId)->getImmediateOperand(0); }
+    unsigned long long getConstantScalar64(Id resultId) const
+    {
+        return getConstantScalar(resultId) |
+               (static_cast<unsigned long long>(module.getInstruction(resultId)->getImmediateOperand(1)) << 32);
+    }
     StorageClass getStorageClass(Id resultId) const { return getTypeStorageClass(getTypeId(resultId)); }
 
     bool isVariableOpCode(Op opcode) const { return opcode == Op::OpVariable; }
@@ -1059,6 +1064,7 @@ public:
     struct AccessChain {
         Id base;                       // for l-values, pointer to the base object, for r-values, the base object
         std::vector<Id> indexChain;
+        Id descriptorArrayOffset;      // flattened offset of a partially indexed descriptor array
         Id instr;                      // cache the instruction that generates this access chain
         std::vector<unsigned> swizzle; // each std::vector element selects the next GLSL component number
         Id component;                  // a dynamic component index, can coexist with a swizzle,
