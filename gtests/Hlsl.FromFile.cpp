@@ -601,6 +601,7 @@ INSTANTIATE_TEST_SUITE_P(
         {"spv.debuginfo.hlsl.geom", "main"},
         {"spv.debuginfo.hlsl.tesc", "main"},
         {"spv.debuginfo.hlsl.tese", "main"},
+        {"spv.debuginfo.hlsl.noEntry.frag", "main"},
     }),
     FileNameAsCustomTestSuffix
 );
