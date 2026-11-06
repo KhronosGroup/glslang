@@ -118,6 +118,12 @@ void HlslTokenStream::advanceToken()
 
 void HlslTokenStream::recedeToken()
 {
+    // Only tokenBufferSize tokens of history are kept.  Error paths in the grammar can
+    // ask to back up further (e.g., one recede per nested constructor whose argument
+    // list fails to parse); that can't be honored, so leave the stream where it is.
+    if (preTokenStackSize >= tokenBufferSize)
+        return;
+
     pushPreToken(token);
     token = popTokenBuffer();
 }
