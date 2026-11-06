@@ -11440,6 +11440,12 @@ TIntermNode* TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeL
     case EvqVaryingIn:  defaultQualification = globalInputDefaults;      break;
     case EvqVaryingOut: defaultQualification = globalOutputDefaults;     break;
     case EvqShared:     defaultQualification = globalSharedDefaults;     break;
+    case EvqResourceHeap:
+    case EvqSamplerHeap:
+        // Heap data uses scalar packing even without an explicit layout qualifier.
+        defaultQualification.clear();
+        defaultQualification.layoutPacking = ElpScalar;
+        break;
     default:            defaultQualification.clear();                    break;
     }
 
@@ -11918,6 +11924,31 @@ void TParseContext::fixXfbOffsets(TQualifier& qualifier, TTypeList& typeList)
     qualifier.layoutXfbOffset = TQualifier::layoutXfbOffsetEnd;
 }
 
+// Descriptor alignment is supplied by the client API unless descriptor_size is
+// specified. Return zero when an explicit heap offset cannot be checked yet.
+static unsigned int getKnownHeapMemberAlignment(const TType& type)
+{
+    if (type.getQualifier().isBufferType() || type.getBasicType() == EbtSampler ||
+        type.getBasicType() == EbtAccStruct)
+        return type.getQualifier().layoutDescriptorSize;
+
+    if (type.isStruct()) {
+        unsigned int alignment = 1;
+        for (const auto& member : *type.getStruct()) {
+            const unsigned int memberAlignment = getKnownHeapMemberAlignment(*member.type);
+            if (memberAlignment == 0)
+                return 0;
+            alignment = std::max(alignment, memberAlignment);
+        }
+        return alignment;
+    }
+
+    int size;
+    int stride;
+    return TIntermediate::getMemberAlignment(type, size, stride, ElpScalar,
+                                            type.getQualifier().layoutMatrix == ElmRowMajor);
+}
+
 // Calculate and save the offset of each block member, using the recursively
 // defined block offset rules and the user-provided offset and align.
 //
@@ -11928,6 +11959,23 @@ void TParseContext::fixBlockUniformOffsets(TQualifier& qualifier, TTypeList& typ
 {
     if (!storageCanHaveLayoutInBlock(qualifier.storage) && !qualifier.isTaskMemory())
         return;
+
+    if (qualifier.storage == EvqResourceHeap || qualifier.storage == EvqSamplerHeap) {
+        // Keep only user-specified offsets. Descriptor sizes and alignments can
+        // require specialization-constant expressions, which are emitted later.
+        for (const auto& member : typeList) {
+            const TQualifier& memberQualifier = member.type->getQualifier();
+            if (!memberQualifier.hasOffset())
+                continue;
+
+            const unsigned int alignment = getKnownHeapMemberAlignment(*member.type);
+            if (alignment != 0 && static_cast<unsigned int>(memberQualifier.layoutOffset) % alignment != 0)
+                error(member.loc, "must be a multiple of the member's alignment", "offset",
+                      "(layout offset = %d | member alignment = %u)", memberQualifier.layoutOffset, alignment);
+        }
+        return;
+    }
+
     if (qualifier.layoutPacking != ElpStd140 && qualifier.layoutPacking != ElpStd430 && qualifier.layoutPacking != ElpScalar)
         return;
 
