@@ -1,0 +1,20 @@
+hlsl.constructNested.negative.frag
+ERROR: 0:5: ';' : Expected 
+ERROR: 0:5: ';' : Expected 
+ERROR: 0:5: 'expression' : Expected 
+ERROR: 0:5: 'declaration' : Expected 
+(5): error at column 54, HLSL parsing failed.
+ERROR: 5 compilation errors.  No code generated.
+
+
+Shader version: 500
+gl_FragCoord origin is upper left
+
+
+Linked fragment stage:
+
+
+Shader version: 500
+gl_FragCoord origin is upper left
+
+SPIR-V is not generated for failed compile or link
