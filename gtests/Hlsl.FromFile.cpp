@@ -430,6 +430,8 @@ INSTANTIATE_TEST_SUITE_P(
         {"hlsl.structbuffer.frag", "main"},
         {"hlsl.structbuffer.append.frag", "main"},
         {"hlsl.structbuffer.append.fn.frag", "main"},
+        {"hlsl.structbuffer.array.error.frag", "main"},
+        {"hlsl.structbuffer.array.method.error.frag", "main"},
         {"hlsl.structbuffer.atomics.frag", "main"},
         {"hlsl.structbuffer.byte.frag", "main"},
         {"hlsl.structbuffer.coherent.frag", "main"},
