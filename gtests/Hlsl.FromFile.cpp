@@ -221,6 +221,7 @@ INSTANTIATE_TEST_SUITE_P(
         {"hlsl.constructArray.vert", "main"},
         {"hlsl.constructexpr.frag", "main"},
         {"hlsl.constructimat.frag", "main"},
+        {"hlsl.constructNested.negative.frag", "main"},
         {"hlsl.coverage.frag", "main"},
         {"hlsl.depthGreater.frag", "PixelShaderFunction"},
         {"hlsl.depthLess.frag", "PixelShaderFunction"},
