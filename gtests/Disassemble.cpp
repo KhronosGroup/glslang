@@ -39,6 +39,11 @@
 namespace glslangtest {
 namespace {
 
+using DisassembleDeathTest = ::testing::Test;
+
+// Death tests are unavailable on some platforms (e.g. emscripten)
+#if GTEST_HAS_DEATH_TEST
+
 // Disassemble a malformed module; the disassembler must reject it rather than
 // read past the end of the word stream.
 void disassembleBody(std::vector<unsigned int> body)
@@ -49,8 +54,6 @@ void disassembleBody(std::vector<unsigned int> body)
     std::ostringstream out;
     spv::Disassemble(out, words);
 }
-
-using DisassembleDeathTest = ::testing::Test;
 
 TEST_F(DisassembleDeathTest, ShortHeader)
 {
@@ -81,6 +84,8 @@ TEST_F(DisassembleDeathTest, OperandPastEnd)
     // OpGroupMemberDecorate with an unpaired trailing operand
     EXPECT_EXIT(disassembleBody({(5u << 16) | 75, 1, 2, 3, 4}), ::testing::ExitedWithCode(1), "");
 }
+
+#endif // GTEST_HAS_DEATH_TEST
 
 TEST_F(DisassembleDeathTest, ValidModule)
 {
