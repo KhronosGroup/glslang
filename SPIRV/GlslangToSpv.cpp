@@ -7212,11 +7212,15 @@ spv::Id TGlslangToSpvTraverser::makeArraySizeId(const glslang::TArraySizes& arra
     // First, see if this is sized with a node, meaning a specialization constant:
     glslang::TIntermTyped* specNode = arraySizes.getDimNode(dim);
     if (specNode != nullptr) {
+        // Type generation may run while a heap or member access is in progress.
+        const spv::Builder::AccessChain savedAccessChain = builder.getAccessChain();
         builder.clearAccessChain();
         SpecConstantOpModeGuard spec_constant_op_mode_setter(&builder);
         spec_constant_op_mode_setter.turnOnSpecConstantOpMode();
         specNode->traverse(this);
-        return accessChainLoad(specNode->getAsTyped()->getType());
+        const spv::Id sizeId = accessChainLoad(specNode->getType());
+        builder.setAccessChain(savedAccessChain);
+        return sizeId;
     }
 
     // Otherwise, need a compile-time (front end) size, get it:
@@ -12515,9 +12519,10 @@ spv::Id TGlslangToSpvTraverser::createSpvConstant(const glslang::TIntermTyped& n
     if (auto* sn = node.getAsSymbolNode()) {
         spv::Id result;
         if (auto* sub_tree = sn->getConstSubtree()) {
-            // Traverse the constant constructor sub tree like generating normal run-time instructions.
-            // During the AST traversal, if the node is marked as 'specConstant', SpecConstantOpModeGuard
-            // will set the builder into spec constant op instruction generating mode.
+            // Keep specialization mode active through the deferred load as well
+            // as traversal (for example, when extracting a vector component).
+            SpecConstantOpModeGuard spec_constant_op_mode_setter(&builder);
+            spec_constant_op_mode_setter.turnOnSpecConstantOpMode();
             sub_tree->traverse(this);
             result = accessChainLoad(sub_tree->getType());
         } else if (auto* const_union_array = &sn->getConstArray()) {

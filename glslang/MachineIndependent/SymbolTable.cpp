@@ -188,7 +188,8 @@ void TType::buildMangledName(TString& mangledName) const
     }
 
     if (typeParameters) {
-        const int maxSize = 11;
+        // Specialization IDs include scope bits and need the full 64-bit spelling.
+        const int maxSize = 32;
         char buf[maxSize];
         for (int i = 0; i < typeParameters->arraySizes->getNumDims(); ++i) {
             if (typeParameters->arraySizes->getDimNode(i)) {
@@ -205,7 +206,7 @@ void TType::buildMangledName(TString& mangledName) const
     }
 
     if (arraySizes) {
-        const int maxSize = 11;
+        const int maxSize = 32;
         char buf[maxSize];
         for (int i = 0; i < arraySizes->getNumDims(); ++i) {
             if (arraySizes->getDimNode(i)) {

@@ -505,6 +505,8 @@ enum TShaderInterface
     EsiInput,
     EsiOutput,
     EsiNone,
+    EsiResourceHeap,
+    EsiSamplerHeap,
 
     EsiCount
 };
@@ -1949,6 +1951,11 @@ public:
         case EvqUniform:
         case EvqBuffer:
             return EsiUniform;
+        // Match heap blocks by block name, independently of their instance names.
+        case EvqResourceHeap:
+            return EsiResourceHeap;
+        case EvqSamplerHeap:
+            return EsiSamplerHeap;
         }
     }
 
