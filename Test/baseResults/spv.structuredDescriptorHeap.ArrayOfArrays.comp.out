@@ -24,9 +24,13 @@ spv.structuredDescriptorHeap.ArrayOfArrays.comp
                               Name 39  "i"
                               Name 41  "resource_heap"
                               Name 66  "Resources"
+                              Name 69  "resources"
                               Name 73  "j"
+                              Name 76  "resources"
                               Name 81  "DataBuffer"
                               MemberName 81(DataBuffer) 0  "values"
+                              Name 87  "resources"
+                              Name 93  "resources"
                               Name 97  "color"
                               Name 100  "sampler_heap"
                               Name 104  "Samplers"
@@ -37,6 +41,9 @@ spv.structuredDescriptorHeap.ArrayOfArrays.comp
                               Name 111  "descriptor_offset"
                               Name 112  "descriptor_offset"
                               Name 115  "param"
+                              Name 122  "resources"
+                              Name 129  "resources"
+                              Name 133  "samplers"
                               Decorate 41(resource_heap) BuiltIn ResourceHeapEXT
                               Decorate 42 ArrayStride 4
                               Decorate 44 ArrayStride 12
@@ -127,24 +134,24 @@ spv.structuredDescriptorHeap.ArrayOfArrays.comp
            73(j):     15(ptr) Variable Function
        97(color):     96(ptr) Variable Function
       115(param):     15(ptr) Variable Function
-              69:     40(ptr) UntypedAccessChainKHR 66(Resources) 41(resource_heap) 68 68 68
-              70:      8(int) Load 69
+   69(resources):     40(ptr) UntypedAccessChainKHR 66(Resources) 41(resource_heap) 68 68 68
+              70:      8(int) Load 69(resources)
               72:      8(int) BitwiseAnd 70 71
                               Store 39(i) 72
-              76:     40(ptr) UntypedAccessChainKHR 66(Resources) 41(resource_heap) 68 74 75
-              77:      8(int) Load 76
+   76(resources):     40(ptr) UntypedAccessChainKHR 66(Resources) 41(resource_heap) 68 74 75
+              77:      8(int) Load 76(resources)
               78:      8(int) UMod 77 9
                               Store 73(j) 78
               82:      8(int) Load 39(i)
               83:      8(int) IMul 82 9
               84:      8(int) Load 73(j)
               85:      8(int) IAdd 83 84
-              87:     40(ptr) UntypedAccessChainKHR 66(Resources) 41(resource_heap) 74 86
-              89:     88(ptr) BufferPointerEXT 87
+   87(resources):     40(ptr) UntypedAccessChainKHR 66(Resources) 41(resource_heap) 74 86
+              89:     88(ptr) BufferPointerEXT 87(resources)
               91:     90(ptr) AccessChain 89 68 68 68
               92:      8(int) Load 91
-              93:     40(ptr) UntypedAccessChainKHR 66(Resources) 41(resource_heap) 74 85
-              94:     88(ptr) BufferPointerEXT 93
+   93(resources):     40(ptr) UntypedAccessChainKHR 66(Resources) 41(resource_heap) 74 85
+              94:     88(ptr) BufferPointerEXT 93(resources)
               95:     90(ptr) AccessChain 94 68 74 75
                               Store 95 92
               98:      8(int) Load 39(i)
@@ -158,8 +165,8 @@ spv.structuredDescriptorHeap.ArrayOfArrays.comp
              119:    118(ptr) AccessChain 97(color) 53
              120:    6(float) Load 119
              121:      8(int) ConvertFToU 120
-             122:     40(ptr) UntypedAccessChainKHR 66(Resources) 41(resource_heap) 74 86
-             123:     88(ptr) BufferPointerEXT 122
+  122(resources):     40(ptr) UntypedAccessChainKHR 66(Resources) 41(resource_heap) 74 86
+             123:     88(ptr) BufferPointerEXT 122(resources)
              124:     90(ptr) AccessChain 123 68 68 68
                               Store 124 121
                               Return
@@ -188,12 +195,12 @@ spv.structuredDescriptorHeap.ArrayOfArrays.comp
              114:             Label
              127:      8(int) Load 110(j)
              128:      8(int) IAdd 111(descriptor_offset) 127
-             129:     40(ptr) UntypedAccessChainKHR 66(Resources) 108(inputs) 75 128
-             130:           7 Load 129
+  129(resources):     40(ptr) UntypedAccessChainKHR 66(Resources) 108(inputs) 75 128
+             130:           7 Load 129(resources)
              131:      8(int) Load 110(j)
              132:      8(int) IAdd 112(descriptor_offset) 131
-             133:     40(ptr) UntypedAccessChainKHR 104(Samplers) 109(states) 68 132
-             134:          12 Load 133
+   133(samplers):     40(ptr) UntypedAccessChainKHR 104(Samplers) 109(states) 68 132
+             134:          12 Load 133(samplers)
              135:          31 SampledImage 130 134
              136:   16(fvec4) ImageSampleExplicitLod 135 35 Lod 34
                               ReturnValue 136

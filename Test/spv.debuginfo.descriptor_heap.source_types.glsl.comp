@@ -1,0 +1,35 @@
+#version 460
+#extension GL_EXT_descriptor_heap : require
+#extension GL_EXT_structured_descriptor_heap : require
+#extension GL_EXT_buffer_reference : require
+
+// Preserve nested types, array dimensions and recursive buffer references in debug info.
+layout(local_size_x = 1) in;
+layout(constant_id = 0) const int count = 2;
+
+struct Payload {
+    mat2x3 matrix;
+    uvec2 ids[2];
+};
+layout(buffer_reference) buffer Node;
+layout(buffer_reference, std430, buffer_reference_align = 8) buffer Node {
+    Node next;
+    Payload value;
+};
+layout(descriptor_heap, std430) buffer Buffers {
+    Payload value;
+    Node link;
+    uint values[count];
+} heaps[];
+
+layout(buffer_type, std430) buffer Data {
+    Payload value;
+    bool flags[];
+};
+resourceheap View {
+    layout(descriptor_size = 128) Data dataBuffer;
+    Node root;
+    Data dataBuffers[][2];
+} view;
+
+void main() {}

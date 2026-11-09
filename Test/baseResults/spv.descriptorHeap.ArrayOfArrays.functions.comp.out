@@ -84,6 +84,11 @@ spv.descriptorHeap.ArrayOfArrays.functions.comp
                               Name 207  "descriptor_offset"
                               Name 208  "descriptor_offset"
                               Name 211  "param"
+                              Name 220  "textures"
+                              Name 224  "samplers"
+                              Name 235  "images"
+                              Name 242  "textures"
+                              Name 246  "samplers"
                               Decorate 42(inputs) NonWritable
                               Decorate 96(Output) Block
                               MemberDecorate 96(Output) 0 Offset 0
@@ -321,12 +326,12 @@ spv.descriptorHeap.ArrayOfArrays.functions.comp
              155:             Label
              218:     15(int) Load 151(j)
              219:      8(int) IAdd 152(descriptor_offset) 218
-             220:     99(ptr) UntypedAccessChainKHR 106 149(inputs) 219
-             221:           7 Load 220
+   220(textures):     99(ptr) UntypedAccessChainKHR 106 149(inputs) 219
+             221:           7 Load 220(textures)
              222:     15(int) Load 151(j)
              223:      8(int) IAdd 153(descriptor_offset) 222
-             224:     99(ptr) UntypedAccessChainKHR 117 150(states) 223
-             225:          12 Load 224
+   224(samplers):     99(ptr) UntypedAccessChainKHR 117 150(states) 223
+             225:          12 Load 224(samplers)
              226:          55 SampledImage 221 225
              227:   17(fvec4) ImageSampleExplicitLod 226 59 Lod 58
                               ReturnValue 227
@@ -342,8 +347,8 @@ spv.descriptorHeap.ArrayOfArrays.functions.comp
              232:      8(int) IAdd 172(descriptor_offset) 231
              233:     15(int) Load 171(j)
              234:      8(int) IAdd 232 233
-             235:     99(ptr) UntypedAccessChainKHR 167(images_heap) 169(inputs) 91 234
-             236:          36 Load 235
+     235(images):     99(ptr) UntypedAccessChainKHR 167(images_heap) 169(inputs) 91 234
+             236:          36 Load 235(images)
              237:   17(fvec4) ImageRead 236 92
                               ReturnValue 237
                               FunctionEnd
@@ -356,12 +361,12 @@ spv.descriptorHeap.ArrayOfArrays.functions.comp
              210:             Label
              240:     15(int) Load 206(j)
              241:      8(int) IAdd 207(descriptor_offset) 240
-             242:     99(ptr) UntypedAccessChainKHR 106 204(inputs) 241
-             243:           7 Load 242
+   242(textures):     99(ptr) UntypedAccessChainKHR 106 204(inputs) 241
+             243:           7 Load 242(textures)
              244:     15(int) Load 206(j)
              245:      8(int) IAdd 208(descriptor_offset) 244
-             246:     99(ptr) UntypedAccessChainKHR 117 205(states) 245
-             247:          12 Load 246
+   246(samplers):     99(ptr) UntypedAccessChainKHR 117 205(states) 245
+             247:          12 Load 246(samplers)
              248:          55 SampledImage 243 247
              249:   17(fvec4) ImageSampleExplicitLod 248 59 Lod 58
                               ReturnValue 249

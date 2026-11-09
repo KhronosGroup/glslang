@@ -97,6 +97,7 @@ void TIntermediate::warn(TInfoSink& infoSink, const TSourceLoc* loc, EShMessages
 //
 void TIntermediate::merge(TInfoSink& infoSink, TIntermediate& unit)
 {
+    structSources.insert(unit.structSources.begin(), unit.structSources.end());
     mergeCallGraphs(infoSink, unit);
     mergeModes(infoSink, unit);
     mergeTrees(infoSink, unit);

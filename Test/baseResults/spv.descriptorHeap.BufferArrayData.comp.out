@@ -19,8 +19,10 @@ spv.descriptorHeap.BufferArrayData.comp
                               Name 17  "resource_heap"
                               Name 24  "InputData"
                               MemberName 24(InputData) 0  "values"
+                              Name 25  "inputs"
                               Name 38  "OutputData"
                               MemberName 38(OutputData) 0  "values"
+                              Name 41  "outputs"
                               Decorate 17(resource_heap) BuiltIn ResourceHeapEXT
                               DecorateId 20 ArrayStrideIdEXT 19
                               Decorate 22 ArrayStride 16
@@ -70,16 +72,16 @@ spv.descriptorHeap.BufferArrayData.comp
          4(main):           2 Function None 3
                5:             Label
       12(values):     11(ptr) Variable Function
-              25:     16(ptr) UntypedAccessChainKHR 20 17(resource_heap) 21
-              27:     26(ptr) BufferPointerEXT 25
+      25(inputs):     16(ptr) UntypedAccessChainKHR 20 17(resource_heap) 21
+              27:     26(ptr) BufferPointerEXT 25(inputs)
               29:     28(ptr) AccessChain 27 21 14 15
               30:      6(int) Load 29
               32:     31(ptr) AccessChain 12(values) 14 15
                               Store 32 30
               39:     31(ptr) AccessChain 12(values) 14 15
               40:      6(int) Load 39
-              41:     16(ptr) UntypedAccessChainKHR 35 17(resource_heap) 21
-              43:     42(ptr) BufferPointerEXT 41
+     41(outputs):     16(ptr) UntypedAccessChainKHR 35 17(resource_heap) 21
+              43:     42(ptr) BufferPointerEXT 41(outputs)
               45:     44(ptr) AccessChain 43 21 14 15
                               Store 45 40
                               Return

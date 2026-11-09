@@ -1,0 +1,91 @@
+hlsl.append.typeMismatch.geom
+ERROR: 0:16: 'Append' : argument type does not match stream output type 
+ERROR: 0:17: 'Append' : argument type does not match stream output type 
+ERROR: 2 compilation errors.  No code generated.
+
+
+Shader version: 500
+invocations = -1
+max_vertices = 3
+input primitive = triangles
+output primitive = triangle_strip
+ERROR: node is still EOpNull!
+0:14  Function Definition: @main(u1[3];struct-PSInput-vf4-vf41; ( temp void)
+0:14    Function Parameters: 
+0:14      'vid' ( in 3-element array of uint)
+0:14      'stream' ( out structure{ temp 4-component vector of float pos,  temp 4-component vector of float color})
+0:?     Sequence
+0:15      Sequence
+0:15        move second child to first child ( temp structure{ temp 4-component vector of float pos})
+0:15          'o' ( temp structure{ temp 4-component vector of float pos})
+0:15          Constant:
+0:15            0.000000
+0:15            0.000000
+0:15            0.000000
+0:15            0.000000
+0:16      Sequence
+0:16        'o' ( temp structure{ temp 4-component vector of float pos})
+0:16        EmitVertex ( temp void)
+0:17      Sequence
+0:17        Constant:
+0:17          1.000000
+0:17        EmitVertex ( temp void)
+0:14  Function Definition: main( ( temp void)
+0:14    Function Parameters: 
+0:?     Sequence
+0:14      move second child to first child ( temp 3-element array of uint)
+0:?         'vid' ( temp 3-element array of uint)
+0:?         'vid' (layout( location=0) in 3-element array of uint)
+0:14      Function Call: @main(u1[3];struct-PSInput-vf4-vf41; ( temp void)
+0:?         'vid' ( temp 3-element array of uint)
+0:?         'stream' ( temp structure{ temp 4-component vector of float pos,  temp 4-component vector of float color})
+0:?   Linker Objects
+0:?     'vid' (layout( location=0) in 3-element array of uint)
+0:?     'stream.pos' ( out 4-component vector of float Position)
+0:?     'stream.color' (layout( location=0) out 4-component vector of float)
+
+
+Linked geometry stage:
+
+
+Shader version: 500
+invocations = 1
+max_vertices = 3
+input primitive = triangles
+output primitive = triangle_strip
+ERROR: node is still EOpNull!
+0:14  Function Definition: @main(u1[3];struct-PSInput-vf4-vf41; ( temp void)
+0:14    Function Parameters: 
+0:14      'vid' ( in 3-element array of uint)
+0:14      'stream' ( out structure{ temp 4-component vector of float pos,  temp 4-component vector of float color})
+0:?     Sequence
+0:15      Sequence
+0:15        move second child to first child ( temp structure{ temp 4-component vector of float pos})
+0:15          'o' ( temp structure{ temp 4-component vector of float pos})
+0:15          Constant:
+0:15            0.000000
+0:15            0.000000
+0:15            0.000000
+0:15            0.000000
+0:16      Sequence
+0:16        'o' ( temp structure{ temp 4-component vector of float pos})
+0:16        EmitVertex ( temp void)
+0:17      Sequence
+0:17        Constant:
+0:17          1.000000
+0:17        EmitVertex ( temp void)
+0:14  Function Definition: main( ( temp void)
+0:14    Function Parameters: 
+0:?     Sequence
+0:14      move second child to first child ( temp 3-element array of uint)
+0:?         'vid' ( temp 3-element array of uint)
+0:?         'vid' (layout( location=0) in 3-element array of uint)
+0:14      Function Call: @main(u1[3];struct-PSInput-vf4-vf41; ( temp void)
+0:?         'vid' ( temp 3-element array of uint)
+0:?         'stream' ( temp structure{ temp 4-component vector of float pos,  temp 4-component vector of float color})
+0:?   Linker Objects
+0:?     'vid' (layout( location=0) in 3-element array of uint)
+0:?     'stream.pos' ( out 4-component vector of float Position)
+0:?     'stream.color' (layout( location=0) out 4-component vector of float)
+
+SPIR-V is not generated for failed compile or link

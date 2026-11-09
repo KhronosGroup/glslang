@@ -1,0 +1,20 @@
+#version 450 core
+#extension GL_KHR_memory_scope_semantics : enable
+#extension GL_KHR_cooperative_matrix : enable
+#extension GL_NV_cooperative_vector : enable
+#extension GL_EXT_long_vector : enable
+#extension GL_ARM_tensors : enable
+
+layout(local_size_x = 64) in;
+
+layout(set = 0, binding = 0) uniform tensorARM<struct S0 { float a; }, 1> t;
+
+void fm(coopmat<struct S1 { float a; }, gl_ScopeSubgroup, 8, 8, gl_MatrixUseA> m) { }
+coopvecNV<struct S2 { float a; }, 4> fv();
+
+void main()
+{
+    coopvecNV<struct S3 { float a; }, 4> v;
+    vector<struct S4 { float a; }, 4> lv;
+    coopmat<struct S5 { float a; }, gl_ScopeSubgroup, 8, 8, gl_MatrixUseA> m;
+}
