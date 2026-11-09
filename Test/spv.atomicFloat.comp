@@ -19,7 +19,6 @@ layout(binding = 0, r32f) volatile coherent uniform image1D        fimage1D;
 layout(binding = 1, r32f) volatile coherent uniform image1DArray   fimage1DArray;
 layout(binding = 2, r32f) volatile coherent uniform image2D        fimage2D;
 layout(binding = 3, r32f) volatile coherent uniform image2DArray   fimage2DArray;
-layout(binding = 4, r32f) volatile coherent uniform image2DRect    fimage2DRect;
 layout(binding = 5, r32f) volatile coherent uniform imageCube      fimageCube;
 layout(binding = 6, r32f) volatile coherent uniform imageCubeArray fimageCubeArray;
 layout(binding = 9, r32f) volatile coherent uniform image3D        fimage3D;
@@ -118,21 +117,6 @@ void main()
     buf.dataf += atomf;
 
     imageAtomicStore(fimage2D, ivec2(2,2), atomf, gl_ScopeDevice, gl_StorageSemanticsImage, gl_SemanticsRelease);
-    buf.dataf += atomf;
-
-    // image atomics on 2D Rect:
-    atomf = imageAtomicAdd(fimage2DRect, ivec2(0,0), 2.0);
-    buf.dataf += atomf;
-    atomf = imageAtomicAdd(fimage2DRect, ivec2(1,1), 3.0, gl_ScopeDevice, gl_StorageSemanticsImage , gl_SemanticsAcquireRelease);
-    buf.dataf += atomf;
-
-    atomf = imageAtomicExchange(fimage2DRect, ivec2(1,0), 4.0, gl_ScopeDevice, gl_StorageSemanticsImage, gl_SemanticsAcquireRelease);
-    buf.dataf += atomf;
-
-    atomf = imageAtomicLoad(fimage2DRect, ivec2(1,1), gl_ScopeDevice, gl_StorageSemanticsImage, gl_SemanticsAcquire);
-    buf.dataf += atomf;
-
-    imageAtomicStore(fimage2DRect, ivec2(2,2), atomf, gl_ScopeDevice, gl_StorageSemanticsImage, gl_SemanticsRelease);
     buf.dataf += atomf;
 
     // image atomics on 2D Array:

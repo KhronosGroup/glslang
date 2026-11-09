@@ -23,6 +23,8 @@ spv.structuredDescriptorHeap.MatrixLayout.comp
                               Name 11  "resultBuffer"
                               Name 15  "resource_heap"
                               Name 37  "MatrixHeap"
+                              Name 38  "matrixHeap"
+                              Name 43  "matrixHeap"
                               Decorate 9(Result) Block
                               MemberDecorate 9(Result) 0 Offset 0
                               MemberDecorate 9(Result) 1 Offset 16
@@ -79,12 +81,12 @@ spv.structuredDescriptorHeap.MatrixLayout.comp
               49:   47(ivec3) ConstantComposite 48 48 48
          4(main):           2 Function None 3
                5:             Label
-              38:     14(ptr) UntypedAccessChainKHR 37(MatrixHeap) 15(resource_heap) 13 13
-              39:    7(fvec3) Load 38
+  38(matrixHeap):     14(ptr) UntypedAccessChainKHR 37(MatrixHeap) 15(resource_heap) 13 13
+              39:    7(fvec3) Load 38(matrixHeap)
               41:     40(ptr) AccessChain 11(resultBuffer) 13
                               Store 41 39
-              43:     14(ptr) UntypedAccessChainKHR 37(MatrixHeap) 15(resource_heap) 42 13
-              44:    8(fvec4) Load 43
+  43(matrixHeap):     14(ptr) UntypedAccessChainKHR 37(MatrixHeap) 15(resource_heap) 42 13
+              44:    8(fvec4) Load 43(matrixHeap)
               46:     45(ptr) AccessChain 11(resultBuffer) 42
                               Store 46 44
                               Return

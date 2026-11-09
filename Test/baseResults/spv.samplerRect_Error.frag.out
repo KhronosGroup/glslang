@@ -1,0 +1,12 @@
+spv.samplerRect_Error.frag
+ERROR: 0:3: 'sampler2DRect' : Reserved word. 
+ERROR: 0:4: 'sampler2DRectShadow' : Reserved word. 
+ERROR: 0:5: 'isampler2DRect' : Reserved word. 
+ERROR: 0:6: 'usampler2DRect' : Reserved word. 
+ERROR: 0:8: 'image2DRect' : Reserved word. 
+ERROR: 0:9: 'uimage2DRect' : Reserved word. 
+ERROR: 0:10: 'iimage2DRect' : Reserved word. 
+ERROR: 7 compilation errors.  No code generated.
+
+
+SPIR-V is not generated for failed compile or link

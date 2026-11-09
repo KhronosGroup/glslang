@@ -23,6 +23,8 @@ spv.descriptorHeap.BufferQualifiers.frag
                               MemberName 17(WriteSSBO) 0  "value"
                               Name 20  "ReadSSBO"
                               MemberName 20(ReadSSBO) 0  "value"
+                              Name 21  "reads"
+                              Name 27  "writeHeap"
                               Decorate 7(resource_heap) BuiltIn ResourceHeapEXT
                               DecorateId 11 ArrayStrideIdEXT 10
                               Decorate 14(WriteHeap) Block
@@ -57,12 +59,12 @@ spv.descriptorHeap.BufferQualifiers.frag
               28:             TypePointer StorageBuffer 17(WriteSSBO)
          4(main):           2 Function None 3
                5:             Label
-              21:      6(ptr) UntypedAccessChainKHR 19 7(resource_heap) 16
-              23:     22(ptr) BufferPointerEXT 21
+       21(reads):      6(ptr) UntypedAccessChainKHR 19 7(resource_heap) 16
+              23:     22(ptr) BufferPointerEXT 21(reads)
               25:     24(ptr) AccessChain 23 16
               26:      9(int) Load 25
-              27:      6(ptr) UntypedAccessChainKHR 14(WriteHeap) 7(resource_heap) 16 18
-              29:     28(ptr) BufferPointerEXT 27
+   27(writeHeap):      6(ptr) UntypedAccessChainKHR 14(WriteHeap) 7(resource_heap) 16 18
+              29:     28(ptr) BufferPointerEXT 27(writeHeap)
               30:     24(ptr) AccessChain 29 16
                               Store 30 26
                               Return

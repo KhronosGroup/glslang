@@ -25,6 +25,8 @@ spv.structuredDescriptorHeap.Offset16Bit.comp
                               MemberName 19(DataBuffer) 0  "data"
                               Name 28  "signedOffset"
                               Name 31  "SignedHeap"
+                              Name 33  "signedHeap"
+                              Name 39  "unsignedHeap"
                               Decorate 7(resource_heap) BuiltIn ResourceHeapEXT
                               Decorate 12(unsignedOffset) SpecId 0
                               MemberDecorateIdEXT 16(UnsignedHeap) 0 OffsetIdEXT 15
@@ -70,12 +72,12 @@ spv.structuredDescriptorHeap.Offset16Bit.comp
               44:   42(ivec3) ConstantComposite 43 43 43
          4(main):           2 Function None 3
                5:             Label
-              33:      6(ptr) UntypedAccessChainKHR 31(SignedHeap) 7(resource_heap) 32
-              35:     34(ptr) BufferPointerEXT 33
+  33(signedHeap):      6(ptr) UntypedAccessChainKHR 31(SignedHeap) 7(resource_heap) 32
+              35:     34(ptr) BufferPointerEXT 33(signedHeap)
               37:     36(ptr) AccessChain 35 18
               38:      9(int) Load 37
-              39:      6(ptr) UntypedAccessChainKHR 16(UnsignedHeap) 7(resource_heap) 18
-              40:     34(ptr) BufferPointerEXT 39
+39(unsignedHeap):      6(ptr) UntypedAccessChainKHR 16(UnsignedHeap) 7(resource_heap) 18
+              40:     34(ptr) BufferPointerEXT 39(unsignedHeap)
               41:     36(ptr) AccessChain 40 18
                               Store 41 38
                               Return

@@ -23,6 +23,8 @@ spv.structuredDescriptorHeap.Buffer.comp
                               Name 47  "DataBuffer"
                               MemberName 47(DataBuffer) 0  "data0"
                               MemberName 47(DataBuffer) 1  "data1"
+                              Name 50  "bufferHeap"
+                              Name 56  "bufferHeap"
                               Decorate 7(resource_heap) BuiltIn ResourceHeapEXT
                               MemberDecorateIdEXT 20(Material) 0 OffsetIdEXT 12
                               MemberDecorateIdEXT 20(Material) 1 OffsetIdEXT 19
@@ -88,12 +90,12 @@ spv.structuredDescriptorHeap.Buffer.comp
               61:   59(ivec3) ConstantComposite 60 60 60
          4(main):           2 Function None 3
                5:             Label
-              50:      6(ptr) UntypedAccessChainKHR 44(BufferHeap) 7(resource_heap) 48 49 46
-              52:     51(ptr) BufferPointerEXT 50
+  50(bufferHeap):      6(ptr) UntypedAccessChainKHR 44(BufferHeap) 7(resource_heap) 48 49 46
+              52:     51(ptr) BufferPointerEXT 50(bufferHeap)
               54:     53(ptr) AccessChain 52 46
               55:      8(int) Load 54
-              56:      6(ptr) UntypedAccessChainKHR 44(BufferHeap) 7(resource_heap) 46
-              57:     51(ptr) BufferPointerEXT 56
+  56(bufferHeap):      6(ptr) UntypedAccessChainKHR 44(BufferHeap) 7(resource_heap) 46
+              57:     51(ptr) BufferPointerEXT 56(bufferHeap)
               58:     53(ptr) AccessChain 57 46
                               Store 58 55
                               Return

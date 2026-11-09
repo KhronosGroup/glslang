@@ -22,6 +22,7 @@ spv.structuredDescriptorHeap.OffsetConstant.comp
                               Name 15  "SSBO_B"
                               MemberName 15(SSBO_B) 0  "x_b"
                               MemberName 15(SSBO_B) 1  "y_b"
+                              Name 17  "bufferHeap"
                               Decorate 7(resource_heap) BuiltIn ResourceHeapEXT
                               MemberDecorateIdEXT 12(BufferHeap) 0 OffsetIdEXT 11
                               Decorate 15(SSBO_B) Block
@@ -48,8 +49,8 @@ spv.structuredDescriptorHeap.OffsetConstant.comp
               24:   22(ivec3) ConstantComposite 23 23 23
          4(main):           2 Function None 3
                5:             Label
-              17:      6(ptr) UntypedAccessChainKHR 12(BufferHeap) 7(resource_heap) 14
-              19:     18(ptr) BufferPointerEXT 17
+  17(bufferHeap):      6(ptr) UntypedAccessChainKHR 12(BufferHeap) 7(resource_heap) 14
+              19:     18(ptr) BufferPointerEXT 17(bufferHeap)
               21:     20(ptr) AccessChain 19 14
                               Store 21 16
                               Return

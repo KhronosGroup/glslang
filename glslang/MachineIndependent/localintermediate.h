@@ -475,6 +475,29 @@ public:
 
     void setTreeRoot(TIntermNode* r) { treeRoot = r; }
     TIntermNode* getTreeRoot() const { return treeRoot; }
+    // Layout propagation and buffer references copy member lists without a new
+    // source declaration. Preserve that identity, including nested structs.
+    void recordStructSource(const TTypeList* copy, const TTypeList* original)
+    {
+        if (copy == nullptr || original == nullptr || copy == original ||
+            !structSources.emplace(copy, getStructSource(original)).second)
+            return;
+        assert(copy->size() == original->size());
+        for (size_t member = 0; member < copy->size(); ++member) {
+            const auto& copyType = *(*copy)[member].type;
+            const auto& originalType = *(*original)[member].type;
+            if (copyType.isStruct() && originalType.isStruct())
+                recordStructSource(copyType.getStruct(), originalType.getStruct());
+        }
+    }
+    const TTypeList* getStructSource(const TTypeList* members) const
+    {
+        for (auto source = structSources.find(members); source != structSources.end();
+             source = structSources.find(members))
+            members = source->second;
+        return members;
+    }
+
     void incrementEntryPointCount() { ++numEntryPoints; }
     int getNumEntryPoints() const { return numEntryPoints; }
     int getNumErrors() const { return numErrors; }
@@ -1270,6 +1293,7 @@ protected:
     int version;                                // source version
     SpvVersion spvVersion;
     TIntermNode* treeRoot;
+    std::unordered_map<const TTypeList*, const TTypeList*> structSources;
     std::set<std::string> requestedExtensions;  // cumulation of all enabled or required extensions; not connected to what subset of the shader used them
     MustBeAssigned<TBuiltInResource> resources;
     int numEntryPoints;

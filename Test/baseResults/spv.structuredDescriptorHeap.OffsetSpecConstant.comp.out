@@ -23,12 +23,18 @@ spv.structuredDescriptorHeap.OffsetSpecConstant.comp
                               Name 35  "resourceOffset"
                               Name 37  "adjustedResourceOffset"
                               Name 40  "ResourceHeap"
+                              Name 44  "resourceHeap"
                               Name 46  "sampler_heap"
                               Name 57  "samplerOffset"
                               Name 59  "SamplerHeap"
+                              Name 60  "samplerHeap"
                               Name 70  "DataBuffer"
                               MemberName 70(DataBuffer) 0  "values"
+                              Name 75  "resourceHeap"
+                              Name 78  "resourceHeap"
                               Name 84  "FixedHeap"
+                              Name 85  "resourceHeap"
+                              Name 89  "fixedHeap"
                               Decorate 11(resource_heap) BuiltIn ResourceHeapEXT
                               MemberDecorateIdEXT 23(Material) 0 OffsetIdEXT 15
                               MemberDecorateIdEXT 23(Material) 1 OffsetIdEXT 22
@@ -118,29 +124,29 @@ spv.structuredDescriptorHeap.OffsetSpecConstant.comp
          4(main):           2 Function None 3
                5:             Label
         9(texel):      8(ptr) Variable Function
-              44:     10(ptr) UntypedAccessChainKHR 40(ResourceHeap) 11(resource_heap) 42 42 43
-              45:          13 Load 44
-              60:     10(ptr) UntypedAccessChainKHR 59(SamplerHeap) 46(sampler_heap) 42 42
-              61:          47 Load 60
+44(resourceHeap):     10(ptr) UntypedAccessChainKHR 40(ResourceHeap) 11(resource_heap) 42 42 43
+              45:          13 Load 44(resourceHeap)
+ 60(samplerHeap):     10(ptr) UntypedAccessChainKHR 59(SamplerHeap) 46(sampler_heap) 42 42
+              61:          47 Load 60(samplerHeap)
               63:          62 SampledImage 45 61
               68:    7(fvec4) ImageSampleExplicitLod 63 66 Lod 67
                               Store 9(texel) 68
               72:     71(ptr) AccessChain 9(texel) 15
               73:    6(float) Load 72
               74:     12(int) ConvertFToU 73
-              75:     10(ptr) UntypedAccessChainKHR 40(ResourceHeap) 11(resource_heap) 43
-              76:     12(int) Load 75
+75(resourceHeap):     10(ptr) UntypedAccessChainKHR 40(ResourceHeap) 11(resource_heap) 43
+              76:     12(int) Load 75(resourceHeap)
               77:     12(int) IAdd 74 76
-              78:     10(ptr) UntypedAccessChainKHR 40(ResourceHeap) 11(resource_heap) 42 42 42
-              80:     79(ptr) BufferPointerEXT 78
+78(resourceHeap):     10(ptr) UntypedAccessChainKHR 40(ResourceHeap) 11(resource_heap) 42 42 42
+              80:     79(ptr) BufferPointerEXT 78(resourceHeap)
               82:     81(ptr) AccessChain 80 43 43
                               Store 82 77
-              85:     10(ptr) UntypedAccessChainKHR 40(ResourceHeap) 11(resource_heap) 42 42 42
-              86:     79(ptr) BufferPointerEXT 85
+85(resourceHeap):     10(ptr) UntypedAccessChainKHR 40(ResourceHeap) 11(resource_heap) 42 42 42
+              86:     79(ptr) BufferPointerEXT 85(resourceHeap)
               87:     81(ptr) AccessChain 86 43 43
               88:     12(int) Load 87
-              89:     10(ptr) UntypedAccessChainKHR 84(FixedHeap) 11(resource_heap) 43 42
-              90:     79(ptr) BufferPointerEXT 89
+   89(fixedHeap):     10(ptr) UntypedAccessChainKHR 84(FixedHeap) 11(resource_heap) 43 42
+              90:     79(ptr) BufferPointerEXT 89(fixedHeap)
               91:     81(ptr) AccessChain 90 43 42
                               Store 91 88
                               Return

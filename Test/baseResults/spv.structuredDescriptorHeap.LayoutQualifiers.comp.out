@@ -35,15 +35,21 @@ spv.structuredDescriptorHeap.LayoutQualifiers.comp
                               Name 58  ""
                               MemberName 58 0  "v"
                               MemberName 58 1  "x"
+                              Name 59  "layoutHeap"
+                              Name 65  "layoutHeap"
+                              Name 71  "layoutHeap"
                               Name 77  "Std140Type"
                               MemberName 77(Std140Type) 0  "v"
                               MemberName 77(Std140Type) 1  "x"
+                              Name 78  "layoutHeap"
                               Name 86  "Std430Type"
                               MemberName 86(Std430Type) 0  "v"
                               MemberName 86(Std430Type) 1  "x"
+                              Name 87  "layoutHeap"
                               Name 94  "ScalarType"
                               MemberName 94(ScalarType) 0  "v"
                               MemberName 94(ScalarType) 1  "x"
+                              Name 95  "layoutHeap"
                               Decorate 7(Result) Block
                               MemberDecorate 7(Result) 0 Offset 0
                               Decorate 9(resultBuffer) Binding 0
@@ -150,32 +156,32 @@ spv.structuredDescriptorHeap.LayoutQualifiers.comp
              104:  102(ivec3) ConstantComposite 103 103 103
          4(main):           2 Function None 3
                5:             Label
-              59:     12(ptr) UntypedAccessChainKHR 52(LayoutHeap) 13(resource_heap) 11
-              60:     14(ptr) Load 59
+  59(layoutHeap):     12(ptr) UntypedAccessChainKHR 52(LayoutHeap) 13(resource_heap) 11
+              60:     14(ptr) Load 59(layoutHeap)
               63:     62(ptr) AccessChain 60 61
               64:      6(int) Load 63 Aligned 16
-              65:     12(ptr) UntypedAccessChainKHR 52(LayoutHeap) 13(resource_heap) 61
-              66:     15(ptr) Load 65
+  65(layoutHeap):     12(ptr) UntypedAccessChainKHR 52(LayoutHeap) 13(resource_heap) 61
+              66:     15(ptr) Load 65(layoutHeap)
               67:     62(ptr) AccessChain 66 61
               68:      6(int) Load 67 Aligned 16
               69:      6(int) IAdd 64 68
-              71:     12(ptr) UntypedAccessChainKHR 52(LayoutHeap) 13(resource_heap) 70
-              72:     16(ptr) Load 71
+  71(layoutHeap):     12(ptr) UntypedAccessChainKHR 52(LayoutHeap) 13(resource_heap) 70
+              72:     16(ptr) Load 71(layoutHeap)
               73:     62(ptr) AccessChain 72 61
               74:      6(int) Load 73 Aligned 4
               75:      6(int) IAdd 69 74
-              78:     12(ptr) UntypedAccessChainKHR 52(LayoutHeap) 13(resource_heap) 76
-              80:     79(ptr) BufferPointerEXT 78
+  78(layoutHeap):     12(ptr) UntypedAccessChainKHR 52(LayoutHeap) 13(resource_heap) 76
+              80:     79(ptr) BufferPointerEXT 78(layoutHeap)
               82:     81(ptr) AccessChain 80 61
               83:      6(int) Load 82
               84:      6(int) IAdd 75 83
-              87:     12(ptr) UntypedAccessChainKHR 52(LayoutHeap) 13(resource_heap) 85
-              89:     88(ptr) BufferPointerEXT 87
+  87(layoutHeap):     12(ptr) UntypedAccessChainKHR 52(LayoutHeap) 13(resource_heap) 85
+              89:     88(ptr) BufferPointerEXT 87(layoutHeap)
               90:     81(ptr) AccessChain 89 61
               91:      6(int) Load 90
               92:      6(int) IAdd 84 91
-              95:     12(ptr) UntypedAccessChainKHR 52(LayoutHeap) 13(resource_heap) 93
-              97:     96(ptr) BufferPointerEXT 95
+  95(layoutHeap):     12(ptr) UntypedAccessChainKHR 52(LayoutHeap) 13(resource_heap) 93
+              97:     96(ptr) BufferPointerEXT 95(layoutHeap)
               98:     81(ptr) AccessChain 97 61
               99:      6(int) Load 98
              100:      6(int) IAdd 92 99

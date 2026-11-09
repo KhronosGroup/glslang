@@ -1,0 +1,80 @@
+hlsl.append.typeMismatch.nonstruct.geom
+ERROR: 0:10: 'Append' : argument type does not match stream output type 
+ERROR: 1 compilation errors.  No code generated.
+
+
+Shader version: 500
+invocations = -1
+max_vertices = 1
+input primitive = triangles
+output primitive = points
+ERROR: node is still EOpNull!
+0:8  Function Definition: @main(u1[3];vf4; ( temp void)
+0:8    Function Parameters: 
+0:8      'vid' ( in 3-element array of uint)
+0:8      'stream' ( out 4-component vector of float)
+0:?     Sequence
+0:9      Sequence
+0:9        move second child to first child ( temp structure{ temp 4-component vector of float pos})
+0:9          'o' ( temp structure{ temp 4-component vector of float pos})
+0:9          Constant:
+0:9            0.000000
+0:9            0.000000
+0:9            0.000000
+0:9            0.000000
+0:10      Sequence
+0:10        'o' ( temp structure{ temp 4-component vector of float pos})
+0:10        EmitVertex ( temp void)
+0:8  Function Definition: main( ( temp void)
+0:8    Function Parameters: 
+0:?     Sequence
+0:8      move second child to first child ( temp 3-element array of uint)
+0:?         'vid' ( temp 3-element array of uint)
+0:?         'vid' (layout( location=0) in 3-element array of uint)
+0:8      Function Call: @main(u1[3];vf4; ( temp void)
+0:?         'vid' ( temp 3-element array of uint)
+0:?         'stream' ( temp 4-component vector of float)
+0:?   Linker Objects
+0:?     'vid' (layout( location=0) in 3-element array of uint)
+0:?     'stream' (layout( location=0) out 4-component vector of float)
+
+
+Linked geometry stage:
+
+
+Shader version: 500
+invocations = 1
+max_vertices = 1
+input primitive = triangles
+output primitive = points
+ERROR: node is still EOpNull!
+0:8  Function Definition: @main(u1[3];vf4; ( temp void)
+0:8    Function Parameters: 
+0:8      'vid' ( in 3-element array of uint)
+0:8      'stream' ( out 4-component vector of float)
+0:?     Sequence
+0:9      Sequence
+0:9        move second child to first child ( temp structure{ temp 4-component vector of float pos})
+0:9          'o' ( temp structure{ temp 4-component vector of float pos})
+0:9          Constant:
+0:9            0.000000
+0:9            0.000000
+0:9            0.000000
+0:9            0.000000
+0:10      Sequence
+0:10        'o' ( temp structure{ temp 4-component vector of float pos})
+0:10        EmitVertex ( temp void)
+0:8  Function Definition: main( ( temp void)
+0:8    Function Parameters: 
+0:?     Sequence
+0:8      move second child to first child ( temp 3-element array of uint)
+0:?         'vid' ( temp 3-element array of uint)
+0:?         'vid' (layout( location=0) in 3-element array of uint)
+0:8      Function Call: @main(u1[3];vf4; ( temp void)
+0:?         'vid' ( temp 3-element array of uint)
+0:?         'stream' ( temp 4-component vector of float)
+0:?   Linker Objects
+0:?     'vid' (layout( location=0) in 3-element array of uint)
+0:?     'stream' (layout( location=0) out 4-component vector of float)
+
+SPIR-V is not generated for failed compile or link
