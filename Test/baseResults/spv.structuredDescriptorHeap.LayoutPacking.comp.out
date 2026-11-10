@@ -23,14 +23,34 @@ spv.structuredDescriptorHeap.LayoutPacking.comp
                               Name 50  "DataBuffer"
                               MemberName 50(DataBuffer) 0  "first"
                               MemberName 50(DataBuffer) 1  "value"
+                              Name 52  "defaultResource"
+                              Name 59  "defaultResource"
+                              Name 62  "defaultResource"
                               Name 65  "sampler_heap"
                               Name 86  "DefaultSamplers"
+                              Name 87  "defaultSamplers"
+                              Name 93  "defaultResource"
                               Name 112  "ScalarResource"
+                              Name 113  "scalarResource"
+                              Name 117  "scalarResource"
+                              Name 119  "scalarResource"
                               Name 139  "ScalarSamplers"
+                              Name 140  "scalarSamplers"
+                              Name 146  "scalarResource"
                               Name 165  "Std140Resource"
+                              Name 166  "std140Resource"
+                              Name 170  "std140Resource"
+                              Name 172  "std140Resource"
                               Name 192  "Std140Samplers"
+                              Name 193  "std140Samplers"
+                              Name 199  "std140Resource"
                               Name 218  "Std430Resource"
+                              Name 219  "std430Resource"
+                              Name 223  "std430Resource"
+                              Name 225  "std430Resource"
                               Name 245  "Std430Samplers"
+                              Name 246  "std430Samplers"
+                              Name 252  "std430Resource"
                               Decorate 7(resource_heap) BuiltIn ResourceHeapEXT
                               MemberDecorateIdEXT 18(Nested) 0 OffsetIdEXT 10
                               MemberDecorateIdEXT 18(Nested) 1 OffsetIdEXT 17
@@ -263,80 +283,80 @@ spv.structuredDescriptorHeap.LayoutPacking.comp
              257:  255(ivec3) ConstantComposite 256 256 256
          4(main):           2 Function None 3
                5:             Label
-              52:      6(ptr) UntypedAccessChainKHR 45(DefaultResource) 7(resource_heap) 51 47 47
-              54:     53(ptr) BufferPointerEXT 52
+52(defaultResource):      6(ptr) UntypedAccessChainKHR 45(DefaultResource) 7(resource_heap) 51 47 47
+              54:     53(ptr) BufferPointerEXT 52(defaultResource)
               56:     55(ptr) AccessChain 54 47
               57:   49(fvec3) Load 56
-              59:      6(ptr) UntypedAccessChainKHR 45(DefaultResource) 7(resource_heap) 58
-              60:      8(int) Load 59
-              62:      6(ptr) UntypedAccessChainKHR 45(DefaultResource) 7(resource_heap) 61
-              63:      8(int) Load 62
+59(defaultResource):      6(ptr) UntypedAccessChainKHR 45(DefaultResource) 7(resource_heap) 58
+              60:      8(int) Load 59(defaultResource)
+62(defaultResource):      6(ptr) UntypedAccessChainKHR 45(DefaultResource) 7(resource_heap) 61
+              63:      8(int) Load 62(defaultResource)
               64:      8(int) IAdd 60 63
-              87:      6(ptr) UntypedAccessChainKHR 86(DefaultSamplers) 65(sampler_heap) 61
-              88:      8(int) Load 87
+87(defaultSamplers):      6(ptr) UntypedAccessChainKHR 86(DefaultSamplers) 65(sampler_heap) 61
+              88:      8(int) Load 87(defaultSamplers)
               89:      8(int) IAdd 64 88
               90:   48(float) ConvertUToF 89
               91:   49(fvec3) CompositeConstruct 90 90 90
               92:   49(fvec3) FAdd 57 91
-              93:      6(ptr) UntypedAccessChainKHR 45(DefaultResource) 7(resource_heap) 47
-              94:     53(ptr) BufferPointerEXT 93
+93(defaultResource):      6(ptr) UntypedAccessChainKHR 45(DefaultResource) 7(resource_heap) 47
+              94:     53(ptr) BufferPointerEXT 93(defaultResource)
               95:     55(ptr) AccessChain 94 47
                               Store 95 92
-             113:      6(ptr) UntypedAccessChainKHR 112(ScalarResource) 7(resource_heap) 51 47 47
-             114:     53(ptr) BufferPointerEXT 113
+113(scalarResource):      6(ptr) UntypedAccessChainKHR 112(ScalarResource) 7(resource_heap) 51 47 47
+             114:     53(ptr) BufferPointerEXT 113(scalarResource)
              115:     55(ptr) AccessChain 114 47
              116:   49(fvec3) Load 115
-             117:      6(ptr) UntypedAccessChainKHR 112(ScalarResource) 7(resource_heap) 58
-             118:      8(int) Load 117
-             119:      6(ptr) UntypedAccessChainKHR 112(ScalarResource) 7(resource_heap) 61
-             120:      8(int) Load 119
+117(scalarResource):      6(ptr) UntypedAccessChainKHR 112(ScalarResource) 7(resource_heap) 58
+             118:      8(int) Load 117(scalarResource)
+119(scalarResource):      6(ptr) UntypedAccessChainKHR 112(ScalarResource) 7(resource_heap) 61
+             120:      8(int) Load 119(scalarResource)
              121:      8(int) IAdd 118 120
-             140:      6(ptr) UntypedAccessChainKHR 139(ScalarSamplers) 65(sampler_heap) 61
-             141:      8(int) Load 140
+140(scalarSamplers):      6(ptr) UntypedAccessChainKHR 139(ScalarSamplers) 65(sampler_heap) 61
+             141:      8(int) Load 140(scalarSamplers)
              142:      8(int) IAdd 121 141
              143:   48(float) ConvertUToF 142
              144:   49(fvec3) CompositeConstruct 143 143 143
              145:   49(fvec3) FAdd 116 144
-             146:      6(ptr) UntypedAccessChainKHR 112(ScalarResource) 7(resource_heap) 47
-             147:     53(ptr) BufferPointerEXT 146
+146(scalarResource):      6(ptr) UntypedAccessChainKHR 112(ScalarResource) 7(resource_heap) 47
+             147:     53(ptr) BufferPointerEXT 146(scalarResource)
              148:     55(ptr) AccessChain 147 47
                               Store 148 145
-             166:      6(ptr) UntypedAccessChainKHR 165(Std140Resource) 7(resource_heap) 51 47 47
-             167:     53(ptr) BufferPointerEXT 166
+166(std140Resource):      6(ptr) UntypedAccessChainKHR 165(Std140Resource) 7(resource_heap) 51 47 47
+             167:     53(ptr) BufferPointerEXT 166(std140Resource)
              168:     55(ptr) AccessChain 167 47
              169:   49(fvec3) Load 168
-             170:      6(ptr) UntypedAccessChainKHR 165(Std140Resource) 7(resource_heap) 58
-             171:      8(int) Load 170
-             172:      6(ptr) UntypedAccessChainKHR 165(Std140Resource) 7(resource_heap) 61
-             173:      8(int) Load 172
+170(std140Resource):      6(ptr) UntypedAccessChainKHR 165(Std140Resource) 7(resource_heap) 58
+             171:      8(int) Load 170(std140Resource)
+172(std140Resource):      6(ptr) UntypedAccessChainKHR 165(Std140Resource) 7(resource_heap) 61
+             173:      8(int) Load 172(std140Resource)
              174:      8(int) IAdd 171 173
-             193:      6(ptr) UntypedAccessChainKHR 192(Std140Samplers) 65(sampler_heap) 61
-             194:      8(int) Load 193
+193(std140Samplers):      6(ptr) UntypedAccessChainKHR 192(Std140Samplers) 65(sampler_heap) 61
+             194:      8(int) Load 193(std140Samplers)
              195:      8(int) IAdd 174 194
              196:   48(float) ConvertUToF 195
              197:   49(fvec3) CompositeConstruct 196 196 196
              198:   49(fvec3) FAdd 169 197
-             199:      6(ptr) UntypedAccessChainKHR 165(Std140Resource) 7(resource_heap) 47
-             200:     53(ptr) BufferPointerEXT 199
+199(std140Resource):      6(ptr) UntypedAccessChainKHR 165(Std140Resource) 7(resource_heap) 47
+             200:     53(ptr) BufferPointerEXT 199(std140Resource)
              201:     55(ptr) AccessChain 200 47
                               Store 201 198
-             219:      6(ptr) UntypedAccessChainKHR 218(Std430Resource) 7(resource_heap) 51 47 47
-             220:     53(ptr) BufferPointerEXT 219
+219(std430Resource):      6(ptr) UntypedAccessChainKHR 218(Std430Resource) 7(resource_heap) 51 47 47
+             220:     53(ptr) BufferPointerEXT 219(std430Resource)
              221:     55(ptr) AccessChain 220 47
              222:   49(fvec3) Load 221
-             223:      6(ptr) UntypedAccessChainKHR 218(Std430Resource) 7(resource_heap) 58
-             224:      8(int) Load 223
-             225:      6(ptr) UntypedAccessChainKHR 218(Std430Resource) 7(resource_heap) 61
-             226:      8(int) Load 225
+223(std430Resource):      6(ptr) UntypedAccessChainKHR 218(Std430Resource) 7(resource_heap) 58
+             224:      8(int) Load 223(std430Resource)
+225(std430Resource):      6(ptr) UntypedAccessChainKHR 218(Std430Resource) 7(resource_heap) 61
+             226:      8(int) Load 225(std430Resource)
              227:      8(int) IAdd 224 226
-             246:      6(ptr) UntypedAccessChainKHR 245(Std430Samplers) 65(sampler_heap) 61
-             247:      8(int) Load 246
+246(std430Samplers):      6(ptr) UntypedAccessChainKHR 245(Std430Samplers) 65(sampler_heap) 61
+             247:      8(int) Load 246(std430Samplers)
              248:      8(int) IAdd 227 247
              249:   48(float) ConvertUToF 248
              250:   49(fvec3) CompositeConstruct 249 249 249
              251:   49(fvec3) FAdd 222 250
-             252:      6(ptr) UntypedAccessChainKHR 218(Std430Resource) 7(resource_heap) 47
-             253:     53(ptr) BufferPointerEXT 252
+252(std430Resource):      6(ptr) UntypedAccessChainKHR 218(Std430Resource) 7(resource_heap) 47
+             253:     53(ptr) BufferPointerEXT 252(std430Resource)
              254:     55(ptr) AccessChain 253 47
                               Store 254 251
                               Return
