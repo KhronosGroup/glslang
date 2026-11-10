@@ -21,5 +21,4 @@ layout(location = 0) out vec4 fragColor;
 void main()
 {
     fragColor = texture(sampler2D(resources.textures[2], samplers.samplers[1]), uvs);
-    fragColor.x += float(resources.count);
 }

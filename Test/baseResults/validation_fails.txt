@@ -58,6 +58,7 @@ Test/baseResults/spv.AofA.frag.out
 Test/baseResults/spv.bitops.int8int16.frag.out
 Test/baseResults/spv.controlFlowAttributes.frag.out
 Test/baseResults/spv.dataOut.frag.out
+Test/baseResults/spv.debuginfo.structured_descriptor_heap_khr.glsl.comp.out
 Test/baseResults/spv.exportFunctions.comp.out
 Test/baseResults/spv.float16Fetch.frag.out
 Test/baseResults/spv.float64.frag.out
@@ -66,6 +67,16 @@ Test/baseResults/spv.intrinsicsSpirvInstructionSetLiteral.comp.out
 Test/baseResults/spv.nvgpushader5.frag.out
 Test/baseResults/spv.paramMemory.420.frag.out
 Test/baseResults/spv.paramMemory.frag.out
+Test/baseResults/spv.structuredDescriptorHeap.khr.BufferReference.comp.out
+Test/baseResults/spv.structuredDescriptorHeap.khr.DescriptorSize.comp.out
+Test/baseResults/spv.structuredDescriptorHeap.khr.es.frag.out
+Test/baseResults/spv.structuredDescriptorHeap.khr.LayoutQualifiers.comp.out
+Test/baseResults/spv.structuredDescriptorHeap.khr.MatrixLayout.comp.out
+Test/baseResults/spv.structuredDescriptorHeap.khr.OffsetSpecConstant.comp.out
+Test/baseResults/spv.structuredDescriptorHeap.khr.ReadOnly.comp.out
+Test/baseResults/spv.structuredDescriptorHeap.khr.Uniform.comp.out
+Test/baseResults/spv.structuredDescriptorHeap.LayoutPacking.comp.out
+Test/baseResults/spv.structuredDescriptorHeap.MemberOffset.comp.out
 Test/baseResults/spv.WorkgroupMemoryExplicitLayout.NoLink.comp.out
 Test/baseResults/vk.relaxed.errorcheck.vert.out
 Test/baseResults/vk.relaxed.syntaxerror.vert.out
