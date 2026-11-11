@@ -1423,6 +1423,7 @@ public:
     virtual void changeId(long long i) { id = i; }
     virtual const TString& getName() const { return name; }
     virtual const TString& getMangledName() const { return mangledName; }
+    void setMangledName(const TString& n) { mangledName = n; }
     virtual void traverse(TIntermTraverser*);
     virtual       TIntermSymbol* getAsSymbolNode()       { return this; }
     virtual const TIntermSymbol* getAsSymbolNode() const { return this; }

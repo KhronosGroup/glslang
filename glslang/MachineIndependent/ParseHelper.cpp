@@ -11305,7 +11305,8 @@ bool TParseContext::untypedHeapCheck(TSymbol* symbol, const TType& type, const T
                 TString warnMsg = "layout(descriptor_heap) is turned on beyond version/profile limits.";
                 infoSink.info.message(EPrefixWarning, warnMsg.c_str());
             }
-            if (IsAnonymous(symbol->getName()) &&
+            // Structured heap blocks can omit their instance name, like other interface blocks.
+            if (!isHeapStruct && IsAnonymous(symbol->getName()) &&
                 (type.getQualifier().isUniformOrBuffer() || type.getBasicType() == EbtBlock)) {
                 error(loc, "layout(descriptor_heap) decorated block should be explicitly "
                     "declared with a run-time sized array type.", name, "");

@@ -12773,9 +12773,10 @@ spv::Id TGlslangToSpvTraverser::createSpvConstant(const glslang::TIntermTyped& n
     if (auto* sn = node.getAsSymbolNode()) {
         spv::Id result;
         if (auto* sub_tree = sn->getConstSubtree()) {
-            // Traverse the constant constructor sub tree like generating normal run-time instructions.
-            // During the AST traversal, if the node is marked as 'specConstant', SpecConstantOpModeGuard
-            // will set the builder into spec constant op instruction generating mode.
+            // Keep specialization mode active through the deferred load as well
+            // as traversal (for example, when extracting a vector component).
+            SpecConstantOpModeGuard spec_constant_op_mode_setter(&builder);
+            spec_constant_op_mode_setter.turnOnSpecConstantOpMode();
             sub_tree->traverse(this);
             result = accessChainLoad(sub_tree->getType());
         } else if (auto* const_union_array = &sn->getConstArray()) {
