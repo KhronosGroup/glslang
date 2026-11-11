@@ -2091,13 +2091,20 @@ void TParseContext::handleCoopMat2FunctionCall(const TSourceLoc& loc, const TFun
                 return buf.str();
             };
 
+            // A coop matrix operand can be a non-symbol expression (e.g. a nested
+            // coopMatMulAdd result), so getAsSymbolNode() may be null here.
+            auto operandName = [](TIntermNode* node) -> const char* {
+                const TIntermSymbol* symbol = node->getAsSymbolNode();
+                return symbol ? symbol->getMangledName().c_str() : "";
+            };
+
             if (aCols != bRows) {
                 auto aRowsStr = toString(aRows);
                 auto aColsStr = toString(aCols);
                 auto bRowsStr = toString(bRows);
                 auto bColsStr = toString(bCols);
                 error(loc, "cannot multiply coop matrices with incompatible sizes",
-                      sequence[0]->getAsSymbolNode()->getMangledName().c_str(),
+                      operandName(sequence[0]),
                       "%s x %s with %s x %s",
                       aRowsStr.c_str(),
                       aColsStr.c_str(),
@@ -2109,7 +2116,7 @@ void TParseContext::handleCoopMat2FunctionCall(const TSourceLoc& loc, const TFun
                 auto cRowsStr = toString(cRows);
                 auto cColsStr = toString(cCols);
                 error(loc, "cannot add coop matrices with incompatible sizes",
-                      sequence[2]->getAsSymbolNode()->getMangledName().c_str(),
+                      operandName(sequence[2]),
                       "%s x %s with %s x %s",
                       aRowsStr.c_str(),
                       bColsStr.c_str(),
@@ -2117,15 +2124,15 @@ void TParseContext::handleCoopMat2FunctionCall(const TSourceLoc& loc, const TFun
                       cColsStr.c_str());
             } else if (aUse != 0) {
                 error(loc, "coop matrix A in MulAdd operation has incompatible usage property,",
-                      sequence[0]->getAsSymbolNode()->getMangledName().c_str(),
+                      operandName(sequence[0]),
                       "found %d, but needed 0", aUse);
             } else if (bUse != 1) {
                 error(loc, "coop matrix B in MulAdd operation has incompatible usage property,",
-                      sequence[1]->getAsSymbolNode()->getMangledName().c_str(),
+                      operandName(sequence[1]),
                       "found %d, but needed 1", bUse);
             } else if (cUse != 2) {
                 error(loc, "coop matrix C in MulAdd operation has incompatible usage property,",
-                      sequence[2]->getAsSymbolNode()->getMangledName().c_str(),
+                      operandName(sequence[2]),
                       "found %d, but needed 2", cUse);
             }
 
@@ -3251,6 +3258,26 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
         }
     };
 
+    // Hit object functions that also require an interacting extension to be enabled
+    switch (callNode.getOp()) {
+    case EOpHitObjectTraceRayMotionNV:
+    case EOpHitObjectRecordHitMotionNV:
+    case EOpHitObjectRecordHitWithIndexMotionNV:
+    case EOpHitObjectRecordMissMotionNV:
+    case EOpHitObjectGetCurrentTimeNV:
+    case EOpHitObjectTraceRayMotionEXT:
+    case EOpHitObjectRecordMissMotionEXT:
+    case EOpHitObjectGetCurrentTimeEXT:
+    case EOpHitObjectTraceMotionReorderExecuteEXT:
+        requireExtensions(loc, 1, &E_GL_NV_ray_tracing_motion_blur, fnCandidate.getName().c_str());
+        break;
+    case EOpHitObjectGetIntersectionTriangleVertexPositionsEXT:
+        requireExtensions(loc, 1, &E_GL_EXT_ray_tracing_position_fetch, fnCandidate.getName().c_str());
+        break;
+    default:
+        break;
+    }
+
     switch (callNode.getOp()) {
     case EOpDPdx:
     case EOpDPdxFine:
@@ -4160,7 +4187,7 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
             if (!opArg) {
                 error(loc, "tensor operands argument must be a constant integral expression", "tensorOps", "");
             }
-            const unsigned int ops = opArg ? opArg->getConstArray()[0].getUConst() : 0;
+            const unsigned int ops = opArg ? opArg->getConstArray()[0].getUConst() : 0u;
             const int gl_TensorOperandsOutOfBoundsValueARM = 0x2;
             if (ops & gl_TensorOperandsOutOfBoundsValueARM) {
                 // Out-of-bounds values can only be used with reads.
@@ -9509,6 +9536,13 @@ void TParseContext::typeParametersCheck(const TSourceLoc& loc, const TPublicType
 {
     if (parsingBuiltins)
         return;
+    // A structure type parameter only carries its basic type, not its member list, so the
+    // parameterized type would be a structure with no members. Report it and fall back to
+    // float so the rest of the declaration sees a well-formed type.
+    if (publicType.typeParameters && publicType.typeParameters->basicType == EbtStruct) {
+        error(loc, "structure type not allowed as type parameter", "", "");
+        publicType.typeParameters->basicType = EbtFloat;
+    }
     if (publicType.isCoopmatKHR()) {
         if (publicType.typeParameters == nullptr) {
             error(loc, "coopmat missing type parameters", "", "");
@@ -9570,7 +9604,7 @@ void TParseContext::typeParametersCheck(const TSourceLoc& loc, const TPublicType
         if (publicType.typeParameters && publicType.typeParameters->arraySizes->getNumDims() < 7) {
             uint32_t numDims = publicType.typeParameters->arraySizes->getNumDims();
             while (numDims < 7) {
-                uint32_t dim = (numDims == 1) ? 0 : (numDims - 2);
+                uint32_t dim = (numDims == 1) ? 0u : (numDims - 2);
                 publicType.typeParameters->arraySizes->addInnerSize(dim);
                 numDims++;
             }
@@ -11407,6 +11441,12 @@ TIntermNode* TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeL
     case EvqVaryingIn:  defaultQualification = globalInputDefaults;      break;
     case EvqVaryingOut: defaultQualification = globalOutputDefaults;     break;
     case EvqShared:     defaultQualification = globalSharedDefaults;     break;
+    case EvqResourceHeap:
+    case EvqSamplerHeap:
+        // Heap data uses scalar packing even without an explicit layout qualifier.
+        defaultQualification.clear();
+        defaultQualification.layoutPacking = ElpScalar;
+        break;
     default:            defaultQualification.clear();                    break;
     }
 
@@ -11552,6 +11592,7 @@ TIntermNode* TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeL
         // as a referent struct type with no members. Replace the referent type with
         // blockType.
         TType blockNameType(EbtReference, blockType, *blockName);
+        intermediate.recordStructSource(blockNameType.getReferentType()->getStruct(), blockType.getStruct());
         TVariable* blockNameVar = new TVariable(blockName, blockNameType, true);
         if (! symbolTable.insert(*blockNameVar)) {
             TSymbol* existingName = symbolTable.find(*blockName);
@@ -11560,6 +11601,8 @@ TIntermNode* TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeL
                 existingName->getType().getReferentType()->getStruct()->size() == 0 &&
                 existingName->getType().getQualifier().storage == blockType.getQualifier().storage) {
                 existingName->getType().getReferentType()->deepCopy(blockType);
+                intermediate.recordStructSource(existingName->getType().getReferentType()->getStruct(),
+                                                blockType.getStruct());
             } else {
                 error(loc, "block name cannot be redefined", blockName->c_str(), "");
             }
@@ -11882,6 +11925,31 @@ void TParseContext::fixXfbOffsets(TQualifier& qualifier, TTypeList& typeList)
     qualifier.layoutXfbOffset = TQualifier::layoutXfbOffsetEnd;
 }
 
+// Descriptor alignment is supplied by the client API unless descriptor_size is
+// specified. Return zero when an explicit heap offset cannot be checked yet.
+static unsigned int getKnownHeapMemberAlignment(const TType& type)
+{
+    if (type.getQualifier().isBufferType() || type.getBasicType() == EbtSampler ||
+        type.getBasicType() == EbtAccStruct)
+        return type.getQualifier().layoutDescriptorSize;
+
+    if (type.isStruct()) {
+        unsigned int alignment = 1;
+        for (const auto& member : *type.getStruct()) {
+            const unsigned int memberAlignment = getKnownHeapMemberAlignment(*member.type);
+            if (memberAlignment == 0)
+                return 0;
+            alignment = std::max(alignment, memberAlignment);
+        }
+        return alignment;
+    }
+
+    int size;
+    int stride;
+    return TIntermediate::getMemberAlignment(type, size, stride, ElpScalar,
+                                            type.getQualifier().layoutMatrix == ElmRowMajor);
+}
+
 // Calculate and save the offset of each block member, using the recursively
 // defined block offset rules and the user-provided offset and align.
 //
@@ -11892,6 +11960,23 @@ void TParseContext::fixBlockUniformOffsets(TQualifier& qualifier, TTypeList& typ
 {
     if (!storageCanHaveLayoutInBlock(qualifier.storage) && !qualifier.isTaskMemory())
         return;
+
+    if (qualifier.storage == EvqResourceHeap || qualifier.storage == EvqSamplerHeap) {
+        // Keep only user-specified offsets. Descriptor sizes and alignments can
+        // require specialization-constant expressions, which are emitted later.
+        for (const auto& member : typeList) {
+            const TQualifier& memberQualifier = member.type->getQualifier();
+            if (!memberQualifier.hasOffset())
+                continue;
+
+            const unsigned int alignment = getKnownHeapMemberAlignment(*member.type);
+            if (alignment != 0 && static_cast<unsigned int>(memberQualifier.layoutOffset) % alignment != 0)
+                error(member.loc, "must be a multiple of the member's alignment", "offset",
+                      "(layout offset = %d | member alignment = %u)", memberQualifier.layoutOffset, alignment);
+        }
+        return;
+    }
+
     if (qualifier.layoutPacking != ElpStd140 && qualifier.layoutPacking != ElpStd430 && qualifier.layoutPacking != ElpScalar)
         return;
 
@@ -12621,6 +12706,7 @@ const TTypeList* TParseContext::recordStructCopy(TStructRecord& record, const TT
     const TTypeList* originStruct = originType->getStruct();
     const TTypeList* tmpStruct = tmpType->getStruct();
     if (originHash != tmpHash) {
+        intermediate.recordStructSource(tmpStruct, originStruct);
         auto fixRecords = record.find(originStruct);
         if (fixRecords != record.end()) {
             auto fixRecord = fixRecords->second.find(tmpHash);

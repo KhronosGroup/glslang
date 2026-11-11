@@ -20,8 +20,10 @@ spv.descriptorHeap.ImageQualifiers.frag
                               Name 7  "resource_heap"
                               Name 14  "Writes_heap"
                               MemberName 14(Writes_heap) 0  "Writes"
+                              Name 18  "Writes"
                               Name 23  "Reads_heap"
                               MemberName 23(Reads_heap) 0  "Reads"
+                              Name 25  "Reads"
                               Decorate 7(resource_heap) BuiltIn ResourceHeapEXT
                               DecorateId 12 ArrayStrideIdEXT 11
                               Decorate 14(Writes_heap) Block
@@ -53,10 +55,10 @@ spv.descriptorHeap.ImageQualifiers.frag
               27:             TypeVector 8(float) 4
          4(main):           2 Function None 3
                5:             Label
-              18:      6(ptr) UntypedAccessChainKHR 14(Writes_heap) 7(resource_heap) 16 17
-              19:           9 Load 18
-              25:      6(ptr) UntypedAccessChainKHR 23(Reads_heap) 7(resource_heap) 16 24
-              26:           9 Load 25
+      18(Writes):      6(ptr) UntypedAccessChainKHR 14(Writes_heap) 7(resource_heap) 16 17
+              19:           9 Load 18(Writes)
+       25(Reads):      6(ptr) UntypedAccessChainKHR 23(Reads_heap) 7(resource_heap) 16 24
+              26:           9 Load 25(Reads)
               28:   27(fvec4) ImageRead 26 21
                               ImageWrite 19 21 28
                               Return

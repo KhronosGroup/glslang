@@ -500,7 +500,12 @@ public:
     void setBindingsPerResourceType();
     void addUniformLocationOverride(const char* name, int loc);
     void setUniformLocationBase(int base);
+
+    // Invert the Y component of the position output (pos.y = -pos.y).
+    // Applies to GLSL and HLSL vertex, geometry, and tessellation evaluation shaders.
+    // Disabled by default; call before parse().
     void setInvertY(bool invert);
+
     void setDxPositionW(bool dxPosW);
     void setEnhancedMsgs();
 #ifdef ENABLE_HLSL

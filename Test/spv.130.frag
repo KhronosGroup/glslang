@@ -19,7 +19,6 @@ uniform samplerCube sampC;
 
 uniform sampler2D samp2D;
 uniform sampler2DShadow samp2DS;
-uniform sampler2DRect samp2DR;
 uniform sampler2DArray samp2DA;
 
 void bar3()
@@ -32,7 +31,6 @@ void bar3()
 
 void bar4()
 {
-    o += textureGatherOffset(samp2DR, vec2(0.3), ivec2(1));
     o += textureGatherOffset(samp2DS, vec2(0.3), 1.3, ivec2(1));
     o += textureGatherOffset(samp2D, vec2(0.3), ivec2(1), 2);
 }
@@ -77,8 +75,6 @@ void bar6()
 #extension GL_ARB_shader_texture_lod : require
 
 uniform sampler2D s2D;
-uniform sampler2DRect s2DR;
-uniform sampler2DRectShadow s2DRS;
 uniform sampler1D s1D;
 uniform sampler2DShadow s2DS;
 

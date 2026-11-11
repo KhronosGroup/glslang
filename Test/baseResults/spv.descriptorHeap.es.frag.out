@@ -17,12 +17,16 @@ spv.descriptorHeap.es.frag
                               Name 4  "main"
                               Name 9  "fragColor"
                               Name 11  "resource_heap"
+                              Name 18  "heapTexture2D"
                               Name 20  "sampler_heap"
+                              Name 25  "heapSampler"
                               Name 31  "uvs"
                               Name 38  "UniformBuffer"
                               MemberName 38(UniformBuffer) 0  "colorOffset"
+                              Name 39  "heapUniformBuffer"
                               Name 51  "StorageBuffer"
                               MemberName 51(StorageBuffer) 0  "a"
+                              Name 53  "heapStorageBuffer"
                               Decorate 9(fragColor) Location 0
                               Decorate 11(resource_heap) BuiltIn ResourceHeapEXT
                               DecorateId 15 ArrayStrideIdEXT 14
@@ -74,24 +78,24 @@ spv.descriptorHeap.es.frag
               56:             TypePointer StorageBuffer 7(fvec4)
          4(main):           2 Function None 3
                5:             Label
-              18:     10(ptr) UntypedAccessChainKHR 15 11(resource_heap) 17
-              19:          12 Load 18
-              25:     10(ptr) UntypedAccessChainKHR 23 20(sampler_heap) 24
-              26:          21 Load 25
+18(heapTexture2D):     10(ptr) UntypedAccessChainKHR 15 11(resource_heap) 17
+              19:          12 Load 18(heapTexture2D)
+ 25(heapSampler):     10(ptr) UntypedAccessChainKHR 23 20(sampler_heap) 24
+              26:          21 Load 25(heapSampler)
               28:          27 SampledImage 19 26
               32:   29(fvec2) Load 31(uvs)
               33:    7(fvec4) ImageSampleImplicitLod 28 32
                               Store 9(fragColor) 33
-              39:     10(ptr) UntypedAccessChainKHR 36 11(resource_heap) 37
-              41:     40(ptr) BufferPointerEXT 39
+39(heapUniformBuffer):     10(ptr) UntypedAccessChainKHR 36 11(resource_heap) 37
+              41:     40(ptr) BufferPointerEXT 39(heapUniformBuffer)
               43:     42(ptr) AccessChain 41 24
               44:    7(fvec4) Load 43
               45:    7(fvec4) Load 9(fragColor)
               46:    7(fvec4) FAdd 45 44
                               Store 9(fragColor) 46
               52:    7(fvec4) Load 9(fragColor)
-              53:     10(ptr) UntypedAccessChainKHR 49 11(resource_heap) 50
-              55:     54(ptr) BufferPointerEXT 53
+53(heapStorageBuffer):     10(ptr) UntypedAccessChainKHR 49 11(resource_heap) 50
+              55:     54(ptr) BufferPointerEXT 53(heapStorageBuffer)
               57:     56(ptr) AccessChain 55 24
                               Store 57 52
                               Return

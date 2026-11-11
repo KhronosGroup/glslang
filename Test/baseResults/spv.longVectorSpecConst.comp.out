@@ -24,7 +24,7 @@ spv.longVectorSpecConst.comp
                               SourceExtension  "GL_KHR_memory_scope_semantics"
                               Name 4  "main"
                               Name 8  "c0"
-                              Name 13  "foo(f161<s216172782113795113>;"
+                              Name 13  "foo(f161<s216172782113794623>;"
                               Name 12  "x"
                               Name 18  "v"
                               Name 22  "x"
@@ -258,7 +258,7 @@ spv.longVectorSpecConst.comp
                               Store 78(f) 147
                               Return
                               FunctionEnd
-13(foo(f161<s216172782113795113>;):           9 Function None 11
+13(foo(f161<s216172782113794623>;):           9 Function None 11
            12(x):     10(ptr) FunctionParameter
               14:             Label
              148:           9 Load 12(x)

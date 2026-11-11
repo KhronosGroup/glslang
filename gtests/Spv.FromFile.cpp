@@ -556,6 +556,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.sampleId.frag",
         "spv.samplePosition.frag",
         "spv.sampleMaskOverrideCoverage.frag",
+        "spv.samplerRect_Error.frag",
         "spv.scalarlayout.frag",
         "spv.scalarlayoutfloat16.frag",
         "spv.shaderBallot.comp",
@@ -610,6 +611,8 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.specConstantOp.float16.comp",
         "spv.specConstantOp.logical.comp",
         "spv.specConstantOp.uconvert.comp",
+        // Exercise heap offset promotion with SPIR-V 1.0.
+        "spv.structuredDescriptorHeap.Offset16Bit.comp",
         "spv.storageBuffer.vert",
         "spv.terminate.frag",
         "spv.subgroupUniformControlFlow.vert",
@@ -811,6 +814,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.coopvecTraining.comp",
         "spv.coopvecTraining_Error.comp",
         "spv.coopvecBuiltinsConst.comp",
+        "spv.typeParameterStruct_Error.comp",
         "spv.intcoopmat.comp",
         "spv.intrinsicsInteractWithCoopMat.comp",
         "spv.longVector.comp",
@@ -826,6 +830,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.longVectorBadParams.constructors.comp",
         "spv.longVectorBadParams.constructors.as.type.comp",
         "spv.longVectorBadParams.index.comp",
+        "spv.longVectorBadParams.mixedShape.comp",
         "spv.longVectorBuiltins.comp",
         "spv.longVectorBuiltinsfp16.comp",
         "spv.longVectorBuiltinsfp64.comp",
@@ -945,6 +950,8 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.nv.hitobject-allops.rgen",
         "spv.nv.hitobject-allops.rchit",
         "spv.nv.hitobject-allops.rmiss",
+        "spv.nv.hitobject-time.rgen",
+        "spv.nv.hitobject-interaction-errors.rgen",
 
         // SPV_EXT_shader_execution_reorder
 
@@ -952,6 +959,9 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.ext.hitobject-allops.rgen",
         "spv.ext.hitobject-allops.rchit",
         "spv.ext.hitobject-allops.rmiss",
+        "spv.ext.hitobject-time.rgen",
+        "spv.ext.hitobject-positions.rchit",
+        "spv.ext.hitobject-interaction-errors.rgen",
 
         // SPV_NV_displacement_micromap
 
@@ -986,6 +996,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.descriptorHeap.BufferQualifiers.frag",
         "spv.descriptorHeap.CombinedSampler.error.frag",
         "spv.descriptorHeap.ImageQualifiers.frag",
+        "spv.descriptorHeap.SpecArray.comp",
         "spv.descriptorHeap.Stride.comp",
         "spv.descriptorHeap.DebugPrintf.comp",
         "spv.descriptorHeap.HeapNotArray.error.comp",
@@ -1005,13 +1016,19 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.structuredDescriptorHeap.Uniform.comp",
         "spv.structuredDescriptorHeap.BufferReference.comp",
         "spv.structuredDescriptorHeap.DescriptorSize.comp",
+        "spv.structuredDescriptorHeap.LayoutPacking.comp",
         "spv.structuredDescriptorHeap.LayoutQualifiers.comp",
+        "spv.structuredDescriptorHeap.MemberOffset.comp",
+        "spv.structuredDescriptorHeap.MemberOffset.error.comp",
         "spv.structuredDescriptorHeap.ReadOnly.comp",
         "spv.structuredDescriptorHeap.ReadOnly.error.comp",
+        "spv.structuredDescriptorHeap.SamplerOffset.error.comp",
         "spv.structuredDescriptorHeap.es.frag",
         "spv.structuredDescriptorHeap.UnsizedES.error.frag",
         "spv.structuredDescriptorHeap.MatrixLayout.comp",
         "spv.structuredDescriptorHeap.Offset.comp",
+        "spv.structuredDescriptorHeap.OffsetConstant.comp",
+        "spv.structuredDescriptorHeap.OffsetSpecConstant.comp",
         
         // SPV_KHR_abort
         "spv.shader.abort.comp",
@@ -1136,6 +1153,13 @@ INSTANTIATE_TEST_SUITE_P(
 INSTANTIATE_TEST_SUITE_P(
     Glsl, CompileOpenGLToSpirvTest,
     ::testing::ValuesIn(std::vector<std::string>({
+        "glspv.400.frag",
+        "glspv.floatFetch.frag",
+        "glspv.image.frag",
+        "glspv.memoryQualifier.frag",
+        "glspv.newTexture.frag",
+        "glspv.sparseTexture.frag",
+        "glspv.sparseTextureClamp.frag",
         "spv.330.location.opengl.frag",
         "spv.460.frag",
         "spv.460.vert",
@@ -1375,9 +1399,18 @@ INSTANTIATE_TEST_SUITE_P(
 INSTANTIATE_TEST_SUITE_P(
     Glsl, GlslNonSemanticShaderDebugInfoVulkanLatestTest,
     ::testing::ValuesIn(std::vector<std::string>({
+        "spv.debuginfo.descriptor_heap.glsl.comp",
+        "spv.debuginfo.descriptor_heap.unused_16bit.glsl.comp",
+        "spv.debuginfo.descriptor_heap.unused_8bit.glsl.comp",
+        "spv.debuginfo.descriptor_heap.unused_bool.glsl.comp",
+        "spv.debuginfo.descriptor_heap.unused_tensor.glsl.comp",
+        "spv.debuginfo.descriptor_heap.source_types.glsl.comp",
+        "spv.debuginfo.descriptor_heap.bool.glsl.comp",
+        "spv.debuginfo.structured_descriptor_heap.glsl.comp",
         "spv.debuginfo.rt_types.glsl.rgen",
         "spv.debuginfo.rt_nv_builtins.glsl.rahit",
         "spv.debuginfo.rt_ext_builtins.glsl.rahit",
+        "spv.debuginfo.descriptorHeap.glsl.frag",
     })),
     FileNameAsCustomTestSuffix
 );

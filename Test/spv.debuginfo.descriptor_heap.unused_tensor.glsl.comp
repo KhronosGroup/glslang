@@ -1,0 +1,10 @@
+#version 460
+#extension GL_EXT_descriptor_heap : require
+#extension GL_ARM_tensors : require
+
+// Opaque tensor elements still need valid debug type ids when the heaps are unused.
+layout(local_size_x = 1) in;
+layout(descriptor_heap) uniform tensorARM<float, 2> floatTensors[];
+layout(descriptor_heap) uniform tensorARM<int, 4> intTensors[3];
+
+void main() {}

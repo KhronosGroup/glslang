@@ -20,6 +20,8 @@ spv.descriptorHeap.Buffer.comp
                               MemberName 14(O) 0  "outputData"
                               Name 20  "U"
                               MemberName 20(U) 0  "inputData"
+                              Name 21  "ubo"
+                              Name 27  "ssbo"
                               Decorate 7(resource_heap) BuiltIn ResourceHeapEXT
                               DecorateId 11 ArrayStrideIdEXT 10
                               Decorate 14(O) Block
@@ -50,12 +52,12 @@ spv.descriptorHeap.Buffer.comp
               30:             TypePointer StorageBuffer 9(int)
          4(main):           2 Function None 3
                5:             Label
-              21:      6(ptr) UntypedAccessChainKHR 18 7(resource_heap) 19
-              23:     22(ptr) BufferPointerEXT 21
+         21(ubo):      6(ptr) UntypedAccessChainKHR 18 7(resource_heap) 19
+              23:     22(ptr) BufferPointerEXT 21(ubo)
               25:     24(ptr) AccessChain 23 15
               26:      9(int) Load 25
-              27:      6(ptr) UntypedAccessChainKHR 11 7(resource_heap) 13
-              29:     28(ptr) BufferPointerEXT 27
+        27(ssbo):      6(ptr) UntypedAccessChainKHR 11 7(resource_heap) 13
+              29:     28(ptr) BufferPointerEXT 27(ssbo)
               31:     30(ptr) AccessChain 29 15
                               Store 31 26
                               Return

@@ -1,0 +1,10 @@
+spv.ext.hitobject-interaction-errors.rgen
+ERROR: 0:13: 'hitObjectTraceRayMotionEXT' : required extension not requested: GL_NV_ray_tracing_motion_blur
+ERROR: 0:14: 'hitObjectRecordMissMotionEXT' : required extension not requested: GL_NV_ray_tracing_motion_blur
+ERROR: 0:15: 'hitObjectTraceMotionReorderExecuteEXT' : required extension not requested: GL_NV_ray_tracing_motion_blur
+ERROR: 0:16: 'hitObjectGetCurrentTimeEXT' : required extension not requested: GL_NV_ray_tracing_motion_blur
+ERROR: 0:18: 'hitObjectGetIntersectionTriangleVertexPositionsEXT' : required extension not requested: GL_EXT_ray_tracing_position_fetch
+ERROR: 5 compilation errors.  No code generated.
+
+
+SPIR-V is not generated for failed compile or link
