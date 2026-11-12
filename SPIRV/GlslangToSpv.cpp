@@ -251,6 +251,12 @@ protected:
     spv::Id convertGlslangStructToSpvType(const glslang::TType&, const glslang::TTypeList* glslangStruct,
                                           glslang::TLayoutPacking, const glslang::TQualifier&);
     spv::LinkageType convertGlslangLinkageToSpv(glslang::TLinkType glslangLinkType);
+    bool isDescriptorArray(const glslang::TType& type) const;
+    void accessChainPushIndex(glslang::TIntermBinary* node, spv::Id index,
+                              spv::Builder::AccessChain::CoherentFlags coherentFlags);
+    void accessChainPushDescriptorArrayElement(int index);
+    spv::Id makeDescriptorArraySize(const glslang::TArraySizes& arraySizes, int firstDim = 0);
+    spv::Id createDescriptorIndexOperation(spv::Op op, spv::Id left, spv::Id right);
     bool isDescHeapDescriptorType(const glslang::TType& type) const;
     bool containsDescHeapDescriptorType(const glslang::TType& type) const;
     bool useHeapOffsetDecoration(const glslang::TType& type) const;
@@ -274,7 +280,10 @@ protected:
     bool isShaderEntryPoint(const glslang::TIntermAggregate* node);
     bool writableParam(glslang::TStorageQualifier) const;
     bool originalParam(glslang::TStorageQualifier, const glslang::TType&, bool implicitThisParam);
+    void getParamDecorations(std::vector<spv::Decoration>&, const glslang::TType&, bool useVulkanMemoryModel);
     void makeFunctions(const glslang::TIntermSequence&);
+    spv::Function* specializeDescriptorArrayFunction(const glslang::TIntermAggregate*, spv::Function*,
+        const std::map<int, spv::Builder::AccessChain>&, std::vector<spv::Id>&);
     void makeGlobalInitializers(const glslang::TIntermSequence&);
     void collectRayTracingLinkerObjects();
     void visitFunctions(const glslang::TIntermSequence&);
@@ -369,6 +378,16 @@ protected:
     std::unordered_set<long long> rValueParameters;  // set of formal function parameters passed as rValues,
                                                // rather than a pointer
     std::unordered_map<std::string, spv::Function*> functionMap;
+    std::unordered_map<std::string, glslang::TIntermAggregate*> functionNodes;
+    struct DescriptorArrayFunction {
+        glslang::TIntermAggregate* node;
+        spv::Function* function;
+        std::map<int, spv::Builder::AccessChain> parameters;
+    };
+    std::vector<DescriptorArrayFunction> descriptorArrayFunctions;
+    std::map<std::vector<spv::Id>, size_t> descriptorArrayFunctionMap;
+    std::unordered_map<long long, spv::Builder::AccessChain> descriptorArrayParameters;
+    std::map<std::vector<spv::Id>, spv::Id> descriptorArraySizeCache;
     std::unordered_map<const glslang::TTypeList*, spv::Id> structMap[glslang::ElpCount][glslang::ElmCount];
     // Share source struct debug types between heap views and their physical layouts.
     std::unordered_map<const glslang::TTypeList*, spv::Id> debugStructMap;
@@ -2390,6 +2409,14 @@ void TGlslangToSpvTraverser::visitSymbol(glslang::TIntermSymbol* symbol)
         return;
 #endif
 
+    // A descriptor-array slice keeps the original array pointer and a separate
+    // element offset; there is no pointer to a row in the flattened SPIR-V type.
+    auto descriptorParameter = descriptorArrayParameters.find(symbol->getId());
+    if (descriptorParameter != descriptorArrayParameters.end()) {
+        builder.setAccessChain(descriptorParameter->second);
+        return;
+    }
+
     // getSymbolId() will set up all the IO decorations on the first call.
     // Formal function parameters were mapped during makeFunctions().
     spv::Id id = getSymbolId(symbol);
@@ -2463,9 +2490,11 @@ void TGlslangToSpvTraverser::visitSymbol(glslang::TIntermSymbol* symbol)
                 const long long symbolId = symbol->getId();
                 auto cachedBaseType = heapDescHeapBaseType.find(symbolId);
                 if (cachedBaseType == heapDescHeapBaseType.end()) {
+                    const spv::Builder::AccessChain savedChain = builder.getAccessChain();
                     spv::Id baseType = convertGlslangToSpvType(symbolType);
                     if (wrapDescHeapImageArray)
                         baseType = makeDescHeapImageArrayWrapperType(*symbol, baseType);
+                    builder.setAccessChain(savedChain);
                     cachedBaseType = heapDescHeapBaseType.emplace(symbolId, baseType).first;
                 }
                 builder.setAccessChainDescHeapBaseType(cachedBaseType->second);
@@ -2539,6 +2568,19 @@ spv::Id TGlslangToSpvTraverser::makeDescHeapImageArrayWrapperType(const glslang:
     return wrapperType;
 }
 
+// Array dereferences have temporary storage qualification. Find the original
+// array declaration when its descriptor storage class is needed.
+const glslang::TIntermTyped* GetArrayBase(const glslang::TIntermTyped* node)
+{
+    while (const glslang::TIntermBinary* index = node->getAsBinaryNode()) {
+        if ((index->getOp() != glslang::EOpIndexDirect && index->getOp() != glslang::EOpIndexIndirect) ||
+            !index->getLeft()->getType().isArray())
+            break;
+        node = index->getLeft();
+    }
+    return node;
+}
+
 // Create new untyped access chain instruction to descriptor heap, based on EXT_descriptor_heap extension.
 void TGlslangToSpvTraverser::recordDescHeapAccessChainInfo(glslang::TIntermBinary* node)
 {
@@ -2556,12 +2598,12 @@ void TGlslangToSpvTraverser::recordDescHeapAccessChainInfo(glslang::TIntermBinar
         glslang::TType nodeTy;
         nodeTy.shallowCopy(node->getType());
 
+        const glslang::TType& arrayType = GetArrayBase(node->getLeft())->getType();
         const bool useLeftDescriptorType =
-            node->getLeft()->getType().isArray() &&
-            node->getLeft()->getQualifier().isUniformOrBuffer();
+            arrayType.isArray() && arrayType.getQualifier().isUniformOrBuffer();
 
         if (useLeftDescriptorType)
-            nodeTy.shallowCopy(node->getLeft()->getType());
+            nodeTy.shallowCopy(arrayType);
 
         if (nodeTy.isArray())
             nodeTy.clearArraySizes();
@@ -2585,6 +2627,137 @@ void TGlslangToSpvTraverser::recordDescHeapAccessChainInfo(glslang::TIntermBinar
         builder.setAccessChainDescHeapDescriptorType(descType, storageClass, nodeTy.getQualifier().isReadOnly(),
                                                      nodeTy.getQualifier().isWriteOnly());
     }
+}
+
+// Vulkan descriptor interfaces have one array level. Keep the GLSL dimensions
+// for type checking and flatten both the SPIR-V type and its indexing instead.
+bool TGlslangToSpvTraverser::isDescriptorArray(const glslang::TType& type) const
+{
+    return glslangIntermediate->getSpv().vulkan > 0 && type.isArray() &&
+           (IsDescriptorResource(type) || (type.getQualifier().layoutDescriptorHeap && isDescHeapDescriptorType(type)) ||
+            type.getBasicType() == glslang::EbtSampler ||
+            type.getBasicType() == glslang::EbtAccStruct);
+}
+
+// Use the widest index operand, preserving sign extension for signed indices.
+// Literal arithmetic stays folded, and specialization expressions stay constant.
+spv::Id TGlslangToSpvTraverser::createDescriptorIndexOperation(spv::Op op, spv::Id left, spv::Id right)
+{
+    assert(op == spv::Op::OpIMul || op == spv::Op::OpIAdd);
+    const int width = std::max(32, std::max(builder.getScalarTypeWidth(builder.getTypeId(left)),
+                                           builder.getScalarTypeWidth(builder.getTypeId(right))));
+    const spv::Id indexType = builder.makeUintType(width);
+    const auto makeIndexConstant = [&](unsigned long long value) {
+        return width == 64 ? builder.makeUint64Constant(value)
+                           : builder.makeUintConstant(static_cast<unsigned>(value));
+    };
+    const auto widen = [&](spv::Id value) {
+        const spv::Id sourceType = builder.getTypeId(value);
+        const int sourceWidth = builder.getScalarTypeWidth(sourceType);
+        if (sourceWidth == width)
+            return value;
+        // Keep literal conversions as ordinary constants so HLSL legalization
+        // can resolve local descriptor-array indices and eliminate opaque stores.
+        if (builder.isConstantScalar(value)) {
+            const unsigned long long mask = (1ull << sourceWidth) - 1;
+            unsigned long long literal = builder.getConstantScalar(value) & mask;
+            if (builder.isIntType(sourceType) && (literal & (1ull << (sourceWidth - 1))))
+                literal |= ~mask;
+            return makeIndexConstant(literal);
+        }
+        SpecConstantOpModeGuard specConstantMode(&builder);
+        if (builder.isConstant(value))
+            specConstantMode.turnOnSpecConstantOpMode();
+        if (builder.isUintType(sourceType)) {
+            if (specConstUConvertNeedsWorkaround())
+                return createSpecConstUConvert(indexType, value, 0, sourceWidth, width);
+            return builder.createUnaryOp(spv::Op::OpUConvert, indexType, value);
+        }
+        return builder.createUnaryOp(spv::Op::OpSConvert, indexType, value);
+    };
+    left = widen(left);
+    right = widen(right);
+    if (builder.isConstantScalar(left) && builder.isConstantScalar(right)) {
+        const unsigned long long lhs = width == 64 ? builder.getConstantScalar64(left)
+                                                   : builder.getConstantScalar(left);
+        const unsigned long long rhs = width == 64 ? builder.getConstantScalar64(right)
+                                                   : builder.getConstantScalar(right);
+        return makeIndexConstant(op == spv::Op::OpIMul ? lhs * rhs : lhs + rhs);
+    }
+    if (builder.isConstant(left) && builder.isConstant(right))
+        return builder.createSpecConstantOp(op, indexType, {left, right}, {});
+    return builder.createBinOp(op, indexType, left, right);
+}
+
+void TGlslangToSpvTraverser::accessChainPushIndex(
+    glslang::TIntermBinary* node, spv::Id index, spv::Builder::AccessChain::CoherentFlags coherentFlags)
+{
+    const glslang::TType& arrayType = node->getLeft()->getType();
+    if (arrayType.isArray() && isDescriptorArray(GetArrayBase(node->getLeft())->getType())) {
+        spv::Builder::AccessChain chain = builder.getAccessChain();
+        // Weight each subscript by the remaining dimensions. Keeping the offset
+        // in elements also lets a partially indexed array be passed to a function.
+        if (arrayType.isArrayOfArrays())
+            index = createDescriptorIndexOperation(spv::Op::OpIMul, index,
+                makeDescriptorArraySize(*arrayType.getArraySizes(), 1));
+        if (chain.descriptorArrayOffset != spv::NoResult)
+            index = createDescriptorIndexOperation(spv::Op::OpIAdd, chain.descriptorArrayOffset, index);
+
+        chain.descriptorArrayOffset = node->getType().isArray() ? index : spv::NoResult;
+        chain.coherentFlags |= coherentFlags;
+        chain.alignment |= arrayType.getBufferReferenceAlignment();
+        // makeArraySizeId() can traverse a specialization expression and replace
+        // the active access chain, so always restore the saved chain.
+        builder.setAccessChain(chain);
+        if (node->getType().isArray())
+            return;
+        if (chain.descHeapInfo.descHeapBaseTy != spv::NoResult) {
+            builder.accessChainPushDescHeapIndex(index);
+            return;
+        }
+    }
+    builder.accessChainPush(index, coherentFlags, arrayType.getBufferReferenceAlignment());
+}
+
+// Select one element when copying a partially indexed descriptor array.
+// The pending offset is measured in descriptors, independently of GLSL dimensions.
+void TGlslangToSpvTraverser::accessChainPushDescriptorArrayElement(int index)
+{
+    spv::Builder::AccessChain chain = builder.getAccessChain();
+    assert(chain.descriptorArrayOffset != spv::NoResult);
+    spv::Id element = createDescriptorIndexOperation(spv::Op::OpIAdd, chain.descriptorArrayOffset,
+                                                    builder.makeUintConstant(index));
+    chain.descriptorArrayOffset = spv::NoResult;
+    chain.instr = spv::NoResult;
+    chain.descHeapInfo.descHeapInstId.clear();
+    if (chain.descHeapInfo.descHeapBaseTy != spv::NoResult)
+        chain.descHeapInfo.descHeapIndexChain.push_back(element);
+    else
+        chain.indexChain.push_back(element);
+    builder.setAccessChain(chain);
+}
+
+spv::Id TGlslangToSpvTraverser::makeDescriptorArraySize(const glslang::TArraySizes& arraySizes, int firstDim)
+{
+    std::vector<spv::Id> dimensions;
+    for (int dim = firstDim; dim < arraySizes.getNumDims(); ++dim)
+        dimensions.push_back(makeArraySizeId(arraySizes, dim));
+
+    // Array type identity includes the length ID. Reuse the product for function
+    // parameters and arguments sized with the same specialization constants.
+    auto cached = descriptorArraySizeCache.find(dimensions);
+    if (cached != descriptorArraySizeCache.end())
+        return cached->second;
+
+    spv::Id size = dimensions.front();
+    for (size_t dim = 1; dim < dimensions.size(); ++dim) {
+        spv::Id innerSize = dimensions[dim];
+        if (builder.isConstantScalar(size) && builder.isConstantScalar(innerSize))
+            size = builder.makeUintConstant(builder.getConstantScalar(size) * builder.getConstantScalar(innerSize));
+        else
+            size = builder.createSpecConstantOp(spv::Op::OpIMul, builder.makeUintType(32), {size, innerSize}, {});
+    }
+    return descriptorArraySizeCache.emplace(std::move(dimensions), size).first->second;
 }
 
 bool TGlslangToSpvTraverser::visitBinary(glslang::TVisit /* visit */, glslang::TIntermBinary* node)
@@ -2722,14 +2895,10 @@ bool TGlslangToSpvTraverser::visitBinary(glslang::TVisit /* visit */, glslang::T
                     int64_t idx = node->getRight()->getType().contains64BitInt() ?
                                     node->getRight()->getAsConstantUnion()->getConstArray()[0].getI64Const() :
                                     (int64_t)node->getRight()->getAsConstantUnion()->getConstArray()[0].getUConst();
-                    builder.accessChainPush(builder.makeInt64Constant(idx),
-                            coherentFlags,
-                            node->getLeft()->getType().getBufferReferenceAlignment());
+                    accessChainPushIndex(node, builder.makeInt64Constant(idx), coherentFlags);
 
                 } else {
-                    builder.accessChainPush(builder.makeIntConstant(spvIndex),
-                            coherentFlags,
-                            node->getLeft()->getType().getBufferReferenceAlignment());
+                    accessChainPushIndex(node, builder.makeIntConstant(spvIndex), coherentFlags);
                 }
                 // Add capabilities here for accessing PointSize and clip/cull distance.
                 // We have deferred generation of associated capabilities until now.
@@ -2773,7 +2942,7 @@ bool TGlslangToSpvTraverser::visitBinary(glslang::TVisit /* visit */, glslang::T
                 index = builder.createUnaryOp(spv::Op::OpUConvert, uintType, index);
             }
 
-            addIndirectionIndexCapabilities(node->getLeft()->getType(), node->getRight()->getType());
+            addIndirectionIndexCapabilities(GetArrayBase(node->getLeft())->getType(), node->getRight()->getType());
 
             // restore the saved access chain
             builder.setAccessChain(partial);
@@ -2795,8 +2964,7 @@ bool TGlslangToSpvTraverser::visitBinary(glslang::TVisit /* visit */, glslang::T
                     index = createIntWidthConversion(index, 0, builder.makeIntegerType(64, true), glslang::EbtInt64, node->getRight()->getType().getBasicType());
                 }
 
-                builder.accessChainPush(index, coherent_flags,
-                                        node->getLeft()->getType().getBufferReferenceAlignment());
+                accessChainPushIndex(node, index, coherent_flags);
             }
 
             // EXT_descriptor_heap
@@ -6502,7 +6670,23 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
     }
 
     if (type.isArray()) {
-        if (type.getQualifier().layoutDescriptorHeap && containsDescHeapDescriptorType(type)) {
+        if (isDescriptorArray(type) && type.isArrayOfArrays()) {
+            const bool heap = type.getQualifier().layoutDescriptorHeap;
+            const bool runtime = !type.isSizedArray() || (heap && type.isImplicitlySizedArray());
+            // ID decorations must refer to expressions defined before their target.
+            spv::Id stride = heap ? descHeapLayout.getOrCreateArrayStrides(type).front() : spv::NoResult;
+            // Keep explicitly laid out heap arrays separate from undecorated
+            // descriptor arrays, including function parameter types.
+            spvType = runtime ? builder.makeRuntimeArray(spvType) :
+                builder.makeArrayType(spvType, makeDescriptorArraySize(*type.getArraySizes()), heap ? 1 : 0);
+            if (heap) {
+                // The flattened array advances one descriptor at a time.
+                builder.addDecorationId(spvType, spv::Decoration::ArrayStrideIdEXT, stride);
+            } else if (runtime) {
+                builder.addIncorporatedExtension("SPV_EXT_descriptor_indexing", spv::Spv_1_5);
+                builder.addCapability(spv::Capability::RuntimeDescriptorArrayEXT);
+            }
+        } else if (type.getQualifier().layoutDescriptorHeap && containsDescHeapDescriptorType(type)) {
             std::vector<spv::Id> arrayStrides = descHeapLayout.getOrCreateArrayStrides(type);
             assert((int)arrayStrides.size() == type.getArraySizes()->getNumDims());
             int strideIndex = 0;
@@ -7481,6 +7665,25 @@ spv::Id TGlslangToSpvTraverser::makeHeapOffsetId(const glslang::TType& type)
 //  - do conversion of concrete to abstract type
 spv::Id TGlslangToSpvTraverser::accessChainLoad(const glslang::TType& type)
 {
+    if (type.isArray() && builder.getAccessChain().descriptorArrayOffset != spv::NoResult) {
+        // HLSL copies opaque array arguments. A slice of a flattened array must
+        // load its own elements, rather than loading the entire base array.
+        const spv::Builder::AccessChain chain = builder.getAccessChain();
+        glslang::TType elementType;
+        elementType.shallowCopy(type);
+        elementType.clearArraySizes();
+        const int size = type.getCumulativeArraySize();
+        std::vector<spv::Id> elements;
+        for (int index = 0; index < size; ++index) {
+            builder.setAccessChain(chain);
+            accessChainPushDescriptorArrayElement(index);
+            elements.push_back(accessChainLoad(elementType));
+        }
+        builder.setAccessChain(chain);
+        spv::Id arrayType = builder.makeArrayType(builder.getTypeId(elements.front()), builder.makeUintConstant(size), 0);
+        return builder.createCompositeConstruct(arrayType, elements);
+    }
+
     spv::Id nominalTypeId = builder.accessChainGetInferredType();
 
     spv::Builder::AccessChain::CoherentFlags coherentFlags = builder.getAccessChain().coherentFlags;
@@ -7581,6 +7784,23 @@ void TGlslangToSpvTraverser::accessChainStore(const glslang::TType& type, spv::I
 // Implicitly uses the existing builder.accessChain as the storage target.
 void TGlslangToSpvTraverser::multiTypeStore(const glslang::TType& type, spv::Id rValue)
 {
+    if (type.isArray() && builder.getAccessChain().descriptorArrayOffset != spv::NoResult) {
+        // Preserve the slice offset for array assignment and out/inout copy-back.
+        const spv::Builder::AccessChain chain = builder.getAccessChain();
+        glslang::TType elementType;
+        elementType.shallowCopy(type);
+        elementType.clearArraySizes();
+        spv::Id elementRType = builder.getContainedTypeId(builder.getTypeId(rValue));
+        for (int index = 0; index < type.getCumulativeArraySize(); ++index) {
+            spv::Id element = builder.createCompositeExtract(rValue, elementRType, index);
+            builder.setAccessChain(chain);
+            accessChainPushDescriptorArrayElement(index);
+            multiTypeStore(elementType, element);
+        }
+        builder.setAccessChain(chain);
+        return;
+    }
+
     // we only do the complex path here if it's an aggregate
     if (! type.isStruct() && ! type.isArray()) {
         accessChainStore(type, rValue);
@@ -7866,32 +8086,33 @@ bool TGlslangToSpvTraverser::originalParam(glslang::TStorageQualifier qualifier,
            (paramType.getBasicType() == glslang::EbtBlock && qualifier == glslang::EvqBuffer); // SSBO
 }
 
+void TGlslangToSpvTraverser::getParamDecorations(std::vector<spv::Decoration>& decorations,
+    const glslang::TType& type, bool useVulkanMemoryModel)
+{
+    spv::Decoration paramPrecision = TranslatePrecisionDecoration(type);
+    if (paramPrecision != spv::NoPrecision)
+        decorations.push_back(paramPrecision);
+    TranslateMemoryDecoration(type.getQualifier(), decorations, useVulkanMemoryModel);
+    if (type.isReference()) {
+        // Original and non-writable params pass the pointer directly and
+        // use restrict/aliased, others are stored to a pointer in Function
+        // memory and use RestrictPointer/AliasedPointer.
+        if (originalParam(type.getQualifier().storage, type, false) ||
+            !writableParam(type.getQualifier().storage)) {
+            // TranslateMemoryDecoration added Restrict decoration already.
+            if (!type.getQualifier().isRestrict()) {
+                decorations.push_back(spv::Decoration::Aliased);
+            }
+        } else {
+            decorations.push_back(type.getQualifier().isRestrict() ? spv::Decoration::RestrictPointerEXT :
+                                                                     spv::Decoration::AliasedPointerEXT);
+        }
+    }
+}
+
 // Make all the functions, skeletally, without actually visiting their bodies.
 void TGlslangToSpvTraverser::makeFunctions(const glslang::TIntermSequence& glslFunctions)
 {
-    const auto getParamDecorations = [&](std::vector<spv::Decoration>& decorations, const glslang::TType& type,
-        bool useVulkanMemoryModel) {
-        spv::Decoration paramPrecision = TranslatePrecisionDecoration(type);
-        if (paramPrecision != spv::NoPrecision)
-            decorations.push_back(paramPrecision);
-        TranslateMemoryDecoration(type.getQualifier(), decorations, useVulkanMemoryModel);
-        if (type.isReference()) {
-            // Original and non-writable params pass the pointer directly and
-            // use restrict/aliased, others are stored to a pointer in Function
-            // memory and use RestrictPointer/AliasedPointer.
-            if (originalParam(type.getQualifier().storage, type, false) ||
-                !writableParam(type.getQualifier().storage)) {
-                // TranslateMemoryDecoration added Restrict decoration already.
-                if (!type.getQualifier().isRestrict()) {
-                    decorations.push_back(spv::Decoration::Aliased);
-                }
-            } else {
-                decorations.push_back(type.getQualifier().isRestrict() ? spv::Decoration::RestrictPointerEXT :
-                                                                         spv::Decoration::AliasedPointerEXT);
-            }
-        }
-    };
-
     for (int f = 0; f < (int)glslFunctions.size(); ++f) {
         glslang::TIntermAggregate* glslFunction = glslFunctions[f]->getAsAggregate();
         if (! glslFunction || glslFunction->getOp() != glslang::EOpFunction)
@@ -7971,6 +8192,7 @@ void TGlslangToSpvTraverser::makeFunctions(const glslang::TIntermSequence& glslF
 
         // Track function to emit/call later
         functionMap[glslFunction->getName().c_str()] = function;
+        functionNodes[glslFunction->getName().c_str()] = glslFunction;
 
         // Set the parameter id's
         for (int p = 0; p < (int)parameters.size(); ++p) {
@@ -8049,6 +8271,40 @@ void TGlslangToSpvTraverser::visitFunctions(const glslang::TIntermSequence& glsl
         glslang::TIntermAggregate* node = glslFunctions[f]->getAsAggregate();
         if (node && (node->getOp() == glslang::EOpFunction || node->getOp() == glslang::EOpLinkerObjects))
             node->traverse(this);
+    }
+
+    // Calls with descriptor-array slices use the actual base array type plus
+    // scalar offsets. Emit those variants after the ordinary function bodies.
+    for (size_t f = 0; f < descriptorArrayFunctions.size(); ++f) {
+        // Traversing a variant may queue more variants, invalidating vector references.
+        const DescriptorArrayFunction variant = descriptorArrayFunctions[f];
+        auto savedSymbols = symbolValues;
+        for (auto it = symbolValues.begin(); it != symbolValues.end();) {
+            spv::Id id = it->second;
+            if (builder.getOpCode(id) == spv::Op::OpFunctionParameter ||
+                (builder.isPointer(id) && builder.getStorageClass(id) == spv::StorageClass::Function))
+                it = symbolValues.erase(it);
+            else
+                ++it;
+        }
+        const auto& parameters = variant.node->getSequence()[0]->getAsAggregate()->getSequence();
+        for (int p = 0; p < (int)parameters.size(); ++p)
+            symbolValues[parameters[p]->getAsSymbolNode()->getId()] = variant.function->getParamId(p);
+        for (const auto& parameter : variant.parameters)
+            descriptorArrayParameters[parameters[parameter.first]->getAsSymbolNode()->getId()] = parameter.second;
+
+        spv::Function* original = functionMap[variant.node->getName().c_str()];
+        functionMap[variant.node->getName().c_str()] = variant.function;
+        variant.node->traverse(this);
+        functionMap[variant.node->getName().c_str()] = original;
+        descriptorArrayParameters.clear();
+
+        // Retain newly encountered globals, but give each variant its own locals.
+        for (const auto& symbol : symbolValues) {
+            if (builder.isGlobalVariable(symbol.second) || builder.isConstant(symbol.second))
+                savedSymbols.emplace(symbol);
+        }
+        symbolValues = std::move(savedSymbols);
     }
 }
 
@@ -8844,6 +9100,101 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
     return result[0];
 }
 
+// A row of a flattened descriptor array has no corresponding SPIR-V array
+// pointer type. Specialize the callee for the actual base pointer and carry its
+// offset separately. This also preserves untyped descriptor-heap access metadata.
+spv::Function* TGlslangToSpvTraverser::specializeDescriptorArrayFunction(
+    const glslang::TIntermAggregate* call, spv::Function* original,
+    const std::map<int, spv::Builder::AccessChain>& arguments, std::vector<spv::Id>& extraArguments)
+{
+    glslang::TIntermAggregate* node = functionNodes.at(call->getName().c_str());
+    const auto& glslParameters = node->getSequence()[0]->getAsAggregate()->getSequence();
+    std::vector<spv::Id> paramTypes;
+    std::vector<const char*> paramNames;
+    std::vector<std::vector<spv::Decoration>> paramDecorations(glslParameters.size());
+    for (int p = 0; p < (int)glslParameters.size(); ++p) {
+        paramTypes.push_back(original->getParamType(p));
+        paramNames.push_back(glslParameters[p]->getAsSymbolNode()->getName().c_str());
+        getParamDecorations(paramDecorations[p], glslParameters[p]->getAsTyped()->getType(),
+                            glslangIntermediate->usingVulkanMemoryModel());
+    }
+
+    auto parameters = arguments;
+    std::vector<spv::Id> key{original->getId()};
+    std::vector<std::pair<spv::Id*, int>> parameterIds;
+    const auto indexParameter = [&](spv::Id& id, bool alwaysPass = false) {
+        // Structure member indices must remain constants. Other constant prefixes
+        // may also stay in the body; the final slice offset is always a parameter.
+        if (!alwaysPass && (id == spv::NoResult || builder.isConstant(id))) {
+            key.push_back(id);
+        } else {
+            key.push_back(spv::NoResult);
+            key.push_back(builder.getTypeId(id));
+            parameterIds.emplace_back(&id, (int)paramTypes.size());
+            extraArguments.push_back(id);
+            paramTypes.push_back(builder.getTypeId(id));
+            paramNames.push_back("descriptor_offset");
+        }
+    };
+    for (auto& parameter : parameters) {
+        const int p = parameter.first;
+        auto& chain = parameter.second;
+        auto& heap = chain.descHeapInfo;
+        const auto& flags = chain.coherentFlags;
+        paramTypes[p] = builder.getTypeId(chain.base);
+        if (heap.descHeapBaseTy != spv::NoResult) {
+            // Image access qualifiers belong to the descriptor in the heap,
+            // not the untyped pointer to the whole heap passed as a parameter.
+            auto& decorations = paramDecorations[p];
+            decorations.erase(std::remove_if(decorations.begin(), decorations.end(),
+                [](spv::Decoration decoration) {
+                    return decoration == spv::Decoration::NonReadable ||
+                           decoration == spv::Decoration::NonWritable;
+                }), decorations.end());
+        }
+        key.insert(key.end(), {static_cast<spv::Id>(p), paramTypes[p], heap.descHeapBaseTy, heap.descTy,
+            static_cast<spv::Id>(heap.descStorageClass), heap.descReadonly, heap.descWriteonly, chain.alignment,
+            flags.coherent, flags.devicecoherent, flags.queuefamilycoherent, flags.workgroupcoherent,
+            flags.subgroupcoherent, flags.shadercallcoherent, flags.nonprivate, flags.volatil, flags.nontemporal,
+            flags.isImage, flags.nonUniform, static_cast<spv::Id>(chain.indexChain.size()),
+            static_cast<spv::Id>(heap.descHeapIndexChain.size())});
+        parameterIds.emplace_back(&chain.base, p);
+        for (auto& index : chain.indexChain)
+            indexParameter(index);
+        for (auto& index : heap.descHeapIndexChain)
+            indexParameter(index);
+        indexParameter(heap.descHeapBaseOffset);
+        if (chain.descriptorArrayOffset == spv::NoResult)
+            chain.descriptorArrayOffset = builder.makeUintConstant(0);
+        indexParameter(chain.descriptorArrayOffset, true);
+        chain.instr = spv::NoResult;
+        heap.descHeapInstId.clear();
+    }
+
+    auto cached = descriptorArrayFunctionMap.find(key);
+    if (cached != descriptorArrayFunctionMap.end())
+        return descriptorArrayFunctions[cached->second].function;
+
+    spv::Block* savedBuildPoint = builder.getBuildPoint();
+    spv::Block* entry;
+    const std::string name = std::string(node->getName().c_str()) + ".descriptor_array." +
+                             std::to_string(descriptorArrayFunctions.size());
+    spv::Function* function = builder.makeFunctionEntry(TranslatePrecisionDecoration(node->getType()),
+        original->getReturnType(), name.c_str(), spv::LinkageType::Max, paramTypes, paramDecorations, &entry);
+    function->setFunctionControl(TranslateFunctionControl(node->getFunctionControl()));
+    if (original->hasImplicitThis())
+        function->setImplicitThis();
+    builder.setupFunctionDebugInfo(function, name.c_str(), paramTypes, paramNames);
+    for (int p = 0; p < (int)paramNames.size(); ++p)
+        builder.addName(function->getParamId(p), paramNames[p]);
+    for (const auto& parameter : parameterIds)
+        *parameter.first = function->getParamId(parameter.second);
+    descriptorArrayFunctionMap.emplace(std::move(key), descriptorArrayFunctions.size());
+    descriptorArrayFunctions.push_back({node, function, std::move(parameters)});
+    builder.setBuildPoint(savedBuildPoint);
+    return function;
+}
+
 spv::Id TGlslangToSpvTraverser::handleUserFunctionCall(const glslang::TIntermAggregate* node)
 {
     // Grab the function's pointer from the previously created function
@@ -8866,6 +9217,7 @@ spv::Id TGlslangToSpvTraverser::handleUserFunctionCall(const glslang::TIntermAgg
     std::vector<spv::Builder::AccessChain> lValues;
     std::vector<spv::Id> rValues;
     std::vector<const glslang::TType*> argTypes;
+    std::map<int, spv::Builder::AccessChain> descriptorArrayArguments;
     for (int a = 0; a < (int)glslangArgs.size(); ++a) {
         argTypes.push_back(&glslangArgs[a]->getAsTyped()->getType());
         // build l-value
@@ -8875,12 +9227,34 @@ spv::Id TGlslangToSpvTraverser::handleUserFunctionCall(const glslang::TIntermAgg
         if (originalParam(qualifiers[a], *argTypes[a], function->hasImplicitThis() && a == 0) ||
             writableParam(qualifiers[a])) {
             // save l-value
-            lValues.push_back(builder.getAccessChain());
+            spv::Builder::AccessChain chain = builder.getAccessChain();
+            // A pending offset already identifies a flattened descriptor slice.
+            // Its expression type may have lost the original storage qualifier,
+            // including for HLSL ConstantBuffer array arguments.
+            if (originalParam(qualifiers[a], *argTypes[a], function->hasImplicitThis() && a == 0) &&
+                (chain.descriptorArrayOffset != spv::NoResult ||
+                 (isDescriptorArray(*argTypes[a]) && chain.descHeapInfo.descHeapBaseTy != spv::NoResult))) {
+                if (chain.descHeapInfo.descHeapBaseTy != spv::NoResult &&
+                    chain.descHeapInfo.descTy == spv::NoResult) {
+                    glslang::TType elementType;
+                    elementType.shallowCopy(*argTypes[a]);
+                    elementType.clearArraySizes();
+                    elementType.getQualifier().layoutDescriptorHeap = false;
+                    chain.descHeapInfo.descTy = convertGlslangToSpvType(elementType);
+                    chain.descHeapInfo.descStorageClass = spv::StorageClass::UniformConstant;
+                }
+                descriptorArrayArguments.emplace(a, chain);
+            }
+            lValues.push_back(chain);
         } else {
             // process r-value
             rValues.push_back(accessChainLoad(*argTypes.back()));
         }
     }
+
+    std::vector<spv::Id> extraArguments;
+    if (!descriptorArrayArguments.empty())
+        function = specializeDescriptorArrayFunction(node, function, descriptorArrayArguments, extraArguments);
 
     // Reset source location to the function call location after argument evaluation
     builder.setDebugSourceLocation(node->getLoc().line, node->getLoc().getFilename());
@@ -8896,7 +9270,7 @@ spv::Id TGlslangToSpvTraverser::handleUserFunctionCall(const glslang::TIntermAgg
         spv::Id arg;
         if (originalParam(qualifiers[a], *argTypes[a], function->hasImplicitThis() && a == 0)) {
             builder.setAccessChain(lValues[lValueCount]);
-            arg = builder.accessChainGetLValue();
+            arg = descriptorArrayArguments.count(a) ? lValues[lValueCount].base : builder.accessChainGetLValue();
             ++lValueCount;
         } else if (writableParam(qualifiers[a])) {
             // need space to hold the copy
@@ -8929,6 +9303,7 @@ spv::Id TGlslangToSpvTraverser::handleUserFunctionCall(const glslang::TIntermAgg
     }
 
     // 3. Make the call.
+    spvArgs.insert(spvArgs.end(), extraArguments.begin(), extraArguments.end());
     spv::Id result = builder.createFunctionCall(function, spvArgs);
     builder.setPrecision(result, TranslatePrecisionDecoration(node->getType()));
     builder.addDecoration(result, TranslateNonUniformDecoration(node->getType().getQualifier()));
