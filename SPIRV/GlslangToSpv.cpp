@@ -1781,7 +1781,7 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion,
     spv::SpvBuildLogger* buildLogger, glslang::SpvOptions& options) :
         TIntermTraverser(true, false, true),
         options(options),
-        shaderEntry(nullptr), currentFunction(nullptr),
+        shaderEntry(nullptr), currentFunction(nullptr), entryPoint(nullptr),
         sequenceDepth(0),
         opacityMicromapEnableConstId(spv::NoResult),
         logger(buildLogger),
@@ -2264,35 +2264,41 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion,
         const glslang::TSpirvExecutionMode spirvExecutionMode = glslangIntermediate->getSpirvExecutionMode();
 
         // Add spirv_execution_mode
-        for (auto& mode : spirvExecutionMode.modes) {
-            if (!mode.second.empty()) {
-                std::vector<unsigned> literals;
-                TranslateLiterals(mode.second, literals);
-                builder.addExecutionMode(shaderEntry, static_cast<spv::ExecutionMode>(mode.first), literals);
-            } else
-                builder.addExecutionMode(shaderEntry, static_cast<spv::ExecutionMode>(mode.first));
+        for (const auto& mode : spirvExecutionMode.modes) {
+            for (const auto& operands : mode.second) {
+                if (!operands.empty()) {
+                    std::vector<unsigned> literals;
+                    TranslateLiterals(operands, literals);
+                    builder.addExecutionMode(shaderEntry, static_cast<spv::ExecutionMode>(mode.first), literals);
+                } else {
+                    builder.addExecutionMode(shaderEntry, static_cast<spv::ExecutionMode>(mode.first));
+                }
+            }
         }
 
         // Add spirv_execution_mode_id
-        for (auto& modeId : spirvExecutionMode.modeIds) {
-            std::vector<spv::Id> operandIds;
-            assert(!modeId.second.empty());
-            for (auto extraOperand : modeId.second) {
-                if (extraOperand->getType().getQualifier().isSpecConstant()) {
-                    // A bare specialization constant is referenced by the <id> of its symbol.
-                    // A specialization-constant expression (e.g. sc + 1) is not a symbol node, so
-                    // emit it as a spec-constant-op and reference that result <id> instead of
-                    // dereferencing a null symbol.
-                    if (auto* specSymbol = extraOperand->getAsSymbolNode())
-                        operandIds.push_back(getSymbolId(specSymbol));
-                    else {
-                        const_cast<glslang::TIntermTyped*>(extraOperand)->traverse(this);
-                        operandIds.push_back(accessChainLoad(extraOperand->getType()));
+        for (const auto& modeId : spirvExecutionMode.modeIds) {
+            for (const auto& extraOperands : modeId.second) {
+                std::vector<spv::Id> operandIds;
+                assert(!extraOperands.empty());
+                for (auto extraOperand : extraOperands) {
+                    if (extraOperand->getType().getQualifier().isSpecConstant()) {
+                        // A bare specialization constant is referenced by the <id> of its symbol.
+                        // A specialization-constant expression (e.g. sc + 1) is not a symbol node, so
+                        // emit it as a spec-constant-op and reference that result <id> instead of
+                        // dereferencing a null symbol.
+                        if (auto* specSymbol = extraOperand->getAsSymbolNode()) {
+                            operandIds.push_back(getSymbolId(specSymbol));
+                        } else {
+                            const_cast<glslang::TIntermTyped*>(extraOperand)->traverse(this);
+                            operandIds.push_back(accessChainLoad(extraOperand->getType()));
+                        }
+                    } else {
+                        operandIds.push_back(createSpvConstant(*extraOperand));
                     }
-                } else
-                    operandIds.push_back(createSpvConstant(*extraOperand));
+                }
+                builder.addExecutionModeId(shaderEntry, static_cast<spv::ExecutionMode>(modeId.first), operandIds);
             }
-            builder.addExecutionModeId(shaderEntry, static_cast<spv::ExecutionMode>(modeId.first), operandIds);
         }
     }
 }
