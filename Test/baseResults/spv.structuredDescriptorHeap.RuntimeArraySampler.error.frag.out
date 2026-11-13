@@ -1,5 +1,5 @@
 spv.structuredDescriptorHeap.RuntimeArraySampler.error.frag
-ERROR: 0:11: 'samplers' : variable indexing applies only to the last member of the heap 
+ERROR: 0:18: 'variable index' : required extension not requested: GL_EXT_nonuniform_qualifier
 ERROR: 1 compilation errors.  No code generated.
 
 

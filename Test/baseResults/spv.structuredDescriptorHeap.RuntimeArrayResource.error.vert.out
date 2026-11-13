@@ -1,5 +1,5 @@
 spv.structuredDescriptorHeap.RuntimeArrayResource.error.vert
-ERROR: 0:11: 'vertices' : variable indexing applies only to the last member of the heap 
+ERROR: 0:16: '[' :  array must be redeclared with a size before being indexed with a variable
 ERROR: 1 compilation errors.  No code generated.
 
 

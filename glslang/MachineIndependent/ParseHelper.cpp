@@ -6377,16 +6377,11 @@ void TParseContext::checkRuntimeSizable(const TSourceLoc& loc, const TIntermType
 
             if (blockType.getBasicType() == EbtBlock && isStructuredHeap) {
                 const int index = binary->getRight()->getAsConstantUnion()->getConstArray()[0].getIConst();
-                const TTypeList& members = *blockType.getStruct();
-                const int memberCount = static_cast<int>(members.size());
+                const int memberCount = static_cast<int>(blockType.getStruct()->size());
 
                 if (index == memberCount - 1) {
                     return;
                 }
-
-                const TTypeLoc& member = members[index];
-                error(member.loc, "variable indexing applies only to the last member of the heap", member.type->getFieldName().c_str(), "");
-                return;
             }
         }
     }

@@ -77,6 +77,8 @@ Test/baseResults/spv.structuredDescriptorHeap.khr.ReadOnly.comp.out
 Test/baseResults/spv.structuredDescriptorHeap.khr.Uniform.comp.out
 Test/baseResults/spv.structuredDescriptorHeap.LayoutPacking.comp.out
 Test/baseResults/spv.structuredDescriptorHeap.MemberOffset.comp.out
+Test/baseResults/spv.structuredDescriptorHeap.RuntimeArrayResource.vert.out
+Test/baseResults/spv.structuredDescriptorHeap.RuntimeArraySampler.frag.out
 Test/baseResults/spv.WorkgroupMemoryExplicitLayout.NoLink.comp.out
 Test/baseResults/vk.relaxed.errorcheck.vert.out
 Test/baseResults/vk.relaxed.syntaxerror.vert.out
