@@ -1,0 +1,6 @@
+spv.structuredDescriptorHeap.RuntimeArrayResource.error.vert
+ERROR: 0:11: 'vertices' : variable indexing applies only to the last member of the heap 
+ERROR: 1 compilation errors.  No code generated.
+
+
+SPIR-V is not generated for failed compile or link
