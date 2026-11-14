@@ -482,6 +482,8 @@ INSTANTIATE_TEST_SUITE_P(
         {"hlsl.targetStruct1.frag", "main"},
         {"hlsl.targetStruct2.frag", "main"},
         {"hlsl.templatetypes.frag", "PixelShaderFunction"},
+        {"hlsl.templatetypes.matrixSize.frag", "main"},
+        {"hlsl.templatetypes.vectorSize.frag", "main"},
         {"hlsl.tristream-append.geom", "main"},
         {"hlsl.tx.bracket.frag", "main"},
         {"hlsl.tx.overload.frag", "main"},

@@ -1,0 +1,18 @@
+hlsl.templatetypes.matrixSize.frag
+ERROR: 0:3: 'matrix' : matrix dimensions must be between 1 and 4 
+ERROR: 0:3: 'declaration' : Expected 
+(3): error at column 23, HLSL parsing failed.
+ERROR: 3 compilation errors.  No code generated.
+
+
+Shader version: 500
+gl_FragCoord origin is upper left
+
+
+Linked fragment stage:
+
+
+Shader version: 500
+gl_FragCoord origin is upper left
+
+SPIR-V is not generated for failed compile or link
