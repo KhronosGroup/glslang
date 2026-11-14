@@ -6377,16 +6377,20 @@ void TParseContext::checkRuntimeSizable(const TSourceLoc& loc, const TIntermType
 
             if (blockType.getBasicType() == EbtBlock && isStructuredHeap) {
                 const int index = binary->getRight()->getAsConstantUnion()->getConstArray()[0].getIConst();
-                const int memberCount = static_cast<int>(blockType.getStruct()->size());
+                const TTypeList& members = *blockType.getStruct();
+                const int memberCount = static_cast<int>(members.size());
 
-                if (index == memberCount - 1) {
-                    return;
+                if (index != memberCount - 1) {
+                    const char* fieldName = members[index].type->getFieldName().c_str();
+                    error(loc, "cannot declare runtime sizeable array for the non-last field of the heap", fieldName, "");
                 }
+
+                return;
             }
         }
     }
 
-    // Check for last member of a bufferreference type, which is runtime sizeable
+    // Check for last member of a buffer_reference type, which is runtime sizeable
     // but doesn't support runtime length
     if (base.getType().getQualifier().storage == EvqBuffer) {
         const TIntermBinary* binary = base.getAsBinaryNode();

@@ -1,5 +1,5 @@
 spv.structuredDescriptorHeap.RuntimeArraySampler.error.frag
-ERROR: 0:18: 'variable index' : required extension not requested: GL_EXT_nonuniform_qualifier
+ERROR: 0:20: 'samplers' : cannot declare runtime sizeable array for the non-last field of the heap 
 ERROR: 1 compilation errors.  No code generated.
 
 

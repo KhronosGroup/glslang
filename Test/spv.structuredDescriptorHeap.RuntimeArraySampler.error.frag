@@ -2,6 +2,8 @@
 
 #extension GL_EXT_descriptor_heap : require
 #extension GL_EXT_structured_descriptor_heap : require
+#extension GL_EXT_nonuniform_qualifier : require
+#extension GL_EXT_uniform_buffer_unsized_array : require
 
 layout(push_constant) uniform PushConstant {
     uint index;

@@ -1,5 +1,5 @@
 spv.structuredDescriptorHeap.RuntimeArrayResource.error.vert
-ERROR: 0:16: '[' :  array must be redeclared with a size before being indexed with a variable
+ERROR: 0:16: 'vertices' : cannot declare runtime sizeable array for the non-last field of the heap 
 ERROR: 1 compilation errors.  No code generated.
 
 
