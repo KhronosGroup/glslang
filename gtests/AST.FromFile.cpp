@@ -138,6 +138,7 @@ INSTANTIATE_TEST_SUITE_P(
         "constFold.frag",
         "constFoldBitCast64.frag",
         "constFoldIntMin.frag",
+        "constFoldFloatToIntRange.frag",
         "errors.frag",
         "forwardRef.frag",
         "uint.frag",
