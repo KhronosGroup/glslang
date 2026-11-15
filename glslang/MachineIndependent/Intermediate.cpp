@@ -46,9 +46,11 @@
 #include "propagateNoContraction.h"
 
 #include <cfloat>
+#include <cmath>
 #include <limits>
 #include <utility>
 #include <tuple>
+#include <type_traits>
 
 namespace glslang {
 
@@ -4012,6 +4014,22 @@ void TIntermTyped::propagatePrecision(TPrecisionQualifier newPrecision)
     }
 }
 
+// Converting a floating-point value that is out of range of the integer
+// type (or NaN) is undefined behavior in C++, so saturate instead.
+template<typename IntType, typename SrcType>
+static IntType ConvertConstant(SrcType value)
+{
+    if constexpr (std::is_floating_point_v<SrcType> && std::is_integral_v<IntType>) {
+        if (std::isnan(value))
+            return 0;
+        if (value <= static_cast<SrcType>(std::numeric_limits<IntType>::min()))
+            return std::numeric_limits<IntType>::min();
+        if (value >= static_cast<SrcType>(std::numeric_limits<IntType>::max()))
+            return std::numeric_limits<IntType>::max();
+    }
+    return static_cast<IntType>(value);
+}
+
 TIntermTyped* TIntermediate::promoteConstantUnion(TBasicType promoteTo, TIntermConstantUnion* node) const
 {
     const TConstUnionArray& rightUnionArray = node->getConstArray();
@@ -4021,7 +4039,7 @@ TIntermTyped* TIntermediate::promoteConstantUnion(TBasicType promoteTo, TIntermC
 
     for (int i=0; i < size; i++) {
 
-#define PROMOTE(Set, CType, Get) leftUnionArray[i].Set(static_cast<CType>(rightUnionArray[i].Get()))
+#define PROMOTE(Set, CType, Get) leftUnionArray[i].Set(ConvertConstant<CType>(rightUnionArray[i].Get()))
 #define PROMOTE_TO_BOOL(Get) leftUnionArray[i].setBConst(rightUnionArray[i].Get() != 0)
 
 #define TO_ALL(Get)   \
