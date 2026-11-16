@@ -153,10 +153,12 @@ set(GLSLANG_HEADERS
     Public/ShaderLang.h
     Include/arrays.h
     Include/BaseTypes.h
+    Include/bitutils.h
     Include/Common.h
     Include/ConstantUnion.h
     Include/glslang_c_interface.h
     Include/glslang_c_shader_types.h
+    Include/hex_float.h
     Include/InfoSink.h
     Include/InitializeGlobals.h
     Include/intermediate.h

@@ -64,12 +64,12 @@ gl_FragCoord origin is upper left
 0:21        move second child to first child ( temp float)
 0:21          'r11' ( temp float)
 0:21          Constant:
-0:21            1.100000
+0:21            1.099609
 0:22      Sequence
 0:22        move second child to first child ( temp float)
 0:22          'r12' ( temp float)
 0:22          Constant:
-0:22            1.100000
+0:22            1.099609
 0:23      Sequence
 0:23        move second child to first child ( temp uint)
 0:23          'r13' ( temp uint)
@@ -192,12 +192,12 @@ gl_FragCoord origin is upper left
 0:21        move second child to first child ( temp float)
 0:21          'r11' ( temp float)
 0:21          Constant:
-0:21            1.100000
+0:21            1.099609
 0:22      Sequence
 0:22        move second child to first child ( temp float)
 0:22          'r12' ( temp float)
 0:22          Constant:
-0:22            1.100000
+0:22            1.099609
 0:23      Sequence
 0:23        move second child to first child ( temp uint)
 0:23          'r13' ( temp uint)
@@ -306,7 +306,7 @@ gl_FragCoord origin is upper left
               29:     24(int) Constant 6
               31:     24(int) Constant 57
               33:     15(int) Constant 58
-              37:    6(float) Constant 1066192077
+              37:    6(float) Constant 1066188800
               42:     24(int) Constant 3
               44:     24(int) Constant 4
               47:             TypePointer Function 8(PS_OUTPUT)
