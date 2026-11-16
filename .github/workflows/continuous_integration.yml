@@ -224,14 +224,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-          os: [{genus: windows-2022, family: windows}]
+          os: [{genus: windows-2022, family: windows, arch: x64, generator: Visual Studio 17 2022}, {genus: windows-11-arm, family: windows, arch: ARM64, generator: Visual Studio 18 2026}]
           cmake_build_type: [Debug, Release]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - run: python update_glslang_sources.py
       - name: Build
         run: |
-          cmake -S. -Bbuild -G "Visual Studio 17 2022" -A x64 -DCMAKE_INSTALL_PREFIX="$PWD/build/install" -DBUILD_WERROR=ON -D GLSLANG_TESTS=ON
+          cmake -S. -Bbuild -G "${{matrix.os.generator}}" -A ${{matrix.os.arch}} -DCMAKE_INSTALL_PREFIX="$PWD/build/install" -DBUILD_WERROR=ON -D GLSLANG_TESTS=ON
           cmake --build build --config ${{matrix.cmake_build_type}} --target install
       - name: Test find_package support
         run: |
@@ -248,14 +248,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-          os: [{genus: windows-2022, family: windows}]
+          os: [{genus: windows-2022, family: windows, arch: x64, generator: Visual Studio 17 2022}, {genus: windows-11-arm, family: windows, arch: ARM64, generator: Visual Studio 18 2026}]
           cmake_build_type: [Debug, Release]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - run: python update_glslang_sources.py
       - name: Build
         run: |
-          cmake -S. -Bbuild -G "Visual Studio 17 2022" -A x64 -DCMAKE_INSTALL_PREFIX="$PWD/build/install" -DBUILD_WERROR=ON -D GLSLANG_TESTS=ON -DBUILD_SHARED_LIBS=ON
+          cmake -S. -Bbuild -G "${{matrix.os.generator}}" -A ${{matrix.os.arch}} -DCMAKE_INSTALL_PREFIX="$PWD/build/install" -DBUILD_WERROR=ON -D GLSLANG_TESTS=ON -DBUILD_SHARED_LIBS=ON
           cmake --build build --config ${{matrix.cmake_build_type}} --target install
       - name: Test find_package support
         run: |
