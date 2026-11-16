@@ -267,6 +267,7 @@ INSTANTIATE_TEST_SUITE_P(
         {"hlsl.domain.2.tese", "main"},
         {"hlsl.domain.3.tese", "main"},
         {"hlsl.function.frag", "main"},
+        {"hlsl.function.nested.error.frag", "main"},
         {"hlsl.hull.1.tesc", "main"},
         {"hlsl.hull.2.tesc", "main"},
         {"hlsl.hull.3.tesc", "main"},
