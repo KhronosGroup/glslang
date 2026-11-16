@@ -12780,6 +12780,11 @@ spv::Id TGlslangToSpvTraverser::createSpvConstant(const glslang::TIntermTyped& n
     // Its initializer should either be a sub tree with constant nodes, or a constant union array.
     if (auto* sn = node.getAsSymbolNode()) {
         spv::Id result;
+        // For -gV, make sure the initializer is generated as spec constant ops
+        // at module scope instead of as run-time instructions inside the current function.
+        SpecConstantOpModeGuard spec_constant_op_mode_setter(&builder);
+        if (sn->getType().getQualifier().isSpecConstant())
+            spec_constant_op_mode_setter.turnOnSpecConstantOpMode();
         if (auto* sub_tree = sn->getConstSubtree()) {
             // Traverse the constant constructor sub tree like generating normal run-time instructions.
             // During the AST traversal, if the node is marked as 'specConstant', SpecConstantOpModeGuard

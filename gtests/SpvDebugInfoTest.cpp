@@ -887,6 +887,32 @@ void main() {
         << "Opaque-composite workaround should not appear in disassembly.\nSPIR-V:\n" << spirv;
 }
 
+// With debug info, a const initialized from a spec constant (wg = gl_WorkGroupSize.x)
+// must still be emitted as a module-scope OpSpecConstantOp CompositeExtract.
+TEST_F(SpvDebugInfoTest, SpecConstInitializerIsSpecConstantOp)
+{
+    const std::string source = R"(
+#version 450
+layout(local_size_x_id = 0) in;
+layout(std430, binding = 0) buffer B { uint o[]; };
+void main() {
+    const uint wg = gl_WorkGroupSize.x;
+    o[gl_LocalInvocationIndex] = wg;
+}
+)";
+    std::vector<uint32_t> spirv;
+    std::string error;
+    ASSERT_TRUE(compileToSpirvWithDebugInfo(source, spirv, error)) << error;
+
+    bool found = false;
+    for (size_t i = 5; i < spirv.size(); i += spirv[i] >> spv::WordCountShift) {
+        if (static_cast<spv::Op>(spirv[i] & spv::OpCodeMask) == spv::Op::OpSpecConstantOp &&
+            spirv[i + 3] == static_cast<uint32_t>(spv::Op::OpCompositeExtract))
+            found = true;
+    }
+    EXPECT_TRUE(found) << "Expected OpSpecConstantOp CompositeExtract for wg";
+}
+
 // DebugTypeCooperativeMatrixKHR must be emitted when Rows and Columns are
 // specialization constants (OpSpecConstant), since the spec allows any constant
 // instruction for those operands.
