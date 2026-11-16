@@ -3,8 +3,6 @@
 #extension GL_EXT_descriptor_heap : require
 #extension GL_EXT_structured_descriptor_heap : require
 #extension GL_EXT_scalar_block_layout : require
-#extension GL_EXT_buffer_reference : require
-#extension GL_EXT_buffer_reference2 : require
 
 layout(local_size_x = 1) in;
 
@@ -12,15 +10,16 @@ layout(buffer_type, scalar) uniform UBO {
     uint x;
 };
 
+layout(buffer_type, scalar) buffer SSBO {
+    uint y;
+};
+
 layout(heap_offset = 0) resourceheap Heap {
     UBO ubo;
-
-    layout(buffer_reference, scalar) buffer {
-        uint data;
-    } inlineBDA;
+    SSBO ssbo;
 } heap;
 
 void main()
 {
-    heap.inlineBDA.data = heap.ubo.x;
+    heap.ssbo.y = heap.ubo.x;
 }

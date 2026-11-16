@@ -325,7 +325,10 @@ void TParseContext::setInvariant(const TSourceLoc& loc, const char* builtin) {
         if (intermediate.inIoAccessed(builtin))
             warn(loc, "changing qualification after use", "invariant", "%s", builtin);
         TSymbol* csymbol = symbolTable.copyUp(symbol);
-        csymbol->getWritableType().getQualifier().invariant = true;
+        if (csymbol)
+            csymbol->getWritableType().getQualifier().invariant = true;
+        else
+            warn(loc, "cannot make invariant after another member of its block was declared", builtin, "");
     }
 }
 
@@ -763,7 +766,7 @@ void TParseContext::makeEditable(TSymbol*& symbol)
     TParseContextBase::makeEditable(symbol);
 
     // See if it's tied to IO resizing
-    if (isIoResizeArray(symbol->getType()))
+    if (symbol && isIoResizeArray(symbol->getType()))
         ioArraySymbolResizeList.push_back(symbol);
 }
 
@@ -6555,6 +6558,11 @@ TSymbol* TParseContext::redeclareBuiltinVariable(const TSourceLoc& loc, const TS
         // redeclaration.  Otherwise, make the new one.
         if (builtIn) {
             makeEditable(symbol);
+            if (! symbol) {
+                error(loc, "cannot redeclare after another member of its block was declared",
+                      identifier.c_str(), "");
+                return nullptr;
+            }
             symbolTable.amendSymbolIdLevel(*symbol);
         }
 
@@ -11432,6 +11440,12 @@ TIntermNode* TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeL
     case EvqVaryingIn:  defaultQualification = globalInputDefaults;      break;
     case EvqVaryingOut: defaultQualification = globalOutputDefaults;     break;
     case EvqShared:     defaultQualification = globalSharedDefaults;     break;
+    case EvqResourceHeap:
+    case EvqSamplerHeap:
+        // Heap data uses scalar packing even without an explicit layout qualifier.
+        defaultQualification.clear();
+        defaultQualification.layoutPacking = ElpScalar;
+        break;
     default:            defaultQualification.clear();                    break;
     }
 
@@ -11910,6 +11924,31 @@ void TParseContext::fixXfbOffsets(TQualifier& qualifier, TTypeList& typeList)
     qualifier.layoutXfbOffset = TQualifier::layoutXfbOffsetEnd;
 }
 
+// Descriptor alignment is supplied by the client API unless descriptor_size is
+// specified. Return zero when an explicit heap offset cannot be checked yet.
+static unsigned int getKnownHeapMemberAlignment(const TType& type)
+{
+    if (type.getQualifier().isBufferType() || type.getBasicType() == EbtSampler ||
+        type.getBasicType() == EbtAccStruct)
+        return type.getQualifier().layoutDescriptorSize;
+
+    if (type.isStruct()) {
+        unsigned int alignment = 1;
+        for (const auto& member : *type.getStruct()) {
+            const unsigned int memberAlignment = getKnownHeapMemberAlignment(*member.type);
+            if (memberAlignment == 0)
+                return 0;
+            alignment = std::max(alignment, memberAlignment);
+        }
+        return alignment;
+    }
+
+    int size;
+    int stride;
+    return TIntermediate::getMemberAlignment(type, size, stride, ElpScalar,
+                                            type.getQualifier().layoutMatrix == ElmRowMajor);
+}
+
 // Calculate and save the offset of each block member, using the recursively
 // defined block offset rules and the user-provided offset and align.
 //
@@ -11920,6 +11959,23 @@ void TParseContext::fixBlockUniformOffsets(TQualifier& qualifier, TTypeList& typ
 {
     if (!storageCanHaveLayoutInBlock(qualifier.storage) && !qualifier.isTaskMemory())
         return;
+
+    if (qualifier.storage == EvqResourceHeap || qualifier.storage == EvqSamplerHeap) {
+        // Keep only user-specified offsets. Descriptor sizes and alignments can
+        // require specialization-constant expressions, which are emitted later.
+        for (const auto& member : typeList) {
+            const TQualifier& memberQualifier = member.type->getQualifier();
+            if (!memberQualifier.hasOffset())
+                continue;
+
+            const unsigned int alignment = getKnownHeapMemberAlignment(*member.type);
+            if (alignment != 0 && static_cast<unsigned int>(memberQualifier.layoutOffset) % alignment != 0)
+                error(member.loc, "must be a multiple of the member's alignment", "offset",
+                      "(layout offset = %d | member alignment = %u)", memberQualifier.layoutOffset, alignment);
+        }
+        return;
+    }
+
     if (qualifier.layoutPacking != ElpStd140 && qualifier.layoutPacking != ElpStd430 && qualifier.layoutPacking != ElpScalar)
         return;
 
@@ -12123,8 +12179,14 @@ void TParseContext::addQualifierToExisting(const TSourceLoc& loc, TQualifier qua
 
     // For read-only built-ins, add a new symbol for holding the modified qualifier.
     // This will bring up an entire block, if a block type has to be modified (e.g., gl_Position inside a block)
-    if (symbol->isReadOnly())
+    if (symbol->isReadOnly()) {
         symbol = symbolTable.copyUp(symbol);
+        if (symbol == nullptr) {
+            error(loc, "cannot change qualification after another member of its block was declared",
+                  identifier.c_str(), "");
+            return;
+        }
+    }
 
     if (qualifier.invariant) {
         if (intermediate.inIoAccessed(identifier))

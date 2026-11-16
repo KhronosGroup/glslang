@@ -1,0 +1,11 @@
+spv.intrinsicsRedeclareBlockMember.error.vert
+ERROR: 0:4: 'gl_ClipDistance' : cannot redeclare after another member of its block was declared 
+ERROR: 0:5: 'gl_PointSize' : cannot change qualification after another member of its block was declared 
+ERROR: 0:6: 'gl_PointSize' : cannot change qualification after another member of its block was declared 
+WARNING: 0:7: 'gl_PointSize' : cannot make invariant after another member of its block was declared 
+WARNING: 0:7: 'gl_ClipDistance' : cannot make invariant after another member of its block was declared 
+WARNING: 0:7: 'gl_CullDistance' : cannot make invariant after another member of its block was declared 
+ERROR: 3 compilation errors.  No code generated.
+
+
+SPIR-V is not generated for failed compile or link

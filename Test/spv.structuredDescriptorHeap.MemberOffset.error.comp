@@ -1,0 +1,32 @@
+// Heap offsets must still satisfy statically known scalar or descriptor alignment.
+#version 460
+#extension GL_EXT_descriptor_heap : require
+#extension GL_EXT_structured_descriptor_heap : require
+#extension GL_EXT_buffer_reference : require
+
+layout(buffer_type, std430) buffer DataBuffer {
+    uint value;
+};
+
+layout(buffer_reference, std430) buffer BufferRef {
+    uint value;
+};
+
+struct NestedData {
+    uint first;
+    dvec2 vector;
+};
+
+resourceheap BadOffsets {
+    layout(offset = 2) uint count; // ERROR: alignment 4
+    layout(offset = 2) vec3 vector; // ERROR: alignment 4
+    layout(offset = 16, descriptor_size = 32) DataBuffer descriptor; // ERROR: alignment 32
+    layout(offset = 16, descriptor_size = 32) DataBuffer descriptors[2]; // ERROR: alignment 32
+    layout(offset = 4) BufferRef reference; // ERROR: alignment 8
+    layout(offset = 4) double values[2]; // ERROR: alignment 8
+    layout(offset = 4) NestedData nested; // ERROR: alignment 8
+} badOffsets;
+
+void main()
+{
+}

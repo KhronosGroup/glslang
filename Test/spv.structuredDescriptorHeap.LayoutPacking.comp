@@ -1,0 +1,55 @@
+// Heap packing qualifiers must preserve descriptor sizes, alignment, and nested strides.
+#version 460
+#extension GL_EXT_descriptor_heap : require
+#extension GL_EXT_structured_descriptor_heap : require
+#extension GL_EXT_scalar_block_layout : require
+
+layout(local_size_x = 1) in;
+
+// The buffer payload keeps its own std140 layout: value starts at byte 16.
+layout(buffer_type, std140) buffer DataBuffer {
+    uint first;
+    vec3 value;
+};
+
+struct Nested {
+    uint count;
+    DataBuffer data;
+};
+
+// The first three members start at 0, 32, and 64 for every heap packing.
+// The nested array uses the native buffer descriptor size and alignment.
+#define RESOURCE_MEMBERS \
+    uint count; \
+    layout(descriptor_size = 32) DataBuffer fixedBuffer; \
+    uint tail; \
+    Nested nested[2];
+
+layout(heap_offset = 0) resourceheap DefaultResource { RESOURCE_MEMBERS } defaultResource;
+layout(heap_offset = 0, scalar) resourceheap ScalarResource { RESOURCE_MEMBERS } scalarResource;
+layout(heap_offset = 0, std140) resourceheap Std140Resource { RESOURCE_MEMBERS } std140Resource;
+layout(heap_offset = 0, std430) resourceheap Std430Resource { RESOURCE_MEMBERS } std430Resource;
+
+// Sampler array elements retain a 16-byte stride; tail starts at byte 48.
+#define SAMPLER_MEMBERS \
+    uint count; \
+    layout(descriptor_size = 16) sampler samplers[2]; \
+    uint tail; \
+    sampler nativeSampler;
+
+layout(heap_offset = 0) samplerheap DefaultSamplers { SAMPLER_MEMBERS } defaultSamplers;
+layout(heap_offset = 0, scalar) samplerheap ScalarSamplers { SAMPLER_MEMBERS } scalarSamplers;
+layout(heap_offset = 0, std140) samplerheap Std140Samplers { SAMPLER_MEMBERS } std140Samplers;
+layout(heap_offset = 0, std430) samplerheap Std430Samplers { SAMPLER_MEMBERS } std430Samplers;
+
+void main()
+{
+    defaultResource.fixedBuffer.value = defaultResource.nested[1].data.value +
+        vec3(float(defaultResource.count + defaultResource.tail + defaultSamplers.tail));
+    scalarResource.fixedBuffer.value = scalarResource.nested[1].data.value +
+        vec3(float(scalarResource.count + scalarResource.tail + scalarSamplers.tail));
+    std140Resource.fixedBuffer.value = std140Resource.nested[1].data.value +
+        vec3(float(std140Resource.count + std140Resource.tail + std140Samplers.tail));
+    std430Resource.fixedBuffer.value = std430Resource.nested[1].data.value +
+        vec3(float(std430Resource.count + std430Resource.tail + std430Samplers.tail));
+}

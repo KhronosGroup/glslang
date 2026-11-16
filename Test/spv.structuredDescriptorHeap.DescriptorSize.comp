@@ -22,5 +22,5 @@ void main()
 {
     vec4 texel = imageLoad(descriptorSizeHeap.sourceImages[0], ivec2(0));
     imageStore(descriptorSizeHeap.destinationImages[1], ivec2(0), texel);
-    descriptorSizeHeap.dataBuffer.value = descriptorSizeHeap.valueAfterBuffer;
+    descriptorSizeHeap.dataBuffer.value = floatBitsToUint(texel.x);
 }

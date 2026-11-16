@@ -1,0 +1,51 @@
+// Explicit offsets use scalar heap layout without requiring scalar_block_layout.
+#version 460
+#extension GL_EXT_descriptor_heap : require
+#extension GL_EXT_structured_descriptor_heap : require
+#extension GL_EXT_buffer_reference : require
+
+layout(local_size_x = 1) in;
+
+layout(buffer_type, std140) buffer DataBuffer {
+    uint first;
+    vec3 value;
+};
+
+layout(buffer_reference, std430) buffer BufferRef {
+    uint value;
+};
+
+resourceheap ResourceOffsets {
+    layout(offset = 4) uint count;
+    layout(descriptor_size = 32) DataBuffer implicitBuffer; // byte 32
+    uint tail; // byte 64
+    layout(offset = 128, descriptor_size = 32) DataBuffer explicitBuffer;
+    layout(offset = 196, align = 16) vec3 aligned; // byte 208
+    layout(align = 64, descriptor_size = 32) DataBuffer alignedBuffer; // byte 256
+    layout(offset = 512) DataBuffer nativeBuffer;
+} resources;
+
+samplerheap SamplerOffsets {
+    layout(offset = 4) uint count;
+    layout(descriptor_size = 16) sampler samplers[2]; // byte 16, stride 16
+    uint tail; // byte 48
+    layout(offset = 80, descriptor_size = 16) sampler explicitSampler;
+    layout(align = 64, descriptor_size = 16) sampler alignedSamplers[2]; // byte 128, stride 16
+    uint afterSamplers; // byte 160
+} samplers;
+
+resourceheap DataOffsets {
+    layout(offset = 4) vec3 vector;
+    layout(align = 32) uint aligned; // byte 32
+    uint tail; // byte 36
+    layout(offset = 40) BufferRef reference;
+} data;
+
+void main()
+{
+    resources.implicitBuffer.value = data.vector +
+        vec3(float(resources.count + resources.tail + samplers.tail));
+    resources.explicitBuffer.value = resources.aligned;
+    resources.alignedBuffer.first = data.aligned + data.tail + samplers.afterSamplers;
+    resources.nativeBuffer.first = data.reference.value + samplers.count;
+}

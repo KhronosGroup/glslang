@@ -1,0 +1,8 @@
+spv.structuredDescriptorHeap.SamplerOffset.error.comp
+ERROR: 0:7: 'offset' : must be a multiple of the member's alignment (layout offset = 2 | member alignment = 4)
+ERROR: 0:8: 'offset' : must be a multiple of the member's alignment (layout offset = 8 | member alignment = 16)
+ERROR: 0:9: 'offset' : must be a multiple of the member's alignment (layout offset = 8 | member alignment = 16)
+ERROR: 3 compilation errors.  No code generated.
+
+
+SPIR-V is not generated for failed compile or link

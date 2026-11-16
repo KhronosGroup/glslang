@@ -26,8 +26,9 @@ vec4 sampleRow(texture2D inputs[3], sampler states[3], uint j)
 
 void main()
 {
-    uint i = resources.values[0][0] & 1u;
-    uint j = resources.values[1][2] % 3u;
+    // Read ordinary data through a buffer descriptor, not directly from the heap.
+    uint i = resources.buffers[0][0].values[0][0] & 1u;
+    uint j = resources.buffers[0][0].values[1][2] % 3u;
     resources.buffers[i][j].values[1][2] = resources.buffers[1][2].values[0][0];
     vec4 color = sampleRow(resources.textures[i], samplers.states[i], j);
     resources.buffers[1][2].values[0][0] = uint(color.x);
