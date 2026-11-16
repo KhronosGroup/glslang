@@ -10875,7 +10875,9 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
                     aggregateOp = EOpConstructFloat;
                 else
                     aggregateOp = (TOperator)(EOpConstructVec2 + op - EOpConstructF16Vec2);
-                newNode = intermediate.setAggregateOperator(newNode, aggregateOp, tempType, node->getLoc());
+                newNode = constructBuiltIn(tempType, aggregateOp, newNode, loc, subset);
+                if (newNode == nullptr)
+                    return nullptr;
             }
             newNode = intermediate.addConversion(EbtFloat16, newNode);
             return newNode;
@@ -10955,7 +10957,9 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
                     aggregateOp = EOpConstructInt;
                 else
                     aggregateOp = (TOperator)(EOpConstructIVec2 + op - EOpConstructI8Vec2);
-                newNode = intermediate.setAggregateOperator(newNode, aggregateOp, tempType, node->getLoc());
+                newNode = constructBuiltIn(tempType, aggregateOp, newNode, loc, subset);
+                if (newNode == nullptr)
+                    return nullptr;
             }
             newNode = intermediate.addConversion(EbtInt8, newNode);
             return newNode;
@@ -10979,7 +10983,9 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
                     aggregateOp = EOpConstructUint;
                 else
                     aggregateOp = (TOperator)(EOpConstructUVec2 + op - EOpConstructU8Vec2);
-                newNode = intermediate.setAggregateOperator(newNode, aggregateOp, tempType, node->getLoc());
+                newNode = constructBuiltIn(tempType, aggregateOp, newNode, loc, subset);
+                if (newNode == nullptr)
+                    return nullptr;
             }
             newNode = intermediate.addConversion(EbtUint8, newNode);
             return newNode;
@@ -11003,7 +11009,9 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
                     aggregateOp = EOpConstructInt;
                 else
                     aggregateOp = (TOperator)(EOpConstructIVec2 + op - EOpConstructI16Vec2);
-                newNode = intermediate.setAggregateOperator(newNode, aggregateOp, tempType, node->getLoc());
+                newNode = constructBuiltIn(tempType, aggregateOp, newNode, loc, subset);
+                if (newNode == nullptr)
+                    return nullptr;
             }
             newNode = intermediate.addConversion(EbtInt16, newNode);
             return newNode;
@@ -11027,7 +11035,9 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
                     aggregateOp = EOpConstructUint;
                 else
                     aggregateOp = (TOperator)(EOpConstructUVec2 + op - EOpConstructU16Vec2);
-                newNode = intermediate.setAggregateOperator(newNode, aggregateOp, tempType, node->getLoc());
+                newNode = constructBuiltIn(tempType, aggregateOp, newNode, loc, subset);
+                if (newNode == nullptr)
+                    return nullptr;
             }
             newNode = intermediate.addConversion(EbtUint16, newNode);
             return newNode;
