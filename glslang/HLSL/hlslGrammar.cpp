@@ -2983,6 +2983,7 @@ bool HlslGrammar::acceptParameterDeclaration(TFunction& function)
 bool HlslGrammar::acceptFunctionDefinition(TFunctionDeclarator& declarator, TIntermNode*& nodeList,
                                            TVector<HlslToken>* deferredTokens)
 {
+    parseContext.globalCheck(declarator.loc, "function definition");
     parseContext.handleFunctionDeclarator(declarator.loc, *declarator.function, false /* not prototype */);
 
     if (deferredTokens)
