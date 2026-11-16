@@ -495,11 +495,13 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.int64.frag",
         "spv.intOps.vert",
         "spv.intrinsicsDebugBreak.frag",
+        "spv.intrinsicsRedeclareBlockMember.error.vert",
         "spv.intrinsicsSpirvByReference.vert",
         "spv.intrinsicsSpirvDecorate.frag",
         "spv.intrinsicsSpirvDecorateId.comp",
         "spv.intrinsicsSpirvDecorateString.comp",
         "spv.intrinsicsSpirvExecutionMode.frag",
+        "spv.intrinsicsSpirvExecutionModeRepeatDecls.comp",
         "spv.intrinsicsSpirvInstruction.vert",
         "spv.intrinsicsSpirvInstructionSetLiteral.comp",
         "spv.intrinsicsSpirvLiteral.vert",
@@ -1014,7 +1016,6 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.structuredDescriptorHeap.AccelerationStructure.comp",
         "spv.structuredDescriptorHeap.Buffer.comp",
         "spv.structuredDescriptorHeap.Uniform.comp",
-        "spv.structuredDescriptorHeap.BufferReference.comp",
         "spv.structuredDescriptorHeap.DescriptorSize.comp",
         "spv.structuredDescriptorHeap.LayoutPacking.comp",
         "spv.structuredDescriptorHeap.LayoutQualifiers.comp",
@@ -1025,11 +1026,22 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.structuredDescriptorHeap.SamplerOffset.error.comp",
         "spv.structuredDescriptorHeap.es.frag",
         "spv.structuredDescriptorHeap.UnsizedES.error.frag",
-        "spv.structuredDescriptorHeap.MatrixLayout.comp",
         "spv.structuredDescriptorHeap.Offset.comp",
         "spv.structuredDescriptorHeap.OffsetConstant.comp",
         "spv.structuredDescriptorHeap.OffsetSpecConstant.comp",
-        
+
+        // Reads non-descriptor data from the heap, which SPV_EXT_descriptor_heap
+        // does not allow (VUID-StandaloneSpirv-ResourceHeapEXT-13744), so these
+        // fail validation until the KHR version is supported
+        "spv.structuredDescriptorHeap.khr.Uniform.comp",
+        "spv.structuredDescriptorHeap.khr.BufferReference.comp",
+        "spv.structuredDescriptorHeap.khr.DescriptorSize.comp",
+        "spv.structuredDescriptorHeap.khr.LayoutQualifiers.comp",
+        "spv.structuredDescriptorHeap.khr.ReadOnly.comp",
+        "spv.structuredDescriptorHeap.khr.es.frag",
+        "spv.structuredDescriptorHeap.khr.MatrixLayout.comp",
+        "spv.structuredDescriptorHeap.khr.OffsetSpecConstant.comp",
+
         // SPV_KHR_abort
         "spv.shader.abort.comp",
         "spv.shader.abort.matrix_param.comp",
@@ -1407,6 +1419,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.debuginfo.descriptor_heap.source_types.glsl.comp",
         "spv.debuginfo.descriptor_heap.bool.glsl.comp",
         "spv.debuginfo.structured_descriptor_heap.glsl.comp",
+        "spv.debuginfo.structured_descriptor_heap_khr.glsl.comp",
         "spv.debuginfo.rt_types.glsl.rgen",
         "spv.debuginfo.rt_nv_builtins.glsl.rahit",
         "spv.debuginfo.rt_ext_builtins.glsl.rahit",

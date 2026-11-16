@@ -1,0 +1,40 @@
+#version 460
+#extension GL_EXT_descriptor_heap : require
+#extension GL_EXT_structured_descriptor_heap : require
+#extension GL_EXT_scalar_block_layout : require
+
+layout(local_size_x = 1) in;
+
+layout(constant_id = 0) const uint resourceOffset = 64;
+layout(constant_id = 1) const int samplerOffset = 128;
+const uint adjustedResourceOffset = resourceOffset + 32u;
+
+layout(buffer_type, scalar) buffer DataBuffer {
+    uint values[2];
+};
+
+struct Material {
+    texture2D tex;
+    DataBuffer data;
+};
+
+layout(scalar, heap_offset = adjustedResourceOffset) resourceheap ResourceHeap {
+    layout(offset = 16) uint count;
+    Material materials[];
+} resourceHeap;
+
+layout(heap_offset = samplerOffset) samplerheap SamplerHeap {
+    uint count;
+    sampler samplers[2];
+} samplerHeap;
+
+layout(heap_offset = 512) resourceheap FixedHeap {
+    Material material;
+} fixedHeap;
+
+void main()
+{
+    vec4 texel = textureLod(sampler2D(resourceHeap.materials[1].tex, samplerHeap.samplers[1]), vec2(0.5), 0.0);
+    resourceHeap.materials[1].data.values[0] = uint(texel.x) + resourceHeap.count;
+    fixedHeap.material.data.values[1] = resourceHeap.materials[1].data.values[0];
+}

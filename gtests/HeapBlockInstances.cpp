@@ -3,8 +3,14 @@
 
 #include "SPIRV/GlslangToSpv.h"
 #include "SPIRV/NonSemanticShaderDebugInfo.h"
+#include "SPIRV/SpvTools.h"
+#include "SPIRV/spirv.hpp11"
 #include "glslang/Public/ResourceLimits.h"
 #include "glslang/Public/ShaderLang.h"
+
+#if ENABLE_OPT
+#include "spirv-tools/libspirv.hpp"
+#endif
 
 #include <gtest/gtest.h>
 
@@ -45,7 +51,7 @@ std::string decodeString(const unsigned int* words, unsigned int wordCount)
 class HeapBlockInstanceTest : public ::testing::Test {
 protected:
     bool compile(const std::vector<std::string>& sources, std::vector<unsigned int>& spirv, std::string& error,
-                 bool debug = false)
+                 bool debug = false, bool allowHeapData = false)
     {
         spirv.clear();
         error.clear();
@@ -81,14 +87,42 @@ protected:
 
         glslang::SpvOptions options;
         options.disableOptimizer = true;
-        options.validate = true;
+        options.validate = !allowHeapData;
         options.generateDebugInfo = debug;
         options.emitNonSemanticShaderDebugInfo = debug;
         options.emitNonSemanticShaderDebugSource = debug;
         spv::SpvBuildLogger logger;
         glslang::GlslangToSpv(*program.getIntermediate(EShLangCompute), spirv, &logger, &options);
         error = logger.getAllMessages();
-        return error.empty();
+        if (!error.empty() || !allowHeapData)
+            return error.empty();
+
+#if ENABLE_OPT
+        // Ordinary heap data awaits KHR Vulkan support. Preserve these compiler
+        // and linker tests while allowing only the known EXT Vulkan restriction,
+        // and still require the module to pass generic SPIR-V validation.
+        spv::SpvBuildLogger validationLogger;
+        glslang::SpirvToolsValidate(*program.getIntermediate(EShLangCompute), spirv, &validationLogger, false);
+        error = validationLogger.getAllMessages();
+        if (error.empty())
+            return true;
+        if (error.find("[VUID-StandaloneSpirv-ResourceHeapEXT-13744]") == std::string::npos)
+            return false;
+
+        error.clear();
+        spvtools::SpirvTools validator(SPV_ENV_UNIVERSAL_1_6);
+        validator.SetMessageConsumer([&](spv_message_level_t, const char*, const spv_position_t&,
+                                        const char* message) { error += std::string(message) + '\n'; });
+        return validator.Validate(spirv) && error.empty();
+#else
+        return true;
+#endif
+    }
+
+    bool compileHeapData(const std::vector<std::string>& sources, std::vector<unsigned int>& spirv,
+                         std::string& error, bool debug = false)
+    {
+        return compile(sources, spirv, error, debug, true);
     }
 
     using HeapLocation = std::pair<spv::BuiltIn, unsigned int>;
@@ -496,21 +530,19 @@ layout(push_constant) uniform Parameters { uint samplerOffset; uint index; } par
 layout(buffer_type, std430) buffer Output { vec4 color; uint count; };
 
 layout(heap_offset = resourceOffset) resourceheap Resources {
-    uint resourceCount;
     Output outputBuffer;
     texture2D textures[];
 };
 layout(heap_offset = parameters.samplerOffset) samplerheap Sampling {
-    uint samplerCount;
     sampler samplers[];
 };
 
 void main()
 {
-    uint index = (parameters.index + resourceCount + samplerCount) & 1u;
+    uint index = (parameters.index + outputBuffer.count) & 1u;
     outputBuffer.color = textureLod(sampler2D(textures[nonuniformEXT(index)], samplers[nonuniformEXT(index)]),
                                    vec2(0.5), 0.0);
-    outputBuffer.count = resourceCount + samplerCount;
+    outputBuffer.count = index;
 }
 )";
     std::vector<unsigned int> spirv;
@@ -538,7 +570,7 @@ TEST_F(HeapBlockInstanceTest, ReorderedDeclarationsKeepTheirHeapAndLayout)
             SCOPED_TRACE(order);
             std::vector<unsigned int> spirv;
             std::string error;
-            ASSERT_TRUE(compile(sources, spirv, error)) << error;
+            ASSERT_TRUE(compileHeapData(sources, spirv, error)) << error;
             expectHeapAccesses(spirv, {{"first", {spv::BuiltIn::ResourceHeapEXT, 64}},
                                      {"second", {spv::BuiltIn::ResourceHeapEXT, 128}},
                                      {"third", {spv::BuiltIn::SamplerHeapEXT, 256}}});
@@ -557,7 +589,7 @@ TEST_F(HeapBlockInstanceTest, DifferentHeapInterfacesCanShareABlockName)
         SCOPED_TRACE(order);
         std::vector<unsigned int> spirv;
         std::string error;
-        ASSERT_TRUE(compile(sources, spirv, error)) << error;
+        ASSERT_TRUE(compileHeapData(sources, spirv, error)) << error;
         expectHeapAccesses(spirv, {{"resourceValue", {spv::BuiltIn::ResourceHeapEXT, 64}},
                                  {"samplerValue", {spv::BuiltIn::SamplerHeapEXT, 128}}});
         std::reverse(sources.begin(), sources.end());
@@ -591,7 +623,7 @@ TEST_F(HeapBlockInstanceTest, DynamicHeapOffsetsUseTheLinkedPushConstant)
                     SCOPED_TRACE(order);
                     std::vector<unsigned int> spirv;
                     std::string error;
-                    ASSERT_TRUE(compile(sources, spirv, error)) << error;
+                    ASSERT_TRUE(compileHeapData(sources, spirv, error)) << error;
                     expectDynamicOffsets(spirv, mainDeclaresHeap ? 3u : 2u);
                     std::reverse(sources.begin(), sources.end());
                 }
@@ -636,7 +668,7 @@ TEST_F(HeapBlockInstanceTest, SpecializedHeapOffsetsKeepTheirDependencies)
                     SCOPED_TRACE(order);
                     std::vector<unsigned int> spirv;
                     std::string error;
-                    ASSERT_TRUE(compile(sources, spirv, error)) << error;
+                    ASSERT_TRUE(compileHeapData(sources, spirv, error)) << error;
                     expectSpecializedOffsets(spirv);
                     std::reverse(sources.begin(), sources.end());
                 }
@@ -668,7 +700,9 @@ TEST_F(HeapBlockInstanceTest, SpecializationSizedHeapMembersPreserveTheAccessCha
                         (buffer ? "data." : "") + "values[0]; }\n";
                     std::vector<unsigned int> spirv;
                     std::string error;
-                    ASSERT_TRUE(compile({source}, spirv, error)) << error;
+                    const bool compiled = buffer ? compile({source}, spirv, error)
+                                                 : compileHeapData({source}, spirv, error);
+                    ASSERT_TRUE(compiled) << error;
                     expectStoredHeapLoad(spirv);
                 }
             }
@@ -729,7 +763,9 @@ TEST_F(HeapBlockInstanceTest, LinkedArrayDimensionsKeepTheirSpecializationConsta
                     SCOPED_TRACE(order);
                     std::vector<unsigned int> spirv;
                     std::string error;
-                    ASSERT_TRUE(compile(sources, spirv, error)) << error;
+                    const bool compiled = kind == "buffer" ? compile(sources, spirv, error)
+                                                           : compileHeapData(sources, spirv, error);
+                    ASSERT_TRUE(compiled) << error;
                     expectSpecializedArrayLengths(spirv, {{"values0", 16}, {"values1", 16}});
                     std::reverse(sources.begin(), sources.end());
                 }
@@ -764,7 +800,7 @@ TEST_F(HeapBlockInstanceTest, SharedSpecializationSizedMembersStillMatchAcrossUn
                     SCOPED_TRACE(order);
                     std::vector<unsigned int> spirv;
                     std::string error;
-                    ASSERT_TRUE(compile(sources, spirv, error)) << error;
+                    ASSERT_TRUE(compileHeapData(sources, spirv, error)) << error;
                     expectSpecializedArrayLengths(spirv, {{"values", alias ? 24u : 16u}});
                     std::reverse(sources.begin(), sources.end());
                 }
@@ -788,7 +824,7 @@ TEST_F(HeapBlockInstanceTest, SpecializationSizedFunctionArgumentsKeepMatchingTy
         SCOPED_TRACE(order);
         std::vector<unsigned int> spirv;
         std::string error;
-        ASSERT_TRUE(compile(sources, spirv, error)) << error;
+        ASSERT_TRUE(compileHeapData(sources, spirv, error)) << error;
         expectSpecializedArrayLengths(spirv, {{"values", 16}});
         expectFunctionDimensions(spirv, {0});
         std::reverse(sources.begin(), sources.end());
@@ -812,7 +848,7 @@ TEST_F(HeapBlockInstanceTest, SpecializationSizedOverloadsKeepDistinctTypes)
                 "void main() { outputData.result = first(" + prefix + "a) + first(" + prefix + "b); }\n";
             std::vector<unsigned int> spirv;
             std::string error;
-            ASSERT_TRUE(compile({a + b + heap + firstA + firstB + entry}, spirv, error)) << error;
+            ASSERT_TRUE(compileHeapData({a + b + heap + firstA + firstB + entry}, spirv, error)) << error;
             expectFunctionDimensions(spirv, {0, 1});
 
             const std::vector<std::string> units = {
@@ -823,7 +859,7 @@ TEST_F(HeapBlockInstanceTest, SpecializationSizedOverloadsKeepDistinctTypes)
             std::vector<unsigned int> order = {0, 1, 2};
             do {
                 SCOPED_TRACE(std::to_string(order[0]) + std::to_string(order[1]) + std::to_string(order[2]));
-                ASSERT_TRUE(compile({units[order[0]], units[order[1]], units[order[2]]}, spirv, error)) << error;
+                ASSERT_TRUE(compileHeapData({units[order[0]], units[order[1]], units[order[2]]}, spirv, error)) << error;
                 expectFunctionDimensions(spirv, {0, 1});
             } while (std::next_permutation(order.begin(), order.end()));
         }
@@ -890,7 +926,7 @@ TEST_F(HeapBlockInstanceTest, SpecializedArrayAliasesRemainConstantsWithDebugInf
                 SCOPED_TRACE(debug);
                 std::vector<unsigned int> spirv;
                 std::string error;
-                ASSERT_TRUE(compile({source}, spirv, error, debug)) << error;
+                ASSERT_TRUE(compileHeapData({source}, spirv, error, debug)) << error;
                 expectStoredHeapLoad(spirv);
                 expectSpecializedArrayLengths(spirv, {{"values", 16}});
             }
@@ -918,7 +954,7 @@ TEST_F(HeapBlockInstanceTest, LinkedDebugDeclarationsKeepTheirVariableIdentity)
                 SCOPED_TRACE(order);
                 std::vector<unsigned int> spirv;
                 std::string error;
-                ASSERT_TRUE(compile(sources, spirv, error, true)) << error;
+                ASSERT_TRUE(compileHeapData(sources, spirv, error, true)) << error;
                 expectDebugLocals(spirv, {{{"main", "value"}, true}, {{"helper(", "value"}, true},
                                          {{"main", "unusedMain"}, false}, {{"helper(", "unusedHelper"}, false}});
                 std::reverse(sources.begin(), sources.end());
