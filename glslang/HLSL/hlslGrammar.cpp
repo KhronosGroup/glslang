@@ -4344,15 +4344,22 @@ void HlslGrammar::acceptArraySpecifier(TArraySizes*& arraySizes)
 bool HlslGrammar::acceptPostDecls(TQualifier& qualifier)
 {
     bool found = false;
+    bool semanticFound = false;
 
     do {
         // COLON
         if (acceptTokenClass(EHTokColon)) {
             found = true;
             HlslToken idToken;
-            if (peekTokenClass(EHTokLayout))
-                acceptLayoutQualifierList(qualifier);
-            else if (acceptTokenClass(EHTokPackOffset)) {
+            if (peekTokenClass(EHTokLayout)) {
+                if (semanticFound) {
+                    // A layout(location) here would override the location the semantic assigned.
+                    parseContext.error(token.loc, "layout qualifier can't follow a semantic", "layout", "");
+                    TQualifier discard = qualifier;
+                    acceptLayoutQualifierList(discard);
+                } else
+                    acceptLayoutQualifierList(qualifier);
+            } else if (acceptTokenClass(EHTokPackOffset)) {
                 // PACKOFFSET LEFT_PAREN c[Subcomponent][.component] RIGHT_PAREN
                 if (! acceptTokenClass(EHTokLeftParen)) {
                     expected("(");
@@ -4431,6 +4438,11 @@ bool HlslGrammar::acceptPostDecls(TQualifier& qualifier)
                 parseContext.handleRegister(registerDesc.loc, qualifier, profile.string, *registerDesc.string, subComponent, spaceDesc.string);
             } else {
                 // semantic, in idToken.string
+                if (semanticFound) {
+                    parseContext.error(idToken.loc, "multiple semantics on a single declaration", idToken.string->c_str(), "");
+                    continue;
+                }
+                semanticFound = true;
                 TString semanticUpperCase = *idToken.string;
                 std::transform(semanticUpperCase.begin(), semanticUpperCase.end(), semanticUpperCase.begin(), ::toupper);
                 parseContext.handleSemantic(idToken.loc, qualifier, mapSemantic(semanticUpperCase.c_str()), semanticUpperCase);
