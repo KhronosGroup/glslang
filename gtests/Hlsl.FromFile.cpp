@@ -213,6 +213,8 @@ INSTANTIATE_TEST_SUITE_P(
         {"hlsl.clipdistance-8.vert", "main"},
         {"hlsl.clipdistance-9.frag", "main"},
         {"hlsl.clipdistance-9.vert", "main"},
+        {"hlsl.clipdistance.layoutLocation.vert", "main"},
+        {"hlsl.clipdistance.semanticOverride.frag", "main"},
         {"hlsl.color.hull.tesc", "main"},
         {"hlsl.comparison.vec.frag", "main"},
         {"hlsl.conditional.frag", "PixelShaderFunction"},
