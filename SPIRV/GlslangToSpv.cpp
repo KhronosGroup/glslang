@@ -2584,9 +2584,12 @@ void TGlslangToSpvTraverser::recordDescHeapAccessChainInfo(glslang::TIntermBinar
             descType = convertGlslangToSpvType(nodeTy);
         }
 
-        spv::StorageClass storageClass = TranslateStorageClass(nodeTy);
-        if (nodeTy.getBasicType() == glslang::EbtAccStruct)
-            storageClass = spv::StorageClass::UniformConstant;
+        // Heap qualifiers describe the source heap, not a buffer payload.
+        // Opaque descriptors are loaded directly through UniformConstant pointers.
+        const spv::StorageClass storageClass =
+            nodeTy.getBasicType() == glslang::EbtSampler || nodeTy.getBasicType() == glslang::EbtAccStruct
+                ? spv::StorageClass::UniformConstant
+                : TranslateStorageClass(nodeTy);
 
         builder.setAccessChainDescHeapDescriptorType(descType, storageClass, nodeTy.getQualifier().isReadOnly(),
                                                      nodeTy.getQualifier().isWriteOnly());

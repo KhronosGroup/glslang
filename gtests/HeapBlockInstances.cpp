@@ -125,6 +125,46 @@ protected:
         return compile(sources, spirv, error, debug, true);
     }
 
+    void expectOpaqueHeapLoads(const std::vector<unsigned int>& spirv, const std::set<spv::Op>& expectedTypes)
+    {
+        std::map<unsigned int, spv::Op> types;
+        std::map<unsigned int, spv::BuiltIn> heaps;
+        std::map<spv::Op, unsigned int> loads;
+        ASSERT_GE(spirv.size(), 5u);
+        for (size_t offset = 5; offset < spirv.size();) {
+            const auto* words = &spirv[offset];
+            const unsigned int wordCount = words[0] >> spv::WordCountShift;
+            const auto opcode = static_cast<spv::Op>(words[0] & spv::OpCodeMask);
+            ASSERT_GT(wordCount, 0u);
+            ASSERT_LE(offset + wordCount, spirv.size());
+            if (opcode == spv::Op::OpTypeImage || opcode == spv::Op::OpTypeSampler) {
+                ASSERT_GE(wordCount, 2u);
+                types[words[1]] = opcode;
+            } else if (opcode == spv::Op::OpDecorate && wordCount == 4 &&
+                       words[2] == static_cast<unsigned int>(spv::Decoration::BuiltIn)) {
+                const auto builtin = static_cast<spv::BuiltIn>(words[3]);
+                if (builtin == spv::BuiltIn::ResourceHeapEXT || builtin == spv::BuiltIn::SamplerHeapEXT)
+                    heaps[words[1]] = builtin;
+            } else if (opcode == spv::Op::OpUntypedAccessChainKHR && wordCount >= 6) {
+                const auto base = heaps.find(words[4]);
+                if (base != heaps.end())
+                    heaps[words[2]] = base->second;
+            } else if (opcode == spv::Op::OpLoad && wordCount >= 4 && types.count(words[1]) != 0) {
+                // Image and sampler descriptors must be loaded from their heap,
+                // without interpreting them as buffer descriptors first.
+                const auto heap = heaps.find(words[3]);
+                ASSERT_NE(heap, heaps.end());
+                const auto type = types.at(words[1]);
+                EXPECT_EQ(heap->second, type == spv::Op::OpTypeSampler ? spv::BuiltIn::SamplerHeapEXT
+                                                                     : spv::BuiltIn::ResourceHeapEXT);
+                ++loads[type];
+            }
+            offset += wordCount;
+        }
+        for (const auto type : expectedTypes)
+            EXPECT_GT(loads[type], 0u);
+    }
+
     using HeapLocation = std::pair<spv::BuiltIn, unsigned int>;
 
     // Validation alone cannot detect an untyped access using another block's
@@ -549,6 +589,65 @@ void main()
     std::string error;
     ASSERT_TRUE(compile({source}, spirv, error)) << error;
     EXPECT_FALSE(spirv.empty());
+}
+
+TEST_F(HeapBlockInstanceTest, OpaqueMembersKeepDescriptorStorageAcrossLinking)
+{
+    for (const bool named : {false, true}) {
+        SCOPED_TRACE(named);
+        for (const bool array : {false, true}) {
+            SCOPED_TRACE(array);
+            const std::string size = array ? "[1]" : "";
+            const std::string index = array ? "[0]" : "";
+            const std::vector<std::string> declarations = {
+                "layout(heap_offset = 64) resourceheap Shared { texture2D resourceTexture" + size +
+                    "; }" + (named ? " resources;\n" : ";\n"),
+                "layout(heap_offset = 128) samplerheap Shared { sampler samplerState" + size +
+                    "; }" + (named ? " sampling;\n" : ";\n"),
+            };
+            const std::string texture = (named ? "resources." : "") + std::string("resourceTexture") + index;
+            const std::string sampler = (named ? "sampling." : "") + std::string("samplerState") + index;
+            const std::string expression = "uint(textureLod(sampler2D(" + texture + ", " + sampler +
+                "), vec2(0.5), 0.0).x)";
+            auto sources = linkedSources(declarations, expression);
+            for (const bool debug : {false, true}) {
+                SCOPED_TRACE(debug);
+                std::vector<unsigned int> spirv;
+                std::string error;
+                ASSERT_TRUE(compile({sources[0] + "uint helper() { return " + expression + "; }\n"},
+                                    spirv, error, debug)) << error;
+                expectOpaqueHeapLoads(spirv, {spv::Op::OpTypeImage, spv::Op::OpTypeSampler});
+                for (int order = 0; order < 2; ++order) {
+                    SCOPED_TRACE(order);
+                    ASSERT_TRUE(compile(sources, spirv, error, debug)) << error;
+                    expectOpaqueHeapLoads(spirv, {spv::Op::OpTypeImage, spv::Op::OpTypeSampler});
+                    std::reverse(sources.begin(), sources.end());
+                }
+            }
+        }
+    }
+}
+
+TEST_F(HeapBlockInstanceTest, ScalarStorageImagesKeepDescriptorStorage)
+{
+    for (const bool named : {false, true}) {
+        SCOPED_TRACE(named);
+        const std::string prefix = named ? "images." : "";
+        const std::string source =
+            "layout(heap_offset = 256) resourceheap Images {\n"
+            "    layout(rgba32f) readonly image2D sourceImage;\n"
+            "    layout(rgba32f, offset = 256) writeonly image2D targetImage;\n"
+            "}" + std::string(named ? " images;\n" : ";\n") +
+            "void main() { imageStore(" + prefix + "targetImage, ivec2(1), imageLoad(" + prefix +
+            "sourceImage, ivec2(0))); }\n";
+        for (const bool debug : {false, true}) {
+            SCOPED_TRACE(debug);
+            std::vector<unsigned int> spirv;
+            std::string error;
+            ASSERT_TRUE(compile({source}, spirv, error, debug)) << error;
+            expectOpaqueHeapLoads(spirv, {spv::Op::OpTypeImage});
+        }
+    }
 }
 
 TEST_F(HeapBlockInstanceTest, ReorderedDeclarationsKeepTheirHeapAndLayout)
