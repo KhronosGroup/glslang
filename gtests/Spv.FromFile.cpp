@@ -91,6 +91,23 @@ using GlslNonSemanticShaderDebugInfoTest = GlslangTest<::testing::TestWithParam<
 using GlslNonSemanticShaderDebugInfoVulkanLatestTest = GlslangTest<::testing::TestWithParam<std::string>>;
 using GlslSplitBarrierEXTTest = GlslangTest<::testing::TestWithParam<std::string>>;
 
+#if ENABLE_OPT
+using CooperativeMatrixSelection = GlslangTest<::testing::TestWithParam<std::string>>;
+
+TEST_P(CooperativeMatrixSelection, FromFile)
+{
+    options().optimizeSize = true;
+    options().validate = false;
+    loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam(), Source::GLSL, Semantics::Vulkan,
+                            glslang::EShTargetVulkan_1_1, glslang::EShTargetSpv_1_4, Target::Spv, true, "",
+                            "/baseResults/", true);
+}
+
+INSTANTIATE_TEST_SUITE_P(CooperativeMatrix, CooperativeMatrixSelection,
+                         ::testing::Values("spv.coopmatKHR_select.comp"),
+                         FileNameAsCustomTestSuffix);
+#endif
+
 // Compiling GLSL to SPIR-V under Vulkan semantics. Expected to successfully
 // generate SPIR-V.
 TEST_P(CompileVulkanToSpirvTest, FromFile)
