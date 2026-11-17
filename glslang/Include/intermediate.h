@@ -1068,6 +1068,17 @@ enum TOperator {
     // GL_EXT_ray_tracing_position_fetch
     EOpRayQueryGetIntersectionTriangleVertexPositionsEXT,
 
+    // GL_AMDX_multi_level_acceleration_structure
+    EOpGetInstanceCustomIndexAtLevelAMDX,
+    EOpGetInstanceIdAtLevelAMDX,
+    EOpGetObjectToWorldAtLevelAMDX,
+    EOpGetWorldToObjectAtLevelAMDX,
+    EOpRayQueryGetIntersectionInstanceLevelAMDX,
+    EOpRayQueryGetIntersectionInstanceCustomIndexAtLevelAMDX,
+    EOpRayQueryGetIntersectionInstanceIdAtLevelAMDX,
+    EOpRayQueryGetIntersectionObjectToWorldAtLevelAMDX,
+    EOpRayQueryGetIntersectionWorldToObjectAtLevelAMDX,
+
     // Shader tile image ops
     EOpStencilAttachmentReadEXT, // Fragment only
     EOpDepthAttachmentReadEXT, // Fragment only

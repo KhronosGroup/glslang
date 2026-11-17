@@ -3261,7 +3261,7 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
         }
     };
 
-    // Hit object functions that also require an interacting extension to be enabled
+    // Built-in functions that also require an interacting extension to be enabled
     switch (callNode.getOp()) {
     case EOpHitObjectTraceRayMotionNV:
     case EOpHitObjectRecordHitMotionNV:
@@ -3276,6 +3276,19 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
         break;
     case EOpHitObjectGetIntersectionTriangleVertexPositionsEXT:
         requireExtensions(loc, 1, &E_GL_EXT_ray_tracing_position_fetch, fnCandidate.getName().c_str());
+        break;
+    case EOpGetInstanceCustomIndexAtLevelAMDX:
+    case EOpGetInstanceIdAtLevelAMDX:
+    case EOpGetObjectToWorldAtLevelAMDX:
+    case EOpGetWorldToObjectAtLevelAMDX:
+        requireExtensions(loc, 1, &E_GL_EXT_ray_tracing, fnCandidate.getName().c_str());
+        break;
+    case EOpRayQueryGetIntersectionInstanceLevelAMDX:
+    case EOpRayQueryGetIntersectionInstanceCustomIndexAtLevelAMDX:
+    case EOpRayQueryGetIntersectionInstanceIdAtLevelAMDX:
+    case EOpRayQueryGetIntersectionObjectToWorldAtLevelAMDX:
+    case EOpRayQueryGetIntersectionWorldToObjectAtLevelAMDX:
+        requireExtensions(loc, 1, &E_GL_EXT_ray_query, fnCandidate.getName().c_str());
         break;
     default:
         break;
@@ -3702,6 +3715,11 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
     case EOpRayQueryGetIntersectionObjectRayOrigin:
     case EOpRayQueryGetIntersectionObjectToWorld:
     case EOpRayQueryGetIntersectionWorldToObject:
+    case EOpRayQueryGetIntersectionInstanceLevelAMDX:
+    case EOpRayQueryGetIntersectionInstanceCustomIndexAtLevelAMDX:
+    case EOpRayQueryGetIntersectionInstanceIdAtLevelAMDX:
+    case EOpRayQueryGetIntersectionObjectToWorldAtLevelAMDX:
+    case EOpRayQueryGetIntersectionWorldToObjectAtLevelAMDX:
     case EOpRayQueryGetIntersectionTriangleVertexPositionsEXT:
     case EOpRayQueryGetIntersectionClusterIdNV:
     case EOpRayQueryGetIntersectionSpherePositionNV:
@@ -4572,6 +4590,9 @@ void TParseContext::variableCheck(TIntermTyped*& nodePtr)
             nodePtr = intermediate.addSymbol(*fakeVariable, symbol->getLoc());
         }
     } else {
+        if (symbol->getQualifier().builtIn == EbvHitInstanceLevelAMDX)
+            requireExtensions(symbol->getLoc(), 1, &E_GL_EXT_ray_tracing, symbol->getName().c_str());
+
         switch (symbol->getQualifier().storage) {
         case EvqPointCoord:
             profileRequires(symbol->getLoc(), ENoProfile, 120, nullptr, "gl_PointCoord");

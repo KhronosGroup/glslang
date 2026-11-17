@@ -1,0 +1,6 @@
+spv.amdx.multiLevelAccelerationStructure.spirv13.Error.comp
+ERROR: 0:3: 'GL_AMDX_multi_level_acceleration_structure' : not supported for current targeted SPIR-V version 
+ERROR: 1 compilation errors.  No code generated.
+
+
+SPIR-V is not generated for failed compile or link

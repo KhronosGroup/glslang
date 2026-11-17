@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ## NEXT
 
+* Add GL_AMDX_multi_level_acceleration_structure and SPIR-V support for
+  per-level ray-tracing and ray-query instance properties
 * Deprecate the HLSL front-end. It will be removed at the next major version.
   See issue #4210 for details.
 * Add support for GL_EXT_opacity_micromap_ray_query_mode
