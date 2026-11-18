@@ -1,0 +1,26 @@
+#version 450
+#pragma use_vulkan_memory_model
+#extension GL_KHR_cooperative_matrix : enable
+#extension GL_KHR_memory_scope_semantics : enable
+
+layout(local_size_x = 32) in;
+layout(binding = 0) buffer Output { float values[]; };
+
+void main()
+{
+    coopmat<float, gl_ScopeSubgroup, 16, 16, gl_MatrixUseAccumulator> firstMatrix =
+        coopmat<float, gl_ScopeSubgroup, 16, 16, gl_MatrixUseAccumulator>(1.0);
+    coopmat<float, gl_ScopeSubgroup, 16, 16, gl_MatrixUseAccumulator> secondMatrix =
+        coopmat<float, gl_ScopeSubgroup, 16, 16, gl_MatrixUseAccumulator>(2.0);
+    coopmat<float, gl_ScopeSubgroup, 16, 16, gl_MatrixUseAccumulator> resultMatrix;
+    bool condition = gl_WorkGroupID.x == 0;
+
+    resultMatrix = condition ? firstMatrix : secondMatrix;
+    coopMatStore(resultMatrix, values, 0, 16, gl_CooperativeMatrixLayoutRowMajor);
+
+    if (condition)
+        resultMatrix = firstMatrix + secondMatrix;
+    else
+        resultMatrix = firstMatrix - secondMatrix;
+    coopMatStore(resultMatrix, values, 256, 16, gl_CooperativeMatrixLayoutRowMajor);
+}

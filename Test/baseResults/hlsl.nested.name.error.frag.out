@@ -1,9 +1,10 @@
 hlsl.nested.name.error.frag
+ERROR: 0:4: 'function definition' : not allowed in nested scope 
 ERROR: 0:4: 'resurn' : unknown variable 
 ERROR: 0:4: ';' : Expected 
 ERROR: 0:4: 'm3' : no matching overloaded function found 
 ERROR: 0:9: '' : function does not return a value: @main
-ERROR: 4 compilation errors.  No code generated.
+ERROR: 5 compilation errors.  No code generated.
 
 
 Shader version: 500

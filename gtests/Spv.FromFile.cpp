@@ -91,6 +91,23 @@ using GlslNonSemanticShaderDebugInfoTest = GlslangTest<::testing::TestWithParam<
 using GlslNonSemanticShaderDebugInfoVulkanLatestTest = GlslangTest<::testing::TestWithParam<std::string>>;
 using GlslSplitBarrierEXTTest = GlslangTest<::testing::TestWithParam<std::string>>;
 
+#if ENABLE_OPT
+using CooperativeMatrixSelection = GlslangTest<::testing::TestWithParam<std::string>>;
+
+TEST_P(CooperativeMatrixSelection, FromFile)
+{
+    options().optimizeSize = true;
+    options().validate = false;
+    loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam(), Source::GLSL, Semantics::Vulkan,
+                            glslang::EShTargetVulkan_1_1, glslang::EShTargetSpv_1_4, Target::Spv, true, "",
+                            "/baseResults/", true);
+}
+
+INSTANTIATE_TEST_SUITE_P(CooperativeMatrix, CooperativeMatrixSelection,
+                         ::testing::Values("spv.coopmatKHR_select.comp"),
+                         FileNameAsCustomTestSuffix);
+#endif
+
 // Compiling GLSL to SPIR-V under Vulkan semantics. Expected to successfully
 // generate SPIR-V.
 TEST_P(CompileVulkanToSpirvTest, FromFile)
@@ -362,6 +379,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.16bitstorage_Error-int.frag",
         "spv.16bitstorage-uint.frag",
         "spv.16bitstorage_Error-uint.frag",
+        "spv.16bitstorage-constructors.frag",
         "spv.300BuiltIns.vert",
         "spv.300layout.frag",
         "spv.300layout.vert",
@@ -390,7 +408,9 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.8bitstorage_Error-uint.frag",
         "spv.8bitstorage-ubo.vert",
         "spv.8bitstorage-ssbo.vert",
+        "spv.8bitstorage-constructors.frag",
         "spv.8bit-16bit-construction.frag",
+        "spv.8bit-16bit-int-construction.frag",
         "spv.accessChain.frag",
         "spv.aggOps.frag",
         "spv.always-discard.frag",
@@ -495,11 +515,13 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.int64.frag",
         "spv.intOps.vert",
         "spv.intrinsicsDebugBreak.frag",
+        "spv.intrinsicsRedeclareBlockMember.error.vert",
         "spv.intrinsicsSpirvByReference.vert",
         "spv.intrinsicsSpirvDecorate.frag",
         "spv.intrinsicsSpirvDecorateId.comp",
         "spv.intrinsicsSpirvDecorateString.comp",
         "spv.intrinsicsSpirvExecutionMode.frag",
+        "spv.intrinsicsSpirvExecutionModeRepeatDecls.comp",
         "spv.intrinsicsSpirvInstruction.vert",
         "spv.intrinsicsSpirvInstructionSetLiteral.comp",
         "spv.intrinsicsSpirvLiteral.vert",
@@ -1014,7 +1036,6 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.structuredDescriptorHeap.AccelerationStructure.comp",
         "spv.structuredDescriptorHeap.Buffer.comp",
         "spv.structuredDescriptorHeap.Uniform.comp",
-        "spv.structuredDescriptorHeap.BufferReference.comp",
         "spv.structuredDescriptorHeap.ConstantFolding.comp",
         "spv.structuredDescriptorHeap.ConstantFoldingSpec.comp",
         "spv.structuredDescriptorHeap.DescriptorSize.comp",
@@ -1024,14 +1045,29 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.structuredDescriptorHeap.MemberOffset.error.comp",
         "spv.structuredDescriptorHeap.ReadOnly.comp",
         "spv.structuredDescriptorHeap.ReadOnly.error.comp",
+        "spv.structuredDescriptorHeap.RuntimeArrayResource.vert",
+        "spv.structuredDescriptorHeap.RuntimeArrayResource.error.vert",
+        "spv.structuredDescriptorHeap.RuntimeArraySampler.frag",
+        "spv.structuredDescriptorHeap.RuntimeArraySampler.error.frag",
         "spv.structuredDescriptorHeap.SamplerOffset.error.comp",
         "spv.structuredDescriptorHeap.es.frag",
         "spv.structuredDescriptorHeap.UnsizedES.error.frag",
-        "spv.structuredDescriptorHeap.MatrixLayout.comp",
         "spv.structuredDescriptorHeap.Offset.comp",
         "spv.structuredDescriptorHeap.OffsetConstant.comp",
         "spv.structuredDescriptorHeap.OffsetSpecConstant.comp",
-        
+
+        // Reads non-descriptor data from the heap, which SPV_EXT_descriptor_heap
+        // does not allow (VUID-StandaloneSpirv-ResourceHeapEXT-13744), so these
+        // fail validation until the KHR version is supported
+        "spv.structuredDescriptorHeap.khr.Uniform.comp",
+        "spv.structuredDescriptorHeap.khr.BufferReference.comp",
+        "spv.structuredDescriptorHeap.khr.DescriptorSize.comp",
+        "spv.structuredDescriptorHeap.khr.LayoutQualifiers.comp",
+        "spv.structuredDescriptorHeap.khr.ReadOnly.comp",
+        "spv.structuredDescriptorHeap.khr.es.frag",
+        "spv.structuredDescriptorHeap.khr.MatrixLayout.comp",
+        "spv.structuredDescriptorHeap.khr.OffsetSpecConstant.comp",
+
         // SPV_KHR_abort
         "spv.shader.abort.comp",
         "spv.shader.abort.matrix_param.comp",
@@ -1409,6 +1445,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.debuginfo.descriptor_heap.source_types.glsl.comp",
         "spv.debuginfo.descriptor_heap.bool.glsl.comp",
         "spv.debuginfo.structured_descriptor_heap.glsl.comp",
+        "spv.debuginfo.structured_descriptor_heap_khr.glsl.comp",
         "spv.debuginfo.rt_types.glsl.rgen",
         "spv.debuginfo.rt_nv_builtins.glsl.rahit",
         "spv.debuginfo.rt_ext_builtins.glsl.rahit",

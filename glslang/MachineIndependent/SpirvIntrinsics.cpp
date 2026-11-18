@@ -137,7 +137,7 @@ void TIntermediate::insertSpirvExecutionMode(int executionMode, const TIntermAgg
             extraOperands.push_back(extraOperand);
         }
     }
-    spirvExecutionMode->modes[executionMode] = extraOperands;
+    spirvExecutionMode->modes[executionMode].push_back(std::move(extraOperands));
 }
 
 void TIntermediate::insertSpirvExecutionModeId(int executionMode, const TIntermAggregate* args)
@@ -153,7 +153,7 @@ void TIntermediate::insertSpirvExecutionModeId(int executionMode, const TIntermA
         assert(extraOperand != nullptr && extraOperand->getQualifier().isConstant());
         extraOperands.push_back(extraOperand);
     }
-    spirvExecutionMode->modeIds[executionMode] = extraOperands;
+    spirvExecutionMode->modeIds[executionMode].push_back(std::move(extraOperands));
 }
 
 //

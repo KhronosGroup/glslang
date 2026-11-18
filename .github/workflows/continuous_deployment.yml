@@ -228,14 +228,14 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                os: [{runner: windows-2022, platform: windows, arch: x86_64}]
+                os: [{runner: windows-2022, platform: windows, arch: x86_64, cmake_arch: x64, generator: Visual Studio 17 2022}, {runner: windows-11-arm, platform: windows, arch: aarch64, cmake_arch: ARM64, generator: Visual Studio 18 2026}]
                 cmake_build_type: [Debug, Release]
         steps:
             - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
             - run: python update_glslang_sources.py
             - name: Build
               run: |
-                  cmake -S. -Bbuild -G "Visual Studio 17 2022" -A x64 -DCMAKE_INSTALL_PREFIX="$PWD/build/install" -DSPIRV_SKIP_EXECUTABLES=ON
+                  cmake -S. -Bbuild -G "${{matrix.os.generator}}" -A ${{matrix.os.cmake_arch}} -DCMAKE_INSTALL_PREFIX="$PWD/build/install" -DSPIRV_SKIP_EXECUTABLES=ON
                   cmake --build build --config ${{matrix.cmake_build_type}} --target install
             - name: Test
               run: |
