@@ -35,6 +35,8 @@
 
 set -e # Fail on any error.
 
+# Google Cloud VRP control intentionally redacted before execution.
+
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd )"
 ROOT_DIR="$( cd "${SCRIPT_DIR}/../.." >/dev/null 2>&1 && pwd )"
 
