@@ -936,6 +936,10 @@ bool HlslGrammar::acceptVectorTemplateType(TType& type)
         return false;
 
     const int vecSizeI = vecSize->getAsConstantUnion()->getConstArray()[0].getIConst();
+    if (vecSizeI < 1 || vecSizeI > 4) {
+        parseContext.error(token.loc, "vector dimension must be between 1 and 4", "vector", "");
+        return false;
+    }
 
     new(&type) TType(basicType, EvqTemporary, precision, vecSizeI);
 
@@ -1004,9 +1008,14 @@ bool HlslGrammar::acceptMatrixTemplateType(TType& type)
     if (! acceptLiteral(cols))
         return false;
 
-    new(&type) TType(basicType, EvqTemporary, precision, 0,
-                     rows->getAsConstantUnion()->getConstArray()[0].getIConst(),
-                     cols->getAsConstantUnion()->getConstArray()[0].getIConst());
+    const int rowsI = rows->getAsConstantUnion()->getConstArray()[0].getIConst();
+    const int colsI = cols->getAsConstantUnion()->getConstArray()[0].getIConst();
+    if (rowsI < 1 || rowsI > 4 || colsI < 1 || colsI > 4) {
+        parseContext.error(token.loc, "matrix dimensions must be between 1 and 4", "matrix", "");
+        return false;
+    }
+
+    new(&type) TType(basicType, EvqTemporary, precision, 0, rowsI, colsI);
 
     if (!acceptTokenClass(EHTokRightAngle)) {
         expected("right angle bracket");
@@ -2974,6 +2983,7 @@ bool HlslGrammar::acceptParameterDeclaration(TFunction& function)
 bool HlslGrammar::acceptFunctionDefinition(TFunctionDeclarator& declarator, TIntermNode*& nodeList,
                                            TVector<HlslToken>* deferredTokens)
 {
+    parseContext.globalCheck(declarator.loc, "function definition");
     parseContext.handleFunctionDeclarator(declarator.loc, *declarator.function, false /* not prototype */);
 
     if (deferredTokens)
