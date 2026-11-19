@@ -7052,7 +7052,7 @@ spv::Id DescHeapLayoutEmitter::makeUint(unsigned value)
     return traverser.builder.makeUintConstant(value);
 }
 
-// Create a 32-bit unsigned OpSpecConstantOp id.
+// Create a 32-bit unsigned layout expression, folding ordinary constant operands.
 spv::Id DescHeapLayoutEmitter::makeSpecOp(spv::Op op,
     const std::vector<spv::Id>& operands)
 {
