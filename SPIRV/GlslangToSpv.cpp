@@ -2584,9 +2584,12 @@ void TGlslangToSpvTraverser::recordDescHeapAccessChainInfo(glslang::TIntermBinar
             descType = convertGlslangToSpvType(nodeTy);
         }
 
-        spv::StorageClass storageClass = TranslateStorageClass(nodeTy);
-        if (nodeTy.getBasicType() == glslang::EbtAccStruct)
-            storageClass = spv::StorageClass::UniformConstant;
+        // Heap qualifiers describe the source heap, not a buffer payload.
+        // Opaque descriptors are loaded directly through UniformConstant pointers.
+        const spv::StorageClass storageClass =
+            nodeTy.getBasicType() == glslang::EbtSampler || nodeTy.getBasicType() == glslang::EbtAccStruct
+                ? spv::StorageClass::UniformConstant
+                : TranslateStorageClass(nodeTy);
 
         builder.setAccessChainDescHeapDescriptorType(descType, storageClass, nodeTy.getQualifier().isReadOnly(),
                                                      nodeTy.getQualifier().isWriteOnly());
@@ -12786,9 +12789,10 @@ spv::Id TGlslangToSpvTraverser::createSpvConstant(const glslang::TIntermTyped& n
         if (sn->getType().getQualifier().isSpecConstant())
             spec_constant_op_mode_setter.turnOnSpecConstantOpMode();
         if (auto* sub_tree = sn->getConstSubtree()) {
-            // Traverse the constant constructor sub tree like generating normal run-time instructions.
-            // During the AST traversal, if the node is marked as 'specConstant', SpecConstantOpModeGuard
-            // will set the builder into spec constant op instruction generating mode.
+            // Keep specialization mode active through the deferred load as well
+            // as traversal (for example, when extracting a vector component).
+            SpecConstantOpModeGuard spec_constant_op_mode_setter(&builder);
+            spec_constant_op_mode_setter.turnOnSpecConstantOpMode();
             sub_tree->traverse(this);
             result = accessChainLoad(sub_tree->getType());
         } else if (auto* const_union_array = &sn->getConstArray()) {
