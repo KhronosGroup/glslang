@@ -2585,7 +2585,7 @@ void TGlslangToSpvTraverser::recordDescHeapAccessChainInfo(glslang::TIntermBinar
         }
 
         spv::StorageClass storageClass = TranslateStorageClass(nodeTy);
-        if (nodeTy.getBasicType() == glslang::EbtAccStruct)
+        if (nodeTy.getBasicType() == glslang::EbtAccStruct || nodeTy.getBasicType() == glslang::EbtSampler)
             storageClass = spv::StorageClass::UniformConstant;
 
         builder.setAccessChainDescHeapDescriptorType(descType, storageClass, nodeTy.getQualifier().isReadOnly(),
