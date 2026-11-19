@@ -523,6 +523,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.intrinsicsSpirvExecutionMode.frag",
         "spv.intrinsicsSpirvExecutionModeRepeatDecls.comp",
         "spv.intrinsicsSpirvInstruction.vert",
+        "spv.intrinsicsSpirvInstructionOperands.frag",
         "spv.intrinsicsSpirvInstructionSetLiteral.comp",
         "spv.intrinsicsSpirvLiteral.vert",
         "spv.intrinsicsSpirvRequirement.error.frag",

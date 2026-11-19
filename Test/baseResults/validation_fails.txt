@@ -62,6 +62,7 @@ Test/baseResults/spv.exportFunctions.comp.out
 Test/baseResults/spv.float16Fetch.frag.out
 Test/baseResults/spv.float64.frag.out
 Test/baseResults/spv.functionNestedOpaque.vert.out
+Test/baseResults/spv.intrinsicsSpirvInstructionOperands.frag.out
 Test/baseResults/spv.intrinsicsSpirvInstructionSetLiteral.comp.out
 Test/baseResults/spv.nvgpushader5.frag.out
 Test/baseResults/spv.paramMemory.420.frag.out
