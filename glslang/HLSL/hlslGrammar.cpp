@@ -4267,6 +4267,11 @@ bool HlslGrammar::acceptCaseLabel(TIntermNode*& statement)
         return false;
     }
 
+    if (parseContext.switchSequenceStack.empty()) {
+        parseContext.error(loc, "cannot appear outside switch statement", "case", "");
+        return false;
+    }
+
     statement = parseContext.intermediate.addBranch(EOpCase, expression, loc);
 
     return true;
@@ -4283,6 +4288,11 @@ bool HlslGrammar::acceptDefaultLabel(TIntermNode*& statement)
 
     if (! acceptTokenClass(EHTokColon)) {
         expected(":");
+        return false;
+    }
+
+    if (parseContext.switchSequenceStack.empty()) {
+        parseContext.error(loc, "cannot appear outside switch statement", "default", "");
         return false;
     }
 

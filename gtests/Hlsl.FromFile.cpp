@@ -479,6 +479,8 @@ INSTANTIATE_TEST_SUITE_P(
         {"hlsl.scope.frag", "PixelShaderFunction"},
         {"hlsl.sin.frag", "PixelShaderFunction"},
         {"hlsl.struct.frag", "PixelShaderFunction"},
+        {"hlsl.switch.caseOutside.error.frag", "main"},
+        {"hlsl.switch.defaultOutside.error.frag", "main"},
         {"hlsl.switch.frag", "PixelShaderFunction"},
         {"hlsl.swizzle.frag", "PixelShaderFunction"},
         {"hlsl.target.frag", "main"},
