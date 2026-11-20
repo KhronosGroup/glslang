@@ -1,0 +1,18 @@
+hlsl.switch.caseOutside.error.frag
+ERROR: 0:4: 'case' : cannot appear outside switch statement 
+ERROR: 0:5: 'declaration' : Expected 
+(5): error at column 10, HLSL parsing failed.
+ERROR: 3 compilation errors.  No code generated.
+
+
+Shader version: 500
+gl_FragCoord origin is upper left
+
+
+Linked fragment stage:
+
+
+Shader version: 500
+gl_FragCoord origin is upper left
+
+SPIR-V is not generated for failed compile or link
