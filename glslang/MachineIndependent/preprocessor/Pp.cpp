@@ -318,7 +318,8 @@ int TPpContext::CPPelse(int matchelse, TPpToken* ppToken)
             token = extraTokenCheck(nextAtom, ppToken, scanToken(ppToken));
             if (elsetracker >= 0)
                 elseSeen[elsetracker] = false;
-            --elsetracker;
+            if (elsetracker > 0)
+                --elsetracker;
             if (depth == 0) {
                 // found the #endif we are looking for
                 if (ifdepth > 0)
@@ -1016,7 +1017,8 @@ int TPpContext::readCPPline(TPpToken* ppToken)
             else {
                 if (elsetracker >= 0)
                     elseSeen[elsetracker] = false;
-                --elsetracker;
+                if (elsetracker > 0)
+                    --elsetracker;
                 --ifdepth;
             }
             token = extraTokenCheck(PpAtomEndif, ppToken, scanToken(ppToken));
