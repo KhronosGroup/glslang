@@ -32,7 +32,9 @@
 // POSSIBILITY OF SUCH DAMAGE.
 
 #include "SPIRV/disassemble.h"
+#include "SPIRV/spirv.hpp11"
 #include <gtest/gtest.h>
+#include <initializer_list>
 #include <sstream>
 #include <vector>
 
@@ -94,6 +96,64 @@ TEST_F(DisassembleDeathTest, ValidModule)
     std::ostringstream out;
     spv::Disassemble(out, words);
     EXPECT_NE(out.str().find("TypeVoid"), std::string::npos);
+}
+
+TEST_F(DisassembleDeathTest, MultiLevelAccelerationStructure)
+{
+    std::vector<unsigned int> words = {spv::MagicNumber, 0x00010400, 0, 32, 0};
+    auto append = [&words](spv::Op op, std::initializer_list<unsigned int> operands) {
+        words.push_back((static_cast<unsigned int>(operands.size() + 1) << spv::WordCountShift) |
+                        static_cast<unsigned int>(op));
+        words.insert(words.end(), operands);
+    };
+    append(spv::Op::OpCapability,
+           {static_cast<unsigned int>(spv::Capability::RayTracingMultiLevelAccelerationStructureAMDX)});
+    append(spv::Op::OpCapability,
+           {static_cast<unsigned int>(spv::Capability::RayQueryMultiLevelAccelerationStructureAMDX)});
+    append(spv::Op::OpTypeInt, {1, 32, 0});
+    append(spv::Op::OpTypeFloat, {2, 32});
+    append(spv::Op::OpTypeVector, {3, 2, 3});
+    append(spv::Op::OpTypeMatrix, {4, 3, 4});
+    append(spv::Op::OpTypeRayQueryKHR, {5});
+    append(spv::Op::OpTypePointer, {6, static_cast<unsigned int>(spv::StorageClass::Function), 5});
+    append(spv::Op::OpConstant, {1, 7, 0});
+    append(spv::Op::OpVariable, {6, 8, static_cast<unsigned int>(spv::StorageClass::Function)});
+    append(spv::Op::OpTypePointer, {9, static_cast<unsigned int>(spv::StorageClass::Input), 1});
+    append(spv::Op::OpVariable, {9, 10, static_cast<unsigned int>(spv::StorageClass::Input)});
+    append(spv::Op::OpDecorate, {10, static_cast<unsigned int>(spv::Decoration::BuiltIn),
+                                 static_cast<unsigned int>(spv::BuiltIn::HitInstanceLevelAMDX)});
+
+    append(spv::Op::OpGetInstanceCustomIndexAtLevelAMDX, {1, 11, 7});
+    append(spv::Op::OpGetInstanceIdAtLevelAMDX, {1, 12, 7});
+    append(spv::Op::OpGetObjectToWorldAtLevelAMDX, {4, 13, 7});
+    append(spv::Op::OpGetWorldToObjectAtLevelAMDX, {4, 14, 7});
+    append(spv::Op::OpRayQueryGetIntersectionInstanceLevelAMDX, {1, 15, 8, 7});
+    append(spv::Op::OpRayQueryGetIntersectionInstanceCustomIndexAtLevelAMDX, {1, 16, 8, 7, 7});
+    append(spv::Op::OpRayQueryGetIntersectionInstanceIdAtLevelAMDX, {1, 17, 8, 7, 7});
+    append(spv::Op::OpRayQueryGetIntersectionObjectToWorldAtLevelAMDX, {4, 18, 8, 7, 7});
+    append(spv::Op::OpRayQueryGetIntersectionWorldToObjectAtLevelAMDX, {4, 19, 8, 7, 7});
+
+    std::ostringstream out;
+    spv::Disassemble(out, words);
+    const std::string text = out.str();
+    EXPECT_NE(text.find("RayTracingMultiLevelAccelerationStructureAMDX"), std::string::npos);
+    EXPECT_NE(text.find("RayQueryMultiLevelAccelerationStructureAMDX"), std::string::npos);
+    EXPECT_NE(text.find("HitInstanceLevelAMDX"), std::string::npos);
+    const char* names[] = {"GetInstanceCustomIndexAtLevelAMDX",
+                           "GetInstanceIdAtLevelAMDX",
+                           "GetObjectToWorldAtLevelAMDX",
+                           "GetWorldToObjectAtLevelAMDX",
+                           "RayQueryGetIntersectionInstanceLevelAMDX",
+                           "RayQueryGetIntersectionInstanceCustomIndexAtLevelAMDX",
+                           "RayQueryGetIntersectionInstanceIdAtLevelAMDX",
+                           "RayQueryGetIntersectionObjectToWorldAtLevelAMDX",
+                           "RayQueryGetIntersectionWorldToObjectAtLevelAMDX"};
+    unsigned int id = 11;
+    for (const char* name : names) {
+        EXPECT_NE(text.find(name), std::string::npos);
+        EXPECT_NE(text.find(std::to_string(id++) + ":"), std::string::npos);
+    }
+    EXPECT_EQ(text.find("ERROR"), std::string::npos);
 }
 
 } // anonymous namespace

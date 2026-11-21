@@ -167,6 +167,7 @@ void TParseVersions::initializeExtensionBehavior()
     } extensionData;
 
     const extensionData exts[] = { {E_GL_EXT_ray_tracing, EShTargetSpv_1_4},
+                                   {E_GL_AMDX_multi_level_acceleration_structure, EShTargetSpv_1_4},
                                    {E_GL_NV_ray_tracing_motion_blur, EShTargetSpv_1_4},
                                    {E_GL_EXT_mesh_shader, EShTargetSpv_1_4},
                                    {E_GL_NV_cooperative_matrix2, EShTargetSpv_1_6},
@@ -399,6 +400,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_EXT_opacity_micromap_ray_query_mode] = EBhDisable;
     extensionBehavior[E_GL_EXT_shader_quad_control]         = EBhDisable;
     extensionBehavior[E_GL_EXT_ray_tracing_position_fetch]  = EBhDisable;
+    extensionBehavior[E_GL_AMDX_multi_level_acceleration_structure] = EBhDisable;
     extensionBehavior[E_GL_EXT_shader_tile_image]           = EBhDisable;
     extensionBehavior[E_GL_EXT_texture_shadow_lod]          = EBhDisable;
     extensionBehavior[E_GL_EXT_draw_instanced]              = EBhDisable;
@@ -608,6 +610,7 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_EXT_ray_flags_primitive_culling 1\n"
             "#define GL_EXT_ray_cull_mask 1\n"
             "#define GL_EXT_ray_tracing_position_fetch 1\n"
+            "#define GL_AMDX_multi_level_acceleration_structure 1\n"
             "#define GL_EXT_spirv_intrinsics 1\n"
             "#define GL_EXT_mesh_shader 1\n"
 

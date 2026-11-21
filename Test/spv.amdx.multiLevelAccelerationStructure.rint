@@ -1,0 +1,16 @@
+#version 460 core
+#extension GL_EXT_ray_tracing : require
+#extension GL_AMDX_multi_level_acceleration_structure : require
+
+hitAttributeEXT vec2 hitAttrib;
+
+void main()
+{
+    uint level = gl_HitInstanceLevelAMDX - 1u;
+    int customIndex = getInstanceCustomIndexAtLevelAMDX(level);
+    int instanceId = getInstanceIdAtLevelAMDX(level);
+    mat4x3 objectToWorld = getObjectToWorldAtLevelAMDX(level);
+    mat4x3 worldToObject = getWorldToObjectAtLevelAMDX(level);
+    hitAttrib = vec2(float(customIndex + instanceId), objectToWorld[3].x + worldToObject[3].x);
+    reportIntersectionEXT(gl_RayTminEXT, 0u);
+}

@@ -5700,7 +5700,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
     }
 
     // Builtins for GL_NV_ray_tracing/GL_NV_ray_tracing_motion_blur/GL_EXT_ray_tracing/GL_EXT_ray_query/
-    // GL_NV_shader_invocation_reorder/GL_KHR_ray_tracing_position_Fetch
+    // GL_NV_shader_invocation_reorder/GL_KHR_ray_tracing_position_Fetch/GL_AMDX_multi_level_acceleration_structure
     if (profile != EEsProfile && version >= 460) {
          commonBuiltins.append("void rayQueryInitializeEXT(rayQueryEXT, accelerationStructureEXT, uint, uint, vec3, float, vec3, float);"
             "void rayQueryTerminateEXT(rayQueryEXT);"
@@ -5725,6 +5725,11 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "vec3 rayQueryGetIntersectionObjectRayOriginEXT(rayQueryEXT, bool);"
             "mat4x3 rayQueryGetIntersectionObjectToWorldEXT(rayQueryEXT, bool);"
             "mat4x3 rayQueryGetIntersectionWorldToObjectEXT(rayQueryEXT, bool);"
+            "uint rayQueryGetIntersectionInstanceLevelAMDX(rayQueryEXT, bool);"
+            "int rayQueryGetIntersectionInstanceCustomIndexAtLevelAMDX(rayQueryEXT, bool, uint);"
+            "int rayQueryGetIntersectionInstanceIdAtLevelAMDX(rayQueryEXT, bool, uint);"
+            "mat4x3 rayQueryGetIntersectionObjectToWorldAtLevelAMDX(rayQueryEXT, bool, uint);"
+            "mat4x3 rayQueryGetIntersectionWorldToObjectAtLevelAMDX(rayQueryEXT, bool, uint);"
             "void rayQueryGetIntersectionTriangleVertexPositionsEXT(rayQueryEXT, bool, out vec3[3]);"
             "int rayQueryGetIntersectionClusterIdNV(rayQueryEXT, bool);"
             "vec3 rayQueryGetIntersectionSpherePositionNV(rayQueryEXT, bool);"
@@ -5829,6 +5834,15 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "bool reportIntersectionNV(float, uint);"
             "bool reportIntersectionEXT(float, uint);"
             "\n");
+        const char *mlasFunctions =
+            "int getInstanceCustomIndexAtLevelAMDX(uint);"
+            "int getInstanceIdAtLevelAMDX(uint);"
+            "mat4x3 getObjectToWorldAtLevelAMDX(uint);"
+            "mat4x3 getWorldToObjectAtLevelAMDX(uint);"
+            "\n";
+        stageBuiltins[EShLangIntersect].append(mlasFunctions);
+        stageBuiltins[EShLangAnyHit].append(mlasFunctions);
+        stageBuiltins[EShLangClosestHit].append(mlasFunctions);
         stageBuiltins[EShLangAnyHit].append(
             "void ignoreIntersectionNV();"
             "void terminateRayNV();"
@@ -7409,6 +7423,10 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
         stageBuiltins[EShLangIntersect].append(intersectDecls);
         stageBuiltins[EShLangAnyHit].append(hitDecls);
         stageBuiltins[EShLangClosestHit].append(hitDecls);
+        const char *mlasDecls = "in uint gl_HitInstanceLevelAMDX;\n";
+        stageBuiltins[EShLangIntersect].append(mlasDecls);
+        stageBuiltins[EShLangAnyHit].append(mlasDecls);
+        stageBuiltins[EShLangClosestHit].append(mlasDecls);
         stageBuiltins[EShLangMiss].append(missDecls);
         stageBuiltins[EShLangCallable].append(callableDecls);
 
@@ -9697,6 +9715,11 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setFunctionExtensions("rayQueryGetIntersectionObjectRayOriginEXT",                        1, &E_GL_EXT_ray_query);
             symbolTable.setFunctionExtensions("rayQueryGetIntersectionObjectToWorldEXT",                          1, &E_GL_EXT_ray_query);
             symbolTable.setFunctionExtensions("rayQueryGetIntersectionWorldToObjectEXT",                          1, &E_GL_EXT_ray_query);
+            symbolTable.setFunctionExtensions("rayQueryGetIntersectionInstanceLevelAMDX",                         1, &E_GL_AMDX_multi_level_acceleration_structure);
+            symbolTable.setFunctionExtensions("rayQueryGetIntersectionInstanceCustomIndexAtLevelAMDX",            1, &E_GL_AMDX_multi_level_acceleration_structure);
+            symbolTable.setFunctionExtensions("rayQueryGetIntersectionInstanceIdAtLevelAMDX",                     1, &E_GL_AMDX_multi_level_acceleration_structure);
+            symbolTable.setFunctionExtensions("rayQueryGetIntersectionObjectToWorldAtLevelAMDX",                  1, &E_GL_AMDX_multi_level_acceleration_structure);
+            symbolTable.setFunctionExtensions("rayQueryGetIntersectionWorldToObjectAtLevelAMDX",                  1, &E_GL_AMDX_multi_level_acceleration_structure);
             symbolTable.setFunctionExtensions("rayQueryGetWorldRayOriginEXT",                                     1, &E_GL_EXT_ray_query);
             symbolTable.setFunctionExtensions("rayQueryGetWorldRayDirectionEXT",                                  1, &E_GL_EXT_ray_query);
             symbolTable.setFunctionExtensions("rayQueryGetIntersectionTriangleVertexPositionsEXT",                1, &E_GL_EXT_ray_tracing_position_fetch);
@@ -11902,6 +11925,11 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.relateToOperator("rayQueryGetWorldRayOriginEXT",                                      EOpRayQueryGetWorldRayOrigin);
             symbolTable.relateToOperator("rayQueryGetIntersectionObjectToWorldEXT",                           EOpRayQueryGetIntersectionObjectToWorld);
             symbolTable.relateToOperator("rayQueryGetIntersectionWorldToObjectEXT",                           EOpRayQueryGetIntersectionWorldToObject);
+            symbolTable.relateToOperator("rayQueryGetIntersectionInstanceLevelAMDX",                          EOpRayQueryGetIntersectionInstanceLevelAMDX);
+            symbolTable.relateToOperator("rayQueryGetIntersectionInstanceCustomIndexAtLevelAMDX",             EOpRayQueryGetIntersectionInstanceCustomIndexAtLevelAMDX);
+            symbolTable.relateToOperator("rayQueryGetIntersectionInstanceIdAtLevelAMDX",                      EOpRayQueryGetIntersectionInstanceIdAtLevelAMDX);
+            symbolTable.relateToOperator("rayQueryGetIntersectionObjectToWorldAtLevelAMDX",                   EOpRayQueryGetIntersectionObjectToWorldAtLevelAMDX);
+            symbolTable.relateToOperator("rayQueryGetIntersectionWorldToObjectAtLevelAMDX",                   EOpRayQueryGetIntersectionWorldToObjectAtLevelAMDX);
             symbolTable.relateToOperator("rayQueryGetIntersectionTriangleVertexPositionsEXT",                 EOpRayQueryGetIntersectionTriangleVertexPositionsEXT);
             symbolTable.relateToOperator("rayQueryGetIntersectionClusterIdNV",                                EOpRayQueryGetIntersectionClusterIdNV);
             symbolTable.relateToOperator("rayQueryGetIntersectionSpherePositionNV",                           EOpRayQueryGetIntersectionSpherePositionNV);
@@ -12128,6 +12156,20 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
 
     default:
         assert(false && "Language not supported");
+    }
+
+    if (profile != EEsProfile && version >= 460 &&
+        (language == EShLangIntersect || language == EShLangAnyHit || language == EShLangClosestHit)) {
+        symbolTable.setVariableExtensions("gl_HitInstanceLevelAMDX", 1, &E_GL_AMDX_multi_level_acceleration_structure);
+        BuiltInVariable("gl_HitInstanceLevelAMDX", EbvHitInstanceLevelAMDX, symbolTable);
+        symbolTable.setFunctionExtensions("getInstanceCustomIndexAtLevelAMDX", 1, &E_GL_AMDX_multi_level_acceleration_structure);
+        symbolTable.setFunctionExtensions("getInstanceIdAtLevelAMDX",          1, &E_GL_AMDX_multi_level_acceleration_structure);
+        symbolTable.setFunctionExtensions("getObjectToWorldAtLevelAMDX",       1, &E_GL_AMDX_multi_level_acceleration_structure);
+        symbolTable.setFunctionExtensions("getWorldToObjectAtLevelAMDX",       1, &E_GL_AMDX_multi_level_acceleration_structure);
+        symbolTable.relateToOperator("getInstanceCustomIndexAtLevelAMDX", EOpGetInstanceCustomIndexAtLevelAMDX);
+        symbolTable.relateToOperator("getInstanceIdAtLevelAMDX",          EOpGetInstanceIdAtLevelAMDX);
+        symbolTable.relateToOperator("getObjectToWorldAtLevelAMDX",       EOpGetObjectToWorldAtLevelAMDX);
+        symbolTable.relateToOperator("getWorldToObjectAtLevelAMDX",       EOpGetWorldToObjectAtLevelAMDX);
     }
 }
 
