@@ -1449,6 +1449,9 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.debuginfo.rt_nv_builtins.glsl.rahit",
         "spv.debuginfo.rt_ext_builtins.glsl.rahit",
         "spv.debuginfo.descriptorHeap.glsl.frag",
+        "spv.debuginfo.coopmat_nv.glsl.comp",
+        "spv.debuginfo.spirv_type.glsl.comp",
+        "spv.debuginfo.rt_hitobject_ext.glsl.rgen",
     })),
     FileNameAsCustomTestSuffix
 );
