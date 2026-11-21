@@ -1,0 +1,42 @@
+#version 460
+#extension GL_EXT_nonuniform_qualifier : require
+
+layout(local_size_x = 1) in;
+layout(set = 0, binding = 0) uniform sampler2D textures[2][3][4];
+layout(set = 0, binding = 1) uniform sampler2D otherTextures[5][3][4];
+layout(set = 0, binding = 2) uniform sampler2D matrixTextures[3][4];
+layout(set = 0, binding = 3) uniform sampler2D rowTextures[4];
+layout(set = 0, binding = 4) buffer Output { vec4 color; } outputData;
+layout(push_constant) uniform Indices { int i; uint j; int k; } indices;
+
+vec4 sampleRow(sampler2D inputs[4], const in int j, inout vec4 sum)
+{
+    vec4 value = textureLod(inputs[j], vec2(0.0), 0.0);
+    sum += value;
+    if (j == 0)
+        return sum;
+    return value;
+}
+
+vec4 sampleMatrix(sampler2D inputs[3][4], uint i, int j)
+{
+    vec4 sum = vec4(0.0);
+    vec4 value = sampleRow(inputs[i], j, sum);
+    return value + sum;
+}
+
+void main()
+{
+    vec4 sum = vec4(0.0);
+    // Whole arrays, rows, and rows forwarded through another function.
+    sum += sampleMatrix(matrixTextures, indices.j, indices.k);
+    sum += sampleMatrix(textures[indices.i], indices.j, indices.k);
+    sum += sampleMatrix(otherTextures[indices.i], indices.j, indices.k);
+    // Reuse the same base-array specialization for a different row.
+    sum += sampleMatrix(textures[1], indices.j, indices.k);
+    vec4 rowValue = sampleRow(textures[nonuniformEXT(indices.i)][indices.j], indices.k, sum);
+    sum += rowValue;
+    rowValue = sampleRow(rowTextures, indices.k, sum);
+    sum += rowValue;
+    outputData.color = sum;
+}

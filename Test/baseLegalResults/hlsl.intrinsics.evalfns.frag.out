@@ -75,12 +75,7 @@ hlsl.intrinsics.evalfns.frag
              176:      9(ptr) Variable Function
              177:     11(ptr) Variable Function
              178:     13(ptr) Variable Function
-             139:    6(float) Load 138(inF1)
-             143:    8(fvec2) Load 142(inF2)
-             147:   10(fvec3) Load 146(inF3)
-             151:   12(fvec4) Load 150(inF4)
              155:   15(ivec2) Load 154(inI2)
-             158:    8(fvec2) Load 157(i.vPos)
              183:    6(float) ExtInst 1(GLSL.std.450) 78(InterpolateAtOffset) 138(inF1) 32
              185:    8(fvec2) ExtInst 1(GLSL.std.450) 78(InterpolateAtOffset) 142(inF2) 38
              187:   10(fvec3) ExtInst 1(GLSL.std.450) 78(InterpolateAtOffset) 146(inF3) 44

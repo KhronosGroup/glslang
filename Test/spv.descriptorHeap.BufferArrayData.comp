@@ -1,0 +1,19 @@
+#version 450
+#extension GL_EXT_descriptor_heap : require
+
+layout(local_size_x = 1) in;
+
+layout(descriptor_heap) uniform InputData {
+    uint values[2][3];
+} inputs[];
+
+layout(descriptor_heap) buffer OutputData {
+    uint values[2][3];
+} outputs[];
+
+void main()
+{
+    uint values[2][3];
+    values[1][2] = inputs[0].values[1][2];
+    outputs[0].values[1][2] = values[1][2];
+}

@@ -1,0 +1,37 @@
+#version 460
+#extension GL_EXT_descriptor_heap : require
+#extension GL_EXT_nonuniform_qualifier : require
+
+layout(local_size_x = 1) in;
+layout(push_constant) uniform Indices { int i; uint j; int k; } indices;
+layout(constant_id = 0) const int columns = 3;
+
+layout(descriptor_heap) buffer Heap {
+    uint data;
+    uint values[2][3];
+} heap[3][3];
+layout(descriptor_heap) buffer UnsizedHeap { uint data; } unsizedHeap[][3];
+layout(descriptor_heap) uniform UniformHeap { uint data; } uniformHeap[2][3];
+layout(descriptor_heap) uniform sampler samplers[2][3];
+layout(descriptor_heap) uniform texture2D textures[2][3];
+layout(descriptor_heap, rgba32f) uniform readonly image2D inputs[2][3];
+layout(descriptor_heap, rgba32f) uniform writeonly image2D outputs[2][3];
+layout(descriptor_heap) uniform texture2D textures3D[2][3][4];
+layout(descriptor_heap) uniform texture2D specTextures[columns][2];
+
+void main()
+{
+    int i = indices.i;
+    uint j = indices.j;
+    int k = indices.k;
+    // Constant descriptor index 5, followed by separate buffer-data indices.
+    heap[1][2].data = 42;
+    heap[1][2].values[1][2] = uniformHeap[1][2].data;
+    unsizedHeap[i][j].data = heap[i][j].values[1][2];
+    heap[nonuniformEXT(i)][2].data = uniformHeap[0][nonuniformEXT(j)].data;
+    vec4 color = textureLod(sampler2D(textures[i][j], samplers[i][j]), vec2(0.0), 0.0);
+    color += textureLod(sampler2D(textures3D[i][j][k], samplers[1][2]), vec2(0.0), 0.0);
+    color += textureLod(sampler2D(specTextures[i][j], samplers[1][2]), vec2(0.0), 0.0);
+    color += imageLoad(inputs[i][nonuniformEXT(j)], ivec2(0));
+    imageStore(outputs[i][j], ivec2(0), color);
+}

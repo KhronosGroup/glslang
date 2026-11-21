@@ -1,0 +1,34 @@
+#version 460
+#extension GL_EXT_descriptor_heap : require
+#extension GL_EXT_nonuniform_qualifier : require
+#extension GL_EXT_shader_image_load_formatted : require
+
+layout(local_size_x = 1) in;
+layout(descriptor_heap) uniform texture2D textures[2][3][4];
+layout(descriptor_heap) uniform sampler samplers[2][4];
+layout(descriptor_heap) uniform readonly image2D images[2][4];
+layout(set = 0, binding = 0) buffer Output { vec4 color; } outputData;
+layout(push_constant) uniform Indices { int i; uint j; int k; } indices;
+
+vec4 sampleRow(texture2D inputs[4], sampler states[4], int j)
+{
+    return textureLod(sampler2D(inputs[j], states[j]), vec2(0.0), 0.0);
+}
+
+vec4 sampleMatrix(texture2D inputs[3][4], sampler states[4], uint i, int j)
+{
+    vec4 value = sampleRow(inputs[i], states, j);
+    return value + vec4(1.0);
+}
+
+vec4 loadImages(readonly image2D inputs[2][4], int i, int j)
+{
+    return imageLoad(inputs[i][j], ivec2(0));
+}
+
+void main()
+{
+    outputData.color = sampleMatrix(textures[indices.i], samplers[1], indices.j, indices.k);
+    outputData.color += sampleRow(textures[nonuniformEXT(indices.i)][indices.j], samplers[0], indices.k);
+    outputData.color += loadImages(images, indices.i, indices.k);
+}
