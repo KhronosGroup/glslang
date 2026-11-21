@@ -1517,6 +1517,11 @@ void HlslParseContext::fixBuiltInIoType(TType& type)
         if (isClipOrCullDistance(type)) {
             const int loc = type.getQualifier().layoutLocation;
 
+            // The semantic ID can be overridden after handleSemantic() validated it, e.g. by a
+            // later semantic or layout(location=N).  assignClipCullDistance() reports the error.
+            if (loc < 0 || loc >= maxClipCullRegs)
+                return;
+
             if (type.getQualifier().builtIn == EbvClipDistance) {
                 if (type.getQualifier().storage == EvqVaryingIn)
                     clipSemanticNSizeIn[loc] = type.getVectorSize();
@@ -2646,6 +2651,11 @@ TIntermAggregate* HlslParseContext::assignClipCullDistance(const TSourceLoc& loc
         break;
     default:
         error(loc, "unimplemented: clip/cull not currently implemented for this stage", "", "");
+        return nullptr;
+    }
+
+    if (semanticId < 0 || semanticId >= maxClipCullRegs) {
+        error(loc, "invalid clip/cull semantic", "", "");
         return nullptr;
     }
 

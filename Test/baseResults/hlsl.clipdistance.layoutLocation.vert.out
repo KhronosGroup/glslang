@@ -1,0 +1,64 @@
+hlsl.clipdistance.layoutLocation.vert
+ERROR: 0:3: '' : invalid clip/cull semantic 
+ERROR: 1 compilation errors.  No code generated.
+
+
+Shader version: 500
+ERROR: node is still EOpNull!
+0:3  Function Definition: @main(vf2; ( temp 4-component vector of float)
+0:3    Function Parameters: 
+0:3      'clip' ( out 2-component vector of float)
+0:?     Sequence
+0:4      move second child to first child ( temp 2-component vector of float)
+0:4        'clip' ( out 2-component vector of float)
+0:4        Constant:
+0:4          0.500000
+0:4          0.500000
+0:5      Branch: Return with expression
+0:5        Constant:
+0:5          1.000000
+0:5          1.000000
+0:5          1.000000
+0:5          1.000000
+0:3  Function Definition: main( ( temp void)
+0:3    Function Parameters: 
+0:?     Sequence
+0:3      move second child to first child ( temp 4-component vector of float)
+0:?         '@entryPointOutput' ( out 4-component vector of float Position)
+0:3        Function Call: @main(vf2; ( temp 4-component vector of float)
+0:?           'clip' ( temp 2-component vector of float)
+0:?   Linker Objects
+0:?     '@entryPointOutput' ( out 4-component vector of float Position)
+
+
+Linked vertex stage:
+
+
+Shader version: 500
+ERROR: node is still EOpNull!
+0:3  Function Definition: @main(vf2; ( temp 4-component vector of float)
+0:3    Function Parameters: 
+0:3      'clip' ( out 2-component vector of float)
+0:?     Sequence
+0:4      move second child to first child ( temp 2-component vector of float)
+0:4        'clip' ( out 2-component vector of float)
+0:4        Constant:
+0:4          0.500000
+0:4          0.500000
+0:5      Branch: Return with expression
+0:5        Constant:
+0:5          1.000000
+0:5          1.000000
+0:5          1.000000
+0:5          1.000000
+0:3  Function Definition: main( ( temp void)
+0:3    Function Parameters: 
+0:?     Sequence
+0:3      move second child to first child ( temp 4-component vector of float)
+0:?         '@entryPointOutput' ( out 4-component vector of float Position)
+0:3        Function Call: @main(vf2; ( temp 4-component vector of float)
+0:?           'clip' ( temp 2-component vector of float)
+0:?   Linker Objects
+0:?     '@entryPointOutput' ( out 4-component vector of float Position)
+
+SPIR-V is not generated for failed compile or link
