@@ -1833,10 +1833,17 @@ Id Builder::getContainedTypeId(Id typeId, int member) const
 Id Builder::getResultingAccessChainType() const
 {
     assert(accessChain.base != NoResult);
-    Id typeId = getTypeId(accessChain.base);
+    Id typeId;
 
-    assert(isPointerType(typeId));
-    typeId = getContainedTypeId(typeId);
+    // A descriptor heap base is an untyped pointer; the index chain walks the
+    // descriptor type, as in createDescHeapAccessChain().
+    if (accessChain.descHeapInfo.descTy != NoResult)
+        typeId = accessChain.descHeapInfo.descTy;
+    else {
+        typeId = getTypeId(accessChain.base);
+        assert(isPointerType(typeId));
+        typeId = getContainedTypeId(typeId);
+    }
 
     for (int i = 0; i < (int)accessChain.indexChain.size(); ++i) {
         if (isStructType(typeId)) {
