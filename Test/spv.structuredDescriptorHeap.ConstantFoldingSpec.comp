@@ -1,0 +1,32 @@
+#version 460
+#extension GL_EXT_descriptor_heap : require
+#extension GL_EXT_structured_descriptor_heap : require
+
+layout(local_size_x = 1) in;
+layout(constant_id = 0) const uint heapBase = 64u;
+layout(constant_id = 1) const int bufferCount = 3;
+
+layout(buffer_type, std430) buffer DataBuffer {
+    uint value;
+};
+
+// Fold constant subexpressions, but retain dependence on both SpecId 0 and 1.
+layout(heap_offset = heapBase) resourceheap SpecializedResources {
+    layout(descriptor_size = 16) DataBuffer first;
+    layout(descriptor_size = 32, align = 64) DataBuffer buffers[bufferCount];
+    layout(descriptor_size = 64, align = 16) DataBuffer last;
+} specializedResources;
+
+// Native descriptor sizes are supplied by the implementation, not OpConstant.
+// Their size and alignment calculations must remain specialization operations.
+layout(heap_offset = 256) resourceheap NativeResources {
+    layout(descriptor_size = 32) DataBuffer fixedBuffers[2];
+    DataBuffer nativeBuffer;
+    DataBuffer nativeArray[2];
+} nativeResources;
+
+void main()
+{
+    specializedResources.first.value = specializedResources.buffers[1].value + specializedResources.last.value;
+    nativeResources.fixedBuffers[1].value = nativeResources.nativeBuffer.value + nativeResources.nativeArray[1].value;
+}

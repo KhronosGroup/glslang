@@ -1,0 +1,33 @@
+#version 460
+#extension GL_EXT_descriptor_heap : require
+#extension GL_EXT_structured_descriptor_heap : require
+
+layout(local_size_x = 1) in;
+layout(binding = 0) uniform texture2D textureImage;
+
+layout(buffer_type, std430) buffer DataBuffer {
+    uint value;
+};
+
+// All sizes and alignments are known. OffsetIdEXT should reference OpConstant
+// values 64, 128, 256, and 384, without any OpSpecConstantOp arithmetic.
+layout(heap_offset = 64) resourceheap Resources {
+    layout(descriptor_size = 16) DataBuffer first;
+    layout(descriptor_size = 32, align = 64) DataBuffer buffers[3];
+    layout(descriptor_size = 64, align = 16) DataBuffer last;
+    layout(descriptor_size = 16, offset = 272, align = 64) DataBuffer shifted;
+} resources;
+
+// Array strides are 16 and 32; the absolute member offsets are 128 and 192.
+layout(heap_offset = 128) samplerheap Samplers {
+    layout(descriptor_size = 16) sampler states[3];
+    layout(descriptor_size = 32, align = 64) sampler alignedStates[2];
+} samplers;
+
+void main()
+{
+    vec4 a = textureLod(sampler2D(textureImage, samplers.states[2]), vec2(0.5), 0.0);
+    vec4 b = textureLod(sampler2D(textureImage, samplers.alignedStates[1]), vec2(0.5), 0.0);
+    resources.first.value = resources.buffers[2].value + resources.last.value + uint(a.x + b.x);
+    resources.shifted.value = resources.first.value;
+}

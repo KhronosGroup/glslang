@@ -1036,6 +1036,8 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.structuredDescriptorHeap.AccelerationStructure.comp",
         "spv.structuredDescriptorHeap.Buffer.comp",
         "spv.structuredDescriptorHeap.Uniform.comp",
+        "spv.structuredDescriptorHeap.ConstantFolding.comp",
+        "spv.structuredDescriptorHeap.ConstantFoldingSpec.comp",
         "spv.structuredDescriptorHeap.DescHeapAccessChainInfo.frag",
         "spv.structuredDescriptorHeap.DescriptorSize.comp",
         "spv.structuredDescriptorHeap.LayoutPacking.comp",
