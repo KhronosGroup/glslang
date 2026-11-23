@@ -6368,7 +6368,32 @@ void TParseContext::checkRuntimeSizable(const TSourceLoc& loc, const TIntermType
     if (base.getType().getQualifier().builtIn == EbvSampleMask)
         return;
 
-    // Check for last member of a bufferreference type, which is runtime sizeable
+    // Check for last member of a structured heap, which can be runtime sizeable
+    // when using GL_EXT_structured_descriptor_heap
+    if (extensionTurnedOn(E_GL_EXT_structured_descriptor_heap)) {
+        const TIntermBinary* binary = base.getAsBinaryNode();
+        if (binary != nullptr && binary->getOp() == EOpIndexDirectStruct) {
+            const TType& blockType = binary->getLeft()->getType();
+            const TStorageQualifier storage = blockType.getQualifier().storage;
+
+            const bool isStructuredHeap = (storage == EvqResourceHeap || storage == EvqSamplerHeap);
+
+            if (blockType.getBasicType() == EbtBlock && isStructuredHeap) {
+                const int index = binary->getRight()->getAsConstantUnion()->getConstArray()[0].getIConst();
+                const TTypeList& members = *blockType.getStruct();
+                const int memberCount = static_cast<int>(members.size());
+
+                if (index != memberCount - 1) {
+                    const char* fieldName = members[index].type->getFieldName().c_str();
+                    error(loc, "cannot declare runtime sizeable array for the non-last field of the heap", fieldName, "");
+                }
+
+                return;
+            }
+        }
+    }
+
+    // Check for last member of a buffer_reference type, which is runtime sizeable
     // but doesn't support runtime length
     if (base.getType().getQualifier().storage == EvqBuffer) {
         const TIntermBinary* binary = base.getAsBinaryNode();
@@ -10875,7 +10900,9 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
                     aggregateOp = EOpConstructFloat;
                 else
                     aggregateOp = (TOperator)(EOpConstructVec2 + op - EOpConstructF16Vec2);
-                newNode = intermediate.setAggregateOperator(newNode, aggregateOp, tempType, node->getLoc());
+                newNode = constructBuiltIn(tempType, aggregateOp, newNode, loc, subset);
+                if (newNode == nullptr)
+                    return nullptr;
             }
             newNode = intermediate.addConversion(EbtFloat16, newNode);
             return newNode;
@@ -10955,7 +10982,9 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
                     aggregateOp = EOpConstructInt;
                 else
                     aggregateOp = (TOperator)(EOpConstructIVec2 + op - EOpConstructI8Vec2);
-                newNode = intermediate.setAggregateOperator(newNode, aggregateOp, tempType, node->getLoc());
+                newNode = constructBuiltIn(tempType, aggregateOp, newNode, loc, subset);
+                if (newNode == nullptr)
+                    return nullptr;
             }
             newNode = intermediate.addConversion(EbtInt8, newNode);
             return newNode;
@@ -10979,7 +11008,9 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
                     aggregateOp = EOpConstructUint;
                 else
                     aggregateOp = (TOperator)(EOpConstructUVec2 + op - EOpConstructU8Vec2);
-                newNode = intermediate.setAggregateOperator(newNode, aggregateOp, tempType, node->getLoc());
+                newNode = constructBuiltIn(tempType, aggregateOp, newNode, loc, subset);
+                if (newNode == nullptr)
+                    return nullptr;
             }
             newNode = intermediate.addConversion(EbtUint8, newNode);
             return newNode;
@@ -11003,7 +11034,9 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
                     aggregateOp = EOpConstructInt;
                 else
                     aggregateOp = (TOperator)(EOpConstructIVec2 + op - EOpConstructI16Vec2);
-                newNode = intermediate.setAggregateOperator(newNode, aggregateOp, tempType, node->getLoc());
+                newNode = constructBuiltIn(tempType, aggregateOp, newNode, loc, subset);
+                if (newNode == nullptr)
+                    return nullptr;
             }
             newNode = intermediate.addConversion(EbtInt16, newNode);
             return newNode;
@@ -11027,7 +11060,9 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
                     aggregateOp = EOpConstructUint;
                 else
                     aggregateOp = (TOperator)(EOpConstructUVec2 + op - EOpConstructU16Vec2);
-                newNode = intermediate.setAggregateOperator(newNode, aggregateOp, tempType, node->getLoc());
+                newNode = constructBuiltIn(tempType, aggregateOp, newNode, loc, subset);
+                if (newNode == nullptr)
+                    return nullptr;
             }
             newNode = intermediate.addConversion(EbtUint16, newNode);
             return newNode;

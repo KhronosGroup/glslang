@@ -1,0 +1,74 @@
+constFoldFloatToIntRange.frag
+Shader version: 460
+Requested GL_EXT_shader_explicit_arithmetic_types
+0:? Sequence
+0:4  Function Definition: a( ( global void)
+0:4    Function Parameters: 
+0:5    Sequence
+0:5      Sequence
+0:5        move second child to first child ( temp int)
+0:5          'i0' ( temp int)
+0:5          Constant:
+0:5            2147483647 (const int)
+0:6      Sequence
+0:6        move second child to first child ( temp int)
+0:6          'i1' ( temp int)
+0:6          Constant:
+0:6            -2147483648 (const int)
+0:7      Sequence
+0:7        move second child to first child ( temp uint)
+0:7          'u0' ( temp uint)
+0:7          Constant:
+0:7            4294967295 (const uint)
+0:8      Sequence
+0:8        move second child to first child ( temp uint)
+0:8          'u1' ( temp uint)
+0:8          Constant:
+0:8            0 (const uint)
+0:9      Sequence
+0:9        move second child to first child ( temp int8_t)
+0:9          'b0' ( temp int8_t)
+0:9          Constant:
+0:9            127 (const int8_t)
+0:10      Sequence
+0:10        move second child to first child ( temp uint8_t)
+0:10          'b1' ( temp uint8_t)
+0:10          Constant:
+0:10            0 (const uint8_t)
+0:11      Sequence
+0:11        move second child to first child ( temp int16_t)
+0:11          's0' ( temp int16_t)
+0:11          Constant:
+0:11            32767 (const int16_t)
+0:12      Sequence
+0:12        move second child to first child ( temp int64_t)
+0:12          'l0' ( temp int64_t)
+0:12          Constant:
+0:12            9223372036854775807 (const int64_t)
+0:13      Sequence
+0:13        move second child to first child ( temp uint64_t)
+0:13          'l1' ( temp uint64_t)
+0:13          Constant:
+0:13            18446744073709551615 (const uint64_t)
+0:14      Sequence
+0:14        move second child to first child ( temp int)
+0:14          'i2' ( temp int)
+0:14          Constant:
+0:14            2147483647 (const int)
+0:15      Sequence
+0:15        move second child to first child ( temp int)
+0:15          'i3' ( temp int)
+0:15          Constant:
+0:15            -2 (const int)
+0:?   Linker Objects
+
+
+Linked fragment stage:
+
+ERROR: Linking fragment stage: Missing entry point: Each stage requires one entry point
+
+Shader version: 460
+Requested GL_EXT_shader_explicit_arithmetic_types
+0:? Sequence
+0:?   Linker Objects
+
