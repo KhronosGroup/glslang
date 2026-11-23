@@ -61,10 +61,24 @@
 #include <map>
 #include <memory>
 #include <set>
+#include <system_error>
 #include <thread>
 #include <type_traits>
 
 #include "../glslang/OSDependent/osinclude.h"
+
+#ifdef _WIN32
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+#ifndef NOGDI
+#define NOGDI
+#endif
+#include <windows.h>
+#endif
 
 // Build-time generated includes
 #include "glslang/build_info.h"
@@ -354,6 +368,43 @@ void Error(const char* message, const char* detail = nullptr)
         fprintf(stderr, "%s: ", detail);
     fprintf(stderr, "%s (use -h for usage)\n", message);
     exit(EFailUsage);
+}
+
+//
+// The current working directory for the debug info, in the same encoding as path::string(), or an empty string
+// if it can't be read or converted.
+//
+static std::string CurrentWorkingDirectory()
+{
+    std::error_code error;
+    const std::filesystem::path path = std::filesystem::current_path(error);
+    if (error)
+        return {};
+#ifdef _WIN32
+    // path::string() converts to the ANSI code page and throws when the name has a character outside it (a CJK
+    // folder name on a Western-locale system, say). glslang builds without exceptions by default, so that ended
+    // the process with 0xC0000409 before any output was written. Convert here instead, and leave the directory
+    // out of the debug info when it doesn't fit.
+    const std::wstring& wide = path.native();
+    if (wide.empty())
+        return {};
+    const UINT codePage = GetACP();
+    const bool utf8 = codePage == CP_UTF8;
+    const DWORD flags = utf8 ? WC_ERR_INVALID_CHARS : WC_NO_BEST_FIT_CHARS;
+    BOOL usedDefault = FALSE;
+    BOOL* const usedDefaultOut = utf8 ? nullptr : &usedDefault;  // must be null for CP_UTF8
+    const int wideSize = static_cast<int>(wide.size());
+    const int size = WideCharToMultiByte(codePage, flags, wide.data(), wideSize, nullptr, 0, nullptr, usedDefaultOut);
+    if (size <= 0 || usedDefault)
+        return {};
+    std::string narrow(static_cast<size_t>(size), '\0');
+    if (WideCharToMultiByte(codePage, flags, wide.data(), wideSize, &narrow[0], size, nullptr, usedDefaultOut) != size ||
+        usedDefault)
+        return {};
+    return narrow;
+#else
+    return path.string();
+#endif
 }
 
 //
@@ -1628,9 +1679,8 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
                 spvOptions.compileOnly = compileOnly;
                 spvOptions.compilerSignature = "glslang";
                 spvOptions.commandLineArguments = CommandLineArguments.c_str();
-                std::error_code currentPathError;
-                const std::string currentWorkingDirectory = std::filesystem::current_path(currentPathError).string();
-                if (!currentPathError)
+                const std::string currentWorkingDirectory = CurrentWorkingDirectory();
+                if (!currentWorkingDirectory.empty())
                     spvOptions.currentWorkingDirectory = currentWorkingDirectory.c_str();
                 glslang::GlslangToSpv(*intermediate, spirv, &logger, &spvOptions);
 
