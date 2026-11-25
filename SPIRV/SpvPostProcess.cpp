@@ -84,8 +84,12 @@ void Builder::postProcessType(const Instruction& inst, Id typeId)
                 addCapability(Capability::Float16);
         } else {
             StorageClass storageClass = StorageClass::Max;
-            if (module.getInstruction(inst.getIdOperand(0))->getOpCode() != Op::OpUntypedAccessChainKHR) {
-                storageClass = getStorageClass(inst.getIdOperand(0));
+            // spirv_instruction can emit OpLoad/OpStore with any operands
+            Id pointer = inst.getNumOperands() > 0 && inst.isIdOperand(0) ? inst.getIdOperand(0) : NoResult;
+            Id pointerType = pointer != NoResult ? getTypeId(pointer) : NoType;
+            if (pointerType != NoType && (isPointerType(pointerType) || isUntypedPointerType(pointerType)) &&
+                module.getInstruction(pointer)->getOpCode() != Op::OpUntypedAccessChainKHR) {
+                storageClass = getStorageClass(pointer);
             }
             if (width == 8) {
                 switch (storageClass) {
@@ -160,7 +164,7 @@ void Builder::postProcessType(const Instruction& inst, Id typeId)
         }
         break;
     case Op::OpExtInst:
-        switch (inst.getImmediateOperand(1)) {
+        switch (inst.getNumOperands() > 1 ? inst.getImmediateOperand(1) : 0) {
         case GLSLstd450Frexp:
         case GLSLstd450FrexpStruct:
             if (getSpvVersion() < spv::Spv_1_3 && containsType(typeId, Op::OpTypeInt, 16))
@@ -251,6 +255,8 @@ void Builder::postProcess(Instruction& inst)
     // Add capabilities based simply on the opcode.
     switch (inst.getOpCode()) {
     case Op::OpExtInst:
+        if (inst.getNumOperands() < 2)
+            break;
         switch (inst.getImmediateOperand(1)) {
         case GLSLstd450InterpolateAtCentroid:
         case GLSLstd450InterpolateAtSample:
@@ -291,14 +297,24 @@ void Builder::postProcess(Instruction& inst)
             // (set via Builder::AccessChain::alignment) only accounts for the base of
             // the reference type and any scalar component selection in the accesschain,
             // and this function computes the rest from the SPIR-V Offset decorations.
+            const bool is_store = inst.getOpCode() == Op::OpStore;
+            // Compute the index of the alignment operand.
+            int alignmentIdx = 2;
+            if (is_store)
+                alignmentIdx++;
+            // spirv_instruction can emit OpLoad/OpStore/OpAccessChain with any operands,
+            // so check for the layout the builder uses before walking it.
+            if (inst.getNumOperands() <= alignmentIdx || !inst.isIdOperand(0))
+                break;
             Instruction *accessChain = module.getInstruction(inst.getIdOperand(0));
-            if (accessChain->getOpCode() == Op::OpAccessChain) {
+            if (accessChain->getOpCode() == Op::OpAccessChain && accessChain->getNumOperands() > 0 &&
+                accessChain->isIdOperand(0)) {
                 const Instruction* base = module.getInstruction(accessChain->getIdOperand(0));
                 // Get the type of the base of the access chain. It must be a pointer type.
                 Id typeId = base->getTypeId();
                 Instruction *type = module.getInstruction(typeId);
-                assert(type->getOpCode() == Op::OpTypePointer);
-                if (type->getImmediateOperand(0) != StorageClass::PhysicalStorageBuffer) {
+                if (type->getOpCode() != Op::OpTypePointer ||
+                    type->getImmediateOperand(0) != StorageClass::PhysicalStorageBuffer) {
                     break;
                 }
                 // Get the pointee type.
@@ -310,10 +326,12 @@ void Builder::postProcess(Instruction& inst)
                 // together.
                 int alignment = 0;
                 bool first_struct_elem = false;
-                for (int i = 1; i < accessChain->getNumOperands(); ++i) {
+                for (int i = 1; i < accessChain->getNumOperands() && accessChain->isIdOperand(i); ++i) {
                     Instruction *idx = module.getInstruction(accessChain->getIdOperand(i));
                     if (type->getOpCode() == Op::OpTypeStruct) {
-                        assert(idx->getOpCode() == Op::OpConstant);
+                        if (idx->getOpCode() != Op::OpConstant ||
+                            idx->getImmediateOperand(0) >= (unsigned int)type->getNumOperands())
+                            break;
                         unsigned int c = idx->getImmediateOperand(0);
 
                         const auto function = [&](const std::unique_ptr<Instruction>& decoration) {
@@ -352,16 +370,10 @@ void Builder::postProcess(Instruction& inst)
                         break;
                     }
                 }
-                assert(inst.getNumOperands() >= 3);
-                const bool is_store = inst.getOpCode() == Op::OpStore;
                 auto const memoryAccess = (MemoryAccessMask)inst.getImmediateOperand(is_store ? 2 : 1);
                 assert(anySet(memoryAccess, MemoryAccessMask::Aligned));
                 static_cast<void>(memoryAccess);
 
-                // Compute the index of the alignment operand.
-                int alignmentIdx = 2;
-                if (is_store)
-                    alignmentIdx++;
                 // Merge new and old (mis)alignment
                 alignment |= inst.getImmediateOperand(alignmentIdx);
 
