@@ -503,6 +503,7 @@ public:
     TSpirvTypeParameters* makeSpirvTypeParameters(const TSourceLoc& loc, const TPublicType& type);
     TSpirvTypeParameters* mergeSpirvTypeParameters(TSpirvTypeParameters* spirvTypeParams1,
                                                    TSpirvTypeParameters* spirvTypeParams2);
+    void spirvTypeCheck(const TSourceLoc& loc, const TPublicType& publicType);
     TSpirvInstruction* makeSpirvInstruction(const TSourceLoc& loc, const TString& name, const TString& value);
     TSpirvInstruction* makeSpirvInstruction(const TSourceLoc& loc, const TString& name, int value);
     TSpirvInstruction* mergeSpirvInstruction(const TSourceLoc& loc, TSpirvInstruction* spirvInst1,

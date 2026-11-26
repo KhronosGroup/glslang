@@ -329,6 +329,65 @@ TSpirvTypeParameters* TParseContext::mergeSpirvTypeParameters(TSpirvTypeParamete
 }
 
 //
+// The SPIR-V builder also creates the type opcodes below itself, and it looks them up and
+// walks them by operand position, so a spirv_type using one of them must have the operand
+// layout from the SPIR-V specification. In 'operands', 'L' is a literal and 'I' an <id>;
+// operands past 'minCount' are optional, and a trailing '*' allows any number of <id>s.
+//
+void TParseContext::spirvTypeCheck(const TSourceLoc& loc, const TPublicType& publicType)
+{
+    struct TOperandLayout {
+        int opcode;
+        const char* operands;
+        size_t minCount;
+    };
+    static const TOperandLayout layouts[] = {
+        { 21,   "LL",       2 }, // OpTypeInt
+        { 22,   "LL",       1 }, // OpTypeFloat
+        { 23,   "IL",       2 }, // OpTypeVector
+        { 24,   "IL",       2 }, // OpTypeMatrix
+        { 25,   "ILLLLLLL", 7 }, // OpTypeImage
+        { 27,   "I",        1 }, // OpTypeSampledImage
+        { 28,   "II",       2 }, // OpTypeArray
+        { 29,   "I",        1 }, // OpTypeRuntimeArray
+        { 30,   "*",        0 }, // OpTypeStruct
+        { 32,   "LI",       2 }, // OpTypePointer
+        { 33,   "I*",       1 }, // OpTypeFunction
+        { 4163, "III",      1 }, // OpTypeTensorARM
+        { 4417, "L",        1 }, // OpTypeUntypedPointerKHR
+        { 4456, "IIIII",    5 }, // OpTypeCooperativeMatrixKHR
+        { 5115, "L",        1 }, // OpTypeBufferEXT
+        { 5288, "II",       2 }, // OpTypeCooperativeVectorNV
+        { 5358, "IIII",     4 }, // OpTypeCooperativeMatrixNV
+    };
+
+    if (publicType.spirvType == nullptr)
+        return;
+    const TSpirvType& spirvType = *publicType.spirvType;
+
+    for (const auto& layout : layouts) {
+        if (layout.opcode != spirvType.spirvInst.id)
+            continue;
+
+        const TSpirvTypeParameters& params = spirvType.typeParams;
+        size_t fixedCount = 0;
+        while (layout.operands[fixedCount] != '\0' && layout.operands[fixedCount] != '*')
+            ++fixedCount;
+        const bool variadic = layout.operands[fixedCount] == '*';
+        bool valid = params.size() >= layout.minCount && (variadic || params.size() <= fixedCount);
+        for (size_t i = 0; valid && i < params.size(); ++i) {
+            const TIntermConstantUnion* constant = params[i].getAsConstant();
+            const bool literal = constant != nullptr && constant->isLiteral();
+            valid = literal == (i < fixedCount && layout.operands[i] == 'L');
+        }
+        if (!valid)
+            error(loc, "operands do not match the layout of SPIR-V type opcode", "spirv_type", "%d",
+                  spirvType.spirvInst.id);
+        return;
+    }
+}
+
+//
 // Handle SPIR-V instruction qualifiers
 //
 TSpirvInstruction* TParseContext::makeSpirvInstruction(const TSourceLoc& loc, const TString& name, const TString& value)

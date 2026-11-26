@@ -1,0 +1,31 @@
+#version 450
+#extension GL_EXT_spirv_intrinsics : enable
+
+layout(local_size_x = 1) in;
+
+// The SPIR-V builder looks up and walks these type opcodes by operand
+// position, so a spirv_type using one of them must have the operand layout
+// from the specification.
+
+spirv_type(id = 21, 32) int1;                  // OpTypeInt: missing signedness
+spirv_type(id = 23) vec0;                      // OpTypeVector: no operands
+spirv_type(id = 23, 4, float) vecLiteral;      // OpTypeVector: literal component type
+spirv_type(id = 24, vec2) mat1;                // OpTypeMatrix: missing column count
+spirv_type(id = 25, float) image1;             // OpTypeImage: missing image operands
+spirv_type(id = 27) sampledImage0;             // OpTypeSampledImage: no operands
+spirv_type(id = 28, float) array1;             // OpTypeArray: missing length
+spirv_type(id = 30, 4) structLiteral;          // OpTypeStruct: literal member
+spirv_type(id = 32, float) pointer1;           // OpTypePointer: missing storage class
+spirv_type(id = 32, 7, 7) pointerLiteral;      // OpTypePointer: literal pointee
+spirv_type(id = 33) function0;                 // OpTypeFunction: no return type
+spirv_type(id = 21, 32, 0, 0) intExtra;        // OpTypeInt: extra operand
+
+// Well-formed layouts are accepted.
+spirv_type(id = 21, 32, 1) intOk;
+spirv_type(id = 22, 16) floatOk;
+spirv_type(id = 23, float, 3) vecOk;
+spirv_type(id = 30) structOk;
+
+void main()
+{
+}

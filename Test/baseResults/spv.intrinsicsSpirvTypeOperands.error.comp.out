@@ -1,0 +1,17 @@
+spv.intrinsicsSpirvTypeOperands.error.comp
+ERROR: 0:10: 'spirv_type' : operands do not match the layout of SPIR-V type opcode 21
+ERROR: 0:11: 'spirv_type' : operands do not match the layout of SPIR-V type opcode 23
+ERROR: 0:12: 'spirv_type' : operands do not match the layout of SPIR-V type opcode 23
+ERROR: 0:13: 'spirv_type' : operands do not match the layout of SPIR-V type opcode 24
+ERROR: 0:14: 'spirv_type' : operands do not match the layout of SPIR-V type opcode 25
+ERROR: 0:15: 'spirv_type' : operands do not match the layout of SPIR-V type opcode 27
+ERROR: 0:16: 'spirv_type' : operands do not match the layout of SPIR-V type opcode 28
+ERROR: 0:17: 'spirv_type' : operands do not match the layout of SPIR-V type opcode 30
+ERROR: 0:18: 'spirv_type' : operands do not match the layout of SPIR-V type opcode 32
+ERROR: 0:19: 'spirv_type' : operands do not match the layout of SPIR-V type opcode 32
+ERROR: 0:20: 'spirv_type' : operands do not match the layout of SPIR-V type opcode 33
+ERROR: 0:21: 'spirv_type' : operands do not match the layout of SPIR-V type opcode 21
+ERROR: 12 compilation errors.  No code generated.
+
+
+SPIR-V is not generated for failed compile or link

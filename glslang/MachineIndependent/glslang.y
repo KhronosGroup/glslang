@@ -3819,6 +3819,7 @@ type_specifier_nonarray
     }
     | spirv_type_specifier {
         parseContext.requireExtensions($1.loc, 1, &E_GL_EXT_spirv_intrinsics, "SPIR-V type specifier");
+        parseContext.spirvTypeCheck($1.loc, $1);
         $$ = $1;
     }
     | HITOBJECTNV {
