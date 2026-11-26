@@ -52,6 +52,8 @@
 #include "SymbolTable.h"
 #include "LiveTraverser.h"
 
+#include <cmath>
+
 namespace glslang {
 
 //
@@ -98,9 +100,11 @@ void TIntermediate::warn(TInfoSink& infoSink, const TSourceLoc* loc, EShMessages
 void TIntermediate::merge(TInfoSink& infoSink, TIntermediate& unit)
 {
     structSources.insert(unit.structSources.begin(), unit.structSources.end());
-    mergeCallGraphs(infoSink, unit);
+    mergeEntryPoints(infoSink, unit);
     mergeModes(infoSink, unit);
     mergeTrees(infoSink, unit);
+    // Function names can change when mergeTrees remaps specialization IDs.
+    callGraph.insert(callGraph.end(), unit.callGraph.begin(), unit.callGraph.end());
 }
 
 //
@@ -475,7 +479,7 @@ void TIntermediate::optimizeStageIO(TInfoSink&, TIntermediate& unit)
     });
 }
 
-void TIntermediate::mergeCallGraphs(TInfoSink& infoSink, TIntermediate& unit)
+void TIntermediate::mergeEntryPoints(TInfoSink& infoSink, TIntermediate& unit)
 {
     if (unit.getNumEntryPoints() > 0) {
         if (getNumEntryPoints() > 0)
@@ -486,8 +490,6 @@ void TIntermediate::mergeCallGraphs(TInfoSink& infoSink, TIntermediate& unit)
         }
     }
     numEntryPoints += unit.getNumEntryPoints();
-
-    callGraph.insert(callGraph.end(), unit.callGraph.begin(), unit.callGraph.end());
 }
 
 #define MERGE_MAX(member) member = std::max(member, unit.member)
@@ -746,19 +748,67 @@ static const TString& getNameForIdMap(TIntermSymbol* symbol)
         return symbol->getType().getTypeName();
 }
 
+// Array dimensions and heap offsets are held in types rather than ordinary AST
+// children. Visit them in both ID passes, including nested and reference types.
+class TIdTraverser : public TIntermTraverser {
+public:
+    // Debug declarations contain independent symbol nodes that must agree with
+    // ordinary references, even when the declared variable is otherwise unused.
+    TIdTraverser() : TIntermTraverser(true, false, false, false, true) { }
 
+    void visitConstantUnion(TIntermConstantUnion* node) override { traverseType(node->getType()); }
+    bool visitBinary(TVisit, TIntermBinary* node) override { traverseType(node->getType()); return true; }
+    bool visitUnary(TVisit, TIntermUnary* node) override { traverseType(node->getType()); return true; }
+    bool visitSelection(TVisit, TIntermSelection* node) override { traverseType(node->getType()); return true; }
+    bool visitAggregate(TVisit, TIntermAggregate* node) override { traverseType(node->getType()); return true; }
+
+protected:
+    void traverseType(const TType& type)
+    {
+        if (!visitedTypes.insert(&type).second)
+            return;
+        if (type.getQualifier().layoutHeapOffsetNode != nullptr)
+            type.getQualifier().layoutHeapOffsetNode->traverse(this);
+        traverseArraySizes(type.getArraySizes());
+        if (type.getTypeParameters() != nullptr)
+            traverseArraySizes(type.getTypeParameters()->arraySizes);
+        if (type.isStruct() && type.getStruct() != nullptr) {
+            for (const auto& member : *type.getStruct())
+                traverseType(*member.type);
+        }
+        if (type.isReference() && type.getReferentType() != nullptr)
+            traverseType(*type.getReferentType());
+    }
+
+    std::unordered_set<const TIntermSymbol*> visitedSymbols;
+
+private:
+    void traverseArraySizes(const TArraySizes* sizes)
+    {
+        if (sizes != nullptr) {
+            for (int dim = 0; dim < sizes->getNumDims(); ++dim) {
+                if (sizes->getDimNode(dim) != nullptr)
+                    sizes->getDimNode(dim)->traverse(this);
+            }
+        }
+    }
+
+    std::unordered_set<const TType*> visitedTypes;
+};
 
 // Traverser that seeds an ID map with all built-ins, and tracks the
 // maximum ID used, currently using (maximum ID + 1) as new symbol id shift seed.
 // Level id will keep same after shifting.
 // (It would be nice to put this in a function, but that causes warnings
 // on having no bodies for the copy-constructor/operator=.)
-class TBuiltInIdTraverser : public TIntermTraverser {
+class TBuiltInIdTraverser : public TIdTraverser {
 public:
     TBuiltInIdTraverser(TIdMaps& idMaps) : idMaps(idMaps), idShift(0) { }
     // If it's a built in, add it to the map.
     virtual void visitSymbol(TIntermSymbol* symbol)
     {
+        if (!visitedSymbols.insert(symbol).second)
+            return;
         const TQualifier& qualifier = symbol->getType().getQualifier();
         if (qualifier.builtIn != EbvNone) {
             TShaderInterface si = symbol->getType().getShaderInterface();
@@ -767,6 +817,10 @@ public:
         idShift = (symbol->getId() & ~TSymbolTable::uniqueIdMask) |
                 std::max(idShift & TSymbolTable::uniqueIdMask,
                          symbol->getId() & TSymbolTable::uniqueIdMask);
+
+        traverseType(symbol->getType());
+        if (symbol->getConstSubtree() != nullptr)
+            symbol->getConstSubtree()->traverse(this);
     }
     long long getIdShift() const { return idShift; }
 protected:
@@ -811,20 +865,129 @@ void TIntermediate::seedIdMap(TIdMaps& idMaps, long long& idShift)
     findLinkerObjects()->traverse(&userIdTraverser);
 }
 
+static bool sameConstantValue(const TConstUnionArray& left, const TConstUnionArray& right)
+{
+    if (left != right)
+        return false;
+    // Numeric equality alone would merge floating-point defaults of +0 and -0.
+    for (int i = 0; i < left.size(); ++i) {
+        if (left[i].getType() == EbtDouble &&
+            std::signbit(left[i].getDConst()) != std::signbit(right[i].getDConst()))
+            return false;
+    }
+    return true;
+}
+
+// Compare constant initializers using already matched dependencies, not the
+// independently assigned IDs or just the default values of those dependencies.
+static bool sameSpecializationExpression(const TIntermTyped* left, const TIntermTyped* right,
+                                        const TMap<long long, long long>& specializationIds)
+{
+    if (left == nullptr || right == nullptr)
+        return left == right;
+    if (left->getType() != right->getType())
+        return false;
+    if (const auto* symbol = left->getAsSymbolNode()) {
+        const auto* other = right->getAsSymbolNode();
+        if (other == nullptr)
+            return false;
+        if (symbol->getQualifier().builtIn != EbvNone) {
+            return symbol->getName() == other->getName() &&
+                   symbol->getQualifier().builtIn == other->getQualifier().builtIn &&
+                   symbol->getQualifier().layoutSpecConstantId == other->getQualifier().layoutSpecConstantId &&
+                   sameConstantValue(symbol->getConstArray(), other->getConstArray());
+        }
+        const auto match = specializationIds.find(other->getId());
+        return match != specializationIds.end() && match->second == symbol->getId();
+    }
+    if (const auto* constant = left->getAsConstantUnion()) {
+        const auto* other = right->getAsConstantUnion();
+        return other != nullptr && sameConstantValue(constant->getConstArray(), other->getConstArray());
+    }
+    if (const auto* unary = left->getAsUnaryNode()) {
+        const auto* other = right->getAsUnaryNode();
+        return other != nullptr && unary->getOp() == other->getOp() &&
+               sameSpecializationExpression(unary->getOperand(), other->getOperand(), specializationIds);
+    }
+    if (const auto* binary = left->getAsBinaryNode()) {
+        const auto* other = right->getAsBinaryNode();
+        return other != nullptr && binary->getOp() == other->getOp() &&
+               sameSpecializationExpression(binary->getLeft(), other->getLeft(), specializationIds) &&
+               sameSpecializationExpression(binary->getRight(), other->getRight(), specializationIds);
+    }
+    if (const auto* aggregate = left->getAsAggregate()) {
+        const auto* other = right->getAsAggregate();
+        if (other == nullptr || aggregate->getOp() != other->getOp() ||
+            (!aggregate->isConstructor() && aggregate->getOp() != EOpSequence) ||
+            aggregate->getSequence().size() != other->getSequence().size())
+            return false;
+        for (size_t i = 0; i < aggregate->getSequence().size(); ++i) {
+            if (!sameSpecializationExpression(aggregate->getSequence()[i]->getAsTyped(),
+                                              other->getSequence()[i]->getAsTyped(), specializationIds))
+                return false;
+        }
+        return true;
+    }
+    if (const auto* selection = left->getAsSelectionNode()) {
+        const auto* other = right->getAsSelectionNode();
+        return other != nullptr &&
+               sameSpecializationExpression(selection->getCondition(), other->getCondition(), specializationIds) &&
+               sameSpecializationExpression(selection->getTrueBlock()->getAsTyped(),
+                                            other->getTrueBlock()->getAsTyped(), specializationIds) &&
+               sameSpecializationExpression(selection->getFalseBlock()->getAsTyped(),
+                                            other->getFalseBlock()->getAsTyped(), specializationIds);
+    }
+    return false;
+}
+
 // Traverser to map an AST ID to what was known from the seeding AST.
 // (It would be nice to put this in a function, but that causes warnings
 // on having no bodies for the copy-constructor/operator=.)
-class TRemapIdTraverser : public TIntermTraverser {
+class TRemapIdTraverser : public TIdTraverser {
 public:
-    TRemapIdTraverser(const TIdMaps& idMaps, long long idShift) : idMaps(idMaps), idShift(idShift) { }
+    TRemapIdTraverser(const TIdMaps& idMaps, long long idShift, const TIntermSequence& globals,
+                     const TIntermSequence& unitGlobals) : idMaps(idMaps), idShift(idShift)
+    {
+        TMap<TString, const TIntermSymbol*> constants;
+        for (const auto* node : globals) {
+            const auto* symbol = node->getAsSymbolNode();
+            if (symbol->getQualifier().isSpecConstant() && symbol->getQualifier().builtIn == EbvNone)
+                constants[symbol->getName()] = symbol;
+        }
+        // Only global declarations can match across units. Linker objects retain
+        // declaration order, so dependencies are matched before their aliases.
+        for (const auto* node : unitGlobals) {
+            const auto* symbol = node->getAsSymbolNode();
+            if (!symbol->getQualifier().isSpecConstant() || symbol->getQualifier().builtIn != EbvNone)
+                continue;
+            const auto match = constants.find(symbol->getName());
+            if (match == constants.end())
+                continue;
+            const auto* other = match->second;
+            if (symbol->getType() == other->getType() &&
+                symbol->getQualifier().layoutSpecConstantId == other->getQualifier().layoutSpecConstantId &&
+                sameConstantValue(symbol->getConstArray(), other->getConstArray()) &&
+                sameSpecializationExpression(other->getConstSubtree(), symbol->getConstSubtree(), specializationIds))
+                specializationIds[symbol->getId()] = other->getId();
+        }
+    }
     // Do the mapping:
     //  - if the same symbol, adopt the 'this' ID
     //  - otherwise, ensure a unique ID by shifting to a new space
     virtual void visitSymbol(TIntermSymbol* symbol)
     {
+        // A symbol node can be shared by the AST and auxiliary expressions
+        // (for example, a specialization-sized array's length).
+        if (!visitedSymbols.insert(symbol).second)
+            return;
+        const long long originalId = symbol->getId();
         const TQualifier& qualifier = symbol->getType().getQualifier();
         bool remapped = false;
-        if (qualifier.isLinkable() || qualifier.builtIn != EbvNone) {
+        const auto specialization = specializationIds.find(symbol->getId());
+        if (specialization != specializationIds.end()) {
+            symbol->changeId(specialization->second);
+            remapped = true;
+        } else if (qualifier.isLinkable() || qualifier.builtIn != EbvNone) {
             TShaderInterface si = symbol->getType().getShaderInterface();
             auto it = idMaps[si].find(getNameForIdMap(symbol));
             if (it != idMaps[si].end()) {
@@ -836,19 +999,95 @@ public:
         }
         if (!remapped)
             symbol->changeId(symbol->getId() + idShift);
+
+        if (symbol->getId() != originalId)
+            remappedIds[std::to_string(originalId).c_str()] = std::to_string(symbol->getId()).c_str();
+
+        traverseType(symbol->getType());
+        if (symbol->getConstSubtree() != nullptr)
+            symbol->getConstSubtree()->traverse(this);
+    }
+
+    TString remapFunctionName(const TString& name) const
+    {
+        TString result = name;
+        size_t position = 0;
+        // Mangled dimensions are [s<ID>] for arrays and <s<ID>> for type
+        // parameters. Match complete tokens, including nested struct members.
+        while ((position = result.find_first_of("[<", position)) != TString::npos) {
+            const char closing = result[position] == '[' ? ']' : '>';
+            if (position + 1 >= result.size() || result[position + 1] != 's') {
+                ++position;
+                continue;
+            }
+            const size_t start = position + 2;
+            const size_t end = result.find(closing, start);
+            if (end == TString::npos)
+                break;
+            const auto match = remappedIds.find(result.substr(start, end - start));
+            if (match != remappedIds.end()) {
+                result.replace(start, end - start, match->second);
+                position = start + match->second.size() + 1;
+            } else {
+                // Pointer-based expression identities are not symbol IDs.
+                position = end + 1;
+            }
+        }
+        return result;
     }
 protected:
     TRemapIdTraverser(TRemapIdTraverser&);
     TRemapIdTraverser& operator=(TRemapIdTraverser&);
     const TIdMaps& idMaps;
     long long idShift;
+    TMap<long long, long long> specializationIds;
+    TMap<TString, TString> remappedIds;
+};
+
+// Types and function signatures must use the same IDs. Wait until all symbols
+// have been remapped, since a call can precede the relevant declaration.
+class TRemapFunctionNameTraverser : public TIdTraverser {
+public:
+    explicit TRemapFunctionNameTraverser(const TRemapIdTraverser& ids) : ids(ids) { }
+
+    void visitSymbol(TIntermSymbol* symbol) override
+    {
+        if (!visitedSymbols.insert(symbol).second)
+            return;
+        if (symbol->getBasicType() == EbtFunction)
+            symbol->setMangledName(ids.remapFunctionName(symbol->getMangledName()));
+        traverseType(symbol->getType());
+        if (symbol->getConstSubtree() != nullptr)
+            symbol->getConstSubtree()->traverse(this);
+    }
+
+    bool visitAggregate(TVisit visit, TIntermAggregate* node) override
+    {
+        if (!visitedAggregates.insert(node).second)
+            return false;
+        if (node->getOp() == EOpFunction || node->getOp() == EOpFunctionCall)
+            node->setName(ids.remapFunctionName(node->getName()));
+        return TIdTraverser::visitAggregate(visit, node);
+    }
+
+private:
+    const TRemapIdTraverser& ids;
+    std::unordered_set<const TIntermAggregate*> visitedAggregates;
 };
 
 void TIntermediate::remapIds(const TIdMaps& idMaps, long long idShift, TIntermediate& unit)
 {
     // Remap all IDs to either share or be unique, as dictated by the idMap and idShift.
-    TRemapIdTraverser idTraverser(idMaps, idShift);
+    TRemapIdTraverser idTraverser(idMaps, idShift, findLinkerObjects()->getSequence(),
+                                 unit.findLinkerObjects()->getSequence());
     unit.getTreeRoot()->traverse(&idTraverser);
+
+    TRemapFunctionNameTraverser nameTraverser(idTraverser);
+    unit.getTreeRoot()->traverse(&nameTraverser);
+    for (auto& call : unit.callGraph) {
+        call.caller = idTraverser.remapFunctionName(call.caller);
+        call.callee = idTraverser.remapFunctionName(call.callee);
+    }
 }
 
 //

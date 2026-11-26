@@ -1253,7 +1253,7 @@ protected:
     void warn(TInfoSink& infoSink, const char* message, EShLanguage unitStage = EShLangCount) {
         warn(infoSink, nullptr, EShMsgDefault, message, unitStage);
     }
-    void mergeCallGraphs(TInfoSink&, TIntermediate&);
+    void mergeEntryPoints(TInfoSink&, TIntermediate&);
     void mergeModes(TInfoSink&, TIntermediate&);
     void mergeTrees(TInfoSink&, TIntermediate&);
     void seedIdMap(TIdMaps& idMaps, long long& IdShift);
