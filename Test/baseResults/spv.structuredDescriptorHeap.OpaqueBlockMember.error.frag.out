@@ -1,0 +1,6 @@
+spv.structuredDescriptorHeap.OpaqueBlockMember.error.frag
+ERROR: 0:8: 's' : member of block cannot be or contain a sampler, image, or atomic_uint type 
+ERROR: 1 compilation errors.  No code generated.
+
+
+SPIR-V is not generated for failed compile or link

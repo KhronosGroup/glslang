@@ -1044,6 +1044,7 @@ INSTANTIATE_TEST_SUITE_P(
         "spv.structuredDescriptorHeap.LayoutQualifiers.comp",
         "spv.structuredDescriptorHeap.MemberOffset.comp",
         "spv.structuredDescriptorHeap.MemberOffset.error.comp",
+        "spv.structuredDescriptorHeap.OpaqueBlockMember.error.frag",
         "spv.structuredDescriptorHeap.ReadOnly.comp",
         "spv.structuredDescriptorHeap.ReadOnly.error.comp",
         "spv.structuredDescriptorHeap.RuntimeArrayResource.vert",

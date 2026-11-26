@@ -11443,7 +11443,7 @@ TIntermNode* TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeL
             error(memberLoc, "can only be used on resourceheap or samplerheap block members", "descriptor_size", "");
 
         // For bindless texture, sampler can be declared as uniform/storage block member,
-        if (memberType.containsOpaque() && !extensionTurnedOn(E_GL_EXT_structured_descriptor_heap)) {
+        if (memberType.containsOpaque() && !heapBlockMember) {
             if (memberType.containsSampler() && extensionTurnedOn(E_GL_ARB_bindless_texture))
                 updateBindlessQualifier(memberType);
             else
