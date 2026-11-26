@@ -1,0 +1,21 @@
+#version 450 core
+#extension GL_KHR_memory_scope_semantics : enable
+#extension GL_NV_cooperative_matrix : enable
+
+layout(local_size_x = 64) in;
+
+layout(set = 0, binding = 0) buffer Block { float x[]; } block;
+
+fcoopmatNV<32, gl_ScopeSubgroup, 8, 8> globalMat;
+
+fcoopmatNV<32, gl_ScopeSubgroup, 8, 8> scale(fcoopmatNV<32, gl_ScopeSubgroup, 8, 8> m)
+{
+    return m * 2.0;
+}
+
+void main()
+{
+    fcoopmatNV<32, gl_ScopeSubgroup, 8, 8> localMat = fcoopmatNV<32, gl_ScopeSubgroup, 8, 8>(1.0);
+    coopMatLoadNV(globalMat, block.x, 0, 8, false);
+    coopMatStoreNV(scale(localMat) + globalMat, block.x, 64, 8, false);
+}

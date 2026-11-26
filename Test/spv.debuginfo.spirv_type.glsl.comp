@@ -1,0 +1,20 @@
+#version 450 core
+#extension GL_KHR_memory_scope_semantics : enable
+#extension GL_KHR_cooperative_matrix : enable
+#extension GL_EXT_spirv_intrinsics : enable
+
+layout(local_size_x = 32) in;
+
+layout(set = 0, binding = 0, std430) buffer Buf { uvec4 x[]; } buf;
+
+#define half spirv_type(capabilities = [9], id = 22, 16)
+
+half globalHalf;
+coopmat<half, gl_ScopeSubgroup, 16, 16, gl_MatrixUseA> globalMat;
+
+void main()
+{
+    half localHalf = globalHalf;
+    coopMatLoad(globalMat, buf.x, 0, 2, 0);
+    coopMatStore(globalMat, buf.x, 64, 4, 0);
+}

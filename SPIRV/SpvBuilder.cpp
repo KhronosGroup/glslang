@@ -666,6 +666,9 @@ Id Builder::makeCooperativeMatrixTypeNV(Id component, Id scope, Id rows, Id cols
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
 
+    if (emitNonSemanticShaderDebugInfo)
+        debugTypeIdLookup[type->getResultId()] = makeOpaqueDebugType("coopmatNV");
+
     return type->getResultId();
 }
 
@@ -758,6 +761,11 @@ Id Builder::makeGenericType(spv::Op opcode, std::vector<spv::IdImmediate>& opera
     groupedTypes[enumCast(opcode)].push_back(type);
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
+
+    // A spirv_type from GL_EXT_spirv_intrinsics has no source-language counterpart,
+    // but variables and functions using it still need a valid debug type operand.
+    if (emitNonSemanticShaderDebugInfo)
+        debugTypeIdLookup[type->getResultId()] = makeOpaqueDebugType("spirvType");
 
     return type->getResultId();
 }
@@ -1277,6 +1285,15 @@ Id Builder::makeCooperativeMatrixDebugTypeKHR(Id const componentDebugType, Id co
                                               Id const rows, Id const cols, Id const use)
 {
     requireNonSemanticShaderDebugInfoVersion(101);
+
+    // The component type operand must be a DebugTypeBasic. A component type that only has an
+    // opaque debug type, such as a spirv_type, makes the whole matrix opaque instead.
+    bool componentIsBasic = false;
+    for (const Instruction* basic : groupedDebugTypes[NonSemanticShaderDebugInfoDebugTypeBasic])
+        componentIsBasic = componentIsBasic || basic->getResultId() == componentDebugType;
+    if (! componentIsBasic)
+        return makeOpaqueDebugType("coopmat");
+
     // try to find it
     Instruction* type;
     for (int t = 0; t < (int)groupedDebugTypes[NonSemanticShaderDebugInfoDebugTypeCooperativeMatrixKHR].size(); ++t) {
@@ -1690,6 +1707,10 @@ Id Builder::makeHitObjectEXTType()
         groupedTypes[enumCast(Op::OpTypeHitObjectEXT)].push_back(type);
         constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
         module.mapInstruction(type);
+        if (emitNonSemanticShaderDebugInfo) {
+            spv::Id debugType = makeOpaqueDebugType("hitObjectEXT");
+            debugTypeIdLookup[type->getResultId()] = debugType;
+        }
     } else {
         type = groupedTypes[enumCast(Op::OpTypeHitObjectEXT)].back();
     }
