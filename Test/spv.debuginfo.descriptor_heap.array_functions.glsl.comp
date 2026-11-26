@@ -1,0 +1,54 @@
+#version 460
+#extension GL_EXT_descriptor_heap : require
+#extension GL_EXT_structured_descriptor_heap : require
+
+layout(local_size_x = 1) in;
+layout(descriptor_heap) uniform texture2D rowTextures[3];
+layout(descriptor_heap) uniform sampler rowSamplers[3];
+layout(descriptor_heap) uniform texture2D matrixTextures[2][3];
+layout(descriptor_heap) uniform sampler matrixSamplers[2][3];
+layout(descriptor_heap) uniform texture2D cubeTextures[2][2][3];
+
+layout(push_constant) uniform Indices {
+    uint heapOffset;
+    uint material;
+    uint row;
+    uint column;
+} indices;
+
+struct Material {
+    texture2D textures[2][3];
+};
+layout(heap_offset = indices.heapOffset) resourceheap Resources {
+    Material materials[2];
+} resources;
+layout(heap_offset = indices.heapOffset) samplerheap Samplers {
+    sampler states[2][3];
+} samplers;
+
+layout(set = 0, binding = 0) buffer Output { vec4 color; } outputData;
+
+vec4 sampleRow(texture2D inputs[3], sampler states[3], uint column)
+{
+    return textureLod(sampler2D(inputs[column], states[column]), vec2(0.0), 0.0);
+}
+
+vec4 sampleMatrix(texture2D inputs[2][3], sampler states[3], uint row, uint column)
+{
+    return sampleRow(inputs[row], states, column);
+}
+
+void main()
+{
+    uint row = indices.row & 1u;
+    uint column = indices.column % 3u;
+    // One-dimensional heap arrays also require untyped pointer parameters.
+    vec4 color = sampleRow(rowTextures, rowSamplers, column);
+    color += sampleRow(matrixTextures[row], matrixSamplers[row], column);
+    // Nested variants preserve the flattened array offset.
+    color += sampleMatrix(cubeTextures[1], matrixSamplers[1], row, column);
+    // Structured heaps carry both the member prefix and the heap base offset.
+    color += sampleRow(resources.materials[indices.material & 1u].textures[row],
+                       samplers.states[row], column);
+    outputData.color = color;
+}

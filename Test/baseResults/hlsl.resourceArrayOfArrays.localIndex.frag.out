@@ -1,0 +1,940 @@
+hlsl.resourceArrayOfArrays.localIndex.frag
+WARNING: AST will form illegal SPIR-V; need to transform to legalize
+Shader version: 500
+gl_FragCoord origin is upper left
+0:? Sequence
+0:4  Function Definition: reverseRow(t21[3]; ( temp void)
+0:4    Function Parameters: 
+0:4      'inputs' ( inout 3-element array of texture2D)
+0:?     Sequence
+0:5      Sequence
+0:5        move second child to first child ( temp texture2D)
+0:5          'first' ( temp texture2D)
+0:5          direct index ( temp texture2D)
+0:5            'inputs' ( inout 3-element array of texture2D)
+0:5            Constant:
+0:5              0 (const int)
+0:6      move second child to first child ( temp texture2D)
+0:6        direct index ( temp texture2D)
+0:6          'inputs' ( inout 3-element array of texture2D)
+0:6          Constant:
+0:6            0 (const int)
+0:6        direct index ( temp texture2D)
+0:6          'inputs' ( inout 3-element array of texture2D)
+0:6          Constant:
+0:6            2 (const int)
+0:7      move second child to first child ( temp texture2D)
+0:7        direct index ( temp texture2D)
+0:7          'inputs' ( inout 3-element array of texture2D)
+0:7          Constant:
+0:7            2 (const int)
+0:7        'first' ( temp texture2D)
+0:11  Function Definition: replaceRow(t21[3]; ( temp void)
+0:11    Function Parameters: 
+0:11      'outputs' ( out 3-element array of texture2D)
+0:?     Sequence
+0:12      move second child to first child ( temp texture2D)
+0:12        direct index ( temp texture2D)
+0:12          'outputs' ( out 3-element array of texture2D)
+0:12          Constant:
+0:12            0 (const int)
+0:12        direct index (layout( binding=0) temp texture2D)
+0:12          'textures' (layout( binding=0) uniform 6-element array of texture2D)
+0:12          Constant:
+0:12            0 (const int)
+0:13      move second child to first child ( temp texture2D)
+0:13        direct index ( temp texture2D)
+0:13          'outputs' ( out 3-element array of texture2D)
+0:13          Constant:
+0:13            1 (const int)
+0:13        direct index (layout( binding=0) temp texture2D)
+0:13          'textures' (layout( binding=0) uniform 6-element array of texture2D)
+0:13          Constant:
+0:13            1 (const int)
+0:14      move second child to first child ( temp texture2D)
+0:14        direct index ( temp texture2D)
+0:14          'outputs' ( out 3-element array of texture2D)
+0:14          Constant:
+0:14            2 (const int)
+0:14        direct index (layout( binding=0) temp texture2D)
+0:14          'textures' (layout( binding=0) uniform 6-element array of texture2D)
+0:14          Constant:
+0:14            2 (const int)
+0:18  Function Definition: @main( ( temp 4-component vector of float)
+0:18    Function Parameters: 
+0:?     Sequence
+0:20      move second child to first child ( temp texture2D)
+0:20        direct index ( temp texture2D)
+0:20          direct index ( temp 3-element array of texture2D)
+0:20            'local' ( temp 2-element array of 3-element array of texture2D)
+0:20            Constant:
+0:20              0 (const int)
+0:20          Constant:
+0:20            0 (const int)
+0:20        direct index (layout( binding=0) temp texture2D)
+0:20          'textures' (layout( binding=0) uniform 6-element array of texture2D)
+0:20          Constant:
+0:20            0 (const int)
+0:21      move second child to first child ( temp texture2D)
+0:21        direct index ( temp texture2D)
+0:21          direct index ( temp 3-element array of texture2D)
+0:21            'local' ( temp 2-element array of 3-element array of texture2D)
+0:21            Constant:
+0:21              0 (const int)
+0:21          Constant:
+0:21            1 (const int)
+0:21        direct index (layout( binding=0) temp texture2D)
+0:21          'textures' (layout( binding=0) uniform 6-element array of texture2D)
+0:21          Constant:
+0:21            1 (const int)
+0:22      move second child to first child ( temp texture2D)
+0:22        direct index ( temp texture2D)
+0:22          direct index ( temp 3-element array of texture2D)
+0:22            'local' ( temp 2-element array of 3-element array of texture2D)
+0:22            Constant:
+0:22              0 (const int)
+0:22          Constant:
+0:22            2 (const int)
+0:22        direct index (layout( binding=0) temp texture2D)
+0:22          'textures' (layout( binding=0) uniform 6-element array of texture2D)
+0:22          Constant:
+0:22            2 (const int)
+0:23      move second child to first child ( temp texture2D)
+0:23        direct index ( temp texture2D)
+0:23          direct index ( temp 3-element array of texture2D)
+0:23            'local' ( temp 2-element array of 3-element array of texture2D)
+0:23            Constant:
+0:23              1 (const int)
+0:23          Constant:
+0:23            0 (const int)
+0:23        direct index (layout( binding=0) temp texture2D)
+0:23          'textures' (layout( binding=0) uniform 6-element array of texture2D)
+0:23          Constant:
+0:23            3 (const int)
+0:24      move second child to first child ( temp texture2D)
+0:24        direct index ( temp texture2D)
+0:24          direct index ( temp 3-element array of texture2D)
+0:24            'local' ( temp 2-element array of 3-element array of texture2D)
+0:24            Constant:
+0:24              1 (const int)
+0:24          Constant:
+0:24            1 (const int)
+0:24        direct index (layout( binding=0) temp texture2D)
+0:24          'textures' (layout( binding=0) uniform 6-element array of texture2D)
+0:24          Constant:
+0:24            4 (const int)
+0:25      move second child to first child ( temp texture2D)
+0:25        direct index ( temp texture2D)
+0:25          direct index ( temp 3-element array of texture2D)
+0:25            'local' ( temp 2-element array of 3-element array of texture2D)
+0:25            Constant:
+0:25              1 (const int)
+0:25          Constant:
+0:25            2 (const int)
+0:25        direct index (layout( binding=0) temp texture2D)
+0:25          'textures' (layout( binding=0) uniform 6-element array of texture2D)
+0:25          Constant:
+0:25            5 (const int)
+0:28      Sequence
+0:28        move second child to first child ( temp uint)
+0:28          'row' ( temp uint)
+0:28          Constant:
+0:28            1 (const uint)
+0:29      Sequence
+0:29        move second child to first child ( temp float)
+0:29          'direct' ( temp float)
+0:29          direct index ( temp float)
+0:29            textureFetch ( temp 4-component vector of float)
+0:29              direct index ( temp texture2D)
+0:29                indirect index ( temp 3-element array of texture2D)
+0:29                  'local' ( temp 2-element array of 3-element array of texture2D)
+0:29                  'row' ( temp uint)
+0:29                Constant:
+0:29                  2 (const int)
+0:29              vector swizzle ( temp 2-component vector of int)
+0:29                Constant:
+0:29                  0 (const int)
+0:29                  0 (const int)
+0:29                  0 (const int)
+0:29                Sequence
+0:29                  Constant:
+0:29                    0 (const int)
+0:29                  Constant:
+0:29                    1 (const int)
+0:29              direct index ( temp int)
+0:29                Constant:
+0:29                  0 (const int)
+0:29                  0 (const int)
+0:29                  0 (const int)
+0:29                Constant:
+0:29                  2 (const int)
+0:29            Constant:
+0:29              0 (const int)
+0:31      Sequence
+0:31        move second child to first child ( temp uint)
+0:31          'destination' ( temp uint)
+0:31          Constant:
+0:31            0 (const uint)
+0:32      Sequence
+0:32        move second child to first child ( temp uint)
+0:32          'source' ( temp uint)
+0:32          Constant:
+0:32            1 (const uint)
+0:33      move second child to first child ( temp 3-element array of texture2D)
+0:33        indirect index ( temp 3-element array of texture2D)
+0:33          'local' ( temp 2-element array of 3-element array of texture2D)
+0:33          Post-Increment ( temp uint)
+0:33            'destination' ( temp uint)
+0:33        indirect index ( temp 3-element array of texture2D)
+0:33          'local' ( temp 2-element array of 3-element array of texture2D)
+0:33          Post-Increment ( temp uint)
+0:33            'source' ( temp uint)
+0:34      Sequence
+0:34        move second child to first child ( temp float)
+0:34          'copied' ( temp float)
+0:34          direct index ( temp float)
+0:34            textureFetch ( temp 4-component vector of float)
+0:34              direct index ( temp texture2D)
+0:34                direct index ( temp 3-element array of texture2D)
+0:34                  'local' ( temp 2-element array of 3-element array of texture2D)
+0:34                  Constant:
+0:34                    0 (const int)
+0:34                Constant:
+0:34                  0 (const int)
+0:34              vector swizzle ( temp 2-component vector of int)
+0:34                Constant:
+0:34                  0 (const int)
+0:34                  0 (const int)
+0:34                  0 (const int)
+0:34                Sequence
+0:34                  Constant:
+0:34                    0 (const int)
+0:34                  Constant:
+0:34                    1 (const int)
+0:34              direct index ( temp int)
+0:34                Constant:
+0:34                  0 (const int)
+0:34                  0 (const int)
+0:34                  0 (const int)
+0:34                Constant:
+0:34                  2 (const int)
+0:34            Constant:
+0:34              0 (const int)
+0:37      Sequence
+0:37        move second child to first child ( temp uint)
+0:37          'reversed' ( temp uint)
+0:37          Constant:
+0:37            1 (const uint)
+0:38      Function Call: reverseRow(t21[3]; ( temp void)
+0:38        indirect index ( temp 3-element array of texture2D)
+0:38          'local' ( temp 2-element array of 3-element array of texture2D)
+0:38          Post-Increment ( temp uint)
+0:38            'reversed' ( temp uint)
+0:39      Sequence
+0:39        move second child to first child ( temp float)
+0:39          'swapped' ( temp float)
+0:39          direct index ( temp float)
+0:39            textureFetch ( temp 4-component vector of float)
+0:39              direct index ( temp texture2D)
+0:39                direct index ( temp 3-element array of texture2D)
+0:39                  'local' ( temp 2-element array of 3-element array of texture2D)
+0:39                  Constant:
+0:39                    1 (const int)
+0:39                Constant:
+0:39                  2 (const int)
+0:39              vector swizzle ( temp 2-component vector of int)
+0:39                Constant:
+0:39                  0 (const int)
+0:39                  0 (const int)
+0:39                  0 (const int)
+0:39                Sequence
+0:39                  Constant:
+0:39                    0 (const int)
+0:39                  Constant:
+0:39                    1 (const int)
+0:39              direct index ( temp int)
+0:39                Constant:
+0:39                  0 (const int)
+0:39                  0 (const int)
+0:39                  0 (const int)
+0:39                Constant:
+0:39                  2 (const int)
+0:39            Constant:
+0:39              0 (const int)
+0:41      Sequence
+0:41        move second child to first child ( temp uint)
+0:41          'replaced' ( temp uint)
+0:41          Constant:
+0:41            0 (const uint)
+0:42      Function Call: replaceRow(t21[3]; ( temp void)
+0:42        indirect index ( temp 3-element array of texture2D)
+0:42          'local' ( temp 2-element array of 3-element array of texture2D)
+0:42          Post-Increment ( temp uint)
+0:42            'replaced' ( temp uint)
+0:43      Sequence
+0:43        move second child to first child ( temp float)
+0:43          'written' ( temp float)
+0:43          direct index ( temp float)
+0:43            textureFetch ( temp 4-component vector of float)
+0:43              direct index ( temp texture2D)
+0:43                direct index ( temp 3-element array of texture2D)
+0:43                  'local' ( temp 2-element array of 3-element array of texture2D)
+0:43                  Constant:
+0:43                    0 (const int)
+0:43                Constant:
+0:43                  2 (const int)
+0:43              vector swizzle ( temp 2-component vector of int)
+0:43                Constant:
+0:43                  0 (const int)
+0:43                  0 (const int)
+0:43                  0 (const int)
+0:43                Sequence
+0:43                  Constant:
+0:43                    0 (const int)
+0:43                  Constant:
+0:43                    1 (const int)
+0:43              direct index ( temp int)
+0:43                Constant:
+0:43                  0 (const int)
+0:43                  0 (const int)
+0:43                  0 (const int)
+0:43                Constant:
+0:43                  2 (const int)
+0:43            Constant:
+0:43              0 (const int)
+0:46      Branch: Return with expression
+0:46        add ( temp 4-component vector of float)
+0:46          Construct vec4 ( temp 4-component vector of float)
+0:46            'direct' ( temp float)
+0:46            'copied' ( temp float)
+0:46            'swapped' ( temp float)
+0:46            'written' ( temp float)
+0:46          Construct vec4 ( temp 4-component vector of float)
+0:46            Convert uint to float ( temp float)
+0:46              'destination' ( temp uint)
+0:46            Convert uint to float ( temp float)
+0:46              'source' ( temp uint)
+0:46            Convert uint to float ( temp float)
+0:46              'reversed' ( temp uint)
+0:46            Convert uint to float ( temp float)
+0:46              'replaced' ( temp uint)
+0:18  Function Definition: main( ( temp void)
+0:18    Function Parameters: 
+0:?     Sequence
+0:18      move second child to first child ( temp 4-component vector of float)
+0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float)
+0:18        Function Call: @main( ( temp 4-component vector of float)
+0:?   Linker Objects
+0:?     'textures' (layout( binding=0) uniform 6-element array of texture2D)
+0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float)
+
+
+Linked fragment stage:
+
+
+Shader version: 500
+gl_FragCoord origin is upper left
+0:? Sequence
+0:4  Function Definition: reverseRow(t21[3]; ( temp void)
+0:4    Function Parameters: 
+0:4      'inputs' ( inout 3-element array of texture2D)
+0:?     Sequence
+0:5      Sequence
+0:5        move second child to first child ( temp texture2D)
+0:5          'first' ( temp texture2D)
+0:5          direct index ( temp texture2D)
+0:5            'inputs' ( inout 3-element array of texture2D)
+0:5            Constant:
+0:5              0 (const int)
+0:6      move second child to first child ( temp texture2D)
+0:6        direct index ( temp texture2D)
+0:6          'inputs' ( inout 3-element array of texture2D)
+0:6          Constant:
+0:6            0 (const int)
+0:6        direct index ( temp texture2D)
+0:6          'inputs' ( inout 3-element array of texture2D)
+0:6          Constant:
+0:6            2 (const int)
+0:7      move second child to first child ( temp texture2D)
+0:7        direct index ( temp texture2D)
+0:7          'inputs' ( inout 3-element array of texture2D)
+0:7          Constant:
+0:7            2 (const int)
+0:7        'first' ( temp texture2D)
+0:11  Function Definition: replaceRow(t21[3]; ( temp void)
+0:11    Function Parameters: 
+0:11      'outputs' ( out 3-element array of texture2D)
+0:?     Sequence
+0:12      move second child to first child ( temp texture2D)
+0:12        direct index ( temp texture2D)
+0:12          'outputs' ( out 3-element array of texture2D)
+0:12          Constant:
+0:12            0 (const int)
+0:12        direct index (layout( binding=0) temp texture2D)
+0:12          'textures' (layout( binding=0) uniform 6-element array of texture2D)
+0:12          Constant:
+0:12            0 (const int)
+0:13      move second child to first child ( temp texture2D)
+0:13        direct index ( temp texture2D)
+0:13          'outputs' ( out 3-element array of texture2D)
+0:13          Constant:
+0:13            1 (const int)
+0:13        direct index (layout( binding=0) temp texture2D)
+0:13          'textures' (layout( binding=0) uniform 6-element array of texture2D)
+0:13          Constant:
+0:13            1 (const int)
+0:14      move second child to first child ( temp texture2D)
+0:14        direct index ( temp texture2D)
+0:14          'outputs' ( out 3-element array of texture2D)
+0:14          Constant:
+0:14            2 (const int)
+0:14        direct index (layout( binding=0) temp texture2D)
+0:14          'textures' (layout( binding=0) uniform 6-element array of texture2D)
+0:14          Constant:
+0:14            2 (const int)
+0:18  Function Definition: @main( ( temp 4-component vector of float)
+0:18    Function Parameters: 
+0:?     Sequence
+0:20      move second child to first child ( temp texture2D)
+0:20        direct index ( temp texture2D)
+0:20          direct index ( temp 3-element array of texture2D)
+0:20            'local' ( temp 2-element array of 3-element array of texture2D)
+0:20            Constant:
+0:20              0 (const int)
+0:20          Constant:
+0:20            0 (const int)
+0:20        direct index (layout( binding=0) temp texture2D)
+0:20          'textures' (layout( binding=0) uniform 6-element array of texture2D)
+0:20          Constant:
+0:20            0 (const int)
+0:21      move second child to first child ( temp texture2D)
+0:21        direct index ( temp texture2D)
+0:21          direct index ( temp 3-element array of texture2D)
+0:21            'local' ( temp 2-element array of 3-element array of texture2D)
+0:21            Constant:
+0:21              0 (const int)
+0:21          Constant:
+0:21            1 (const int)
+0:21        direct index (layout( binding=0) temp texture2D)
+0:21          'textures' (layout( binding=0) uniform 6-element array of texture2D)
+0:21          Constant:
+0:21            1 (const int)
+0:22      move second child to first child ( temp texture2D)
+0:22        direct index ( temp texture2D)
+0:22          direct index ( temp 3-element array of texture2D)
+0:22            'local' ( temp 2-element array of 3-element array of texture2D)
+0:22            Constant:
+0:22              0 (const int)
+0:22          Constant:
+0:22            2 (const int)
+0:22        direct index (layout( binding=0) temp texture2D)
+0:22          'textures' (layout( binding=0) uniform 6-element array of texture2D)
+0:22          Constant:
+0:22            2 (const int)
+0:23      move second child to first child ( temp texture2D)
+0:23        direct index ( temp texture2D)
+0:23          direct index ( temp 3-element array of texture2D)
+0:23            'local' ( temp 2-element array of 3-element array of texture2D)
+0:23            Constant:
+0:23              1 (const int)
+0:23          Constant:
+0:23            0 (const int)
+0:23        direct index (layout( binding=0) temp texture2D)
+0:23          'textures' (layout( binding=0) uniform 6-element array of texture2D)
+0:23          Constant:
+0:23            3 (const int)
+0:24      move second child to first child ( temp texture2D)
+0:24        direct index ( temp texture2D)
+0:24          direct index ( temp 3-element array of texture2D)
+0:24            'local' ( temp 2-element array of 3-element array of texture2D)
+0:24            Constant:
+0:24              1 (const int)
+0:24          Constant:
+0:24            1 (const int)
+0:24        direct index (layout( binding=0) temp texture2D)
+0:24          'textures' (layout( binding=0) uniform 6-element array of texture2D)
+0:24          Constant:
+0:24            4 (const int)
+0:25      move second child to first child ( temp texture2D)
+0:25        direct index ( temp texture2D)
+0:25          direct index ( temp 3-element array of texture2D)
+0:25            'local' ( temp 2-element array of 3-element array of texture2D)
+0:25            Constant:
+0:25              1 (const int)
+0:25          Constant:
+0:25            2 (const int)
+0:25        direct index (layout( binding=0) temp texture2D)
+0:25          'textures' (layout( binding=0) uniform 6-element array of texture2D)
+0:25          Constant:
+0:25            5 (const int)
+0:28      Sequence
+0:28        move second child to first child ( temp uint)
+0:28          'row' ( temp uint)
+0:28          Constant:
+0:28            1 (const uint)
+0:29      Sequence
+0:29        move second child to first child ( temp float)
+0:29          'direct' ( temp float)
+0:29          direct index ( temp float)
+0:29            textureFetch ( temp 4-component vector of float)
+0:29              direct index ( temp texture2D)
+0:29                indirect index ( temp 3-element array of texture2D)
+0:29                  'local' ( temp 2-element array of 3-element array of texture2D)
+0:29                  'row' ( temp uint)
+0:29                Constant:
+0:29                  2 (const int)
+0:29              vector swizzle ( temp 2-component vector of int)
+0:29                Constant:
+0:29                  0 (const int)
+0:29                  0 (const int)
+0:29                  0 (const int)
+0:29                Sequence
+0:29                  Constant:
+0:29                    0 (const int)
+0:29                  Constant:
+0:29                    1 (const int)
+0:29              direct index ( temp int)
+0:29                Constant:
+0:29                  0 (const int)
+0:29                  0 (const int)
+0:29                  0 (const int)
+0:29                Constant:
+0:29                  2 (const int)
+0:29            Constant:
+0:29              0 (const int)
+0:31      Sequence
+0:31        move second child to first child ( temp uint)
+0:31          'destination' ( temp uint)
+0:31          Constant:
+0:31            0 (const uint)
+0:32      Sequence
+0:32        move second child to first child ( temp uint)
+0:32          'source' ( temp uint)
+0:32          Constant:
+0:32            1 (const uint)
+0:33      move second child to first child ( temp 3-element array of texture2D)
+0:33        indirect index ( temp 3-element array of texture2D)
+0:33          'local' ( temp 2-element array of 3-element array of texture2D)
+0:33          Post-Increment ( temp uint)
+0:33            'destination' ( temp uint)
+0:33        indirect index ( temp 3-element array of texture2D)
+0:33          'local' ( temp 2-element array of 3-element array of texture2D)
+0:33          Post-Increment ( temp uint)
+0:33            'source' ( temp uint)
+0:34      Sequence
+0:34        move second child to first child ( temp float)
+0:34          'copied' ( temp float)
+0:34          direct index ( temp float)
+0:34            textureFetch ( temp 4-component vector of float)
+0:34              direct index ( temp texture2D)
+0:34                direct index ( temp 3-element array of texture2D)
+0:34                  'local' ( temp 2-element array of 3-element array of texture2D)
+0:34                  Constant:
+0:34                    0 (const int)
+0:34                Constant:
+0:34                  0 (const int)
+0:34              vector swizzle ( temp 2-component vector of int)
+0:34                Constant:
+0:34                  0 (const int)
+0:34                  0 (const int)
+0:34                  0 (const int)
+0:34                Sequence
+0:34                  Constant:
+0:34                    0 (const int)
+0:34                  Constant:
+0:34                    1 (const int)
+0:34              direct index ( temp int)
+0:34                Constant:
+0:34                  0 (const int)
+0:34                  0 (const int)
+0:34                  0 (const int)
+0:34                Constant:
+0:34                  2 (const int)
+0:34            Constant:
+0:34              0 (const int)
+0:37      Sequence
+0:37        move second child to first child ( temp uint)
+0:37          'reversed' ( temp uint)
+0:37          Constant:
+0:37            1 (const uint)
+0:38      Function Call: reverseRow(t21[3]; ( temp void)
+0:38        indirect index ( temp 3-element array of texture2D)
+0:38          'local' ( temp 2-element array of 3-element array of texture2D)
+0:38          Post-Increment ( temp uint)
+0:38            'reversed' ( temp uint)
+0:39      Sequence
+0:39        move second child to first child ( temp float)
+0:39          'swapped' ( temp float)
+0:39          direct index ( temp float)
+0:39            textureFetch ( temp 4-component vector of float)
+0:39              direct index ( temp texture2D)
+0:39                direct index ( temp 3-element array of texture2D)
+0:39                  'local' ( temp 2-element array of 3-element array of texture2D)
+0:39                  Constant:
+0:39                    1 (const int)
+0:39                Constant:
+0:39                  2 (const int)
+0:39              vector swizzle ( temp 2-component vector of int)
+0:39                Constant:
+0:39                  0 (const int)
+0:39                  0 (const int)
+0:39                  0 (const int)
+0:39                Sequence
+0:39                  Constant:
+0:39                    0 (const int)
+0:39                  Constant:
+0:39                    1 (const int)
+0:39              direct index ( temp int)
+0:39                Constant:
+0:39                  0 (const int)
+0:39                  0 (const int)
+0:39                  0 (const int)
+0:39                Constant:
+0:39                  2 (const int)
+0:39            Constant:
+0:39              0 (const int)
+0:41      Sequence
+0:41        move second child to first child ( temp uint)
+0:41          'replaced' ( temp uint)
+0:41          Constant:
+0:41            0 (const uint)
+0:42      Function Call: replaceRow(t21[3]; ( temp void)
+0:42        indirect index ( temp 3-element array of texture2D)
+0:42          'local' ( temp 2-element array of 3-element array of texture2D)
+0:42          Post-Increment ( temp uint)
+0:42            'replaced' ( temp uint)
+0:43      Sequence
+0:43        move second child to first child ( temp float)
+0:43          'written' ( temp float)
+0:43          direct index ( temp float)
+0:43            textureFetch ( temp 4-component vector of float)
+0:43              direct index ( temp texture2D)
+0:43                direct index ( temp 3-element array of texture2D)
+0:43                  'local' ( temp 2-element array of 3-element array of texture2D)
+0:43                  Constant:
+0:43                    0 (const int)
+0:43                Constant:
+0:43                  2 (const int)
+0:43              vector swizzle ( temp 2-component vector of int)
+0:43                Constant:
+0:43                  0 (const int)
+0:43                  0 (const int)
+0:43                  0 (const int)
+0:43                Sequence
+0:43                  Constant:
+0:43                    0 (const int)
+0:43                  Constant:
+0:43                    1 (const int)
+0:43              direct index ( temp int)
+0:43                Constant:
+0:43                  0 (const int)
+0:43                  0 (const int)
+0:43                  0 (const int)
+0:43                Constant:
+0:43                  2 (const int)
+0:43            Constant:
+0:43              0 (const int)
+0:46      Branch: Return with expression
+0:46        add ( temp 4-component vector of float)
+0:46          Construct vec4 ( temp 4-component vector of float)
+0:46            'direct' ( temp float)
+0:46            'copied' ( temp float)
+0:46            'swapped' ( temp float)
+0:46            'written' ( temp float)
+0:46          Construct vec4 ( temp 4-component vector of float)
+0:46            Convert uint to float ( temp float)
+0:46              'destination' ( temp uint)
+0:46            Convert uint to float ( temp float)
+0:46              'source' ( temp uint)
+0:46            Convert uint to float ( temp float)
+0:46              'reversed' ( temp uint)
+0:46            Convert uint to float ( temp float)
+0:46              'replaced' ( temp uint)
+0:18  Function Definition: main( ( temp void)
+0:18    Function Parameters: 
+0:?     Sequence
+0:18      move second child to first child ( temp 4-component vector of float)
+0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float)
+0:18        Function Call: @main( ( temp 4-component vector of float)
+0:?   Linker Objects
+0:?     'textures' (layout( binding=0) uniform 6-element array of texture2D)
+0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float)
+
+// Module Version 10000
+// Generated by (magic number): 8000b
+// Id's are bound by 204
+
+                              Capability Shader
+               1:             ExtInstImport  "GLSL.std.450"
+                              MemoryModel Logical GLSL450
+                              EntryPoint Fragment 4  "main" 202
+                              ExecutionMode 4 OriginUpperLeft
+                              Source HLSL 500
+                              Name 4  "main"
+                              Name 14  "reverseRow(t21[3];"
+                              Name 13  "inputs"
+                              Name 17  "replaceRow(t21[3];"
+                              Name 16  "outputs"
+                              Name 21  "@main("
+                              Name 24  "first"
+                              Name 38  "textures"
+                              Name 52  "local"
+                              Name 79  "row"
+                              Name 81  "direct"
+                              Name 94  "destination"
+                              Name 95  "source"
+                              Name 121  "copied"
+                              Name 128  "reversed"
+                              Name 132  "param"
+                              Name 154  "swapped"
+                              Name 161  "replaced"
+                              Name 165  "param"
+                              Name 177  "written"
+                              Name 202  "@entryPointOutput"
+                              Decorate 38(textures) Binding 0
+                              Decorate 38(textures) DescriptorSet 0
+                              Decorate 202(@entryPointOutput) Location 0
+               2:             TypeVoid
+               3:             TypeFunction 2
+               6:             TypeFloat 32
+               7:             TypeImage 6(float) 2D sampled format:Unknown
+               8:             TypeInt 32 0
+               9:      8(int) Constant 3
+              10:             TypeArray 7 9
+              11:             TypePointer Function 10
+              12:             TypeFunction 2 11(ptr)
+              19:             TypeVector 6(float) 4
+              20:             TypeFunction 19(fvec4)
+              23:             TypePointer Function 7
+              25:             TypeInt 32 1
+              26:     25(int) Constant 0
+              29:     25(int) Constant 2
+              35:      8(int) Constant 6
+              36:             TypeArray 7 35
+              37:             TypePointer UniformConstant 36
+    38(textures):     37(ptr) Variable UniformConstant
+              39:             TypePointer UniformConstant 7
+              43:     25(int) Constant 1
+              50:      8(int) Constant 2
+              51:             TypePointer Function 36
+              53:      8(int) Constant 0
+              57:      8(int) Constant 1
+              64:     25(int) Constant 3
+              68:      8(int) Constant 4
+              69:     25(int) Constant 4
+              73:      8(int) Constant 5
+              74:     25(int) Constant 5
+              78:             TypePointer Function 8(int)
+              80:             TypePointer Function 6(float)
+              87:             TypeVector 25(int) 3
+              88:   87(ivec3) ConstantComposite 26 26 26
+              89:             TypeVector 25(int) 2
+             201:             TypePointer Output 19(fvec4)
+202(@entryPointOutput):    201(ptr) Variable Output
+         4(main):           2 Function None 3
+               5:             Label
+             203:   19(fvec4) FunctionCall 21(@main()
+                              Store 202(@entryPointOutput) 203
+                              Return
+                              FunctionEnd
+14(reverseRow(t21[3];):           2 Function None 12
+      13(inputs):     11(ptr) FunctionParameter
+              15:             Label
+       24(first):     23(ptr) Variable Function
+              27:     23(ptr) AccessChain 13(inputs) 26
+              28:           7 Load 27
+                              Store 24(first) 28
+              30:     23(ptr) AccessChain 13(inputs) 29
+              31:           7 Load 30
+              32:     23(ptr) AccessChain 13(inputs) 26
+                              Store 32 31
+              33:           7 Load 24(first)
+              34:     23(ptr) AccessChain 13(inputs) 29
+                              Store 34 33
+                              Return
+                              FunctionEnd
+17(replaceRow(t21[3];):           2 Function None 12
+     16(outputs):     11(ptr) FunctionParameter
+              18:             Label
+              40:     39(ptr) AccessChain 38(textures) 26
+              41:           7 Load 40
+              42:     23(ptr) AccessChain 16(outputs) 26
+                              Store 42 41
+              44:     39(ptr) AccessChain 38(textures) 43
+              45:           7 Load 44
+              46:     23(ptr) AccessChain 16(outputs) 43
+                              Store 46 45
+              47:     39(ptr) AccessChain 38(textures) 29
+              48:           7 Load 47
+              49:     23(ptr) AccessChain 16(outputs) 29
+                              Store 49 48
+                              Return
+                              FunctionEnd
+      21(@main():   19(fvec4) Function None 20
+              22:             Label
+       52(local):     51(ptr) Variable Function
+         79(row):     78(ptr) Variable Function
+      81(direct):     80(ptr) Variable Function
+ 94(destination):     78(ptr) Variable Function
+      95(source):     78(ptr) Variable Function
+     121(copied):     80(ptr) Variable Function
+   128(reversed):     78(ptr) Variable Function
+      132(param):     11(ptr) Variable Function
+    154(swapped):     80(ptr) Variable Function
+   161(replaced):     78(ptr) Variable Function
+      165(param):     11(ptr) Variable Function
+    177(written):     80(ptr) Variable Function
+              54:     39(ptr) AccessChain 38(textures) 26
+              55:           7 Load 54
+              56:     23(ptr) AccessChain 52(local) 53
+                              Store 56 55
+              58:     39(ptr) AccessChain 38(textures) 43
+              59:           7 Load 58
+              60:     23(ptr) AccessChain 52(local) 57
+                              Store 60 59
+              61:     39(ptr) AccessChain 38(textures) 29
+              62:           7 Load 61
+              63:     23(ptr) AccessChain 52(local) 50
+                              Store 63 62
+              65:     39(ptr) AccessChain 38(textures) 64
+              66:           7 Load 65
+              67:     23(ptr) AccessChain 52(local) 9
+                              Store 67 66
+              70:     39(ptr) AccessChain 38(textures) 69
+              71:           7 Load 70
+              72:     23(ptr) AccessChain 52(local) 68
+                              Store 72 71
+              75:     39(ptr) AccessChain 38(textures) 74
+              76:           7 Load 75
+              77:     23(ptr) AccessChain 52(local) 73
+                              Store 77 76
+                              Store 79(row) 57
+              82:      8(int) Load 79(row)
+              83:      8(int) IMul 82 9
+              84:      8(int) IAdd 83 29
+              85:     23(ptr) AccessChain 52(local) 84
+              86:           7 Load 85
+              90:   89(ivec2) VectorShuffle 88 88 0 1
+              91:     25(int) CompositeExtract 88 2
+              92:   19(fvec4) ImageFetch 86 90 Lod 91
+              93:    6(float) CompositeExtract 92 0
+                              Store 81(direct) 93
+                              Store 94(destination) 53
+                              Store 95(source) 57
+              96:      8(int) Load 94(destination)
+              97:      8(int) IAdd 96 43
+                              Store 94(destination) 97
+              98:      8(int) IMul 96 9
+              99:      8(int) Load 95(source)
+             100:      8(int) IAdd 99 43
+                              Store 95(source) 100
+             101:      8(int) IMul 99 9
+             102:      8(int) IAdd 101 53
+             103:     23(ptr) AccessChain 52(local) 102
+             104:           7 Load 103
+             105:      8(int) IAdd 101 57
+             106:     23(ptr) AccessChain 52(local) 105
+             107:           7 Load 106
+             108:      8(int) IAdd 101 50
+             109:     23(ptr) AccessChain 52(local) 108
+             110:           7 Load 109
+             111:          10 CompositeConstruct 104 107 110
+             112:           7 CompositeExtract 111 0
+             113:      8(int) IAdd 98 53
+             114:     23(ptr) AccessChain 52(local) 113
+                              Store 114 112
+             115:           7 CompositeExtract 111 1
+             116:      8(int) IAdd 98 57
+             117:     23(ptr) AccessChain 52(local) 116
+                              Store 117 115
+             118:           7 CompositeExtract 111 2
+             119:      8(int) IAdd 98 50
+             120:     23(ptr) AccessChain 52(local) 119
+                              Store 120 118
+             122:     23(ptr) AccessChain 52(local) 53
+             123:           7 Load 122
+             124:   89(ivec2) VectorShuffle 88 88 0 1
+             125:     25(int) CompositeExtract 88 2
+             126:   19(fvec4) ImageFetch 123 124 Lod 125
+             127:    6(float) CompositeExtract 126 0
+                              Store 121(copied) 127
+                              Store 128(reversed) 57
+             129:      8(int) Load 128(reversed)
+             130:      8(int) IAdd 129 43
+                              Store 128(reversed) 130
+             131:      8(int) IMul 129 9
+             133:      8(int) IAdd 131 53
+             134:     23(ptr) AccessChain 52(local) 133
+             135:           7 Load 134
+             136:      8(int) IAdd 131 57
+             137:     23(ptr) AccessChain 52(local) 136
+             138:           7 Load 137
+             139:      8(int) IAdd 131 50
+             140:     23(ptr) AccessChain 52(local) 139
+             141:           7 Load 140
+             142:          10 CompositeConstruct 135 138 141
+                              Store 132(param) 142
+             143:           2 FunctionCall 14(reverseRow(t21[3];) 132(param)
+             144:          10 Load 132(param)
+             145:           7 CompositeExtract 144 0
+             146:      8(int) IAdd 131 53
+             147:     23(ptr) AccessChain 52(local) 146
+                              Store 147 145
+             148:           7 CompositeExtract 144 1
+             149:      8(int) IAdd 131 57
+             150:     23(ptr) AccessChain 52(local) 149
+                              Store 150 148
+             151:           7 CompositeExtract 144 2
+             152:      8(int) IAdd 131 50
+             153:     23(ptr) AccessChain 52(local) 152
+                              Store 153 151
+             155:     23(ptr) AccessChain 52(local) 73
+             156:           7 Load 155
+             157:   89(ivec2) VectorShuffle 88 88 0 1
+             158:     25(int) CompositeExtract 88 2
+             159:   19(fvec4) ImageFetch 156 157 Lod 158
+             160:    6(float) CompositeExtract 159 0
+                              Store 154(swapped) 160
+                              Store 161(replaced) 53
+             162:      8(int) Load 161(replaced)
+             163:      8(int) IAdd 162 43
+                              Store 161(replaced) 163
+             164:      8(int) IMul 162 9
+             166:           2 FunctionCall 17(replaceRow(t21[3];) 165(param)
+             167:          10 Load 165(param)
+             168:           7 CompositeExtract 167 0
+             169:      8(int) IAdd 164 53
+             170:     23(ptr) AccessChain 52(local) 169
+                              Store 170 168
+             171:           7 CompositeExtract 167 1
+             172:      8(int) IAdd 164 57
+             173:     23(ptr) AccessChain 52(local) 172
+                              Store 173 171
+             174:           7 CompositeExtract 167 2
+             175:      8(int) IAdd 164 50
+             176:     23(ptr) AccessChain 52(local) 175
+                              Store 176 174
+             178:     23(ptr) AccessChain 52(local) 50
+             179:           7 Load 178
+             180:   89(ivec2) VectorShuffle 88 88 0 1
+             181:     25(int) CompositeExtract 88 2
+             182:   19(fvec4) ImageFetch 179 180 Lod 181
+             183:    6(float) CompositeExtract 182 0
+                              Store 177(written) 183
+             184:    6(float) Load 81(direct)
+             185:    6(float) Load 121(copied)
+             186:    6(float) Load 154(swapped)
+             187:    6(float) Load 177(written)
+             188:   19(fvec4) CompositeConstruct 184 185 186 187
+             189:      8(int) Load 94(destination)
+             190:    6(float) ConvertUToF 189
+             191:      8(int) Load 95(source)
+             192:    6(float) ConvertUToF 191
+             193:      8(int) Load 128(reversed)
+             194:    6(float) ConvertUToF 193
+             195:      8(int) Load 161(replaced)
+             196:    6(float) ConvertUToF 195
+             197:   19(fvec4) CompositeConstruct 190 192 194 196
+             198:   19(fvec4) FAdd 188 197
+                              ReturnValue 198
+                              FunctionEnd

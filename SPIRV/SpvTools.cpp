@@ -198,8 +198,16 @@ void SpirvToolsTransform(const glslang::TIntermediate& intermediate, std::vector
         optimizer.RegisterPass(spvtools::CreateStripDebugInfoPass());
     }
 
-    if (prelegalization)
+    if (prelegalization) {
         optimizer.RegisterLegalizationPasses();
+        // Flattened descriptor indices may only become constant after the
+        // legalization pipeline's scalar replacement pass. Scalarize these
+        // local arrays and eliminate their opaque stores before validation.
+        optimizer.RegisterPass(spvtools::CreateScalarReplacementPass(0));
+        optimizer.RegisterPass(spvtools::CreateLocalSingleBlockLoadStoreElimPass());
+        optimizer.RegisterPass(spvtools::CreateLocalSingleStoreElimPass());
+        optimizer.RegisterPass(spvtools::CreateAggressiveDCEPass());
+    }
     if (options->optimizePerformance)
         optimizer.RegisterPerformancePasses();
     if (options->optimizeSize)

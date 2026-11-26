@@ -1,0 +1,54 @@
+#version 460
+#extension GL_EXT_shader_explicit_arithmetic_types : require
+#extension GL_EXT_shader_64bit_indexing : require
+#extension GL_EXT_nonuniform_qualifier : require
+#extension GL_EXT_ray_query : require
+
+#pragma shader_64bit_indexing
+
+layout(local_size_x = 1) in;
+layout(constant_id = 0) const int rows = 2;
+layout(constant_id = 1) const uint columns = 3;
+layout(constant_id = 2) const uint64_t rowIndex = 1;
+// Equal defaults do not make two specialization constants interchangeable.
+layout(constant_id = 3) const int otherRows = 2;
+layout(set = 0, binding = 0) uniform sampler2D textures[rows][3][2];
+layout(set = 0, binding = 1) uniform accelerationStructureEXT scenes[columns][3];
+layout(set = 0, binding = 2) buffer Output { vec4 color; } outputData;
+layout(set = 0, binding = 3) uniform sampler2D otherTextures[otherRows][3][2];
+layout(push_constant) uniform Indices { int i; uint j; } indices;
+
+// Whole-array arguments and parameters must share the flattened array type.
+vec4 sampleAll(sampler2D inputs[rows][3][2], int i, uint j)
+{
+    return textureLod(inputs[i][j][1], vec2(0.0), 0.0);
+}
+
+vec4 forwardAll(sampler2D inputs[rows][3][2], int i, uint j)
+{
+    return sampleAll(inputs, i, j);
+}
+
+vec4 sampleOtherAll(sampler2D inputs[otherRows][3][2], int i, uint j)
+{
+    return textureLod(inputs[i][j][1], vec2(0.0), 0.0);
+}
+
+void main()
+{
+    int16_t i = int16_t(indices.i);
+    uint16_t j = uint16_t(indices.j);
+    outputData.color = textureLod(textures[i][j][1], vec2(0.0), 0.0);
+    outputData.color += textureLod(textures[int64_t(indices.i)][indices.j][0], vec2(0.0), 0.0);
+    outputData.color += textureLod(textures[indices.i][uint64_t(indices.j)][1], vec2(0.0), 0.0);
+    outputData.color += textureLod(textures[rowIndex][1][0], vec2(0.0), 0.0);
+    outputData.color += sampleAll(textures, indices.i, indices.j);
+    outputData.color += forwardAll(textures, indices.i, indices.j);
+    outputData.color += sampleOtherAll(otherTextures, indices.i, indices.j);
+    // Descriptor arrays flatten, but ordinary opaque ray-query arrays do not.
+    rayQueryEXT queries[2][3];
+    rayQueryInitializeEXT(queries[1][2], scenes[1][2], 0u, 255u,
+                         vec3(0.0), 0.1, vec3(0.0, 0.0, 1.0), 100.0);
+    while (rayQueryProceedEXT(queries[1][2])) {
+    }
+}
