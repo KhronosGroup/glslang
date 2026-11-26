@@ -193,7 +193,7 @@ if(ENABLE_SPIRV)
     if(ENABLE_OPT)
         target_include_directories(glslang PUBLIC
             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../External>)
-        target_link_libraries(glslang SPIRV-Tools-opt)
+        target_link_libraries(glslang PUBLIC SPIRV-Tools-opt)
     endif()
 endif()
 
@@ -201,7 +201,7 @@ endif()
 if(UNIX OR "${CMAKE_SYSTEM_NAME}" STREQUAL "Fuchsia" OR ANDROID)
     set(THREADS_PREFER_PTHREAD_FLAG ON)
     find_package(Threads REQUIRED)
-    target_link_libraries(glslang Threads::Threads)
+    target_link_libraries(glslang PRIVATE Threads::Threads)
 endif()
 
 ################################################################################
