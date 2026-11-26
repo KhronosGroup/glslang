@@ -2627,7 +2627,7 @@ void TGlslangToSpvTraverser::recordDescHeapAccessChainInfo(glslang::TIntermBinar
         }
 
         spv::StorageClass storageClass = TranslateStorageClass(nodeTy);
-        if (nodeTy.getBasicType() == glslang::EbtAccStruct)
+        if (nodeTy.getBasicType() == glslang::EbtAccStruct || nodeTy.getBasicType() == glslang::EbtSampler)
             storageClass = spv::StorageClass::UniformConstant;
 
         builder.setAccessChainDescHeapDescriptorType(descType, storageClass, nodeTy.getQualifier().isReadOnly(),
@@ -7236,7 +7236,7 @@ spv::Id DescHeapLayoutEmitter::makeUint(unsigned value)
     return traverser.builder.makeUintConstant(value);
 }
 
-// Create a 32-bit unsigned OpSpecConstantOp id.
+// Create a 32-bit unsigned layout expression, folding ordinary constant operands.
 spv::Id DescHeapLayoutEmitter::makeSpecOp(spv::Op op,
     const std::vector<spv::Id>& operands)
 {

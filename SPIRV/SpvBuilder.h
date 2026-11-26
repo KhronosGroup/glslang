@@ -1282,6 +1282,10 @@ public:
     void setUseReplicatedComposites(bool use) { useReplicatedComposites = use; }
 
 private:
+    // Return a folded constant ID, or NoResult when the operation cannot be folded.
+    Id tryFoldSpecConstantOp(Op opCode, Id typeId, const std::vector<Id>& operands,
+                             const std::vector<unsigned>& literals);
+
     // Helper to get size of a scalar (in bytes)
     unsigned int postProcessGetLargestScalarSize(const Instruction& type);
 

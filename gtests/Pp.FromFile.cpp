@@ -74,6 +74,7 @@ INSTANTIATE_TEST_SUITE_P(
         "preprocessor.stringify_invalid.vert",
         "preprocessor.shift_out_of_range.vert",
         "preprocessor.elseseen.oob.vert",
+        "preprocessor.elseseen.unmatched.vert",
         "preprocessor.macro.recursion.vert",
         "preprocessor.string_escaping.frag",
     })),

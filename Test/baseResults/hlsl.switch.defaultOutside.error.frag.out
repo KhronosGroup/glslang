@@ -1,0 +1,18 @@
+hlsl.switch.defaultOutside.error.frag
+ERROR: 0:3: 'default' : cannot appear outside switch statement 
+ERROR: 0:4: 'declaration' : Expected 
+(4): error at column 10, HLSL parsing failed.
+ERROR: 3 compilation errors.  No code generated.
+
+
+Shader version: 500
+gl_FragCoord origin is upper left
+
+
+Linked fragment stage:
+
+
+Shader version: 500
+gl_FragCoord origin is upper left
+
+SPIR-V is not generated for failed compile or link

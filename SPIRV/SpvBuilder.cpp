@@ -3721,9 +3721,63 @@ Id Builder::createOp(Op opCode, Id typeId, const std::vector<IdImmediate>& opera
     return op->getResultId();
 }
 
+Id Builder::tryFoldSpecConstantOp(Op opCode, Id typeId, const std::vector<Id>& operands,
+    const std::vector<unsigned>& literals)
+{
+    // Fold the scalar 32-bit arithmetic used for descriptor heap layouts. Only
+    // OpConstant operands have known values here; specialization constants and
+    // OpConstantSizeOfEXT must retain their specialization-time dependencies.
+    const auto isInt32Constant = [this](Id id) {
+        return isConstantScalar(id) && getTypeClass(getTypeId(id)) == Op::OpTypeInt &&
+               getScalarTypeWidth(getTypeId(id)) == 32;
+    };
+    if (literals.empty() && operands.size() == 2 &&
+        isInt32Constant(operands[0]) && isInt32Constant(operands[1])) {
+        const uint32_t left = getConstantScalar(operands[0]);
+        const uint32_t right = getConstantScalar(operands[1]);
+        if (opCode == Op::OpUGreaterThan && isBoolType(typeId))
+            return makeBoolConstant(left > right);
+
+        if (getTypeClass(typeId) == Op::OpTypeInt && getScalarTypeWidth(typeId) == 32) {
+            // Unsigned arithmetic preserves SPIR-V's wraparound semantics for
+            // both signed and unsigned integer result types.
+            switch (opCode) {
+            case Op::OpIAdd:
+                return makeIntConstant(typeId, left + right, false);
+            case Op::OpISub:
+                return makeIntConstant(typeId, left - right, false);
+            case Op::OpIMul:
+                return makeIntConstant(typeId, left * right, false);
+            case Op::OpUMod:
+                if (right != 0)
+                    return makeIntConstant(typeId, left % right, false);
+                break;
+            default:
+                break;
+            }
+        }
+    }
+    // Selecting the maximum alignment uses a boolean comparison followed by an
+    // integer select. Fold both so subsequent layout arithmetic stays constant.
+    if (literals.empty() && opCode == Op::OpSelect && operands.size() == 3 &&
+        isInt32Constant(operands[1]) && isInt32Constant(operands[2]) &&
+        getTypeId(operands[1]) == typeId && getTypeId(operands[2]) == typeId) {
+        if (getOpCode(operands[0]) == Op::OpConstantTrue)
+            return operands[1];
+        if (getOpCode(operands[0]) == Op::OpConstantFalse)
+            return operands[2];
+    }
+
+    return NoResult;
+}
+
 Id Builder::createSpecConstantOp(Op opCode, Id typeId, const std::vector<Id>& operands,
     const std::vector<unsigned>& literals)
 {
+    const Id folded = tryFoldSpecConstantOp(opCode, typeId, operands, literals);
+    if (folded != NoResult)
+        return folded;
+
     Instruction* op = new Instruction(getUniqueId(), typeId, Op::OpSpecConstantOp);
     op->reserveOperands(operands.size() + literals.size() + 1);
     op->addImmediateOperand((unsigned) opCode);
