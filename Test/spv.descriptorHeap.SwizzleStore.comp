@@ -1,0 +1,19 @@
+#version 450
+#extension GL_EXT_descriptor_heap: require
+#extension GL_EXT_structured_descriptor_heap: require
+
+layout(descriptor_heap) buffer O { vec3 v; vec4 w; } ssbo[];
+
+layout(buffer_type) buffer DataBuffer { vec4 v; };
+layout(heap_offset = 1024) resourceheap BufferHeap { DataBuffer dataBuffer; } bufferHeap;
+
+void main()
+{
+    // partial swizzle, split into per-component stores
+    ssbo[0].v.zy = vec2(1.0, 2.0);
+    bufferHeap.dataBuffer.v.yx = vec2(3.0, 4.0);
+
+    // full reordering swizzle, stored through a load and shuffle
+    ssbo[1].w.wzyx = vec4(5.0);
+    bufferHeap.dataBuffer.v.wzyx = vec4(6.0);
+}
