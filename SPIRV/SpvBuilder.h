@@ -90,7 +90,7 @@ struct StructMemberDebugInfo {
     spv::Id debugTypeOverride {0};
 };
 
-class Builder {
+class GLSLANG_EXPORT_FOR_TESTS Builder {
     class CompositeConstantKey {
     public:
         enum Kind {
@@ -319,6 +319,9 @@ public:
     Builder(unsigned int spvVersion, unsigned int userNumber, SpvBuildLogger* logger);
     virtual ~Builder();
 
+    Builder(const Builder&) = delete;
+    Builder& operator=(const Builder&) = delete;
+
     static const int maxMatrixSize = 4;
 
     unsigned int getSpvVersion() const { return spvVersion; }
@@ -443,7 +446,7 @@ public:
             return it->second;
         }
 
-        return NoType;
+        return makeDebugInfoNone();
     }
 
     // Maps the given OpFunction Id to a Non-Semantic DebugFunction Id.
@@ -452,7 +455,7 @@ public:
             return it->second;
         }
 
-        return NoResult;
+        return makeDebugInfoNone();
     }
 
     // For creating new types (will return old type if the requested one was already made).
