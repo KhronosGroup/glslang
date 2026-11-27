@@ -1,0 +1,20 @@
+spv.amdx.multiLevelAccelerationStructure.Error.comp
+ERROR: 0:9: 'rayQueryGetIntersectionInstanceLevelAMDX' : required extension not requested: GL_AMDX_multi_level_acceleration_structure
+ERROR: 0:10: 'rayQueryGetIntersectionInstanceCustomIndexAtLevelAMDX' : required extension not requested: GL_AMDX_multi_level_acceleration_structure
+ERROR: 0:11: 'rayQueryGetIntersectionInstanceIdAtLevelAMDX' : required extension not requested: GL_AMDX_multi_level_acceleration_structure
+ERROR: 0:12: 'rayQueryGetIntersectionObjectToWorldAtLevelAMDX' : required extension not requested: GL_AMDX_multi_level_acceleration_structure
+ERROR: 0:13: 'rayQueryGetIntersectionWorldToObjectAtLevelAMDX' : required extension not requested: GL_AMDX_multi_level_acceleration_structure
+ERROR: 0:20: 'committed' : argument must be compile-time constant 
+ERROR: 0:21: 'committed' : argument must be compile-time constant 
+ERROR: 0:22: 'committed' : argument must be compile-time constant 
+ERROR: 0:23: 'committed' : argument must be compile-time constant 
+ERROR: 0:24: 'committed' : argument must be compile-time constant 
+ERROR: 0:31: 'rayQueryGetIntersectionInstanceLevelAMDX' : required extension not requested: GL_EXT_ray_query
+ERROR: 0:32: 'rayQueryGetIntersectionInstanceCustomIndexAtLevelAMDX' : required extension not requested: GL_EXT_ray_query
+ERROR: 0:33: 'rayQueryGetIntersectionInstanceIdAtLevelAMDX' : required extension not requested: GL_EXT_ray_query
+ERROR: 0:34: 'rayQueryGetIntersectionObjectToWorldAtLevelAMDX' : required extension not requested: GL_EXT_ray_query
+ERROR: 0:35: 'rayQueryGetIntersectionWorldToObjectAtLevelAMDX' : required extension not requested: GL_EXT_ray_query
+ERROR: 15 compilation errors.  No code generated.
+
+
+SPIR-V is not generated for failed compile or link

@@ -1012,6 +1012,15 @@ bool TOutputTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node
     case EOpRayQueryGetWorldRayOrigin:                                     out.debug << "rayQueryGetWorldRayOriginEXT"; break;
     case EOpRayQueryGetIntersectionObjectToWorld:                          out.debug << "rayQueryGetIntersectionObjectToWorldEXT"; break;
     case EOpRayQueryGetIntersectionWorldToObject:                          out.debug << "rayQueryGetIntersectionWorldToObjectEXT"; break;
+    case EOpGetInstanceCustomIndexAtLevelAMDX:                             out.debug << "getInstanceCustomIndexAtLevelAMDX"; break;
+    case EOpGetInstanceIdAtLevelAMDX:                                      out.debug << "getInstanceIdAtLevelAMDX"; break;
+    case EOpGetObjectToWorldAtLevelAMDX:                                   out.debug << "getObjectToWorldAtLevelAMDX"; break;
+    case EOpGetWorldToObjectAtLevelAMDX:                                   out.debug << "getWorldToObjectAtLevelAMDX"; break;
+    case EOpRayQueryGetIntersectionInstanceLevelAMDX:                      out.debug << "rayQueryGetIntersectionInstanceLevelAMDX"; break;
+    case EOpRayQueryGetIntersectionInstanceCustomIndexAtLevelAMDX:          out.debug << "rayQueryGetIntersectionInstanceCustomIndexAtLevelAMDX"; break;
+    case EOpRayQueryGetIntersectionInstanceIdAtLevelAMDX:                   out.debug << "rayQueryGetIntersectionInstanceIdAtLevelAMDX"; break;
+    case EOpRayQueryGetIntersectionObjectToWorldAtLevelAMDX:                out.debug << "rayQueryGetIntersectionObjectToWorldAtLevelAMDX"; break;
+    case EOpRayQueryGetIntersectionWorldToObjectAtLevelAMDX:                out.debug << "rayQueryGetIntersectionWorldToObjectAtLevelAMDX"; break;
     case EOpRayQueryGetIntersectionTriangleVertexPositionsEXT:             out.debug << "rayQueryGetIntersectionTriangleVertexPositionsEXT"; break;
     case EOpRayQueryGetIntersectionClusterIdNV:                            out.debug << "rayQueryGetIntersectionClusterIdNV"; break;
     case EOpRayQueryGetIntersectionSpherePositionNV:                       out.debug << "rayQueryGetIntersectionSpherePositionNV"; break;

@@ -1,0 +1,6 @@
+#version 460 core
+#extension GL_EXT_ray_query : require
+#extension GL_AMDX_multi_level_acceleration_structure : require // ERROR: requires SPIR-V 1.4
+
+layout(local_size_x = 1) in;
+void main() {}

@@ -738,6 +738,7 @@ INSTANTIATE_TEST_SUITE_P(
 INSTANTIATE_TEST_SUITE_P(
     Glsl, CompileVulkan1_1ToSpirvTest,
     ::testing::ValuesIn(std::vector<std::string>({
+        "spv.amdx.multiLevelAccelerationStructure.spirv13.Error.comp",
         "spv.1.3.8bitstorage-ubo.vert",
         "spv.1.3.8bitstorage-ssbo.vert",
         "spv.1.3.coopmat.comp",
@@ -910,6 +911,15 @@ INSTANTIATE_TEST_SUITE_P(
         "rayQuery-opacityMicromapRayQueryModeForce2State.comp",
         "rayQuery-opacityMicromapRayQueryMode.Error.comp",
         "rayQuery-opacityMicromapRayQueryModeNonConst.Error.comp",
+        "spv.amdx.mlas.rchit",
+        "spv.amdx.mlas.comp",
+        "spv.amdx.multiLevelAccelerationStructure.rchit",
+        "spv.amdx.multiLevelAccelerationStructure.rahit",
+        "spv.amdx.multiLevelAccelerationStructure.rint",
+        "spv.amdx.multiLevelAccelerationStructure.comp",
+        "spv.amdx.multiLevelAccelerationStructure.Error.rchit",
+        "spv.amdx.multiLevelAccelerationStructure.Error.rgen",
+        "spv.amdx.multiLevelAccelerationStructure.Error.comp",
         "spv.ext.AnyHitShader.rahit",
         "spv.ext.AnyHitShader_Errors.rahit",
         "spv.ext.ClosestHitShader.rchit",

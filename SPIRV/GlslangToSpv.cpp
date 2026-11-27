@@ -1130,6 +1130,10 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
         return spv::BuiltIn::CullMaskKHR;
     case glslang::EbvPositionFetch:
         return spv::BuiltIn::HitTriangleVertexPositionsKHR;
+    case glslang::EbvHitInstanceLevelAMDX:
+        builder.addExtension("SPV_AMDX_multi_level_acceleration_structure");
+        builder.addCapability(spv::Capability::RayTracingMultiLevelAccelerationStructureAMDX);
+        return spv::BuiltIn::HitInstanceLevelAMDX;
     case glslang::EbvInstanceCustomIndex:
         return spv::BuiltIn::InstanceCustomIndexKHR;
     case glslang::EbvHitKind:
@@ -4431,6 +4435,11 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         case glslang::EOpRayQueryGetIntersectionObjectRayOrigin:
         case glslang::EOpRayQueryGetIntersectionObjectToWorld:
         case glslang::EOpRayQueryGetIntersectionWorldToObject:
+        case glslang::EOpRayQueryGetIntersectionInstanceLevelAMDX:
+        case glslang::EOpRayQueryGetIntersectionInstanceCustomIndexAtLevelAMDX:
+        case glslang::EOpRayQueryGetIntersectionInstanceIdAtLevelAMDX:
+        case glslang::EOpRayQueryGetIntersectionObjectToWorldAtLevelAMDX:
+        case glslang::EOpRayQueryGetIntersectionWorldToObjectAtLevelAMDX:
         case glslang::EOpRayQueryGetIntersectionClusterIdNV:
         case glslang::EOpRayQueryGetIntersectionSpherePositionNV:
         case glslang::EOpRayQueryGetIntersectionSphereRadiusNV:
@@ -4683,6 +4692,11 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
                  glslangOp == glslang::EOpRayQueryGetIntersectionObjectRayOrigin ||
                  glslangOp == glslang::EOpRayQueryGetIntersectionObjectToWorld ||
                  glslangOp == glslang::EOpRayQueryGetIntersectionWorldToObject ||
+                 glslangOp == glslang::EOpRayQueryGetIntersectionInstanceLevelAMDX ||
+                 glslangOp == glslang::EOpRayQueryGetIntersectionInstanceCustomIndexAtLevelAMDX ||
+                 glslangOp == glslang::EOpRayQueryGetIntersectionInstanceIdAtLevelAMDX ||
+                 glslangOp == glslang::EOpRayQueryGetIntersectionObjectToWorldAtLevelAMDX ||
+                 glslangOp == glslang::EOpRayQueryGetIntersectionWorldToObjectAtLevelAMDX ||
                  glslangOp == glslang::EOpRayQueryGetIntersectionTriangleVertexPositionsEXT ||
                  glslangOp == glslang::EOpRayQueryGetIntersectionClusterIdNV ||
                  glslangOp == glslang::EOpRayQueryGetIntersectionSpherePositionNV ||
@@ -9661,6 +9675,26 @@ spv::Id TGlslangToSpvTraverser::createUnaryOperation(glslang::TOperator op, OpDe
     case glslang::EOpRayQueryGetIntersectionCandidateAABBOpaque:
         unaryOp = spv::Op::OpRayQueryGetIntersectionCandidateAABBOpaqueKHR;
         break;
+    case glslang::EOpGetInstanceCustomIndexAtLevelAMDX:
+        builder.addExtension("SPV_AMDX_multi_level_acceleration_structure");
+        builder.addCapability(spv::Capability::RayTracingMultiLevelAccelerationStructureAMDX);
+        unaryOp = spv::Op::OpGetInstanceCustomIndexAtLevelAMDX;
+        break;
+    case glslang::EOpGetInstanceIdAtLevelAMDX:
+        builder.addExtension("SPV_AMDX_multi_level_acceleration_structure");
+        builder.addCapability(spv::Capability::RayTracingMultiLevelAccelerationStructureAMDX);
+        unaryOp = spv::Op::OpGetInstanceIdAtLevelAMDX;
+        break;
+    case glslang::EOpGetObjectToWorldAtLevelAMDX:
+        builder.addExtension("SPV_AMDX_multi_level_acceleration_structure");
+        builder.addCapability(spv::Capability::RayTracingMultiLevelAccelerationStructureAMDX);
+        unaryOp = spv::Op::OpGetObjectToWorldAtLevelAMDX;
+        break;
+    case glslang::EOpGetWorldToObjectAtLevelAMDX:
+        builder.addExtension("SPV_AMDX_multi_level_acceleration_structure");
+        builder.addCapability(spv::Capability::RayTracingMultiLevelAccelerationStructureAMDX);
+        unaryOp = spv::Op::OpGetWorldToObjectAtLevelAMDX;
+        break;
     case glslang::EOpInterpolateAtCentroid:
         if (typeProxy == glslang::EbtFloat16)
             builder.addExtension(spv::E_SPV_AMD_gpu_shader_half_float);
@@ -11655,6 +11689,31 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
     case glslang::EOpRayQueryGetIntersectionWorldToObject:
         typeId = builder.makeMatrixType(builder.makeFloatType(32), 4, 3);
         opCode = spv::Op::OpRayQueryGetIntersectionWorldToObjectKHR;
+        break;
+    case glslang::EOpRayQueryGetIntersectionInstanceLevelAMDX:
+        builder.addExtension("SPV_AMDX_multi_level_acceleration_structure");
+        builder.addCapability(spv::Capability::RayQueryMultiLevelAccelerationStructureAMDX);
+        opCode = spv::Op::OpRayQueryGetIntersectionInstanceLevelAMDX;
+        break;
+    case glslang::EOpRayQueryGetIntersectionInstanceCustomIndexAtLevelAMDX:
+        builder.addExtension("SPV_AMDX_multi_level_acceleration_structure");
+        builder.addCapability(spv::Capability::RayQueryMultiLevelAccelerationStructureAMDX);
+        opCode = spv::Op::OpRayQueryGetIntersectionInstanceCustomIndexAtLevelAMDX;
+        break;
+    case glslang::EOpRayQueryGetIntersectionInstanceIdAtLevelAMDX:
+        builder.addExtension("SPV_AMDX_multi_level_acceleration_structure");
+        builder.addCapability(spv::Capability::RayQueryMultiLevelAccelerationStructureAMDX);
+        opCode = spv::Op::OpRayQueryGetIntersectionInstanceIdAtLevelAMDX;
+        break;
+    case glslang::EOpRayQueryGetIntersectionObjectToWorldAtLevelAMDX:
+        builder.addExtension("SPV_AMDX_multi_level_acceleration_structure");
+        builder.addCapability(spv::Capability::RayQueryMultiLevelAccelerationStructureAMDX);
+        opCode = spv::Op::OpRayQueryGetIntersectionObjectToWorldAtLevelAMDX;
+        break;
+    case glslang::EOpRayQueryGetIntersectionWorldToObjectAtLevelAMDX:
+        builder.addExtension("SPV_AMDX_multi_level_acceleration_structure");
+        builder.addCapability(spv::Capability::RayQueryMultiLevelAccelerationStructureAMDX);
+        opCode = spv::Op::OpRayQueryGetIntersectionWorldToObjectAtLevelAMDX;
         break;
     case glslang::EOpRayQueryGetIntersectionSpherePositionNV:
         typeId = builder.makeVectorType(builder.makeFloatType(32), 3);

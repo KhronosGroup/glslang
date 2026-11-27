@@ -461,6 +461,8 @@ const char* BuiltInString(int builtIn)
     case (int)BuiltIn::HitLSSPositionsNV:           return "HitLSSPositionsNV";
     case (int)BuiltIn::HitLSSRadiiNV:               return "HitLLSSRadiiNV";
     case (int)BuiltIn::InstanceCustomIndexKHR:      return "InstanceCustomIndexKHR";
+    case (int)BuiltIn::HitInstanceLevelAMDX:
+        return "HitInstanceLevelAMDX";
     case (int)BuiltIn::RayGeometryIndexKHR:         return "RayGeometryIndexKHR";
     case (int)BuiltIn::ObjectToWorldKHR:            return "ObjectToWorldKHR";
     case (int)BuiltIn::WorldToObjectKHR:            return "WorldToObjectKHR";
@@ -1040,6 +1042,10 @@ const char* CapabilityString(int info)
     case (int)Capability::RayTracingKHR:                   return "RayTracingKHR";
     case (int)Capability::RayCullMaskKHR:                  return "RayCullMaskKHR";
     case (int)Capability::RayQueryKHR:                     return "RayQueryKHR";
+    case (int)Capability::RayTracingMultiLevelAccelerationStructureAMDX:
+        return "RayTracingMultiLevelAccelerationStructureAMDX";
+    case (int)Capability::RayQueryMultiLevelAccelerationStructureAMDX:
+        return "RayQueryMultiLevelAccelerationStructureAMDX";
     case (int)Capability::RayTracingProvisionalKHR:        return "RayTracingProvisionalKHR";
     case (int)Capability::RayTraversalPrimitiveCullingKHR: return "RayTraversalPrimitiveCullingKHR";
     case (int)Capability::RayTracingPositionFetchKHR:      return "RayTracingPositionFetchKHR";
@@ -1620,6 +1626,25 @@ const char* OpcodeString(int op)
     case (int)Op::OpSetMeshOutputsEXT:                return "OpSetMeshOutputsEXT";
 
     case (int)Op::OpGroupNonUniformRotateKHR:         return "OpGroupNonUniformRotateKHR";
+
+    case (int)Op::OpGetInstanceCustomIndexAtLevelAMDX:
+        return "OpGetInstanceCustomIndexAtLevelAMDX";
+    case (int)Op::OpGetInstanceIdAtLevelAMDX:
+        return "OpGetInstanceIdAtLevelAMDX";
+    case (int)Op::OpGetObjectToWorldAtLevelAMDX:
+        return "OpGetObjectToWorldAtLevelAMDX";
+    case (int)Op::OpGetWorldToObjectAtLevelAMDX:
+        return "OpGetWorldToObjectAtLevelAMDX";
+    case (int)Op::OpRayQueryGetIntersectionInstanceLevelAMDX:
+        return "OpRayQueryGetIntersectionInstanceLevelAMDX";
+    case (int)Op::OpRayQueryGetIntersectionInstanceCustomIndexAtLevelAMDX:
+        return "OpRayQueryGetIntersectionInstanceCustomIndexAtLevelAMDX";
+    case (int)Op::OpRayQueryGetIntersectionInstanceIdAtLevelAMDX:
+        return "OpRayQueryGetIntersectionInstanceIdAtLevelAMDX";
+    case (int)Op::OpRayQueryGetIntersectionObjectToWorldAtLevelAMDX:
+        return "OpRayQueryGetIntersectionObjectToWorldAtLevelAMDX";
+    case (int)Op::OpRayQueryGetIntersectionWorldToObjectAtLevelAMDX:
+        return "OpRayQueryGetIntersectionWorldToObjectAtLevelAMDX";
 
     case (int)Op::OpTypeRayQueryKHR:                                                   return "OpTypeRayQueryKHR";
     case (int)Op::OpRayQueryInitializeKHR:                                             return "OpRayQueryInitializeKHR";
@@ -3321,9 +3346,27 @@ void Parameterize()
         InstructionDesc[enumCast(Op::OpConvertUToAccelerationStructureKHR)].operands.push(OperandId, "Value");
         InstructionDesc[enumCast(Op::OpConvertUToAccelerationStructureKHR)].setResultAndType(true, true);
 
+        for (Op op : {Op::OpGetInstanceCustomIndexAtLevelAMDX, Op::OpGetInstanceIdAtLevelAMDX,
+                      Op::OpGetObjectToWorldAtLevelAMDX, Op::OpGetWorldToObjectAtLevelAMDX}) {
+            InstructionDesc[enumCast(op)].operands.push(OperandId, "'Level'");
+            InstructionDesc[enumCast(op)].setResultAndType(true, true);
+        }
+
         // Ray Query
         InstructionDesc[enumCast(Op::OpTypeAccelerationStructureKHR)].setResultAndType(true, false);
         InstructionDesc[enumCast(Op::OpTypeRayQueryKHR)].setResultAndType(true, false);
+
+        for (Op op :
+             {Op::OpRayQueryGetIntersectionInstanceLevelAMDX,
+              Op::OpRayQueryGetIntersectionInstanceCustomIndexAtLevelAMDX,
+              Op::OpRayQueryGetIntersectionInstanceIdAtLevelAMDX, Op::OpRayQueryGetIntersectionObjectToWorldAtLevelAMDX,
+              Op::OpRayQueryGetIntersectionWorldToObjectAtLevelAMDX}) {
+            InstructionDesc[enumCast(op)].operands.push(OperandId, "'RayQuery'");
+            InstructionDesc[enumCast(op)].operands.push(OperandId, "'Intersection'");
+            if (op != Op::OpRayQueryGetIntersectionInstanceLevelAMDX)
+                InstructionDesc[enumCast(op)].operands.push(OperandId, "'Level'");
+            InstructionDesc[enumCast(op)].setResultAndType(true, true);
+        }
 
         InstructionDesc[enumCast(Op::OpRayQueryInitializeKHR)].operands.push(OperandId, "'RayQuery'");
         InstructionDesc[enumCast(Op::OpRayQueryInitializeKHR)].operands.push(OperandId, "'AccelerationS'");

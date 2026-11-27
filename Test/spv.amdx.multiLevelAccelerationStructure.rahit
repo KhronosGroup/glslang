@@ -1,0 +1,14 @@
+#version 460 core
+#extension GL_EXT_ray_tracing : require
+#extension GL_AMDX_multi_level_acceleration_structure : require
+
+layout(location = 0) rayPayloadInEXT vec4 result;
+
+void main()
+{
+    uint level = gl_HitInstanceLevelAMDX - 1u;
+    result.x = float(gl_HitInstanceLevelAMDX);
+    result.y = float(getInstanceCustomIndexAtLevelAMDX(level));
+    result.z = float(getInstanceIdAtLevelAMDX(level));
+    result.w = getObjectToWorldAtLevelAMDX(level)[3].x + getWorldToObjectAtLevelAMDX(level)[3].x;
+}

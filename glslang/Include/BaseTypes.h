@@ -358,6 +358,7 @@ enum TBuiltInVariable {
     EbvWarpMaxIDARM,
 
     EbvPositionFetch,
+    EbvHitInstanceLevelAMDX,
 
     // SPV_QCOM_tile_shading
     EbvTileOffsetQCOM,
